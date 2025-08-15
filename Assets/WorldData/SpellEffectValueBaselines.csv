@@ -1,8 +1,12 @@
 ﻿Effect|EqLow|EqHigh|WowLow|WowHigh60|WowHigh80
 HealDirectHPS|10|202|32|1000|0
 DamageDirectDPS|5.33|333.33|21|400|0
+ManaUpDirectMPS|0|0|0|0|0
+ManaDownDirectMPS|0|0|0|0|0
 HealOverTimeHPS|0.1667|50|1|74|0
 DamageOverTimeDPS|0.1667|18.5|0.5|53|0
+ManaUpOverTimeMPS|0|0|0|0|0
+ManaDownOvertimeMPS|0|0|0|0|0
 ArmorClassBuff|15|90|8|685|0
 ArmorClassDebuff|15|100|140|2600|0
 AttackBuff|10|17|25|550|0

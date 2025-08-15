@@ -35,7 +35,7 @@ namespace EQWOWConverter.Spells
         InvisibilityUnstable = 12,
         SeeInvisibility = 13,
         WaterBreathing = 14,
-        //CurrentMana = 15,
+        CurrentMana = 15,
         //NPCFrenzy = 16, // What is this?
         //NPCAwareness = 17, // What is this?
         //Pacify = 18, -- This isn't implemented in eq emulators so always skip it
@@ -75,6 +75,7 @@ namespace EQWOWConverter.Spells
         //DispelDetrimental = 154, -- Not used (Purify Soul, AA ability)
         //DispelBeneficial = 209, -- Not used
         Invisibility = 314,
+        CurrentManaOnce = 358,
         // TODO: Goes up to 526
     }
 }

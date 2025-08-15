@@ -711,13 +711,64 @@ namespace EQWOWConverter.Spells
                                     else
                                     {
                                         newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "DamageOverTimeDPS");
-                                        newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                        newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.EffectBasePoints, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                         newSpellEffectWOW.AuraDescription = string.Concat("suffering ", newSpellEffectWOW.EffectBasePoints, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                     }
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
                             }
                         } break;
+                    case SpellEQEffectType.CurrentMana:
+                    case SpellEQEffectType.CurrentManaOnce:
+                        {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
+
+                            int preFormulaEffectAmount = eqEffect.EQBaseValue;
+                            if (spellDurationInMS <= 0 || eqEffect.EQEffectType == SpellEQEffectType.CurrentManaOnce)
+                            {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.Energize;
+                                newSpellEffectWOW.EffectMiscValueA = 0; // Power Type = Mana
+                                if (eqEffect.EQBaseValue > 0)
+                                {
+                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ManaUpDirectMPS");
+                                    newSpellEffectWOW.ActionDescription = string.Concat("restore ", newSpellEffectWOW.EffectBasePoints, " mana");
+                                    spellTemplate.HighestDirectHealAmountInSpellEffect = Math.Max(spellTemplate.HighestDirectHealAmountInSpellEffect, newSpellEffectWOW.EffectBasePoints);
+                                }
+                                else
+                                {
+                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ManaDownDirectMPS");
+                                    newSpellEffectWOW.ActionDescription = string.Concat("reduce ", Math.Abs(newSpellEffectWOW.EffectBasePoints), " mana");
+                                }
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            }
+                            else
+                            {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicEnergize;
+                                newSpellEffectWOW.EffectMiscValueA = 0; // Power Type = Mana
+                                float effectAmountMod = Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) / Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ);
+                                preFormulaEffectAmount = Math.Max((int)Math.Round(Convert.ToSingle(preFormulaEffectAmount) * effectAmountMod), 1);
+                                newSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
+                                if (eqEffect.EQBaseValue > 0)
+                                {
+                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ManaUpOverTimeMPS");
+                                    newSpellEffectWOW.ActionDescription = string.Concat("recover ", newSpellEffectWOW.EffectBasePoints, " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                    newSpellEffectWOW.AuraDescription = string.Concat("recovering ", newSpellEffectWOW.EffectBasePoints, " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                }
+                                else
+                                {
+                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ManaDownOvertimeMPS");
+                                    newSpellEffectWOW.ActionDescription = string.Concat("reduce ", Math.Abs(newSpellEffectWOW.EffectBasePoints), " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                    newSpellEffectWOW.AuraDescription = string.Concat("reducing ", Math.Abs(newSpellEffectWOW.EffectBasePoints), " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                }
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            }
+                        }
+                        break;
                     case SpellEQEffectType.ArmorClass:
                         {
                             if (eqEffect.EQBaseValue == 0)
