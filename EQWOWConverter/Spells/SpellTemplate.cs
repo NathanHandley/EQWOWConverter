@@ -724,21 +724,23 @@ namespace EQWOWConverter.Spells
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
 
-                            int preFormulaEffectAmount = eqEffect.EQBaseValue;
+                            int preFormulaEffectAmount = Math.Abs(eqEffect.EQBaseValue);
                             if (spellDurationInMS <= 0 || eqEffect.EQEffectType == SpellEQEffectType.CurrentManaOnce)
                             {
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
-                                newSpellEffectWOW.EffectType = SpellWOWEffectType.Energize;
                                 newSpellEffectWOW.EffectMiscValueA = 0; // Power Type = Mana
                                 if (eqEffect.EQBaseValue > 0)
                                 {
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.Energize;
                                     newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ManaUpDirectMPS");
                                     newSpellEffectWOW.ActionDescription = string.Concat("restore ", newSpellEffectWOW.EffectBasePoints, " mana");
                                     spellTemplate.HighestDirectHealAmountInSpellEffect = Math.Max(spellTemplate.HighestDirectHealAmountInSpellEffect, newSpellEffectWOW.EffectBasePoints);
                                 }
                                 else
                                 {
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.PowerBurn;
+                                    newSpellEffectWOW.EffectMultipleValue = 0;
                                     newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ManaDownDirectMPS");
                                     newSpellEffectWOW.ActionDescription = string.Concat("reduce ", Math.Abs(newSpellEffectWOW.EffectBasePoints), " mana");
                                 }
@@ -750,7 +752,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 newSpellEffectWOW.EffectMiscValueA = 0; // Power Type = Mana
                                 float effectAmountMod = Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) / Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ);
-                                preFormulaEffectAmount = (int)Math.Round(Convert.ToSingle(Math.Abs(preFormulaEffectAmount)) * effectAmountMod);
+                                preFormulaEffectAmount = (int)Math.Round(Convert.ToSingle(preFormulaEffectAmount) * effectAmountMod);
                                 newSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
                                 if (eqEffect.EQBaseValue > 0)
                                 {
@@ -762,7 +764,7 @@ namespace EQWOWConverter.Spells
                                 else
                                 {
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PowerBurn;
-                                    newSpellEffectWOW.EffectMultipleValue = 1;
+                                    newSpellEffectWOW.EffectMultipleValue = 0;
                                     newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ManaDownOvertimeMPS");
                                     newSpellEffectWOW.ActionDescription = string.Concat("reduce ", newSpellEffectWOW.EffectBasePoints, " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                     newSpellEffectWOW.AuraDescription = string.Concat("reducing ", newSpellEffectWOW.EffectBasePoints, " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
