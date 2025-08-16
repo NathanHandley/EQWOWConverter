@@ -120,7 +120,7 @@ namespace EQWOWConverter
                             itemTemplatesByWOWEntryID[itemID].IsGivenAsStartItem = true;
 
                 // Spells                                        
-                GenerateSpells(out spellTemplates);
+                GenerateSpells(out spellTemplates, itemTemplatesByEQDBID);
 
                 // Tradeskills
                 GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates, out tradeskillRecipes);
@@ -1501,7 +1501,7 @@ namespace EQWOWConverter
             FileTool.CopyDirectoryAndContents(workingFolder, outputFolder, true, false, "*.blp");
         }
 
-        public void GenerateSpells(out List<SpellTemplate> spellTemplates)
+        public void GenerateSpells(out List<SpellTemplate> spellTemplates, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
         {
             Logger.WriteInfo("Generating spells...");
 
@@ -1514,6 +1514,16 @@ namespace EQWOWConverter
 
             // Add any custom spells
             GenerateCustomSpells(ref spellTemplates);
+
+            // Generate the poison weapon enchantment spells
+            foreach (ItemTemplate itemTemplate in itemTemplatesByEQDBID.Values)
+                if (itemTemplate.WOWProcEnchantEffectIDEQ > 0 && itemTemplate.WOWProcEnchantSpellIDWOW > 0)
+                {
+                    SpellTemplate? enchantSpellTemplate;
+                    SpellTemplate.GenerateItemEnchantSpellIfNotCreated(itemTemplate.Name, itemTemplate.WOWProcEnchantEffectIDEQ, itemTemplate.WOWProcEnchantSpellIDWOW, out enchantSpellTemplate);
+                    if (enchantSpellTemplate != null)
+                        spellTemplates.Add(enchantSpellTemplate);
+                }
 
             // Copy the spell sounds
             string inputSoundFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
@@ -2114,13 +2124,17 @@ namespace EQWOWConverter
                 // Rogue Poison Weapon Enchants
                 if (itemTemplate.EQClickType == 6)
                 {
-                    itemTemplate.WOWSpellCharges1 = itemTemplate.MaxCharges *= -1; // *= -1 makes it expendable
-                    itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
-                    itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
-                    itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
-
-                    // TODO
-
+                    if (spellTemplatesByEQID.ContainsKey(itemTemplate.WOWProcEnchantEffectIDEQ) == false)
+                        Logger.WriteDebug("Could not map spell with eqid ", itemTemplate.WOWProcEnchantEffectIDEQ.ToString(), " to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as the spell didn't exist");
+                    else
+                    {
+                        itemTemplate.WOWSpellID1 = itemTemplate.WOWProcEnchantSpellIDWOW;
+                        itemTemplate.WOWSpellTrigger1 = 0; // Use (click)
+                        itemTemplate.WOWSpellCharges1 = itemTemplate.MaxCharges *= -1; // *= -1 makes it expendable
+                        itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
+                        itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
+                        itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
+                    }
                 }
 
                 // Worn

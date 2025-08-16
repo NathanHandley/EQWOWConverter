@@ -171,6 +171,8 @@ namespace EQWOWConverter
             spellDurationDBC.LoadFromDisk(dbcInputFolder, "SpellDuration.dbc");
             SpellIconDBC spellIconDBC = new SpellIconDBC();
             spellIconDBC.LoadFromDisk(dbcInputFolder, "SpellIcon.dbc");
+            SpellItemEnchantmentDBC spellItemEnchantmentDBC = new SpellItemEnchantmentDBC();
+            spellItemEnchantmentDBC.LoadFromDisk(dbcInputFolder, "SpellItemEnchantment.dbc");
             SpellRadiusDBC spellRadiusDBC = new SpellRadiusDBC();
             spellRadiusDBC.LoadFromDisk(dbcInputFolder, "SpellRadius.dbc");
             SpellRangeDBC spellRangeDBC = new SpellRangeDBC();
@@ -499,6 +501,13 @@ namespace EQWOWConverter
                     }
                 }
 
+                // Add the enchantment, if there is one
+                if (spellTemplate.ItemEnchantSpellID != 0)
+                {
+                    spellItemEnchantmentDBC.AddRowForRogueWeaponProc(spellTemplate.ItemEnchantSpellID, spellTemplate.ItemEnchantProcSpellID,
+                        Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE, string.Concat("EQ ", spellTemplate.ItemEnchantSpellName));
+                }
+
                 if (spellTemplate.SkillLine != 0)
                     skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate);
             }
@@ -697,6 +706,8 @@ namespace EQWOWConverter
             spellDurationDBC.SaveToDisk(dbcOutputServerFolder);
             spellIconDBC.SaveToDisk(dbcOutputClientFolder);
             spellIconDBC.SaveToDisk(dbcOutputServerFolder);
+            spellItemEnchantmentDBC.SaveToDisk(dbcOutputClientFolder);
+            spellItemEnchantmentDBC.SaveToDisk(dbcOutputServerFolder);
             spellRadiusDBC.SaveToDisk(dbcOutputClientFolder);
             spellRadiusDBC.SaveToDisk(dbcOutputServerFolder);
             spellRangeDBC.SaveToDisk(dbcOutputClientFolder);

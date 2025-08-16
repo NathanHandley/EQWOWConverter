@@ -66,7 +66,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // AuraInterruptFlags
             newRow.AddUInt32(0); // ChannelInterruptFlags
             newRow.AddUInt32(GetProcFlags(spellTemplate)); // ProcTypeMask
-            newRow.AddUInt32(101); // ProcChance
+            newRow.AddUInt32(spellTemplate.ProcChance); // ProcChance
             newRow.AddUInt32(0); // ProcCharges
             newRow.AddUInt32(0); // MaxLevel
             newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // BaseLevel

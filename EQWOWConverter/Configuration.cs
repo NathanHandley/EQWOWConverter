@@ -492,6 +492,12 @@ namespace EQWOWConverter
         // All spell properties
         public static readonly int SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = 16000;
 
+        // How long rogue poisons stay on the weapons
+        public static readonly int SPELL_ENCHANT_ROGUE_POISON_ENCHANT_DURATION_ON_WEAPON_TIME_IN_SECONDS = 3600;
+
+        // How often to proc rogue poisons on weapons
+        public static readonly int SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE = 15;
+
         // What to show when a rogue has a poison, 0 will disable it (and be more EQ like)
         public static readonly int SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_VISUAL_ID = 26;
 

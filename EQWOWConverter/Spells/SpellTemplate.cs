@@ -144,6 +144,10 @@ namespace EQWOWConverter.Spells
         public bool NoPartialImmunity = false;
         public UInt32 DefenseType = 0; // 0 None, 1 Magic, 2 Melee, 3 Ranged
         public UInt32 PreventionType = 0; // 0 None, 1 Silence, 2 Pacify, 4 No Actions
+        public int ItemEnchantSpellID = 0;
+        public int ItemEnchantProcSpellID = 0;
+        public string ItemEnchantSpellName = string.Empty;
+        public UInt32 ProcChance = 101;
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
@@ -236,6 +240,54 @@ namespace EQWOWConverter.Spells
 
                 // Add it
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
+            }
+        }
+
+        public static void GenerateItemEnchantSpellIfNotCreated(string itemName, int procSpellEQID, int enchantSpellWOWID, out SpellTemplate? enchantSpellTemplate)
+        {
+            lock (SpellTemplateLock)
+            {
+                enchantSpellTemplate = null;
+
+                // Don't do anything if it already exists
+                foreach (SpellTemplate spellTemplate in SpellTemplatesByEQID.Values)
+                {
+                    if (spellTemplate.WOWSpellID == enchantSpellWOWID)
+                        return;
+                }
+                if (SpellTemplatesByEQID.ContainsKey(procSpellEQID) == false)
+                {
+                    Logger.WriteError("Failed to create an item enchantement since triggered eq spell ID of ", procSpellEQID.ToString() ," did not exist");
+                    return;
+                }
+                SpellTemplate procSpellTemplate = SpellTemplatesByEQID[procSpellEQID];
+
+                // Generate a description
+                StringBuilder descriptionSB = new StringBuilder();
+                descriptionSB.Append("Coats a weapon with poison that lasts for ");
+                descriptionSB.Append(GetTimeTextFromSeconds(Configuration.SPELL_ENCHANT_ROGUE_POISON_ENCHANT_DURATION_ON_WEAPON_TIME_IN_SECONDS));
+                descriptionSB.Append(" with each strike having a ");
+                descriptionSB.Append(Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE);
+                descriptionSB.Append("% chance of the : ");
+                descriptionSB.Append(procSpellTemplate.Description);
+
+                // Generate an enchant ID
+                int enchantID = SpellItemEnchantmentDBC.GenerateUniqueID();
+
+                // Create the new spell
+                SpellTemplate enchantSpell = new SpellTemplate();
+                enchantSpell.Name = itemName;
+                enchantSpell.WOWSpellID = enchantSpellWOWID;
+                enchantSpell.Description = descriptionSB.ToString();
+                enchantSpell.ItemEnchantSpellID = enchantID;
+                enchantSpell.ItemEnchantProcSpellID = procSpellTemplate.WOWSpellID;
+                enchantSpell.ItemEnchantSpellName = itemName;
+                enchantSpell.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.EnchantItemTemporary, 0, 0, 0, 1, 0, enchantID, 0));
+                enchantSpell.ProcChance = Convert.ToUInt32(Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE);
+                enchantSpell.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(procSpellTemplate.SpellIconID);
+                enchantSpell.SpellVisualID1 = procSpellTemplate.SpellVisualID1;
+
+                enchantSpellTemplate = enchantSpell;
             }
         }
 
@@ -1362,6 +1414,42 @@ namespace EQWOWConverter.Spells
             }
             else // Just seconds
                 return (string.Concat(" Lasts ", remainderSeconds, " sec."));
+        }
+
+        private static string GetTimeTextFromSeconds(int inputSeconds)
+        {
+            // Pull out the time values
+            int hours = inputSeconds / 3600;
+            int minutes = (inputSeconds % 3600) / 60;
+            int seconds = (minutes % 60);
+
+            StringBuilder timeSB = new StringBuilder();
+            if (hours > 0)
+            {
+                timeSB.Append(hours);
+                timeSB.Append(" hour");
+                if (hours != 1)
+                    timeSB.Append("s");
+            }
+            if (minutes > 0)
+            {
+                if (hours > 0)
+                    timeSB.Append(" ");
+                timeSB.Append(minutes);
+                timeSB.Append(" minute");
+                if (minutes != 1)
+                    timeSB.Append("s");
+            }
+            if (seconds > 0)
+            {
+                if (hours > 0 || minutes > 0)
+                    timeSB.Append(" ");
+                timeSB.Append(seconds);
+                timeSB.Append(" second");
+                if (seconds != 1)
+                    timeSB.Append("s");
+            }
+            return timeSB.ToString();
         }
 
         public List<List<SpellEffectWOW>> GetWOWEffectsInBlocksOfThree()
