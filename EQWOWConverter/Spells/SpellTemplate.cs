@@ -144,9 +144,9 @@ namespace EQWOWConverter.Spells
         public bool NoPartialImmunity = false;
         public UInt32 DefenseType = 0; // 0 None, 1 Magic, 2 Melee, 3 Ranged
         public UInt32 PreventionType = 0; // 0 None, 1 Silence, 2 Pacify, 4 No Actions
-        public int ItemEnchantSpellID = 0;
-        public int ItemEnchantProcSpellID = 0;
-        public string ItemEnchantSpellName = string.Empty;
+        public int WeaponSpellItemEnchantmentDBCID = 0;
+        public int WeaponItemEnchantProcSpellID = 0;
+        public string WeaponItemEnchantSpellName = string.Empty;
         public UInt32 ProcChance = 101;
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
@@ -279,9 +279,9 @@ namespace EQWOWConverter.Spells
                 enchantSpell.Name = itemName;
                 enchantSpell.WOWSpellID = enchantSpellWOWID;
                 enchantSpell.Description = descriptionSB.ToString();
-                enchantSpell.ItemEnchantSpellID = enchantID;
-                enchantSpell.ItemEnchantProcSpellID = procSpellTemplate.WOWSpellID;
-                enchantSpell.ItemEnchantSpellName = itemName;
+                enchantSpell.WeaponSpellItemEnchantmentDBCID = enchantID;
+                enchantSpell.WeaponItemEnchantProcSpellID = procSpellTemplate.WOWSpellID;
+                enchantSpell.WeaponItemEnchantSpellName = itemName;
                 enchantSpell.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.EnchantItemTemporary, 0, 0, 0, 1, 0, enchantID, 0));
                 enchantSpell.ProcChance = Convert.ToUInt32(Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE);
                 enchantSpell.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(procSpellTemplate.SpellIconID);

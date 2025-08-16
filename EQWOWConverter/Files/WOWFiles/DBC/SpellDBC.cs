@@ -44,7 +44,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // AttributesExG
             newRow.AddUInt64(0); // ShapeshiftMask
             newRow.AddUInt64(0); // ShapeshiftExclude
-            newRow.AddUInt32(0); // Targets (should this be non-zero?)
+            if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
+                newRow.AddUInt32(16); // Targets (Item Enchantment)
+            else
+                newRow.AddUInt32(0); // Targets (should this be non-zero?)
             newRow.AddUInt32(spellTemplate.TargetCreatureType); // TargetCreatureType
             newRow.AddUInt32(spellTemplate.SpellFocusID); // RequiresSpellFocus
             newRow.AddUInt32(0); // FacingCasterFlags
@@ -199,6 +202,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 128; // SPELL_ATTR0_DO_NOT_DISPLAY_SPELLBOOK_AURA_ICON_COMBAT_LOG
             if (spellTemplate.AllowCastInCombat == false)
                 attributeFlags |= 268435456; // SPELL_ATTR0_NOT_IN_COMBAT_ONLY_PEACEFUL (0x10000000)
+            if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
+                attributeFlags |= 16; // SPELL_ATTR0_IS_ABILITY (0x00000010)
             if (spellTemplate.TradeskillRecipe != null)
             {
                 attributeFlags |= 16; // SPELL_ATTR0_IS_ABILITY (0x00000010)
@@ -214,14 +219,22 @@ namespace EQWOWConverter.WOWFiles
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 3072;
-            return 0;
+            UInt32 attributeFlags = 0;
+            if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
+                attributeFlags |= 32; // 	SPELL_ATTR1_ALLOW_WHILE_STEALTHED (0x00000020)
+            return attributeFlags;
         }
 
         private UInt32 GetAttributesExB(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 16385;
-            return 0;
+            UInt32 attributeFlags = 0;
+            if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
+            {
+                attributeFlags |= 32; // 	SPELL_ATTR2_ENCHANT_OWN_ITEM_ONLY (0x00002000)
+            }
+            return attributeFlags;
         }
 
         private UInt32 GetAttributesExC(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
