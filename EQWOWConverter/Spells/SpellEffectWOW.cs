@@ -308,6 +308,58 @@ namespace EQWOWConverter.Spells
             return calculatedValue;
         }
 
+        public string GetFormattedEffectActionString(bool addPercentSymbol)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            int lowValue = Math.Abs(CalcEffectLowLevelValue);
+            int highValue = Math.Abs(CalcEffectHighLevelValue);
+
+            // Simple return, no level difference
+            if (CalcEffectLowLevel == CalcEffectHighLevel)
+            {
+                stringBuilder.Append(lowValue);
+                if (addPercentSymbol == true)
+                    stringBuilder.Append("%");
+            }
+
+            // Band values
+            else
+            {
+                stringBuilder.Append(lowValue.ToString());
+                if (addPercentSymbol == true)
+                    stringBuilder.Append("%");
+                stringBuilder.Append(" (L");
+                stringBuilder.Append(CalcEffectLowLevel.ToString());
+                stringBuilder.Append(") to ");
+                stringBuilder.Append(highValue.ToString());
+                if (addPercentSymbol == true)
+                    stringBuilder.Append("%");
+                stringBuilder.Append(" (L");
+                stringBuilder.Append(CalcEffectHighLevel.ToString());
+                stringBuilder.Append(")");
+            }
+
+            return stringBuilder.ToString();
+        }
+
+        public string GetFormattedEffectAuraString(bool addPercentSymbol, string leadinTextIfSingleValue,
+            string leadinTextIfBandValue)
+        {
+            // Nothing will get returned if there is a range/band
+            if (CalcEffectLowLevel != CalcEffectHighLevel)
+                return string.Empty;
+
+            StringBuilder stringBuilder = new StringBuilder();
+            int lowValue = Math.Abs(CalcEffectLowLevelValue);
+            stringBuilder.Append(leadinTextIfSingleValue);
+            stringBuilder.Append(lowValue);
+            if (addPercentSymbol == true)
+                stringBuilder.Append("%");
+
+            return stringBuilder.ToString();
+        }
+
         public int CompareTo(SpellEffectWOW? other)
         {
             // Null and auras should evaluate as greater to push them to the bottom of the list
