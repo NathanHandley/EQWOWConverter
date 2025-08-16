@@ -257,7 +257,7 @@ namespace EQWOWConverter.Spells
                 }
                 if (SpellTemplatesByEQID.ContainsKey(procSpellEQID) == false)
                 {
-                    Logger.WriteError("Failed to create an item enchantement since triggered eq spell ID of ", procSpellEQID.ToString() ," did not exist");
+                    Logger.WriteDebug("Failed to create an item enchantement since triggered eq spell ID of ", procSpellEQID.ToString() ," did not exist");
                     return;
                 }
                 SpellTemplate procSpellTemplate = SpellTemplatesByEQID[procSpellEQID];
@@ -268,7 +268,7 @@ namespace EQWOWConverter.Spells
                 descriptionSB.Append(GetTimeTextFromSeconds(Configuration.SPELL_ENCHANT_ROGUE_POISON_ENCHANT_DURATION_ON_WEAPON_TIME_IN_SECONDS));
                 descriptionSB.Append(" with each strike having a ");
                 descriptionSB.Append(Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE);
-                descriptionSB.Append("% chance of the : ");
+                descriptionSB.Append("% chance of applying the following: ");
                 descriptionSB.Append(procSpellTemplate.Description);
 
                 // Generate an enchant ID
@@ -285,7 +285,8 @@ namespace EQWOWConverter.Spells
                 enchantSpell.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.EnchantItemTemporary, 0, 0, 0, 1, 0, enchantID, 0));
                 enchantSpell.ProcChance = Convert.ToUInt32(Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE);
                 enchantSpell.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(procSpellTemplate.SpellIconID);
-                enchantSpell.SpellVisualID1 = procSpellTemplate.SpellVisualID1;
+                enchantSpell.SpellVisualID1 = Convert.ToUInt32(Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_APPLYING_VISUAL_ID);
+                enchantSpell.CastTimeInMS = Configuration.SPELL_ENCHANT_ROGUE_POISON_APPLY_TIME_IN_MS;
 
                 enchantSpellTemplate = enchantSpell;
             }
@@ -771,11 +772,6 @@ namespace EQWOWConverter.Spells
                     case SpellEQEffectType.CurrentMana:
                     case SpellEQEffectType.CurrentManaOnce:
                         {
-                            if (spellTemplate.WOWSpellID == 93633)
-                            {
-                                int x = 5;
-                            }
-
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
 
@@ -1397,33 +1393,18 @@ namespace EQWOWConverter.Spells
         private static string GetTimeDurationStringFromMSWithLeadingSpace(int durationInMS)
         {
             // Skip no duration
-            if (durationInMS <= 0)
+            if (durationInMS < 1000)
                 return string.Empty;
 
-            // Pull out the time values
-            int wholeMinutes = durationInMS / 60000;
-            int remainderSeconds = (durationInMS % 60000) / 1000;
-
-            // Different text depending on minutes, seconds, or both
-            if (wholeMinutes > 0)
-            {
-                if (remainderSeconds > 0)
-                    return (string.Concat(" Lasts ", wholeMinutes, " min ", remainderSeconds, " sec."));
-                else
-                    return (string.Concat(" Lasts ", wholeMinutes, " min."));
-            }
-            else // Just seconds
-                return (string.Concat(" Lasts ", remainderSeconds, " sec."));
+            // Get the time string
+            string timeBlockString = GetTimeTextFromSeconds(durationInMS / 1000);
+            return string.Concat(" Lasts ", timeBlockString, ".");
         }
 
         private static string GetTimeTextFromSeconds(int inputSeconds)
         {
-            // Pull out the time values
-            int hours = inputSeconds / 3600;
-            int minutes = (inputSeconds % 3600) / 60;
-            int seconds = (minutes % 60);
-
             StringBuilder timeSB = new StringBuilder();
+            int hours = inputSeconds / 3600;
             if (hours > 0)
             {
                 timeSB.Append(hours);
@@ -1431,6 +1412,7 @@ namespace EQWOWConverter.Spells
                 if (hours != 1)
                     timeSB.Append("s");
             }
+            int minutes = (inputSeconds % 3600) / 60;
             if (minutes > 0)
             {
                 if (hours > 0)
@@ -1440,6 +1422,7 @@ namespace EQWOWConverter.Spells
                 if (minutes != 1)
                     timeSB.Append("s");
             }
+            int seconds = (inputSeconds % 60);
             if (seconds > 0)
             {
                 if (hours > 0 || minutes > 0)

@@ -505,7 +505,7 @@ namespace EQWOWConverter
                 if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
                 {
                     spellItemEnchantmentDBC.AddRowForRogueWeaponProc(spellTemplate.WeaponSpellItemEnchantmentDBCID, spellTemplate.WeaponItemEnchantProcSpellID,
-                        Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE, string.Concat("EQ ", spellTemplate.WeaponItemEnchantSpellName));
+                        Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE, spellTemplate.WeaponItemEnchantSpellName);
                 }
 
                 if (spellTemplate.SkillLine != 0)

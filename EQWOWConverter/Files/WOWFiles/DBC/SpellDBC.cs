@@ -232,7 +232,7 @@ namespace EQWOWConverter.WOWFiles
             UInt32 attributeFlags = 0;
             if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
             {
-                attributeFlags |= 32; // 	SPELL_ATTR2_ENCHANT_OWN_ITEM_ONLY (0x00002000)
+                attributeFlags |= 8192; // 	SPELL_ATTR2_ENCHANT_OWN_ITEM_ONLY (0x00002000)
             }
             return attributeFlags;
         }

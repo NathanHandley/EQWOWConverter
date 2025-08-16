@@ -38,7 +38,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // EffectArg2
             newRow.AddInt32(0); // EffectArg3
             newRow.AddStringLang(name); // Name
-            newRow.AddInt32(Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_VISUAL_ID); // ItemVisual (Matches other rogue poisons, probably good to give it the visual)
+            newRow.AddInt32(Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_EFFECT_VISUAL_ID); // ItemVisual (Matches other rogue poisons, probably good to give it the visual)
             newRow.AddInt32(9); // Flags (Matches other rogue poisons, so not 100% sure what it means)
             newRow.AddInt32(0); // Src_ItemID
             newRow.AddInt32(0); // Condition_Id
