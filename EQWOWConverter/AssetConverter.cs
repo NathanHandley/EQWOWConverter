@@ -2111,8 +2111,20 @@ namespace EQWOWConverter
 
             foreach(ItemTemplate itemTemplate in itemTemplatesByWOWEntryID.Values)
             {
+                // Rogue Poison Weapon Enchants
+                if (itemTemplate.EQClickType == 6)
+                {
+                    itemTemplate.WOWSpellCharges1 = itemTemplate.MaxCharges *= -1; // *= -1 makes it expendable
+                    itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
+                    itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
+                    itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
+
+                    // TODO
+
+                }
+
                 // Worn
-                if (itemTemplate.EQWornEffectSpellID > 0)
+                else if (itemTemplate.EQWornEffectSpellID > 0)
                 {
                     if (spellTemplatesByEQID.ContainsKey(itemTemplate.EQWornEffectSpellID) == false)
                         Logger.WriteDebug("Could not map spell with eqid ", itemTemplate.EQWornEffectSpellID.ToString(), " to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as the spell didn't exist");

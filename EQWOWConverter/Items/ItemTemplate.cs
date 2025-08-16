@@ -72,6 +72,8 @@ namespace EQWOWConverter.Items
         public int EQClickType = 0;
         public int WOWClickEquipItemTemplateWOWID = 0;
         public int WOWClickEssenceItemTemplateWOWID = 0;
+        public int WOWProcEnchantSpellIDWOW = 0;
+        public int WOWProcEnchantEffectIDEQ = 0;
         public int EQCombatProcSpellEffectID = 0;
         public int EQCombatProcSpellEffectMinLevel = 0;
         public int MaxCharges = 0;
@@ -95,6 +97,7 @@ namespace EQWOWConverter.Items
         public int IconID = 0;
         public int TotemDBCID = 0;
         public int RequiredLevel = 1;
+        public bool IsRogueOnlyPoison = false;
         public string EQItemDisplayFileName = string.Empty;
         ItemTemplate? ParentItemTemplate = null;
 
@@ -1191,6 +1194,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 0;
                         itemTemplate.SubClassID = 8;
+                        itemTemplate.IsRogueOnlyPoison = true;
                     } break;
                 case 45: // Hand2Hand => Fist Weapon
                     {
@@ -1340,6 +1344,8 @@ namespace EQWOWConverter.Items
                 newItemTemplate.EQClickType = int.Parse(columns["clicktype"]);
                 newItemTemplate.WOWClickEquipItemTemplateWOWID = int.Parse(columns["clickequipwowid"]);
                 newItemTemplate.WOWClickEssenceItemTemplateWOWID = int.Parse(columns["clickessencewowid"]);
+                newItemTemplate.WOWProcEnchantSpellIDWOW = int.Parse(columns["procenchant_spellIDWOW"]);
+                newItemTemplate.WOWProcEnchantEffectIDEQ = int.Parse(columns["procenchant_effectIDEQ"]);
                 newItemTemplate.MaxCharges = Math.Max(int.Parse(columns["maxcharges"]), 0);
 
                 // Icon information
@@ -1356,7 +1362,7 @@ namespace EQWOWConverter.Items
                 newItemTemplate.EQClassMask = int.Parse(columns["classes"]);
                 newItemTemplate.EQSlotMask = int.Parse(columns["slots"]);
                 newItemTemplate.CastTime = int.Parse(columns["casttime"]);
-                PopulateItemClassSpecificProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID, 
+                PopulateItemClassSpecificProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID,
                     damage, newItemTemplate.CastTime);
                 int overrideItemClassID = int.Parse(columns["override_item_class_id"]);
                 if (overrideItemClassID >= 0)
@@ -1393,7 +1399,13 @@ namespace EQWOWConverter.Items
 
                 // Other
                 newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);
-                newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
+                if (newItemTemplate.IsRogueOnlyPoison == true)
+                {
+                    newItemTemplate.AllowedClassTypes = new List<ClassType>() { ClassType.Rogue };
+                    newItemTemplate.StackSize = 20;
+                }
+                else
+                    newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
                 newItemTemplate.FoodType = int.Parse(columns["foodtype"]);
 
                 // Adjust stack size and price for arrows
@@ -1630,12 +1642,12 @@ namespace EQWOWConverter.Items
             bool isFirstItem = true;
             foreach (var item in itemCountsByWOWItemID)
             {
-                ItemTemplate componentItemTemplate = itemTemplatesByWOWIDs[item.Key];
+                ItemTemplate containedItemTemplate = itemTemplatesByWOWIDs[item.Key];
                 if (isFirstItem == true)
                     isFirstItem = false;
                 else
                     bagDescriptionSB.Append(",");
-                bagDescriptionSB.Append(string.Concat(" ", item.Value, " x ", componentItemTemplate.Name));
+                bagDescriptionSB.Append(string.Concat(" ", item.Value, " x ", containedItemTemplate.Name));
             }          
             itemTemplate.Description = bagDescriptionSB.ToString();
 
