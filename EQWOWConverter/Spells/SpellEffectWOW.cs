@@ -78,7 +78,7 @@ namespace EQWOWConverter.Spells
         }
 
         public void SetEffectAmountValues(int effectBasePoints, int effectMaxPoints, int spellLevel, SpellEQBaseValueFormulaType eqFormula, 
-            int spellCastTimeInMS, bool useMax, string valueScalingFormulaName)
+            int spellCastTimeInMS, bool useMax, string valueScalingFormulaName, SpellEffectWOWConversionScaleType conversionScaleType)
         {
             // Normalize the formula name
             valueScalingFormulaName = valueScalingFormulaName.ToLower().Trim();
@@ -136,17 +136,24 @@ namespace EQWOWConverter.Spells
             if (valueScalingFormulaName.Length > 0)
             {
                 float beforeValue = EffectBasePoints;
-                if (valueScalingFormulaName.Contains("overtime"))
-                    beforeValue = beforeValue / Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW);
-                else if (valueScalingFormulaName.Contains("dps") || valueScalingFormulaName.Contains("hps"))
-                    beforeValue = beforeValue / Math.Max((Convert.ToSingle(spellCastTimeInMS) * 0.001f), 1f); // No lower than 1 second for the calculation
+                if (conversionScaleType == SpellEffectWOWConversionScaleType.Periodic)
+                    beforeValue /= Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ);
+                float normalizeMod = 0;
+                if (conversionScaleType == SpellEffectWOWConversionScaleType.CastTime)
+                {
+                    // No lower than 1 second for the calculation
+                    normalizeMod = 1 / Math.Max((Convert.ToSingle(spellCastTimeInMS) * 0.001f), 1f); 
+                    beforeValue *= normalizeMod;
+                }
                 float afterValue = GetConvertedEqValueToWowValue(valueScalingFormulaName, beforeValue);
-                float calculatedNewValue = Convert.ToSingle(EffectBasePoints) * (afterValue / beforeValue);
-                EffectBasePoints = Math.Max(Convert.ToInt32(calculatedNewValue), 1);
-                    
+                if (conversionScaleType == SpellEffectWOWConversionScaleType.CastTime)
+                    afterValue /= normalizeMod;
+                if (conversionScaleType == SpellEffectWOWConversionScaleType.Periodic)
+                    afterValue *= Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW);
+                EffectBasePoints = Math.Max(Convert.ToInt32(afterValue), 1); 
             }
 
-            // Reverse the sign
+            // Reverse the sign, if needed
             if (effectBasePointsWasNegative == true)
                 EffectBasePoints *= -1;
         }
