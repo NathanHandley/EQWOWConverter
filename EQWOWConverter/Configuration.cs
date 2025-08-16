@@ -492,6 +492,9 @@ namespace EQWOWConverter
         // All spell properties
         public static readonly int SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = 16000;
 
+        // What to show when a rogue has a poison, 0 will disable it (and be more EQ like)
+        public static readonly int SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_VISUAL_ID = 26;
+
         // Spell emitter particles
         public static readonly float SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN = 0.05f;
         public static readonly float SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX = 0.8f;
@@ -600,6 +603,9 @@ namespace EQWOWConverter
 
         // Start ID for item display info
         public static readonly int DBCID_ITEMDISPLAYINFO_START = 86000;
+
+        // Stand ID for spell item ennchantments
+        public static readonly int DBCID_SPELLITEMENCHANTMENT_ID_START = 4000;
 
         // Identifies the Light.DBC row, used for environmental properties
         public static readonly int DBCID_LIGHT_ID_START = 3500;
