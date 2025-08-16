@@ -722,14 +722,14 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
                                 if (eqEffect.EQBaseValue > 0)
                                 {
-                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "HealDirectHPS", SpellEffectWOWConversionScaleType.CastTime);
+                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealDirectHPS", SpellEffectWOWConversionScaleType.CastTime);
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.Heal;
                                     newSpellEffectWOW.ActionDescription = string.Concat("heal for ", newSpellEffectWOW.EffectBasePoints);
                                     spellTemplate.HighestDirectHealAmountInSpellEffect = Math.Max(spellTemplate.HighestDirectHealAmountInSpellEffect, newSpellEffectWOW.EffectBasePoints);
                                 }
                                 else
                                 {
-                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "DamageDirectDPS", SpellEffectWOWConversionScaleType.CastTime);
+                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageDirectDPS", SpellEffectWOWConversionScaleType.CastTime);
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.SchoolDamage;
                                     if (elementalSchoolName.Length > 0)
                                         newSpellEffectWOW.ActionDescription = string.Concat("strike for ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage");
@@ -745,7 +745,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
                                 if (eqEffect.EQBaseValue > 0)
                                 {
-                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "HealOverTimeHPS", SpellEffectWOWConversionScaleType.Periodic);
+                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealOverTimeHPS", SpellEffectWOWConversionScaleType.Periodic);
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicHeal;
                                     newSpellEffectWOW.ActionDescription = string.Concat("regenerate ", newSpellEffectWOW.EffectBasePoints, " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                     newSpellEffectWOW.AuraDescription = string.Concat("regenerating ", newSpellEffectWOW.EffectBasePoints, " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
@@ -755,13 +755,13 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicDamage;
                                     if (elementalSchoolName.Length > 0)
                                     {
-                                        newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic);
+                                        newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic);
                                         newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                         newSpellEffectWOW.AuraDescription = string.Concat("suffering ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                     }
                                     else
                                     {
-                                        newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic);
+                                        newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic);
                                         newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.EffectBasePoints, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                         newSpellEffectWOW.AuraDescription = string.Concat("suffering ", newSpellEffectWOW.EffectBasePoints, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                     }
@@ -784,7 +784,7 @@ namespace EQWOWConverter.Spells
                                 if (eqEffect.EQBaseValue > 0)
                                 {
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.Energize;
-                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ManaUpDirect", SpellEffectWOWConversionScaleType.None);
+                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ManaUpDirect", SpellEffectWOWConversionScaleType.None);
                                     newSpellEffectWOW.ActionDescription = string.Concat("restore ", newSpellEffectWOW.EffectBasePoints, " mana");
                                     spellTemplate.HighestDirectHealAmountInSpellEffect = Math.Max(spellTemplate.HighestDirectHealAmountInSpellEffect, newSpellEffectWOW.EffectBasePoints);
                                 }
@@ -792,7 +792,7 @@ namespace EQWOWConverter.Spells
                                 {
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.PowerBurn;
                                     newSpellEffectWOW.EffectMultipleValue = 0;
-                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ManaDownDirect", SpellEffectWOWConversionScaleType.None);
+                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ManaDownDirect", SpellEffectWOWConversionScaleType.None);
                                     newSpellEffectWOW.ActionDescription = string.Concat("reduce ", Math.Abs(newSpellEffectWOW.EffectBasePoints), " mana");
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
@@ -806,7 +806,7 @@ namespace EQWOWConverter.Spells
                                 if (eqEffect.EQBaseValue > 0)
                                 {
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicEnergize;
-                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ManaUpOverTimeMPS", SpellEffectWOWConversionScaleType.Periodic);
+                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ManaUpOverTimeMPS", SpellEffectWOWConversionScaleType.Periodic);
                                     newSpellEffectWOW.ActionDescription = string.Concat("recover ", newSpellEffectWOW.EffectBasePoints, " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                     newSpellEffectWOW.AuraDescription = string.Concat("recovering ", newSpellEffectWOW.EffectBasePoints, " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                 }
@@ -814,7 +814,7 @@ namespace EQWOWConverter.Spells
                                 {
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PowerBurn;
                                     newSpellEffectWOW.EffectMultipleValue = 0;
-                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ManaDownOvertimeMPS", SpellEffectWOWConversionScaleType.Periodic);
+                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ManaDownOvertimeMPS", SpellEffectWOWConversionScaleType.Periodic);
                                     newSpellEffectWOW.ActionDescription = string.Concat("reduce ", newSpellEffectWOW.EffectBasePoints, " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                     newSpellEffectWOW.AuraDescription = string.Concat("reducing ", newSpellEffectWOW.EffectBasePoints, " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                 }
@@ -832,13 +832,13 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectMiscValueA = 1; // Armor
                             if (eqEffect.EQBaseValue >= 0)
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ArmorClassBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ArmorClassBuff", SpellEffectWOWConversionScaleType.None);
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase armor by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("armor increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ArmorClassDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ArmorClassDebuff", SpellEffectWOWConversionScaleType.None);
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.ActionDescription = string.Concat("decrease armor by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("armor decreased by ", reductionAmount);
@@ -854,13 +854,13 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModAttackPower;
                             if (eqEffect.EQBaseValue >= 0)
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "AttackBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "AttackBuff", SpellEffectWOWConversionScaleType.None);
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase attack power by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("attack power increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "AttackDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "AttackDebuff", SpellEffectWOWConversionScaleType.None);
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.ActionDescription = string.Concat("decrease attack power by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("attack power decreased by ", reductionAmount);
@@ -882,14 +882,14 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             if (eqEffect.EQBaseValue >= 0)
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "", SpellEffectWOWConversionScaleType.None);
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModIncreaseSpeed;
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase non-mounted movement speed by ", newSpellEffectWOW.EffectBasePoints, "%");
                                 newSpellEffectWOW.AuraDescription = string.Concat("non-mounted movement speed increased by ", newSpellEffectWOW.EffectBasePoints, "%");
                             }
                             else
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "", SpellEffectWOWConversionScaleType.None);
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModDecreaseSpeed;
                                 newSpellEffectWOW.ActionDescription = string.Concat("decrease movement speed by ", Math.Abs(newSpellEffectWOW.EffectBasePoints), "%");
                                 newSpellEffectWOW.AuraDescription = string.Concat("movement speed decreased by ", Math.Abs(newSpellEffectWOW.EffectBasePoints), "%");
@@ -906,13 +906,13 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModMaximumHealth;
                             if (eqEffect.EQBaseValue >= 0)
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "MaxHPBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "MaxHPBuff", SpellEffectWOWConversionScaleType.None);
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase maximum health by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("maximum health increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "", SpellEffectWOWConversionScaleType.None);
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.ActionDescription = string.Concat("decrease maximum health by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("maximum health decreased by ", reductionAmount);
@@ -929,13 +929,13 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectMiscValueA = 0; // Strength
                             if (eqEffect.EQBaseValue >= 0)
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "StrengthBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "StrengthBuff", SpellEffectWOWConversionScaleType.None);
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase maximum strength by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("maximum strength increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "StrengthDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "StrengthDebuff", SpellEffectWOWConversionScaleType.None);
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.ActionDescription = string.Concat("decrease maximum strength by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("maximum strength decreased by ", reductionAmount);
@@ -968,13 +968,13 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectMiscValueA = 1; // Agility
                             if (eqEffect.EQBaseValue >= 0)
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "AgilityBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "AgilityBuff", SpellEffectWOWConversionScaleType.None);
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase agility by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("agility increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "AgilityDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "AgilityDebuff", SpellEffectWOWConversionScaleType.None);
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.ActionDescription = string.Concat("decrease agility by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("agility decreased by ", reductionAmount);
@@ -991,13 +991,13 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectMiscValueA = 2; // Stamina
                             if (eqEffect.EQBaseValue >= 0)
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "StaminaBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "StaminaBuff", SpellEffectWOWConversionScaleType.None);
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase stamina by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("stamina increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "StaminaDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "StaminaDebuff", SpellEffectWOWConversionScaleType.None);
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.ActionDescription = string.Concat("decrease stamina by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("stamina decreased by ", reductionAmount);
@@ -1012,13 +1012,13 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectMiscValueA = 3; // Intellect
                             if (eqEffect.EQBaseValue >= 0)
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "IntellectBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "IntellectBuff", SpellEffectWOWConversionScaleType.None);
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase intellect by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("intellect increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "IntellectDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "IntellectDebuff", SpellEffectWOWConversionScaleType.None);
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.ActionDescription = string.Concat("decrease intellect by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("intellect decreased by ", reductionAmount);
@@ -1035,13 +1035,13 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectMiscValueA = 4; // Spirit
                             if (eqEffect.EQBaseValue >= 0)
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "SpiritBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "SpiritBuff", SpellEffectWOWConversionScaleType.None);
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase spirit by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("spirit increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "SpiritDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "SpiritDebuff", SpellEffectWOWConversionScaleType.None);
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.ActionDescription = string.Concat("decrease spirit by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("spirit decreased by ", reductionAmount);
@@ -1057,13 +1057,13 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModHitChance;
                             if (eqEffect.EQBaseValue >= 0)
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "HitPctBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HitPctBuff", SpellEffectWOWConversionScaleType.None);
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase hit chance by ", newSpellEffectWOW.EffectBasePoints, "%");
                                 newSpellEffectWOW.AuraDescription = string.Concat("hit chance increased by ", newSpellEffectWOW.EffectBasePoints, "%");
                             }
                             else
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "HitPctDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HitPctDebuff", SpellEffectWOWConversionScaleType.None);
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.ActionDescription = string.Concat("decrease hit chance by ", reductionAmount, "%");
                                 newSpellEffectWOW.AuraDescription = string.Concat("hit chance decreased by ", reductionAmount, "%");
@@ -1079,7 +1079,7 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModMeleeHaste;
 
                             // Baseline for attack speed is 100, so above that is increase and below that is decrease
-                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue - 100, eqEffect.EQMaxValue - 100, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "", SpellEffectWOWConversionScaleType.None);
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue - 100, eqEffect.EQMaxValue - 100, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "", SpellEffectWOWConversionScaleType.None);
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {   
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase attack speed by ", newSpellEffectWOW.EffectBasePoints, "%");

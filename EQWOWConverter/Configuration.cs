@@ -536,6 +536,12 @@ namespace EQWOWConverter
         //  the higher effect.  Don't make it less than 1.  
         public static readonly float SPELL_EFFECT_VALUE_LOW_BIAS_WEIGHT = 2.5f;
 
+        // If true, the damage formula will honor spell level based values, otherwise it'll use maximum
+        public static readonly bool SPELL_EFFECT_USE_DYNAMIC_VALUES = false;
+
+        // If true, spells will balance around level 60 being the cap, otherwise, 80.
+        public static readonly bool SPELL_EFFECT_BALANCE_LEVEL_USE_80_VERSION = false;
+
         //=====================================================================
         // Tradeskills
         //=====================================================================
