@@ -185,13 +185,13 @@ namespace EQWOWConverter.Spells
                 else
                 {
                     // Calculate for every level in the gap as a spread until a max is hit
-                    for (int curCalcLevel = spellLevel+1; curCalcLevel <= spellLevel; curCalcLevel++)
+                    for (int curCalcLevel = spellLevel+1; curCalcLevel <= endCalcLevel; curCalcLevel++)
                     {
                         CalcEffectHighLevel = curCalcLevel;
                         CalcEffectHighLevelValue = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, curCalcLevel, eqFormula, spellCastTimeInMS,
                             valueScalingFormulaName, conversionScaleType);
                         if (CalcEffectHighLevelValue == effectMaxPoints)
-                            curCalcLevel = spellLevel + 1;
+                            curCalcLevel = endCalcLevel + 1;
                     }
 
                     float totalLevelSteps = endCalcLevel - spellLevel;
@@ -316,7 +316,7 @@ namespace EQWOWConverter.Spells
             int highValue = Math.Abs(CalcEffectHighLevelValue);
 
             // Simple return, no level difference
-            if (CalcEffectLowLevel == CalcEffectHighLevel)
+            if (lowValue == highValue)
             {
                 stringBuilder.Append(lowValue);
                 if (addPercentSymbol == true)

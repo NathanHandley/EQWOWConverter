@@ -1362,10 +1362,10 @@ namespace EQWOWConverter.Spells
             // Store and control capitalization
             descriptionSB.Append('.');
             auraSB.Append('.');
-            spellTemplate.Description = descriptionSB.ToString().ToLower();
+            spellTemplate.Description = descriptionSB.ToString();
             if (spellTemplate.Description.Length > 0)
                 spellTemplate.Description = string.Concat(char.ToUpper(spellTemplate.Description[0]), spellTemplate.Description.Substring(1));
-            spellTemplate.AuraDescription = auraSB.ToString().ToLower();
+            spellTemplate.AuraDescription = auraSB.ToString();
             if (spellTemplate.AuraDescription.Length > 0)
                 spellTemplate.AuraDescription = string.Concat(char.ToUpper(spellTemplate.AuraDescription[0]), spellTemplate.AuraDescription.Substring(1));
 
