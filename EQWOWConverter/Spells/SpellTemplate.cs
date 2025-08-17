@@ -122,6 +122,7 @@ namespace EQWOWConverter.Spells
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
         public int MinimumPlayerLearnLevel = -1;
+        public int MaximumEffectGrowthLevel = 1;
         public bool HasEffectBaseFormulaUsingSpellLevel = false;
         public int RequiredAreaIDs = -1;
         public UInt32 SchoolMask = 1;
@@ -1439,25 +1440,35 @@ namespace EQWOWConverter.Spells
                 return returnList;
             }
 
-            // Otherwise, group in batches of 3 adding blanks to pad the space
-            int numOfExtractedEffects = 0;
-            while (numOfExtractedEffects < WOWSpellEffects.Count)
+            // Pre-group by 'max' levels so that spell value calculations work properly
+            Dictionary<int, List<SpellEffectWOW>> spellEffectsByMaxLevel = new Dictionary<int, List<SpellEffectWOW>>();
+            foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
             {
-                List<SpellEffectWOW> curBlockSpellEffects = new List<SpellEffectWOW>();
-                for (int i = 0; i < 3; i++)
-                {
-                    if (numOfExtractedEffects >= WOWSpellEffects.Count)
-                        curBlockSpellEffects.Add(new SpellEffectWOW());
-                    else
-                        curBlockSpellEffects.Add(WOWSpellEffects[numOfExtractedEffects]);
-                    numOfExtractedEffects += 1;
-                }
-                returnList.Add(curBlockSpellEffects);
+                if (spellEffectsByMaxLevel.ContainsKey(spellEffect.CalcEffectHighLevel) == false)
+                    spellEffectsByMaxLevel.Add(spellEffect.CalcEffectHighLevel, new List<SpellEffectWOW>());
+                spellEffectsByMaxLevel[spellEffect.CalcEffectHighLevel].Add(spellEffect);
             }
 
+            // Otherwise, group in batches of 3 adding blanks to pad the space
+            // Group these by maximum level of related effects
+            foreach (var curEffectList in spellEffectsByMaxLevel.Values)
+            {
+                int numOfExtractedEffects = 0;
+                while (numOfExtractedEffects < curEffectList.Count)
+                {
+                    List<SpellEffectWOW> curBlockSpellEffects = new List<SpellEffectWOW>();
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (numOfExtractedEffects >= curEffectList.Count)
+                            curBlockSpellEffects.Add(new SpellEffectWOW());
+                        else
+                            curBlockSpellEffects.Add(curEffectList[numOfExtractedEffects]);
+                        numOfExtractedEffects += 1;
+                    }
+                    returnList.Add(curBlockSpellEffects);
+                }
+            }
             return returnList;
         }
-
-
     }
 }

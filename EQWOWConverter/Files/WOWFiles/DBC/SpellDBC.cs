@@ -21,7 +21,7 @@ namespace EQWOWConverter.WOWFiles
     internal class SpellDBC : DBCFile
     {
         public void AddRow(int spellID, string spellName, string spellDescription, SpellTemplate spellTemplate, List<SpellEffectWOW> spellEffects, bool doHideFromDisplay, bool overrideDurationToInfinite, 
-            bool preventClickOff)
+            bool preventClickOff, int maximumSpellLevel)
         {
             if (spellEffects.Count != 3)
             {
@@ -71,7 +71,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(GetProcFlags(spellTemplate)); // ProcTypeMask
             newRow.AddUInt32(spellTemplate.ProcChance); // ProcChance
             newRow.AddUInt32(0); // ProcCharges
-            newRow.AddUInt32(0); // MaxLevel
+            newRow.AddUInt32(Convert.ToUInt32(maximumSpellLevel)); // MaxLevel
             newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // BaseLevel
             newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // SpellLevel
             if (overrideDurationToInfinite == true)

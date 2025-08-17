@@ -79,7 +79,11 @@ namespace EQWOWConverter.Spells
                 EffectMiscValueA = this.EffectMiscValueA,
                 EffectMiscValueB = this.EffectMiscValueB,
                 ActionDescription = this.ActionDescription,
-                AuraDescription = this.AuraDescription
+                AuraDescription = this.AuraDescription,
+                CalcEffectLowLevelValue = this.CalcEffectLowLevelValue,
+                CalcEffectLowLevel = this.CalcEffectLowLevel,
+                CalcEffectHighLevelValue = this.CalcEffectHighLevelValue,
+                CalcEffectHighLevel = this.CalcEffectHighLevel
             };
         }
 
@@ -194,7 +198,7 @@ namespace EQWOWConverter.Spells
                             curCalcLevel = endCalcLevel + 1;
                     }
 
-                    float totalLevelSteps = endCalcLevel - spellLevel;
+                    float totalLevelSteps = CalcEffectHighLevel - spellLevel;
                     EffectRealPointsPerLevel = (Convert.ToSingle(CalcEffectHighLevelValue) - Convert.ToSingle(EffectBasePoints)) / totalLevelSteps;
                 }
             }

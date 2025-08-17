@@ -481,7 +481,7 @@ namespace EQWOWConverter
                         curSpellAuraGenID++;
                         spellName = string.Concat(spellName, " Split ", i.ToString());
                     }
-                    spellDBC.AddRow(spellID, spellName, spellTemplate.Description, spellTemplate, threeBlockEffects, i != 0, false, false);
+                    spellDBC.AddRow(spellID, spellName, spellTemplate.Description, spellTemplate, threeBlockEffects, i != 0, false, false, threeBlockEffects[0].CalcEffectHighLevel);
 
                     // Worn effects get their own copy too
                     if (spellTemplate.WOWSpellIDWorn > 0)
@@ -495,9 +495,9 @@ namespace EQWOWConverter
                             spellName = string.Concat(spellName, " Split ", i.ToString());
                         }
                         if (Configuration.ITEMS_SHOW_WORN_EFFECT_AURA_ICON == true)
-                            spellDBC.AddRow(spellID, spellName, spellTemplate.AuraDescription, spellTemplate, threeBlockEffects, i != 0, true, true);
+                            spellDBC.AddRow(spellID, spellName, spellTemplate.AuraDescription, spellTemplate, threeBlockEffects, i != 0, true, true, threeBlockEffects[0].CalcEffectHighLevel);
                         else
-                            spellDBC.AddRow(spellID, spellName, spellTemplate.AuraDescription, spellTemplate, threeBlockEffects, true, true, true);
+                            spellDBC.AddRow(spellID, spellName, spellTemplate.AuraDescription, spellTemplate, threeBlockEffects, true, true, true, threeBlockEffects[0].CalcEffectHighLevel);
                     }
                 }
 
