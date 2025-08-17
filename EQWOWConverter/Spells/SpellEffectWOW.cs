@@ -172,9 +172,7 @@ namespace EQWOWConverter.Spells
             }
             else
             {
-                int endCalcLevel = 60;
-                if (Configuration.SPELL_EFFECT_BALANCE_LEVEL_USE_80_VERSION == true)
-                    endCalcLevel = 80;
+                int endCalcLevel = Configuration.SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL;
                 EffectBasePoints = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, eqFormula, spellCastTimeInMS,
                     valueScalingFormulaName, conversionScaleType);
                 CalcEffectLowLevelValue = EffectBasePoints;
@@ -278,6 +276,8 @@ namespace EQWOWConverter.Spells
             float valueEqHigh = valuesForEffectType["eqhigh"];
             float valueWowLow = valuesForEffectType["wowlow"];
             float valueWoWHigh = valuesForEffectType["wowhigh60"];
+            if (Configuration.SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION == false)
+                valueWoWHigh = valuesForEffectType["wowhigh80"];
 
             // Perform no calculation if any are 0
             if (valueEqLow == 0 || valueEqHigh == 0 || valueWowLow == 0 || valueWoWHigh == 0)

@@ -453,6 +453,17 @@ namespace EQWOWConverter
         //=====================================================================
         // Spells
         //=====================================================================
+
+        // If true, spells will balance around level 60 being the cap (EQ-like),
+        // otherwise it will be 80 like WOTLK
+        public static readonly bool SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION = true;
+
+        // This is how high (WOW side) stats will be be scaled to.  This should almost always be
+        // set to the server max level configuration.  This is different than the property
+        // SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION which balances values to level 60
+        // WOW content, in that this just lets a trickle-up of stats
+        public static readonly int SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL = 80;
+
         // IDs for special spells that need an exact match of ID between this and mod-everquest
         public static readonly int SPELLS_GATE_SPELLDBC_ID = 86900;
         public static readonly int SPELLS_BINDSELF_SPELLDBC_ID = 86901;
@@ -538,9 +549,6 @@ namespace EQWOWConverter
 
         // If true, the damage formula will honor spell level based values, otherwise it'll use maximum
         public static readonly bool SPELL_EFFECT_USE_DYNAMIC_VALUES = true;
-
-        // If true, spells will balance around level 60 being the cap, otherwise, 80.
-        public static readonly bool SPELL_EFFECT_BALANCE_LEVEL_USE_80_VERSION = false;
 
         //=====================================================================
         // Tradeskills
