@@ -773,11 +773,6 @@ namespace EQWOWConverter.Spells
                     case SpellEQEffectType.CurrentMana:
                     case SpellEQEffectType.CurrentManaOnce:
                         {
-                            if (spellTemplate.WOWSpellID == 92172)
-                            {
-                                int x = 5;
-                            }
-
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
 
