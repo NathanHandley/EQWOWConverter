@@ -115,6 +115,7 @@ namespace EQWOWConverter.Spells
                 _SpellDurationInMS = value;
             }
         }
+        public SpellDuration AuraDuration = new SpellDuration();
         public int SpellGroupStackingID = -1;
         public int SpellGroupStackingRule = 0;
         public UInt32 RecoveryTimeInMS = 0; // Note that this may be zero for a player but not a creature.  See Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS
@@ -122,7 +123,6 @@ namespace EQWOWConverter.Spells
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
         public int MinimumPlayerLearnLevel = -1;
-        public int MaximumEffectGrowthLevel = 1;
         public bool HasEffectBaseFormulaUsingSpellLevel = false;
         public int RequiredAreaIDs = -1;
         public UInt32 SchoolMask = 1;
@@ -178,8 +178,6 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.WOWSpellID = int.Parse(columns["wow_id"]);
                 newSpellTemplate.WOWSpellIDWorn = int.Parse(columns["wow_worn_id"]);
                 newSpellTemplate.Name = columns["name"];
-                //newSpellTemplate.AuraDescription = newSpellTemplate.Name; // TODO: Find strings for these
-                //newSpellTemplate.Description = newSpellTemplate.Name; // TODO: Find strings for these
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.SpellRadius = Convert.ToInt32(float.Parse(columns["aoerange"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["cast_recovery_time"]);
@@ -193,13 +191,12 @@ namespace EQWOWConverter.Spells
                     continue;
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
+
+                // Buff duration (if any)
                 int buffDurationInTicks = Convert.ToInt32(columns["buffduration"]);
-                if (buffDurationInTicks > 0)
-                {
-                    // TODO: Formulas 50 and 51 are perm effects and should have no duration
-                    int buffDurationFormula = Convert.ToInt32(columns["buffdurationformula"]);
-                    newSpellTemplate.SpellDurationInMS = GetBuffDurationInMS(buffDurationInTicks, buffDurationFormula);
-                }
+                int buffDurationFormula = Convert.ToInt32(columns["buffdurationformula"]);
+                if (buffDurationFormula != 0)
+                    newSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(newSpellTemplate.MinimumPlayerLearnLevel, buffDurationFormula, buffDurationInTicks);
 
                 // Icon
                 int spellIconID = int.Parse(columns["icon"]);
@@ -243,6 +240,8 @@ namespace EQWOWConverter.Spells
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
             }
         }
+
+        
 
         public static void GenerateItemEnchantSpellIfNotCreated(string itemName, int procSpellEQID, int enchantSpellWOWID, out SpellTemplate? enchantSpellTemplate)
         {
@@ -628,22 +627,6 @@ namespace EQWOWConverter.Spells
             }
 
             return spellWOWTargetTypes;
-        }
-
-        private static int GetBuffDurationInMS(int eqBuffDurationInTicks, int eqBuffDurationFormula)
-        {
-            int buffTicks = eqBuffDurationInTicks;
-
-            // TODO: There are level-based formulas, but they are ignored for now since spellpower is a 'thing' and balance
-            // is already achieved
-            switch (eqBuffDurationFormula)
-            {
-                case 4: buffTicks = Math.Min(50, eqBuffDurationInTicks); break;
-                case 5: buffTicks = Math.Min(2, eqBuffDurationInTicks); break;
-                default: break;
-            }
-
-            return eqBuffDurationInTicks * Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ * 1000;
         }
 
         private static void PopulateEQSpellEffect(ref SpellTemplate spellTemplate, int slotID, Dictionary<string, string> rowColumns)

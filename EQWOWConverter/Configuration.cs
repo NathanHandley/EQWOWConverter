@@ -548,7 +548,8 @@ namespace EQWOWConverter
         public static readonly float SPELL_EFFECT_VALUE_LOW_BIAS_WEIGHT = 2.5f;
 
         // If true, the damage formula will honor spell level based values, otherwise it'll use maximum
-        public static readonly bool SPELL_EFFECT_USE_DYNAMIC_VALUES = true;
+        public static readonly bool SPELL_EFFECT_USE_DYNAMIC_EFFECT_VALUES = true;
+        public static readonly bool SPELL_EFFECT_USE_DYNAMIC_AURA_DURATIONS = true;
 
         //=====================================================================
         // Tradeskills

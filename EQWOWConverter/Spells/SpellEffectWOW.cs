@@ -154,7 +154,6 @@ namespace EQWOWConverter.Spells
             return calculatedEffectBasePoints;
         }
 
-
         public void SetEffectAmountValues(int effectBasePoints, int effectMaxPoints, int spellLevel, SpellEQBaseValueFormulaType eqFormula, 
             int spellCastTimeInMS, string valueScalingFormulaName, SpellEffectWOWConversionScaleType conversionScaleType)
         {
@@ -167,7 +166,7 @@ namespace EQWOWConverter.Spells
 
             // Run the calculation on both ends of the level band, if relevant
             EffectRealPointsPerLevel = 0;
-            if (eqFormula == SpellEQBaseValueFormulaType.BaseDivideBy100 || eqFormula == SpellEQBaseValueFormulaType.UnknownUseBaseOrMaxWhicheverHigher || Configuration.SPELL_EFFECT_USE_DYNAMIC_VALUES == false)
+            if (eqFormula == SpellEQBaseValueFormulaType.BaseDivideBy100 || eqFormula == SpellEQBaseValueFormulaType.UnknownUseBaseOrMaxWhicheverHigher || Configuration.SPELL_EFFECT_USE_DYNAMIC_EFFECT_VALUES == false)
             {
                 EffectBasePoints = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
                     valueScalingFormulaName, conversionScaleType);                
