@@ -672,7 +672,7 @@ namespace EQWOWConverter.Spells
                     case 115: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddSixTimesLevelMinusSpellLevel; break;
                     case 116: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddEightTimesLevelMinusSpellLevel; break;
                     case 121: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddLevelDivideThree; break;
-                    default: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseValue; break;
+                    default: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.UnknownUseBaseOrMaxWhicheverHigher; break;
                 }
                 curEffect.EQFormulaTypeValue = formulaRaw;
             }
@@ -773,6 +773,11 @@ namespace EQWOWConverter.Spells
                     case SpellEQEffectType.CurrentMana:
                     case SpellEQEffectType.CurrentManaOnce:
                         {
+                            if (spellTemplate.WOWSpellID == 92172)
+                            {
+                                int x = 5;
+                            }
+
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
 

@@ -87,8 +87,8 @@ namespace EQWOWConverter.Spells
             };
         }
 
-        public int GetEffectAmountValueByLevel(int inputEffectBasePoints, int inputEffectMaxPoints, int spellInfluencingLevel, SpellEQBaseValueFormulaType eqFormula, 
-            int spellCastTimeInMS, string valueScalingFormulaName, SpellEffectWOWConversionScaleType conversionScaleType)
+        public int GetEffectAmountValueByLevel(int inputEffectBasePoints, int inputEffectMaxPoints, int spellInfluencingLevel, int unitInfluencingLevel, 
+            SpellEQBaseValueFormulaType eqFormula, int spellCastTimeInMS, string valueScalingFormulaName, SpellEffectWOWConversionScaleType conversionScaleType)
         {
             // Only work with positive values
             bool effectBasePointsWasNegative = false;
@@ -105,16 +105,22 @@ namespace EQWOWConverter.Spells
             switch (eqFormula)
             {
                 case SpellEQBaseValueFormulaType.BaseDivideBy100: calculatedEffectBasePoints = inputEffectBasePoints / 100; break;
-                case SpellEQBaseValueFormulaType.BaseAddLevel: calculatedEffectBasePoints += spellInfluencingLevel; break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelTimesTwo: calculatedEffectBasePoints += (spellInfluencingLevel * 2); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelTimesThree: calculatedEffectBasePoints += (spellInfluencingLevel * 3); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelTimesFour: calculatedEffectBasePoints += (spellInfluencingLevel * 4); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideTwo: calculatedEffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellInfluencingLevel) * 0.5f); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideThree: calculatedEffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellInfluencingLevel) * 0.3333f); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFour: calculatedEffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellInfluencingLevel) * 0.25f); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFive: calculatedEffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellInfluencingLevel) * 0.20f); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideEight: calculatedEffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellInfluencingLevel) * 0.125f); break;
-                default: break;
+                case SpellEQBaseValueFormulaType.BaseAddLevel: calculatedEffectBasePoints += unitInfluencingLevel; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelTimesTwo: calculatedEffectBasePoints += (unitInfluencingLevel * 2); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelTimesThree: calculatedEffectBasePoints += (unitInfluencingLevel * 3); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelTimesFour: calculatedEffectBasePoints += (unitInfluencingLevel * 4); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideTwo: calculatedEffectBasePoints += Convert.ToInt32(Convert.ToSingle(unitInfluencingLevel) * 0.5f); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideThree: calculatedEffectBasePoints += Convert.ToInt32(Convert.ToSingle(unitInfluencingLevel) * 0.3333f); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFour: calculatedEffectBasePoints += Convert.ToInt32(Convert.ToSingle(unitInfluencingLevel) * 0.25f); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFive: calculatedEffectBasePoints += Convert.ToInt32(Convert.ToSingle(unitInfluencingLevel) * 0.20f); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideEight: calculatedEffectBasePoints += Convert.ToInt32(Convert.ToSingle(unitInfluencingLevel) * 0.125f); break;
+                case SpellEQBaseValueFormulaType.BaseAddSixTimesLevelMinusSpellLevel: calculatedEffectBasePoints += 6 * (unitInfluencingLevel - spellInfluencingLevel); break;
+                case SpellEQBaseValueFormulaType.BaseAddEightTimesLevelMinusSpellLevel: calculatedEffectBasePoints += 8 * (unitInfluencingLevel - spellInfluencingLevel); break;
+                case SpellEQBaseValueFormulaType.BaseAddTenTimesLevelMinusSpellLevel: calculatedEffectBasePoints += 10 * (unitInfluencingLevel - spellInfluencingLevel); break;
+                case SpellEQBaseValueFormulaType.BaseAddFifteenTimesLevelMinusSpellLevel: calculatedEffectBasePoints += 15 * (unitInfluencingLevel - spellInfluencingLevel); break;
+                case SpellEQBaseValueFormulaType.BaseAddTwelveTimesLevelMinusSpellLevel: calculatedEffectBasePoints += 15 * (unitInfluencingLevel - spellInfluencingLevel); break;
+                case SpellEQBaseValueFormulaType.BaseAddTwentyTimesLevelMinusSpellLevel: calculatedEffectBasePoints += 20 * (unitInfluencingLevel - spellInfluencingLevel); break;
+                default: calculatedEffectBasePoints = Math.Max(inputEffectBasePoints, inputEffectMaxPoints); break;
             }
 
             // Enforce a maximum if it's set
@@ -161,9 +167,9 @@ namespace EQWOWConverter.Spells
 
             // Run the calculation on both ends of the level band, if relevant
             EffectRealPointsPerLevel = 0;
-            if (eqFormula == SpellEQBaseValueFormulaType.BaseDivideBy100 || Configuration.SPELL_EFFECT_USE_DYNAMIC_VALUES == false)
+            if (eqFormula == SpellEQBaseValueFormulaType.BaseDivideBy100 || eqFormula == SpellEQBaseValueFormulaType.UnknownUseBaseOrMaxWhicheverHigher || Configuration.SPELL_EFFECT_USE_DYNAMIC_VALUES == false)
             {
-                EffectBasePoints = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, eqFormula, spellCastTimeInMS,
+                EffectBasePoints = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
                     valueScalingFormulaName, conversionScaleType);                
                 CalcEffectLowLevelValue = EffectBasePoints;
                 CalcEffectLowLevel = spellLevel;
@@ -172,14 +178,16 @@ namespace EQWOWConverter.Spells
             }
             else
             {
+                int calcMaxPoints = GetEffectAmountValueByLevel(effectMaxPoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
+                    valueScalingFormulaName, conversionScaleType);
                 int endCalcLevel = Configuration.SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL;
-                EffectBasePoints = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, eqFormula, spellCastTimeInMS,
+                EffectBasePoints = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
                     valueScalingFormulaName, conversionScaleType);
                 CalcEffectLowLevelValue = EffectBasePoints;
                 CalcEffectLowLevel = spellLevel;
 
                 // Only calculate the larger band if the two levels aren't the same
-                if (endCalcLevel <= spellLevel || EffectBasePoints == effectMaxPoints)
+                if (endCalcLevel <= spellLevel || EffectBasePoints == calcMaxPoints)
                 {
                     CalcEffectHighLevelValue = EffectBasePoints;
                     CalcEffectHighLevel = spellLevel;
@@ -190,9 +198,9 @@ namespace EQWOWConverter.Spells
                     for (int curCalcLevel = spellLevel+1; curCalcLevel <= endCalcLevel; curCalcLevel++)
                     {
                         CalcEffectHighLevel = curCalcLevel;
-                        CalcEffectHighLevelValue = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, curCalcLevel, eqFormula, spellCastTimeInMS,
+                        CalcEffectHighLevelValue = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, curCalcLevel, eqFormula, spellCastTimeInMS,
                             valueScalingFormulaName, conversionScaleType);
-                        if (CalcEffectHighLevelValue == effectMaxPoints)
+                        if (CalcEffectHighLevelValue == calcMaxPoints)
                             curCalcLevel = endCalcLevel + 1;
                     }
 

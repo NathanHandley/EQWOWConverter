@@ -18,9 +18,10 @@ namespace EQWOWConverter.Spells
 {
     internal enum SpellEQBaseValueFormulaType : int
     {
+        UnknownUseBaseOrMaxWhicheverHigher = 0,
         BaseValue = 100,
 
-        BaseAddLevelTimesMultiplier = 1,
+        //BaseAddLevelTimesMultiplier = 1,
         BaseDivideBy100 = 60,
         BaseAddLevel = 102,
         BaseAddLevelTimesTwo = 103,
@@ -30,12 +31,14 @@ namespace EQWOWConverter.Spells
         BaseAddLevelDivideThree = 108, // (Same as 121)
         BaseAddLevelDivideFour = 109,
         BaseAddLevelDivideFive = 110,
+
         BaseAddSixTimesLevelMinusSpellLevel = 111, // Base * (Level - Spell Level), (Same as 115)
         BaseAddEightTimesLevelMinusSpellLevel = 112, // (Same as 116)
         BaseAddTenTimesLevelMinusSpellLevel = 113,
         BaseAddFifteenTimesLevelMinusSpellLevel = 114,
         BaseAddTwelveTimesLevelMinusSpellLevel = 117,
         BaseAddTwentyTimesLevelMinusSpellLevel = 118,
+        
         BaseAddLevelDivideEight = 119,
         //Splurt = 122, // What is this?
         //RandomBetweenBaseAndMax = 123, never used on Velious and below
