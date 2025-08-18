@@ -96,6 +96,8 @@ namespace EQWOWConverter.Spells
                 // These are dynamic formulas
                 int endCalcLevel = Configuration.SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL;
                 BaseDurationInMS = CalcAuraDurationInMSForLevel(spellLevel, eqBuffDurationFormula);
+                if (MaxDurationInMS > 0 && BaseDurationInMS > MaxDurationInMS)
+                    BaseDurationInMS = MaxDurationInMS;
                 if (BaseDurationInMS < MaxDurationInMS)
                 {
                     MinLevel = spellLevel;
