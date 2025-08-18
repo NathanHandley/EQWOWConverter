@@ -1119,6 +1119,17 @@ namespace EQWOWConverter.Spells
                             spellTemplate.AuraDuration.SetFixedDuration(eqEffect.EQBaseValue);
                             newSpellEffects.Add(newSpellEffectWOW);
                         } break;
+                    case SpellEQEffectType.Fear:
+                        {
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModFear;
+                            newSpellEffectWOW.ActionDescription = string.Concat("run away in fear");
+                            newSpellEffectWOW.AuraDescription = string.Concat("running in fear");
+                            spellTemplate.BreakEffectOnNonAutoDirectDamage = true;
+                            spellTemplate.NoPartialImmunity = true;
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
                     case SpellEQEffectType.Root:
                         {
                             SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();

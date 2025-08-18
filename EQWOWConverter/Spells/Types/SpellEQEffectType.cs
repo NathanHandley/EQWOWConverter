@@ -43,7 +43,7 @@ namespace EQWOWConverter.Spells
         //Blind = 20,
         Stun = 21,
         //Charm = 22,
-        //Fear = 23,
+        Fear = 23,
         //Stamina = 24,
         //BindAffinity = 25,
         //Gate = 26,
