@@ -629,9 +629,6 @@ namespace EQWOWConverter
         // Start ID for item display info
         public static readonly int DBCID_ITEMDISPLAYINFO_START = 86000;
 
-        // Stand ID for spell item ennchantments
-        public static readonly int DBCID_SPELLITEMENCHANTMENT_ID_START = 4000;
-
         // Identifies the Light.DBC row, used for environmental properties
         public static readonly int DBCID_LIGHT_ID_START = 3500;
 
@@ -669,12 +666,16 @@ namespace EQWOWConverter
         // - SpellIDs 96100 - 96199 reserved for 'coat' effects that come from rogue poisons, triggering another spell
         public static readonly int DBCID_SPELL_ID_START = 86900;
         public static readonly int DBCID_SPELL_ID_SPLIT_SPELLS_START = 96200;
+        public static readonly int DBCID_SPELL_ID_END = 99999;
 
         // ID for spellcasttimes.dbc
         public static readonly int DBCID_SPELLCASTTIME_ID_START = 215;
 
         // ID for spellduration.dbc
-        public static readonly int DBCID_SPELLDURATION_ID_START = 610;
+        public static readonly int DBCID_SPELLDURATION_AURA_ID = 610;
+
+        // Stand ID for spell item ennchantments
+        public static readonly int DBCID_SPELLITEMENCHANTMENT_ID_START = 4000;
 
         // ID for spellicon.dbc
         public static readonly int DBCID_SPELLICON_ID_START = 4400;
@@ -790,7 +791,6 @@ namespace EQWOWConverter
         // Start and end IDs for transports
         public static readonly int SQL_TRANSPORTS_GUID_START = 21;
         public static readonly int SQL_TRANSPORTS_GUID_END = 41;
-
 
         // DO NOT CHANGE THESE VALUES UNLESS YOU KNOW WHAT YOU ARE DOING
         // They are temporary values used for configuration purposes, resolved at runtime

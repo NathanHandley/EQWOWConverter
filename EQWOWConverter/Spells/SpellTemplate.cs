@@ -32,7 +32,6 @@ namespace EQWOWConverter.Spells
         public static Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellRangeDBCIDsBySpellRange = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellRadiusDBCIDsBySpellRadius = new Dictionary<int, int>();
-        public static Dictionary<int, int> SpellDurationDBCIDsByDurationInMS = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellGroupStackRuleByGroup = new Dictionary<int, int>();
 
         private static Dictionary<int, SpellTemplate> SpellTemplatesByEQID = new Dictionary<int, SpellTemplate>();
@@ -99,20 +98,6 @@ namespace EQWOWConverter.Spells
                     SpellRadiusDBCIDsBySpellRadius.Add(value, SpellRadiusDBC.GenerateDBCID());
                 _SpellRadiusDBCID = SpellRadiusDBCIDsBySpellRadius[value];
                 _SpellRadius = value;
-            }
-        }
-        protected int _SpellDurationDBCID = 21; // "Infinite" by default"
-        public int SpellDurationDBCID { get { return _SpellDurationDBCID; } }
-        protected int _SpellDurationInMS = -1;
-        public int SpellDurationInMS
-        {
-            get { return _SpellDurationInMS; }
-            set
-            {
-                if (SpellDurationDBCIDsByDurationInMS.ContainsKey(value) == false)
-                    SpellDurationDBCIDsByDurationInMS.Add(value, SpellDurationDBC.GenerateDBCID());
-                _SpellDurationDBCID = SpellDurationDBCIDsByDurationInMS[value];
-                _SpellDurationInMS = value;
             }
         }
         public SpellDuration AuraDuration = new SpellDuration();
@@ -216,14 +201,14 @@ namespace EQWOWConverter.Spells
                 // School class
                 int resistType = int.Parse(columns["resisttype"]);
                 newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
-                newSpellTemplate.DispelType = GetDispelTypeForResistType(resistType, isDetrimental, newSpellTemplate.SpellDurationInMS);
+                newSpellTemplate.DispelType = GetDispelTypeForResistType(resistType, isDetrimental, newSpellTemplate.AuraDuration.MaxDurationInMS > 0);
 
                 // Set defensive properties
                 newSpellTemplate.DefenseType = 1; // Magic
                 newSpellTemplate.PreventionType = 1; // Silence
 
                 // Convert the spell effects
-                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.SpellDurationInMS, 
+                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration.MaxDurationInMS > 0, 
                     newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID);
 
                 // If there is no wow effect, skip it
@@ -239,9 +224,7 @@ namespace EQWOWConverter.Spells
                 // Add it
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
             }
-        }
-
-        
+        }        
 
         public static void GenerateItemEnchantSpellIfNotCreated(string itemName, int procSpellEQID, int enchantSpellWOWID, out SpellTemplate? enchantSpellTemplate)
         {
@@ -320,10 +303,10 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        public static UInt32 GetDispelTypeForResistType(int eqResistType, bool isDetrimental, int spellDurationInMS)
+        public static UInt32 GetDispelTypeForResistType(int eqResistType, bool isDetrimental, bool hasSpellDuration)
         {
             // TODO: Honor 'nodispel'?
-            if (spellDurationInMS == 0)
+            if (hasSpellDuration == false)
                 return 0;
             if (isDetrimental == false)
                 return 1;
@@ -673,7 +656,7 @@ namespace EQWOWConverter.Spells
             spellTemplate.EQSpellEffects.Add(curEffect);
         }
 
-        private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, int spellDurationInMS, 
+        private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, bool hasSpellDuration, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex)
         {
             // Process all spell effects
@@ -700,7 +683,7 @@ namespace EQWOWConverter.Spells
                             }
 
                             int preFormulaEffectAmount = Math.Abs(eqEffect.EQBaseValue);
-                            if (spellDurationInMS <= 0 || eqEffect.EQEffectType == SpellEQEffectType.CurrentHitPointsOnce)
+                            if (hasSpellDuration == false || eqEffect.EQEffectType == SpellEQEffectType.CurrentHitPointsOnce)
                             {
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
@@ -760,7 +743,7 @@ namespace EQWOWConverter.Spells
                                 continue;
 
                             int preFormulaEffectAmount = Math.Abs(eqEffect.EQBaseValue);
-                            if (spellDurationInMS <= 0 || eqEffect.EQEffectType == SpellEQEffectType.CurrentManaOnce)
+                            if (hasSpellDuration == false || eqEffect.EQEffectType == SpellEQEffectType.CurrentManaOnce)
                             {
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
@@ -1129,7 +1112,7 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStun;
                             newSpellEffectWOW.ActionDescription = string.Concat("stuns");
                             newSpellEffectWOW.AuraDescription = string.Concat("stunned");
-                            spellTemplate.SpellDurationInMS = eqEffect.EQBaseValue;
+                            spellTemplate.AuraDuration.SetFixedDuration(eqEffect.EQBaseValue);
                             newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     case SpellEQEffectType.Root:
@@ -1357,22 +1340,21 @@ namespace EQWOWConverter.Spells
             spellTemplate.Description = string.Concat(spellTemplate.Description, " ", spellTemplate.TargetDescriptionTextFragment, ".");
 
             // Add the time duration
-            spellTemplate.Description = string.Concat(spellTemplate.Description, GetTimeDurationStringFromMSWithLeadingSpace(spellTemplate.SpellDurationInMS));
+            spellTemplate.Description = string.Concat(spellTemplate.Description, GetTimeDurationStringFromMSWithLeadingSpace(spellTemplate.AuraDuration.MaxDurationInMS, spellTemplate.AuraDuration.GetTimeText()));
 
             // Add any additional fragments to descriptions
             if (spellTemplate.BreakEffectOnNonAutoDirectDamage == true)
                 spellTemplate.Description = string.Concat(spellTemplate.Description, " May break on direct damage.");
         }
 
-        private static string GetTimeDurationStringFromMSWithLeadingSpace(int durationInMS)
+        private static string GetTimeDurationStringFromMSWithLeadingSpace(int durationInMS, string timeFragment)
         {
             // Skip no duration
             if (durationInMS < 1000)
                 return string.Empty;
 
             // Get the time string
-            string timeBlockString = GetTimeTextFromSeconds(durationInMS / 1000);
-            return string.Concat(" Lasts ", timeBlockString, ".");
+            return string.Concat(" Lasts ", timeFragment, ".");
         }
 
         private static string GetTimeTextFromSeconds(int inputSeconds)

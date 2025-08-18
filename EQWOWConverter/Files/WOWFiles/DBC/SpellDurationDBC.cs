@@ -18,9 +18,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellDurationDBC : DBCFile
     {
-        private static int CUR_DBCID = Configuration.DBCID_SPELLDURATION_ID_START;
-        private static readonly object SpellDurationDBCLock = new object();
-
         public void AddRow(int dbcID, int durationInMS)
         {
             DBCRow newRow = new DBCRow();
@@ -29,16 +26,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // DurationPerLevel
             newRow.AddInt32(durationInMS); // Max duration
             Rows.Add(newRow);
-        }
-
-        public static int GenerateDBCID()
-        {
-            lock (SpellDurationDBCLock)
-            {
-                int newDBCID = CUR_DBCID;
-                CUR_DBCID++;
-                return newDBCID;
-            }
         }
     }
 }

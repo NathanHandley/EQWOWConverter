@@ -21,12 +21,34 @@ namespace EQWOWConverter.Spells
     internal struct SpellDuration : IEquatable<SpellDuration>
     {
         public int BaseDurationInMS = 0;
-        public int DurationPerLevel = 0;
+        public int DurationInMSPerLevel = 0;
         public int MaxDurationInMS = 0;
         public int MinLevel = 0;
         public int MaxLevel = 0;
 
         public SpellDuration() { }
+
+        public int GetBuffDurationForLevel(int level)
+        {
+            if (level == 0 || level >= MaxLevel)
+                return MaxDurationInMS;
+            if (level <= MinLevel)
+                return BaseDurationInMS;
+            int calcMSForLevel = BaseDurationInMS + ((MinLevel - level) * DurationInMSPerLevel);
+            if (calcMSForLevel > MaxDurationInMS)
+                return MaxDurationInMS;
+            else
+                return calcMSForLevel;
+        }
+
+        public void SetFixedDuration(int durationInMS)
+        {
+            BaseDurationInMS = durationInMS;
+            MaxDurationInMS = durationInMS;
+            DurationInMSPerLevel = 0;
+            MinLevel = 0;
+            MaxLevel = 0;
+        }
 
         public void CalculateAndSetAuraDuration(int spellLevel, int eqBuffDurationFormula, int maxBuffDurationInTicks)
         {
@@ -88,7 +110,7 @@ namespace EQWOWConverter.Spells
                     }
 
                     int totalLevelSteps = MaxLevel - spellLevel;
-                    DurationPerLevel = (MaxDurationInMS - BaseDurationInMS) / totalLevelSteps;
+                    DurationInMSPerLevel = (MaxDurationInMS - BaseDurationInMS) / totalLevelSteps;
                 }
             }
         }
@@ -132,7 +154,7 @@ namespace EQWOWConverter.Spells
 
             if (Configuration.SPELL_EFFECT_USE_DYNAMIC_AURA_DURATIONS == true 
                 && MinLevel != MaxLevel
-                && DurationPerLevel != 0
+                && DurationInMSPerLevel != 0
                 && MaxDurationInMS != BaseDurationInMS)
             {
                 timeSB.Append(" (L");
@@ -192,13 +214,13 @@ namespace EQWOWConverter.Spells
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(BaseDurationInMS, DurationPerLevel, MaxDurationInMS, MinLevel, MaxLevel);
+            return HashCode.Combine(BaseDurationInMS, DurationInMSPerLevel, MaxDurationInMS, MinLevel, MaxLevel);
         }
 
         public bool Equals(SpellDuration other)
         {
             return BaseDurationInMS == other.BaseDurationInMS
-                && DurationPerLevel == other.DurationPerLevel
+                && DurationInMSPerLevel == other.DurationInMSPerLevel
                 && MaxDurationInMS == other.MaxDurationInMS
                 && MinLevel == other.MinLevel
                 && MaxLevel == other.MaxLevel;

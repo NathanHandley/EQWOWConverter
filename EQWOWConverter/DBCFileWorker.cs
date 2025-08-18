@@ -479,6 +479,11 @@ namespace EQWOWConverter
                     {
                         spellID = curSpellAuraGenID;
                         curSpellAuraGenID++;
+                        if (curSpellAuraGenID >= Configuration.DBCID_SPELL_ID_END)
+                        {
+                            Logger.WriteError("Spell DBCID max exceeded");
+                            throw new Exception("Spell DBCID max exceeded");
+                        }
                         spellName = string.Concat(spellName, " Split ", i.ToString());
                     }
                     spellDBC.AddRow(spellID, spellName, spellTemplate.Description, spellTemplate, threeBlockEffects, i != 0, false, false, threeBlockEffects[0].CalcEffectHighLevel);
@@ -492,6 +497,11 @@ namespace EQWOWConverter
                         {
                             spellID = curSpellAuraGenID;
                             curSpellAuraGenID++;
+                            if (curSpellAuraGenID >= Configuration.DBCID_SPELL_ID_END)
+                            {
+                                Logger.WriteError("Spell DBCID max exceeded");
+                                throw new Exception("Spell DBCID max exceeded");
+                            }
                             spellName = string.Concat(spellName, " Split ", i.ToString());
                         }
                         if (Configuration.ITEMS_SHOW_WORN_EFFECT_AURA_ICON == true)
@@ -517,8 +527,6 @@ namespace EQWOWConverter
                 spellRangeDBC.AddRow(spellRangeDBCIDByRange.Value, spellRangeDBCIDByRange.Key);
             foreach (var spellRadiusDBCIDByRadius in SpellTemplate.SpellRadiusDBCIDsBySpellRadius)
                 spellRadiusDBC.AddRow(spellRadiusDBCIDByRadius.Value, spellRadiusDBCIDByRadius.Key);
-            foreach (var spellDurationDBCIDByDurationInMS in SpellTemplate.SpellDurationDBCIDsByDurationInMS)
-                spellDurationDBC.AddRow(spellDurationDBCIDByDurationInMS.Value, spellDurationDBCIDByDurationInMS.Key);
             foreach (var soundByFileNameNoExt in SpellVisual.SoundsByFileNameNoExt)
             {
                 string soundDirectoryRelative = Path.Combine("Sound", "Spells", "Everquest");
@@ -544,6 +552,8 @@ namespace EQWOWConverter
                     spellVisualEffectNameDBC.AddRow(objectModel.Properties.SpellVisualEffectNameDBCID, objectModel.Name, relativeMPQPath);
                 }
             }
+            // Row for auras (will be overwritten later by mod_everquest_spell
+            spellDurationDBC.AddRow(Configuration.DBCID_SPELLDURATION_AURA_ID, -1);
 
             // Transports
             if (Configuration.GENERATE_TRANSPORTS == true)

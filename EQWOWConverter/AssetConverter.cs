@@ -1288,8 +1288,8 @@ namespace EQWOWConverter
                     CreatureSpellEntry curEntry = allValidSpellEntries[i];
                     SpellTemplate spellTemplate = spellTemplatesByEQID[allValidSpellEntries[i].EQSpellID];
                     int originalRecastDelayInMS = allValidSpellEntries[i].OriginalRecastDelayInMS;
-                    curEntry.CalculatedMinimumDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, spellTemplate.SpellDurationInMS), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
-                    curEntry.BuffDurationInMS = spellTemplate.SpellDurationInMS;
+                    curEntry.CalculatedMinimumDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, spellTemplate.AuraDuration.GetBuffDurationForLevel(creatureTemplate.Level)), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
+                    curEntry.BuffDurationInMS = spellTemplate.AuraDuration.GetBuffDurationForLevel(creatureTemplate.Level);
                     allValidSpellEntries[i] = curEntry;
                 }
 
@@ -1576,7 +1576,7 @@ namespace EQWOWConverter
             {
                 gateSpellTemplate.Description = string.Concat(gateSpellTemplate.Description, " You will have 30 minutes where you can return to your gate point after casting it.");
                 gateSpellTemplate.AuraDescription = "You are tethered to the location where you gated. Right click before the buff wears off to return there. The tether will fail if you attempt return while in combat.";
-                gateSpellTemplate.SpellDurationInMS = 1800000; // 30 minutes
+                gateSpellTemplate.AuraDuration.SetFixedDuration(1800000); // 30 minutes
                 gateSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
             }
             else

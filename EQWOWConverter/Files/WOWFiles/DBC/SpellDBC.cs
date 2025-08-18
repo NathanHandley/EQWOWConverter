@@ -76,8 +76,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // SpellLevel
             if (overrideDurationToInfinite == true)
                 newRow.AddUInt32(21); // DurationIndex (SpellDuration.dbc id) - 21 is infinite (auras use it)
+            else if (spellTemplate.AuraDuration.MaxDurationInMS == 0)
+                newRow.AddUInt32(0); // DurationIndex (SpellDuration.dbc id)
             else
-                newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellDurationDBCID)); // DurationIndex (SpellDuration.dbc id)
+                newRow.AddUInt32(Convert.ToUInt32(Configuration.DBCID_SPELLDURATION_AURA_ID)); // DurationIndex (SpellDuration.dbc id) -- Note: This will get overwritten by mod_everquest_spell SQL table
             newRow.AddInt32(0); // PowerType
             newRow.AddUInt32(spellTemplate.ManaCost); // ManaCost
             newRow.AddUInt32(0); // ManaCostPerLevel

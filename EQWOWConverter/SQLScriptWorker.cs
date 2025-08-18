@@ -60,6 +60,7 @@ namespace EQWOWConverter
         private ItemLootTemplateSQL itemLootTemplateSQL = new ItemLootTemplateSQL();
         private ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
+        private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
         private ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
         private NPCTextSQL npcTextSQL = new NPCTextSQL();
         private NPCTrainerSQL npcTrainerSQL = new NPCTrainerSQL();
@@ -599,6 +600,9 @@ namespace EQWOWConverter
                 // Stack rules
                 if (spellTemplate.SpellGroupStackingID > 0)
                     spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.WOWSpellID);
+                
+                // Additional spell data
+                modEverquestSpellSQL.AddRow(spellTemplate, spellTemplate.WOWSpellID);
 
                 // Chains for spells with > 3 effects
                 List<List<SpellEffectWOW>> spellEffectsByThree = spellTemplate.GetWOWEffectsInBlocksOfThree();
@@ -607,12 +611,39 @@ namespace EQWOWConverter
                     int chainSpellID = curSpellSplitGenID;
                     string comment = string.Concat(spellTemplate.Name, " Split ", i.ToString());
                     curSpellSplitGenID++;
+                    if (curSpellSplitGenID >= Configuration.DBCID_SPELL_ID_END)
+                    {
+                        Logger.WriteError("Spell DBCID max exceeded");
+                        throw new Exception("Spell DBCID max exceeded");
+                    }
                     // TODO: Check if there are mixtures of aura and non-aura spells first, this may have a bug
-                    if (spellTemplate.SpellDurationInMS > 0)
+                    if (spellTemplate.AuraDuration.MaxDurationInMS > 0)
                         spellLinkedSpellSQL.AddRowForAuraTrigger(spellTemplate.WOWSpellID, chainSpellID, comment);
                     else
                         spellLinkedSpellSQL.AddRowForHitTrigger(spellTemplate.WOWSpellID, chainSpellID, comment);
+                    
+                    // Additional spell data
+                    modEverquestSpellSQL.AddRow(spellTemplate, chainSpellID);
+
+                    // Worn effects get their own copy too
+                    if (spellTemplate.WOWSpellIDWorn > 0)
+                    {
+                        int spellID = spellTemplate.WOWSpellIDWorn;
+                        if (i != 0)
+                        {
+                            spellID = curSpellSplitGenID;
+                            curSpellSplitGenID++;
+                            if (curSpellSplitGenID >= Configuration.DBCID_SPELL_ID_END)
+                            {
+                                Logger.WriteError("Spell DBCID max exceeded");
+                                throw new Exception("Spell DBCID max exceeded");
+                            }
+                        }
+                        // Additional spell data
+                        modEverquestSpellSQL.AddRow(spellTemplate, spellID);
+                    }
                 }
+
             }
             foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)
                 spellGroupStackRulesSQL.AddRow(spellGroupStackRuleByGroup.Key, spellGroupStackRuleByGroup.Value);
@@ -846,6 +877,7 @@ namespace EQWOWConverter
             itemLootTemplateSQL.SaveToDisk("item_loot_template", SQLFileType.World);
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
+            modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcTrainerSQL.SaveToDisk("npc_trainer", SQLFileType.World);
