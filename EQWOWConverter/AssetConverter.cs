@@ -1635,6 +1635,7 @@ namespace EQWOWConverter
             dayPhaseSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Phase, 0, 0, 1, -1, 2, 0));
             dayPhaseSpellTemplate.SchoolMask = 1;
             dayPhaseSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
+            dayPhaseSpellTemplate.AuraDuration.IsInfinite = true;
             spellTemplates.Add(dayPhaseSpellTemplate);
 
             // Phase aura 2 (Night)
@@ -1648,6 +1649,7 @@ namespace EQWOWConverter
             nightPhaseSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Phase, 0, 0, 1, -1, 4, 0));
             nightPhaseSpellTemplate.SchoolMask = 1;
             nightPhaseSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
+            nightPhaseSpellTemplate.AuraDuration.IsInfinite = true;
             spellTemplates.Add(nightPhaseSpellTemplate);
 
             Logger.WriteDebug("Generating custom spells completed.");

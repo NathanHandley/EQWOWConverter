@@ -25,6 +25,7 @@ namespace EQWOWConverter.Spells
         public int MaxDurationInMS = 0;
         public int MinLevel = 0;
         public int MaxLevel = 0;
+        public bool IsInfinite = false;
 
         public SpellDuration() { }
 

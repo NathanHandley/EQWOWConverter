@@ -486,7 +486,7 @@ namespace EQWOWConverter
                         }
                         spellName = string.Concat(spellName, " Split ", i.ToString());
                     }
-                    spellDBC.AddRow(spellID, spellName, spellTemplate.Description, spellTemplate, threeBlockEffects, i != 0, false, false, threeBlockEffects[0].CalcEffectHighLevel);
+                    spellDBC.AddRow(spellID, spellName, spellTemplate.Description, spellTemplate, threeBlockEffects, i != 0, spellTemplate.AuraDuration.IsInfinite, false, threeBlockEffects[0].CalcEffectHighLevel);
 
                     // Worn effects get their own copy too
                     if (spellTemplate.WOWSpellIDWorn > 0)
