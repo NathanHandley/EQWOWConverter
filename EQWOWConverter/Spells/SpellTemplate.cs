@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Items;
 using EQWOWConverter.Tradeskills;
 using EQWOWConverter.WOWFiles;
 using System.Text;
@@ -140,12 +141,15 @@ namespace EQWOWConverter.Spells
             lock (SpellTemplateLock)
             {
                 if (SpellTemplatesByEQID.Count == 0)
-                    LoadSpellTemplates();
+                {
+                    Logger.WriteError("GetSPellTemplatesByEQID called before LoadSpellTemplates");
+                    return new Dictionary<int, SpellTemplate>();
+                }
                 return SpellTemplatesByEQID;
             }
         }
 
-        public static void LoadSpellTemplates()
+        public static void LoadSpellTemplates(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
         {
             // Load the spell templates
             string spellTemplatesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpellTemplates.csv");
@@ -209,7 +213,7 @@ namespace EQWOWConverter.Spells
 
                 // Convert the spell effects
                 ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration.MaxDurationInMS > 0, 
-                    newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID);
+                    newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID);
 
                 // If there is no wow effect, skip it
                 if (newSpellTemplate.WOWSpellEffects.Count == 0)
@@ -657,7 +661,7 @@ namespace EQWOWConverter.Spells
         }
 
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, bool hasSpellDuration, 
-            int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex)
+            int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
         {
             // Process all spell effects
             foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
@@ -1237,8 +1241,28 @@ namespace EQWOWConverter.Spells
                             if (totalDispels > 1)
                                 newSpellEffectWOW.ActionDescription = string.Concat(newSpellEffectWOW.ActionDescription, "s");
                             newSpellEffects.Add(newSpellEffectWOW);
-                        }
-                        break;
+                        } break;
+                    case SpellEQEffectType.SummonItems:
+                        {
+                            if (itemTemplatesByEQDBID.ContainsKey(eqEffect.EQBaseValue) == false)
+                            {
+                                Logger.WriteWarning("Failed to summon items with eq id ", eqEffect.EQBaseValue.ToString() , " for eq spell id ", spellTemplate.EQSpellID.ToString(), " as it was not found in the item list");
+                                continue;
+                            }
+
+                            int itemCount = Math.Max(eqEffect.EQMaxValue, 1);
+                            SpellEffectWOW spellEffectWOW = new SpellEffectWOW();
+                            spellEffectWOW.EffectType = SpellWOWEffectType.CreateItem;
+                            spellEffectWOW.EffectBasePoints = itemCount;
+                            spellEffectWOW.EffectItemType = Convert.ToUInt32(itemTemplatesByEQDBID[eqEffect.EQBaseValue].WOWEntryID);
+                            itemTemplatesByEQDBID[eqEffect.EQBaseValue].IsCreatedBySpell = true;
+                            string itemName = itemTemplatesByEQDBID[eqEffect.EQBaseValue].Name;
+                            if (itemCount == 1)
+                                spellEffectWOW.ActionDescription = string.Concat("Conjure ", itemCount, " ", itemName, ".\n\nConjured items disappear if logged out for more than 15 minutes.");
+                            else
+                                spellEffectWOW.ActionDescription = string.Concat("Conjure ", itemCount, " ", itemName, "s.\n\nConjured items disappear if logged out for more than 15 minutes.");
+                            newSpellEffects.Add(spellEffectWOW);
+                        } break;
                     default:
                         {
                             Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());

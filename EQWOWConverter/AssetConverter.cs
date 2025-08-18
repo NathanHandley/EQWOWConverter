@@ -1509,7 +1509,7 @@ namespace EQWOWConverter
             SpellVisual.GenerateWOWSpellVisualData();
 
             // Load spell templates
-            SpellTemplate.LoadSpellTemplates();
+            SpellTemplate.LoadSpellTemplates(itemTemplatesByEQDBID);
             spellTemplates = SpellTemplate.GetSpellTemplatesByEQID().Values.ToList();
 
             // Add any custom spells
