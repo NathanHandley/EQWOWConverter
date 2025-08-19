@@ -54,11 +54,11 @@ namespace EQWOWConverter.Spells
         DiseaseCounter = 35,
         PoisonCounter = 36,
         //....
-        //ResistFire = 46,
-        //ResistCold = 47,
-        //ResistPoison = 48,
-        //ResistDisease = 49,
-        //ResistMagic = 50,
+        ResistFire = 46,
+        ResistCold = 47,
+        ResistPoison = 48,
+        ResistDisease = 49,
+        ResistMagic = 50,
         //....
         TotalHP = 69,
         //....

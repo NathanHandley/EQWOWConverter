@@ -1274,6 +1274,116 @@ namespace EQWOWConverter.Spells
                                 spellEffectWOW.ActionDescription = string.Concat("Conjure ", itemCount, " ", itemName, "s.\n\nConjured items disappear if logged out for more than 15 minutes.");
                             newSpellEffects.Add(spellEffectWOW);
                         } break;
+                    case SpellEQEffectType.ResistFire:
+                        {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
+                            newSpellEffectWOW.EffectMiscValueA = 4; // Fire
+                            if (eqEffect.EQBaseValue >= 0)
+                            {
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "FireResistanceBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase fire resistance by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                newSpellEffectWOW.AuraDescription = string.Concat("fire resistance increased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                            }
+                            else
+                            {
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "FireResistanceDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease fire resistance by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                newSpellEffectWOW.AuraDescription = string.Concat("fire resistance decreased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                            }
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
+                    case SpellEQEffectType.ResistCold:
+                        {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
+                            newSpellEffectWOW.EffectMiscValueA = 16; // Frost
+                            if (eqEffect.EQBaseValue >= 0)
+                            {
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "FrostResistanceBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase frost resistance by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                newSpellEffectWOW.AuraDescription = string.Concat("frost resistance increased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                            }
+                            else
+                            {
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "FrostResistanceDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease frost resistance by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                newSpellEffectWOW.AuraDescription = string.Concat("frost resistance decreased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                            }
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
+                    case SpellEQEffectType.ResistPoison:
+                        {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
+                            newSpellEffectWOW.EffectMiscValueA = 8; // Nature
+                            if (eqEffect.EQBaseValue >= 0)
+                            {
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "NatureResistanceBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase nature resistance by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                newSpellEffectWOW.AuraDescription = string.Concat("nature resistance increased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                            }
+                            else
+                            {
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "NatureResistanceDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease nature resistance by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                newSpellEffectWOW.AuraDescription = string.Concat("nature resistance decreased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                            }
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
+                    case SpellEQEffectType.ResistDisease:
+                        {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
+                            newSpellEffectWOW.EffectMiscValueA = 32; // Shadow
+                            if (eqEffect.EQBaseValue >= 0)
+                            {
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ShadowResistanceBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase shadow resistance by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                newSpellEffectWOW.AuraDescription = string.Concat("shadow resistance increased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                            }
+                            else
+                            {
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ShadowResistanceDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease shadow resistance by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                newSpellEffectWOW.AuraDescription = string.Concat("shadow resistance decreased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                            }
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
+                    case SpellEQEffectType.ResistMagic:
+                        {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
+                            newSpellEffectWOW.EffectMiscValueA = 64; // Arcane
+                            if (eqEffect.EQBaseValue >= 0)
+                            {
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ArcaneResistanceBuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase arcane resistance by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                newSpellEffectWOW.AuraDescription = string.Concat("arcane resistance increased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                            }
+                            else
+                            {
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ArcaneResistanceDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease arcane resistance by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                newSpellEffectWOW.AuraDescription = string.Concat("arcane resistance decreased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                            } newSpellEffects.Add(newSpellEffectWOW);
+                        }
+                        break;
                     default:
                         {
                             Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
