@@ -1116,7 +1116,7 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStun;
                             newSpellEffectWOW.ActionDescription = string.Concat("stuns");
                             newSpellEffectWOW.AuraDescription = string.Concat("stunned");
-                            spellTemplate.AuraDuration.SetFixedDuration(eqEffect.EQBaseValue);
+                            spellTemplate.AuraDuration.SetFixedDuration(Math.Max(eqEffect.EQBaseValue, 500));
                             newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     case SpellEQEffectType.Fear:
