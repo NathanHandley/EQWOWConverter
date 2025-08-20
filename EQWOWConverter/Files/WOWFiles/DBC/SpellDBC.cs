@@ -46,6 +46,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt64(0); // ShapeshiftExclude
             if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
                 newRow.AddUInt32(16); // Targets (Item Enchantment)
+            else if (spellTemplate.CastOnCorpse == true)
+                newRow.AddUInt32(32768); // Targets (Corpse))
             else
                 newRow.AddUInt32(0); // Targets (should this be non-zero?)
             newRow.AddUInt32(spellTemplate.TargetCreatureType); // TargetCreatureType

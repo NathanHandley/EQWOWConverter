@@ -124,6 +124,7 @@ namespace EQWOWConverter.Spells
         public UInt32 ManaCost = 0;
         public SpellEQTargetType EQTargetType = SpellEQTargetType.Single;
         public UInt32 TargetCreatureType = 0; // No specific creature type
+        public bool CastOnCorpse = false;
         public Dictionary<ClassType, SpellLearnScrollProperties> LearnScrollPropertiesByClassType = new Dictionary<ClassType, SpellLearnScrollProperties>();
         public int HighestDirectHealAmountInSpellEffect = 0; // Used in spell priority calculations
         private string TargetDescriptionTextFragment = string.Empty;
@@ -553,9 +554,9 @@ namespace EQWOWConverter.Spells
                     break;
                 case SpellEQTargetType.Corpse:
                     {
-                        // TODO: Make only work on corpses
                         spellWOWTargetTypes.Add(SpellWOWTargetType.None);
                         spellTemplate.TargetDescriptionTextFragment = "Targets a friendly corpse";
+                        spellTemplate.CastOnCorpse = true;
                     }
                     break;
                 case SpellEQTargetType.Plant:
@@ -1382,8 +1383,16 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("decrease arcane resistance by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
                                 newSpellEffectWOW.AuraDescription = string.Concat("arcane resistance decreased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
                             } newSpellEffects.Add(newSpellEffectWOW);
-                        }
-                        break;
+                        } break;
+                    case SpellEQEffectType.Revive:
+                        {
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ResurrectNew;
+                            int amountRestored = Math.Max(Configuration.SPELL_EFFECT_REVIVE_EXPPCT_TO_HPMP_MULTIPLIER * eqEffect.EQBaseValue, 1);
+                            newSpellEffectWOW.EffectBasePoints = amountRestored;
+                            newSpellEffectWOW.ActionDescription = string.Concat("brings a dead player back to life with ", amountRestored, " health and ", amountRestored, " mana");
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
                     default:
                         {
                             Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());

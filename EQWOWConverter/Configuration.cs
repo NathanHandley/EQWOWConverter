@@ -551,6 +551,9 @@ namespace EQWOWConverter
         public static readonly bool SPELL_EFFECT_USE_DYNAMIC_EFFECT_VALUES = true;
         public static readonly bool SPELL_EFFECT_USE_DYNAMIC_AURA_DURATIONS = true;
 
+        // Revive will give HP/MP instead of EXP on revive, so this is the multiplier to use for that
+        public static readonly int SPELL_EFFECT_REVIVE_EXPPCT_TO_HPMP_MULTIPLIER = 22;
+
         //=====================================================================
         // Tradeskills
         //=====================================================================
