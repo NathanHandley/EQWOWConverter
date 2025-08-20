@@ -1577,10 +1577,10 @@ namespace EQWOWConverter
                 gateSpellTemplate.Description = string.Concat(gateSpellTemplate.Description, " You will have 30 minutes where you can return to your gate point after casting it.");
                 gateSpellTemplate.AuraDescription = "You are tethered to the location where you gated. Right click before the buff wears off to return there. The tether will fail if you attempt return while in combat.";
                 gateSpellTemplate.AuraDuration.SetFixedDuration(1800000); // 30 minutes
-                gateSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
+                gateSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 3, 0));
             }
             else
-                gateSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0));
+                gateSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.None, 0, 0, 0, 0, 3, 0));
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
             gateSpellTemplate.RecoveryTimeInMS = 8000;
@@ -1603,7 +1603,7 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySelfSpellTemplate.AllowCastInCombat = false;
             bindAffinitySelfSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
-            bindAffinitySelfSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
+            bindAffinitySelfSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 1, 0));
             bindAffinitySelfSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.Self;
             spellTemplates.Add(bindAffinitySelfSpellTemplate);
 
@@ -1620,7 +1620,7 @@ namespace EQWOWConverter
             bindAffinitySpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySpellTemplate.AllowCastInCombat = false;
             bindAffinitySpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
-            bindAffinitySpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
+            bindAffinitySpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 2, 0));
             bindAffinitySpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.TargetParty;
             spellTemplates.Add(bindAffinitySpellTemplate);
 
@@ -2169,6 +2169,8 @@ namespace EQWOWConverter
                         Logger.WriteDebug("Could not map spell with eqid ", itemTemplate.EQCombatProcSpellEffectID.ToString(), " to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as the spell didn't exist");
                     else
                     {
+                        // Remap any special type
+
                         itemTemplate.WOWSpellID1 = spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellID;
                         itemTemplate.WOWSpellTrigger1 = 2; // Chance on Hit
                         itemTemplate.WOWSpellPPMRate1 = Configuration.ITEMS_WEAPON_EFFECT_PPM_BASE_RATE; // TODO: Make this varied?
