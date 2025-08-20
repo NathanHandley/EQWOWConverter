@@ -1393,6 +1393,36 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.ActionDescription = string.Concat("brings a dead player back to life with ", amountRestored, " health and ", amountRestored, " mana");
                             newSpellEffects.Add(newSpellEffectWOW);
                         } break;
+                    case SpellEQEffectType.Gate:
+                        {
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            if (Configuration.SPELLS_GATE_TETHER_ENABLED == true)
+                            {
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
+                                newSpellEffectWOW.ActionDescription = "opens a magical portal that returns you to your bind point in norrath, and you will have 30 minutes where you can return to your gate point after casting it";
+                                newSpellEffectWOW.AuraDescription = "you are tethered to the location where you gated and may return there if you click it off before the buff wears off, but it will fail in combat";
+                                newSpellEffectWOW.EffectMiscValueA = 3;
+                                spellTemplate.AuraDuration.SetFixedDuration(1800000); // 30 minutes
+                            }
+                            else
+                            {
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.Dummy;
+                                newSpellEffectWOW.ActionDescription = "opens a magical portal that returns you to your bind point in norrath";
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
+                                newSpellEffectWOW.EffectMiscValueA = 3;
+                            }
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
+                    case SpellEQEffectType.BindAffinity:
+                        {
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.Dummy;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
+                            newSpellEffectWOW.EffectMiscValueA = 2;
+                            newSpellEffectWOW.ActionDescription = string.Concat("binds the soul of the target to their current location, which only works in norrath");
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
                     default:
                         {
                             Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
@@ -1499,6 +1529,9 @@ namespace EQWOWConverter.Spells
             // Add any additional fragments to descriptions
             if (spellTemplate.BreakEffectOnNonAutoDirectDamage == true)
                 spellTemplate.Description = string.Concat(spellTemplate.Description, " May break on direct damage.");
+
+            // Capitalize Norrath
+            spellTemplate.Description = spellTemplate.Description.Replace("norrath", "Norrath");
         }
 
         private static string GetTimeDurationStringFromMSWithLeadingSpace(int durationInMS, string timeFragment)

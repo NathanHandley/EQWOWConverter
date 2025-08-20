@@ -45,8 +45,8 @@ namespace EQWOWConverter.Spells
         //Charm = 22,
         Fear = 23,
         //Stamina = 24,
-        //BindAffinity = 25,
-        //Gate = 26,
+        BindAffinity = 25,
+        Gate = 26,
         CancelMagic = 27,
         //....
         SummonItems = 32,
