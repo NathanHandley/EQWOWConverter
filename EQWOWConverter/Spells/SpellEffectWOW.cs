@@ -358,7 +358,7 @@ namespace EQWOWConverter.Spells
             string leadinTextIfBandValue)
         {
             // Nothing will get returned if there is a range/band
-            if (CalcEffectLowLevel != CalcEffectHighLevel)
+            if (CalcEffectLowLevelValue != CalcEffectHighLevelValue)
                 return string.Empty;
 
             StringBuilder stringBuilder = new StringBuilder();
