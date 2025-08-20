@@ -971,25 +971,67 @@ namespace EQWOWConverter.Spells
                             newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     case SpellEQEffectType.Intelligence:
+                    case SpellEQEffectType.TotalMana:
                         {
-                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
-                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
-                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
-                            newSpellEffectWOW.EffectMiscValueA = 3; // Intellect
-                            if (eqEffect.EQBaseValue >= 0)
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
+
+                            if (eqEffect.EQBaseValue > 0)
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "IntellectBuff", SpellEffectWOWConversionScaleType.None);
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                if (eqEffect.EQEffectType == SpellEQEffectType.TotalMana)
+                                    newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "MaxManaToIntBuff", SpellEffectWOWConversionScaleType.None);
+                                else
+                                    newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "IntellectBuff", SpellEffectWOWConversionScaleType.None);
+
+                                // EQ Intelligence and EQ Total Mana are both mapped to WOW int, so use the higher of the two and reuse if one exists
+                                bool ignoreAsIntEffectExistsAndIsStronger = false;
+                                foreach (SpellEffectWOW wowEffect in spellTemplate.WOWSpellEffects)
+                                {
+                                    if (wowEffect.EffectAuraType == SpellWOWAuraType.ModStat && wowEffect.EffectMiscValueA == 3)
+                                        if (wowEffect.EffectBasePoints > 0 && wowEffect.EffectBasePoints >= newSpellEffectWOW.EffectBasePoints)
+                                            ignoreAsIntEffectExistsAndIsStronger = true;
+                                }
+                                if (ignoreAsIntEffectExistsAndIsStronger == true)
+                                    continue;
+
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
+                                newSpellEffectWOW.EffectMiscValueA = 3; // Intellect                                
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase intellect by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
                                 newSpellEffectWOW.AuraDescription = string.Concat("intellect increased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                                newSpellEffects.Add(newSpellEffectWOW);
                             }
                             else
                             {
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "IntellectDebuff", SpellEffectWOWConversionScaleType.None);
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                if (eqEffect.EQEffectType == SpellEQEffectType.TotalMana)
+                                    newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "MaxManaToIntDebuff", SpellEffectWOWConversionScaleType.None);
+                                else
+                                    newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "IntellectDebuff", SpellEffectWOWConversionScaleType.None);
+
+                                // EQ Intelligence and EQ Total Mana are both mapped to WOW int, so use the higher of the two and reuse if one exists
+                                bool ignoreAsIntEffectExistsAndIsStronger = false;
+                                foreach (SpellEffectWOW wowEffect in spellTemplate.WOWSpellEffects)
+                                {
+                                    if (wowEffect.EffectAuraType == SpellWOWAuraType.ModStat && wowEffect.EffectMiscValueA == 3)
+                                    {
+                                        if (wowEffect.EffectBasePoints < 0 && wowEffect.EffectBasePoints <= newSpellEffectWOW.EffectBasePoints)
+                                            ignoreAsIntEffectExistsAndIsStronger = true;
+                                    }
+                                }
+                                if (ignoreAsIntEffectExistsAndIsStronger == true)
+                                    continue;
+
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
+                                newSpellEffectWOW.EffectMiscValueA = 3; // Intellect
                                 newSpellEffectWOW.ActionDescription = string.Concat("decrease intellect by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
                                 newSpellEffectWOW.AuraDescription = string.Concat("intellect decreased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
-                            }
-                            newSpellEffects.Add(newSpellEffectWOW);
-                        } break;
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            }             
+                        }
+                        break;
                     case SpellEQEffectType.Wisdom:
                         {
                             if (eqEffect.EQBaseValue == 0)

@@ -69,7 +69,7 @@ namespace EQWOWConverter.Spells
         //Teleport = 83,
         //....
         //Silence = 96,
-        //TotalMana = 97,
+        TotalMana = 97,
         //AttackSpeed2 = 98, // Looks like this stacks with the other attack speed
         Root = 99,
         HealOverTime = 100,
