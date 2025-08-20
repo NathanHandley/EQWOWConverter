@@ -49,10 +49,15 @@ namespace EQWOWConverter.Spells
         Gate = 26,
         CancelMagic = 27,
         //....
+        // Mez = 31
         SummonItems = 32,
+        // SummonPet = 33
+        // Confuse = 34
         //....
         DiseaseCounter = 35,
         PoisonCounter = 36,
+        //....
+        // DivineAura = 40 - Note: Can't cast or melee
         //....
         ResistFire = 46,
         ResistCold = 47,
@@ -60,20 +65,57 @@ namespace EQWOWConverter.Spells
         ResistDisease = 49,
         ResistMagic = 50,
         //....
+        // DetectTraps = 51
+        // SenseDead = 52
+        // SenseSummoned = 53
+        // SenseAnimals = 54
+        // Rune = 55 // Absorb all melee damage until a maximum amount of damage is taken and it fades
+        // TrueNorth = 56
+        // Levitate = 57
+        // Illusion = 58
+        // DamageShield = 59 // Attacker takes damage if they hit someone with this
+        //....
+        // WipeHateList = 63
+        //....
+        // InfraVision = 65
+        // UltraVision = 66
+        //....
+        // ReclainPet = 68 // Destroys pet and gives some of the mana back
         TotalHP = 69,
+        //....
+        // NecPet = 71 // Undead / Necromancer pet
+        //....
+        // BindSight = 73
+        // FeignDeath = 74
+        //....
+        // LocateCorpse = 77
         //....
         CurrentHitPointsOnce = 79,
         //....
         Revive = 81,
+        // SummonPC = 82 // Summons the player to the casters location
+        // Teleport = 83,
+        // TossUp = 84, // Launches the target in the air
+        // WeaponProc = 85, // Add a weapon proc to the melee target
+        // Harmony = 86, // Reduce agro reaction radius
+        // MagnifyVision = 87,
+        // Succor = 88, // Teleport self or the group to a safe spot in a zone
+        // ModelSize = 89, // Grow/Shrink
         //....
-        //Teleport = 83,
+        // SummonCorpse = 91 // Summon the corpse of the targeted player
+        // InstantHate = 92 // Add or remove a set amount of hate
+        // StopRain = 93 // Stops any active rain
         //....
-        //Silence = 96,
+        // Silence = 96,
         TotalMana = 97,
-        //AttackSpeed2 = 98, // Looks like this stacks with the other attack speed
+        // AttackSpeed2 = 98, // Looks like this stacks with the other attack speed
         Root = 99,
         HealOverTime = 100,
         //....
+        // Fearless = 102,
+        // CallPet = 103,
+        // Translocate = 104, // Move the target to a place
+        // ResistAll = 111,
         //DispelDetrimental = 154, -- Not used (Purify Soul, AA ability)
         //DispelBeneficial = 209, -- Not used
         Invisibility = 314,
