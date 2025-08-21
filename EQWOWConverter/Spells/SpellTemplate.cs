@@ -711,7 +711,6 @@ namespace EQWOWConverter.Spells
                                         newSpellEffectWOW2.AuraDescription = string.Empty;
                                         newSpellEffects.Add(newSpellEffectWOW2);
                                         otherTarget = SpellWOWTargetType.Self;
-                                        newSpellEffects.Add(newSpellEffectWOW2);
                                     }
                                     else
                                     {
