@@ -738,10 +738,21 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
                                     if (eqEffect.EQBaseValue > 0)
                                     {
-                                        newSpellEffectWOW.SetEffectAmountValues(-1 * eqEffect.EQBaseValue, -1 * eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealOverTimeHPS", SpellEffectWOWConversionScaleType.Periodic);
-                                        newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicLeech;
-                                        newSpellEffectWOW.ActionDescription = string.Concat("transfering ", newSpellEffectWOW.GetFormattedEffectActionString(false), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to the target");
-                                        newSpellEffectWOW.AuraDescription = string.Concat("transfering", newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to the target");
+                                        Logger.WriteError("Unimplemented Life Leach Aura effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
+                                        continue;
+                                        //// Canceling this crashes the server...?
+                                        //newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealOverTimeHPS", SpellEffectWOWConversionScaleType.Periodic);
+                                        //newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicHeal;
+                                        //newSpellEffectWOW.ActionDescription = string.Concat("transfer ", newSpellEffectWOW.GetFormattedEffectActionString(false), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to the target");
+                                        //newSpellEffectWOW.AuraDescription = string.Concat(newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds is being transfered to you");
+
+                                        // Add a second for damage to self
+                                        //SpellEffectWOW newSpellEffectWOW2 = newSpellEffectWOW.Clone();
+                                        //newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.PeriodicDamage;
+                                        //newSpellEffectWOW2.ActionDescription = string.Empty;
+                                        //newSpellEffectWOW2.AuraDescription = string.Concat(newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds is being transfered to someone");
+                                        //newSpellEffects.Add(newSpellEffectWOW2);
+                                        //otherTarget = SpellWOWTargetType.Self;
                                     }
                                     else
                                     {
