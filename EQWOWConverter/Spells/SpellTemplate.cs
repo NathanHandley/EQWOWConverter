@@ -676,6 +676,13 @@ namespace EQWOWConverter.Spells
                     SpellWOWTargetType? otherTarget = null;
                     switch (eqEffect.EQEffectType)
                     {
+                        case SpellEQEffectType.Charisma:
+                            {
+                                if (eqEffect.EQBaseValue == 0)
+                                    continue;
+                                else
+                                    Logger.WriteError("Transfer spell effect type Charisma with base value > 0 not implemented.");
+                            } break;
                         case SpellEQEffectType.CurrentHitPoints:
                             {
                                 if (eqEffect.EQBaseValue == 0)
@@ -724,37 +731,37 @@ namespace EQWOWConverter.Spells
                                         newSpellEffects.Add(newSpellEffectWOW);
                                     }
                                 }
-                                //else
-                                //{
-                                //    SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
-                                //    newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
-                                //    newSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
-                                //    if (eqEffect.EQBaseValue > 0)
-                                //    {
-                                //        newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealOverTimeHPS", SpellEffectWOWConversionScaleType.Periodic);
-                                //        newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicHeal;
-                                //        newSpellEffectWOW.ActionDescription = string.Concat("regenerate ", newSpellEffectWOW.GetFormattedEffectActionString(false), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                //        newSpellEffectWOW.AuraDescription = string.Concat("regenerating", newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                //    }
-                                //    else
-                                //    {
-                                //        newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicDamage;
-                                //        if (elementalSchoolName.Length > 0)
-                                //        {
-                                //            newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic);
-                                //            newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                //            newSpellEffectWOW.AuraDescription = string.Concat("suffering", newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                //        }
-                                //        else
-                                //        {
-                                //            newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic);
-                                //            newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                //            newSpellEffectWOW.AuraDescription = string.Concat("suffering", newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                //        }
-                                //    }
-                                //    newSpellEffects.Add(newSpellEffectWOW);
-                                //}
-
+                                else
+                                {
+                                    SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                    newSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
+                                    if (eqEffect.EQBaseValue > 0)
+                                    {
+                                        newSpellEffectWOW.SetEffectAmountValues(-1 * eqEffect.EQBaseValue, -1 * eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealOverTimeHPS", SpellEffectWOWConversionScaleType.Periodic);
+                                        newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicLeech;
+                                        newSpellEffectWOW.ActionDescription = string.Concat("transfering ", newSpellEffectWOW.GetFormattedEffectActionString(false), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to the target");
+                                        newSpellEffectWOW.AuraDescription = string.Concat("transfering", newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to the target");
+                                    }
+                                    else
+                                    {
+                                        newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicLeech;
+                                        if (elementalSchoolName.Length > 0)
+                                        {
+                                            newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic);
+                                            newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds and return it as life to yourself");
+                                            newSpellEffectWOW.AuraDescription = string.Concat("suffering", newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds and return it as life to yourself");
+                                        }
+                                        else
+                                        {
+                                            newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic);
+                                            newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds and return it as life to yourself");
+                                            newSpellEffectWOW.AuraDescription = string.Concat("suffering", newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds and return it as life to yourself");
+                                        }
+                                    }
+                                    newSpellEffectWOW.EffectMultipleValue = 1;
+                                    newSpellEffects.Add(newSpellEffectWOW);
+                                }
                             } break;
                         default:
                             {
