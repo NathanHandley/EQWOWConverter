@@ -815,6 +815,58 @@ namespace EQWOWConverter.Spells
                                 casterStrBuffEffect.AuraDescription = string.Empty;
                                 newSpellEffects.Add(casterStrBuffEffect);
                             } break;
+                        case SpellEQEffectType.Agility:
+                            {
+                                if (eqEffect.EQBaseValue == 0)
+                                    continue;
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
+                                newSpellEffectWOW.EffectMiscValueA = 1; // Strength
+                                if (eqEffect.EQBaseValue >= 0)
+                                {
+                                    Logger.WriteError("Unimplemented agility leach aura effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
+                                    continue;
+                                }
+
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "AgilityDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("steal ", newSpellEffectWOW.GetFormattedEffectActionString(false), " agility from the target");
+                                newSpellEffectWOW.AuraDescription = string.Concat(newSpellEffectWOW.GetFormattedEffectAuraString(false, "", ""), "agility stolen by the caster");
+                                newSpellEffects.Add(newSpellEffectWOW);
+
+                                // Make a second for the buff on the caster
+                                SpellEffectWOW casterAglBuffEffect = newSpellEffectWOW.Clone();
+                                casterAglBuffEffect.Invert();
+                                casterAglBuffEffect.ActionDescription = string.Empty;
+                                casterAglBuffEffect.AuraDescription = string.Empty;
+                                newSpellEffects.Add(casterAglBuffEffect);
+                            } break;
+                        case SpellEQEffectType.ArmorClass:
+                            {
+                                if (eqEffect.EQBaseValue == 0)
+                                    continue;
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
+                                newSpellEffectWOW.EffectMiscValueA = 1; // Armor
+                                if (eqEffect.EQBaseValue >= 0)
+                                {
+                                    Logger.WriteError("Unimplemented armor leach aura effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
+                                    continue;
+                                }
+
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ArmorClassDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("steal ", newSpellEffectWOW.GetFormattedEffectActionString(false), " armor from the target");
+                                newSpellEffectWOW.AuraDescription = string.Concat(newSpellEffectWOW.GetFormattedEffectAuraString(false, "", ""), "armor stolen by the caster");
+                                newSpellEffects.Add(newSpellEffectWOW);
+
+                                // Make a second for the buff on the caster
+                                SpellEffectWOW casterArmorBuffEffect = newSpellEffectWOW.Clone();
+                                casterArmorBuffEffect.Invert();
+                                casterArmorBuffEffect.ActionDescription = string.Empty;
+                                casterArmorBuffEffect.AuraDescription = string.Empty;
+                                newSpellEffects.Add(casterArmorBuffEffect);
+                            } break;
                         default:
                             {
                                 Logger.WriteError("Unhandled Transfer type SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
