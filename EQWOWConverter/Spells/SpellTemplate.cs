@@ -667,9 +667,18 @@ namespace EQWOWConverter.Spells
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID,
             bool isDetrimental)
         {
+
             // Process all spell effects
             foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
             {
+                // This is temporary logic until "Splurt" is implemented
+                // Re-enable "Greenmist Recourse" if another solution isn't found
+                if (eqEffect.EQFormulaTypeValue == 122 || eqEffect.EQFormulaTypeValue == 120) // 122 is splurt, 120 is something else though....
+                {
+                    if (isDetrimental)
+                        eqEffect.EQBaseValue *= -1;
+                }
+
                 List<SpellEffectWOW> newSpellEffects = new List<SpellEffectWOW>();
                 if (spellTemplate.IsTransferEffectType)
                 {
@@ -682,6 +691,27 @@ namespace EQWOWConverter.Spells
                                     continue;
                                 else
                                     Logger.WriteError("Transfer spell effect type Charisma with base value > 0 not implemented.");
+                            } break;
+                        case SpellEQEffectType.CurrentMana:
+                            {
+                                if (hasSpellDuration == true)
+                                {
+                                    Logger.WriteError("Unimplemented Mana Leach Aura effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
+                                    continue;
+                                }
+                                if (eqEffect.EQBaseValue > 0)
+                                {
+                                    Logger.WriteError("Unimplemented Mana Leach Reverse effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
+                                    continue;
+                                }
+                                int preFormulaEffectAmount = Math.Abs(eqEffect.EQBaseValue);
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ManaUpDirect", SpellEffectWOWConversionScaleType.CastTime);
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.PowerDrain;
+                                newSpellEffectWOW.EffectMiscValueA = 0; // Power Type = Mana
+                                newSpellEffectWOW.EffectMultipleValue = 1;
+                                newSpellEffectWOW.ActionDescription = string.Concat("drain ", newSpellEffectWOW.GetFormattedEffectActionString(false), " mana from the target and add it to your own");
+                                newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         case SpellEQEffectType.CurrentHitPoints:
                             {
@@ -708,7 +738,6 @@ namespace EQWOWConverter.Spells
                                         newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealDirectHPS", SpellEffectWOWConversionScaleType.CastTime);
                                         newSpellEffectWOW.EffectType = SpellWOWEffectType.Heal;
                                         newSpellEffectWOW.ActionDescription = string.Concat("transfer ", newSpellEffectWOW.GetFormattedEffectActionString(false), " of your life to the target");
-                                        spellTemplate.HighestDirectHealAmountInSpellEffect = Math.Max(spellTemplate.HighestDirectHealAmountInSpellEffect, newSpellEffectWOW.CalcEffectHighLevelValue);
                                         newSpellEffects.Add(newSpellEffectWOW);
 
                                         // Add a second for damage to self
@@ -740,19 +769,6 @@ namespace EQWOWConverter.Spells
                                     {
                                         Logger.WriteError("Unimplemented Life Leach Aura effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
                                         continue;
-                                        //// Canceling this crashes the server...?
-                                        //newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealOverTimeHPS", SpellEffectWOWConversionScaleType.Periodic);
-                                        //newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicHeal;
-                                        //newSpellEffectWOW.ActionDescription = string.Concat("transfer ", newSpellEffectWOW.GetFormattedEffectActionString(false), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to the target");
-                                        //newSpellEffectWOW.AuraDescription = string.Concat(newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds is being transfered to you");
-
-                                        // Add a second for damage to self
-                                        //SpellEffectWOW newSpellEffectWOW2 = newSpellEffectWOW.Clone();
-                                        //newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.PeriodicDamage;
-                                        //newSpellEffectWOW2.ActionDescription = string.Empty;
-                                        //newSpellEffectWOW2.AuraDescription = string.Concat(newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds is being transfered to someone");
-                                        //newSpellEffects.Add(newSpellEffectWOW2);
-                                        //otherTarget = SpellWOWTargetType.Self;
                                     }
                                     else
                                     {
@@ -881,7 +897,6 @@ namespace EQWOWConverter.Spells
                                         newSpellEffectWOW.EffectType = SpellWOWEffectType.Energize;
                                         newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ManaUpDirect", SpellEffectWOWConversionScaleType.None);
                                         newSpellEffectWOW.ActionDescription = string.Concat("restore ", newSpellEffectWOW.GetFormattedEffectActionString(false), " mana");
-                                        spellTemplate.HighestDirectHealAmountInSpellEffect = Math.Max(spellTemplate.HighestDirectHealAmountInSpellEffect, newSpellEffectWOW.CalcEffectHighLevelValue);
                                     }
                                     else
                                     {
