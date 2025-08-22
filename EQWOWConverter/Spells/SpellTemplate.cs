@@ -247,7 +247,7 @@ namespace EQWOWConverter.Spells
                 }
 
                 // Set the spell and aura descriptions
-                SetMainAndAuraDescriptions(ref spellTemplate, linkedSpellTemplate);
+                SetActionAndAuraDescriptions(ref spellTemplate, linkedSpellTemplate);
             }
         }
 
@@ -1758,22 +1758,61 @@ namespace EQWOWConverter.Spells
             spellTemplate.SpellGroupStackingID = groupStackingID;
         }
 
-        private static void SetMainAndAuraDescriptions(ref SpellTemplate spellTemplate, SpellTemplate? linkedSpellTemplate)
+        private static void SetActionAndAuraDescriptions(ref SpellTemplate spellTemplate, SpellTemplate? linkedSpellTemplate)
+        {
+            // Action Description
+            spellTemplate.Description = GenerateActionDescription(spellTemplate);
+            if (linkedSpellTemplate != null)
+                spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nOn success also cast:\n", linkedSpellTemplate.Name, "\n", GenerateActionDescription(linkedSpellTemplate));
+
+            // Aura Description
+            spellTemplate.AuraDescription = GenerateAuraDescription(spellTemplate);
+        }
+
+        private static string GenerateActionDescription(SpellTemplate spellTemplate)
         {
             StringBuilder descriptionSB = new StringBuilder();
-            StringBuilder auraSB = new StringBuilder();
             bool descriptionTextHasBeenAddedToAction = false;
-            bool descriptionTextHasBeenAddedToAura = false;
             for (int i = 0; i < spellTemplate.WOWSpellEffects.Count; i++)
             {
                 SpellEffectWOW spellEffectWOW = spellTemplate.WOWSpellEffects[i];
-                if (spellEffectWOW.ActionDescription.Length > 0 )
+                if (spellEffectWOW.ActionDescription.Length > 0)
                 {
                     if (descriptionTextHasBeenAddedToAction == true)
                         descriptionSB.Append(", ");
                     descriptionSB.Append(spellTemplate.WOWSpellEffects[i].ActionDescription);
                     descriptionTextHasBeenAddedToAction = true;
                 }
+            }
+            if (descriptionSB.Length == 0)
+                return string.Empty;
+            descriptionSB.Append('.');
+
+            // Control capitalization
+            descriptionSB[0] = char.ToUpper(descriptionSB[0]);
+
+            descriptionSB.Append(" ");
+            descriptionSB.Append(spellTemplate.TargetDescriptionTextFragment);
+            descriptionSB.Append(".");
+            descriptionSB.Append(GetTimeDurationStringFromMSWithLeadingSpace(spellTemplate.AuraDuration.MaxDurationInMS, spellTemplate.AuraDuration.GetTimeText()));
+
+            // Add any additional fragments to descriptions
+            if (spellTemplate.BreakEffectOnNonAutoDirectDamage == true)
+                descriptionSB.Append(" May break on direct damage.");
+
+            // Capitalize Norrath
+            descriptionSB.Replace("norrath", "Norrath");
+
+            return descriptionSB.ToString();
+        }
+
+        private static string GenerateAuraDescription(SpellTemplate spellTemplate)
+        {
+            StringBuilder auraSB = new StringBuilder();
+            bool descriptionTextHasBeenAddedToAura = false;
+            for (int i = 0; i < spellTemplate.WOWSpellEffects.Count; i++)
+            {
+                SpellEffectWOW spellEffectWOW = spellTemplate.WOWSpellEffects[i];
                 if (spellEffectWOW.AuraDescription.Length > 0)
                 {
                     if (descriptionTextHasBeenAddedToAura == true)
@@ -1784,65 +1823,10 @@ namespace EQWOWConverter.Spells
             }
 
             // Store and control capitalization
-            descriptionSB.Append('.');
             auraSB.Append('.');
-            spellTemplate.Description = descriptionSB.ToString();
-            if (spellTemplate.Description.Length > 0)
-                spellTemplate.Description = string.Concat(char.ToUpper(spellTemplate.Description[0]), spellTemplate.Description.Substring(1));
-            spellTemplate.AuraDescription = auraSB.ToString();
-            if (spellTemplate.AuraDescription.Length > 0)
-                spellTemplate.AuraDescription = string.Concat(char.ToUpper(spellTemplate.AuraDescription[0]), spellTemplate.AuraDescription.Substring(1));
-
-            // Add target information to spell
-            spellTemplate.Description = string.Concat(spellTemplate.Description, " ", spellTemplate.TargetDescriptionTextFragment, ".");
-
-            // Add the time duration
-            spellTemplate.Description = string.Concat(spellTemplate.Description, GetTimeDurationStringFromMSWithLeadingSpace(spellTemplate.AuraDuration.MaxDurationInMS, spellTemplate.AuraDuration.GetTimeText()));
-
-            // Add any additional fragments to descriptions
-            if (spellTemplate.BreakEffectOnNonAutoDirectDamage == true)
-                spellTemplate.Description = string.Concat(spellTemplate.Description, " May break on direct damage.");
-
-            // Capitalize Norrath
-            spellTemplate.Description = spellTemplate.Description.Replace("norrath", "Norrath");
+            auraSB[0] = char.ToUpper(auraSB[0]);
+            return auraSB.ToString();
         }
-
-        //private static string GenerateActionDescriptionForSpell(SpellTemplate spellTemplate)
-        //{
-        //    StringBuilder descriptionSB = new StringBuilder();
-        //    bool descriptionTextHasBeenAddedToAction = false;
-        //    bool descriptionTextHasBeenAddedToAura = false;
-        //    for (int i = 0; i < spellTemplate.WOWSpellEffects.Count; i++)
-        //    {
-        //        SpellEffectWOW spellEffectWOW = spellTemplate.WOWSpellEffects[i];
-        //        if (spellEffectWOW.ActionDescription.Length > 0)
-        //        {
-        //            if (descriptionTextHasBeenAddedToAction == true)
-        //                descriptionSB.Append(", ");
-        //            descriptionSB.Append(spellTemplate.WOWSpellEffects[i].ActionDescription);
-        //            descriptionTextHasBeenAddedToAction = true;
-        //        }
-        //    }
-
-        //    // Store and control capitalization
-        //    descriptionSB.Append('.');
-        //    spellTemplate.Description = descriptionSB.ToString();
-        //    if (spellTemplate.Description.Length > 0)
-        //        spellTemplate.Description = string.Concat(char.ToUpper(spellTemplate.Description[0]), spellTemplate.Description.Substring(1));
-
-        //    // Add target information to spell
-        //    spellTemplate.Description = string.Concat(spellTemplate.Description, " ", spellTemplate.TargetDescriptionTextFragment, ".");
-
-        //    // Add the time duration
-        //    spellTemplate.Description = string.Concat(spellTemplate.Description, GetTimeDurationStringFromMSWithLeadingSpace(spellTemplate.AuraDuration.MaxDurationInMS, spellTemplate.AuraDuration.GetTimeText()));
-
-        //    // Add any additional fragments to descriptions
-        //    if (spellTemplate.BreakEffectOnNonAutoDirectDamage == true)
-        //        spellTemplate.Description = string.Concat(spellTemplate.Description, " May break on direct damage.");
-
-        //    // Capitalize Norrath
-        //    spellTemplate.Description = spellTemplate.Description.Replace("norrath", "Norrath");
-        //}
 
         private static string GetTimeDurationStringFromMSWithLeadingSpace(int durationInMS, string timeFragment)
         {
