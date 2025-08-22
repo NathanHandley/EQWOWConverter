@@ -87,6 +87,13 @@ namespace EQWOWConverter.Spells
             };
         }
 
+        public void Invert()
+        {
+            EffectDieSides *= -1;
+            EffectRealPointsPerLevel *= -1;
+            EffectBasePoints *= -1;
+        }
+
         public int GetEffectAmountValueByLevel(int inputEffectBasePoints, int inputEffectMaxPoints, int spellInfluencingLevel, int unitInfluencingLevel, 
             SpellEQBaseValueFormulaType eqFormula, int spellCastTimeInMS, string valueScalingFormulaName, SpellEffectWOWConversionScaleType conversionScaleType)
         {

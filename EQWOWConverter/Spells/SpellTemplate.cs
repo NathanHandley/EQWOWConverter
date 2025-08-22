@@ -667,7 +667,6 @@ namespace EQWOWConverter.Spells
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID,
             bool isDetrimental)
         {
-
             // Process all spell effects
             foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
             {
@@ -789,6 +788,32 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectMultipleValue = 1;
                                     newSpellEffects.Add(newSpellEffectWOW);
                                 }
+                            } break;
+                        case SpellEQEffectType.Strength:
+                            {
+                                if (eqEffect.EQBaseValue == 0)
+                                    continue;
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
+                                newSpellEffectWOW.EffectMiscValueA = 0; // Strength
+                                if (eqEffect.EQBaseValue >= 0)
+                                {
+                                    Logger.WriteError("Unimplemented strength leach aura effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
+                                    continue;
+                                }
+                               
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "StrengthDebuff", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("steal ", newSpellEffectWOW.GetFormattedEffectActionString(false), " strength from the target");
+                                newSpellEffectWOW.AuraDescription = string.Concat(newSpellEffectWOW.GetFormattedEffectAuraString(false, "", ""), "strength stolen by the caster");
+                                newSpellEffects.Add(newSpellEffectWOW);
+
+                                // Make a second for the buff on the caster
+                                SpellEffectWOW casterStrBuffEffect = newSpellEffectWOW.Clone();
+                                casterStrBuffEffect.Invert();
+                                casterStrBuffEffect.ActionDescription = string.Empty;
+                                casterStrBuffEffect.AuraDescription = string.Empty;
+                                newSpellEffects.Add(casterStrBuffEffect);
                             } break;
                         default:
                             {
@@ -1036,14 +1061,14 @@ namespace EQWOWConverter.Spells
                                 if (eqEffect.EQBaseValue >= 0)
                                 {
                                     newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "StrengthBuff", SpellEffectWOWConversionScaleType.None);
-                                    newSpellEffectWOW.ActionDescription = string.Concat("increase maximum strength by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
-                                    newSpellEffectWOW.AuraDescription = string.Concat("maximum strength increased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                                    newSpellEffectWOW.ActionDescription = string.Concat("increase strength by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                    newSpellEffectWOW.AuraDescription = string.Concat("strength increased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
                                 }
                                 else
                                 {
                                     newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "StrengthDebuff", SpellEffectWOWConversionScaleType.None);
-                                    newSpellEffectWOW.ActionDescription = string.Concat("decrease maximum strength by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
-                                    newSpellEffectWOW.AuraDescription = string.Concat("maximum strength decreased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                                    newSpellEffectWOW.ActionDescription = string.Concat("decrease strength by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                    newSpellEffectWOW.AuraDescription = string.Concat("strength decreased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
@@ -1630,8 +1655,6 @@ namespace EQWOWConverter.Spells
                     }
                 }
             }
-
-            // TODO: Collapse multi-stat effects into 1 where possible
 
             // Sort them so the aura effects are last
             spellTemplate.WOWSpellEffects.Sort();
