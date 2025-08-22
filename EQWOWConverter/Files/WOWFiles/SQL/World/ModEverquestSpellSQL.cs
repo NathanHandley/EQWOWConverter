@@ -32,6 +32,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`AuraDurationMaxInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`AuraDurationCalcMinLevel` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`AuraDurationCalcMaxLevel` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`RecourseSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -45,6 +46,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("AuraDurationMaxInMS", spellTemplate.AuraDuration.MaxDurationInMS);
             newRow.AddInt("AuraDurationCalcMinLevel", spellTemplate.AuraDuration.MinLevel);
             newRow.AddInt("AuraDurationCalcMaxLevel", spellTemplate.AuraDuration.MaxLevel);
+            if (spellTemplate.RecourseLinkSpellTemplate != null)
+                newRow.AddInt("RecourseSpellID", spellTemplate.RecourseLinkSpellTemplate.WOWSpellID);
+            else
+                newRow.AddInt("RecourseSpellID", 0);
             Rows.Add(newRow);
         }
     }

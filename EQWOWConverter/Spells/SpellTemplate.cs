@@ -138,7 +138,7 @@ namespace EQWOWConverter.Spells
         public UInt32 ProcChance = 101;
         public bool IsTransferEffectType = false;
         public int RecourseLinkEQSpellID = 0;
-        public int RecourseLinkWOWSpellID = 0;
+        public SpellTemplate? RecourseLinkSpellTemplate = null;
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
@@ -243,7 +243,10 @@ namespace EQWOWConverter.Spells
                     if (SpellTemplatesByEQID.ContainsKey(spellTemplate.RecourseLinkEQSpellID) == false)
                         Logger.WriteError("Spell with eqid ", eqSpellID.ToString(), " has a linked spell eqid ", spellTemplate.RecourseLinkEQSpellID.ToString(), " which did not exist");
                     else
+                    {
                         linkedSpellTemplate = SpellTemplatesByEQID[spellTemplate.RecourseLinkEQSpellID];
+                        spellTemplate.RecourseLinkSpellTemplate = linkedSpellTemplate;
+                    }
                 }
 
                 // Set the spell and aura descriptions
