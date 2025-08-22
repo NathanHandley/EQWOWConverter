@@ -137,6 +137,8 @@ namespace EQWOWConverter.Spells
         public string WeaponItemEnchantSpellName = string.Empty;
         public UInt32 ProcChance = 101;
         public bool IsTransferEffectType = false;
+        public int RecourseLinkEQSpellID = 0;
+        public int RecourseLinkWOWSpellID = 0;
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
@@ -174,6 +176,8 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["cast_recovery_time"]);
                 newSpellTemplate.Category = 0; // Temp / TODO: Figure out how/what to set here
                 newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
+                newSpellTemplate.RecourseLinkEQSpellID = int.Parse(columns["RecourseLink"]);
+
                 // TODO: FacingCasterFlags
                 for (int i = 1; i <= 12; i++)
                     PopulateEQSpellEffect(ref newSpellTemplate, i, columns);
@@ -221,16 +225,31 @@ namespace EQWOWConverter.Spells
                 if (newSpellTemplate.WOWSpellEffects.Count == 0)
                     continue;
 
-                // Set the spell and aura descriptions
-                SetMainAndAuraDescriptions(ref newSpellTemplate);
-
                 // Stacking rules
                 SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]));
 
                 // Add it
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
             }
-        }        
+
+            // Set any post load grooming
+            foreach (int eqSpellID in SpellTemplatesByEQID.Keys)
+            {
+                SpellTemplate spellTemplate = SpellTemplatesByEQID[eqSpellID];
+
+                SpellTemplate? linkedSpellTemplate = null;
+                if (spellTemplate.RecourseLinkEQSpellID != 0)
+                {
+                    if (SpellTemplatesByEQID.ContainsKey(spellTemplate.RecourseLinkEQSpellID) == false)
+                        Logger.WriteError("Spell with eqid ", eqSpellID.ToString(), " has a linked spell eqid ", spellTemplate.RecourseLinkEQSpellID.ToString(), " which did not exist");
+                    else
+                        linkedSpellTemplate = SpellTemplatesByEQID[spellTemplate.RecourseLinkEQSpellID];
+                }
+
+                // Set the spell and aura descriptions
+                SetMainAndAuraDescriptions(ref spellTemplate, linkedSpellTemplate);
+            }
+        }
 
         public static void GenerateItemEnchantSpellIfNotCreated(string itemName, int procSpellEQID, int enchantSpellWOWID, out SpellTemplate? enchantSpellTemplate)
         {
@@ -766,7 +785,7 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
                                     if (eqEffect.EQBaseValue > 0)
                                     {
-                                        Logger.WriteError("Unimplemented Life Leach Aura effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
+                                        Logger.WriteWarning("Unimplemented Life Leach Aura effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
                                         continue;
                                     }
                                     else
@@ -799,7 +818,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectMiscValueA = 0; // Strength
                                 if (eqEffect.EQBaseValue >= 0)
                                 {
-                                    Logger.WriteError("Unimplemented strength leach aura effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
+                                    Logger.WriteWarning("Unimplemented strength leach aura effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
                                     continue;
                                 }
                                
@@ -851,7 +870,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectMiscValueA = 1; // Armor
                                 if (eqEffect.EQBaseValue >= 0)
                                 {
-                                    Logger.WriteError("Unimplemented armor leach aura effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
+                                    Logger.WriteWarning("Unimplemented armor leach aura effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
                                     continue;
                                 }
 
@@ -1739,7 +1758,7 @@ namespace EQWOWConverter.Spells
             spellTemplate.SpellGroupStackingID = groupStackingID;
         }
 
-        private static void SetMainAndAuraDescriptions(ref SpellTemplate spellTemplate)
+        private static void SetMainAndAuraDescriptions(ref SpellTemplate spellTemplate, SpellTemplate? linkedSpellTemplate)
         {
             StringBuilder descriptionSB = new StringBuilder();
             StringBuilder auraSB = new StringBuilder();
@@ -1787,6 +1806,43 @@ namespace EQWOWConverter.Spells
             // Capitalize Norrath
             spellTemplate.Description = spellTemplate.Description.Replace("norrath", "Norrath");
         }
+
+        //private static string GenerateActionDescriptionForSpell(SpellTemplate spellTemplate)
+        //{
+        //    StringBuilder descriptionSB = new StringBuilder();
+        //    bool descriptionTextHasBeenAddedToAction = false;
+        //    bool descriptionTextHasBeenAddedToAura = false;
+        //    for (int i = 0; i < spellTemplate.WOWSpellEffects.Count; i++)
+        //    {
+        //        SpellEffectWOW spellEffectWOW = spellTemplate.WOWSpellEffects[i];
+        //        if (spellEffectWOW.ActionDescription.Length > 0)
+        //        {
+        //            if (descriptionTextHasBeenAddedToAction == true)
+        //                descriptionSB.Append(", ");
+        //            descriptionSB.Append(spellTemplate.WOWSpellEffects[i].ActionDescription);
+        //            descriptionTextHasBeenAddedToAction = true;
+        //        }
+        //    }
+
+        //    // Store and control capitalization
+        //    descriptionSB.Append('.');
+        //    spellTemplate.Description = descriptionSB.ToString();
+        //    if (spellTemplate.Description.Length > 0)
+        //        spellTemplate.Description = string.Concat(char.ToUpper(spellTemplate.Description[0]), spellTemplate.Description.Substring(1));
+
+        //    // Add target information to spell
+        //    spellTemplate.Description = string.Concat(spellTemplate.Description, " ", spellTemplate.TargetDescriptionTextFragment, ".");
+
+        //    // Add the time duration
+        //    spellTemplate.Description = string.Concat(spellTemplate.Description, GetTimeDurationStringFromMSWithLeadingSpace(spellTemplate.AuraDuration.MaxDurationInMS, spellTemplate.AuraDuration.GetTimeText()));
+
+        //    // Add any additional fragments to descriptions
+        //    if (spellTemplate.BreakEffectOnNonAutoDirectDamage == true)
+        //        spellTemplate.Description = string.Concat(spellTemplate.Description, " May break on direct damage.");
+
+        //    // Capitalize Norrath
+        //    spellTemplate.Description = spellTemplate.Description.Replace("norrath", "Norrath");
+        //}
 
         private static string GetTimeDurationStringFromMSWithLeadingSpace(int durationInMS, string timeFragment)
         {
