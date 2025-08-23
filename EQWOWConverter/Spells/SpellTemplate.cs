@@ -1329,6 +1329,7 @@ namespace EQWOWConverter.Spells
                                 {
                                     newSpellEffectWOW.ActionDescription = string.Concat("decrease attack speed by ", newSpellEffectWOW.GetFormattedEffectActionString(true));
                                     newSpellEffectWOW.AuraDescription = string.Concat("attack speed decreased", newSpellEffectWOW.GetFormattedEffectAuraString(true, " by ", ""));
+                                    newSpellEffectWOW.EffectMechanic = SpellMechanicType.Slowed;
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
 
@@ -1337,6 +1338,8 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW2.ActionDescription = string.Empty;
                                 newSpellEffectWOW2.AuraDescription = string.Empty;
                                 newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModRangedHaste;
+                                if (newSpellEffectWOW2.EffectBasePoints < 0)
+                                    newSpellEffectWOW2.EffectMechanic = SpellMechanicType.Slowed;
                                 newSpellEffects.Add(newSpellEffectWOW2);
                             } break;
                         case SpellEQEffectType.InvisibilityUnstable:
@@ -1404,6 +1407,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModFear;
                                 newSpellEffectWOW.ActionDescription = string.Concat("run away in fear");
                                 newSpellEffectWOW.AuraDescription = string.Concat("running in fear");
+                                newSpellEffectWOW.EffectMechanic = SpellMechanicType.Fleeing;
                                 spellTemplate.BreakEffectOnNonAutoDirectDamage = true;
                                 spellTemplate.NoPartialImmunity = true;
                                 newSpellEffects.Add(newSpellEffectWOW);
@@ -1415,6 +1419,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModRoot;
                                 newSpellEffectWOW.ActionDescription = string.Concat("roots in place stops movement by rooting in place");
                                 newSpellEffectWOW.AuraDescription = string.Concat("rooted");
+                                newSpellEffectWOW.EffectMechanic = SpellMechanicType.Rooted;
                                 spellTemplate.BreakEffectOnNonAutoDirectDamage = true;
                                 spellTemplate.NoPartialImmunity = true;
                                 newSpellEffects.Add(newSpellEffectWOW);
