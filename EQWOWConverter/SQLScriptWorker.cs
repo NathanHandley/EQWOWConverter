@@ -32,6 +32,7 @@ namespace EQWOWConverter
     internal class SQLScriptWorker
     {
         // Characters
+        private CharacterAuraSQL characterAuraSQL = new CharacterAuraSQL();
         private ModEverquestCharacterHomebindSQL modEverquestCharacterHomebindSQL = new ModEverquestCharacterHomebindSQL();
         // World
         private AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
@@ -864,6 +865,7 @@ namespace EQWOWConverter
         private void OutputSQLScriptsToDisk()
         {
             // Characters
+            characterAuraSQL.SaveToDisk("character_aura", SQLFileType.Characters);
             modEverquestCharacterHomebindSQL.SaveToDisk("mod_everquest_character_homebind", SQLFileType.Characters);
             // World
             areaTriggerSQL.SaveToDisk("areatrigger", SQLFileType.World);

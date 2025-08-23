@@ -14,11 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Creatures;
-using Google.Protobuf.Collections;
-using Google.Protobuf.WellKnownTypes;
-using System.Net.NetworkInformation;
-using System;
 using System.Text;
 
 namespace EQWOWConverter.WOWFiles
