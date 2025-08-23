@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System.Text;
+using EQWOWConverter.Common;
 
 namespace EQWOWConverter.Spells
 {
@@ -43,6 +44,9 @@ namespace EQWOWConverter.Spells
         public int CalcEffectLowLevel = 0;
         public int CalcEffectHighLevelValue = 0;
         public int CalcEffectHighLevel = 0;
+        public Vector3 TelePosition = new Vector3();
+        public float TeleOrientation;
+        public int TeleMapID;
 
         public SpellEffectWOW() { }
 
@@ -83,7 +87,10 @@ namespace EQWOWConverter.Spells
                 CalcEffectLowLevelValue = this.CalcEffectLowLevelValue,
                 CalcEffectLowLevel = this.CalcEffectLowLevel,
                 CalcEffectHighLevelValue = this.CalcEffectHighLevelValue,
-                CalcEffectHighLevel = this.CalcEffectHighLevel
+                CalcEffectHighLevel = this.CalcEffectHighLevel,
+                TelePosition = new Vector3(this.TelePosition),
+                TeleOrientation = this.TeleOrientation,
+                TeleMapID = this.TeleMapID
             };
         }
 

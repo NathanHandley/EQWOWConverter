@@ -25,11 +25,11 @@ namespace EQWOWConverter.WOWFiles
             return string.Concat("DELETE FROM `spell_target_position` WHERE `MapID` >= ", Configuration.DBCID_MAP_ID_START, " AND `MapID` <= " + Configuration.DBCID_MAP_ID_END + ";");
         }
 
-        public void AddRow(int spellID, int mapID, Vector3 position, float orientation)
+        public void AddRow(int spellID, int effectIndex, int mapID, Vector3 position, float orientation)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ID", spellID);
-            newRow.AddInt("EffectIndex", 0);
+            newRow.AddInt("EffectIndex", effectIndex);
             newRow.AddInt("MapID", mapID);
             newRow.AddFloat("PositionX", position.X);
             newRow.AddFloat("PositionY", position.Y);

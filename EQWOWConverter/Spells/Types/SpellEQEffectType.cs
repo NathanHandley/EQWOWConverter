@@ -94,7 +94,7 @@ namespace EQWOWConverter.Spells
         //....
         Revive = 81,
         // SummonPC = 82 // Summons the player to the casters location
-        // Teleport = 83,
+        Teleport = 83,
         // TossUp = 84, // Launches the target in the air
         // WeaponProc = 85, // Add a weapon proc to the melee target
         // Harmony = 86, // Reduce agro reaction radius

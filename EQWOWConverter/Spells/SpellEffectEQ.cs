@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
+
 namespace EQWOWConverter.Spells
 {
     internal class SpellEffectEQ
@@ -23,6 +25,8 @@ namespace EQWOWConverter.Spells
         public int EQFormulaTypeValue = 0;
         public int EQBaseValue = 0;
         public int EQLimitValue = 0;
-        public int EQMaxValue = 0;        
+        public int EQMaxValue = 0;
+        public Vector3 EQTelePosition = new Vector3();
+        public int EQTeleHeading = 0;
     }
 }

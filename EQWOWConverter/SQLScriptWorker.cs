@@ -605,8 +605,20 @@ namespace EQWOWConverter
                 // Additional spell data
                 modEverquestSpellSQL.AddRow(spellTemplate, spellTemplate.WOWSpellID);
 
-                // Chains for spells with > 3 effects
+                // Grab effects in blocks of three
                 List<List<SpellEffectWOW>> spellEffectsByThree = spellTemplate.GetWOWEffectsInBlocksOfThree();
+
+                // Teleports are only on the main 3-block
+                for (int i = 0; i < spellEffectsByThree[0].Count; i++)
+                {
+                    if (spellEffectsByThree[0][i].EffectType == SpellWOWEffectType.TeleportUnits)
+                    {
+                        SpellEffectWOW curEffect = spellEffectsByThree[0][i];
+                        spellTargetPositionSQL.AddRow(spellTemplate.WOWSpellID, i, curEffect.TeleMapID, curEffect.TelePosition, curEffect.TeleOrientation);
+                    }
+                }
+
+                // Chains for spells with > 3 effects
                 for (int i = 1; i < spellEffectsByThree.Count; i++)
                 {
                     int chainSpellID = curSpellSplitGenID;

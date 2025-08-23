@@ -18,6 +18,7 @@ using EQWOWConverter.Common;
 using EQWOWConverter.Items;
 using EQWOWConverter.Tradeskills;
 using EQWOWConverter.WOWFiles;
+using EQWOWConverter.Zones;
 using System.Text;
 
 namespace EQWOWConverter.Spells
@@ -153,7 +154,7 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        public static void LoadSpellTemplates(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
+        public static void LoadSpellTemplates(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, Dictionary<string, ZoneProperties> zonePropertiesByShortName)
         {
             // Load the spell templates
             string spellTemplatesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpellTemplates.csv");
@@ -202,6 +203,7 @@ namespace EQWOWConverter.Spells
                 int eqTargetTypeID = int.Parse(columns["targettype"]);
                 bool isDetrimental = int.Parse(columns["goodEffect"]) == 0 ? true : false; // "2" should be non-detrimental group only (not caster).  Ignoring that for now.
                 List<SpellWOWTargetType> targets = CalculateTargets(ref newSpellTemplate, eqTargetTypeID, isDetrimental, newSpellTemplate.EQSpellEffects, newSpellTemplate.SpellRange, newSpellTemplate.SpellRadius);
+                string teleportZoneName = columns["teleport_zone"];
 
                 // Visual
                 int spellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
@@ -219,7 +221,7 @@ namespace EQWOWConverter.Spells
 
                 // Convert the spell effects
                 ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration.MaxDurationInMS > 0, 
-                    newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental);
+                    newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneName, zonePropertiesByShortName);
 
                 // If there is no wow effect, skip it
                 if (newSpellTemplate.WOWSpellEffects.Count == 0)
@@ -421,7 +423,7 @@ namespace EQWOWConverter.Spells
                         if (spellRadius > 0)
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets the whole party within ", spellRadius, " yards around the caster");
                         else
-                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets the whole party.");
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets the whole party");
                     }
                     break;
                 case SpellEQTargetType.PointBlankAreaOfEffect:
@@ -444,8 +446,7 @@ namespace EQWOWConverter.Spells
                         if (isDetrimental == false)
                         {
                             // Referenced from Circle of healing
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny);
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetAlly);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundCaster);
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets ", targetTypeDescriptionFragment, "friendly units within ", spellRadius, " yards around the caster");
                         }
 
@@ -681,13 +682,22 @@ namespace EQWOWConverter.Spells
             if ((int)curEffect.EQBaseValueFormulaType >= 111 || (int)curEffect.EQBaseValueFormulaType <= 118)
                 spellTemplate.HasEffectBaseFormulaUsingSpellLevel = true;
 
+            // Teleports use fixed columns for values
+            if (curEffect.EQEffectType == SpellEQEffectType.Teleport)
+            {
+                curEffect.EQTelePosition = new Vector3(float.Parse(rowColumns["effect_base_value1"]),
+                    float.Parse(rowColumns["effect_base_value2"]),
+                    float.Parse(rowColumns["effect_base_value3"]));
+                curEffect.EQTeleHeading = int.Parse(rowColumns["effect_base_value4"]);
+            }
+
             // Add it
             spellTemplate.EQSpellEffects.Add(curEffect);
         }
 
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, bool hasSpellDuration, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID,
-            bool isDetrimental)
+            bool isDetrimental, string teleportZoneName, Dictionary<string, ZoneProperties> zonePropertiesByShortName)
         {
             // Process all spell effects
             foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
@@ -1704,6 +1714,46 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
                                 newSpellEffectWOW.EffectMiscValueA = 2;
                                 newSpellEffectWOW.ActionDescription = string.Concat("binds the soul of the target to their current location, which only works in norrath");
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
+                        case SpellEQEffectType.Teleport:
+                            {
+                                if (zonePropertiesByShortName.ContainsKey(teleportZoneName) == false)
+                                {
+                                    Logger.WriteError("Could not convert teleport spell effect for eq spell id ", spellTemplate.EQSpellID.ToString(), " since there is no output zone properties loaded for zone short name ", teleportZoneName);
+                                    continue;
+                                }
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.ImplicitTargetB = SpellWOWTargetType.TeleportLocationFromDB;
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.TeleportUnits;
+                                newSpellEffectWOW.EffectDieSides = 1;
+                                newSpellEffectWOW.EffectBasePoints = -1;
+                                newSpellEffectWOW.ActionDescription = string.Concat("teleports the affected to ", zonePropertiesByShortName[teleportZoneName].DescriptiveName);
+                                newSpellEffectWOW.TeleMapID = zonePropertiesByShortName[teleportZoneName].DBCMapID;
+
+                                // Position
+                                Vector3 telePosition = new Vector3(eqEffect.EQTelePosition);
+                                telePosition.X *= Configuration.GENERATE_WORLD_SCALE;
+                                telePosition.Y *= Configuration.GENERATE_WORLD_SCALE;
+                                telePosition.Z *= Configuration.GENERATE_WORLD_SCALE;
+                                newSpellEffectWOW.TelePosition = telePosition;
+
+                                // Orientation
+                                // Note: "Heading" in EQ was 0-512 instead of 0-360, and the result needs to rotate 180 degrees due to y axis difference
+                                float orientation;
+                                if (eqEffect.EQTeleHeading == 0)
+                                    orientation = MathF.PI;
+                                else
+                                {
+                                    float orientationInDegrees = (eqEffect.EQTeleHeading / 512) * 360;
+                                    float orientationInRadians = orientationInDegrees * MathF.PI / 180.0f;
+                                    orientation = orientationInRadians + MathF.PI;
+                                }
+                                newSpellEffectWOW.TeleOrientation = orientation;
+
+                                if (targets.Count > 1)
+                                    Logger.WriteError("Teleport for eq spell id ", spellTemplate.EQSpellID.ToString(), " will not properly hit targets since there is > 2 targets");
+
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         default:
