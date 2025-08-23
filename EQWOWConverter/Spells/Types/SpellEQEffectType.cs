@@ -106,7 +106,7 @@ namespace EQWOWConverter.Spells
         // InstantHate = 92 // Add or remove a set amount of hate
         // StopRain = 93 // Stops any active rain
         //....
-        // Silence = 96,
+        Silence = 96,
         TotalMana = 97,
         AttackSpeed2 = 98, // Looks like this stacks with the other attack speed
         Root = 99,

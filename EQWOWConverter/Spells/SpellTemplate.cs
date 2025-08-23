@@ -1721,7 +1721,7 @@ namespace EQWOWConverter.Spells
                             {
                                 if (zonePropertiesByShortName.ContainsKey(teleportZoneName) == false)
                                 {
-                                    Logger.WriteInfo("Could not convert teleport spell effect for eq spell id ", spellTemplate.EQSpellID.ToString(), " since there is no output zone properties loaded for zone short name ", teleportZoneName);
+                                    Logger.WriteDebug("Could not convert teleport spell effect for eq spell id ", spellTemplate.EQSpellID.ToString(), " since there is no output zone properties loaded for zone short name ", teleportZoneName);
                                     continue;
                                 }
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
@@ -1755,6 +1755,17 @@ namespace EQWOWConverter.Spells
                                 if (targets.Count > 1)
                                     Logger.WriteError("Teleport for eq spell id ", spellTemplate.EQSpellID.ToString(), " will not properly hit targets since there is > 2 targets");
 
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
+                        case SpellEQEffectType.Silence:
+                            {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModSilence;
+                                newSpellEffectWOW.ActionDescription = string.Concat("casting interrupted and unable to cast spells");
+                                newSpellEffectWOW.AuraDescription = string.Concat("silenced");
+                                newSpellEffectWOW.EffectMechanic = SpellMechanicType.Silenced;
+                                spellTemplate.NoPartialImmunity = true;
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         default:
