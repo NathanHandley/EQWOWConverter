@@ -1062,6 +1062,7 @@ namespace EQWOWConverter.Spells
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
+                        case SpellEQEffectType.AttackSpeed2:
                         case SpellEQEffectType.Attack:
                             {
                                 if (eqEffect.EQBaseValue == 0)
@@ -1720,7 +1721,7 @@ namespace EQWOWConverter.Spells
                             {
                                 if (zonePropertiesByShortName.ContainsKey(teleportZoneName) == false)
                                 {
-                                    Logger.WriteError("Could not convert teleport spell effect for eq spell id ", spellTemplate.EQSpellID.ToString(), " since there is no output zone properties loaded for zone short name ", teleportZoneName);
+                                    Logger.WriteInfo("Could not convert teleport spell effect for eq spell id ", spellTemplate.EQSpellID.ToString(), " since there is no output zone properties loaded for zone short name ", teleportZoneName);
                                     continue;
                                 }
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();

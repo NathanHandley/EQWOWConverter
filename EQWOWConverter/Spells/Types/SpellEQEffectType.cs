@@ -108,7 +108,7 @@ namespace EQWOWConverter.Spells
         //....
         // Silence = 96,
         TotalMana = 97,
-        // AttackSpeed2 = 98, // Looks like this stacks with the other attack speed
+        AttackSpeed2 = 98, // Looks like this stacks with the other attack speed
         Root = 99,
         HealOverTime = 100,
         //....
