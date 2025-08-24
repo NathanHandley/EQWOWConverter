@@ -1571,6 +1571,7 @@ namespace EQWOWConverter
             SpellTemplate gateSpellTemplate = new SpellTemplate();
             gateSpellTemplate.Name = "Gate";
             gateSpellTemplate.WOWSpellID = Configuration.SPELLS_GATE_SPELLDBC_ID;
+            gateSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
             gateSpellTemplate.Description = "Opens a magical portal that returns you to your bind point in Norrath.";
             if (Configuration.SPELLS_GATE_TETHER_ENABLED == true)
             {
@@ -1595,6 +1596,7 @@ namespace EQWOWConverter
             SpellTemplate bindAffinitySelfSpellTemplate = new SpellTemplate();
             bindAffinitySelfSpellTemplate.Name = "Bind Affinity (Self)";
             bindAffinitySelfSpellTemplate.WOWSpellID = Configuration.SPELLS_BINDSELF_SPELLDBC_ID;
+            bindAffinitySelfSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
             bindAffinitySelfSpellTemplate.Description = "Binds the soul of the caster to their current location. Only works in Norrath.";
             bindAffinitySelfSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(21);
             bindAffinitySelfSpellTemplate.CastTimeInMS = 6000;
@@ -1611,6 +1613,7 @@ namespace EQWOWConverter
             SpellTemplate bindAffinitySpellTemplate = new SpellTemplate();
             bindAffinitySpellTemplate.Name = "Bind Affinity";
             bindAffinitySpellTemplate.WOWSpellID = Configuration.SPELLS_BINDANY_SPELLDBC_ID;
+            bindAffinitySpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
             bindAffinitySpellTemplate.Description = "Binds the soul of the target to their current location. Only works in Norrath.";
             bindAffinitySpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(21);
             bindAffinitySpellTemplate.CastTimeInMS = 6000;
@@ -1630,6 +1633,7 @@ namespace EQWOWConverter
             dayPhaseSpellTemplate.Category = 0;
             dayPhaseSpellTemplate.InterruptFlags = 0;
             dayPhaseSpellTemplate.WOWSpellID = Configuration.SPELLS_DAYPHASE_SPELLDBC_ID;
+            dayPhaseSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
             dayPhaseSpellTemplate.Description = "Able to see day EQ creatures";
             dayPhaseSpellTemplate.SpellIconID = 253;
             dayPhaseSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Phase, 0, 0, 1, -1, 2, 0));
@@ -1644,6 +1648,7 @@ namespace EQWOWConverter
             nightPhaseSpellTemplate.Category = 0;
             nightPhaseSpellTemplate.InterruptFlags = 0;
             nightPhaseSpellTemplate.WOWSpellID = Configuration.SPELLS_NIGHTPHASE_SPELLDBC_ID;
+            nightPhaseSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
             nightPhaseSpellTemplate.Description = "Able to see night EQ creatures";
             nightPhaseSpellTemplate.SpellIconID = 253;
             nightPhaseSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Phase, 0, 0, 1, -1, 4, 0));

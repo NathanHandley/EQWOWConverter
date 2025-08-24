@@ -39,6 +39,8 @@ namespace EQWOWConverter.Spells
         private static Dictionary<int, SpellTemplate> SpellTemplatesByEQID = new Dictionary<int, SpellTemplate>();
         private static readonly object SpellTemplateLock = new object();
         private static int CUR_GENERATED_WOW_SPELL_ID = Configuration.DBCID_SPELL_ID_GENERATED_START;
+        private static readonly object SpellEQIDLock = new object();
+        private static int CUR_GENERATED_EQ_SPELL_ID = 5000;
 
         public class Reagent
         {
@@ -2115,6 +2117,16 @@ namespace EQWOWConverter.Spells
                 throw new Exception("Spell DBCID max exceeded");
             }
             return returnID;
+        }
+
+        public static int GenerateUniqueEQSpellID()
+        {
+            lock (SpellEQIDLock)
+            {
+                int returnID = CUR_GENERATED_EQ_SPELL_ID;
+                CUR_GENERATED_EQ_SPELL_ID++;
+                return returnID;
+            }
         }
     }
 }
