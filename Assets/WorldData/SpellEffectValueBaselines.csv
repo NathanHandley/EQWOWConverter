@@ -36,5 +36,5 @@ ShadowResistanceBuff|0|0|0|0|0
 ShadowResistanceDebuff|0|0|0|0|0
 ArcaneResistanceBuff|0|0|0|0|0
 ArcaneResistanceDebuff|0|0|0|0|0
-DamageReflectShield|1|33|3|22|77
-HealReflectShield|1|33|3|22|77
+DamageReflectShield|1|33|3|33|77
+HealReflectShield|1|33|3|33|77

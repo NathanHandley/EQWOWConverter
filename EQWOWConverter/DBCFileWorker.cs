@@ -463,51 +463,22 @@ namespace EQWOWConverter
                 spellIconDBC.AddSpellIconRow(i);
             for (int i = 0; i < 751; i++)
                 spellIconDBC.AddItemIconRow(i);
-            // TODO: Save this aura gen ID in the spellTemplate, so it doesn't run into conflict with SQL
-            int curSpellAuraGenID = Configuration.DBCID_SPELL_ID_SPLIT_SPELLS_START;
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
-                // Spells max out at three effects each, so add as blocks
-                List<List<SpellEffectWOW>> spellEffectsByThree = spellTemplate.GetWOWEffectsInBlocksOfThree();
-                for (int i = 0; i < spellEffectsByThree.Count; i++)
+                // Effects max at three, so need to loop for them
+                for (int i = 0; i < spellTemplate.GroupedBaseSpellEffectBlocksForOutput.Count; i++)
                 {
-                    List<SpellEffectWOW> threeBlockEffects = spellEffectsByThree[i];
-                    int spellID = spellTemplate.WOWSpellID;
-                    string spellName = spellTemplate.Name;
-                    // If beyond the first 3 effects, spawn a new aura for it
-                    if (i != 0)
-                    {
-                        spellID = curSpellAuraGenID;
-                        curSpellAuraGenID++;
-                        if (curSpellAuraGenID >= Configuration.DBCID_SPELL_ID_END)
-                        {
-                            Logger.WriteError("Spell DBCID max exceeded");
-                            throw new Exception("Spell DBCID max exceeded");
-                        }
-                        spellName = string.Concat(spellName, " Split ", i.ToString());
-                    }
-                    spellDBC.AddRow(spellID, spellName, spellTemplate.Description, spellTemplate, threeBlockEffects, i != 0, spellTemplate.AuraDuration.IsInfinite, false, threeBlockEffects[0].CalcEffectHighLevel);
+                    SpellEffectBlock curEffectBlock = spellTemplate.GroupedBaseSpellEffectBlocksForOutput[i];
+                    spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, false, curEffectBlock.SpellEffects[0].CalcEffectHighLevel);
 
                     // Worn effects get their own copy too
                     if (spellTemplate.WOWSpellIDWorn > 0)
                     {
-                        spellID = spellTemplate.WOWSpellIDWorn;
-                        spellName = string.Concat(spellTemplate.Name, " (from gear)");
-                        if (i != 0)
-                        {
-                            spellID = curSpellAuraGenID;
-                            curSpellAuraGenID++;
-                            if (curSpellAuraGenID >= Configuration.DBCID_SPELL_ID_END)
-                            {
-                                Logger.WriteError("Spell DBCID max exceeded");
-                                throw new Exception("Spell DBCID max exceeded");
-                            }
-                            spellName = string.Concat(spellName, " Split ", i.ToString());
-                        }
+                        SpellEffectBlock curWornEffectBlock = spellTemplate.GroupedWornSpellEffectBlocksForOutput[i];
                         if (Configuration.ITEMS_SHOW_WORN_EFFECT_AURA_ICON == true)
-                            spellDBC.AddRow(spellID, spellName, spellTemplate.AuraDescription, spellTemplate, threeBlockEffects, i != 0, true, true, threeBlockEffects[0].CalcEffectHighLevel);
+                            spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, i != 0, true, true, curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel);
                         else
-                            spellDBC.AddRow(spellID, spellName, spellTemplate.AuraDescription, spellTemplate, threeBlockEffects, true, true, true, threeBlockEffects[0].CalcEffectHighLevel);
+                            spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, true, true, true, curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel);
                     }
                 }
 

@@ -37,7 +37,8 @@ namespace EQWOWConverter.Spells
         public static Dictionary<int, int> SpellGroupStackRuleByGroup = new Dictionary<int, int>();
 
         private static Dictionary<int, SpellTemplate> SpellTemplatesByEQID = new Dictionary<int, SpellTemplate>();
-        private static readonly object SpellTemplateLock = new object();       
+        private static readonly object SpellTemplateLock = new object();
+        private static int CUR_GENERATED_WOW_SPELL_ID = Configuration.DBCID_SPELL_ID_GENERATED_START;
 
         public class Reagent
         {
@@ -140,6 +141,26 @@ namespace EQWOWConverter.Spells
         public bool IsTransferEffectType = false;
         public int RecourseLinkEQSpellID = 0;
         public SpellTemplate? RecourseLinkSpellTemplate = null;
+        private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
+        public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
+        {
+            get
+            {
+                if (_GroupedBaseSpellEffectBlocksForOutput.Count == 0)
+                    GenerateOutputEffectBlocks();
+                return _GroupedBaseSpellEffectBlocksForOutput;
+            }
+        }
+        private List<SpellEffectBlock> _GroupedWornSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
+        public List<SpellEffectBlock> GroupedWornSpellEffectBlocksForOutput
+        {
+            get
+            {
+                if (_GroupedWornSpellEffectBlocksForOutput.Count == 0)
+                    GenerateOutputEffectBlocks();
+                return _GroupedWornSpellEffectBlocksForOutput;
+            }
+        }
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
@@ -220,8 +241,10 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.PreventionType = 1; // Silence
 
                 // Convert the spell effects
+                SpellTemplate? effectGeneratedSpellTemplate;
                 ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration.MaxDurationInMS > 0, 
-                    newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneName, zonePropertiesByShortName);
+                    newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneName, zonePropertiesByShortName,
+                    out effectGeneratedSpellTemplate);
 
                 // If there is no wow effect, skip it
                 if (newSpellTemplate.WOWSpellEffects.Count == 0)
@@ -230,8 +253,10 @@ namespace EQWOWConverter.Spells
                 // Stacking rules
                 SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]));
 
-                // Add it
+                // Add it, and any effect generated ones
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
+                if (effectGeneratedSpellTemplate != null)
+                    SpellTemplatesByEQID.Add(effectGeneratedSpellTemplate.EQSpellID, effectGeneratedSpellTemplate);
             }
 
             // Set any post load grooming
@@ -697,8 +722,10 @@ namespace EQWOWConverter.Spells
 
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, bool hasSpellDuration, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID,
-            bool isDetrimental, string teleportZoneName, Dictionary<string, ZoneProperties> zonePropertiesByShortName)
+            bool isDetrimental, string teleportZoneName, Dictionary<string, ZoneProperties> zonePropertiesByShortName, out SpellTemplate? effectGeneratedSpellTemplate)
         {
+            effectGeneratedSpellTemplate = null;
+
             // Process all spell effects
             foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
             {
@@ -2005,18 +2032,23 @@ namespace EQWOWConverter.Spells
             return timeSB.ToString();
         }
 
-        public List<List<SpellEffectWOW>> GetWOWEffectsInBlocksOfThree()
+        private void GenerateOutputEffectBlocks()
         {
-            List<List<SpellEffectWOW>> returnList = new List<List<SpellEffectWOW>> ();
-           
+            if (_GroupedBaseSpellEffectBlocksForOutput.Count != 0)
+            {
+                Logger.WriteError("Attempted to call GenerateOutputEffectBlocks more than once for spell eq id ", EQSpellID.ToString());
+                return;
+            }
+
             // Blank out if no spell effects
             if (WOWSpellEffects.Count == 0)
             {
-                List<SpellEffectWOW> curBlockSpellEffects = new List<SpellEffectWOW>();
+                SpellEffectBlock blankEffectBlock = new SpellEffectBlock();
+                blankEffectBlock.WOWSpellID = WOWSpellID;
                 for (int i = 0; i < 3; i++)
-                    curBlockSpellEffects.Add(new SpellEffectWOW());
-                returnList.Add(curBlockSpellEffects);
-                return returnList;
+                    blankEffectBlock.SpellEffects.Add(new SpellEffectWOW());
+                _GroupedBaseSpellEffectBlocksForOutput.Add(blankEffectBlock);
+                return;
             }
 
             // Pre-group by 'max' levels so that spell value calculations work properly
@@ -2035,19 +2067,54 @@ namespace EQWOWConverter.Spells
                 int numOfExtractedEffects = 0;
                 while (numOfExtractedEffects < curEffectList.Count)
                 {
-                    List<SpellEffectWOW> curBlockSpellEffects = new List<SpellEffectWOW>();
+                    SpellEffectBlock baseEffectBlock = new SpellEffectBlock();
                     for (int i = 0; i < 3; i++)
                     {
                         if (numOfExtractedEffects >= curEffectList.Count)
-                            curBlockSpellEffects.Add(new SpellEffectWOW());
+                            baseEffectBlock.SpellEffects.Add(new SpellEffectWOW());
                         else
-                            curBlockSpellEffects.Add(curEffectList[numOfExtractedEffects]);
+                            baseEffectBlock.SpellEffects.Add(curEffectList[numOfExtractedEffects]);
                         numOfExtractedEffects += 1;
                     }
-                    returnList.Add(curBlockSpellEffects);
+                    if (_GroupedBaseSpellEffectBlocksForOutput.Count == 0)
+                    {
+                        baseEffectBlock.SpellName = Name;
+                        baseEffectBlock.WOWSpellID = WOWSpellID;
+                    }
+                    else
+                    {
+                        baseEffectBlock.SpellName = string.Concat(Name, " Split ", _GroupedBaseSpellEffectBlocksForOutput.Count.ToString());
+                        baseEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
+                    }
+                    _GroupedBaseSpellEffectBlocksForOutput.Add(baseEffectBlock);
+
+                    // Worn versions also get their own copy
+                    if (WOWSpellIDWorn != 0)
+                    {
+                        SpellEffectBlock wornEffectBlock = new SpellEffectBlock();
+                        if (_GroupedWornSpellEffectBlocksForOutput.Count == 0)
+                            wornEffectBlock.WOWSpellID = WOWSpellIDWorn;
+                        else
+                            wornEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
+                        foreach (SpellEffectWOW spellEffect in baseEffectBlock.SpellEffects)
+                            wornEffectBlock.SpellEffects.Add(spellEffect);
+                        wornEffectBlock.SpellName = string.Concat(baseEffectBlock, " (from gear)");
+                        _GroupedWornSpellEffectBlocksForOutput.Add(wornEffectBlock);
+                    }
                 }
             }
-            return returnList;
+        }
+    
+        private int GenerateUniqueWOWSpellID()
+        {
+            int returnID = CUR_GENERATED_WOW_SPELL_ID;
+            CUR_GENERATED_WOW_SPELL_ID++;
+            if (CUR_GENERATED_WOW_SPELL_ID >= Configuration.DBCID_SPELL_ID_END)
+            {
+                Logger.WriteError("Spell DBCID max exceeded");
+                throw new Exception("Spell DBCID max exceeded");
+            }
+            return returnID;
         }
     }
 }

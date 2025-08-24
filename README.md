@@ -6,30 +6,7 @@ Converts the EverQuest assets from the original game into World of Warcraft 3.3.
 To see video references, go here: https://www.youtube.com/@WoWEverQuest
 
 # Current State
-It is currently still in heavy development and things are changing daily.  Currently these features are completed:
-- Map Geometry & Collision
-- Ladders
-- Water/Lava
-- Zone Lines
-- Fog / Exterior Environment Lighting
-- Vertex Colors (on WMOs)
-- Point Sounds (campfires, running water, etc)
-- Ambient Sounds
-- Music
-- Creatures
-- Transports (boats, lifts)
-- Equipment (including held equipment visuals, minus particles)
-- Quests
-- Armor visuals
-- Tradeskills
-- Spell Particles
-
-What's currently missing (all in a mid-state / work in progress):
-- Creature Spells
-- Player Spells
-- Equipment Particles
-
-Right now only classic (pre-Kunark) is in a semi-polished state, but you can enable Kunark and/or Velious content by setting the configuration values starting with GENERATE_EQ_EXPANSION_ID_.  Many things, such as zone lines and water volumes will not work in Kunark and above right now.
+It is currently in an Alpha state, but all content types (tradeskills, spells, quests, etc) are working to some degree.  Only classic (pre-Kunark) is in a semi-polished state, but you can enable Kunark and/or Velious content by setting the configuration values starting with GENERATE_EQ_EXPANSION_ID_.  Many things, such as zone lines and water volumes will not work in Kunark and above right now.
 
 # Requirements
 - Windows build environment

@@ -595,8 +595,6 @@ namespace EQWOWConverter
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
         {
             // Spell split data
-            // TODO: Save this spell gen ID in the spellTemplate, so it doesn't run into conflict with DBC
-            int curSpellSplitGenID = Configuration.DBCID_SPELL_ID_SPLIT_SPELLS_START;
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
                 // Stack rules
@@ -607,54 +605,38 @@ namespace EQWOWConverter
                 modEverquestSpellSQL.AddRow(spellTemplate, spellTemplate.WOWSpellID);
 
                 // Grab effects in blocks of three
-                List<List<SpellEffectWOW>> spellEffectsByThree = spellTemplate.GetWOWEffectsInBlocksOfThree();
+                List<SpellEffectBlock> groupedBaseSpellEffectBlocksForOutput = spellTemplate.GroupedBaseSpellEffectBlocksForOutput;
 
                 // Teleports are only on the main 3-block
-                for (int i = 0; i < spellEffectsByThree[0].Count; i++)
+                for (int i = 0; i < groupedBaseSpellEffectBlocksForOutput[0].SpellEffects.Count; i++)
                 {
-                    if (spellEffectsByThree[0][i].EffectType == SpellWOWEffectType.TeleportUnits)
+                    if (groupedBaseSpellEffectBlocksForOutput[0].SpellEffects[i].EffectType == SpellWOWEffectType.TeleportUnits)
                     {
-                        SpellEffectWOW curEffect = spellEffectsByThree[0][i];
-                        spellTargetPositionSQL.AddRow(spellTemplate.WOWSpellID, i, curEffect.TeleMapID, curEffect.TelePosition, curEffect.TeleOrientation);
+                        SpellEffectWOW curEffect = groupedBaseSpellEffectBlocksForOutput[0].SpellEffects[i];
+                        spellTargetPositionSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[0].WOWSpellID, i, curEffect.TeleMapID, curEffect.TelePosition, curEffect.TeleOrientation);
                     }
                 }
 
                 // Chains for spells with > 3 effects
-                for (int i = 1; i < spellEffectsByThree.Count; i++)
+                for (int i = 1; i < groupedBaseSpellEffectBlocksForOutput.Count; i++)
                 {
-                    int chainSpellID = curSpellSplitGenID;
-                    string comment = string.Concat(spellTemplate.Name, " Split ", i.ToString());
-                    curSpellSplitGenID++;
-                    if (curSpellSplitGenID >= Configuration.DBCID_SPELL_ID_END)
-                    {
-                        Logger.WriteError("Spell DBCID max exceeded");
-                        throw new Exception("Spell DBCID max exceeded");
-                    }
+                    SpellEffectBlock curEffectBlock = spellTemplate.GroupedBaseSpellEffectBlocksForOutput[i];
+
                     // TODO: Check if there are mixtures of aura and non-aura spells first, this may have a bug
                     if (spellTemplate.AuraDuration.MaxDurationInMS > 0)
-                        spellLinkedSpellSQL.AddRowForAuraTrigger(spellTemplate.WOWSpellID, chainSpellID, comment);
+                        spellLinkedSpellSQL.AddRowForAuraTrigger(spellTemplate.WOWSpellID, curEffectBlock.WOWSpellID, curEffectBlock.SpellName);
                     else
-                        spellLinkedSpellSQL.AddRowForHitTrigger(spellTemplate.WOWSpellID, chainSpellID, comment);
+                        spellLinkedSpellSQL.AddRowForHitTrigger(spellTemplate.WOWSpellID, curEffectBlock.WOWSpellID, curEffectBlock.SpellName);
                     
                     // Additional spell data
-                    modEverquestSpellSQL.AddRow(spellTemplate, chainSpellID);
+                    modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID);
 
                     // Worn effects get their own copy too
                     if (spellTemplate.WOWSpellIDWorn > 0)
                     {
-                        int spellID = spellTemplate.WOWSpellIDWorn;
-                        if (i != 0)
-                        {
-                            spellID = curSpellSplitGenID;
-                            curSpellSplitGenID++;
-                            if (curSpellSplitGenID >= Configuration.DBCID_SPELL_ID_END)
-                            {
-                                Logger.WriteError("Spell DBCID max exceeded");
-                                throw new Exception("Spell DBCID max exceeded");
-                            }
-                        }
                         // Additional spell data
-                        modEverquestSpellSQL.AddRow(spellTemplate, spellID);
+                        SpellEffectBlock curWornEffectBlock = spellTemplate.GroupedWornSpellEffectBlocksForOutput[i];
+                        modEverquestSpellSQL.AddRow(spellTemplate, curWornEffectBlock.WOWSpellID);
                     }
                 }
 

@@ -1,4 +1,4 @@
-﻿//  Author: Nathan Handley (nathanhandley@protonmail.com)
+﻿//  Author: Nathan Handley(nathanhandley@protonmail.com)
 //  Copyright (c) 2025 Nathan Handley
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -14,14 +14,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace EQWOWConverter.WOWFiles
+namespace EQWOWConverter.Spells
 {
-    internal class CharacterAuraSQL : SQLFile
+    internal class SpellEffectBlock
     {
-        public override string DeleteRowSQL()
-        {
-            // Used to clear any WIP generated spell IDs
-            return string.Concat("DELETE FROM character_aura WHERE `spell` >= ", Configuration.DBCID_SPELL_ID_START.ToString(), " AND `spell` <= ", Configuration.DBCID_SPELL_ID_GENERATED_START, " AND `spell` != ", Configuration.SPELLS_GATE_SPELLDBC_ID, ";");
-        }
+        public string SpellName = string.Empty;
+        public int WOWSpellID = 0;
+        public List<SpellEffectWOW> SpellEffects = new List<SpellEffectWOW>(); // Guarenteed to be 3 elements
     }
 }

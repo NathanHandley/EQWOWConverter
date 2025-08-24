@@ -20,7 +20,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM spell_linked_spell WHERE `spell_trigger` >= " + Configuration.DBCID_SPELL_ID_START.ToString() + " AND `spell_trigger` <= " + Configuration.DBCID_SPELL_ID_SPLIT_SPELLS_START + ";";
+            return "DELETE FROM spell_linked_spell WHERE `spell_trigger` >= " + Configuration.DBCID_SPELL_ID_START.ToString() + " AND `spell_trigger` <= " + Configuration.DBCID_SPELL_ID_GENERATED_START + ";";
         }
 
         public void AddRowForAuraTrigger(int triggeringSpellID, int triggeredSpellID, string comment)
