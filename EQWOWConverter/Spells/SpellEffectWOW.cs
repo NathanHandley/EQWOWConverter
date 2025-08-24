@@ -38,6 +38,7 @@ namespace EQWOWConverter.Spells
         public UInt32 EffectItemType = 0;
         public int EffectMiscValueA = 0;
         public int EffectMiscValueB = 0;
+        public int EffectTriggerSpell = 0;
         public string ActionDescription = string.Empty;
         public string AuraDescription = string.Empty;
         public int CalcEffectLowLevelValue = 0;
@@ -82,6 +83,7 @@ namespace EQWOWConverter.Spells
                 EffectItemType = this.EffectItemType,
                 EffectMiscValueA = this.EffectMiscValueA,
                 EffectMiscValueB = this.EffectMiscValueB,
+                EffectTriggerSpell = this.EffectTriggerSpell,
                 ActionDescription = this.ActionDescription,
                 AuraDescription = this.AuraDescription,
                 CalcEffectLowLevelValue = this.CalcEffectLowLevelValue,

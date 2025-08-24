@@ -116,6 +116,7 @@ namespace EQWOWConverter.Spells
         // CallPet = 103,
         // Translocate = 104, // Move the target to a place
         // ResistAll = 111,
+        // ReverseDamageShield = 121, -- Not used before Planes of Power
         //DispelDetrimental = 154, -- Not used (Purify Soul, AA ability)
         //DispelBeneficial = 209, -- Not used
         Invisibility = 314,

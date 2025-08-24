@@ -33,6 +33,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`AuraDurationCalcMinLevel` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`AuraDurationCalcMaxLevel` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`RecourseSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`SpellIDCastOnMeleeAttacker` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -50,6 +51,7 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("RecourseSpellID", spellTemplate.RecourseLinkSpellTemplate.WOWSpellID);
             else
                 newRow.AddInt("RecourseSpellID", 0);
+            newRow.AddInt("SpellIDCastOnMeleeAttacker", spellTemplate.WOWSpellIDCastOnMeleeAttacker);
             Rows.Add(newRow);
         }
     }

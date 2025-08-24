@@ -52,6 +52,7 @@ namespace EQWOWConverter.Spells
         CasterParty = 20,
         TargetFriendly = 21,
         AreaAroundCaster = 22,
+        TargetUnitAny = 25,
         AreaAroundTargetAlly = 31,
         TargetParty = 35,
         TargetAny = 63

@@ -140,9 +140,8 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt32(spellEffect.EffectMiscValueA); // EffectMiscValueA1, EffectMiscValueA2, EffectMiscValueA3
             foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
                 newRow.AddInt32(spellEffect.EffectMiscValueB); // EffectMiscValueB1, EffectMiscValueB2, EffectMiscValueB3
-            newRow.AddUInt32(0); // EffectTriggerSpell1
-            newRow.AddUInt32(0); // EffectTriggerSpell2
-            newRow.AddUInt32(0); // EffectTriggerSpell3
+            foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
+                newRow.AddUInt32(Convert.ToUInt32(spellEffect.EffectTriggerSpell)); // EffectTriggerSpell1, EffectTriggerSpell2, EffectTriggerSpell3
             newRow.AddFloat(0); // EffectPointsPerCombo1
             newRow.AddFloat(0); // EffectPointsPerCombo2
             newRow.AddFloat(0); // EffectPointsPerCombo3

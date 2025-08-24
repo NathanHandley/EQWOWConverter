@@ -143,6 +143,7 @@ namespace EQWOWConverter.Spells
         public bool IsTransferEffectType = false;
         public int RecourseLinkEQSpellID = 0;
         public SpellTemplate? RecourseLinkSpellTemplate = null;
+        public int WOWSpellIDCastOnMeleeAttacker = 0;
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -1829,8 +1830,37 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 if (eqEffect.EQBaseValue > 0)
                                 {
-                                    Logger.WriteError("Unimplemented heal shield for eq spell id ", spellTemplate.EQSpellID.ToString());
-                                    continue;
+                                    if (effectGeneratedSpellTemplate != null)
+                                    {
+                                        Logger.WriteError("Already generated effectGenerateSpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString());
+                                        continue;
+                                    }
+
+                                    // Create a healing spell for this
+                                    effectGeneratedSpellTemplate = new SpellTemplate();
+                                    effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Heal Effect");
+                                    effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+                                    effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+                                    effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                                    effectGeneratedSpellTemplate.SpellVisualID1 = 5560; // Lesser Heal visual, like Judgement of Light
+                                    effectGeneratedSpellTemplate.SchoolMask = 2; // Holy
+                                    SpellEffectEQ healEQEffect = new SpellEffectEQ();
+                                    healEQEffect.EQEffectType = SpellEQEffectType.CurrentHitPoints;
+                                    healEQEffect.EQBaseValue = eqEffect.EQBaseValue;
+                                    healEQEffect.EQBaseValueFormulaType = eqEffect.EQBaseValueFormulaType;
+                                    healEQEffect.EQFormulaTypeValue = eqEffect.EQFormulaTypeValue;
+                                    healEQEffect.EQLimitValue = eqEffect.EQLimitValue;
+                                    healEQEffect.EQMaxValue = eqEffect.EQMaxValue;
+                                    effectGeneratedSpellTemplate.EQSpellEffects.Add(healEQEffect);
+                                    SpellTemplate? discardTemplate;
+                                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, false, 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.Self },
+                                        0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate);
+
+                                    // Proc effect for the heal
+                                    newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
+                                    newSpellEffectWOW.ActionDescription = string.Concat("applies a shield that heals melee attackers for ", effectGeneratedSpellTemplate.WOWSpellEffects[0].GetFormattedEffectActionString(false));
+                                    newSpellEffectWOW.AuraDescription = string.Concat("healing melee attackers", effectGeneratedSpellTemplate.WOWSpellEffects[0].GetFormattedEffectAuraString(false, " for ", ""));
+                                    spellTemplate.WOWSpellIDCastOnMeleeAttacker = effectGeneratedSpellTemplate.WOWSpellID;
                                 }
                                 else
                                 {
@@ -2107,7 +2137,7 @@ namespace EQWOWConverter.Spells
             }
         }
     
-        private int GenerateUniqueWOWSpellID()
+        private static int GenerateUniqueWOWSpellID()
         {
             int returnID = CUR_GENERATED_WOW_SPELL_ID;
             CUR_GENERATED_WOW_SPELL_ID++;
