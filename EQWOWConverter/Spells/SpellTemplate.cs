@@ -1768,6 +1768,32 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.NoPartialImmunity = true;
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
+                        case SpellEQEffectType.Levitate:
+                            {
+                                // FeatherFall
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.FeatherFall;
+                                newSpellEffectWOW.ActionDescription = string.Concat("grants levitation");
+                                newSpellEffectWOW.AuraDescription = string.Concat("levitating");
+                                newSpellEffects.Add(newSpellEffectWOW);
+
+                                // + Waterwalk
+                                SpellEffectWOW newSpellEffectWOW2 = new SpellEffectWOW();
+                                newSpellEffectWOW2.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.WaterWalk;
+                                newSpellEffectWOW2.ActionDescription = string.Empty;
+                                newSpellEffectWOW2.AuraDescription = string.Empty;
+                                newSpellEffects.Add(newSpellEffectWOW2);
+
+                                // + Hover
+                                SpellEffectWOW newSpellEffectWOW3 = new SpellEffectWOW();
+                                newSpellEffectWOW3.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW3.EffectAuraType = SpellWOWAuraType.Hover;
+                                newSpellEffectWOW3.ActionDescription = string.Empty;
+                                newSpellEffectWOW3.AuraDescription = string.Empty;
+                                newSpellEffects.Add(newSpellEffectWOW3);
+                            } break;
                         default:
                             {
                                 Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
