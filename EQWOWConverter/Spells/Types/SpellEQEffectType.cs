@@ -73,13 +73,13 @@ namespace EQWOWConverter.Spells
         // TrueNorth = 56
         Levitate = 57,
         // Illusion = 58
-        // DamageShield = 59 // Attacker takes damage if they hit someone with this
+        DamageShield = 59, // Attacker takes damage if they hit someone with this
         //....
-        // WipeHateList = 63
+        // WipeHateList = 63,
         //....
-        // InfraVision = 65
-        // UltraVision = 66
-        //....
+        // InfraVision = 65,
+        // UltraVision = 66,
+        // EyeOfZomm = 67,
         // ReclainPet = 68 // Destroys pet and gives some of the mana back
         TotalHP = 69,
         //....

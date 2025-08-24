@@ -1794,6 +1794,43 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW3.AuraDescription = string.Empty;
                                 newSpellEffects.Add(newSpellEffectWOW3);
                             } break;
+                        case SpellEQEffectType.DamageShield:
+                            {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                if (eqEffect.EQBaseValue > 0)
+                                {
+                                    Logger.WriteError("Unimplemented heal shield for eq spell id ", spellTemplate.EQSpellID.ToString());
+                                    continue;
+                                }
+                                else
+                                {
+                                    string elementalSchoolName = string.Empty;
+                                    switch (schoolMask)
+                                    {
+                                        case 4: elementalSchoolName = "fire"; break;
+                                        case 8: elementalSchoolName = "nature"; break;
+                                        case 16: elementalSchoolName = "frost"; break;
+                                        case 32: elementalSchoolName = "shadow"; break;
+                                        case 64: elementalSchoolName = "arcane"; break;
+                                        default: break;
+                                    }
+                                    newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.DamageShield;
+                                    newSpellEffectWOW.SetEffectAmountValues(Math.Abs(eqEffect.EQBaseValue), Math.Abs(eqEffect.EQMaxValue), spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageReflectShield", SpellEffectWOWConversionScaleType.None);
+                                    
+                                    if (elementalSchoolName.Length > 0)
+                                    {
+                                        newSpellEffectWOW.ActionDescription = string.Concat("grants a damage shield that reflects ", newSpellEffectWOW.GetFormattedEffectActionString(false), " ", elementalSchoolName, " damage back melee attackers");
+                                        newSpellEffectWOW.AuraDescription = string.Concat("reflecting", newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " ", elementalSchoolName, " damage back at melee attackers");
+                                    }
+                                    else
+                                    {
+                                        newSpellEffectWOW.ActionDescription = string.Concat("grants a damage shield that reflects ", newSpellEffectWOW.GetFormattedEffectActionString(false), " damage back melee attackers");
+                                        newSpellEffectWOW.AuraDescription = string.Concat("reflecting", newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " damage back at melee attackers");
+                                    }
+                                }
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
                         default:
                             {
                                 Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
