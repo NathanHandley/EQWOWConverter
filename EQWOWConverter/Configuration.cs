@@ -554,6 +554,9 @@ namespace EQWOWConverter
         // Revive will give HP/MP instead of EXP on revive, so this is the multiplier to use for that
         public static readonly int SPELL_EFFECT_REVIVE_EXPPCT_TO_HPMP_MULTIPLIER = 22;
 
+        // Default time that a shrink/grow spell will last for
+        public static readonly int SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS = 1800000;
+
         //=====================================================================
         // Tradeskills
         //=====================================================================

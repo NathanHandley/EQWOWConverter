@@ -51,8 +51,16 @@ namespace EQWOWConverter.Spells
             MaxLevel = 0;
         }
 
-        public void CalculateAndSetAuraDuration(int spellLevel, int eqBuffDurationFormula, int maxBuffDurationInTicks)
+        public void CalculateAndSetAuraDuration(int spellLevel, int eqBuffDurationFormula, int maxBuffDurationInTicks, bool isModelChangeSize)
         {
+            // Default for model change size spells
+            if (eqBuffDurationFormula == 0 && isModelChangeSize == true)
+            {
+                BaseDurationInMS = Configuration.SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS;
+                MaxDurationInMS = Configuration.SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS;
+                return;
+            }
+
             if (eqBuffDurationFormula <= 0)
                 return;
 

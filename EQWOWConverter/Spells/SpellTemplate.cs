@@ -148,6 +148,7 @@ namespace EQWOWConverter.Spells
         public bool HideCaster = false;
         public bool TriggersGlobalCooldown = true;
         public bool DoNotInterruptAutoActionsAndSwingTimers = false;
+        public bool IsModelSizeChangeSpell = false;
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -219,8 +220,8 @@ namespace EQWOWConverter.Spells
                 // Buff duration (if any)
                 int buffDurationInTicks = Convert.ToInt32(columns["buffduration"]);
                 int buffDurationFormula = Convert.ToInt32(columns["buffdurationformula"]);
-                if (buffDurationFormula != 0)
-                    newSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(newSpellTemplate.MinimumPlayerLearnLevel, buffDurationFormula, buffDurationInTicks);
+                if (buffDurationFormula != 0 || newSpellTemplate.IsModelSizeChangeSpell == true)
+                    newSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(newSpellTemplate.MinimumPlayerLearnLevel, buffDurationFormula, buffDurationInTicks, newSpellTemplate.IsModelSizeChangeSpell);
 
                 // Icon
                 int spellIconID = int.Parse(columns["icon"]);
@@ -722,6 +723,10 @@ namespace EQWOWConverter.Spells
                     float.Parse(rowColumns["effect_base_value3"]));
                 curEffect.EQTeleHeading = int.Parse(rowColumns["effect_base_value4"]);
             }
+
+            // Model change spells need to be identified for a default effect duration
+            if (curEffect.EQEffectType == SpellEQEffectType.ModelSize)
+                spellTemplate.IsModelSizeChangeSpell = true;
 
             // Add it
             spellTemplate.EQSpellEffects.Add(curEffect);
@@ -1931,6 +1936,25 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.SetEffectAmountValues(Math.Abs(eqEffect.EQBaseValue), Math.Abs(eqEffect.EQMaxValue), spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "PhysicalAbsorb", SpellEffectWOWConversionScaleType.None);
                                 newSpellEffectWOW.ActionDescription = string.Concat("applies a shield that absorbs ", newSpellEffectWOW.GetFormattedEffectActionString(false), " physical damage before breaking");
                                 newSpellEffectWOW.AuraDescription = string.Concat("absorbing", newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " physical damage");
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
+                        case SpellEQEffectType.ModelSize:
+                            {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModScale;
+                                int modelScale = eqEffect.EQBaseValue - 100; // 100 is 'same size'
+                                newSpellEffectWOW.SetEffectAmountValues(modelScale, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "", SpellEffectWOWConversionScaleType.None);
+                                if (modelScale > 0)
+                                {
+                                    newSpellEffectWOW.ActionDescription = string.Concat("grows the size of the target by ", newSpellEffectWOW.GetFormattedEffectActionString(true));
+                                    newSpellEffectWOW.AuraDescription = string.Concat("grown by ", newSpellEffectWOW.GetFormattedEffectAuraString(true, string.Empty, string.Empty));
+                                }
+                                else
+                                {
+                                    newSpellEffectWOW.ActionDescription = string.Concat("shrink the size of the target by ", newSpellEffectWOW.GetFormattedEffectActionString(true));
+                                    newSpellEffectWOW.AuraDescription = string.Concat("shrunk by ", newSpellEffectWOW.GetFormattedEffectAuraString(true, string.Empty, string.Empty));
+                                }
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         default:

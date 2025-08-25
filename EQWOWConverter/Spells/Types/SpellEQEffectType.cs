@@ -100,7 +100,7 @@ namespace EQWOWConverter.Spells
         // Harmony = 86, // Reduce agro reaction radius
         // MagnifyVision = 87,
         // Succor = 88, // Teleport self or the group to a safe spot in a zone
-        // ModelSize = 89, // Grow/Shrink
+        ModelSize = 89, // Grow/Shrink
         //....
         // SummonCorpse = 91 // Summon the corpse of the targeted player
         // InstantHate = 92 // Add or remove a set amount of hate
