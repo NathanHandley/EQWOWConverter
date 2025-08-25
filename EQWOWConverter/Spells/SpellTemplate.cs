@@ -144,6 +144,9 @@ namespace EQWOWConverter.Spells
         public int RecourseLinkEQSpellID = 0;
         public SpellTemplate? RecourseLinkSpellTemplate = null;
         public int WOWSpellIDCastOnMeleeAttacker = 0;
+        public bool HideCaster = false;
+        public bool TriggersGlobalCooldown = true;
+        public bool DoNotInterruptAutoActionsAndSwingTimers = false;
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -1844,6 +1847,9 @@ namespace EQWOWConverter.Spells
                                     effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
                                     effectGeneratedSpellTemplate.SpellVisualID1 = 5560; // Lesser Heal visual, like Judgement of Light
                                     effectGeneratedSpellTemplate.SchoolMask = 2; // Holy
+                                    effectGeneratedSpellTemplate.HideCaster = true;
+                                    effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                                    effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
                                     SpellEffectEQ healEQEffect = new SpellEffectEQ();
                                     healEQEffect.EQEffectType = SpellEQEffectType.CurrentHitPoints;
                                     healEQEffect.EQBaseValue = eqEffect.EQBaseValue;
@@ -1853,7 +1859,7 @@ namespace EQWOWConverter.Spells
                                     healEQEffect.EQMaxValue = eqEffect.EQMaxValue;
                                     effectGeneratedSpellTemplate.EQSpellEffects.Add(healEQEffect);
                                     SpellTemplate? discardTemplate;
-                                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, false, 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.Self },
+                                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, false, 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.TargetUnitAny },
                                         0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate);
 
                                     // Proc effect for the heal

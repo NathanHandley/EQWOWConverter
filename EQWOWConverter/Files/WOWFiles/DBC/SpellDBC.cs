@@ -164,8 +164,16 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddStringLang(spellDescription); // Description_Lang
             newRow.AddStringLang(spellTemplate.AuraDescription); // AuraDescription_Lang
             newRow.AddUInt32(0); // ManaCostPct
-            newRow.AddUInt32(133); // StartRecoveryCategory
-            newRow.AddUInt32(1500); // StartRecoveryTime
+            if (spellTemplate.TriggersGlobalCooldown == true)
+            {
+                newRow.AddUInt32(133); // StartRecoveryCategory
+                newRow.AddUInt32(1500); // StartRecoveryTime
+            }
+            else
+            {
+                newRow.AddUInt32(0); // StartRecoveryCategory
+                newRow.AddUInt32(0); // StartRecoveryTime
+            }
             newRow.AddUInt32(0); // MaxTargetLevel
             newRow.AddUInt32(0); // SpellClassSet
             newRow.AddUInt32(0); // SpellClassMask1
@@ -234,9 +242,9 @@ namespace EQWOWConverter.WOWFiles
                 return 16385;
             UInt32 attributeFlags = 0;
             if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
-            {
                 attributeFlags |= 8192; // 	SPELL_ATTR2_ENCHANT_OWN_ITEM_ONLY (0x00002000)
-            }
+            if (spellTemplate.DoNotInterruptAutoActionsAndSwingTimers == true)
+                attributeFlags |= 131072; // SPELL_ATTR2_DO_NOT_RESET_COMBAT_TIMERS (0x00020000)
             return attributeFlags;
         }
 
@@ -257,6 +265,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 2048; // SPELL_ATTR4_NO_PARTIAL_IMMUNITY
                 attributeFlags |= 536870912; // SPELL_ATTR4_AURA_BOUNCE_FAILS_SPELL
             }
+            if (spellTemplate.HideCaster == true)
+                attributeFlags |= 1; // SPELL_ATTR4_NO_CAST_LOG
             return attributeFlags;
         }
 
@@ -272,7 +282,10 @@ namespace EQWOWConverter.WOWFiles
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 4096;
-            return 0;
+            UInt32 attributeFlags = 0;
+            if (spellTemplate.DoNotInterruptAutoActionsAndSwingTimers == true)
+                attributeFlags |= 33554432; // 	SPELL_ATTR6_DOESNT_RESET_SWING_TIMER_IF_INSTANT (0x02000000)
+            return attributeFlags;
         }
 
         private UInt32 GetProcFlags(SpellTemplate spellTemplate)
