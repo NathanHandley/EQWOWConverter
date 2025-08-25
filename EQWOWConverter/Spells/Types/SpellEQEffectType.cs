@@ -42,7 +42,7 @@ namespace EQWOWConverter.Spells
         //ModFaction = 19,
         //Blind = 20,
         Stun = 21,
-        //Charm = 22,
+        Charm = 22,
         Fear = 23,
         //Stamina = 24,
         BindAffinity = 25,

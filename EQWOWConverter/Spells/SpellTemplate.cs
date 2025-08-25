@@ -1909,6 +1909,17 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.NoPartialImmunity = true;
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
+                        case SpellEQEffectType.Charm:
+                            {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModCharm;
+                                newSpellEffectWOW.ActionDescription = string.Concat("charms the target which makes it fight for you");
+                                newSpellEffectWOW.AuraDescription = string.Concat("charmed");
+                                newSpellEffectWOW.EffectMechanic = SpellMechanicType.Charmed;
+                                spellTemplate.NoPartialImmunity = true;
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
                         default:
                             {
                                 Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
