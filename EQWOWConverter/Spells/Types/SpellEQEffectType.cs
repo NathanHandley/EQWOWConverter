@@ -69,7 +69,7 @@ namespace EQWOWConverter.Spells
         // SenseDead = 52
         // SenseSummoned = 53
         // SenseAnimals = 54
-        // Rune = 55 // Absorb all melee damage until a maximum amount of damage is taken and it fades
+        Rune = 55, // Absorb all melee damage until a maximum amount of damage is taken and it fades
         // TrueNorth = 56
         Levitate = 57,
         // Illusion = 58

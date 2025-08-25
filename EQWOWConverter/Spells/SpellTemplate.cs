@@ -1920,6 +1920,19 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.NoPartialImmunity = true;
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
+                        case SpellEQEffectType.Rune:
+                            {
+                                if (eqEffect.EQBaseValue == 0)
+                                    continue;
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.SchoolAbsorb;
+                                newSpellEffectWOW.EffectMiscValueA = 1; // Physical
+                                newSpellEffectWOW.SetEffectAmountValues(Math.Abs(eqEffect.EQBaseValue), Math.Abs(eqEffect.EQMaxValue), spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "PhysicalAbsorb", SpellEffectWOWConversionScaleType.None);
+                                newSpellEffectWOW.ActionDescription = string.Concat("applies a shield that absorbs ", newSpellEffectWOW.GetFormattedEffectActionString(false), " physical damage before breaking");
+                                newSpellEffectWOW.AuraDescription = string.Concat("absorbing", newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " physical damage");
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
                         default:
                             {
                                 Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
