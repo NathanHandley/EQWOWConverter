@@ -49,7 +49,7 @@ namespace EQWOWConverter.Spells
         Gate = 26,
         CancelMagic = 27,
         //....
-        // Mez = 31
+        Mez = 31,
         SummonItems = 32,
         // SummonPet = 33
         // Confuse = 34

@@ -68,7 +68,10 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddUInt32(spellTemplate.RecoveryTimeInMS); // RecoveryTime
             newRow.AddUInt32(0); // CategoryRecoveryTime
             newRow.AddUInt32(spellTemplate.InterruptFlags); // InterruptFlags (15 is standard interrupt for things like moving, pushback, and interrupt cast)
-            newRow.AddUInt32(0); // AuraInterruptFlags
+            if (spellTemplate.BreakEffectOnAllDamage == true)
+                newRow.AddUInt32(2); // AuraInterruptFlags
+            else
+                newRow.AddUInt32(0); // AuraInterruptFlags
             newRow.AddUInt32(0); // ChannelInterruptFlags
             newRow.AddUInt32(GetProcFlags(spellTemplate)); // ProcTypeMask
             newRow.AddUInt32(spellTemplate.ProcChance); // ProcChance

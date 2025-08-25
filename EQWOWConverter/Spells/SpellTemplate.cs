@@ -133,6 +133,7 @@ namespace EQWOWConverter.Spells
         public int HighestDirectHealAmountInSpellEffect = 0; // Used in spell priority calculations
         private string TargetDescriptionTextFragment = string.Empty;
         public bool BreakEffectOnNonAutoDirectDamage = false;
+        public bool BreakEffectOnAllDamage = false;
         public bool NoPartialImmunity = false;
         public UInt32 DefenseType = 0; // 0 None, 1 Magic, 2 Melee, 3 Ranged
         public UInt32 PreventionType = 0; // 0 None, 1 Silence, 2 Pacify, 4 No Actions
@@ -1894,6 +1895,18 @@ namespace EQWOWConverter.Spells
                                         newSpellEffectWOW.AuraDescription = string.Concat("reflecting", newSpellEffectWOW.GetFormattedEffectAuraString(false, " ", ""), " damage back at melee attackers");
                                     }
                                 }
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
+                        case SpellEQEffectType.Mez:
+                            {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStun;
+                                newSpellEffectWOW.ActionDescription = string.Concat("mesmerises the target which stops all actions until damage is taken");
+                                newSpellEffectWOW.AuraDescription = string.Concat("mesmerized");
+                                newSpellEffectWOW.EffectMechanic = SpellMechanicType.Incapacitated;
+                                spellTemplate.BreakEffectOnAllDamage = true;
+                                spellTemplate.NoPartialImmunity = true;
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         default:
