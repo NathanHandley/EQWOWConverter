@@ -67,6 +67,7 @@ namespace EQWOWConverter
         private NPCTrainerSQL npcTrainerSQL = new NPCTrainerSQL();
         private NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
         private PlayerCreateInfoSQL playerCreateInfoSQL = new PlayerCreateInfoSQL();
+        private PlayerCreateInfoSpellCustomSQL playerCreateInfoSpellCustomSQL = new PlayerCreateInfoSpellCustomSQL();
         private PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
         private PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
         private PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
@@ -643,6 +644,13 @@ namespace EQWOWConverter
             }
             foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)
                 spellGroupStackRulesSQL.AddRow(spellGroupStackRuleByGroup.Key, spellGroupStackRuleByGroup.Value);
+
+            // Custom gate and bind
+            if (Configuration.PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START == true)
+            {
+                playerCreateInfoSpellCustomSQL.AddRow(Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID, "Gate");
+                playerCreateInfoSpellCustomSQL.AddRow(Configuration.SPELLS_BINDCUSTOM_SPELLDBC_ID, "Bind");
+            }
         }
 
         private void PopulateTrainerAbilityListData()
@@ -879,8 +887,8 @@ namespace EQWOWConverter
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcTrainerSQL.SaveToDisk("npc_trainer", SQLFileType.World);
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
-            if (Configuration.PLAYER_USE_EQ_START_LOCATION == true)
-                playerCreateInfoSQL.SaveToDisk("playercreateinfo", SQLFileType.World);
+            playerCreateInfoSQL.SaveToDisk("playercreateinfo", SQLFileType.World);
+            playerCreateInfoSpellCustomSQL.SaveToDisk("playercreateinfo_spell_custom", SQLFileType.World);
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
             poolTemplateSQL.SaveToDisk("pool_template", SQLFileType.World);

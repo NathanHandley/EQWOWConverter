@@ -158,6 +158,9 @@ namespace EQWOWConverter
         // If true, this will also add a hearthstone if using EQ items
         public static readonly bool PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS = false;
 
+        // If true, players start with a bind and gate spell regardless of class (with no costs)
+        public static readonly bool PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START = true;
+
         // These properties are for replacing the collision for many race models that otherwise wouldn't fit in most doorways (bigger than human male)
         // NOTE: This WILL change the camera-center value for any reduced models.
         public static readonly bool PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED = true;
@@ -464,24 +467,14 @@ namespace EQWOWConverter
         // WOW content, in that this just lets a trickle-up of stats
         public static readonly int SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL = 80;
 
+        // If true, the player can return to their gate point by clicking off the buff (within 30 minutes)
+        public static readonly bool SPELLS_GATE_TETHER_ENABLED = true;
+
         // IDs for special spells that need an exact match of ID between this and mod-everquest
-        public static readonly int SPELLS_GATE_SPELLDBC_ID = 86900;
-        public static readonly int SPELLS_BINDSELF_SPELLDBC_ID = 86901;
-        public static readonly int SPELLS_BINDANY_SPELLDBC_ID = 86902;
+        public static readonly int SPELLS_GATECUSTOM_SPELLDBC_ID = 86900;
+        public static readonly int SPELLS_BINDCUSTOM_SPELLDBC_ID = 86901;
         public static readonly int SPELLS_DAYPHASE_SPELLDBC_ID = 86903;
         public static readonly int SPELLS_NIGHTPHASE_SPELLDBC_ID = 86904;
-
-        // These are the levels in which casters and melee can learn gate and bind. Setting to 0 or lower means
-        // that can never be learned by that group.  If both melee and casters can learn bind, then a self-only
-        // version of bind is learned.  If gate tether is enabled then the player can return to their gate point
-        // by clicking off the buff (within 30 minutes)
-        public static readonly int SPELLS_GATE_CASTER_LEARN_LEVEL = 1; // Set to 4 or 6 to be more like EQ
-        public static readonly int SPELLS_GATE_MELEE_LEARN_LEVEL = 1; // Set to -1 to be like EQ (melee can't learn it)
-        public static readonly int SPELLS_GATE_SPELL_LEARN_COST = 100;
-        public static readonly int SPELLS_BIND_CASTER_LEARN_LEVEL = 1; // Set to 12 or 14 to be more like EQ
-        public static readonly int SPELLS_BIND_MELEE_LEARN_LEVEL = 1; // Set to -1 to be like EQ (melee can't learn it)
-        public static readonly int SPELLS_BIND_SPELL_LEARN_COST = 100;
-        public static readonly bool SPELLS_GATE_TETHER_ENABLED = true;
 
         // How much to multiply the EQ range value for WoW
         public static readonly float SPELLS_RANGE_MULTIPLIER = 0.3333f;

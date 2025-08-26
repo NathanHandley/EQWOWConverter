@@ -16,20 +16,20 @@
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class PoolCreatureSQL : SQLFile
+    internal class PlayerCreateInfoSpellCustomSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM pool_creature WHERE pool_entry >= " + Configuration.SQL_POOL_TEMPLATE_ID_START.ToString() + " AND pool_entry <= " + Configuration.SQL_POOL_TEMPLATE_ID_END.ToString() + ";";
+            return "DELETE FROM playercreateinfo_spell_custom WHERE `Spell` >= " + Configuration.DBCID_SPELL_ID_START.ToString() + " AND `Spell` <= " + Configuration.DBCID_SPELL_ID_GENERATED_START + ";";
         }
 
-        public void AddRow(int creatureGUID, int poolTemplateEntryID, float chance, string description)
+        public void AddRow(int spellID, string note)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("guid", creatureGUID);
-            newRow.AddInt("pool_entry", poolTemplateEntryID);
-            newRow.AddFloat("chance", chance);
-            newRow.AddString("description", 255, description);
+            newRow.AddInt("racemask", 0);
+            newRow.AddInt("classmask", 0);
+            newRow.AddInt("Spell", spellID);
+            newRow.AddString("Note", 255, note);
             Rows.Add(newRow);
         }
     }

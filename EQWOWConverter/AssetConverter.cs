@@ -1567,10 +1567,10 @@ namespace EQWOWConverter
             List<ClassType> casterClassTypes = new List<ClassType> { ClassType.Priest, ClassType.Shaman, ClassType.Mage, ClassType.Druid, ClassType.Warlock };
             List<ClassType> meleeClassTypes = new List<ClassType> { ClassType.Warrior, ClassType.Paladin, ClassType.Hunter, ClassType.Rogue, ClassType.DeathKnight };
 
-            // Gate
+            // Custom Gate
             SpellTemplate gateSpellTemplate = new SpellTemplate();
             gateSpellTemplate.Name = "Gate";
-            gateSpellTemplate.WOWSpellID = Configuration.SPELLS_GATE_SPELLDBC_ID;
+            gateSpellTemplate.WOWSpellID = Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID;
             gateSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
             gateSpellTemplate.Description = "Opens a magical portal that returns you to your bind point in Norrath.";
             if (Configuration.SPELLS_GATE_TETHER_ENABLED == true)
@@ -1592,10 +1592,10 @@ namespace EQWOWConverter
             gateSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             spellTemplates.Add(gateSpellTemplate);
 
-            // Bind Affinity (Self)
+            // Custom Bind Affinity (Self)
             SpellTemplate bindAffinitySelfSpellTemplate = new SpellTemplate();
             bindAffinitySelfSpellTemplate.Name = "Bind Affinity (Self)";
-            bindAffinitySelfSpellTemplate.WOWSpellID = Configuration.SPELLS_BINDSELF_SPELLDBC_ID;
+            bindAffinitySelfSpellTemplate.WOWSpellID = Configuration.SPELLS_BINDCUSTOM_SPELLDBC_ID;
             bindAffinitySelfSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
             bindAffinitySelfSpellTemplate.Description = "Binds the soul of the caster to their current location. Only works in Norrath.";
             bindAffinitySelfSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(21);
@@ -1608,24 +1608,6 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 1, 0));
             bindAffinitySelfSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.Self;
             spellTemplates.Add(bindAffinitySelfSpellTemplate);
-
-            // Bind Affinity
-            SpellTemplate bindAffinitySpellTemplate = new SpellTemplate();
-            bindAffinitySpellTemplate.Name = "Bind Affinity";
-            bindAffinitySpellTemplate.WOWSpellID = Configuration.SPELLS_BINDANY_SPELLDBC_ID;
-            bindAffinitySpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
-            bindAffinitySpellTemplate.Description = "Binds the soul of the target to their current location. Only works in Norrath.";
-            bindAffinitySpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(21);
-            bindAffinitySpellTemplate.CastTimeInMS = 6000;
-            bindAffinitySpellTemplate.RecoveryTimeInMS = 12000;
-            bindAffinitySpellTemplate.SpellRange = 30;
-            bindAffinitySpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(14, true).SpellVisualDBCID); // Bind
-            bindAffinitySpellTemplate.PlayerLearnableByClassTrainer = true;
-            bindAffinitySpellTemplate.AllowCastInCombat = false;
-            bindAffinitySpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
-            bindAffinitySpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 2, 0));
-            bindAffinitySpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.TargetParty;
-            spellTemplates.Add(bindAffinitySpellTemplate);
 
             // Phase aura 1 (Day)
             SpellTemplate dayPhaseSpellTemplate = new SpellTemplate();
@@ -2222,11 +2204,11 @@ namespace EQWOWConverter
 
                 // Remap gate
                 if (itemTemplate.WOWSpellID1 == 36)
-                    itemTemplate.WOWSpellID1 = Configuration.SPELLS_GATE_SPELLDBC_ID;
+                    itemTemplate.WOWSpellID1 = Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID;
 
                 // Remap bind
                 if (itemTemplate.WOWSpellID1 == 35)
-                    itemTemplate.WOWSpellID1 = Configuration.SPELLS_BINDSELF_SPELLDBC_ID;
+                    itemTemplate.WOWSpellID1 = Configuration.SPELLS_BINDCUSTOM_SPELLDBC_ID;
             }
         }
 
