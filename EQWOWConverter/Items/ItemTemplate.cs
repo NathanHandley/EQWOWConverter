@@ -1073,8 +1073,28 @@ namespace EQWOWConverter.Items
                     } break;
                 case 16: // Light Source => Misc
                     {
-                        itemTemplate.ClassID = 14;
-                        itemTemplate.SubClassID = 4;
+                        // If it has any other equippable armor slot, it's armor
+                        if (slotMask != 0)
+                        {
+                            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) &&
+                                IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Secondary, slotMask))
+                            {
+                                itemTemplate.ClassID = 2;
+                                itemTemplate.SubClassID = 14;
+                                itemTemplate.InventoryType = ItemWOWInventoryType.HeldInOffHand;
+                            }
+                            else
+                            {
+                                itemTemplate.ClassID = 4;
+                                itemTemplate.SubClassID = Convert.ToInt32(GetArmorSubclass(classMask));
+                                itemTemplate.InventoryType = GetInventoryTypeFromSlotMask(slotMask);
+                            }   
+                        }
+                        else
+                        {
+                            itemTemplate.ClassID = 14;
+                            itemTemplate.SubClassID = 4;
+                        }   
                     } break;
                 case 17: // Stackable => Misc
                     {
