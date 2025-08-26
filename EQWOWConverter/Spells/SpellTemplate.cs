@@ -1724,6 +1724,28 @@ namespace EQWOWConverter.Spells
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
+                        case SpellEQEffectType.ResistAll:
+                            {
+                                if (eqEffect.EQBaseValue == 0)
+                                    continue;
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
+                                newSpellEffectWOW.EffectMiscValueA = 124; // All resistances
+                                if (eqEffect.EQBaseValue >= 0)
+                                {
+                                    newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ArcaneResistanceBuff", SpellEffectWOWConversionScaleType.None);
+                                    newSpellEffectWOW.ActionDescription = string.Concat("increase all resistances by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                    newSpellEffectWOW.AuraDescription = string.Concat("all resistances increased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                                }
+                                else
+                                {
+                                    newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ArcaneResistanceDebuff", SpellEffectWOWConversionScaleType.None);
+                                    newSpellEffectWOW.ActionDescription = string.Concat("decrease all resistances by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                    newSpellEffectWOW.AuraDescription = string.Concat("all resistances decreased", newSpellEffectWOW.GetFormattedEffectAuraString(false, " by ", ""));
+                                }
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
                         case SpellEQEffectType.Revive:
                             {
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
