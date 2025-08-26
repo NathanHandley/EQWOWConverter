@@ -1609,9 +1609,9 @@ namespace EQWOWConverter.Spells
                                 itemTemplatesByEQDBID[eqEffect.EQBaseValue].IsCreatedBySpell = true;
                                 string itemName = itemTemplatesByEQDBID[eqEffect.EQBaseValue].Name;
                                 if (itemCount == 1)
-                                    spellEffectWOW.ActionDescription = string.Concat("Conjure ", itemCount, " ", itemName, ".\n\nConjured items disappear if logged out for more than 15 minutes.");
+                                    spellEffectWOW.ActionDescription = string.Concat("Conjure ", itemCount, " ", itemName, ".\n\nConjured items disappear if logged out for more than 15 minutes");
                                 else
-                                    spellEffectWOW.ActionDescription = string.Concat("Conjure ", itemCount, " ", itemName, "s.\n\nConjured items disappear if logged out for more than 15 minutes.");
+                                    spellEffectWOW.ActionDescription = string.Concat("Conjure ", itemCount, " ", itemName, "s.\n\nConjured items disappear if logged out for more than 15 minutes");
                                 newSpellEffects.Add(spellEffectWOW);
                             } break;
                         case SpellEQEffectType.ResistFire:
