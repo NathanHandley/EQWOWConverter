@@ -62,6 +62,7 @@ namespace EQWOWConverter.Spells
         public string AuraDescription = string.Empty;
         public UInt32 Category = 1;
         public UInt32 InterruptFlags = 15;
+        public UInt32 ChannelInterruptFlags = 0;
         public int SpellIconID = 0;
         public TradeskillRecipe? TradeskillRecipe = null;
         protected int _SpellCastTimeDBCID = 1; // First row, instant cast
@@ -149,6 +150,11 @@ namespace EQWOWConverter.Spells
         public bool TriggersGlobalCooldown = true;
         public bool DoNotInterruptAutoActionsAndSwingTimers = false;
         public bool IsModelSizeChangeSpell = false;
+        public bool IsChanneled = false;
+        public bool ForceAsDebuff = false;
+        public bool IsFarSight = false;
+        public bool GenerateNoThreat = false;
+        public bool IgnoreTargetRequirements = false;
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -250,7 +256,7 @@ namespace EQWOWConverter.Spells
 
                 // Convert the spell effects
                 SpellTemplate? effectGeneratedSpellTemplate;
-                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration.MaxDurationInMS > 0, 
+                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration.MaxDurationInMS, 
                     newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneName, zonePropertiesByShortName,
                     out effectGeneratedSpellTemplate);
 
@@ -732,11 +738,12 @@ namespace EQWOWConverter.Spells
             spellTemplate.EQSpellEffects.Add(curEffect);
         }
 
-        private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, bool hasSpellDuration, 
+        private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, int auraDurationInMS, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID,
             bool isDetrimental, string teleportZoneName, Dictionary<string, ZoneProperties> zonePropertiesByShortName, out SpellTemplate? effectGeneratedSpellTemplate)
         {
             effectGeneratedSpellTemplate = null;
+            bool hasSpellDuration = auraDurationInMS > 0;
 
             // Process all spell effects
             foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
@@ -1865,7 +1872,7 @@ namespace EQWOWConverter.Spells
                                     healEQEffect.EQMaxValue = eqEffect.EQMaxValue;
                                     effectGeneratedSpellTemplate.EQSpellEffects.Add(healEQEffect);
                                     SpellTemplate? discardTemplate;
-                                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, false, 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.TargetUnitAny },
+                                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, 0, 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.TargetUnitAny },
                                         0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate);
 
                                     // Proc effect for the heal
@@ -1956,6 +1963,35 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.AuraDescription = string.Concat("shrunk by ", newSpellEffectWOW.GetFormattedEffectAuraString(true, string.Empty, string.Empty));
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
+                        case SpellEQEffectType.BindSight:
+                            {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.BindSight;
+                                newSpellEffectWOW.ActionDescription = string.Concat("allows the caster to see through the target's eyes");
+                                newSpellEffectWOW.AuraDescription = string.Concat("sight granted through target's eyes");
+                                newSpellEffects.Add(newSpellEffectWOW);
+                                spellTemplate.IsChanneled = true;
+                                spellTemplate.ForceAsDebuff = true;
+                                spellTemplate.IsFarSight = true;
+                                spellTemplate.GenerateNoThreat = true;
+                                spellTemplate.IgnoreTargetRequirements = true;
+                                spellTemplate.InterruptFlags = 9;
+                                spellTemplate.ChannelInterruptFlags = 31772;
+                                targets.Clear();
+                                targets.Add(SpellWOWTargetType.TargetAny);
+
+                                // Add two more effects
+                                SpellEffectWOW newSpellEffectWOW2 = new SpellEffectWOW();
+                                newSpellEffectWOW2.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModStalked;
+                                newSpellEffects.Add(newSpellEffectWOW2);
+
+                                SpellEffectWOW newSpellEffectWOW3 = new SpellEffectWOW();
+                                newSpellEffectWOW3.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW3.EffectAuraType = SpellWOWAuraType.Dummy;
+                                newSpellEffects.Add(newSpellEffectWOW3);
                             } break;
                         default:
                             {

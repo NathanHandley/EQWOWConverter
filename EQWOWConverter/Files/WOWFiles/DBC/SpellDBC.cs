@@ -61,7 +61,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // TargetAuraSpell
             newRow.AddUInt32(0); // ExcludeCasterAuraSpell
             newRow.AddUInt32(0); // ExcludeTargetAuraSpell
-            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellCastTimeDBCID)); // CastingTimeIndex
+            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellCastTimeDBCID)); // CastingTimeIndex   
             if (spellTemplate.RecoveryTimeInMS < Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS)
                 newRow.AddUInt32(0); // RecoveryTime
             else
@@ -72,7 +72,7 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddUInt32(2); // AuraInterruptFlags
             else
                 newRow.AddUInt32(0); // AuraInterruptFlags
-            newRow.AddUInt32(0); // ChannelInterruptFlags
+            newRow.AddUInt32(spellTemplate.ChannelInterruptFlags); // ChannelInterruptFlags
             newRow.AddUInt32(GetProcFlags(spellTemplate)); // ProcTypeMask
             newRow.AddUInt32(spellTemplate.ProcChance); // ProcChance
             newRow.AddUInt32(0); // ProcCharges
@@ -226,6 +226,8 @@ namespace EQWOWConverter.WOWFiles
             attributeFlags |= 65536; // SPELL_ATTR0_NOT_SHAPESHIFTED (0x00010000)
             if (preventClickOff == true)
                 attributeFlags |= 2147483648; // SPELL_ATTR0_NO_AURA_CANCEL (0x80000000)
+            if (spellTemplate.ForceAsDebuff == true)
+                attributeFlags |= 67108864; // SPELL_ATTR0_AURA_IS_DEBUFF (0x04000000)
             return attributeFlags;
         }
 
@@ -236,6 +238,18 @@ namespace EQWOWConverter.WOWFiles
             UInt32 attributeFlags = 0;
             if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
                 attributeFlags |= 32; // 	SPELL_ATTR1_ALLOW_WHILE_STEALTHED (0x00000020)
+            if (spellTemplate.IsChanneled == true)
+                attributeFlags |= 4; // SPELL_ATTR1_IS_CHANNELED (0x00000004)
+            if (spellTemplate.IsFarSight == true)
+            {
+                attributeFlags |= 8192; // SPELL_ATTR1_TOGGLE_FAR_SIGHT (0x00002000)
+                attributeFlags |= 131072; // SPELL_ATTR1_NO_AUTOCAST_AI
+                attributeFlags |= 524288; // SPELL_ATTR1_EXCLUDE_CASTER
+                attributeFlags |= 67108864; // SPELL_ATTR1_REQUIRE_ALL_TARGETS
+            }
+            if (spellTemplate.GenerateNoThreat == true)
+                attributeFlags |= 1024; // SPELL_ATTR1_NO_THREAT (	0x00000400)
+                
             return attributeFlags;
         }
 
@@ -255,7 +269,13 @@ namespace EQWOWConverter.WOWFiles
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 1048576;
-            return 0;
+            UInt32 attributeFlags = 0;
+            if (spellTemplate.IsFarSight)
+            {
+                attributeFlags |= 65536; // SPELL_ATTR3_SUPPRESS_CASTER_PROCS
+                attributeFlags |= 131072; // SPELL_ATTR3_SUPPRESS_TARGET_PROCS
+            }
+            return attributeFlags;
         }
 
         private UInt32 GetAttributesExD(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
@@ -278,6 +298,8 @@ namespace EQWOWConverter.WOWFiles
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 393224;
             UInt32 attributeFlags = 0;
+            if (spellTemplate.IgnoreTargetRequirements == true)
+                attributeFlags |= 2097152; // 	SPELL_ATTR5_IGNORE_TARGET_REQUIREMENTS
             return attributeFlags;
         }
 
@@ -288,6 +310,11 @@ namespace EQWOWConverter.WOWFiles
             UInt32 attributeFlags = 0;
             if (spellTemplate.DoNotInterruptAutoActionsAndSwingTimers == true)
                 attributeFlags |= 33554432; // 	SPELL_ATTR6_DOESNT_RESET_SWING_TIMER_IF_INSTANT (0x02000000)
+            if (spellTemplate.IsFarSight == true)
+            {
+                attributeFlags |= 4; // SPELL_ATTR6_NOT_AN_ATTACK (0x00000004)
+                attributeFlags |= 8; // SPELL_ATTR6_CAN_ASSIST_IMMUNE_PC
+            }
             return attributeFlags;
         }
 

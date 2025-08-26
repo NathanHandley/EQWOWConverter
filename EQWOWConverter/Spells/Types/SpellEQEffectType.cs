@@ -84,8 +84,8 @@ namespace EQWOWConverter.Spells
         TotalHP = 69,
         //....
         // NecPet = 71 // Undead / Necromancer pet
-        //....
-        // BindSight = 73
+        // PreserveCorpse = 72 // Probably not going to use this
+        BindSight = 73,
         // FeignDeath = 74
         //....
         // LocateCorpse = 77
