@@ -80,7 +80,7 @@ namespace EQWOWConverter.Spells
         // InfraVision = 65,
         // UltraVision = 66,
         // EyeOfZomm = 67,
-        // ReclainPet = 68 // Destroys pet and gives some of the mana back
+        // ReclaimPet = 68 // Destroys pet and gives some of the mana back
         TotalHP = 69,
         //....
         // NecPet = 71 // Undead / Necromancer pet
@@ -116,7 +116,7 @@ namespace EQWOWConverter.Spells
         // CallPet = 103,
         // Translocate = 104, // Move the target to a place
         ResistAll = 111,
-        // ReverseDamageShield = 121, -- Not used before Planes of Power
+        //ReverseDamageShield = 121, -- Not used before Planes of Power
         //DispelDetrimental = 154, -- Not used (Purify Soul, AA ability)
         //DispelBeneficial = 209, -- Not used
         Invisibility = 314,
