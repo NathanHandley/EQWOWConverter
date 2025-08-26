@@ -1979,8 +1979,11 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.IgnoreTargetRequirements = true;
                                 spellTemplate.InterruptFlags = 9;
                                 spellTemplate.ChannelInterruptFlags = 31772;
-                                targets.Clear();
-                                targets.Add(SpellWOWTargetType.TargetAny);
+                                if (targets[0] != SpellWOWTargetType.Pet)
+                                {
+                                    targets.Clear();
+                                    targets.Add(SpellWOWTargetType.TargetAny);
+                                }
 
                                 // Add two more effects
                                 SpellEffectWOW newSpellEffectWOW2 = new SpellEffectWOW();
