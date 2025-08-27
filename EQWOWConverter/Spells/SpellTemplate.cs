@@ -1994,6 +1994,12 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("allows the caster to see through the target's eyes");
                                 newSpellEffectWOW.AuraDescription = string.Concat("sight granted through target's eyes");
                                 newSpellEffects.Add(newSpellEffectWOW);
+
+                                SpellEffectWOW newSpellEffectWOW2 = new SpellEffectWOW();
+                                newSpellEffectWOW2.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModStalked;
+                                newSpellEffects.Add(newSpellEffectWOW2);
+
                                 spellTemplate.IsChanneled = true;
                                 spellTemplate.ForceAsDebuff = true;
                                 spellTemplate.IsFarSight = true;
@@ -2001,21 +2007,31 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.IgnoreTargetRequirements = true;
                                 spellTemplate.InterruptFlags = 9;
                                 spellTemplate.ChannelInterruptFlags = 31772;
+
                                 if (targets[0] != SpellWOWTargetType.Pet)
                                 {
                                     targets.Clear();
                                     targets.Add(SpellWOWTargetType.TargetAny);
                                 }
+                            } break;
+                        case SpellEQEffectType.DivineAura:
+                            {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.SchoolImmunity;
+                                newSpellEffectWOW.ActionDescription = string.Concat("grants invulnerability but stops any ability to attack or cast");
+                                newSpellEffectWOW.AuraDescription = string.Concat("invulnerable");
+                                newSpellEffectWOW.EffectMiscValueA = 127;
+                                newSpellEffects.Add(newSpellEffectWOW);
 
-                                // Add two more effects
                                 SpellEffectWOW newSpellEffectWOW2 = new SpellEffectWOW();
                                 newSpellEffectWOW2.EffectType = SpellWOWEffectType.ApplyAura;
-                                newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModStalked;
+                                newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModPacify;
                                 newSpellEffects.Add(newSpellEffectWOW2);
 
                                 SpellEffectWOW newSpellEffectWOW3 = new SpellEffectWOW();
-                                newSpellEffectWOW3.EffectType = SpellWOWEffectType.ApplyAura;
-                                newSpellEffectWOW3.EffectAuraType = SpellWOWAuraType.Dummy;
+                                newSpellEffectWOW2.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModPacifySilence;
                                 newSpellEffects.Add(newSpellEffectWOW3);
                             } break;
                         default:

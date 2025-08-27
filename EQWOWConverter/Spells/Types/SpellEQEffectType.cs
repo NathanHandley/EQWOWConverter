@@ -57,7 +57,7 @@ namespace EQWOWConverter.Spells
         DiseaseCounter = 35,
         PoisonCounter = 36,
         //....
-        // DivineAura = 40 - Note: Can't cast or melee
+        DivineAura = 40, // - Note: Can't cast or melee
         //....
         ResistFire = 46,
         ResistCold = 47,
