@@ -1563,10 +1563,6 @@ namespace EQWOWConverter
 
         public void GenerateCustomSpells(ref List<SpellTemplate> spellTemplates)
         {
-            Logger.WriteDebug("Creating custom spells");
-            List<ClassType> casterClassTypes = new List<ClassType> { ClassType.Priest, ClassType.Shaman, ClassType.Mage, ClassType.Druid, ClassType.Warlock };
-            List<ClassType> meleeClassTypes = new List<ClassType> { ClassType.Warrior, ClassType.Paladin, ClassType.Hunter, ClassType.Rogue, ClassType.DeathKnight };
-
             // Custom Gate
             SpellTemplate gateSpellTemplate = new SpellTemplate();
             gateSpellTemplate.Name = "Gate";

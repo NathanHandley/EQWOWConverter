@@ -406,8 +406,8 @@ namespace EQWOWConverter.Creatures
                     } break;
                 //case 33: // Enchanter GM (switching it to an enchanter)
                 //    {
-                //        creatureTemplate.ClassTrainerType = ClassType.Warlock;
-                //        creatureTemplate.SubName = "Warlock Trainer";
+                //        creatureTemplate.ClassTrainerType = ClassType.Priest;
+                //        creatureTemplate.SubName = "Priest Trainer";
                 //    } break;
                 case 34: // Beastlord GM
                     {

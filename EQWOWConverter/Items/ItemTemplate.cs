@@ -720,7 +720,7 @@ namespace EQWOWConverter.Items
                 return classTypes;
             }
 
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Necromancer, classMask) || IsPackedClassMask(ItemEQClassBitmaskType.Enchanter, classMask))
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Necromancer, classMask))
                 classTypes.Add(ClassType.Warlock);
             if (IsPackedClassMask(ItemEQClassBitmaskType.Wizard, classMask) || IsPackedClassMask(ItemEQClassBitmaskType.Magician, classMask))
                 classTypes.Add(ClassType.Mage);
@@ -738,7 +738,7 @@ namespace EQWOWConverter.Items
                 classTypes.Add(ClassType.Paladin);
             if (IsPackedClassMask(ItemEQClassBitmaskType.ShadowKnight, classMask))
                 classTypes.Add(ClassType.DeathKnight);
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask))
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask) || IsPackedClassMask(ItemEQClassBitmaskType.Enchanter, classMask))
                 classTypes.Add(ClassType.Priest);
 
             // If set, collapse common armors and weapons
