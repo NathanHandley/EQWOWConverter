@@ -328,6 +328,11 @@ namespace EQWOWConverter.WOWFiles
                 procFlags |= 8192; // PROC_FLAG_TAKEN_SPELL_NONE_DMG_CLASS_NEG
                 procFlags |= 131072; // PROC_FLAG_TAKEN_SPELL_MAGIC_DMG_CLASS_NEG
             }
+            if (spellTemplate.ProcsOnMeleeAttacks == true)
+            {
+                procFlags |= 4; //	PROC_FLAG_DONE_MELEE_AUTO_ATTACK
+                procFlags |= 16; // PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS
+            }
             return procFlags;
         }
     }

@@ -145,6 +145,7 @@ namespace EQWOWConverter.Spells
         public bool IsTransferEffectType = false;
         public int RecourseLinkEQSpellID = 0;
         public SpellTemplate? RecourseLinkSpellTemplate = null;
+        public int ProcLinkEQSpellID = 0;
         public int WOWSpellIDCastOnMeleeAttacker = 0;
         public bool HideCaster = false;
         public bool TriggersGlobalCooldown = true;
@@ -155,6 +156,7 @@ namespace EQWOWConverter.Spells
         public bool IsFarSight = false;
         public bool GenerateNoThreat = false;
         public bool IgnoreTargetRequirements = false;
+        public bool ProcsOnMeleeAttacks = false;
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -278,20 +280,33 @@ namespace EQWOWConverter.Spells
             {
                 SpellTemplate spellTemplate = SpellTemplatesByEQID[eqSpellID];
 
-                SpellTemplate? linkedSpellTemplate = null;
+                SpellTemplate? recourseSpellTemplate = null;
                 if (spellTemplate.RecourseLinkEQSpellID != 0)
                 {
                     if (SpellTemplatesByEQID.ContainsKey(spellTemplate.RecourseLinkEQSpellID) == false)
-                        Logger.WriteError("Spell with eqid ", eqSpellID.ToString(), " has a linked spell eqid ", spellTemplate.RecourseLinkEQSpellID.ToString(), " which did not exist");
+                        Logger.WriteError("Spell with eqid ", eqSpellID.ToString(), " has a linked recourse spell eqid ", spellTemplate.RecourseLinkEQSpellID.ToString(), " which did not exist");
                     else
                     {
-                        linkedSpellTemplate = SpellTemplatesByEQID[spellTemplate.RecourseLinkEQSpellID];
-                        spellTemplate.RecourseLinkSpellTemplate = linkedSpellTemplate;
+                        recourseSpellTemplate = SpellTemplatesByEQID[spellTemplate.RecourseLinkEQSpellID];
+                        spellTemplate.RecourseLinkSpellTemplate = recourseSpellTemplate;
+                    }
+                }
+                SpellTemplate? procLinkSpellTemplate = null;
+                if (spellTemplate.ProcLinkEQSpellID != 0)
+                {
+                    if (SpellTemplatesByEQID.ContainsKey(spellTemplate.ProcLinkEQSpellID) == false)
+                        Logger.WriteError("Spell with eqid ", eqSpellID.ToString(), " has a linked proc spell eqid ", spellTemplate.ProcLinkEQSpellID.ToString(), " which did not exist");
+                    else
+                    {
+                        procLinkSpellTemplate = SpellTemplatesByEQID[spellTemplate.ProcLinkEQSpellID];
+                        foreach (SpellEffectWOW spellEffectWOW in spellTemplate.WOWSpellEffects)
+                            if (spellEffectWOW.EffectTriggerSpell == spellTemplate.ProcLinkEQSpellID)
+                                spellEffectWOW.EffectTriggerSpell = SpellTemplatesByEQID[spellTemplate.ProcLinkEQSpellID].WOWSpellID;
                     }
                 }
 
                 // Set the spell and aura descriptions
-                SetActionAndAuraDescriptions(ref spellTemplate, linkedSpellTemplate);
+                SetActionAndAuraDescriptions(ref spellTemplate, recourseSpellTemplate, procLinkSpellTemplate);
             }
         }
 
@@ -2034,6 +2049,26 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModPacifySilence;
                                 newSpellEffects.Add(newSpellEffectWOW3);
                             } break;
+                        case SpellEQEffectType.WeaponProc:
+                            {
+                                if (spellTemplate.ProcLinkEQSpellID != 0)
+                                {
+                                    Logger.WriteError("Proc effect already bound to eq spell id ", spellTemplate.EQSpellID.ToString());
+                                    continue;
+                                }
+                                spellTemplate.ProcLinkEQSpellID = eqEffect.EQBaseValue;
+                                spellTemplate.ProcsOnMeleeAttacks = true;
+                                spellTemplate.ProcChance = Convert.ToUInt32(Configuration.SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE);
+
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ProcTriggerSpell;
+                                newSpellEffectWOW.ActionDescription = string.Concat("imbues the caster's attacks");
+                                newSpellEffectWOW.EffectTriggerSpell = eqEffect.EQBaseValue;
+
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            }
+                            break;
                         default:
                             {
                                 Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
@@ -2094,15 +2129,24 @@ namespace EQWOWConverter.Spells
             spellTemplate.SpellGroupStackingID = groupStackingID;
         }
 
-        private static void SetActionAndAuraDescriptions(ref SpellTemplate spellTemplate, SpellTemplate? linkedSpellTemplate)
+        private static void SetActionAndAuraDescriptions(ref SpellTemplate spellTemplate, SpellTemplate? recourseSpellTemplate, SpellTemplate? procLinkSpellTemplate)
         {
             // Action Description
             spellTemplate.Description = GenerateActionDescription(spellTemplate);
-            if (linkedSpellTemplate != null)
-                spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nOn success also cast:\n", linkedSpellTemplate.Name, "\n", GenerateActionDescription(linkedSpellTemplate));
+            if (recourseSpellTemplate != null)
+                spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nOn success also cast:\n", recourseSpellTemplate.Name, "\n", GenerateActionDescription(recourseSpellTemplate));
+            if (procLinkSpellTemplate != null)
+                spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nSometimes on hit cast:\n", procLinkSpellTemplate.Name, "\n", GenerateActionDescription(procLinkSpellTemplate));
 
             // Aura Description
             spellTemplate.AuraDescription = GenerateAuraDescription(spellTemplate);
+            if (procLinkSpellTemplate != null)
+            {
+                if (spellTemplate.AuraDescription.Length == 0)
+                    spellTemplate.AuraDescription = string.Concat("Sometimes casts ", procLinkSpellTemplate.Name, " on strike.");
+                else
+                    spellTemplate.AuraDescription = string.Concat(spellTemplate.AuraDescription, " Sometimes casts ", procLinkSpellTemplate.Name, " on strike.");
+            }
         }
 
         private static string GenerateActionDescription(SpellTemplate spellTemplate)
@@ -2157,6 +2201,8 @@ namespace EQWOWConverter.Spells
                     descriptionTextHasBeenAddedToAura = true;
                 }
             }
+            if (auraSB.Length == 0)
+                return string.Empty;
 
             // Store and control capitalization
             auraSB.Append('.');

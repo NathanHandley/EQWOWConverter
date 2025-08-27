@@ -496,11 +496,12 @@ namespace EQWOWConverter
         // All spell properties
         public static readonly int SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = 16000;
 
+        // How often weapon procs occur
+        public static readonly int SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE = 25;
+        public static readonly int SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE = 25;
+
         // How long rogue poisons stay on the weapons
         public static readonly int SPELL_ENCHANT_ROGUE_POISON_ENCHANT_DURATION_ON_WEAPON_TIME_IN_SECONDS = 3600;
-
-        // How often to proc rogue poisons on weapons
-        public static readonly int SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE = 25;
 
         // How long it takes to apply rogue poison
         public static readonly int SPELL_ENCHANT_ROGUE_POISON_APPLY_TIME_IN_MS = 4000;
