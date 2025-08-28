@@ -134,23 +134,23 @@ namespace EQWOWConverter.Creatures
                 // Skip invalid creatures
                 string namePreFormat = columns["name"];
                 string spawnZones = columns["spawnzones"].Trim();
-                //if (allSpellPetNameTypes.Contains(namePreFormat) == false)
-                //{
-                //    if (spawnZones.Length == 0)
-                //        continue;
-                //    bool zoneShortNameFound = false;
-                //    string[] spawnZoneShortNames = spawnZones.Split(',');
-                //    foreach (string spawnZoneShortName in spawnZoneShortNames)
-                //    {
-                //        if (zonePropertiesByShortName.ContainsKey(spawnZoneShortName))
-                //        {
-                //            zoneShortNameFound = true;
-                //            break;
-                //        }
-                //    }
-                //    if (zoneShortNameFound == false)
-                //        continue;
-                //}
+                if (allSpellPetNameTypes.Contains(namePreFormat) == false)
+                {
+                    if (spawnZones.Length == 0)
+                        continue;
+                    bool zoneShortNameFound = false;
+                    string[] spawnZoneShortNames = spawnZones.Split(',');
+                    foreach (string spawnZoneShortName in spawnZoneShortNames)
+                    {
+                        if (zonePropertiesByShortName.ContainsKey(spawnZoneShortName))
+                        {
+                            zoneShortNameFound = true;
+                            break;
+                        }
+                    }
+                    if (zoneShortNameFound == false)
+                        continue;
+                }
                 if (int.Parse(columns["enabled"]) == 0)
                     continue;
 
