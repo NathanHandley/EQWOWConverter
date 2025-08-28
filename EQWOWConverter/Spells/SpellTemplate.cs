@@ -2088,6 +2088,7 @@ namespace EQWOWConverter.Spells
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.SummonPet;
                                 newSpellEffectWOW.EffectMiscValueA = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].WOWCreatureTemplateID;
+                                newSpellEffectWOW.ActionDescription = "summon a companion to fight by your side";
                                 newSpellEffects.Add(newSpellEffectWOW);
 
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;
