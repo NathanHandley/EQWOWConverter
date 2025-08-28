@@ -158,6 +158,8 @@ namespace EQWOWConverter.Spells
         public bool GenerateNoThreat = false;
         public bool IgnoreTargetRequirements = false;
         public bool ProcsOnMeleeAttacks = false;
+        public SpellPet? SummonSpellPet = null;
+        public int SummonPropertiesDBCID = 0;
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -2084,11 +2086,22 @@ namespace EQWOWConverter.Spells
                                     Logger.WriteError("Could not assign pet for eq spell id ", spellTemplate.EQSpellID.ToString(), " as there was no eq creature template ID of ", spellPet.EQCreatureTemplateID.ToString());
                                     continue;
                                 }
+                                spellTemplate.SummonSpellPet = spellPet;
 
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
-                                newSpellEffectWOW.EffectType = SpellWOWEffectType.SummonPet;
                                 newSpellEffectWOW.EffectMiscValueA = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].WOWCreatureTemplateID;
-                                newSpellEffectWOW.ActionDescription = "summon a companion to fight by your side";
+                                if (Configuration.SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR == true)
+                                {
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.Summon;
+                                    newSpellEffectWOW.ActionDescription = "summon a companion to fight by your side";
+                                    spellTemplate.SummonPropertiesDBCID = SummonPropertiesDBC.GenerateUniqueID();
+                                    newSpellEffectWOW.EffectMiscValueB = spellTemplate.SummonPropertiesDBCID;
+                                }
+                                else
+                                {
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.SummonPet;
+                                    newSpellEffectWOW.ActionDescription = "summon a companion to fight by your side";
+                                }
                                 newSpellEffects.Add(newSpellEffectWOW);
 
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;

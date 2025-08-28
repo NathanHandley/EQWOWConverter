@@ -183,6 +183,8 @@ namespace EQWOWConverter
             spellVisualEffectNameDBC.LoadFromDisk(dbcInputFolder, "SpellVisualEffectName.dbc");
             SpellVisualKitDBC spellVisualKitDBC = new SpellVisualKitDBC();
             spellVisualKitDBC.LoadFromDisk(dbcInputFolder, "SpellVisualKit.dbc");
+            SummonPropertiesDBC summonPropertiesDBC = new SummonPropertiesDBC();
+            summonPropertiesDBC.LoadFromDisk(dbcInputFolder, "SummonProperties.dbc");
             TaxiPathDBC taxiPathDBC = new TaxiPathDBC();
             taxiPathDBC.LoadFromDisk(dbcInputFolder, "TaxiPath.dbc");
             TaxiPathNodeDBC taxiPathNodeDBC = new TaxiPathNodeDBC();
@@ -489,8 +491,14 @@ namespace EQWOWConverter
                         Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE, spellTemplate.WeaponItemEnchantSpellName);
                 }
 
+                // Skill-bound spells
                 if (spellTemplate.SkillLine != 0)
                     skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate);
+
+                // Pets
+                if (Configuration.SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR == true)
+                    if (spellTemplate.SummonSpellPet != null)
+                        summonPropertiesDBC.AddRow(spellTemplate.SummonPropertiesDBCID, spellTemplate.SummonSpellPet);
             }
             foreach (var spellCastTimeDBCIDByCastTime in SpellTemplate.SpellCastTimeDBCIDsByCastTime)
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
@@ -699,6 +707,8 @@ namespace EQWOWConverter
             spellVisualEffectNameDBC.SaveToDisk(dbcOutputServerFolder);
             spellVisualKitDBC.SaveToDisk(dbcOutputClientFolder);
             spellVisualKitDBC.SaveToDisk(dbcOutputServerFolder);
+            summonPropertiesDBC.SaveToDisk(dbcOutputClientFolder);
+            summonPropertiesDBC.SaveToDisk(dbcOutputServerFolder);
             taxiPathDBC.SaveToDisk(dbcOutputClientFolder);
             taxiPathDBC.SaveToDisk(dbcOutputServerFolder);
             taxiPathNodeDBC.SaveToDisk(dbcOutputClientFolder);

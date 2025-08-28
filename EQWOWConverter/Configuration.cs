@@ -456,6 +456,11 @@ namespace EQWOWConverter
         //=====================================================================
         // Spells
         //=====================================================================
+        // If this is true, use the level as defined in everquest for summoned pets as well
+        // as the control behavior.  Otherwise it will behave like a controllable pet and
+        // is level aligned with the player
+        // NOTE: Not currently working right, so leave false
+        public static readonly bool SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR = false;
 
         // If true, spells will balance around level 60 being the cap (EQ-like),
         // otherwise it will be 80 like WOTLK
@@ -689,6 +694,9 @@ namespace EQWOWConverter
         public static readonly int DBCID_SPELLVISUAL_ID_START = 17000;
         public static readonly int DBCID_SPELLVISUALKIT_ID_START = 16000;
         public static readonly int DBCID_SPELLVISUALEFFECTNAME_ID_START = 7200;
+
+        // IDs for SummonProperties.dbc
+        public static readonly int DBCID_SUMMONPROPERTIES_ID_START = 3100;
 
         // ID for TaxiPath.dbc
         public static readonly int DBCID_TAXIPATH_ID_START = 2000;
