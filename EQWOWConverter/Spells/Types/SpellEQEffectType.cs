@@ -52,7 +52,7 @@ namespace EQWOWConverter.Spells
         Mez = 31,
         SummonItems = 32,
         // SummonPet = 33
-        // Confuse = 34
+        // Confuse = 34 -- Does not exist, skip it
         //....
         DiseaseCounter = 35,
         PoisonCounter = 36,
