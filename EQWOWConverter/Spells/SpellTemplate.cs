@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Creatures;
 using EQWOWConverter.Items;
 using EQWOWConverter.Tradeskills;
 using EQWOWConverter.WOWFiles;
@@ -191,7 +192,8 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        public static void LoadSpellTemplates(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, Dictionary<string, ZoneProperties> zonePropertiesByShortName)
+        public static void LoadSpellTemplates(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, Dictionary<string, ZoneProperties> zonePropertiesByShortName,
+            ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID)
         {
             // Load the spell templates
             string spellTemplatesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpellTemplates.csv");
@@ -240,7 +242,7 @@ namespace EQWOWConverter.Spells
                 int eqTargetTypeID = int.Parse(columns["targettype"]);
                 bool isDetrimental = int.Parse(columns["goodEffect"]) == 0 ? true : false; // "2" should be non-detrimental group only (not caster).  Ignoring that for now.
                 List<SpellWOWTargetType> targets = CalculateTargets(ref newSpellTemplate, eqTargetTypeID, isDetrimental, newSpellTemplate.EQSpellEffects, newSpellTemplate.SpellRange, newSpellTemplate.SpellRadius);
-                string teleportZoneName = columns["teleport_zone"];
+                string teleportZoneOrPetTypeName = columns["teleport_zone"];
 
                 // Visual
                 int spellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
@@ -259,8 +261,8 @@ namespace EQWOWConverter.Spells
                 // Convert the spell effects
                 SpellTemplate? effectGeneratedSpellTemplate;
                 ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration.MaxDurationInMS, 
-                    newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneName, zonePropertiesByShortName,
-                    out effectGeneratedSpellTemplate);
+                    newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneOrPetTypeName, zonePropertiesByShortName,
+                    out effectGeneratedSpellTemplate, ref creatureTemplatesByEQID);
 
                 // If there is no wow effect, skip it
                 if (newSpellTemplate.WOWSpellEffects.Count == 0)
@@ -755,7 +757,8 @@ namespace EQWOWConverter.Spells
 
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, int auraDurationInMS, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID,
-            bool isDetrimental, string teleportZoneName, Dictionary<string, ZoneProperties> zonePropertiesByShortName, out SpellTemplate? effectGeneratedSpellTemplate)
+            bool isDetrimental, string teleportZoneOrPetTypeName, Dictionary<string, ZoneProperties> zonePropertiesByShortName, out SpellTemplate? effectGeneratedSpellTemplate,
+            ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID)
         {
             effectGeneratedSpellTemplate = null;
             bool hasSpellDuration = auraDurationInMS > 0;
@@ -1802,9 +1805,9 @@ namespace EQWOWConverter.Spells
                             } break;
                         case SpellEQEffectType.Teleport:
                             {
-                                if (zonePropertiesByShortName.ContainsKey(teleportZoneName) == false)
+                                if (zonePropertiesByShortName.ContainsKey(teleportZoneOrPetTypeName) == false)
                                 {
-                                    Logger.WriteDebug("Could not convert teleport spell effect for eq spell id ", spellTemplate.EQSpellID.ToString(), " since there is no output zone properties loaded for zone short name ", teleportZoneName);
+                                    Logger.WriteDebug("Could not convert teleport spell effect for eq spell id ", spellTemplate.EQSpellID.ToString(), " since there is no output zone properties loaded for zone short name ", teleportZoneOrPetTypeName);
                                     continue;
                                 }
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
@@ -1812,8 +1815,8 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.TeleportUnits;
                                 newSpellEffectWOW.EffectDieSides = 1;
                                 newSpellEffectWOW.EffectBasePoints = -1;
-                                newSpellEffectWOW.ActionDescription = string.Concat("teleports the affected to ", zonePropertiesByShortName[teleportZoneName].DescriptiveName);
-                                newSpellEffectWOW.TeleMapID = zonePropertiesByShortName[teleportZoneName].DBCMapID;
+                                newSpellEffectWOW.ActionDescription = string.Concat("teleports the affected to ", zonePropertiesByShortName[teleportZoneOrPetTypeName].DescriptiveName);
+                                newSpellEffectWOW.TeleMapID = zonePropertiesByShortName[teleportZoneOrPetTypeName].DBCMapID;
 
                                 // Position
                                 Vector3 telePosition = new Vector3(eqEffect.EQTelePosition);
@@ -1910,7 +1913,7 @@ namespace EQWOWConverter.Spells
                                     effectGeneratedSpellTemplate.EQSpellEffects.Add(healEQEffect);
                                     SpellTemplate? discardTemplate;
                                     ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, 0, 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.TargetUnitAny },
-                                        0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate);
+                                        0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID);
 
                                     // Proc effect for the heal
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
@@ -2067,8 +2070,28 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectTriggerSpell = eqEffect.EQBaseValue;
 
                                 newSpellEffects.Add(newSpellEffectWOW);
-                            }
-                            break;
+                            } break;
+                        case SpellEQEffectType.SummonPet:
+                            {
+                                SpellPet? spellPet = SpellPet.GetSpellPetByTypeName(teleportZoneOrPetTypeName);
+                                if (spellPet == null)
+                                {
+                                    Logger.WriteError("Could not assign pet for eq spell id ", spellTemplate.EQSpellID.ToString(), " as there was no typename of ", teleportZoneOrPetTypeName);
+                                    continue;
+                                }
+                                if (creatureTemplatesByEQID.ContainsKey(spellPet.EQCreatureTemplateID) == false)
+                                {
+                                    Logger.WriteError("Could not assign pet for eq spell id ", spellTemplate.EQSpellID.ToString(), " as there was no eq creature template ID of ", spellPet.EQCreatureTemplateID.ToString());
+                                    continue;
+                                }
+
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.SummonPet;
+                                newSpellEffectWOW.EffectMiscValueA = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].WOWCreatureTemplateID;
+                                newSpellEffects.Add(newSpellEffectWOW);
+
+                                creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;
+                            } break;
                         default:
                             {
                                 Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());

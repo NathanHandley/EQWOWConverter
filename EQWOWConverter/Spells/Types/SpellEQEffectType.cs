@@ -51,9 +51,8 @@ namespace EQWOWConverter.Spells
         //....
         Mez = 31,
         SummonItems = 32,
-        // SummonPet = 33
+        SummonPet = 33,
         // Confuse = 34 -- Does not exist, skip it
-        //....
         DiseaseCounter = 35,
         PoisonCounter = 36,
         //....
@@ -64,7 +63,6 @@ namespace EQWOWConverter.Spells
         ResistPoison = 48,
         ResistDisease = 49,
         ResistMagic = 50,
-        //....
         // DetectTraps = 51
         // SenseDead = 52
         // SenseSummoned = 53
@@ -115,12 +113,19 @@ namespace EQWOWConverter.Spells
         // Fearless = 102,
         // CallPet = 103,
         // Translocate = 104, // Move the target to a place
+        //....
         ResistAll = 111,
+        //....
         //ReverseDamageShield = 121, -- Not used before Planes of Power
+        //....
         //DispelDetrimental = 154, -- Not used (Purify Soul, AA ability)
+        //....
         //DispelBeneficial = 209, -- Not used
+        //....
         Invisibility = 314,
+        //....
         CurrentManaOnce = 358,
+        //....
         // TODO: Goes up to 526
     }
 }

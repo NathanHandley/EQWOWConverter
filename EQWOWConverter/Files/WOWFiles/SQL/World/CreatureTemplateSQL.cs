@@ -144,7 +144,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("VehicleId", 0);
             newRow.AddInt("mingold", creatureTemplate.MoneyMinInCopper); // "mingold" in the DB, but value is actually copper
             newRow.AddInt("maxgold", creatureTemplate.MoneyMaxInCopper); // "maxgold" in the DB, but value is actually copper
-            if (creatureTemplate.HasSmartScript == true)
+            if (creatureTemplate.IsPet == true)
+                newRow.AddString("AIName", 64, "PetAI");
+            else if (creatureTemplate.HasSmartScript == true)
                 newRow.AddString("AIName", 64, "SmartAI");
             else
                 newRow.AddString("AIName", 64, string.Empty);

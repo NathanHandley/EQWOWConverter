@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Spells;
 using EQWOWConverter.Tradeskills;
 using EQWOWConverter.Zones;
 
@@ -74,6 +75,7 @@ namespace EQWOWConverter.Creatures
         public List<CreatureSpellEntry> CreatureSpellEntriesHeal = new List<CreatureSpellEntry>();
         public List<CreatureSpellEntry> CreatureSpellEntriesOutOfCombatBuff = new List<CreatureSpellEntry>();        
         public List<(int, int)> AttackEQSpellIDAndProcChance = new List<(int, int)>();
+        public bool IsPet = false;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         
@@ -120,6 +122,9 @@ namespace EQWOWConverter.Creatures
             // Get the zone properties list for lookups
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
 
+            // Get spell pets also for lookups
+            List<string> allSpellPetNameTypes = SpellPet.GetAllSpellTypeNames();
+
             // Load all of the creature data
             string creatureTemplatesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureTemplates.csv");
             Logger.WriteDebug("Populating Creature Template list via file '" + creatureTemplatesFile + "'");           
@@ -127,21 +132,25 @@ namespace EQWOWConverter.Creatures
             foreach (Dictionary<string, string> columns in rows)
             {
                 // Skip invalid creatures
+                string namePreFormat = columns["name"];
                 string spawnZones = columns["spawnzones"].Trim();
-                if (spawnZones.Length == 0)
-                    continue;
-                bool zoneShortNameFound = false;
-                string[] spawnZoneShortNames = spawnZones.Split(',');
-                foreach (string spawnZoneShortName in spawnZoneShortNames)
-                {
-                    if (zonePropertiesByShortName.ContainsKey(spawnZoneShortName))
-                    {
-                        zoneShortNameFound = true;
-                        break;
-                    }
-                }
-                if (zoneShortNameFound == false)
-                    continue;
+                //if (allSpellPetNameTypes.Contains(namePreFormat) == false)
+                //{
+                //    if (spawnZones.Length == 0)
+                //        continue;
+                //    bool zoneShortNameFound = false;
+                //    string[] spawnZoneShortNames = spawnZones.Split(',');
+                //    foreach (string spawnZoneShortName in spawnZoneShortNames)
+                //    {
+                //        if (zonePropertiesByShortName.ContainsKey(spawnZoneShortName))
+                //        {
+                //            zoneShortNameFound = true;
+                //            break;
+                //        }
+                //    }
+                //    if (zoneShortNameFound == false)
+                //        continue;
+                //}
                 if (int.Parse(columns["enabled"]) == 0)
                     continue;
 
@@ -158,7 +167,7 @@ namespace EQWOWConverter.Creatures
                 if (newCreatureTemplate.Name.StartsWith("#") == true && newCreatureTemplate.Name.StartsWith("##") == false)
                     newCreatureTemplate.LimitOneInSpawnPool = true;
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace("#", "");
-                newCreatureTemplate.NameNoFormat = columns["name"];
+                newCreatureTemplate.NameNoFormat = namePreFormat;
                 newCreatureTemplate.SubName = columns["lastname"].Replace('_', ' ');
                 newCreatureTemplate.Level = int.Max(int.Parse(columns["level"]), 1);
                 newCreatureTemplate.DefaultEmoteID = int.Max(int.Parse(columns["idle_emote_id"]), 0);

@@ -28,7 +28,7 @@ namespace EQWOWConverter.Spells
         public SpellPetNamingType NamingType = SpellPetNamingType.Pet;
         public bool MonsterFlag = false;
 
-        public static SpellPet GetSpellPetByTypeName(string typeName)
+        public static SpellPet? GetSpellPetByTypeName(string typeName)
         {
             lock (SpellPetLock)
             {
@@ -39,8 +39,18 @@ namespace EQWOWConverter.Spells
                 else
                 {
                     Logger.WriteError("Could not find a spell pet type with name '", typeName);
-                    return new SpellPet();
+                    return null;
                 }
+            }
+        }
+
+        public static List<string> GetAllSpellTypeNames()
+        {
+            lock (SpellPetLock)
+            {
+                if (SpellPetsByTypeName.Count == 0)
+                    LoadSpellPetData();
+                return SpellPetsByTypeName.Keys.ToList();
             }
         }
 

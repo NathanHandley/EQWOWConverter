@@ -75,7 +75,7 @@ namespace EQWOWConverter
 
             // Thread 2: Creatures, Transports and Spawns
             List<CreatureTemplate> creatureTemplates = new List<CreatureTemplate>();
-            Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = new Dictionary<int, CreatureTemplate>();
+            Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
             List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
             List<CreatureSpawnPool> creatureSpawnPools = new List<CreatureSpawnPool>();
             Task creaturesAndSpawnsTask = Task.Factory.StartNew(() =>
@@ -85,8 +85,7 @@ namespace EQWOWConverter
                 // Creatures                
                 if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
                 {
-                    ConvertCreatures(ref creatureModelTemplates, ref creatureTemplates, ref creatureSpawnPools);
-                    creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
+                    ConvertCreatures(creatureTemplatesByEQID, ref creatureModelTemplates, ref creatureTemplates, ref creatureSpawnPools);
                 }
                 else
                     Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
@@ -120,7 +119,7 @@ namespace EQWOWConverter
                             itemTemplatesByWOWEntryID[itemID].IsGivenAsStartItem = true;
 
                 // Spells                                        
-                GenerateSpells(out spellTemplates, itemTemplatesByEQDBID);
+                GenerateSpells(out spellTemplates, itemTemplatesByEQDBID, ref creatureTemplatesByEQID);
 
                 // Tradeskills
                 GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates, out tradeskillRecipes);
@@ -1008,9 +1007,9 @@ namespace EQWOWConverter
             return curZone;
         }
 
-        public bool ConvertCreatures(ref List<CreatureModelTemplate> creatureModelTemplates, ref List<CreatureTemplate> creatureTemplates, 
+        public bool ConvertCreatures(Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, ref List<CreatureModelTemplate> creatureModelTemplates, ref List<CreatureTemplate> creatureTemplates, 
             ref List<CreatureSpawnPool> creatureSpawnPools)
-        {           
+        {
             // Generate folder paths
             string workingTexturePath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
             if (Directory.Exists(workingTexturePath))
@@ -1034,12 +1033,9 @@ namespace EQWOWConverter
 
             Logger.WriteInfo("Converting EQ Creatures (skeletal objects) to WOW creature objects...");
 
-            // Generate templates
-            Dictionary<int, CreatureTemplate> creatureTemplatesByID = CreatureTemplate.GetCreatureTemplateListByEQID();
-            creatureTemplates = creatureTemplatesByID.Values.ToList();
-
             // Create all of the models and related model files
             LogCounter progressionCounter = new LogCounter("Creating creature model files...");
+            creatureTemplates = creatureTemplatesByEQID.Values.ToList();
             CreatureModelTemplate.CreateAllCreatureModelTemplates(creatureTemplates);
             foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
             {
@@ -1110,13 +1106,13 @@ namespace EQWOWConverter
                 {
                     foreach (CreatureSpawnEntry spawnEntry in creatureSpawnEntriesByGroupID[spawnGroup.Key])
                     {
-                        if (creatureTemplatesByID.ContainsKey(spawnEntry.EQCreatureTemplateID))
+                        if (creatureTemplatesByEQID.ContainsKey(spawnEntry.EQCreatureTemplateID))
                         {
-                            curSpawnPool.AddCreatureTemplate(creatureTemplatesByID[spawnEntry.EQCreatureTemplateID], spawnEntry.Chance);
+                            curSpawnPool.AddCreatureTemplate(creatureTemplatesByEQID[spawnEntry.EQCreatureTemplateID], spawnEntry.Chance);
 
                             // If  this is a limited spawn, limit the group
                             // TODO: This should be handled differently, as only specific creature templates should be limited
-                            if (creatureTemplatesByID[spawnEntry.EQCreatureTemplateID].LimitOneInSpawnPool == true)
+                            if (creatureTemplatesByEQID[spawnEntry.EQCreatureTemplateID].LimitOneInSpawnPool == true)
                                 spawnGroup.Value.SpawnLimit = 1;
                         }
                     }
@@ -1501,7 +1497,8 @@ namespace EQWOWConverter
             FileTool.CopyDirectoryAndContents(workingFolder, outputFolder, true, false, "*.blp");
         }
 
-        public void GenerateSpells(out List<SpellTemplate> spellTemplates, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
+        public void GenerateSpells(out List<SpellTemplate> spellTemplates, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, 
+            ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID)
         {
             Logger.WriteInfo("Generating spells...");
 
@@ -1509,7 +1506,7 @@ namespace EQWOWConverter
             SpellVisual.GenerateWOWSpellVisualData();
 
             // Load spell templates
-            SpellTemplate.LoadSpellTemplates(itemTemplatesByEQDBID, ZoneProperties.GetZonePropertyListByShortName());
+            SpellTemplate.LoadSpellTemplates(itemTemplatesByEQDBID, ZoneProperties.GetZonePropertyListByShortName(), ref creatureTemplatesByEQID);
             spellTemplates = SpellTemplate.GetSpellTemplatesByEQID().Values.ToList();
 
             // Add any custom spells
