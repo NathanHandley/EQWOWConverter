@@ -1209,7 +1209,7 @@ namespace EQWOWConverter
 
             // Load the creature spell reference data
             List<CreatureSpellList> creatureSpellLists = CreatureSpellList.GetCreatureSpellLists();
-            Dictionary<int, List<CreatureSpellEntry>> creatureSpellEntriesByListID = CreatureSpellEntry.GetCreatureSpellEntriesByListID();
+            SortedDictionary<int, List<CreatureSpellEntry>> creatureSpellEntriesByListID = CreatureSpellEntry.GetCreatureSpellEntriesByListID();
 
             // Cull the lists down to only list entries that have valid spells within them
             foreach (List<CreatureSpellEntry> creatureSpellEntries in creatureSpellEntriesByListID.Values)

@@ -46,6 +46,7 @@ namespace EQWOWConverter
         private CreatureQuestStarterSQL creatureQuestStarterSQL = new CreatureQuestStarterSQL();
         private CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
         private CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
+        private CreatureTemplateSpellSQL creatureTemplateSpellSQL = new CreatureTemplateSpellSQL();
         private CreatureTextSQL creatureTextSQL = new CreatureTextSQL();
         private GameEventSQL gameEventSQL = new GameEventSQL();
         private GameGraveyardSQL gameGraveyardSQL = new GameGraveyardSQL();
@@ -283,6 +284,30 @@ namespace EQWOWConverter
                         string comment = string.Concat("EQ Attack Proc ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
                         smartScriptsSQL.AddRowForCreatureTemplateApplySpellOnDamageDone(creatureTemplate.WOWCreatureTemplateID, eqSpellIDAndProcChance.Item2,
                             curSpellTemplate.WOWSpellID, comment);
+                    }
+                }
+
+                // Creature spell associations for pet creatures
+                if (creatureTemplate.IsPet == true)
+                {
+                    int curIndex = 0;
+                    foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesOutOfCombatBuff)
+                    {
+                        SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
+                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, curSpellTemplate.WOWSpellID);
+                        curIndex++;
+                    }
+                    foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesHeal)
+                    {
+                        SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
+                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, curSpellTemplate.WOWSpellID);
+                        curIndex++;
+                    }
+                    foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesCombat)
+                    {
+                        SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
+                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, curSpellTemplate.WOWSpellID);
+                        curIndex++;
                     }
                 }
             }
@@ -867,6 +892,7 @@ namespace EQWOWConverter
             creatureModelInfoSQL.SaveToDisk("creature_model_info", SQLFileType.World);
             creatureTemplateSQL.SaveToDisk("creature_template", SQLFileType.World);
             creatureTemplateModelSQL.SaveToDisk("creature_template_model", SQLFileType.World);
+            creatureTemplateSpellSQL.SaveToDisk("creature_template_spell", SQLFileType.World);
             creatureTextSQL.SaveToDisk("creature_text", SQLFileType.World);
             gameEventSQL.SaveToDisk("game_event", SQLFileType.World);
             gameGraveyardSQL.SaveToDisk("game_graveyard", SQLFileType.World);

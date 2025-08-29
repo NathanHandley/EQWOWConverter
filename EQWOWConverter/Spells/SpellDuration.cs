@@ -98,6 +98,11 @@ namespace EQWOWConverter.Spells
                 BaseDurationInMS = calcMS;
                 MaxDurationInMS = calcMS;
             }
+            else if (eqBuffDurationFormula == 50)
+            {
+                IsInfinite = true;
+                return;
+            }
             else
             {
                 if (maxBuffDurationInTicks > 0)
@@ -148,6 +153,7 @@ namespace EQWOWConverter.Spells
                 case 9: curDurationInTicks = (curLevel * 2) + 10; break;
                 case 10: curDurationInTicks = (curLevel * 3) + 10; break;
                 case 11: curDurationInTicks = ((curLevel + 3) * 30); break;
+                case 50: curDurationInTicks = 0; break; // Unlimited
                 default:
                     {
                         Logger.WriteError("Unhandled type of eqBuffDurationFormula of ", eqBuffDurationFormula.ToString());

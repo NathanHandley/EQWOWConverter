@@ -18,7 +18,7 @@ namespace EQWOWConverter.Creatures
 {
     internal struct CreatureSpellEntry : IComparable<CreatureSpellEntry>
     {
-        private static Dictionary<int, List<CreatureSpellEntry>> CreatureSpellEntriesByListID = new Dictionary<int, List<CreatureSpellEntry>>();
+        private static SortedDictionary<int, List<CreatureSpellEntry>> CreatureSpellEntriesByListID = new SortedDictionary<int, List<CreatureSpellEntry>>();
         private static readonly object CreatureSpellEntryLock = new object();
         public int ID;
         public int CreatureSpellListID;
@@ -32,7 +32,7 @@ namespace EQWOWConverter.Creatures
         public int BuffDurationInMS;
         public int Priority;
 
-        public static Dictionary<int, List<CreatureSpellEntry>> GetCreatureSpellEntriesByListID()
+        public static SortedDictionary<int, List<CreatureSpellEntry>> GetCreatureSpellEntriesByListID()
         {
             lock (CreatureSpellEntryLock)
             {
