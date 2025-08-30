@@ -81,7 +81,7 @@ namespace EQWOWConverter.Spells
         // ReclaimPet = 68 // Destroys pet and gives some of the mana back
         TotalHP = 69,
         //....
-        // NecPet = 71 // Undead / Necromancer pet
+        NecPet = 71, // Undead / Necromancer pet
         // PreserveCorpse = 72 // Probably not going to use this
         BindSight = 73,
         // FeignDeath = 74

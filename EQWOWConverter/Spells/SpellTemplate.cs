@@ -2106,6 +2106,39 @@ namespace EQWOWConverter.Spells
 
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;
                             } break;
+                        case SpellEQEffectType.NecPet:
+                            {
+                                SpellPet? spellPet = SpellPet.GetSpellPetByTypeName(teleportZoneOrPetTypeName);
+                                if (spellPet == null)
+                                {
+                                    Logger.WriteError("Could not assign pet for eq spell id ", spellTemplate.EQSpellID.ToString(), " as there was no typename of ", teleportZoneOrPetTypeName);
+                                    continue;
+                                }
+                                if (creatureTemplatesByEQID.ContainsKey(spellPet.EQCreatureTemplateID) == false)
+                                {
+                                    Logger.WriteError("Could not assign pet for eq spell id ", spellTemplate.EQSpellID.ToString(), " as there was no eq creature template ID of ", spellPet.EQCreatureTemplateID.ToString());
+                                    continue;
+                                }
+                                spellTemplate.SummonSpellPet = spellPet;
+
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectMiscValueA = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].WOWCreatureTemplateID;
+                                if (Configuration.SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR == true)
+                                {
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.Summon;
+                                    newSpellEffectWOW.ActionDescription = "summon an undead companion to fight by your side";
+                                    spellTemplate.SummonPropertiesDBCID = SummonPropertiesDBC.GenerateUniqueID();
+                                    newSpellEffectWOW.EffectMiscValueB = spellTemplate.SummonPropertiesDBCID;
+                                }
+                                else
+                                {
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.SummonPet;
+                                    newSpellEffectWOW.ActionDescription = "summon an undead companion to fight by your side";
+                                }
+                                newSpellEffects.Add(newSpellEffectWOW);
+
+                                creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;
+                            } break;
                         default:
                             {
                                 Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
