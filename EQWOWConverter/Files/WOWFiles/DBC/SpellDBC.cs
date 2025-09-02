@@ -21,7 +21,7 @@ namespace EQWOWConverter.WOWFiles
     internal class SpellDBC : DBCFile
     {
         public void AddRow(SpellEffectBlock effectBlock, string spellDescription, SpellTemplate spellTemplate, bool doHideFromDisplay, bool overrideDurationToInfinite, 
-            bool preventClickOff, int maximumSpellLevel)
+            bool preventClickOff, int maximumSpellLevel, bool isToggleAura)
         {
             if (effectBlock.SpellEffects.Count != 3)
             {
@@ -38,7 +38,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(GetAttributesEx(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesEx
             newRow.AddUInt32(GetAttributesExB(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExB
             newRow.AddUInt32(GetAttributesExC(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExC
-            newRow.AddUInt32(GetAttributesExD(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExD
+            newRow.AddUInt32(GetAttributesExD(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, isToggleAura)); // AttributesExD
             newRow.AddUInt32(GetAttributesExE(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExE
             newRow.AddUInt32(GetAttributesExF(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExF
             newRow.AddUInt32(0); // AttributesExG
@@ -160,7 +160,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(spellTemplate.SpellVisualID1); // SpellVisualID1
             newRow.AddUInt32(spellTemplate.SpellVisualID2); // SpellVisualID2
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellIconID)); // SpellIconID
-            newRow.AddUInt32(0); // ActiveIconID
+            if (isToggleAura == true)
+                newRow.AddUInt32(122); // ActiveIconID (use same as paladin auras)
+            else
+                newRow.AddUInt32(0); // ActiveIconID
             newRow.AddUInt32(0); // SpellPriority
             newRow.AddStringLang(effectBlock.SpellName); // Name_Lang
             newRow.AddStringLang(""); // NameSubtext_Lang
@@ -278,7 +281,7 @@ namespace EQWOWConverter.WOWFiles
             return attributeFlags;
         }
 
-        private UInt32 GetAttributesExD(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
+        private UInt32 GetAttributesExD(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool isToggleAura)
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 128;
@@ -290,6 +293,8 @@ namespace EQWOWConverter.WOWFiles
             }
             if (spellTemplate.HideCaster == true)
                 attributeFlags |= 1; // SPELL_ATTR4_NO_CAST_LOG
+            if (isToggleAura == true)
+                attributeFlags |= 1048576; // SPELL_ATTR4_AURA_NEVER_BOUNCES
             return attributeFlags;
         }
 

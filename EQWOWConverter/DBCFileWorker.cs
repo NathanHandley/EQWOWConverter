@@ -471,16 +471,16 @@ namespace EQWOWConverter
                 for (int i = 0; i < spellTemplate.GroupedBaseSpellEffectBlocksForOutput.Count; i++)
                 {
                     SpellEffectBlock curEffectBlock = spellTemplate.GroupedBaseSpellEffectBlocksForOutput[i];
-                    spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, false, curEffectBlock.SpellEffects[0].CalcEffectHighLevel);
+                    spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, false, curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.BardSongType != SpellBardSongType.None);
 
                     // Worn effects get their own copy too
                     if (spellTemplate.WOWSpellIDWorn > 0)
                     {
                         SpellEffectBlock curWornEffectBlock = spellTemplate.GroupedWornSpellEffectBlocksForOutput[i];
                         if (Configuration.ITEMS_SHOW_WORN_EFFECT_AURA_ICON == true)
-                            spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, i != 0, true, true, curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel);
+                            spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, i != 0, true, true, curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.BardSongType != SpellBardSongType.None);
                         else
-                            spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, true, true, true, curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel);
+                            spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, true, true, true, curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.BardSongType != SpellBardSongType.None);
                     }
                 }
 
