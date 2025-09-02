@@ -161,6 +161,8 @@ namespace EQWOWConverter.Spells
         public SpellPet? SummonSpellPet = null;
         public int SummonPropertiesDBCID = 0;
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
+        public SpellBardSongType BardSongType = SpellBardSongType.None;
+
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
             get
@@ -228,12 +230,15 @@ namespace EQWOWConverter.Spells
                     continue;
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
+                if (Convert.ToInt32(columns["bard_learn_level"]) < 100)
+                    newSpellTemplate.BardSongType = GetBardSongType(columns["skill"]);
 
                 // Buff duration (if any)
                 int buffDurationInTicks = Convert.ToInt32(columns["buffduration"]);
                 int buffDurationFormula = Convert.ToInt32(columns["buffdurationformula"]);
                 if (buffDurationFormula != 0 || newSpellTemplate.IsModelSizeChangeSpell == true)
-                    newSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(newSpellTemplate.MinimumPlayerLearnLevel, buffDurationFormula, buffDurationInTicks, newSpellTemplate.IsModelSizeChangeSpell);
+                    newSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(newSpellTemplate.MinimumPlayerLearnLevel, buffDurationFormula, buffDurationInTicks, 
+                        newSpellTemplate.IsModelSizeChangeSpell, newSpellTemplate.BardSongType != SpellBardSongType.None);
 
                 // Icon
                 int spellIconID = int.Parse(columns["icon"]);
@@ -698,6 +703,19 @@ namespace EQWOWConverter.Spells
             }
 
             return spellWOWTargetTypes;
+        }
+
+        private static SpellBardSongType GetBardSongType(string skillString)
+        {
+            switch (skillString)
+            {
+                case "12": return SpellBardSongType.Brass;
+                case "41": return SpellBardSongType.Singing;
+                case "49": return SpellBardSongType.String;
+                case "54": return SpellBardSongType.Wind;
+                case "70": return SpellBardSongType.Percussion;
+                default: return SpellBardSongType.None;
+            }
         }
 
         private static void PopulateEQSpellEffect(ref SpellTemplate spellTemplate, int slotID, Dictionary<string, string> rowColumns)
