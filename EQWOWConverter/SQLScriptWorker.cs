@@ -62,6 +62,7 @@ namespace EQWOWConverter
         private ItemLootTemplateSQL itemLootTemplateSQL = new ItemLootTemplateSQL();
         private ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
+        private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
         private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
         private ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
         private NPCTextSQL npcTextSQL = new NPCTextSQL();
@@ -666,6 +667,9 @@ namespace EQWOWConverter
                     }
                 }
 
+                // Save any pet details
+                if (spellTemplate.SummonSpellPet != null)
+                    modEverquestPetSQL.AddRow(spellTemplate.WOWSpellID, spellTemplate.SummonSpellPet.NamingType);
             }
             foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)
                 spellGroupStackRulesSQL.AddRow(spellGroupStackRuleByGroup.Key, spellGroupStackRuleByGroup.Value);
@@ -908,6 +912,7 @@ namespace EQWOWConverter
             itemLootTemplateSQL.SaveToDisk("item_loot_template", SQLFileType.World);
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
+            modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);
             modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
