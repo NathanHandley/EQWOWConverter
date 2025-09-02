@@ -2225,6 +2225,20 @@ namespace EQWOWConverter.Spells
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nOn success also cast:\n", recourseSpellTemplate.Name, "\n", GenerateActionDescription(recourseSpellTemplate));
             if (procLinkSpellTemplate != null)
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nSometimes on hit cast:\n", procLinkSpellTemplate.Name, "\n", GenerateActionDescription(procLinkSpellTemplate));
+            if (spellTemplate.BardSongType != SpellBardSongType.None && spellTemplate.BardSongType != SpellBardSongType.Singing)
+            {
+                string songSkillTypeString = string.Empty;
+                switch (spellTemplate.BardSongType)
+                {
+                    case SpellBardSongType.Brass: songSkillTypeString = "Brass Instruments"; break;
+                    case SpellBardSongType.String: songSkillTypeString = "String Instruments"; break;
+                    case SpellBardSongType.Wind: songSkillTypeString = "Wind Instruments"; break;
+                    case SpellBardSongType.Percussion: songSkillTypeString = "Percussion Instruments"; break;
+                    case SpellBardSongType.Singing: songSkillTypeString = "Singing"; break;
+                    default: break;
+                }
+                spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nEnhanced by ", songSkillTypeString);
+            }
 
             // Aura Description
             spellTemplate.AuraDescription = GenerateAuraDescription(spellTemplate);
