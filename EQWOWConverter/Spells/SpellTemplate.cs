@@ -267,7 +267,7 @@ namespace EQWOWConverter.Spells
 
                 // Convert the spell effects
                 SpellTemplate? effectGeneratedSpellTemplate;
-                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration.MaxDurationInMS, 
+                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration, 
                     newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneOrPetTypeName, zonePropertiesByShortName,
                     out effectGeneratedSpellTemplate, ref creatureTemplatesByEQID);
 
@@ -775,13 +775,13 @@ namespace EQWOWConverter.Spells
             spellTemplate.EQSpellEffects.Add(curEffect);
         }
 
-        private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, int auraDurationInMS, 
+        private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, SpellDuration auraDuration, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID,
             bool isDetrimental, string teleportZoneOrPetTypeName, Dictionary<string, ZoneProperties> zonePropertiesByShortName, out SpellTemplate? effectGeneratedSpellTemplate,
             ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID)
         {
             effectGeneratedSpellTemplate = null;
-            bool hasSpellDuration = auraDurationInMS > 0;
+            bool hasSpellDuration = (auraDuration.IsInfinite || auraDuration.BaseDurationInMS > 0);
 
             // Process all spell effects
             foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
@@ -1932,7 +1932,7 @@ namespace EQWOWConverter.Spells
                                     healEQEffect.EQMaxValue = eqEffect.EQMaxValue;
                                     effectGeneratedSpellTemplate.EQSpellEffects.Add(healEQEffect);
                                     SpellTemplate? discardTemplate;
-                                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, 0, 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.TargetUnitAny },
+                                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, new SpellDuration(), 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.TargetUnitAny },
                                         0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID);
 
                                     // Proc effect for the heal
