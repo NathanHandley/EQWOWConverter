@@ -269,7 +269,7 @@ namespace EQWOWConverter.Spells
                 SpellTemplate? effectGeneratedSpellTemplate;
                 ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration, 
                     newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneOrPetTypeName, zonePropertiesByShortName,
-                    out effectGeneratedSpellTemplate, ref creatureTemplatesByEQID);
+                    out effectGeneratedSpellTemplate, ref creatureTemplatesByEQID, newSpellTemplate.BardSongType != SpellBardSongType.None);
 
                 // If there is no wow effect, skip it
                 if (newSpellTemplate.WOWSpellEffects.Count == 0)
@@ -778,7 +778,7 @@ namespace EQWOWConverter.Spells
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, SpellDuration auraDuration, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID,
             bool isDetrimental, string teleportZoneOrPetTypeName, Dictionary<string, ZoneProperties> zonePropertiesByShortName, out SpellTemplate? effectGeneratedSpellTemplate,
-            ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID)
+            ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, bool isBardSong)
         {
             effectGeneratedSpellTemplate = null;
             bool hasSpellDuration = (auraDuration.IsInfinite || auraDuration.BaseDurationInMS > 0);
@@ -1933,7 +1933,7 @@ namespace EQWOWConverter.Spells
                                     effectGeneratedSpellTemplate.EQSpellEffects.Add(healEQEffect);
                                     SpellTemplate? discardTemplate;
                                     ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, new SpellDuration(), 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.TargetUnitAny },
-                                        0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID);
+                                        0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, isBardSong);
 
                                     // Proc effect for the heal
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
@@ -2164,22 +2164,34 @@ namespace EQWOWConverter.Spells
                             }
                     }
 
-                    // Add the target types and radius
+                    // Add the target types and radius, and convert any aura types
                     foreach (SpellEffectWOW newSpellEffect in newSpellEffects)
                     {
-                        if (targets.Count == 0)
+                        if (isBardSong == true)
                         {
-                            Logger.WriteError("Too few targets for spell effect");
-                            continue;
+                            if (isDetrimental == true)
+                                newSpellEffect.EffectType = SpellWOWEffectType.ApplyAreaAuraEnemy;
+                            else
+                                newSpellEffect.EffectType = SpellWOWEffectType.ApplyAreaAuraFriend;
+                            newSpellEffect.ImplicitTargetA = SpellWOWTargetType.Self;
                         }
-                        if (targets.Count > 2)
+                        else
                         {
-                            Logger.WriteError("Too many targets for spell effect");
-                            continue;
+                            if (targets.Count == 0)
+                            {
+                                Logger.WriteError("Too few targets for spell effect");
+                                continue;
+                            }
+                            if (targets.Count > 2)
+                            {
+                                Logger.WriteError("Too many targets for spell effect");
+                                continue;
+                            }
+                            newSpellEffect.ImplicitTargetA = targets[0];
+                            if (targets.Count == 2)
+                                newSpellEffect.ImplicitTargetB = targets[1];
                         }
-                        newSpellEffect.ImplicitTargetA = targets[0];
-                        if (targets.Count == 2)
-                            newSpellEffect.ImplicitTargetB = targets[1];
+
                         newSpellEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
                         spellTemplate.WOWSpellEffects.Add(newSpellEffect);
                     }
