@@ -784,6 +784,7 @@ namespace EQWOWConverter.Spells
             bool hasSpellDuration = (auraDuration.IsInfinite || auraDuration.BaseDurationInMS > 0);
 
             // Process all spell effects
+            List<SpellEffectWOW> newSpellEffects = new List<SpellEffectWOW>();
             foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
             {
                 // This is temporary logic until "Splurt" is implemented
@@ -794,7 +795,6 @@ namespace EQWOWConverter.Spells
                         eqEffect.EQBaseValue *= -1;
                 }
 
-                List<SpellEffectWOW> newSpellEffects = new List<SpellEffectWOW>();
                 if (spellTemplate.IsTransferEffectType)
                 {
                     SpellWOWTargetType? otherTarget = null;
@@ -2163,38 +2163,78 @@ namespace EQWOWConverter.Spells
                                 continue;
                             }
                     }
+                }
+            }
 
-                    // Add the target types and radius, and convert any aura types
-                    foreach (SpellEffectWOW newSpellEffect in newSpellEffects)
+            if (isBardSong == true)
+            {
+                // Bard songs are built differently if they are good or bad
+                if (isDetrimental == false)
+                {
+                    foreach (SpellEffectWOW spellEffect in newSpellEffects)
                     {
-                        if (isBardSong == true)
-                        {
-                            if (isDetrimental == true)
-                                newSpellEffect.EffectType = SpellWOWEffectType.ApplyAreaAuraEnemy;
-                            else
-                                newSpellEffect.EffectType = SpellWOWEffectType.ApplyAreaAuraFriend;
-                            newSpellEffect.ImplicitTargetA = SpellWOWTargetType.Self;
-                        }
-                        else
-                        {
-                            if (targets.Count == 0)
-                            {
-                                Logger.WriteError("Too few targets for spell effect");
-                                continue;
-                            }
-                            if (targets.Count > 2)
-                            {
-                                Logger.WriteError("Too many targets for spell effect");
-                                continue;
-                            }
-                            newSpellEffect.ImplicitTargetA = targets[0];
-                            if (targets.Count == 2)
-                                newSpellEffect.ImplicitTargetB = targets[1];
-                        }
-
-                        newSpellEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
-                        spellTemplate.WOWSpellEffects.Add(newSpellEffect);
+                        spellEffect.EffectType = SpellWOWEffectType.ApplyAreaAuraFriend;
+                        spellEffect.ImplicitTargetA = SpellWOWTargetType.Self;
+                        spellEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
+                        spellTemplate.WOWSpellEffects.Add(spellEffect);
                     }
+                }
+                else
+                {
+                    if (spellTemplate.WOWSpellID == 92697)
+                    {
+                        int x = 5;
+                    }
+                    // Detrimental bard songs need to be split out into a periodic aura that triggers the negative effect at the interval                                   
+                    // TODO: Non-Damage
+                    effectGeneratedSpellTemplate = new SpellTemplate();
+                    effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Effect");
+                    effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+                    effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+                    effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                    effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                    effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
+                    effectGeneratedSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects;
+                    effectGeneratedSpellTemplate.SpellRadius = 0;
+                    effectGeneratedSpellTemplate.SpellRange = 0;
+                    SpellTemplate? discardTemplate;
+                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, new SpellDuration(), 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.AreaAroundTargetEnemy, SpellWOWTargetType.TargetDestinationCaster },
+                        spellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, true, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, false);
+                    effectGeneratedSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
+
+                    // Proc effect for triggering
+                    SpellEffectWOW auraEffect = new SpellEffectWOW();
+                    auraEffect.EffectType = SpellWOWEffectType.ApplyAura;
+                    auraEffect.EffectAuraType = SpellWOWAuraType.PeriodicTriggerSpell;
+                    auraEffect.ActionDescription = string.Concat("Test");
+                    auraEffect.AuraDescription = string.Concat("Test");
+                    auraEffect.EffectTriggerSpell = effectGeneratedSpellTemplate.WOWSpellID;
+                    auraEffect.ImplicitTargetA = SpellWOWTargetType.Self;
+                    auraEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
+                    spellTemplate.WOWSpellEffects.Add(auraEffect);
+                }
+            }
+            else
+            {
+                // Add targets and radius
+                foreach (SpellEffectWOW spellEffect in newSpellEffects)
+                {
+                    if (targets.Count == 0)
+                    {
+                        Logger.WriteError("Too few targets for spell effect");
+                        continue;
+                    }
+                    if (targets.Count > 2)
+                    {
+                        Logger.WriteError("Too many targets for spell effect");
+                        continue;
+                    }
+                    spellEffect.ImplicitTargetA = targets[0];
+                    if (targets.Count == 2)
+                        spellEffect.ImplicitTargetB = targets[1];
+
+                    spellEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
+                    spellTemplate.WOWSpellEffects.Add(spellEffect);
                 }
             }
 

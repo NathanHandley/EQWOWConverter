@@ -49,6 +49,7 @@ namespace EQWOWConverter.Spells
         AreaAroundCasterTargetingEnemies = 15,
         AreaAroundTargetEnemy = 16,
         TeleportLocationFromDB = 17,
+        TargetDestinationCaster = 18,
         CasterParty = 20,
         TargetFriendly = 21,
         AreaAroundCaster = 22,
