@@ -2181,10 +2181,6 @@ namespace EQWOWConverter.Spells
                 }
                 else
                 {
-                    if (spellTemplate.WOWSpellID == 92697)
-                    {
-                        int x = 5;
-                    }
                     // Detrimental bard songs need to be split out into a periodic aura that triggers the negative effect at the interval                                   
                     // TODO: Non-Damage
                     effectGeneratedSpellTemplate = new SpellTemplate();
@@ -2197,6 +2193,7 @@ namespace EQWOWConverter.Spells
                     effectGeneratedSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects;
                     effectGeneratedSpellTemplate.SpellRadius = 0;
                     effectGeneratedSpellTemplate.SpellRange = 0;
+                    effectGeneratedSpellTemplate.TargetDescriptionTextFragment = spellTemplate.TargetDescriptionTextFragment;
                     SpellTemplate? discardTemplate;
                     ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, new SpellDuration(), 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.AreaAroundTargetEnemy, SpellWOWTargetType.TargetDestinationCaster },
                         spellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, true, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, false);
@@ -2206,11 +2203,14 @@ namespace EQWOWConverter.Spells
                     SpellEffectWOW auraEffect = new SpellEffectWOW();
                     auraEffect.EffectType = SpellWOWEffectType.ApplyAura;
                     auraEffect.EffectAuraType = SpellWOWAuraType.PeriodicTriggerSpell;
-                    auraEffect.ActionDescription = string.Concat("Test");
-                    auraEffect.AuraDescription = string.Concat("Test");
                     auraEffect.EffectTriggerSpell = effectGeneratedSpellTemplate.WOWSpellID;
                     auraEffect.ImplicitTargetA = SpellWOWTargetType.Self;
                     auraEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
+                    auraEffect.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
+                    SetActionAndAuraDescriptions(ref effectGeneratedSpellTemplate, null, null);
+                    auraEffect.ActionDescription = string.Concat("every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds ", effectGeneratedSpellTemplate.Description);
+                    auraEffect.AuraDescription = string.Concat("every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds ", effectGeneratedSpellTemplate.Description);
+
                     spellTemplate.WOWSpellEffects.Add(auraEffect);
                 }
             }
@@ -2289,7 +2289,7 @@ namespace EQWOWConverter.Spells
                     case SpellBardSongType.Singing: songSkillTypeString = "Singing"; break;
                     default: break;
                 }
-                spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nEnhanced by ", songSkillTypeString);
+                spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nEnhanced by ", songSkillTypeString, ".");
             }
 
             // Aura Description
