@@ -107,6 +107,8 @@ namespace EQWOWConverter.Spells
                 _SpellRadius = value;
             }
         }
+        public int EQBuffDurationInTicks = 0;
+        public int EQBuffDurationFormula = 0;
         public SpellDuration AuraDuration = new SpellDuration();
         public int SpellGroupStackingID = -1;
         public int SpellGroupStackingRule = 0;
@@ -222,6 +224,11 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
                 newSpellTemplate.RecourseLinkEQSpellID = int.Parse(columns["RecourseLink"]);
 
+                if (newSpellTemplate.WOWSpellID == 92697)
+                {
+                    int x = 5;
+                }
+
                 // TODO: FacingCasterFlags
                 for (int i = 1; i <= 12; i++)
                     PopulateEQSpellEffect(ref newSpellTemplate, i, columns);
@@ -234,11 +241,11 @@ namespace EQWOWConverter.Spells
                     newSpellTemplate.BardSongType = GetBardSongType(columns["skill"]);
 
                 // Buff duration (if any)
-                int buffDurationInTicks = Convert.ToInt32(columns["buffduration"]);
-                int buffDurationFormula = Convert.ToInt32(columns["buffdurationformula"]);
-                if (buffDurationFormula != 0 || newSpellTemplate.IsModelSizeChangeSpell == true)
-                    newSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(newSpellTemplate.MinimumPlayerLearnLevel, buffDurationFormula, buffDurationInTicks, 
-                        newSpellTemplate.IsModelSizeChangeSpell, newSpellTemplate.BardSongType != SpellBardSongType.None);
+                newSpellTemplate.EQBuffDurationInTicks = Convert.ToInt32(columns["buffduration"]);
+                newSpellTemplate.EQBuffDurationFormula = Convert.ToInt32(columns["buffdurationformula"]);
+                if (newSpellTemplate.EQBuffDurationFormula != 0 || newSpellTemplate.IsModelSizeChangeSpell == true)
+                    newSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(newSpellTemplate.MinimumPlayerLearnLevel, newSpellTemplate.EQBuffDurationFormula, 
+                        newSpellTemplate.EQBuffDurationInTicks, newSpellTemplate.IsModelSizeChangeSpell, newSpellTemplate.BardSongType != SpellBardSongType.None);
 
                 // Icon
                 int spellIconID = int.Parse(columns["icon"]);
@@ -2193,8 +2200,11 @@ namespace EQWOWConverter.Spells
                     effectGeneratedSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects;
                     effectGeneratedSpellTemplate.SpellRadius = 0;
                     effectGeneratedSpellTemplate.SpellRange = 0;
+                    effectGeneratedSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(spellTemplate.MinimumPlayerLearnLevel, spellTemplate.EQBuffDurationFormula,
+                        spellTemplate.EQBuffDurationInTicks, spellTemplate.IsModelSizeChangeSpell, false);
+                    
                     SpellTemplate? discardTemplate;
-                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, new SpellDuration(), 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.AreaAroundTargetEnemy, SpellWOWTargetType.TargetDestinationCaster },
+                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, effectGeneratedSpellTemplate.AuraDuration, 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.AreaAroundTargetEnemy, SpellWOWTargetType.TargetDestinationCaster },
                         spellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, true, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, false);
                     effectGeneratedSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
                     SetActionAndAuraDescriptions(ref effectGeneratedSpellTemplate, null, null);

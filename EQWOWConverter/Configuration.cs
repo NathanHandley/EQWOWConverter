@@ -487,8 +487,10 @@ namespace EQWOWConverter
         // Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier
         // Increase or decrease this to modify how long spells work for and, in effect, the damage they do
         // World of Warcraft uses a reduced amonut since anything > 5 seconds triggers out of combat events
+        // It's highly advisable to use 3 or 2 since they are divisors of 6, but note that generally smaller has
+        // rounding issues on the bottom end from a balance perspective
         public static readonly int SPELL_PERIODIC_SECONDS_PER_TICK_EQ = 6;
-        public static readonly int SPELL_PERIODIC_SECONDS_PER_TICK_WOW = 4;
+        public static readonly int SPELL_PERIODIC_SECONDS_PER_TICK_WOW = 3;
 
         // This is the minimum allowable recovery time any spell can have, which any smaller will become zero
         // and only subjected to the global cooldown of 1.5 seconds.  This is only enforced on the raw spell

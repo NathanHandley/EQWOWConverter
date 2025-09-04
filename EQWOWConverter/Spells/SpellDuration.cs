@@ -51,7 +51,7 @@ namespace EQWOWConverter.Spells
             MaxLevel = 0;
         }
 
-        public void CalculateAndSetAuraDuration(int spellLevel, int eqBuffDurationFormula, int maxBuffDurationInTicks, bool isModelChangeSize, bool isBardSong)
+        public void CalculateAndSetAuraDuration(int spellLevel, int eqBuffDurationFormula, int maxBuffDurationInTicks, bool isModelChangeSize, bool isBardSongCastersAura)
         {
             // Default for model change size spells
             if (eqBuffDurationFormula == 0 && isModelChangeSize == true)
@@ -72,7 +72,7 @@ namespace EQWOWConverter.Spells
                 spellLevel = 1;
 
             // Handle population based on the type of formula
-            if (isBardSong == true)
+            if (isBardSongCastersAura == true)
             {
                 IsInfinite = true;
                 return;
