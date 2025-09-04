@@ -90,7 +90,7 @@ namespace EQWOWConverter.Spells
                 // 50 ticks or max
                 int calcMS = 50 * Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ * 1000;
                 if (maxBuffDurationInMS > 0)
-                    Math.Min(calcMS, maxBuffDurationInMS);
+                    Math.Max(calcMS, maxBuffDurationInMS);
                 BaseDurationInMS = calcMS;
                 MaxDurationInMS = calcMS;
             }
@@ -99,7 +99,7 @@ namespace EQWOWConverter.Spells
                 // 2 ticks or max
                 int calcMS = 2 * Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ * 1000;
                 if (maxBuffDurationInMS > 0)
-                    Math.Min(calcMS, maxBuffDurationInMS);
+                    Math.Max(calcMS, maxBuffDurationInMS);
                 BaseDurationInMS = calcMS;
                 MaxDurationInMS = calcMS;
             }
