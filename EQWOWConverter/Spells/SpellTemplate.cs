@@ -2193,11 +2193,11 @@ namespace EQWOWConverter.Spells
                     effectGeneratedSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects;
                     effectGeneratedSpellTemplate.SpellRadius = 0;
                     effectGeneratedSpellTemplate.SpellRange = 0;
-                    effectGeneratedSpellTemplate.TargetDescriptionTextFragment = spellTemplate.TargetDescriptionTextFragment;
                     SpellTemplate? discardTemplate;
                     ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, new SpellDuration(), 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.AreaAroundTargetEnemy, SpellWOWTargetType.TargetDestinationCaster },
                         spellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, true, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, false);
                     effectGeneratedSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
+                    SetActionAndAuraDescriptions(ref effectGeneratedSpellTemplate, null, null);
 
                     // Proc effect for triggering
                     SpellEffectWOW auraEffect = new SpellEffectWOW();
@@ -2207,9 +2207,15 @@ namespace EQWOWConverter.Spells
                     auraEffect.ImplicitTargetA = SpellWOWTargetType.Self;
                     auraEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
                     auraEffect.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
-                    SetActionAndAuraDescriptions(ref effectGeneratedSpellTemplate, null, null);
-                    auraEffect.ActionDescription = string.Concat("every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds ", effectGeneratedSpellTemplate.Description);
-                    auraEffect.AuraDescription = string.Concat("every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds ", effectGeneratedSpellTemplate.Description);
+                    StringBuilder descriptionSB = new StringBuilder();
+                    descriptionSB.Append(effectGeneratedSpellTemplate.Description);
+                    if (descriptionSB.Length > 0)
+                        descriptionSB[0] = char.ToLower(descriptionSB[0]);
+                    if (descriptionSB.ToString().EndsWith("."))
+                        descriptionSB.Length--;
+                    string description = string.Concat("every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds ", descriptionSB.ToString());
+                    auraEffect.ActionDescription = description;
+                    auraEffect.AuraDescription = description;
 
                     spellTemplate.WOWSpellEffects.Add(auraEffect);
                 }
@@ -2325,9 +2331,12 @@ namespace EQWOWConverter.Spells
             // Control capitalization
             descriptionSB[0] = char.ToUpper(descriptionSB[0]);
 
-            descriptionSB.Append(" ");
-            descriptionSB.Append(spellTemplate.TargetDescriptionTextFragment);
-            descriptionSB.Append(".");
+            if (spellTemplate.TargetDescriptionTextFragment.Length > 0)
+            {
+                descriptionSB.Append(" ");
+                descriptionSB.Append(spellTemplate.TargetDescriptionTextFragment);
+                descriptionSB.Append(".");
+            }
             descriptionSB.Append(GetTimeDurationStringFromMSWithLeadingSpace(spellTemplate.AuraDuration.MaxDurationInMS, spellTemplate.AuraDuration.GetTimeText()));
 
             // Add any additional fragments to descriptions
@@ -2361,6 +2370,15 @@ namespace EQWOWConverter.Spells
             // Store and control capitalization
             auraSB.Append('.');
             auraSB[0] = char.ToUpper(auraSB[0]);
+
+            // Bard song auras need target information
+            if (spellTemplate.BardSongType != SpellBardSongType.None && spellTemplate.TargetDescriptionTextFragment.Length > 0)
+            {
+                auraSB.Append(" ");
+                auraSB.Append(spellTemplate.TargetDescriptionTextFragment);
+                auraSB.Append(".");
+            }
+            
             return auraSB.ToString();
         }
 
