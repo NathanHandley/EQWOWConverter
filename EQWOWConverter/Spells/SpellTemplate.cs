@@ -2179,7 +2179,7 @@ namespace EQWOWConverter.Spells
                 }
                 else
                 {
-                    spellTargets.Add(SpellWOWTargetType.UnitDestinationAreaParty);
+                    spellTargets.Add(SpellWOWTargetType.UnitCasterAreaParty);
                     spellTargets.Add(SpellWOWTargetType.DestinationCaster);
                 }
 
