@@ -51,7 +51,8 @@ namespace EQWOWConverter.Spells
             MaxLevel = 0;
         }
 
-        public void CalculateAndSetAuraDuration(int spellLevel, int eqBuffDurationFormula, int maxBuffDurationInTicks, bool isModelChangeSize, bool isBardSongCastersAura)
+        public void CalculateAndSetAuraDuration(int spellLevel, int eqBuffDurationFormula, int maxBuffDurationInTicks,
+            bool isModelChangeSize, bool isBardSongCastersAura)
         {
             // Default for model change size spells
             if (eqBuffDurationFormula == 0 && isModelChangeSize == true)
@@ -90,7 +91,7 @@ namespace EQWOWConverter.Spells
                 // 50 ticks or max
                 int calcMS = 50 * Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ * 1000;
                 if (maxBuffDurationInMS > 0)
-                    Math.Max(calcMS, maxBuffDurationInMS);
+                    calcMS = Math.Max(calcMS, maxBuffDurationInMS);
                 BaseDurationInMS = calcMS;
                 MaxDurationInMS = calcMS;
             }
@@ -99,7 +100,7 @@ namespace EQWOWConverter.Spells
                 // 2 ticks or max
                 int calcMS = 2 * Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ * 1000;
                 if (maxBuffDurationInMS > 0)
-                    Math.Max(calcMS, maxBuffDurationInMS);
+                    calcMS = Math.Max(calcMS, maxBuffDurationInMS);
                 BaseDurationInMS = calcMS;
                 MaxDurationInMS = calcMS;
             }

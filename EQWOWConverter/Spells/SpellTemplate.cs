@@ -224,11 +224,6 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
                 newSpellTemplate.RecourseLinkEQSpellID = int.Parse(columns["RecourseLink"]);
 
-                if (newSpellTemplate.WOWSpellID == 92697)
-                {
-                    int x = 5;
-                }
-
                 // TODO: FacingCasterFlags
                 for (int i = 1; i <= 12; i++)
                     PopulateEQSpellEffect(ref newSpellTemplate, i, columns);
@@ -2216,7 +2211,7 @@ namespace EQWOWConverter.Spells
                     auraEffect.EffectTriggerSpell = effectGeneratedSpellTemplate.WOWSpellID;
                     auraEffect.ImplicitTargetA = SpellWOWTargetType.Self;
                     auraEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
-                    auraEffect.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
+                    auraEffect.EffectAuraPeriod = (Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000) + Convert.ToUInt32(Configuration.SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS);
                     StringBuilder descriptionSB = new StringBuilder();
                     descriptionSB.Append(effectGeneratedSpellTemplate.Description);
                     if (descriptionSB.Length > 0)

@@ -492,6 +492,11 @@ namespace EQWOWConverter
         public static readonly int SPELL_PERIODIC_SECONDS_PER_TICK_EQ = 6;
         public static readonly int SPELL_PERIODIC_SECONDS_PER_TICK_WOW = 3;
 
+        // This is 'added time' in the periodic tick that comes from bard casters.  WOW 3.3.5 does not have
+        // 'rolling dots', so without any kind of buffer there won't be a damage/heal 'tick' that occurs
+        // on targets near the bard since the spell would get overridden right when a tick would occur
+        public static readonly int SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS = 50;
+
         // This is the minimum allowable recovery time any spell can have, which any smaller will become zero
         // and only subjected to the global cooldown of 1.5 seconds.  This is only enforced on the raw spell
         // records and not the SpellTemplate, to ensure cast repeats are correct for creatures
