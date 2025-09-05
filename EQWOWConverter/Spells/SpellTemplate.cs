@@ -450,7 +450,7 @@ namespace EQWOWConverter.Spells
             if (Enum.IsDefined(typeof(SpellEQTargetType), eqTargetTypeID) == false)
             {
                 Logger.WriteError("SpellTemplate with EQID ", spellTemplate.EQSpellID.ToString(), " has unknown target type of ", eqTargetTypeID.ToString());
-                spellWOWTargetTypes.Add(SpellWOWTargetType.Self);
+                spellWOWTargetTypes.Add(SpellWOWTargetType.UnitCaster);
                 return spellWOWTargetTypes;
             }
             else
@@ -471,12 +471,12 @@ namespace EQWOWConverter.Spells
                     {
                         if (isDetrimental == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single visible enemy";
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetAlly);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single visible friendly unit";
                         }
                     }
@@ -484,7 +484,7 @@ namespace EQWOWConverter.Spells
                 case SpellEQTargetType.GroupV1:
                 case SpellEQTargetType.GroupV2:
                     {
-                        spellWOWTargetTypes.Add(SpellWOWTargetType.CasterParty);
+                        spellWOWTargetTypes.Add(SpellWOWTargetType.UnitCasterAreaParty);
                         if (spellRadius > 0)
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets the whole party within ", spellRadius, " yards around the caster");
                         else
@@ -504,14 +504,14 @@ namespace EQWOWConverter.Spells
                         if (isDetrimental == true)
                         {
                             // Referenced from Blast Wave
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundCaster);
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundCasterTargetingEnemies);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.SourceCaster);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitSourceAreaEnemy);
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets ", targetTypeDescriptionFragment, "enemies within ", spellRadius, " yards around the caster");
                         }
                         if (isDetrimental == false)
                         {
                             // Referenced from Circle of healing
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundCaster);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.SourceCaster);
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets ", targetTypeDescriptionFragment, "friendly units within ", spellRadius, " yards around the caster");
                         }
 
@@ -521,25 +521,25 @@ namespace EQWOWConverter.Spells
                     {
                         if (canTargetBothEnemyAndFriendly == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetAlly);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single enemy or friendly unit";
                         }
                         else if (isDetrimental == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single enemy";
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetAlly);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single friendly unit";
                         }
                     }
                     break;
                 case SpellEQTargetType.Self:
                     {
-                        spellWOWTargetTypes.Add(SpellWOWTargetType.Self);
+                        spellWOWTargetTypes.Add(SpellWOWTargetType.UnitCaster);
                         spellTemplate.TargetDescriptionTextFragment = "Targets self";
                     }
                     break;
@@ -548,14 +548,14 @@ namespace EQWOWConverter.Spells
                     {
                         if (isDetrimental == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitDestinationAreaEnemy);
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets an enemy and other enemies within ", spellRadius, " yards around the target");
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetAlly);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetAlly);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitDestinationAreaAlly);
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets a friendly unit and other friendly units within ", spellRadius, " yards around the target");
                         }
                     }
@@ -565,12 +565,12 @@ namespace EQWOWConverter.Spells
                         spellTemplate.TargetCreatureType = 1; // Beast, 0x0001
                         if (isDetrimental == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single beast enemy";
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" put into this for now
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly); // "lull" put into this for now
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single beast friendly unit";
                         }
                     }
@@ -580,12 +580,12 @@ namespace EQWOWConverter.Spells
                         spellTemplate.TargetCreatureType = 32; // Undead, 0x0020
                         if (isDetrimental == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single undead enemy";
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal undead put into this for now
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly); // "lull" and heal undead put into this for now
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single undead friendly unit";
                         }
                     }
@@ -595,12 +595,12 @@ namespace EQWOWConverter.Spells
                         spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
                         if (isDetrimental == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single elemental enemy";
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single elemental friendly unit";
                         }
                     }
@@ -610,14 +610,14 @@ namespace EQWOWConverter.Spells
                         spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
                         if (isDetrimental == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitDestinationAreaEnemy);
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets an elemental enemy and other elemental enemies within ", spellRadius, " yards around the target");
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny);
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetAlly);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitDestinationAreaAlly);
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets an elemental friendly unit and other elemental friendly units within ", spellRadius, " yards around the target");
                         }
                     } break;
@@ -626,19 +626,19 @@ namespace EQWOWConverter.Spells
                         spellTemplate.IsTransferEffectType = true;
                         if (isDetrimental == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single enemy";
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetAlly);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single friendly unit";
                         }
                     }
                     break;
                 case SpellEQTargetType.Pet:
                     {
-                        spellWOWTargetTypes.Add(SpellWOWTargetType.Pet);
+                        spellWOWTargetTypes.Add(SpellWOWTargetType.UnitPet);
                         spellTemplate.TargetDescriptionTextFragment = "Targets your pet";
                     }
                     break;
@@ -655,12 +655,12 @@ namespace EQWOWConverter.Spells
                         spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
                         if (isDetrimental == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single elemental enemy";
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal undead put into this for now
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly); // "lull" and heal undead put into this for now
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single elemental friendly unit";
                         }
                     }
@@ -670,12 +670,12 @@ namespace EQWOWConverter.Spells
                         spellTemplate.TargetCreatureType = 16; // Giant, 0x0010
                         if (isDetrimental == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single giant enemy";
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal put into this for now
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly); // "lull" and heal put into this for now
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single giant friendly unit";
                         }
                     }
@@ -685,12 +685,12 @@ namespace EQWOWConverter.Spells
                         spellTemplate.TargetCreatureType = 2; // Dragonkin, 0x0002
                         if (isDetrimental == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single dragonkin enemy";
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal put into this for now
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly); // "lull" and heal put into this for now
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single dragonkin friendly unit";
                         }
                     }
@@ -698,7 +698,7 @@ namespace EQWOWConverter.Spells
                 default:
                     {
                         Logger.WriteError("Unable to map eq target type ", spellTemplate.EQTargetType.ToString(), " to WOW target type");
-                        spellWOWTargetTypes.Add(SpellWOWTargetType.Self);
+                        spellWOWTargetTypes.Add(SpellWOWTargetType.UnitCaster);
                         spellTemplate.TargetDescriptionTextFragment = "Targets self";
                     }
                     break;
@@ -863,7 +863,7 @@ namespace EQWOWConverter.Spells
                                         newSpellEffectWOW2.ActionDescription = string.Empty;
                                         newSpellEffectWOW2.AuraDescription = string.Empty;
                                         newSpellEffects.Add(newSpellEffectWOW2);
-                                        otherTarget = SpellWOWTargetType.Self;
+                                        otherTarget = SpellWOWTargetType.UnitCaster;
                                     }
                                     else
                                     {
@@ -1833,7 +1833,7 @@ namespace EQWOWConverter.Spells
                                     continue;
                                 }
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
-                                newSpellEffectWOW.ImplicitTargetB = SpellWOWTargetType.TeleportLocationFromDB;
+                                newSpellEffectWOW.ImplicitTargetB = SpellWOWTargetType.DestinationDatabaseForTeleport;
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.TeleportUnits;
                                 newSpellEffectWOW.EffectDieSides = 1;
                                 newSpellEffectWOW.EffectBasePoints = -1;
@@ -1934,7 +1934,7 @@ namespace EQWOWConverter.Spells
                                     healEQEffect.EQMaxValue = eqEffect.EQMaxValue;
                                     effectGeneratedSpellTemplate.EQSpellEffects.Add(healEQEffect);
                                     SpellTemplate? discardTemplate;
-                                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, new SpellDuration(), 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.TargetUnitAny },
+                                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, new SpellDuration(), 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.UnitTargetAny },
                                         0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, isBardSong);
 
                                     // Proc effect for the heal
@@ -2048,10 +2048,10 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.InterruptFlags = 9;
                                 spellTemplate.ChannelInterruptFlags = 31772;
 
-                                if (targets[0] != SpellWOWTargetType.Pet)
+                                if (targets[0] != SpellWOWTargetType.UnitPet)
                                 {
                                     targets.Clear();
-                                    targets.Add(SpellWOWTargetType.TargetAny);
+                                    targets.Add(SpellWOWTargetType.DestinationTargetAlly);
                                 }
                             } break;
                         case SpellEQEffectType.DivineAura:
@@ -2170,60 +2170,57 @@ namespace EQWOWConverter.Spells
 
             if (isBardSong == true)
             {
-                // Bard songs are built differently if they are good or bad
-                if (isDetrimental == false)
+                // Bard songs will create an aura that 'ticks' an effect
+                List<SpellWOWTargetType> spellTargets = new List<SpellWOWTargetType>();
+                if (isDetrimental == true)
                 {
-                    foreach (SpellEffectWOW spellEffect in newSpellEffects)
-                    {
-                        spellEffect.EffectType = SpellWOWEffectType.ApplyAreaAuraFriend;
-                        spellEffect.ImplicitTargetA = SpellWOWTargetType.Self;
-                        spellEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
-                        spellTemplate.WOWSpellEffects.Add(spellEffect);
-                    }
+                    spellTargets.Add(SpellWOWTargetType.UnitDestinationAreaEnemy);
+                    spellTargets.Add(SpellWOWTargetType.DestinationCaster);
                 }
                 else
                 {
-                    // Detrimental bard songs need to be split out into a periodic aura that triggers the negative effect at the interval                                   
-                    // TODO: Non-Damage
-                    effectGeneratedSpellTemplate = new SpellTemplate();
-                    effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Effect");
-                    effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
-                    effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
-                    effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
-                    effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
-                    effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
-                    effectGeneratedSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects;
-                    effectGeneratedSpellTemplate.SpellRadius = 0;
-                    effectGeneratedSpellTemplate.SpellRange = 0;
-                    effectGeneratedSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(spellTemplate.MinimumPlayerLearnLevel, spellTemplate.EQBuffDurationFormula,
-                        spellTemplate.EQBuffDurationInTicks, spellTemplate.IsModelSizeChangeSpell, false);
-                    
-                    SpellTemplate? discardTemplate;
-                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, effectGeneratedSpellTemplate.AuraDuration, 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.AreaAroundTargetEnemy, SpellWOWTargetType.TargetDestinationCaster },
-                        spellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, true, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, false);
-                    effectGeneratedSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
-                    SetActionAndAuraDescriptions(ref effectGeneratedSpellTemplate, null, null);
-
-                    // Proc effect for triggering
-                    SpellEffectWOW auraEffect = new SpellEffectWOW();
-                    auraEffect.EffectType = SpellWOWEffectType.ApplyAura;
-                    auraEffect.EffectAuraType = SpellWOWAuraType.PeriodicTriggerSpell;
-                    auraEffect.EffectTriggerSpell = effectGeneratedSpellTemplate.WOWSpellID;
-                    auraEffect.ImplicitTargetA = SpellWOWTargetType.Self;
-                    auraEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
-                    auraEffect.EffectAuraPeriod = (Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000) + Convert.ToUInt32(Configuration.SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS);
-                    StringBuilder descriptionSB = new StringBuilder();
-                    descriptionSB.Append(effectGeneratedSpellTemplate.Description);
-                    if (descriptionSB.Length > 0)
-                        descriptionSB[0] = char.ToLower(descriptionSB[0]);
-                    if (descriptionSB.ToString().EndsWith("."))
-                        descriptionSB.Length--;
-                    string description = string.Concat("every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds ", descriptionSB.ToString());
-                    auraEffect.ActionDescription = description;
-                    auraEffect.AuraDescription = description;
-
-                    spellTemplate.WOWSpellEffects.Add(auraEffect);
+                    spellTargets.Add(SpellWOWTargetType.UnitDestinationAreaParty);
+                    spellTargets.Add(SpellWOWTargetType.DestinationCaster);
                 }
+
+                effectGeneratedSpellTemplate = new SpellTemplate();
+                effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Effect");
+                effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+                effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+                effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
+                effectGeneratedSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects;
+                effectGeneratedSpellTemplate.SpellRadius = 0;
+                effectGeneratedSpellTemplate.SpellRange = 0;
+                effectGeneratedSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(spellTemplate.MinimumPlayerLearnLevel, spellTemplate.EQBuffDurationFormula,
+                    spellTemplate.EQBuffDurationInTicks, spellTemplate.IsModelSizeChangeSpell, false);
+                    
+                SpellTemplate? discardTemplate;
+                ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, effectGeneratedSpellTemplate.AuraDuration, 0, spellTargets,
+                    spellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, true, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, false);
+                effectGeneratedSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
+                SetActionAndAuraDescriptions(ref effectGeneratedSpellTemplate, null, null);
+
+                // Proc effect for triggering
+                SpellEffectWOW auraEffect = new SpellEffectWOW();
+                auraEffect.EffectType = SpellWOWEffectType.ApplyAura;
+                auraEffect.EffectAuraType = SpellWOWAuraType.PeriodicTriggerSpell;
+                auraEffect.EffectTriggerSpell = effectGeneratedSpellTemplate.WOWSpellID;
+                auraEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                auraEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
+                auraEffect.EffectAuraPeriod = (Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000) + Convert.ToUInt32(Configuration.SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS);
+                StringBuilder descriptionSB = new StringBuilder();
+                descriptionSB.Append(effectGeneratedSpellTemplate.Description);
+                if (descriptionSB.Length > 0)
+                    descriptionSB[0] = char.ToLower(descriptionSB[0]);
+                if (descriptionSB.ToString().EndsWith("."))
+                    descriptionSB.Length--;
+                string description = string.Concat("every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds ", descriptionSB.ToString());
+                auraEffect.ActionDescription = description;
+                auraEffect.AuraDescription = description;
+
+                spellTemplate.WOWSpellEffects.Add(auraEffect);
             }
             else
             {

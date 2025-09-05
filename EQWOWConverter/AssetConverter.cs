@@ -1578,7 +1578,7 @@ namespace EQWOWConverter
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
             gateSpellTemplate.RecoveryTimeInMS = 8000;
-            gateSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.Self;
+            gateSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             gateSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(9, true).SpellVisualDBCID); // Gate
             gateSpellTemplate.PlayerLearnableByClassTrainer = true;
             gateSpellTemplate.AllowCastInCombat = false;
@@ -1599,7 +1599,7 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.AllowCastInCombat = false;
             bindAffinitySelfSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             bindAffinitySelfSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 1, 0));
-            bindAffinitySelfSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.Self;
+            bindAffinitySelfSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             spellTemplates.Add(bindAffinitySelfSpellTemplate);
 
             // Phase aura 1 (Day)

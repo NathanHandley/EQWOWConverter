@@ -43,19 +43,20 @@ namespace EQWOWConverter.Spells
     internal enum SpellWOWTargetType : int
     {
         None = 0, // This isn't actually a wow target type, but might be corpse?
-        Self = 1,
-        Pet = 5,
-        TargetEnemy = 6,
-        AreaAroundCasterTargetingEnemies = 15,
-        AreaAroundTargetEnemy = 16,
-        TeleportLocationFromDB = 17,
-        TargetDestinationCaster = 18,
-        CasterParty = 20,
-        TargetFriendly = 21,
-        AreaAroundCaster = 22,
-        TargetUnitAny = 25,
-        AreaAroundTargetAlly = 31,
-        TargetParty = 35,
-        TargetAny = 63
+        UnitCaster = 1,
+        UnitPet = 5,
+        UnitTargetEnemy = 6,
+        UnitSourceAreaEnemy = 15,
+        UnitDestinationAreaEnemy = 16,
+        DestinationDatabaseForTeleport = 17,
+        DestinationCaster = 18,
+        UnitCasterAreaParty = 20,
+        UnitTargetAlly = 21,
+        SourceCaster = 22,
+        UnitTargetAny = 25,
+        UnitDestinationAreaAlly = 31,
+        UnitDestinationAreaParty = 34,
+        UnitTargetParty = 35,
+        DestinationTargetAlly = 63
     }
 }
