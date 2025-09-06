@@ -113,6 +113,7 @@ namespace EQWOWConverter.Spells
         public int SpellGroupStackingID = -1;
         public int SpellGroupStackingRule = 0;
         public UInt32 RecoveryTimeInMS = 0; // Note that this may be zero for a player but not a creature.  See Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS
+        public int EQSpellVisualEffectIndex = 0;
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
@@ -256,12 +257,12 @@ namespace EQWOWConverter.Spells
                 string teleportZoneOrPetTypeName = columns["teleport_zone"];
 
                 // Visual
-                int spellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
+                newSpellTemplate.EQSpellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
                 SpellVisualType spellVisualType = SpellVisualType.Beneficial;
                 if (isDetrimental == true)
                     spellVisualType = SpellVisualType.Detrimental;
-                if (spellVisualEffectIndex >= 0 && spellVisualEffectIndex < 52)
-                    newSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(spellVisualEffectIndex, spellVisualType).SpellVisualDBCID);
+                if (newSpellTemplate.EQSpellVisualEffectIndex >= 0 && newSpellTemplate.EQSpellVisualEffectIndex < 52)
+                    newSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(newSpellTemplate.EQSpellVisualEffectIndex, spellVisualType).SpellVisualDBCID);
 
                 // School class
                 int resistType = int.Parse(columns["resisttype"]);
@@ -2198,7 +2199,8 @@ namespace EQWOWConverter.Spells
                 SpellTemplate? discardTemplate;
                 ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, effectGeneratedSpellTemplate.AuraDuration, 0, spellTargets,
                     spellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, true, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, false);
-                effectGeneratedSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
+                if (spellTemplate.EQSpellVisualEffectIndex >= 0)
+                    effectGeneratedSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(spellTemplate.EQSpellVisualEffectIndex, SpellVisualType.BardTick).SpellVisualDBCID);
                 SetActionAndAuraDescriptions(ref effectGeneratedSpellTemplate, null, null);
 
                 // Proc effect for triggering
