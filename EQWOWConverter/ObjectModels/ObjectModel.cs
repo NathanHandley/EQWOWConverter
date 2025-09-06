@@ -18,6 +18,7 @@ using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels.Properties;
+using EQWOWConverter.Spells;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -436,6 +437,13 @@ namespace EQWOWConverter.ObjectModels
                     }
                     curQuadBoneIndex++;
 
+                    int nonProjectileAnimTimeInMS = Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS;
+                    if (Properties.SpellVisualType == SpellVisualType.BardTick)
+                    {
+                        int maxDuration = Convert.ToInt32(Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW * 1000) * Configuration.SPELL_EFFECT_BARD_TICK_VISUAL_DURATION_MOD_FROM_TICK);
+                        nonProjectileAnimTimeInMS = Math.Min(nonProjectileAnimTimeInMS, maxDuration);
+                    }
+
                     // Dynamic Rotation Bone
                     ModelBones.Add(new ObjectModelBone());
                     ModelBones[curQuadBoneIndex].ParentBone = Convert.ToInt16(curQuadBoneIndex - 1);
@@ -456,13 +464,13 @@ namespace EQWOWConverter.ObjectModels
                             ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort());
 
                             // There will be 4 moved-to frames per rotation, so calculate the size of a frame
-                            int timeForOneRotationInMS = Convert.ToInt32(Convert.ToSingle(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS) / numOfRotations);
+                            int timeForOneRotationInMS = Convert.ToInt32(Convert.ToSingle(nonProjectileAnimTimeInMS) / numOfRotations);
                             int frameSizeInMS = timeForOneRotationInMS / 4;
 
                             // Add quarter rotations until past invis time
                             UInt32 totalTimeElapsedInMS = 0;
                             int curQuarterStepIndex = 0;
-                            while (totalTimeElapsedInMS < Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS)
+                            while (totalTimeElapsedInMS < nonProjectileAnimTimeInMS)
                             {
                                 totalTimeElapsedInMS += Convert.ToUInt32(frameSizeInMS);
 
@@ -516,7 +524,7 @@ namespace EQWOWConverter.ObjectModels
                     ModelBones[curQuadBoneIndex].TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].TranslationTrack.AddSequence();
                     ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(0, new Vector3(curSpriteRadius, 0f, 0f));
-                    UInt32 animMidTimestamp = Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS / 2);
+                    UInt32 animMidTimestamp = Convert.ToUInt32(nonProjectileAnimTimeInMS / 2);
                     float pulseMaxDistance = curSpriteRadius;
                     if (spriteListEffect.EffectType == EQSpellListEffectType.Pulsating && (curParticle.Radius == 0f || curParticle.Radius >= 0.1f)) // Low (but not zero) means static image at player
                         pulseMaxDistance = curSpriteRadius + Configuration.SPELL_EFFECT_SPRITE_LIST_PULSE_RANGE;
@@ -535,7 +543,7 @@ namespace EQWOWConverter.ObjectModels
                         }
                     }
                     ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(animMidTimestamp, new Vector3(pulseMaxDistance, 0f, forceMaxDistance * 0.5f));
-                    ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS), new Vector3(curSpriteRadius, 0f, forceMaxDistance));
+                    ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(Convert.ToUInt32(nonProjectileAnimTimeInMS), new Vector3(curSpriteRadius, 0f, forceMaxDistance));
 
                     // Set Scale
                     // EQ values are 0 - 25
@@ -545,11 +553,17 @@ namespace EQWOWConverter.ObjectModels
                     ModelBones[curQuadBoneIndex].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(spriteScaleWOW, spriteScaleWOW, spriteScaleWOW));
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS - 1), new Vector3(spriteScaleWOW, spriteScaleWOW, spriteScaleWOW));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(nonProjectileAnimTimeInMS - 1), new Vector3(spriteScaleWOW, spriteScaleWOW, spriteScaleWOW));
                     // Hide the sprites after 2 seconds, as that's when all sprite list animations 'ends' with exception of projectiles
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS), new Vector3(0f, 0f, 0f));
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS), new Vector3(0f, 0f, 0f));
-
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(nonProjectileAnimTimeInMS), new Vector3(0f, 0f, 0f));
+                    if (Properties.SpellVisualType == SpellVisualType.BardTick)
+                    {
+                        int maxDuration = Convert.ToInt32(Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW * 1000) * Configuration.SPELL_EFFECT_BARD_TICK_VISUAL_DURATION_MOD_FROM_TICK);
+                        int finalFrameTimestamp = Math.Min(Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS, maxDuration);
+                        ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(maxDuration), new Vector3(0f, 0f, 0f));
+                    }
+                    else
+                        ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS), new Vector3(0f, 0f, 0f));
                     curQuadBoneIndex++;
                 }
             }

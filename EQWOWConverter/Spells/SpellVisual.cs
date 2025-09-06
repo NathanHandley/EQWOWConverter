@@ -265,6 +265,7 @@ namespace EQWOWConverter.Spells
                 string objectName = string.Concat("eqemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString(), "_Chest");
                 ObjectModelProperties objectProperties = new ObjectModelProperties();
                 objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
+                objectProperties.SpellVisualType = spellVisualType;
                 ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.ParticleEmitter, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                 objectModel.Load(new List<Material>(), new MeshData(), new List<Vector3>(), new List<TriangleFace>(), spriteListEffects);
                 spellVisual.AddObjectToStageAtAttachLocation(stageType, SpellEmitterModelAttachLocationType.Chest, objectModel);
