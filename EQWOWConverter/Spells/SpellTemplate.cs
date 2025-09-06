@@ -165,6 +165,7 @@ namespace EQWOWConverter.Spells
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public SpellBardSongType BardSongType = SpellBardSongType.None;
         public bool IsBardTickEffect = false;
+        public bool HasAdditionalTickOnApply = false;
 
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -2219,6 +2220,7 @@ namespace EQWOWConverter.Spells
                 auraEffect.AuraDescription = description;
 
                 spellTemplate.WOWSpellEffects.Add(auraEffect);
+                spellTemplate.HasAdditionalTickOnApply = true;
             }
             else
             {

@@ -305,6 +305,8 @@ namespace EQWOWConverter.WOWFiles
             UInt32 attributeFlags = 0;
             if (spellTemplate.IgnoreTargetRequirements == true)
                 attributeFlags |= 2097152; // 	SPELL_ATTR5_IGNORE_TARGET_REQUIREMENTS
+            if (spellTemplate.HasAdditionalTickOnApply == true)
+                attributeFlags |= 512; // 	SPELL_ATTR5_EXTRA_INITIAL_PERIOD
             return attributeFlags;
         }
 
