@@ -20,6 +20,7 @@ namespace EQWOWConverter.Spells
     {
         Beneficial = 0,
         Detrimental = 1,
-        BardTick = 2
+        BardSong = 2,
+        BardTick = 3
     }
 }

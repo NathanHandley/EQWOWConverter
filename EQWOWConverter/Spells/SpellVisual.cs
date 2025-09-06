@@ -63,6 +63,7 @@ namespace EQWOWConverter.Spells
                 List<SpellVisual> combinedSpellVisuals = new List<SpellVisual>();
                 combinedSpellVisuals.AddRange(SpellVisualsByType[SpellVisualType.Beneficial]);
                 combinedSpellVisuals.AddRange(SpellVisualsByType[SpellVisualType.Detrimental]);
+                combinedSpellVisuals.AddRange(SpellVisualsByType[SpellVisualType.BardSong]);
                 combinedSpellVisuals.AddRange(SpellVisualsByType[SpellVisualType.BardTick]);
                 return combinedSpellVisuals;
             }
@@ -90,6 +91,7 @@ namespace EQWOWConverter.Spells
             SpellVisualsByType.Clear();
             SpellVisualsByType.Add(SpellVisualType.Beneficial, new List<SpellVisual>());
             SpellVisualsByType.Add(SpellVisualType.Detrimental, new List<SpellVisual>());
+            SpellVisualsByType.Add(SpellVisualType.BardSong, new List<SpellVisual>());
             SpellVisualsByType.Add(SpellVisualType.BardTick, new List<SpellVisual>());
 
             lock (SpellVisualLock)
@@ -107,8 +109,8 @@ namespace EQWOWConverter.Spells
                 // Create spell visual data for each of the EQ spell data
                 for (int i = 0; i < EQSpellsEFF.SpellEffects.Count; i++)
                 {
-                    // Two copies for good vs bad
-                    for (int j = 0; j < 3; j++)
+                    // One for each type of spell visual
+                    for (int j = 0; j < 4; j++)
                     {
                         SpellVisualType spellVisualType = (SpellVisualType)j;
                         EQSpellsEFF.EQSpellEffect spellEffect = EQSpellsEFF.SpellEffects[i];
@@ -139,6 +141,7 @@ namespace EQWOWConverter.Spells
                         {
                             case SpellVisualType.Beneficial: spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.ReadySpellOmni; break;
                             case SpellVisualType.Detrimental: spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.ReadySpellDirected; break;
+                            case SpellVisualType.BardSong: spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.ReadySpellOmni; break;
                             default: spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.None; break;
                         }
                         spellVisual.SoundEntryDBCIDInStage[(int)stageType] = ProcessSoundAndReturnDBCID(spellEffect.SourceSoundID, stageType);
@@ -149,6 +152,7 @@ namespace EQWOWConverter.Spells
                         {
                             case SpellVisualType.Beneficial: spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.SpellCastOmni; break;
                             case SpellVisualType.Detrimental: spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.SpellCastDirected; break;
+                            case SpellVisualType.BardSong: spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.SpellCastOmni; break;
                             default: spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.None; break;
                         }
                     } break;
@@ -161,8 +165,12 @@ namespace EQWOWConverter.Spells
             }
 
             // Model
-            if (spellVisualType != SpellVisualType.BardTick || stageType == SpellVisualStageType.Impact)
-                GenerateEmitterModels(ref spellVisual, spellEffect, stageType, spellVisualType);
+            // Skip certain bard configurations
+            if (spellVisualType == SpellVisualType.BardTick && stageType == SpellVisualStageType.Cast)
+                return;
+            if (spellVisualType == SpellVisualType.BardSong && stageType == SpellVisualStageType.Impact)
+                return;
+            GenerateEmitterModels(ref spellVisual, spellEffect, stageType, spellVisualType);
 
             // If there is a projectile, create that
             //if (spellEffect.)

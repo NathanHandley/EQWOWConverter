@@ -262,11 +262,15 @@ namespace EQWOWConverter.Spells
 
                 // Visual
                 newSpellTemplate.EQSpellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
-                SpellVisualType spellVisualType = SpellVisualType.Beneficial;
-                if (isDetrimental == true)
-                    spellVisualType = SpellVisualType.Detrimental;
                 if (newSpellTemplate.EQSpellVisualEffectIndex >= 0 && newSpellTemplate.EQSpellVisualEffectIndex < 52)
+                {
+                    SpellVisualType spellVisualType = SpellVisualType.Beneficial;
+                    if (newSpellTemplate.BardSongType != SpellBardSongType.None)
+                        spellVisualType = SpellVisualType.BardSong;
+                    else if (isDetrimental == true)
+                        spellVisualType = SpellVisualType.Detrimental;
                     newSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(newSpellTemplate.EQSpellVisualEffectIndex, spellVisualType).SpellVisualDBCID);
+                }
 
                 // School class
                 int resistType = int.Parse(columns["resisttype"]);
