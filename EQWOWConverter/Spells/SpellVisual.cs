@@ -154,17 +154,15 @@ namespace EQWOWConverter.Spells
                     } break;
                 case SpellVisualStageType.Impact:
                     {
-                        switch (spellVisualType)
-                        {
-                            default: spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.None; break;
-                        }
+                        spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.None;
                         spellVisual.SoundEntryDBCIDInStage[(int)stageType] = ProcessSoundAndReturnDBCID(spellEffect.TargetSoundID, stageType);
                     } break;
                 default: Logger.WriteError("Unhandled stagetype in ConvertStageVisualData"); break;
             }
 
             // Model
-            GenerateEmitterModels(ref spellVisual, spellEffect, stageType, spellVisualType);
+            if (spellVisualType != SpellVisualType.BardTick || stageType == SpellVisualStageType.Impact)
+                GenerateEmitterModels(ref spellVisual, spellEffect, stageType, spellVisualType);
 
             // If there is a projectile, create that
             //if (spellEffect.)
