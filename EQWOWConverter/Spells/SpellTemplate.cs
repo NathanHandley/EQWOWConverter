@@ -164,6 +164,7 @@ namespace EQWOWConverter.Spells
         public int SummonPropertiesDBCID = 0;
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public SpellBardSongType BardSongType = SpellBardSongType.None;
+        public bool IsBardTickEffect = false;
 
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -255,8 +256,11 @@ namespace EQWOWConverter.Spells
 
                 // Visual
                 int spellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
+                SpellVisualType spellVisualType = SpellVisualType.Beneficial;
+                if (isDetrimental == true)
+                    spellVisualType = SpellVisualType.Detrimental;
                 if (spellVisualEffectIndex >= 0 && spellVisualEffectIndex < 52)
-                    newSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(spellVisualEffectIndex, !isDetrimental).SpellVisualDBCID);
+                    newSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(spellVisualEffectIndex, spellVisualType).SpellVisualDBCID);
 
                 // School class
                 int resistType = int.Parse(columns["resisttype"]);
