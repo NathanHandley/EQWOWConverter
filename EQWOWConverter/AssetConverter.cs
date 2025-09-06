@@ -1606,7 +1606,6 @@ namespace EQWOWConverter
             SpellTemplate dayPhaseSpellTemplate = new SpellTemplate();
             dayPhaseSpellTemplate.Name = "EQ Phase Day";
             dayPhaseSpellTemplate.Category = 0;
-            dayPhaseSpellTemplate.InterruptFlags = 0;
             dayPhaseSpellTemplate.WOWSpellID = Configuration.SPELLS_DAYPHASE_SPELLDBC_ID;
             dayPhaseSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
             dayPhaseSpellTemplate.Description = "Able to see day EQ creatures";
@@ -1621,7 +1620,6 @@ namespace EQWOWConverter
             SpellTemplate nightPhaseSpellTemplate = new SpellTemplate();
             nightPhaseSpellTemplate.Name = "EQ Phase Day";
             nightPhaseSpellTemplate.Category = 0;
-            nightPhaseSpellTemplate.InterruptFlags = 0;
             nightPhaseSpellTemplate.WOWSpellID = Configuration.SPELLS_NIGHTPHASE_SPELLDBC_ID;
             nightPhaseSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
             nightPhaseSpellTemplate.Description = "Able to see night EQ creatures";

@@ -62,7 +62,6 @@ namespace EQWOWConverter.Spells
         public string Description = string.Empty;
         public string AuraDescription = string.Empty;
         public UInt32 Category = 1;
-        public UInt32 InterruptFlags = 15;
         public UInt32 ChannelInterruptFlags = 0;
         public int SpellIconID = 0;
         public TradeskillRecipe? TradeskillRecipe = null;
@@ -167,6 +166,11 @@ namespace EQWOWConverter.Spells
         public SpellBardSongType BardSongType = SpellBardSongType.None;
         public bool IsBardTickEffect = false;
         public bool HasAdditionalTickOnApply = false;
+        public bool InterruptOnMovement = true;
+        public bool InterruptOnSchoolLockdown = true;
+        public bool InterruptOnPushback = true;
+        public bool InterruptOnCast = true;
+        public bool InterruptOnDamageTaken = false;
 
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -2051,7 +2055,8 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.IsFarSight = true;
                                 spellTemplate.GenerateNoThreat = true;
                                 spellTemplate.IgnoreTargetRequirements = true;
-                                spellTemplate.InterruptFlags = 9;
+                                spellTemplate.InterruptOnCast = false;
+                                spellTemplate.InterruptOnPushback = false;
                                 spellTemplate.ChannelInterruptFlags = 31772;
 
                                 if (targets[0] != SpellWOWTargetType.UnitPet)
@@ -2223,6 +2228,8 @@ namespace EQWOWConverter.Spells
 
                 spellTemplate.WOWSpellEffects.Add(auraEffect);
                 spellTemplate.HasAdditionalTickOnApply = true;
+                spellTemplate.InterruptOnMovement = false;
+                spellTemplate.InterruptOnPushback = false;
             }
             else
             {

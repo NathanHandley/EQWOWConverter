@@ -67,7 +67,7 @@ namespace EQWOWConverter.WOWFiles
             else
                 newRow.AddUInt32(spellTemplate.RecoveryTimeInMS); // RecoveryTime
             newRow.AddUInt32(0); // CategoryRecoveryTime
-            newRow.AddUInt32(spellTemplate.InterruptFlags); // InterruptFlags (15 is standard interrupt for things like moving, pushback, and interrupt cast)
+            newRow.AddUInt32(GetInterruptFlags(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType));
             if (spellTemplate.BreakEffectOnAllDamage == true)
                 newRow.AddUInt32(2); // AuraInterruptFlags
             else
@@ -341,6 +341,25 @@ namespace EQWOWConverter.WOWFiles
                 procFlags |= 16; // PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS
             }
             return procFlags;
+        }
+
+        public UInt32 GetInterruptFlags(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
+        {
+            if (auraType == SpellWOWAuraType.Phase)
+                return 0;
+            
+            UInt32 interruptFlags = 0;
+            if (spellTemplate.InterruptOnMovement == true)
+                interruptFlags |= 1;
+            if (spellTemplate.InterruptOnPushback == true)
+                interruptFlags |= 2;
+            if (spellTemplate.InterruptOnCast == true)
+                interruptFlags |= 4;
+            if (spellTemplate.InterruptOnSchoolLockdown == true)
+                interruptFlags |= 8;
+            if (spellTemplate.InterruptOnDamageTaken == true)
+                interruptFlags |= 16;
+            return interruptFlags;
         }
     }
 }
