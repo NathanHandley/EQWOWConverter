@@ -164,7 +164,7 @@ namespace EQWOWConverter.Spells
             }
 
             // Model
-            GenerateEmitterModels(ref spellVisual, spellEffect, stageType);
+            GenerateEmitterModels(ref spellVisual, spellEffect, stageType, spellVisualType);
 
             // If there is a projectile, create that
             //if (spellEffect.)
@@ -247,7 +247,8 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        private static void GenerateEmitterModels(ref SpellVisual spellVisual, EQSpellsEFF.EQSpellEffect spellEffect, SpellVisualStageType stageType)
+        private static void GenerateEmitterModels(ref SpellVisual spellVisual, EQSpellsEFF.EQSpellEffect spellEffect, SpellVisualStageType stageType,
+            SpellVisualType spellVisualType)
         {
             // There are no 'cast' models
             if (stageType == SpellVisualStageType.Cast)
@@ -281,7 +282,7 @@ namespace EQWOWConverter.Spells
                     continue;
 
                 ObjectModelParticleEmitter particleEmitter = new ObjectModelParticleEmitter();
-                particleEmitter.Load(emitter, stageType);
+                particleEmitter.Load(emitter, stageType, spellVisualType);
                 modelParticleEmitters.Add(particleEmitter);
 
                 // It seems that emitters with type 5 (disc at player center) ALSO create emitters on hands and on the ground
@@ -293,7 +294,7 @@ namespace EQWOWConverter.Spells
                     //emitters.Add(particleEmitterHands);
 
                     ObjectModelParticleEmitter particleEmitterGround = new ObjectModelParticleEmitter();
-                    particleEmitterGround.Load(emitter, stageType, SpellVisualEmitterSpawnPatternType.DiscOnGround);
+                    particleEmitterGround.Load(emitter, stageType, spellVisualType, SpellVisualEmitterSpawnPatternType.DiscOnGround);
                     modelParticleEmitters.Add(particleEmitterGround);
                 }
             }
@@ -312,6 +313,7 @@ namespace EQWOWConverter.Spells
                     objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
                     objectProperties.SingleSpriteSpellParticleEmitters.Add(emitter);
                     objectProperties.SpellVisualEffectStageType = stageType;
+                    objectProperties.SpellVisualType = spellVisualType;
                     if (emitter.EmissionPattern == SpellVisualEmitterSpawnPatternType.FromHands)
                         objectProperties.SpellEmitterSpraysFromHands = true;
                     ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.ParticleEmitter, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);

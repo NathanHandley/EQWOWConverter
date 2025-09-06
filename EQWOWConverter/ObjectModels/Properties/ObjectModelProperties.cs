@@ -39,6 +39,7 @@ namespace EQWOWConverter.ObjectModels.Properties
         public List<ObjectModelParticleEmitter> SingleSpriteSpellParticleEmitters = new List<ObjectModelParticleEmitter>();
         public int SpellVisualEffectNameDBCID;
         public SpellVisualStageType SpellVisualEffectStageType = SpellVisualStageType.None;
+        public SpellVisualType SpellVisualType = SpellVisualType.Beneficial;
         public bool SpellEmitterSpraysFromHands = false;
         public bool RenderingEnabled = true; // Note: This is also makes it non-interactive (non-clickable)
 

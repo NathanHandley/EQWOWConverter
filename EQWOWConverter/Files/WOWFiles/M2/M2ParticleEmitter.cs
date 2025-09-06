@@ -103,8 +103,16 @@ namespace EQWOWConverter.WOWFiles
 
             EmissionRate.TrackSequences.AddSequence();
             EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.SpawnRate));
-            if (objectModelParticleEmitter.SpellVisualEffectStageType == Spells.SpellVisualStageType.Impact)
-                EmissionRate.TrackSequences.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS), new M2Float(0));
+            if (objectModelParticleEmitter.SpellVisualEffectStageType == SpellVisualStageType.Impact)
+            {
+                if (objectModelParticleEmitter.SpellVisualType == SpellVisualType.BardTick)
+                {
+                    UInt32 duration = Convert.ToUInt32(Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW * 1000) * Configuration.SPELL_EFFECT_BARD_TICK_VISUAL_DURATION_MOD_FROM_TICK);
+                    EmissionRate.TrackSequences.AddValueToLastSequence(duration, new M2Float(0));
+                }
+                else
+                    EmissionRate.TrackSequences.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS), new M2Float(0));
+            }
             else
                 EmissionRate.TrackSequences.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS), new M2Float(0));
 

@@ -15,9 +15,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Creatures;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels.Properties;
-using EQWOWConverter.Creatures;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -193,7 +193,15 @@ namespace EQWOWConverter.ObjectModels
                 ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
 
                 if (Properties.SpellVisualEffectStageType == Spells.SpellVisualStageType.Impact)
-                    ModelAnimations[0].DurationInMS = Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS);
+                {
+                    if (Properties.SpellVisualType == Spells.SpellVisualType.BardTick)
+                    {
+                        UInt32 duration = Convert.ToUInt32(Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW * 1000) * Configuration.SPELL_EFFECT_BARD_TICK_VISUAL_DURATION_MOD_FROM_TICK);
+                        ModelAnimations[0].DurationInMS = duration;
+                    }
+                    else
+                        ModelAnimations[0].DurationInMS = Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS);
+                }
                 else
                     ModelAnimations[0].DurationInMS = Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS);
 

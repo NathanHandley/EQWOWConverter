@@ -486,7 +486,7 @@ namespace EQWOWConverter
 
         // Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier
         // Increase or decrease this to modify how long spells work for and, in effect, the damage they do
-        // World of Warcraft uses a reduced amonut since anything > 5 seconds triggers out of combat events
+        // World of Warcraft typically uses a reduced amount and dummy targets start out of combat events at >5 seconds
         // It's highly advisable to use 3 or 2 since they are divisors of 6, but note that generally smaller has
         // rounding issues on the bottom end from a balance perspective
         public static readonly int SPELL_PERIODIC_SECONDS_PER_TICK_EQ = 6;
@@ -547,6 +547,11 @@ namespace EQWOWConverter
         public static readonly float SPELL_EFFECT_SPRITE_LIST_CIRCULAR_SHIFT_MOD = 0.5f; // Various reports show this as 0.066 for EQ like (divide by 15) but that seems wrong
         public static readonly float SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_HIGH = 3f;
         public static readonly float SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_LOW = -1f;
+
+        // BardTick visuals have their durations multiplied by this ammount.  It uses the
+        // SPELL_PERIODIC_SECONDS_PER_TICK_WOW variable to calculate the amount.  So at 0.333,
+        // a 6 second tick would be 2 seconds (EQ like) and 3 second tick would be 1 second
+        public static readonly float SPELL_EFFECT_BARD_TICK_VISUAL_DURATION_MOD_FROM_TICK = 0.333f;
 
         // This is how much 'weight' the lower effect value has when converting EQ to WoW spell effects,
         //  with values closer to 1 leaning towards the lower effect, and further from 1 leaning towards
