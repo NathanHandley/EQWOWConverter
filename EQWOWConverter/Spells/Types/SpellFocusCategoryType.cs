@@ -20,9 +20,9 @@ namespace EQWOWConverter.Spells
     {
         None = 0,
         BardBrass = 1,
-        BardSinging = 2,
-        BardString = 3,
-        BardWind = 4,
-        BardPercussion = 5
+        BardString = 2,
+        BardWind = 3,
+        BardPercussion = 4,
+        BardAll = 5
     }
 }

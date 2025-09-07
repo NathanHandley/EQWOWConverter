@@ -239,10 +239,9 @@ namespace EQWOWConverter.Spells
                     continue;
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
-                newSpellTemplate.FocusCategoryType = GetFocusCategoryType(columns["skill"]);
-                if (newSpellTemplate.FocusCategoryType == SpellFocusCategoryType.BardBrass || newSpellTemplate.FocusCategoryType == SpellFocusCategoryType.BardSinging ||
-                    newSpellTemplate.FocusCategoryType == SpellFocusCategoryType.BardString || newSpellTemplate.FocusCategoryType == SpellFocusCategoryType.BardWind ||
-                    newSpellTemplate.FocusCategoryType == SpellFocusCategoryType.BardPercussion)
+                int skillID = int.Parse(columns["skill"]);
+                newSpellTemplate.FocusCategoryType = GetFocusCategoryType(skillID);
+                if (skillID == 12 || skillID == 41 || skillID == 49 || skillID == 54 || skillID == 70)
                     newSpellTemplate.IsBardSong = true;
 
                 // Buff duration (if any)
@@ -724,16 +723,15 @@ namespace EQWOWConverter.Spells
             return spellWOWTargetTypes;
         }
 
-        private static SpellFocusCategoryType GetFocusCategoryType(string skillString)
+        private static SpellFocusCategoryType GetFocusCategoryType(int skillID)
         {
             // Pull out the bard songs from skill string
-            switch (skillString)
+            switch (skillID)
             {
-                case "12": return SpellFocusCategoryType.BardBrass;
-                case "41": return SpellFocusCategoryType.BardSinging;
-                case "49": return SpellFocusCategoryType.BardString;
-                case "54": return SpellFocusCategoryType.BardWind;
-                case "70": return SpellFocusCategoryType.BardPercussion;
+                case 12: return SpellFocusCategoryType.BardBrass;
+                case 49: return SpellFocusCategoryType.BardString;
+                case 54: return SpellFocusCategoryType.BardWind;
+                case 70: return SpellFocusCategoryType.BardPercussion;
                 default: break;
             }
             return SpellFocusCategoryType.None;
@@ -2236,7 +2234,8 @@ namespace EQWOWConverter.Spells
                 auraEffect.AuraDescription = description;
 
                 spellTemplate.WOWSpellEffects.Add(auraEffect);
-                spellTemplate.HasAdditionalTickOnApply = true;
+                if (Configuration.SPELL_EFFECT_BARD_ADDITIONAL_TICK_ON_CAST == true)
+                    spellTemplate.HasAdditionalTickOnApply = true;
                 spellTemplate.InterruptOnMovement = false;
                 spellTemplate.InterruptOnPushback = false;
             }

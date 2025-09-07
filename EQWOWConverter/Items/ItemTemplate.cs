@@ -15,6 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Spells;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace EQWOWConverter.Items
@@ -100,6 +102,8 @@ namespace EQWOWConverter.Items
         public bool IsRogueOnlyPoison = false;
         public string EQItemDisplayFileName = string.Empty;
         ItemTemplate? ParentItemTemplate = null;
+        public SpellFocusCategoryType SpellFocusType = SpellFocusCategoryType.None;
+        public int SpellFocusValue = 0;
 
         public ItemTemplate()
         {
@@ -1291,7 +1295,29 @@ namespace EQWOWConverter.Items
             {
                 itemTemplate.SheatheType = 0; // None / hide when put away
             }
-        }                     
+        }
+        
+        private static void FillFocusProperties(ref ItemTemplate itemTemplate, Dictionary<string, string> columns)
+        {
+            // Bard focus data
+            int bardFocusValue = int.Parse(columns["bardvalue"]);
+            if (bardFocusValue > 0)
+            {
+                int bardFocusType = int.Parse(columns["bardtype"]);
+                switch (bardFocusType)
+                {
+                    case 23: itemTemplate.SpellFocusType = SpellFocusCategoryType.BardWind; break;
+                    case 24: itemTemplate.SpellFocusType = SpellFocusCategoryType.BardString; break;
+                    case 25: itemTemplate.SpellFocusType = SpellFocusCategoryType.BardBrass; break;
+                    case 26: itemTemplate.SpellFocusType = SpellFocusCategoryType.BardPercussion; break;
+                    case 51: itemTemplate.SpellFocusType = SpellFocusCategoryType.BardAll; break;
+                    default: break; 
+                }
+                if (itemTemplate.SpellFocusType != SpellFocusCategoryType.None)
+                    itemTemplate.SpellFocusValue = bardFocusValue;
+                return;
+            }
+        }
 
         public static void PopulateItemTemplateListFromDisk()
         {
@@ -1367,6 +1393,9 @@ namespace EQWOWConverter.Items
                 newItemTemplate.WOWProcEnchantSpellIDWOW = int.Parse(columns["procenchant_spellIDWOW"]);
                 newItemTemplate.WOWProcEnchantEffectIDEQ = int.Parse(columns["procenchant_effectIDEQ"]);
                 newItemTemplate.MaxCharges = Math.Max(int.Parse(columns["maxcharges"]), 0);
+
+                // Focus data
+                FillFocusProperties(ref newItemTemplate, columns);
 
                 // Icon information
                 int iconID = int.Parse(columns["icon"]) - 500;
