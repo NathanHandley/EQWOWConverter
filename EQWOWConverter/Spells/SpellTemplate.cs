@@ -1821,7 +1821,7 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
                                     newSpellEffectWOW.ActionDescription = "opens a magical portal that returns you to your bind point in norrath, and you will have 30 minutes where you can return to your gate point after casting it";
                                     newSpellEffectWOW.AuraDescription = "you are tethered to the location where you gated and may return there if you click it off before the buff wears off, but it will fail in combat";
-                                    newSpellEffectWOW.EffectMiscValueA = 3;
+                                    newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.Gate;
                                     spellTemplate.AuraDuration.SetFixedDuration(1800000); // 30 minutes
                                 }
                                 else
@@ -1829,7 +1829,7 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.Dummy;
                                     newSpellEffectWOW.ActionDescription = "opens a magical portal that returns you to your bind point in norrath";
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
-                                    newSpellEffectWOW.EffectMiscValueA = 3;
+                                    newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.Gate;
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
@@ -1838,7 +1838,7 @@ namespace EQWOWConverter.Spells
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.Dummy;
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
-                                newSpellEffectWOW.EffectMiscValueA = 2;
+                                newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.BindAny;
                                 newSpellEffectWOW.ActionDescription = string.Concat("binds the soul of the target to their current location, which only works in norrath");
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
