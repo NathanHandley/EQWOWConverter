@@ -16,13 +16,13 @@
 
 namespace EQWOWConverter.Spells
 {
-    internal enum SpellBardSongType : int
+    internal enum SpellFocusCategoryType : int
     {
         None = 0,
-        Brass = 1,
-        Singing = 2,
-        String = 3,
-        Wind = 4,
-        Percussion = 5
+        BardBrass = 1,
+        BardSinging = 2,
+        BardString = 3,
+        BardWind = 4,
+        BardPercussion = 5
     }
 }

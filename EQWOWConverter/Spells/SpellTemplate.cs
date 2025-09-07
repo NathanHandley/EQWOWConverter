@@ -163,14 +163,14 @@ namespace EQWOWConverter.Spells
         public SpellPet? SummonSpellPet = null;
         public int SummonPropertiesDBCID = 0;
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
-        public SpellBardSongType BardSongType = SpellBardSongType.None;
-        public bool IsBardTickEffect = false;
+        public bool IsBardSong = false;
         public bool HasAdditionalTickOnApply = false;
         public bool InterruptOnMovement = true;
         public bool InterruptOnSchoolLockdown = true;
         public bool InterruptOnPushback = true;
         public bool InterruptOnCast = true;
         public bool InterruptOnDamageTaken = false;
+        public SpellFocusCategoryType FocusCategoryType = SpellFocusCategoryType.None;
 
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -239,15 +239,18 @@ namespace EQWOWConverter.Spells
                     continue;
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
-                if (Convert.ToInt32(columns["bard_learn_level"]) < 100)
-                    newSpellTemplate.BardSongType = GetBardSongType(columns["skill"]);
+                newSpellTemplate.FocusCategoryType = GetFocusCategoryType(columns["skill"]);
+                if (newSpellTemplate.FocusCategoryType == SpellFocusCategoryType.BardBrass || newSpellTemplate.FocusCategoryType == SpellFocusCategoryType.BardSinging ||
+                    newSpellTemplate.FocusCategoryType == SpellFocusCategoryType.BardString || newSpellTemplate.FocusCategoryType == SpellFocusCategoryType.BardWind ||
+                    newSpellTemplate.FocusCategoryType == SpellFocusCategoryType.BardPercussion)
+                    newSpellTemplate.IsBardSong = true;
 
                 // Buff duration (if any)
                 newSpellTemplate.EQBuffDurationInTicks = Convert.ToInt32(columns["buffduration"]);
                 newSpellTemplate.EQBuffDurationFormula = Convert.ToInt32(columns["buffdurationformula"]);
                 if (newSpellTemplate.EQBuffDurationFormula != 0 || newSpellTemplate.IsModelSizeChangeSpell == true)
                     newSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(newSpellTemplate.MinimumPlayerLearnLevel, newSpellTemplate.EQBuffDurationFormula, 
-                        newSpellTemplate.EQBuffDurationInTicks, newSpellTemplate.IsModelSizeChangeSpell, newSpellTemplate.BardSongType != SpellBardSongType.None);
+                        newSpellTemplate.EQBuffDurationInTicks, newSpellTemplate.IsModelSizeChangeSpell, newSpellTemplate.IsBardSong);
 
                 // Icon
                 int spellIconID = int.Parse(columns["icon"]);
@@ -265,7 +268,7 @@ namespace EQWOWConverter.Spells
                 if (newSpellTemplate.EQSpellVisualEffectIndex >= 0 && newSpellTemplate.EQSpellVisualEffectIndex < 52)
                 {
                     SpellVisualType spellVisualType = SpellVisualType.Beneficial;
-                    if (newSpellTemplate.BardSongType != SpellBardSongType.None)
+                    if (newSpellTemplate.IsBardSong == true)
                         spellVisualType = SpellVisualType.BardSong;
                     else if (isDetrimental == true)
                         spellVisualType = SpellVisualType.Detrimental;
@@ -285,7 +288,7 @@ namespace EQWOWConverter.Spells
                 SpellTemplate? effectGeneratedSpellTemplate;
                 ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration, 
                     newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneOrPetTypeName, zonePropertiesByShortName,
-                    out effectGeneratedSpellTemplate, ref creatureTemplatesByEQID, newSpellTemplate.BardSongType != SpellBardSongType.None);
+                    out effectGeneratedSpellTemplate, ref creatureTemplatesByEQID, newSpellTemplate.IsBardSong);
 
                 // If there is no wow effect, skip it
                 if (newSpellTemplate.WOWSpellEffects.Count == 0)
@@ -721,17 +724,19 @@ namespace EQWOWConverter.Spells
             return spellWOWTargetTypes;
         }
 
-        private static SpellBardSongType GetBardSongType(string skillString)
+        private static SpellFocusCategoryType GetFocusCategoryType(string skillString)
         {
+            // Pull out the bard songs from skill string
             switch (skillString)
             {
-                case "12": return SpellBardSongType.Brass;
-                case "41": return SpellBardSongType.Singing;
-                case "49": return SpellBardSongType.String;
-                case "54": return SpellBardSongType.Wind;
-                case "70": return SpellBardSongType.Percussion;
-                default: return SpellBardSongType.None;
+                case "12": return SpellFocusCategoryType.BardBrass;
+                case "41": return SpellFocusCategoryType.BardSinging;
+                case "49": return SpellFocusCategoryType.BardString;
+                case "54": return SpellFocusCategoryType.BardWind;
+                case "70": return SpellFocusCategoryType.BardPercussion;
+                default: break;
             }
+            return SpellFocusCategoryType.None;
         }
 
         private static void PopulateEQSpellEffect(ref SpellTemplate spellTemplate, int slotID, Dictionary<string, string> rowColumns)
@@ -2298,16 +2303,15 @@ namespace EQWOWConverter.Spells
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nOn success also cast:\n", recourseSpellTemplate.Name, "\n", GenerateActionDescription(recourseSpellTemplate));
             if (procLinkSpellTemplate != null)
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nSometimes on hit cast:\n", procLinkSpellTemplate.Name, "\n", GenerateActionDescription(procLinkSpellTemplate));
-            if (spellTemplate.BardSongType != SpellBardSongType.None && spellTemplate.BardSongType != SpellBardSongType.Singing)
+            if (spellTemplate.IsBardSong && spellTemplate.FocusCategoryType != SpellFocusCategoryType.BardSinging)
             {
                 string songSkillTypeString = string.Empty;
-                switch (spellTemplate.BardSongType)
+                switch (spellTemplate.FocusCategoryType)
                 {
-                    case SpellBardSongType.Brass: songSkillTypeString = "Brass Instruments"; break;
-                    case SpellBardSongType.String: songSkillTypeString = "String Instruments"; break;
-                    case SpellBardSongType.Wind: songSkillTypeString = "Wind Instruments"; break;
-                    case SpellBardSongType.Percussion: songSkillTypeString = "Percussion Instruments"; break;
-                    case SpellBardSongType.Singing: songSkillTypeString = "Singing"; break;
+                    case SpellFocusCategoryType.BardBrass: songSkillTypeString = "Brass Instruments"; break;
+                    case SpellFocusCategoryType.BardString: songSkillTypeString = "String Instruments"; break;
+                    case SpellFocusCategoryType.BardWind: songSkillTypeString = "Wind Instruments"; break;
+                    case SpellFocusCategoryType.BardPercussion: songSkillTypeString = "Percussion Instruments"; break;
                     default: break;
                 }
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nEnhanced by ", songSkillTypeString, ".");
@@ -2387,7 +2391,7 @@ namespace EQWOWConverter.Spells
             auraSB[0] = char.ToUpper(auraSB[0]);
 
             // Bard song auras need target information
-            if (spellTemplate.BardSongType != SpellBardSongType.None && spellTemplate.TargetDescriptionTextFragment.Length > 0)
+            if (spellTemplate.IsBardSong && spellTemplate.TargetDescriptionTextFragment.Length > 0)
             {
                 auraSB.Append(" ");
                 auraSB.Append(spellTemplate.TargetDescriptionTextFragment);
