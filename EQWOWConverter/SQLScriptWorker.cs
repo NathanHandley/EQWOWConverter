@@ -64,6 +64,7 @@ namespace EQWOWConverter
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
         private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
         private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
+        private ModEverquestSystemConfigsSQL modEverquestSystemConfigsSQL = new ModEverquestSystemConfigsSQL();
         private ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
         private NPCTextSQL npcTextSQL = new NPCTextSQL();
         private NPCTrainerSQL npcTrainerSQL = new NPCTrainerSQL();
@@ -93,6 +94,9 @@ namespace EQWOWConverter
             string sqlScriptFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "SQLScripts");
             if (Directory.Exists(sqlScriptFolder))
                 Directory.Delete(sqlScriptFolder, true);
+
+            // System configs
+            PopulateSystemConfigs();
 
             // Zones
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
@@ -133,6 +137,20 @@ namespace EQWOWConverter
 
             // Output them
             OutputSQLScriptsToDisk();
+        }
+
+        private void PopulateSystemConfigs()
+        {
+            modEverquestSystemConfigsSQL.AddRow("DayEventID", Configuration.SQL_GAMEEVENT_ID_DAY.ToString());
+            modEverquestSystemConfigsSQL.AddRow("NightEventID", Configuration.SQL_GAMEEVENT_ID_NIGHT.ToString());
+            modEverquestSystemConfigsSQL.AddRow("MapDBCIDMin", Configuration.DBCID_MAP_ID_START.ToString());
+            modEverquestSystemConfigsSQL.AddRow("MapDBCIDMax", Configuration.DBCID_MAP_ID_END.ToString());
+            modEverquestSystemConfigsSQL.AddRow("SpellDBCIDMin", Configuration.DBCID_SPELL_ID_START.ToString());
+            modEverquestSystemConfigsSQL.AddRow("SpellDBCIDMax", Configuration.DBCID_SPELL_ID_END.ToString());
+            modEverquestSystemConfigsSQL.AddRow("SpellDBCIDDayPhaseAura", Configuration.SPELLS_DAYPHASE_SPELLDBC_ID.ToString());
+            modEverquestSystemConfigsSQL.AddRow("SpellDBCIDNightPhaseAura", Configuration.SPELLS_NIGHTPHASE_SPELLDBC_ID.ToString());
+            modEverquestSystemConfigsSQL.AddRow("QuestSQLIDMin", Configuration.SQL_QUEST_TEMPLATE_ID_START.ToString());
+            modEverquestSystemConfigsSQL.AddRow("QuestSQLIDMax", Configuration.SQL_QUEST_TEMPLATE_ID_END.ToString());
         }
 
         private void PopulateCreatureData(List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
@@ -914,6 +932,7 @@ namespace EQWOWConverter
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
             modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);
             modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
+            modEverquestSystemConfigsSQL.SaveToDisk("mod_everquest_systemconfigs", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcTrainerSQL.SaveToDisk("npc_trainer", SQLFileType.World);
