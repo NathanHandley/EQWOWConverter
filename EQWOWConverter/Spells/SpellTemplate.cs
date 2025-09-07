@@ -2303,7 +2303,7 @@ namespace EQWOWConverter.Spells
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nOn success also cast:\n", recourseSpellTemplate.Name, "\n", GenerateActionDescription(recourseSpellTemplate));
             if (procLinkSpellTemplate != null)
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nSometimes on hit cast:\n", procLinkSpellTemplate.Name, "\n", GenerateActionDescription(procLinkSpellTemplate));
-            if (spellTemplate.IsBardSong && spellTemplate.FocusCategoryType != SpellFocusCategoryType.BardSinging)
+            if (spellTemplate.IsBardSong && spellTemplate.FocusCategoryType != SpellFocusCategoryType.None)
             {
                 string songSkillTypeString = string.Empty;
                 switch (spellTemplate.FocusCategoryType)

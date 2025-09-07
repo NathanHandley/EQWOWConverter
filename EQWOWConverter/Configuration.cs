@@ -553,6 +553,9 @@ namespace EQWOWConverter
         // a 6 second tick would be 2 seconds (EQ like) and 3 second tick would be 1 second
         public static readonly float SPELL_EFFECT_BARD_TICK_VISUAL_DURATION_MOD_FROM_TICK = 0.333f;
 
+        // If this is true, then when a bard song is cast then a tick is applied immediately on targets
+        public static readonly bool SPELL_EFFECT_BARD_ADDITIONAL_TICK_ON_CAST = true;
+
         // This is how much 'weight' the lower effect value has when converting EQ to WoW spell effects,
         //  with values closer to 1 leaning towards the lower effect, and further from 1 leaning towards
         //  the higher effect.  Don't make it less than 1.  
