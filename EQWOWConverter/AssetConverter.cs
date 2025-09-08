@@ -1512,8 +1512,10 @@ namespace EQWOWConverter
             // Add any custom spells
             GenerateCustomSpells(ref spellTemplates);
 
-            // Generate the poison weapon enchantment spells
+            // Generate item-bound spells
             foreach (ItemTemplate itemTemplate in itemTemplatesByEQDBID.Values)
+            {
+                // Generate the poison weapon enchantment spells
                 if (itemTemplate.WOWProcEnchantEffectIDEQ > 0 && itemTemplate.WOWProcEnchantSpellIDWOW > 0)
                 {
                     SpellTemplate? enchantSpellTemplate;
@@ -1521,6 +1523,30 @@ namespace EQWOWConverter
                     if (enchantSpellTemplate != null)
                         spellTemplates.Add(enchantSpellTemplate);
                 }
+
+                // Generate focus items
+                if (itemTemplate.SpellFocusType != SpellFocusCategoryType.None && itemTemplate.SpellFocusValue > 0)
+                {
+                    SpellTemplate? enchantSpellTemplate;
+                    SpellTemplate.GenerateFocusSpellIfNotCreated(itemTemplate.Name, itemTemplate.IconID, itemTemplate.SpellFocusType, itemTemplate.SpellFocusValue, out enchantSpellTemplate);
+                    if (enchantSpellTemplate != null)
+                    {
+                        if (itemTemplate.WOWSpellID1 > 0)
+                        {
+                            Logger.WriteError("Attempted to add focus spell effect to item with WOWID of ", itemTemplate.WOWEntryID.ToString(), " but it already had a WOWSpellID1"); ;
+                            continue;
+                        }
+                        itemTemplate.WOWSpellID1 = enchantSpellTemplate.WOWSpellID;
+                        itemTemplate.WOWSpellTrigger1 = 1; // On Equip
+                        itemTemplate.WOWSpellPPMRate1 = 0;
+                        itemTemplate.WOWSpellCharges1 = 0; // Unlimited
+                        itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
+                        itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
+                        itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
+                        spellTemplates.Add(enchantSpellTemplate);
+                    }
+                }
+            }
 
             // Copy the spell sounds
             string inputSoundFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");

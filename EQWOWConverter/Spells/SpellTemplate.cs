@@ -38,6 +38,7 @@ namespace EQWOWConverter.Spells
         public static Dictionary<int, int> SpellGroupStackRuleByGroup = new Dictionary<int, int>();
 
         private static Dictionary<int, SpellTemplate> SpellTemplatesByEQID = new Dictionary<int, SpellTemplate>();
+        private static Dictionary<(SpellFocusCategoryType, int), SpellTemplate> SpellTemplatesByFocusTypeAndValue = new Dictionary<(SpellFocusCategoryType, int), SpellTemplate>();
         private static readonly object SpellTemplateLock = new object();
         private static int CUR_GENERATED_WOW_SPELL_ID = Configuration.DBCID_SPELL_ID_GENERATED_START;
         private static readonly object SpellEQIDLock = new object();
@@ -383,6 +384,62 @@ namespace EQWOWConverter.Spells
                 enchantSpell.CastTimeInMS = Configuration.SPELL_ENCHANT_ROGUE_POISON_APPLY_TIME_IN_MS;
 
                 enchantSpellTemplate = enchantSpell;
+            }
+        }
+
+        public static void GenerateFocusSpellIfNotCreated(string itemName, int itemIconID, SpellFocusCategoryType focusType, int focusValue, out SpellTemplate? enchantSpellTemplate)
+        {
+            lock (SpellTemplateLock)
+            {
+                enchantSpellTemplate = null;
+
+                // Don't do anything if it already exists
+                if (SpellTemplatesByFocusTypeAndValue.ContainsKey((focusType, focusValue)) == true)
+                {
+                    enchantSpellTemplate =  SpellTemplatesByFocusTypeAndValue[(focusType, focusValue)];
+                    return;
+                }
+
+                // Generate an aura description
+                string description = string.Empty;
+                switch (focusType)
+                {
+                    case SpellFocusCategoryType.BardBrass:
+                        {
+                            description = string.Concat("Increases potency of songs using brass instruments by ", focusValue, "%");
+                        } break;
+                    case SpellFocusCategoryType.BardString:
+                        {
+                            description = string.Concat("Increases potency of songs using string instruments by ", focusValue, "%");
+                        } break;
+                    case SpellFocusCategoryType.BardWind:
+                        {
+                            description = string.Concat("Increases potency of songs using wind instruments by ", focusValue, "%");
+                        } break;
+                    case SpellFocusCategoryType.BardPercussion:
+                        {
+                            description = string.Concat("Increases potency of songs using percussion instruments by ", focusValue, "%");
+                        } break;
+                    case SpellFocusCategoryType.BardAll:
+                        {
+                            description = string.Concat("Increases potency of all songs by ", focusValue, "%");
+                        } break;
+                    default:
+                        {
+                            Logger.WriteError("GenerateFocusSpellIfNotCreated failed, unhandled focusType ", focusType.ToString());
+                            return;
+                        }
+                }
+
+                enchantSpellTemplate = new SpellTemplate();
+                enchantSpellTemplate.Name = string.Concat(itemName, " Focus");
+                enchantSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+                enchantSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+                enchantSpellTemplate.Description = description;
+                enchantSpellTemplate.AuraDescription = string.Concat(description, " (from gear)");
+                enchantSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 1, (int)SpellDummyType.SpellFocus, (int)focusType));
+                enchantSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(itemIconID);
+                enchantSpellTemplate.SpellVisualID1 = 0; // No visual
             }
         }
 

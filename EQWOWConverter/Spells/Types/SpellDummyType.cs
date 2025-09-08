@@ -21,6 +21,7 @@ namespace EQWOWConverter.Spells
         None = 0,
         BindSelf = 1,
         BindAny = 2,
-        Gate = 3
+        Gate = 3,
+        SpellFocus = 4
     }
 }
