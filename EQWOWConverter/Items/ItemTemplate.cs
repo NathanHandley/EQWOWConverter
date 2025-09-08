@@ -16,7 +16,6 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Spells;
-using System.Runtime.Serialization;
 using System.Text;
 
 namespace EQWOWConverter.Items
@@ -1126,25 +1125,22 @@ namespace EQWOWConverter.Items
                         itemTemplate.ClassID = 0;
                         itemTemplate.SubClassID = 1;
                     } break;
-                case 23: // Wind Instrument => Misc
+                case 23: // Wind Instrument => Held
+                case 24: // String Instrument => Held
+                case 25: // Brass Instrument => Held
+                case 26: // Drum Instrument => Held
                     {
-                        itemTemplate.ClassID = 14;
-                        itemTemplate.SubClassID = 4;
-                    } break;
-                case 24: // String Instrument => Misc
-                    {
-                        itemTemplate.ClassID = 14;
-                        itemTemplate.SubClassID = 4;
-                    } break;
-                case 25: // Brass Instrument => Misc
-                    {
-                        itemTemplate.ClassID = 14;
-                        itemTemplate.SubClassID = 4;
-                    } break;
-                case 26: // Drum Instrument => Misc
-                    {
-                        itemTemplate.ClassID = 14;
-                        itemTemplate.SubClassID = 4;
+                        itemTemplate.ClassID = 2;
+                        itemTemplate.SubClassID = 14;
+                        if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) == false)
+                            itemTemplate.InventoryType = ItemWOWInventoryType.HeldInOffHand;
+                        else
+                        {
+                            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Secondary, slotMask) == true)
+                                itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
+                            else
+                                itemTemplate.InventoryType = ItemWOWInventoryType.MainHand;
+                        }                       
                     } break;
                 case 27: // Arrow
                     {
