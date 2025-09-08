@@ -2510,7 +2510,7 @@ namespace EQWOWConverter.Spells
                             wornEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
                         foreach (SpellEffectWOW spellEffect in baseEffectBlock.SpellEffects)
                             wornEffectBlock.SpellEffects.Add(spellEffect);
-                        wornEffectBlock.SpellName = string.Concat(baseEffectBlock, " (from gear)");
+                        wornEffectBlock.SpellName = string.Concat(baseEffectBlock.SpellName, " (from gear)");
                         _GroupedWornSpellEffectBlocksForOutput.Add(wornEffectBlock);
                     }
                 }
