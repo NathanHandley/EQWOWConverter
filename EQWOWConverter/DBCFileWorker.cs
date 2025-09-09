@@ -471,7 +471,7 @@ namespace EQWOWConverter
                 for (int i = 0; i < spellTemplate.GroupedBaseSpellEffectBlocksForOutput.Count; i++)
                 {
                     SpellEffectBlock curEffectBlock = spellTemplate.GroupedBaseSpellEffectBlocksForOutput[i];
-                    spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, false, curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsBardSong);
+                    spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff, curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsBardSong);
 
                     // Worn effects get their own copy too
                     if (spellTemplate.WOWSpellIDWorn > 0)

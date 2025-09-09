@@ -172,6 +172,7 @@ namespace EQWOWConverter.Spells
         public bool InterruptOnCast = true;
         public bool InterruptOnDamageTaken = false;
         public SpellFocusCategoryType FocusCategoryType = SpellFocusCategoryType.None;
+        public bool PreventAuraClickOff = false;
 
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -436,10 +437,13 @@ namespace EQWOWConverter.Spells
                 enchantSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
                 enchantSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                 enchantSpellTemplate.Description = description;
-                enchantSpellTemplate.AuraDescription = string.Concat(description, " (from gear)");
+                enchantSpellTemplate.AuraDescription = description;
                 enchantSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 1, (int)SpellDummyType.SpellFocus, (int)focusType));
                 enchantSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(itemIconID);
                 enchantSpellTemplate.SpellVisualID1 = 0; // No visual
+                enchantSpellTemplate.PreventAuraClickOff = true;
+                enchantSpellTemplate.AuraDuration = new SpellDuration();
+                enchantSpellTemplate.AuraDuration.IsInfinite = true;
             }
         }
 
