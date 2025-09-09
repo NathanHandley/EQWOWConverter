@@ -1434,7 +1434,7 @@ namespace EQWOWConverter
             foreach (ItemTemplate itemTemplate in itemTemplatesByEQDBID.Values)
             {
                 string iconName = "INV_EQ_" + (itemTemplate.IconID).ToString();
-                itemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo("eq_" + itemTemplate.EQItemDisplayFileName, iconName,
+                itemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo(itemTemplate.EQItemDisplayFileName, iconName,
                     itemTemplate.InventoryType, itemTemplate.EQArmorMaterialType, itemTemplate.ColorPacked);
             }
 

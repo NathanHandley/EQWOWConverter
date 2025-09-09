@@ -118,8 +118,19 @@ namespace EQWOWConverter.Items
         public static ItemDisplayInfo CreateItemDisplayInfo(string itemDisplayCommonName, string iconFileNameNoExt, 
             ItemWOWInventoryType inventoryType, int materialTypeID, Int64 colorPacked)
         {
+            // Perform known lookup replacements
+            switch (itemDisplayCommonName.ToLower())
+            {
+                case "it11501": itemDisplayCommonName = "it6"; break; // Old drum (stick)
+                case "it11502": itemDisplayCommonName = "it21"; break; // Lute
+                default: break;
+            }
+
+            // Make it EQ specific
+            string itemDisplayNameWithEQ = String.Concat("eq_", itemDisplayCommonName.ToLower());
+
             // Pull if it already exists
-            string modelFileName = itemDisplayCommonName + ".mdx";
+            string modelFileName = itemDisplayNameWithEQ + ".mdx";
             foreach(ItemDisplayInfo itemDisplayInfo in ItemDisplayInfos)
             {
                 if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt && itemDisplayInfo.ModelName == modelFileName)
@@ -175,7 +186,7 @@ namespace EQWOWConverter.Items
             // Held objects have models
             else if (IsHeld(inventoryType) == true)
             {
-                ObjectModel objectModel = GetOrCreateModelForHeldItem(itemDisplayCommonName, inventoryType);
+                ObjectModel objectModel = GetOrCreateModelForHeldItem(itemDisplayNameWithEQ, inventoryType);
                 newItemDisplayInfo.ModelName = objectModel.Name + ".mdx";
             }
             // Armor
@@ -269,7 +280,7 @@ namespace EQWOWConverter.Items
                         } break;
                     default:
                         {
-                            Logger.WriteError("Unable to set DisplayInfo for equipment with name '" + itemDisplayCommonName + "' due to unhandled inventory type of '" + inventoryType.ToString() + "'");
+                            Logger.WriteError("Unable to set DisplayInfo for equipment with name '" + itemDisplayNameWithEQ + "' due to unhandled inventory type of '" + inventoryType.ToString() + "'");
                         } break;              
                 }
             }
