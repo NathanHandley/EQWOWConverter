@@ -1525,11 +1525,11 @@ namespace EQWOWConverter
                 }
 
                 // Generate focus items
-                if (itemTemplate.SpellFocusType != SpellFocusCategoryType.None && itemTemplate.SpellFocusValue > 0)
+                if (itemTemplate.FocusType != ItemFocusType.None && itemTemplate.FocusValue > 0)
                 {
                     SpellTemplate? enchantSpellTemplate;
                     bool isNewSpell;
-                    SpellTemplate.GenerateFocusSpellIfNotCreated(itemTemplate.Name, itemTemplate.IconID, itemTemplate.SpellFocusType, itemTemplate.SpellFocusValue, out enchantSpellTemplate, out isNewSpell);
+                    SpellTemplate.GenerateFocusSpellIfNotCreated(itemTemplate.Name, itemTemplate.IconID, itemTemplate.FocusType, itemTemplate.FocusValue, out enchantSpellTemplate, out isNewSpell);
                     if (enchantSpellTemplate != null)
                     {
                         if (itemTemplate.WOWSpellID1 > 0)

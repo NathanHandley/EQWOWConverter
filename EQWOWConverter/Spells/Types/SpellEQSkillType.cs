@@ -1,4 +1,4 @@
-﻿//  Author: Nathan Handley (nathanhandley@protonmail.com)
+﻿//  Author: Nathan Handley(nathanhandley@protonmail.com)
 //  Copyright (c) 2025 Nathan Handley
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -14,27 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace EQWOWConverter.Items
+namespace EQWOWConverter.Spells
 {
-    internal enum ItemWOWStatType : Int32
+    internal enum SpellEQSkillType : int
     {
-        Mana = 0,
-        Health = 1,
-        Agility = 3,
-        Strength = 4,
-        Intellect = 5,
-        Spirit = 6,
-        Stamina = 7,
-        DefenseSkillRating = 12,
-        DodgeRating = 13,
-        ParryRating = 14,
-        BlockRating = 15,
-        SpellHitRating = 18,
-        HitRating = 31,
-        CritRating = 32,
-        HasteRating = 36,
-        SpellPower = 45,
-        HealthRegen = 46,
-        BlockValue = 48
+        None = -1,
+        PercussionInstruments = 70,
+        BrassInstruments = 12,
+        Singing = 41,
+        StringedInstruments = 49,
+        WindInstruments = 54,
     }
 }

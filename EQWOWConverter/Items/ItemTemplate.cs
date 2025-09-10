@@ -100,9 +100,9 @@ namespace EQWOWConverter.Items
         public int RequiredLevel = 1;
         public bool IsRogueOnlyPoison = false;
         public string EQItemDisplayFileName = string.Empty;
-        ItemTemplate? ParentItemTemplate = null;
-        public SpellFocusCategoryType SpellFocusType = SpellFocusCategoryType.None;
-        public int SpellFocusValue = 0;
+        public ItemTemplate? ParentItemTemplate = null;
+        public ItemFocusType FocusType = ItemFocusType.None;
+        public int FocusValue = 0;
 
         public ItemTemplate()
         {
@@ -1302,15 +1302,15 @@ namespace EQWOWConverter.Items
                 int bardFocusType = int.Parse(columns["bardtype"]);
                 switch (bardFocusType)
                 {
-                    case 23: itemTemplate.SpellFocusType = SpellFocusCategoryType.BardWind; break;
-                    case 24: itemTemplate.SpellFocusType = SpellFocusCategoryType.BardString; break;
-                    case 25: itemTemplate.SpellFocusType = SpellFocusCategoryType.BardBrass; break;
-                    case 26: itemTemplate.SpellFocusType = SpellFocusCategoryType.BardPercussion; break;
-                    case 51: itemTemplate.SpellFocusType = SpellFocusCategoryType.BardAll; break;
+                    case 23: itemTemplate.FocusType = ItemFocusType.BardWindInstruments; break;
+                    case 24: itemTemplate.FocusType = ItemFocusType.BardStringedInstruments; break;
+                    case 25: itemTemplate.FocusType = ItemFocusType.BardBrassInstruments; break;
+                    case 26: itemTemplate.FocusType = ItemFocusType.BardPercussionInstruments; break;
+                    case 51: itemTemplate.FocusType = ItemFocusType.BardAll; break;
                     default: break; 
                 }
-                if (itemTemplate.SpellFocusType != SpellFocusCategoryType.None)
-                    itemTemplate.SpellFocusValue = bardFocusValue;
+                if (itemTemplate.FocusType != ItemFocusType.None)
+                    itemTemplate.FocusValue = bardFocusValue;
                 return;
             }
         }

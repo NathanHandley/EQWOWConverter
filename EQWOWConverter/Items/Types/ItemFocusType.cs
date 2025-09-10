@@ -1,4 +1,4 @@
-﻿//  Author: Nathan Handley(nathanhandley@protonmail.com)
+﻿//  Author: Nathan Handley (nathanhandley@protonmail.com)
 //  Copyright (c) 2025 Nathan Handley
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -14,15 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace EQWOWConverter.Spells
+namespace EQWOWConverter.Items
 {
-    internal enum SpellFocusCategoryType : int
+    internal enum ItemFocusType : Int32
     {
         None = 0,
-        BardBrass = 1,
-        BardString = 2,
-        BardWind = 3,
-        BardPercussion = 4,
+        BardWindInstruments = 1,
+        BardStringedInstruments = 2,
+        BardBrassInstruments = 3,
+        BardPercussionInstruments = 4,
         BardAll = 5
     }
 }
