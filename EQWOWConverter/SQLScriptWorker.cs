@@ -80,6 +80,7 @@ namespace EQWOWConverter
         private SpellGroupSQL spellGroupSQL = new SpellGroupSQL();
         private SpellGroupStackRulesSQL spellGroupStackRulesSQL = new SpellGroupStackRulesSQL();
         private SpellLinkedSpellSQL spellLinkedSpellSQL = new SpellLinkedSpellSQL();
+        private SpellScriptNamesSQL spellScriptNamesSQL = new SpellScriptNamesSQL();
         private SpellTargetPositionSQL spellTargetPositionSQL = new SpellTargetPositionSQL();
         private TransportsSQL transportsSQL = new TransportsSQL();
         private WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
@@ -698,6 +699,10 @@ namespace EQWOWConverter
                 playerCreateInfoSpellCustomSQL.AddRow(Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID, "Gate");
                 playerCreateInfoSpellCustomSQL.AddRow(Configuration.SPELLS_BINDCUSTOM_SPELLDBC_ID, "Bind");
             }
+
+            // Focus script references
+            foreach (SpellTemplate focusSpellTemplate in SpellTemplate.GetAllFocusSpellTemplates())
+                spellScriptNamesSQL.AddRow(focusSpellTemplate.WOWSpellID, "spell_eq_focus_aura_script");
         }
 
         private void PopulateTrainerAbilityListData()
@@ -946,6 +951,7 @@ namespace EQWOWConverter
             spellGroupSQL.SaveToDisk("spell_group", SQLFileType.World);
             spellGroupStackRulesSQL.SaveToDisk("spell_group_stack_rules", SQLFileType.World);
             spellLinkedSpellSQL.SaveToDisk("spell_linked_spell", SQLFileType.World);
+            spellScriptNamesSQL.SaveToDisk("spell_script_names", SQLFileType.World);
             spellTargetPositionSQL.SaveToDisk("spell_target_position", SQLFileType.World);
             transportsSQL.SaveToDisk("transports", SQLFileType.World);
             waypointDataSQL.SaveToDisk("waypoint_data", SQLFileType.World);

@@ -16,28 +16,18 @@
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class GameTeleSQL : SQLFile
+    internal class SpellScriptNamesSQL : SQLFile
     {
-        private static int CURRENT_ROWID = Configuration.SQL_GAMETELE_ROWID_START;
-
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM `game_tele` WHERE `id` >= " + Configuration.SQL_GAMETELE_ROWID_START + " AND `id` <= " + Configuration.SQL_GAMETELE_ROWID_END + ";";
+            return "DELETE FROM `spell_script_names` WHERE `spell_id` >= " + Configuration.DBCID_SPELL_ID_START + " AND `spell_id` <= " + Configuration.DBCID_SPELL_ID_END + ";";
         }
 
-        public void AddRow(int mapID, string name, float x, float y, float z)
+        public void AddRow(int spellID, string scriptName)
         {
-            int ID = CURRENT_ROWID;
-            CURRENT_ROWID++;
-
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("id", ID);
-            newRow.AddFloat("position_x", x);
-            newRow.AddFloat("position_y", y);
-            newRow.AddFloat("position_z", z);
-            newRow.AddFloat("orientation", 0);
-            newRow.AddInt("map", mapID);
-            newRow.AddString("name", 100, name);
+            newRow.AddInt("spell_id", spellID);
+            newRow.AddString("ScriptName", scriptName);
             Rows.Add(newRow);
         }
     }

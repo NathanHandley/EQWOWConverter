@@ -1528,7 +1528,8 @@ namespace EQWOWConverter
                 if (itemTemplate.SpellFocusType != SpellFocusCategoryType.None && itemTemplate.SpellFocusValue > 0)
                 {
                     SpellTemplate? enchantSpellTemplate;
-                    SpellTemplate.GenerateFocusSpellIfNotCreated(itemTemplate.Name, itemTemplate.IconID, itemTemplate.SpellFocusType, itemTemplate.SpellFocusValue, out enchantSpellTemplate);
+                    bool isNewSpell;
+                    SpellTemplate.GenerateFocusSpellIfNotCreated(itemTemplate.Name, itemTemplate.IconID, itemTemplate.SpellFocusType, itemTemplate.SpellFocusValue, out enchantSpellTemplate, out isNewSpell);
                     if (enchantSpellTemplate != null)
                     {
                         if (itemTemplate.WOWSpellID1 > 0)
@@ -1543,7 +1544,8 @@ namespace EQWOWConverter
                         itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
                         itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
                         itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
-                        spellTemplates.Add(enchantSpellTemplate);
+                        if (isNewSpell)
+                            spellTemplates.Add(enchantSpellTemplate);
                     }
                 }
             }

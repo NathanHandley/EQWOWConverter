@@ -206,6 +206,12 @@ namespace EQWOWConverter.Spells
                 return SpellTemplatesByEQID;
             }
         }
+        
+        public static List<SpellTemplate> GetAllFocusSpellTemplates()
+        {
+            lock (SpellTemplateLock)
+                return SpellTemplatesByFocusTypeAndValue.Values.ToList();
+        }
 
         public static void LoadSpellTemplates(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, Dictionary<string, ZoneProperties> zonePropertiesByShortName,
             ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID)
@@ -388,7 +394,8 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        public static void GenerateFocusSpellIfNotCreated(string itemName, int itemIconID, SpellFocusCategoryType focusType, int focusValue, out SpellTemplate? focusSpellTemplate)
+        public static void GenerateFocusSpellIfNotCreated(string itemName, int itemIconID, SpellFocusCategoryType focusType, int focusValue, out SpellTemplate? focusSpellTemplate,
+            out bool isNewSpell)
         {
             lock (SpellTemplateLock)
             {
@@ -398,8 +405,10 @@ namespace EQWOWConverter.Spells
                 if (SpellTemplatesByFocusTypeAndValue.ContainsKey((focusType, focusValue)) == true)
                 {
                     focusSpellTemplate =  SpellTemplatesByFocusTypeAndValue[(focusType, focusValue)];
+                    isNewSpell = false;
                     return;
                 }
+                isNewSpell = true;
 
                 // Generate an aura description
                 string description = string.Empty;
@@ -450,6 +459,7 @@ namespace EQWOWConverter.Spells
                 focusSpellTemplate.PreventAuraClickOff = true;
                 focusSpellTemplate.AuraDuration = new SpellDuration();
                 focusSpellTemplate.AuraDuration.IsInfinite = true;
+                SpellTemplatesByFocusTypeAndValue.Add((focusType, focusValue), focusSpellTemplate);
             }
         }
 
