@@ -388,41 +388,47 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        public static void GenerateFocusSpellIfNotCreated(string itemName, int itemIconID, SpellFocusCategoryType focusType, int focusValue, out SpellTemplate? enchantSpellTemplate)
+        public static void GenerateFocusSpellIfNotCreated(string itemName, int itemIconID, SpellFocusCategoryType focusType, int focusValue, out SpellTemplate? focusSpellTemplate)
         {
             lock (SpellTemplateLock)
             {
-                enchantSpellTemplate = null;
+                focusSpellTemplate = null;
 
                 // Don't do anything if it already exists
                 if (SpellTemplatesByFocusTypeAndValue.ContainsKey((focusType, focusValue)) == true)
                 {
-                    enchantSpellTemplate =  SpellTemplatesByFocusTypeAndValue[(focusType, focusValue)];
+                    focusSpellTemplate =  SpellTemplatesByFocusTypeAndValue[(focusType, focusValue)];
                     return;
                 }
 
                 // Generate an aura description
                 string description = string.Empty;
+                SpellDummyType spellDummyType = SpellDummyType.None;
                 switch (focusType)
                 {
                     case SpellFocusCategoryType.BardBrass:
                         {
+                            spellDummyType = SpellDummyType.BardFocusBrass;
                             description = string.Concat("Increases potency of songs using brass instruments by ", focusValue, "%");
                         } break;
                     case SpellFocusCategoryType.BardString:
                         {
+                            spellDummyType = SpellDummyType.BardFocusString;
                             description = string.Concat("Increases potency of songs using string instruments by ", focusValue, "%");
                         } break;
                     case SpellFocusCategoryType.BardWind:
                         {
+                            spellDummyType = SpellDummyType.BardFocusWind;
                             description = string.Concat("Increases potency of songs using wind instruments by ", focusValue, "%");
                         } break;
                     case SpellFocusCategoryType.BardPercussion:
                         {
+                            spellDummyType = SpellDummyType.BardFocusPercussion;
                             description = string.Concat("Increases potency of songs using percussion instruments by ", focusValue, "%");
                         } break;
                     case SpellFocusCategoryType.BardAll:
                         {
+                            spellDummyType = SpellDummyType.BardFocusAll;
                             description = string.Concat("Increases potency of all songs by ", focusValue, "%");
                         } break;
                     default:
@@ -432,18 +438,18 @@ namespace EQWOWConverter.Spells
                         }
                 }
 
-                enchantSpellTemplate = new SpellTemplate();
-                enchantSpellTemplate.Name = string.Concat(itemName, " Focus");
-                enchantSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
-                enchantSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
-                enchantSpellTemplate.Description = description;
-                enchantSpellTemplate.AuraDescription = description;
-                enchantSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 1, (int)SpellDummyType.SpellFocus, (int)focusType));
-                enchantSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(itemIconID);
-                enchantSpellTemplate.SpellVisualID1 = 0; // No visual
-                enchantSpellTemplate.PreventAuraClickOff = true;
-                enchantSpellTemplate.AuraDuration = new SpellDuration();
-                enchantSpellTemplate.AuraDuration.IsInfinite = true;
+                focusSpellTemplate = new SpellTemplate();
+                focusSpellTemplate.Name = string.Concat(itemName, " Focus");
+                focusSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+                focusSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+                focusSpellTemplate.Description = description;
+                focusSpellTemplate.AuraDescription = description;
+                focusSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 1, (int)spellDummyType, focusValue));
+                focusSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(itemIconID);
+                focusSpellTemplate.SpellVisualID1 = 0; // No visual
+                focusSpellTemplate.PreventAuraClickOff = true;
+                focusSpellTemplate.AuraDuration = new SpellDuration();
+                focusSpellTemplate.AuraDuration.IsInfinite = true;
             }
         }
 

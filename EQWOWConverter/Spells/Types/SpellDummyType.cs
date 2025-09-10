@@ -22,6 +22,10 @@ namespace EQWOWConverter.Spells
         BindSelf = 1,
         BindAny = 2,
         Gate = 3,
-        SpellFocus = 4
+        BardFocusBrass = 4,
+        BardFocusString = 5,
+        BardFocusWind = 6,
+        BardFocusPercussion = 7,
+        BardFocusAll = 8
     }
 }
