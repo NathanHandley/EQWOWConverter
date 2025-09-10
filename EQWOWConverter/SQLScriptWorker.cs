@@ -686,6 +686,11 @@ namespace EQWOWConverter
                     }
                 }
 
+                // Focus spells can be anywhere in the blocks
+                if (spellTemplate.FocusCategoryType != SpellFocusCategoryType.None)
+                    for (int i = 0; i < groupedBaseSpellEffectBlocksForOutput.Count; i++)
+                        spellScriptNamesSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[i].WOWSpellID, "EverQuest_FocusBoostScript");
+
                 // Save any pet details
                 if (spellTemplate.SummonSpellPet != null)
                     modEverquestPetSQL.AddRow(spellTemplate.WOWSpellID, spellTemplate.SummonSpellPet.NamingType);
@@ -699,10 +704,6 @@ namespace EQWOWConverter
                 playerCreateInfoSpellCustomSQL.AddRow(Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID, "Gate");
                 playerCreateInfoSpellCustomSQL.AddRow(Configuration.SPELLS_BINDCUSTOM_SPELLDBC_ID, "Bind");
             }
-
-            // Focus script references
-            foreach (SpellTemplate focusSpellTemplate in SpellTemplate.GetAllFocusSpellTemplates())
-                spellScriptNamesSQL.AddRow(focusSpellTemplate.WOWSpellID, "spell_eq_focus_aura_script");
         }
 
         private void PopulateTrainerAbilityListData()

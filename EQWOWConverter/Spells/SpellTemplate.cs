@@ -206,12 +206,6 @@ namespace EQWOWConverter.Spells
                 return SpellTemplatesByEQID;
             }
         }
-        
-        public static List<SpellTemplate> GetAllFocusSpellTemplates()
-        {
-            lock (SpellTemplateLock)
-                return SpellTemplatesByFocusTypeAndValue.Values.ToList();
-        }
 
         public static void LoadSpellTemplates(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, Dictionary<string, ZoneProperties> zonePropertiesByShortName,
             ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID)
