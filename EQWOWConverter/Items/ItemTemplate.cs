@@ -1285,7 +1285,7 @@ namespace EQWOWConverter.Items
             }
             else if (itemTemplate.InventoryType == ItemWOWInventoryType.HeldInOffHand)
             {
-                itemTemplate.SheatheType = 6; // On the right-hand side of the waist
+                itemTemplate.SheatheType = 3; // While AzerothCore says to make it 6, the client handles left/right hand fine with 3
             }
             else
             {
