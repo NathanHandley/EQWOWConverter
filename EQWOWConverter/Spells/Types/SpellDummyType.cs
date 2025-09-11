@@ -18,6 +18,7 @@ namespace EQWOWConverter.Spells
 {
     internal enum SpellDummyType
     {
+        // Note: These are defines in the mod-everquest file EverQuest.h, so values must match
         None = 0,
         BindSelf = 1,
         BindAny = 2,
