@@ -21,7 +21,7 @@ namespace EQWOWConverter.WOWFiles
         public override string DeleteRowSQL()
         {
             // Used to clear any WIP generated spell IDs
-            return string.Concat("DELETE FROM character_aura WHERE `spell` >= ", Configuration.DBCID_SPELL_ID_START.ToString(), " AND `spell` <= ", Configuration.DBCID_SPELL_ID_GENERATED_START, " AND `spell` != ", Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID, ";");
+            return string.Concat("DELETE FROM character_aura WHERE `spell` >= ", Configuration.DBCID_SPELL_ID_START.ToString(), " AND `spell` <= ", Configuration.DBCID_SPELL_ID_END, " AND `spell` != ", Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID, ";");
         }
     }
 }
