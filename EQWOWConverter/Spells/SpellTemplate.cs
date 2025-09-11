@@ -171,8 +171,9 @@ namespace EQWOWConverter.Spells
         public bool InterruptOnPushback = true;
         public bool InterruptOnCast = true;
         public bool InterruptOnDamageTaken = false;
-        public SpellEQSkillType EQSkillType = SpellEQSkillType.None;
         public bool PreventAuraClickOff = false;
+        public SpellFocusBoostType FocusBoostType = SpellFocusBoostType.None;
+        public bool IsFocusBoostableEffect = false;        
 
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -242,7 +243,7 @@ namespace EQWOWConverter.Spells
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
                 int skillID = int.Parse(columns["skill"]);
-                newSpellTemplate.EQSkillType = GetEQSkillType(skillID);
+                newSpellTemplate.FocusBoostType = GetFocusBoostType(skillID);
                 if (skillID == 12 || skillID == 41 || skillID == 49 || skillID == 54 || skillID == 70)
                     newSpellTemplate.IsBardSong = true;
 
@@ -289,7 +290,7 @@ namespace EQWOWConverter.Spells
                 SpellTemplate? effectGeneratedSpellTemplate;
                 ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration, 
                     newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneOrPetTypeName, zonePropertiesByShortName,
-                    out effectGeneratedSpellTemplate, ref creatureTemplatesByEQID, newSpellTemplate.IsBardSong);
+                    out effectGeneratedSpellTemplate, ref creatureTemplatesByEQID, newSpellTemplate.IsBardSong, newSpellTemplate.FocusBoostType);
 
                 // If there is no wow effect, skip it
                 if (newSpellTemplate.WOWSpellEffects.Count == 0)
@@ -794,19 +795,19 @@ namespace EQWOWConverter.Spells
             return spellWOWTargetTypes;
         }
 
-        private static SpellEQSkillType GetEQSkillType(int skillID)
+        private static SpellFocusBoostType GetFocusBoostType(int skillID)
         {
             // Pull out the bard songs from skill string
             switch (skillID)
             {
-                case 12: return SpellEQSkillType.BrassInstruments;
-                case 41: return SpellEQSkillType.Singing;
-                case 49: return SpellEQSkillType.StringedInstruments;
-                case 54: return SpellEQSkillType.WindInstruments;
-                case 70: return SpellEQSkillType.PercussionInstruments;
+                case 12: return SpellFocusBoostType.BardBrassInstruments;
+                case 41: return SpellFocusBoostType.BardSinging;
+                case 49: return SpellFocusBoostType.BardStringedInstruments;
+                case 54: return SpellFocusBoostType.BardWindInstruments;
+                case 70: return SpellFocusBoostType.BardPercussionInstruments;
                 default: break;
             }
-            return SpellEQSkillType.None;
+            return SpellFocusBoostType.None;
         }
 
         private static void PopulateEQSpellEffect(ref SpellTemplate spellTemplate, int slotID, Dictionary<string, string> rowColumns)
@@ -869,7 +870,7 @@ namespace EQWOWConverter.Spells
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, SpellDuration auraDuration, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID,
             bool isDetrimental, string teleportZoneOrPetTypeName, Dictionary<string, ZoneProperties> zonePropertiesByShortName, out SpellTemplate? effectGeneratedSpellTemplate,
-            ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, bool isBardSong)
+            ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, bool isBardSong, SpellFocusBoostType focusBoostType)
         {
             effectGeneratedSpellTemplate = null;
             bool hasSpellDuration = (auraDuration.IsInfinite || auraDuration.BaseDurationInMS > 0);
@@ -2024,7 +2025,7 @@ namespace EQWOWConverter.Spells
                                     effectGeneratedSpellTemplate.EQSpellEffects.Add(healEQEffect);
                                     SpellTemplate? discardTemplate;
                                     ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, new SpellDuration(), 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.UnitTargetAny },
-                                        0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, isBardSong);
+                                        0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, isBardSong, focusBoostType);
 
                                     // Proc effect for the heal
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
@@ -2277,15 +2278,17 @@ namespace EQWOWConverter.Spells
                 effectGeneratedSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects;
                 effectGeneratedSpellTemplate.SpellRadius = 0;
                 effectGeneratedSpellTemplate.SpellRange = 0;
+                effectGeneratedSpellTemplate.IsFocusBoostableEffect = true;
+                effectGeneratedSpellTemplate.FocusBoostType = focusBoostType;
                 effectGeneratedSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(spellTemplate.MinimumPlayerLearnLevel, spellTemplate.EQBuffDurationFormula,
                     spellTemplate.EQBuffDurationInTicks, spellTemplate.IsModelSizeChangeSpell, false);
                 SpellTemplate? discardTemplate;
                 ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, effectGeneratedSpellTemplate.AuraDuration, 0, spellTargets,
-                    spellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, true, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, false);
+                    spellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, true, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, false,
+                    focusBoostType);
                 if (spellTemplate.EQSpellVisualEffectIndex >= 0)
                     effectGeneratedSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(spellTemplate.EQSpellVisualEffectIndex, SpellVisualType.BardTick).SpellVisualDBCID);
                 SetActionAndAuraDescriptions(ref effectGeneratedSpellTemplate, null, null);
-                //if (spellTemplate.Focus)
 
                 // Proc effect for triggering
                 SpellEffectWOW auraEffect = new SpellEffectWOW();
@@ -2374,15 +2377,15 @@ namespace EQWOWConverter.Spells
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nOn success also cast:\n", recourseSpellTemplate.Name, "\n", GenerateActionDescription(recourseSpellTemplate));
             if (procLinkSpellTemplate != null)
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nSometimes on hit cast:\n", procLinkSpellTemplate.Name, "\n", GenerateActionDescription(procLinkSpellTemplate));
-            if (spellTemplate.IsBardSong && spellTemplate.EQSkillType != SpellEQSkillType.None)
+            if (spellTemplate.IsBardSong && spellTemplate.FocusBoostType != SpellFocusBoostType.None)
             {
                 string songSkillTypeString = string.Empty;
-                switch (spellTemplate.EQSkillType)
+                switch (spellTemplate.FocusBoostType)
                 {
-                    case SpellEQSkillType.BrassInstruments: songSkillTypeString = "Brass Instruments"; break;
-                    case SpellEQSkillType.StringedInstruments: songSkillTypeString = "String Instruments"; break;
-                    case SpellEQSkillType.WindInstruments: songSkillTypeString = "Wind Instruments"; break;
-                    case SpellEQSkillType.PercussionInstruments: songSkillTypeString = "Percussion Instruments"; break;
+                    case SpellFocusBoostType.BardBrassInstruments: songSkillTypeString = "Brass Instruments"; break;
+                    case SpellFocusBoostType.BardStringedInstruments: songSkillTypeString = "String Instruments"; break;
+                    case SpellFocusBoostType.BardWindInstruments: songSkillTypeString = "Wind Instruments"; break;
+                    case SpellFocusBoostType.BardPercussionInstruments: songSkillTypeString = "Percussion Instruments"; break;
                     default: break;
                 }
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nEnhanced by ", songSkillTypeString, ".");

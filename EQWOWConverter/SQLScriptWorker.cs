@@ -686,10 +686,10 @@ namespace EQWOWConverter
                     }
                 }
 
-                // Focus spells can be anywhere in the blocks
-                //if (spellTemplate.FocusCategoryType != SpellFocusCategoryType.None)
-                //    for (int i = 0; i < groupedBaseSpellEffectBlocksForOutput.Count; i++)
-                //        spellScriptNamesSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[i].WOWSpellID, "EverQuest_FocusBoostScript");
+                // Focus boostable spells use all blocks
+                if (spellTemplate.IsFocusBoostableEffect)
+                    for (int i = 0; i < groupedBaseSpellEffectBlocksForOutput.Count; i++)
+                        spellScriptNamesSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[i].WOWSpellID, "EverQuest_FocusBoostScript");
 
                 // Save any pet details
                 if (spellTemplate.SummonSpellPet != null)
