@@ -16,9 +16,10 @@
 
 namespace EQWOWConverter.Spells
 {
+    // Note: These are defines in the mod-everquest file EverQuest.h, so values must match
     internal enum SpellFocusBoostType : int
     {
-        None = -1,
+        None = 0,
         BardPercussionInstruments = 1,
         BardBrassInstruments = 2,
         BardSinging = 3,
