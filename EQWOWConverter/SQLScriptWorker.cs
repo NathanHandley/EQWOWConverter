@@ -689,7 +689,12 @@ namespace EQWOWConverter
                 // Focus boostable spells use all blocks
                 if (spellTemplate.IsFocusBoostableEffect)
                     for (int i = 0; i < groupedBaseSpellEffectBlocksForOutput.Count; i++)
-                        spellScriptNamesSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[i].WOWSpellID, "EverQuest_FocusBoostScript");
+                    {
+                        if (groupedBaseSpellEffectBlocksForOutput[i].SpellEffects[0].IsAuraType())
+                            spellScriptNamesSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[i].WOWSpellID, "EverQuest_FocusBoostAuraScript");
+                        else
+                            spellScriptNamesSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[i].WOWSpellID, "EverQuest_FocusBoostNonAuraScript");
+                    }
 
                 // Save any pet details
                 if (spellTemplate.SummonSpellPet != null)
