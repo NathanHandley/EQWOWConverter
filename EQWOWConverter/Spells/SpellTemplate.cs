@@ -1666,7 +1666,10 @@ namespace EQWOWConverter.Spells
                         //    } break;
                         case SpellEQEffectType.Stun:
                             {
-                                int stunDurationInMS = Math.Max(eqEffect.EQBaseValue, 500);
+                                // Skip zero stuns (and for now, stuns with value of 1)
+                                // NOTE: This will break the bard song "Denon's Breavement" if it's disabled
+                                if (eqEffect.EQBaseValue <= 1)
+                                    continue;
 
                                 // Stuns become their own spell since the stun duration can differ from a parent aura duration
                                 SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
@@ -1682,7 +1685,7 @@ namespace EQWOWConverter.Spells
                                 effectGeneratedSpellTemplate.IsFocusBoostableEffect = spellTemplate.IsFocusBoostableEffect;
                                 effectGeneratedSpellTemplate.FocusBoostType = spellTemplate.FocusBoostType;
                                 effectGeneratedSpellTemplate.AuraDuration = new SpellDuration();
-                                effectGeneratedSpellTemplate.AuraDuration.SetFixedDuration(stunDurationInMS);
+                                effectGeneratedSpellTemplate.AuraDuration.SetFixedDuration(eqEffect.EQBaseValue);
                                 effectGeneratedSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
 
                                 // Make the stun effect
@@ -1706,7 +1709,6 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
                                 newSpellEffectWOW.ActionDescription = string.Concat("stuns for ", effectGeneratedSpellTemplate.AuraDuration.GetTimeText());
-                                //newSpellEffectWOW.AuraDescription = string.Concat("stunned");
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         case SpellEQEffectType.Fear:

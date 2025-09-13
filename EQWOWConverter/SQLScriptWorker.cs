@@ -643,11 +643,6 @@ namespace EQWOWConverter
             // Spell split data
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
-                if (spellTemplate.WOWSpellID == 92121)
-                {
-                    int x = 5;
-                }
-
                 // Stack rules
                 if (spellTemplate.SpellGroupStackingID > 0)
                     spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.WOWSpellID);
