@@ -236,28 +236,29 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
                 newSpellTemplate.RecourseLinkEQSpellID = int.Parse(columns["RecourseLink"]);
 
-                if (newSpellTemplate.WOWSpellID == 92698)
-                {
-                    int x = 5;
-                }
-
                 // Recovery time (take highest)
                 UInt32 eqCastRecoveryTime = UInt32.Parse(columns["cast_recovery_time"]);
                 UInt32 eqInterruptRecoveryTime = UInt32.Parse(columns["interrupt_recovery_time"]);
                 newSpellTemplate.RecoveryTimeInMS = Math.Max(eqCastRecoveryTime, eqInterruptRecoveryTime);
 
                 // TODO: FacingCasterFlags
+
+                // Spell effects
                 for (int i = 1; i <= 12; i++)
                     PopulateEQSpellEffect(ref newSpellTemplate, i, columns);
                 // Skip if there isn't an effect
                 if (newSpellTemplate.EQSpellEffects.Count == 0)
                     continue;
+
+                // Generic properties
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
                 int skillID = int.Parse(columns["skill"]);
                 newSpellTemplate.FocusBoostType = GetFocusBoostType(skillID);
                 if ((skillID == 12 || skillID == 41 || skillID == 49 || skillID == 54 || skillID == 70) && newSpellTemplate.RecoveryTimeInMS == 0)
                     newSpellTemplate.IsBardSongAura = true;
+                if (newSpellTemplate.FocusBoostType != SpellFocusBoostType.None && newSpellTemplate.IsBardSongAura == false)
+                    newSpellTemplate.IsFocusBoostableEffect = true;
 
                 // Buff duration (if any)
                 newSpellTemplate.EQBuffDurationInTicks = Convert.ToInt32(columns["buffduration"]);
