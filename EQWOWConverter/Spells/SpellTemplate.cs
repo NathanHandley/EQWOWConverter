@@ -20,6 +20,7 @@ using EQWOWConverter.Items;
 using EQWOWConverter.Tradeskills;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
+using System.Collections.Generic;
 using System.Text;
 
 namespace EQWOWConverter.Spells
@@ -77,6 +78,7 @@ namespace EQWOWConverter.Spells
                 if (SpellCastTimeDBCIDsByCastTime.ContainsKey(value) == false)
                     SpellCastTimeDBCIDsByCastTime.Add(value, SpellCastTimesDBC.GenerateDBCID());
                 _SpellCastTimeDBCID = SpellCastTimeDBCIDsByCastTime[value];
+                _CastTimeInMS = value;
             }
         }
         protected int _SpellRangeDBCID = 1; // First row, self only (no range)
@@ -164,7 +166,7 @@ namespace EQWOWConverter.Spells
         public SpellPet? SummonSpellPet = null;
         public int SummonPropertiesDBCID = 0;
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
-        public bool IsBardSong = false;
+        public bool IsBardSongAura = false;
         public bool HasAdditionalTickOnApply = false;
         public bool InterruptOnMovement = true;
         public bool InterruptOnSchoolLockdown = true;
@@ -173,7 +175,8 @@ namespace EQWOWConverter.Spells
         public bool InterruptOnDamageTaken = false;
         public bool PreventAuraClickOff = false;
         public SpellFocusBoostType FocusBoostType = SpellFocusBoostType.None;
-        public bool IsFocusBoostableEffect = false;        
+        public bool IsFocusBoostableEffect = false;
+        public bool IsToggleAura = false;
 
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -233,6 +236,11 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
                 newSpellTemplate.RecourseLinkEQSpellID = int.Parse(columns["RecourseLink"]);
 
+                if (newSpellTemplate.WOWSpellID == 92698)
+                {
+                    int x = 5;
+                }
+
                 // Recovery time (take highest)
                 UInt32 eqCastRecoveryTime = UInt32.Parse(columns["cast_recovery_time"]);
                 UInt32 eqInterruptRecoveryTime = UInt32.Parse(columns["interrupt_recovery_time"]);
@@ -248,15 +256,15 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
                 int skillID = int.Parse(columns["skill"]);
                 newSpellTemplate.FocusBoostType = GetFocusBoostType(skillID);
-                if (skillID == 12 || skillID == 41 || skillID == 49 || skillID == 54 || skillID == 70)
-                    newSpellTemplate.IsBardSong = true;
+                if ((skillID == 12 || skillID == 41 || skillID == 49 || skillID == 54 || skillID == 70) && newSpellTemplate.RecoveryTimeInMS == 0)
+                    newSpellTemplate.IsBardSongAura = true;
 
                 // Buff duration (if any)
                 newSpellTemplate.EQBuffDurationInTicks = Convert.ToInt32(columns["buffduration"]);
                 newSpellTemplate.EQBuffDurationFormula = Convert.ToInt32(columns["buffdurationformula"]);
                 if (newSpellTemplate.EQBuffDurationFormula != 0 || newSpellTemplate.IsModelSizeChangeSpell == true)
-                    newSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(newSpellTemplate.MinimumPlayerLearnLevel, newSpellTemplate.EQBuffDurationFormula, 
-                        newSpellTemplate.EQBuffDurationInTicks, newSpellTemplate.IsModelSizeChangeSpell, newSpellTemplate.IsBardSong);
+                    newSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(newSpellTemplate.MinimumPlayerLearnLevel, newSpellTemplate.EQBuffDurationFormula,
+                        newSpellTemplate.EQBuffDurationInTicks, newSpellTemplate.IsModelSizeChangeSpell);
 
                 // Icon
                 int spellIconID = int.Parse(columns["icon"]);
@@ -274,7 +282,7 @@ namespace EQWOWConverter.Spells
                 if (newSpellTemplate.EQSpellVisualEffectIndex >= 0 && newSpellTemplate.EQSpellVisualEffectIndex < 52)
                 {
                     SpellVisualType spellVisualType = SpellVisualType.Beneficial;
-                    if (newSpellTemplate.IsBardSong == true)
+                    if (newSpellTemplate.IsBardSongAura == true)
                         spellVisualType = SpellVisualType.BardSong;
                     else if (isDetrimental == true)
                         spellVisualType = SpellVisualType.Detrimental;
@@ -291,10 +299,18 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.PreventionType = 1; // Silence
 
                 // Convert the spell effects
-                SpellTemplate? effectGeneratedSpellTemplate;
-                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration, 
-                    newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneOrPetTypeName, zonePropertiesByShortName,
-                    out effectGeneratedSpellTemplate, ref creatureTemplatesByEQID, newSpellTemplate.IsBardSong, newSpellTemplate.FocusBoostType);
+                SpellTemplate? effectGeneratedSpellTemplate = null;
+                if (newSpellTemplate.IsBardSongAura == true)
+                {
+                    ConvertEQSpellEffectsIntoWOWEffectsForBardSongAura(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration,
+                        targets, newSpellTemplate.SpellRadiusDBCID, isDetrimental, out effectGeneratedSpellTemplate, newSpellTemplate.FocusBoostType);
+                }
+                else
+                {
+                    ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration,
+                        newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneOrPetTypeName, 
+                        zonePropertiesByShortName, out effectGeneratedSpellTemplate, ref creatureTemplatesByEQID);
+                }
 
                 // If there is no wow effect, skip it
                 if (newSpellTemplate.WOWSpellEffects.Count == 0)
@@ -302,6 +318,8 @@ namespace EQWOWConverter.Spells
 
                 // Stacking rules
                 SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]));
+                if (effectGeneratedSpellTemplate != null)
+                    SetAuraStackRule(ref effectGeneratedSpellTemplate, int.Parse(columns["spell_category"]));
 
                 // Add it, and any effect generated ones
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
@@ -871,10 +889,71 @@ namespace EQWOWConverter.Spells
             spellTemplate.EQSpellEffects.Add(curEffect);
         }
 
+        private static void ConvertEQSpellEffectsIntoWOWEffectsForBardSongAura(ref SpellTemplate spellTemplate, UInt32 schoolMask, SpellDuration auraDuration,
+            List<SpellWOWTargetType> targets, int spellRadiusIndex, bool isDetrimental, out SpellTemplate? effectGeneratedSpellTemplate, SpellFocusBoostType focusBoostType)
+        {
+            // Bard songs will create an aura that 'ticks' an effect
+            List<SpellWOWTargetType> effectedSpellTargets = new List<SpellWOWTargetType>();
+            if (isDetrimental == true)
+                effectedSpellTargets.Add(SpellWOWTargetType.UnitSourceAreaEnemy);
+            else
+                effectedSpellTargets.Add(SpellWOWTargetType.UnitCasterAreaParty);
+
+            // Generate the effect spell, and move many of the properties over to it
+            effectGeneratedSpellTemplate = new SpellTemplate();
+            effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Effect");
+            effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+            effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+            effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+            effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+            effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
+            effectGeneratedSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects;
+            effectGeneratedSpellTemplate.SpellRadius = 0;
+            effectGeneratedSpellTemplate.SpellRange = 0;
+            effectGeneratedSpellTemplate.IsFocusBoostableEffect = true;
+            effectGeneratedSpellTemplate.FocusBoostType = focusBoostType;
+            effectGeneratedSpellTemplate.AuraDuration = auraDuration;
+            SpellTemplate? discardTemplate;
+            Dictionary<int, CreatureTemplate> discardCreatureTemplates = new Dictionary<int, CreatureTemplate>();
+            ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, effectGeneratedSpellTemplate.AuraDuration, 0, effectedSpellTargets,
+                spellTemplate.SpellRadiusDBCID, new SortedDictionary<int, ItemTemplate>(), isDetrimental, string.Empty, new Dictionary<string, ZoneProperties>(),
+                out discardTemplate, ref discardCreatureTemplates);
+            if (spellTemplate.EQSpellVisualEffectIndex >= 0)
+                effectGeneratedSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(spellTemplate.EQSpellVisualEffectIndex, SpellVisualType.BardTick).SpellVisualDBCID);
+            SetActionAndAuraDescriptions(ref effectGeneratedSpellTemplate, null, null);
+
+            // Update properties for this song aura
+            SpellEffectWOW auraEffect = new SpellEffectWOW();
+            auraEffect.EffectType = SpellWOWEffectType.ApplyAura;
+            auraEffect.EffectAuraType = SpellWOWAuraType.PeriodicTriggerSpell;
+            auraEffect.EffectTriggerSpell = effectGeneratedSpellTemplate.WOWSpellID;
+            auraEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            auraEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
+            auraEffect.EffectAuraPeriod = (Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000) + Convert.ToUInt32(Configuration.SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS);
+            StringBuilder descriptionSB = new StringBuilder();
+            descriptionSB.Append(effectGeneratedSpellTemplate.Description);
+            if (descriptionSB.Length > 0)
+                descriptionSB[0] = char.ToLower(descriptionSB[0]);
+            if (descriptionSB.ToString().EndsWith("."))
+                descriptionSB.Length--;
+            string description = string.Concat("every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds ", descriptionSB.ToString());
+            auraEffect.ActionDescription = description;
+            auraEffect.AuraDescription = description;
+
+            spellTemplate.WOWSpellEffects.Add(auraEffect);
+            if (Configuration.SPELL_EFFECT_BARD_ADDITIONAL_TICK_ON_CAST == true)
+                spellTemplate.HasAdditionalTickOnApply = true;
+            spellTemplate.InterruptOnMovement = false;
+            spellTemplate.InterruptOnPushback = false;
+            spellTemplate.AuraDuration = new SpellDuration();
+            spellTemplate.AuraDuration.IsInfinite = true;
+            spellTemplate.IsToggleAura = true;
+        }
+
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, SpellDuration auraDuration, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID,
             bool isDetrimental, string teleportZoneOrPetTypeName, Dictionary<string, ZoneProperties> zonePropertiesByShortName, out SpellTemplate? effectGeneratedSpellTemplate,
-            ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, bool isBardSong, SpellFocusBoostType focusBoostType)
+            ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID)
         {
             effectGeneratedSpellTemplate = null;
             bool hasSpellDuration = (auraDuration.IsInfinite || auraDuration.BaseDurationInMS > 0);
@@ -2029,7 +2108,7 @@ namespace EQWOWConverter.Spells
                                     effectGeneratedSpellTemplate.EQSpellEffects.Add(healEQEffect);
                                     SpellTemplate? discardTemplate;
                                     ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, new SpellDuration(), 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.UnitTargetAny },
-                                        0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, isBardSong, focusBoostType);
+                                        0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID);
 
                                     // Proc effect for the heal
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
@@ -2263,83 +2342,25 @@ namespace EQWOWConverter.Spells
                 }
             }
 
-            if (isBardSong == true)
+            // Add targets and radius
+            foreach (SpellEffectWOW spellEffect in newSpellEffects)
             {
-                // Bard songs will create an aura that 'ticks' an effect
-                List<SpellWOWTargetType> spellTargets = new List<SpellWOWTargetType>();
-                if (isDetrimental == true)
-                    spellTargets.Add(SpellWOWTargetType.UnitSourceAreaEnemy);
-                else
-                    spellTargets.Add(SpellWOWTargetType.UnitCasterAreaParty);
-
-                effectGeneratedSpellTemplate = new SpellTemplate();
-                effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Effect");
-                effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
-                effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
-                effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
-                effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
-                effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
-                effectGeneratedSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects;
-                effectGeneratedSpellTemplate.SpellRadius = 0;
-                effectGeneratedSpellTemplate.SpellRange = 0;
-                effectGeneratedSpellTemplate.IsFocusBoostableEffect = true;
-                effectGeneratedSpellTemplate.FocusBoostType = focusBoostType;
-                effectGeneratedSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(spellTemplate.MinimumPlayerLearnLevel, spellTemplate.EQBuffDurationFormula,
-                    spellTemplate.EQBuffDurationInTicks, spellTemplate.IsModelSizeChangeSpell, false);
-                SpellTemplate? discardTemplate;
-                ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, effectGeneratedSpellTemplate.AuraDuration, 0, spellTargets,
-                    spellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, true, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID, false,
-                    focusBoostType);
-                if (spellTemplate.EQSpellVisualEffectIndex >= 0)
-                    effectGeneratedSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(spellTemplate.EQSpellVisualEffectIndex, SpellVisualType.BardTick).SpellVisualDBCID);
-                SetActionAndAuraDescriptions(ref effectGeneratedSpellTemplate, null, null);
-
-                // Proc effect for triggering
-                SpellEffectWOW auraEffect = new SpellEffectWOW();
-                auraEffect.EffectType = SpellWOWEffectType.ApplyAura;
-                auraEffect.EffectAuraType = SpellWOWAuraType.PeriodicTriggerSpell;
-                auraEffect.EffectTriggerSpell = effectGeneratedSpellTemplate.WOWSpellID;
-                auraEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
-                auraEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
-                auraEffect.EffectAuraPeriod = (Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000) + Convert.ToUInt32(Configuration.SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS);
-                StringBuilder descriptionSB = new StringBuilder();
-                descriptionSB.Append(effectGeneratedSpellTemplate.Description);
-                if (descriptionSB.Length > 0)
-                    descriptionSB[0] = char.ToLower(descriptionSB[0]);
-                if (descriptionSB.ToString().EndsWith("."))
-                    descriptionSB.Length--;
-                string description = string.Concat("every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds ", descriptionSB.ToString());
-                auraEffect.ActionDescription = description;
-                auraEffect.AuraDescription = description;
-
-                spellTemplate.WOWSpellEffects.Add(auraEffect);
-                if (Configuration.SPELL_EFFECT_BARD_ADDITIONAL_TICK_ON_CAST == true)
-                    spellTemplate.HasAdditionalTickOnApply = true;
-                spellTemplate.InterruptOnMovement = false;
-                spellTemplate.InterruptOnPushback = false;
-            }
-            else
-            {
-                // Add targets and radius
-                foreach (SpellEffectWOW spellEffect in newSpellEffects)
+                if (targets.Count == 0)
                 {
-                    if (targets.Count == 0)
-                    {
-                        Logger.WriteError("Too few targets for spell effect");
-                        continue;
-                    }
-                    if (targets.Count > 2)
-                    {
-                        Logger.WriteError("Too many targets for spell effect");
-                        continue;
-                    }
-                    spellEffect.ImplicitTargetA = targets[0];
-                    if (targets.Count == 2)
-                        spellEffect.ImplicitTargetB = targets[1];
-
-                    spellEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
-                    spellTemplate.WOWSpellEffects.Add(spellEffect);
+                    Logger.WriteError("Too few targets for spell effect");
+                    continue;
                 }
+                if (targets.Count > 2)
+                {
+                    Logger.WriteError("Too many targets for spell effect");
+                    continue;
+                }
+                spellEffect.ImplicitTargetA = targets[0];
+                if (targets.Count == 2)
+                    spellEffect.ImplicitTargetB = targets[1];
+
+                spellEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
+                spellTemplate.WOWSpellEffects.Add(spellEffect);
             }
 
             // Sort them so the aura effects are last
@@ -2381,7 +2402,7 @@ namespace EQWOWConverter.Spells
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nOn success also cast:\n", recourseSpellTemplate.Name, "\n", GenerateActionDescription(recourseSpellTemplate));
             if (procLinkSpellTemplate != null)
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nSometimes on hit cast:\n", procLinkSpellTemplate.Name, "\n", GenerateActionDescription(procLinkSpellTemplate));
-            if (spellTemplate.IsBardSong && spellTemplate.FocusBoostType != SpellFocusBoostType.None)
+            if (spellTemplate.FocusBoostType != SpellFocusBoostType.None)
             {
                 string songSkillTypeString = string.Empty;
                 switch (spellTemplate.FocusBoostType)
@@ -2392,7 +2413,8 @@ namespace EQWOWConverter.Spells
                     case SpellFocusBoostType.BardPercussionInstruments: songSkillTypeString = "Percussion Instruments"; break;
                     default: break;
                 }
-                spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nEnhanced by ", songSkillTypeString, ".");
+                if (songSkillTypeString.Length > 0)
+                    spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nEnhanced by ", songSkillTypeString, ".");
             }
 
             // Aura Description
@@ -2469,7 +2491,7 @@ namespace EQWOWConverter.Spells
             auraSB[0] = char.ToUpper(auraSB[0]);
 
             // Bard song auras need target information
-            if (spellTemplate.IsBardSong && spellTemplate.TargetDescriptionTextFragment.Length > 0)
+            if (spellTemplate.IsBardSongAura && spellTemplate.TargetDescriptionTextFragment.Length > 0)
             {
                 auraSB.Append(" ");
                 auraSB.Append(spellTemplate.TargetDescriptionTextFragment);
