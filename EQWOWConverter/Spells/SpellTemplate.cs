@@ -20,7 +20,6 @@ using EQWOWConverter.Items;
 using EQWOWConverter.Tradeskills;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
-using System.Collections.Generic;
 using System.Text;
 
 namespace EQWOWConverter.Spells
@@ -151,6 +150,7 @@ namespace EQWOWConverter.Spells
         public bool IsTransferEffectType = false;
         public int RecourseLinkEQSpellID = 0;
         public SpellTemplate? RecourseLinkSpellTemplate = null;
+        public List<SpellTemplate> ChainedSpellTemplates = new List<SpellTemplate>();
         public int ProcLinkEQSpellID = 0;
         public int WOWSpellIDCastOnMeleeAttacker = 0;
         public bool HideCaster = false;
@@ -300,17 +300,17 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.PreventionType = 1; // Silence
 
                 // Convert the spell effects
-                SpellTemplate? effectGeneratedSpellTemplate = null;
+                List<SpellTemplate> effectGeneratedSpellTemplates = new List<SpellTemplate>();
                 if (newSpellTemplate.IsBardSongAura == true)
                 {
                     ConvertEQSpellEffectsIntoWOWEffectsForBardSongAura(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration,
-                        targets, newSpellTemplate.SpellRadiusDBCID, isDetrimental, out effectGeneratedSpellTemplate, newSpellTemplate.FocusBoostType);
+                        targets, newSpellTemplate.SpellRadiusDBCID, isDetrimental, newSpellTemplate.FocusBoostType, ref effectGeneratedSpellTemplates);
                 }
                 else
                 {
                     ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration,
                         newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneOrPetTypeName, 
-                        zonePropertiesByShortName, out effectGeneratedSpellTemplate, ref creatureTemplatesByEQID);
+                        zonePropertiesByShortName, ref creatureTemplatesByEQID, ref effectGeneratedSpellTemplates);
                 }
 
                 // If there is no wow effect, skip it
@@ -319,12 +319,15 @@ namespace EQWOWConverter.Spells
 
                 // Stacking rules
                 SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]));
-                if (effectGeneratedSpellTemplate != null)
+                for (int i = 0; i < effectGeneratedSpellTemplates.Count; i++)
+                {
+                    SpellTemplate effectGeneratedSpellTemplate = effectGeneratedSpellTemplates[i];
                     SetAuraStackRule(ref effectGeneratedSpellTemplate, int.Parse(columns["spell_category"]));
+                }
 
                 // Add it, and any effect generated ones
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
-                if (effectGeneratedSpellTemplate != null)
+                foreach (SpellTemplate effectGeneratedSpellTemplate in effectGeneratedSpellTemplates)
                     SpellTemplatesByEQID.Add(effectGeneratedSpellTemplate.EQSpellID, effectGeneratedSpellTemplate);
             }
 
@@ -891,7 +894,7 @@ namespace EQWOWConverter.Spells
         }
 
         private static void ConvertEQSpellEffectsIntoWOWEffectsForBardSongAura(ref SpellTemplate spellTemplate, UInt32 schoolMask, SpellDuration auraDuration,
-            List<SpellWOWTargetType> targets, int spellRadiusIndex, bool isDetrimental, out SpellTemplate? effectGeneratedSpellTemplate, SpellFocusBoostType focusBoostType)
+            List<SpellWOWTargetType> targets, int spellRadiusIndex, bool isDetrimental, SpellFocusBoostType focusBoostType, ref List<SpellTemplate> effectGeneratedSpellTemplates)
         {
             // Bard songs will create an aura that 'ticks' an effect
             List<SpellWOWTargetType> effectedSpellTargets = new List<SpellWOWTargetType>();
@@ -901,7 +904,7 @@ namespace EQWOWConverter.Spells
                 effectedSpellTargets.Add(SpellWOWTargetType.UnitCasterAreaParty);
 
             // Generate the effect spell, and move many of the properties over to it
-            effectGeneratedSpellTemplate = new SpellTemplate();
+            SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
             effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Effect");
             effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
             effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
@@ -914,11 +917,10 @@ namespace EQWOWConverter.Spells
             effectGeneratedSpellTemplate.IsFocusBoostableEffect = true;
             effectGeneratedSpellTemplate.FocusBoostType = focusBoostType;
             effectGeneratedSpellTemplate.AuraDuration = auraDuration;
-            SpellTemplate? discardTemplate;
             Dictionary<int, CreatureTemplate> discardCreatureTemplates = new Dictionary<int, CreatureTemplate>();
             ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, effectGeneratedSpellTemplate.AuraDuration, 0, effectedSpellTargets,
                 spellTemplate.SpellRadiusDBCID, new SortedDictionary<int, ItemTemplate>(), isDetrimental, string.Empty, new Dictionary<string, ZoneProperties>(),
-                out discardTemplate, ref discardCreatureTemplates);
+                ref discardCreatureTemplates, ref effectGeneratedSpellTemplates);
             if (spellTemplate.EQSpellVisualEffectIndex >= 0)
                 effectGeneratedSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(spellTemplate.EQSpellVisualEffectIndex, SpellVisualType.BardTick).SpellVisualDBCID);
             SetActionAndAuraDescriptions(ref effectGeneratedSpellTemplate, null, null);
@@ -949,14 +951,15 @@ namespace EQWOWConverter.Spells
             spellTemplate.AuraDuration = new SpellDuration();
             spellTemplate.AuraDuration.IsInfinite = true;
             spellTemplate.IsToggleAura = true;
+
+            effectGeneratedSpellTemplates.Add(effectGeneratedSpellTemplate);
         }
 
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, SpellDuration auraDuration, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID,
-            bool isDetrimental, string teleportZoneOrPetTypeName, Dictionary<string, ZoneProperties> zonePropertiesByShortName, out SpellTemplate? effectGeneratedSpellTemplate,
-            ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID)
+            bool isDetrimental, string teleportZoneOrPetTypeName, Dictionary<string, ZoneProperties> zonePropertiesByShortName, 
+            ref Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, ref List<SpellTemplate> effectGeneratedSpellTemplates)
         {
-            effectGeneratedSpellTemplate = null;
             bool hasSpellDuration = (auraDuration.IsInfinite || auraDuration.BaseDurationInMS > 0);
 
             // Process all spell effects
@@ -1663,12 +1666,47 @@ namespace EQWOWConverter.Spells
                         //    } break;
                         case SpellEQEffectType.Stun:
                             {
+                                int stunDurationInMS = Math.Max(eqEffect.EQBaseValue, 500);
+
+                                // Stuns become their own spell since the stun duration can differ from a parent aura duration
+                                SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
+                                effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Stunning Effect");
+                                effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+                                effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+                                effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                                effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                                effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
+                                effectGeneratedSpellTemplate.EQSpellEffects = new List<SpellEffectEQ>() { eqEffect };
+                                effectGeneratedSpellTemplate.SpellRadius = spellTemplate.SpellRadius;
+                                effectGeneratedSpellTemplate.SpellRange = spellTemplate.SpellRange;
+                                effectGeneratedSpellTemplate.IsFocusBoostableEffect = spellTemplate.IsFocusBoostableEffect;
+                                effectGeneratedSpellTemplate.FocusBoostType = spellTemplate.FocusBoostType;
+                                effectGeneratedSpellTemplate.AuraDuration = new SpellDuration();
+                                effectGeneratedSpellTemplate.AuraDuration.SetFixedDuration(stunDurationInMS);
+                                effectGeneratedSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
+
+                                // Make the stun effect
+                                SpellEffectWOW stunSpellEffectWOW = new SpellEffectWOW();
+                                stunSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                stunSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStun;
+                                stunSpellEffectWOW.ActionDescription = string.Concat("stuns");
+                                stunSpellEffectWOW.AuraDescription = string.Concat("stunned");
+                                stunSpellEffectWOW.ImplicitTargetA = targets[0];
+                                if (targets.Count == 2)
+                                    stunSpellEffectWOW.ImplicitTargetB = targets[1];
+                                stunSpellEffectWOW.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
+                                effectGeneratedSpellTemplate.WOWSpellEffects.Add(stunSpellEffectWOW);
+
+                                // Chain it
+                                effectGeneratedSpellTemplates.Add(effectGeneratedSpellTemplate);
+                                spellTemplate.ChainedSpellTemplates.Add(effectGeneratedSpellTemplate);
+
+                                // Make a dummy for descriptions
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
-                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStun;
-                                newSpellEffectWOW.ActionDescription = string.Concat("stuns");
-                                newSpellEffectWOW.AuraDescription = string.Concat("stunned");
-                                spellTemplate.AuraDuration.SetFixedDuration(Math.Max(eqEffect.EQBaseValue, 500));
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
+                                newSpellEffectWOW.ActionDescription = string.Concat("stuns for ", effectGeneratedSpellTemplate.AuraDuration.GetTimeText());
+                                //newSpellEffectWOW.AuraDescription = string.Concat("stunned");
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         case SpellEQEffectType.Fear:
@@ -2082,14 +2120,8 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 if (eqEffect.EQBaseValue > 0)
                                 {
-                                    if (effectGeneratedSpellTemplate != null)
-                                    {
-                                        Logger.WriteError("Already generated effectGenerateSpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString());
-                                        continue;
-                                    }
-
                                     // Create a healing spell for this
-                                    effectGeneratedSpellTemplate = new SpellTemplate();
+                                    SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
                                     effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Heal Effect");
                                     effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
                                     effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
@@ -2107,9 +2139,9 @@ namespace EQWOWConverter.Spells
                                     healEQEffect.EQLimitValue = eqEffect.EQLimitValue;
                                     healEQEffect.EQMaxValue = eqEffect.EQMaxValue;
                                     effectGeneratedSpellTemplate.EQSpellEffects.Add(healEQEffect);
-                                    SpellTemplate? discardTemplate;
+                                    effectGeneratedSpellTemplates.Add(effectGeneratedSpellTemplate);
                                     ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, new SpellDuration(), 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.UnitTargetAny },
-                                        0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, out discardTemplate, ref creatureTemplatesByEQID);
+                                        0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, ref creatureTemplatesByEQID, ref effectGeneratedSpellTemplates);
 
                                     // Proc effect for the heal
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;

@@ -643,6 +643,11 @@ namespace EQWOWConverter
             // Spell split data
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
+                if (spellTemplate.WOWSpellID == 92121)
+                {
+                    int x = 5;
+                }
+
                 // Stack rules
                 if (spellTemplate.SpellGroupStackingID > 0)
                     spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.WOWSpellID);
@@ -684,6 +689,18 @@ namespace EQWOWConverter
                         SpellEffectBlock curWornEffectBlock = spellTemplate.GroupedWornSpellEffectBlocksForOutput[i];
                         modEverquestSpellSQL.AddRow(spellTemplate, curWornEffectBlock.WOWSpellID);
                     }
+                }
+
+                // Additional changed spells (caused by chain effects directly)
+                foreach(SpellTemplate chainedSpellTemplate in spellTemplate.ChainedSpellTemplates)
+                {
+                    List<SpellEffectBlock> chainedGroupedBaseSpellEffectBlocksForOutput = chainedSpellTemplate.GroupedBaseSpellEffectBlocksForOutput;
+                    int chainedSpellID = chainedGroupedBaseSpellEffectBlocksForOutput[0].WOWSpellID;
+                    string chainedSpellName = chainedGroupedBaseSpellEffectBlocksForOutput[0].SpellName;
+                    if (spellTemplate.AuraDuration.MaxDurationInMS > 0)
+                        spellLinkedSpellSQL.AddRowForAuraTrigger(spellTemplate.WOWSpellID, chainedSpellID, chainedSpellName);
+                    else
+                        spellLinkedSpellSQL.AddRowForHitTrigger(spellTemplate.WOWSpellID, chainedSpellID, chainedSpellName);
                 }
 
                 // Focus boostable spells use all blocks

@@ -189,11 +189,19 @@ namespace EQWOWConverter.Spells
 
         private string GetTimeTextFragmentForMS(int ms)
         {
-            int inputSeconds = ms / 1000;
-            if (inputSeconds <= 0)
+            if (ms <= 0)
                 return string.Empty;
 
             StringBuilder timeSB = new StringBuilder();
+            int inputSeconds = ms / 1000;
+            if (inputSeconds == 0)
+            {
+                decimal partialSeconds = (decimal)ms / 1000;
+                timeSB.Append(partialSeconds);
+                timeSB.Append(" seconds");
+                return timeSB.ToString();
+            }
+            
             int hours = inputSeconds / 3600;
             if (hours > 0)
             {
