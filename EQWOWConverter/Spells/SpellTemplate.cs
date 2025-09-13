@@ -912,6 +912,7 @@ namespace EQWOWConverter.Spells
             effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
             effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
             effectGeneratedSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects;
+            effectGeneratedSpellTemplate.MinimumPlayerLearnLevel = spellTemplate.MinimumPlayerLearnLevel;
             effectGeneratedSpellTemplate.SpellRadius = 0;
             effectGeneratedSpellTemplate.SpellRange = 0;
             effectGeneratedSpellTemplate.IsFocusBoostableEffect = true;
