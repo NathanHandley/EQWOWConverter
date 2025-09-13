@@ -229,10 +229,14 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.Name = columns["name"];
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.SpellRadius = Convert.ToInt32(float.Parse(columns["aoerange"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
-                newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["cast_recovery_time"]);
                 newSpellTemplate.Category = 0; // Temp / TODO: Figure out how/what to set here
                 newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
                 newSpellTemplate.RecourseLinkEQSpellID = int.Parse(columns["RecourseLink"]);
+
+                // Recovery time (take highest)
+                UInt32 eqCastRecoveryTime = UInt32.Parse(columns["cast_recovery_time"]);
+                UInt32 eqInterruptRecoveryTime = UInt32.Parse(columns["interrupt_recovery_time"]);
+                newSpellTemplate.RecoveryTimeInMS = Math.Max(eqCastRecoveryTime, eqInterruptRecoveryTime);
 
                 // TODO: FacingCasterFlags
                 for (int i = 1; i <= 12; i++)
