@@ -304,7 +304,7 @@ namespace EQWOWConverter.Spells
                 if (newSpellTemplate.IsBardSongAura == true)
                 {
                     ConvertEQSpellEffectsIntoWOWEffectsForBardSongAura(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration,
-                        eqTargetTypeID, newSpellTemplate.SpellRadius, isDetrimental, newSpellTemplate.FocusBoostType, ref effectGeneratedSpellTemplates);
+                        eqTargetTypeID, newSpellTemplate.SpellRadius, newSpellTemplate.SpellRange, isDetrimental, newSpellTemplate.FocusBoostType, ref effectGeneratedSpellTemplates);
                 }
                 else
                 {
@@ -896,7 +896,7 @@ namespace EQWOWConverter.Spells
         }
 
         private static void ConvertEQSpellEffectsIntoWOWEffectsForBardSongAura(ref SpellTemplate spellTemplate, UInt32 schoolMask, SpellDuration auraDuration,
-            int eqTargetType, int spellRadius, bool isDetrimental, SpellFocusBoostType focusBoostType, ref List<SpellTemplate> effectGeneratedSpellTemplates)
+            int eqTargetType, int spellRadius, int spellRange, bool isDetrimental, SpellFocusBoostType focusBoostType, ref List<SpellTemplate> effectGeneratedSpellTemplates)
         {
             // Use targets to determine the dummy type
             SpellAuraDummyType dummyType = SpellAuraDummyType.None;
@@ -952,7 +952,7 @@ namespace EQWOWConverter.Spells
             effectGeneratedSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects;
             effectGeneratedSpellTemplate.MinimumPlayerLearnLevel = spellTemplate.MinimumPlayerLearnLevel;
             effectGeneratedSpellTemplate.SpellRadius = 0;
-            effectGeneratedSpellTemplate.SpellRange = 0;
+            effectGeneratedSpellTemplate.SpellRange = spellRange;
             effectGeneratedSpellTemplate.IsFocusBoostableEffect = true;
             effectGeneratedSpellTemplate.FocusBoostType = focusBoostType;
             effectGeneratedSpellTemplate.AuraDuration = auraDuration;
