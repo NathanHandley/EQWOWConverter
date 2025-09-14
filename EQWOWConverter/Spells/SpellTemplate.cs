@@ -320,11 +320,11 @@ namespace EQWOWConverter.Spells
                     continue;
 
                 // Stacking rules
-                SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]));
+                SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]), newSpellTemplate.IsBardSongAura);
                 for (int i = 0; i < effectGeneratedSpellTemplates.Count; i++)
                 {
                     SpellTemplate effectGeneratedSpellTemplate = effectGeneratedSpellTemplates[i];
-                    SetAuraStackRule(ref effectGeneratedSpellTemplate, int.Parse(columns["spell_category"]));
+                    SetAuraStackRule(ref effectGeneratedSpellTemplate, int.Parse(columns["spell_category"]), newSpellTemplate.IsBardSongAura);
                 }
 
                 // Add it, and any effect generated ones
@@ -2418,8 +2418,12 @@ namespace EQWOWConverter.Spells
             spellTemplate.WOWSpellEffects.Sort();
         }
 
-        private static void SetAuraStackRule(ref SpellTemplate spellTemplate, int eqSpellCategory)
+        private static void SetAuraStackRule(ref SpellTemplate spellTemplate, int eqSpellCategory, bool isBardSongAura)
         {
+            // Skip this for bard auras themselves
+            if (isBardSongAura == true)
+                return;
+
             // This is exactly how EQ does spell stacking, but it seems like an appropriate approximation that works well for wow
             if (eqSpellCategory < 0) // NPC = -99, AA Procs = -1
                 return;
