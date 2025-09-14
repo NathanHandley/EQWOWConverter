@@ -28,7 +28,7 @@ namespace EQWOWConverter.Spells
         public float EffectRealPointsPerLevel = 0;
         public int EffectBasePoints = 0;
         public SpellMechanicType EffectMechanic = SpellMechanicType.None;
-        public SpellWOWTargetType ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+        public SpellWOWTargetType ImplicitTargetA = SpellWOWTargetType.None;
         public SpellWOWTargetType ImplicitTargetB = SpellWOWTargetType.None;
         public UInt32 EffectRadiusIndex = 0;
         public SpellWOWAuraType EffectAuraType = SpellWOWAuraType.None;
