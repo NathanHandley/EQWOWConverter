@@ -255,12 +255,7 @@ namespace EQWOWConverter.Spells
                 // Generic properties
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
-                int skillID = int.Parse(columns["skill"]);
-                newSpellTemplate.FocusBoostType = GetFocusBoostType(skillID);
-                if ((skillID == 12 || skillID == 41 || skillID == 49 || skillID == 54 || skillID == 70) && newSpellTemplate.RecoveryTimeInMS == 0)
-                    newSpellTemplate.IsBardSongAura = true;
-                if (newSpellTemplate.FocusBoostType != SpellFocusBoostType.None && newSpellTemplate.IsBardSongAura == false)
-                    newSpellTemplate.IsFocusBoostableEffect = true;
+                bool isDetrimental = int.Parse(columns["goodEffect"]) == 0 ? true : false; // "2" should be non-detrimental group only (not caster).  Ignoring that for now.
 
                 // Buff duration (if any)
                 newSpellTemplate.EQBuffDurationInTicks = Convert.ToInt32(columns["buffduration"]);
@@ -269,16 +264,18 @@ namespace EQWOWConverter.Spells
                     newSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(newSpellTemplate.MinimumPlayerLearnLevel, newSpellTemplate.EQBuffDurationFormula,
                         newSpellTemplate.EQBuffDurationInTicks, newSpellTemplate.IsModelSizeChangeSpell);
 
+                // Focus and Bard properties
+                int skillID = int.Parse(columns["skill"]);
+                newSpellTemplate.FocusBoostType = GetFocusBoostType(skillID);
+                if ((skillID == 12 || skillID == 41 || skillID == 49 || skillID == 54 || skillID == 70) && newSpellTemplate.RecoveryTimeInMS == 0 && newSpellTemplate.EQBuffDurationInTicks != 0)
+                    newSpellTemplate.IsBardSongAura = true;
+                if (newSpellTemplate.FocusBoostType != SpellFocusBoostType.None && newSpellTemplate.IsBardSongAura == false)
+                    newSpellTemplate.IsFocusBoostableEffect = true;
+
                 // Icon
                 int spellIconID = int.Parse(columns["icon"]);
                 if (spellIconID >= 2500)
                     newSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(spellIconID - 2500);
-
-                // Targets
-                int eqTargetTypeID = int.Parse(columns["targettype"]);
-                bool isDetrimental = int.Parse(columns["goodEffect"]) == 0 ? true : false; // "2" should be non-detrimental group only (not caster).  Ignoring that for now.
-                List<SpellWOWTargetType> targets = CalculateTargets(ref newSpellTemplate, eqTargetTypeID, isDetrimental, newSpellTemplate.EQSpellEffects, newSpellTemplate.SpellRange, newSpellTemplate.SpellRadius);
-                string teleportZoneOrPetTypeName = columns["teleport_zone"];
 
                 // Visual
                 newSpellTemplate.EQSpellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
@@ -301,15 +298,18 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.DefenseType = 1; // Magic
                 newSpellTemplate.PreventionType = 1; // Silence
 
-                // Convert the spell effects
+                // Get targets and convert the spell effects
+                int eqTargetTypeID = int.Parse(columns["targettype"]);
                 List<SpellTemplate> effectGeneratedSpellTemplates = new List<SpellTemplate>();
                 if (newSpellTemplate.IsBardSongAura == true)
                 {
                     ConvertEQSpellEffectsIntoWOWEffectsForBardSongAura(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration,
-                        targets, newSpellTemplate.SpellRadius, isDetrimental, newSpellTemplate.FocusBoostType, ref effectGeneratedSpellTemplates);
+                        eqTargetTypeID, newSpellTemplate.SpellRadius, isDetrimental, newSpellTemplate.FocusBoostType, ref effectGeneratedSpellTemplates);
                 }
                 else
                 {
+                    List<SpellWOWTargetType> targets = CalculateTargets(ref newSpellTemplate, eqTargetTypeID, isDetrimental, newSpellTemplate.EQSpellEffects, newSpellTemplate.SpellRange, newSpellTemplate.SpellRadius);
+                    string teleportZoneOrPetTypeName = columns["teleport_zone"];
                     ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration,
                         newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneOrPetTypeName, 
                         zonePropertiesByShortName, ref creatureTemplatesByEQID, ref effectGeneratedSpellTemplates);
@@ -896,9 +896,37 @@ namespace EQWOWConverter.Spells
         }
 
         private static void ConvertEQSpellEffectsIntoWOWEffectsForBardSongAura(ref SpellTemplate spellTemplate, UInt32 schoolMask, SpellDuration auraDuration,
-            List<SpellWOWTargetType> targets, int spellRadius, bool isDetrimental, SpellFocusBoostType focusBoostType, ref List<SpellTemplate> effectGeneratedSpellTemplates)
+            int eqTargetType, int spellRadius, bool isDetrimental, SpellFocusBoostType focusBoostType, ref List<SpellTemplate> effectGeneratedSpellTemplates)
         {
-            // TODO: Handle 0 radius spells
+            // Use targets to determine the dummy type
+            SpellAuraDummyType dummyType = SpellAuraDummyType.None;
+            switch (eqTargetType)
+            {
+                case 3: // GroupV1
+                case 41: // GroupV2
+                    {
+                        dummyType = SpellAuraDummyType.BardSongFriendlyParty;
+                    } break;
+                case 4: // PointBlankAreaOfEffect
+                    {
+                        dummyType = SpellAuraDummyType.BardSongEnemyArea;
+                    } break;
+                case 5: // Single
+                    {
+                        if (isDetrimental == true)
+                            dummyType = SpellAuraDummyType.BardSongEnemySingle;
+                        else
+                            dummyType = SpellAuraDummyType.BardSongFriendlySingle;
+                    } break;
+                case 6: // Self
+                    {
+                        dummyType = SpellAuraDummyType.BardSongSelf;
+                    } break;
+                default:
+                    {
+                        Logger.WriteError("ConvertEQSpellEffectsIntoWOWEffectsForBardSongAura error, unhandled eqTargetType of ", eqTargetType.ToString());
+                    } break;
+            }
 
             // Bard songs will create an aura that 'ticks' an effect
             List<SpellWOWTargetType> effectedSpellTargets = new List<SpellWOWTargetType>();
@@ -943,10 +971,7 @@ namespace EQWOWConverter.Spells
             auraEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             auraEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadius);
             auraEffect.EffectAuraPeriod = (Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000) + Convert.ToUInt32(Configuration.SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS);
-            if (isDetrimental == true)
-                auraEffect.EffectMiscValueA = Convert.ToInt32(SpellAuraDummyType.BardSongEnemy);
-            else
-                auraEffect.EffectMiscValueA = Convert.ToInt32(SpellAuraDummyType.BardSongFriendly);
+            auraEffect.EffectMiscValueA = Convert.ToInt32(dummyType);
             StringBuilder descriptionSB = new StringBuilder();
             descriptionSB.Append(effectGeneratedSpellTemplate.Description);
             if (descriptionSB.Length > 0)

@@ -28,7 +28,10 @@ namespace EQWOWConverter.Spells
         BardFocusWind = 6,
         BardFocusPercussion = 7,
         BardFocusAll = 8,
-        BardSongEnemy = 9,
-        BardSongFriendly = 10
+        BardSongEnemyArea = 9,
+        BardSongFriendlyParty = 10,
+        BardSongSelf = 11,
+        BardSongEnemySingle = 12,
+        BardSongFriendlySingle = 13
     }
 }
