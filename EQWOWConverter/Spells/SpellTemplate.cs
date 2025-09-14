@@ -899,9 +899,15 @@ namespace EQWOWConverter.Spells
             // Bard songs will create an aura that 'ticks' an effect
             List<SpellWOWTargetType> effectedSpellTargets = new List<SpellWOWTargetType>();
             if (isDetrimental == true)
-                effectedSpellTargets.Add(SpellWOWTargetType.UnitSourceAreaEnemy);
+            {
+                effectedSpellTargets.Add(SpellWOWTargetType.DestinationCaster);
+                effectedSpellTargets.Add(SpellWOWTargetType.UnitDestinationAreaEnemy);
+            }
             else
+            {
+                effectedSpellTargets.Add(SpellWOWTargetType.DestinationCaster);
                 effectedSpellTargets.Add(SpellWOWTargetType.UnitCasterAreaParty);
+            }
 
             // Generate the effect spell, and move many of the properties over to it
             SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
