@@ -177,6 +177,8 @@ namespace EQWOWConverter.Spells
         public SpellFocusBoostType FocusBoostType = SpellFocusBoostType.None;
         public bool IsFocusBoostableEffect = false;
         public bool IsToggleAura = false;
+        public int PeriodicAuraWOWSpellID = 0;
+        public int PeriodicAuraSpellRadius = 0;
 
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -304,7 +306,7 @@ namespace EQWOWConverter.Spells
                 if (newSpellTemplate.IsBardSongAura == true)
                 {
                     ConvertEQSpellEffectsIntoWOWEffectsForBardSongAura(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration,
-                        targets, newSpellTemplate.SpellRadiusDBCID, isDetrimental, newSpellTemplate.FocusBoostType, ref effectGeneratedSpellTemplates);
+                        targets, newSpellTemplate.SpellRadius, isDetrimental, newSpellTemplate.FocusBoostType, ref effectGeneratedSpellTemplates);
                 }
                 else
                 {
@@ -433,32 +435,32 @@ namespace EQWOWConverter.Spells
 
                 // Generate an aura description
                 string description = string.Empty;
-                SpellDummyType spellDummyType = SpellDummyType.None;
+                SpellAuraDummyType spellDummyType = SpellAuraDummyType.None;
                 switch (focusType)
                 {
                     case ItemFocusType.BardBrassInstruments:
                         {
-                            spellDummyType = SpellDummyType.BardFocusBrass;
+                            spellDummyType = SpellAuraDummyType.BardFocusBrass;
                             description = string.Concat("Increases potency of songs using brass instruments by ", focusValue, "%");
                         } break;
                     case ItemFocusType.BardStringedInstruments:
                         {
-                            spellDummyType = SpellDummyType.BardFocusString;
+                            spellDummyType = SpellAuraDummyType.BardFocusString;
                             description = string.Concat("Increases potency of songs using string instruments by ", focusValue, "%");
                         } break;
                     case ItemFocusType.BardWindInstruments:
                         {
-                            spellDummyType = SpellDummyType.BardFocusWind;
+                            spellDummyType = SpellAuraDummyType.BardFocusWind;
                             description = string.Concat("Increases potency of songs using wind instruments by ", focusValue, "%");
                         } break;
                     case ItemFocusType.BardPercussionInstruments:
                         {
-                            spellDummyType = SpellDummyType.BardFocusPercussion;
+                            spellDummyType = SpellAuraDummyType.BardFocusPercussion;
                             description = string.Concat("Increases potency of songs using percussion instruments by ", focusValue, "%");
                         } break;
                     case ItemFocusType.BardAll:
                         {
-                            spellDummyType = SpellDummyType.BardFocusAll;
+                            spellDummyType = SpellAuraDummyType.BardFocusAll;
                             description = string.Concat("Increases potency of all songs by ", focusValue, "%");
                         } break;
                     default:
@@ -894,8 +896,10 @@ namespace EQWOWConverter.Spells
         }
 
         private static void ConvertEQSpellEffectsIntoWOWEffectsForBardSongAura(ref SpellTemplate spellTemplate, UInt32 schoolMask, SpellDuration auraDuration,
-            List<SpellWOWTargetType> targets, int spellRadiusIndex, bool isDetrimental, SpellFocusBoostType focusBoostType, ref List<SpellTemplate> effectGeneratedSpellTemplates)
+            List<SpellWOWTargetType> targets, int spellRadius, bool isDetrimental, SpellFocusBoostType focusBoostType, ref List<SpellTemplate> effectGeneratedSpellTemplates)
         {
+            // TODO: Handle 0 radius spells
+
             // Bard songs will create an aura that 'ticks' an effect
             List<SpellWOWTargetType> effectedSpellTargets = new List<SpellWOWTargetType>();
             if (isDetrimental == true)
@@ -935,11 +939,14 @@ namespace EQWOWConverter.Spells
             // Update properties for this song aura
             SpellEffectWOW auraEffect = new SpellEffectWOW();
             auraEffect.EffectType = SpellWOWEffectType.ApplyAura;
-            auraEffect.EffectAuraType = SpellWOWAuraType.PeriodicTriggerSpell;
-            auraEffect.EffectTriggerSpell = effectGeneratedSpellTemplate.WOWSpellID;
+            auraEffect.EffectAuraType = SpellWOWAuraType.PeriodicDummy;
             auraEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
-            auraEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
+            auraEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadius);
             auraEffect.EffectAuraPeriod = (Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000) + Convert.ToUInt32(Configuration.SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS);
+            if (isDetrimental == true)
+                auraEffect.EffectMiscValueA = Convert.ToInt32(SpellAuraDummyType.BardSongEnemy);
+            else
+                auraEffect.EffectMiscValueA = Convert.ToInt32(SpellAuraDummyType.BardSongFriendly);
             StringBuilder descriptionSB = new StringBuilder();
             descriptionSB.Append(effectGeneratedSpellTemplate.Description);
             if (descriptionSB.Length > 0)
@@ -958,6 +965,8 @@ namespace EQWOWConverter.Spells
             spellTemplate.AuraDuration = new SpellDuration();
             spellTemplate.AuraDuration.IsInfinite = true;
             spellTemplate.IsToggleAura = true;
+            spellTemplate.PeriodicAuraWOWSpellID = effectGeneratedSpellTemplate.WOWSpellID;
+            spellTemplate.PeriodicAuraSpellRadius = spellRadius;
 
             effectGeneratedSpellTemplates.Add(effectGeneratedSpellTemplate);
         }
@@ -2025,7 +2034,7 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
                                     newSpellEffectWOW.ActionDescription = "opens a magical portal that returns you to your bind point in norrath, and you will have 30 minutes where you can return to your gate point after casting it";
                                     newSpellEffectWOW.AuraDescription = "you are tethered to the location where you gated and may return there if you click it off before the buff wears off, but it will fail in combat";
-                                    newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.Gate;
+                                    newSpellEffectWOW.EffectMiscValueA = (int)SpellAuraDummyType.Gate;
                                     spellTemplate.AuraDuration.SetFixedDuration(1800000); // 30 minutes
                                 }
                                 else
@@ -2033,7 +2042,7 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.Dummy;
                                     newSpellEffectWOW.ActionDescription = "opens a magical portal that returns you to your bind point in norrath";
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
-                                    newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.Gate;
+                                    newSpellEffectWOW.EffectMiscValueA = (int)SpellAuraDummyType.Gate;
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
@@ -2042,7 +2051,7 @@ namespace EQWOWConverter.Spells
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.Dummy;
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
-                                newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.BindAny;
+                                newSpellEffectWOW.EffectMiscValueA = (int)SpellAuraDummyType.BindAny;
                                 newSpellEffectWOW.ActionDescription = string.Concat("binds the soul of the target to their current location, which only works in norrath");
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;

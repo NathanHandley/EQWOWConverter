@@ -708,6 +708,10 @@ namespace EQWOWConverter
                             spellScriptNamesSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[i].WOWSpellID, "EverQuest_FocusBoostNonAuraScript");
                     }
 
+                // Bard songs have a script
+                if (spellTemplate.IsBardSongAura == true)
+                    spellScriptNamesSQL.AddRow(spellTemplate.WOWSpellID, "EverQuest_BardSongAuraScript");
+
                 // Save any pet details
                 if (spellTemplate.SummonSpellPet != null)
                     modEverquestPetSQL.AddRow(spellTemplate.WOWSpellID, spellTemplate.SummonSpellPet.NamingType);

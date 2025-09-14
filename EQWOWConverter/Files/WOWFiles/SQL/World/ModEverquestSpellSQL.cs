@@ -35,6 +35,8 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`RecourseSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`SpellIDCastOnMeleeAttacker` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`FocusBoostType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`PeriodicAuraSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`PeriodicAuraSpellRadius` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -54,6 +56,8 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("RecourseSpellID", 0);
             newRow.AddInt("SpellIDCastOnMeleeAttacker", spellTemplate.WOWSpellIDCastOnMeleeAttacker);
             newRow.AddInt("FocusBoostType", (int)spellTemplate.FocusBoostType);
+            newRow.AddInt("PeriodicAuraSpellID", spellTemplate.PeriodicAuraWOWSpellID);
+            newRow.AddInt("PeriodicAuraSpellRadius", spellTemplate.PeriodicAuraSpellRadius);
             Rows.Add(newRow);
         }
     }

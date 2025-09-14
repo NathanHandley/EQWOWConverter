@@ -17,7 +17,7 @@
 namespace EQWOWConverter.Spells
 {
     // Note: These are defines in the mod-everquest file EverQuest.h, so values must match
-    internal enum SpellDummyType
+    internal enum SpellAuraDummyType
     {
         None = 0,
         BindSelf = 1,
@@ -27,6 +27,8 @@ namespace EQWOWConverter.Spells
         BardFocusString = 5,
         BardFocusWind = 6,
         BardFocusPercussion = 7,
-        BardFocusAll = 8
+        BardFocusAll = 8,
+        BardSongEnemy = 9,
+        BardSongFriendly = 10
     }
 }
