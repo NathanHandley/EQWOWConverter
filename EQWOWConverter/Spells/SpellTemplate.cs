@@ -326,7 +326,7 @@ namespace EQWOWConverter.Spells
                 for (int i = 0; i < effectGeneratedSpellTemplates.Count; i++)
                 {
                     SpellTemplate effectGeneratedSpellTemplate = effectGeneratedSpellTemplates[i];
-                    SetAuraStackRule(ref effectGeneratedSpellTemplate, int.Parse(columns["spell_category"]), newSpellTemplate.IsBardSongAura);
+                    SetAuraStackRule(ref effectGeneratedSpellTemplate, int.Parse(columns["spell_category"]), effectGeneratedSpellTemplate.IsBardSongAura);
                 }
 
                 // Add it, and any effect generated ones
@@ -2458,10 +2458,6 @@ namespace EQWOWConverter.Spells
 
         private static void SetAuraStackRule(ref SpellTemplate spellTemplate, int eqSpellCategory, bool isBardSongAura)
         {
-            // Skip this for bard auras themselves
-            if (isBardSongAura == true)
-                return;
-
             // This is exactly how EQ does spell stacking, but it seems like an appropriate approximation that works well for wow
             if (eqSpellCategory < 0) // NPC = -99, AA Procs = -1
                 return;
@@ -2481,7 +2477,11 @@ namespace EQWOWConverter.Spells
                 spellTemplate.SpellGroupStackingRule |= 8; // SPELL_GROUP_STACK_FLAG_NEVER_STACK
 
             // Calculate the category
-            int groupStackingID = Configuration.SQL_SPELL_GROUP_ID_START + eqSpellCategory;
+            int groupStackingID;
+            if (isBardSongAura == true)
+                groupStackingID = Configuration.SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START + eqSpellCategory;
+            else
+                groupStackingID = Configuration.SQL_SPELL_GROUP_ID_START + eqSpellCategory;
             if (SpellGroupStackRuleByGroup.ContainsKey(groupStackingID) == false)
                 SpellGroupStackRuleByGroup[groupStackingID] = spellTemplate.SpellGroupStackingRule;
             spellTemplate.SpellGroupStackingID = groupStackingID;
