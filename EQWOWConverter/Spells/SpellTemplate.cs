@@ -902,35 +902,43 @@ namespace EQWOWConverter.Spells
         {
             // Use targets to determine the dummy type
             SpellAuraDummyType dummyType = SpellAuraDummyType.None;
+            List<SpellWOWTargetType> effectedSpellTargets = new List<SpellWOWTargetType>();
+            int effectSpellRange = spellRange;
             switch (eqTargetType)
             {
                 case 3: // GroupV1
                 case 41: // GroupV2
                     {
+                        effectedSpellTargets.Add(SpellWOWTargetType.UnitTargetAlly);
                         dummyType = SpellAuraDummyType.BardSongFriendlyParty;
                         spellTemplate.TargetDescriptionTextFragment = string.Concat("Applies the effect every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to all party members within ", spellRadius, " yards");
+                        effectSpellRange = spellRadius;
                     } break;
                 case 4: // PointBlankAreaOfEffect
                     {
+                        effectedSpellTargets.Add(SpellWOWTargetType.UnitTargetEnemy);
                         dummyType = SpellAuraDummyType.BardSongEnemyArea;
                         spellTemplate.TargetDescriptionTextFragment = string.Concat("Applies the effect every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to all enemies within ", spellRadius, " yards");
+                        effectSpellRange = spellRadius;
                     } break;
                 case 5: // Single
                     {
                         if (isDetrimental == true)
                         {
+                            effectedSpellTargets.Add(SpellWOWTargetType.UnitTargetEnemy);
                             dummyType = SpellAuraDummyType.BardSongEnemySingle;
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Applies the effect every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to a single enemy target within ", spellRange, " yards");
                         }
                         else
                         {
+                            effectedSpellTargets.Add(SpellWOWTargetType.UnitTargetAlly);
                             dummyType = SpellAuraDummyType.BardSongFriendlySingle;
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Applies the effect every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to a single friendly target within ", spellRange, " yards");
-                        }
-                        
+                        }                        
                     } break;
                 case 6: // Self
                     {
+                        effectedSpellTargets.Add(SpellWOWTargetType.UnitCaster);
                         dummyType = SpellAuraDummyType.BardSongSelf;
                         spellTemplate.TargetDescriptionTextFragment = string.Concat("Applies the effect every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to self");
                     } break;
@@ -938,19 +946,6 @@ namespace EQWOWConverter.Spells
                     {
                         Logger.WriteError("ConvertEQSpellEffectsIntoWOWEffectsForBardSongAura error, unhandled eqTargetType of ", eqTargetType.ToString());
                     } break;
-            }
-
-            // Bard songs will create an aura that 'ticks' an effect
-            List<SpellWOWTargetType> effectedSpellTargets = new List<SpellWOWTargetType>();
-            if (isDetrimental == true)
-            {
-                effectedSpellTargets.Add(SpellWOWTargetType.DestinationCaster);
-                effectedSpellTargets.Add(SpellWOWTargetType.UnitDestinationAreaEnemy);
-            }
-            else
-            {
-                effectedSpellTargets.Add(SpellWOWTargetType.DestinationCaster);
-                effectedSpellTargets.Add(SpellWOWTargetType.UnitCasterAreaParty);
             }
 
             // Generate the effect spell, and move many of the properties over to it
@@ -964,7 +959,7 @@ namespace EQWOWConverter.Spells
             effectGeneratedSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects;
             effectGeneratedSpellTemplate.MinimumPlayerLearnLevel = spellTemplate.MinimumPlayerLearnLevel;
             effectGeneratedSpellTemplate.SpellRadius = 0;
-            effectGeneratedSpellTemplate.SpellRange = spellRange;
+            effectGeneratedSpellTemplate.SpellRange = effectSpellRange;
             effectGeneratedSpellTemplate.IsFocusBoostableEffect = true;
             effectGeneratedSpellTemplate.FocusBoostType = focusBoostType;
             effectGeneratedSpellTemplate.AuraDuration = auraDuration;
@@ -981,7 +976,6 @@ namespace EQWOWConverter.Spells
             auraEffect.EffectType = SpellWOWEffectType.ApplyAura;
             auraEffect.EffectAuraType = SpellWOWAuraType.PeriodicDummy;
             auraEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
-            auraEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadius);
             auraEffect.EffectAuraPeriod = (Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000) + Convert.ToUInt32(Configuration.SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS);
             auraEffect.EffectMiscValueA = Convert.ToInt32(dummyType);
             StringBuilder descriptionSB = new StringBuilder();
