@@ -179,6 +179,7 @@ namespace EQWOWConverter.Spells
         public bool IsToggleAura = false;
         public int PeriodicAuraWOWSpellID = 0;
         public int PeriodicAuraSpellRadius = 0;
+        public bool ShowFocusBoostInDescriptionIfExists = false;
 
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -313,6 +314,7 @@ namespace EQWOWConverter.Spells
                     ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.AuraDuration,
                         newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID, itemTemplatesByEQDBID, isDetrimental, teleportZoneOrPetTypeName, 
                         zonePropertiesByShortName, ref creatureTemplatesByEQID, ref effectGeneratedSpellTemplates);
+                    newSpellTemplate.ShowFocusBoostInDescriptionIfExists = true;
                 }
 
                 // If there is no wow effect, skip it
@@ -992,6 +994,7 @@ namespace EQWOWConverter.Spells
             spellTemplate.IsToggleAura = true;
             spellTemplate.PeriodicAuraWOWSpellID = effectGeneratedSpellTemplate.WOWSpellID;
             spellTemplate.PeriodicAuraSpellRadius = spellRadius;
+            spellTemplate.ShowFocusBoostInDescriptionIfExists = true;
 
             effectGeneratedSpellTemplates.Add(effectGeneratedSpellTemplate);
         }
@@ -2482,15 +2485,16 @@ namespace EQWOWConverter.Spells
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nOn success also cast:\n", recourseSpellTemplate.Name, "\n", GenerateActionDescription(recourseSpellTemplate));
             if (procLinkSpellTemplate != null)
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nSometimes on hit cast:\n", procLinkSpellTemplate.Name, "\n", GenerateActionDescription(procLinkSpellTemplate));
-            if (spellTemplate.FocusBoostType != SpellFocusBoostType.None)
+            if (spellTemplate.ShowFocusBoostInDescriptionIfExists == true)
             {
                 string songSkillTypeString = string.Empty;
                 switch (spellTemplate.FocusBoostType)
                 {
-                    case SpellFocusBoostType.BardBrassInstruments: songSkillTypeString = "Brass Instruments"; break;
-                    case SpellFocusBoostType.BardStringedInstruments: songSkillTypeString = "String Instruments"; break;
-                    case SpellFocusBoostType.BardWindInstruments: songSkillTypeString = "Wind Instruments"; break;
-                    case SpellFocusBoostType.BardPercussionInstruments: songSkillTypeString = "Percussion Instruments"; break;
+                    case SpellFocusBoostType.BardBrassInstruments: songSkillTypeString = "brass instruments"; break;
+                    case SpellFocusBoostType.BardStringedInstruments: songSkillTypeString = "string instruments"; break;
+                    case SpellFocusBoostType.BardWindInstruments: songSkillTypeString = "wind instruments"; break;
+                    case SpellFocusBoostType.BardPercussionInstruments: songSkillTypeString = "percussion instruments"; break;
+                    case SpellFocusBoostType.BardSinging: songSkillTypeString = "singing aids"; break;
                     default: break;
                 }
                 if (songSkillTypeString.Length > 0)
@@ -2511,6 +2515,12 @@ namespace EQWOWConverter.Spells
         private static string GenerateActionDescription(SpellTemplate spellTemplate)
         {
             StringBuilder descriptionSB = new StringBuilder();
+
+            // Songs should have something
+            if (spellTemplate.IsBardSongAura)
+                descriptionSB.Append("Perform a continuous song that ");
+
+            // Add the description blocks
             bool descriptionTextHasBeenAddedToAction = false;
             for (int i = 0; i < spellTemplate.WOWSpellEffects.Count; i++)
             {
@@ -2523,7 +2533,7 @@ namespace EQWOWConverter.Spells
                     descriptionTextHasBeenAddedToAction = true;
                 }
             }
-            if (descriptionSB.Length == 0)
+            if (descriptionTextHasBeenAddedToAction == false)
                 return string.Empty;
             descriptionSB.Append('.');
 
