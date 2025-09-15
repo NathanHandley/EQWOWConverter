@@ -908,21 +908,31 @@ namespace EQWOWConverter.Spells
                 case 41: // GroupV2
                     {
                         dummyType = SpellAuraDummyType.BardSongFriendlyParty;
+                        spellTemplate.TargetDescriptionTextFragment = string.Concat("Applies the effect every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to all party members within ", spellRadius, " yards");
                     } break;
                 case 4: // PointBlankAreaOfEffect
                     {
                         dummyType = SpellAuraDummyType.BardSongEnemyArea;
+                        spellTemplate.TargetDescriptionTextFragment = string.Concat("Applies the effect every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to all enemies within ", spellRadius, " yards");
                     } break;
                 case 5: // Single
                     {
                         if (isDetrimental == true)
+                        {
                             dummyType = SpellAuraDummyType.BardSongEnemySingle;
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Applies the effect every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to a single enemy target within ", spellRange, " yards");
+                        }
                         else
+                        {
                             dummyType = SpellAuraDummyType.BardSongFriendlySingle;
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Applies the effect every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to a single friendly target within ", spellRange, " yards");
+                        }
+                        
                     } break;
                 case 6: // Self
                     {
                         dummyType = SpellAuraDummyType.BardSongSelf;
+                        spellTemplate.TargetDescriptionTextFragment = string.Concat("Applies the effect every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to self");
                     } break;
                 default:
                     {
