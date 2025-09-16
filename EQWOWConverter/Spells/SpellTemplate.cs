@@ -1434,7 +1434,10 @@ namespace EQWOWConverter.Spells
                                 }
                                 else
                                 {
-                                    newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "", SpellEffectWOWConversionScaleType.None);
+                                    int eqMaxValue = eqEffect.EQMaxValue;
+                                    if (eqMaxValue == 0 || eqMaxValue < Configuration.SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE)
+                                        eqMaxValue = Configuration.SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE;
+                                    newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "", SpellEffectWOWConversionScaleType.None);
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModDecreaseSpeed;
                                     newSpellEffectWOW.ActionDescription = string.Concat("decrease movement speed by ", newSpellEffectWOW.GetFormattedEffectActionString(true));
                                     newSpellEffectWOW.AuraDescription = string.Concat("movement speed decreased", newSpellEffectWOW.GetFormattedEffectAuraString(true, " by ", ""));
