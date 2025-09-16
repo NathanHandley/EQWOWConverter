@@ -21,6 +21,7 @@ using EQWOWConverter.Tradeskills;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using System.Text;
+using static EQWOWConverter.EQFiles.EQSpellsEFF;
 
 namespace EQWOWConverter.Spells
 {
@@ -133,6 +134,7 @@ namespace EQWOWConverter.Spells
         public List<SpellEffectWOW> WOWSpellEffects = new List<SpellEffectWOW>();
         public UInt32 ManaCost = 0;
         public SpellEQTargetType EQTargetType = SpellEQTargetType.Single;
+        public bool CanTargetBothFriendlyAndEnemy = false;
         public UInt32 TargetCreatureType = 0; // No specific creature type
         public bool CastOnCorpse = false;
         public Dictionary<ClassType, SpellLearnScrollProperties> LearnScrollPropertiesByClassType = new Dictionary<ClassType, SpellLearnScrollProperties>();
@@ -575,11 +577,12 @@ namespace EQWOWConverter.Spells
                 spellTemplate.EQTargetType = (SpellEQTargetType)eqTargetTypeID;
 
             // Some spell effects allow targeting both friendly and enemy
-            bool canTargetBothEnemyAndFriendly = false;
             foreach (SpellEffectEQ effect in eqSpellEffects)
             {
                 if (effect.EQEffectType == SpellEQEffectType.CancelMagic)
-                    canTargetBothEnemyAndFriendly = true;
+                    spellTemplate.CanTargetBothFriendlyAndEnemy = true;
+                else if (effect.EQEffectType == SpellEQEffectType.BindSight)
+                    spellTemplate.CanTargetBothFriendlyAndEnemy = true;
             }
 
             // Map the EQ target type to WOW
@@ -637,10 +640,9 @@ namespace EQWOWConverter.Spells
                     break;
                 case SpellEQTargetType.Single:
                     {
-                        if (canTargetBothEnemyAndFriendly == true)
+                        if (spellTemplate.CanTargetBothFriendlyAndEnemy == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetAlly);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAny);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single enemy or friendly unit";
                         }
                         else if (isDetrimental == true)
@@ -688,7 +690,7 @@ namespace EQWOWConverter.Spells
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly); // "lull" put into this for now
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetAlly); // "lull" put into this for now
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single beast friendly unit";
                         }
                     }
@@ -703,7 +705,7 @@ namespace EQWOWConverter.Spells
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly); // "lull" and heal undead put into this for now
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetAlly); // "lull" and heal undead put into this for now
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single undead friendly unit";
                         }
                     }
@@ -718,7 +720,7 @@ namespace EQWOWConverter.Spells
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetAlly);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single elemental friendly unit";
                         }
                     }
@@ -734,7 +736,7 @@ namespace EQWOWConverter.Spells
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetAlly);
                             spellWOWTargetTypes.Add(SpellWOWTargetType.UnitDestinationAreaAlly);
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets an elemental friendly unit and other elemental friendly units within ", spellRadius, " yards around the target");
                         }
@@ -778,7 +780,7 @@ namespace EQWOWConverter.Spells
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly); // "lull" and heal undead put into this for now
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAny); // "lull" and heal undead put into this for now
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single elemental friendly unit";
                         }
                     }
@@ -793,7 +795,7 @@ namespace EQWOWConverter.Spells
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly); // "lull" and heal put into this for now
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAny); // "lull" and heal put into this for now
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single giant friendly unit";
                         }
                     }
@@ -808,7 +810,7 @@ namespace EQWOWConverter.Spells
                         }
                         else
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAlly); // "lull" and heal put into this for now
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationTargetAny); // "lull" and heal put into this for now
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single dragonkin friendly unit";
                         }
                     }
@@ -900,6 +902,15 @@ namespace EQWOWConverter.Spells
         private static void ConvertEQSpellEffectsIntoWOWEffectsForBardSongAura(ref SpellTemplate spellTemplate, UInt32 schoolMask, SpellDuration auraDuration,
             int eqTargetType, int spellRadius, int spellRange, bool isDetrimental, SpellFocusBoostType focusBoostType, ref List<SpellTemplate> effectGeneratedSpellTemplates)
         {
+            // Some spell effects allow targeting both friendly and enemy
+            foreach (SpellEffectEQ effect in spellTemplate.EQSpellEffects)
+            {
+                if (effect.EQEffectType == SpellEQEffectType.CancelMagic)
+                    spellTemplate.CanTargetBothFriendlyAndEnemy = true;
+                else if (effect.EQEffectType == SpellEQEffectType.BindSight)
+                    spellTemplate.CanTargetBothFriendlyAndEnemy = true;
+            }
+
             // Use targets to determine the dummy type
             SpellAuraDummyType dummyType = SpellAuraDummyType.None;
             List<SpellWOWTargetType> effectedSpellTargets = new List<SpellWOWTargetType>();
@@ -923,7 +934,13 @@ namespace EQWOWConverter.Spells
                     } break;
                 case 5: // Single
                     {
-                        if (isDetrimental == true)
+                        if (spellTemplate.CanTargetBothFriendlyAndEnemy == true)
+                        {
+                            effectedSpellTargets.Add(SpellWOWTargetType.DestinationTargetAny);
+                            dummyType = SpellAuraDummyType.BardSongAnySingle;
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Applies the effect every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to a single target within ", spellRange, " yards");
+                        }
+                        else if (isDetrimental == true)
                         {
                             effectedSpellTargets.Add(SpellWOWTargetType.UnitTargetEnemy);
                             dummyType = SpellAuraDummyType.BardSongEnemySingle;
@@ -2304,12 +2321,6 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.InterruptOnCast = false;
                                 spellTemplate.InterruptOnPushback = false;
                                 spellTemplate.ChannelInterruptFlags = 31772;
-
-                                if (targets[0] != SpellWOWTargetType.UnitPet)
-                                {
-                                    targets.Clear();
-                                    targets.Add(SpellWOWTargetType.DestinationTargetAlly);
-                                }
                             } break;
                         case SpellEQEffectType.DivineAura:
                             {

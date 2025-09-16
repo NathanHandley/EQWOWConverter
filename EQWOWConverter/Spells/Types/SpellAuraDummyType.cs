@@ -32,6 +32,7 @@ namespace EQWOWConverter.Spells
         BardSongFriendlyParty = 10,
         BardSongSelf = 11,
         BardSongEnemySingle = 12,
-        BardSongFriendlySingle = 13
+        BardSongFriendlySingle = 13,
+        BardSongAnySingle = 14,
     }
 }

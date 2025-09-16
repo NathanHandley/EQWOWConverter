@@ -33,6 +33,6 @@ namespace EQWOWConverter.Spells
         UnitDestinationAreaAlly = 31,
         UnitDestinationAreaParty = 34,
         UnitTargetParty = 35,
-        DestinationTargetAlly = 63
+        DestinationTargetAny = 63
     }
 }
