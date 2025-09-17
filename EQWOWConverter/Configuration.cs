@@ -484,6 +484,9 @@ namespace EQWOWConverter
         // How much to multiply the EQ range value for WoW
         public static readonly float SPELLS_RANGE_MULTIPLIER = 0.3333f;
 
+        // The most that a movement speed reduction can slow a target.  Should be above -100
+        public static readonly int SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE = -90;
+
         // Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier
         // Increase or decrease this to modify how long spells work for and, in effect, the damage they do
         // World of Warcraft typically uses a reduced amount and dummy targets start out of combat events at >5 seconds
@@ -806,9 +809,10 @@ namespace EQWOWConverter
         public static readonly int SQL_QUEST_TEMPLATE_ID_END = 40000;
         public static readonly int SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT = 5000;
 
-        // Start and end IDs for spell groups (must be at least 220 large)
+        // Start and end IDs for spell groups
         public static readonly int SQL_SPELL_GROUP_ID_START = 1500;
-        public static readonly int SQL_SPELL_GROUP_ID_END = 1750;
+        public static readonly int SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START = 1750;
+        public static readonly int SQL_SPELL_GROUP_ID_END = 1999;
 
         // Start and end IDs for transports
         public static readonly int SQL_TRANSPORTS_GUID_START = 21;
