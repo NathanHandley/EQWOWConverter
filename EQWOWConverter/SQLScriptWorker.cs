@@ -142,6 +142,7 @@ namespace EQWOWConverter
 
         private void PopulateSystemConfigs()
         {
+            modEverquestSystemConfigsSQL.AddRow("BardMaxConcurrentSongs", Configuration.SPELL_MAX_CONCURRENT_BARD_SONGS.ToString());
             modEverquestSystemConfigsSQL.AddRow("DayEventID", Configuration.SQL_GAMEEVENT_ID_DAY.ToString());
             modEverquestSystemConfigsSQL.AddRow("NightEventID", Configuration.SQL_GAMEEVENT_ID_NIGHT.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMin", Configuration.DBCID_MAP_ID_START.ToString());

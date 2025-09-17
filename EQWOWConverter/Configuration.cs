@@ -500,6 +500,11 @@ namespace EQWOWConverter
         // on targets near the bard since the spell would get overridden right when a tick would occur
         public static readonly int SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS = 50;
 
+        // Bards can have this many songs playing at the same time.
+        // - Set as 0 to disable this entirely, allowing all songs to play at once
+        // - Set as 1 to have a more EQ like experience
+        public static readonly int SPELL_MAX_CONCURRENT_BARD_SONGS = 3;
+
         // This is the minimum allowable recovery time any spell can have, which any smaller will become zero
         // and only subjected to the global cooldown of 1.5 seconds.  This is only enforced on the raw spell
         // records and not the SpellTemplate, to ensure cast repeats are correct for creatures
