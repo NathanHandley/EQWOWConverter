@@ -2503,6 +2503,7 @@ namespace EQWOWConverter.Spells
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nOn success also cast:\n", recourseSpellTemplate.Name, "\n", GenerateActionDescription(recourseSpellTemplate));
             if (procLinkSpellTemplate != null)
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nSometimes on hit cast:\n", procLinkSpellTemplate.Name, "\n", GenerateActionDescription(procLinkSpellTemplate));
+            bool focusBoostWasAddedToDescription = false;
             if (spellTemplate.ShowFocusBoostInDescriptionIfExists == true)
             {
                 string songSkillTypeString = string.Empty;
@@ -2516,7 +2517,10 @@ namespace EQWOWConverter.Spells
                     default: break;
                 }
                 if (songSkillTypeString.Length > 0)
+                {
                     spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nEnhanced by ", songSkillTypeString, ".");
+                    focusBoostWasAddedToDescription = true;
+                }
             }
 
             // Aura Description
@@ -2527,6 +2531,27 @@ namespace EQWOWConverter.Spells
                     spellTemplate.AuraDescription = string.Concat("Sometimes casts ", procLinkSpellTemplate.Name, " on strike.");
                 else
                     spellTemplate.AuraDescription = string.Concat(spellTemplate.AuraDescription, " Sometimes casts ", procLinkSpellTemplate.Name, " on strike.");
+            }
+
+            // Add bard song aura limit to aura description and action description
+            if (spellTemplate.IsBardSongAura == true && Configuration.SPELL_MAX_CONCURRENT_BARD_SONGS != 0)
+            {
+                // Make the string
+                string songOrSongs = "song";
+                if (Configuration.SPELL_MAX_CONCURRENT_BARD_SONGS > 1)
+                    songOrSongs = "songs";
+                string concurrentString = string.Concat("Only ", Configuration.SPELL_MAX_CONCURRENT_BARD_SONGS.ToString(), " ", songOrSongs,
+                    " can play at once, and the oldest is canceled if exceeded.");
+
+                // Action Description
+                if (focusBoostWasAddedToDescription == false)
+                    spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\n");
+                else
+                    spellTemplate.Description = string.Concat(spellTemplate.Description, " ");
+                spellTemplate.Description = string.Concat(spellTemplate.Description, concurrentString);
+
+                // Aura Description
+                spellTemplate.AuraDescription = string.Concat(spellTemplate.AuraDescription, "\n\n", concurrentString);
             }
         }
 
