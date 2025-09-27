@@ -2444,7 +2444,6 @@ namespace EQWOWConverter.Spells
                                     continue;
                                 }
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
-                                newSpellEffectWOW.IllusionEQRaceID = eqEffect.EQBaseValue; // Note: Resolving this to the ModelDisplayID is done much later
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Transform;
                                 CreatureRace? creatureRace = CreatureRace.GetRaceForRaceGenderVariant(eqEffect.EQBaseValue, CreatureGenderType.Male, 0, true);
@@ -2453,6 +2452,9 @@ namespace EQWOWConverter.Spells
                                     Logger.WriteError("SpellTemplate with wow spell template id ", spellTemplate.WOWSpellID.ToString(), " has an illusion effect but could not find a raceid with id ", eqEffect.EQBaseValue.ToString());
                                     continue;
                                 }
+                                string name = string.Concat(spellTemplate.Name, " Form");
+                                CreatureTemplate newCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(name, creatureRace, CreatureGenderType.Male, 0, 0, 0, 0);
+                                newSpellEffectWOW.EffectMiscValueA = newCreatureTemplate.WOWCreatureTemplateID;
                                 string raceName = creatureRace.Name;
                                 string textParticle = "a";
                                 if (raceName.ToLower().StartsWith("a") || raceName.ToLower().StartsWith("e") || raceName.ToLower().StartsWith("o"))
