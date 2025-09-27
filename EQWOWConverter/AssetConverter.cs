@@ -76,7 +76,6 @@ namespace EQWOWConverter
             // Thread 2: Creatures, Transports and Spawns
             List<CreatureTemplate> creatureTemplates = new List<CreatureTemplate>();
             Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
-            List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
             List<CreatureSpawnPool> creatureSpawnPools = new List<CreatureSpawnPool>();
             Task creaturesAndSpawnsTask = Task.Factory.StartNew(() =>
             {
@@ -84,9 +83,7 @@ namespace EQWOWConverter
 
                 // Creatures                
                 if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
-                {
-                    ConvertCreatures(creatureTemplatesByEQID, ref creatureModelTemplates, ref creatureTemplates, ref creatureSpawnPools);
-                }
+                    ConvertCreatures(creatureTemplatesByEQID, ref creatureTemplates, ref creatureSpawnPools);
                 else
                     Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
 
@@ -101,7 +98,7 @@ namespace EQWOWConverter
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 creaturesAndSpawnsTask.Wait();
 
-            // Thread 3: Items, Spells, Tradeskills, GameObjects
+            // Thread 3: Items, Spells, Tradeskills
             List<SpellTemplate> spellTemplates = new List<SpellTemplate>();
             List<TradeskillRecipe> tradeskillRecipes = new List<TradeskillRecipe>();
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
@@ -126,15 +123,21 @@ namespace EQWOWConverter
 
                 Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills] Ended");
             }, TaskCreationOptions.LongRunning);
-            if (Configuration.CORE_ENABLE_MULTITHREADING == false)
-                itemsSpellsTradeskillsTask.Wait();
 
-            // Wait for some of the threads above to complete
-            if (Configuration.CORE_ENABLE_MULTITHREADING == true)
+            // Creature model files
+            creaturesAndSpawnsTask.Wait();
+            itemsSpellsTradeskillsTask.Wait();
+            List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
+            Task creatureModelFilesTask = Task.Factory.StartNew(() =>
             {
-                creaturesAndSpawnsTask.Wait();
-                itemsSpellsTradeskillsTask.Wait();
-            }            
+                Logger.WriteInfo("<+> Thread [Creature Models] Started");
+
+                GenerateCreatureModelFiles(creatureTemplates, ref creatureModelTemplates);
+
+                Logger.WriteInfo("<-> Thread [Creature Models] Ended");
+            }, TaskCreationOptions.LongRunning);
+            if (Configuration.CORE_ENABLE_MULTITHREADING == false)
+                creatureModelFilesTask.Wait();
 
             // Loot
             Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID;
@@ -171,9 +174,12 @@ namespace EQWOWConverter
             // Generate item graphics
             CreateItemGraphics(ref itemTemplatesByEQDBID);
 
-            // Make sure zones are done
+            // Make sure threads are done
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
+            {
                 zoneAndObjectTask.Wait();
+                creatureModelFilesTask.Wait();
+            }
 
             // Generate creature spell logic
             // Note: Should be one of the last things so that the spells are only valid ones
@@ -1007,8 +1013,7 @@ namespace EQWOWConverter
             return curZone;
         }
 
-        public bool ConvertCreatures(Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, ref List<CreatureModelTemplate> creatureModelTemplates, ref List<CreatureTemplate> creatureTemplates, 
-            ref List<CreatureSpawnPool> creatureSpawnPools)
+        public void GenerateCreatureModelFiles(List<CreatureTemplate> creatureTemplates, ref List<CreatureModelTemplate> creatureModelTemplates)
         {
             // Generate folder paths
             string workingTexturePath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
@@ -1026,16 +1031,13 @@ namespace EQWOWConverter
             if (Directory.Exists(charactersFolderRoot) == false)
             {
                 Logger.WriteError("Failed to create characters because could not find the characters folder root at '" + charactersFolderRoot + "'");
-                return false;
+                return;
             }
             string inputObjectTextureFolder = Path.Combine(charactersFolderRoot, "Textures");
             string generatedTexturesFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
 
-            Logger.WriteInfo("Converting EQ Creatures (skeletal objects) to WOW creature objects...");
-
-            // Create all of the models and related model files
+            // Generate the creatures
             LogCounter progressionCounter = new LogCounter("Creating creature model files...");
-            creatureTemplates = creatureTemplatesByEQID.Values.ToList();
             CreatureModelTemplate.CreateCreatureModelTemplatesFromCreatureTemplates(creatureTemplates);
             foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
             {
@@ -1046,6 +1048,13 @@ namespace EQWOWConverter
                     progressionCounter.Write(1);
                 }
             }
+        }
+
+        public bool ConvertCreatures(Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, ref List<CreatureTemplate> creatureTemplates, 
+            ref List<CreatureSpawnPool> creatureSpawnPools)
+        {
+            Logger.WriteInfo("Converting EQ Creatures (skeletal objects) to WOW creature objects...");
+            creatureTemplates = creatureTemplatesByEQID.Values.ToList();
 
             // Get a list of valid zone names
             Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
