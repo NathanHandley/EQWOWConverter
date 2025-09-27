@@ -181,6 +181,7 @@ namespace EQWOWConverter.Spells
         public int PeriodicAuraWOWSpellID = 0;
         public int PeriodicAuraSpellRadius = 0;
         public bool ShowFocusBoostInDescriptionIfExists = false;
+        public bool HasIllusionEffect = false;
 
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -2459,6 +2460,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", textParticle, " ", raceName);
                                 newSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
                                 newSpellEffects.Add(newSpellEffectWOW);
+                                spellTemplate.HasIllusionEffect = true;
                             } break;
                         default:
                             {

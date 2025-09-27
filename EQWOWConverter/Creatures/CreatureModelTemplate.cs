@@ -18,6 +18,7 @@ using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.ObjectModels;
 using System.Text;
 using EQWOWConverter.WOWFiles;
+
 namespace EQWOWConverter.Creatures
 {
     internal class CreatureModelTemplate
@@ -40,7 +41,8 @@ namespace EQWOWConverter.Creatures
         public int DBCCreatureSoundDataID;
         private static readonly object CreatureLock = new object();
 
-        public CreatureModelTemplate(CreatureRace creatureRace, CreatureTemplate creatureTemplate)
+        public CreatureModelTemplate(CreatureRace creatureRace, CreatureGenderType genderType, int helmTextureID,
+            int textureIndex, int faceIndex, int colorTintID)
         {
             lock(CreatureLock)
             {
@@ -53,25 +55,56 @@ namespace EQWOWConverter.Creatures
             }
 
             Race = creatureRace;
-            GenderType = creatureTemplate.GenderType;
-            TextureIndex = creatureTemplate.TextureID;
-            HelmTextureIndex = creatureTemplate.HelmTextureID;
-            FaceIndex = creatureTemplate.FaceID;
+            GenderType = genderType;
+            TextureIndex = textureIndex;
+            HelmTextureIndex = helmTextureID;
+            FaceIndex = faceIndex;
 
-            if (creatureTemplate.ColorTintID != 0)
+            if (colorTintID != 0)
             {
                 Dictionary<int, CreatureTemplateColorTint> colorTints = CreatureTemplateColorTint.GetCreatureTemplateColorTints();
-                if (colorTints.ContainsKey(creatureTemplate.ColorTintID) == false)
-                    Logger.WriteError("No color tint ID of '" + creatureTemplate.ColorTintID + "' found");
+                if (colorTints.ContainsKey(colorTintID) == false)
+                    Logger.WriteError("No color tint ID of '" + colorTintID + "' found");
                 else
                 {
-                    ColorTint = colorTints[creatureTemplate.ColorTintID];
-                    ColorTintID = creatureTemplate.ColorTintID;
+                    ColorTint = colorTints[colorTintID];
+                    ColorTintID = colorTintID;
                 }
             }
         }
 
-        public static void CreateAllCreatureModelTemplates(List<CreatureTemplate> creatureTemplates)
+        public static CreatureModelTemplate GetOrCreateCreatureModelTemplate(CreatureRace creatureRace, CreatureGenderType genderType, int helmTextureID,
+            int textureIndex, int faceIndex, int colorTintID)
+        {
+            lock (CreatureLock)
+            {
+                // They are grouped by race
+                if (AllTemplatesByRaceID.ContainsKey(creatureRace.ID) == false)
+                    AllTemplatesByRaceID.Add(creatureRace.ID, new List<CreatureModelTemplate>());
+
+                // Return existing, if it exists
+                foreach (CreatureModelTemplate modelTemplate in AllTemplatesByRaceID[creatureRace.ID])
+                {
+                    // Skip if this model template already exists
+                    if (modelTemplate.GenderType == genderType &&
+                        modelTemplate.HelmTextureIndex == helmTextureID &&
+                        modelTemplate.TextureIndex == textureIndex &&
+                        modelTemplate.FaceIndex == faceIndex &&
+                        modelTemplate.ColorTintID == colorTintID)
+                    {
+                        return modelTemplate;
+                    }
+                }
+
+                // Otherwise create a new one
+                CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(creatureRace, genderType, helmTextureID,
+                    textureIndex, faceIndex, colorTintID);
+                AllTemplatesByRaceID[creatureRace.ID].Add(newModelTemplate);
+                return newModelTemplate;
+            }
+        }
+
+        public static void CreateCreatureModelTemplatesFromCreatureTemplates(List<CreatureTemplate> creatureTemplates)
         {
             // Clear the old list
             AllTemplatesByRaceID.Clear();
@@ -79,33 +112,10 @@ namespace EQWOWConverter.Creatures
             // Generate model templates in response to creature templates
             foreach(CreatureTemplate creatureTemplate in creatureTemplates)
             {
-                // They are grouped by race
-                if (AllTemplatesByRaceID.ContainsKey(creatureTemplate.Race.ID) == false)
-                    AllTemplatesByRaceID.Add(creatureTemplate.Race.ID, new List<CreatureModelTemplate>());
-
-                // Create for any templates
-                CreatureModelTemplate? existingModel = null;
-                foreach(CreatureModelTemplate modelTemplate in AllTemplatesByRaceID[creatureTemplate.Race.ID])
-                {
-                    // Skip if this model template already exists
-                    if (modelTemplate.GenderType == creatureTemplate.GenderType && 
-                        modelTemplate.HelmTextureIndex == creatureTemplate.HelmTextureID &&
-                        modelTemplate.TextureIndex == creatureTemplate.TextureID &&
-                        modelTemplate.FaceIndex == creatureTemplate.FaceID &&
-                        modelTemplate.ColorTintID == creatureTemplate.ColorTintID)
-                    {
-                        existingModel = modelTemplate;
-                        break;
-                    }
-                }
-                creatureTemplate.ModelTemplate = existingModel;
-                if (existingModel != null)
-                    continue;
-
-                // Create the new template
-                CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(creatureTemplate.Race, creatureTemplate);
-                creatureTemplate.ModelTemplate = newModelTemplate;
-                AllTemplatesByRaceID[creatureTemplate.Race.ID].Add(newModelTemplate);
+                CreatureModelTemplate curModelTemplate = GetOrCreateCreatureModelTemplate(creatureTemplate.Race,
+                    creatureTemplate.GenderType, creatureTemplate.HelmTextureID, creatureTemplate.TextureID, creatureTemplate.FaceID,
+                    creatureTemplate.ColorTintID);
+                creatureTemplate.ModelTemplate = curModelTemplate;
             }
         }
 

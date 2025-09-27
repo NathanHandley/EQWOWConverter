@@ -1036,7 +1036,7 @@ namespace EQWOWConverter
             // Create all of the models and related model files
             LogCounter progressionCounter = new LogCounter("Creating creature model files...");
             creatureTemplates = creatureTemplatesByEQID.Values.ToList();
-            CreatureModelTemplate.CreateAllCreatureModelTemplates(creatureTemplates);
+            CreatureModelTemplate.CreateCreatureModelTemplatesFromCreatureTemplates(creatureTemplates);
             foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
             {
                 foreach (CreatureModelTemplate modelTemplate in modelTemplatesByRaceID.Value)

@@ -466,12 +466,8 @@ namespace EQWOWConverter.GameObjects
                                         Logger.WriteError("Could not load the race information for the mail carrier game object");
                                         continue;
                                     }
-                                    creatureTemplate.GenderType = CreatureGenderType.Male;
-                                    creatureTemplate.TextureID = 2; // 3 = plate
-                                    creatureTemplate.HelmTextureID = 0; // 3 = plate
-                                    creatureTemplate.FaceID = 2;
-                                    creatureTemplate.ColorTintID = 300002; // If this isn't zero, it needs to be in CreatureTemplateColors.csv
-                                    CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, creatureTemplate);
+                                    CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, CreatureGenderType.Male, 
+                                        0, 2, 2, 300002);
                                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                                     objectProperties.CreatureModelTemplate = creatureModelTemplate;
                                     objectProperties.ModelScalePreWorldScale = creatureRace.ModelScale;
