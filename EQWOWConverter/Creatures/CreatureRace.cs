@@ -138,7 +138,7 @@ namespace EQWOWConverter.Creatures
             }
         }
 
-        public static CreatureRace? GetRaceForRaceGenderVariant(int raceID, CreatureGenderType gender, int variant)
+        public static CreatureRace? GetRaceForRaceGenderVariant(int raceID, CreatureGenderType gender, int variant, bool fallbackToNeutral = false)
         {
             lock (CreatureLock)
             {
@@ -147,6 +147,10 @@ namespace EQWOWConverter.Creatures
                 foreach (CreatureRace race in CreatureRaces)
                     if (race.ID == raceID && race.Gender == gender && race.VariantID == variant)
                         return race;
+                if (fallbackToNeutral == true)
+                    foreach (CreatureRace race in CreatureRaces)
+                        if (race.ID == raceID && race.Gender == CreatureGenderType.Neutral && race.VariantID == variant)
+                            return race;
                 Logger.WriteError(string.Concat("Could not find a creature race with ID ", raceID, ", gender ", gender, ", varient ", variant));
                 return null;
             }

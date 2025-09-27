@@ -48,6 +48,7 @@ namespace EQWOWConverter.Spells
         public Vector3 TelePosition = new Vector3();
         public float TeleOrientation;
         public int TeleMapID;
+        public int IllusionEQRaceID = -1;
 
         public SpellEffectWOW() { }
 

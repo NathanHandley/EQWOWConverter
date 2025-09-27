@@ -70,7 +70,7 @@ namespace EQWOWConverter.Spells
         Rune = 55, // Absorb all melee damage until a maximum amount of damage is taken and it fades
         // TrueNorth = 56
         Levitate = 57,
-        // Illusion = 58
+        Illusion = 58,
         DamageShield = 59, // Attacker takes damage if they hit someone with this
         //....
         // WipeHateList = 63,

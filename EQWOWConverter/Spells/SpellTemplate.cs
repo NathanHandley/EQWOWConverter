@@ -21,7 +21,6 @@ using EQWOWConverter.Tradeskills;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using System.Text;
-using static EQWOWConverter.EQFiles.EQSpellsEFF;
 
 namespace EQWOWConverter.Spells
 {
@@ -2429,6 +2428,37 @@ namespace EQWOWConverter.Spells
                                 newSpellEffects.Add(newSpellEffectWOW);
 
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;
+                            } break;
+                        case SpellEQEffectType.Illusion:
+                            {
+                                // Any value over 196 is an illusion for an expansion that will not be supported
+                                if (eqEffect.EQBaseValue > 196)
+                                {
+                                    Logger.WriteWarning("SpellTemplate with wow spell template id ", spellTemplate.WOWSpellID.ToString(), " has an illusion effect greater than 196, so it's being skipped");
+                                    continue;
+                                }
+                                if (eqEffect.EQBaseValue < 0)
+                                {
+                                    Logger.WriteError("SpellTemplate with wow spell template id ", spellTemplate.WOWSpellID.ToString(), " has an illusion effect < 0, so it's being skipped");
+                                    continue;
+                                }
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.IllusionEQRaceID = eqEffect.EQBaseValue; // Note: Resolving this to the ModelDisplayID is done much later
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Transform;
+                                CreatureRace? creatureRace = CreatureRace.GetRaceForRaceGenderVariant(eqEffect.EQBaseValue, CreatureGenderType.Male, 0, true);
+                                if (creatureRace == null)
+                                {
+                                    Logger.WriteError("SpellTemplate with wow spell template id ", spellTemplate.WOWSpellID.ToString(), " has an illusion effect but could not find a raceid with id ", eqEffect.EQBaseValue.ToString());
+                                    continue;
+                                }
+                                string raceName = creatureRace.Name;
+                                string textParticle = "a";
+                                if (raceName.ToLower().StartsWith("a") || raceName.ToLower().StartsWith("e") || raceName.ToLower().StartsWith("o"))
+                                    textParticle = "an";
+                                newSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", textParticle, " ", raceName);
+                                newSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
+                                newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         default:
                             {
