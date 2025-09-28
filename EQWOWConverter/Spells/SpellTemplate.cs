@@ -108,6 +108,7 @@ namespace EQWOWConverter.Spells
                 _SpellRadius = value;
             }
         }
+        public int EQAOERange = 0; // This is used as a data field for illusions
         public int EQBuffDurationInTicks = 0;
         public int EQBuffDurationFormula = 0;
         public SpellDuration AuraDuration = new SpellDuration();
@@ -236,7 +237,8 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.WOWSpellIDWorn = int.Parse(columns["wow_worn_id"]);
                 newSpellTemplate.Name = columns["name"];
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
-                newSpellTemplate.SpellRadius = Convert.ToInt32(float.Parse(columns["aoerange"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
+                newSpellTemplate.EQAOERange = int.Parse(columns["aoerange"]);
+                newSpellTemplate.SpellRadius = Convert.ToInt32(Convert.ToSingle(newSpellTemplate.EQAOERange) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.Category = 0; // Temp / TODO: Figure out how/what to set here
                 newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
                 newSpellTemplate.RecourseLinkEQSpellID = int.Parse(columns["RecourseLink"]);
@@ -2453,7 +2455,10 @@ namespace EQWOWConverter.Spells
                                     continue;
                                 }
                                 string name = string.Concat(spellTemplate.Name, " Form");
-                                CreatureTemplate newCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(name, creatureRace, CreatureGenderType.Male, 0, 0, 0, 0);
+                                int textureID = 0;
+                                if (spellTemplate.EQAOERange < 10) // Why is aoerange the textureID? 
+                                    textureID = spellTemplate.EQAOERange;
+                                CreatureTemplate newCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(name, creatureRace, CreatureGenderType.Male, 0, textureID, 0, 0);
                                 newSpellEffectWOW.EffectMiscValueA = newCreatureTemplate.WOWCreatureTemplateID;
                                 string raceName = creatureRace.Name;
                                 string textParticle = "a";
