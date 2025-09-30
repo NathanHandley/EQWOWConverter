@@ -23,7 +23,7 @@ namespace EQWOWConverter.ObjectModels
     {
         public UInt16 SubAnimationID = 0; // wowdev also refers to this as variationIndex
         public UInt32 DurationInMS = 10000;
-        public float MoveSpeed = 2f;
+        public float MoveSpeed = 0f;
         public ObjectModelAnimationFlags Flags = ObjectModelAnimationFlags.AnimationInM2  | ObjectModelAnimationFlags.Set0x80OnLoad /*| ObjectModelAnimationFlags.BlendedAnimation*/;
         public Int16 PlayFrequency = 32767; // Always make this add up to 32767 for animations of same type
         public UInt16 Padding = 0;
@@ -45,6 +45,7 @@ namespace EQWOWConverter.ObjectModels
             get { return _AnimationType; }
             set
             {
+                // Loop values
                 switch (value)
                 {
                     case AnimationType.Death: Loop = false; break;
@@ -55,6 +56,15 @@ namespace EQWOWConverter.ObjectModels
                     case AnimationType.Closed: Loop = false; break;
                     default: break; // Do nothing
                 }
+
+                // Movement speed values
+                switch (value)
+                {
+                    case AnimationType.Walk: MoveSpeed = 2.2222f; break;
+                    case AnimationType.Run: MoveSpeed = 6.94444f; break;
+                    default: break; // Do nothing
+                }
+
                 _AnimationType = value;
             }
         }
