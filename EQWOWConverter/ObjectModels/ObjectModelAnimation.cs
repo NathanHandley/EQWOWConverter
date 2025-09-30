@@ -66,6 +66,7 @@ namespace EQWOWConverter.ObjectModels
             {
                 case AnimationType.ReadySpellDirected: // Fallthrough
                 case AnimationType.ReadySpellOmni: //  Fallthrough
+                case AnimationType.Hover: // Fallthrough
                 case AnimationType.Stand:
                     {
                         returnTypes.Add(EQAnimationType.p01StandPassive);

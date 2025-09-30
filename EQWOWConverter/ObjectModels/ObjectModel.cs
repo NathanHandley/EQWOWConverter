@@ -987,6 +987,12 @@ namespace EQWOWConverter.ObjectModels
 
         public bool CreateAndSetAnimations()
         {
+            // Pre-fill animation lookups
+            AnimationLookups.Clear();
+            for (Int16 i = 0; i <= 281; i++)
+                AnimationLookups.Add(-1);
+            SetAnimationIndicesForAnimationType(AnimationType.Stand);
+
             // Set the various animations (note: Do not change the order of the first 4)
             FindAndSetAnimationForType(AnimationType.Stand);
             
@@ -1010,6 +1016,7 @@ namespace EQWOWConverter.ObjectModels
                 FindAndSetAnimationForType(AnimationType.CombatCritical);
                 FindAndSetAnimationForType(AnimationType.SpellCastOmni);
                 FindAndSetAnimationForType(AnimationType.SpellCastDirected);
+                FindAndSetAnimationForType(AnimationType.Hover);
 
                 // Update the stand/fidget animation timers so that there is a fidget sometimes
                 if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)
@@ -1255,7 +1262,9 @@ namespace EQWOWConverter.ObjectModels
                             }
                         }
 
-                        // Animation set, so exit
+                        // Assign a lookup for it and exit
+                        AnimationLookups[Convert.ToInt32(animationType)] = Convert.ToInt16(ModelAnimations.Count - 1);
+
                         return;
                     }
                 }
@@ -1438,31 +1447,6 @@ namespace EQWOWConverter.ObjectModels
 
         private void SetAllAnimationLookups()
         {
-            AnimationLookups.Clear();
-
-            // Pre-fill 49 animation lookups (supports events)
-            for (Int16 i = 0; i <= 49; i++)
-                AnimationLookups.Add(-1);
-            SetAnimationIndicesForAnimationType(AnimationType.Stand);
-
-            if (IsSkeletal)
-            {
-                SetAnimationIndicesForAnimationType(AnimationType.Walk);
-                SetAnimationIndicesForAnimationType(AnimationType.Run);
-                SetAnimationIndicesForAnimationType(AnimationType.CombatWound);
-                SetAnimationIndicesForAnimationType(AnimationType.CombatCritical);
-                SetAnimationIndicesForAnimationType(AnimationType.StandWound);
-                SetAnimationIndicesForAnimationType(AnimationType.AttackUnarmed);
-                SetAnimationIndicesForAnimationType(AnimationType.Death);
-                SetAnimationIndicesForAnimationType(AnimationType.Swim);
-                SetAnimationIndicesForAnimationType(AnimationType.Swim);
-                SetAnimationIndicesForAnimationType(AnimationType.SwimIdle);
-                SetAnimationIndicesForAnimationType(AnimationType.SwimBackwards);
-                SetAnimationIndicesForAnimationType(AnimationType.SwimLeft);
-                SetAnimationIndicesForAnimationType(AnimationType.SwimRight);
-                SetAnimationIndicesForAnimationType(AnimationType.SpellCastDirected);
-                SetAnimationIndicesForAnimationType(AnimationType.SpellCastOmni);
-            }
         }
 
         private void SetAnimationIndicesForAnimationType(AnimationType animationType)
