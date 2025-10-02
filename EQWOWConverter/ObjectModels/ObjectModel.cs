@@ -1046,14 +1046,6 @@ namespace EQWOWConverter.ObjectModels
             {
                 for (int i = 0; i < ModelAnimations.Count; i++)
                 {
-                    // If more than one frame of animation. reduce the new frame timestamp by half a frame to avoid too long of a 'freeze' between loops, which is more EQ like
-                    UInt32 newFrameTimestamp = Convert.ToUInt32(ModelAnimations[i].DurationInMS);
-                    if (ModelAnimations[i].NumOfFramesFromEQTemplate > 1)
-                    {
-                        UInt32 avgAnimationFrameDuration = Convert.ToUInt32(ModelAnimations[i].DurationInMS / ModelAnimations[i].NumOfFramesFromEQTemplate);
-                        newFrameTimestamp -= (avgAnimationFrameDuration / 2);
-                    }
-
                     if (bone.ScaleTrack.Timestamps[i].Timestamps.Count > 1)
                     {
                         bone.ScaleTrack.Timestamps[i].Timestamps.Add(Convert.ToUInt32(ModelAnimations[i].DurationInMS));
