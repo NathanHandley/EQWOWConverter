@@ -60,8 +60,8 @@ namespace EQWOWConverter.ObjectModels
                 // Movement speed values
                 switch (value)
                 {
-                    case AnimationType.Walk: MoveSpeed = 2.2222f; break;
-                    case AnimationType.Run: MoveSpeed = 6.94444f; break;
+                    case AnimationType.Walk: MoveSpeed = 1.7f; break;
+                    case AnimationType.Run: MoveSpeed = 4f; break;
                     default: break; // Do nothing
                 }
 
