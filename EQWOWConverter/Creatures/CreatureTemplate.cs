@@ -77,6 +77,7 @@ namespace EQWOWConverter.Creatures
         public List<CreatureSpellEntry> CreatureSpellEntriesOutOfCombatBuff = new List<CreatureSpellEntry>();        
         public List<(int, int)> AttackEQSpellIDAndProcChance = new List<(int, int)>();
         public bool IsPet = false;
+        public float ModelTemplateScale = 1.0f; // Used for form changes
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURE_TEMPLATE_GUID = Configuration.SQL_CREATURETEMPLATE_GENERATED_START_ID;
@@ -117,7 +118,8 @@ namespace EQWOWConverter.Creatures
             return returnGUID;
         }
 
-        public static CreatureTemplate GenerateCreatureTemplate(string name, CreatureRace race, CreatureGenderType genderType, int helmTextureID, int textureIndex, int faceIndex, int colorTintID)
+        public static CreatureTemplate GenerateCreatureTemplate(string name, CreatureRace race, CreatureGenderType genderType, int helmTextureID, int textureIndex, int faceIndex, int colorTintID,
+            float formModelScaleSize)
         {
             lock (CreatureTemplateLock)
             {
@@ -138,6 +140,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.FaceID = faceIndex;
                 newCreatureTemplate.ColorTintID = colorTintID;
                 newCreatureTemplate.Size = race.Height;
+                newCreatureTemplate.ModelTemplateScale = formModelScaleSize;
 
                 // Store the creature template
                 if (CreatureTemplateListByEQID.ContainsKey(newCreatureTemplate.EQCreatureTemplateID))

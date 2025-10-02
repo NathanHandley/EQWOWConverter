@@ -467,7 +467,7 @@ namespace EQWOWConverter.GameObjects
                                         continue;
                                     }
                                     CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, CreatureGenderType.Male, 
-                                        0, 2, 2, 300002);
+                                        0, 2, 2, 300002, 1f);
                                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                                     objectProperties.CreatureModelTemplate = creatureModelTemplate;
                                     objectProperties.ModelScalePreWorldScale = creatureRace.ModelScale;

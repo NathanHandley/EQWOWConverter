@@ -2458,7 +2458,8 @@ namespace EQWOWConverter.Spells
                                 int textureID = 0;
                                 if (spellTemplate.EQAOERange < 10) // Why is aoerange the textureID? 
                                     textureID = spellTemplate.EQAOERange;
-                                CreatureTemplate newCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(name, creatureRace, CreatureGenderType.Male, 0, textureID, 0, 0);
+                                float scale = creatureRace.Height * creatureRace.SpawnSizeMod;
+                                CreatureTemplate newCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(name, creatureRace, CreatureGenderType.Male, 0, textureID, 0, 0, scale);
                                 newSpellEffectWOW.EffectMiscValueA = newCreatureTemplate.WOWCreatureTemplateID;
                                 string raceName = creatureRace.Name;
                                 string textParticle = "a";

@@ -32,6 +32,7 @@ namespace EQWOWConverter.Creatures
         public int FaceIndex = 0;
         public int ColorTintID = 0;
         public CreatureTemplateColorTint? ColorTint = null;
+        public float ModelTemplateScale = 1.0f; // Used for form changes
 
         private static int CURRENT_DBCID_CREATUREMODELDATAID = Configuration.DBCID_CREATUREMODELDATA_ID_START;
         private static int CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.DBCID_CREATUREDISPLAYINFO_ID_START;
@@ -42,9 +43,9 @@ namespace EQWOWConverter.Creatures
         private static readonly object CreatureLock = new object();
 
         public CreatureModelTemplate(CreatureRace creatureRace, CreatureGenderType genderType, int helmTextureID,
-            int textureIndex, int faceIndex, int colorTintID)
+            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale)
         {
-            lock(CreatureLock)
+            lock (CreatureLock)
             {
                 DBCCreatureModelDataID = CURRENT_DBCID_CREATUREMODELDATAID;
                 CURRENT_DBCID_CREATUREMODELDATAID++;
@@ -59,6 +60,7 @@ namespace EQWOWConverter.Creatures
             TextureIndex = textureIndex;
             HelmTextureIndex = helmTextureID;
             FaceIndex = faceIndex;
+            ModelTemplateScale = modelTemplateScale;
 
             if (colorTintID != 0)
             {
@@ -71,10 +73,12 @@ namespace EQWOWConverter.Creatures
                     ColorTintID = colorTintID;
                 }
             }
+
+            ModelTemplateScale = modelTemplateScale;
         }
 
         public static CreatureModelTemplate GetOrCreateCreatureModelTemplate(CreatureRace creatureRace, CreatureGenderType genderType, int helmTextureID,
-            int textureIndex, int faceIndex, int colorTintID)
+            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale)
         {
             lock (CreatureLock)
             {
@@ -90,7 +94,8 @@ namespace EQWOWConverter.Creatures
                         modelTemplate.HelmTextureIndex == helmTextureID &&
                         modelTemplate.TextureIndex == textureIndex &&
                         modelTemplate.FaceIndex == faceIndex &&
-                        modelTemplate.ColorTintID == colorTintID)
+                        modelTemplate.ColorTintID == colorTintID &&
+                        modelTemplate.ModelTemplateScale == modelTemplateScale)
                     {
                         return modelTemplate;
                     }
@@ -98,7 +103,7 @@ namespace EQWOWConverter.Creatures
 
                 // Otherwise create a new one
                 CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(creatureRace, genderType, helmTextureID,
-                    textureIndex, faceIndex, colorTintID);
+                    textureIndex, faceIndex, colorTintID, modelTemplateScale);
                 AllTemplatesByRaceID[creatureRace.ID].Add(newModelTemplate);
                 return newModelTemplate;
             }
@@ -114,7 +119,7 @@ namespace EQWOWConverter.Creatures
             {
                 CreatureModelTemplate curModelTemplate = GetOrCreateCreatureModelTemplate(creatureTemplate.Race,
                     creatureTemplate.GenderType, creatureTemplate.HelmTextureID, creatureTemplate.TextureID, creatureTemplate.FaceID,
-                    creatureTemplate.ColorTintID);
+                    creatureTemplate.ColorTintID, creatureTemplate.ModelTemplateScale);
                 creatureTemplate.ModelTemplate = curModelTemplate;
             }
         }
