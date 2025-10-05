@@ -21,27 +21,27 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(int id)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt32(id); // ID" Type = "int" IsIndex = "true" />
-            newRow.AddInt32(0); // DisplayRaceID" Type = "int" />
-            newRow.AddInt32(0); // DisplaySexID" Type = "int" />
-            newRow.AddInt32(0); // SkinID" Type = "int" />
-            newRow.AddInt32(0); // FaceID" Type = "int" />
-            newRow.AddInt32(0); // HairStyleID" Type = "int" />
-            newRow.AddInt32(0); // HairColorID" Type = "int" />
-            newRow.AddInt32(0); // FacialHairID" Type = "int" />
-            newRow.AddInt32(0); // NPCItemDisplay" Type = "int" ArraySize = "11" />
-            newRow.AddInt32(0); // NPCItemDisplay" Type = "int" ArraySize = "11" />
-            newRow.AddInt32(0); // NPCItemDisplay" Type = "int" ArraySize = "11" />
-            newRow.AddInt32(0); // NPCItemDisplay" Type = "int" ArraySize = "11" />
-            newRow.AddInt32(0); // NPCItemDisplay" Type = "int" ArraySize = "11" />
-            newRow.AddInt32(0); // NPCItemDisplay" Type = "int" ArraySize = "11" />
-            newRow.AddInt32(0); // NPCItemDisplay" Type = "int" ArraySize = "11" />
-            newRow.AddInt32(0); // NPCItemDisplay" Type = "int" ArraySize = "11" />
-            newRow.AddInt32(0); // NPCItemDisplay" Type = "int" ArraySize = "11" />
-            newRow.AddInt32(0); // NPCItemDisplay" Type = "int" ArraySize = "11" />
-            newRow.AddInt32(0); // NPCItemDisplay" Type = "int" ArraySize = "11" />
-            newRow.AddInt32(0); // Flags" Type = "int" />
-            newRow.AddString(string.Empty); // BakeName" Type = "string" />
+            newRow.AddInt32(id); // ID
+            newRow.AddInt32(0); // DisplayRaceID
+            newRow.AddInt32(0); // DisplaySexID
+            newRow.AddInt32(0); // SkinID
+            newRow.AddInt32(0); // FaceID
+            newRow.AddInt32(0); // HairStyleID
+            newRow.AddInt32(0); // HairColorID
+            newRow.AddInt32(0); // FacialHairID
+            newRow.AddInt32(0); // Helm ItemDisplayInfo.ID
+            newRow.AddInt32(0); // Shoulder ItemDisplayInfo.ID
+            newRow.AddInt32(0); // Shirt ItemDisplayInfo.ID
+            newRow.AddInt32(0); // Cuirass ItemDisplayInfo.ID
+            newRow.AddInt32(0); // Belt ItemDisplayInfo.ID
+            newRow.AddInt32(0); // Legs ItemDisplayInfo.ID
+            newRow.AddInt32(0); // Boots ItemDisplayInfo.ID
+            newRow.AddInt32(0); // Wrist ItemDisplayInfo.ID
+            newRow.AddInt32(0); // Gloves ItemDisplayInfo.ID
+            newRow.AddInt32(0); // Tabard ItemDisplayInfo.ID
+            newRow.AddInt32(0); // Cape ItemDisplayInfo.ID
+            newRow.AddInt32(0); // CanEquipWeapons (0 = no, 1 = yes)
+            newRow.AddString(string.Empty); // BakeName
             Rows.Add(newRow);
         }
     }
