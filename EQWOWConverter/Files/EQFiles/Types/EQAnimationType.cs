@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.EQFiles
 {
     internal enum EQAnimationType
@@ -63,8 +57,8 @@ namespace EQWOWConverter.EQFiles
         o02StandArmsToSide,
         o03SitIdle,
         p01StandPassive,
-        p02SitToStand,
-        p02rStandToSit,
+        p02StandToSit,
+        p02rSitToStand,
         p03ShuffleFeet,
         p03rShuffleFeetReverse,
         p04FloatWalkStrafe, // This is actually "float/walk/strafe"

@@ -1004,6 +1004,7 @@ namespace EQWOWConverter.ObjectModels
                 FindAndSetAnimationForType(AnimationType.Death);
                 FindAndSetAnimationForType(AnimationType.AttackUnarmed);
                 FindAndSetAnimationForType(AnimationType.Walk);
+                FindAndSetAnimationForType(AnimationType.Walkbackwards);
                 FindAndSetAnimationForType(AnimationType.Run);
                 FindAndSetAnimationForType(AnimationType.ShuffleLeft);
                 FindAndSetAnimationForType(AnimationType.ShuffleRight);
@@ -1017,6 +1018,12 @@ namespace EQWOWConverter.ObjectModels
                 FindAndSetAnimationForType(AnimationType.SpellCastOmni);
                 FindAndSetAnimationForType(AnimationType.SpellCastDirected);
                 FindAndSetAnimationForType(AnimationType.Hover);
+                FindAndSetAnimationForType(AnimationType.SitGround);
+                //FindAndSetAnimationForType(AnimationType.SitGroundUp); Not yet working
+                FindAndSetAnimationForType(AnimationType.SitGroundDown);
+                FindAndSetAnimationForType(AnimationType.EmotePoint);
+                FindAndSetAnimationForType(AnimationType.EmoteCheer);
+                FindAndSetAnimationForType(AnimationType.EmoteLaugh);                
 
                 // Update the stand/fidget animation timers so that there is a fidget sometimes
                 if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)

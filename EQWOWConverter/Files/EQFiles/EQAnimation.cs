@@ -264,8 +264,8 @@ namespace EQWOWConverter.EQFiles
                 case "o02": return EQAnimationType.o02StandArmsToSide;
                 case "o03": return EQAnimationType.o03SitIdle;
                 case "p01": return EQAnimationType.p01StandPassive;
-                case "p02": return EQAnimationType.p02SitToStand;
-                case "p02r": return EQAnimationType.p02rStandToSit;
+                case "p02": return EQAnimationType.p02StandToSit;
+                case "p02r": return EQAnimationType.p02rSitToStand;
                 case "p03": return EQAnimationType.p03ShuffleFeet;
                 case "p03r": return EQAnimationType.p03rShuffleFeetReverse;
                 case "p04": return EQAnimationType.p04FloatWalkStrafe;
