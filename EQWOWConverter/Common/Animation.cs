@@ -78,6 +78,50 @@ namespace EQWOWConverter.Common
                     return string.Empty;
                 return nameParts[nameParts.Length - 2];
             }
-        }        
+        }
+        
+        public Animation GenerateAsReversedVersion(string reversedAnimationName, AnimationType animationType, EQAnimationType reversedEQAnimationType)
+        {
+            Animation reversedAnimation = new Animation(reversedAnimationName, animationType, reversedEQAnimationType, FrameCount, TotalTimeInMS);
+
+            // Group the frame blocks by the bone name to preserve original ordering
+            Dictionary<string, List<BoneAnimationFrame>> groupedFrames = new Dictionary<string, List<BoneAnimationFrame>>();
+            foreach (BoneAnimationFrame frame in AnimationFrames)
+            {
+                string boneName = frame.BoneFullNameInPath;
+                if (groupedFrames.ContainsKey(boneName) == false)
+                    groupedFrames[boneName] = new List<BoneAnimationFrame>();
+                groupedFrames[boneName].Add(frame);
+            }
+
+            // Reverse the visual elements on a per-group basis
+            foreach (KeyValuePair<string, List<BoneAnimationFrame>> group in groupedFrames)
+            {
+                List<BoneAnimationFrame> frames = group.Value;
+                List<BoneAnimationFrame> reversedFrames = new List<BoneAnimationFrame>();
+                for (int i = 0; i < frames.Count; i++)
+                {
+                    BoneAnimationFrame originalFrame = frames[i];
+                    BoneAnimationFrame reversedFrame = new BoneAnimationFrame
+                    {
+                        BoneFullNameInPath = originalFrame.BoneFullNameInPath,
+                        FrameIndex = originalFrame.FrameIndex,
+                        FramesMS = originalFrame.FramesMS,
+                        XPosition = frames[frames.Count - 1 - i].XPosition,
+                        YPosition = frames[frames.Count - 1 - i].YPosition,
+                        ZPosition = frames[frames.Count - 1 - i].ZPosition,
+                        XRotation = frames[frames.Count - 1 - i].XRotation,
+                        YRotation = frames[frames.Count - 1 - i].YRotation,
+                        ZRotation = frames[frames.Count - 1 - i].ZRotation,
+                        WRotation = frames[frames.Count - 1 - i].WRotation,
+                        Scale = frames[frames.Count - 1 - i].Scale
+                    };
+                    reversedFrames.Add(reversedFrame);
+                }
+                reversedAnimation.AnimationFrames.AddRange(reversedFrames);
+            }
+
+            return reversedAnimation;
+        }
     }
 }
