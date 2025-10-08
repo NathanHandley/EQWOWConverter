@@ -1019,7 +1019,7 @@ namespace EQWOWConverter.ObjectModels
                 FindAndSetAnimationForType(AnimationType.SpellCastDirected);
                 FindAndSetAnimationForType(AnimationType.Hover);
                 FindAndSetAnimationForType(AnimationType.SitGround);
-                //FindAndSetAnimationForType(AnimationType.SitGroundUp); Not yet working
+                FindAndSetAnimationForType(AnimationType.SitGroundUp);
                 FindAndSetAnimationForType(AnimationType.SitGroundDown);
                 FindAndSetAnimationForType(AnimationType.EmotePoint);
                 FindAndSetAnimationForType(AnimationType.EmoteCheer);
@@ -1157,10 +1157,14 @@ namespace EQWOWConverter.ObjectModels
 
         public void FindAndSetAnimationForType(AnimationType animationType, List<EQAnimationType>? overrideEQAnimationTypes = null)
         {
+            CreatureRace? creatureRace = null;
+            if (Properties.CreatureModelTemplate != null)
+                creatureRace = Properties.CreatureModelTemplate.Race;
+
             // Determine what animations can work
             List<EQAnimationType> compatibleAnimationTypes;
             if (overrideEQAnimationTypes == null)
-                compatibleAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType);
+                compatibleAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType, creatureRace);
             else
                 compatibleAnimationTypes = overrideEQAnimationTypes;
 
@@ -1450,7 +1454,7 @@ namespace EQWOWConverter.ObjectModels
 
         private void SetAnimationIndicesForAnimationType(AnimationType animationType)
         {
-            List<EQAnimationType> validPreferredEQAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType);
+            List<EQAnimationType> validPreferredEQAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType, null);
             int firstAnimationIndex = GetFirstAnimationIndexForEQAnimationTypes(validPreferredEQAnimationTypes.ToArray());
             if (firstAnimationIndex == -1)
                 return;

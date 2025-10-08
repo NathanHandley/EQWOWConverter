@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
+using EQWOWConverter.Creatures;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -69,7 +70,7 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        public static List<EQAnimationType> GetPrioritizedCompatibleEQAnimationTypes(AnimationType animationType)
+        public static List<EQAnimationType> GetPrioritizedCompatibleEQAnimationTypes(AnimationType animationType, CreatureRace? creatureRace)
         {
             List<EQAnimationType> returnTypes = new List<EQAnimationType>();
             switch (animationType)
@@ -231,54 +232,58 @@ namespace EQWOWConverter.ObjectModels
                     break;
                 case AnimationType.SitGround:
                     {
-                        returnTypes.Add(EQAnimationType.p07SitGround);
-                        returnTypes.Add(EQAnimationType.o03SitIdle);
-                        returnTypes.Add(EQAnimationType.p01StandPassive);
-                        returnTypes.Add(EQAnimationType.o02StandArmsToSide);
-                        returnTypes.Add(EQAnimationType.o01StandIdle);
-                    } break;
+                        // Skeletons don't have sit animation
+                        if (creatureRace == null || creatureRace.ID != 60)
+                        {
+                            returnTypes.Add(EQAnimationType.p07SitGround);
+                            returnTypes.Add(EQAnimationType.o03SitIdle);
+                        }
+                    }
+                    break;
                 case AnimationType.SitGroundDown:
                     {
-                        returnTypes.Add(EQAnimationType.p02StandToSit);
-                        returnTypes.Add(EQAnimationType.p07SitGround);
-                        returnTypes.Add(EQAnimationType.o03SitIdle);
-                        returnTypes.Add(EQAnimationType.p01StandPassive);
-                        returnTypes.Add(EQAnimationType.o02StandArmsToSide);
-                        returnTypes.Add(EQAnimationType.o01StandIdle);
-                    } break;
+                        if (creatureRace != null && creatureRace.ID == 60)
+                        {
+                            // Skeleton has reversed sit/stand animations
+                            returnTypes.Add(EQAnimationType.p02rSitToStand);
+                        }
+                        else
+                        {
+                            returnTypes.Add(EQAnimationType.p02StandToSit);
+                            returnTypes.Add(EQAnimationType.p07SitGround);
+                            returnTypes.Add(EQAnimationType.o03SitIdle);
+                        }
+                    }
+                    break;
                 case AnimationType.SitGroundUp:
                     {
-                        returnTypes.Add(EQAnimationType.p02rSitToStand);
-                        returnTypes.Add(EQAnimationType.p07SitGround);
-                        returnTypes.Add(EQAnimationType.o03SitIdle);
-                        returnTypes.Add(EQAnimationType.p01StandPassive);
-                        returnTypes.Add(EQAnimationType.o02StandArmsToSide);
-                        returnTypes.Add(EQAnimationType.o01StandIdle);
+                        if (creatureRace != null && creatureRace.ID == 60) 
+                        {
+                            // Skeleton has reversed sit/stand animations
+                            returnTypes.Add(EQAnimationType.p02StandToSit);
+                        }
+                        else
+                        {
+                            returnTypes.Add(EQAnimationType.p02rSitToStand);
+                            returnTypes.Add(EQAnimationType.p07SitGround);
+                            returnTypes.Add(EQAnimationType.o03SitIdle);
+                        }
                     }
                     break;
                 case AnimationType.EmoteCheer:
                     {
                         returnTypes.Add(EQAnimationType.s01EmoteCheer);
-                        returnTypes.Add(EQAnimationType.p01StandPassive);
-                        returnTypes.Add(EQAnimationType.o02StandArmsToSide);
-                        returnTypes.Add(EQAnimationType.o01StandIdle);
                     }
                     break;
                 case AnimationType.EmoteLaugh:
                     {
                         returnTypes.Add(EQAnimationType.s12EmoteLaugh);
                         returnTypes.Add(EQAnimationType.s21EmoteLaugh);
-                        returnTypes.Add(EQAnimationType.p01StandPassive);
-                        returnTypes.Add(EQAnimationType.o02StandArmsToSide);
-                        returnTypes.Add(EQAnimationType.o01StandIdle);
                     }
                     break;
                 case AnimationType.EmotePoint:
                     {
                         returnTypes.Add(EQAnimationType.s22EmotePoint);
-                        returnTypes.Add(EQAnimationType.p01StandPassive);
-                        returnTypes.Add(EQAnimationType.o02StandArmsToSide);
-                        returnTypes.Add(EQAnimationType.o01StandIdle);
                     }
                     break;
                 case AnimationType.ParryUnarmed:
