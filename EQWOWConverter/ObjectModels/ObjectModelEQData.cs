@@ -465,13 +465,9 @@ namespace EQWOWConverter.ObjectModels
                 string animationName = animationFileName.Split("_")[1];
                 EQAnimation curEQAnimation = new EQAnimation();
                 if (curEQAnimation.LoadFromDisk(animationFileInfo.FullName))
-                {                    
                     Animations.Add(animationName, curEQAnimation.Animation);
-                }
                 else
-                {
                     Logger.WriteError("- [" + inputObjectName + "]: Could not load animation data that should be at '" + animationFileName + "'");
-                }
             }
             if (animationSupplementalName.Length > 0)
             {
@@ -487,14 +483,35 @@ namespace EQWOWConverter.ObjectModels
 
                     EQAnimation curEQAnimation = new EQAnimation();
                     if (curEQAnimation.LoadFromDisk(animationFileInfo.FullName))
-                    {
                         Animations.Add(animationName, curEQAnimation.Animation);
-                    }
                     else
-                    {
                         Logger.WriteError("- [" + inputObjectName + "]: Could not load animation data that should be at '" + animationFileName + "'");
-                    }
                 }
+            }
+
+            // Generate any appropriate reversals
+            {
+                Dictionary<string, Animation> newReverseAnimationsByName = new Dictionary<string, Animation>();
+                foreach (Animation animation in Animations.Values)
+                {
+                    string newAnimationName = string.Empty;
+                    switch (animation.EQAnimationType)
+                    {
+                        case EQAnimationType.l01Walk: newAnimationName = "l01r"; break;
+                        case EQAnimationType.l02Run: newAnimationName = "l02r"; break;
+                        case EQAnimationType.l08Crouch: newAnimationName = "l08r"; break;
+                        case EQAnimationType.p02StandToSit: newAnimationName = "p02r"; break;
+                        case EQAnimationType.p03ShuffleFeet: newAnimationName = "p03r"; break;
+                        case EQAnimationType.p05KneelStart: newAnimationName = "p05r"; break;
+                        default: continue;
+                    }
+                    AnimationType animationType = EQAnimation.DetermineAnimationType(newAnimationName);
+                    EQAnimationType eqAnimationType = EQAnimation.DetermineEQAnimationType(newAnimationName);
+                    Animation newReverseAnimation = animation.GenerateAsReversedVersion(newAnimationName, animationType, eqAnimationType);
+                    newReverseAnimationsByName.Add(newAnimationName, newReverseAnimation);
+                }
+                foreach (var reverseAnimation in newReverseAnimationsByName)
+                    Animations.Add(reverseAnimation.Key, reverseAnimation.Value);
             }
         }
     }

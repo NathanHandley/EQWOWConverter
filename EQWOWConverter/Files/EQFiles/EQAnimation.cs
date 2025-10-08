@@ -133,7 +133,7 @@ namespace EQWOWConverter.EQFiles
         }
 
         // TODO: Consider deleting this since it mirrors ObjectModel.GetAnimationIndexForAnimationType, kind of
-        private AnimationType DetermineAnimationType(string animationName)
+        public static AnimationType DetermineAnimationType(string animationName)
         {
             switch (animationName.ToLower())
             {
@@ -227,7 +227,7 @@ namespace EQWOWConverter.EQFiles
             }
         }
 
-        private EQAnimationType DetermineEQAnimationType(string animationName)
+        public static EQAnimationType DetermineEQAnimationType(string animationName)
         {
             switch (animationName.ToLower())
             {
