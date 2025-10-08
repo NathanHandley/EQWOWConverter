@@ -1023,7 +1023,16 @@ namespace EQWOWConverter.ObjectModels
                 FindAndSetAnimationForType(AnimationType.SitGroundDown);
                 FindAndSetAnimationForType(AnimationType.EmotePoint);
                 FindAndSetAnimationForType(AnimationType.EmoteCheer);
-                FindAndSetAnimationForType(AnimationType.EmoteLaugh);                
+                FindAndSetAnimationForType(AnimationType.EmoteLaugh);
+                FindAndSetAnimationForType(AnimationType.Kick);
+                FindAndSetAnimationForType(AnimationType.Drown);
+                //FindAndSetAnimationForType(AnimationType.StealthStand);
+                FindAndSetAnimationForType(AnimationType.StealthWalk);
+                FindAndSetAnimationForType(AnimationType.JumpStart);
+                FindAndSetAnimationForType(AnimationType.KneelStart);
+                FindAndSetAnimationForType(AnimationType.KneelEnd);
+                FindAndSetAnimationForType(AnimationType.Loot);
+                FindAndSetAnimationForType(AnimationType.LootUp);
 
                 // Update the stand/fidget animation timers so that there is a fidget sometimes
                 if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)

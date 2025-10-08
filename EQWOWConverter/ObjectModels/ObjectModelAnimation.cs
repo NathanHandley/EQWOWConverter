@@ -55,6 +55,12 @@ namespace EQWOWConverter.ObjectModels
                     case AnimationType.SitGroundUp: Loop = false; break;
                     case AnimationType.Opened: Loop = false; break;
                     case AnimationType.Closed: Loop = false; break;
+                    case AnimationType.KneelStart: Loop = false; break;
+                    case AnimationType.KneelEnd: Loop = false; break;
+                    case AnimationType.StealthStand: Loop = false; break;
+                    case AnimationType.Loot: Loop = false; break;
+                    case AnimationType.LootHold: Loop = false; break;
+                    case AnimationType.LootUp: Loop = false; break;
                     default: break; // Do nothing
                 }
 
@@ -162,6 +168,19 @@ namespace EQWOWConverter.ObjectModels
                         returnTypes.Add(EQAnimationType.l02rRunBackwards);
                         returnTypes.Add(EQAnimationType.l01Walk);
                         returnTypes.Add(EQAnimationType.l02Run);
+                    }
+                    break;
+                case AnimationType.Drown:
+                    {
+                        returnTypes.Add(EQAnimationType.d04DrownAndBurn);
+                    } break;
+                case AnimationType.StealthStand:
+                    {
+                        returnTypes.Add(EQAnimationType.l08Crouch);
+                    } break;
+                case AnimationType.StealthWalk:
+                    {
+                        returnTypes.Add(EQAnimationType.l06CrouchWalk);
                     }
                     break;
                 case AnimationType.Stun:
@@ -286,6 +305,29 @@ namespace EQWOWConverter.ObjectModels
                         returnTypes.Add(EQAnimationType.s22EmotePoint);
                     }
                     break;
+                case AnimationType.Kick:
+                    {
+                        returnTypes.Add(EQAnimationType.c01Kick);
+                    } break;
+                case AnimationType.KneelStart:
+                    {
+                        returnTypes.Add(EQAnimationType.p05KneelStart);
+                    } break;
+                case AnimationType.KneelEnd:
+                    {
+                        returnTypes.Add(EQAnimationType.p05rKneelEnd);
+                    }
+                    break;
+                case AnimationType.Loot:
+                    {
+                        returnTypes.Add(EQAnimationType.p05KneelStart);
+                    }
+                    break;
+                case AnimationType.LootUp:
+                    {
+                        returnTypes.Add(EQAnimationType.p05rKneelEnd);
+                    }
+                    break;
                 case AnimationType.ParryUnarmed:
                     {
                         returnTypes.Add(EQAnimationType.c07ShieldBash);
@@ -391,9 +433,9 @@ namespace EQWOWConverter.ObjectModels
                     break;
                 case AnimationType.JumpStart:
                     {
-                        // TODO:
-                    }
-                    break;
+                        returnTypes.Add(EQAnimationType.l04JumpStanding);
+                        returnTypes.Add(EQAnimationType.l03JumpRunning);
+                    } break;
                 case AnimationType.Jump:
                     {
                         returnTypes.Add(EQAnimationType.l04JumpStanding);
