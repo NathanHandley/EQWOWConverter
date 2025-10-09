@@ -36,7 +36,7 @@ namespace EQWOWConverter.ObjectModels
         public Int16 NextAnimation = -1; // aka, variationNext
         public UInt16 AliasNext = 0; // Id in the list of animations if this is an alias (?)
         public int NumOfFramesFromEQTemplate = -1;
-        public bool Loop = true;
+        public bool Loop = false;
         public EQAnimationType EQAnimationTypeTrue = EQAnimationType.Unknown;
         public EQAnimationType EQAnimationTypePreferred = EQAnimationType.Unknown;
         private AnimationType _AnimationType = AnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
@@ -49,18 +49,19 @@ namespace EQWOWConverter.ObjectModels
                 // Loop values
                 switch (value)
                 {
-                    case AnimationType.Death: Loop = false; break;
-                    case AnimationType.Dead: Loop = false; break;
-                    case AnimationType.SitGroundDown: Loop = false; break;
-                    case AnimationType.SitGroundUp: Loop = false; break;
-                    case AnimationType.Opened: Loop = false; break;
-                    case AnimationType.Closed: Loop = false; break;
-                    case AnimationType.KneelStart: Loop = false; break;
-                    case AnimationType.KneelEnd: Loop = false; break;
-                    case AnimationType.StealthStand: Loop = false; break;
-                    case AnimationType.Loot: Loop = false; break;
-                    case AnimationType.LootHold: Loop = false; break;
-                    case AnimationType.LootUp: Loop = false; break;
+                    case AnimationType.Stand: Loop = true; break;
+                    case AnimationType.Walk: Loop = true; break;
+                    case AnimationType.Walkbackwards: Loop = true; break;
+                    case AnimationType.Run: Loop = true; break;
+                    case AnimationType.ShuffleLeft: Loop = true; break;
+                    case AnimationType.ShuffleRight: Loop = true; break;
+                    case AnimationType.Swim: Loop = true; break;
+                    case AnimationType.SwimIdle: Loop = true; break;
+                    case AnimationType.SwimBackwards: Loop = true; break;
+                    case AnimationType.SwimLeft: Loop = true; break;
+                    case AnimationType.SwimRight: Loop = true; break;
+                    case AnimationType.Hover: Loop = true; break;
+                    case AnimationType.StealthWalk: Loop = true; break;
                     default: break; // Do nothing
                 }
 
