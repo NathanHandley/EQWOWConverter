@@ -39,6 +39,9 @@ namespace EQWOWConverter.EQFiles
         {
             lock (AnimationLock)
             {
+                string animationFileName = Path.GetFileNameWithoutExtension(fileFullPath);
+                string animationName = animationFileName.Split("_")[1];
+
                 // Special logic for a few animations
                 fileFullPath = RenameFileNameForSpecialCases(fileFullPath);
 
@@ -57,8 +60,6 @@ namespace EQWOWConverter.EQFiles
                     return true;
                 }
 
-                string animationFileName = Path.GetFileNameWithoutExtension(fileFullPath);
-                string animationName = animationFileName.Split("_")[1];
                 Animation = new Animation(animationName, DetermineAnimationType(animationName), DetermineEQAnimationType(animationName), 0, 0);
 
                 // Load the core data
