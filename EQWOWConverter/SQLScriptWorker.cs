@@ -33,7 +33,6 @@ namespace EQWOWConverter
     {
         // Characters
         private CharacterAuraSQL characterAuraSQL = new CharacterAuraSQL();
-        private ModEverquestCharacterHomebindSQL modEverquestCharacterHomebindSQL = new ModEverquestCharacterHomebindSQL();
         // World
         private AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
         private AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
@@ -931,7 +930,6 @@ namespace EQWOWConverter
         {
             // Characters
             characterAuraSQL.SaveToDisk("character_aura", SQLFileType.Characters);
-            modEverquestCharacterHomebindSQL.SaveToDisk("mod_everquest_character_homebind", SQLFileType.Characters);
             // World
             areaTriggerSQL.SaveToDisk("areatrigger", SQLFileType.World);
             areaTriggerTeleportSQL.SaveToDisk("areatrigger_teleport", SQLFileType.World);
