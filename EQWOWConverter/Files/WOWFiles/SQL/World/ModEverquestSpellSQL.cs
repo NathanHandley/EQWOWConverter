@@ -27,6 +27,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("DROP TABLE IF EXISTS `mod_everquest_spell`; ");
             stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_spell` ( ");
             stringBuilder.AppendLine("`SpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`SpellName` VARCHAR(255) NOT NULL DEFAULT '', ");
             stringBuilder.AppendLine("`AuraDurationBaseInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`AuraDurationAddPerLevelInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`AuraDurationMaxInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
@@ -47,6 +48,7 @@ namespace EQWOWConverter.WOWFiles
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("SpellID", spellID);
+            newRow.AddString("SpellName", 255, spellTemplate.Name);
             newRow.AddInt("AuraDurationBaseInMS", spellTemplate.AuraDuration.BaseDurationInMS);
             newRow.AddInt("AuraDurationAddPerLevelInMS", spellTemplate.AuraDuration.DurationInMSPerLevel);
             newRow.AddInt("AuraDurationMaxInMS", spellTemplate.AuraDuration.MaxDurationInMS);
