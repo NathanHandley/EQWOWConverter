@@ -37,7 +37,9 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`FocusBoostType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`PeriodicAuraSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`PeriodicAuraSpellRadius` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
-            stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
+            stringBuilder.AppendLine("`MaleFormSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`FemaleFormSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");            
             return stringBuilder.ToString();
         }
 
@@ -58,6 +60,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("FocusBoostType", (int)spellTemplate.FocusBoostType);
             newRow.AddInt("PeriodicAuraSpellID", spellTemplate.PeriodicAuraWOWSpellID);
             newRow.AddInt("PeriodicAuraSpellRadius", spellTemplate.PeriodicAuraSpellRadius);
+            newRow.AddInt("MaleFormSpellID", spellTemplate.MaleFormSpellTemplateID);
+            newRow.AddInt("FemaleFormSpellID", spellTemplate.FemaleFormSpellTemplateID);
             Rows.Add(newRow);
         }
     }

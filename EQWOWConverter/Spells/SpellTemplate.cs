@@ -21,6 +21,7 @@ using EQWOWConverter.Tradeskills;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using System.Text;
+using System.Xml.Linq;
 
 namespace EQWOWConverter.Spells
 {
@@ -182,7 +183,9 @@ namespace EQWOWConverter.Spells
         public int PeriodicAuraWOWSpellID = 0;
         public int PeriodicAuraSpellRadius = 0;
         public bool ShowFocusBoostInDescriptionIfExists = false;
-        public bool HasIllusionEffect = false;
+        public bool IsllusionSpellParent = false;
+        public int MaleFormSpellTemplateID = 0;
+        public int FemaleFormSpellTemplateID = 0;
 
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
@@ -2445,30 +2448,86 @@ namespace EQWOWConverter.Spells
                                     Logger.WriteError("SpellTemplate with wow spell template id ", spellTemplate.WOWSpellID.ToString(), " has an illusion effect < 0, so it's being skipped");
                                     continue;
                                 }
-                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
-                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
-                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Transform;
-                                CreatureRace? creatureRace = CreatureRace.GetRaceForRaceGenderVariant(eqEffect.EQBaseValue, CreatureGenderType.Male, 0, true);
-                                if (creatureRace == null)
+
+                                int textureID = 0;
+                                if (spellTemplate.EQAOERange < 10) // Why is aoerange the textureID? 
+                                    textureID = spellTemplate.EQAOERange;
+
+                                // Male form
+                                SpellTemplate maleFormSpellTemplate = new SpellTemplate();
+                                maleFormSpellTemplate.Name = string.Concat(spellTemplate.Name, " Form");
+                                maleFormSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+                                maleFormSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+                                maleFormSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                                SpellEffectWOW maleFormSpellEffectWOW = new SpellEffectWOW();
+                                maleFormSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                maleFormSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Transform;
+                                maleFormSpellEffectWOW.ImplicitTargetA = targets[0];
+                                if (targets.Count == 2)
+                                    maleFormSpellEffectWOW.ImplicitTargetB = targets[1];
+                                maleFormSpellEffectWOW.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
+                                spellTemplate.WOWSpellEffects.Add(maleFormSpellEffectWOW);
+                                CreatureRace? creatureRaceMale = CreatureRace.GetRaceForRaceGenderVariant(eqEffect.EQBaseValue, CreatureGenderType.Male, 0, true);
+                                if (creatureRaceMale == null)
                                 {
                                     Logger.WriteError("SpellTemplate with wow spell template id ", spellTemplate.WOWSpellID.ToString(), " has an illusion effect but could not find a raceid with id ", eqEffect.EQBaseValue.ToString());
                                     continue;
                                 }
-                                string name = string.Concat(spellTemplate.Name, " Form");
-                                int textureID = 0;
-                                if (spellTemplate.EQAOERange < 10) // Why is aoerange the textureID? 
-                                    textureID = spellTemplate.EQAOERange;
-                                float scale = creatureRace.Height * creatureRace.SpawnSizeMod;
-                                CreatureTemplate newCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(name, creatureRace, CreatureGenderType.Male, 0, textureID, 0, 0, scale);
-                                newSpellEffectWOW.EffectMiscValueA = newCreatureTemplate.WOWCreatureTemplateID;
-                                string raceName = creatureRace.Name;
+                                float scaleMale = creatureRaceMale.Height * creatureRaceMale.SpawnSizeMod;
+                                CreatureTemplate maleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(maleFormSpellTemplate.Name, creatureRaceMale, creatureRaceMale.Gender, 0, textureID, 0, 0, scaleMale);
+                                maleFormSpellEffectWOW.EffectMiscValueA = maleCreatureTemplate.WOWCreatureTemplateID;
+                                string raceName = creatureRaceMale.Name;
                                 string textParticle = "a";
                                 if (raceName.ToLower().StartsWith("a") || raceName.ToLower().StartsWith("e") || raceName.ToLower().StartsWith("o"))
                                     textParticle = "an";
+                                maleFormSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", textParticle, " ", raceName);
+                                maleFormSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
+                                maleFormSpellTemplate.WOWSpellEffects.Add(maleFormSpellEffectWOW);
+                                spellTemplate.MaleFormSpellTemplateID = maleFormSpellTemplate.WOWSpellID;
+                                effectGeneratedSpellTemplates.Add(maleFormSpellTemplate);
+
+                                // Female form
+                                SpellTemplate femaleFormSpellTemplate = new SpellTemplate();
+                                femaleFormSpellTemplate.Name = string.Concat(spellTemplate.Name, " Form");
+                                femaleFormSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+                                femaleFormSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+                                femaleFormSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                                SpellEffectWOW femaleFormSpellEffectWOW = new SpellEffectWOW();
+                                femaleFormSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                femaleFormSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Transform;
+                                femaleFormSpellEffectWOW.ImplicitTargetA = targets[0];
+                                if (targets.Count == 2)
+                                    femaleFormSpellEffectWOW.ImplicitTargetB = targets[1];
+                                femaleFormSpellEffectWOW.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
+                                spellTemplate.WOWSpellEffects.Add(femaleFormSpellEffectWOW);
+                                CreatureRace? creatureRaceFemale = CreatureRace.GetRaceForRaceGenderVariant(eqEffect.EQBaseValue, CreatureGenderType.Female, 0, true);
+                                if (creatureRaceFemale == null)
+                                {
+                                    Logger.WriteError("SpellTemplate with wow spell template id ", spellTemplate.WOWSpellID.ToString(), " has an illusion effect but could not find a raceid with id ", eqEffect.EQBaseValue.ToString());
+                                    continue;
+                                }
+                                float scaleFemale = creatureRaceFemale.Height * creatureRaceFemale.SpawnSizeMod;
+                                CreatureTemplate femaleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(femaleFormSpellTemplate.Name, creatureRaceFemale, creatureRaceFemale.Gender, 0, textureID, 0, 0, scaleFemale);
+                                femaleFormSpellEffectWOW.EffectMiscValueA = femaleCreatureTemplate.WOWCreatureTemplateID;
+                                raceName = creatureRaceFemale.Name;
+                                textParticle = "a";
+                                if (raceName.ToLower().StartsWith("a") || raceName.ToLower().StartsWith("e") || raceName.ToLower().StartsWith("o"))
+                                    textParticle = "an";
+                                femaleFormSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", textParticle, " ", raceName);
+                                femaleFormSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
+                                femaleFormSpellTemplate.WOWSpellEffects.Add(femaleFormSpellEffectWOW);
+                                spellTemplate.FemaleFormSpellTemplateID = femaleFormSpellTemplate.WOWSpellID;
+                                effectGeneratedSpellTemplates.Add(femaleFormSpellTemplate);
+
+                                // Parent illusion spell
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.Dummy;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
+                                newSpellEffectWOW.EffectMiscValueA = (int)SpellAuraDummyType.IllusionParent;
                                 newSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", textParticle, " ", raceName);
                                 newSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
                                 newSpellEffects.Add(newSpellEffectWOW);
-                                spellTemplate.HasIllusionEffect = true;
+                                spellTemplate.IsllusionSpellParent = true;
                             } break;
                         default:
                             {
