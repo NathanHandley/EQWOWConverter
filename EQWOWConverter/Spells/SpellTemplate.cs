@@ -2483,6 +2483,7 @@ namespace EQWOWConverter.Spells
                                 maleFormSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", textParticle, " ", raceName);
                                 maleFormSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
                                 maleFormSpellTemplate.WOWSpellEffects.Add(maleFormSpellEffectWOW);
+                                maleFormSpellTemplate.AuraDuration = spellTemplate.AuraDuration;
                                 spellTemplate.MaleFormSpellTemplateID = maleFormSpellTemplate.WOWSpellID;
                                 effectGeneratedSpellTemplates.Add(maleFormSpellTemplate);
 
@@ -2516,6 +2517,7 @@ namespace EQWOWConverter.Spells
                                 femaleFormSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", textParticle, " ", raceName);
                                 femaleFormSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
                                 femaleFormSpellTemplate.WOWSpellEffects.Add(femaleFormSpellEffectWOW);
+                                femaleFormSpellTemplate.AuraDuration = spellTemplate.AuraDuration;
                                 spellTemplate.FemaleFormSpellTemplateID = femaleFormSpellTemplate.WOWSpellID;
                                 effectGeneratedSpellTemplates.Add(femaleFormSpellTemplate);
 
