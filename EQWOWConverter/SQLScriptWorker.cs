@@ -712,6 +712,10 @@ namespace EQWOWConverter
                 if (spellTemplate.IsBardSongAura == true)
                     spellScriptNamesSQL.AddRow(spellTemplate.WOWSpellID, "EverQuest_BardSongAuraScript");
 
+                // Illusion spells have a script
+                if (spellTemplate.IsllusionSpellParent == true)
+                    spellScriptNamesSQL.AddRow(spellTemplate.WOWSpellID, "EverQuest_IllusionSpellScript");
+
                 // Save any pet details
                 if (spellTemplate.SummonSpellPet != null)
                     modEverquestPetSQL.AddRow(spellTemplate.WOWSpellID, spellTemplate.SummonSpellPet.NamingType);

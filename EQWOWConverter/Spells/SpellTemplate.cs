@@ -2530,6 +2530,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
                                 newSpellEffects.Add(newSpellEffectWOW);
                                 spellTemplate.IsllusionSpellParent = true;
+                                spellTemplate.AuraDuration = new SpellDuration();
                             } break;
                         default:
                             {
