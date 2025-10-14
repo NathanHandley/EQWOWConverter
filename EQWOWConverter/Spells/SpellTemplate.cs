@@ -21,7 +21,6 @@ using EQWOWConverter.Tradeskills;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using System.Text;
-using System.Xml.Linq;
 
 namespace EQWOWConverter.Spells
 {
@@ -184,6 +183,7 @@ namespace EQWOWConverter.Spells
         public int PeriodicAuraSpellRadius = 0;
         public bool ShowFocusBoostInDescriptionIfExists = false;
         public bool IsllusionSpellParent = false;
+        public SpellTemplate? IllusionSpellParent = null;
         public int MaleFormSpellTemplateID = 0;
         public int FemaleFormSpellTemplateID = 0;
 
@@ -347,6 +347,7 @@ namespace EQWOWConverter.Spells
             {
                 SpellTemplate spellTemplate = SpellTemplatesByEQID[eqSpellID];
 
+                // Pull recourse spell template
                 SpellTemplate? recourseSpellTemplate = null;
                 if (spellTemplate.RecourseLinkEQSpellID != 0)
                 {
@@ -358,6 +359,8 @@ namespace EQWOWConverter.Spells
                         spellTemplate.RecourseLinkSpellTemplate = recourseSpellTemplate;
                     }
                 }
+
+                // Pull proc link template
                 SpellTemplate? procLinkSpellTemplate = null;
                 if (spellTemplate.ProcLinkEQSpellID != 0)
                 {
@@ -369,6 +372,18 @@ namespace EQWOWConverter.Spells
                         foreach (SpellEffectWOW spellEffectWOW in spellTemplate.WOWSpellEffects)
                             if (spellEffectWOW.EffectTriggerSpell == spellTemplate.ProcLinkEQSpellID)
                                 spellEffectWOW.EffectTriggerSpell = SpellTemplatesByEQID[spellTemplate.ProcLinkEQSpellID].WOWSpellID;
+                    }
+                }
+
+                // Copy any form effects to the child illusion effect spells
+                if (spellTemplate.IllusionSpellParent != null)
+                {
+                    foreach (SpellEffectWOW spellEffect in spellTemplate.IllusionSpellParent.WOWSpellEffects)
+                    {
+                        // Dummy is used for the form change trigger, so skip that
+                        if (spellEffect.EffectType == SpellWOWEffectType.Dummy)
+                            continue;
+                        spellTemplate.WOWSpellEffects.Add(spellEffect);
                     }
                 }
 
@@ -2455,7 +2470,7 @@ namespace EQWOWConverter.Spells
 
                                 // Male form
                                 SpellTemplate maleFormSpellTemplate = new SpellTemplate();
-                                maleFormSpellTemplate.Name = string.Concat(spellTemplate.Name, " Form");
+                                maleFormSpellTemplate.Name = string.Concat(spellTemplate.Name);
                                 maleFormSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
                                 maleFormSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 maleFormSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
@@ -2466,7 +2481,6 @@ namespace EQWOWConverter.Spells
                                 if (targets.Count == 2)
                                     maleFormSpellEffectWOW.ImplicitTargetB = targets[1];
                                 maleFormSpellEffectWOW.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
-                                spellTemplate.WOWSpellEffects.Add(maleFormSpellEffectWOW);
                                 CreatureRace? creatureRaceMale = CreatureRace.GetRaceForRaceGenderVariant(eqEffect.EQBaseValue, CreatureGenderType.Male, 0, true);
                                 if (creatureRaceMale == null)
                                 {
@@ -2484,12 +2498,13 @@ namespace EQWOWConverter.Spells
                                 maleFormSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
                                 maleFormSpellTemplate.WOWSpellEffects.Add(maleFormSpellEffectWOW);
                                 maleFormSpellTemplate.AuraDuration = spellTemplate.AuraDuration;
+                                maleFormSpellTemplate.IllusionSpellParent = spellTemplate;
                                 spellTemplate.MaleFormSpellTemplateID = maleFormSpellTemplate.WOWSpellID;
                                 effectGeneratedSpellTemplates.Add(maleFormSpellTemplate);
 
                                 // Female form
                                 SpellTemplate femaleFormSpellTemplate = new SpellTemplate();
-                                femaleFormSpellTemplate.Name = string.Concat(spellTemplate.Name, " Form");
+                                femaleFormSpellTemplate.Name = string.Concat(spellTemplate.Name);
                                 femaleFormSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
                                 femaleFormSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 femaleFormSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
@@ -2500,7 +2515,6 @@ namespace EQWOWConverter.Spells
                                 if (targets.Count == 2)
                                     femaleFormSpellEffectWOW.ImplicitTargetB = targets[1];
                                 femaleFormSpellEffectWOW.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
-                                spellTemplate.WOWSpellEffects.Add(femaleFormSpellEffectWOW);
                                 CreatureRace? creatureRaceFemale = CreatureRace.GetRaceForRaceGenderVariant(eqEffect.EQBaseValue, CreatureGenderType.Female, 0, true);
                                 if (creatureRaceFemale == null)
                                 {
@@ -2519,6 +2533,7 @@ namespace EQWOWConverter.Spells
                                 femaleFormSpellTemplate.WOWSpellEffects.Add(femaleFormSpellEffectWOW);
                                 femaleFormSpellTemplate.AuraDuration = spellTemplate.AuraDuration;
                                 spellTemplate.FemaleFormSpellTemplateID = femaleFormSpellTemplate.WOWSpellID;
+                                femaleFormSpellTemplate.IllusionSpellParent = spellTemplate;
                                 effectGeneratedSpellTemplates.Add(femaleFormSpellTemplate);
 
                                 // Parent illusion spell
@@ -2530,8 +2545,8 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
                                 newSpellEffects.Add(newSpellEffectWOW);
                                 spellTemplate.IsllusionSpellParent = true;
-                                spellTemplate.AuraDuration = new SpellDuration();
-                            } break;
+                            }
+                            break;
                         default:
                             {
                                 Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
