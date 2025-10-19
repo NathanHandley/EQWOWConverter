@@ -167,6 +167,7 @@ namespace EQWOWConverter.Spells
         public bool ProcsOnMeleeAttacks = false;
         public SpellPet? SummonSpellPet = null;
         public int SummonPropertiesDBCID = 0;
+        public int SummonCreatureTemplateID = 0;
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public bool IsBardSongAura = false;
         public bool HasAdditionalTickOnApply = false;
@@ -2385,38 +2386,6 @@ namespace EQWOWConverter.Spells
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         case SpellEQEffectType.SummonPet:
-                            {
-                                SpellPet? spellPet = SpellPet.GetSpellPetByTypeName(teleportZoneOrPetTypeName);
-                                if (spellPet == null)
-                                {
-                                    Logger.WriteError("Could not assign pet for eq spell id ", spellTemplate.EQSpellID.ToString(), " as there was no typename of ", teleportZoneOrPetTypeName);
-                                    continue;
-                                }
-                                if (creatureTemplatesByEQID.ContainsKey(spellPet.EQCreatureTemplateID) == false)
-                                {
-                                    Logger.WriteError("Could not assign pet for eq spell id ", spellTemplate.EQSpellID.ToString(), " as there was no eq creature template ID of ", spellPet.EQCreatureTemplateID.ToString());
-                                    continue;
-                                }
-                                spellTemplate.SummonSpellPet = spellPet;
-
-                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
-                                newSpellEffectWOW.EffectMiscValueA = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].WOWCreatureTemplateID;
-                                if (Configuration.SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR == true)
-                                {
-                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.Summon;
-                                    newSpellEffectWOW.ActionDescription = "summon a companion to fight by your side";
-                                    spellTemplate.SummonPropertiesDBCID = SummonPropertiesDBC.GenerateUniqueID();
-                                    newSpellEffectWOW.EffectMiscValueB = spellTemplate.SummonPropertiesDBCID;
-                                }
-                                else
-                                {
-                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.SummonPet;
-                                    newSpellEffectWOW.ActionDescription = "summon a companion to fight by your side";
-                                }
-                                newSpellEffects.Add(newSpellEffectWOW);
-
-                                creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;
-                            } break;
                         case SpellEQEffectType.NecPet:
                             {
                                 SpellPet? spellPet = SpellPet.GetSpellPetByTypeName(teleportZoneOrPetTypeName);
@@ -2430,24 +2399,18 @@ namespace EQWOWConverter.Spells
                                     Logger.WriteError("Could not assign pet for eq spell id ", spellTemplate.EQSpellID.ToString(), " as there was no eq creature template ID of ", spellPet.EQCreatureTemplateID.ToString());
                                     continue;
                                 }
+                                
+                                spellTemplate.SummonCreatureTemplateID = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].WOWCreatureTemplateID;
                                 spellTemplate.SummonSpellPet = spellPet;
-
-                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
-                                newSpellEffectWOW.EffectMiscValueA = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].WOWCreatureTemplateID;
                                 if (Configuration.SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR == true)
-                                {
-                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.Summon;
-                                    newSpellEffectWOW.ActionDescription = "summon an undead companion to fight by your side";
                                     spellTemplate.SummonPropertiesDBCID = SummonPropertiesDBC.GenerateUniqueID();
-                                    newSpellEffectWOW.EffectMiscValueB = spellTemplate.SummonPropertiesDBCID;
-                                }
-                                else
-                                {
-                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.SummonPet;
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                if (eqEffect.EQEffectType == SpellEQEffectType.NecPet)
                                     newSpellEffectWOW.ActionDescription = "summon an undead companion to fight by your side";
-                                }
+                                else
+                                    newSpellEffectWOW.ActionDescription = "summon a companion to fight by your side";
+                                newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.SummonPet;
                                 newSpellEffects.Add(newSpellEffectWOW);
-
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;
                             } break;
                         case SpellEQEffectType.Illusion:

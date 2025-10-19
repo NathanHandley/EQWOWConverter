@@ -32,11 +32,14 @@ namespace EQWOWConverter.WOWFiles
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int creatingSpellID, SpellPetNamingType petNamingType)
+        public void AddRow(int creatingSpellID, SpellPetNamingType petNamingType,
+            int creatureTemplateID, int summonPropertiesID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatingSpellID", creatingSpellID);
             newRow.AddInt("NamingType", (int)petNamingType);
+            newRow.AddInt("CreatureTemplateID", creatureTemplateID);
+            newRow.AddInt("SummonPropertiesID", summonPropertiesID);
             Rows.Add(newRow);
         }
     }
