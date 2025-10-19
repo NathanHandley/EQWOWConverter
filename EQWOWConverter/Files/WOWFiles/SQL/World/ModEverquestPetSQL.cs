@@ -28,6 +28,8 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_pet` ( ");
             stringBuilder.AppendLine("`CreatingSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`NamingType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`CreatureTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`SummonPropertiesID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`CreatingSpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
