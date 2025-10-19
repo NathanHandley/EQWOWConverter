@@ -2409,6 +2409,7 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.ActionDescription = "summon an undead companion to fight by your side";
                                 else
                                     newSpellEffectWOW.ActionDescription = "summon a companion to fight by your side";
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.Dummy;
                                 newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.SummonPet;
                                 newSpellEffects.Add(newSpellEffectWOW);
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;

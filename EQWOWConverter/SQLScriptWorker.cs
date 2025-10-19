@@ -709,13 +709,13 @@ namespace EQWOWConverter
                             spellScriptNamesSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[i].WOWSpellID, "EverQuest_FocusBoostNonAuraScript");
                     }
 
-                // Bard songs have a script
+                // Attach scripts to certain spell types
                 if (spellTemplate.IsBardSongAura == true)
                     spellScriptNamesSQL.AddRow(spellTemplate.WOWSpellID, "EverQuest_BardSongAuraScript");
-
-                // Illusion spells have a script
                 if (spellTemplate.IsllusionSpellParent == true)
                     spellScriptNamesSQL.AddRow(spellTemplate.WOWSpellID, "EverQuest_IllusionSpellScript");
+                if (spellTemplate.SummonSpellPet != null)
+                    spellScriptNamesSQL.AddRow(spellTemplate.WOWSpellID, "EverQuest_SummonPetScript");
 
                 // Save any pet details
                 if (spellTemplate.SummonSpellPet != null)
