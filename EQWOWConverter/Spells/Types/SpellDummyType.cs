@@ -34,7 +34,6 @@ namespace EQWOWConverter.Spells
         BardSongEnemySingle = 12,
         BardSongFriendlySingle = 13,
         BardSongAnySingle = 14,
-        IllusionParent = 15,
-        SummonPet = 16,
+        IllusionParent = 15
     }
 }

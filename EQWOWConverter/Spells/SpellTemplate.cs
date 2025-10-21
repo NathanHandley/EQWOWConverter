@@ -2399,19 +2399,28 @@ namespace EQWOWConverter.Spells
                                     Logger.WriteError("Could not assign pet for eq spell id ", spellTemplate.EQSpellID.ToString(), " as there was no eq creature template ID of ", spellPet.EQCreatureTemplateID.ToString());
                                     continue;
                                 }
-                                
-                                spellTemplate.SummonCreatureTemplateID = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].WOWCreatureTemplateID;
                                 spellTemplate.SummonSpellPet = spellPet;
-                                if (Configuration.SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR == true)
-                                    spellTemplate.SummonPropertiesDBCID = SummonPropertiesDBC.GenerateUniqueID();
+
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectMiscValueA = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].WOWCreatureTemplateID;
+
+                                // Description differs if undead or not
                                 if (eqEffect.EQEffectType == SpellEQEffectType.NecPet)
                                     newSpellEffectWOW.ActionDescription = "summon an undead companion to fight by your side";
                                 else
                                     newSpellEffectWOW.ActionDescription = "summon a companion to fight by your side";
-                                newSpellEffectWOW.EffectType = SpellWOWEffectType.Dummy;
-                                newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.SummonPet;
+
+                                // Different summon types based on the config
+                                if (Configuration.SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR == true)
+                                {
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.Summon;
+                                    spellTemplate.SummonPropertiesDBCID = SummonPropertiesDBC.GenerateUniqueID();
+                                    newSpellEffectWOW.EffectMiscValueB = spellTemplate.SummonPropertiesDBCID;
+                                }
+                                else
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.SummonPet;
                                 newSpellEffects.Add(newSpellEffectWOW);
+
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;
                             } break;
                         case SpellEQEffectType.Illusion:
