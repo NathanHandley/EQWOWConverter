@@ -68,6 +68,7 @@ namespace EQWOWConverter
         private NPCTextSQL npcTextSQL = new NPCTextSQL();
         private NPCTrainerSQL npcTrainerSQL = new NPCTrainerSQL();
         private NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
+        private PetNameGenerationSQL petNameGenerationSQL = new PetNameGenerationSQL();
         private PlayerCreateInfoSQL playerCreateInfoSQL = new PlayerCreateInfoSQL();
         private PlayerCreateInfoSpellCustomSQL playerCreateInfoSpellCustomSQL = new PlayerCreateInfoSpellCustomSQL();
         private PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
@@ -714,8 +715,6 @@ namespace EQWOWConverter
                     spellScriptNamesSQL.AddRow(spellTemplate.WOWSpellID, "EverQuest_BardSongAuraScript");
                 if (spellTemplate.IsllusionSpellParent == true)
                     spellScriptNamesSQL.AddRow(spellTemplate.WOWSpellID, "EverQuest_IllusionSpellScript");
-                if (spellTemplate.SummonSpellPet != null)
-                    spellScriptNamesSQL.AddRow(spellTemplate.WOWSpellID, "EverQuest_SummonPetScript");
 
                 // Save any pet details
                 if (spellTemplate.SummonSpellPet != null)
@@ -969,6 +968,7 @@ namespace EQWOWConverter
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcTrainerSQL.SaveToDisk("npc_trainer", SQLFileType.World);
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
+            petNameGenerationSQL.SaveToDisk("pet_name_generation", SQLFileType.World);
             playerCreateInfoSQL.SaveToDisk("playercreateinfo", SQLFileType.World);
             playerCreateInfoSpellCustomSQL.SaveToDisk("playercreateinfo_spell_custom", SQLFileType.World);
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
