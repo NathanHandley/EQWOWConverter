@@ -2399,10 +2399,21 @@ namespace EQWOWConverter.Spells
                                     Logger.WriteError("Could not assign pet for eq spell id ", spellTemplate.EQSpellID.ToString(), " as there was no eq creature template ID of ", spellPet.EQCreatureTemplateID.ToString());
                                     continue;
                                 }
+
+                                // Set names for this creature template
+                                switch (spellPet.NamingType)
+                                {
+                                    case SpellPetNamingType.Pet: creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].Name = "Pet"; break;
+                                    case SpellPetNamingType.Familiar: creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].Name = "Familiar"; break;
+                                    case SpellPetNamingType.Warder: creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].Name = "Warder"; break;
+                                    case SpellPetNamingType.Random: creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].Name = "Random"; break;
+                                }
+
                                 spellTemplate.SummonSpellPet = spellPet;
+                                spellTemplate.SummonCreatureTemplateID = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].WOWCreatureTemplateID;
 
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
-                                newSpellEffectWOW.EffectMiscValueA = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].WOWCreatureTemplateID;
+                                newSpellEffectWOW.EffectMiscValueA = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].WOWCreatureTemplateID;                                
 
                                 // Description differs if undead or not
                                 if (eqEffect.EQEffectType == SpellEQEffectType.NecPet)
