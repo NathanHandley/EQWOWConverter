@@ -805,7 +805,10 @@ namespace EQWOWConverter
         public static readonly int SQL_NPCTRAINER_ID_START = 210000;
         public static readonly int SQL_NPCTRAINER_ID_END = 211000;
 
-        // Start ID for pool_template data rows (reserve 40k records)
+        // Start ID for pet_name_generation entries
+        public static readonly int SQL_PETNAMEGENERATION_ID_START = 400;
+
+        // Start and end ID for pool_template data rows (reserve 40k records)
         public static readonly int SQL_POOL_TEMPLATE_ID_START = 110000;
         public static readonly int SQL_POOL_TEMPLATE_ID_END = 150000;
 

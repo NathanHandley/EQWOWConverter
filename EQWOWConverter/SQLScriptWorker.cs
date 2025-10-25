@@ -718,8 +718,18 @@ namespace EQWOWConverter
 
                 // Save any pet details
                 if (spellTemplate.SummonSpellPet != null)
+                {
                     modEverquestPetSQL.AddRow(spellTemplate.WOWSpellID, spellTemplate.SummonSpellPet.NamingType,
                         spellTemplate.SummonCreatureTemplateID, spellTemplate.SummonPropertiesDBCID);
+
+                    if (spellTemplate.SummonSpellPet.NamingType == SpellPetNamingType.Random)
+                    {
+                        foreach (string prefix in SpellPet.GetRandomPetNamePrefixes())
+                            petNameGenerationSQL.AddRow(spellTemplate.SummonCreatureTemplateID, prefix, true);
+                        foreach (string suffix in SpellPet.GetRandomPetNameSuffixes())
+                            petNameGenerationSQL.AddRow(spellTemplate.SummonCreatureTemplateID, suffix, false);
+                    }
+                }
             }
             foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)
                 spellGroupStackRulesSQL.AddRow(spellGroupStackRuleByGroup.Key, spellGroupStackRuleByGroup.Value);

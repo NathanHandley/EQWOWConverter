@@ -18,6 +18,8 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class PetNameGenerationSQL : SQLFile
     {
+        private static int CUR_ID = Configuration.SQL_PETNAMEGENERATION_ID_START;
+
         public override string DeleteRowSQL()
         {
             return "DELETE FROM `pet_name_generation` WHERE `entry` >= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH + ";";
@@ -26,6 +28,7 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(int creatureTemplateEntryID, string wordPart, bool isFirstHalf)
         {
             SQLRow newRow = new SQLRow();
+            newRow.AddInt("id", CUR_ID);
             newRow.AddString("word", wordPart);
             newRow.AddInt("entry", creatureTemplateEntryID);
             if (isFirstHalf == true)
@@ -33,6 +36,8 @@ namespace EQWOWConverter.WOWFiles
             else
                 newRow.AddInt("half", 1);
             Rows.Add(newRow);
+
+            CUR_ID++;
         }
     }
 }
