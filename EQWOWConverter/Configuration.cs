@@ -459,7 +459,7 @@ namespace EQWOWConverter
         // If this is true, use the level as defined in everquest for summoned pets as well
         // as the control behavior.  Otherwise it will behave like a controllable pet and
         // is level aligned with the player
-        // NOTE: Not currently working right, so leave false
+        // NOTE: Not currently working right, so leave false.  Lots of work left before this is good.
         public static readonly bool SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR = false;
 
         // If true, spells will balance around level 60 being the cap (EQ-like),

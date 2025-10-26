@@ -147,13 +147,13 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("NightEventID", Configuration.SQL_GAMEEVENT_ID_NIGHT.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMin", Configuration.DBCID_MAP_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMax", Configuration.DBCID_MAP_ID_END.ToString());
-            //modEverquestSystemConfigsSQL.AddRow("PetsUseEQLevelAndBehavior", Configuration.SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR.ToString());
             modEverquestSystemConfigsSQL.AddRow("SpellDBCIDMin", Configuration.DBCID_SPELL_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("SpellDBCIDMax", Configuration.DBCID_SPELL_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("SpellDBCIDDayPhaseAura", Configuration.SPELLS_DAYPHASE_SPELLDBC_ID.ToString());
             modEverquestSystemConfigsSQL.AddRow("SpellDBCIDNightPhaseAura", Configuration.SPELLS_NIGHTPHASE_SPELLDBC_ID.ToString());
             modEverquestSystemConfigsSQL.AddRow("QuestSQLIDMin", Configuration.SQL_QUEST_TEMPLATE_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("QuestSQLIDMax", Configuration.SQL_QUEST_TEMPLATE_ID_END.ToString());
+            modEverquestSystemConfigsSQL.AddRow("WorldScale", Configuration.GENERATE_WORLD_SCALE.ToString());
         }
 
         private void PopulateCreatureData(List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
