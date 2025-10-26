@@ -2432,6 +2432,9 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.SummonPet;
                                 newSpellEffects.Add(newSpellEffectWOW);
 
+                                // Correct scaling of pet & mark as a pet
+                                CreatureRace creatureRace = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].Race;
+                                creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].ModelTemplateScale = creatureRace.Height * creatureRace.SpawnSizeMod;
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;
                             } break;
                         case SpellEQEffectType.Illusion:
