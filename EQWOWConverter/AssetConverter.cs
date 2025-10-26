@@ -49,6 +49,11 @@ namespace EQWOWConverter
                 return false;
             }
 
+            // Clean output folder
+            string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
+            if (Directory.Exists(exportMPQRootFolder) == true)
+                Directory.Delete(exportMPQRootFolder, true);   
+
             // Extract DBC files
             DBCFileWorker dbcFileWorker = new DBCFileWorker();
             if (Configuration.GENERATE_EXTRACT_DBC_FILES == true)
@@ -827,22 +832,6 @@ namespace EQWOWConverter
             string exportMusicFolder = Path.Combine(exportMPQRootFolder, "Sound", "Music");
             string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".mpq");
             string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
-
-            // Clear folders if it's a fresh build
-            if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0
-                || File.Exists(exportMPQFileName) == false)
-            {
-                if (Directory.Exists(exportMapsFolder))
-                    Directory.Delete(exportMapsFolder, true);
-                if (Directory.Exists(exportWMOFolder))
-                    Directory.Delete(exportWMOFolder, true);
-                if (Directory.Exists(exportZonesTexturesFolder))
-                    Directory.Delete(exportZonesTexturesFolder, true);
-                if (Directory.Exists(exportZonesObjectsFolder))
-                    Directory.Delete(exportZonesObjectsFolder, true);
-                if (Directory.Exists(exportMusicFolder))
-                    Directory.Delete(exportMusicFolder, true);
-            }
 
             // Generate folders
             if (Directory.Exists(exportMapsFolder) == false)
