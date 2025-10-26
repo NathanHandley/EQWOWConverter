@@ -239,6 +239,8 @@ namespace EQWOWConverter.WOWFiles
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 3072;
             UInt32 attributeFlags = 0;
+            if (spellTemplate.SummonSpellPet != null)
+                attributeFlags |= 1; // SPELL_ATTR1_DISMISS_PET_FIRST
             if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
                 attributeFlags |= 32; // 	SPELL_ATTR1_ALLOW_WHILE_STEALTHED (0x00000020)
             if (spellTemplate.IsChanneled == true)
