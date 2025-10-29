@@ -2455,6 +2455,9 @@ namespace EQWOWConverter.Spells
                                 if (spellTemplate.EQAOERange < 10) // Why is aoerange the textureID? 
                                     textureID = spellTemplate.EQAOERange;
 
+                                // Temp faction value.  Need to change this on a per-form basis
+                                int wowFactionTemplateID = 35; // Friendly
+
                                 // Male form
                                 SpellTemplate maleFormSpellTemplate = new SpellTemplate();
                                 maleFormSpellTemplate.Name = string.Concat(spellTemplate.Name);
@@ -2475,7 +2478,7 @@ namespace EQWOWConverter.Spells
                                     continue;
                                 }
                                 float scaleMale = creatureRaceMale.Height * creatureRaceMale.SpawnSizeMod;
-                                CreatureTemplate maleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(maleFormSpellTemplate.Name, creatureRaceMale, creatureRaceMale.Gender, 0, textureID, 0, 0, scaleMale);
+                                CreatureTemplate maleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(maleFormSpellTemplate.Name, creatureRaceMale, creatureRaceMale.Gender, 0, textureID, 0, 0, scaleMale, wowFactionTemplateID);
                                 maleFormSpellEffectWOW.EffectMiscValueA = maleCreatureTemplate.WOWCreatureTemplateID;
                                 string raceName = creatureRaceMale.Name;
                                 string textParticle = "a";
@@ -2509,7 +2512,7 @@ namespace EQWOWConverter.Spells
                                     continue;
                                 }
                                 float scaleFemale = creatureRaceFemale.Height * creatureRaceFemale.SpawnSizeMod;
-                                CreatureTemplate femaleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(femaleFormSpellTemplate.Name, creatureRaceFemale, creatureRaceFemale.Gender, 0, textureID, 0, 0, scaleFemale);
+                                CreatureTemplate femaleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(femaleFormSpellTemplate.Name, creatureRaceFemale, creatureRaceFemale.Gender, 0, textureID, 0, 0, scaleFemale, wowFactionTemplateID);
                                 femaleFormSpellEffectWOW.EffectMiscValueA = femaleCreatureTemplate.WOWCreatureTemplateID;
                                 raceName = creatureRaceFemale.Name;
                                 textParticle = "a";

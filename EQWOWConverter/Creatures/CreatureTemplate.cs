@@ -119,7 +119,7 @@ namespace EQWOWConverter.Creatures
         }
 
         public static CreatureTemplate GenerateCreatureTemplate(string name, CreatureRace race, CreatureGenderType genderType, int helmTextureID, int textureIndex, int faceIndex, int colorTintID,
-            float modelTemplateScale)
+            float modelTemplateScale, int wowFactionTemplateID)
         {
             lock (CreatureTemplateLock)
             {
@@ -141,6 +141,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.ColorTintID = colorTintID;
                 newCreatureTemplate.Size = race.Height;
                 newCreatureTemplate.ModelTemplateScale = modelTemplateScale;
+                newCreatureTemplate.WOWFactionTemplateID = wowFactionTemplateID;
 
                 // Store the creature template
                 if (CreatureTemplateListByEQID.ContainsKey(newCreatureTemplate.EQCreatureTemplateID))
