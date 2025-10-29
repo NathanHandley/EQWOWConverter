@@ -67,6 +67,7 @@ namespace EQWOWConverter.Quests
         public List<QuestCompletionFactionReward> questCompletionFactionRewards = new List<QuestCompletionFactionReward>();
         public ItemTemplate? RandomAwardContainerItemTemplate = null;
         public bool HasInvalidItems = false;
+        public bool IsValidQuest = true;
         public int MultiRewardContainerWOWItemID = -1;
 
         public static List<QuestTemplate> GetQuestTemplates()

@@ -573,6 +573,8 @@ namespace EQWOWConverter
                 // Skip quests where items needed to complete it are not available
                 if (questTemplate.AreRequiredItemsPlayerObtainable(itemTemplatesByWOWEntryID) == false)
                     continue;
+                if (questTemplate.IsValidQuest == false)
+                    continue;
 
                 string firstQuestName = questTemplate.Name;
                 int firstQuestID = questTemplate.QuestIDWOW;

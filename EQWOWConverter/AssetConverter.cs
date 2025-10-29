@@ -122,6 +122,17 @@ namespace EQWOWConverter
                 // Spells                                        
                 GenerateSpells(out spellTemplates, itemTemplatesByEQDBID, ref creatureTemplatesByEQID); // Remove the 'ref'
 
+                // Update class-specific references from spell scrolls
+                if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == true)
+                {
+                    Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
+                    foreach (var itemTemplateByWOWEntryID in itemTemplatesByWOWEntryID)
+                    {
+                        if (itemTemplateByWOWEntryID.Value.EQScrollSpellID > 0 && spellTemplatesByEQID.ContainsKey(itemTemplateByWOWEntryID.Value.EQScrollSpellID) == true)
+                            itemTemplateByWOWEntryID.Value.PopulateClassSpecificVersionsForSpellScrolls(spellTemplatesByEQID[itemTemplateByWOWEntryID.Value.EQScrollSpellID].LearnScrollPropertiesByClassType);
+                    }
+                }                
+
                 // Tradeskills
                 GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates, out tradeskillRecipes);
 
@@ -692,11 +703,11 @@ namespace EQWOWConverter
             Logger.WriteInfo("Converting quest items...");
 
             // Build the return quest templates
-            questTemplates = new List<QuestTemplate>();
+            questTemplates = QuestTemplate.GetQuestTemplates();
 
             // Work through each of the quest templates
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
-            foreach (QuestTemplate questTemplate in QuestTemplate.GetQuestTemplates())
+            foreach (QuestTemplate questTemplate in questTemplates)
             {
                 // Skip any quests that are in zones we're not processing
                 if (zonePropertiesByShortName.ContainsKey(questTemplate.ZoneShortName.ToLower()) == false)
@@ -722,21 +733,28 @@ namespace EQWOWConverter
         {
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
             Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
-            foreach (QuestTemplate questTemplate in QuestTemplate.GetQuestTemplates())
+            foreach (QuestTemplate questTemplate in questTemplates)
             {
                 // Skip any quests that are in zones we're not processing
                 if (zonePropertiesByShortName.ContainsKey(questTemplate.ZoneShortName.ToLower()) == false)
                 {
                     Logger.WriteDebug(string.Concat("Ignoring quest with id '", questTemplate.QuestIDWOW, ", as the zone '", questTemplate.ZoneShortName, "' is not being generated"));
+                    questTemplate.IsValidQuest = false;
                     continue;
                 }
 
                 // Skip any quests where the items cannot be obtained
                 if (questTemplate.HasInvalidItems == true)
+                {
+                    questTemplate.IsValidQuest = false;
                     continue;
+                }
                 SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
                 if (questTemplate.AreRequiredItemsPlayerObtainable(itemTemplatesByWOWEntryID) == false)
+                {
+                    questTemplate.IsValidQuest = false;
                     continue;
+                }
 
                 // If there is a random award, handle it
                 if (questTemplate.RewardItemEQIDs.Count > 0 && questTemplate.RewardItemChances[0] < 100)
@@ -744,6 +762,7 @@ namespace EQWOWConverter
                     if (questTemplate.MultiRewardContainerWOWItemID <= 0)
                     {
                         Logger.WriteError("Quest template ", questTemplate.QuestIDWOW.ToString(), " had multiple rewards but no reward_container_wowid, skipping");
+                        questTemplate.IsValidQuest = false;
                         continue;
                     }
                     string containerName = string.Concat(questTemplate.QuestgiverName.Replace("_", " ").Replace("#", ""), "'s Reward");
@@ -762,12 +781,32 @@ namespace EQWOWConverter
                     }
                 }
 
+                // Spell scrolls can be a reward in slot 1, so update reward template if so to a class-appropriate version(s)
+                if (questTemplate.RewardItemEQIDs.Count > 0 && questTemplate.RewardItemChances[0] >= 100 && itemTemplatesByWOWEntryID.ContainsKey(questTemplate.RewardItemWOWIDs[0]) == true &&
+                    itemTemplatesByWOWEntryID[questTemplate.RewardItemWOWIDs[0]].ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
+                {
+                    int rewardItemEQID = questTemplate.RewardItemEQIDs[0];
+                    int rewardItemWOWID = questTemplate.RewardItemWOWIDs[0];
+                    questTemplate.RewardItemWOWIDs.RemoveAt(0);
+                    questTemplate.RewardItemEQIDs.RemoveAt(0);
+                    questTemplate.RewardItemCounts.RemoveAt(0);
+                    questTemplate.RewardItemChances.RemoveAt(0);
+                    foreach (int classSpecificItemID in itemTemplatesByWOWEntryID[rewardItemWOWID].ClassSpecificItemVersionsByWOWItemTemplateID.Values)
+                    {
+                        questTemplate.RewardItemWOWIDs.Add(classSpecificItemID);
+                        questTemplate.RewardItemEQIDs.Add(rewardItemEQID);
+                        questTemplate.RewardItemCounts.Add(1);
+                        questTemplate.RewardItemChances.Add(100);
+                    }
+                }
+
                 // Pull up the related creature(s) that are quest givers and mark them as quest givers
                 // NOTE: Always do this last (before the add(questTemplate)
                 List<CreatureTemplate> questgiverCreatureTemplates = CreatureTemplate.GetCreatureTemplatesForSpawnZonesAndName(questTemplate.ZoneShortName, questTemplate.QuestgiverName);
                 if (questgiverCreatureTemplates.Count == 0)
                 {
                     Logger.WriteDebug(string.Concat("Could not map quest to creature template with zone '", questTemplate.ZoneShortName, "' and name '", questTemplate.QuestgiverName, "'"));
+                    questTemplate.IsValidQuest = false;
                     continue;
                 }
                 foreach (CreatureTemplate creatureTemplate in questgiverCreatureTemplates)
@@ -794,8 +833,6 @@ namespace EQWOWConverter
                         if (reaction.type == QuestReactionType.Emote || reaction.type == QuestReactionType.Say || reaction.type == QuestReactionType.Yell)
                             foreach (CreatureTemplate creatureTemplate in questgiverCreatureTemplates)
                                 creatureTemplate.HasSmartScript = true;
-
-                questTemplates.Add(questTemplate);
             }
 
             Logger.WriteDebug("Converting quests done");

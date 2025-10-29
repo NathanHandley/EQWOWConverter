@@ -103,10 +103,18 @@ namespace EQWOWConverter.Items
         public ItemTemplate? ParentItemTemplate = null;
         public ItemFocusType FocusType = ItemFocusType.None;
         public int FocusValue = 0;
+        public Dictionary<ClassType, int> ClassSpecificItemVersionsByWOWItemTemplateID = new Dictionary<ClassType, int>(); // Used for quests
 
         public ItemTemplate()
         {
 
+        }
+
+        public void PopulateClassSpecificVersionsForSpellScrolls(Dictionary<ClassType, SpellTemplate.SpellLearnScrollProperties> spellScrollPropertiesByClassType)
+        {
+            ClassSpecificItemVersionsByWOWItemTemplateID.Clear();
+            foreach (var spellScrollProperties in spellScrollPropertiesByClassType)
+                ClassSpecificItemVersionsByWOWItemTemplateID.Add(spellScrollProperties.Key, spellScrollProperties.Value.WOWItemTemplateID);
         }
 
         public bool IsPlayerObtainable()
