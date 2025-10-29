@@ -719,8 +719,8 @@ namespace EQWOWConverter
                 // Save any pet details
                 if (spellTemplate.SummonSpellPet != null)
                 {
-                    modEverquestPetSQL.AddRow(spellTemplate.WOWSpellID, spellTemplate.SummonSpellPet.NamingType,
-                        spellTemplate.SummonCreatureTemplateID, spellTemplate.SummonPropertiesDBCID);
+                    modEverquestPetSQL.AddRow(spellTemplate.WOWSpellID, spellTemplate.SummonSpellPet.NamingType, spellTemplate.SummonCreatureTemplateID, 
+                        spellTemplate.SummonPropertiesDBCID, spellTemplate.SummonSpellPet.MainhandItemIDWOW, spellTemplate.SummonSpellPet.OffhandItemIDWOW);
 
                     if (spellTemplate.SummonSpellPet.NamingType == SpellPetNamingType.Random)
                     {

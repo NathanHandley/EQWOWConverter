@@ -26,6 +26,8 @@ namespace EQWOWConverter.Spells
         public bool IsTemp = false;
         public SpellPetControlType ControlType = SpellPetControlType.NoControl;
         public SpellPetNamingType NamingType = SpellPetNamingType.Pet;
+        public int MainhandItemIDWOW = 0;
+        public int OffhandItemIDWOW = 0;
         public bool MonsterFlag = false;
 
         public static SpellPet? GetSpellPetByTypeName(string typeName)
@@ -67,6 +69,8 @@ namespace EQWOWConverter.Spells
                 spellPet.IsTemp = columns["temp"] == "1";
                 spellPet.ControlType = (SpellPetControlType)Convert.ToInt32(columns["petcontrol"]);
                 spellPet.NamingType = (SpellPetNamingType)Convert.ToInt32(columns["petnaming"]);
+                spellPet.MainhandItemIDWOW = int.Parse(columns["itemIDWOW_main"]);
+                spellPet.OffhandItemIDWOW = int.Parse(columns["itemIDWOW_off"]);
                 SpellPetsByTypeName.Add(spellPet.TypeName, spellPet);
             }
             Logger.WriteDebug(string.Concat("Loading spell pets complete"));

@@ -30,18 +30,22 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`NamingType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`CreatureTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`SummonPropertiesID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`MainhandItemID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`OffhandItemID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`CreatingSpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
         public void AddRow(int creatingSpellID, SpellPetNamingType petNamingType,
-            int creatureTemplateID, int summonPropertiesID)
+            int creatureTemplateID, int summonPropertiesID, int mainhandItemID, int offhandItemID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatingSpellID", creatingSpellID);
             newRow.AddInt("NamingType", (int)petNamingType);
             newRow.AddInt("CreatureTemplateID", creatureTemplateID);
             newRow.AddInt("SummonPropertiesID", summonPropertiesID);
+            newRow.AddInt("MainhandItemID", mainhandItemID);
+            newRow.AddInt("OffhandItemID", offhandItemID);
             Rows.Add(newRow);
         }
     }

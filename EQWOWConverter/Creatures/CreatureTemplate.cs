@@ -206,7 +206,7 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.SpawnZones = spawnZones;
                     newCreatureTemplate.IsNonNPC = int.Parse(columns["non_npc"]) > 0;
                     if (newCreatureTemplate.WOWCreatureTemplateID < Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW || newCreatureTemplate.WOWCreatureTemplateID > Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH)
-                        Logger.WriteError("Creature template with EQ id of '' had a wow id of '', but that's outside th ebounds of CREATURETEMPLATE_ENTRY_LOW and CREATURETEMPLATE_ENTRY_HIGH.  SQL deletes will not catch everything");
+                        Logger.WriteError("Creature template with EQ id of '' had a wow id of '', but that's outside the bounds of CREATURETEMPLATE_ENTRY_LOW and CREATURETEMPLATE_ENTRY_HIGH.  SQL deletes will not catch everything");
                     newCreatureTemplate.Rank = (CreatureRankType)int.Parse(columns["rank"]);
                     newCreatureTemplate.Name = columns["name"].Replace('_', ' ');
                     if (newCreatureTemplate.Name.StartsWith("#") == true && newCreatureTemplate.Name.StartsWith("##") == false)
