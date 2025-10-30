@@ -1393,7 +1393,8 @@ namespace EQWOWConverter
                 }
 
                 // Mark if it'll have any smart scripts
-                if (allValidSpellEntries.Count > 0 || creatureTemplate.AttackEQSpellIDAndProcChance.Count > 0)
+                if (creatureTemplate.AttackEQSpellIDAndProcChance.Count > 0 || creatureTemplate.CreatureSpellEntriesCombat.Count > 0 ||
+                        creatureTemplate.CreatureSpellEntriesHeal.Count > 0 || creatureTemplate.CreatureSpellEntriesOutOfCombatBuff.Count > 0)
                     creatureTemplate.HasSmartScript = true;
 
                 // Sort then set recasts (where needed) to make sure it cycles
