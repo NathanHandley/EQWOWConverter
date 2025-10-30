@@ -48,6 +48,7 @@ namespace EQWOWConverter.Spells
         {
             public int WOWItemTemplateEntryID;
             public int Count;
+            public int ParentWOWItemTemplateEntryID = 0;
 
             public Reagent(int wowItemTemplateEntryID, int count)
             {

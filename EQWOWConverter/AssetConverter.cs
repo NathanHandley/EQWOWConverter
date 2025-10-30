@@ -828,7 +828,7 @@ namespace EQWOWConverter
                             }
                         }
                         if (matchFound == false)
-                            itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID[0];
+                            itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.First().Value;
                         itemReference.itemIDParentWOW = requiredItemTemplate.WOWEntryID;
                     }
                 }
@@ -1799,10 +1799,6 @@ namespace EQWOWConverter
                 }
                 else
                     curSpellTemplate.Name = recipe.Name;
-            
-                // Assign every component item as reagents
-                foreach (var item in recipe.ComponentItemCountsByWOWItemID)
-                    curSpellTemplate.Reagents.Add(new SpellTemplate.Reagent(item.Key, item.Value));
 
                 // Create the produced item
                 ItemTemplate? resultItemTemplate = null;
@@ -1834,6 +1830,38 @@ namespace EQWOWConverter
                 {
                     Logger.WriteError(string.Concat("Could not convert item template with id ", recipe.EQID, " as the result item template is NULL"));
                     continue;
+                }
+
+                // Assign every component item as reagents
+                foreach (var item in recipe.ComponentItemCountsByWOWItemID)
+                {
+                    int count = item.Value;
+                    int wowItemID = item.Key;
+
+                    // For class-specific item variations, replace the added reagent with one that is aligned to the output, or the first
+                    ItemTemplate curItemTemplate = itemTemplatesByWOWEntryID[wowItemID];
+                    if (curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
+                    {
+                        ItemTemplate firstProducedItemTemplate = itemTemplatesByWOWEntryID[recipe.ProducedItemCountsByWOWItemID.Keys.First()];
+                        bool matchFound = false;
+                        int parentItemID = wowItemID;
+                        foreach (var classSpecificItem in curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID)
+                        {
+                            if (firstProducedItemTemplate.AllowedClassTypes.Contains(classSpecificItem.Key) == true)
+                            {
+                                wowItemID = classSpecificItem.Value;
+                                matchFound = true;
+                                break;
+                            }
+                        }
+                        if (matchFound == false)
+                            wowItemID = curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.First().Value;
+                        SpellTemplate.Reagent newReagent = new SpellTemplate.Reagent(wowItemID, count);
+                        newReagent.ParentWOWItemTemplateEntryID = parentItemID;
+                        curSpellTemplate.Reagents.Add(newReagent);
+                    }
+                    else
+                        curSpellTemplate.Reagents.Add(new SpellTemplate.Reagent(wowItemID, count));
                 }
 
                 // Avoid name collisions
