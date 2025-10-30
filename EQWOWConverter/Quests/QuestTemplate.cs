@@ -25,7 +25,9 @@ namespace EQWOWConverter.Quests
         {
             public int itemIDEQ;
             public int itemIDWOW = 0;
+            public int itemIDParentWOW = 0; // Used for spell scrolls that are class specific
             public int itemCount;
+            public float itemChance = 100f;
         }
 
         private static List<QuestTemplate> QuestTemplates = new List<QuestTemplate>();
@@ -42,13 +44,11 @@ namespace EQWOWConverter.Quests
         public int QuestLevel = -1;
         public int RequiredMoneyInCopper = 0;
         public List<QuestItemReference> RequiredItems = new List<QuestItemReference>();
+        public List<QuestItemReference> RewardItems = new List<QuestItemReference>();
         public int RewardMoneyInCopper;
         public int RewardExperience;
-        public List<int> RewardItemEQIDs = new List<int>();
-        public List<int> RewardItemWOWIDs = new List<int>();
-        public List<int> RewardItemCounts = new List<int>();
-        public List<float> RewardItemChances = new List<float>();
         // TODO: Faction
+        // TODO: Required Class
         public string RequestText = string.Empty;
         public string RequestObjectiveText = string.Empty;
         public int AreaID = 0;
@@ -93,11 +93,14 @@ namespace EQWOWConverter.Quests
         {
             foreach (QuestItemReference requiredItem in RequiredItems)
             {
-                if (requiredItem.itemIDWOW == 0)
-                    continue;
                 if (itemTemplatesByWOWEntryID.ContainsKey(requiredItem.itemIDWOW) == false)
-                    return false;
-                if (itemTemplatesByWOWEntryID[requiredItem.itemIDWOW].IsPlayerObtainable() == false)
+                {
+                    if (itemTemplatesByWOWEntryID.ContainsKey(requiredItem.itemIDParentWOW) == false)
+                        return false;
+                    else if (itemTemplatesByWOWEntryID[requiredItem.itemIDParentWOW].IsPlayerObtainable() == false)
+                        return false;
+                }
+                else if (itemTemplatesByWOWEntryID[requiredItem.itemIDWOW].IsPlayerObtainable() == false)
                     return false;
             }
             return true;
@@ -256,24 +259,17 @@ namespace EQWOWConverter.Quests
                 newQuestTemplate.MinimumQuestgiverFactionValue = minRep == -1 ? 0 : ConvertEQFactionValueToWoW(minRep);
                 newQuestTemplate.HasMinimumFactionRequirement = minRep == -1 ? false : true;
                 newQuestTemplate.RequiredMoneyInCopper = int.Parse(columns["req_copper"]);
-                newQuestTemplate.RequiredItems.Add(new QuestItemReference());
-                newQuestTemplate.RequiredItems[0].itemIDEQ = int.Parse(columns["req_item_id1"]);
-                newQuestTemplate.RequiredItems[0].itemCount = int.Parse(columns["req_item_count1"]);
-                newQuestTemplate.RequiredItems.Add(new QuestItemReference());
-                newQuestTemplate.RequiredItems[1].itemIDEQ = int.Parse(columns["req_item_id2"]);
-                newQuestTemplate.RequiredItems[1].itemCount = int.Parse(columns["req_item_count2"]);
-                newQuestTemplate.RequiredItems.Add(new QuestItemReference());
-                newQuestTemplate.RequiredItems[2].itemIDEQ = int.Parse(columns["req_item_id3"]);
-                newQuestTemplate.RequiredItems[2].itemCount = int.Parse(columns["req_item_count3"]);
-                newQuestTemplate.RequiredItems.Add(new QuestItemReference());
-                newQuestTemplate.RequiredItems[3].itemIDEQ = int.Parse(columns["req_item_id4"]);
-                newQuestTemplate.RequiredItems[3].itemCount = int.Parse(columns["req_item_count4"]);
-                newQuestTemplate.RequiredItems.Add(new QuestItemReference());
-                newQuestTemplate.RequiredItems[4].itemIDEQ = int.Parse(columns["req_item_id5"]);
-                newQuestTemplate.RequiredItems[4].itemCount = int.Parse(columns["req_item_count5"]);
-                newQuestTemplate.RequiredItems.Add(new QuestItemReference());
-                newQuestTemplate.RequiredItems[5].itemIDEQ = int.Parse(columns["req_item_id6"]);
-                newQuestTemplate.RequiredItems[5].itemCount = int.Parse(columns["req_item_count6"]);
+                for (int i = 1; i <= 6; i++)
+                {
+                    int reqItemIDEQ = int.Parse(columns["req_item_id" + i.ToString()]);
+                    if (reqItemIDEQ > 0)
+                    {
+                        QuestItemReference requiredItem = new QuestItemReference();
+                        requiredItem.itemIDEQ = reqItemIDEQ;
+                        requiredItem.itemCount = int.Parse(columns["req_item_count" + i.ToString()]);
+                        newQuestTemplate.RequiredItems.Add(requiredItem);
+                    }
+                }
                 newQuestTemplate.RewardMoneyInCopper = int.Parse(columns["reward_money"]);
                 newQuestTemplate.RewardExperience = int.Parse(columns["reward_exp"]);
                 for (int i = 1; i <= 38; i++)
@@ -282,9 +278,11 @@ namespace EQWOWConverter.Quests
                     if (rewardItemID == -1)
                         break;
 
-                    newQuestTemplate.RewardItemEQIDs.Add(rewardItemID);
-                    newQuestTemplate.RewardItemCounts.Add(int.Parse(columns[string.Concat("reward_item_count", i)]));
-                    newQuestTemplate.RewardItemChances.Add(int.Parse(columns[string.Concat("reward_item_chance", i)]));
+                    QuestItemReference rewardItem = new QuestItemReference();
+                    rewardItem.itemIDEQ = rewardItemID;
+                    rewardItem.itemCount = int.Parse(columns[string.Concat("reward_item_count", i)]);
+                    rewardItem.itemChance = int.Parse(columns[string.Concat("reward_item_chance", i)]);
+                    newQuestTemplate.RewardItems.Add(rewardItem);
                 }
                 List<int> rewardFactionEQIDs = new List<int>();
                 List<int> rewardFactionValues = new List<int>();
@@ -296,7 +294,7 @@ namespace EQWOWConverter.Quests
                 newQuestTemplate.questCompletionFactionRewards = GetCompletionFactionRewards(rewardFactionEQIDs, rewardFactionValues);
                 string questName = columns["quest_name"];
                 string firstRewardItem = columns["reward_item1_name"];
-                newQuestTemplate.Name = GetOrGenerateName(questName, newQuestTemplate.QuestgiverName, newQuestTemplate.QuestIDWOW, firstRewardItem, newQuestTemplate.RewardItemCounts);
+                newQuestTemplate.Name = GetOrGenerateName(questName, newQuestTemplate.QuestgiverName, newQuestTemplate.QuestIDWOW, firstRewardItem, newQuestTemplate.RewardItems);
                 //newQuestTemplate.RequestText = columns["request_text"]; Ignoring for now
                 if (reactionsByQuestID.ContainsKey(newQuestTemplate.QuestIDWOW))
                 {
@@ -308,11 +306,11 @@ namespace EQWOWConverter.Quests
             }
         }
 
-        private static string GetOrGenerateName(string questName, string questGiverName, int questID, string firstRewardItemName, List<int> rewardItemCounts)
+        private static string GetOrGenerateName(string questName, string questGiverName, int questID, string firstRewardItemName, List<QuestItemReference> rewardItems)
         {
             if (questName.Length != 0)
                 return questName;
-            if (rewardItemCounts.Count == 1 && rewardItemCounts[0] == 1)
+            if (rewardItems.Count == 1 && rewardItems[0].itemCount == 1)
                 return firstRewardItemName;
             return String.Concat(questGiverName, " Quest (", questID, ")");
         }
@@ -384,15 +382,15 @@ namespace EQWOWConverter.Quests
             }
 
             // Reward items
-            for (int i = 0; i < RewardItemEQIDs.Count; i++)
+            for (int i = 0; i < RewardItems.Count; i++)
             {
-                if (itemTemplatesByEQDBID.ContainsKey(RewardItemEQIDs[i]) == false)
+                if (itemTemplatesByEQDBID.ContainsKey(RewardItems[i].itemIDEQ) == false)
                 {
-                    Logger.WriteDebug(string.Concat("Quest '", Name, "' (", QuestIDWOW, ") could not be mapped as the EQItemID '", RewardItemEQIDs[i], "' did not exist"));
+                    Logger.WriteDebug(string.Concat("Quest '", Name, "' (", QuestIDWOW, ") could not be mapped as the EQItemID '", RewardItems[i].itemIDEQ, "' did not exist"));
                     HasInvalidItems = true;
                     return false;
                 }
-                RewardItemWOWIDs.Add(itemTemplatesByEQDBID[RewardItemEQIDs[i]].WOWEntryID);
+                RewardItems[i].itemIDWOW = itemTemplatesByEQDBID[RewardItems[i].itemIDEQ].WOWEntryID;
             }
             return true;
         }

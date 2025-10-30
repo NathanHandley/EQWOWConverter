@@ -17,6 +17,7 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.Spells;
 using System.Text;
+using static EQWOWConverter.Quests.QuestTemplate;
 
 namespace EQWOWConverter.Items
 {
@@ -1593,32 +1594,31 @@ namespace EQWOWConverter.Items
             }
         }
 
-        public static ItemTemplate? CreateQuestRandomItemContainer(string name, List<int> eqItemIDsInsideContainer, List<float> itemChances, 
-            List<int> itemCounts, int multiContainerWOWItemTemplateID)
+        public static ItemTemplate? CreateQuestRandomItemContainer(string name, List<QuestItemReference> rewardItems, int multiContainerWOWItemTemplateID)
         {
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBIDs = GetItemTemplatesByEQDBIDs();
             ItemTemplate itemTemplate = new ItemTemplate();
 
             // Fill the contained items
             float totalChance = 0;
-            for (int i = 0; i < eqItemIDsInsideContainer.Count; i++)
+            for (int i = 0; i < rewardItems.Count; i++)
             {
-                int eqItemID = eqItemIDsInsideContainer[i];
+                int eqItemID = rewardItems[i].itemIDEQ;
                 if (itemTemplatesByEQDBIDs.ContainsKey(eqItemID) == false)
                 {
                     Logger.WriteError(string.Concat("Could not find item with eqid '", eqItemID, "' to be put into item container"));
                     return null;
                 }
-                if (itemChances[i] <= 0)
+                float itemChance = rewardItems[i].itemChance;
+                if (itemChance <= 0)
                 {
                     Logger.WriteError(string.Concat("Item with eqid '", eqItemID, "' had a zero or less chance"));
                     return null;
                 }
 
-                // Break up the counts if there is more than one
-                float itemChance = itemChances[i];
-                if (itemCounts[i] > 1)
-                    itemChance *= Convert.ToSingle(itemCounts[i]);
+                // Break up the counts if there is more than one                
+                if (rewardItems[i].itemCount > 1)
+                    itemChance *= Convert.ToSingle(rewardItems[i].itemCount);
                 itemChance = float.Round(itemChance, 1);
                 itemTemplate.ContainedWOWItemTemplateIDs.Add(itemTemplatesByEQDBIDs[eqItemID].WOWEntryID);
                 itemTemplatesByEQDBIDs[eqItemID].IsRewardedFromQuest = true;

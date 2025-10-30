@@ -16,8 +16,8 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
-using EQWOWConverter.Items;
 using EQWOWConverter.GameObjects;
+using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Player;
@@ -709,6 +709,12 @@ namespace EQWOWConverter
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
             foreach (QuestTemplate questTemplate in questTemplates)
             {
+                if (questTemplate.QuestIDWOW == 32177)
+                {
+                    int x = 5;
+                    int y = 5;
+                }
+
                 // Skip any quests that are in zones we're not processing
                 if (zonePropertiesByShortName.ContainsKey(questTemplate.ZoneShortName.ToLower()) == false)
                 {
@@ -724,12 +730,12 @@ namespace EQWOWConverter
                 }
 
                 // Mark all of the rewards so they get included in the final output
-                foreach (int eqItemTemplateID in questTemplate.RewardItemEQIDs)
+                for (int i = 0; i < questTemplate.RewardItems.Count; i++)
                 {
-                    if (itemTemplatesByEQDBID.ContainsKey(eqItemTemplateID) == false)
+                    if (itemTemplatesByEQDBID.ContainsKey(questTemplate.RewardItems[i].itemIDEQ) == false)
                         questTemplate.IsValidQuest = false;
                     else
-                        itemTemplatesByEQDBID[eqItemTemplateID].IsRewardedFromQuest = true;
+                        itemTemplatesByEQDBID[questTemplate.RewardItems[i].itemIDEQ].IsRewardedFromQuest = true;
                 }   
             }
         }
@@ -762,7 +768,7 @@ namespace EQWOWConverter
                 }
 
                 // If there is a random award, handle it
-                if (questTemplate.RewardItemEQIDs.Count > 0 && questTemplate.RewardItemChances[0] < 100)
+                if (questTemplate.RewardItems.Count > 0 && questTemplate.RewardItems[0].itemChance < 100)
                 {
                     if (questTemplate.MultiRewardContainerWOWItemID <= 0)
                     {
@@ -771,37 +777,65 @@ namespace EQWOWConverter
                         continue;
                     }
                     string containerName = string.Concat(questTemplate.QuestgiverName.Replace("_", " ").Replace("#", ""), "'s Reward");
-                    questTemplate.RandomAwardContainerItemTemplate = ItemTemplate.CreateQuestRandomItemContainer(containerName, questTemplate.RewardItemEQIDs, questTemplate.RewardItemChances, 
-                        questTemplate.RewardItemCounts, questTemplate.MultiRewardContainerWOWItemID);
-                    questTemplate.RewardItemWOWIDs.Clear();
-                    questTemplate.RewardItemEQIDs.Clear();
-                    questTemplate.RewardItemCounts.Clear();
-                    questTemplate.RewardItemChances.Clear();
+                    questTemplate.RandomAwardContainerItemTemplate = ItemTemplate.CreateQuestRandomItemContainer(containerName, questTemplate.RewardItems, questTemplate.MultiRewardContainerWOWItemID);
+                    questTemplate.RewardItems.Clear();
                     if (questTemplate.RandomAwardContainerItemTemplate != null)
                     {
-                        questTemplate.RewardItemWOWIDs.Add(questTemplate.RandomAwardContainerItemTemplate.WOWEntryID);
-                        questTemplate.RewardItemEQIDs.Add(questTemplate.RandomAwardContainerItemTemplate.EQItemID);
-                        questTemplate.RewardItemCounts.Add(1);
-                        questTemplate.RewardItemChances.Add(100);
+                        QuestTemplate.QuestItemReference questItemReference = new QuestTemplate.QuestItemReference();
+                        questItemReference.itemIDWOW = questTemplate.RandomAwardContainerItemTemplate.WOWEntryID;
+                        questItemReference.itemIDEQ = questTemplate.RandomAwardContainerItemTemplate.EQItemID;
+                        questItemReference.itemCount = 1;
+                        questItemReference.itemChance = 100;
+                        questTemplate.RewardItems.Add(questItemReference);
                     }
                 }
 
                 // Spell scrolls can be a reward in slot 1, so update reward template if so to a class-appropriate version(s)
-                if (questTemplate.RewardItemEQIDs.Count > 0 && questTemplate.RewardItemChances[0] >= 100 && itemTemplatesByWOWEntryID.ContainsKey(questTemplate.RewardItemWOWIDs[0]) == true &&
-                    itemTemplatesByWOWEntryID[questTemplate.RewardItemWOWIDs[0]].ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
+                if (questTemplate.RewardItems.Count > 0 && questTemplate.RewardItems[0].itemChance >= 100 && itemTemplatesByWOWEntryID.ContainsKey(questTemplate.RewardItems[0].itemIDWOW) == true &&
+                    itemTemplatesByWOWEntryID[questTemplate.RewardItems[0].itemIDWOW].ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
                 {
-                    int rewardItemEQID = questTemplate.RewardItemEQIDs[0];
-                    int rewardItemWOWID = questTemplate.RewardItemWOWIDs[0];
-                    questTemplate.RewardItemWOWIDs.RemoveAt(0);
-                    questTemplate.RewardItemEQIDs.RemoveAt(0);
-                    questTemplate.RewardItemCounts.RemoveAt(0);
-                    questTemplate.RewardItemChances.RemoveAt(0);
+                    int rewardItemEQID = questTemplate.RewardItems[0].itemIDEQ;
+                    int rewardItemWOWID = questTemplate.RewardItems[0].itemIDWOW;
+                    questTemplate.RewardItems.RemoveAt(0);
                     foreach (int classSpecificItemID in itemTemplatesByWOWEntryID[rewardItemWOWID].ClassSpecificItemVersionsByWOWItemTemplateID.Values)
                     {
-                        questTemplate.RewardItemWOWIDs.Add(classSpecificItemID);
-                        questTemplate.RewardItemEQIDs.Add(rewardItemEQID);
-                        questTemplate.RewardItemCounts.Add(1);
-                        questTemplate.RewardItemChances.Add(100);
+                        QuestTemplate.QuestItemReference questItemReference = new QuestTemplate.QuestItemReference();
+                        questItemReference.itemIDWOW = classSpecificItemID;
+                        questItemReference.itemIDParentWOW = rewardItemWOWID;
+                        questItemReference.itemIDEQ = rewardItemEQID;
+                        questItemReference.itemCount = 1;
+                        questItemReference.itemChance = 100;
+                        questTemplate.RewardItems.Add(questItemReference);
+                    }
+                }
+
+                // Spell scrolls can also be a required item, so update the references as needed
+                foreach (QuestTemplate.QuestItemReference itemReference in questTemplate.RequiredItems)
+                {
+                    if (itemTemplatesByWOWEntryID.ContainsKey(itemReference.itemIDWOW) == false)
+                    {
+                        Logger.WriteError("Quest ", questTemplate.QuestIDWOW.ToString(), " has an invalid required item reference with wowid of ", itemReference.itemIDWOW.ToString());
+                        questTemplate.IsValidQuest = false;
+                        continue;
+                    }
+                    ItemTemplate requiredItemTemplate = itemTemplatesByWOWEntryID[itemReference.itemIDWOW];
+                    if (requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0 && questTemplate.RewardItems.Count > 0)
+                    {
+                        // If the first reward is class specific, use that as the class reference.
+                        ItemTemplate firstRewardItemTemplate = itemTemplatesByWOWEntryID[questTemplate.RewardItems[0].itemIDWOW];
+                        bool matchFound = false;
+                        foreach(var classSpecificItem in requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID)
+                        {
+                            if (firstRewardItemTemplate.AllowedClassTypes.Contains(classSpecificItem.Key) == true)
+                            {
+                                itemReference.itemIDWOW = classSpecificItem.Value;
+                                matchFound = true;
+                                break;
+                            }
+                        }
+                        if (matchFound == false)
+                            itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID[0];
+                        itemReference.itemIDParentWOW = requiredItemTemplate.WOWEntryID;
                     }
                 }
 
