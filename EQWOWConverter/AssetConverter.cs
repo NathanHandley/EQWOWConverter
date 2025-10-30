@@ -709,12 +709,6 @@ namespace EQWOWConverter
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
             foreach (QuestTemplate questTemplate in questTemplates)
             {
-                if (questTemplate.QuestIDWOW == 32177)
-                {
-                    int x = 5;
-                    int y = 5;
-                }
-
                 // Skip any quests that are in zones we're not processing
                 if (zonePropertiesByShortName.ContainsKey(questTemplate.ZoneShortName.ToLower()) == false)
                 {
@@ -1474,15 +1468,35 @@ namespace EQWOWConverter
                             }
                             ItemTemplate curItemTemplate = itemTemplatesByEQDBID[itemDropEntry.ItemIDEQ];
                             curItemTemplate.IsDroppedByCreature = true;
-                            ItemLootTemplate newItemLootTemplate = new ItemLootTemplate();
-                            newItemLootTemplate.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
-                            newItemLootTemplate.ItemTemplateEntryID = curItemTemplate.WOWEntryID;
-                            newItemLootTemplate.Chance = itemDropEntry.Chance;
-                            newItemLootTemplate.Comment = creatureTemplate.Name + " - " + curItemTemplate.Name;
-                            newItemLootTemplate.GroupID = itemGroupID;
-                            newItemLootTemplate.MinCount = Math.Max(lootTableEntry.MinDrop, 1);
-                            newItemLootTemplate.MaxCount = Math.Max(lootTableEntry.MinDrop, 1);
-                            itemLootTemplates.Add(newItemLootTemplate);
+
+                            // Items that have class specific copies need to be added for each copy, otherwise just one
+                            if (curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
+                            {
+                                foreach (var classSpecificItem in curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID)
+                                {
+                                    ItemLootTemplate newItemLootTemplate = new ItemLootTemplate();
+                                    newItemLootTemplate.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
+                                    newItemLootTemplate.ItemTemplateEntryID = classSpecificItem.Value;
+                                    newItemLootTemplate.Chance = itemDropEntry.Chance;
+                                    newItemLootTemplate.Comment = string.Concat(creatureTemplate.Name, " - ", curItemTemplate.Name, " (", classSpecificItem.Key.ToString(), ")");
+                                    newItemLootTemplate.GroupID = itemGroupID;
+                                    newItemLootTemplate.MinCount = Math.Max(lootTableEntry.MinDrop, 1);
+                                    newItemLootTemplate.MaxCount = Math.Max(lootTableEntry.MinDrop, 1);
+                                    itemLootTemplates.Add(newItemLootTemplate);
+                                }
+                            }
+                            else
+                            {                                
+                                ItemLootTemplate newItemLootTemplate = new ItemLootTemplate();
+                                newItemLootTemplate.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
+                                newItemLootTemplate.ItemTemplateEntryID = curItemTemplate.WOWEntryID;
+                                newItemLootTemplate.Chance = itemDropEntry.Chance;
+                                newItemLootTemplate.Comment = creatureTemplate.Name + " - " + curItemTemplate.Name;
+                                newItemLootTemplate.GroupID = itemGroupID;
+                                newItemLootTemplate.MinCount = Math.Max(lootTableEntry.MinDrop, 1);
+                                newItemLootTemplate.MaxCount = Math.Max(lootTableEntry.MinDrop, 1);
+                                itemLootTemplates.Add(newItemLootTemplate);
+                            }
                         }
                         itemGroupID++;
                     }
