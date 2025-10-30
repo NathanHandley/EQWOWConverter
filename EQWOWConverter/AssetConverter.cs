@@ -725,7 +725,12 @@ namespace EQWOWConverter
 
                 // Mark all of the rewards so they get included in the final output
                 foreach (int eqItemTemplateID in questTemplate.RewardItemEQIDs)
-                    itemTemplatesByEQDBID[eqItemTemplateID].IsRewardedFromQuest = true;
+                {
+                    if (itemTemplatesByEQDBID.ContainsKey(eqItemTemplateID) == false)
+                        questTemplate.IsValidQuest = false;
+                    else
+                        itemTemplatesByEQDBID[eqItemTemplateID].IsRewardedFromQuest = true;
+                }   
             }
         }
 
