@@ -23,7 +23,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM `item_loot_template` WHERE `Entry` >= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_START + " AND `Entry` <= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_END + ";";
+            return "DELETE FROM `item_loot_template` WHERE `Item` >= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_START + " AND `Item` <= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_END + ";";
         }
 
         public void AddRow(int containerItemTemplateID, int containedItemTemplateID, int groupID, float chance, int count, string comment)
