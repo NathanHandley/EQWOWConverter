@@ -836,23 +836,34 @@ namespace EQWOWConverter
                         continue;
                     }
                     ItemTemplate requiredItemTemplate = itemTemplatesByWOWEntryID[itemReference.itemIDWOW];
-                    if (requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0 && questTemplate.RewardItems.Count > 0)
+                    if (requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
                     {
-                        // If the first reward is class specific, use that as the class reference.
-                        ItemTemplate firstRewardItemTemplate = itemTemplatesByWOWEntryID[questTemplate.RewardItems[0].itemIDWOW];
-                        bool matchFound = false;
-                        foreach (var classSpecificItem in requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID)
+                        if (questTemplate.RewardItems.Count > 0)
                         {
-                            if (firstRewardItemTemplate.AllowedClassTypes.Contains(classSpecificItem.Key) == true)
+                            // If the first reward is class specific, use that as the class reference.
+                            ItemTemplate firstRewardItemTemplate = itemTemplatesByWOWEntryID[questTemplate.RewardItems[0].itemIDWOW];
+                            bool matchFound = false;
+                            foreach (var classSpecificItem in requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID)
                             {
-                                itemReference.itemIDWOW = classSpecificItem.Value;
-                                matchFound = true;
-                                break;
+                                if (firstRewardItemTemplate.AllowedClassTypes.Contains(classSpecificItem.Key) == true)
+                                {
+                                    itemReference.itemIDWOW = classSpecificItem.Value;
+                                    matchFound = true;
+                                    break;
+                                }
                             }
+                            if (matchFound == false)
+                                itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.First().Value;
                         }
-                        if (matchFound == false)
-                            itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.First().Value;
+                        else
+                            itemReference.itemIDWOW = itemTemplatesByWOWEntryID[requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.First().Value].WOWEntryID;
                         itemReference.itemIDParentWOW = requiredItemTemplate.WOWEntryID;
+                    }
+                    else
+                    {
+                        // Also ensure that the 'essence container' versions are not being used as a required item
+                        if (requiredItemTemplate.NonEssenceWOWEntryID != 0)
+                            itemReference.itemIDWOW = requiredItemTemplate.NonEssenceWOWEntryID;
                     }
                 }
 
@@ -1885,7 +1896,12 @@ namespace EQWOWConverter
                         curSpellTemplate.Reagents.Add(newReagent);
                     }
                     else
-                        curSpellTemplate.Reagents.Add(new SpellTemplate.Reagent(wowItemID, count));
+                    {
+                        if (curItemTemplate.NonEssenceWOWEntryID != 0)
+                            curSpellTemplate.Reagents.Add(new SpellTemplate.Reagent(curItemTemplate.NonEssenceWOWEntryID, count));
+                        else
+                            curSpellTemplate.Reagents.Add(new SpellTemplate.Reagent(wowItemID, count));
+                    }
                 }
 
                 // Avoid name collisions

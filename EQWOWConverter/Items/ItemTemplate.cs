@@ -39,6 +39,7 @@ namespace EQWOWConverter.Items
 
         public int EQItemID = 0;
         public int WOWEntryID = 0;
+        public int NonEssenceWOWEntryID = 0; // Filled in only for "essence split clickies" for tradeskills/quests to reference a non-essence version
         public int ClassID = 0;
         public int SubClassID = 0;
         public string Name = string.Empty;
@@ -1762,6 +1763,7 @@ namespace EQWOWConverter.Items
 
             createdBagItemTemplate.ContainedItems.Add(new ContainedItem());
             createdBagItemTemplate.ContainedItems[0].itemTemplateIDWOW = newItemWOWItemEntryID; // Add the item reference
+            createdBagItemTemplate.NonEssenceWOWEntryID = newItemWOWItemEntryID;
             createdBagItemTemplate.ContainedItems[0].parentItemTemplateIDWOW = newItemWOWItemEntryID;
             createdBagItemTemplate.ContainedItems[0].chance = 100;
             createdBagItemTemplate.ContainedItems[0].count = 1;
