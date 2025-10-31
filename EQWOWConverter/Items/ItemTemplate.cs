@@ -16,13 +16,22 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Spells;
+using EQWOWConverter.Quests;
 using System.Text;
-using static EQWOWConverter.Quests.QuestTemplate;
 
 namespace EQWOWConverter.Items
 {
     internal class ItemTemplate
     {
+        internal class ContainedItem
+        {
+            public int parentItemTemplateIDWOW;
+            public int itemTemplateIDWOW;
+            public int count;
+            public float chance;
+            public int group;
+        }
+
         private static Dictionary<string, Dictionary<string, float>> StatBaselinesBySlotAndStat = new Dictionary<string, Dictionary<string, float>>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByWOWEntryID = new SortedDictionary<int, ItemTemplate>();
@@ -84,9 +93,7 @@ namespace EQWOWConverter.Items
         public int WOWSpellCategoryCooldown1 = -1;
         public int CastTime = 0;
         public int FoodType = 0; // For pets: 1 - Meat, 2 - Fish, 3 - Cheese, 4 - Bread, 5 - Fungus, 6 - fruit, 7 - Raw Meat, 8 - Raw Fish
-        public List<int> ContainedWOWItemTemplateIDs = new List<int>();
-        public List<int> ContainedtemCounts = new List<int>();
-        public List<float> ContainedItemChances = new List<float>();
+        public List<ContainedItem> ContainedItems = new List<ContainedItem>();
         public bool CanBeOpened = false;
         public bool IsExistingItemAlready = false;
         public bool IsGivenAsStartItem = false;
@@ -1594,44 +1601,70 @@ namespace EQWOWConverter.Items
             }
         }
 
-        public static ItemTemplate? CreateQuestRandomItemContainer(string name, List<QuestItemReference> rewardItems, int multiContainerWOWItemTemplateID)
+        public static ItemTemplate? CreateQuestRandomItemContainer(string name, List<QuestTemplate.QuestItemReference> rewardItems, int multiContainerWOWItemTemplateID)
         {
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBIDs = GetItemTemplatesByEQDBIDs();
             ItemTemplate itemTemplate = new ItemTemplate();
 
-            // Fill the contained items
-            float totalChance = 0;
-            for (int i = 0; i < rewardItems.Count; i++)
+            // Add all 100 chance items to the collection, but set aside the randoms for now
+            List<QuestTemplate.QuestItemReference> randomRewardItems = new List<QuestTemplate.QuestItemReference>();
+            int curGroupID = 1;
+            foreach (QuestTemplate.QuestItemReference rewardItem in rewardItems)
             {
-                int eqItemID = rewardItems[i].itemIDEQ;
-                if (itemTemplatesByEQDBIDs.ContainsKey(eqItemID) == false)
+                if (rewardItem.itemChance == 100)
                 {
-                    Logger.WriteError(string.Concat("Could not find item with eqid '", eqItemID, "' to be put into item container"));
-                    return null;
+                    ContainedItem containedItem = new ContainedItem();
+                    containedItem.itemTemplateIDWOW = rewardItem.itemIDWOW;
+                    containedItem.parentItemTemplateIDWOW = rewardItem.itemIDParentWOW;
+                    containedItem.chance = 100;
+                    containedItem.count = rewardItem.itemCount;
+                    containedItem.group = curGroupID;
+                    itemTemplate.ContainedItems.Add(containedItem);
+                    curGroupID++;
                 }
-                float itemChance = rewardItems[i].itemChance;
-                if (itemChance <= 0)
-                {
-                    Logger.WriteError(string.Concat("Item with eqid '", eqItemID, "' had a zero or less chance"));
-                    return null;
-                }
-
-                // Break up the counts if there is more than one                
-                if (rewardItems[i].itemCount > 1)
-                    itemChance *= Convert.ToSingle(rewardItems[i].itemCount);
-                itemChance = float.Round(itemChance, 1);
-                itemTemplate.ContainedWOWItemTemplateIDs.Add(itemTemplatesByEQDBIDs[eqItemID].WOWEntryID);
-                itemTemplatesByEQDBIDs[eqItemID].IsRewardedFromQuest = true;
-                itemTemplate.ContainedItemChances.Add(itemChance);
-                itemTemplate.ContainedtemCounts.Add(1);
-                totalChance += itemChance;
+                else
+                    randomRewardItems.Add(rewardItem);
             }
 
-            // Make sure the total chance equals as close to 100 as possible
-            if (itemTemplate.ContainedItemChances.Count > 0)
+            // Pull all random items into one group
+            if (randomRewardItems.Count > 0)
             {
-                float addChance = 100 - totalChance;
-                itemTemplate.ContainedItemChances[itemTemplate.ContainedItemChances.Count - 1] += addChance;
+                float totalChance = 0;
+                for (int i = 0; i < randomRewardItems.Count; i++)
+                {
+                    ContainedItem containedItem = new ContainedItem();
+                    int eqItemID = randomRewardItems[i].itemIDEQ;
+                    if (itemTemplatesByEQDBIDs.ContainsKey(eqItemID) == false)
+                    {
+                        Logger.WriteError(string.Concat("Could not find item with eqid '", eqItemID, "' to be put into item container"));
+                        return null;
+                    }
+                    float itemChance = randomRewardItems[i].itemChance;
+                    if (itemChance <= 0)
+                    {
+                        Logger.WriteError(string.Concat("Item with eqid '", eqItemID, "' had a zero or less chance"));
+                        return null;
+                    }
+
+                    // Break up the counts if there is more than one                
+                    if (randomRewardItems[i].itemCount > 1)
+                        itemChance *= Convert.ToSingle(randomRewardItems[i].itemCount);
+                    itemChance = float.Round(itemChance, 1);
+                    containedItem.itemTemplateIDWOW = randomRewardItems[i].itemIDWOW;
+                    containedItem.parentItemTemplateIDWOW = randomRewardItems[i].itemIDParentWOW;
+                    containedItem.chance = itemChance;
+                    containedItem.count = 1;
+                    containedItem.group = curGroupID;
+                    totalChance += itemChance;
+                    itemTemplate.ContainedItems.Add(containedItem);
+                }
+
+                // Make sure the total chance equals as close to 100 as possible
+                if (randomRewardItems.Count > 0)
+                {
+                    float addChance = 100 - totalChance;
+                    itemTemplate.ContainedItems[itemTemplate.ContainedItems.Count - 1].chance += addChance;
+                }
             }
 
             // Calculate the icon name
@@ -1664,11 +1697,17 @@ namespace EQWOWConverter.Items
             ItemTemplate itemTemplate = new ItemTemplate();
 
             // Fill the contained items
+            int curGroupID = 0;
             foreach (var item in itemCountsByWOWItemID)
             {
-                itemTemplate.ContainedWOWItemTemplateIDs.Add(item.Key);
-                itemTemplate.ContainedItemChances.Add(100);
-                itemTemplate.ContainedtemCounts.Add(item.Value);
+                ContainedItem containedItem = new ContainedItem();
+                containedItem.itemTemplateIDWOW = item.Key;
+                containedItem.parentItemTemplateIDWOW = item.Key;
+                containedItem.chance = 100;
+                containedItem.count = item.Value;
+                containedItem.group = curGroupID;
+                itemTemplate.ContainedItems.Add(containedItem);
+                curGroupID++;
             }
 
             // Calculate the icon name
@@ -1720,12 +1759,19 @@ namespace EQWOWConverter.Items
             createdBagItemTemplate.WOWEntryID = originalItemTemplate.WOWEntryID; // Hand over the entry ID from the original item
             createdBagItemTemplate.EQItemID = originalItemTemplate.EQItemID;
             createdBagItemTemplate.IsNoDrop = originalItemTemplate.IsNoDrop;
-            createdBagItemTemplate.ContainedWOWItemTemplateIDs.Add(newItemWOWItemEntryID); // Add the item reference
-            createdBagItemTemplate.ContainedItemChances.Add(100);
-            createdBagItemTemplate.ContainedtemCounts.Add(1);
-            createdBagItemTemplate.ContainedWOWItemTemplateIDs.Add(essenceWOWItemEntryID); // Add the essence reference
-            createdBagItemTemplate.ContainedItemChances.Add(100);
-            createdBagItemTemplate.ContainedtemCounts.Add(1);
+
+            createdBagItemTemplate.ContainedItems.Add(new ContainedItem());
+            createdBagItemTemplate.ContainedItems[0].itemTemplateIDWOW = newItemWOWItemEntryID; // Add the item reference
+            createdBagItemTemplate.ContainedItems[0].parentItemTemplateIDWOW = newItemWOWItemEntryID;
+            createdBagItemTemplate.ContainedItems[0].chance = 100;
+            createdBagItemTemplate.ContainedItems[0].count = 1;
+            createdBagItemTemplate.ContainedItems[0].group = 0;
+            createdBagItemTemplate.ContainedItems.Add(new ContainedItem());
+            createdBagItemTemplate.ContainedItems[1].itemTemplateIDWOW = essenceWOWItemEntryID; // Add the essence reference
+            createdBagItemTemplate.ContainedItems[1].parentItemTemplateIDWOW = essenceWOWItemEntryID;
+            createdBagItemTemplate.ContainedItems[1].chance = 100;
+            createdBagItemTemplate.ContainedItems[1].count = 1;
+            createdBagItemTemplate.ContainedItems[1].group = 1;
             createdBagItemTemplate.ClassID = 0;
             createdBagItemTemplate.SubClassID = 8; // Other
             createdBagItemTemplate.Name = string.Concat(originalItemTemplate.Name, " Container");

@@ -522,18 +522,18 @@ namespace EQWOWConverter
                 else
                 {
                     itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes);
-                    for (int i = 0; i < itemTemplate.ContainedWOWItemTemplateIDs.Count; i++)
+                    for (int i = 0; i < itemTemplate.ContainedItems.Count; i++)
                     {
-                        int curWOWItemTemplateID = itemTemplate.ContainedWOWItemTemplateIDs[i];
-                        float curItemChance = itemTemplate.ContainedItemChances[i];
-                        int curItemCount = 1;
-                        if (itemTemplate.ContainedtemCounts.Count > i)
-                            curItemCount = itemTemplate.ContainedtemCounts[i];
-                        string comment = string.Concat(itemTemplate.Name, " - ", itemTemplatesByWOWID[curWOWItemTemplateID].Name);
-                        if (curItemChance >= 100)
-                            itemLootTemplateSQL.AddRow(itemTemplate.WOWEntryID, curWOWItemTemplateID, 2 + i, curItemChance, curItemCount, comment);
+                        int curWOWItemTemplateID = itemTemplate.ContainedItems[i].itemTemplateIDWOW;
+                        float curItemChance = itemTemplate.ContainedItems[i].chance;
+                        int curItemCount = itemTemplate.ContainedItems[i].count;
+                        int curItemGroup = itemTemplate.ContainedItems[i].group;
+                        string comment;
+                        if (itemTemplate.ContainedItems[i].parentItemTemplateIDWOW == 0)
+                            comment = string.Concat(itemTemplate.Name, " - ", itemTemplatesByWOWID[curWOWItemTemplateID].Name);
                         else
-                            itemLootTemplateSQL.AddRow(itemTemplate.WOWEntryID, curWOWItemTemplateID, 1, curItemChance, curItemCount, comment);
+                            comment = string.Concat(itemTemplate.Name, " - ", itemTemplatesByWOWID[itemTemplate.ContainedItems[i].parentItemTemplateIDWOW].Name);
+                        itemLootTemplateSQL.AddRow(itemTemplate.WOWEntryID, curWOWItemTemplateID, curItemGroup, curItemChance, curItemCount, comment);
                     }
                 }
             }
