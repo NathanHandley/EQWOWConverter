@@ -792,7 +792,7 @@ namespace EQWOWConverter
         // - Class-Specific scroll IDs range 110500 - 112887
         // - Equipped Click Bag IDs range 113000 - 113932
         // - Equipped Click Essence IDs range 114000 - 114932
-        // - Quest Template multi-item reward containers IDs range 116000 - 116199
+        // - Quest Template multi-item reward containers IDs range 116000 - 116200
         // - Tradeskill multi-item creation containers IDs range 117000 - 117217
         public static readonly int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;
         public static readonly int SQL_ITEM_TEMPLATE_ENTRY_END = 120000;
