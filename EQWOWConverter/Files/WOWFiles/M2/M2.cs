@@ -212,8 +212,11 @@ namespace EQWOWConverter.WOWFiles
                 AttachmentIndicesLookup.Add(new M2Int16(-1));
 
             // Add the various attachments
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.Shield_MountMain_ItemVisual0);
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HandRight_ItemVisual1);
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HandLeft_ItemVisual2);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.LargeWeaponLeft);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.LargeWeaponRight);
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ChestBloodFront);
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ChestBloodBack);
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.MouthBreath);
@@ -222,13 +225,9 @@ namespace EQWOWConverter.WOWFiles
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HeadTop);
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.SpellLeftHand);
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.SpellRightHand);
-            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.Chest);
-            if (wowObjectModel.ModelType == ObjectModelType.EquipmentHeld)
-            {
-                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.Shield_MountMain_ItemVisual0);
-                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ElbowRight_ItemVisual3);
-                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ElbowLeft_ItemVisual4);                
-            }
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.Chest);            
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ElbowRight_ItemVisual3);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ElbowLeft_ItemVisual4);
         }
 
         private void SetSkeletonAttachment(ObjectModel wowObjectModel, ObjectModelAttachmentType attachmentType)

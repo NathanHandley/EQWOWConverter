@@ -1336,17 +1336,19 @@ namespace EQWOWConverter.ObjectModels
                     } break;
                 case ObjectModelAttachmentType.HandLeft_ItemVisual2:
                 case ObjectModelAttachmentType.SpellLeftHand:
+                case ObjectModelAttachmentType.LargeWeaponLeft:
                     {
                         returnValue = GetFirstBoneIndexForEQBoneNames("l_point", "pe", "root");
                     } break;
                 case ObjectModelAttachmentType.HandRight_ItemVisual1:
                 case ObjectModelAttachmentType.SpellRightHand:
+                case ObjectModelAttachmentType.LargeWeaponRight:
                     {
                         returnValue = GetFirstBoneIndexForEQBoneNames("r_point", "pe", "root");
                     } break;
                 case ObjectModelAttachmentType.Shield_MountMain_ItemVisual0:
                     {
-                        returnValue = GetFirstBoneIndexForEQBoneNames("shield_mnt", "pe", "root");
+                        returnValue = GetFirstBoneIndexForEQBoneNames("shield_point", "fo_l", "fi_l", "l_point", "pe", "root");
                     } break;
                 case ObjectModelAttachmentType.ElbowRight_ItemVisual3:
                     {
