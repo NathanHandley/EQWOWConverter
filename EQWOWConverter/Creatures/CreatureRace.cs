@@ -35,7 +35,7 @@ namespace EQWOWConverter.Creatures
         public float ModelScale = 1;
         public float Height = 1;
         public float SpawnSizeMod = 0.2f;
-        public bool CanHoldWeapons = false;
+        public bool CanHoldVisualItems = false;
         public string SoundLoopName = string.Empty;
         public string SoundIdle1Name = string.Empty;
         public string SoundIdle2Name = string.Empty;
@@ -186,7 +186,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.SpawnSizeMod = float.Parse(columns["SpawnSizeMod"]);
                 newCreatureRace.BoundaryRadius = float.Parse(columns["BoundRadius"]);
                 newCreatureRace.BoundaryHeight = float.Parse(columns["BoundHeight"]);
-                newCreatureRace.CanHoldWeapons = columns["CanHoldWeapons"].Trim() == "1";
+                newCreatureRace.CanHoldVisualItems = columns["CanHoldVisualItems"].Trim() == "1";
                 newCreatureRace.SoundLoopName = columns["SndLoop"];
                 newCreatureRace.SoundIdle1Name = columns["SndIdle1"];
                 newCreatureRace.SoundIdle2Name = columns["SndIdle2"];

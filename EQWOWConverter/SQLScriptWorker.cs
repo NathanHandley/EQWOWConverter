@@ -60,6 +60,7 @@ namespace EQWOWConverter
         private InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
         private ItemLootTemplateSQL itemLootTemplateSQL = new ItemLootTemplateSQL();
         private ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
+        private ModEverquestCreatureSQL modEverquestCreatureSQL = new ModEverquestCreatureSQL();
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
         private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
         private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
@@ -189,7 +190,10 @@ namespace EQWOWConverter
                 {
                     Logger.WriteError("Error generating azeroth core scripts since model template was null for creature template '" + creatureTemplate.Name + "'");
                     continue;
-                }                
+                }
+
+                // All creature data
+                modEverquestCreatureSQL.AddRow(creatureTemplate);
 
                 // Class Trainers
                 if (creatureTemplate.ClassTrainerType != ClassType.All && creatureTemplate.ClassTrainerType != ClassType.None)
@@ -972,6 +976,7 @@ namespace EQWOWConverter
             instanceTemplateSQL.SaveToDisk("instance_template", SQLFileType.World);
             itemLootTemplateSQL.SaveToDisk("item_loot_template", SQLFileType.World);
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
+            modEverquestCreatureSQL.SaveToDisk("mod_everquest_creature", SQLFileType.World);
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
             modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);
             modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
