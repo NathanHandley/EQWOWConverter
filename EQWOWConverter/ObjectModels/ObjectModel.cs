@@ -123,7 +123,7 @@ namespace EQWOWConverter.ObjectModels
                 if (ModelType == ObjectModelType.Creature)
                     scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_CREATURE_SCALE;
                 else if (ModelType == ObjectModelType.EquipmentHeld)
-                    scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_EQUIPMENT_HELD_SCALE;
+                    scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_EQUIPMENT_SCALE;
 
                 // Determine if rotation is needed
                 bool doRotateOnZAxis = false;
