@@ -1492,8 +1492,8 @@ namespace EQWOWConverter
 
                     // Output loot table entries for each copy determined above
                     ItemLootDrop curItemLootDrop = itemLootDropsByEQID[lootTableEntry.LootDropID];
-                    //for (int i = 0; i < numOfDropCopies; i++)
-                    //{
+                    for (int i = 0; i < numOfDropCopies; i++)
+                    {
                         foreach (ItemLootDropEntry itemDropEntry in curItemLootDrop.ItemLootDropEntries)
                         {
                             if (itemTemplatesByEQDBID.ContainsKey(itemDropEntry.ItemIDEQ) == false)
@@ -1535,10 +1535,9 @@ namespace EQWOWConverter
                                 newItemLootTemplate.MaxCount = Math.Max(lootTableEntry.MinDrop, 1);
                                 itemLootTemplates.Add(newItemLootTemplate);
                             }
-                            itemGroupID++;
                         }
-
-                    //}
+                        itemGroupID++;
+                    }
                 }
 
                 if (itemLootTemplates.Count > 0)
