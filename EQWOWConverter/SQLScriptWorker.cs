@@ -193,7 +193,7 @@ namespace EQWOWConverter
                 }
 
                 // All creature data
-                modEverquestCreatureSQL.AddRow(creatureTemplate);
+                modEverquestCreatureSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.MainhandHeldItemTemplateIDWOW, creatureTemplate.OffhandHeldItemTemplateIDWOW);
 
                 // Class Trainers
                 if (creatureTemplate.ClassTrainerType != ClassType.All && creatureTemplate.ClassTrainerType != ClassType.None)

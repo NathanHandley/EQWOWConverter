@@ -1470,6 +1470,7 @@ namespace EQWOWConverter
                 // Create the item loot template records
                 List<ItemLootTemplate> itemLootTemplates = new List<ItemLootTemplate>();
                 int itemGroupID = 0;
+                List<ItemTemplate> heldMeleeItemTemplatesThatAlwaysDrop = new List<ItemTemplate>();
                 foreach (ItemLootTableEntry lootTableEntry in curItemLootTable.ItemLootTableEntries)
                 {
                     // Skip invalid rows
@@ -1491,8 +1492,8 @@ namespace EQWOWConverter
 
                     // Output loot table entries for each copy determined above
                     ItemLootDrop curItemLootDrop = itemLootDropsByEQID[lootTableEntry.LootDropID];
-                    for (int i = 0; i < numOfDropCopies; i++)
-                    {
+                    //for (int i = 0; i < numOfDropCopies; i++)
+                    //{
                         foreach (ItemLootDropEntry itemDropEntry in curItemLootDrop.ItemLootDropEntries)
                         {
                             if (itemTemplatesByEQDBID.ContainsKey(itemDropEntry.ItemIDEQ) == false)
@@ -1503,6 +1504,8 @@ namespace EQWOWConverter
                             }
                             ItemTemplate curItemTemplate = itemTemplatesByEQDBID[itemDropEntry.ItemIDEQ];
                             curItemTemplate.IsDroppedByCreature = true;
+                            if (itemDropEntry.Chance == 100 && curItemTemplate.IsHeldInHandsNonRanged() == true && creatureTemplate.Race.CanHoldVisualItems == true)
+                                heldMeleeItemTemplatesThatAlwaysDrop.Add(curItemTemplate);
 
                             // Items that have class specific copies need to be added for each copy, otherwise just one
                             if (curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
@@ -1532,15 +1535,19 @@ namespace EQWOWConverter
                                 newItemLootTemplate.MaxCount = Math.Max(lootTableEntry.MinDrop, 1);
                                 itemLootTemplates.Add(newItemLootTemplate);
                             }
+                            itemGroupID++;
                         }
-                        itemGroupID++;
-                    }
+
+                    //}
                 }
 
                 if (itemLootTemplates.Count > 0)
                 {
                     itemLootTemplatesByCreatureTemplateID.Add(creatureTemplate.WOWCreatureTemplateID, itemLootTemplates);
                     creatureTemplate.WOWLootID = creatureTemplate.WOWCreatureTemplateID;
+
+                    if (heldMeleeItemTemplatesThatAlwaysDrop.Count > 0)
+                        creatureTemplate.SetHeldItemTemplates(heldMeleeItemTemplatesThatAlwaysDrop);
                 }
             }
 

@@ -149,6 +149,15 @@ namespace EQWOWConverter.Items
             return false;
         }
 
+        public bool IsHeldInHandsNonRanged()
+        {
+            if (InventoryType == ItemWOWInventoryType.OneHand || InventoryType == ItemWOWInventoryType.HeldInOffHand ||
+                InventoryType == ItemWOWInventoryType.Shield || InventoryType == ItemWOWInventoryType.Shield ||
+                InventoryType == ItemWOWInventoryType.TwoHand || InventoryType == ItemWOWInventoryType.OffHand2)
+                return true;
+            return false;
+        }
+
         public ItemTemplate(int wowEntryID, ItemWOWInventoryType inventoryType)
         {
             WOWEntryID = wowEntryID;

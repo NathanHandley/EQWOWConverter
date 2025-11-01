@@ -132,8 +132,8 @@ namespace EQWOWConverter.Items
             }
 
             // Normalize the loot drop chances
-            foreach (var itemLootDropsByEQID in ItemLootDropsByEQID)
-                itemLootDropsByEQID.Value.ReduceChanceIfOver100();
+            //foreach (var itemLootDropsByEQID in ItemLootDropsByEQID)
+            //    itemLootDropsByEQID.Value.ReduceChanceIfOver100();
         }
     }
 }
