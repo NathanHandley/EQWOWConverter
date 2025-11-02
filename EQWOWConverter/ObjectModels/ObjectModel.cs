@@ -1341,13 +1341,13 @@ namespace EQWOWConverter.ObjectModels
                     } break;
                 case ObjectModelAttachmentType.HandLeft_ItemVisual2:
                 case ObjectModelAttachmentType.SpellLeftHand:
-                case ObjectModelAttachmentType.LargeWeaponLeft:
                     {
                         returnValue = GetFirstBoneIndexForEQBoneNames("l_point", "pe", "root");
                     } break;
                 case ObjectModelAttachmentType.HandRight_ItemVisual1:
                 case ObjectModelAttachmentType.SpellRightHand:
                 case ObjectModelAttachmentType.LargeWeaponRight:
+                case ObjectModelAttachmentType.LargeWeaponLeft:// This seems questionable, but fixes swapping of hands for 2h weapons when casting
                     {
                         returnValue = GetFirstBoneIndexForEQBoneNames("r_point", "pe", "root");
                     } break;
