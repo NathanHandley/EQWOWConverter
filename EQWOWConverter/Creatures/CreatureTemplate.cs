@@ -142,7 +142,6 @@ namespace EQWOWConverter.Creatures
                 if (shields.Count > 0)
                     OffhandHeldItemTemplateIDWOW = shields[0].WOWEntryIDForCreatureEquip;
                 else if (oneHandWeapons.Count > 1)
-                    OffhandHeldItemTemplateIDWOW = oneHandWeapons[0].WOWEntryID;
                     OffhandHeldItemTemplateIDWOW = oneHandWeapons[0].WOWEntryIDForCreatureEquip;
                 else if (heldItems.Count > 0)
                     OffhandHeldItemTemplateIDWOW = heldItems[0].WOWEntryIDForCreatureEquip;
