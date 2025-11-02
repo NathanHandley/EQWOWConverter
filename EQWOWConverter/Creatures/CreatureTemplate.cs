@@ -129,22 +129,23 @@ namespace EQWOWConverter.Creatures
 
             // Set the visuals accordingly
             if (doHoldFishingPole == true && fishingPoles.Count > 0)
-                MainhandHeldItemTemplateIDWOW = fishingPoles[0].WOWEntryID;
+                MainhandHeldItemTemplateIDWOW = fishingPoles[0].WOWEntryIDForCreatureEquip;
             else if (twoHandWeapons.Count > 0)
-                MainhandHeldItemTemplateIDWOW = twoHandWeapons[0].WOWEntryID;
+                MainhandHeldItemTemplateIDWOW = twoHandWeapons[0].WOWEntryIDForCreatureEquip;
             else
             {
                 // Mainhand
                 if (oneHandWeapons.Count > 0)
-                    MainhandHeldItemTemplateIDWOW = oneHandWeapons[0].WOWEntryID;
+                    MainhandHeldItemTemplateIDWOW = oneHandWeapons[0].WOWEntryIDForCreatureEquip;
 
                 // Offhand
                 if (shields.Count > 0)
-                    OffhandHeldItemTemplateIDWOW = shields[0].WOWEntryID;
+                    OffhandHeldItemTemplateIDWOW = shields[0].WOWEntryIDForCreatureEquip;
                 else if (oneHandWeapons.Count > 1)
                     OffhandHeldItemTemplateIDWOW = oneHandWeapons[0].WOWEntryID;
+                    OffhandHeldItemTemplateIDWOW = oneHandWeapons[0].WOWEntryIDForCreatureEquip;
                 else if (heldItems.Count > 0)
-                    OffhandHeldItemTemplateIDWOW = heldItems[0].WOWEntryID;
+                    OffhandHeldItemTemplateIDWOW = heldItems[0].WOWEntryIDForCreatureEquip;
             }
         }
 

@@ -27,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM `item_template` WHERE `entry` >= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_START + " AND `entry` <= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_END + ";";
         }
 
-        public void AddRow(ItemTemplate itemTemplate, int entryID, string name, string description, int requiredLevel, List<ClassType> allowedClassTypes)
+        public void AddRow(ItemTemplate itemTemplate, int entryID, string name, string description, int requiredLevel, List<ClassType> allowedClassTypes, ItemDisplayInfo? itemDisplayInfo)
         {
             // Prevent double-add
             if (insertedItemTemplateEntryIDs.Contains(entryID))
@@ -40,8 +40,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("subclass", itemTemplate.SubClassID);
             newRow.AddInt("SoundOverrideSubclass", -1);
             newRow.AddString("name", 255, name);
-            if (itemTemplate.ItemDisplayInfo != null)
-                newRow.AddInt("displayid", itemTemplate.ItemDisplayInfo.ItemDisplayInfoDBCID);
+            if (itemDisplayInfo != null)
+                newRow.AddInt("displayid", itemDisplayInfo.ItemDisplayInfoDBCID);
             else
                 newRow.AddInt("displayid", 0);
             newRow.AddInt("Quality", Convert.ToInt32(itemTemplate.Quality));

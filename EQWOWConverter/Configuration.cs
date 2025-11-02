@@ -94,8 +94,8 @@ namespace EQWOWConverter
         // A WORLD_SCALE value of 0.25 seems to be 1:1 with EQ.  0.28 allows humans and 0.4 allows taurens to enter rivervale bank door
         public static readonly float GENERATE_WORLD_SCALE = 0.29f;
         public static readonly float GENERATE_CREATURE_SCALE = 0.255f;
-        public static readonly float GENERATE_EQUIPMENT_SCALE = 0.255f;
-        //public static readonly float GENERATE_EQUIPMENT_SCALE_PLAYER = 0.35f; TODO: Consider generating larger versions for players
+        public static readonly float GENERATE_EQUIPMENT_PLAYER_SCALE = 0.35f; // The size of equipment on players
+        public static readonly float GENERATE_EQUIPMENT_CREATURE_SCALE = 0.255f; // The size of equipment on creatures/npcs
 
         // Identifier for what subset of expansion data to work with.  0 = Classic, 1 = Kunark, 2 = Velious
         public static readonly int GENERATE_EQ_EXPANSION_ID_GENERAL = 2; // Not advisable to set this lower than 2
@@ -762,7 +762,7 @@ namespace EQWOWConverter
         public static readonly int SQL_CREATURE_GUID_LOW = 310000;
         public static readonly int SQL_CREATURE_GUID_HIGH = 399999;
 
-        // Record identifier for the creature template SQL table, Need just under 11k
+        // Record identifier for the creature template SQL table
         public static readonly int SQL_CREATURETEMPLATE_ENTRY_LOW = 45000;
         public static readonly int SQL_CREATURETEMPLATE_ENTRY_HIGH = 60000;
         public static readonly int SQL_CREATURETEMPLATE_GENERATED_START_ID = 56000;
@@ -795,8 +795,10 @@ namespace EQWOWConverter
         // - Equipped Click Essence IDs range 114000 - 114932
         // - Quest Template multi-item reward containers IDs range 116000 - 116200
         // - Tradeskill multi-item creation containers IDs range 117000 - 117217
+        // - NPC-worn version of items range 120000-133783 (TODO Review: May be much less)
         public static readonly int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;
-        public static readonly int SQL_ITEM_TEMPLATE_ENTRY_END = 120000;
+        public static readonly int SQL_ITEM_TEMPLATE_ENTRY_END = 134000;
+        public static readonly int SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START = 120000;
 
         // Stand and end IDs for npc_text sql records
         public static readonly int SQL_NPCTEXT_ID_START = 80000;

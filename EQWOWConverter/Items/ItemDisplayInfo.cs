@@ -17,7 +17,6 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.WOWFiles;
-using System.Drawing;
 
 namespace EQWOWConverter.Items
 {
@@ -25,7 +24,7 @@ namespace EQWOWConverter.Items
     {
         public static List<ItemDisplayInfo> ItemDisplayInfos = new List<ItemDisplayInfo>();
         private static int CURRENT_DBCID_ITEMDISPLAYINFO = Configuration.DBCID_ITEMDISPLAYINFO_START;
-        private static Dictionary<string, ObjectModel> ObjectModelsByEQItemDisplayFileName = new Dictionary<string, ObjectModel>();
+        private static Dictionary<string, ObjectModel> ObjectModelsByEQItemOutputName = new Dictionary<string, ObjectModel>();
         private static Dictionary<string, string> staticFileNamesByCommonName = new Dictionary<string, string>();
         private static Dictionary<string, string> skeletalFileNamesByCommonName = new Dictionary<string, string>();
         private static bool IsFirstCreate = true;
@@ -33,6 +32,7 @@ namespace EQWOWConverter.Items
         private static Dictionary<string, List<Int64>> GeneratedArmorPartBySourceNameThenColorID = new Dictionary<string, List<long>>();
 
         public int ItemDisplayInfoDBCID = 0;
+        public ItemEquipUnitType itemEquipUnitType = ItemEquipUnitType.Player;
         public string IconFileNameNoExt = string.Empty;
         public string ModelName = string.Empty;
         public string ModelTexture1 = string.Empty;
@@ -116,7 +116,7 @@ namespace EQWOWConverter.Items
         }
 
         public static ItemDisplayInfo CreateItemDisplayInfo(string itemDisplayCommonName, string iconFileNameNoExt, 
-            ItemWOWInventoryType inventoryType, int materialTypeID, Int64 colorPacked)
+            ItemWOWInventoryType inventoryType, int materialTypeID, Int64 colorPacked, ItemEquipUnitType equipUnitType)
         {
             // Perform known lookup replacements
             switch (itemDisplayCommonName.ToLower())
@@ -133,7 +133,7 @@ namespace EQWOWConverter.Items
             string modelFileName = itemDisplayNameWithEQ + ".mdx";
             foreach(ItemDisplayInfo itemDisplayInfo in ItemDisplayInfos)
             {
-                if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt && itemDisplayInfo.ModelName == modelFileName)
+                if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt && itemDisplayInfo.ModelName == modelFileName && itemDisplayInfo.itemEquipUnitType == equipUnitType)
                     return itemDisplayInfo;
             }
 
@@ -186,7 +186,7 @@ namespace EQWOWConverter.Items
             // Held objects have models
             else if (IsHeld(inventoryType) == true)
             {
-                ObjectModel objectModel = GetOrCreateModelForHeldItem(itemDisplayNameWithEQ, inventoryType);
+                ObjectModel objectModel = GetOrCreateModelForHeldItem(itemDisplayNameWithEQ, inventoryType, equipUnitType);
                 newItemDisplayInfo.ModelName = objectModel.Name + ".mdx";
             }
             // Armor
@@ -288,7 +288,7 @@ namespace EQWOWConverter.Items
             return newItemDisplayInfo;
         }
 
-        private static ObjectModel GetOrCreateModelForHeldItem(string itemDisplayCommonName, ItemWOWInventoryType inventoryType)
+        private static ObjectModel GetOrCreateModelForHeldItem(string itemDisplayCommonName, ItemWOWInventoryType inventoryType, ItemEquipUnitType equipUnitType)
         {
             // Make sure things are loaded
             string equipmentSourceBasePath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment");
@@ -321,9 +321,13 @@ namespace EQWOWConverter.Items
             if (IsHeld(inventoryType) == false)
                 itemDisplayCommonName = "eq_it63";
 
+            string outputName = itemDisplayCommonName;
+            if (equipUnitType == ItemEquipUnitType.Creature)
+                outputName = string.Concat(itemDisplayCommonName, "_npc");
+
             // Get or load the model
-            if (ObjectModelsByEQItemDisplayFileName.ContainsKey(itemDisplayCommonName) == true)
-                return ObjectModelsByEQItemDisplayFileName[itemDisplayCommonName];
+            if (ObjectModelsByEQItemOutputName.ContainsKey(outputName) == true)
+                return ObjectModelsByEQItemOutputName[outputName];
             else
             {
                 Logger.WriteDebug("Creating equipment model object for '" + itemDisplayCommonName + "'...");
@@ -343,7 +347,9 @@ namespace EQWOWConverter.Items
                 }
 
                 // Create a new model
-                ObjectModel equipmentModel = new ObjectModel(itemDisplayCommonName, new ObjectModels.Properties.ObjectModelProperties(), modelType, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+                ObjectModels.Properties.ObjectModelProperties objectModelProperties = new ObjectModels.Properties.ObjectModelProperties();
+                objectModelProperties.EquipUnitType = equipUnitType;
+                ObjectModel equipmentModel = new ObjectModel(outputName, objectModelProperties, modelType, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                 equipmentModel.LoadEQObjectFromFile(equipmentSourceBasePath, eqAssetFileName);
 
                 // Determine the output folder based on item type
@@ -356,7 +362,7 @@ namespace EQWOWConverter.Items
 
                 // Create the output files
                 M2 objectM2 = new M2(equipmentModel, relativeMPQFolderName);
-                objectM2.WriteToDisk(itemDisplayCommonName, fullOutputFolderName);
+                objectM2.WriteToDisk(outputName, fullOutputFolderName);
 
                 // Copy the textures
                 foreach (ObjectModelTexture texture in equipmentModel.ModelTextures)
@@ -370,7 +376,7 @@ namespace EQWOWConverter.Items
                 }
 
                 // Save it on the list and return it
-                ObjectModelsByEQItemDisplayFileName.Add(itemDisplayCommonName, equipmentModel);
+                ObjectModelsByEQItemOutputName.Add(outputName, equipmentModel);
                 return equipmentModel;
             }
         }

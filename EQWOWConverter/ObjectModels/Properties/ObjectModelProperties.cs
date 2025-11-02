@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
+using EQWOWConverter.Items;
 using EQWOWConverter.Spells;
 
 namespace EQWOWConverter.ObjectModels.Properties
@@ -42,6 +43,7 @@ namespace EQWOWConverter.ObjectModels.Properties
         public SpellVisualType SpellVisualType = SpellVisualType.Beneficial;
         public bool SpellEmitterSpraysFromHands = false;
         public bool RenderingEnabled = true; // Note: This is also makes it non-interactive (non-clickable)
+        public ItemEquipUnitType EquipUnitType = ItemEquipUnitType.Player;
 
         public ObjectModelProperties() { }
         public ObjectModelProperties(ObjectModelProperties other)

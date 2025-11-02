@@ -503,7 +503,8 @@ namespace EQWOWConverter
                         itemTemplate.DoesTeachSpell = false;
                         itemTemplate.Quality = ItemWOWQuality.Poor;
                         itemTemplate.Description = "The magic in this scroll has faded to time";
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes);
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel, 
+                            itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfo);
                     }
                     else
                     {
@@ -519,13 +520,19 @@ namespace EQWOWConverter
                             if (spellTemplate.LearnScrollPropertiesByClassType.Count != 1)
                                 scrollName = string.Concat(itemTemplate.Name, " (", scrollPropertiesByClassType.Key.ToString(), ")");
                             itemTemplateSQL.AddRow(itemTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollName,
-                                itemTemplate.Description, scrollPropertiesByClassType.Value.LearnLevel, new List<ClassType>() { scrollPropertiesByClassType.Key });
+                                itemTemplate.Description, scrollPropertiesByClassType.Value.LearnLevel, new List<ClassType>() { scrollPropertiesByClassType.Key }, itemTemplate.ItemDisplayInfo);
                         }
                     }
                 }
                 else
                 {
-                    itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes);
+                    // Factor for creature-wearable versions
+                    itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfo);
+                    if (itemTemplate.ItemDisplayInfoForCreatureEquip != null)
+                    {
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryIDForCreatureEquip, string.Concat(itemTemplate.Name, " (npc)"), itemTemplate.Description, 
+                            itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfoForCreatureEquip);
+                    }
                     for (int i = 0; i < itemTemplate.ContainedItems.Count; i++)
                     {
                         int curWOWItemTemplateID = itemTemplate.ContainedItems[i].itemTemplateIDWOW;

@@ -22,7 +22,7 @@ namespace EQWOWConverter.WOWFiles
     {
         private HashSet<int> insertedItemTemplateEntryIDs = new HashSet<int>();
 
-        public void AddRow(ItemTemplate itemTemplate, int itemTemplateEntryID)
+        public void AddRow(ItemTemplate itemTemplate, int itemTemplateEntryID, ItemDisplayInfo? itemDisplayInfo)
         {
             // Prevent double-add
             if (insertedItemTemplateEntryIDs.Contains(itemTemplateEntryID))
@@ -35,8 +35,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(itemTemplate.SubClassID);
             newRow.AddInt32(-1); // Sound Override SubclassID
             newRow.AddInt32(itemTemplate.WOWItemMaterialType);
-            if (itemTemplate.ItemDisplayInfo != null)
-                newRow.AddInt32(itemTemplate.ItemDisplayInfo.ItemDisplayInfoDBCID);
+            if (itemDisplayInfo != null)
+                newRow.AddInt32(itemDisplayInfo.ItemDisplayInfoDBCID);
             else
                 newRow.AddInt32(0);
             newRow.AddInt32(Convert.ToInt32(itemTemplate.InventoryType));

@@ -441,18 +441,23 @@ namespace EQWOWConverter
                 {
                     // Spell scrolls get multiplied out by classes
                     if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQScrollSpellID) == false)
-                        itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryID);
+                        itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.ItemDisplayInfo);
                     else
                     {
                         SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQScrollSpellID];
                         itemTemplate.ClassID = 9;
                         itemTemplate.SubClassID = 0;
                         foreach (var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByClassType)
-                            itemDBC.AddRow(itemTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID);
+                            itemDBC.AddRow(itemTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID, itemTemplate.ItemDisplayInfo);
                     }
                 }
                 else
-                    itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryID);
+                {
+                    // Regular items (2 versions, one for creatures and one for players)
+                    itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.ItemDisplayInfo);
+                    if (itemTemplate.ItemDisplayInfoForCreatureEquip != null)
+                        itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryIDForCreatureEquip, itemTemplate.ItemDisplayInfoForCreatureEquip);
+                }
             }
             foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
                 itemDisplayInfoDBC.AddRow(itemDisplayInfo);
