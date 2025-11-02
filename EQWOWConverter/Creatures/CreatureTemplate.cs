@@ -79,74 +79,10 @@ namespace EQWOWConverter.Creatures
         public List<(int, int)> AttackEQSpellIDAndProcChance = new List<(int, int)>();
         public bool IsPet = false;
         public float ModelTemplateScale = 1.0f; // Used for form changes
-        public int MainhandHeldItemTemplateIDWOW = 0;
-        public int OffhandHeldItemTemplateIDWOW = 0;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURE_TEMPLATE_GUID = Configuration.SQL_CREATURETEMPLATE_GENERATED_START_ID;
         private static int CURRENT_CREATURE_EQID = 200000;
-
-        public void SetHeldItemTemplates(List<ItemTemplate> heldItemTemplates)
-        {
-            if (Race.CanHoldVisualItems == false)
-                return;
-
-            MainhandHeldItemTemplateIDWOW = 0;
-            OffhandHeldItemTemplateIDWOW = 0;
-
-            // Prioritize what items to show as worn
-            List<ItemTemplate> oneHandWeapons = new List<ItemTemplate>();
-            List<ItemTemplate> twoHandWeapons = new List<ItemTemplate>();
-            List<ItemTemplate> shields = new List<ItemTemplate>();
-            List<ItemTemplate> heldItems = new List<ItemTemplate>();
-            List<ItemTemplate> fishingPoles = new List<ItemTemplate>();
-            foreach (ItemTemplate heldItemTemplate in heldItemTemplates)
-            {
-                if (heldItemTemplate.InventoryType == ItemWOWInventoryType.TwoHand)
-                {
-                    if (heldItemTemplate.SubClassID == 20)
-                        fishingPoles.Add(heldItemTemplate);
-                    else
-                        twoHandWeapons.Add(heldItemTemplate);
-                }
-                else if (heldItemTemplate.InventoryType == ItemWOWInventoryType.Shield)
-                {
-                    shields.Add(heldItemTemplate);
-                }
-                else if (heldItemTemplate.InventoryType == ItemWOWInventoryType.MainHand || heldItemTemplate.InventoryType == ItemWOWInventoryType.OneHand)
-                {
-                    if (heldItemTemplate.ClassID == 2)
-                        oneHandWeapons.Add(heldItemTemplate);
-                    else
-                        heldItems.Add(heldItemTemplate);
-                }
-                else if (heldItemTemplate.InventoryType == ItemWOWInventoryType.HeldInOffHand || heldItemTemplate.InventoryType == ItemWOWInventoryType.OffHand2)
-                    heldItems.Add(heldItemTemplate);
-            }
-
-            // Holding a fishing pole is lowest priority
-            bool doHoldFishingPole = (fishingPoles.Count > 0) && (oneHandWeapons.Count == 0) && (twoHandWeapons.Count == 0) && (shields.Count == 0) && (heldItems.Count == 0);
-
-            // Set the visuals accordingly
-            if (doHoldFishingPole == true && fishingPoles.Count > 0)
-                MainhandHeldItemTemplateIDWOW = fishingPoles[0].WOWEntryIDForCreatureEquip;
-            else if (twoHandWeapons.Count > 0)
-                MainhandHeldItemTemplateIDWOW = twoHandWeapons[0].WOWEntryIDForCreatureEquip;
-            else
-            {
-                // Mainhand
-                if (oneHandWeapons.Count > 0)
-                    MainhandHeldItemTemplateIDWOW = oneHandWeapons[0].WOWEntryIDForCreatureEquip;
-
-                // Offhand
-                if (shields.Count > 0)
-                    OffhandHeldItemTemplateIDWOW = shields[0].WOWEntryIDForCreatureEquip;
-                else if (oneHandWeapons.Count > 1)
-                    OffhandHeldItemTemplateIDWOW = oneHandWeapons[0].WOWEntryIDForCreatureEquip;
-                else if (heldItems.Count > 0)
-                    OffhandHeldItemTemplateIDWOW = heldItems[0].WOWEntryIDForCreatureEquip;
-            }
-        }
 
         public static Dictionary<int, CreatureTemplate> GetCreatureTemplateListByEQID()
         {

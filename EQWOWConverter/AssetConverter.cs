@@ -1544,9 +1544,6 @@ namespace EQWOWConverter
                 {
                     itemLootTemplatesByCreatureTemplateID.Add(creatureTemplate.WOWCreatureTemplateID, itemLootTemplates);
                     creatureTemplate.WOWLootID = creatureTemplate.WOWCreatureTemplateID;
-
-                    if (heldMeleeItemTemplatesThatAlwaysDrop.Count > 0)
-                        creatureTemplate.SetHeldItemTemplates(heldMeleeItemTemplatesThatAlwaysDrop);
                 }
             }
 
