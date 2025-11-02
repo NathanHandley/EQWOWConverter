@@ -194,60 +194,56 @@ namespace EQWOWConverter.ObjectModels
                         // This is a 'casting' animation, which in EQ is just standing
                     }
                     break;
+                case AnimationType.AttackOff:
+                    {
+                        returnTypes.Add(EQAnimationType.c06AttackOff1H);
+                        returnTypes.Add(EQAnimationType.c05AttackMain1H);
+                        returnTypes.Add(EQAnimationType.c02AttackPierce);                        
+                        returnTypes.Add(EQAnimationType.c08AttackUnarmed);
+                    } break;
+                case AnimationType.AttackOffPierce:
+                    {
+                        returnTypes.Add(EQAnimationType.c06AttackOff1H);
+                        returnTypes.Add(EQAnimationType.c02AttackPierce);
+                        returnTypes.Add(EQAnimationType.c05AttackMain1H);
+                        returnTypes.Add(EQAnimationType.c08AttackUnarmed);
+                    } break;
+                case AnimationType.Attack1HPierce:
+                    {
+                        returnTypes.Add(EQAnimationType.c02AttackPierce);
+                        returnTypes.Add(EQAnimationType.c05AttackMain1H);
+                        returnTypes.Add(EQAnimationType.c08AttackUnarmed);
+                    } break;
                 case AnimationType.AttackUnarmed:
                     {
                         returnTypes.Add(EQAnimationType.c08AttackUnarmed);
-                        returnTypes.Add(EQAnimationType.c05AttackThrown);
+                        returnTypes.Add(EQAnimationType.c05AttackMain1H);
                         returnTypes.Add(EQAnimationType.c02AttackPierce);
-                        returnTypes.Add(EQAnimationType.c03Attack2H);
-                        returnTypes.Add(EQAnimationType.c04Attack2HBlunt);
-                        returnTypes.Add(EQAnimationType.c10AttackUnderwater);
-                        returnTypes.Add(EQAnimationType.c07ShieldBash);
-                        returnTypes.Add(EQAnimationType.c01Kick);
-                        returnTypes.Add(EQAnimationType.c11RoundhouseKick);                        
-                        returnTypes.Add(EQAnimationType.c09AttackBow);
                     }
                     break;
                 case AnimationType.Attack1H:
                     {
-                        returnTypes.Add(EQAnimationType.c05AttackThrown);
+                        returnTypes.Add(EQAnimationType.c05AttackMain1H);
                         returnTypes.Add(EQAnimationType.c08AttackUnarmed);
                         returnTypes.Add(EQAnimationType.c02AttackPierce);
-                        returnTypes.Add(EQAnimationType.c03Attack2H);
-                        returnTypes.Add(EQAnimationType.c04Attack2HBlunt);
-                        returnTypes.Add(EQAnimationType.c10AttackUnderwater);
-                        returnTypes.Add(EQAnimationType.c07ShieldBash);
-                        returnTypes.Add(EQAnimationType.c01Kick);
-                        returnTypes.Add(EQAnimationType.c11RoundhouseKick);
-                        returnTypes.Add(EQAnimationType.c09AttackBow);
                     }
                     break;
                 case AnimationType.Attack2H:
                     {
                         returnTypes.Add(EQAnimationType.c03Attack2H);
                         returnTypes.Add(EQAnimationType.c04Attack2HBlunt);
-                        returnTypes.Add(EQAnimationType.c05AttackThrown);
+                        returnTypes.Add(EQAnimationType.c05AttackMain1H);
                         returnTypes.Add(EQAnimationType.c08AttackUnarmed);
                         returnTypes.Add(EQAnimationType.c02AttackPierce);
-                        returnTypes.Add(EQAnimationType.c10AttackUnderwater);
-                        returnTypes.Add(EQAnimationType.c07ShieldBash);
-                        returnTypes.Add(EQAnimationType.c01Kick);
-                        returnTypes.Add(EQAnimationType.c11RoundhouseKick);
-                        returnTypes.Add(EQAnimationType.c09AttackBow);
                     }
                     break;
                 case AnimationType.Attack2HL:
                     {
                         returnTypes.Add(EQAnimationType.c04Attack2HBlunt);
                         returnTypes.Add(EQAnimationType.c03Attack2H);
-                        returnTypes.Add(EQAnimationType.c05AttackThrown);
+                        returnTypes.Add(EQAnimationType.c05AttackMain1H);
                         returnTypes.Add(EQAnimationType.c08AttackUnarmed);
                         returnTypes.Add(EQAnimationType.c02AttackPierce);
-                        returnTypes.Add(EQAnimationType.c10AttackUnderwater);
-                        returnTypes.Add(EQAnimationType.c07ShieldBash);
-                        returnTypes.Add(EQAnimationType.c01Kick);
-                        returnTypes.Add(EQAnimationType.c11RoundhouseKick);
-                        returnTypes.Add(EQAnimationType.c09AttackBow);
                     }
                     break;
                 case AnimationType.SitGround:

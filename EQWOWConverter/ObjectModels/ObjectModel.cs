@@ -1008,6 +1008,16 @@ namespace EQWOWConverter.ObjectModels
                 FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.o02StandArmsToSide, EQAnimationType.o01StandIdle, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 2 / Fidget
                 FindAndSetAnimationForType(AnimationType.Death);
                 FindAndSetAnimationForType(AnimationType.AttackUnarmed);
+                FindAndSetAnimationForType(AnimationType.Attack1H);
+                FindAndSetAnimationForType(AnimationType.Attack1HPierce);
+                FindAndSetAnimationForType(AnimationType.Attack2H);
+                FindAndSetAnimationForType(AnimationType.Attack2HL);
+                FindAndSetAnimationForType(AnimationType.AttackOff);
+                FindAndSetAnimationForType(AnimationType.AttackOffPierce);
+                FindAndSetAnimationForType(AnimationType.AttackRifle);
+                FindAndSetAnimationForType(AnimationType.AttackBow);
+                FindAndSetAnimationForType(AnimationType.ReadyRifle);
+                FindAndSetAnimationForType(AnimationType.FireBow);
                 FindAndSetAnimationForType(AnimationType.Walk);
                 FindAndSetAnimationForType(AnimationType.Walkbackwards);
                 FindAndSetAnimationForType(AnimationType.Run);

@@ -23,8 +23,8 @@ namespace EQWOWConverter.EQFiles
         c02AttackPierce, // "Piercing" so may be 2h
         c03Attack2H,
         c04Attack2HBlunt,
-        c05AttackThrown,
-        c06AttackOff,
+        c05AttackMain1H,
+        c06AttackOff1H,
         c07ShieldBash,
         c08AttackUnarmed,
         c09AttackBow, // This may need more than this one animation

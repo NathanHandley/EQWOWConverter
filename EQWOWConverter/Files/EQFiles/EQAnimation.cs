@@ -236,8 +236,8 @@ namespace EQWOWConverter.EQFiles
                 case "c02": return EQAnimationType.c02AttackPierce;
                 case "c03": return EQAnimationType.c03Attack2H;
                 case "c04": return EQAnimationType.c04Attack2HBlunt;
-                case "c05": return EQAnimationType.c05AttackThrown;
-                case "c06": return EQAnimationType.c06AttackOff;
+                case "c05": return EQAnimationType.c05AttackMain1H;
+                case "c06": return EQAnimationType.c06AttackOff1H;
                 case "c07": return EQAnimationType.c07ShieldBash;
                 case "c08": return EQAnimationType.c08AttackUnarmed;
                 case "c09": return EQAnimationType.c09AttackBow;
