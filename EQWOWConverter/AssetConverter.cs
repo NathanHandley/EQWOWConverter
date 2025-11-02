@@ -1469,7 +1469,7 @@ namespace EQWOWConverter
 
                 // Create the item loot template records
                 List<ItemLootTemplate> itemLootTemplates = new List<ItemLootTemplate>();
-                int itemGroupID = 0;
+                int itemGroupID = 1;
                 List<ItemTemplate> heldMeleeItemTemplatesThatAlwaysDrop = new List<ItemTemplate>();
                 foreach (ItemLootTableEntry lootTableEntry in curItemLootTable.ItemLootTableEntries)
                 {
