@@ -145,6 +145,8 @@ namespace EQWOWConverter
         {
             modEverquestSystemConfigsSQL.AddRow("BardMaxConcurrentSongs", Configuration.SPELL_MAX_CONCURRENT_BARD_SONGS.ToString());
             modEverquestSystemConfigsSQL.AddRow("DayEventID", Configuration.SQL_GAMEEVENT_ID_DAY.ToString());
+            modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMin", Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString());
+            modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMax", Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH.ToString());
             modEverquestSystemConfigsSQL.AddRow("NightEventID", Configuration.SQL_GAMEEVENT_ID_NIGHT.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMin", Configuration.DBCID_MAP_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMax", Configuration.DBCID_MAP_ID_END.ToString());
@@ -193,7 +195,7 @@ namespace EQWOWConverter
                 }
 
                 // All creature data
-                modEverquestCreatureSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.MainhandHeldItemTemplateIDWOW, creatureTemplate.OffhandHeldItemTemplateIDWOW);
+                modEverquestCreatureSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.Race.CanHoldVisualItems, creatureTemplate.MainhandHeldItemTemplateIDWOW, creatureTemplate.OffhandHeldItemTemplateIDWOW);
 
                 // Class Trainers
                 if (creatureTemplate.ClassTrainerType != ClassType.All && creatureTemplate.ClassTrainerType != ClassType.None)

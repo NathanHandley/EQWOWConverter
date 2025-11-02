@@ -27,16 +27,18 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("DROP TABLE IF EXISTS `mod_everquest_creature`; ");
             stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_creature` ( ");
             stringBuilder.AppendLine("`CreatureTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`CanShowHeldLootItems` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`MainhandHeldItemTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`OffhandHeldItemTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`CreatureTemplateID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int creatureTemplateID, int mainhandHeldVisualItemID, int offhandHeldVisualItemID)
+        public void AddRow(int creatureTemplateID, bool canShowHeldLootItems, int mainhandHeldVisualItemID, int offhandHeldVisualItemID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatureTemplateID", creatureTemplateID);
+            newRow.AddInt("CanShowHeldLootItems", canShowHeldLootItems == true ? 1 : 0);
             newRow.AddInt("MainhandHeldItemTemplateID", mainhandHeldVisualItemID);
             newRow.AddInt("OffhandHeldItemTemplateID", offhandHeldVisualItemID);
             Rows.Add(newRow);
