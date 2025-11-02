@@ -62,6 +62,7 @@ namespace EQWOWConverter
         private ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
         private ModEverquestCreatureSQL modEverquestCreatureSQL = new ModEverquestCreatureSQL();
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
+        private ModEverquestItemTemplateSQL modEverquestItemTemplateSQL = new ModEverquestItemTemplateSQL();
         private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
         private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
         private ModEverquestSystemConfigsSQL modEverquestSystemConfigsSQL = new ModEverquestSystemConfigsSQL();
@@ -495,6 +496,12 @@ namespace EQWOWConverter
                 if (itemTemplate.IsExistingItemAlready == true)
                     continue;
 
+                // Save any additional metadata
+                if (itemTemplate.WOWEntryIDForCreatureEquip != 0)
+                    modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryIDForCreatureEquip);
+                else
+                    modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryID);
+
                 // Associate spells if it's a learnable item
                 if (itemTemplate.DoesTeachSpell == true && itemTemplate.EQScrollSpellID != 0)
                 {
@@ -505,7 +512,7 @@ namespace EQWOWConverter
                         itemTemplate.DoesTeachSpell = false;
                         itemTemplate.Quality = ItemWOWQuality.Poor;
                         itemTemplate.Description = "The magic in this scroll has faded to time";
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel, 
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel,
                             itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfo);
                     }
                     else
@@ -532,7 +539,7 @@ namespace EQWOWConverter
                     itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfo);
                     if (itemTemplate.ItemDisplayInfoForCreatureEquip != null)
                     {
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryIDForCreatureEquip, string.Concat(itemTemplate.Name, " (npc)"), itemTemplate.Description, 
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryIDForCreatureEquip, string.Concat(itemTemplate.Name, " (npc)"), itemTemplate.Description,
                             itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfoForCreatureEquip);
                     }
                     for (int i = 0; i < itemTemplate.ContainedItems.Count; i++)
@@ -987,6 +994,7 @@ namespace EQWOWConverter
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
             modEverquestCreatureSQL.SaveToDisk("mod_everquest_creature", SQLFileType.World);
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
+            modEverquestItemTemplateSQL.SaveToDisk("mod_everquest_item_template", SQLFileType.World);
             modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);
             modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
             modEverquestSystemConfigsSQL.SaveToDisk("mod_everquest_systemconfigs", SQLFileType.World);

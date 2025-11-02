@@ -18,26 +18,24 @@ using System.Text;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class ModEverquestCreatureSQL : SQLFile
+    internal class ModEverquestItemTemplateSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DROP TABLE IF EXISTS `mod_everquest_creature`; ");
-            stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_creature` ( ");
-            stringBuilder.AppendLine("`CreatureTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
-            stringBuilder.AppendLine("`CanShowHeldLootItems` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
-            stringBuilder.AppendLine("`CanShowHeldLootShields` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
-            stringBuilder.AppendLine("PRIMARY KEY (`CreatureTemplateID`) USING BTREE ); ");
+            stringBuilder.AppendLine("DROP TABLE IF EXISTS `mod_everquest_item_template`; ");
+            stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_item_template` ( ");
+            stringBuilder.AppendLine("`ItemTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`NPCEquipItemTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("PRIMARY KEY (`ItemTemplateID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int creatureTemplateID, bool canShowHeldLootItems, bool canShowHeldLootShields)
+        public void AddRow(int itemTemplateID, int npcEquipItemTemplateID)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("CreatureTemplateID", creatureTemplateID);
-            newRow.AddInt("CanShowHeldLootItems", canShowHeldLootItems == true ? 1 : 0);
-            newRow.AddInt("CanShowHeldLootShields", canShowHeldLootShields == true ? 1 : 0);
+            newRow.AddInt("ItemTemplateID", itemTemplateID);
+            newRow.AddInt("NPCEquipItemTemplateID", npcEquipItemTemplateID);
             Rows.Add(newRow);
         }
     }
