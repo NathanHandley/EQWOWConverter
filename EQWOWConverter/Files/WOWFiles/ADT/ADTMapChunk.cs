@@ -49,6 +49,7 @@ namespace EQWOWConverter.WOWFiles
             // Making it flat
             for (int i = 0; i < 145; i++)
                 MCVTBytes.AddRange(BitConverter.GetBytes(baseHeight));
+            MCVTBytes = WrapInChunk("MCVT", MCVTBytes.ToArray());
 
             // MCNR (Height normals)
             // Making everything (0,0,127)
@@ -58,6 +59,7 @@ namespace EQWOWConverter.WOWFiles
                 MCNRBytes.Add(0);
                 MCNRBytes.Add(127);
             }
+            MCNRBytes = WrapInChunk("MCNR", MCNRBytes.ToArray());
 
             // MCLY (Texture layer definitions)
             // None, since we won't render it (Texture ID + Flags + EffectID + AlphaOffset)
@@ -65,7 +67,7 @@ namespace EQWOWConverter.WOWFiles
 
             // MCRF (References?)
             // None
-            MCRFBytes = WrapInChunk("MCRF", MCLYBytes.ToArray());
+            MCRFBytes = WrapInChunk("MCRF", MCRFBytes.ToArray());
 
             // MCAL (Alpha Maps for additional texture layers)
             // None
@@ -167,6 +169,9 @@ namespace EQWOWConverter.WOWFiles
             // Offset into liquids section
             headerBytes.AddRange(BitConverter.GetBytes(MCLQOffset));
 
+            // Size of Liquids (Setting to 8 has it not use MCLQ, and fallback to MH20)
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(8)));
+
             // Position
             headerBytes.AddRange(Position.ToBytes());
 
@@ -184,8 +189,8 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> nonHeaderBytes = new List<byte>();
 
-            // Offset starts at +128 due to the header data size
-            UInt32 nonHeaderStartOffset = 128;
+            // Offset starts at +136 (+128 chunk header, +8 magic header)
+            UInt32 nonHeaderStartOffset = 136;
 
             // Height data
             MCVTOffset = nonHeaderStartOffset;
@@ -225,12 +230,13 @@ namespace EQWOWConverter.WOWFiles
             List<Byte> dataBytes = new List<Byte>();
 
             // Must generate the body bytes first since that sets the offsets in the header
-            List<Byte> bodyBytes = GetNonHeaderBytes();
+            List<byte> bodyBytes = GetNonHeaderBytes();
             List<byte> headerBytes = GetHeaderBytes();
 
             dataBytes.AddRange(headerBytes.ToArray());
+            dataBytes.AddRange(bodyBytes.ToArray());
 
-            return dataBytes;
+            return WrapInChunk("MCNK", dataBytes.ToArray());
         }
     }
 }

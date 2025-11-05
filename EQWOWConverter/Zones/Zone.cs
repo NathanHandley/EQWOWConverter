@@ -46,6 +46,10 @@ namespace EQWOWConverter.Zones
         public List<ZoneArea> SubAreas = new List<ZoneArea>();
         public List<SoundInstance> SoundInstances = new List<SoundInstance>();
         public List<ObjectModel> SoundInstanceObjectModels = new List<ObjectModel>();
+        public UInt32 MODFIdentifier = 0;
+
+        private static UInt32 CUR_MODFID = 1000000;
+        private static readonly object MODFLock = new object();
 
         public Zone(string shortName, string descriptiveName)
         {
@@ -53,6 +57,7 @@ namespace EQWOWConverter.Zones
             SetDescriptiveName(descriptiveName);
             DefaultArea = new ZoneArea("", "");
             ZoneProperties = new ZoneProperties();
+            GenerateMODFID();
         }
 
         public Zone(string shortName, ZoneProperties zoneProperties)
@@ -65,6 +70,16 @@ namespace EQWOWConverter.Zones
                 DescriptiveNameOnlyLetters = shortName;
             DefaultArea = zoneProperties.DefaultZoneArea;
             SubAreas = zoneProperties.ZoneAreas;
+            GenerateMODFID();
+        }
+
+        private void GenerateMODFID()
+        {
+            lock (MODFLock)
+            {
+                MODFIdentifier = CUR_MODFID;
+                CUR_MODFID++;
+            }
         }
 
         public void LoadFromEQZone(string inputZoneFolderName, string inputZoneFolderFullPath, List<GameObject> nonInteractiveGameObjects)

@@ -23,6 +23,12 @@ namespace EQWOWConverter.WOWFiles
         public UInt32 Flags = 0; // Always zero
         public UInt32 AsyncID = 0; // Always zero
 
+        public ADTMapChunkInfo(int offset, int size)
+        {
+            Offset = Convert.ToUInt32(offset);
+            Size = Convert.ToUInt32(size);
+        }
+
         public List<Byte> ToBytes()
         {
             List<Byte> bytes = new List<Byte>();

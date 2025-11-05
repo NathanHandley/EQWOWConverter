@@ -22,10 +22,10 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class ADT : WOWChunkedObject
     {
-        Zone ZoneObject;
-        string WMOFileName;
-        float ZoneBaseHeight;
-        List<byte> DataBytes;
+        private Zone ZoneObject;
+        private string WMOFileName;
+        private float ZoneBaseHeight;
+        private List<byte> DataBytes;
 
         public ADT(Zone zone, string wmoFileName)
         {
@@ -67,70 +67,64 @@ namespace EQWOWConverter.WOWFiles
             // Generate WMO placement information (MODF)
             List<byte> wmoPlacementInformationBytes = GenerateMODFChunk(ZoneObject);
 
-            // Calculate the offsets of all of the chunks
-            int offsetCursor = 0;
-            offsetCursor += versionChunkBytes.Count; // MVER
-            offsetCursor += 72; // Header (MHDR)
-            int offsetMCIN = offsetCursor;
-            offsetCursor += 4104; // Map Chunk Infos (MCIN) - 16bytes x 256 + 8 bytes (header)
-            int offsetMTEX = offsetCursor;
-            offsetCursor += textureChunkBytes.Count;
-            int offsetMMDX = offsetCursor;
-            offsetCursor += m2ModelChunkBytes.Count;
-            int offsetMMID = offsetCursor;
-            offsetCursor += m2ModelOffsetChunkBytes.Count;
-            int offsetMWMO = offsetCursor;
-            offsetCursor += wmoNameChunkBytes.Count;
-            int offsetMWID = offsetCursor;
-            offsetCursor += wmoNameOffsetBytes.Count;
-            int offsetMDDF = offsetCursor;
-            offsetCursor += modelPlacementBytes.Count;
-            int offsetMODF = offsetCursor;
-            offsetCursor += wmoPlacementInformationBytes.Count;
-            int offsetMCNK = offsetCursor;
+            // Calculate the offsets of all of the chunks which are relative to the data block of the header (MHDR)
+            int headerRelativeOffsetCursor = 64; // Header (HMD) data size minus the magic/size subheader
+            int offsetMCIN = headerRelativeOffsetCursor;
+            headerRelativeOffsetCursor += 4104; // Map Chunk Infos (MCIN) - 16bytes x 256 + 8 bytes (header)
+            int offsetMTEX = headerRelativeOffsetCursor;
+            headerRelativeOffsetCursor += textureChunkBytes.Count;
+            int offsetMMDX = headerRelativeOffsetCursor;
+            headerRelativeOffsetCursor += m2ModelChunkBytes.Count;
+            int offsetMMID = headerRelativeOffsetCursor;
+            headerRelativeOffsetCursor += m2ModelOffsetChunkBytes.Count;
+            int offsetMWMO = headerRelativeOffsetCursor;
+            headerRelativeOffsetCursor += wmoNameChunkBytes.Count;
+            int offsetMWID = headerRelativeOffsetCursor;
+            headerRelativeOffsetCursor += wmoNameOffsetBytes.Count;
+            int offsetMDDF = headerRelativeOffsetCursor;
+            headerRelativeOffsetCursor += modelPlacementBytes.Count;
+            int offsetMODF = headerRelativeOffsetCursor;
 
             // Generate the header (MHDR)
             List<byte> headerBytes = GenerateMHDRChunk(offsetMCIN, offsetMTEX, offsetMMDX, offsetMMID, offsetMWMO, offsetMWID, offsetMDDF, offsetMODF);
 
-            // Generate map chunks (MCNKs)
-            List<ADTMapChunk> mapChunks = new List<ADTMapChunk>();
+            // Generate map chunks (MCNKs) and their info objects (MCIN)
+            //List<ADTMapChunk> mapChunks = new List<ADTMapChunk>();
+            List<ADTMapChunkInfo> mapChunkInfos = new List<ADTMapChunkInfo>();
             List<byte> mapChunkBytes = new List<byte>();
+            int curMCNKOffset = headerRelativeOffsetCursor + headerBytes.Count + versionChunkBytes.Count + 8;
             for (UInt16 y = 0; y < 16; y++)
                 for (UInt16 x = 0; x < 16; x++)
                 {
+                    // Make the chunk
                     ADTMapChunk curChunk = new ADTMapChunk(x, y, ZoneBaseHeight, ZoneObject.DefaultArea.DBCAreaTableID);
-                    mapChunks.Add(curChunk);
-                    mapChunkBytes.AddRange(curChunk.GetDataBytes());
+                    List<byte> curChunkBytes = curChunk.GetDataBytes();
+                    mapChunkBytes.AddRange(curChunkBytes);
+
+                    // Make the info and advance the cursor
+                    ADTMapChunkInfo curChunkInfo = new ADTMapChunkInfo(curMCNKOffset, curChunkBytes.Count);
+                    mapChunkInfos.Add(curChunkInfo);
+                    curMCNKOffset += curChunkBytes.Count;
                 }
 
-            // Generate map chunk infos (MCIN)
-            // TODO
+            // Turn the chunk infos into a data block
+            List<byte> mapChunkInfoBytes = GenerateMCINChunk(mapChunkInfos);
 
-
-
-            //// MCIN (Map Chunk Infos)
-            //// Must be after Map Chunks
-            //List<ADTMapChunkInfo> mapChunkInfos = new List<ADTMapChunkInfo>();
-            //List<byte> mapChunkInfoBytes = GenerateMCINChunk(mapChunkInfos);
-
-            //// MHDR (Header)
-            //List<byte> headerBytes = GenerateMOHDChunk(); // TODO
-
-
-
-            //
-
-
-            //// Must generate the body bytes first since that sets the offsets in the header
-            //List<Byte> bodyBytes = GetNonHeaderBytes(mapChunkStartOffset);
-            //List<byte> headerBytes = GetHeaderBytes();
-
-            //dataBytes.AddRange(headerBytes.ToArray());
+            // Combine all the data up into the final data block
             List<Byte> dataBytes = new List<Byte>();
+            dataBytes.AddRange(versionChunkBytes);              // MVER
+            dataBytes.AddRange(headerBytes);                    // MHDR
+            dataBytes.AddRange(mapChunkInfoBytes);              // MCIN
+            dataBytes.AddRange(textureChunkBytes);              // MTEX
+            dataBytes.AddRange(m2ModelChunkBytes);              // MMDX
+            dataBytes.AddRange(m2ModelOffsetChunkBytes);        // MMID
+            dataBytes.AddRange(wmoNameChunkBytes);              // MWMO
+            dataBytes.AddRange(wmoNameOffsetBytes);             // MWID
+            dataBytes.AddRange(modelPlacementBytes);            // MDDF
+            dataBytes.AddRange(wmoPlacementInformationBytes);   // MODF
+            dataBytes.AddRange(mapChunkBytes);                  // MCNKs
             return dataBytes;
         }
-
-
 
         /// <summary>
         /// MVER (Version)
@@ -255,8 +249,8 @@ namespace EQWOWConverter.WOWFiles
             // ID.  Unsure what this is exactly, so setting to zero for now
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
-            // Unique ID.  Not sure if used, but see references of it to -1
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToInt32(-1)));
+            // Unique ID.
+            chunkBytes.AddRange(BitConverter.GetBytes((zone.MODFIdentifier)));
 
             // Position - Set zero now, and maybe mess with later
             Vector3 positionVector = new Vector3();
@@ -282,6 +276,14 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
 
             return WrapInChunk("MODF", chunkBytes.ToArray());
+        }
+
+        public void WriteToDisk(string baseFolderPath, int tileX, int tileY)
+        {
+            string folderToWrite = Path.Combine(baseFolderPath, "World", "Maps", "EQ_" + ZoneObject.ShortName);
+            FileTool.CreateBlankDirectory(folderToWrite, true);
+            string fullFilePath = Path.Combine(folderToWrite, string.Concat("EQ_", ZoneObject.ShortName, "_", tileX, "_", tileY, ".adt"));
+            File.WriteAllBytes(fullFilePath, DataBytes.ToArray());
         }
     }
 }

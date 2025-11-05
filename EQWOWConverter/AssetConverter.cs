@@ -85,7 +85,8 @@ namespace EQWOWConverter
             {
                 Logger.WriteInfo("<+> Thread [Creatures, Transports, and Spawns] Started");
 
-                // Creatures                
+                // Creatures
+                CreatureRace.GenerateAllSounds();
                 if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
                     ConvertCreatures(creatureTemplatesByEQID, ref creatureSpawnPools);
                 else
@@ -1291,7 +1292,6 @@ namespace EQWOWConverter
             if (Directory.Exists(exportCreatureSoundsDirectory) == true)
                 Directory.Delete(exportCreatureSoundsDirectory, true);
             FileTool.CreateBlankDirectory(exportCreatureSoundsDirectory, false);
-            CreatureRace.GenerateAllSounds();
             foreach (var sound in CreatureRace.SoundsBySoundName)
             {
                 string sourceSoundFileName = Path.Combine(inputSoundFolderRoot, sound.Value.Name);

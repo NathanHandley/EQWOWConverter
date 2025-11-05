@@ -120,8 +120,8 @@ namespace EQWOWConverter.WOWFiles
             // ID.  Unsure what this is exactly, so setting to zero for now
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
-            // Unique ID.  Not sure if used, but see references of it to -1
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToInt32(-1)));
+            // Unique ID.
+            chunkBytes.AddRange(BitConverter.GetBytes((zone.MODFIdentifier)));
 
             // Position - Set zero now, and maybe mess with later
             Vector3 positionVector = new Vector3();
