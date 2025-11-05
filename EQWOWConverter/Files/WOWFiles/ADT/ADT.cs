@@ -14,42 +14,123 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Text;
 using EQWOWConverter.Common;
 using EQWOWConverter.Zones;
+using System.Text;
 
 namespace EQWOWConverter.WOWFiles
 {
     internal class ADT : WOWChunkedObject
     {
+        Zone ZoneObject;
+        string WMOFileName;
+        float ZoneBaseHeight;
+        List<byte> DataBytes;
+
         public ADT(Zone zone, string wmoFileName)
         {
-            // MVER (Version)
-            List<byte> versionBytes = GenerateMVERChunk();
+            ZoneObject = zone;
+            WMOFileName = wmoFileName;
+            ZoneBaseHeight = 0f; // TODO: Map this to something, maybe from ZoneProperties
 
-            // MTEX (Textures) - Placeholder Texture
+            DataBytes = GenerateDataBytes();
+        }
+
+        private List<byte> GenerateDataBytes()
+        {
+            List<byte> discardByteArray = new List<byte>();
+
+            // Generate version chunk (MVER)
+            List<byte> versionChunkBytes = GenerateMVERChunk();
+
+            // Generate texture chunk (MTEX)
+            // Using a placeholder texture since the map won't be rendered
             List<byte> textureChunkBytes = GenerateMTEXChunk("Tileset\\BurningStepps\\BurningSteppsRock02.blp\0");
 
-            // MWMO (WMO file names)
-            List<byte> wmoNameChunkBytes = GenerateMWMOChunk(wmoFileName);
+            // Generate the M2 model list chunk (MMDX)
+            // No objects, so making it a blank chunk
+            List<byte> m2ModelChunkBytes = WrapInChunk("MMDX", discardByteArray.ToArray());
 
-            // MODF (WMO placement information)
-            List<byte> wmoPlacementInformationBytes = GenerateMODFChunk(zone);
+            // Generate offsets for M2 model list (MMID)
+            // No objects, so making it a blank chunk
+            List<byte> m2ModelOffsetChunkBytes = WrapInChunk("MMID", discardByteArray.ToArray());
 
-            // MCIN (Map Chunk Infos)
-            List<ADTMapChunkInfo> mapChunkInfos = new List<ADTMapChunkInfo>();
-            List<byte> mapChunkInfoBytes = GenerateMCINChunk(mapChunkInfos);
+            // Generate WMO file names (MWMO)
+            List<byte> wmoNameChunkBytes = GenerateMWMOChunk(WMOFileName);
 
-            // MCNK (Map Chunks)
-            float zoneBaseHeight = 0f; // TODO: Map this to something, maybe from ZoneProperties
+            // Generate offsets for WMO File names (WMID)
+            List<byte> wmoNameOffsetBytes = GenerateMWIDChunk();
+
+            // Generate model placement information (MDDF)
+            List<byte> modelPlacementBytes = GenerateMDDFChunk();
+
+            // Generate WMO placement information (MODF)
+            List<byte> wmoPlacementInformationBytes = GenerateMODFChunk(ZoneObject);
+
+            // Calculate the offsets of all of the chunks
+            int offsetCursor = 0;
+            offsetCursor += versionChunkBytes.Count; // MVER
+            offsetCursor += 72; // Header (MHDR)
+            int offsetMCIN = offsetCursor;
+            offsetCursor += 4104; // Map Chunk Infos (MCIN) - 16bytes x 256 + 8 bytes (header)
+            int offsetMTEX = offsetCursor;
+            offsetCursor += textureChunkBytes.Count;
+            int offsetMMDX = offsetCursor;
+            offsetCursor += m2ModelChunkBytes.Count;
+            int offsetMMID = offsetCursor;
+            offsetCursor += m2ModelOffsetChunkBytes.Count;
+            int offsetMWMO = offsetCursor;
+            offsetCursor += wmoNameChunkBytes.Count;
+            int offsetMWID = offsetCursor;
+            offsetCursor += wmoNameOffsetBytes.Count;
+            int offsetMDDF = offsetCursor;
+            offsetCursor += modelPlacementBytes.Count;
+            int offsetMODF = offsetCursor;
+            offsetCursor += wmoPlacementInformationBytes.Count;
+            int offsetMCNK = offsetCursor;
+
+            // Generate the header (MHDR)
+            List<byte> headerBytes = GenerateMHDRChunk(offsetMCIN, offsetMTEX, offsetMMDX, offsetMMID, offsetMWMO, offsetMWID, offsetMDDF, offsetMODF);
+
+            // Generate map chunks (MCNKs)
             List<ADTMapChunk> mapChunks = new List<ADTMapChunk>();
+            List<byte> mapChunkBytes = new List<byte>();
             for (UInt16 y = 0; y < 16; y++)
                 for (UInt16 x = 0; x < 16; x++)
-                    mapChunks.Add(new ADTMapChunk(x, y, zoneBaseHeight, zone.DefaultArea.DBCAreaTableID));
+                {
+                    ADTMapChunk curChunk = new ADTMapChunk(x, y, ZoneBaseHeight, ZoneObject.DefaultArea.DBCAreaTableID);
+                    mapChunks.Add(curChunk);
+                    mapChunkBytes.AddRange(curChunk.GetDataBytes());
+                }
 
-            // MHDR (Header)
-            List<byte> headerBytes = GenerateMOHDChunk(); // TODO
+            // Generate map chunk infos (MCIN)
+            // TODO
+
+
+
+            //// MCIN (Map Chunk Infos)
+            //// Must be after Map Chunks
+            //List<ADTMapChunkInfo> mapChunkInfos = new List<ADTMapChunkInfo>();
+            //List<byte> mapChunkInfoBytes = GenerateMCINChunk(mapChunkInfos);
+
+            //// MHDR (Header)
+            //List<byte> headerBytes = GenerateMOHDChunk(); // TODO
+
+
+
+            //
+
+
+            //// Must generate the body bytes first since that sets the offsets in the header
+            //List<Byte> bodyBytes = GetNonHeaderBytes(mapChunkStartOffset);
+            //List<byte> headerBytes = GetHeaderBytes();
+
+            //dataBytes.AddRange(headerBytes.ToArray());
+            List<Byte> dataBytes = new List<Byte>();
+            return dataBytes;
         }
+
+
 
         /// <summary>
         /// MVER (Version)
@@ -63,7 +144,8 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MHDR (Header) - Totals 72 bytes
         /// </summary>
-        private List<byte> GenerateMOHDChunk()
+        private List<byte> GenerateMHDRChunk(int offsetMCIN, int offsetMTEX, int offsetMMDX, int offsetMMID, int offsetMWMO, 
+            int offsetMWID, int offsetMDDF, int offsetMODF)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -71,42 +153,42 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
             // MCIN Offset
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(offsetMCIN)));
 
             // MTEX Offset
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(offsetMTEX)));
 
             // MMDX Offset
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(offsetMMDX)));
             
             // MMID Offset
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(offsetMMID)));
             
             // MWMO Offset
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(offsetMWMO)));
             
             // MWID Offset
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(offsetMWID)));
             
             // MDDF Offset
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(offsetMDDF)));
             
             // MODF Offset
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(offsetMODF)));
+            
+            // MFBO Offset (none)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
             
-            // MFBO Offset
+            // MH20 Offset (none)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
             
-            // MH20 Offset
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-            
-            // MTXF Offset
+            // MTXF Offset (none)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
             // Padding to bring up to 64 bytes (not including chunk header)
             chunkBytes.AddRange(new byte[16]);
 
-            return WrapInChunk("MOHD", chunkBytes.ToArray());
+            return WrapInChunk("MHDR", chunkBytes.ToArray());
         }
 
         /// <summary>
@@ -139,6 +221,27 @@ namespace EQWOWConverter.WOWFiles
             List<byte> chunkBytes = new List<byte>();
             chunkBytes.AddRange(Encoding.ASCII.GetBytes(wmoFileName + "\0"));
             return WrapInChunk("MWMO", chunkBytes.ToArray());
+        }
+
+        /// <summary>
+        /// MWID (WMO file name offsets)
+        /// </summary>
+        private List<byte> GenerateMWIDChunk()
+        {
+            // Offsets are relative to the start of the MWMO, so "0" works
+            List<byte> chunkBytes = new List<byte>();
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            return WrapInChunk("MWID", chunkBytes.ToArray());
+        }
+
+        /// <summary>
+        /// MDDF (Model placement information)
+        /// </summary>
+        private List<byte> GenerateMDDFChunk()
+        {
+            // No models, so no data
+            List<byte> chunkBytes = new List<byte>();
+            return WrapInChunk("MDDF", chunkBytes.ToArray());
         }
 
         /// <summary>

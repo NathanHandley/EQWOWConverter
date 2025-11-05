@@ -22,7 +22,6 @@ namespace EQWOWConverter.WOWFiles
     {
         private UInt32 IndexX;
         private UInt32 IndexY;
-        private float HeightLevel;
         private UInt32 AreaID;
         private Vector3 Position;
         private UInt32 MCVTOffset = 0;
@@ -44,7 +43,6 @@ namespace EQWOWConverter.WOWFiles
         {
             IndexX = xIndex;
             IndexY = yIndex;
-            HeightLevel = baseHeight;
             AreaID = areaID;
 
             // MCVT (Height values)
@@ -96,7 +94,7 @@ namespace EQWOWConverter.WOWFiles
             Position = new Vector3(0, 0, 0);
         }
 
-        public List<byte> GetHeaderBytes()
+        private List<byte> GetHeaderBytes()
         {
             List<byte> headerBytes = new List<byte>();
 
@@ -182,14 +180,12 @@ namespace EQWOWConverter.WOWFiles
             return headerBytes;
         }
 
-
-
-        private List<byte> GetNonHeaderBytes(UInt32 mapChunkStartOffset)
+        private List<byte> GetNonHeaderBytes()
         {
             List<byte> nonHeaderBytes = new List<byte>();
 
             // Offset starts at +128 due to the header data size
-            UInt32 nonHeaderStartOffset = 128 + mapChunkStartOffset;
+            UInt32 nonHeaderStartOffset = 128;
 
             // Height data
             MCVTOffset = nonHeaderStartOffset;
@@ -224,72 +220,17 @@ namespace EQWOWConverter.WOWFiles
             return nonHeaderBytes;
         }
 
-
-
-
         public List<byte> GetDataBytes()
         {
-            List<>
-            //List<byte> chunkBytes = new List<byte>();
-            List<byte> nonHeaderBytes = new List<byte>();
+            List<Byte> dataBytes = new List<Byte>();
 
-            ///////////////////
-            // Non-Header bytes
+            // Must generate the body bytes first since that sets the offsets in the header
+            List<Byte> bodyBytes = GetNonHeaderBytes();
+            List<byte> headerBytes = GetHeaderBytes();
 
-                        // Initial header section
-            
-            
+            dataBytes.AddRange(headerBytes.ToArray());
 
-            
-
-            
-            
-
-            
-
-            
-
-            UInt32 MCALSize = (uint)MCALBytes.Count;
-            chunkBytes.AddRange(BitConverter.GetBytes(MCALSize));
-
-            UInt32 MCSHOffset = MCALOffset + MCALSize;
-            chunkBytes.AddRange(BitConverter.GetBytes(MCSHOffset));
-
-            UInt32 MCSHSize = (uint)MCSHBytes.Count;
-            chunkBytes.AddRange(BitConverter.GetBytes(MCSHSize));
-
-            chunkBytes.AddRange(BitConverter.GetBytes(AreaID));
-            
-
-            byte[] reallyLowResTextureMap = new byte[16];
-            chunkBytes.AddRange(reallyLowResTextureMap);
-
-            byte[] predTex = new byte[8];
-            chunkBytes.AddRange(predTex);
-
-            byte[] noEffectDoodad = new byte[8];
-            chunkBytes.AddRange(noEffectDoodad);
-
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // MCSE (Sound Emitters) - Offset
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // MCSE (Sound Emitters) - Size
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // MCLQ Offset (not used)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(8))); // MCLQ Size, set to 8 when not used (which then uses MH20 chunk)
-            chunkBytes.AddRange(BitConverter.GetBytes(HeightLevel));
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Unknown / Pad
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // MCLV Offset (?)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Unknown / Pad
-
-            // TODO: More padding for header?
-
-            // Add subchunk data
-            chunkBytes.AddRange(MCVTBytes);
-            chunkBytes.AddRange(MCNRBytes);
-            chunkBytes.AddRange(MCLYBytes);
-            chunkBytes.AddRange(MCRFBytes);
-            chunkBytes.AddRange(MCALBytes);
-            chunkBytes.AddRange(MCSHBytes);
-
-            return chunkBytes;
+            return dataBytes;
         }
     }
 }
