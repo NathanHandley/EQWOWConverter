@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
+
 namespace EQWOWConverter.WOWFiles
 {
     internal class ADTMapChunk : WOWChunkedObject
@@ -22,12 +24,21 @@ namespace EQWOWConverter.WOWFiles
         private UInt32 IndexY;
         private float HeightLevel;
         private UInt32 AreaID;
+        private Vector3 Position;
+        private UInt32 MCVTOffset = 0;
         private List<byte> MCVTBytes = new List<byte>();
+        private UInt32 MCNROffset = 0;
         private List<byte> MCNRBytes = new List<byte>();
+        private UInt32 MCLYOffset = 0;
         private List<byte> MCLYBytes = new List<byte>();
+        private UInt32 MCRFOffset = 0;
         private List<byte> MCRFBytes = new List<byte>();
+        private UInt32 MCALOffset = 0;
         private List<byte> MCALBytes = new List<byte>();
-        private List<byte> MCSHBytes = new List<byte>();
+        private UInt32 MCLQOffset = 0;
+        private List<byte> MCLQBytes = new List<byte>();
+        private UInt32 MCSEOffset = 0;
+        private List<byte> MCSEBytes = new List<byte>();
 
         public ADTMapChunk(UInt32 xIndex, UInt32 yIndex, float baseHeight, UInt32 areaID)
         {
@@ -54,42 +65,189 @@ namespace EQWOWConverter.WOWFiles
             // None, since we won't render it (Texture ID + Flags + EffectID + AlphaOffset)
             MCLYBytes = WrapInChunk("MCLY", MCLYBytes.ToArray());
 
-            // MCRF?
+            // MCRF (References?)
+            // None
+            MCRFBytes = WrapInChunk("MCRF", MCLYBytes.ToArray());
 
-            // MCAL?
+            // MCAL (Alpha Maps for additional texture layers)
+            // None
+            MCALBytes = WrapInChunk("MCAL", MCALBytes.ToArray());
 
-            // MCSH: 64 bytes of 0
-            MCSHBytes.AddRange(new byte[64]);
+            //// MCSH: 64 bytes of 0
+            //MCSHBytes.AddRange(new byte[64]);
+
+            // MSCE (Sound Emitters)
+            // None
+            MCSEBytes = WrapInChunk("MCSE", MCSEBytes.ToArray());
+
+            // MCLQ (Liquids)
+            // None
+            MCLQBytes = WrapInChunk("MCLQ", MCLQBytes.ToArray());
+
+            // TODO: Figure out how to calculate position
+            // MonasteryInstances_29_28.adt has row[0] mcnk[0] as 2133.333, 1600, 0
+            // MonasteryInstances_29_28.adt has row[0] mcnk[1] as 2133.333, 1566.667, 0
+            // MonasteryInstances_29_28.adt has row[0] mcnk[2] as 2133.333, 1533.333, 0
+            // MonasteryInstances_29_28.adt has row[1] mcnk[0] as 2100, 1600, 0
+            // MonasteryInstances_29_28.adt has row[2] mcnk[1] as 2100, 1566.667, 0
+            // MonasteryInstances_29_28.adt has row[3] mcnk[2] as 2100, 1533.333, 0
+            // ...
+            // MonasteryInstances_29_28.adt has row[15] mcnk[15] as 1633.333, 1100, 0
+            Position = new Vector3(0, 0, 0);
         }
 
-        public List<byte> GetChunkDataBytes()
+        public List<byte> GetHeaderBytes()
         {
-            List<byte> chunkBytes = new List<byte>();
+            List<byte> headerBytes = new List<byte>();
 
-            // Initial header section
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Flags (none)
-            chunkBytes.AddRange(BitConverter.GetBytes(IndexX));
-            chunkBytes.AddRange(BitConverter.GetBytes(IndexY));
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Layers
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of doodad references
+            // Flags (none)
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
-            // Offset starts at 128 due to the header data
-            uint curOffset = 128;
+            // IndexX
+            headerBytes.AddRange(BitConverter.GetBytes(IndexX));
 
-            UInt32 MCVTOffset = curOffset;
-            chunkBytes.AddRange(BitConverter.GetBytes(MCVTOffset));
+            // IndexY
+            headerBytes.AddRange(BitConverter.GetBytes(IndexY));
 
-            UInt32 MCNROffset = MCVTOffset + (uint)MCVTBytes.Count;
-            chunkBytes.AddRange(BitConverter.GetBytes(MCNROffset));
+            // Number of Layers
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
-            UInt32 MCLYOffset = MCNROffset + (uint)MCNRBytes.Count;
-            chunkBytes.AddRange(BitConverter.GetBytes(MCLYOffset));
+            // Number of doodad references
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
-            UInt32 MCRFOffset = MCLYOffset + (uint)MCLYBytes.Count;
-            chunkBytes.AddRange(BitConverter.GetBytes(MCRFOffset));
+            // Offset into height data
+            headerBytes.AddRange(BitConverter.GetBytes(MCVTOffset));
 
-            UInt32 MCALOffset = MCRFOffset + (uint)MCRFBytes.Count;
-            chunkBytes.AddRange(BitConverter.GetBytes(MCALOffset));
+            // Offset into normal data
+            headerBytes.AddRange(BitConverter.GetBytes(MCNROffset));
+
+            // Offset into layer data
+            headerBytes.AddRange(BitConverter.GetBytes(MCLYOffset));
+
+            // Offset into doodad reference data
+            headerBytes.AddRange(BitConverter.GetBytes(MCRFOffset));
+
+            // Offset into layer alpha map data
+            headerBytes.AddRange(BitConverter.GetBytes(MCALOffset));
+
+            // Size of alpha (8 because blank)
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(8)));
+
+            // Offset into shadow data (making zero because it doesn't exist - May cause issue)
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Size of shadow (should be zero, but I see 512 in MonasteryInstances_29_28.adt even though the flag is blank)
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // AreaID
+            headerBytes.AddRange(BitConverter.GetBytes(AreaID));
+
+            // Number of Map Object References
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Number of holes (should this be 0 and the whole map is holes?)
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // 4 Unknown values
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // "PredTex" (determines the detail doodads will show).  Not using it
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // No Effect Doodads (disable doodads with 1, ignore it)
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Offset into Sound emitters
+            headerBytes.AddRange(BitConverter.GetBytes(MCSEOffset));
+
+            // Number of sound emitters (forcing zero)
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Offset into liquids section
+            headerBytes.AddRange(BitConverter.GetBytes(MCLQOffset));
+
+            // Position
+            headerBytes.AddRange(Position.ToBytes());
+
+            // Offset into MCCV (not using that block)
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Two unused blocks
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            return headerBytes;
+        }
+
+
+
+        private List<byte> GetNonHeaderBytes(UInt32 mapChunkStartOffset)
+        {
+            List<byte> nonHeaderBytes = new List<byte>();
+
+            // Offset starts at +128 due to the header data size
+            UInt32 nonHeaderStartOffset = 128 + mapChunkStartOffset;
+
+            // Height data
+            MCVTOffset = nonHeaderStartOffset;
+            nonHeaderBytes.AddRange(MCVTBytes);
+
+            // Normals data
+            MCNROffset = MCVTOffset + (uint)MCVTBytes.Count; 
+            nonHeaderBytes.AddRange(MCNRBytes);
+
+            // Layer data
+            MCLYOffset = MCNROffset + (uint)MCNRBytes.Count;
+            nonHeaderBytes.AddRange(MCLYBytes);
+
+            // Doodad reference data
+            MCRFOffset = MCLYOffset + (uint)MCLYBytes.Count;
+            nonHeaderBytes.AddRange(MCRFBytes);
+
+            // Note: MonasteryInstances_29_28.adt has MCSH data block here, but flag is 0.  Revisit if issues.
+
+            // Layer alpha map data
+            MCALOffset = MCRFOffset + (uint)MCRFBytes.Count;
+            nonHeaderBytes.AddRange(MCALBytes);
+
+            // Liquid data
+            MCLQOffset = MCALOffset + (uint)MCRFBytes.Count;
+            nonHeaderBytes.AddRange(MCLQBytes);
+
+            // Sound emitter data
+            MCSEOffset = MCLQOffset + (uint)MCRFBytes.Count;
+            nonHeaderBytes.AddRange(MCSEBytes);
+
+            return nonHeaderBytes;
+        }
+
+
+
+
+        public List<byte> GetDataBytes()
+        {
+            List<>
+            //List<byte> chunkBytes = new List<byte>();
+            List<byte> nonHeaderBytes = new List<byte>();
+
+            ///////////////////
+            // Non-Header bytes
+
+                        // Initial header section
+            
+            
+
+            
+
+            
+            
+
+            
+
+            
 
             UInt32 MCALSize = (uint)MCALBytes.Count;
             chunkBytes.AddRange(BitConverter.GetBytes(MCALSize));
@@ -101,8 +259,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(MCSHSize));
 
             chunkBytes.AddRange(BitConverter.GetBytes(AreaID));
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Map Object References
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of holes (TODO: Consider making map all holes?)
+            
 
             byte[] reallyLowResTextureMap = new byte[16];
             chunkBytes.AddRange(reallyLowResTextureMap);
