@@ -14,7 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
 using EQWOWConverter.Zones;
 using System.Text;
 
@@ -26,17 +25,21 @@ namespace EQWOWConverter.WOWFiles
         private string WMOFileName;
         private float ZoneBaseHeight;
         private List<byte> DataBytes;
+        private UInt32 TileXIndex = 0;
+        private UInt32 TileYIndex = 0;
 
-        public ADT(Zone zone, string wmoFileName)
+        public ADT(Zone zone, string wmoFileName, UInt32 tileXIndex, UInt32 tileYIndex)
         {
             ZoneObject = zone;
             WMOFileName = wmoFileName;
             ZoneBaseHeight = 0f; // TODO: Map this to something, maybe from ZoneProperties
+            TileXIndex = tileXIndex;
+            TileYIndex = tileYIndex;
 
-            DataBytes = GenerateDataBytes();
+            DataBytes = GenerateDataBytes(tileXIndex, tileYIndex);
         }
 
-        private List<byte> GenerateDataBytes()
+        private List<byte> GenerateDataBytes(UInt32 tileXIndex, UInt32 tileYIndex)
         {
             List<byte> discardByteArray = new List<byte>();
 
@@ -97,7 +100,7 @@ namespace EQWOWConverter.WOWFiles
                 for (UInt16 x = 0; x < 16; x++)
                 {
                     // Make the chunk
-                    ADTMapChunk curChunk = new ADTMapChunk(x, y, ZoneBaseHeight, ZoneObject.DefaultArea.DBCAreaTableID);
+                    ADTMapChunk curChunk = new ADTMapChunk(tileXIndex, tileYIndex, x, y, ZoneBaseHeight, ZoneObject.DefaultArea.DBCAreaTableID);
                     List<byte> curChunkBytes = curChunk.GetDataBytes();
                     mapChunkBytes.AddRange(curChunkBytes);
 
@@ -278,11 +281,11 @@ namespace EQWOWConverter.WOWFiles
             return WrapInChunk("MODF", chunkBytes.ToArray());
         }
 
-        public void WriteToDisk(string baseFolderPath, int tileX, int tileY)
+        public void WriteToDisk(string baseFolderPath)
         {
             string folderToWrite = Path.Combine(baseFolderPath, "World", "Maps", "EQ_" + ZoneObject.ShortName);
             FileTool.CreateBlankDirectory(folderToWrite, true);
-            string fullFilePath = Path.Combine(folderToWrite, string.Concat("EQ_", ZoneObject.ShortName, "_", tileX, "_", tileY, ".adt"));
+            string fullFilePath = Path.Combine(folderToWrite, string.Concat("EQ_", ZoneObject.ShortName, "_", TileXIndex, "_", TileYIndex, ".adt"));
             File.WriteAllBytes(fullFilePath, DataBytes.ToArray());
         }
     }

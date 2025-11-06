@@ -25,7 +25,7 @@ namespace EQWOWConverter.WOWFiles
         public List<byte> ObjectBytes = new List<byte>();
         private string BaseFileName;
 
-        public WDT(Zone zone, string wmoFileName)
+        public WDT(Zone zone, string wmoFileName, int minADTX, int minADTY, int maxADTX, int maxADTY)
         {
             BaseFileName = zone.ShortName;
 
@@ -36,7 +36,7 @@ namespace EQWOWConverter.WOWFiles
             ObjectBytes.AddRange(GenerateMPHDChunk(zone));
 
             // MAIN (Map Tile Table) --------------------------------------------------------------
-            ObjectBytes.AddRange(GenerateMAINChunk(zone));
+            ObjectBytes.AddRange(GenerateMAINChunk(zone, minADTX, minADTY, maxADTX, maxADTY));
 
             // MWMO (Main WMO lookup) -------------------------------------------------------------
             ObjectBytes.AddRange(GenerateMWMOChunk(zone, wmoFileName));
@@ -80,7 +80,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MAIN (Map Tile Table)
         /// </summary>
-        private List<byte> GenerateMAINChunk(Zone zone)
+        private List<byte> GenerateMAINChunk(Zone zone, int minADTX, int minADTY, int maxADTX, int maxADTY)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -88,17 +88,11 @@ namespace EQWOWConverter.WOWFiles
             {
                 for (int mapY = 0; mapY < 64; ++mapY)
                 {
-                    if (mapX == 32 && mapY == 32)
-                    {
+                    if ((mapX >= minADTX && mapX <= maxADTX) && (mapY >= minADTY && mapY <= maxADTY))
                         chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Flags
-                        chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Async (do not populate)
-                    }
                     else
-                    {
-                        // Blank tiles
-                        chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-                        chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-                    }
+                        chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Flags
+                    chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Async (do not populate / always 0)                  
                 }
             }
 

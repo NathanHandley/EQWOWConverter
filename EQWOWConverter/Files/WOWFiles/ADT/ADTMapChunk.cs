@@ -41,10 +41,10 @@ namespace EQWOWConverter.WOWFiles
         private UInt32 MCSHOffset = 0;
         private List<byte> MCSHBytes = new List<byte>();
 
-        public ADTMapChunk(UInt32 xIndex, UInt32 yIndex, float baseHeight, UInt32 areaID)
+        public ADTMapChunk(UInt32 tileXIndex, UInt32 tileYIndex, UInt32 chunkXIndex, UInt32 chunkYIndex, float baseHeight, UInt32 areaID)
         {
-            IndexX = xIndex;
-            IndexY = yIndex;
+            IndexX = chunkXIndex;
+            IndexY = chunkYIndex;
             AreaID = areaID;
 
             // MCVT (Height values)
@@ -91,22 +91,17 @@ namespace EQWOWConverter.WOWFiles
             // None
             MCLQBytes = WrapInChunk("MCLQ", MCLQBytes.ToArray());
 
-            // TODO: Figure out how to calculate position properly.
-            // MonasteryInstances_29_28.adt has row[0] mcnk[0] as 2133.333, 1600, 0
-            // MonasteryInstances_29_28.adt has row[0] mcnk[1] as 2133.333, 1566.667, 0
-            // MonasteryInstances_29_28.adt has row[0] mcnk[2] as 2133.333, 1533.333, 0
-            // MonasteryInstances_29_28.adt has row[1] mcnk[0] as 2100, 1600, 0
-            // MonasteryInstances_29_28.adt has row[2] mcnk[1] as 2100, 1566.667, 0
-            // MonasteryInstances_29_28.adt has row[3] mcnk[2] as 2100, 1533.333, 0
-            // ...
-            // MonasteryInstances_29_28.adt has row[15] mcnk[15] as 1633.333, 1100, 0
-            // It looks like this is the absolute world position of the SW corner vertex.
-
-            float xPosition = xIndex * -33.33398f;
-            float yPosition = yIndex * -33.33398f;
-            float zPosition = 0f;
-
-            Position = new Vector3(xPosition, yPosition, zPosition);
+            // Calculate position
+            // Chunks in a tile span 0-533.3333 on each axis
+            // tileIndex between 31 and 32 is zero, with lower going positive
+            // X <=> Y (seems x/y are inverted)
+            float step = 100f / 3f; // Ensures proper repeating 33.33333....
+            float startY = (32 - tileYIndex) * (16 * step);
+            float startX = (32 - tileXIndex) * (16 * step);
+            float xPosition = startX + (chunkXIndex * step * -1);
+            float yPosition = startY + (chunkYIndex * step * -1);
+            float zPosition = baseHeight;
+            Position = new Vector3(yPosition, xPosition, zPosition); // Intentionally inverted x/y
         }
 
         private List<byte> GetHeaderBytes()

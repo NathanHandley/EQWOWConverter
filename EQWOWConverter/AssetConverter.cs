@@ -1055,14 +1055,21 @@ namespace EQWOWConverter
             WMO zoneWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\ZONETEXTURES", relativeStaticDoodadsPath, relativeZoneObjectsPath, false);
             zoneWMO.WriteToDisk();
 
+            // Calculate range of ADTs to generate based on zone dimensions
+            //int tileSize = Convert.ToInt32(Math.Round((100.0 / 3.0 * 16.0), MidpointRounding.ToPositiveInfinity));
+            //int tileXMin = Convert.ToInt32(curZone.BoundingBox.BottomCorner.X) % tileSize - 1;
+            //int tileXMax = 0;
+            //int tileYMin = 0;
+            //int tileYMax = 0;
+
             // Create the WDT
-            WDT zoneWDT = new WDT(curZone, zoneWMO.RootFileRelativePathWithFileName);
+            WDT zoneWDT = new WDT(curZone, zoneWMO.RootFileRelativePathWithFileName, 32, 32, 32, 32);
             zoneWDT.WriteToDisk(exportMPQRootFolder);
 
             // Create the ADT
             // TODO: Expand this larger than a single zone tile size
-            ADT zoneADT = new ADT(curZone, zoneWMO.RootFileRelativePathWithFileName);
-            zoneADT.WriteToDisk(exportMPQRootFolder, 32, 32);
+            ADT zoneADT = new ADT(curZone, zoneWMO.RootFileRelativePathWithFileName, 31, 31);
+            zoneADT.WriteToDisk(exportMPQRootFolder);
 
             // Create the WDL
             WDL zoneWDL = new WDL(curZone);
