@@ -38,6 +38,8 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> MCLQBytes = new List<byte>();
         private UInt32 MCSEOffset = 0;
         private List<byte> MCSEBytes = new List<byte>();
+        private UInt32 MCSHOffset = 0;
+        private List<byte> MCSHBytes = new List<byte>();
 
         public ADTMapChunk(UInt32 xIndex, UInt32 yIndex, float baseHeight, UInt32 areaID)
         {
@@ -59,6 +61,9 @@ namespace EQWOWConverter.WOWFiles
                 MCNRBytes.Add(0);
                 MCNRBytes.Add(127);
             }
+            // This padding is unknown what it's for
+            List<byte> unknownPadding = new List<byte> { 0, 112, 245, 18, 0, 8, 0, 0, 0, 84, 245, 18, 0 };
+            MCNRBytes.AddRange(unknownPadding.ToArray());
             MCNRBytes = WrapInChunk("MCNR", MCNRBytes.ToArray());
 
             // MCLY (Texture layer definitions)
@@ -73,8 +78,10 @@ namespace EQWOWConverter.WOWFiles
             // None
             MCALBytes = WrapInChunk("MCAL", MCALBytes.ToArray());
 
-            //// MCSH: 64 bytes of 0
-            //MCSHBytes.AddRange(new byte[64]);
+            // MCSH (shadow map)
+            // None
+            MCSHBytes.AddRange(new byte[512]);
+            MCSHBytes = WrapInChunk("MCSH", MCSHBytes.ToArray());
 
             // MSCE (Sound Emitters)
             // None
@@ -95,11 +102,11 @@ namespace EQWOWConverter.WOWFiles
             // MonasteryInstances_29_28.adt has row[15] mcnk[15] as 1633.333, 1100, 0
             // It looks like this is the absolute world position of the SW corner vertex.
 
-            float x = xIndex * -33.33398f;
-            float y = yIndex * -33.33398f;
-            float z = 0f;
+            float xPosition = xIndex * -33.33398f;
+            float yPosition = yIndex * -33.33398f;
+            float zPosition = 0f;
 
-            Position = new Vector3(x, y, z);
+            Position = new Vector3(xPosition, yPosition, zPosition);
         }
 
         private List<byte> GetHeaderBytes()
@@ -139,11 +146,11 @@ namespace EQWOWConverter.WOWFiles
             // Size of alpha (8 because blank)
             headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(8)));
 
-            // Offset into shadow data (making zero because it doesn't exist - May cause issue)
-            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            // Offset into shadow data
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(MCSHOffset)));
 
-            // Size of shadow (should be zero, but I see 512 in MonasteryInstances_29_28.adt even though the flag is blank)
-            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            // Size of shadow
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(512)));
 
             // AreaID
             headerBytes.AddRange(BitConverter.GetBytes(AreaID));
@@ -203,29 +210,31 @@ namespace EQWOWConverter.WOWFiles
             nonHeaderBytes.AddRange(MCVTBytes);
 
             // Normals data
-            MCNROffset = MCVTOffset + (uint)MCVTBytes.Count; 
+            MCNROffset = MCVTOffset + (UInt32)MCVTBytes.Count; 
             nonHeaderBytes.AddRange(MCNRBytes);
 
             // Layer data
-            MCLYOffset = MCNROffset + (uint)MCNRBytes.Count;
+            MCLYOffset = MCNROffset + (UInt32)MCNRBytes.Count;
             nonHeaderBytes.AddRange(MCLYBytes);
 
             // Doodad reference data
-            MCRFOffset = MCLYOffset + (uint)MCLYBytes.Count;
+            MCRFOffset = MCLYOffset + (UInt32)MCLYBytes.Count;
             nonHeaderBytes.AddRange(MCRFBytes);
 
-            // Note: MonasteryInstances_29_28.adt has MCSH data block here, but flag is 0.  Revisit if issues.
+            // Shadow data
+            MCSHOffset = MCRFOffset + (UInt32)MCRFBytes.Count;
+            nonHeaderBytes.AddRange(MCSHBytes);
 
             // Layer alpha map data
-            MCALOffset = MCRFOffset + (uint)MCRFBytes.Count;
+            MCALOffset = MCSHOffset + (UInt32)MCSHBytes.Count;
             nonHeaderBytes.AddRange(MCALBytes);
 
             // Liquid data
-            MCLQOffset = MCALOffset + (uint)MCRFBytes.Count;
+            MCLQOffset = MCALOffset + (UInt32)MCALBytes.Count;
             nonHeaderBytes.AddRange(MCLQBytes);
 
             // Sound emitter data
-            MCSEOffset = MCLQOffset + (uint)MCRFBytes.Count;
+            MCSEOffset = MCLQOffset + (UInt32)MCLQBytes.Count;
             nonHeaderBytes.AddRange(MCSEBytes);
 
             return nonHeaderBytes;

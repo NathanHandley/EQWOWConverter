@@ -92,7 +92,7 @@ namespace EQWOWConverter.WOWFiles
             //List<ADTMapChunk> mapChunks = new List<ADTMapChunk>();
             List<ADTMapChunkInfo> mapChunkInfos = new List<ADTMapChunkInfo>();
             List<byte> mapChunkBytes = new List<byte>();
-            int curMCNKOffset = headerRelativeOffsetCursor + headerBytes.Count + versionChunkBytes.Count + 8;
+            int curMCNKOffset = headerRelativeOffsetCursor + wmoPlacementInformationBytes.Count + versionChunkBytes.Count + 8;
             for (UInt16 y = 0; y < 16; y++)
                 for (UInt16 x = 0; x < 16; x++)
                 {
@@ -224,7 +224,7 @@ namespace EQWOWConverter.WOWFiles
         {
             // Offsets are relative to the start of the MWMO, so "0" works
             List<byte> chunkBytes = new List<byte>();
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            //chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
             return WrapInChunk("MWID", chunkBytes.ToArray());
         }
 
@@ -247,33 +247,33 @@ namespace EQWOWConverter.WOWFiles
 
             // If there's an orientation issue, it could be that this matrix will need to map to world coordinates...
             // ID.  Unsure what this is exactly, so setting to zero for now
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            //chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
-            // Unique ID.
-            chunkBytes.AddRange(BitConverter.GetBytes((zone.MODFIdentifier)));
+            //// Unique ID.
+            //chunkBytes.AddRange(BitConverter.GetBytes((zone.MODFIdentifier)));
 
-            // Position - Set zero now, and maybe mess with later
-            Vector3 positionVector = new Vector3();
-            chunkBytes.AddRange(positionVector.ToBytes());
+            //// Position - Set zero now, and maybe mess with later
+            //Vector3 positionVector = new Vector3();
+            //chunkBytes.AddRange(positionVector.ToBytes());
 
-            // Rotation - Set zero now, and maybe mess with later.  Format is ABC not XYZ....
-            Vector3 rotation = new Vector3();
-            chunkBytes.AddRange(rotation.ToBytes());
+            //// Rotation - Set zero now, and maybe mess with later.  Format is ABC not XYZ....
+            //Vector3 rotation = new Vector3();
+            //chunkBytes.AddRange(rotation.ToBytes());
 
-            // Bounding Box (Upper Extents then Lower Extents)
-            chunkBytes.AddRange(zone.BoundingBox.ToBytesForWDT());
+            //// Bounding Box (Upper Extents then Lower Extents)
+            //chunkBytes.AddRange(zone.BoundingBox.ToBytesForWDT());
 
-            // Flags - I don't think any are relevant, so zeroing it out (IsDestructible = 1, UsesLOD = 2)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+            //// Flags - I don't think any are relevant, so zeroing it out (IsDestructible = 1, UsesLOD = 2)
+            //chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
 
-            // DoodadSet - None for now
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+            //// DoodadSet - None for now
+            //chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
 
-            // NameSet - Unsure on purpose
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+            //// NameSet - Unsure on purpose
+            //chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
 
-            // Unsure / Unused?
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+            //// Unsure / Unused?
+            //chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
 
             return WrapInChunk("MODF", chunkBytes.ToArray());
         }

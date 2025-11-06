@@ -42,7 +42,7 @@ namespace EQWOWConverter.WOWFiles
             ObjectBytes.AddRange(GenerateMWMOChunk(zone, wmoFileName));
 
             // MODF (WMO placement information) ---------------------------------------------------
-            //ObjectBytes.AddRange(GenerateMODFChunk(zone));
+            ObjectBytes.AddRange(GenerateMODFChunk(zone));
         }
 
         /// <summary>
