@@ -149,10 +149,8 @@ namespace EQWOWConverter
             liquidTypeDBC.LoadFromDisk(dbcInputFolder, "LiquidType.dbc");
             LoadingScreensDBC loadingScreensDBC = new LoadingScreensDBC();
             loadingScreensDBC.LoadFromDisk(dbcInputFolder, "LoadingScreens.dbc");
-            MapDBC mapDBCClient = new MapDBC();
-            mapDBCClient.LoadFromDisk(dbcInputFolder, "Map.dbc");
-            MapDBC mapDBCServer = new MapDBC();
-            mapDBCServer.LoadFromDisk(dbcInputFolder, "Map.dbc");
+            MapDBC mapDBC = new MapDBC();
+            mapDBC.LoadFromDisk(dbcInputFolder, "Map.dbc");
             MapDifficultyDBC mapDifficultyDBC = new MapDifficultyDBC();
             mapDifficultyDBC.LoadFromDisk(dbcInputFolder, "MapDifficulty.dbc");
             //SkillLineDBC skillLineDBC = new SkillLineDBC();
@@ -291,8 +289,7 @@ namespace EQWOWConverter
                 }
 
                 // Map
-                mapDBCClient.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, 0, zone.LoadingScreenID);
-                mapDBCServer.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.LoadingScreenID);
+                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, 0, zone.LoadingScreenID);
 
                 // Map Difficulty
                 mapDifficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
@@ -571,8 +568,7 @@ namespace EQWOWConverter
                     validTransportGroupIDs.Add(curTransportShip.PathGroupID);
 
                     // TODO: Make loading screen configurable
-                    mapDBCClient.AddRow(Convert.ToInt32(curTransportShip.MapID), curTransportShip.MeshName, curTransportShip.Name, 0, Configuration.DBCID_LOADINGSCREEN_ID_START);
-                    mapDBCServer.AddRow(Convert.ToInt32(curTransportShip.MapID), curTransportShip.MeshName, curTransportShip.Name, 0, Configuration.DBCID_LOADINGSCREEN_ID_START);
+                    mapDBC.AddRow(Convert.ToInt32(curTransportShip.MapID), curTransportShip.MeshName, curTransportShip.Name, 0, Configuration.DBCID_LOADINGSCREEN_ID_START);
                     taxiPathDBC.AddRow(curTransportShip.TaxiPathID);
                 }
                 foreach (TransportShipPathNode shipNode in TransportShipPathNode.GetAllPathNodesSorted())
@@ -680,8 +676,8 @@ namespace EQWOWConverter
             liquidTypeDBC.SaveToDisk(dbcOutputServerFolder);
             loadingScreensDBC.SaveToDisk(dbcOutputClientFolder);
             loadingScreensDBC.SaveToDisk(dbcOutputServerFolder);
-            mapDBCClient.SaveToDisk(dbcOutputClientFolder);
-            mapDBCServer.SaveToDisk(dbcOutputServerFolder);
+            mapDBC.SaveToDisk(dbcOutputClientFolder);
+            mapDBC.SaveToDisk(dbcOutputServerFolder);
             mapDifficultyDBC.SaveToDisk(dbcOutputClientFolder);
             mapDifficultyDBC.SaveToDisk(dbcOutputServerFolder);
             //skillLineDBC.SaveToDisk(dbcOutputClientFolder);

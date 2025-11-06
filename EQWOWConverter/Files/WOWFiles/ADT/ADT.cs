@@ -213,7 +213,7 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateMWMOChunk(string wmoFileName)
         {
             List<byte> chunkBytes = new List<byte>();
-            chunkBytes.AddRange(Encoding.ASCII.GetBytes(wmoFileName + "\0"));
+            chunkBytes.AddRange(Encoding.ASCII.GetBytes(wmoFileName.ToUpper() + "\0"));
             return WrapInChunk("MWMO", chunkBytes.ToArray());
         }
 

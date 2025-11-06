@@ -84,7 +84,7 @@ namespace EQWOWConverter.WOWFiles
             // None
             MCLQBytes = WrapInChunk("MCLQ", MCLQBytes.ToArray());
 
-            // TODO: Figure out how to calculate position
+            // TODO: Figure out how to calculate position properly.
             // MonasteryInstances_29_28.adt has row[0] mcnk[0] as 2133.333, 1600, 0
             // MonasteryInstances_29_28.adt has row[0] mcnk[1] as 2133.333, 1566.667, 0
             // MonasteryInstances_29_28.adt has row[0] mcnk[2] as 2133.333, 1533.333, 0
@@ -93,7 +93,13 @@ namespace EQWOWConverter.WOWFiles
             // MonasteryInstances_29_28.adt has row[3] mcnk[2] as 2100, 1533.333, 0
             // ...
             // MonasteryInstances_29_28.adt has row[15] mcnk[15] as 1633.333, 1100, 0
-            Position = new Vector3(0, 0, 0);
+            // It looks like this is the absolute world position of the SW corner vertex.
+
+            float x = xIndex * -33.33398f;
+            float y = yIndex * -33.33398f;
+            float z = 0f;
+
+            Position = new Vector3(x, y, z);
         }
 
         private List<byte> GetHeaderBytes()

@@ -1059,6 +1059,11 @@ namespace EQWOWConverter
             WDT zoneWDT = new WDT(curZone, zoneWMO.RootFileRelativePathWithFileName);
             zoneWDT.WriteToDisk(exportMPQRootFolder);
 
+            // Create the ADT
+            // TODO: Expand this larger than a single zone tile size
+            ADT zoneADT = new ADT(curZone, zoneWMO.RootFileRelativePathWithFileName);
+            zoneADT.WriteToDisk(exportMPQRootFolder, 32, 32);
+
             // Create the WDL
             WDL zoneWDL = new WDL(curZone);
             zoneWDL.WriteToDisk(exportMPQRootFolder);

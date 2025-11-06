@@ -42,7 +42,7 @@ namespace EQWOWConverter.WOWFiles
             ObjectBytes.AddRange(GenerateMWMOChunk(zone, wmoFileName));
 
             // MODF (WMO placement information) ---------------------------------------------------
-            ObjectBytes.AddRange(GenerateMODFChunk(zone));
+            //ObjectBytes.AddRange(GenerateMODFChunk(zone));
         }
 
         /// <summary>
@@ -88,9 +88,17 @@ namespace EQWOWConverter.WOWFiles
             {
                 for (int mapY = 0; mapY < 64; ++mapY)
                 {
-                    // Since this is a WMO-based map, blank seems okay...
-                    chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-                    chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+                    if (mapX == 32 && mapY == 32)
+                    {
+                        chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Flags
+                        chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Async (do not populate)
+                    }
+                    else
+                    {
+                        // Blank tiles
+                        chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+                        chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+                    }
                 }
             }
 
