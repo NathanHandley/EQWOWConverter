@@ -99,10 +99,10 @@ namespace EQWOWConverter.WOWFiles
             // tileIndex between 31 and 32 is zero, with lower going positive
             // X <=> Y (seems x/y are inverted)
             float step = 100f / 3f; // Ensures proper repeating 33.33333....
-            float startY = (32 - tileYIndex) * (16 * step);
-            float startX = (32 - tileXIndex) * (16 * step);
-            float xPosition = startX + (chunkXIndex * step * -1);
-            float yPosition = startY + (chunkYIndex * step * -1);
+            float startY = (32f - tileYIndex) * (16f * step);
+            float startX = (32f - tileXIndex) * (16f * step);
+            float xPosition = startX + (chunkXIndex * step * -1f);
+            float yPosition = startY + (chunkYIndex * step * -1f);
             float zPosition = baseHeight;
             Position = new Vector3(yPosition, xPosition, zPosition); // Intentionally inverted x/y
         }

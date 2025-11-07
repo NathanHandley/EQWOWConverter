@@ -1056,10 +1056,10 @@ namespace EQWOWConverter
             // Calculate range of ADTs to generate based on zone dimensions
             // Note: Coordinate system differs between ADT and WMO, so the top/bottom are traded (and sign inverted)
             float tileLength = 1600f / 3f; // Comes out to 533.333 repeat, doing the math here to make it be as exact as possible
-            float worldNorth = curZone.BoundingBox.BottomCorner.X * -1;
-            float worldWest = curZone.BoundingBox.BottomCorner.Y * -1;
-            float worldSouth = curZone.BoundingBox.TopCorner.X * -1;
-            float worldEast = curZone.BoundingBox.TopCorner.Y * -1;
+            float worldNorth = curZone.BoundingBox.BottomCorner.X * -1f;
+            float worldWest = curZone.BoundingBox.BottomCorner.Y * -1f;
+            float worldSouth = curZone.BoundingBox.TopCorner.X * -1f;
+            float worldEast = curZone.BoundingBox.TopCorner.Y * -1f;
             int tileXMin = 31 - Convert.ToInt32(MathF.Truncate(MathF.Abs(worldWest) / tileLength));
             int tileXMax = 32 + Convert.ToInt32(MathF.Truncate(MathF.Abs(worldEast) / tileLength));
             int tileYMin = 31 - Convert.ToInt32(MathF.Truncate(MathF.Abs(worldNorth) / tileLength));

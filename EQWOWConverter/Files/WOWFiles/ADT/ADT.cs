@@ -258,7 +258,7 @@ namespace EQWOWConverter.WOWFiles
 
             // Position
             // Note that WMOs have to be translated to map space, which has a different coordinate system and origin point
-            float centerPointValue = 51200 / 3; // 64 x 533.333/2
+            float centerPointValue = 51200f / 3f; // 64 x 533.333/2
             Vector3 positionVector = new Vector3(centerPointValue, 0, centerPointValue);
             chunkBytes.AddRange(positionVector.ToBytes());
 
