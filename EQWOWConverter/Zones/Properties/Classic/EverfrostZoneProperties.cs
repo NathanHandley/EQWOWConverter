@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class EverfrostZoneProperties : ZoneProperties
@@ -28,7 +21,7 @@ namespace EQWOWConverter.Zones.Properties
         public EverfrostZoneProperties() : base()
         {
             // TODO: Add zone areas
-            // TODO: Add cold breath
+            DefaultZoneArea.DoShowBreath = true;
             SetZonewideEnvironmentAsOutdoorsNoSky(144, 165, 183, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             SetZonewideAmbienceSound("wind_lp2", "wind_lp4");

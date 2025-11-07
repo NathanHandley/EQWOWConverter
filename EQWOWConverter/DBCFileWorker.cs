@@ -252,9 +252,9 @@ namespace EQWOWConverter
                 ZoneProperties zoneProperties = zone.ZoneProperties;
 
                 // AreaTable
-                areaTableDBC.AddRow(Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zoneProperties.DBCMapID, 0, zone.DefaultArea.AreaMusic, zone.DefaultArea.AreaAmbientSound, zone.DefaultArea.DisplayName, zoneProperties.IsRestingZoneWide);
+                areaTableDBC.AddRow(Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zoneProperties.DBCMapID, 0, zone.DefaultArea.AreaMusic, zone.DefaultArea.AreaAmbientSound, zone.DefaultArea.DisplayName, zoneProperties.IsRestingZoneWide, zone.DefaultArea.DoShowBreath);
                 foreach (ZoneArea subArea in zoneProperties.ZoneAreas)
-                    areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), zoneProperties.DBCMapID, Convert.ToInt32(subArea.DBCParentAreaTableID), subArea.AreaMusic, subArea.AreaAmbientSound, subArea.DisplayName, zoneProperties.IsRestingZoneWide);
+                    areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), zoneProperties.DBCMapID, Convert.ToInt32(subArea.DBCParentAreaTableID), subArea.AreaMusic, subArea.AreaAmbientSound, subArea.DisplayName, zoneProperties.IsRestingZoneWide, subArea.DoShowBreath);
 
                 // AreaTrigger
                 foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)

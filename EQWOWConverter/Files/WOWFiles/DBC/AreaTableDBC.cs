@@ -23,7 +23,7 @@ namespace EQWOWConverter.WOWFiles
         private static int CURRENT_AREABIT = Configuration.DBCID_AREATABLE_AREABIT_BLOCK_1_START;
         private static readonly object AreaBitLock = new object();
 
-        public void AddRow(int id, int mapID, int parentAreaID, ZoneAreaMusic? areaMusic, ZoneAreaAmbientSound? areaSound, string areaName, bool isRestingArea)
+        public void AddRow(int id, int mapID, int parentAreaID, ZoneAreaMusic? areaMusic, ZoneAreaAmbientSound? areaSound, string areaName, bool isRestingArea, bool doShowBreath)
         {
             // AreaBit must always be unique
             int areaBit;
@@ -59,9 +59,9 @@ namespace EQWOWConverter.WOWFiles
                 flags += 2097152; // AREA_FLAG_PlayersCallGuards
             }
             if (Configuration.ZONE_FLYING_ALLOWED == true)
-            {
                 flags += 1024; // AREA_FLAG_FLYING
-            }
+            if (doShowBreath == true)
+                flags += 1; // AREA_FLAG_HasBreathParticles
 
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id);

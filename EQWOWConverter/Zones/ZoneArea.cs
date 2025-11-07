@@ -38,6 +38,7 @@ namespace EQWOWConverter.Zones
         public string AmbientSoundFileNameNoExtDay = string.Empty;
         public string AmbientSoundFileNameNoExtNight = string.Empty;
         public ZoneAreaAmbientSound? AreaAmbientSound = null;
+        public bool DoShowBreath = false;
 
         public ZoneArea(string displayName, string parentAreaDisplayName)
         {
