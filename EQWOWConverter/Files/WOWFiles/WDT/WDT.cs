@@ -42,7 +42,7 @@ namespace EQWOWConverter.WOWFiles
             ObjectBytes.AddRange(GenerateMWMOChunk(zone, wmoFileName));
 
             // MODF (WMO placement information) ---------------------------------------------------
-            ObjectBytes.AddRange(GenerateMODFChunk(zone));
+            //ObjectBytes.AddRange(GenerateMODFChunk(zone));
         }
 
         /// <summary>
@@ -62,7 +62,8 @@ namespace EQWOWConverter.WOWFiles
             List<byte> chunkBytes = new List<byte>();
 
             // Flags
-            UInt32 flags = GetPackedFlags(Convert.ToUInt32(WDTHeaderFlags.HasGlobalMapObject));
+            //UInt32 flags = GetPackedFlags(Convert.ToUInt32(WDTHeaderFlags.HasGlobalMapObject));
+            UInt32 flags = 0;
             chunkBytes.AddRange(BitConverter.GetBytes(flags));
 
             // Unknown / Padding
@@ -107,7 +108,7 @@ namespace EQWOWConverter.WOWFiles
             List<byte> chunkBytes = new List<byte>();
 
             // Write out the wmo root file name
-            chunkBytes.AddRange(Encoding.ASCII.GetBytes(wmoFileName + "\0"));
+            //chunkBytes.AddRange(Encoding.ASCII.GetBytes(wmoFileName + "\0"));
             return WrapInChunk("MWMO", chunkBytes.ToArray());
         }
 

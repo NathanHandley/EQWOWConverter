@@ -1065,6 +1065,12 @@ namespace EQWOWConverter
             int tileYMin = 31 - Convert.ToInt32(MathF.Truncate(MathF.Abs(worldNorth) / tileLength));
             int tileYMax = 32 + Convert.ToInt32(MathF.Truncate(MathF.Abs(worldSouth) / tileLength));
 
+            // Control for minimums
+            tileXMin = Math.Min(31, tileXMin);
+            tileXMax = Math.Max(32, tileXMax);
+            tileYMin = Math.Min(31, tileYMin);
+            tileYMax = Math.Max(32, tileYMax);
+
             // Create the WDT
             WDT zoneWDT = new WDT(curZone, zoneWMO.RootFileRelativePathWithFileName, tileXMin, tileXMax, tileYMin, tileYMax);
             zoneWDT.WriteToDisk(exportMPQRootFolder);

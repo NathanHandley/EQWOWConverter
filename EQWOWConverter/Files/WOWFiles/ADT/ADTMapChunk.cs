@@ -20,8 +20,10 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class ADTMapChunk : WOWChunkedObject
     {
-        private UInt32 IndexX;
-        private UInt32 IndexY;
+        private UInt32 TileXIndex;
+        private UInt32 TileYIndex;
+        private UInt32 ChunkXIndex;
+        private UInt32 ChunkYIndex;
         private UInt32 AreaID;
         private Vector3 Position;
         private UInt32 MCVTOffset = 0;
@@ -43,14 +45,16 @@ namespace EQWOWConverter.WOWFiles
 
         public ADTMapChunk(UInt32 tileXIndex, UInt32 tileYIndex, UInt32 chunkXIndex, UInt32 chunkYIndex, float baseHeight, UInt32 areaID)
         {
-            IndexX = chunkXIndex;
-            IndexY = chunkYIndex;
+            TileXIndex = tileXIndex;
+            TileYIndex = tileYIndex;
+            ChunkXIndex = chunkXIndex;
+            ChunkYIndex = chunkYIndex;
             AreaID = areaID;
 
             // MCVT (Height values)
             // Making it flat
             for (int i = 0; i < 145; i++)
-                MCVTBytes.AddRange(BitConverter.GetBytes(baseHeight));
+                MCVTBytes.AddRange(BitConverter.GetBytes(0));
             MCVTBytes = WrapInChunk("MCVT", MCVTBytes.ToArray());
 
             // MCNR (Height normals)
@@ -71,7 +75,7 @@ namespace EQWOWConverter.WOWFiles
             MCLYBytes = WrapInChunk("MCLY", MCLYBytes.ToArray());
 
             // MCRF (References?)
-            // None
+            MCRFBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
             MCRFBytes = WrapInChunk("MCRF", MCRFBytes.ToArray());
 
             // MCAL (Alpha Maps for additional texture layers)
@@ -79,7 +83,6 @@ namespace EQWOWConverter.WOWFiles
             MCALBytes = WrapInChunk("MCAL", MCALBytes.ToArray());
 
             // MCSH (shadow map)
-            // None
             MCSHBytes.AddRange(new byte[512]);
             MCSHBytes = WrapInChunk("MCSH", MCSHBytes.ToArray());
 
@@ -112,10 +115,10 @@ namespace EQWOWConverter.WOWFiles
             headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
             // IndexX
-            headerBytes.AddRange(BitConverter.GetBytes(IndexX));
+            headerBytes.AddRange(BitConverter.GetBytes(ChunkXIndex));
 
             // IndexY
-            headerBytes.AddRange(BitConverter.GetBytes(IndexY));
+            headerBytes.AddRange(BitConverter.GetBytes(ChunkYIndex));
 
             // Number of Layers
             headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
@@ -151,7 +154,7 @@ namespace EQWOWConverter.WOWFiles
             headerBytes.AddRange(BitConverter.GetBytes(AreaID));
 
             // Number of Map Object References
-            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1)));
 
             // Number of holes (should this be 0 and the whole map is holes?)
             headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
