@@ -23,16 +23,16 @@ namespace EQWOWConverter.WOWFiles
     {
         private Zone ZoneObject;
         private string WMOFileName;
-        private float ZoneBaseHeight;
+        private float ZoneFloorHeight;
         private List<byte> DataBytes;
         private UInt32 TileXIndex = 0;
         private UInt32 TileYIndex = 0;
 
-        public ADT(Zone zone, string wmoFileName, UInt32 tileXIndex, UInt32 tileYIndex)
+        public ADT(Zone zone, string wmoFileName, UInt32 tileXIndex, UInt32 tileYIndex, float zoneFloorHeight)
         {
             ZoneObject = zone;
             WMOFileName = wmoFileName;
-            ZoneBaseHeight = 0f; // TODO: Map this to something, maybe from ZoneProperties
+            ZoneFloorHeight = zoneFloorHeight;
             TileXIndex = tileXIndex;
             TileYIndex = tileYIndex;
 
@@ -100,7 +100,7 @@ namespace EQWOWConverter.WOWFiles
                 for (UInt16 x = 0; x < 16; x++)
                 {
                     // Make the chunk
-                    ADTMapChunk curChunk = new ADTMapChunk(tileXIndex, tileYIndex, x, y, ZoneBaseHeight, ZoneObject.DefaultArea.DBCAreaTableID);
+                    ADTMapChunk curChunk = new ADTMapChunk(tileXIndex, tileYIndex, x, y, ZoneFloorHeight, ZoneObject.DefaultArea.DBCAreaTableID);
                     List<byte> curChunkBytes = curChunk.GetDataBytes();
                     mapChunkBytes.AddRange(curChunkBytes);
 

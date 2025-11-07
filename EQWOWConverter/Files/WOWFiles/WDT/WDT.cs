@@ -25,7 +25,7 @@ namespace EQWOWConverter.WOWFiles
         public List<byte> ObjectBytes = new List<byte>();
         private string BaseFileName;
 
-        public WDT(Zone zone, string wmoFileName, int minADTX, int minADTY, int maxADTX, int maxADTY)
+        public WDT(Zone zone, string wmoFileName, int minADTX, int maxADTX, int minADTY, int maxADTY)
         {
             BaseFileName = zone.ShortName;
 
@@ -36,7 +36,7 @@ namespace EQWOWConverter.WOWFiles
             ObjectBytes.AddRange(GenerateMPHDChunk(zone));
 
             // MAIN (Map Tile Table) --------------------------------------------------------------
-            ObjectBytes.AddRange(GenerateMAINChunk(zone, minADTX, minADTY, maxADTX, maxADTY));
+            ObjectBytes.AddRange(GenerateMAINChunk(zone, minADTX, maxADTX, minADTY, maxADTY));
 
             // MWMO (Main WMO lookup) -------------------------------------------------------------
             ObjectBytes.AddRange(GenerateMWMOChunk(zone, wmoFileName));
@@ -80,13 +80,13 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MAIN (Map Tile Table)
         /// </summary>
-        private List<byte> GenerateMAINChunk(Zone zone, int minADTX, int minADTY, int maxADTX, int maxADTY)
+        private List<byte> GenerateMAINChunk(Zone zone, int minADTX, int maxADTX, int minADTY, int maxADTY)
         {
             List<byte> chunkBytes = new List<byte>();
 
-            for (int mapX = 0; mapX < 64; ++mapX)
+            for (int mapY = 0; mapY < 64; ++mapY)
             {
-                for (int mapY = 0; mapY < 64; ++mapY)
+                for (int mapX = 0; mapX < 64; ++mapX)
                 {
                     if ((mapX >= minADTX && mapX <= maxADTX) && (mapY >= minADTY && mapY <= maxADTY))
                         chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Flags

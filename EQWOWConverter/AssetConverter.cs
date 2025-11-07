@@ -1043,8 +1043,6 @@ namespace EQWOWConverter
             string relativeZoneObjectsPath = Path.Combine("World", "Everquest", "ZoneObjects", zoneShortName);
             ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(zoneShortName);
 
-            // Grab any game objects that 
-
             // Generate the zone
             Zone curZone = new Zone(zoneShortName, zoneProperties);
             Logger.WriteDebug("- [" + curZone.ShortName + "]: Converting zone '" + curZone.ShortName + "' into a wow zone...");
@@ -1056,20 +1054,28 @@ namespace EQWOWConverter
             zoneWMO.WriteToDisk();
 
             // Calculate range of ADTs to generate based on zone dimensions
-            //int tileSize = Convert.ToInt32(Math.Round((100.0 / 3.0 * 16.0), MidpointRounding.ToPositiveInfinity));
-            //int tileXMin = Convert.ToInt32(curZone.BoundingBox.BottomCorner.X) % tileSize - 1;
-            //int tileXMax = 0;
-            //int tileYMin = 0;
-            //int tileYMax = 0;
+            // Note: Coordinate system differs between ADT and WMO, so the top/bottom are traded (and sign inverted)
+            float tileLength = 1600f / 3f; // Comes out to 533.333 repeat, doing the math here to make it be as exact as possible
+            float worldNorth = curZone.BoundingBox.BottomCorner.X * -1;
+            float worldWest = curZone.BoundingBox.BottomCorner.Y * -1;
+            float worldSouth = curZone.BoundingBox.TopCorner.X * -1;
+            float worldEast = curZone.BoundingBox.TopCorner.Y * -1;
+            int tileXMin = 31 - Convert.ToInt32(MathF.Truncate(MathF.Abs(worldWest) / tileLength));
+            int tileXMax = 32 + Convert.ToInt32(MathF.Truncate(MathF.Abs(worldEast) / tileLength));
+            int tileYMin = 31 - Convert.ToInt32(MathF.Truncate(MathF.Abs(worldNorth) / tileLength));
+            int tileYMax = 32 + Convert.ToInt32(MathF.Truncate(MathF.Abs(worldSouth) / tileLength));
 
             // Create the WDT
-            WDT zoneWDT = new WDT(curZone, zoneWMO.RootFileRelativePathWithFileName, 32, 32, 32, 32);
+            WDT zoneWDT = new WDT(curZone, zoneWMO.RootFileRelativePathWithFileName, tileXMin, tileXMax, tileYMin, tileYMax);
             zoneWDT.WriteToDisk(exportMPQRootFolder);
 
             // Create the ADT
-            // TODO: Expand this larger than a single zone tile size
-            ADT zoneADT = new ADT(curZone, zoneWMO.RootFileRelativePathWithFileName, 31, 31);
-            zoneADT.WriteToDisk(exportMPQRootFolder);
+            for (UInt32 y = Convert.ToUInt32(tileYMin); y <= Convert.ToUInt32(tileYMax); y++)
+                for (UInt32 x = Convert.ToUInt32(tileXMin); x <= Convert.ToUInt32(tileXMax); x++)
+                {
+                    ADT zoneADT = new ADT(curZone, zoneWMO.RootFileRelativePathWithFileName, x, y, (curZone.BoundingBox.BottomCorner.Z - 0.5f));
+                    zoneADT.WriteToDisk(exportMPQRootFolder);
+                }
 
             // Create the WDL
             WDL zoneWDL = new WDL(curZone);
