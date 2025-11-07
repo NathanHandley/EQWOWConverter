@@ -84,6 +84,18 @@ namespace EQWOWConverter.Common
             returnBytes.AddRange(BitConverter.GetBytes(TopCorner.X));
             return returnBytes;
         }
+        
+        public List<byte> ToBytesForADT(Vector3 centerPosition)
+        {
+            List<byte> returnBytes = new List<byte>();
+            returnBytes.AddRange(BitConverter.GetBytes(BottomCorner.Z + centerPosition.X));
+            returnBytes.AddRange(BitConverter.GetBytes(BottomCorner.Y + centerPosition.Y));            
+            returnBytes.AddRange(BitConverter.GetBytes(BottomCorner.X + centerPosition.Z));
+            returnBytes.AddRange(BitConverter.GetBytes(TopCorner.Z + centerPosition.X));
+            returnBytes.AddRange(BitConverter.GetBytes(TopCorner.Y + centerPosition.Y));            
+            returnBytes.AddRange(BitConverter.GetBytes(TopCorner.X + centerPosition.Z));
+            return returnBytes;
+        }
 
         public List<byte> ToBytesLowRes()
         {

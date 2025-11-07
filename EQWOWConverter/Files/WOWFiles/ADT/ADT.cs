@@ -256,8 +256,10 @@ namespace EQWOWConverter.WOWFiles
             // Unique ID
             chunkBytes.AddRange(BitConverter.GetBytes((zone.MODFIdentifier)));
 
-            // Position - Set zero now, and maybe mess with later
-            Vector3 positionVector = new Vector3();
+            // Position
+            // Note that WMOs have to be translated to map space, which has a different coordinate system and origin point
+            float centerPointValue = 51200 / 3; // 64 x 533.333/2
+            Vector3 positionVector = new Vector3(centerPointValue, 0, centerPointValue);
             chunkBytes.AddRange(positionVector.ToBytes());
 
             // Rotation - Set zero now, and maybe mess with later.  Format is ABC not XYZ....
@@ -265,7 +267,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(rotation.ToBytes());
 
             // Bounding Box (Upper Extents then Lower Extents)
-            chunkBytes.AddRange(zone.BoundingBox.ToBytesForWDT());
+            chunkBytes.AddRange(zone.BoundingBox.ToBytesForADT(positionVector));
 
             // Flags - I don't think any are relevant, so zeroing it out (IsDestructible = 1, UsesLOD = 2)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
