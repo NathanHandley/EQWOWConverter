@@ -156,8 +156,8 @@ namespace EQWOWConverter.WOWFiles
             // Number of Map Object References
             headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1)));
 
-            // Number of holes (should this be 0 and the whole map is holes?)
-            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            // Number of holes (not using terrain, so just making it a hole)
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(65535)));
 
             // 4 Unknown values
             headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
