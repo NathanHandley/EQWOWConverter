@@ -144,6 +144,7 @@ namespace EQWOWConverter
 
         private void PopulateSystemConfigs()
         {
+            modEverquestSystemConfigsSQL.AddRow("ModVersion", Configuration.CORE_MOD_VERSION.ToString());
             modEverquestSystemConfigsSQL.AddRow("BardMaxConcurrentSongs", Configuration.SPELL_MAX_CONCURRENT_BARD_SONGS.ToString());
             modEverquestSystemConfigsSQL.AddRow("DayEventID", Configuration.SQL_GAMEEVENT_ID_DAY.ToString());
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMin", Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString());
