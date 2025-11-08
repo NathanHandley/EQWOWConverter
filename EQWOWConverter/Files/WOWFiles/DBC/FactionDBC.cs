@@ -48,6 +48,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(5); // Parent Faction Cap 2 // Unsure why this is 5, but most rows are
             newRow.AddStringLang(creatureFaction.Name); // Name
             newRow.AddStringLang(creatureFaction.Description); // Description
+
+            // Sort by ID
+            newRow.SortValue1 = creatureFaction.FactionID;
+
             Rows.Add(newRow);
         }
 
@@ -105,6 +109,9 @@ namespace EQWOWConverter.WOWFiles
                 row.AddIntFromSourceRawBytes(ref byteCursor); // Parent Faction Cap 2
                 row.AddStringLangFromSourceRawBytes(ref byteCursor, StringBlock); // Name
                 row.AddStringLangFromSourceRawBytes(ref byteCursor, StringBlock); // Description
+
+                // Sort by ID
+                row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[0]).Value;
 
                 // Purge raw data
                 row.SourceRawBytes.Clear();
