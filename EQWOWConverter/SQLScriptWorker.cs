@@ -934,7 +934,7 @@ namespace EQWOWConverter
                 Dictionary<string, List<GameObject>> gameObjectsByZoneShortNames = GameObject.GetNonDoodadGameObjectsByZoneShortNames();
                 foreach (var gameObjectByShortName in gameObjectsByZoneShortNames)
                 {
-                    // Skip invalid objects (zones not loaded)
+                    // Skip invalid zones
                     if (zonePropertiesByShortName.ContainsKey(gameObjectByShortName.Key) == false)
                         continue;
                     int areaID = 0;
@@ -944,6 +944,12 @@ namespace EQWOWConverter
 
                     foreach (GameObject gameObject in gameObjectByShortName.Value)
                     {
+                        // Skip invalid objects
+                        if (gameObject.GameObjectDisplayInfoID < 0)
+                        {
+                            Logger.WriteError("Skipping gameobject named '", gameObject.DisplayName, "' since it has no displayinfoID");
+                            continue;
+                        }
                         string comment = string.Concat("EQ ", gameObject.ObjectType.ToString(), " ", gameObject.ZoneShortName, " (", gameObject.ID, ")");
                         string name = gameObject.DisplayName;
                         if (name.Length == 0)

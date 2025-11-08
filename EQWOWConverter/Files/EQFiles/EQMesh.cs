@@ -225,6 +225,13 @@ namespace EQWOWConverter.EQFiles
                 }
             }
 
+            // Backfill any missing vertex colors
+            if (Meshdata.Vertices.Count > 0 && Meshdata.VertexColors.Count == 0)
+            {
+                for (int i = 0; i < Meshdata.Vertices.Count; i++)
+                    Meshdata.VertexColors.Add(new ColorRGBA());
+            }
+
             Meshdata.DeleteInvalidTriangles();
             if (Meshdata.AnimatedVertexFramesByVertexIndex.Count > 0)
                 if (Meshdata.AnimatedVertexFramesByVertexIndex.Count != Meshdata.Vertices.Count)
