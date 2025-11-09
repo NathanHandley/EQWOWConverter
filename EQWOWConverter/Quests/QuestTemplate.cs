@@ -137,11 +137,11 @@ namespace EQWOWConverter.Quests
                 {
                     case "attackplayer":
                         {
-                            reaction.type = QuestReactionType.AttackPlayer;
+                            reaction.ReactionType = QuestReactionType.AttackPlayer;
                         } break;
                     case "despawn":
                         {
-                            reaction.type = QuestReactionType.Despawn;
+                            reaction.ReactionType = QuestReactionType.Despawn;
                             if (reactionValue1 == "self")
                                 reaction.TargetSelf = true;
                             else
@@ -149,17 +149,17 @@ namespace EQWOWConverter.Quests
                         } break;
                     case "emote":
                         {
-                            reaction.type = QuestReactionType.Emote;
+                            reaction.ReactionType = QuestReactionType.Emote;
                             reaction.ReactionValue = reactionValue1;
                         } break;
                     case "say":
                         {
-                            reaction.type = QuestReactionType.Say;
+                            reaction.ReactionType = QuestReactionType.Say;
                             reaction.ReactionValue = reactionValue1;
                         } break;
                     case "spawn":
                         {
-                            reaction.type = QuestReactionType.Spawn;
+                            reaction.ReactionType = QuestReactionType.Spawn;
                             reaction.TargetCreatureEQID = int.Parse(reactionValue1);
                             string reactionValue2 = columns["reaction_value2"];
                             if (reactionValue2 == "playerX")
@@ -180,7 +180,7 @@ namespace EQWOWConverter.Quests
                             if (reactionValue5 == "playerHeading")
                                 reaction.UsePlayerHeading = true;
                             else
-                                reaction.Heading = ParseTool.ParseFloat(reactionValue5, 0); // TODO: Convert this
+                                reaction.EQHeading = ParseTool.ParseFloat(reactionValue5, 0); // TODO: Convert this
                             string reactionValue6 = columns["reaction_value6"];
                             if (reactionValue6.Length > 0)
                                 reaction.AddedX = ParseTool.ParseFloat(reactionValue6, 0);
@@ -190,7 +190,7 @@ namespace EQWOWConverter.Quests
                         } break;
                     case "spawnunique":
                         {
-                            reaction.type = QuestReactionType.SpawnUnique;
+                            reaction.ReactionType = QuestReactionType.SpawnUnique;
                             reaction.TargetCreatureEQID = int.Parse(reactionValue1);
                             string reactionValue2 = columns["reaction_value2"];
                             if (reactionValue2 == "playerX")
@@ -211,7 +211,7 @@ namespace EQWOWConverter.Quests
                             if (reactionValue5 == "playerHeading")
                                 reaction.UsePlayerHeading = true;
                             else
-                                reaction.Heading = ParseTool.ParseFloat(reactionValue5, 0); // TODO: Convert this
+                                reaction.EQHeading = ParseTool.ParseFloat(reactionValue5, 0); // TODO: Convert this
                             string reactionValue6 = columns["reaction_value6"];
                             if (reactionValue6.Length > 0)
                                 reaction.AddedX = ParseTool.ParseFloat(reactionValue6, 0);
@@ -222,7 +222,7 @@ namespace EQWOWConverter.Quests
                         break;
                     case "yell":
                         {
-                            reaction.type = QuestReactionType.Yell;
+                            reaction.ReactionType = QuestReactionType.Yell;
                             reaction.ReactionValue = reactionValue1;
                         }
                         break;
@@ -232,6 +232,15 @@ namespace EQWOWConverter.Quests
                             continue;
                         }
                 }
+
+                // Scale positions for wow world scale
+                reaction.X *= Configuration.GENERATE_WORLD_SCALE;
+                reaction.Y *= Configuration.GENERATE_WORLD_SCALE;
+                reaction.Z *= Configuration.GENERATE_WORLD_SCALE;
+                reaction.AddedX *= Configuration.GENERATE_WORLD_SCALE;
+                reaction.AddedY *= Configuration.GENERATE_WORLD_SCALE;
+
+
                 if (reactionsByQuestID.ContainsKey(questID) == false)
                     reactionsByQuestID.Add(questID, new List<QuestReaction>());
                 reactionsByQuestID[questID].Add(reaction);

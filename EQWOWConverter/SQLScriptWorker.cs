@@ -619,7 +619,7 @@ namespace EQWOWConverter
                     // Reward say/yell/emote actions
                     foreach (QuestReaction reaction in questTemplate.Reactions)
                     {
-                        if (reaction.type == QuestReactionType.Emote || reaction.type == QuestReactionType.Say || reaction.type == QuestReactionType.Yell)
+                        if (reaction.ReactionType == QuestReactionType.Emote || reaction.ReactionType == QuestReactionType.Say || reaction.ReactionType == QuestReactionType.Yell)
                         {
                             // Broadcast Text
                             int broadcastID = BroadcastTextSQL.GenerateUniqueID();
@@ -634,14 +634,14 @@ namespace EQWOWConverter
                             }
                             else
                                 creatureTextGroupIDsByCreatureTemplateID.Add(creatureTemplateID, 0);
-                            string comment = string.Concat("EQ ", creatureTemplateByWOWID[creatureTemplateID].Name, " Quest ", reaction.type.ToString());
+                            string comment = string.Concat("EQ ", creatureTemplateByWOWID[creatureTemplateID].Name, " Quest ", reaction.ReactionType.ToString());
                             int messageType = 12; // Default to say
-                            switch (reaction.type)
+                            switch (reaction.ReactionType)
                             {
                                 case QuestReactionType.Say: messageType = 12; break;
                                 case QuestReactionType.Emote: messageType = 16; break;
                                 case QuestReactionType.Yell: messageType = 14; break;
-                                default: Logger.WriteError("Unhandled quest reaction type of " + reaction.type); break;
+                                default: Logger.WriteError("Unhandled quest reaction type of " + reaction.ReactionType); break;
                             }
                             creatureTextSQL.AddRow(creatureTemplateID, creatureTextGroupID, messageType, reaction.ReactionValue, broadcastID, Configuration.QUESTS_TEXT_DURATION_IN_MS, comment);
                             creatureTextSQL.AddRow(creatureTemplateID, creatureTextGroupID + 1, messageType, reaction.ReactionValue, broadcastID, Configuration.QUESTS_TEXT_DURATION_IN_MS, comment);

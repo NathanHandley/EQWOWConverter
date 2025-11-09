@@ -10,24 +10,24 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30007|airplane|a_presence|say|Hahaha! That dolt Eejag fell to the likes of you? Im not surprised. So, I guess this means you are here to challenge me. Normally, I wouldnt waste my time, but since you have defeated my younger brother, I suppose Im obligated.||||||
 30007|airplane|a_presence|spawn|71069|playerX|playerY|-8|playerHeading||
 30008|airplane|a_thunder_spirit_princess|say|Thank you,  $N. I will tell him to expect visitors.||||||
-30008|airplane|a_thunder_spirit_princess|spawnunique|71073|287.9|662.5|-54.1|109.3||
+30008|airplane|a_thunder_spirit_princess|spawnunique|71073|662.5|287.9|-54.1|109.3||
 30009|airplane|Cilin_Spellsinger|say|Then Denise it shall be. You will want to peruse the contents of this journal before your test. When you are ready, simply hand it back to me and I will call Denise forth. If you decide that perhaps Denise is not who you want to test you, then destroy the book and see me again when you are ready.||||||
 30010|airplane|Cilin_Spellsinger|despawn|self||||||
 30010|airplane|Cilin_Spellsinger|say|Farewell.||||||
-30010|airplane|Cilin_Spellsinger|spawn|71081|660.7|1388.9|-766.9|192.6||
+30010|airplane|Cilin_Spellsinger|spawn|71081|1388.9|660.7|-766.9|192.6||
 30011|airplane|Cilin_Spellsinger|despawn|self||||||
 30011|airplane|Cilin_Spellsinger|say|Farewell.||||||
-30011|airplane|Cilin_Spellsinger|spawn|71082|660.7|1368.4|-766.9|192.6||
+30011|airplane|Cilin_Spellsinger|spawn|71082|1368.4|660.7|-766.9|192.6||
 30012|airplane|Clarisa_Spiritsong|say|The songsmith Ervaj crafted this flute. It is now yours,  $N.||||||
 30013|airplane|Clarisa_Spiritsong|say|You are truly a master of songs,  $N.||||||
 30014|airplane|Clarisa_Spiritsong|say|Take this mask. You have earned it.||||||
 30015|airplane|Dason_Goldblade|say|Dirkog is a gruff one, but his faith is what all paladins should strive to equal.  Read this book and return it to me.  After you have done so, I shall summon Dirkog to test you.||||||
 30016|airplane|Dason_Goldblade|despawn|self||||||
 30016|airplane|Dason_Goldblade|say|Farewell.||||||
-30016|airplane|Dason_Goldblade|spawn|71089|563|1331.1|-766.9|63.4||
+30016|airplane|Dason_Goldblade|spawn|71089|1331.1|563|-766.9|63.4||
 30017|airplane|Dason_Goldblade|despawn|self||||||
 30017|airplane|Dason_Goldblade|say|Farewell.||||||
-30017|airplane|Dason_Goldblade|spawn|71077|563|1331.1|-766.9|63.4||
+30017|airplane|Dason_Goldblade|spawn|71077|1331.1|563|-766.9|63.4||
 30018|airplane|Denise_Songweaver|say|The horn of Denon will aid you greatly, I believe.||||||
 30019|airplane|Denise_Songweaver|say|I hope you find this amulet useful,  $N.||||||
 30020|airplane|Denise_Songweaver|say|The spear of harmony is a powerful weapon indeed. I hope you find it useful,  $N.||||||
@@ -36,25 +36,25 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30023|airplane|Deric_Lennox|say|You are a legend among clerics,  $N. Your deeds will be well remembered. Please, take this baton as a token of my admiration.||||||
 30024|airplane|Dirkog_Steelhand|despawn|self||||||
 30024|airplane|Dirkog_Steelhand|say|Thank ye, laddie! He's awaitin' ya up top!||||||
-30024|airplane|Dirkog_Steelhand|spawn|71091|-586|767|176|64||
+30024|airplane|Dirkog_Steelhand|spawn|71091|767|-586|176|64||
 30025|airplane|Dirkog_Steelhand|say|Ye surprised me,  $N. Wear me girdle with pride!||||||
 30026|airplane|Drakis_Bloodcaster|say|Take this book and read it then.  When you are finished, hand it back to me and I will summon the vile Dugaas.||||||
 30027|airplane|Drakis_Bloodcaster|despawn|self||||||
 30027|airplane|Drakis_Bloodcaster|say|Farewell.||||||
-30027|airplane|Drakis_Bloodcaster|spawn|71074|654.9|1305|-762.2|22||
+30027|airplane|Drakis_Bloodcaster|spawn|71074|1305|654.9|-762.2|22||
 30028|airplane|Drakis_Bloodcaster|despawn|self||||||
 30028|airplane|Drakis_Bloodcaster|say|Farewell.||||||
-30028|airplane|Drakis_Bloodcaster|spawn|71084|661.6|1305|-762.2|22||
+30028|airplane|Drakis_Bloodcaster|spawn|71084|1305|661.6|-762.2|22||
 30029|airplane|Dugaas_Helpyre|say|A sphinx's heart holds many magical properties,  $N.  Wear this amulet and reap the benefits.||||||
 30030|airplane|Dugaas_Helpyre|say|You surpise even me,  $N.  A great necromancer you are and now you have the staff to prove it!||||||
 30031|airplane|Dugaas_Helpyre|say|Take this ring,  $N.  Oh, and just Ignore the wailing, you will get used to it in time.||||||
 30032|airplane|Enchanter_Jolas|say|Lelulean it shall be.  Take this book and read it.  When you are finished, hand it back to me and I shall summon Enchantress Lelulean to test you.||||||
 30033|airplane|Enchanter_Jolas|despawn|self||||||
 30033|airplane|Enchanter_Jolas|say|Till next time!  Farewell!||||||
-30033|airplane|Enchanter_Jolas|spawn|71085|640|1303.2|-766.9|0.4||
+30033|airplane|Enchanter_Jolas|spawn|71085|1303.2|640|-766.9|0.4||
 30034|airplane|Enchanter_Jolas|despawn|self||||||
 30034|airplane|Enchanter_Jolas|say|Till next time!  Farewell!||||||
-30034|airplane|Enchanter_Jolas|spawn|71104|640|1303.2|-766.9|0.4||
+30034|airplane|Enchanter_Jolas|spawn|71104|1303.2|640|-766.9|0.4||
 30035|airplane|Enderbite|say| $N, you have come far and done well.  This earring should aid you in the future.||||||
 30036|airplane|Enderbite|say|Since you have done as I asked,  $N, I will give you this necklace. May Veeshan watch over you.||||||
 30037|airplane|Enderbite|say|A great day this is! Here! Take this staff as a token of my gratitude,  $N.||||||
@@ -82,10 +82,10 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30060|airplane|Holwin|say|Take this book and read about the legendary Ton Po.  When you are finished, hand it back, and I will summon the master for you.||||||
 30061|airplane|Holwin|despawn|self||||||
 30061|airplane|Holwin|say|Farewell.||||||
-30061|airplane|Holwin|spawn|71097|660|1332.3|-766.9|189.9||
+30061|airplane|Holwin|spawn|71097|1332.3|660|-766.9|189.9||
 30062|airplane|Holwin|despawn|self||||||
 30062|airplane|Holwin|say|Farewell.||||||
-30062|airplane|Holwin|spawn|71096|660|1315|-766.9|189.9||
+30062|airplane|Holwin|spawn|71096|1315|660|-766.9|189.9||
 30063|airplane|Inte_Akera|say|You have chosen wisely, my friend. Take this note as a token of my blessing upon you.||||||
 30064|airplane|Inte_Akera|say|You have chosen wisely, my friend. Take this note as a token of my blessing upon you.||||||
 30065|airplane|Inte_Akera|despawn|self||||||
@@ -93,34 +93,34 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30066|airplane|Josin_Faithbringer|say|Take and read this book. When you are done, hand it back to me and I will summon him.||||||
 30067|airplane|Josin_Faithbringer|despawn|self||||||
 30067|airplane|Josin_Faithbringer|say|Farewell.||||||
-30067|airplane|Josin_Faithbringer|spawn|71080|660.7|1361.6|-766.9|193.2||
+30067|airplane|Josin_Faithbringer|spawn|71080|1361.6|660.7|-766.9|193.2||
 30068|airplane|Josin_Faithbringer|despawn|self||||||
 30068|airplane|Josin_Faithbringer|say|Farewell.||||||
-30068|airplane|Josin_Faithbringer|spawn|71083|660.7|1338|-766.9|193.2||
+30068|airplane|Josin_Faithbringer|spawn|71083|1338|660.7|-766.9|193.2||
 30069|airplane|Jzil_GSix|say|Yesss? You do well,  $N.  Take thisss sssmall token to show my ressspect for you.||||||
 30070|airplane|Jzil_GSix|say|This feathered cape should be more than enough payment, now be gone from my sight!||||||
 30072|airplane|Kendrick|say|Very good,  $N!  Take this choker as evidence of your abilities.||||||
 30073|airplane|Kendrick|say|These spauldors made from griffon wings will aid you in your ascent to greatness,  $N.||||||
 30074|airplane|Kendrick|say|If one is slow, he dies a quick death. With this belt, you can avoid all that with nary a breath.||||||
 30075|airplane|Kihun_Solstin|say|If you have obtained the other, lesser Elements, go speak with The Master of Elements, who is now waiting for you. I wish you luck. If you have not completed all the tasks set for you, let me know, and I shall let you see the Master.||||||
-30075|airplane|Kihun_Solstin|spawnunique|71040|604.5|1346.3|-766|0||
+30075|airplane|Kihun_Solstin|spawnunique|71040|1346.3|604.5|-766|0||
 30076|airplane|Lelulean|say|Good work,  $N, I hope you find this as useful as I find the items you retrieved for me.||||||
 30077|airplane|Lelulean|say|The Wind Walker's Mantle will sit well upon your shoulders,  $N.  Be well this day.||||||
 30078|airplane|Lelulean|say|My thanks to you,  $N.  Take this mask as a token of my gratitude.||||||
 30079|airplane|Magus_Frinon|say|Roanis it shall be.  Take this book and read it.  When you are finished, hand it back to me and I shall summon the magician Roanis to test you.||||||
 30080|airplane|Magus_Frinon|despawn|self||||||
 30080|airplane|Magus_Frinon|say|Till next time!  Farewell!||||||
-30080|airplane|Magus_Frinon|spawn|71088|614.5|1304.1|-766.9|255||
+30080|airplane|Magus_Frinon|spawn|71088|1304.1|614.5|-766.9|255||
 30081|airplane|Magus_Frinon|despawn|self||||||
 30081|airplane|Magus_Frinon|say|Till next time!  Farewell!||||||
-30081|airplane|Magus_Frinon|spawn|71094|614.5|1304.1|-766.9|255||
+30081|airplane|Magus_Frinon|spawn|71094|1304.1|614.5|-766.9|255||
 30082|airplane|Medicine_Man_Veetra|say|Return this tome if you wish me to summon Ooga to assist you. Destroy it if you do not.||||||
 30083|airplane|Medicine_Man_Veetra|despawn|self||||||
 30083|airplane|Medicine_Man_Veetra|say|I am no longer needed and will take my leave.||||||
-30083|airplane|Medicine_Man_Veetra|spawnunique|71087|631.9|1401.9|-766.9|129.8||
+30083|airplane|Medicine_Man_Veetra|spawnunique|71087|1401.9|631.9|-766.9|129.8||
 30084|airplane|Medicine_Man_Veetra|despawn|self||||||
 30084|airplane|Medicine_Man_Veetra|say|I am no longer needed and will take my leave.||||||
-30084|airplane|Medicine_Man_Veetra|spawnunique|71093|653.4|1399|-766.9|129.8||
+30084|airplane|Medicine_Man_Veetra|spawnunique|71093|1399|653.4|-766.9|129.8||
 30087|airplane|Neasin_Leornic|say|This mantle will sit well on your shoulders,  $N.  Take it as a reward for your troubles.||||||
 30088|airplane|Ogog|say|Good job! Ogog give you Fangol for being good smasher!||||||
 30089|airplane|Ogog|say|This Dagas, blade of stinging wind. You bash good with this.||||||
@@ -130,10 +130,10 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30094|airplane|Ranger_Spirit|say|Ahhh, Gordon Treecaller.  Many say he is the finest swordsman ever. Read of his tale and return the book when you are finished.||||||
 30095|airplane|Ranger_Spirit|despawn|self||||||
 30095|airplane|Ranger_Spirit|say|Relinin Skyrunner, I summon thee.||||||
-30095|airplane|Ranger_Spirit|spawn|71095|617.1|1399.5|-766.9|129.4||
+30095|airplane|Ranger_Spirit|spawn|71095|1399.5|617.1|-766.9|129.4||
 30096|airplane|Ranger_Spirit|despawn|self||||||
 30096|airplane|Ranger_Spirit|say|Gordon Treecaller, I summon thee.||||||
-30096|airplane|Ranger_Spirit|spawn|71090|592.8|1400.1|-766.9|129.4||
+30096|airplane|Ranger_Spirit|spawn|71090|1400.1|592.8|-766.9|129.4||
 30097|airplane|Rayne|say|They call this blade 'Rampage Bringer'. Use it wisely and it will serve you well.||||||
 30098|airplane|Rayne|say|I hope you find this bracelet of many colors useful in your journeys. Use its abilities wisely,  $N.'||||||
 30099|airplane|Rayne|say|Take this mask,  $N. It will aid you in the art of stealth.||||||
@@ -147,34 +147,34 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30107|airplane|Sarkis_Ebonblade|say|Tynicon it is!  Take this book and read it.  When you are finished, hand it back to me and I shall summon Tynicon to test you.||||||
 30108|airplane|Sarkis_Ebonblade|despawn|self||||||
 30108|airplane|Sarkis_Ebonblade|say|Farewell.||||||
-30108|airplane|Sarkis_Ebonblade|spawn|71063|563.3|1351.9|-766.9|63.4||
+30108|airplane|Sarkis_Ebonblade|spawn|71063|1351.9|563.3|-766.9|63.4||
 30109|airplane|Sarkis_Ebonblade|despawn|self||||||
 30109|airplane|Sarkis_Ebonblade|say|Till next time!  Farewell!||||||
-30109|airplane|Sarkis_Ebonblade|spawn|71098|563.3|1351.9|-766.9|63.4||
+30109|airplane|Sarkis_Ebonblade|spawn|71098|1351.9|563.3|-766.9|63.4||
 30110|airplane|Strandar_Pinemist|say|Please read this tome. It wll explain what Fenalla Moonshadow can assist you with. When you are finished, please return this to me. We have but a single copy of such a tome in the world, for which a tree gave its life.||||||
 30111|airplane|Strandar_Pinemist|despawn|self||||||
 30111|airplane|Strandar_Pinemist|say|Welcome, Will Treewalker.||||||
-30111|airplane|Strandar_Pinemist|spawn|71099|563|1311.4|-766.9|65.4||
+30111|airplane|Strandar_Pinemist|spawn|71099|1311.4|563|-766.9|65.4||
 30112|airplane|Strandar_Pinemist|despawn|self||||||
 30112|airplane|Strandar_Pinemist|say|Welcome, Fenalla Moonshadow.||||||
-30112|airplane|Strandar_Pinemist|spawn|71086|562.5|1329.3|-766.9|65.4||
+30112|airplane|Strandar_Pinemist|spawn|71086|1329.3|562.5|-766.9|65.4||
 30113|airplane|Thalik_Silenthand|say|Kendrick it shall be.  Take this book and read it.  When you are finished, hand it back to me and I shall summon the mighty rogue Kendrick to test you.||||||
 30114|airplane|Thalik_Silenthand|despawn|self||||||
 30114|airplane|Thalik_Silenthand|say|Farewell.||||||
-30114|airplane|Thalik_Silenthand|spawn|71061|563.3|1372.6|-766.9|63.4||
+30114|airplane|Thalik_Silenthand|spawn|71061|1372.6|563.3|-766.9|63.4||
 30115|airplane|Thalik_Silenthand|despawn|self||||||
 30115|airplane|Thalik_Silenthand|say|Farewell.||||||
-30115|airplane|Thalik_Silenthand|spawn|71068|563.3|1372.6|-766.9|63.4||
+30115|airplane|Thalik_Silenthand|spawn|71068|1372.6|563.3|-766.9|63.4||
 30116|airplane|Ton_Po|say|You are truly enlightened,  $N.  I am honored by your presence.||||||
 30117|airplane|Ton_Po|say|This eye patch once belonged to the great Ton Po. Please, you must take it as you are far more enlightened than I.||||||
 30118|airplane|Ton_Po|say|Take these sandals,  $N.  It is you who deserves to wear them, not I.||||||
 30119|airplane|Torgon_Blademaster|say|Ogog?  You are indeed brave for choosing that brute.  Take this book telling the tale of Ogog and read it.  When you are finished, hand it back to me.||||||
 30120|airplane|Torgon_Blademaster|despawn|self||||||
 30120|airplane|Torgon_Blademaster|say|Falorn, come forth!||||||
-30120|airplane|Torgon_Blademaster|spawn|71067|563.3|1392.4|-766.9|63.4||
+30120|airplane|Torgon_Blademaster|spawn|71067|1392.4|563.3|-766.9|63.4||
 30121|airplane|Torgon_Blademaster|despawn|self||||||
 30121|airplane|Torgon_Blademaster|say|Farewell.||||||
-30121|airplane|Torgon_Blademaster|spawn|71064|563.3|1392.4|-766.9|63.4||
+30121|airplane|Torgon_Blademaster|spawn|71064|1392.4|563.3|-766.9|63.4||
 30123|airplane|Tynicon_DLin|say|This shield of evil shall guard you well, dark one.||||||
 30124|airplane|Tynicon_DLin|say|Be fooled not by their appearance. They are as evil as you, and will protect you well.||||||
 30125|airplane|Tynicon_DLin|say|The blade I have given you is called Khyldorn, Drinker of Blood.  It was forged a millennium ago and tempered in the blood of Veeshan herself.  Wield it well,  $N.  For if you do, it will never fail you.||||||
@@ -184,10 +184,10 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30129|airplane|Wizard_Schrock|say|Abec it shall be.  Take this book and read it.  When you are finished, hand it back to me and I shall summon the mighty wizard Abec to test you.||||||
 30130|airplane|Wizard_Schrock|despawn|self||||||
 30130|airplane|Wizard_Schrock|say|Till next time!  Farewell!||||||
-30130|airplane|Wizard_Schrock|spawn|71092|585|1304.3|-766.9|0.1||
+30130|airplane|Wizard_Schrock|spawn|71092|1304.3|585|-766.9|0.1||
 30131|airplane|Wizard_Schrock|despawn|self||||||
 30131|airplane|Wizard_Schrock|say|Till next time!  Farewell!||||||
-30131|airplane|Wizard_Schrock|spawn|71079|585|1304.3|-766.9|0.1||
+30131|airplane|Wizard_Schrock|spawn|71079|1304.3|585|-766.9|0.1||
 30132|airplane|Wu_the_Enlightened|say|You have come a long way in your search for enlightenment,  $N.  Please, take these shoulder wraps of the legendary Ton Po.||||||
 30133|airplane|Wu_the_Enlightened|say|You embody tranquility,  $N. You may now wield the Fist of Wu.  May Quellious bless you with peace.||||||
 30134|airplane|Wu_the_Enlightened|say|You have done well,  $N.  You have both my respect and the legendary golden sash.  Wear it well, enlightened one.||||||
@@ -207,7 +207,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30148|akanon|Derthix_Gibblix|say|It is good you returned with this. I almost thought you had lost to Vyntok, or worse become merciful to his cause. I suppose a reward is in order. A mace for a mace, now go forth and spread the word of Bertoxxulous.||||||
 30149|akanon|Drekon_Vebnebber|say|Why, thank you. Hey!! This log indicates some messy business is going on at the scrapyard. Something happened to a group of gnomes. They never came out!! Go check out the scrapyard! I believe the rumors of Red 5 are true.||||||
 30150|akanon|Drekon_Vebnebber|say|Oh my! It seems two of the obsolete duster models were not fully shut down. You must find them. They could be anywhere in Ak'Anon! After you destroy them, take their scraps to Sanfyrd Montop. He is the operator of the scrapyard.||||||
-30150|akanon|Drekon_Vebnebber|spawnunique|55001|-300|1504|-120|0||
+30150|akanon|Drekon_Vebnebber|spawnunique|55001|1504|-300|-120|0||
 30151|akanon|Drigaz_Grumblegrowl|say|I had hoped to see the last of these sorrowful symbols. There is little I can tell you of the details of the kobold religion as I was rescued from death as a pup by the Deep Muses and reunited with Brell Serilis. What I know is this, the deity this symbol represents is named Rolfron Zek. He was a devoted shaman of Brell before the Abandonment, now he is the lord of Despair and Hopelessness. There is a shaman of Rolfron that teaches the local kobolds, he carries with him a doctrine. Recover the doctrine and take it with this translation scroll back to your Temple||||||
 30152|akanon|Eonis_Mournunder|say|Hmmm... As you wish, we will train you in our dark ways. But know this: our art carries a high price, and there is no turning back for you now.||||||
 30153|akanon|Evah_Xokez|say|Join us in fulfilling teh will of Bertoxxulous. You can train with us here, in the shadows of the Abbey. Wear this tunic to help conceal your true identity.||||||
@@ -276,10 +276,10 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30219|akanon|Xalirilan_Zarinokosalio|say|I knew you could do it! You have proven yourself worthy of your god and of your Guild! All the highest ranking officials of the Collective will surely hear of your good deeds. Upon studying these pages a bit further it seems it forms a book of incantations that will aid you in furthering your studies. Please take this magical book for I have learned all I can from it. Good luck!||||||
 30220|befallen|#Sir_Ariam_Arcanum|say|Then deliver this to my family. I have my sisters token to thank for my survival in this form. Something in the magic of this persisted even as I truly wasted away buried alive near here.||||||
 30221|befallen|skeleton_Lrodd|say|Search!! Find Windstream. Find the mallet!! One. Two. Three.||||||
-30221|befallen|skeleton_Lrodd|spawn|36096|-88|-637|-66|127||
+30221|befallen|skeleton_Lrodd|spawn|36096|-637|-88|-66|127||
 30222|beholder|Diggs_Duggun|emote|%s drinks one of the ales, burps loudly, then says 'By Brell's Beard! Yer a lifesaver, ya are! 'ere, take dis bone I've found 'ere in dis maze. Looks human ta me and I'm thinkin that a proper burial is in order. Freeport's the closest place dat has one o Marr's temples. I'm thinkin dis was one o' his Holy Knights by da look o' da tattered tunic I found it wrapped in. I'm thinkin Valeron might be havin an interest in it if you show that to him.'||||||
 30223|blackburrow|Scout_Malityn|say|Oh my I am very thankful for these rations. I have been very hungry. Please send our teacher my regards and this report. Good luck!||||||
-30224|burningwood|Atheling_Plague|spawnunique|87154|playerX|playerY|playerZ||5|
+30224|burningwood|Atheling_Plague|spawnunique|87154|playerX|playerY|playerZ|||5
 30224|burningwood|Atheling_Plague|yell|Excellent. You show signs of a true Iksar slayer. Too, bad I have already given the skull of the Sister of Scale to another. Perhaps you would like to meet him before he departs. Say hello, Doval.||||||
 30225|burningwood|a_sarnak_imitator|say|I see that you have what I was waiting for. Stofo does do excellent work. It seems that you are to start on a long journey. Take this seal and it will guide you on your next step. Seek out the masters of enchantment. In time we will craft the Serpent for you. When you have collected the four parts of the staff, you must combine them in a bundle and return them to me.||||||
 30225|burningwood|a_sarnak_imitator|say|Take this seal. You will need to show my seal to the other masters so that they may grant you the tools to complete your next tasks. When you have collected the four parts of the staff, you must combine them in a bundle for me. The other masters can provide the means to bundle them. Good luck and safe travel.||||||
@@ -289,13 +289,13 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30228|burningwood|Faelin_Bloodbriar|emote|%s smiles at you, then closes her eyes as she sets the gem 'Nature's Balance' into the crossguard and begins to channel her spirit into the sword. The ground rumbles loudly as she casts. She collapses in exhaustion after a short time. 'Take the blade, and perhaps you can finish this. You must strike at the heart of Innoruuk's lair. Bring a shattered gem and the mithril blade to Xanuusus. Only by weakening Innoruuk's grip over his realm can the balance of the land once again be restored. If we do not meet again,  $N, remember you always have my eternal thanks.'||||||
 30229|burningwood|Naxot_Deepwater|despawn|self||||||
 30229|burningwood|Naxot_Deepwater|say|Praise the Triumvirate! Natasha sent you just in time! Those twisted sarnak summoners are summoning Ixiblat Fer as we speak! We must stop Ixiblat Fer while he is still weak or all of Norrath may be set aflame! Please do me one more favor, should I perish to this beast of fire. Give this note to Natasha when you next see her, and if you should perish and I survive, I will make sure the waters never forget your reflections of your deeds this day.||||||
-30229|burningwood|Naxot_Deepwater|spawnunique|87014|1500|-2000|-300|||
+30229|burningwood|Naxot_Deepwater|spawnunique|87014|-2000|1500|-300|||
 30230|burningwood|Slixin_Klex|say|Ssssss. I thought I would never see these. I never thought the symbol of our people would be made whole again. I feel no rest for my sssoul though. My torment still flows as freely as when my peoples first suffered fiery death. I need this not. It is useless to me. Here, you take it. Maybe you can find some good to do with it.||||||
 30231|burningwood|Telin_Darkforest|emote|%s looks at you consideringly and then scribbles something quickly on a small, worn paper. 'You seem powerful enough. Perhaps you can help those who seek to protect nature's peace. Take this note. Deliver it only into the hands of Faelin Bloodbriar. Where you will find her, I cannot say. She is a friend of mine and a wanderer. She has been seen from one end of the lands to the other. Seek her out, and quickly.'||||||
 30232|burningwood|Telin_Darkforest|emote|%s scratches the coin as he looks at it. 'Faelin sent you to Giz? Surprising. This coin speaks to the outcome of your talk. He would hardly give this bit of metal to a stranger, but that's a story for a different time. So, you say Giz did confirm Innoruuk's involvement, and something about undead minions? Here, take this coin back. Find Arch Druid Althele in the Karanas and show her that. Tell her what we have discussed. She will look kindly on an ally in this matter.'||||||
 30233|burningwood|Telin_Darkforest|emote|%s nods as he unbuckles his sword and hands it to you. 'The storm callers are working on containing and fighting against the corruption but they can not hold back the inevitable for long. It is up to us to strike against Innoruuk directly. If we were warriors or paladins we would have a fancy ceremony and plenty of feasting but we're just rangers, without time for pleasantries. The sword you hold in your hands is one of the oldest blades known, even to the eldest. To strike at the darkest heart of evil requires a weapon beyond this, or even ones you may carry at your side. The first task, the first preparation you must make, is the smithing of that blade. Its edge sharpened, its balance made perfect. When you have finished, bring me this sword again.'||||||
 30234|burningwood|Telin_Darkforest|emote|%s smiles slowly. 'Now that's fine work,  $N. Just a moment, we have a friend here who can enchant one of the blades. Give her the blade that the ancient smithed.'||||||
-30234|burningwood|Telin_Darkforest|spawn|87019|2852|3239|-155|109.5||
+30234|burningwood|Telin_Darkforest|spawn|87019|3239|2852|-155|109.5||
 30235|butcher|#Kanthuk_Ogrebane|say|I saw Amstaf lower his head and walked away in silence. He was surronded by two beings carrying a torch. I don't know what it meant, but I swear it was so real. When I awoke both Amstaf and Ambreen were gone. Please find Llara and give this pendant to her. This pendant belonged to Amstaf. She too had a vision that night that may clear things up. If she asks where you got it from, mention my name.||||||
 30236|butcher|#Kanthuk_Ogrebane|say|Ahh, I see you have spoken to Ryshon. You seem tired from your long journey. Sit with me as I tell you a tale. A tale about a true friend of mine, a great man known as Amstaf Trunolis.||||||
 30237|butcher|a_lesser_spirit|say|That is good,  $N. Take this gem. It is a part of us like the clouds to the sky and is a wonderful gift from the grandfather. Take this gem to where the humans gather to spoil the land and water. Some call it a port. There you will find one of us, a shaman like yourself. Give him the gem and perhaps he will tell you more of the spirits.||||||
@@ -358,7 +358,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30292|cabeast|Klok_Mugruk|say|You are a good servant and a fine citizen. I have this piece of curscale armor available, but if it is not enough then perhaps I shall have another piece available if you were to perform the small service again.||||||
 30293|cabeast|Klok_Mugruk|say|I see you have done some hunting, young broodling. I shall prepare these husks later, as for now you can have this training bag husk I have already prepared. You will require a sewing kit, but I am sure you already have one. You will next have to seek out granite pebbles.  Where you shall find them in Cabilis is unknown to me. When you obtain no less than three piles of granite pebbles then you can tailor a monk training bag for your caste. Good luck!||||||
 30294|cabeast|Klok_Unlar|emote|%s breaks open the crust of the pie. 'Wait! What is this? A device of some kind? It looks kind of like some sort of lockpick. BUGRIN!! Get in here and answer some questions at once!!||||||
-30294|cabeast|Klok_Unlar|spawnunique|106302|120|563|4|0||
+30294|cabeast|Klok_Unlar|spawnunique|106302|563|120|4|0||
 30295|cabeast|Librarian_Zimor|emote|%s looks disturbed as he examines the book. His hands tremble as he mouths the words on the ancient parchment pages. 'This book may alter the reality you see before you, 'the scholar says as he continues to read the tome. 'The information that has been waiting in this book may have been brought to us by your hand, but your fate has obviously been chosen by our Lord. Our mystics have conveyed a new vision to us in this most recent season. Please take this note to Hierophant Oxyn, while I continue to translate this tome.' The Librarian hands you a note and turns his attention back to the book.||||||
 30296|cabeast|Librarian_Zimor|say|I am very glad you have returned. Your discovery of the tynnonium is extraordinary! This Sarnak tome has been an incredible source of information. It appears that they have been studying the Greenmist for some time. I'm sure they sought it as nothing more than a trinket to be collected. Their shortsightedness will be their eventual undoing. I have compiled a book of notes that will aid you in your quest for the Greenmist. Please take care to keep this information out of the grasp of our enemies.||||||
 30297|cabeast|Lord_Gikzic|say|You have learned to behead your opponents with great precision. Take the khukri of the knave. It shall prove most formidable in combat when wielded by a young crusader. You may now assist us with a greater concern than your training.||||||
@@ -457,16 +457,16 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30386|cauldron|Conium_Darkblade|say|Take the giant wasp venom. Good or evil it is not. That is up to you.||||||
 30387|cauldron|Conium_Darkblade|say|So Lon has sworn allegiance to a temple. What a fool, but he is a skilled fool. My word is my bond and if he asks for the gem, then so be it. Unfortunately I traded it for a much-needed axe. It was in the middle of a dungeon and... well, that is a long story. If you want to get the gem, take this axe back to the one who once owned it.||||||
 30388|cauldron|Ghilanbiddle_Nylwadil|say|Biggily boo, biggily borc.. Raise that stinky orc!! Bamm!! Okay!! It's done. Now all you have to do is find him in the spot where his soul left him and give him an orc shovel. Oh!! I didn't mention that? Oh, well. I'm sure you can find one.. somewhere. Now, get lost before I turn you into a toad!||||||
-30388|cauldron|Ghilanbiddle_Nylwadil|spawnunique|70072|-2133|-726|156|0||
+30388|cauldron|Ghilanbiddle_Nylwadil|spawnunique|70072|-726|-2133|156|0||
 30389|cauldron|Jinalis_Andir|say|You have the control needed in order to manipulate the water which surrounds us. Take this Element and guard it well, you will need it in the times to come.||||||
 30390|cazicthule|a_living_void|despawn|self||||||
 30390|cazicthule|a_living_void|spawn|48376|playerX|playerY|playerZ|0||
 30391|charasis|An_Iksar_Apparition|despawn|self||||||
 30391|charasis|An_Iksar_Apparition|spawnunique|105007|playerX|playerY|playerZ|playerHeading||
-30391|charasis|An_Iksar_Apparition|spawnunique|105183|13|-658|8|160||
-30391|charasis|An_Iksar_Apparition|spawnunique|105184|13|-690|8|228||
-30391|charasis|An_Iksar_Apparition|spawnunique|105185|-13|-690|8|34||
-30391|charasis|An_Iksar_Apparition|spawnunique|105186|-13|-658|8|100||
+30391|charasis|An_Iksar_Apparition|spawnunique|105183|-658|13|8|160||
+30391|charasis|An_Iksar_Apparition|spawnunique|105184|-690|13|8|228||
+30391|charasis|An_Iksar_Apparition|spawnunique|105185|-690|-13|8|34||
+30391|charasis|An_Iksar_Apparition|spawnunique|105186|-658|-13|8|100||
 30392|charasis|Gandan_Tailfist|emote|%s places a foul smelling book in your hands and speaks to you slowly. 'Take this rotting book given to me by lord Cazic Thule himself, I was given another but it has been lost. The search for the fists will be the end of me. If you are a monk of the final rung show me your Shackle of Tynnonium and I will share with you what I have found.||||||
 30393|charasis|Gandan_Tailfist|despawn|self||||||
 30393|charasis|Gandan_Tailfist|say|The search for the fists has killed many so I hope that your strength is more than mine and those in the past. I was given this satchel by the lord Cazic Thule. I have searched for the fists in this place but they are not here. I suggest you seek audience with our lord. Tell him that I have failed in my task. I am sure that he ugnnnnnhnnn.' One last look to you is given before falling completely lifeless to the cold stone.||||||
@@ -483,7 +483,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30400|citymist|a_human_skeleton|despawn|self||||||
 30401|citymist|Lhranc|despawn|self||||||
 30401|citymist|Lhranc|say|Ahh, at last I can free myself of this prison! Centuries have passed since I enjoyed the fruits of mortality.' He hurls the components above his head where they remain suspended in midair. They hover in place while he chants the words of an ancient spell. As he speaks, the items begin to rotate around his head, slowly at first, then faster as the chanting grows louder, until it spins in a blur. Soon, the room is filled with a deafening shriek that pierces you to the core.||||||
-30401|citymist|Lhranc|spawn|90015|85.1|0.9|7.8|192||
+30401|citymist|Lhranc|spawn|90015|0.9|85.1|7.8|192||
 30402|citymist|Wraith_of_Jaxion|say|Hisss...my spirit is forever trapped here. Leave before your fate is as mine.||||||
 30403|cobaltscar|an_outcast_siren|say|So you are the servant of Wenglawks here to retrieve his cloak. I will need more scales to make the cloak in his size. I have already slaughtered a good thirty sirens and the cloak is nearly complete. Go forth and slaughter my kind and bring me three excellent scales and this idol. Let this idol be your protection from the wrath of E'ci. I will continue my work on the cloak.||||||
 30404|cobaltscar|an_outcast_siren|say|You are an excellent hunter. Tell me, did you enjoy the screams of the sirens as they perished? I find the sound so wonderful.' she hands you a gigantic cloak made of slick siren scales. 'I was done making the cloak already. I just wanted to watch you slay the weak. I thank you for bringing more suffering into the world.||||||
@@ -503,7 +503,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30418|commons|Kizdean_Gix|say|You speak the words of the Dead. You must be the assistance Loveal was to send. You must work quickly! Inside Befallen are the three pieces to the Thex Mallet which are to be returned to Loveal. Find Hubard L'rodd. He was my assistant. Give him this note and he should have information.||||||
 30419|commons|Noresa_Sparkle|say|Oh!!! Thank you. You are my hero. I have been held captive by that horrid dark elf for weeks. Please take this. It was the key to a gem case which was stolen from me by an unseen rogue. If you find the gem case you can take it and the key to the original craftsman. He can open it with only two keys.||||||
 30424|commons|Simon_Aldicott|emote|%s places the coffin in the water and begins to pray. 'Lord of Valor high above, take this knight, your loyal child, into thy kingdom and all that is holy! What is that thing!'||||||
-30424|commons|Simon_Aldicott|spawn|21031|2901|259.7|-51|25||
+30424|commons|Simon_Aldicott|spawn|21031|259.7|2901|-51|25||
 30425|commons|Simon_Aldicott|say|Thank you, Knight. With this task accomplished, I shall reward you with this scroll. It is an ancient spell that only the holiest of knights may cast. Remember your duty!||||||
 30430|commons|Wallin_Slyfoot|say|Yes..yes..of course you will. It is a matter of the utmost importance. I need this letter to be delivered to Master Whoopal in the Nektulos forest but I must also get these Brussels sprouts to my granny before they spoil. Please deliver this message for me?||||||
 30431|crushbone|an_elven_priest|say|Erollisi be praised! You slew the orc lord! Well, here is a token of my appreciation! Should you wish to have that mace enchanted, just hand me the mace and my token and I shall uphold my end of the bargain!||||||
@@ -552,7 +552,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30458|crystal|a_geonid|emote|%s seems as if it doesn't recognize you as anything of importance. You attempt to speak with the geonid through your velium focus but all you are able to hear is the same though over and over.., Eat. You have gained no knowledge from these creatures but you notice your focus has been altered slightly.||||||
 30459|crystal|Historian_Baenek|despawn|self||||||
 30459|crystal|Historian_Baenek|say|You found one of our lost tomes! A lost volume of the Book of Grudges, quite a find! Oh, dear Brell! This evidence proves that the legend of Burdael is true! Thank you,  $N. And now I suppose you wish to meet his ghostly form. I have sensed him from time to time. I will call to him now. Go and wait for him in the lower halls. His spirit sometimes calls to me from the fearsome stalagterrors' lair. Be wary though, undeath may have twisted his mind beyond reason.||||||
-30459|crystal|Historian_Baenek|spawn|121015|-308|-151|-554|0||
+30459|crystal|Historian_Baenek|spawn|121015|-151|-308|-554|0||
 30460|dalnir|an_Iksar_prisoner|emote|%s takes the wire and quickly saws through the rusted shackles. He hands you an icon and says as he runs off, 'Show that to the Arch Duke in Cabilis! He will reward you. Now I'm off to escape!'||||||
 30461|dalnir|a_coerced_channeler|despawn|self||||||
 30461|dalnir|a_coerced_channeler|yell|Go to where the pines have been smashed. Must reach great heights!||||||
@@ -578,7 +578,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30473|droga|a_goblin_traitor|emote|%s looks relieved when he sees your signet of service and eyes you with a bit more respect. 'Good! They tell'd me to wait here for ya, can't say I like it but here I sits. Itbe good to be rid of Skargus though, so I be a happy one, oh yes. Want to know the plan then?'||||||
 30474|droga|Jeren_Manri|say|Oh! Thank you, I assume this means that Thiran sent you. I ran off with the incorrect book without thinking to check. Would you be kind enough to return this to him?||||||
 30475|eastkarana|Althele|emote|%s looks at the coin and nods gravely at you as she slips it into a fold of her clothing. 'I see. The story of this coin speaks much to me as do the words you have given me. Telin sent word that you would arrive. The tidings you bring are ill indeed. Here, take this amulet and find Sionae. She is nearby. We will speak more on this matter when all are present.'||||||
-30475|eastkarana|Althele|spawnunique|15178|-1595|-2595|4|127||
+30475|eastkarana|Althele|spawnunique|15178|-2595|-1595|4|127||
 30476|eastkarana|Althele|despawn|15167||||||
 30476|eastkarana|Althele|despawn|15170||||||
 30476|eastkarana|Althele|despawn|15178||||||
@@ -589,15 +589,15 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30477|eastkarana|Ganelorn_Oast|say|Ah, what do we have here? A letter? Hmm? Scented with a familiar fragrance too. You must have gotten this from Lily. I do wish I had more time to spend with her, for she is a very sweet girl. If she trusts you to deliver such a letter, I must ask you to do me a favor for me. Please take these eggs. They are a very rare species of albino rattlesnakes which were thought to have been extinct due to poachers who eat them as a delicacy and griffins which prey on them. If these eggs hatch there is hope for the species. I need you to deliver them to my master, Kithicor.||||||
 30478|eastkarana|Ganelorn_Oast|say|This does speak highly of you, my friend, an award from Kithicor does not come easy. But I must see more of your skills before I can consider teaching you. Lily's brother Devin is my current pupil - I need you to gather some equipment for me so I can properly train him. I require the following items of you - a smoldering sash, an adamantine ring and a blade forged of electrum. I also need a favor. Take this credit slip to Aanina Rockfinder. She is a merchant from whom I purchased a gift for Lily it should be ready by now.||||||
 30479|eastkarana|Ganelorn_Oast|say|You have done well. I sense the one I have been hunting in the distance. As your final test, you must track him down and destroy him.||||||
-30479|eastkarana|Ganelorn_Oast|spawnunique|15183|-800|-2712|15.6|138||
+30479|eastkarana|Ganelorn_Oast|spawnunique|15183|-2712|-800|15.6|138||
 30480|eastkarana|Ganelorn_Oast|say|You,  $N, are a worthy forester. It brings me great pride to present you this scroll that I have only passed to the finest in all of Norrath. Now you, too, may call the flames.||||||
 30481|eastkarana|Milea_Clothspinner|say|My sister is in danger. She is all the family I have left. I shall be on my way soon. Please take her my handkerchief, so she knows you have contacted me. Thank you. I am thankful Nerissa ran into you. I just wonder why she did not tell Kane about her suspicions.||||||
-30481|eastkarana|Milea_Clothspinner|spawnunique|15193|-5521|-1870|3|226||
+30481|eastkarana|Milea_Clothspinner|spawnunique|15193|-1870|-5521|3|226||
 30482|eastkarana|Milea_Clothspinner|say|Oh great!! I thought I'd saw that last of Plagus, or as all the women in the Steel Warriors called him, the Plague. Please do not tell him where I am. It must have been a long journey for you. Here. A little something for your wasted trip. I found it on the ground. Have fun going back to Freeport.||||||
 30483|eastkarana|Nuien|say|So be it. Do as you have done before and find the next. Teloa is the last.||||||
-30483|eastkarana|Nuien|spawnunique|15170|-2854|-3840|126.5|61.8||
+30483|eastkarana|Nuien|spawnunique|15170|-3840|-2854|126.5|61.8||
 30484|eastkarana|Sionae|say|I see that the time has come. Take the amulet and give it to the third of our kin, Nuien. I will meet you at the gathering.||||||
-30484|eastkarana|Sionae|spawnunique|15167|300|-3657|3|183||
+30484|eastkarana|Sionae|spawnunique|15167|-3657|300|3|183||
 30485|eastkarana|Sir_Morgan|say|What a grand donation!! You must be a rich noble to be making such a donation. Here, I am but a simple warrior, but I found this lying on the highway to Highpass Hold. The lifeless corpse next to it had no more need of it.||||||
 30486|eastkarana|Teloa|say|begins walking toward the gathering spot. 'Follow, friend.'||||||
 30487|eastkarana|Tenal_Redblade|say|So, you know my brother Kargek. He is weak and does not believe the legend that our family was chosen by Rallos Zek to bear the great scabbard. Yet he still holds it. Very well, I shall give you the first test since my 'dear' brother seems to have forgotten it. Travel to the fortress where the children of Rallos were first cursed by the Rathe and bring me the heart of one of the goblins who have made it their new home. Do not return without the heart of your foe and this war totem.||||||
@@ -609,14 +609,14 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30492|eastwastes|#Boridain_Glacierbane|say|Yes! I've done it! The vile beast is finally dead. I will at last be revered as the mighty hunter I am. Here is your axe back, I broke it on the killing blow. Take it as proof that you are a friend of the greatest hunter in the history of the Coldain!||||||
 30493|eastwastes|#Dobbin_Crossaxe|despawn|self||||||
 30493|eastwastes|#Dobbin_Crossaxe|say|Thank you,  $N. Your deeds will be mentioned to  the Dain. Please take this note from Corbin to Garadain. It may help him to achieve victory over the enemy.||||||
-30493|eastwastes|#Dobbin_Crossaxe|spawnunique|116036|-3188|-574|158|62||
+30493|eastwastes|#Dobbin_Crossaxe|spawnunique|116036|-574|-3188|158|62||
 30494|eastwastes|a_coldain_lookout|say|Aahhh.. You're too late! They're upon us! To arms, men! Death to Scarbrow!||||||
-30494|eastwastes|a_coldain_lookout|spawn|116021|-91|-2731|150|200||
-30494|eastwastes|a_coldain_lookout|spawn|116021|-93|-2696|149|200||
-30494|eastwastes|a_coldain_lookout|spawn|116022|-115|-2687|150|200||
-30494|eastwastes|a_coldain_lookout|spawn|116022|-91|-2727|150|200||
-30494|eastwastes|a_coldain_lookout|spawn|116022|-97|-2716|150|200||
-30494|eastwastes|a_coldain_lookout|spawnunique|116020|-110|-2715|152|200||
+30494|eastwastes|a_coldain_lookout|spawn|116021|-2731|-91|150|200||
+30494|eastwastes|a_coldain_lookout|spawn|116021|-2696|-93|149|200||
+30494|eastwastes|a_coldain_lookout|spawn|116022|-2687|-115|150|200||
+30494|eastwastes|a_coldain_lookout|spawn|116022|-2727|-91|150|200||
+30494|eastwastes|a_coldain_lookout|spawn|116022|-2716|-97|150|200||
+30494|eastwastes|a_coldain_lookout|spawnunique|116020|-2715|-110|152|200||
 30495|eastwastes|an_ogre_mercenary|despawn|self||||||
 30495|eastwastes|an_ogre_mercenary|say|It's about time, whelp.  Take your payment and leave, you're scaring away my... clients.||||||
 30496|eastwastes|Boridain_Glacierbane|despawn|self||||||
@@ -643,7 +643,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30512|eastwastes|Gloradin_Coldheart|despawn|116196||||||
 30512|eastwastes|Gloradin_Coldheart|say|Thank you. I will return to the Dain and inform him that the battle is underway. Please escort Garadain to the battlefield and see that he returns safely. May Brell bless you and bring you victory over these beasts.||||||
 30512|eastwastes|Gloradin_Coldheart|spawnunique|116058|playerX|playerY|playerZ|playerHeading||
-30512|eastwastes|Gloradin_Coldheart|spawnunique|116064|-390|-2713|181.5|19||
+30512|eastwastes|Gloradin_Coldheart|spawnunique|116064|-2713|-390|181.5|19||
 30513|eastwastes|Korrigain|say|Many seasons ago I stood here in life with my comrades, the best warriors Thurgadin had to offer. Along with our faithful wolven army we were poised to eliminate the Kromrif presence in the region. Somehow, the enemy was made aware of our plans and just before our attack, a group of Ry'Gorr oracles charmed our wolves, forcing them to tear down their own masters. We were caught by surprise and died a savage death.||||||
 30514|eastwastes|Peffin_Ambersnow|despawn|self||||||
 30515|eastwastes|Tain_Hammerfrost|say|I will report your selfless actions when I return to Thurgadin. Take this for your troubles, friend. I hope you find it useful. Fare thee well.||||||
@@ -657,7 +657,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30521|emeraldjungle|#Scout_Vyrak|say|Excellent work,  $N! Judging by the speed with which it altered that spirit, this totem must be extremely powerful. I've wrapped it, so you should be safe from its magic. Just be sure to keep it in the case. Once you have all of the totems, seal the case and make your way back to Shar Vahl. They will be waiting for you there. I'll continue to look for the person that perpetrated this vile act.||||||
 30522|emeraldjungle|Scout_Vyrak|despawn|self||||||
 30522|emeraldjungle|Scout_Vyrak|say|Well met,  $N, well met indeed I find comfort in the fact that the jungle permitted your passage to me! Maybe there is still hope we can stop this disturbance before any more damage can be done to the balance of the spirit realm I have spent several weeks tracking the corrupted spirit. It seems to have made a home of the ruins just south of here. The spirit no longer resembles he entity that it once was. It is quickly becoming something foul and savage. Let us hope that you are not too late.||||||
-30522|emeraldjungle|Scout_Vyrak|spawn|94126|4054|-690|-44|0||
+30522|emeraldjungle|Scout_Vyrak|spawn|94126|-690|4054|-44|0||
 30522|emeraldjungle|Scout_Vyrak|spawnunique|94015|playerX|playerY|playerZ|0||
 30523|emeraldjungle|Spirit_Sentinel|say|Excellent! Go into the city and gather what evidence you can. The ghosts who still walk the streets may hoard precious memories that will aid us. Take this booklet and combine what you find in it. Then bring me the completed report. From there, we will know where to look next.||||||
 30524|emeraldjungle|Spirit_Sentinel|say|Ahh, you live, shaman! I am glad the beasts of this jungle haven't torn your body asunder. Tell me, do you still walk the path? Are you willing to continue what you have started?||||||
@@ -775,7 +775,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30630|feerrott|Roror|say|Whatsssss thisssss? You sssseek my blessssssssing? Heh heh heh... Very well... CAZIC-THULE! Take this fruit of Karana into horror'sss dark embrace. Fear and death made manifesssssst. A harvesssst of terror! Here, take your gift of blood and sssstraw. Use its dark powersssss in the name of the Fear Lord!||||||
 30631|feerrott|Scout_Ahlikal|despawn|self||||||
 30631|feerrott|Scout_Ahlikal|say|Well met, I'm glad that you made it! This jungle is oppressive, with its dank earth and dark canopy. The sooner you dispatch that spirit, the sooner we can both make our way out of this vile place. Move towards the ruins that lie about two hundred feet from here. The spirit will be there. Release it from its current form and return the totem to me. I will wrap it for you, so that you may place it in the container that you should have been given. Take care and be swift!||||||
-30631|feerrott|Scout_Ahlikal|spawn|47205|-2857|1133|1|0||
+30631|feerrott|Scout_Ahlikal|spawn|47205|1133|-2857|1|0||
 30631|feerrott|Scout_Ahlikal|spawnunique|47004|playerX|playerY|playerZ|0||
 30632|felwithea|Arrias_Arcanum|despawn|self||||||
 30632|felwithea|Arrias_Arcanum|say|This! This is the gift my daughter gave Ariam to aid his cause. This too is the piece of my soul that was missing. Your news of his fate is troubling, yet his heroism even beyond this life is cause for celebration. Here, keep this token. My heart is mended and I have no need of it. Once such as yourself who will continue to fight for the things in which my son believes ought to bear this. I am sure my daughter would agree.||||||
@@ -822,7 +822,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30670|fieldofbone|Oracle_Qulin|emote|%s runs his scaled fingers slowly over the cracked, brittle skull. 'Granix did well to send you to me, I may yet be able to recover the spirit of this ancient and set it free. Come! I shall need your help with this ritual.'||||||
 30670|fieldofbone|Oracle_Qulin|emote|%s's voice stops suddenly, leaving the air completely silent. Even the waves seem to have stopped for a moment. You begin to move toward him, but he raises a hand toward you motioning for you to stay still.||||||
 30670|fieldofbone|Oracle_Qulin|say|Suddenly without warning the skull flies from Quilin's hands and flies into the murky waters. It stays submerged for a moment and then flies toward you, but this time an entire corpse is attached to it.||||||
-30670|fieldofbone|Oracle_Qulin|spawn|78000|playerX|playerY|playerZ|playerHeading|5|
+30670|fieldofbone|Oracle_Qulin|spawn|78000|playerX|playerY|playerZ|playerHeading||5
 30671|fieldofbone|Oracle_Qulin|say|It seems this particular ancient does not wish to be put to rest. Return this note to Hierophant Granix and tell him what happened. He will surely wish this skull to be disposed of properly, but I do not have the power to do it myself.||||||
 30672|fieldofbone|Oracle_Vauris|emote|%s takes the necklace from you without a word. He looks into your eyes for a moment. He seems to be searching for something. Apparently he finds whatever he was looking for as he pulls an empty bag from his belt. He takes the necklace and snaps the cord with his teeth allowing the skulls to fall into the bag. He looks you square in the eyes again and motions for you to put out your hand. You do so and almost immediately regret it. Vauris takes the knife from his belt and slices open your forearm allowing your blood to fall into the bag. He uses the cord to tie the bag and hands it back to you. 'You now share the mark of Rile,  $N. Your fates are intertwined.'||||||
 30673|fieldofbone|Oracle_Vauris|say|You have done well  $N. Now it is time for the true test of your clairvoyance. Only a true Scaled mystic will be able to put these spirits to rest. Be warned, these souls will not go quietly into the next world. They have strong ties to this land, and it is these ties we must break. Take them to the City of the Kunzar, the birthplace of the emperor. Only there will you be able to tear asunder the dark rituals that have twisted the souls of our ancient heroes. I will await you in that place  $N.||||||
@@ -860,11 +860,11 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30705|firiona|Tiblner_Milnik|say|Take this Element and keep it with you. I wish you the best in your journey, but I must ask you to leave me now. This frantic pace you set makes me nervous.||||||
 30706|firiona|Tracker_Azeal_|despawn|self||||||
 30706|firiona|Tracker_Azeal_|emote|%s begins to pull his face off.. it is a disguise!! 'Aha!! You have made it!! I cannot see well in this disguise, but I thought I smelled you. I have news of the Charasis tome.'||||||
-30706|firiona|Tracker_Azeal_|spawn|84311|-1822|617|142.5|103||
+30706|firiona|Tracker_Azeal_|spawn|84311|617|-1822|142.5|103||
 30706|firiona|Tracker_Azeal_|spawn|84319|playerX|playerY|playerZ|playerHeading||
 30707|firiona|Vekis|say|I believe Streaven and his buddy Frode is waiting on the bridge,  Please get his head and return to Grik and 3 rubies for your reference.||||||
-30707|firiona|Vekis|spawnunique|84026|2945|-3812|-49|0||
-30707|firiona|Vekis|spawnunique|84029|2140|-2589|-78|108||
+30707|firiona|Vekis|spawnunique|84026|-3812|2945|-49|0||
+30707|firiona|Vekis|spawnunique|84029|-2589|2140|-78|108||
 30708|firiona|Wellford_Fargin|say|Thank you!! I never could have gone to Odus to replace this. Perhaps now you can collect some rare coins.||||||
 30709|firiona|Wellford_Fargin|say|Wow!! I never thought I would ever see these in my entire life.  Please take this and Thank you!!!!||||||
 30710|freporte|Orc_Centurion|despawn|self||||||
@@ -882,7 +882,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30721|freporte|Gren_Frikniller|say|Elisi runs the show around here.  She's usually a pretty busy lady.  Dang smart, too.  And it's my sworn duty to protect her at any cost, even with my very own life.||||||
 30722|freporte|Gren_Frikniller|say|What's this? Oh, ol' Grandpa Frikniller's lucky necklace, huh? I'll bet this broken piece of junk won't even get me a sip of ale up at the bar. And lucky? How lucky could this thing be? Poor gramps was lonely and copperless his whole life. Bah!! Oh, well. Here's some coin for your efforts, thanks,  $N.||||||
 30723|freporte|Groflah_Steadirt|say|This used to be hanging in Zimel's Blades. It is the price list. It is badly faded though. There was a fire in Zimel's Blades and I was on the scene just afterward. I did not see this hanging. I wonder who took it . . . Hmmmm.. oh, yes.. the markings on the list! It is a code! Here. I will fill it in. Read it. You probably do not even know who Ariska is.||||||
-30723|freporte|Groflah_Steadirt|spawnunique|10003|-920|-210|-52.1|0||
+30723|freporte|Groflah_Steadirt|spawnunique|10003|-210|-920|-52.1|0||
 30728|freporte|Guard_Bribbely|say|Yes, what is it, citizen?' Bribbely reads the note from Jasmine. 'Great, just what I need.' Guard Bribbely sighs. 'I have been a member of the guard for twenty years, investigating countless thefts and other crimes against Freeport and you think you can just waltz in here and solve this? You adventurers are all the same. Ok, 'investigator', if you think you are so smart, here is what we know so far: After the trolls attacked the ship, one of them was left behind and captured by us. After being beat, er questioned, the troll eventually told us that they were from Broken Skull Rock and that is probably where they took our captured ship. He didn't know about any mail, but says that any loot onboard was most likely taken to the Crypts of Nadox to await distribution by treasure sorters to the trolls there as payment. Further questioning revealed that a ship on the shores of Stonebrunt can take people to Broken Skull.||||||
 30729|freporte|Gunex_Eklar|say|It has come to our attention that a paladin of the Sentries of Passion, Raenna Griff, has been aiding sympathizers and wanted members of the Sentries of Passion and the Knights of Truth in the sewer tunnels beneath the western quarter of Freeport. The incompetent Freeport Militia has yet to capture these wanted followers of the Mar twins. We will wait for their capture no longer. Seek this Raenna Griff individual and slay her. I want her head presented to me this very night!||||||
 30730|freporte|Gunex_Eklar|say|It took you long enough. I wonder if the Militia will be able to identify the body minus its head. Take this Dull Dismal Long Sword and sharpen it in a forge with a sharpening stone. It may take you several attempts if you are unfamiliar with the process. Once that is accomplished deliver the Sharpened Dismal Long Sword and a Giant Rattlesnake Skin to Quan Nektogo. He will make the final preparations on your weapon.||||||
@@ -928,7 +928,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30771|freporte|Raltur_Caliskon|say|You have done well. This is the Bayle List. I have heard of it. It is useless without the remaining two parts. Take the list. You must collect the other two pieces of the list and take them to a scribe by the name of Rathmana Allin. He can be found in the deserts of South Ro. First, you must go ask Venox Tarkog what the Bayle List is. He is here in the shrine and will fill you in on your mission.||||||
 30772|freporte|Rigg_Nostra|say|Excellent I've been waiting for the Coalition to send me some assistance. I have an associate waiting for some supplies that have not yet been collected. I need you to acquire a crate of pick heads and a bundle of hardwood shafts and bring them to me so that I may prepare them for delivery to my associate.||||||
 30773|freporte|Rigg_Nostra|say|Thanks  $N.  Now hand this crate to the fellow behind you.||||||
-30773|freporte|Rigg_Nostra|spawn|10000|-144|-456|-52|0||
+30773|freporte|Rigg_Nostra|spawn|10000|-456|-144|-52|0||
 30774|freporte|Rolfic_Gohar|say|To assemble Dismal Warrior Greaves you will need to obtain two bricks of crude iron and smelt them in a forge with a Water Flask and this Crude Greaves Mold. Once that is done combine the Crude Iron Greaves with two Low Quality Coyote Pelts and two Desert Tarantula Femurs in the Mail Assembly Kit.||||||
 30775|freporte|Rolfic_Gohar|say|I see now we have similar interests. I will help you get outfitted in an affordable suit of armor to help you in your endeavors. You will need this Mail Assembly Kit to aid you in the construction of the armor. The materials required depend on the armor section you desire to craft. Do you plan to construct a dismal warrior helm, a dismal warrior bracer, dismal warrior gauntlets, dismal warrior boots, dismal warrior vambraces, dismal warrior greaves, or a dismal warrior breastplate.||||||
 30776|freporte|Sir_Artanis|say|By Marr, what is this? .. Burning Dead .. .. Marnek! By my blade this must be stopped! Where did you find this?||||||
@@ -984,7 +984,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30826|freportn|Merko_Quetalis|say|If you require the binding of wounds you should speak with Palious Jartan in the temple. He will be glad to help you.||||||
 30827|freportn|Merko_Quetalis|say|You have earned the token of bravery. Now you must ask yourself if you are ready to face true fear. You will have but one chance. If you feel you are powerful enough to easily slay that desert tarantula, then hand me both tokens earned and you shall face the Test of Truth.||||||
 30828|freportn|Merko_Quetalis|say|Go to the open sewer across the way. Inside you shall find your opponent. Victory shall bring your final token. Return it to me. Remember our ways and remember our foes. Send them to their judgement in the afterlife. Be swift with your thoughts. May Marr be with you.||||||
-30828|freportn|Merko_Quetalis|spawnunique|8110|-257|132|-17|120||
+30828|freportn|Merko_Quetalis|spawnunique|8110|132|-257|-17|120||
 30829|freportn|Merko_Quetalis|say|You have performed well. You have shown your allegiance to truth and cast aside the Freeport Militia. The militia will surely despise you from now on. This is how they treat the Knights of Truth. Beware. The followers of Marr stand alone in this city.||||||
 30830|freportn|Palious_Jarten|say|May the valor of Mithaniel Marr burn brightly in our soul!||||||
 30831|freportn|Plur_Etinu|say|May the unbridled passion of Erollisi Marr flow through your body.||||||
@@ -1023,7 +1023,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30864|freportw|Driana_Poxsbourne|say|Ahh wonderful work  $N Here is the substance....don't spill it HAHAHAaahhahehehe...yes......you don't want to spill that heheh.||||||
 30865|freportw|Glyssa_Sonshaw|say|Ah..yes, I have seen this symbol before. There is a kobold that lives among the gnomes of Ak'anon. He may be reluctant to speak with you but you have no need to fear him. He is a follower of Brell Serilis and a valuable source of information on kobold society and culture. I will construct a message for him. Deliver the message and necklace and perhaps he can enlighten you to its meaning.||||||
 30866|freportw|Guard_Alayle|say|This is not good news. I must leave immediately. Here. Take this to Kala.. I mean my father. I found it on the floor of Sir Lucan D'Lere's quarters. Thanks again, messenger. I got this just in time.||||||
-30866|freportw|Guard_Alayle|spawnunique|9143|-154|-55|-10|128||
+30866|freportw|Guard_Alayle|spawnunique|9143|-55|-154|-10|128||
 30867|freportw|Hemia_Skemner|say|You have done the world of magic a great justice,  $N.||||||
 30868|freportw|Hyrill_Pon|say|Peh! He thinks this old skull he found is a legendary skull of Wun Toque. It is said, a wizard who possesses one is granted power and intelligence far beyond those of his peers. Yiz was searching for the skulls missing ruby eyes. It seems he found the location of the first eye. Hmm.. Lynuga.. Lynuga.. I think I have heard that name before.. Yeah! Now I remember. I met her in the Foreign Quarter of Neria.. um.. Highpass Hold. She was trying to hawk some stolen gems! I think she mumbled something about going home to Grobb. I sure don't have time to track her down.||||||
 30869|freportw|Hyrill_Pon|say|You found it!? My sap of a brother was right after all! I sure don't want that thing. It sends shivers down my spine just holding it. Here. Take it!||||||
@@ -1131,19 +1131,19 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 30977|gfaydark|Tylfon|say|Excellent job,  $N, we will turn you into a rogue of Tunare yet.  Here this is for your trouble.||||||
 30978|greatdivide|Bekerak_Coldbones|attackplayer|||||||
 30978|greatdivide|Bekerak_Coldbones|say|Well, well, I see Wenglawks finally got around to sending me my new spear. I hope it's not as shoddy as the last one. Your payment? Bahaha, did Wenglawks not tell you? Payment was to be a giant icewurm tooth carved into an amulet. Come now, little one. I will find an ice wurm for us to slay together. Then you can pull one of its teeth out for me and I will fashion the talisman for that greedy merchant.||||||
-30978|greatdivide|Bekerak_Coldbones|spawn|118016|-2776|-3011|255.5|65.5||
+30978|greatdivide|Bekerak_Coldbones|spawn|118016|-3011|-2776|255.5|65.5||
 30979|greatdivide|Bekerak_Coldbones|emote|%s pulls out a large knife and begins to carve at the tooth. After a few minutes he pulls out a length of rope and fashions it into a very large necklace. 'Here is his payment. Tell him the spear is fine, and that I might reconsider his last offer to me. He will know what I mean.'||||||
 30980|greatdivide|Bekerak_Coldbones|say|Supplies from Svekk?  Where are the rest of them little one!  There must be more, we are here pushing the Coldain back into their hole in the wall and Svekk sends a $R to deliver a small portion of supplies.  Take this note back to that fool.  Leave quickly before I take my rage out upon you.||||||
 30981|greatdivide|Bekerak_Coldbones|say|I am in your debt, $R.  These supplies will help our effort to destroy the Coldain.  I wish I had more to give than what I do.'  Bekerak pulls a strange looking totem on a string from one of his pockets and hands it to you.  'May Lord Rallos smile upon you,  $N.'||||||
 30982|greatdivide|Bloodmaw|despawn|self||||||
 30982|greatdivide|Bloodmaw|despawn|118026||||||
-30982|greatdivide|Bloodmaw|spawn|118017|3172|-5930|-107|82||
+30982|greatdivide|Bloodmaw|spawn|118017|-5930|3172|-107|82||
 30983|greatdivide|gnomish_deserter|emote|%s grins and pours the ooze on his hand and the box.  You hear a burning sizzle and then the box thumps onto the ground.  'Ow! Ow! Take it!  Hah.  I never thought I'd get rid of that piece of...'||||||
 30984|greatdivide|Relik|say|Oh, yeah. That's strong, very strong. With these, we can make our shipment for this month. I gotta be thankin' ya properly. This be one of our best tools. Here, ya can swing a pick with us anytime,  $N.||||||
 30985|greatdivide|Sentry_Badain|despawn|self||||||
 30985|greatdivide|Sentry_Badain|emote|%s breathes deeply and blows into an ornate horn. As the sound echoes through the mountain pass, the local inhabitants scurry to take cover.||||||
 30985|greatdivide|Sentry_Badain|say|I'll be right with you,  $N.||||||
-30985|greatdivide|Sentry_Badain|spawnunique|118137|-74|-19|208|0||
+30985|greatdivide|Sentry_Badain|spawnunique|118137|-19|-74|208|0||
 30986|greatdivide|shardwurm_broodmother|emote|%s reels in pain as the harness snaps around its neck tightly. A strange gleam enters its eyes as it slowly begins to shamble towards the exit and the giants fortress.||||||
 30987|greatdivide|shardwurm_broodmother|emote|%s reels in pain as the harness snaps around its neck tightly.  A strange gleam enters its eyes as it slowly begins to shamble towards the exit and the Coldain mines.||||||
 30988|greatdivide|Vores_the_Hunter|say|Hey! What ya got there? Well now, ain't that pretty! Ya know, this just might do it. You done what I never was able. I gotta give ya that much. I ain't much o' one for travelin' any more. My legs be old and my bones are weak. You take this harness and find a good big mother of a wurm ta test it on. Just focus in yer mind what yer wantin the wurm ta do. Heh, maybe have it clear out some pests, eh?||||||
@@ -1248,15 +1248,15 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31079|highkeep|#Princess_Lenya|say|The Royal Amulet of Thex!! I missed it so. I am sorry I escaped so quickly. I am glad you did not run into the Teir'Dal torturers. They are quite formidable. I shall be continuing on to Qeynos. Here. Take this as proof that you have rescued me. My father should be quite happy with your deed. Such beauty as mine should never be locked up. If you cannot find my father then search for Tolon Nurbyte. He is usually at the Traveler's Inn. Good bye.||||||
 31080|highkeep|Tearon_Bleanix|despawn|self||||||
 31080|highkeep|Tearon_Bleanix|say|King Tearis Thex thanks you my friend. Could you please hand the princess this amulet. It is hers. I pryed it from the hands of some beggar.||||||
-31080|highkeep|Tearon_Bleanix|spawnunique|51176|52|13|3.7|161||
+31080|highkeep|Tearon_Bleanix|spawnunique|51176|13|52|3.7|161||
 31081|highkeep|Bank_Clerk_Jaylin|say|I am sorry to see you check out. Here is all you had in your box. We hope to serve you again. Have a nice day!! Next!||||||
 31082|highkeep|Bank_Clerk_Jaylin|say|I am sorry to see you check out. Here is all you had in your box. We hope to serve you again. Have a nice day!! Next!||||||
 31087|highkeep|Captain_Boshinko|say|That little man has now made it to Rivervale.  He has ties with the halfling rogues, obviously. I want you to find him.  When you find him, take this shank he used to kill my guard and hand it to him.  I want him to know why he is about to die.  No one escapes my prison!!  Bring me his head and I shall pay the bounty.||||||
 31088|highkeep|Captain_Boshinko|say|Good work, bounty hunter! You have served your legend well. I hope a few plat is good enough and, please, take this item we confiscated from one of our guests now serving time in our dungeon.||||||
 31089|highkeep|Fenn_Kaedrick|say|So you are the one Laren sent. I myself was trained by Laren. Imagine that, a human trained by elven rogues. I share the concerns of the scouts. You were sent to assassinate Xentil Herkanon. He betrayed the scouts and Kelethin. He is somewhere in this keep. Return his head to Laren in Kelethin.||||||
-31089|highkeep|Fenn_Kaedrick|spawnunique|6185|-258|-102|4|16||
-31089|highkeep|Fenn_Kaedrick|spawnunique|6186|-259|-78|4|0||
-31089|highkeep|Fenn_Kaedrick|spawnunique|6187|-240|-78|4|0||
+31089|highkeep|Fenn_Kaedrick|spawnunique|6185|-102|-258|4|16||
+31089|highkeep|Fenn_Kaedrick|spawnunique|6186|-78|-259|4|0||
+31089|highkeep|Fenn_Kaedrick|spawnunique|6187|-78|-240|4|0||
 31090|highkeep|Jail_Clerk_Maryl|say|That little halfing has escaped our prison. No doubt he will travel back to the safety of Rivervale. He left this cracked emerald. It appears he must have broken off a piece of it. I believe it belongs in Kaladim. You may take it, but I am sure your master will not be satisfied until you combine the final piece with this one. Of course, first you will have to find Bronin and ask him of the missing emerald shard.||||||
 31091|highkeep|Lislia_Goldtune|say|Take this pouch to Eve Marsinger in Qeynos. You can find her at the bard guild hall. I am sure she will compensate you for your troubles.||||||
 31092|highkeep|Lozani|say|Hmmm... Aha! Well, I think this is it. A fine spell. I hope you need it because you are not getting your gold back.||||||
@@ -1270,7 +1270,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31099|highkeep|Treasurer_Lynn|say|You have the runner up ticket from last season!! Here is your reward. Remember, a copper gambled is a plat earned!!||||||
 31100|highkeep|Treasurer_Lynn|say|Congratulations!! You are the winner of last season's Highkeep lottery. Here is the key to the royal suite. You should find this room on the third floor.||||||
 31101|highpass|Anson_McBale|say|Ah, we have been expecting this. Let me get Stanos, he will want to inspect it first, but here are your coins.||||||
-31101|highpass|Anson_McBale|spawnunique|5088|336|10|45|225||
+31101|highpass|Anson_McBale|spawnunique|5088|10|336|45|225||
 31102|highpass|Barn_Bloodstone|say|Why thank you, kind citizen! Mutt, throw me the package! Here. This is for your boss. Do not return return to Kane without the other two lists. Some other bixie boy might just beat you to one of the other pieces. Go to Freeport. There you will find a woman called Opal. Quite a looker. I hear she works with the Arcane Scientists. Tell her the disease is spreading. She will help you.||||||
 31103|highpass|Bryan_McGee|say|On second thought.. You can do a little favor for me first. An associate of mine has asked me to acquire a case of spirits for him. Take this box and seek out what is needed to fill it. Inside you will combine the spirits of Lendel's Grand Lager, Gator Gulp Ale, Blackburrow Swig, Tunare's Finest, Underfoot Triple Bock, Frozen Toe Rum, Blood Spirit, Vasty Deep Ale, Clockwork Oil Stout and the legendary..Oblong Bottle.||||||
 31104|highpass|Bryan_McGee|say|I cannot believe you actually acquired all those drinks!! You do good work, kid. Here is the gem as I promised. And a few plat for good measure. Don't let it be said that the Axe doesn't treat his friends right.||||||
@@ -1279,7 +1279,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31114|highpass|Jovan|say|<SLURP!!>  Ahh thhhhat'thh betterr. Take thithhh. <BURP!>||||||
 31115|highpass|Marlin_Shirtov|say|Ahh!! The silk evening tunic. Mistress Anna will look stunning in this. Here is the key to Princess Lenya's cell. Good luck, hero!||||||
 31116|highpass|Prak|say|Hmm, I see. We think we've found out who the mole is in Carson's guards, some guy named Stald. We need to get rid of this guy as quickly, and as quietly, as possible. Carson doesn't want to cause a stink by eliminating one of his own men, so he asked us to do it. What about you? Do you think you could get rid of Stald for us?||||||
-31116|highpass|Prak|spawnunique|5119|464|127|31.75|47||
+31116|highpass|Prak|spawnunique|5119|127|464|31.75|47||
 31117|highpass|Prak|say|Ah, boy! Looks like I owe Kaden two plat... I thought you'd fumble it up for sure. Well, you've impressed me friend. Here, take this back to Zan... I'll make sure note your fine works to Carson, too, next time we speak.||||||
 31118|highpass|Stanos_Herkanor|despawn|self||||||
 31118|highpass|Stanos_Herkanor|say|Excellent!  With this document I can..' <He pauses for a moment>. 'Damnation!  Curse my tired old mind, I forgot that I could not read the document.  It is written in some obscure code or language.  I can't decipher it, but I know someone who can.  Seek out one called Eldreth, an Erudite who used to do work for me.  I know not where he may be found these days, only that he will not be found in Erudin, as they want his head for some misdeed in the past.  Give him the complete parchment, and tell him I sent you.  He owes me.||||||
@@ -1294,9 +1294,9 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31122|hole|Caradon|attackplayer|||||||
 31122|hole|Caradon|attackplayer|||||||
 31122|hole|Caradon|say|Kyrenna! We are free!||||||
-31122|hole|Caradon|spawn|39155|-195.8|426.6|-213.9|115||
+31122|hole|Caradon|spawn|39155|426.6|-195.8|-213.9|115||
 31123|hole|Ghost_of_Glohnor|despawn|self||||||
-31123|hole|Ghost_of_Glohnor|spawn|39165|464.4|819|-678|125||
+31123|hole|Ghost_of_Glohnor|spawn|39165|819|464.4|-678|125||
 31124|hole|Jaeil_the_Wretched|attackplayer|||||||
 31124|hole|Jaeil_the_Wretched|despawn|self||||||
 31124|hole|Jaeil_the_Wretched|emote|%s howls in anger, his body seeming to suck energy from the walls around him as he sees his reflection. He pulls a hammer from the bundle in his arms and swings fiercely at your head.||||||
@@ -1456,7 +1456,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31265|kaladimb|Kinlo_Strongarm|say|Arrrrr. Ooooo. Arrrrrr... Yah, now that's what I be callin' a good lookin' axe. I be crackin' a few skulls with this one. Oh, here's yer block o' mud. Our priests o' Brell use the mud pit fer relievin' themselves after really hard ale blessin' ceremonies, so ya ain't got ta be enchantin' it in holy water or anythin' cause they already have. Har har!||||||
 31266|kaladimb|Kinlo_Strongarm|emote|%s examines the hammer respectfully, admiring its craftsmanship. He strikes it against his anvil and winces as a howl fills the air. 'This is one of the ancients' hammers? I can almost, well, almost hear it callin ta me. It's strong, that's fer sure, lad. I don't know how ye got it, but aye, a dwarf could make a mighty blade with this. It's lookin like this thing still has its owner inside it though. I'm not knowin how, and not wantin to know, but fer yer own good ye better find some way ta get 'im out.'||||||
 31267|kaladimb|Kinlo_Strongarm|emote|%s looks at the hammer and nods once before slamming the head against his anvil, and shattering the head. In a cloud of dust, another dwarf appears from the cloud and tosses you a hunk of metal. Kinlo stares in awe.||||||
-31267|kaladimb|Kinlo_Strongarm|spawn|67089|-189.5|346.8|1.8|34.5||
+31267|kaladimb|Kinlo_Strongarm|spawn|67089|346.8|-189.5|1.8|34.5||
 31268|kaladimb|Kinlo_Strongarm|say|Erm. Well, I ain't never worked with this stuff but here's what I got for ya. It ain't bad, pretty much like the one ye got there. I suppose ye should take the one the ancient made and show it ta yer friend.||||||
 31269|kaladimb|Mater|say|Very good!! You found him. His head shall bring us a great reward from the Stormguard. And as for you, here is your Mining Pick 628. Only a member of 628 can wield this fine weapon. We are the only ones who can wield it in such a way as to pierce our foes.||||||
 31270|kaladimb|Mater|say|Ah, welcome! We could use some fresh blood around here. The name's Mater, and I run this little outfit. Work hard for me, and I will reward you well. Cross me, and you'll find yourself buried under the mine cap. Now, let's get to work.||||||
@@ -1500,19 +1500,19 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31299|kerraridge|Thalith_Mamluk|say|You.. You kill the rats? Errr. Thalith thanks you. Here. Take this. It's good luck charm I've had for years.||||||
 31300|kerraridge|Urkath_Greyface|say|Errr? This is.. this is silvani leaf! Rrrrrr.. So nice. This means much to Urrkath, furrrless one. Please, take this for such kind work.||||||
 31301|kithicor|#Adjutant_D`kan|say|The General will take care of you!||||||
-31301|kithicor|#Adjutant_D`kan|spawnunique|20205|2297|827|275|128||
+31301|kithicor|#Adjutant_D`kan|spawnunique|20205|827|2297|275|128||
 31302|kithicor|#Advisor_C`zatl|say|The General will take care of you!||||||
-31302|kithicor|#Advisor_C`zatl|spawnunique|20205|2297|827|275|128||
+31302|kithicor|#Advisor_C`zatl|spawnunique|20205|827|2297|275|128||
 31303|kithicor|#Brigadier_G`tav|say|The General will take care of you!||||||
-31303|kithicor|#Brigadier_G`tav|spawnunique|20205|2297|827|275|128||
+31303|kithicor|#Brigadier_G`tav|spawnunique|20205|827|2297|275|128||
 31304|kithicor|#Coercer_Q`ioul|say|The General will take care of you!||||||
-31304|kithicor|#Coercer_Q`ioul|spawnunique|20205|2297|827|275|128||
+31304|kithicor|#Coercer_Q`ioul|spawnunique|20205|827|2297|275|128||
 31305|kithicor|#Ioltos_V`ghera|say|The General will take care of you!||||||
-31305|kithicor|#Ioltos_V`ghera|spawnunique|20205|2297|827|275|128||
+31305|kithicor|#Ioltos_V`ghera|spawnunique|20205|827|2297|275|128||
 31306|kithicor|#Tasi_V`ghera|say|The General will take care of you!||||||
-31306|kithicor|#Tasi_V`ghera|spawnunique|20205|2297|827|275|128||
+31306|kithicor|#Tasi_V`ghera|spawnunique|20205|827|2297|275|128||
 31307|kithicor|#War_Priestess_T`zan|say|The General will take care of you!||||||
-31307|kithicor|#War_Priestess_T`zan|spawnunique|20205|2297|827|275|128||
+31307|kithicor|#War_Priestess_T`zan|spawnunique|20205|827|2297|275|128||
 31308|kithicor|Gandari|say|Well done. May Karana bless your soul.||||||
 31309|kithicor|Gandari|say|Well done. May Karana bless your soul.||||||
 31310|kithicor|Gandari|say|Well done. May Karana bless your soul.||||||
@@ -1539,11 +1539,11 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31327|lakeofillomen|Astral_Projection|attackplayer|||||||
 31327|lakeofillomen|Astral_Projection|attackplayer|||||||
 31327|lakeofillomen|Astral_Projection|despawn|self||||||
-31327|lakeofillomen|Astral_Projection|spawn|85211|playerX|playerY|playerZ|playerHeading|5|
-31327|lakeofillomen|Astral_Projection|spawn|85223|playerX|playerY|playerZ|playerHeading|-5|
+31327|lakeofillomen|Astral_Projection|spawn|85211|playerX|playerY|playerZ|playerHeading||5
+31327|lakeofillomen|Astral_Projection|spawn|85223|playerX|playerY|playerZ|playerHeading||-5
 31328|lakeofillomen|Klok_Foob|say|Me thanks you very much!! Now me stop da tummy grumbles. You have this. And you takes dis. Foob make special, not sold yet, you test it. It is not toughest, but it take a little bashing just like you. It is called Foobscale!!||||||
 31329|lakeofillomen|Klok_Sargin|say|Uhh. Thanks. I sort of told the lizard who bought the skull that you were asking for him, and, well, he was kinda mad, and...  $N, meet Bruiser.||||||
-31329|lakeofillomen|Klok_Sargin|spawnunique|85226|playerX|playerY|playerZ|playerHeading|5|
+31329|lakeofillomen|Klok_Sargin|spawnunique|85226|playerX|playerY|playerZ|playerHeading||5
 31330|lakeofillomen|Professor_Akabao|say|For ages this medallion has been scattered across these inhospitable lands, I had just about given up hope of locating the pieces and rebuilding this piece of Iksar history. You may keep it. It is enough to know that I have done my part to restore such an artifact to the people of Norrath.||||||
 31331|lakeofillomen|Trooper_Frogzin|emote|%s grabs the order from your hand and mumbles something unpleasant and vaguely threatening. He then hands the signed order back to you.||||||
 31332|lakeofillomen|Trooper_Selbat|emote|%s signs the note and hands back to you. 'Be off now. Before I do choose to slay the messenger.'||||||
@@ -1567,7 +1567,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31344|lakerathe|Kazen_Fecae|say|'Excellent!' You watch Kazen hold the head by the hair and begin to cast a spell. A flash of darkness centers around the head, and the eyes of the dead knight open, a terrible scream emanating from its lips. 'This poor fool here - I think I will keep him in my bag from now on. You have done well, my new apprentice. Take this symbol and know that you can do other tasks to advance within my apprentice ranks.'||||||
 31345|lakerathe|Kazen_Fecae|attackplayer|||||||
 31345|lakerathe|Kazen_Fecae|say|As you hand Kazen the symbol, you hear him speak directly into your mind. 'Good luck, my student!' Kazen finishes an incantation and suddenly hands begin to reach up from the ground, as if they were pulling themselves from the grave all around you. A piercing scream fills the air as the creatures advance upon you!||||||
-31345|lakerathe|Kazen_Fecae|spawn|51153|-1498.9|283.8|58.4|57.6||
+31345|lakerathe|Kazen_Fecae|spawn|51153|283.8|-1498.9|58.4|57.6||
 31346|lakerathe|Kazen_Fecae|emote|%s stares through you at the horizon, pausing as he reaches into his robes. Kazen pulls out a scythe with a shimmering black blade that seems too large to have been hidden there. As quickly and gracefully as it was displayed to you, it is returned to the void inside Kazen's robes. 'It is a creation of Miragul which was looted from his lair under the ice. Take this tome, it will be your final task for me as an apprentice.'||||||
 31347|lakerathe|Kazen_Fecae|emote|%s grins wildly and his eyes flare a deep red. The scythe he promised you flies through the air and into your hand. 'Enjoy your toy, I have no more need of you as a servant.'||||||
 31348|lakerathe|Kyralynn|say|Wear this well,  $N!||||||
@@ -1581,7 +1581,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31355|lakerathe|Rykas|say|If you seek to learn the tale of Trilith Magi'kot, your journey shall begin in the Commonlands. Search for Jahsohn Aksot and give him this token. He will share some of the knowledge I have bestowed upon him, and point you further down your path to Mastery. Bring me the Words of Mastery, Power of the Elements, and the Words of Magi'kot....Then you shall learn more about the power of the orb.||||||
 31356|lakerathe|Rykas|say|I see that you have completed the quest I laid before you. That speaks well of your dedication, yet you do not realize your journey has just begun. Study this tome.||||||
 31357|lakerathe|Shmendrik_Lavawalker|emote|%s shoves the crown into a scorch marked leather satchel and cackles uncontrollably as madness twists his features and flames dance in his eyes. 'You,  $N, have reduced the Riptides into chaos! Without a king to keep them in control they will ravage the settlements surrounding this lake! After the slaughter I shall return and easily burn the remainder of the villages and fishing shanties to the ground! None shall escape the fires of the Tyrant!!'||||||
-31357|lakerathe|Shmendrik_Lavawalker|spawnunique|51138|160|3630.3|51|192.4||
+31357|lakerathe|Shmendrik_Lavawalker|spawnunique|51138|3630.3|160|51|192.4||
 31358|lakerathe|Trug|say|POW! POW! POW!||||||
 31359|lakerathe|Turgan|say|I am that Turgan, but I am no longer worthy of this title.  Take this in hopes that you become a better steward than I was.||||||
 31360|lakerathe|Vrynn|say|Wear this well,  $N!||||||
@@ -1603,7 +1603,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31375|lfaydark|Princess_Joleena|say|My wing!! I am so happy!! Thank you  $N. You have proved that I can trust giants once again. Please take a Pouch of Fairie Gold Dust. Its magical properties are desired by all.||||||
 31376|lfaydark|Scout_Rahjiq|despawn|self||||||
 31376|lfaydark|Scout_Rahjiq|say|Keep your head down, mate! The spirit that you have come for is very close. I have spotted it several times today. It keeps appearing near that odd structure just over the hill. Be careful not to attract the attention of those invisible creatures that roam near the structure. Just release the spirit and return the totem to me. I'll prepare the totem for placement in the container that you were given.||||||
-31376|lfaydark|Scout_Rahjiq|spawn|57119|-1632|-349|11|0||
+31376|lfaydark|Scout_Rahjiq|spawn|57119|-349|-1632|11|0||
 31376|lfaydark|Scout_Rahjiq|spawnunique|57005|playerX|playerY|playerZ|0||
 31377|mischiefplane|a_white_stallion|despawn|self||||||
 31377|mischiefplane|a_white_stallion|spawnunique|126014|playerX|playerY|playerZ|playerHeading||
@@ -1671,7 +1671,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31430|neriakb|Camia_V`Retta|say|Greetings, and welcome to the Tower of the Spurned! I am Camia V'Retta, master enchantress. Here is your guild tunic, wear it with pride.  Go to Ulvex D'Jerna he whall help you with your new studies.||||||
 31431|neriakb|Draxiz_N`Ryt|say|I have foreseen your arrival,  $N. I see from the mind of this lesser creature you have slain that he was receiving orders from beyond the boundaries of Nektulos. I see an armored Leatherfoot moving cautiously through the commonlands attempting to avoid the eyes of travelers and guard posts. Find this Leatherfoot I see in my visions and return any pertinent information he may be carrying to me so that I may decipher it. I have skinned the face of this druid and enchanted it so that you may learn what you must through your skills of subterfuge. Go now,  $N, and do not disappoint me!||||||
 31432|neriakb|Draxiz_N`Ryt|say|I see you are more cunning than you appear,  $N. These orders to Whoopal bring disturbing news indeed. It seems there is a Leatherfoot spy somewhere in Neriak who has been providing the raiders with information. Find this spy and return his head and your initiate holy symbol of Innoruuk to Ithvol and if he deems you worthy he will promote you within the ranks of the Spires.||||||
-31432|neriakb|Draxiz_N`Ryt|spawnunique|41104|-560|-180|-55|||
+31432|neriakb|Draxiz_N`Ryt|spawnunique|41104|-180|-560|-55|||
 31433|neriakb|Dunred_M`Trik|say|Very good work. I can see you are a talented baker and these muffins look suitable. You do Neriak a great service. Here is your payment. I look forward to conducting future business with you.||||||
 31434|neriakb|Dunred_M`Trik|say|You have returned and none too soon! Thank you very much, I will put this bread on sale immediately. Here is your reward as promised. Thank you very much.||||||
 31435|neriakb|Gath_N`Mare|say|I am Gath N'Mare, master wizard of the Tower of the Spurned. Welcome to our guild. Let's get started, shall we?  Here is your tunic, represent us well with it. Shanez X'Teria is our beginning guild trainer. He will teach you the basics and give you a solid learning foundation of magic.  Good luck, and study hard.||||||
@@ -1699,11 +1699,11 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31456|neriakb|Volkoon_D`Dbth|say|You have returned and none too soon! Thank you very much, I will put this bread on sale immediately. Here is your reward as promised. Thank you very much.||||||
 31457|neriakb|Yegek_B`Larin|say|Very nice work. Here are some provisions. Now are you ready for the second test?||||||
 31458|neriakb|Yegek_B`Larin|say|Those young warriors who dared to run from battle are now our fodder. They shall help us teach you that sometimes you must kill your own kind. In the center of the arena we have set a coward. Show me you can kill your own when required and bring me his head. Do not grant him mercy nor allow him to flee.||||||
-31458|neriakb|Yegek_B`Larin|spawn|41119|-1218|-25|-25|128||
+31458|neriakb|Yegek_B`Larin|spawn|41119|-25|-1218|-25|128||
 31459|neriakb|Yegek_B`Larin|say|You have performed greatly. A coward deserves no pity or mercy. You will be fine addition to our house. Let us replace your weapon with this, a sullied two handed sword! The weapon of a young brother of this hall. It is a finer weapon than your first. Go and spread the hate of Innoruuk.||||||
 31460|neriakb|Zanotix_Ixtaz|emote|%s quickly pockets the coins and says, 'Go see the Librarian, Nallar. Tell him Denouncer Ixtaz sent you. Do not return here for at least 3 days, now go, $R.||||||
 31461|neriakb|Zanotix_Ixtaz|emote|%s accepts the vial and looks you over, eyebrow raised. He says, 'Well, a sacrifice to feed my forge. You have done Neriak a great service, Citizen  $N. I shall burn it now.' He then holds the vial up the the flames, the blood seems to glow brightly as he stares into it. Then suddenly, with the shout of an arcane phrase, he throws the vial violently into the flame. The force shatters the vial, spilling the blood about the flames. Almost immediately the flames flare up to the ceiling. When they die down a presence is felt within the flames.||||||
-31461|neriakb|Zanotix_Ixtaz|spawn|41106|-867|70|-35|0||
+31461|neriakb|Zanotix_Ixtaz|spawn|41106|70|-867|-35|0||
 31462|neriakc|Eolorn_J`Axx|say|You seem able enough. Here. Take this note to Freeport. Go through the Commonlands and be careful not to encounter any Freeport guards. There is a network of aqueducts accessible through hidden passages. Search the outside walls of Freeport. Take the note to Giz. She will meet you at night, on an island in the harbor. Good luck.||||||
 31463|neriakc|Eolorn_J`Axx|say|You wanna be part of the Ebon Mask, huh? Well, you'll need to impress me. Here's your guild tunic. Go find Hekzin, he'll have some work for you, I'm sure. Don't screw up, kid.  That pretty face of yours would make a fine trophy, got it? Now, quit breathin' my air, and go get some work done.||||||
 31464|neriakc|Eolorn_J`Axx|say|The Hall thanks you. You have performed supremely. We are glad to have you with us. I offer you this, loot from former takes. I hope you can use it.||||||
@@ -1823,12 +1823,12 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31569|oot|Styria_Fearnon|say|Oh!! Thank you!! We are so grateful to you. I offer you this as reward. It is one of the dwarven smith's finest works.||||||
 31570|oot|Styria_Fearnon|say|Good work. That is one less pirate to worry about. We do not have much, but take this as payment.||||||
 31573|overthere|Alchemist_Granika|say|If Heirophant Oxyn has sent this with you, I can assume that our visions were corect. The new age is calling us from the heavens. Prepare for battle. I will take this solution to the Outlander's gates and use it to reveal the location of the metal of prophecy. Should I not return, you will only need to find the creature that glows without the use of a torch. Deklium glows when it gets near the smallest trace of tynnomium. Prepare for battle, Crusader... I am off!||||||
-31573|overthere|Alchemist_Granika|spawn|93002|2240|2764|-49|190||
-31573|overthere|Alchemist_Granika|spawn|93004|2260|2794|-49|190||
-31573|overthere|Alchemist_Granika|spawn|93004|2260|2698|-49|190||
-31573|overthere|Alchemist_Granika|spawn|93004|2280|2794|-49|190||
-31573|overthere|Alchemist_Granika|spawn|93004|2280|2698|-49|190||
-31573|overthere|Alchemist_Granika|spawn|93005|2240|2698|-49|190||
+31573|overthere|Alchemist_Granika|spawn|93002|2764|2240|-49|190||
+31573|overthere|Alchemist_Granika|spawn|93004|2794|2260|-49|190||
+31573|overthere|Alchemist_Granika|spawn|93004|2698|2260|-49|190||
+31573|overthere|Alchemist_Granika|spawn|93004|2794|2280|-49|190||
+31573|overthere|Alchemist_Granika|spawn|93004|2698|2280|-49|190||
+31573|overthere|Alchemist_Granika|spawn|93005|2698|2240|-49|190||
 31574|overthere|an_undead_foreman|emote|%s an undead foreman places the gem deep within his hollow eye socket. He pulls a giant sledgehammer from thin air and hands it to you.||||||
 31574|overthere|an_undead_foreman|say|Here!! You shall be assigned to the lower decks of the Scaled Trident.||||||
 31575|overthere|Astral_Projection|emote|%s looks up and down.||||||
@@ -1893,9 +1893,9 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31631|paineel|Librarian_Kesler|say|Take this book.  $N.  It contains the history of the ancient city from which we came.||||||
 31632|paineel|Mandaril_Dark_Knife|say|You are welcomed into the fold.  Now go out, and prove yourself, young one.  You have much to learn about the Dark Truth.||||||
 31633|paineel|Miadera_Shadowfyre|say|Yes! Can you feel the terror in the air, prickling your flesh, and standing your hair on end? The chanters have summoned the avatar of Terror! Quickly take this mundane mask to him and he shall forge it into a valuable symbol to be worn by loyal apostles of Terror!||||||
-31633|paineel|Miadera_Shadowfyre|spawnunique|75195|421|1182|-37|128||
+31633|paineel|Miadera_Shadowfyre|spawnunique|75195|1182|421|-37|128||
 31634|paineel|Nivold_Predd|say|Commendable work, you have proven yourself a valuable member of our order. Our chanters have summoned the avatar of Dread. Hurry and take him this mundane shield so that he may forge it into a truly valuable symbol of your devotion to the lord of Fear!||||||
-31634|paineel|Nivold_Predd|spawnunique|75194|474|1230|-37|128||
+31634|paineel|Nivold_Predd|spawnunique|75194|1230|474|-37|128||
 31635|paineel|Noclin_Saah|say|Ah! You found him and obviously removed his presence from the yard. You have my thanks, small as it is for such a menial task. Here. Keep this worthless bit of bone for your labors.||||||
 31636|paineel|Royal_Guard_Sheltuin|say|Then you will deliver this chest for us. Don't worry about what's inside it. Although we enjoy our solitude, we do make allies. We also make use of those allies. We will do so now. Take the chest to Lyris Moonbane below the human city of Qeynos. You will then follow her instructions and complete any tasks she assigns you. In return, she will send you back with what we wish. Fear is our armor.||||||
 31637|paineel|Royal_Guard_Sheltuin|say|Hmmm. Very odd. The dust in the crate implies some sort of stone was transported in it. Perhaps our brothers of the Arcane will be able to find out where this dust came from and what it?s used for. Take this dust sample and note to Keletha Nightweaver. She will examine the dust and send you back with a report. Make haste.||||||
@@ -1924,12 +1924,12 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31657|permafrost|#Scout_Janomin|say|Perfect work,  $N! I am glad the Elders made such a wise choice in sending you. I must admit, I was rather scared during the exploration of these halls. This lair is quite foul, quite foul indeed! Take this wrapped totem and place it in the case that you were given. Once you have all of the totems, seal the case and make your way back to Shar Vahl. I work my way back as well. Thank you again. ||||||
 31658|permafrost|Scout_Janomin|despawn|self||||||
 31658|permafrost|Scout_Janomin|say|It is a comfort to meet you,  $N. I was afraid that you might not be able to track me with weather out there being what it is. I must admit that my fondness of the snow is at an all time low right now. The sooner you release the spirit that resides in here, the sooner we can make a way back to a warmer climate.||||||
-31658|permafrost|Scout_Janomin|spawn|73107|-135|973|-105|0||
+31658|permafrost|Scout_Janomin|spawn|73107|973|-135|-105|0||
 31658|permafrost|Scout_Janomin|spawnunique|73005|playerX|playerY|playerZ|0||
 31659|qcat|#a_zombie|say|kill me... kill...me||||||
 31660|qcat|#Guard_Helminth|say|Well, well! Vegalys did send you after all. Are you ready to complete the mission? I am certain I know where Azibelle is hiding.||||||
 31661|qcat|an_investigator|say|Vegalys sent you. I'm done for. Guard Helminth found a false wall. We stepped through it. We were ambushed. I didn't see where Helminth went. He disappeared. I knew we were overwhelmed. I ran and feigned death but I knew it was too late.||||||
-31661|qcat|an_investigator|spawnunique|45005|-49|378|-39|128||
+31661|qcat|an_investigator|spawnunique|45005|378|-49|-39|128||
 31662|qcat|Bait_Masterson|say|Nice material!! I feel the ways of Prexus enlightening my soul. Unngh!! Enough of this fishing. Here take my broken fishing pole and toss it to the sea. All hail Prexus!!||||||
 31663|qcat|Bruax_Grengar|say|A Staff of the Bloodsabers is a useful implement for young sorcerers dedicated to Bertoxxulous the Plague Lord. I will assist you in the creation of a staff but first you must complete a task for me. The sorcerers of The Order of Three are supporters of Antonius Bayle IV, the haughty ruler of Qeynos. They lend magical aid to the Knights of Thunder and Priests of Life to identify and capture members of the Bloodsabers. A rather troublesome member of The Order of Three, Larkin Tolman, has recently been spotted at a settlement in the Western Plains of Karana. Find this Larkin Tolman and bring me his head.||||||
 31664|qcat|Bruax_Grengar|say|Well done. The Bloodsabers have many enemies within the city of Qeynos and its surrounding regions. You must exercise much caution when not within the safety of our temple here in the Qeynos Catacombs. Take this Rough Bloodsaber Staff and when you have gathered a Giant King Snake Skin, two Gnoll Fangs, and a Giant Fire Beetle Eye, return them to me with this staff and I will complete its construction.||||||
@@ -1957,7 +1957,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31688|qcat|Rocthar_Bekesna|say|Well done  $N. Now take this Rusty Scourge Warrior Broadsword to a forge and sharpen it with a sharpening stone. It may take you several attempts if you are unfamiliar with the process. Once that is done take the Tarnished Scourge Warrior Sword and a Giant King Snake Skin to Illie Roln and he will put the finishing touches on the weapon.||||||
 31689|qcat|Sragg_Bloodheart|say|Ah, another would-be soldier for the army of the Plaguebringer. Unmuz has just lost a few of his men, he'll have plenty of work for you. I'm sure. Begone!||||||
 31690|qcat|Sragg_Bloodheart|say|What have you brought me, worm? Hmm... This is disappointing. That Tovax has failed us for the last time. Your loyalty to Bertoxxulous and the Bloodsabers has been noted. Now, if you will excuse me a moment...||||||
-31690|qcat|Sragg_Bloodheart|spawnunique|45040|-321|415|-38|64||
+31690|qcat|Sragg_Bloodheart|spawnunique|45040|415|-321|-38|64||
 31691|qcat|Teydar|say|I did it! The pieces you got me were perfect! It took a huge effort on my part to craft this, of course. It saddens me that I'm unable to keep one of my best works, but a deal is a deal. There is honor among shadowknights.||||||
 31692|qcat|Torin_Krentar|say|To assemble a pestilence priest breastplate you will need to obtain four bricks of crude iron and smelt them in a forge with a Water Flask and this Crude Breastplate Mold. Once that is done combine the Crude Iron Breastplate with a Giant King Snake Skin, a Gnoll Sternum, and a Gnoll Ribcage in the Mail Assembly Kit.||||||
 31693|qcat|Torin_Krentar|say|Well met young disciple of Bertoxxulous. Perhaps one day you shall serve the Plague Lord in his realm, but for now you will serve the Bloodsabers, his mortal agents on Norrath. The armor you seek must be assembled using this Mail Assembly Kit. The materials necessary to construct the armor vary depending on the piece being crafted. Do you wish to craft Gauntlets of the Pestilence Priests, Boots of the Pestilence Priests, a Bracer of the Pestilence Priests, a Helm of the Pestilence Priests, Greaves of the Pestilence Priests, Vambraces of the Pestilence Priests, or a Breastplate of the Pestilence Priests?||||||
@@ -1984,7 +1984,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31712|qey2hh1|Chrislin_Baker|despawn|self||||||
 31712|qey2hh1|Chrislin_Baker|emote|%s gives you a hug. 'Thank you so much. I did some cleaning after you left and found this behind a barrel. It may have been left behind by the person who took my materials. You can have it.'||||||
 31712|qey2hh1|Chrislin_Baker|say|I must go now, I will return later.||||||
-31712|qey2hh1|Chrislin_Baker|spawnunique|12001|-11512|763|16|135||
+31712|qey2hh1|Chrislin_Baker|spawnunique|12001|763|-11512|16|135||
 31713|qey2hh1|Einhorst_McMannus|say|My wife? She is dead. Crushed by the hands of a foul cyclops. I wish I could find that cyclops. I would pay greatly for his eye. I have slain every giant I could find, but I have not met him. I could still remember that cry of his...  BROOON!||||||
 31714|qey2hh1|Einhorst_McMannus|say|Yes. We almost forgot of the shipment of Karana clovers. Here you are, my friend. Back to the north with you. I am sure the Shamans of Justice will need this.||||||
 31715|qey2hh1|Frostbite|emote|%s spits something into your hand.||||||
@@ -2002,7 +2002,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31727|qey2hh1|Lempeck_Hargrin|attackplayer|||||||
 31727|qey2hh1|Lempeck_Hargrin|say|Please let this help...  nnnnghhh!...  I fear it is too late...  Aaaarrrgh!...  I...   I will...   KILL YOU!||||||
 31728|qey2hh1|Linaya_Sowlin|say|Oh thank Tunare you showed up when you did. I was at a nearby merchant house when a fellow dropped a note and I picked it up and read it. It talked of the Unkempt Druids and before I could read on, the man swiped it from my hands. I ran for dear life, for surely he would kill me for reading the note. I think I lost him in the woods but I am not sure. Please stay with me a while to be sure.||||||
-31728|qey2hh1|Linaya_Sowlin|spawnunique|12181|-8000|-3400|23|102.9||
+31728|qey2hh1|Linaya_Sowlin|spawnunique|12181|-3400|-8000|23|102.9||
 31729|qey2hh1|Maldin_the_Old|say|May the Rainkeeper keep you safe. I thank you. Here is the empty chalice. By the way, inform your superior that the operations of the Karana bandits are getting closer to Qeynos.||||||
 31730|qey2hh1|Maligar|attackplayer|||||||
 31730|qey2hh1|Maligar|despawn|self||||||
@@ -2028,13 +2028,13 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31747|qeynos|#Donally_Stultz|attackplayer|||||||
 31747|qeynos|#Donally_Stultz|emote|%s crumples the document into a ball, throws it to the ground and spits in your face, yelling, 'You are a fool if you really believe I would sign such a thing. Prepare to die!'||||||
 31748|qeynos|#Lanhern_Firepride|say|Mmmm... <Burp!>  Thank you. Here is a little dona... <Hic!> dona... <Hic!> mmmoney for your generosity.||||||
-31749|qeynos|#Riley_Shplots|spawnunique|1201|-414|-11|-25|0||
+31749|qeynos|#Riley_Shplots|spawnunique|1201|-11|-414|-25|0||
 31750|qeynos|#Willie_Garrote|say|Here's your confession.  I hope you choke on it!||||||
-31750|qeynos|#Willie_Garrote|spawnunique|1197|55|-341|-16|0||
+31750|qeynos|#Willie_Garrote|spawnunique|1197|-341|55|-16|0||
 31751|qeynos|Anehan_Treol|say|Oh, report time already again? Yeah, here ya go,  $N. Be careful around here at night, I've been seeing some rough looking characters lurking about.||||||
 31752|qeynos|an_investigator|say|The last suspect has been known to hang around that low life known as Raz the Rat.||||||
 31753|qeynos|an_investigator|say|Very well, let's get to work. I assume you have read the briefing and committed it to memory. This is how you will be tested. I shall play the part of student and you shall play the master who directs me. I promise I won't make it easy on you either, we want only the best. We'll see how you do and then I'll decide if you are worthy to wear the badge or not.||||||
-31753|qeynos|an_investigator|spawnunique|1183|-324|200|6|120||
+31753|qeynos|an_investigator|spawnunique|1183|200|-324|6|120||
 31754|qeynos|an_investigator|despawn|self||||||
 31754|qeynos|an_investigator|say|You have done our city a great service and helped to bring several criminals to justice this day! Wear this Investigator's Badge with pride! Speak again with Vegalys Keldrane, he may have information about advancing further in rank.||||||
 31755|qeynos|Behroe_Dlexon|say|Ah, thank you, kind  $N.  You've made two foolish lovebirds very happy.  Please, take this..  Though it is not much, it will help keep you warm on those chilly Karana nights.  It is very good to have a friend such as yourself, and I will one day repay you for your kindness and generosity.||||||
@@ -2048,9 +2048,9 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31763|qeynos|Caleah_Herblender|say|Hmm. Good job,  $N, let's give this a try. Flame and fire. Heat and spark. Touch of Ro, light this dark! Ahh. It stills needs a little work, I guess. Thanks for your help, here's a little something for your effort.||||||
 31764|qeynos|Captain_Rohand|say|Argh! You curvy sea goblin! Taxes, you say?! Peh! I got your taxes right here! I sure don't get the services those taxes are supposed to provide! You can tell them ol' Captain Rohand said so!||||||
 31773|qeynos|Captain_Tillin|say|I heard you were on your way. I have called for the state executioner. She should be on her way now. She will deal with our friend, McNeal Jocub. Thank you for your help, citizen.||||||
-31773|qeynos|Captain_Tillin|spawnunique|1202|-412|75|-24|0||
+31773|qeynos|Captain_Tillin|spawnunique|1202|75|-412|-24|0||
 31774|qeynos|Captain_Tillin|say|So, an assassin has been sent to Qeynos! I shall have my guards keep an eye out for any suspicious looking visitors. As for you... you should speak with the Surefall Glade ambassador. Ambassador Gash is staying at the Lion's Mane Inn here in South Qeynos. Inform him that an assassin has been sent to kill him. Do not let the assassin near him!||||||
-31774|qeynos|Captain_Tillin|spawnunique|1179|-100|222|3|128||
+31774|qeynos|Captain_Tillin|spawnunique|1179|222|-100|3|128||
 31775|qeynos|Captain_Tillin|emote|%s scans the report with a furrowed brow. 'So the threat is worse then we had anticipated. The intelligence we have gathere is true. We have little time, return to Sergeant Caelin and give him these orders. Time is of the essence. Hurry now, these people are in grave danger and something must be done to stop this!||||||
 31776|qeynos|Cassius_Messus|say|As a member of the League of Antonican Bards I am obligated to give all donations to this guild.||||||
 31777|qeynos|Cassius_Messus|say|Thank you! I am in your debt. Here is the songsheet as I promised. I shall sing of you one day.||||||
@@ -2085,7 +2085,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31806|qeynos|Grahan_Rothkar|say|You are a true Steel Warrior!! Now you shall wear my hero bracers. I designed them for my greatest gladiators and you have shown yourself mighty enough to wear them.||||||
 31807|qeynos|Grahan_Rothkar|say|I salute you. You have done well and crossed into the brotherhood of the Steel Warriors. Welcome. Take this. It is the mark of a Steel Warrior. Live the way of the warrior.||||||
 31808|qeynos|Grahan_Rothkar|say|So you are ready to encounter your final test. I wish you well, young warrior. Take this key to the pen on the left along the wall with three doors. There you shall meet your final challenge. Return with proof of victory. Exit before it is at an end and I shall not help you.||||||
-31808|qeynos|Grahan_Rothkar|spawnunique|1005|-520|-120|-24.5|||
+31808|qeynos|Grahan_Rothkar|spawnunique|1005|-120|-520|-24.5|||
 31809|qeynos|Guard_Kwint|say|Hey. Thanks! Sorry about that 'he's my brother' bit but I am sure you had a good time at the Lion's Mane anyway. I sure didn't lie to you about the quality of the ale there.||||||
 31810|qeynos|Guard_Lasen|say|Oh, thank you so much!' Lasen brings the drink to his lips and ravenously drinks the bottle's entire contents, ' Aaaaah. Here, please take this reward for your kindness.  Also take my advice, do not go exploring beneath Qeynos unless you bring friends.  I have seen too many like you enter the aqueducts alone, never to return.||||||
 31815|qeynos|Hansl_Bigroon|say|I would be pleased to help out such a noble organization. Here you are, my good friend. See you at weekly services!||||||
@@ -2237,7 +2237,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 31962|qeynos2|Whysia_Flock|say|I see your beads need to be charged. Very well, here you are. Use them and good health to you!!!||||||
 31963|qeynos2|Zannsin_Resdinet|say|Great work,  $N... The Circle is very pleased with your performance of late, and as a small reward for our more trusted members, I give you this... the cloak of the Unseen Hands. It's good to know that we can count on you to get the job done... here,  $N, go relax and have some wine, on me.||||||
 31964|qeytoqrg|Axe_Broadsmith|say|So you are the new warrior. Let us test your skill. Across the pond is a skeleton. See him? Engage him in combat. He awaits. Return his skull to me and I shall call you a Steel Warrior. Be quick. He will dissipate soon.||||||
-31964|qeytoqrg|Axe_Broadsmith|spawnunique|4192|1055|3858|-19|||
+31964|qeytoqrg|Axe_Broadsmith|spawnunique|4192|3858|1055|-19|||
 31965|qeytoqrg|Axe_Broadsmith|say|So you have returned. Victory is yours, young Steel Warrior. Take this letter of recommendation to Brin Stolunger at the arena in Qeynos. You have passed.||||||
 31966|qeytoqrg|Baobob_Miller|say|Here ya go! That should keep ya nice and warm! Be sure to tell all the friends you're going to impress where you got this fine cloak. Although I am sure they probably have heard of me already.||||||
 31967|qeytoqrg|Baobob_Miller|say|They are exquisite, if I do say so myself. Hope they fit.||||||
@@ -2543,7 +2543,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 32250|steamfont|Yendar_Starpyre|say|I say, this is indeed a challenge. This is written in what I'm sure is the language of the High Priesthood of Innoruuk. I've often wished I could read this, but I have never had the key to unlock the language. Take this for now.||||||
 32251|steamfont|Yendar_Starpyre|despawn|self||||||
 32251|steamfont|Yendar_Starpyre|say|My, this is quite a large list! Yes, I can use the names and dates recorded here to help me understand the script. It should be a simple matter now. A moment, please. Aha, yes, there we go. Translated as best I can! I do hope you're not involved in what is described here, as it is quite fiendish. Oi! You, woman! Give that back!  $N, that woman there took your letter! I think I should leave you to discuss it with her. Best of luck!.||||||
-32251|steamfont|Yendar_Starpyre|spawnunique|56172|playerX|playerY|playerZ|playerHeading|-10|10
+32251|steamfont|Yendar_Starpyre|spawnunique|56172|playerX|playerY|playerZ|playerHeading|10|-10
 32252|stonebrunt|#Giang_Yin|say|Freeing long imprisoned spirits is a noble cause. Your hammer has our blessing to free the souls from their crystalline shadow tombs.||||||
 32253|stonebrunt|#Old_Ghostback|say|Freeing long imprisoned spirits is a noble cause. Your hammer has our blessing to free the souls from their crystalline shadow tombs.||||||
 32254|stonebrunt|#Prowler_of_the_Jungle|say|Freeing long imprisoned spirits is a noble cause. Your hammer has our blessing to free the souls from their crystalline shadow tombs.||||||
@@ -2553,7 +2553,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 32257|stonebrunt|#Snowbeast|say|Freeing long imprisoned spirits is a noble cause. Your hammer has our blessing to free the souls from their crystalline shadow tombs.||||||
 32258|stonebrunt|a_spirit|despawn|self||||||
 32258|stonebrunt|a_spirit|say|Yes, the lance!' and begins to glow as it draws power from the lance, which now floats in mid air next to the spirit. The form of the spirit expands and takes on a humanoid shape. The air itself then seems to condense about the spirit as bits of matter appear within the glowing form. The bits soon take the shape of bones and ropes of muscle. Within minutes, an emaciated Erudite male stands before you. Despite his frail appearance, he stands upright and strong, a fierce red light burning in his eyes.||||||
-32258|stonebrunt|a_spirit|spawnunique|100017|-70|474|509|33.5||
+32258|stonebrunt|a_spirit|spawnunique|100017|474|-70|509|33.5||
 32259|stonebrunt|Emylie_Steelclaws|emote|%s takes the supplies and begins to work on the hammer. She works swiftly and efficiently then cools the finished hammer and hands it to you.||||||
 32260|stonebrunt|Ghost_of_Ridossan|despawn|self||||||
 32260|stonebrunt|Ghost_of_Ridossan|emote|%s takes the idol into his spectral hand and shoves the lance into your arms. After letting go of the lance, the ghost immediately begins to fade away. Before it is gone completely, it looks into your eyes and says, 'Suffer.'||||||
@@ -2569,7 +2569,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 32268|stonebrunt|Saemey_Wirewhisker|say|I require a Soul Orb and Kejek Spirit Dust in order to perform the ritual that will free the imprisoned souls.||||||
 32269|stonebrunt|Scout_Malom|despawn|self||||||
 32269|stonebrunt|Scout_Malom|say|Thank you for coming. I am surprised that you were able to find me. I barely know where I am at this point. I followed the vile beast that has been corrupting the spirits, but he eluded me after I followed him to that ridge up there. Fortunately, the spirit that you seek has remained at the site of its transformation. Use levitation to work your way up the falls and return to me with the totem that you will acquire from releasing the spirit.||||||
-32269|stonebrunt|Scout_Malom|spawnunique|100019|-3346|4266|2057|0||
+32269|stonebrunt|Scout_Malom|spawnunique|100019|4266|-3346|2057|0||
 32269|stonebrunt|Scout_Malom|spawnunique|100022|playerX|playerY|playerZ|0||
 32270|stonebrunt|Shazda_Kaekwon|say|Less heretics to defile the lands and spirits. You have the gratitude of Kejek for your assistance in repelling the heretic threat.||||||
 32271|stonebrunt|Shazda_Kaekwon|say|By slaying Rognarog you have spared the lives of those who would have crossed his path. I thank you for your assistance, the spirits have noticed your actions and are pleased.||||||
@@ -2587,7 +2587,7 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 32281|swampofnohope|Mystic_Dovan|emote|%s chants in an unknown tongue as he takes a dagger and slits your forearm. He then takes a tiny glowing vein worm from his beltpouch and forces it into the open wound. You feel the worm explode within. The pain is unbearable, but then, a coolness courses through your body.||||||
 32282|swampofnohope|Scout_Eyru|despawn|self||||||
 32282|swampofnohope|Scout_Eyru|say|It is a relief to see you. I was beginning to fear that no one would be able to find me in this miserable swamp. I wanted to get word back to Shar Vahl about my location, but I was afraid that I would lose the trail off this spirit if I were to break off my pursuit. This location is as strange of a destination for our spirit as it is dangerous. I have seen the spirit several times and it is very out of place here. I can't help but think that the transformation has left the spirit confused beyond all repair.||||||
-32282|swampofnohope|Scout_Eyru|spawn|83244|2170|-2903|4|0||
+32282|swampofnohope|Scout_Eyru|spawn|83244|-2903|2170|4|0||
 32282|swampofnohope|Scout_Eyru|spawnunique|83046|playerX|playerY|playerZ|0||
 32283|swampofnohope|Ssessthrass|say|Sssso, Emkel ssssent you to retrieve the manisi herb? I do not have the herb. The ssssarnak guard the herb. Apparently it is ssssacred to them. Only memberssss of their royal family are allowed to partake of it. They live deep in Chardok. They are hoarding what little of the precious herb there is. If you have an army, perhapssss you can bring me the herb and I can prepare it for Emkel. Bring back this ssssymbol as well.||||||
 32284|swampofnohope|Ssessthrass|emote|%s looks at you and bows. 'You are truly a fearsome sssshadow weaver! Or you have powerful alliessss,' he adds a moment later. Ssessthrass pulls the manisi herb apart and hands a piece to you. 'Emkel will be most pleased with us both!'||||||
@@ -2672,13 +2672,13 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 32368|timorous|Dolgin_Codslayer|attackplayer|||||||
 32368|timorous|Dolgin_Codslayer|despawn|self||||||
 32368|timorous|Dolgin_Codslayer|say|What's this? Egads! It's perfect.  Now all we gotta do is hope he bites.' Dolgin takes a little of the essence and smears it on a piece of bread. He places the bait into the water and watches intently.||||||
-32368|timorous|Dolgin_Codslayer|spawn|96073|-2178|-11745|-0.63|63||
+32368|timorous|Dolgin_Codslayer|spawn|96073|-11745|-2178|-0.63|63||
 32369|timorous|Drendico_Metalbones|say|Seek, search, turn, twist! Kazen hopes to death master truly! Read out, read in between! Talk to the pretty clouds.' Drendico turns his back to you and throws a book over his shoulder. 'Bring back book! Bring back reagents three!!' He shouts as he mumbles some more gibberish.||||||
 32370|timorous|Drendico_Metalbones|emote|%s turns to you in amazement. 'You actually did it! These are the correct components! Kazen will be most pleased. I searched the planes for almost a year and could not find all the correct components.' Drendico fiddles with the components, puts them into a box and hands it to you. 'You must have access to an army,  $N. Return the components to Kazen quickly!||||||
 32371|timorous|Jhassad_Oceanson|despawn|self||||||
 32371|timorous|Jhassad_Oceanson|emote|%s kneels in the sand and places the three orbs into a large abalone shell bowl. A blue glow surrounds his hands as he waves them over the orbs resting in the bowl. The orbs crack and fall apart, releasing their contents, then reform into a single glowing orb. Jhassad Oceanson gently removes the Orb of the Triumvirate and places it in your hands.||||||
 32371|timorous|Jhassad_Oceanson|say|The Avatar of Water approaches. You must hand him the Orb of the Triumvirate and it will be decided if it is your destiny to wield the Nem Ankh Sprinkler.||||||
-32371|timorous|Jhassad_Oceanson|spawnunique|96086|-1886|-11661|1|192||
+32371|timorous|Jhassad_Oceanson|spawnunique|96086|-11661|-1886|1|192||
 32372|timorous|Lheao|say|Astonishing! To think that you are a master of an order thought to be lost in our world. Forgive my earlier doubts. I believe you are indeed worthy to be given the responsibility of watching over this book. Take great care that it does not fall into the wrong hands as it would be truly disatrous.||||||
 32373|timorous|Natasha_Whitewater|despawn|self||||||
 32373|timorous|Natasha_Whitewater|say|Thank you,  $N, for your services thus far. The Triumvirate missionaries are, so far, impressed. However, there is yet another threat rising from the Plasmatic Priesthood that may have dire effects on all of Norrath if it is not stopped. An Iksar member of the Triumvirate missionaries has discovered that the Plasmatic Priesthood has somehow convinced the sarnak summoners of Chardok to assist them in summoning Ixilblat Fer to Norrath. Take this shell to Naxot Deepwater in the Burning Woods so that she knows I have sent you. We ask that you return with the Sceptre of Ixiblat Fer as well as evidence to show that the Plasmatic Priesthood is dealing with sarnaks. High Priest Omat will await your return. I must depart now. I pray for your success.||||||
@@ -2686,17 +2686,17 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 32374|timorous|Natasha_Whitewater|say|lowers her head in mourning and whispers a prayer. 'It is a shame that fate has decided one so young and from such a background should perish, but we must not attempt to change what was destined to be. Priestess Naxot sacrificed herself selflessly so that others may be spared the horrors Ixiblat would have brought to Norrath. May the waters of Norrath forever remember her reflection. I thank you for delivering Naxot's message to me and give you this pearl imbued with the power of the Triumvirate. Should you find Zordak Ragefire, speak with him before all else and hand him this pearl. No mortal enemy of the Triumvirate can resist its enchantments.'||||||
 32375|timorous|Omat_Vastsea|say|So, you are a friend of Natasha's? That is good to see. She is a very wise and gifted woman. The Riptide goblins have adopted a new king but are still in a vulnerable state until his subjects accept his rule. The Plasmatic Priesthood is aware of the weakened state of the Riptides and has convinced the Fire Peak goblins to strike against them. Although I do not agree with the mannerisms or actions of any goblin clan, such a war would be detrimental to all who are caught in its path. Lord Gimblox of the Fire Peak clan has been meeting with a member of the Plasmatic Priesthood in the Temple of Solusek Ro. Locate the Plasmatic Priest, hand him this statue to hinder his powers, then eliminate him and bring me his robe.||||||
 32376|timorous|Omat_Vastsea|say|You have proven yourself to be one who is willing to take responsibility for his own actions. Such a trait is desired by all deities to be present in their faithful. I pray that you had the wisdom to slay Lord Gimblox as well as the Plasmatic Priest in order to prevent further advancement in the incursion against the Riptides. Priestess Natasha awaits inside the inn for Lord Gimblox's ring, make haste for she is a busy women and will depart soon.||||||
-32376|timorous|Omat_Vastsea|spawnunique|96080|-2198|-11601|76|192||
+32376|timorous|Omat_Vastsea|spawnunique|96080|-11601|-2198|76|192||
 32377|timorous|Omat_Vastsea|say|I commend you on your success over the fire elemental lord, Ixiblat Fer. The fact that the Plasmatic Priesthood has mustered up the power to summon such a being means drastic actions must be taken to stop the fanatic cult of Fennin Ro. I wonder what kind of favor Zordak Ragefire performed for the sarnak summoners to convince them to assist in the ritual that brought forth Ixiblat Fer. The dragon Iksar hybrid abominations are not beings who ally with others easily. All I have seen in my divinations of the High Plasmatic Priest are riddles, and signs that the one who slays him may be awarded an Orb of the Triumvirate. If you are the one whom my visions foretell, then seek Zordak Ragefire and bring me his heart.||||||
-32377|timorous|Omat_Vastsea|spawnunique|96080|-2198|-11601|76|192||
+32377|timorous|Omat_Vastsea|spawnunique|96080|-11601|-2198|76|192||
 32378|timorous|Omat_Vastsea|say|I see now that Zordak Ragefire and the exiled elder dragon Zordakalicus were the same being. That explains how he resisted our attempts to divine his affairs and past. Each of these orbs I have granted you represents one of the Triumvirate. Jhassad Oceanson awaits on the shore below to perform the ritual that will merge the orbs into a single Orb of the Triumvirate and summon an avatar from the Plane of Water. Present the Orb of the Triumvirate to the Avatar of Water when it arrives and allow your destiny to be unraveled.||||||
-32378|timorous|Omat_Vastsea|spawnunique|96074|-1781|-11959|14.3|1||
+32378|timorous|Omat_Vastsea|spawnunique|96074|-11959|-1781|14.3|1||
 32379|timorous|Scout_Sihmoj|despawn|self||||||
 32379|timorous|Scout_Sihmoj|say|Good to see you, now keep your head down friend. He may look out here at any moment, though he's been asleep most of the day. He's been staying in a ruined building on that island over there. I'm sure you can see it from here. You should be able to surprise him with little trouble. Just take care to avoid any traps he may have set. He's proven to be a very capable magic-user.||||||
-32379|timorous|Scout_Sihmoj|spawn|96003|1988|-9203|10|0||
+32379|timorous|Scout_Sihmoj|spawn|96003|-9203|1988|10|0||
 32379|timorous|Scout_Sihmoj|spawnunique|96011|playerX|playerY|playerZ|0||
 32380|timorous|The_Great_Oowomp|emote|%s flings the coins into the air and they all fall neatly into his oversized coin pouch. <Tink, tink, tink, tink, TINK!!> 'Gaze upon my awsome powers of the arcane!! You, a simple $R, shall see my power. Allakabam!!'||||||
-32380|timorous|The_Great_Oowomp|spawnunique|96088|3122.8|5725.2|7.9|13||
+32380|timorous|The_Great_Oowomp|spawnunique|96088|5725.2|3122.8|7.9|13||
 32381|timorous|The_Great_Oowomp|emote|%s begins to jump for joy. The ground trembles. 'Grand! Here is the secret of McMerin's Feast. Scribe it and you shall learn more of its power.||||||
 32382|timorous|Xiblin_Fizzlebik|emote|%s tinkers with the three pieces and snaps the pieces together. 'Wow.. You've done it.. but I suddenly feel very.. strange.. This medallion is cursed! Here, you take it!'||||||
 32383|tox|##a_skeleton|say|Aye.. You cut out the middleman..  I shall reward you.. hmm..  I have not found anything. how about..  <CRACK!! SNAP!! RIPP!!>  How about something off meself?||||||
@@ -2720,16 +2720,16 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 32399|trakanon|a_human_skeleton|despawn|self||||||
 32400|trakanon|Crusader_Vragor|despawn|self||||||
 32400|trakanon|Crusader_Vragor|say|The tome! I can finally pass on in peace. Before I go I will tell you that Zhaoku rests to the east of here near Old Sebilis. He is gigantic and not easily missed.||||||
-32400|trakanon|Crusader_Vragor|spawn|95184|-1801|-2260|-365|38||
+32400|trakanon|Crusader_Vragor|spawn|95184|-2260|-1801|-365|38||
 32401|trakanon|Emperor_Ganak|say|You have returned to me two medallions of my people. In return, I give you this key to enter the ruins of Sebilis. Be wary though, for Trakanon, Scourge of the Sibilisian empire resides within. ||||||
 32402|trakanon|Emperor_Ganak|say|I must say, I thought your flesh would be rotting from your bones alongside the remains of the ancient Sebilisians. I commend you on your victory over the poison dragon and thank you for returning the ancient medallions of my people. I reward you with the key you seek. A place shall be prepared for your souls among the most honored of the dead. Soon you will be seeing the world through the shroud of death.||||||
 32403|trakanon|Kaiaren|attackplayer|||||||
 32403|trakanon|Kaiaren|emote|%s eyes open wide and he attacks you!||||||
-32403|trakanon|Kaiaren|spawnunique|95040|2470|306|-339|0||
+32403|trakanon|Kaiaren|spawnunique|95040|306|2470|-339|0||
 32404|trakanon|Kaiaren|say|Ahhh, impressive indeed! Now that you have broken the chain of the Fists, the others may come toppling down if you persevere. The Fist of Air is now the weakest, then Earth, and finally Water before the master of them all, Vorash. You must defeat them in order, proving the demise of the last to draw out the one you are after. The task before you now is to take this scale and show it to the Fist of Air wherever he may be. Good luck.||||||
 32405|trakanon|Kaiaren|emote|%s bows his head and breathes a long sigh as if relived of a great weight. He then looks up at you and says, 'I honestly did not believe you could have defeated Vorash. Even though he sought nothing but war and bloodshed, it is a life nonetheless and we must mourn him. I will sew these fangs into magical fist wraps and they shall be yours. Remember Xenevorash. A purpose can be found for every situation and individual. To achieve perfection is to perceive this truth.'||||||
 32406|unrest|Khrix_Fritchoff|say|'At last I may leave this place!! Good luck destroying my abomination, you will surely need it against my most powerful yet uncontrollable creation!'||||||
-32406|unrest|Khrix_Fritchoff|spawnunique|63111|60|622|20|0||
+32406|unrest|Khrix_Fritchoff|spawnunique|63111|622|60|20|0||
 32407|unrest|Serra|say|I hope it will help you out. Please find him so I can leave this place?||||||
 32408|unrest|Serra|despawn|self||||||
 32408|unrest|Serra|say|Oh! You have the dolly! Thank you! Thank you! Thank you! I can go home now. Please give this to my father, Baenar. He will understand when he gets it.' Serra begins to fade away. 'Bye bye!||||||
@@ -2758,10 +2758,10 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 32426|wakening|Lieutenant_Krofer|say|Well, I suppose you may be worth something more than fodder after all. Here is your payment. Speak to me again when you are ready for your next assignment. For now, get some rest, you will need it.||||||
 32427|wakening|Lieutenant_Krofer|say|Excellent,  $N. With this we can plan an attack that might actually accomplish something. Here is your payment. You have also earned this cloak, it should help protect you from the clawing undergrowth of this savage land. Your next mission will be more complex and dangerous, however we may be able to spare a laborer or two to assist you. Rest now, and tell me when you are prepared.||||||
 32428|wakening|Lieutenant_Krofer|emote|%s takes the note and looks it over, then sighs and says, 'This will have to be enough. The squad should be here shortly. When they arrive you will march with them to the staging area near the village of those insect Sifaye. When you are satisfied with the formation, give the corporal the order to attack and observe the battle. After the village is destroyed return this report to me and we'll plan our next move.'||||||
-32428|wakening|Lieutenant_Krofer|spawnunique|119022|-4975|-699|-182|63||
-32428|wakening|Lieutenant_Krofer|spawnunique|119025|-4954|-697|-182|63||
-32428|wakening|Lieutenant_Krofer|spawnunique|119027|-4954|-671|-182|63||
-32428|wakening|Lieutenant_Krofer|spawnunique|119028|-4976|-672|-182|63||
+32428|wakening|Lieutenant_Krofer|spawnunique|119022|-699|-4975|-182|63||
+32428|wakening|Lieutenant_Krofer|spawnunique|119025|-697|-4954|-182|63||
+32428|wakening|Lieutenant_Krofer|spawnunique|119027|-671|-4954|-182|63||
+32428|wakening|Lieutenant_Krofer|spawnunique|119028|-672|-4976|-182|63||
 32429|wakening|mist_panther|emote|%s jumps at you and snatches the meat from your hand.  It runs away from you and feasts on the other side of the water.  As it runs away you notice a small shiny object fall from its mouth.||||||
 32430|wakening|Ogre_Mercenary|despawn|self||||||
 32430|wakening|Ogre_Mercenary|say|It's about time, whelp.  Take your payment and leave, you're scaring away my... clients.||||||
@@ -2771,9 +2771,9 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 32434|wakening|Phenocryst|emote|%s thoughts become your own, a feeling of joy overwhelms you, 'Because of you we can at last speak with our maker. We were once given a gift, and we ask that you accept this gift from us now so that we may come closer to that which we owe our sentience to. Now. ,we must construct the Menhir.||||||
 32435|wakening|Phenocryst|emote|%s familiar thoughts flood into your mind again, You truly are the Harbinger, take this Focus as a mark of your friendship with us. Now we can construct the Menhir, we need .. the stones speak.. , There is a problem. Ones of flesh are coming, the large ones, 3 of them. They must not disturb us while we construct the Menhir! Please stop them Harbinger! bring us proof of their distruction along with your Focus and then we will begin the calling. Our asscention is at hand!||||||
 32435|wakening|Phenocryst|emote|%s makes no sound but it's voice fills your mind. We have always held our memories within the earth and stone but only recently have we become aware of them. We do not know what happened or who gave us this wonderful gift but we can now access those memories and are aware of it's storage. With that knowledge has come questions and desires. When the prophecy comes to be then we will have our answers and fulfill our desires.||||||
-32435|wakening|Phenocryst|spawn|119032|408.1|-690.21|-201.55|187||
-32435|wakening|Phenocryst|spawn|119032|-564.04|-985.8|-191.31|187||
-32435|wakening|Phenocryst|spawn|119034|303.02|254.44|-201.54|187||
+32435|wakening|Phenocryst|spawn|119032|-690.21|408.1|-201.55|187||
+32435|wakening|Phenocryst|spawn|119032|-985.8|-564.04|-191.31|187||
+32435|wakening|Phenocryst|spawn|119034|254.44|303.02|-201.54|187||
 32436|wakening|Rolandal|say|It would be my guess that you present this to me in hopes of finding out more about the magics it possesses. Before I can do this I require some rare treasures that you must present to me.||||||
 32437|wakening|Shamus_Aghllsews|say|You have my gratitude,  $N. With these blueprints we can better prepare the forests defenses against the giant invaders. I have yet another favor to ask of you as well. Fill this empty bag with crystallized sulfur. When mixed with the crushed herbs in the other bag it will create an explosion strong enough to destroy stone. Take the two full bags into Kael Drakkel and plant it into a crate of the kromzeks building supplies.||||||
 32438|wakening|Shamus_Aghllsews|say|You have proven yourself to the Fauns of the Tunarean Court. The destruction of the Kromzeks building supplies will slow their progress for some time.||||||
@@ -2803,15 +2803,15 @@ wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reactio
 32457|warslikswood|Warlord_Vyzer|say|Great job, Trooper  $N. Such a warrior would serve the empire better as a legionnaire and not a trooper. I shall recommend you for the rank of legionnaire.||||||
 32458|westwastes|#Scout_Charisa|despawn|self||||||
 32458|westwastes|#Scout_Charisa|say|Great! I was wondering when they would send someone out to give me these.  In the haste and excitement of this new assignment I forgot them.  This scout business is great I must say.  It sure beats sitting in Southern Ro studying  ruins.  I've been following a patrol of Storm Giants for days.  They have been wandering up and down the coast as if they were looking for something.||||||
-32458|westwastes|#Scout_Charisa|spawn|120121|-3430|-4819|-124|0||
-32458|westwastes|#Scout_Charisa|spawn|120121|-3441|-4830|-122|0||
-32458|westwastes|#Scout_Charisa|spawn|120121|-3452|-4841|-119|0||
-32458|westwastes|#Scout_Charisa|spawn|120121|-3463|-4852|-117|0||
-32458|westwastes|#Scout_Charisa|spawn|120121|-3474|-4863|-114|0||
-32458|westwastes|#Scout_Charisa|spawn|120121|-3496|-4874|-109|0||
-32458|westwastes|#Scout_Charisa|spawn|120121|-3507|-4897|-106|0||
+32458|westwastes|#Scout_Charisa|spawn|120121|-4819|-3430|-124|0||
+32458|westwastes|#Scout_Charisa|spawn|120121|-4830|-3441|-122|0||
+32458|westwastes|#Scout_Charisa|spawn|120121|-4841|-3452|-119|0||
+32458|westwastes|#Scout_Charisa|spawn|120121|-4852|-3463|-117|0||
+32458|westwastes|#Scout_Charisa|spawn|120121|-4863|-3474|-114|0||
+32458|westwastes|#Scout_Charisa|spawn|120121|-4874|-3496|-109|0||
+32458|westwastes|#Scout_Charisa|spawn|120121|-4897|-3507|-106|0||
 32458|westwastes|#Scout_Charisa|spawnunique|120001|playerX|playerY|playerZ|playerHeading||
-32458|westwastes|#Scout_Charisa|spawnunique|120115|-3501|-4868|-108|||
+32458|westwastes|#Scout_Charisa|spawnunique|120115|-4868|-3501|-108|||
 32459|westwastes|Derasinal|despawn|self||||||
 32459|westwastes|Derasinal|say|I have given you the Rune of Bleve, to assist you in your research for the once lost magic against the Kromzek. I hope that you can make good use of it, for it is very sacred to me. May Veeshan guide your path!||||||
 32460|westwastes|Draazak|despawn|self||||||

@@ -18,7 +18,7 @@ namespace EQWOWConverter.Quests
 {
     internal class QuestReaction
     {
-        public QuestReactionType type;
+        public QuestReactionType ReactionType;
         public string ReactionValue = string.Empty;
         public bool UsePlayerX = false;
         public bool UsePlayerY = false;
@@ -27,10 +27,12 @@ namespace EQWOWConverter.Quests
         public float X;
         public float Y;
         public float Z;
-        public float Heading;
+        public float EQHeading;
+        public float WOWOrientation;
         public float AddedX;
         public float AddedY;
         public bool TargetSelf = false;
         public int TargetCreatureEQID = 0;
+        public int TargetCreatureWOWID = 0;
     }
 }
