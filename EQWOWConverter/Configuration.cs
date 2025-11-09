@@ -72,7 +72,7 @@ namespace EQWOWConverter
         // Core
         // ====================================================================
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static readonly int CORE_MOD_VERSION = 1;
+        public static readonly int CORE_MOD_VERSION = 2;
         
         // Plays a beep sound when the generate completes if set to true
         public static readonly bool CORE_CONSOLE_BEEP_ON_COMPLETE = true;

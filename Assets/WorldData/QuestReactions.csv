@@ -1,4 +1,4 @@
-wow_questid|zone_shortname|questgiver_name|reaction_type|reaction_value1|reaction_value2|reaction_value3|reaction_value4|reaction_value5|reaction_value6|reaction_value7
+wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|PositionY|PositionZ|Heading|AddedX|AddedY
 30000|airplane|#Master_of_Elements|despawn|self||||||
 30000|airplane|#Master_of_Elements|say|You... are.. balanced... and.. powerful.. for.. a.. mortal...  $N .....  $N. More.. so.. than.... Magi'kot. But.... you.. are.. not.. yet.. ready.. to.. transcend.. transcend... this.. mortal.. coil. Take.. take.. seize.. this.. Orb... for.. you.. are.. worthy.. of.. reward.. and.. with... the.. aid.. of... the... balance.. balance.. contained.. within.. the.. Orb.. you.. may.. yet.. reach.. the... ultimate... Mastery.||||||
 30001|airplane|Abec_Ianor|say|Exceptional work my friend!  I hope you find this ring useful in your journeys.||||||

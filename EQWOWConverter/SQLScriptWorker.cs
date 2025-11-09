@@ -67,6 +67,7 @@ namespace EQWOWConverter
         private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
         private ModEverquestSystemConfigsSQL modEverquestSystemConfigsSQL = new ModEverquestSystemConfigsSQL();
         private ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
+        private ModEverquestQuestReactionSQL modEverquestQuestReactionSQL = new ModEverquestQuestReactionSQL();
         private NPCTextSQL npcTextSQL = new NPCTextSQL();
         private NPCTrainerSQL npcTrainerSQL = new NPCTrainerSQL();
         private NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
@@ -588,6 +589,7 @@ namespace EQWOWConverter
 
         private void PopulateQuestData(List<QuestTemplate> questTemplates, SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
         {
+            Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
             Dictionary<int, int> creatureTextGroupIDsByCreatureTemplateID = new Dictionary<int, int>();
             foreach (QuestTemplate questTemplate in questTemplates)
             {
@@ -616,9 +618,9 @@ namespace EQWOWConverter
                     creatureQuestEnderSQL.AddRow(firstQuestID, creatureTemplateID);
                     creatureQuestEnderSQL.AddRow(repeatQuestID, creatureTemplateID);
 
-                    // Reward say/yell/emote actions
                     foreach (QuestReaction reaction in questTemplate.Reactions)
                     {
+                        // Reward say/yell/emote actions
                         if (reaction.ReactionType == QuestReactionType.Emote || reaction.ReactionType == QuestReactionType.Say || reaction.ReactionType == QuestReactionType.Yell)
                         {
                             // Broadcast Text
@@ -649,6 +651,25 @@ namespace EQWOWConverter
                             // Smart Script
                             smartScriptsSQL.AddRowForQuestCompleteTalkEvent(creatureTemplateID, creatureTextGroupID, firstQuestID, comment);
                             smartScriptsSQL.AddRowForQuestCompleteTalkEvent(creatureTemplateID, creatureTextGroupID + 1, repeatQuestID, comment);
+                        }
+
+                        // Attack/Spawn/Despawn actions
+                        if (reaction.ReactionType == QuestReactionType.AttackPlayer || reaction.ReactionType == QuestReactionType.Despawn || reaction.ReactionType == QuestReactionType.Spawn || reaction.ReactionType == QuestReactionType.SpawnUnique)
+                        {
+                            if (reaction.CreatureEQID > 0)
+                            {
+                                if (creatureTemplatesByEQID.ContainsKey(reaction.CreatureEQID) == false)
+                                {
+                                    Logger.WriteDebug("Skipping quest reaction for quest ", questTemplate.QuestIDWOW.ToString(), " as the target creature EQID of ", reaction.CreatureEQID.ToString() ,"could not be found");
+                                    continue;
+                                }
+                                reaction.CreatureWOWID = creatureTemplatesByEQID[reaction.CreatureEQID].WOWCreatureTemplateID;
+                            }
+                            if (reaction.CreatureIsSelf == true)
+                                reaction.CreatureWOWID = creatureTemplateID;
+
+                            modEverquestQuestReactionSQL.AddRow(firstQuestID, reaction);
+                            modEverquestQuestReactionSQL.AddRow(repeatQuestID, reaction);
                         }
                     }
                 }
@@ -1006,6 +1027,7 @@ namespace EQWOWConverter
             modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
             modEverquestSystemConfigsSQL.SaveToDisk("mod_everquest_systemconfigs", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
+            modEverquestQuestReactionSQL.SaveToDisk("mod_everquest_quest_reaction", SQLFileType.World);
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcTrainerSQL.SaveToDisk("npc_trainer", SQLFileType.World);
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);

@@ -131,21 +131,22 @@ namespace EQWOWConverter.Quests
             {
                 QuestReaction reaction = new QuestReaction();
                 int questID = int.Parse(columns["wow_questid"]);
-                string reactionTypeString = columns["reaction_type"];
-                string reactionValue1 = columns["reaction_value1"];
+                string reactionTypeString = columns["Type"];
+                string reactionValue1 = columns["ReactionValue"];
                 switch (reactionTypeString)
                 {
                     case "attackplayer":
                         {
                             reaction.ReactionType = QuestReactionType.AttackPlayer;
+                            reaction.CreatureIsSelf = true;
                         } break;
                     case "despawn":
                         {
                             reaction.ReactionType = QuestReactionType.Despawn;
                             if (reactionValue1 == "self")
-                                reaction.TargetSelf = true;
+                                reaction.CreatureIsSelf = true;
                             else
-                                reaction.TargetCreatureEQID = int.Parse(reactionValue1);
+                                reaction.CreatureEQID = int.Parse(reactionValue1);
                         } break;
                     case "emote":
                         {
@@ -160,62 +161,62 @@ namespace EQWOWConverter.Quests
                     case "spawn":
                         {
                             reaction.ReactionType = QuestReactionType.Spawn;
-                            reaction.TargetCreatureEQID = int.Parse(reactionValue1);
-                            string reactionValue2 = columns["reaction_value2"];
+                            reaction.CreatureEQID = int.Parse(reactionValue1);
+                            string reactionValue2 = columns["PositionX"];
                             if (reactionValue2 == "playerX")
                                 reaction.UsePlayerX = true;
                             else
-                                reaction.X = ParseTool.ParseFloat(reactionValue2, 0);
-                            string reactionValue3 = columns["reaction_value3"];
+                                reaction.PositionX = ParseTool.ParseFloat(reactionValue2, 0);
+                            string reactionValue3 = columns["PositionY"];
                             if (reactionValue3 == "playerY")
                                 reaction.UsePlayerY = true;
                             else
-                                reaction.Y = ParseTool.ParseFloat(reactionValue3, 0);
-                            string reactionValue4 = columns["reaction_value4"];
+                                reaction.PositionY = ParseTool.ParseFloat(reactionValue3, 0);
+                            string reactionValue4 = columns["PositionZ"];
                             if (reactionValue4 == "playerZ")
                                 reaction.UsePlayerZ = true;
                             else
-                                reaction.Z = ParseTool.ParseFloat(reactionValue4, 0);
-                            string reactionValue5 = columns["reaction_value5"];
+                                reaction.PositionZ = ParseTool.ParseFloat(reactionValue4, 0);
+                            string reactionValue5 = columns["Heading"];
                             if (reactionValue5 == "playerHeading")
                                 reaction.UsePlayerHeading = true;
                             else
-                                reaction.EQHeading = ParseTool.ParseFloat(reactionValue5, 0); // TODO: Convert this
-                            string reactionValue6 = columns["reaction_value6"];
+                                reaction.EQHeading = ParseTool.ParseFloat(reactionValue5, 0);
+                            string reactionValue6 = columns["AddedX"];
                             if (reactionValue6.Length > 0)
                                 reaction.AddedX = ParseTool.ParseFloat(reactionValue6, 0);
-                            string reactionValue7 = columns["reaction_value7"];
+                            string reactionValue7 = columns["AddedY"];
                             if (reactionValue7.Length > 0)
                                 reaction.AddedY = ParseTool.ParseFloat(reactionValue7, 0);
                         } break;
                     case "spawnunique":
                         {
                             reaction.ReactionType = QuestReactionType.SpawnUnique;
-                            reaction.TargetCreatureEQID = int.Parse(reactionValue1);
-                            string reactionValue2 = columns["reaction_value2"];
+                            reaction.CreatureEQID = int.Parse(reactionValue1);
+                            string reactionValue2 = columns["PositionX"];
                             if (reactionValue2 == "playerX")
                                 reaction.UsePlayerX = true;
                             else
-                                reaction.X = ParseTool.ParseFloat(reactionValue2, 0);
-                            string reactionValue3 = columns["reaction_value3"];
+                                reaction.PositionX = ParseTool.ParseFloat(reactionValue2, 0);
+                            string reactionValue3 = columns["PositionY"];
                             if (reactionValue3 == "playerY")
                                 reaction.UsePlayerY = true;
                             else
-                                reaction.Y = ParseTool.ParseFloat(reactionValue3, 0);
-                            string reactionValue4 = columns["reaction_value4"];
+                                reaction.PositionY = ParseTool.ParseFloat(reactionValue3, 0);
+                            string reactionValue4 = columns["PositionZ"];
                             if (reactionValue4 == "playerZ")
                                 reaction.UsePlayerZ = true;
                             else
-                                reaction.Z = ParseTool.ParseFloat(reactionValue4, 0);
-                            string reactionValue5 = columns["reaction_value5"];
+                                reaction.PositionZ = ParseTool.ParseFloat(reactionValue4, 0);
+                            string reactionValue5 = columns["Heading"];
                             if (reactionValue5 == "playerHeading")
                                 reaction.UsePlayerHeading = true;
                             else
-                                reaction.EQHeading = ParseTool.ParseFloat(reactionValue5, 0); // TODO: Convert this
-                            string reactionValue6 = columns["reaction_value6"];
+                                reaction.EQHeading = ParseTool.ParseFloat(reactionValue5, 0);
+                            string reactionValue6 = columns["AddedX"];
                             if (reactionValue6.Length > 0)
                                 reaction.AddedX = ParseTool.ParseFloat(reactionValue6, 0);
-                            string reactionValue7 = columns["reaction_value7"];
+                            string reactionValue7 = columns["AddedY"];
                             if (reactionValue7.Length > 0)
                                 reaction.AddedY = ParseTool.ParseFloat(reactionValue7, 0);
                         }
@@ -234,12 +235,18 @@ namespace EQWOWConverter.Quests
                 }
 
                 // Scale positions for wow world scale
-                reaction.X *= Configuration.GENERATE_WORLD_SCALE;
-                reaction.Y *= Configuration.GENERATE_WORLD_SCALE;
-                reaction.Z *= Configuration.GENERATE_WORLD_SCALE;
+                reaction.PositionX *= Configuration.GENERATE_WORLD_SCALE;
+                reaction.PositionY *= Configuration.GENERATE_WORLD_SCALE;
+                reaction.PositionZ *= Configuration.GENERATE_WORLD_SCALE;
                 reaction.AddedX *= Configuration.GENERATE_WORLD_SCALE;
                 reaction.AddedY *= Configuration.GENERATE_WORLD_SCALE;
 
+                // Convert heading
+                if (reaction.EQHeading != 0)
+                {
+                    float modHeading = reaction.EQHeading / (256f / 360f);
+                    reaction.WOWOrientation = modHeading * Convert.ToSingle(Math.PI / 180);
+                }
 
                 if (reactionsByQuestID.ContainsKey(questID) == false)
                     reactionsByQuestID.Add(questID, new List<QuestReaction>());

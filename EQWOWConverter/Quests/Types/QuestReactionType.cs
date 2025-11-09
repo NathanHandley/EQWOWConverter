@@ -16,15 +16,15 @@
 
 namespace EQWOWConverter.Quests
 {
-    internal enum QuestReactionType
+    internal enum QuestReactionType : Int32
     {
-        Unknown,
-        AttackPlayer,
-        Despawn,
-        Emote,
-        Say,
-        Spawn,
-        SpawnUnique,
-        Yell
+        Unknown = 0,
+        AttackPlayer = 1,
+        Despawn = 2,
+        Emote = 3,
+        Say = 4,
+        Spawn = 5,
+        SpawnUnique = 6,
+        Yell = 7
     }
 }

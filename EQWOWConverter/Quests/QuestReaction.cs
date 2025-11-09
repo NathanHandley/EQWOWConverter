@@ -24,15 +24,15 @@ namespace EQWOWConverter.Quests
         public bool UsePlayerY = false;
         public bool UsePlayerZ = false;
         public bool UsePlayerHeading = false;
-        public float X;
-        public float Y;
-        public float Z;
+        public float PositionX;
+        public float PositionY;
+        public float PositionZ;
         public float EQHeading;
         public float WOWOrientation;
         public float AddedX;
         public float AddedY;
-        public bool TargetSelf = false;
-        public int TargetCreatureEQID = 0;
-        public int TargetCreatureWOWID = 0;
+        public bool CreatureIsSelf = false;
+        public int CreatureEQID = 0;
+        public int CreatureWOWID = 0;
     }
 }
