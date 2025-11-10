@@ -48,8 +48,8 @@ internal class Program
         }
         if (enteredCommand == "5")
         {
-            if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true && Configuration.CREATURE_ADD_DEBUG_VALUES_TO_NAME == true)
-                Logger.WriteInfo("- CREATURE_ADD_DEBUG_VALUES_TO_NAME is true, so creature names will be in debug mode");
+            //if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true && Configuration.CREATURE_ADD_DEBUG_VALUES_TO_NAME == true)
+            //    Logger.WriteInfo("- CREATURE_ADD_DEBUG_VALUES_TO_NAME is true, so creature names will be in debug mode");
             Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_GENERAL is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL.ToString());
             Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_ZONES is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_ZONES.ToString());
             Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_TRANSPORTS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_TRANSPORTS.ToString());

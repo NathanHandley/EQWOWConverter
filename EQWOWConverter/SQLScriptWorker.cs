@@ -190,6 +190,19 @@ namespace EQWOWConverter
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
+                // Simplified logic for debug mode
+                if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                {
+                    creatureTemplateSQL.AddRow(creatureTemplate, 1f);
+                    creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, 1391, 1f);
+                    int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                    string comment = string.Concat(creatureTemplate.Name, " - EQ Debug Creature");                    
+                    creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, creatureTemplate.SpawnWaypointDebugMapID, creatureTemplate.SpawnWaypointDebugAreaID,
+                        creatureTemplate.SpawnWaypointDebugAreaID, creatureTemplate.SpawnWaypointDebugXPosition, creatureTemplate.SpawnWaypointDebugYPosition, 
+                        creatureTemplate.SpawnWaypointDebugZPosition, 0, CreatureMovementType.None, 0, true, true, comment);                    
+                    continue;
+                }
+
                 // Skip invalid creatures
                 if (creatureTemplate.ModelTemplate == null)
                 {

@@ -220,19 +220,22 @@ namespace EQWOWConverter
             loadingScreensDBC.AddRow(Configuration.DBCID_LOADINGSCREEN_ID_START + 1, "EQKunark", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQKunark.blp");
             loadingScreensDBC.AddRow(Configuration.DBCID_LOADINGSCREEN_ID_START + 2, "EQVelious", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQVelious.blp");
 
-            // Creatures sounds
-            Dictionary<string, int> creatureFootstepIDBySoundNames = new Dictionary<string, int>();
-            int curCreatureFootstepID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START;
-            foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
-            {
-                creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCCreatureDisplayID, creatureModelTemplate.DBCCreatureModelDataID);
-                string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
-                creatureModelDataDBC.AddRow(creatureModelTemplate, relativeModelPath);
-                creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, creatureModelTemplate.Race, CreatureRace.FootstepIDBySoundName[creatureModelTemplate.Race.SoundWalkingName]);
-            }
-            string creatureSoundsDirectory = "Sound\\Creature\\Everquest";
-            foreach (var sound in CreatureRace.SoundsBySoundName)
-                soundEntriesDBC.AddRow(sound.Value, sound.Value.Name, creatureSoundsDirectory);
+            // Creatures
+            //if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == false)
+            //{
+                Dictionary<string, int> creatureFootstepIDBySoundNames = new Dictionary<string, int>();
+                int curCreatureFootstepID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START;
+                foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
+                {
+                    creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCCreatureDisplayID, creatureModelTemplate.DBCCreatureModelDataID);
+                    string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
+                    creatureModelDataDBC.AddRow(creatureModelTemplate, relativeModelPath);
+                    creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, creatureModelTemplate.Race, CreatureRace.FootstepIDBySoundName[creatureModelTemplate.Race.SoundWalkingName]);
+                }
+                string creatureSoundsDirectory = "Sound\\Creature\\Everquest";
+                foreach (var sound in CreatureRace.SoundsBySoundName)
+                    soundEntriesDBC.AddRow(sound.Value, sound.Value.Name, creatureSoundsDirectory);
+            //}
 
             // Faction
             foreach (CreatureFaction creatureFaction in CreatureFaction.GetCreatureFactionsByFactionID().Values)

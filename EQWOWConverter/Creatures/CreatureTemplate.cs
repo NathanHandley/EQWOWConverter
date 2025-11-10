@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.Items;
 using EQWOWConverter.Spells;
 using EQWOWConverter.Tradeskills;
 using EQWOWConverter.Zones;
@@ -114,6 +113,8 @@ namespace EQWOWConverter.Creatures
 
         public static int GenerateCreatureSQLGUID()
         {
+            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true && CURRENT_SQL_CREATURE_GUID < Configuration.SQL_CREATURE_GUID_DEBUG_LOW)
+                CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_DEBUG_LOW;
             int returnGUID = CURRENT_SQL_CREATURE_GUID;
             CURRENT_SQL_CREATURE_GUID++;
             return returnGUID;
@@ -163,6 +164,10 @@ namespace EQWOWConverter.Creatures
         {
             lock (CreatureTemplateLock)
             {
+                // Do nothing if in the spawn/waypoint debug mode
+                if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                    return;
+
                 // Grab the baselines
                 PopulateStatBaselinesByLevel();
 
@@ -308,8 +313,8 @@ namespace EQWOWConverter.Creatures
                     }
 
                     // Add ID if debugging for it is true
-                    if (Configuration.CREATURE_ADD_DEBUG_VALUES_TO_NAME == true)
-                        newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.EQCreatureTemplateID.ToString();
+                    //if (Configuration.CREATURE_ADD_DEBUG_VALUES_TO_NAME == true)
+                    //    newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.EQCreatureTemplateID.ToString();
                     //newCreatureTemplate.Name = newCreatureTemplate.Name + " R" + newCreatureTemplate.Race.EQCreatureTemplateID + "-G" + Convert.ToInt32(newCreatureTemplate.GenderType).ToString() + "-V" + newCreatureTemplate.Race.VariantID;
 
                     // Reputation / Faction
@@ -627,6 +632,36 @@ namespace EQWOWConverter.Creatures
                         return 1;
                     }
             }
+        }
+
+        // Debug elements
+        public float SpawnWaypointDebugXPosition;
+        public float SpawnWaypointDebugYPosition;
+        public float SpawnWaypointDebugZPosition;
+        public int SpawnWaypointDebugMapID;
+        public int SpawnWaypointDebugAreaID;
+        private static int SPAWN_WAYPOINT_DEBUG_SQL_CREATURE_TEMPLATE_GUID = Configuration.SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW;
+
+        public static void SpawnWaypointDebugCreateCreatureTemplate(int spawnInstanceID, int gridID, int gridNumber, float xPosition, float yPosition, float zPosition,
+            string zoneShortName, int mapID, int areaID)
+        {
+            CreatureTemplate newCreatureTemplate = new CreatureTemplate();
+            newCreatureTemplate.WOWCreatureTemplateID = SPAWN_WAYPOINT_DEBUG_SQL_CREATURE_TEMPLATE_GUID;
+            newCreatureTemplate.TextureID = 1;
+            newCreatureTemplate.HelmTextureID = 0;
+            newCreatureTemplate.Size = 6;
+            newCreatureTemplate.Level = 1;
+            newCreatureTemplate.Name = spawnInstanceID.ToString() + "," + gridID + "," + gridNumber;
+            newCreatureTemplate.SubName = zoneShortName + "," + zPosition.ToString();
+            newCreatureTemplate.SpawnWaypointDebugXPosition = xPosition;
+            newCreatureTemplate.SpawnWaypointDebugYPosition = yPosition;
+            newCreatureTemplate.SpawnWaypointDebugZPosition = zPosition;
+            newCreatureTemplate.SpawnZones = zoneShortName;
+            newCreatureTemplate.SpawnWaypointDebugMapID = mapID;
+            newCreatureTemplate.SpawnWaypointDebugAreaID = areaID;
+            CreatureTemplateListByWOWID.Add(SPAWN_WAYPOINT_DEBUG_SQL_CREATURE_TEMPLATE_GUID, newCreatureTemplate);
+
+            SPAWN_WAYPOINT_DEBUG_SQL_CREATURE_TEMPLATE_GUID++;
         }
     }
 }

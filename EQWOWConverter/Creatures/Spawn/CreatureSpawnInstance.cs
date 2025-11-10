@@ -108,12 +108,15 @@ namespace EQWOWConverter.Creatures
             foreach (Dictionary<string, string> columns in rows)
             {
                 // Skip any invalid expansion rows
-                int minExpansion = int.Parse(columns["min_expansion"]);
-                int maxExpansion = int.Parse(columns["max_expansion"]);
-                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
-                    continue;
-                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
-                    continue;
+                if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == false)
+                {
+                    int minExpansion = int.Parse(columns["min_expansion"]);
+                    int maxExpansion = int.Parse(columns["max_expansion"]);
+                    if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
+                        continue;
+                    if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
+                        continue;
+                }
 
                 // TODO: figure out really where this should be content wise
                 string contentFlagsDisabled = columns["content_flags_disabled"];

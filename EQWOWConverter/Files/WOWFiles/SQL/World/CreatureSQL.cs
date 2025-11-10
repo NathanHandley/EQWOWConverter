@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Creatures;
+using System.Text;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -22,7 +23,10 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM creature WHERE `guid` >= " + Configuration.SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.SQL_CREATURE_GUID_HIGH + ";";
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("DELETE FROM creature WHERE `guid` >= " + Configuration.SQL_CREATURE_GUID_DEBUG_LOW.ToString() + " AND `guid` <= " + Configuration.SQL_CREATURE_GUID_DEBUG_HIGH + ";");
+            sb.Append("DELETE FROM creature WHERE `guid` >= " + Configuration.SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.SQL_CREATURE_GUID_HIGH + ";");          
+            return sb.ToString();
         }
 
         public void AddRow(int guid, int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition, 

@@ -75,6 +75,7 @@ namespace EQWOWConverter.Creatures
                     PopulateCreatureRaceList();
 
                     // Set the default 'blank' sound for footstep
+                    FootstepIDBySoundName.Add("", 0);
                     FootstepIDBySoundName.Add("null24.wav", 0);
                 }
 

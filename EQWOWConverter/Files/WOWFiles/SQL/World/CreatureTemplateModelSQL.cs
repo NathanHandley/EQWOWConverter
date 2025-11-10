@@ -14,13 +14,18 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Text;
+
 namespace EQWOWConverter.WOWFiles
 {
     internal class CreatureTemplateModelSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM creature_template_model WHERE `CreatureID` >= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `CreatureID` <= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH + ";";
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("DELETE FROM creature_template_model WHERE `CreatureID` >= " + Configuration.SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW.ToString() + " AND `CreatureID` <= " + Configuration.SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH + ";");
+            sb.Append("DELETE FROM creature_template_model WHERE `CreatureID` >= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `CreatureID` <= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH + ";");
+            return sb.ToString();
         }
 
         public void AddRow(int creatureTemplateID, int creatureDisplayID, float displayScale)

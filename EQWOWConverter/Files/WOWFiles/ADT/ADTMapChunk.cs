@@ -156,8 +156,11 @@ namespace EQWOWConverter.WOWFiles
             // Number of Map Object References
             headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1)));
 
-            // Number of holes (not using terrain, so just making it a hole)
-            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(65535)));
+            // Number of holes (not using terrain, so just making it a hole) unless in creature debug mode
+            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            else
+                headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(65535)));
 
             // 4 Unknown values
             headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));

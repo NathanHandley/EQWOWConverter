@@ -332,9 +332,6 @@ namespace EQWOWConverter
         // Note: There are two fidget animations, 1/2 this number applies to each fidget
         public static readonly int CREATURE_FIDGET_TIME_PERCENT = 30;
 
-        // If true, additional data is added in the creature name for easy debugging. Default to false.
-        public static readonly bool CREATURE_ADD_DEBUG_VALUES_TO_NAME = false;
-
         // Stat modifiers for creatures
         // - "MIN" and "MAX" are applied after all other calculations
         public static readonly float CREATURE_STAT_MOD_HP_ADD = 0.5f;
@@ -403,6 +400,10 @@ namespace EQWOWConverter
 
         // At what level of life a creature should cast a heal spell, if they have one
         public static readonly int CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT = 30;
+
+        // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
+        // done for debugging reasons, as the game will not look or feel anything like it should
+        public static readonly bool CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE = true;
 
         //=====================================================================
         // Items
@@ -764,11 +765,15 @@ namespace EQWOWConverter
         // Record identifier for the creature sql table, need at least 31k
         public static readonly int SQL_CREATURE_GUID_LOW = 310000;
         public static readonly int SQL_CREATURE_GUID_HIGH = 399999;
+        public static readonly int SQL_CREATURE_GUID_DEBUG_LOW = 600000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
+        public static readonly int SQL_CREATURE_GUID_DEBUG_HIGH = 799999; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
 
         // Record identifier for the creature template SQL table
         public static readonly int SQL_CREATURETEMPLATE_ENTRY_LOW = 45000;
         public static readonly int SQL_CREATURETEMPLATE_ENTRY_HIGH = 60000;
         public static readonly int SQL_CREATURETEMPLATE_GENERATED_START_ID = 56000;
+        public static readonly int SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW = 300000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
+        public static readonly int SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH = 499999; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
 
         // Start GUIDs for gameobjects
         public static readonly int SQL_GAMEOBJECT_GUID_ID_START = 310000;

@@ -88,7 +88,12 @@ namespace EQWOWConverter
                 // Creatures
                 CreatureRace.GenerateAllSounds();
                 if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
-                    ConvertCreatures(creatureTemplatesByEQID, ref creatureSpawnPools);
+                {
+                    if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                        ConvertCreaturesForDebug(creatureTemplatesByEQID, ref creatureSpawnPools);
+                    else
+                        ConvertCreatures(creatureTemplatesByEQID, ref creatureSpawnPools);
+                }
                 else
                     Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
 
@@ -143,8 +148,7 @@ namespace EQWOWConverter
             itemsSpellsTradeskillsTask.Wait();
 
             // Creature model files
-            creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
-            List<CreatureTemplate> creatureTemplates = creatureTemplatesByEQID.Values.ToList();
+            List<CreatureTemplate> creatureTemplates = CreatureTemplate.GetCreatureTemplateListByWOWID().Values.ToList();
             List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
             Task creatureModelFilesTask = Task.Factory.StartNew(() =>
             {
@@ -1184,6 +1188,60 @@ namespace EQWOWConverter
                     progressionCounter.Write(1);
                 }
             }
+        }
+
+        public bool ConvertCreaturesForDebug(Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, ref List<CreatureSpawnPool> creatureSpawnPools)
+        {
+            Logger.WriteInfo("Converting EQ Creatures (skeletal objects) to WOW creature objects for DEBUG WAYPOINTS...");
+
+            // Get a list of valid zone names
+            Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
+            Dictionary<int, ZoneProperties> zonePropertiesByMapID = new Dictionary<int, ZoneProperties>();
+            Dictionary<int, int> defaultAreaIDsByMapID = new Dictionary<int, int>();
+            foreach (var zoneProperties in ZoneProperties.GetZonePropertyListByShortName())
+            {
+                mapIDsByShortName.Add(zoneProperties.Value.ShortName.ToLower().Trim(), zoneProperties.Value.DBCMapID);
+                zonePropertiesByMapID.Add(zoneProperties.Value.DBCMapID, zoneProperties.Value);
+                defaultAreaIDsByMapID.Add(zoneProperties.Value.DBCMapID, Convert.ToInt32(zoneProperties.Value.DefaultZoneArea.DBCAreaTableID));
+            }
+
+            // Create creature templates for every spawn instance
+            List<CreatureSpawnInstance> creatureSpawnInstances = CreatureSpawnInstance.GetSpawnInstanceListByID().Values.ToList();
+            foreach (CreatureSpawnInstance creatureSpawnInstance in creatureSpawnInstances)
+            {
+                if (mapIDsByShortName.ContainsKey(creatureSpawnInstance.ZoneShortName.ToLower().Trim()) == true)
+                {
+                    CreatureTemplate.SpawnWaypointDebugCreateCreatureTemplate(creatureSpawnInstance.ID, 0, 0, creatureSpawnInstance.SpawnXPosition, creatureSpawnInstance.SpawnYPosition,
+                        creatureSpawnInstance.SpawnZPosition, creatureSpawnInstance.ZoneShortName, mapIDsByShortName[creatureSpawnInstance.ZoneShortName.ToLower().Trim()],
+                        defaultAreaIDsByMapID[mapIDsByShortName[creatureSpawnInstance.ZoneShortName.ToLower().Trim()]]);
+                }
+            }
+
+            // Generate a creature template for every grid entry
+            foreach (CreaturePathGridEntry gridEntry in CreaturePathGridEntry.GetInitialPathGridEntries())
+            {
+                if (mapIDsByShortName.ContainsKey(gridEntry.ZoneShortName.ToLower().Trim()) == true)
+                    CreatureTemplate.SpawnWaypointDebugCreateCreatureTemplate(0, gridEntry.GridID, gridEntry.Number, gridEntry.NodeX, gridEntry.NodeY, gridEntry.NodeZ, gridEntry.ZoneShortName,
+                        mapIDsByShortName[gridEntry.ZoneShortName.ToLower().Trim()], defaultAreaIDsByMapID[mapIDsByShortName[gridEntry.ZoneShortName.ToLower().Trim()]]);
+            }
+
+            // Copy all of the sound files
+            Logger.WriteInfo("Copying creature sound files...");
+            string inputSoundFolderRoot = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
+            string exportCreatureSoundsDirectory = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Sound", "Creature", "Everquest");
+            if (Directory.Exists(exportCreatureSoundsDirectory) == true)
+                Directory.Delete(exportCreatureSoundsDirectory, true);
+            FileTool.CreateBlankDirectory(exportCreatureSoundsDirectory, false);
+            foreach (var sound in CreatureRace.SoundsBySoundName)
+            {
+                string sourceSoundFileName = Path.Combine(inputSoundFolderRoot, sound.Value.Name);
+                string targetSoundFileName = Path.Combine(exportCreatureSoundsDirectory, sound.Value.Name);
+                if (File.Exists(targetSoundFileName) == false)
+                    FileTool.CopyFile(sourceSoundFileName, targetSoundFileName);
+            }
+
+            Logger.WriteInfo("Creature generation complete.");
+            return true;
         }
 
         public bool ConvertCreatures(Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, ref List<CreatureSpawnPool> creatureSpawnPools)

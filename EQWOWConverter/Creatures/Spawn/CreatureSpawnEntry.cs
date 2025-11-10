@@ -68,12 +68,15 @@ namespace EQWOWConverter
                 newSpawnEntry.Chance = int.Parse(rowBlocks[2]);
 
                 // Skip any invalid expansion rows
-                int minExpansion = int.Parse(rowBlocks[5]);
-                int maxExpansion = int.Parse(rowBlocks[6]);
-                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
-                    continue;
-                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
-                    continue;
+                if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == false)
+                {
+                    int minExpansion = int.Parse(rowBlocks[5]);
+                    int maxExpansion = int.Parse(rowBlocks[6]);
+                    if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
+                        continue;
+                    if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
+                        continue;
+                }
 
                 SpawnEntryList.Add(newSpawnEntry);
             }

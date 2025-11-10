@@ -17,6 +17,7 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.Tradeskills;
+using System.Text;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -24,7 +25,10 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM creature_template WHERE `entry` >= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH + ";";
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("DELETE FROM creature_template WHERE `entry` >= " + Configuration.SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH + ";");
+            sb.Append("DELETE FROM creature_template WHERE `entry` >= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH + ";");
+            return sb.ToString();
         }
 
         public void AddRow(CreatureTemplate creatureTemplate, float scale)
