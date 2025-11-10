@@ -1032,6 +1032,15 @@ namespace EQWOWConverter.Common
             }
         }
 
+        public float GetLowestZVertex()
+        {
+            float lowestZ = 0;
+            foreach (Vector3 vertex in Vertices)
+                if (vertex.Z < lowestZ)
+                    lowestZ = vertex.Z;
+            return lowestZ;
+        }
+
         public static List<MeshData> GetGeometrySplitIntoCubiods(MeshData meshData, float maxSpanPerCubiod = -1, int maxFaceCountPerCubiod = -1)
         {
             // Put self into the queue as a single item

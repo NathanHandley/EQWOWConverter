@@ -1096,7 +1096,7 @@ namespace EQWOWConverter
             for (UInt32 y = Convert.ToUInt32(tileYMin); y <= Convert.ToUInt32(tileYMax); y++)
                 for (UInt32 x = Convert.ToUInt32(tileXMin); x <= Convert.ToUInt32(tileXMax); x++)
                 {
-                    ADT zoneADT = new ADT(curZone, zoneWMO.RootFileRelativePathWithFileName, x, y, (curZone.BoundingBox.BottomCorner.Z - 0.5f));
+                    ADT zoneADT = new ADT(curZone, zoneWMO.RootFileRelativePathWithFileName, x, y, (curZone.BoundingBox.BottomCorner.Z - 5f));
                     zoneADT.WriteToDisk(exportMPQRootFolder);
                 }
 

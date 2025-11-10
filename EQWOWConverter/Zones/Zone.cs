@@ -606,6 +606,14 @@ namespace EQWOWConverter.Zones
             // Everything left goes to the default area
             DefaultArea.AddBoundingBox(BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT), false);
             GenerateCollisionWorldObjectModelsForCollidableArea(collisionMeshData, DefaultArea, null);
+
+            // Pull up the 'bottom' collision area of all zone objects, to prevent water from going too far straight down
+            float minimumCollisionZ = 1000f;
+            foreach (ZoneModelObject zoneModelObject in ZoneObjectModels)
+            {
+                minimumCollisionZ = Math.Min(minimumCollisionZ, zoneModelObject.MeshData.GetLowestZVertex());
+                zoneModelObject.BoundingBox.BottomCorner.Z = minimumCollisionZ;
+            }
         }
 
         private void GenerateCollisionWorldObjectModelsForCollidableArea(MeshData collisionMeshData, ZoneArea zoneArea, ZoneLiquid? liquid)
