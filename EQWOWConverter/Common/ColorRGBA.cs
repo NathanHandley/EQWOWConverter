@@ -105,6 +105,16 @@ namespace EQWOWConverter.Common
             return returnColor;
         }
 
+        public static ColorRGBA GetModdedColor(ColorRGBA color, float modValue)
+        {
+            ColorRGBA returnColor = new ColorRGBA();
+            returnColor.R = Convert.ToByte(MathF.Min(Convert.ToSingle(color.R) * modValue, 255f));
+            returnColor.G = Convert.ToByte(MathF.Min(Convert.ToSingle(color.G) * modValue, 255f));
+            returnColor.B = Convert.ToByte(MathF.Min(Convert.ToSingle(color.B) * modValue, 255f));
+            //returnColor.A = Convert.ToByte(MathF.Min(Convert.ToSingle(color.A) * modValue, 255f));
+            return returnColor;
+        }
+
         public static bool operator ==(ColorRGBA left, ColorRGBA right)
         {
             return left.R == right.R && left.G == right.G && left.B == right.B && left.A == right.A;

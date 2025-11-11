@@ -266,6 +266,9 @@ namespace EQWOWConverter
         public static readonly byte LIGHT_OUTSIDE_AMBIENT_TIME_21 = 192; // 9 PM
         public static readonly byte LIGHT_OUTSIDE_AMBIENT_TIME_22 = 58; // 10 PM
 
+        // Storm brightness
+        public static readonly float LIGHT_STORM_COLOR_MOD = 0.8f;
+
         //=====================================================================
         // Audio
         //=====================================================================       
