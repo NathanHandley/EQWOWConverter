@@ -100,6 +100,9 @@ namespace EQWOWConverter.Zones
             MeshData collisionMeshData = EQZoneData.CollisionMeshData;
             collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
 
+            // Remove any discard parts of the geometry
+            RemoveDiscardedGeometry(ref renderMeshData, ref collisionMeshData);
+
             // Update the materials
             Materials = EQZoneData.Materials;
             foreach (Material material in Materials)
@@ -210,6 +213,22 @@ namespace EQWOWConverter.Zones
 
             // Completely loaded
             IsLoaded = true;
+        }
+
+        private void RemoveDiscardedGeometry(ref MeshData renderMeshData, ref MeshData collisionMeshData)
+        {
+            foreach (BoundingBox discardBox in ZoneProperties.DiscardGeometryBoxes)
+            {
+                MeshData discardedRenderMeshData;
+                MeshData keptRenderMeshData;
+                MeshData.GetSplitMeshDataWithClipping(renderMeshData, discardBox, out discardedRenderMeshData, out keptRenderMeshData);
+                renderMeshData = keptRenderMeshData;
+
+                MeshData discardedCollisionMeshData;
+                MeshData keptCollisionMeshData;
+                MeshData.GetSplitMeshDataWithClipping(collisionMeshData, discardBox, out discardedCollisionMeshData, out keptCollisionMeshData);
+                collisionMeshData = keptCollisionMeshData;
+            }
         }
 
         private void AssignLiquidsToAreas()

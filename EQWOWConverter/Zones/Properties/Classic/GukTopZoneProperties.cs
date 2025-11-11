@@ -88,6 +88,7 @@ namespace EQWOWConverter.Zones.Properties
             AddDiscardGeometryBox(920.787354f, -214.072617f, -179.059387f, 808.489868f, -344.278625f, -252.541840f);
             AddDiscardGeometryBox(415.149963f, -2.670650f, -192.444687f, 264.658264f, -181.979843f, -266.984528f);
             AddDiscardGeometryBox(1233.774780f, 596.696228f, -150.474030f, 450.394531f, 239.588364f, -269.154205f);
+            AddDiscardGeometryBox(140.304092f, -62.182442f, -198.681168f, 60.546452f, -145.825851f, -260.205780f);
         }
     }
 }

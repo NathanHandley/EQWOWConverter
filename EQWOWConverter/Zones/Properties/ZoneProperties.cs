@@ -260,8 +260,17 @@ namespace EQWOWConverter.Zones
         // Coordinates flip due to world <-> wmo space
         protected void AddDiscardGeometryBox(float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ)
         {
-            BoundingBox boundingBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
-            DiscardGeometryBoxes.Add(boundingBox);
+            BoundingBox preScaleBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
+            BoundingBox postScaleBox = new BoundingBox();
+
+            postScaleBox.TopCorner.X = preScaleBox.BottomCorner.X * -Configuration.GENERATE_WORLD_SCALE;
+            postScaleBox.TopCorner.Y = preScaleBox.BottomCorner.Y * -Configuration.GENERATE_WORLD_SCALE;
+            postScaleBox.TopCorner.Z = preScaleBox.TopCorner.Z * Configuration.GENERATE_WORLD_SCALE;
+            postScaleBox.BottomCorner.X = preScaleBox.TopCorner.X * -Configuration.GENERATE_WORLD_SCALE;
+            postScaleBox.BottomCorner.Y = preScaleBox.TopCorner.Y * -Configuration.GENERATE_WORLD_SCALE;
+            postScaleBox.BottomCorner.Z = preScaleBox.BottomCorner.Z * Configuration.GENERATE_WORLD_SCALE;
+
+            DiscardGeometryBoxes.Add(postScaleBox);
         }
 
         protected void SetZonewideMusic(string musicFileNameNoExtDay, string musicFileNameNoExtNight, bool loop = true, float musicVolume = 1f)
