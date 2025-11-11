@@ -1907,8 +1907,48 @@ namespace EQWOWConverter.ObjectModels
             if (ModelType == ObjectModelType.ParticleEmitter || ModelType == ObjectModelType.SpellProjectile)
                 return;
 
+            // Create collision data for creatures as boxes
+            bool doGenerateNormals = true;
+            if (ModelType == ObjectModelType.Creature)
+            {
+                collisionVertices.Clear();
+                collisionTriangleFaces.Clear();
+                collisionTriangleFaces.Add(new TriangleFace(0, 0, 1, 2));
+                collisionTriangleFaces.Add(new TriangleFace(0, 2, 3, 0));
+                collisionTriangleFaces.Add(new TriangleFace(0, 4, 5, 6));
+                collisionTriangleFaces.Add(new TriangleFace(0, 6, 7, 4));
+                collisionTriangleFaces.Add(new TriangleFace(0, 0, 3, 5));
+                collisionTriangleFaces.Add(new TriangleFace(0, 5, 4, 0));
+                collisionTriangleFaces.Add(new TriangleFace(0, 3, 2, 6));
+                collisionTriangleFaces.Add(new TriangleFace(0, 6, 5, 3));
+                collisionTriangleFaces.Add(new TriangleFace(0, 2, 1, 7));
+                collisionTriangleFaces.Add(new TriangleFace(0, 7, 6, 2));
+                collisionTriangleFaces.Add(new TriangleFace(0, 1, 0, 4));
+                collisionTriangleFaces.Add(new TriangleFace(0, 4, 7, 1));
+                collisionVertices.Add(new Vector3(0.305556f, -0.305556f, 0.000000f));
+                collisionVertices.Add(new Vector3(-0.305556f, -0.305556f, 0.000000f));
+                collisionVertices.Add(new Vector3(-0.305556f, 0.305556f, 0.000000f));
+                collisionVertices.Add(new Vector3(0.305556f, 0.305556f, 0.000000f));
+                collisionVertices.Add(new Vector3(0.305556f, -0.305556f, 2.031278f));
+                collisionVertices.Add(new Vector3(0.305556f, 0.305556f, 2.031278f));
+                collisionVertices.Add(new Vector3(-0.305556f, 0.305556f, 2.031278f));
+                collisionVertices.Add(new Vector3(-0.305556f, -0.305556f, 2.031278f));
+                CollisionFaceNormals.Add(new Vector3(-0.000000f, 0.000000f, -1.000000f));
+                CollisionFaceNormals.Add(new Vector3(0.000000f, 0.000000f, -1.000000f));                
+                CollisionFaceNormals.Add(new Vector3(-0.000000f, 0.000000f, 1.000000f));
+                CollisionFaceNormals.Add(new Vector3(-0.000000f, 0.000000f, 1.000000f));
+                CollisionFaceNormals.Add(new Vector3(1.000000f, 0.000000f, 0.000000f));
+                CollisionFaceNormals.Add(new Vector3(1.000000f, -0.000000f, 0.000000f));
+                CollisionFaceNormals.Add(new Vector3(-0.000000f, 1.000000f, 0.000000f));
+                CollisionFaceNormals.Add(new Vector3(-0.000000f, 1.000000f, 0.000000f));
+                CollisionFaceNormals.Add(new Vector3(-1.000000f, 0.000000f, 0.000000f));
+                CollisionFaceNormals.Add(new Vector3(-1.000000f, -0.000000f, 0.000000f));
+                CollisionFaceNormals.Add(new Vector3(-0.000000f, -1.000000f, 0.000000f));
+                CollisionFaceNormals.Add(new Vector3(-0.000000f, -1.000000f, 0.000000f));
+                doGenerateNormals = false;
+            }
             // Generate collision data if there is none and it's from an EQ object
-            if (collisionVertices.Count == 0 && Properties.DoGenerateCollisionFromMeshData == true && 
+            else if (collisionVertices.Count == 0 && Properties.DoGenerateCollisionFromMeshData == true &&
                 (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance && ModelType != ObjectModelType.EquipmentHeld))
             {
                 // Skeletal objects need specially generated mesh data utilizing the animation positioning
@@ -1984,40 +2024,43 @@ namespace EQWOWConverter.ObjectModels
             if (Properties.CustomCollisionType != ObjectModelCustomCollisionType.None)
                 ApplyCustomCollision(Properties.CustomCollisionType, ref collisionVertices, ref collisionTriangleFaces);
 
+            // Calculate normals using the triangles provided
+            if (doGenerateNormals == true)
+            {
+                foreach (TriangleFace collisionTriangle in collisionTriangleFaces)
+                {
+                    // Grab related vertices
+                    Vector3 vertex1 = collisionVertices[collisionTriangle.V1];
+                    Vector3 vertex2 = collisionVertices[collisionTriangle.V2];
+                    Vector3 vertex3 = collisionVertices[collisionTriangle.V3];
+
+                    // Calculate two edges
+                    Vector3 edge1 = vertex2 - vertex1;
+                    Vector3 edge2 = vertex3 - vertex1;
+
+                    // Cross product determines the vector, then normalize (using C# libraries to save coding time)
+                    System.Numerics.Vector3 edge1System = new System.Numerics.Vector3(edge1.X, edge1.Y, edge1.Z);
+                    System.Numerics.Vector3 edge2System = new System.Numerics.Vector3(edge2.X, edge2.Y, edge2.Z);
+                    System.Numerics.Vector3 normalSystem = System.Numerics.Vector3.Cross(edge1System, edge2System);
+                    System.Numerics.Vector3 normalizedNormalSystem = System.Numerics.Vector3.Normalize(normalSystem);
+
+                    // Remove NaNs
+                    if (float.IsNaN(normalizedNormalSystem.X))
+                        normalizedNormalSystem.X = 0;
+                    if (float.IsNaN(normalizedNormalSystem.Y))
+                        normalizedNormalSystem.Y = 0;
+                    if (float.IsNaN(normalizedNormalSystem.Z))
+                        normalizedNormalSystem.Z = 0;
+
+                    // Invert the normal due to winding order difference
+                    Vector3 normal = new Vector3(normalizedNormalSystem.X, normalizedNormalSystem.Y, normalizedNormalSystem.Z);
+                    CollisionFaceNormals.Add(normal);
+                }
+            }
+
             // Store data on the object
             CollisionPositions = new List<Vector3>(collisionVertices);
             CollisionTriangles = new List<TriangleFace>(collisionTriangleFaces);
-
-            // Calculate normals using the triangles provided
-            foreach (TriangleFace collisionTriangle in CollisionTriangles)
-            {
-                // Grab related vertices
-                Vector3 vertex1 = CollisionPositions[collisionTriangle.V1];
-                Vector3 vertex2 = CollisionPositions[collisionTriangle.V2];
-                Vector3 vertex3 = CollisionPositions[collisionTriangle.V3];
-
-                // Calculate two edges
-                Vector3 edge1 = vertex2 - vertex1;
-                Vector3 edge2 = vertex3 - vertex1;
-
-                // Cross product determines the vector, then normalize (using C# libraries to save coding time)
-                System.Numerics.Vector3 edge1System = new System.Numerics.Vector3(edge1.X, edge1.Y, edge1.Z);
-                System.Numerics.Vector3 edge2System = new System.Numerics.Vector3(edge2.X, edge2.Y, edge2.Z);
-                System.Numerics.Vector3 normalSystem = System.Numerics.Vector3.Cross(edge1System, edge2System);
-                System.Numerics.Vector3 normalizedNormalSystem = System.Numerics.Vector3.Normalize(normalSystem);
-
-                // Remove NaNs
-                if (float.IsNaN(normalizedNormalSystem.X))
-                    normalizedNormalSystem.X = 0;
-                if (float.IsNaN(normalizedNormalSystem.Y))
-                    normalizedNormalSystem.Y = 0;
-                if (float.IsNaN(normalizedNormalSystem.Z))
-                    normalizedNormalSystem.Z = 0;
-
-                // Invert the normal due to winding order difference
-                Vector3 normal = new Vector3(normalizedNormalSystem.X, normalizedNormalSystem.Y, normalizedNormalSystem.Z);
-                CollisionFaceNormals.Add(normal);
-            }
 
             // Generate collision bounding box
             CollisionBoundingBox = BoundingBox.GenerateBoxFromVectors(CollisionPositions, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT);

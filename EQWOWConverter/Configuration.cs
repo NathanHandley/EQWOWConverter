@@ -403,7 +403,7 @@ namespace EQWOWConverter
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
-        public static readonly bool CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE = true;
+        public static readonly bool CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE = false;
 
         //=====================================================================
         // Items
