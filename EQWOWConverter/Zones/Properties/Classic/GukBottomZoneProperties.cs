@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class GukBottomZoneProperties : ZoneProperties
@@ -74,6 +67,8 @@ namespace EQWOWConverter.Zones.Properties
                 873.733572f, 587.733887f, -167.937393f, 350f); // West upper waterfall, east part
             AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType.Water, "t50_wguk1", 867.500549f, 593.786804f, 857.799255f, 606.497314f, 853.164795f, 602.243958f, 863.647827f,
                 591.752808f, -167.937393f, 350f); // West upper waterfall, south part
+            AddDiscardGeometryBox(1213.268311f, 483.649078f, 123.331970f, 500.296051f, 192.795837f, -118.007584f);
+            AddDiscardGeometryBox(676.638184f, 358.906494f, 131.725525f, -249.973938f, -240.713974f, -149.239975f);
         }
     }
 }

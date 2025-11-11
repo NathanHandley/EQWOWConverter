@@ -52,6 +52,7 @@ namespace EQWOWConverter.Zones
         public int SnowChanceSummer = 0;
         public int SnowChanceFall = 0;
         public float CollisionMaxZ = 0;
+        public List<BoundingBox> DiscardGeometryBoxes = new List<BoundingBox>();
 
         private static readonly object ListReadLock = new object();
         private static readonly object DBCWMOIDLock = new object();
@@ -253,6 +254,14 @@ namespace EQWOWConverter.Zones
                 // Set new top factoring for overlap
                 curXTop = curXBottom;
             }
+        }
+
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
+        // Coordinates flip due to world <-> wmo space
+        protected void AddDiscardGeometryBox(float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ)
+        {
+            BoundingBox boundingBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
+            DiscardGeometryBoxes.Add(boundingBox);
         }
 
         protected void SetZonewideMusic(string musicFileNameNoExtDay, string musicFileNameNoExtNight, bool loop = true, float musicVolume = 1f)

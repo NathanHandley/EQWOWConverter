@@ -112,6 +112,7 @@ namespace EQWOWConverter.Zones.Properties
             AddAlwaysBrightMaterial("d_m0002");
             AddAlwaysBrightMaterial("d_m0008");
             AddAlwaysBrightMaterial("d_underlava1");
+            AddDiscardGeometryBox(43.051270f, 58.907082f, 118.547058f, -80.912552f, -59.643539f, -21.226870f);
         }
     }
 }

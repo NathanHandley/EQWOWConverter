@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class TempleOfSolusekRoZoneProperties : ZoneProperties
@@ -57,6 +50,8 @@ namespace EQWOWConverter.Zones.Properties
             AddAlwaysBrightMaterial("d_m0002");
             AddAlwaysBrightMaterial("d_m0003");
             AddAlwaysBrightMaterial("d_underlava1");
+
+            AddDiscardGeometryBox(37.477161f, 45.932529f, 51.602940f, -66.566910f, -42.252659f, -27.224960f);
         }
     }
 }

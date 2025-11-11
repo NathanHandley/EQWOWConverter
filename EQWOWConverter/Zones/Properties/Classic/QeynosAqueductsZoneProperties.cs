@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class QeynosAqueductsZoneProperties : ZoneProperties
@@ -70,6 +63,7 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 215.513647f, -13.172240f, 78.252281f, -218.280767f, -42.968609f, 150f);// Center south water
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 686.540344f, 99.223663f, 642.067749f, 12.217740f, -84.968674f, 100f); // Lower water area with the shark sign
             AddLiquidPlaneZLevel(ZoneLiquidType.Blood, "d_b1", 379.903473f, -557.136230f, 334.749023f, -604.327087f, -42.968700f, 50f); // Blood pool
+            AddDiscardGeometryBox(31.871531f, 32.753170f, 71.809441f, -41.763409f, -37.255981f, -70.876968f);
         }
     }
 }

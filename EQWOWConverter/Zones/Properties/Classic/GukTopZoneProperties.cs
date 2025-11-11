@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class GukTopZoneProperties : ZoneProperties
@@ -28,7 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public GukTopZoneProperties() : base()
         {
             // TODO: Add zone areas
-            // TODO: Large areas to 'delete' that you couldn't access anyway
             // "gap" that falls down at 931 -2 -125
             SetZonewideEnvironmentAsIndoors(40, 45, 20, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
@@ -92,6 +84,10 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_wguk1", 434.903229f, 98.151421f, 311.871765f, -59.956660f, -41.968712f, 9f); // Center middle north  (ne lower from ring with pillers)
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_wguk1", 508.331848f, 186.730713f, 377.217804f, 82.592552f, -41.968712f, 9f); // Center middle northwest  (ne lower from ring with pillers)
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_wguk1", 451.951996f, -13.112000f, 363.141907f, -127.284462f, -84.968719f, 30f); // Center middle low
+            AddDiscardGeometryBox(1315.996094f, -526.629272f, -15.530750f, 503.663086f, -848.520264f, -288.317780f);
+            AddDiscardGeometryBox(920.787354f, -214.072617f, -179.059387f, 808.489868f, -344.278625f, -252.541840f);
+            AddDiscardGeometryBox(415.149963f, -2.670650f, -192.444687f, 264.658264f, -181.979843f, -266.984528f);
+            AddDiscardGeometryBox(1233.774780f, 596.696228f, -150.474030f, 450.394531f, 239.588364f, -269.154205f);
         }
     }
 }

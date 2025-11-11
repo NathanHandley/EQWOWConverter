@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class SoluseksEyeZoneProperties : ZoneProperties
@@ -67,7 +60,10 @@ namespace EQWOWConverter.Zones.Properties
             AddAlwaysBrightMaterial("d_m0018");
             AddAlwaysBrightMaterial("d_m0020");
             AddAlwaysBrightMaterial("d_m0021");
-            AddAlwaysBrightMaterial("d_underlava1");          
+            AddAlwaysBrightMaterial("d_underlava1");
+
+            AddDiscardGeometryBox(39.520981f, 106.092484f, 187.744125f, -99.078056f, -88.709084f, -22.915991f);
+            AddDiscardGeometryBox(-116.743721f, -477.417908f, 30.357321f, -172.616547f, -513.795044f, -10.188220f);
         }
     }
 }

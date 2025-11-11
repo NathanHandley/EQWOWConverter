@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class NeriakCommonsZoneProperties : ZoneProperties
@@ -64,6 +57,7 @@ namespace EQWOWConverter.Zones.Properties
                 -153.700836f, -957.501465f, -39.968609f, 10f, -151.865845f, -945.736450f, -158.453781f, -957.501465f, 0.3f); // East Fountain - Base segment south
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_m0003", -142.004700f, -950.647949f, -151.977570f, -952.587585f, -23.599950f, 30f); // East Fountain - Top Part NS
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_m0003", -145.975998f, -946.709351f, -147.923950f, -956.632507f, -23.599950f, 30f); // East Fountain - Top Part EW
+            AddDiscardGeometryBox(53.591419f, 57.356628f, 52.387539f, -224.128967f, -29.459351f, -33.583618f);
         }
     }
 }

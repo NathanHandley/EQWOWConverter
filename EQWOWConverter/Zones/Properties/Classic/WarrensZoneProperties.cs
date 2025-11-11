@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class WarrensZoneProperties : ZoneProperties
@@ -39,6 +32,8 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 714.974060f, -483.080292f, 223.336105f, -537.922302f, -80.978719f, 100f); // Channel, run through south (west side)
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 545.971436f, -537.104858f, 223.336105f, -558.051575f, -80.978719f, 100f); // Channel, run through south (east side)
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 347.002655f, -558.337036f, 234.729202f, -624.938477f, -80.978719f, 100f); // Channel, southeast past the gate
+
+            AddDiscardGeometryBox(28.329210f, 23.681120f, 77.969543f, -38.578861f, -52.447941f, -15.690620f);
         }
     }
 }

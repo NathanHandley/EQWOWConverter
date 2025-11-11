@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class ErudinPalaceZoneProperties : ZoneProperties
@@ -28,7 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public ErudinPalaceZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            // TODO: Lots of 'garbage' zone material to delete
             SetZonewideEnvironmentAsIndoors(192, 192, 192, ZoneFogType.Clear, 192, 192, 192);
             AddTeleportPad("erudnext", -773.795898f, -183.949753f, 50.968781f, ZoneLineOrientationType.North, 711.744934f, 806.283813f, 5.000060f, 12.0f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_eruw1", 764.244263f, 770.935730f, 659.586243f, 716.210144f, 35.000069f, 5f); // Top pool 1
@@ -49,6 +41,7 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_eruw1", 729.625732f, 725.127869f, 693.982971f, 681.921570f, -15.999990f, 5f); // Bottom Pool 2
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_eruw1", 725.435303f, 729.403625f, 698.276855f, 677.747437f, -15.999990f, 5f); // Bottom Pool 3
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_eruw1", 721.138245f, 733.511414f, 702.827820f, 674.229980f, -15.999990f, 5f); // Bottom Pool 4
+            AddDiscardGeometryBox(349.321228f, 353.318756f, 703.396851f, -1680.733398f, -1686.445068f, -4.193700f);
         }
     }
 }
