@@ -267,7 +267,10 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(rotation.ToBytes());
 
             // Bounding Box (Upper Extents then Lower Extents)
-            chunkBytes.AddRange(zone.BoundingBox.ToBytesForADT(positionVector));
+            // This extreme box ensures that it's always loaded on any sized map
+            BoundingBox extremeBoundingBox = new BoundingBox(-1000000f, -1000000f, -1000000f, 1000000f, 1000000f, 1000000f);
+            chunkBytes.AddRange(extremeBoundingBox.ToBytesForADT(new Vector3()));
+            //chunkBytes.AddRange(zone.BoundingBox.ToBytesForADT(positionVector));
 
             // Flags - I don't think any are relevant, so zeroing it out (IsDestructible = 1, UsesLOD = 2)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
