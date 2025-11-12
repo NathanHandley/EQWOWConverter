@@ -69,6 +69,7 @@ namespace EQWOWConverter.Zones.Properties
                 591.752808f, -167.937393f, 350f); // West upper waterfall, south part
             AddDiscardGeometryBox(1213.268311f, 483.649078f, 123.331970f, 500.296051f, 192.795837f, -118.007584f);
             AddDiscardGeometryBox(676.638184f, 358.906494f, 131.725525f, -249.973938f, -240.713974f, -149.239975f);
+            AddDiscardGeometryBox(407.490448f, -277.517090f, -21.701771f, 363.984009f, -342.402832f, -85.482300f);
         }
     }
 }
