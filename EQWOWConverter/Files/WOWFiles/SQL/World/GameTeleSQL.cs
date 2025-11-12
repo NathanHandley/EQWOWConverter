@@ -25,7 +25,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM `game_tele` WHERE `id` >= " + Configuration.SQL_GAMETELE_ROWID_START + " AND `id` <= " + Configuration.SQL_GAMETELE_ROWID_END + ";";
         }
 
-        public void AddRow(int mapID, string name, float x, float y, float z)
+        public void AddRow(int mapID, string name, float x, float y, float z, float orientation)
         {
             int ID = CURRENT_ROWID;
             CURRENT_ROWID++;
@@ -35,7 +35,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("position_x", x);
             newRow.AddFloat("position_y", y);
             newRow.AddFloat("position_z", z);
-            newRow.AddFloat("orientation", 0);
+            newRow.AddFloat("orientation", orientation);
             newRow.AddInt("map", mapID);
             newRow.AddString("name", 100, name);
             Rows.Add(newRow);

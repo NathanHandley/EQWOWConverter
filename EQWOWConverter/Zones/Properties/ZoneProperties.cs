@@ -714,9 +714,9 @@ namespace EQWOWConverter.Zones
                 zoneProperties.DBCMapID = int.Parse(propertiesRow["WOWMapID"]);
                 zoneProperties.DBCMapDifficultyID = int.Parse(propertiesRow["WOWMapDifficultyID"]);                    
                 zoneProperties.DescriptiveName = propertiesRow["DescriptiveName"];
-                zoneProperties.TelePosition.X = float.Parse(propertiesRow["TeleX"]);
-                zoneProperties.TelePosition.Y = float.Parse(propertiesRow["TeleY"]);
-                zoneProperties.TelePosition.Z = float.Parse(propertiesRow["TeleZ"]);
+                zoneProperties.TelePosition.X = float.Parse(propertiesRow["TeleX"]) * Configuration.GENERATE_WORLD_SCALE;
+                zoneProperties.TelePosition.Y = float.Parse(propertiesRow["TeleY"]) * Configuration.GENERATE_WORLD_SCALE;
+                zoneProperties.TelePosition.Z = float.Parse(propertiesRow["TeleZ"]) * Configuration.GENERATE_WORLD_SCALE;
                 zoneProperties.TeleOrientation = float.Parse(propertiesRow["TeleOrientation"]);
                 zoneProperties.Continent = (ZoneContinentType)int.Parse(propertiesRow["ContinentID"]);
                 zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);

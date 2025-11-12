@@ -898,9 +898,9 @@ namespace EQWOWConverter
                 instanceTemplateSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID));
 
                 // Teleport scripts to safe positions (add a record for both descriptive and short name if they are different)
-                gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.DescriptiveNameOnlyLetters, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
+                gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.DescriptiveNameOnlyLetters, zone.ZoneProperties.TelePosition.X, zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
                 if (zone.DescriptiveNameOnlyLetters.ToLower() != zone.ShortName.ToLower())
-                    gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ShortName, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
+                    gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ShortName, zone.ZoneProperties.TelePosition.X, zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
 
                 // Weather data
                 if (Configuration.ZONE_WEATHER_ENABLED == true)

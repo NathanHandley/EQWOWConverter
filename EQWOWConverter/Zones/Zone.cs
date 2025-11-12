@@ -37,7 +37,6 @@ namespace EQWOWConverter.Zones
         public BoundingBox BoundingBox = new BoundingBox();
         public int LoadingScreenID;
         public ZoneProperties ZoneProperties;
-        public Vector3 SafePosition = new Vector3();
         public Dictionary<string, Sound> MusicSoundsByFileNameNoExt = new Dictionary<string, Sound>();
         public List<ZoneAreaMusic> ZoneAreaMusics = new List<ZoneAreaMusic>();
         public Dictionary<string, Sound> AmbientSoundsByFileNameNoExt = new Dictionary<string, Sound>();
