@@ -184,6 +184,9 @@ namespace EQWOWConverter
         // Maximum size of any zone-to-material-object creation along the X and Y axis
         public static readonly float ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE = 325.0f;
 
+        // If true, some zones (like gfay and halas) will hide sunlight with a shadowbox
+        public static readonly bool ZONE_ALLOW_SUN_HIDING_WITH_SHADOWBOX_ENABLED = true;
+
         // How much bigger to make the box which causes the shadow in a shadowbox
         public static readonly float ZONE_SHADOW_BOX_ADDED_SIZE = 50f;
 

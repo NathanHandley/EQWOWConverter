@@ -77,7 +77,8 @@ namespace EQWOWConverter.Zones
 
         protected void DisableSunlight()
         {
-            HasShadowBox = true;
+            if (Configuration.ZONE_ALLOW_SUN_HIDING_WITH_SHADOWBOX_ENABLED == true)
+                HasShadowBox = true;
         }
 
         protected void Enable2DSoundInstances(params string[] daySoundNames)
