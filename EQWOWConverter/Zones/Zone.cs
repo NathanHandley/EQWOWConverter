@@ -400,6 +400,19 @@ namespace EQWOWConverter.Zones
                 doodadInstance.Position.X = -doodadInstance.Position.X;
                 doodadInstance.Position.Y = -doodadInstance.Position.Y;
 
+                // Skip it if it's in a discarded geometry section
+                bool skipDoodad = false;
+                foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardGeometryBoxes)
+                {
+                    if (discardGeometryBox.ContainsPoint(doodadInstance.Position) == true)
+                    {
+                        skipDoodad = true;
+                        break;
+                    }
+                }
+                if (skipDoodad == true)
+                    continue;
+
                 // Calculate the rotation
                 float rotateYaw = Convert.ToSingle(Math.PI / 180) * -objectInstance.Rotation.Z;
                 float rotatePitch = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.X;
