@@ -39,8 +39,9 @@ namespace EQWOWConverter
         // The root folder where temporary folders and file will be generated (ensure at least 10GB of space is available in this location)
         public static readonly string PATH_WORKING_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets";
 
-        // Name of the newely generated patch file, without the extension (make sure this is a unique naming, often patch-enUS-4 or patch-enUS-5 works here. Use patch-enUS-4 if not sure)
-        public static readonly string PATH_CLIENT_PATCH_FILE_NAME_NO_EXT = "patch-enUS-5";
+        // Names of the newely generated patch files, without the extension (make sure this is a unique naming, often patch-4 and patch-enUS-5 here)
+        public static readonly string PATH_CLIENT_PATCH_FILE_NAME_NO_EXT = "patch-4";
+        public static readonly string PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT = "patch-enUS-5";
 
         // ====================================================================
         // Deployment Rules

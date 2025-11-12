@@ -225,12 +225,14 @@ namespace EQWOWConverter
                 // Copy the loading screens
                 CreateLoadingScreens();
 
-                // Create or update the MPQ
-                string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".mpq");
+                // Create or update the MPQs
+                string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT + ".mpq");
                 if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
-                    CreatePatchMPQ();
+                    CreateMainPatchMPQ();
                 else
-                    UpdatePatchMPQ();
+                    UpdateMainPatchMPQ();
+                if (Configuration.GENERATE_MINIMAPS == true)
+                    CreateMinimapPatchMPQ();
 
                 // Deploy 
                 if (Configuration.DEPLOY_CLIENT_FILES == true)
@@ -956,7 +958,7 @@ namespace EQWOWConverter
             string exportZonesObjectsFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "ZoneObjects");
             string exportInterfaceFolder = Path.Combine(exportMPQRootFolder, "Interface");
             string exportMusicFolder = Path.Combine(exportMPQRootFolder, "Sound", "Music");
-            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".mpq");
+            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT + ".mpq");
             string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
 
             // Generate folders
@@ -2037,9 +2039,17 @@ namespace EQWOWConverter
             
             Logger.WriteDebug("Converting tradeskills completed.");
         }
-        public void CreatePatchMPQ()
+
+        public void CreateMinimapPatchMPQ()
         {
-            Logger.WriteInfo("Building patch MPQ...");
+
+
+        }
+
+
+        public void CreateMainPatchMPQ()
+        {
+            Logger.WriteInfo("Building main patch MPQ...");
 
             // Make sure the output folder exists
             if (Directory.Exists(Configuration.PATH_EXPORT_FOLDER) == false)
@@ -2047,7 +2057,7 @@ namespace EQWOWConverter
 
             // Delete the old patch file, if it exists
             Logger.WriteDebug("Deleting old patch file if it exists");
-            string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
+            string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT + ".MPQ");
             if (File.Exists(outputPatchFileName) == true)
                 File.Delete(outputPatchFileName);
 
@@ -2078,13 +2088,13 @@ namespace EQWOWConverter
             process.Start();
             process.WaitForExit();
 
-            Logger.WriteDebug("Building patch MPQ complete");
+            Logger.WriteDebug("Building main patch MPQ complete");
         }
 
-        public void UpdatePatchMPQ()
+        public void UpdateMainPatchMPQ()
         {
-            Logger.WriteInfo("Updating patch MPQ...");
-            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".mpq");
+            Logger.WriteInfo("Updating main patch MPQ...");
+            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT + ".mpq");
             if (File.Exists(exportMPQFileName) == false)
             {
                 Logger.WriteError("Attempted to update the patch MPQ, but it didn't exist at '" + exportMPQFileName + "'");
@@ -2244,7 +2254,7 @@ namespace EQWOWConverter
             process.Start();
             process.WaitForExit();
 
-            Logger.WriteDebug("Building patch MPQ complete");
+            Logger.WriteDebug("Building main patch MPQ complete");
         }
 
         public void DeployClient()
@@ -2252,7 +2262,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Deploying to client...");
 
             // Make sure a patch was created
-            string sourcePatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
+            string sourcePatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT + ".MPQ");
             if (File.Exists(sourcePatchFileNameAndPath) == false)
             {
                 Logger.WriteError("Failed to deploy to client. Patch at '" + sourcePatchFileNameAndPath + "' did not exist");
@@ -2260,7 +2270,7 @@ namespace EQWOWConverter
             }
 
             // Delete the old one if it's already deployed on the client
-            string targetPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", "enUS", Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
+            string targetPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", "enUS", Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT + ".MPQ");
             if (File.Exists(targetPatchFileNameAndPath) == true)
             {
                 try
