@@ -206,7 +206,7 @@ namespace EQWOWConverter
         public static readonly int ZONE_MAX_FACES_PER_ZONE_MATERIAL_OBJECT = 2000;
 
         // When true, otherwise animated zone materials which animate (like water) will be 'fixed' as zone geometry.  Leave this false unless generating minimaps.
-        public static readonly bool ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY = true;
+        public static readonly bool ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY = false;
 
         // BSP tree nodes will stop subdividing when this many (or less) triangles are found
         public static readonly UInt16 ZONE_BTREE_MIN_SPLIT_SIZE = 10;
