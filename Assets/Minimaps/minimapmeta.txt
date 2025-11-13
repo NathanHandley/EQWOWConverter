@@ -21,10 +21,10 @@ EQ_kerraridge\map32_32.blp	EQ_kerraridge_32_32.blp
 dir: EQ_lavastorm
 EQ_lavastorm\map31_31.blp	EQ_lavastorm_31_31.blp
 EQ_lavastorm\map31_32.blp	EQ_lavastorm_31_32.blp
-EQ_lavastorm\map32_33.blp	EQ_lavastorm_32_33.blp
 EQ_lavastorm\map31_33.blp	EQ_lavastorm_31_33.blp
-EQ_lavastorm\map32_32.blp	EQ_lavastorm_32_32.blp
 EQ_lavastorm\map32_31.blp	EQ_lavastorm_32_31.blp
+EQ_lavastorm\map32_32.blp	EQ_lavastorm_32_32.blp
+EQ_lavastorm\map32_33.blp	EQ_lavastorm_32_33.blp
 dir: EQ_erudnext
 EQ_erudnext\map31_31.blp	EQ_erudnext_31_31.blp
 EQ_erudnext\map31_32.blp	EQ_erudnext_31_32.blp

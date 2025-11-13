@@ -112,11 +112,15 @@ namespace EQWOWConverter.Zones
                 int curMaterialIndex = MeshData.TriangleFaces[i].MaterialIndex;
 
                 // Skip materials that shouldn't be rendered
+                // Don't add the texture if the material won't be used anyway
+                if (Configuration.ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY == false)
+                {
+                    if (materials[curMaterialIndex].IsAnimated() == true)
+                        continue;
+                    if (materials[curMaterialIndex].HasTransparency() == true)
+                        continue;
+                }
                 if (materials[curMaterialIndex].IsRenderable() == false)
-                    continue;
-                if (materials[curMaterialIndex].IsAnimated() == true)
-                    continue;
-                if (materials[curMaterialIndex].HasTransparency() == true)
                     continue;
 
                 // Create a new one if this is the first instance of the material

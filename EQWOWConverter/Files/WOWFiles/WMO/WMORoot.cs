@@ -113,7 +113,12 @@ namespace EQWOWConverter.WOWFiles
             UInt32 numOfTextures = 0;
             foreach (Material material in materials)
             {
-                if (material.IsAnimated() || material.HasTransparency() || material.IsRenderable() == false)
+                if (Configuration.ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY == false)
+                {
+                    if (material.IsAnimated() || material.HasTransparency())
+                        continue;
+                }
+                if (material.IsRenderable() == false)
                     continue;
                 if (material.TextureNames.Count > 0)
                     numOfTextures++;
@@ -165,7 +170,12 @@ namespace EQWOWConverter.WOWFiles
             foreach (Material material in materials)
             {
                 // Don't add the texture if the material won't be used anyway
-                if (material.IsAnimated() || material.HasTransparency() || material.IsRenderable() == false)
+                if (Configuration.ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY == false)
+                {
+                    if (material.IsAnimated() || material.HasTransparency())
+                        continue;
+                }
+                if (material.IsRenderable() == false)
                     continue;
 
                 if (material.TextureNames.Count > 0)
@@ -198,11 +208,16 @@ namespace EQWOWConverter.WOWFiles
                 Material material = materials[i];
 
                 // Skip any non-rendered materials
-                if (material.IsAnimated() || material.HasTransparency() || material.IsRenderable() == false)
+                if (Configuration.ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY == false)
+                {
+                    if (material.IsAnimated() || material.HasTransparency())
+                        continue;
+                }
+                if (material.IsRenderable() == false)
                     continue;
 
                 // For kedge, put in the front
-                if (name == "kedge")
+                if (name == "kedge" && Configuration.ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY == false)
                     BatchMaterialIDsByMaterialIndex.Add(0, curBatchMaterialID);
                 else
                     BatchMaterialIDsByMaterialIndex.Add(i, curBatchMaterialID);
@@ -214,7 +229,7 @@ namespace EQWOWConverter.WOWFiles
                     hasNoTexture = true;
 
                 if (material.AlwaysBrightOverride == true)
-                    curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(WMOMaterialFlags.DisableLighting)));
+                    curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(WMOMaterialFlags.LightAtNight)));
                 else
                     curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
