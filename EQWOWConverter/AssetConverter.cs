@@ -61,6 +61,10 @@ namespace EQWOWConverter
             else
                 Logger.WriteInfo("- Note: DBC File Extraction is set to false in the Configuration");
 
+            // Extract minimap metadata
+            if (Configuration.GENERATE_MINIMAPS == true)
+                ExtractMinimapMD5TranslateFile();
+
             // Thread 1: Objects and Zones
             List<Zone> zones = new List<Zone>();
             Task zoneAndObjectTask = Task.Factory.StartNew(() =>
@@ -2040,12 +2044,89 @@ namespace EQWOWConverter
             Logger.WriteDebug("Converting tradeskills completed.");
         }
 
-        public void CreateMinimapPatchMPQ()
+        public void ExtractMinimapMD5TranslateFile()
         {
+            string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
 
+            Logger.WriteInfo("Extracting client MD5 Translate file for Minimap...");
 
+            // Make sure the patches folder is correct
+            string wowPatchesFolderRoot = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data");
+            if (Directory.Exists(wowPatchesFolderRoot) == false)
+                throw new Exception("WoW client patches folder does not exist at '" + wowPatchesFolderRoot + "', did you set PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER?");
+            string wowPatchesFolderLoc = Path.Combine(wowPatchesFolderRoot, "enUS");
+
+            // Get a list of valid patch files (it's done this way to ensure sorting order is exactly right). Also ignore existing patch file
+            List<string> patchFileNames = new List<string>();
+            patchFileNames.Add(Path.Combine(wowPatchesFolderLoc, "patch-enUS.MPQ"));
+            string[] existingPatchFiles = Directory.GetFiles(wowPatchesFolderLoc, "patch-*-*.MPQ");
+            foreach (string existingPatchName in existingPatchFiles)
+                if (existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT) == false && existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT) == false)
+                    patchFileNames.Add(existingPatchName);
+            patchFileNames.Add(Path.Combine(wowPatchesFolderRoot, "patch.MPQ"));
+            existingPatchFiles = Directory.GetFiles(wowPatchesFolderRoot, "patch-*.MPQ");
+            foreach (string existingPatchName in existingPatchFiles)
+                if (existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT) == false && existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT) == false)
+                    patchFileNames.Add(existingPatchName);
+
+            // Make sure all of the files are not locked
+            foreach (string patchFileName in patchFileNames)
+                if (FileTool.IsFileLocked(patchFileName))
+                    throw new Exception("Patch file named '" + patchFileName + "' was locked and in use by another application");
+
+            // Clear out any previously extracted minimap files
+            Logger.WriteDebug("Deleting previously extracted MD5 Translate file");
+            string exportedMD5Folder = Path.Combine(wowExportPath, "ExportedMD5File");
+            FileTool.CreateBlankDirectory(exportedMD5Folder, false);
+
+            // Generate a script to extract the MD5 file
+            Logger.WriteDebug("Generating script to extract MD5 file");
+            string workingGeneratedScriptsFolder = Path.Combine(wowExportPath, "GeneratedWorkingScripts");
+            FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
+            StringBuilder md5ExtractScriptText = new StringBuilder();
+            foreach (string patchFileName in patchFileNames)
+                md5ExtractScriptText.AppendLine("extract \"" + patchFileName + "\" textures\\minimap\\md5translate.trs \"" + exportedMD5Folder + "\"");
+            string md5ExtractionScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "md5extract.txt");
+            using (var md5ExtractionScriptFile = new StreamWriter(md5ExtractionScriptFileName))
+                md5ExtractionScriptFile.WriteLine(md5ExtractScriptText.ToString());
+
+            // Extract the file using the script
+            Logger.WriteDebug("Extracting MD5 file");
+            string mpqEditorFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
+            if (File.Exists(mpqEditorFullPath) == false)
+                throw new Exception("Failed to extract MD5 file. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
+            string args = "console \"" + md5ExtractionScriptFileName + "\"";
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.Arguments = args;
+            process.StartInfo.FileName = mpqEditorFullPath;
+            process.Start();
+            process.WaitForExit();
+
+            Logger.WriteDebug("Extracting client MD5 Translate file complete");
         }
 
+        public void CreateMinimapPatchMPQ()
+        {
+            //Logger.WriteInfo("Building minimap patch MPQ...");
+
+            //// Make sure the output folder exists
+            //if (Directory.Exists(Configuration.PATH_EXPORT_FOLDER) == false)
+            //    throw new Exception("Export folder '" + Configuration.PATH_EXPORT_FOLDER + "' did not exist, make sure you set PATH_EXPORT_FOLDER");
+
+            //// Delete the old patch file, if it exists
+            //Logger.WriteDebug("Deleting old minimap patch file if it exists");
+            //string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
+            //if (File.Exists(outputPatchFileName) == true)
+            //    File.Delete(outputPatchFileName);
+
+            //TODO: HERE
+
+
+
+
+            //Logger.WriteDebug("Building minimap patch MPQ complete");
+        }
 
         public void CreateMainPatchMPQ()
         {

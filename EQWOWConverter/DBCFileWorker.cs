@@ -40,14 +40,14 @@ namespace EQWOWConverter
             // Make sure the patches folder is correct
             string wowPatchesFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", "enUS");
             if (Directory.Exists(wowPatchesFolder) == false)
-                throw new Exception("WoW client patches folder does not exist at '" + wowPatchesFolder + "', did you set PATH_WOW_ENUS_CLIENT_FOLDER?");
+                throw new Exception("WoW client patches folder does not exist at '" + wowPatchesFolder + "', did you set PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER?");
 
             // Get a list of valid patch files (it's done this way to ensure sorting order is exactly right). Also ignore existing patch file
             List<string> patchFileNames = new List<string>();
             patchFileNames.Add(Path.Combine(wowPatchesFolder, "patch-enUS.MPQ"));
             string[] existingPatchFiles = Directory.GetFiles(wowPatchesFolder, "patch-*-*.MPQ");
             foreach (string existingPatchName in existingPatchFiles)
-                if (existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT) == false)
+                if (existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT) == false && existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT) == false)
                     patchFileNames.Add(existingPatchName);
 
             // Make sure all of the files are not locked
