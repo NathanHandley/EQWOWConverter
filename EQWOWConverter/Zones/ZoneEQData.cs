@@ -52,6 +52,21 @@ namespace EQWOWConverter.Zones
             LoadSound2DInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadSound3DInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadObjectInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
+
+            // Fill in any blanks in collision data if there is collision data
+            if (CollisionMeshData.Vertices.Count != 0)
+            {
+                if (CollisionMeshData.Normals.Count == 0)
+                    for (int i = 0; i < CollisionMeshData.Vertices.Count; i++)
+                        CollisionMeshData.Normals.Add(new Vector3(0, 0, 0));
+                if (CollisionMeshData.TextureCoordinates.Count == 0)
+                    for (int i = 0; i < CollisionMeshData.Vertices.Count; i++)
+                        CollisionMeshData.TextureCoordinates.Add(new TextureCoordinates(0, 0));
+                if (CollisionMeshData.VertexColors.Count == 0 && RenderMeshData.VertexColors.Count != 0)
+                    for (int i = 0; i < CollisionMeshData.Vertices.Count; i++)
+                        CollisionMeshData.VertexColors.Add(new ColorRGBA(0, 0, 0, 0));
+            }
+
             IsLoaded = true;
         }
 

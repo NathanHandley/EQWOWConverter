@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class ToxxuliaForestZoneProperties : ZoneProperties
@@ -55,6 +48,9 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 790.337036f, -70.241373f, 415.553131f, -957.950867f, -60.686829f, 250f);  // River north of River
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 1089.210815f, -680.044861f, 790.327036f, -1068.042603f, -60.686829f, 250f); // River bend towards the source
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 1151.062866f, -976.408508f, 643.941528f, -1844.147217f, -60.686829f, 250f); // River source
+
+            AddDiscardGeometryBox(-25.450541f, -951.232727f, 933.627136f, -512.030640f, -1355.864136f, 532.040833f);
+            AddDiscardGeometryBox(-198.835083f, -1235.454590f, -132.391876f, -1553.498413f, -1698.729492f, -342.791351f);
         }
     }
 }

@@ -485,15 +485,6 @@ namespace EQWOWConverter.Zones
             else
             {
                 Logger.WriteDebug("For zone '" + ShortName + "', collision is generated from defined collision mesh");
-                if (collisionMeshData.Normals.Count == 0)
-                    for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
-                        collisionMeshData.Normals.Add(new Vector3(0, 0, 0));
-                if (collisionMeshData.TextureCoordinates.Count == 0)
-                    for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
-                        collisionMeshData.TextureCoordinates.Add(new TextureCoordinates(0, 0));
-                if (collisionMeshData.VertexColors.Count == 0 && renderMeshData.VertexColors.Count != 0)
-                    for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
-                        collisionMeshData.VertexColors.Add(new ColorRGBA(0, 0, 0, 0));
             }
 
             // Grab the collision data from the doodads and bake into the zone's collision map
