@@ -2064,12 +2064,12 @@ namespace EQWOWConverter
             patchFileNames.Add(Path.Combine(wowPatchesFolderLoc, "patch-enUS.MPQ"));
             string[] existingPatchFiles = Directory.GetFiles(wowPatchesFolderLoc, "patch-*-*.MPQ");
             foreach (string existingPatchName in existingPatchFiles)
-                if (existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT) == false && existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT) == false)
+                if (existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT) == false)
                     patchFileNames.Add(existingPatchName);
             patchFileNames.Add(Path.Combine(wowPatchesFolderRoot, "patch.MPQ"));
             existingPatchFiles = Directory.GetFiles(wowPatchesFolderRoot, "patch-*.MPQ");
             foreach (string existingPatchName in existingPatchFiles)
-                if (existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT) == false && existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT) == false)
+                if (existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT) == false)
                     patchFileNames.Add(existingPatchName);
 
             // Make sure all of the files are not locked
