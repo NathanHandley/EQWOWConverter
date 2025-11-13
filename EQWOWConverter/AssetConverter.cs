@@ -49,10 +49,13 @@ namespace EQWOWConverter
                 return false;
             }
 
-            // Clean output folder
+            // Clean output folders
             string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
             if (Directory.Exists(exportMPQRootFolder) == true)
-                Directory.Delete(exportMPQRootFolder, true);   
+                Directory.Delete(exportMPQRootFolder, true);
+            string exportMiniMapsMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReadyMiniMaps");
+            if (Directory.Exists(exportMiniMapsMPQRootFolder) == true)
+                Directory.Delete(exportMiniMapsMPQRootFolder, true);
 
             // Extract DBC files
             DBCFileWorker dbcFileWorker = new DBCFileWorker();
@@ -2108,24 +2111,63 @@ namespace EQWOWConverter
 
         public void CreateMinimapPatchMPQ()
         {
-            //Logger.WriteInfo("Building minimap patch MPQ...");
+            Logger.WriteInfo("Building minimap patch MPQ...");
 
-            //// Make sure the output folder exists
-            //if (Directory.Exists(Configuration.PATH_EXPORT_FOLDER) == false)
-            //    throw new Exception("Export folder '" + Configuration.PATH_EXPORT_FOLDER + "' did not exist, make sure you set PATH_EXPORT_FOLDER");
+            // Make the working folder
+            string exportMiniMapsMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReadyMiniMaps");
+            string exportMiniMapsMPQMinimapFolder = Path.Combine(exportMiniMapsMPQRootFolder, "textures", "minimap");
+            FileTool.CreateBlankDirectory(exportMiniMapsMPQRootFolder, false);
+            FileTool.CreateBlankDirectory(exportMiniMapsMPQMinimapFolder, false);
 
-            //// Delete the old patch file, if it exists
-            //Logger.WriteDebug("Deleting old minimap patch file if it exists");
-            //string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
-            //if (File.Exists(outputPatchFileName) == true)
-            //    File.Delete(outputPatchFileName);
+            // Check the asset source
+            string minimapAssetFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "Minimaps");
+            if (Directory.Exists(minimapAssetFolder) == false)
+            {
+                Logger.WriteError("Failed to generate minimap patch, as '" + minimapAssetFolder + "' does not exist. (Be sure to set your Configuration.PATH_ASSETS_FOLDER properly)");
+                return;
+            }
 
-            //TODO: HERE
+            // Copy all of the map files
+            foreach (string minimapFileName in Directory.GetFiles(minimapAssetFolder, "*.blp"))
+                File.Copy(minimapFileName, Path.Combine(exportMiniMapsMPQMinimapFolder, Path.GetFileName(minimapFileName)), true);
 
+            // Create the updated map reference MD5
+            string inputUnmodifiedMD5Translate = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "ExportedMD5File", "md5translate.trs");
+            string inputAddOnMD5Translate = Path.Combine(minimapAssetFolder, "minimapmeta.txt");
+            string outputCombinedMD5Translate = Path.Combine(exportMiniMapsMPQMinimapFolder, "md5translate.trs");
+            FileTool.CreateCombinedTextFile(inputUnmodifiedMD5Translate, inputAddOnMD5Translate, outputCombinedMD5Translate);
 
+            // Delete the old patch file, if it exists
+            Logger.WriteDebug("Deleting old minimap patch file if it exists");
+            string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
+            if (File.Exists(outputPatchFileName) == true)
+                File.Delete(outputPatchFileName);
 
+            // Generate a script to generate the mpq file
+            Logger.WriteDebug("Generating script to generate the minimap MPQ file");
+            string workingGeneratedScriptsFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
+            FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
+            StringBuilder mpqCreateScriptText = new StringBuilder();
+            mpqCreateScriptText.AppendLine("new \"" + outputPatchFileName + "\" 65536");
+            mpqCreateScriptText.AppendLine("add \"" + outputPatchFileName + "\" \"" + exportMiniMapsMPQRootFolder + "\\*\" /auto /r");
+            string mpqNewScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "mpqminimapnew.txt");
+            using (var mpqNewScriptFile = new StreamWriter(mpqNewScriptFileName))
+                mpqNewScriptFile.WriteLine(mpqCreateScriptText.ToString());
 
-            //Logger.WriteDebug("Building minimap patch MPQ complete");
+            // Generate the new MPQ using the script
+            Logger.WriteDebug("Generating minimap MPQ file");
+            string mpqEditorFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
+            if (File.Exists(mpqEditorFullPath) == false)
+                throw new Exception("Failed to generate minimap MPQ file. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
+            string args = "console \"" + mpqNewScriptFileName + "\"";
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.Arguments = args;
+            process.StartInfo.FileName = mpqEditorFullPath;
+            process.Start();
+            process.WaitForExit();
+
+            Logger.WriteDebug("Building minimap patch MPQ complete");
         }
 
         public void CreateMainPatchMPQ()
@@ -2370,6 +2412,39 @@ namespace EQWOWConverter
 
             // Copy it
             FileTool.CopyFile(sourcePatchFileNameAndPath, targetPatchFileNameAndPath);
+
+            // Also deploy the minimaps patch, if configured to do so
+            if (Configuration.GENERATE_MINIMAPS == true)
+            {
+                // Make sure a patch was created
+                string sourceMinimapPatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
+                if (File.Exists(sourceMinimapPatchFileNameAndPath) == false)
+                {
+                    Logger.WriteError("Failed to deploy to client. Patch at '" + sourceMinimapPatchFileNameAndPath + "' did not exist");
+                    return;
+                }
+
+                // Delete the old one if it's already deployed on the client
+                string targetMinimapPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
+                if (File.Exists(targetMinimapPatchFileNameAndPath) == true)
+                {
+                    try
+                    {
+                        File.Delete(targetMinimapPatchFileNameAndPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteError("Failed to delete the file at '" + targetMinimapPatchFileNameAndPath + "', it may be in use (client running, open in MPQ editor, etc)");
+                        if (ex.StackTrace != null)
+                            Logger.WriteDebug(ex.StackTrace.ToString());
+                        Logger.WriteError("Deploying to client failed");
+                        return;
+                    }
+                }
+
+                // Copy it
+                FileTool.CopyFile(sourceMinimapPatchFileNameAndPath, targetMinimapPatchFileNameAndPath);
+            }
 
             Logger.WriteDebug("Deploying to client complete");
         }

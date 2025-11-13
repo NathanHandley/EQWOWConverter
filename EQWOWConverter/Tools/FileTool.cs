@@ -284,6 +284,21 @@ namespace EQWOWConverter
             }
         }
 
+        public static void CreateCombinedTextFile(string sourceTextFilePath1, string sourceTextFilePath2, string targetTextFilePath)
+        {
+            // Read text from the two files
+            string firstFileContent = File.ReadAllText(sourceTextFilePath1);
+            string secondFileContent = File.ReadAllText(sourceTextFilePath2);
+
+            // Combine, with the text on a new line
+            string combinedContent = firstFileContent.TrimEnd() + Environment.NewLine + secondFileContent;
+
+            // Write the file
+            if (File.Exists(targetTextFilePath) == true)
+                File.Delete(targetTextFilePath);
+            File.WriteAllText(targetTextFilePath, combinedContent);
+        }
+
         public static List<byte> GetFileBytes(string filePath)
         {
             return new List<byte>(File.ReadAllBytes(filePath));
