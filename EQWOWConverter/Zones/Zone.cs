@@ -521,36 +521,35 @@ namespace EQWOWConverter.Zones
                     allObjectMeshData.AddMeshData(objectMeshData);
                 }
 
-                // Calculate the normals
-                List<Vector3> normals = new List<Vector3>();
-                for (int i = 0; i < allObjectMeshData.Vertices.Count; i++)
-                    normals.Add(new Vector3());
-                foreach (TriangleFace face in allObjectMeshData.TriangleFaces)
-                {
-                    // Get the vertex positions for the triangle
-                    Vector3 v1 = allObjectMeshData.Vertices[face.V1];
-                    Vector3 v2 = allObjectMeshData.Vertices[face.V2];
-                    Vector3 v3 = allObjectMeshData.Vertices[face.V3];
-
-                    // Calculate two edges of the triangle
-                    Vector3 edge1 = v2 - v1;
-                    Vector3 edge2 = v3 - v1;
-
-                    // Compute the face normal
-                    Vector3 faceNormal = Vector3.Cross(edge1, edge2);
-
-                    // Normalize the face normal to ensure it's a unit vector
-                    faceNormal = Vector3.GetNormalized(faceNormal);
-
-                    // Accumulate the face normal into the vertex normals
-                    normals[face.V1] += faceNormal;
-                    normals[face.V2] += faceNormal;
-                    normals[face.V3] += faceNormal;
-                }
-                allObjectMeshData.Normals = normals;
-
                 // Append it
                 collisionMeshData.AddMeshData(allObjectMeshData);
+            }
+
+            // Create normals for all all collision data
+            collisionMeshData.Normals.Clear();
+            for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
+                collisionMeshData.Normals.Add(new Vector3());
+            foreach (TriangleFace face in collisionMeshData.TriangleFaces)
+            {
+                // Get the vertex positions for the triangle
+                Vector3 v1 = collisionMeshData.Vertices[face.V1];
+                Vector3 v2 = collisionMeshData.Vertices[face.V2];
+                Vector3 v3 = collisionMeshData.Vertices[face.V3];
+
+                // Calculate two edges of the triangle
+                Vector3 edge1 = v2 - v1;
+                Vector3 edge2 = v3 - v1;
+
+                // Compute the face normal
+                Vector3 faceNormal = Vector3.Cross(edge1, edge2);
+
+                // Normalize the face normal to ensure it's a unit vector
+                faceNormal = Vector3.GetNormalized(faceNormal);
+
+                // Accumulate the face normal into the vertex normals
+                collisionMeshData.Normals[face.V1] += faceNormal;
+                collisionMeshData.Normals[face.V2] += faceNormal;
+                collisionMeshData.Normals[face.V3] += faceNormal;
             }
 
             // Constrain the maximum collision area, if set
