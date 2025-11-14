@@ -233,7 +233,7 @@ namespace EQWOWConverter
                 CreateLoadingScreens();
 
                 // Create or update the MPQs
-                string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT + ".mpq");
+                string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ"));
                 if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
                     CreateMainPatchMPQ();
                 else
@@ -965,7 +965,7 @@ namespace EQWOWConverter
             string exportZonesObjectsFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "ZoneObjects");
             string exportInterfaceFolder = Path.Combine(exportMPQRootFolder, "Interface");
             string exportMusicFolder = Path.Combine(exportMPQRootFolder, "Sound", "Music");
-            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT + ".mpq");
+            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ"));
             string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
 
             // Generate folders
@@ -2057,19 +2057,23 @@ namespace EQWOWConverter
             string wowPatchesFolderRoot = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data");
             if (Directory.Exists(wowPatchesFolderRoot) == false)
                 throw new Exception("WoW client patches folder does not exist at '" + wowPatchesFolderRoot + "', did you set PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER?");
-            string wowPatchesFolderLoc = Path.Combine(wowPatchesFolderRoot, "enUS");
+            string wowPatchesFolderLoc = Path.Combine(wowPatchesFolderRoot, Configuration.PATCH_LOCALIZATION_STRING);
+
+            // Calc patch names
+            string dataPatchNameNoExt = string.Concat("patch-", Configuration.PATCH_CLIENT_DATA_ID);
+            string dataLocPatchNameNoExt = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID);
 
             // Get a list of valid patch files (it's done this way to ensure sorting order is exactly right). Also ignore existing patch file
             List<string> patchFileNames = new List<string>();
-            patchFileNames.Add(Path.Combine(wowPatchesFolderLoc, "patch-enUS.MPQ"));
+            patchFileNames.Add(Path.Combine(wowPatchesFolderLoc, string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, ".MPQ")));
             string[] existingPatchFiles = Directory.GetFiles(wowPatchesFolderLoc, "patch-*-*.MPQ");
             foreach (string existingPatchName in existingPatchFiles)
-                if (existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT) == false)
+                if (existingPatchName.Contains(dataLocPatchNameNoExt) == false)
                     patchFileNames.Add(existingPatchName);
             patchFileNames.Add(Path.Combine(wowPatchesFolderRoot, "patch.MPQ"));
             existingPatchFiles = Directory.GetFiles(wowPatchesFolderRoot, "patch-*.MPQ");
             foreach (string existingPatchName in existingPatchFiles)
-                if (existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT) == false)
+                if (existingPatchName.Contains(dataPatchNameNoExt) == false)
                     patchFileNames.Add(existingPatchName);
 
             // Make sure all of the files are not locked
@@ -2139,7 +2143,8 @@ namespace EQWOWConverter
 
             // Delete the old patch file, if it exists
             Logger.WriteDebug("Deleting old minimap patch file if it exists");
-            string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
+            string dataPatchName = string.Concat("patch-", Configuration.PATCH_CLIENT_DATA_ID, ".MPQ");
+            string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, dataPatchName);
             if (File.Exists(outputPatchFileName) == true)
                 File.Delete(outputPatchFileName);
 
@@ -2180,7 +2185,8 @@ namespace EQWOWConverter
 
             // Delete the old patch file, if it exists
             Logger.WriteDebug("Deleting old patch file if it exists");
-            string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT + ".MPQ");
+            string patchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
+            string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, patchMPQName);
             if (File.Exists(outputPatchFileName) == true)
                 File.Delete(outputPatchFileName);
 
@@ -2217,7 +2223,8 @@ namespace EQWOWConverter
         public void UpdateMainPatchMPQ()
         {
             Logger.WriteInfo("Updating main patch MPQ...");
-            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT + ".mpq");
+            string patchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
+            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, patchMPQName);
             if (File.Exists(exportMPQFileName) == false)
             {
                 Logger.WriteError("Attempted to update the patch MPQ, but it didn't exist at '" + exportMPQFileName + "'");
@@ -2385,7 +2392,8 @@ namespace EQWOWConverter
             Logger.WriteInfo("Deploying to client...");
 
             // Make sure a patch was created
-            string sourcePatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT + ".MPQ");
+            string dataLocPatchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
+            string sourcePatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, dataLocPatchMPQName);
             if (File.Exists(sourcePatchFileNameAndPath) == false)
             {
                 Logger.WriteError("Failed to deploy to client. Patch at '" + sourcePatchFileNameAndPath + "' did not exist");
@@ -2393,7 +2401,7 @@ namespace EQWOWConverter
             }
 
             // Delete the old one if it's already deployed on the client
-            string targetPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", "enUS", Configuration.PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT + ".MPQ");
+            string targetPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", Configuration.PATCH_LOCALIZATION_STRING, dataLocPatchMPQName);
             if (File.Exists(targetPatchFileNameAndPath) == true)
             {
                 try
@@ -2417,7 +2425,8 @@ namespace EQWOWConverter
             if (Configuration.GENERATE_MINIMAPS == true)
             {
                 // Make sure a patch was created
-                string sourceMinimapPatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
+                string dataPatchName = string.Concat("patch-", Configuration.PATCH_CLIENT_DATA_ID, ".MPQ");
+                string sourceMinimapPatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, dataPatchName);
                 if (File.Exists(sourceMinimapPatchFileNameAndPath) == false)
                 {
                     Logger.WriteError("Failed to deploy to client. Patch at '" + sourceMinimapPatchFileNameAndPath + "' did not exist");
@@ -2425,7 +2434,7 @@ namespace EQWOWConverter
                 }
 
                 // Delete the old one if it's already deployed on the client
-                string targetMinimapPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
+                string targetMinimapPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", dataPatchName);
                 if (File.Exists(targetMinimapPatchFileNameAndPath) == true)
                 {
                     try

@@ -39,9 +39,14 @@ namespace EQWOWConverter
         // The root folder where temporary folders and file will be generated (ensure at least 10GB of space is available in this location)
         public static readonly string PATH_WORKING_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets";
 
-        // Names of the newely generated patch files, without the extension (make sure this is a unique naming, often patch-4 and patch-enUS-5 here)
-        public static readonly string PATH_CLIENT_PATCH_FILE_NAME_NO_EXT = "patch-4";
-        public static readonly string PATH_CLIENT_PATCH_LOC_FILE_NAME_NO_EXT = "patch-enUS-5";
+        // ID to append to the end of the /Data/ patch file (such as "patch-4.mpq).  Make sure it's unique.
+        public static readonly string PATCH_CLIENT_DATA_ID = "4";
+
+        // ID to append to the localized patch file in /Data/<locale> (such as patch-enUS-5.mpq)
+        public static readonly string PATCH_CLIENT_DATA_LOC_ID = "5";
+
+        // What language to generate things as
+        public static readonly string PATCH_LOCALIZATION_STRING = "enUS";
 
         // ====================================================================
         // Deployment Rules
