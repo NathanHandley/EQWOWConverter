@@ -462,5 +462,41 @@ namespace EQWOWConverter
                     progressionCounter.Write(1);
             }
         }
+
+        public static void SplitMapImageInto12Segments(string inputFilePath, string outputFolder)
+        {
+            using (Bitmap inputImage = new Bitmap(inputFilePath))
+            {
+                string fileName = Path.GetFileNameWithoutExtension(inputFilePath);
+                int outputWidth = 256;
+                int outputHeight = 256;
+                int fileNumber = 1;
+
+                // Loop through 3 rows
+                for (int row = 0; row < 3; row++)
+                {
+                    // Loop through 4 columns
+                    for (int col = 0; col < 4; col++)
+                    {
+                        // Calculate source rectangle
+                        Rectangle sourceRect = new Rectangle(col * outputWidth, row * outputHeight, outputWidth, outputHeight);
+
+                        // Create new bitmap for output
+                        using (Bitmap outputImage = new Bitmap(outputWidth, outputHeight))
+                        {
+                            using (Graphics graphics = Graphics.FromImage(outputImage))
+                            {
+                                graphics.DrawImage(inputImage, new Rectangle(0, 0, outputWidth, outputHeight), sourceRect, GraphicsUnit.Pixel);
+                            }
+
+                            // Generate and save
+                            string outputPath = Path.Combine( outputFolder, string.Concat(fileName, fileNumber, ".png"));
+                            outputImage.Save(outputPath, ImageFormat.Png);
+                            fileNumber++;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

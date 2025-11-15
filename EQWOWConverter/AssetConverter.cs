@@ -121,7 +121,7 @@ namespace EQWOWConverter
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
             Task itemsSpellsTradeskillsTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills] Started");
+                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills, Maps] Started");
 
                 // Generate item templates
                 Logger.WriteInfo("Generating item templates...");
@@ -153,7 +153,7 @@ namespace EQWOWConverter
                 if (Configuration.GENERATE_MAPS == true)
                     GenerateZoneMaps();
 
-                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills] Ended");
+                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills] Ended, Maps");
             }, TaskCreationOptions.LongRunning);
             creaturesAndSpawnsTask.Wait();
             itemsSpellsTradeskillsTask.Wait();
@@ -2054,8 +2054,30 @@ namespace EQWOWConverter
         public void GenerateZoneMaps()
         {
             Logger.WriteDebug("Generating zone maps completed.");
+            string outputFolderRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Interface", "WorldMap");
 
-            // Create the output folder 
+            // Clean out the working folder
+            string workingFolderRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedMaps");
+            if (Directory.Exists(workingFolderRoot))
+                Directory.Delete(workingFolderRoot, true);
+            Directory.CreateDirectory(workingFolderRoot);
+
+            // Processing is on a zone-by-zone basis
+            foreach (ZoneProperties zoneProperties in ZoneProperties.GetZonePropertyListByShortName().Values)
+            {
+                // Copy in the complete zone map, slice it up, and convert it
+                string baseMapFileNameNoExt = string.Concat("EQ_", zoneProperties.ShortName);
+                string inputZoneMapImage = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "maps", baseMapFileNameNoExt + ".png");
+                if (File.Exists(inputZoneMapImage) == false)
+                {
+                    Logger.WriteWarning("GenerateZoneMaps couldn't find a source map file named ", inputZoneMapImage, ", so skipping");
+                    continue;
+                }
+                string workingMapFolder = Path.Combine(workingFolderRoot, baseMapFileNameNoExt);
+                Directory.CreateDirectory(workingMapFolder);
+                ImageTool.SplitMapImageInto12Segments(inputZoneMapImage, workingMapFolder);
+            }
+
 
 
 

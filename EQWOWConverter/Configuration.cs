@@ -131,8 +131,8 @@ namespace EQWOWConverter
         // If true, quests are generated
         public static readonly bool GENERATE_QUESTS = true;
 
-        // If true, generate and copy minimaps
-        public static readonly bool GENERATE_MINIMAPS = true;
+        // If true, generate and copy maps / minimaps
+        public static readonly bool GENERATE_MAPS = true;
 
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones

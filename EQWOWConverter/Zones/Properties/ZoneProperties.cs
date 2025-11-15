@@ -26,6 +26,7 @@ namespace EQWOWConverter.Zones
 
         public int DBCMapID;
         public int DBCMapDifficultyID;
+        public int DBCWorldMapAreaID;
         public UInt32 DBCWMOID;
         public string ShortName = string.Empty;
         public string DescriptiveName = string.Empty;
@@ -53,6 +54,10 @@ namespace EQWOWConverter.Zones
         public int SnowChanceFall = 0;
         public float CollisionMaxZ = 0;
         public List<BoundingBox> DiscardGeometryBoxes = new List<BoundingBox>();
+        public float DisplayMapMainLeft = 0;
+        public float DisplayMapMainRight = 0;
+        public float DisplayMapMainTop = 0;
+        public float DisplayMapMainBottom = 0;
 
         private static readonly object ListReadLock = new object();
         private static readonly object DBCWMOIDLock = new object();
@@ -713,7 +718,8 @@ namespace EQWOWConverter.Zones
 
                 zoneProperties.ShortName = shortName;
                 zoneProperties.DBCMapID = int.Parse(propertiesRow["WOWMapID"]);
-                zoneProperties.DBCMapDifficultyID = int.Parse(propertiesRow["WOWMapDifficultyID"]);                    
+                zoneProperties.DBCMapDifficultyID = int.Parse(propertiesRow["WOWMapDifficultyID"]);
+                zoneProperties.DBCWorldMapAreaID = int.Parse(propertiesRow["WorldMapAreaID"]);
                 zoneProperties.DescriptiveName = propertiesRow["DescriptiveName"];
                 zoneProperties.TelePosition.X = float.Parse(propertiesRow["TeleX"]) * Configuration.GENERATE_WORLD_SCALE;
                 zoneProperties.TelePosition.Y = float.Parse(propertiesRow["TeleY"]) * Configuration.GENERATE_WORLD_SCALE;
@@ -732,6 +738,10 @@ namespace EQWOWConverter.Zones
                 zoneProperties.SnowChanceSummer = int.Parse(propertiesRow["snow_chance_summer"]);
                 zoneProperties.SnowChanceFall = int.Parse(propertiesRow["snow_chance_fall"]);
                 zoneProperties.CollisionMaxZ = float.Parse(propertiesRow["CollisionGeometryMaxZ"]);
+                zoneProperties.DisplayMapMainLeft = float.Parse(propertiesRow["DisplayMapMainLeft"]);
+                zoneProperties.DisplayMapMainRight = float.Parse(propertiesRow["DisplayMapMainRight"]);
+                zoneProperties.DisplayMapMainTop = float.Parse(propertiesRow["DisplayMapMainTop"]);
+                zoneProperties.DisplayMapMainBottom = float.Parse(propertiesRow["DisplayMapMainBottom"]);
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
             else
