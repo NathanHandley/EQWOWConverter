@@ -18,11 +18,14 @@ using EQWOWConverter.Common;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Text;
 
 namespace EQWOWConverter
 {
     internal class ImageTool
     {
+        private static readonly object PNGtoBLPLock = new object();
+
         public enum IconSeriesDirection
         {
             AlongX,
@@ -332,7 +335,8 @@ namespace EQWOWConverter
         {
             Creature,
             Clothing,
-            SpellParticle
+            SpellParticle,
+            InGameMap
         }
 
         public static void GenerateColoredTintedTexture(string inputTextureFolder, string inputTextureFileNameNoExt, string workingDirectory,
@@ -427,6 +431,14 @@ namespace EQWOWConverter
 
         public static void ConvertPNGTexturesToBLP(List<string> fullFileInputPaths, ImageAssociationType imageType, LogCounter? progressionCounter = null)
         {
+            // Make sure the tool is there
+            string blpConverterFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "blpconverter", "BLPConverter.exe");
+            if (File.Exists(blpConverterFullPath) == false)
+            {
+                Logger.WriteError("Failed to convert images files. '" + blpConverterFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
+                return;
+            }
+
             string formatArg = "/FBLP_DXT5";
             switch (imageType)
             {
@@ -438,33 +450,66 @@ namespace EQWOWConverter
                     {
                         formatArg = "/FBLP_DXT5"; // TODO: Look into this, it may be the wrong format
                     } break;
+                case ImageAssociationType.InGameMap:
+                    {
+                        formatArg = "/FBLP_DXT1_A0";
+                    } break;
                 default:
                     {
                         Logger.WriteError("ConvertPNGTexturesToBLP failed. Unhandled image type of '" + imageType + "'");
                     } break;
             }
 
-            // Output a BLP file for each passed path
-            string blpConverterFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "blpconverter", "BLPConverter.exe");
-            foreach (string file in fullFileInputPaths)
+            bool moreToProcess = true;
+            while (moreToProcess)
             {
-                // Generate the BLP files
-                string args = "/M " + formatArg + " \"" + file + "\"";
+                // Create the batch
+                List<string> fileNameBatch = new List<string>();
+                lock (PNGtoBLPLock)
+                {
+                    if (fullFileInputPaths.Count == 0)
+                    {
+                        moreToProcess = false;
+                        continue;
+                    }
+                    else
+                    {
+                        int batchSize = Math.Min(Configuration.GENERATE_BLPCONVERTBATCHSIZE, fullFileInputPaths.Count);
+                        fileNameBatch = fullFileInputPaths.Take(batchSize).ToList();
+                        fullFileInputPaths.RemoveRange(0, batchSize);
+                    }
+                }
+
+                // Convert to a parameter
+                StringBuilder curFileArgListSB = new StringBuilder();
+                for (int i = 0; i < fileNameBatch.Count; i++)
+                {
+                    string curFile = fileNameBatch[i];
+                    curFileArgListSB.Append(" \"");
+                    curFileArgListSB.Append(curFile);
+                    curFileArgListSB.Append("\"");
+                }
+
+                // Convert them
+                Logger.WriteDebug("Converting png files '" + curFileArgListSB.ToString() + "'");
+                string args = string.Concat("/M ", formatArg, " ", curFileArgListSB.ToString());
                 System.Diagnostics.Process process = new System.Diagnostics.Process();
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.Arguments = args;
                 process.StartInfo.FileName = blpConverterFullPath;
                 process.Start();
+                //process.WaitForExit();
                 Logger.WriteDebug(process.StandardOutput.ReadToEnd());
                 Console.Title = "EverQuest to WoW Converter";
-
+                curFileArgListSB.Clear();
                 if (progressionCounter != null)
                     progressionCounter.Write(1);
             }
         }
 
-        public static void SplitMapImageInto12Segments(string inputFilePath, string outputFolder)
+        public static void SplitMapImageInto12Segments(string inputFilePath, string outputFolder, out List<string> outputImageFullPaths)
         {
+            outputImageFullPaths = new List<string>();
             using (Bitmap inputImage = new Bitmap(inputFilePath))
             {
                 string fileName = Path.GetFileNameWithoutExtension(inputFilePath);
@@ -493,6 +538,7 @@ namespace EQWOWConverter
                             string outputPath = Path.Combine( outputFolder, string.Concat(fileName, fileNumber, ".png"));
                             outputImage.Save(outputPath, ImageFormat.Png);
                             fileNumber++;
+                            outputImageFullPaths.Add(outputPath);
                         }
                     }
                 }
