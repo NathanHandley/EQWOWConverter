@@ -85,12 +85,12 @@ namespace EQWOWConverter
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 zoneAndObjectTask.Wait();
 
-            // Thread 2: Creatures, Transports and Spawns
+            // Thread 2: Creatures, Transports, Spawns and Maps
             Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
             List<CreatureSpawnPool> creatureSpawnPools = new List<CreatureSpawnPool>();
             Task creaturesAndSpawnsTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Creatures, Transports, and Spawns] Started");
+                Logger.WriteInfo("<+> Thread [Creatures, Transports, Spawns, and Maps] Started");
 
                 // Creatures
                 CreatureRace.GenerateAllSounds();
@@ -110,18 +110,22 @@ namespace EQWOWConverter
                 else
                     Logger.WriteInfo("- Note: Transport generation is set to false in the Configuration");
 
-                Logger.WriteInfo("<-> Thread [Creatures, Transports, and Spawns] Ended");
+                // Maps
+                if (Configuration.GENERATE_MAPS == true)
+                    GenerateZoneMaps();
+
+                Logger.WriteInfo("<-> Thread [Creatures, Transports, Spawns, and Maps] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 creaturesAndSpawnsTask.Wait();
 
-            // Thread 3: Items, Spells, Tradeskills, Maps
+            // Thread 3: Items, Spells, Tradeskills
             List<SpellTemplate> spellTemplates = new List<SpellTemplate>();
             List<TradeskillRecipe> tradeskillRecipes = new List<TradeskillRecipe>();
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
             Task itemsSpellsTradeskillsTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills, Maps] Started");
+                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills] Started");
 
                 // Generate item templates
                 Logger.WriteInfo("Generating item templates...");
@@ -149,11 +153,7 @@ namespace EQWOWConverter
                 // Tradeskills
                 GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates, out tradeskillRecipes);
 
-                // Maps
-                if (Configuration.GENERATE_MAPS == true)
-                    GenerateZoneMaps();
-
-                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills] Ended, Maps");
+                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills] Ended");
             }, TaskCreationOptions.LongRunning);
             creaturesAndSpawnsTask.Wait();
             itemsSpellsTradeskillsTask.Wait();
@@ -2053,9 +2053,6 @@ namespace EQWOWConverter
 
         public void GenerateZoneMaps()
         {
-            Logger.WriteDebug("Generating zone maps completed.");
-            string outputFolderRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Interface", "WorldMap");
-
             // Clean out the working folder
             string workingFolderRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedMaps");
             if (Directory.Exists(workingFolderRoot))
@@ -2063,6 +2060,7 @@ namespace EQWOWConverter
             Directory.CreateDirectory(workingFolderRoot);
 
             // Processing is on a zone-by-zone basis
+            LogCounter mapProcessCounter = new LogCounter("Converting display maps...", 0, ZoneProperties.GetZonePropertyListByShortName().Count);
             foreach (ZoneProperties zoneProperties in ZoneProperties.GetZonePropertyListByShortName().Values)
             {
                 // Copy in the complete zone map, slice it up, and convert it
@@ -2075,15 +2073,18 @@ namespace EQWOWConverter
                 }
                 string workingMapFolder = Path.Combine(workingFolderRoot, baseMapFileNameNoExt);
                 Directory.CreateDirectory(workingMapFolder);
-                ImageTool.SplitMapImageInto12Segments(inputZoneMapImage, workingMapFolder);
+                List<string> outputImageFullPaths;
+                ImageTool.SplitMapImageInto12Segments(inputZoneMapImage, workingMapFolder, out outputImageFullPaths);
+                ImageTool.ConvertPNGTexturesToBLP(outputImageFullPaths, ImageTool.ImageAssociationType.InGameMap);
+                string[] pngFiles = Directory.GetFiles(workingMapFolder, "*.png");
+                foreach (string pngFile in pngFiles)
+                    File.Delete(pngFile);
+                mapProcessCounter.Write(1);
             }
 
-
-
-
-
-
-            Logger.WriteDebug("Generating zone maps completed.");
+            // Copy it all out
+            string outputFolderRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Interface", "WorldMap");
+            FileTool.CopyDirectoryAndContents(workingFolderRoot, outputFolderRoot, true, true);
         }
 
         public void ExtractMinimapMD5TranslateFile()
