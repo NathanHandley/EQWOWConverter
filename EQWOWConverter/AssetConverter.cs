@@ -65,7 +65,7 @@ namespace EQWOWConverter
                 Logger.WriteInfo("- Note: DBC File Extraction is set to false in the Configuration");
 
             // Extract minimap metadata
-            if (Configuration.GENERATE_MINIMAPS == true)
+            if (Configuration.GENERATE_MAPS == true)
                 ExtractMinimapMD5TranslateFile();
 
             // Thread 1: Objects and Zones
@@ -115,7 +115,7 @@ namespace EQWOWConverter
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 creaturesAndSpawnsTask.Wait();
 
-            // Thread 3: Items, Spells, Tradeskills
+            // Thread 3: Items, Spells, Tradeskills, Maps
             List<SpellTemplate> spellTemplates = new List<SpellTemplate>();
             List<TradeskillRecipe> tradeskillRecipes = new List<TradeskillRecipe>();
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
@@ -148,6 +148,10 @@ namespace EQWOWConverter
 
                 // Tradeskills
                 GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates, out tradeskillRecipes);
+
+                // Maps
+                if (Configuration.GENERATE_MAPS == true)
+                    GenerateZoneMaps();
 
                 Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills] Ended");
             }, TaskCreationOptions.LongRunning);
@@ -238,7 +242,7 @@ namespace EQWOWConverter
                     CreateMainPatchMPQ();
                 else
                     UpdateMainPatchMPQ();
-                if (Configuration.GENERATE_MINIMAPS == true)
+                if (Configuration.GENERATE_MAPS == true)
                     CreateMinimapPatchMPQ();
 
                 // Deploy 
@@ -2047,6 +2051,19 @@ namespace EQWOWConverter
             Logger.WriteDebug("Converting tradeskills completed.");
         }
 
+        public void GenerateZoneMaps()
+        {
+            Logger.WriteDebug("Generating zone maps completed.");
+
+            // Create the output folder 
+
+
+
+
+
+            Logger.WriteDebug("Generating zone maps completed.");
+        }
+
         public void ExtractMinimapMD5TranslateFile()
         {
             string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
@@ -2124,7 +2141,7 @@ namespace EQWOWConverter
             FileTool.CreateBlankDirectory(exportMiniMapsMPQMinimapFolder, false);
 
             // Check the asset source
-            string minimapAssetFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "Minimaps");
+            string minimapAssetFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "minimaps");
             if (Directory.Exists(minimapAssetFolder) == false)
             {
                 Logger.WriteError("Failed to generate minimap patch, as '" + minimapAssetFolder + "' does not exist. (Be sure to set your Configuration.PATH_ASSETS_FOLDER properly)");
@@ -2422,7 +2439,7 @@ namespace EQWOWConverter
             FileTool.CopyFile(sourcePatchFileNameAndPath, targetPatchFileNameAndPath);
 
             // Also deploy the minimaps patch, if configured to do so
-            if (Configuration.GENERATE_MINIMAPS == true)
+            if (Configuration.GENERATE_MAPS == true)
             {
                 // Make sure a patch was created
                 string dataPatchName = string.Concat("patch-", Configuration.PATCH_CLIENT_DATA_ID, ".MPQ");

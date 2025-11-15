@@ -192,6 +192,8 @@ namespace EQWOWConverter
             totemCategoryDBC.LoadFromDisk(dbcInputFolder, "TotemCategory.dbc");
             TransportAnimationDBC transportAnimationDBC = new TransportAnimationDBC();
             transportAnimationDBC.LoadFromDisk(dbcInputFolder, "TransportAnimation.dbc");
+            WorldMapAreaDBC worldMapAreaDBC = new WorldMapAreaDBC();
+            worldMapAreaDBC.LoadFromDisk(dbcInputFolder, "WorldMapArea.dbc");            
             WorldSafeLocsDBC worldSafeLocsDBC = new WorldSafeLocsDBC();
             worldSafeLocsDBC.LoadFromDisk(dbcInputFolder, "WorldSafeLocs.dbc");
             WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
@@ -722,6 +724,8 @@ namespace EQWOWConverter
             totemCategoryDBC.SaveToDisk(dbcOutputServerFolder);
             transportAnimationDBC.SaveToDisk(dbcOutputClientFolder);
             transportAnimationDBC.SaveToDisk(dbcOutputServerFolder);
+            worldMapAreaDBC.SaveToDisk(dbcOutputClientFolder);
+            worldMapAreaDBC.SaveToDisk(dbcOutputServerFolder);
             worldSafeLocsDBC.SaveToDisk(dbcOutputClientFolder);
             worldSafeLocsDBC.SaveToDisk(dbcOutputServerFolder);
             wmoAreaTableDBC.SaveToDisk(dbcOutputClientFolder);
