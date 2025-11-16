@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class BefallenZoneProperties : ZoneProperties
@@ -70,6 +63,8 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Top", 50.491291f, 281.136414f, 31.637880f, -410.858093f, -301.009155f, -28.019581f);
             
             AddZoneLineBox("commons", -1155.6317f, 596.3344f, -42.280308f, ZoneLineOrientationType.North, -49.9417f, 42.162197f, 12.469f, -63.428658f, 27.86666f, -0.5000006f);
+
+            AddDiscardGeometryBox(36.474758f, 33.552818f, 47.433811f, -40.702049f, -32.958870f, -17.738621f);
         }
     }
 }
