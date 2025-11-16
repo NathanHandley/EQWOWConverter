@@ -17,6 +17,7 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.GameObjects;
+using EQWOWConverter.Zones;
 using System.Drawing;
 using System.Text;
 
@@ -55,6 +56,7 @@ namespace EQWOWConverter
             string outputMiscImagesFolderRoot = Path.Combine(eqExportsCondensedPath, "miscimages");
             string outputZoneFolderRoot = Path.Combine(eqExportsCondensedPath, "zones");
             string outputLiquidSurfacesFolderRoot = Path.Combine(eqExportsCondensedPath, "liquidsurfaces");
+            string outputWorldMapsFolderRoot = Path.Combine(eqExportsCondensedPath, "worldmaps");
             string tempFolderRoot = Path.Combine(eqExportsCondensedPath, "temp");
             if (Directory.Exists(eqExportsCondensedPath))
                 Directory.Delete(eqExportsCondensedPath, true);
@@ -67,6 +69,7 @@ namespace EQWOWConverter
             Directory.CreateDirectory(outputObjectsSkeletonsFolderRoot);
             Directory.CreateDirectory(outputZoneFolderRoot);
             Directory.CreateDirectory(outputLiquidSurfacesFolderRoot);
+            Directory.CreateDirectory(outputWorldMapsFolderRoot);
 
             // Keep a store of all objects found
             SortedSet<string> staticObjectNames = new SortedSet<string>();
@@ -320,6 +323,9 @@ namespace EQWOWConverter
             // Create particle sprite sheets
             GenerateSpellParticleSpriteSheets();
 
+            // Condition the maps
+            GenerateMaps();
+
             // Generate the liquid surfaces
             Logger.WriteInfo("Generating liquid surface materials...");
             for (int i = 1; i <= 30; i++)
@@ -374,7 +380,38 @@ namespace EQWOWConverter
                 }
             }
 
-            Logger.WriteInfo("Generating spell particle sprite sheets complete...");
+            Logger.WriteInfo("Generating spell particle sprite sheets complete.");
+        }
+
+        public void GenerateMaps()
+        {
+            Logger.WriteInfo("Generating maps...");
+
+            // Clean out the target folder
+            string targetFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "worldmaps");
+            if (Directory.Exists(targetFolder))
+                Directory.Delete(targetFolder, true);
+            Directory.CreateDirectory(targetFolder);
+
+            // Processing is on a zone-by-zone basis
+            LogCounter mapProcessCounter = new LogCounter("Converting display maps...", 0, ZoneProperties.GetZonePropertyListByShortName().Count);
+            foreach (ZoneProperties zoneProperties in ZoneProperties.GetZonePropertyListByShortName().Values)
+            {
+                // Copy in the complete zone map & slice it up
+                string baseMapFileNameNoExt = string.Concat("EQ_", zoneProperties.ShortName);
+                string inputZoneMapImage = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "maps", baseMapFileNameNoExt + ".png");
+                if (File.Exists(inputZoneMapImage) == false)
+                {
+                    Logger.WriteWarning("GenerateZoneMaps couldn't find a source map file named ", inputZoneMapImage, ", so skipping");
+                    continue;
+                }
+                string targetMapFolder = Path.Combine(targetFolder, baseMapFileNameNoExt);
+                Directory.CreateDirectory(targetMapFolder);
+                List<string> outputImageFullPaths;
+                ImageTool.SplitMapImageInto12Segments(inputZoneMapImage, targetMapFolder, out outputImageFullPaths);
+            }
+
+            Logger.WriteInfo("Generating maps complete.");
         }
 
         private void ResizeTexturesAndSaveCoordinatesInMaterialLists(string topFolderName, string workingRootFolderPath)
@@ -701,14 +738,14 @@ namespace EQWOWConverter
             string spellIconFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellicons");
             if (Directory.Exists(spellIconFolder) == false)
             {
-                Logger.WriteError("Failed to convert png files to blp, as the itemicons folder did not exist at '" + spellIconFolder + "'");
+                Logger.WriteError("Failed to convert png files to blp, as the spell icons folder did not exist at '" + spellIconFolder + "'");
                 return false;
             }
             textureFoldersToProcess.Add(spellIconFolder);
             string spellSpriteSheetsFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellspritesheets");
             if (Directory.Exists(spellSpriteSheetsFolder) == false)
             {
-                Logger.WriteError("Failed to convert png files to blp, as the itemicons folder did not exist at '" + spellSpriteSheetsFolder + "'");
+                Logger.WriteError("Failed to convert png files to blp, as the spell sprites folder did not exist at '" + spellSpriteSheetsFolder + "'");
                 return false;
             }
             textureFoldersToProcess.Add(spellSpriteSheetsFolder);
@@ -729,6 +766,14 @@ namespace EQWOWConverter
                 }
                 textureFoldersToProcess.Add(curZoneTextureFolder);
             }
+            string mapRootFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "worldmaps");
+            if (Directory.Exists(mapRootFolder) == false)
+            {
+                Logger.WriteError("Failed to convert png files to blp, as the world maps folder did not exist at '" + mapRootFolder + "'");
+                return false;
+            }
+            string[] mapDirectories = Directory.GetDirectories(mapRootFolder);
+            textureFoldersToProcess.AddRange(mapDirectories);
 
             // Get all the individual files to process
             Logger.WriteInfo("Building list of png files to convert...");

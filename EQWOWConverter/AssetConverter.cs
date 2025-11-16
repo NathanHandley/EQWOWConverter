@@ -112,7 +112,7 @@ namespace EQWOWConverter
 
                 // Maps
                 if (Configuration.GENERATE_MAPS == true)
-                    GenerateZoneMaps();
+                    CopyZoneMaps();
 
                 Logger.WriteInfo("<-> Thread [Creatures, Transports, Spawns, and Maps] Ended");
             }, TaskCreationOptions.LongRunning);
@@ -2051,40 +2051,11 @@ namespace EQWOWConverter
             Logger.WriteDebug("Converting tradeskills completed.");
         }
 
-        public void GenerateZoneMaps()
+        public void CopyZoneMaps()
         {
-            // Clean out the working folder
-            string workingFolderRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedMaps");
-            if (Directory.Exists(workingFolderRoot))
-                Directory.Delete(workingFolderRoot, true);
-            Directory.CreateDirectory(workingFolderRoot);
-
-            // Processing is on a zone-by-zone basis
-            LogCounter mapProcessCounter = new LogCounter("Converting display maps...", 0, ZoneProperties.GetZonePropertyListByShortName().Count);
-            foreach (ZoneProperties zoneProperties in ZoneProperties.GetZonePropertyListByShortName().Values)
-            {
-                // Copy in the complete zone map, slice it up, and convert it
-                string baseMapFileNameNoExt = string.Concat("EQ_", zoneProperties.ShortName);
-                string inputZoneMapImage = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "maps", baseMapFileNameNoExt + ".png");
-                if (File.Exists(inputZoneMapImage) == false)
-                {
-                    Logger.WriteWarning("GenerateZoneMaps couldn't find a source map file named ", inputZoneMapImage, ", so skipping");
-                    continue;
-                }
-                string workingMapFolder = Path.Combine(workingFolderRoot, baseMapFileNameNoExt);
-                Directory.CreateDirectory(workingMapFolder);
-                List<string> outputImageFullPaths;
-                ImageTool.SplitMapImageInto12Segments(inputZoneMapImage, workingMapFolder, out outputImageFullPaths);
-                ImageTool.ConvertPNGTexturesToBLP(outputImageFullPaths, ImageTool.ImageAssociationType.InGameMap);
-                string[] pngFiles = Directory.GetFiles(workingMapFolder, "*.png");
-                foreach (string pngFile in pngFiles)
-                    File.Delete(pngFile);
-                mapProcessCounter.Write(1);
-            }
-
-            // Copy it all out
+            string sourceFolderRoot = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "worldmaps");
             string outputFolderRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Interface", "WorldMap");
-            FileTool.CopyDirectoryAndContents(workingFolderRoot, outputFolderRoot, true, true);
+            FileTool.CopyDirectoryAndContents(sourceFolderRoot, outputFolderRoot, true, true, "*.blp");
         }
 
         public void ExtractMinimapMD5TranslateFile()
