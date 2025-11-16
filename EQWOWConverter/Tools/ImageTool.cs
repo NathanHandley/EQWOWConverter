@@ -452,7 +452,7 @@ namespace EQWOWConverter
                     } break;
                 case ImageAssociationType.InGameMap:
                     {
-                        formatArg = "/FBLP_DXT1_A0";
+                        formatArg = "/FBLP_DXT1_A1";
                     } break;
                 default:
                     {
