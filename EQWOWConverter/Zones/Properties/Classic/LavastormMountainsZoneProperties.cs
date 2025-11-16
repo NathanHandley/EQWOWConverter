@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class LavastormMountainsZoneProperties : ZoneProperties
@@ -45,6 +38,8 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("nektulos", 3052.935791f, 312.635284f, -19.294090f, ZoneLineOrientationType.South, -2100.800537f, -115.948547f, 129.457657f, -2171.145996f, -253.399704f, -20.001289f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", 1329.520508f, 1471.655151f, -1583.654907f, -1024.369141f, -11.905970f, 300f);
             AddAlwaysBrightMaterial("d_lava001");
+
+            AddDiscardGeometryBox(-2515.055420f, 1090.460205f, 437.519440f, -3393.817383f, -358.500946f, -157.958817f);
         }
     }
 }
