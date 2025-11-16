@@ -2279,6 +2279,11 @@ namespace EQWOWConverter
                 string relativeZoneMusicPath = Path.Combine("Sound", "Music", "Everquest", zoneName);
                 string fullZoneMusicPath = Path.Combine(mpqReadyFolder, relativeZoneMusicPath);
                 mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneMusicPath + "\" \"" + relativeZoneMusicPath + "\" /r");
+
+                // Maps
+                string relativeWorldMapsPath = Path.Combine("Interface", "WorldMap", string.Concat("EQ_", zoneName));
+                string fullWorldMapPath = Path.Combine(mpqReadyFolder, relativeWorldMapsPath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullWorldMapPath + "\" \"" + relativeWorldMapsPath + "\" /r");
             }
 
             // Transports
