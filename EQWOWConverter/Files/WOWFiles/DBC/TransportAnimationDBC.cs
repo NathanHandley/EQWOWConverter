@@ -40,5 +40,37 @@ namespace EQWOWConverter.WOWFiles
             newRow.SortValue3 = id;
             Rows.Add(newRow);
         }
+
+        protected override void OnPostLoadDataFromDisk()
+        {
+            // Convert any raw data rows to actual data rows (which should be all of them)
+            foreach (DBCRow row in Rows)
+            {
+                // This shouldn't be possible, but control for it just in case
+                if (row.SourceRawBytes.Count == 0)
+                {
+                    Logger.WriteError("TransportAnimationDBC had no source raw bytes when converting a row in OnPostLoadDataFromDisk");
+                    continue;
+                }
+
+                // Fill every field
+                int byteCursor = 0;
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddFloatFromSourceRawBytes(ref byteCursor);
+                row.AddFloatFromSourceRawBytes(ref byteCursor);
+                row.AddFloatFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+
+                // Attach the sort rows
+                row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[1]).Value; // GameObjectTemplateID / TransportID
+                row.SortValue2 = ((DBCRow.DBCFieldInt32)row.AddedFields[2]).Value; // TimeINdex
+                row.SortValue3 = ((DBCRow.DBCFieldInt32)row.AddedFields[0]).Value; // ID
+
+                // Purge raw data
+                row.SourceRawBytes.Clear();
+            }
+        }
     }
 }
