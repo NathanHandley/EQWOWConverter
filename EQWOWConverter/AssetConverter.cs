@@ -56,6 +56,9 @@ namespace EQWOWConverter
             string exportMiniMapsMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReadyMiniMaps");
             if (Directory.Exists(exportMiniMapsMPQRootFolder) == true)
                 Directory.Delete(exportMiniMapsMPQRootFolder, true);
+            string exportAddOnsRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady");
+            if (Directory.Exists(exportAddOnsRootFolder) == true)
+                Directory.Delete(exportAddOnsRootFolder, true);
 
             // Extract DBC files
             DBCFileWorker dbcFileWorker = new DBCFileWorker();
@@ -112,7 +115,10 @@ namespace EQWOWConverter
 
                 // Maps
                 if (Configuration.GENERATE_MAPS == true)
+                {
                     CopyZoneMaps();
+                    GenerateMapAddOns();
+                }
 
                 Logger.WriteInfo("<-> Thread [Creatures, Transports, Spawns, and Maps] Ended");
             }, TaskCreationOptions.LongRunning);
@@ -2053,9 +2059,46 @@ namespace EQWOWConverter
 
         public void CopyZoneMaps()
         {
+            Logger.WriteDebug("Copying zone maps...");
             string sourceFolderRoot = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "worldmaps");
             string outputFolderRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Interface", "WorldMap");
             FileTool.CopyDirectoryAndContents(sourceFolderRoot, outputFolderRoot, true, true, "*.blp");
+            Logger.WriteDebug("Copying zone maps complete.");
+        }
+
+        public void GenerateMapAddOns()
+        {
+            Logger.WriteDebug("Generating map addons...");
+
+            // Create core destination folder and copy the addon
+            string sourceFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_MapLinker");
+            string outputFolderRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_MapLinker");
+            if (Directory.Exists(outputFolderRoot) == false)
+                Directory.CreateDirectory(outputFolderRoot);
+            FileTool.CopyDirectoryAndContents(sourceFolder, outputFolderRoot, true, true);
+
+            // Delete the example / template links file and start a new one
+            string outputLinksFilePath = Path.Combine(outputFolderRoot, "EQ_MapLinks.lua");
+            File.Delete(outputLinksFilePath);
+            StringBuilder outputLinksFileTextSB = new StringBuilder();
+            outputLinksFileTextSB.AppendLine("EQ_MapLinks = EQ_MapLinks or {}");
+            outputLinksFileTextSB.AppendLine("");
+            outputLinksFileTextSB.AppendLine("EQ_MapLinks.LINKS = {");
+
+            // Create the map links by zone properties
+            Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
+            foreach (ZoneProperties zoneProperties in zonePropertiesByShortName.Values)
+            {
+
+
+
+            }
+            outputLinksFileTextSB.AppendLine("}");
+
+            // Output the new links file
+            File.WriteAllText(outputLinksFilePath, outputLinksFileTextSB.ToString());
+
+            Logger.WriteDebug("Generating map addons complete.");
         }
 
         public void ExtractMinimapMD5TranslateFile()
@@ -2437,7 +2480,7 @@ namespace EQWOWConverter
             // Copy it
             FileTool.CopyFile(sourcePatchFileNameAndPath, targetPatchFileNameAndPath);
 
-            // Also deploy the minimaps patch, if configured to do so
+            // Also deploy the minimaps patch & addon, if configured to do so
             if (Configuration.GENERATE_MAPS == true)
             {
                 // Make sure a patch was created
@@ -2469,6 +2512,13 @@ namespace EQWOWConverter
 
                 // Copy it
                 FileTool.CopyFile(sourceMinimapPatchFileNameAndPath, targetMinimapPatchFileNameAndPath);
+
+                // Also delete/copy the maplinks addon
+                string sourceMapLinkerAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_MapLinker");
+                string targetMapLinkerAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_MapLinker");
+                if (Directory.Exists(targetMapLinkerAddOnFolder) == true)
+                    Directory.Delete(targetMapLinkerAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceMapLinkerAddOnFolder, targetMapLinkerAddOnFolder, true, true);
             }
 
             Logger.WriteDebug("Deploying to client complete");
