@@ -1,0 +1,7 @@
+## Interface: 30300
+## Title: EverQuest Map Linker
+## Notes: Gives clickable map regions allowing map-switching without needing ZMPs
+## Version: 1.0
+
+EQ_MapLinker.lua
+EQ_MapLinks.lua
