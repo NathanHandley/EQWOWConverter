@@ -32,16 +32,18 @@ end)
 
 function EQ_MapLinker:Init()
     if EQ_MapLinks then self.LINKS = EQ_MapLinks.LINKS or {} end
-    local count = 0 for _ in pairs(self.LINKS) do count = count + 1 end
-	
+    
 	-- Add 1 to all of the source map IDs since it's 0 vs 1 based index
 	local newLinks = {}
     for sourceMapID, links in pairs(self.LINKS) do
         local newSourceID = sourceMapID + 1
         newLinks[newSourceID] = links
     end
-    self.LINKS = newLinks
-
+	self.LINKS = newLinks
+	self:BuildTargetIndex()
+	
+	local count = 0 for _ in pairs(self.LINKS) do count = count + 1 end
+	
     self.buttons = {}
     self:BuildTargetIndex()
     self:HookMap()
