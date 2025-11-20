@@ -2171,6 +2171,16 @@ namespace EQWOWConverter
                     int displayMapBoxWidth = Convert.ToInt32(mapLinkBox.Width * pixelScale);
                     int displayMapBoxHeight = Convert.ToInt32(mapLinkBox.Height * pixelScale);
 
+                    // Clamp the box
+                    if (displayMapBoxLeft < 0)
+                        displayMapBoxLeft = 0;
+                    if (displayMapBoxTop < 0)
+                        displayMapBoxTop = 0;
+                    if (displayMapBoxLeft + displayMapBoxWidth > mapOutputWidth)
+                        displayMapBoxWidth -= (displayMapBoxLeft + displayMapBoxWidth) - mapOutputWidth;
+                    if (displayMapBoxTop + displayMapBoxHeight > mapOutputHeight)
+                        displayMapBoxHeight -= (displayMapBoxTop + displayMapBoxHeight) - mapOutputHeight;
+
                     // Add it as a link
                     zoneBlockSB.Append("   {name=\"");
                     zoneBlockSB.Append(linkedZoneProperties.DescriptiveName);
