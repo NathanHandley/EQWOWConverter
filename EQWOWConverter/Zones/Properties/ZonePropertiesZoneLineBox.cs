@@ -30,6 +30,10 @@ namespace EQWOWConverter.Zones
         public float BoxWidth;
         public float BoxHeight;
         public float BoxOrientation = 0.0f;
+        public float NorthEdgeWorldScaled = 0.0f; // Used for displayed world maps
+        public float SouthEdgeWorldScaled = 0.0f; // Used for displayed world maps
+        public float WestEdgeWorldScaled = 0.0f; // Used for displayed world maps
+        public float EastEdgeWorldScaled = 0.0f; // Used for displayed world maps
 
         public ZonePropertiesZoneLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY,
             float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY,
@@ -47,6 +51,12 @@ namespace EQWOWConverter.Zones
             boxBottomSoutheastX *= Configuration.GENERATE_WORLD_SCALE;
             boxBottomSoutheastY *= Configuration.GENERATE_WORLD_SCALE;
             boxBottomSoutheastZ *= Configuration.GENERATE_WORLD_SCALE;
+
+            // Save values for the display map
+            NorthEdgeWorldScaled = boxTopNorthwestX;
+            WestEdgeWorldScaled = boxTopNorthwestY;
+            SouthEdgeWorldScaled = boxBottomSoutheastX;
+            EastEdgeWorldScaled = boxBottomSoutheastY;
 
             // Create the box base values
             TargetZoneShortName = targetZoneShortName;
@@ -109,6 +119,12 @@ namespace EQWOWConverter.Zones
             BoxWidth = zoneLineBoxBounding.GetYDistance();
             BoxLength = zoneLineBoxBounding.GetXDistance();
             BoxHeight = zoneLineBoxBounding.GetZDistance();
+
+            // Save values for the display map
+            NorthEdgeWorldScaled = boxTopNorthwestX;
+            WestEdgeWorldScaled = boxTopNorthwestY;
+            SouthEdgeWorldScaled = boxBottomSoutheastX;
+            EastEdgeWorldScaled = boxBottomSoutheastY;
         }
     }
 }

@@ -34,7 +34,7 @@ namespace EQWOWConverter.WOWFiles
         {
             Zone = zone;
             BaseFileName = zone.ShortName;
-            BoundingBox = zone.BoundingBox;
+            BoundingBox = zone.AllGeometryBoundingBox;
 
             // Create root object
             RootObject = new WMORoot(zone, textureRelativeOutputFolder, exportStaticDoodadsFolder, exportZoneObjectsFolder, addConvexVolumePlanes);

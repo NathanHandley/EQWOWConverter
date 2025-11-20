@@ -75,7 +75,7 @@ namespace EQWOWConverter
             List<Zone> zones = new List<Zone>();
             Task zoneAndObjectTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Zone and Objects] Started");
+                Logger.WriteInfo("<+> Thread [Zone, Maps, Objects] Started");
 
                 // Objects (must always come before zones)
                 if (Configuration.GENERATE_OBJECTS == true)
@@ -83,7 +83,15 @@ namespace EQWOWConverter
 
                 // Zones
                 ConvertEQZonesToWOW(out zones);
-                Logger.WriteInfo("<-> Thread [Zone and Objects] Ended");
+
+                // Maps
+                if (Configuration.GENERATE_MAPS == true)
+                {
+                    CopyZoneMaps();
+                    GenerateMapAddOns(zones);
+                }
+
+                Logger.WriteInfo("<-> Thread [Zone, Maps, Objects] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 zoneAndObjectTask.Wait();
@@ -93,7 +101,7 @@ namespace EQWOWConverter
             List<CreatureSpawnPool> creatureSpawnPools = new List<CreatureSpawnPool>();
             Task creaturesAndSpawnsTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Creatures, Transports, Spawns, and Maps] Started");
+                Logger.WriteInfo("<+> Thread [Creatures, Transports, Spawns] Started");
 
                 // Creatures
                 CreatureRace.GenerateAllSounds();
@@ -113,14 +121,7 @@ namespace EQWOWConverter
                 else
                     Logger.WriteInfo("- Note: Transport generation is set to false in the Configuration");
 
-                // Maps
-                if (Configuration.GENERATE_MAPS == true)
-                {
-                    CopyZoneMaps();
-                    GenerateMapAddOns();
-                }
-
-                Logger.WriteInfo("<-> Thread [Creatures, Transports, Spawns, and Maps] Ended");
+                Logger.WriteInfo("<-> Thread [Creatures, Transports, Spawns] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 creaturesAndSpawnsTask.Wait();
@@ -1096,10 +1097,10 @@ namespace EQWOWConverter
             // Calculate range of ADTs to generate based on zone dimensions
             // Note: Coordinate system differs between ADT and WMO, so the top/bottom are traded (and sign inverted)
             float tileLength = 1600f / 3f; // Comes out to 533.333 repeat, doing the math here to make it be as exact as possible
-            float worldNorth = curZone.BoundingBox.BottomCorner.X * -1f;
-            float worldWest = curZone.BoundingBox.BottomCorner.Y * -1f;
-            float worldSouth = curZone.BoundingBox.TopCorner.X * -1f;
-            float worldEast = curZone.BoundingBox.TopCorner.Y * -1f;
+            float worldNorth = curZone.AllGeometryBoundingBox.BottomCorner.X * -1f;
+            float worldWest = curZone.AllGeometryBoundingBox.BottomCorner.Y * -1f;
+            float worldSouth = curZone.AllGeometryBoundingBox.TopCorner.X * -1f;
+            float worldEast = curZone.AllGeometryBoundingBox.TopCorner.Y * -1f;
             int tileXMin = 31 - Convert.ToInt32(MathF.Truncate(MathF.Abs(worldWest) / tileLength));
             int tileXMax = 32 + Convert.ToInt32(MathF.Truncate(MathF.Abs(worldEast) / tileLength));
             int tileYMin = 31 - Convert.ToInt32(MathF.Truncate(MathF.Abs(worldNorth) / tileLength));
@@ -1119,7 +1120,7 @@ namespace EQWOWConverter
             for (UInt32 y = Convert.ToUInt32(tileYMin); y <= Convert.ToUInt32(tileYMax); y++)
                 for (UInt32 x = Convert.ToUInt32(tileXMin); x <= Convert.ToUInt32(tileXMax); x++)
                 {
-                    ADT zoneADT = new ADT(curZone, zoneWMO.RootFileRelativePathWithFileName, x, y, (curZone.BoundingBox.TopCorner.Z + 5f));
+                    ADT zoneADT = new ADT(curZone, zoneWMO.RootFileRelativePathWithFileName, x, y, (curZone.AllGeometryBoundingBox.TopCorner.Z + 5f));
                     zoneADT.WriteToDisk(exportMPQRootFolder);
                 }
 
@@ -2066,7 +2067,7 @@ namespace EQWOWConverter
             Logger.WriteDebug("Copying zone maps complete.");
         }
 
-        public void GenerateMapAddOns()
+        public void GenerateMapAddOns(List<Zone> zones)
         {
             Logger.WriteDebug("Generating map addons...");
 
@@ -2087,11 +2088,76 @@ namespace EQWOWConverter
 
             // Create the map links by zone properties
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
-            foreach (ZoneProperties zoneProperties in zonePropertiesByShortName.Values)
+            foreach (Zone zone in zones)
             {
+                // Only process for zones with zone lines
+                if (zone.ZoneProperties.ZoneLineBoxes.Count == 0)
+                    continue;
 
+                // Convert zone geometry to map display geometry
+                int mapOutputWidth = 1002;
+                int mapOutputHeight = 668;
+                int mapOutputContentWidth = mapOutputWidth - (Configuration.GENERATE_MAPS_LEFT_BORDER_PIXEL_SIZE + Configuration.GENERATE_MAPS_RIGHT_BORDER_PIXEL_SIZE);
+                int mapOutputContentHeight = mapOutputHeight - (Configuration.GENERATE_MAPS_TOP_BORDER_PIXEL_SIZE + Configuration.GENERATE_MAPS_BOTTOM_BORDER_PIXEL_SIZE);
+                float unscaledZoneGeometryWidth = (float)zone.RenderedGeometryBoundingBox.GetYDistance();
+                float unscaledZoneGeometryHeight = (float)zone.RenderedGeometryBoundingBox.GetXDistance();
+                float unscaledZoneGeometryOffsetX = MathF.Abs(zone.RenderedGeometryBoundingBox.BottomCorner.Y); // Geometry is flipped between WMO space and map/world space
+                float unscaledZoneGeometryOffsetY = MathF.Abs(zone.RenderedGeometryBoundingBox.BottomCorner.X);
+                float scaleByWidth = (float)mapOutputContentWidth / unscaledZoneGeometryWidth;
+                float scaleByHeight = (float)mapOutputContentHeight / unscaledZoneGeometryHeight;
+                float pixelScale = Math.Min(scaleByWidth, scaleByHeight);
+                int scaledZoneGeometryWidth = (int)Math.Round(unscaledZoneGeometryWidth * pixelScale);
+                int scaledZoneGeometryHeight = (int)Math.Round(unscaledZoneGeometryHeight * pixelScale);
+                int mapOutputStartX = ((mapOutputContentWidth - scaledZoneGeometryWidth) / 2) + Configuration.GENERATE_MAPS_LEFT_BORDER_PIXEL_SIZE;
+                int mapOutputStartY = ((mapOutputContentHeight - scaledZoneGeometryHeight) / 2) + Configuration.GENERATE_MAPS_TOP_BORDER_PIXEL_SIZE;
 
+                // Make a link for every zone line box
+                StringBuilder zoneBlockSB = new StringBuilder();
+                zoneBlockSB.AppendLine(string.Concat("[", zone.ZoneProperties.DBCWorldMapAreaID, "] = {"));
+                int addedBoxes = 0;
+                foreach (ZonePropertiesZoneLineBox zoneLineBox in zone.ZoneProperties.ZoneLineBoxes)
+                {
+                    // Just skip any to the same zone
+                    if (zoneLineBox.TargetZoneShortName == zone.ZoneProperties.ShortName)
+                        continue;
 
+                    // Skip any to any not loaded zones
+                    if (zonePropertiesByShortName.ContainsKey(zoneLineBox.TargetZoneShortName) == false)
+                        continue;
+                    ZoneProperties targetZoneProperties = zonePropertiesByShortName[zoneLineBox.TargetZoneShortName];
+
+                    float unscaledZoneLineBoxWestEdgeNoOffset = (-1 * zoneLineBox.WestEdgeWorldScaled) + unscaledZoneGeometryOffsetX;
+                    float unscaledZoneLineBoxEastEdgeNoOffset = (-1 * zoneLineBox.EastEdgeWorldScaled) + unscaledZoneGeometryOffsetX;
+                    float unscaledZoneLineBoxNorthEdgeNoOffset = (-1 * zoneLineBox.NorthEdgeWorldScaled) + unscaledZoneGeometryOffsetY;
+                    float unscaledZoneLineBoxSouthEdgeNoOffset = (-1 * zoneLineBox.SouthEdgeWorldScaled) + unscaledZoneGeometryOffsetY;
+
+                    //// Calculate display box
+                    int displayMapBoxLeft = Convert.ToInt32(((unscaledZoneLineBoxWestEdgeNoOffset * pixelScale) + mapOutputStartX));
+                    int displayMapBoxRight = Convert.ToInt32(((unscaledZoneLineBoxEastEdgeNoOffset * pixelScale) + mapOutputStartX));
+                    int displayMapBoxTop = Convert.ToInt32(((unscaledZoneLineBoxNorthEdgeNoOffset * pixelScale) + mapOutputStartY));
+                    int displayMapBoxBottom = Convert.ToInt32(((unscaledZoneLineBoxSouthEdgeNoOffset * pixelScale) + mapOutputStartY));
+
+                    // Add it as a link
+                    zoneBlockSB.Append("   {name=\"");
+                    zoneBlockSB.Append(targetZoneProperties.DescriptiveName);
+                    zoneBlockSB.Append("\", mapID=");
+                    zoneBlockSB.Append(targetZoneProperties.DBCWorldMapAreaID.ToString());
+                    zoneBlockSB.Append(", x=");
+                    zoneBlockSB.Append(displayMapBoxLeft);
+                    zoneBlockSB.Append(", y=");
+                    zoneBlockSB.Append(displayMapBoxTop);
+                    zoneBlockSB.Append(", w=");
+                    zoneBlockSB.Append(displayMapBoxRight- displayMapBoxLeft);
+                    zoneBlockSB.Append(", h=");
+                    zoneBlockSB.Append(displayMapBoxBottom - displayMapBoxTop);
+                    zoneBlockSB.AppendLine("},");
+                    addedBoxes++;
+                }
+                if (addedBoxes > 0)
+                {
+                    zoneBlockSB.AppendLine("},");
+                    outputLinksFileTextSB.Append(zoneBlockSB.ToString());
+                }
             }
             outputLinksFileTextSB.AppendLine("}");
 

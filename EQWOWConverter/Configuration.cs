@@ -134,6 +134,12 @@ namespace EQWOWConverter
         // If true, generate and copy maps / minimaps
         public static readonly bool GENERATE_MAPS = true;
 
+        // Borders on any maps that were generated
+        public static readonly int GENERATE_MAPS_LEFT_BORDER_PIXEL_SIZE = 2;
+        public static readonly int GENERATE_MAPS_RIGHT_BORDER_PIXEL_SIZE = 2;
+        public static readonly int GENERATE_MAPS_TOP_BORDER_PIXEL_SIZE = 2;
+        public static readonly int GENERATE_MAPS_BOTTOM_BORDER_PIXEL_SIZE = 2;
+
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones
         // will load and work properly

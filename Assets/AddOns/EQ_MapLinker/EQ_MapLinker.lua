@@ -135,16 +135,8 @@ function EQ_MapLinker:UpdateButtons()
         glow:SetVertexColor(0, 1, 0, 0.7)
         glow:SetAlpha(0)
 
-        -- Label
-        local label = btn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-        label:SetPoint("CENTER", 1, 1)
-        label:SetText(link.name)
-        label:SetTextColor(1, 1, 1)
-        label:SetAlpha(0.25)
-
         -- Store data
         btn.glow = glow
-        btn.label = label
         btn.zoneName = link.name
         btn.targetMapID = link.mapID
 
@@ -152,7 +144,6 @@ function EQ_MapLinker:UpdateButtons()
         btn:SetScript("OnEnter", function(self)
             -- Glow current button
             UIFrameFadeIn(self.glow, 0.2, 0, 1)
-            UIFrameFadeIn(self.label, 0.2, 0.25, 1)
             
             -- Glow ALL buttons to same target mapID
             local targetButtons = EQ_MapLinker.targetButtons[self.targetMapID] or {}
@@ -161,7 +152,6 @@ function EQ_MapLinker:UpdateButtons()
                 for _, currentBtn in ipairs(EQ_MapLinker.buttons) do
                     if currentBtn.targetMapID == self.targetMapID then
                         UIFrameFadeIn(currentBtn.glow, 0.2, 0, 1)
-                        UIFrameFadeIn(currentBtn.label, 0.2, 0.25, 1)
                     end
                 end
             end
@@ -175,7 +165,6 @@ function EQ_MapLinker:UpdateButtons()
         btn:SetScript("OnLeave", function(self)
             -- Stop glow on current button
             UIFrameFadeOut(self.glow, 0.4, 1, 0)
-            UIFrameFadeOut(self.label, 0.4, 1, 0.25)
             
             -- Stop glow on ALL linked buttons
             local targetButtons = EQ_MapLinker.targetButtons[self.targetMapID] or {}
@@ -183,7 +172,6 @@ function EQ_MapLinker:UpdateButtons()
                 for _, currentBtn in ipairs(EQ_MapLinker.buttons) do
                     if currentBtn.targetMapID == self.targetMapID then
                         UIFrameFadeOut(currentBtn.glow, 0.4, 1, 0)
-                        UIFrameFadeOut(currentBtn.label, 0.4, 1, 0.25)
                     end
                 end
             end

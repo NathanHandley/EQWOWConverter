@@ -34,7 +34,8 @@ namespace EQWOWConverter.Zones
         public List<Material> Materials = new List<Material>();
         public List<LightInstance> LightInstances = new List<LightInstance>();
         public List<ZoneDoodadInstance> DoodadInstances = new List<ZoneDoodadInstance>();
-        public BoundingBox BoundingBox = new BoundingBox();
+        public BoundingBox AllGeometryBoundingBox = new BoundingBox();
+        public BoundingBox RenderedGeometryBoundingBox = new BoundingBox();
         public int LoadingScreenID;
         public ZoneProperties ZoneProperties;
         public Dictionary<string, Sound> MusicSoundsByFileNameNoExt = new Dictionary<string, Sound>();
@@ -147,11 +148,17 @@ namespace EQWOWConverter.Zones
             // Save the loading screen
             SetLoadingScreen();
 
-            // Rebuild the bounding box
+            // Rebuild the bounding boxes
             List<BoundingBox> allBoundingBoxes = new List<BoundingBox>();
-            foreach(ZoneModelObject zoneObject in ZoneObjectModels)
+            List<BoundingBox> allRenderedBoundingBoxes = new List<BoundingBox>();
+            foreach (ZoneModelObject zoneObject in ZoneObjectModels)
+            {
                 allBoundingBoxes.Add(zoneObject.BoundingBox);
-            BoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
+                if (zoneObject.WMOType == ZoneObjectModelType.Rendered)
+                    allRenderedBoundingBoxes.Add(zoneObject.BoundingBox);
+            }
+            AllGeometryBoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
+            RenderedGeometryBoundingBox = BoundingBox.GenerateBoxFromBoxes(allRenderedBoundingBoxes);
 
             // Set any area parent relationships
             SetAreaParentRelationships();
@@ -160,7 +167,7 @@ namespace EQWOWConverter.Zones
             if (ZoneProperties.HasShadowBox == true)
             {
                 ZoneModelObject curWorldObjectModel = new ZoneModelObject(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
-                curWorldObjectModel.LoadAsShadowBox(Materials, BoundingBox, ZoneProperties);
+                curWorldObjectModel.LoadAsShadowBox(Materials, AllGeometryBoundingBox, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
 
@@ -205,7 +212,7 @@ namespace EQWOWConverter.Zones
             List<BoundingBox> allBoundingBoxes = new List<BoundingBox>();
             foreach (ZoneModelObject zoneObject in ZoneObjectModels)
                 allBoundingBoxes.Add(zoneObject.BoundingBox);
-            BoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
+            AllGeometryBoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
 
             // Set any area parent relationships
             SetAreaParentRelationships();

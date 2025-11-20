@@ -40,7 +40,7 @@ namespace EQWOWConverter.WOWFiles
 
             // MOHD (Header) ----------------------------------------------------------------------
             RootBytes.AddRange(GenerateMOHDChunk(zone.Materials, zone.ZoneObjectModels.Count(), zone.LightInstances.Count(),
-                DoodadPathOffsetsByName.Count(), zone.ZoneProperties.DBCWMOID, zone.BoundingBox));
+                DoodadPathOffsetsByName.Count(), zone.ZoneProperties.DBCWMOID, zone.AllGeometryBoundingBox));
 
             // MOTX (Textures) --------------------------------------------------------------------
             RootBytes.AddRange(GenerateMOTXChunk(textureRelativeOutputFolder, zone.ShortName, zone.Materials));
