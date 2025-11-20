@@ -58,6 +58,7 @@ namespace EQWOWConverter.Zones
         public float DisplayMapMainRight = 0;
         public float DisplayMapMainTop = 0;
         public float DisplayMapMainBottom = 0;
+        public List<ZonePropertiesDisplayMapLinkBox> DisplayMapLinkBoxes = new List<ZonePropertiesDisplayMapLinkBox>();
 
         private static readonly object ListReadLock = new object();
         private static readonly object DBCWMOIDLock = new object();
@@ -748,6 +749,29 @@ namespace EQWOWConverter.Zones
                 Logger.WriteError("Could not find the properties for short name '" + shortName + "' which should be in the ZoneProperties.csv file");
         }
 
+        private static void PopulateDisplayMapLinkList()
+        {
+            string mapLinkListFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneDisplayMapLinks.csv");
+            Logger.WriteDebug("Populating Zone Display Map Links via file '" + mapLinkListFile + "'");
+            List<Dictionary<string, string>> mapLinkFileRows = FileTool.ReadAllRowsFromFileWithHeader(mapLinkListFile, "|");
+            foreach (Dictionary<string, string> mapLinkFileColumns in mapLinkFileRows)
+            {
+                // Skip any for zones that aren't loaded
+                string ownerZoneShortName = mapLinkFileColumns["OwnerZoneShortName"];
+                if (ZonePropertyListByShortName.ContainsKey(ownerZoneShortName) == false)
+                    continue;
+
+                string linkedZoneShortName = mapLinkFileColumns["LinkedZoneShortName"];
+                float west = Convert.ToSingle(mapLinkFileColumns["West"]);
+                float north = Convert.ToSingle(mapLinkFileColumns["North"]);
+                float east = Convert.ToSingle(mapLinkFileColumns["East"]);
+                float south = Convert.ToSingle(mapLinkFileColumns["South"]);
+
+                ZonePropertiesDisplayMapLinkBox newMapLink = new ZonePropertiesDisplayMapLinkBox(linkedZoneShortName, west, north, east, south);
+                ZonePropertyListByShortName[ownerZoneShortName].DisplayMapLinkBoxes.Add(newMapLink);
+            }
+        }
+
         private static void PopulateZonePropertiesList()
         {
             // Load the file first
@@ -884,6 +908,8 @@ namespace EQWOWConverter.Zones
             AddZonePropertiesByShortName(zonePropertiesByShortName, "warrens", new WarrensZoneProperties());
             AddZonePropertiesByShortName(zonePropertiesByShortName, "warslikswood", new WarsliksWoodsZoneProperties());
             AddZonePropertiesByShortName(zonePropertiesByShortName, "westwastes", new WesternWastesZoneProperties());
+
+            PopulateDisplayMapLinkList();
         }
     }
 }

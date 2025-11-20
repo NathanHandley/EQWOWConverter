@@ -2153,6 +2153,41 @@ namespace EQWOWConverter
                     zoneBlockSB.AppendLine("},");
                     addedBoxes++;
                 }
+
+                // Make a link for every display map link
+                foreach (ZonePropertiesDisplayMapLinkBox mapLinkBox in zone.ZoneProperties.DisplayMapLinkBoxes)
+                {
+                    // Skip any to any not loaded zones
+                    if (zonePropertiesByShortName.ContainsKey(mapLinkBox.LinkedZoneShortName) == false)
+                        continue;
+                    ZoneProperties linkedZoneProperties = zonePropertiesByShortName[mapLinkBox.LinkedZoneShortName];
+
+                    float unscaledMapLinkWestEdgeNoOffset = (-1 * mapLinkBox.West) + unscaledZoneGeometryOffsetX;
+                    float unscaledMapLinkNorthEdgeNoOffset = (-1 * mapLinkBox.North) + unscaledZoneGeometryOffsetY;
+
+                    // Calculate display box
+                    int displayMapBoxLeft = Convert.ToInt32(((unscaledMapLinkWestEdgeNoOffset * pixelScale) + mapOutputStartX));
+                    int displayMapBoxTop = Convert.ToInt32(((unscaledMapLinkNorthEdgeNoOffset * pixelScale) + mapOutputStartY));                    
+                    int displayMapBoxWidth = Convert.ToInt32(mapLinkBox.Width * pixelScale);
+                    int displayMapBoxHeight = Convert.ToInt32(mapLinkBox.Height * pixelScale);
+
+                    // Add it as a link
+                    zoneBlockSB.Append("   {name=\"");
+                    zoneBlockSB.Append(linkedZoneProperties.DescriptiveName);
+                    zoneBlockSB.Append("\", mapID=");
+                    zoneBlockSB.Append(linkedZoneProperties.DBCWorldMapAreaID.ToString());
+                    zoneBlockSB.Append(", x=");
+                    zoneBlockSB.Append(displayMapBoxLeft);
+                    zoneBlockSB.Append(", y=");
+                    zoneBlockSB.Append(displayMapBoxTop);
+                    zoneBlockSB.Append(", w=");
+                    zoneBlockSB.Append(displayMapBoxWidth);
+                    zoneBlockSB.Append(", h=");
+                    zoneBlockSB.Append(displayMapBoxHeight);
+                    zoneBlockSB.AppendLine("},");
+                    addedBoxes++;
+                }
+
                 if (addedBoxes > 0)
                 {
                     zoneBlockSB.AppendLine("},");
