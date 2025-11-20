@@ -127,12 +127,12 @@ function EQ_MapLinker:UpdateButtons()
         border:SetVertexColor(1, 1, 1)
         border:SetAlpha(0.15)
 
-        -- Green glow
+        -- Glow
         local glow = btn:CreateTexture(nil, "OVERLAY")
         glow:SetAllPoints()
         glow:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
         glow:SetBlendMode("ADD")
-        glow:SetVertexColor(0, 1, 0, 0.7)
+        glow:SetVertexColor(.8, .8, .8, 0.7)
         glow:SetAlpha(0)
 
         -- Store data
