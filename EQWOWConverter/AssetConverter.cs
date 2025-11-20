@@ -2101,8 +2101,8 @@ namespace EQWOWConverter
                 int mapOutputContentHeight = mapOutputHeight - (Configuration.GENERATE_MAPS_TOP_BORDER_PIXEL_SIZE + Configuration.GENERATE_MAPS_BOTTOM_BORDER_PIXEL_SIZE);
                 float unscaledZoneGeometryWidth = (float)zone.RenderedGeometryBoundingBox.GetYDistance();
                 float unscaledZoneGeometryHeight = (float)zone.RenderedGeometryBoundingBox.GetXDistance();
-                float unscaledZoneGeometryOffsetX = MathF.Abs(zone.RenderedGeometryBoundingBox.BottomCorner.Y); // Geometry is flipped between WMO space and map/world space
-                float unscaledZoneGeometryOffsetY = MathF.Abs(zone.RenderedGeometryBoundingBox.BottomCorner.X);
+                float unscaledZoneGeometryOffsetX = -1 * zone.RenderedGeometryBoundingBox.BottomCorner.Y; // Geometry is flipped between WMO space and map/world space
+                float unscaledZoneGeometryOffsetY = -1 * zone.RenderedGeometryBoundingBox.BottomCorner.X;
                 float scaleByWidth = (float)mapOutputContentWidth / unscaledZoneGeometryWidth;
                 float scaleByHeight = (float)mapOutputContentHeight / unscaledZoneGeometryHeight;
                 float pixelScale = Math.Min(scaleByWidth, scaleByHeight);
