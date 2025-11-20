@@ -53,10 +53,11 @@ namespace EQWOWConverter.Zones
             boxBottomSoutheastZ *= Configuration.GENERATE_WORLD_SCALE;
 
             // Save values for the display map
-            NorthEdgeWorldScaled = boxTopNorthwestX;
-            WestEdgeWorldScaled = boxTopNorthwestY;
-            SouthEdgeWorldScaled = boxBottomSoutheastX;
-            EastEdgeWorldScaled = boxBottomSoutheastY;
+            // Many were entered in incorrectly, so fixing it here
+            NorthEdgeWorldScaled = Math.Max(boxTopNorthwestX, boxBottomSoutheastX);
+            WestEdgeWorldScaled = Math.Max(boxTopNorthwestY, boxBottomSoutheastY);
+            SouthEdgeWorldScaled = Math.Min(boxBottomSoutheastX, boxTopNorthwestX);
+            EastEdgeWorldScaled = Math.Min(boxBottomSoutheastY, boxTopNorthwestY);
 
             // Create the box base values
             TargetZoneShortName = targetZoneShortName;
@@ -121,10 +122,11 @@ namespace EQWOWConverter.Zones
             BoxHeight = zoneLineBoxBounding.GetZDistance();
 
             // Save values for the display map
-            NorthEdgeWorldScaled = boxTopNorthwestX;
-            WestEdgeWorldScaled = boxTopNorthwestY;
-            SouthEdgeWorldScaled = boxBottomSoutheastX;
-            EastEdgeWorldScaled = boxBottomSoutheastY;
+            // Many were entered in incorrectly, so fixing it here
+            NorthEdgeWorldScaled = Math.Max(boxTopNorthwestX, boxBottomSoutheastX);
+            WestEdgeWorldScaled = Math.Max(boxTopNorthwestY, boxBottomSoutheastY);
+            SouthEdgeWorldScaled = Math.Min(boxBottomSoutheastX, boxTopNorthwestX);
+            EastEdgeWorldScaled = Math.Min(boxBottomSoutheastY, boxTopNorthwestY);
         }
     }
 }
