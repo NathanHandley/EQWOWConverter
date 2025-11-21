@@ -36,6 +36,7 @@ namespace EQWOWConverter.Zones
         public List<ZoneDoodadInstance> DoodadInstances = new List<ZoneDoodadInstance>();
         public BoundingBox AllGeometryBoundingBox = new BoundingBox();
         public BoundingBox RenderedGeometryBoundingBox = new BoundingBox();
+        public List<BoundingBox> AnimatedMaterialGeometryBoundingBoxes = new List<BoundingBox>();
         public int LoadingScreenID;
         public ZoneProperties ZoneProperties;
         public Dictionary<string, Sound> MusicSoundsByFileNameNoExt = new Dictionary<string, Sound>();
@@ -158,6 +159,7 @@ namespace EQWOWConverter.Zones
                     allRenderedBoundingBoxes.Add(zoneObject.BoundingBox);
             }
             AllGeometryBoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
+            allRenderedBoundingBoxes.AddRange(AnimatedMaterialGeometryBoundingBoxes);
             RenderedGeometryBoundingBox = BoundingBox.GenerateBoxFromBoxes(allRenderedBoundingBoxes);
 
             // Set any area parent relationships
@@ -855,6 +857,7 @@ namespace EQWOWConverter.Zones
 
             // Generate a bounding box for the mesh data
             BoundingBox curMeshBoundingBox = BoundingBox.GenerateBoxFromVectors(curMaterialMeshData.Vertices, 0.0f);
+            AnimatedMaterialGeometryBoundingBoxes.Add(curMeshBoundingBox);
 
             // Split the zone into chunks if it passes a threashold
             curMaterialMeshData.SplitIntoChunks(curMaterialMeshData, curMeshBoundingBox, curMaterialMeshData.TriangleFaces,
