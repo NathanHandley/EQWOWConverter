@@ -118,14 +118,14 @@ function EQ_MapLinker:UpdateButtons()
         bg:SetAllPoints()
         bg:SetTexture("Interface\\Buttons\\WHITE8X8")
         bg:SetVertexColor(0.5, 0.5, 0.5)
-        bg:SetAlpha(0.25)
+        bg:SetAlpha(0.15)
 
         -- Border
         local border = btn:CreateTexture(nil, "BORDER")
         border:SetAllPoints()
         border:SetTexture("Interface\\Buttons\\WHITE8X8")
         border:SetVertexColor(1, 1, 1)
-        border:SetAlpha(0.15)
+        border:SetAlpha(0.1)
 
         -- Glow
         local glow = btn:CreateTexture(nil, "OVERLAY")

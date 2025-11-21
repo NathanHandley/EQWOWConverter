@@ -2091,8 +2091,8 @@ namespace EQWOWConverter
             foreach (Zone zone in zones)
             {
                 // Only process for zones with zone lines
-                if (zone.ZoneProperties.ZoneLineBoxes.Count == 0)
-                    continue;
+                //if (zone.ZoneProperties.ZoneLineBoxes.Count == 0)
+                //    continue;
 
                 // Convert zone geometry to map display geometry
                 int mapOutputWidth = 1002;
