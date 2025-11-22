@@ -21,6 +21,9 @@ ZoneTextString:SetShadowColor(0, 0, 0, 0)
 EQ_MapLinker.ZoneText = ZoneText
 EQ_MapLinker.ZoneTextString = ZoneTextString
 
+EQ_MapLinkerDB = EQ_MapLinkerDB or { showLinks = true }
+EQ_MapLinker.db = EQ_MapLinkerDB
+
 EQ_MapLinker:RegisterEvent("ADDON_LOADED")
 EQ_MapLinker:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == "EQ_MapLinker" then
@@ -42,11 +45,43 @@ function EQ_MapLinker:Init()
 	self.LINKS = newLinks
 	self:BuildTargetIndex()
 	
+	self:CreateToggleButton()
+	
 	local count = 0 for _ in pairs(self.LINKS) do count = count + 1 end
 	
     self.buttons = {}
     self:BuildTargetIndex()
     self:HookMap()
+end
+
+function EQ_MapLinker:CreateToggleButton()
+    local btn = CreateFrame("CheckButton", "EQ_MapLinkerShowLinks", WorldMapFrame, "OptionsCheckButtonTemplate")
+    btn:SetSize(24, 24)
+    btn:SetPoint("BOTTOMLEFT", WorldMapDetailFrame, "BOTTOMLEFT", 0, -27)
+    btn:SetFrameStrata("TOOLTIP")        -- Must be TOOLTIP
+    btn:SetFrameLevel(5000)              -- Very high level
+
+    -- Text
+    local text = btn:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    text:SetPoint("LEFT", btn, "RIGHT", 4, 0)
+    text:SetText("Always Show Linked EQ Zones")
+
+    -- Load saved state
+    btn:SetChecked(EQ_MapLinkerDB.showLinks)
+
+    btn:SetScript("OnClick", function(self)
+        EQ_MapLinkerDB.showLinks = self:GetChecked()
+        EQ_MapLinker:UpdateButtons()
+    end)
+
+    btn:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+        GameTooltip:SetText("Show/hide map link zones\n(unchecked = invisible until hover)", 1, 1, 1)
+        GameTooltip:Show()
+    end)
+    btn:SetScript("OnLeave", GameTooltip_Hide)
+
+    self.toggleBtn = btn
 end
 
 function EQ_MapLinker:BuildTargetIndex()
@@ -117,15 +152,8 @@ function EQ_MapLinker:UpdateButtons()
         local bg = btn:CreateTexture(nil, "BACKGROUND")
         bg:SetAllPoints()
         bg:SetTexture("Interface\\Buttons\\WHITE8X8")
-        bg:SetVertexColor(0.5, 0.5, 0.5)
-        bg:SetAlpha(0.15)
-
-        -- Border
-        local border = btn:CreateTexture(nil, "BORDER")
-        border:SetAllPoints()
-        border:SetTexture("Interface\\Buttons\\WHITE8X8")
-        border:SetVertexColor(1, 1, 1)
-        border:SetAlpha(0.1)
+        bg:SetVertexColor(1, 1, 1)
+		bg:SetAlpha(EQ_MapLinkerDB.showLinks and 0.15 or 0)
 
         -- Glow
         local glow = btn:CreateTexture(nil, "OVERLAY")
