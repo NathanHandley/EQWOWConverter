@@ -33,14 +33,16 @@ namespace EQWOWConverter
             }
         }
 
-        private static void WriteToConsole(string text, bool outputNewLine = true)
+        private static void WriteToConsole(string text, ConsoleColor consoleColor, bool outputNewLine = true)
         {
             lock (writeLock)
             {
+                Console.ForegroundColor = consoleColor;
                 if (outputNewLine == true)
                     Console.WriteLine(text);
                 else
                     Console.Write(text);
+                Console.ResetColor();
             }
         }
 
@@ -65,7 +67,7 @@ namespace EQWOWConverter
                     stringBuilder.Append("[ ] Info | ");
                 stringBuilder.Append(text);
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 1)
-                    WriteToConsole(stringBuilder.ToString(), outputNewLine);
+                    WriteToConsole(stringBuilder.ToString(), ConsoleColor.White, outputNewLine);
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 1)
                 {
                     stringBuilder.Append("\n");
@@ -83,7 +85,7 @@ namespace EQWOWConverter
                 foreach (string text in textParts)
                     stringBuilder.Append(text);
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 1)
-                    WriteToConsole(stringBuilder.ToString());
+                    WriteToConsole(stringBuilder.ToString(), ConsoleColor.White);
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 1)
                 {
                     stringBuilder.Append("\n");
@@ -104,7 +106,7 @@ namespace EQWOWConverter
                 foreach (string text in textParts)
                     stringBuilder.Append(text);
                 if (Configuration.LOGGING_CONSOLE_MIN_LEVEL >= 3)
-                    WriteToConsole(stringBuilder.ToString());
+                    WriteToConsole(stringBuilder.ToString(), ConsoleColor.Gray);
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 3)
                 {
                     stringBuilder.Append("\n");
@@ -126,7 +128,7 @@ namespace EQWOWConverter
                 foreach (string text in textParts)
                     stringBuilder.Append(text);
                 if (Configuration.LOGGING_CONSOLE_MIN_LEVEL >= 3)
-                    WriteToConsole(stringBuilder.ToString());
+                    WriteToConsole(stringBuilder.ToString(), ConsoleColor.Magenta);
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 3)
                 {
                     stringBuilder.Append("\n");
@@ -144,7 +146,7 @@ namespace EQWOWConverter
                 foreach(string text in textParts)
                     stringBuilder.Append(text);
                 if (Configuration.LOGGING_CONSOLE_MIN_LEVEL >= 2)
-                    WriteToConsole(stringBuilder.ToString());
+                    WriteToConsole(stringBuilder.ToString(), ConsoleColor.Red);
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 2)
                 {
                     stringBuilder.Append("\n");
