@@ -24,12 +24,15 @@ It is currently in an Alpha state, but all content types (tradeskills, spells, q
 5. Regenerate map/vmap files for the server per AzerothCore instructions
 
 # Deploying the Files
-Automatic Deployment: Set the configuration.cs values in "Deployment Rules"
+Automatic Deployment **Highly Recommended**:
+1. Set the configuration.cs values in "Deployment Rules"
+2. Build and let it deploy for you
 
 Manual Deployment:
 1. Run the .sql files located in <PATH_WORKING_FOLDER>/WOWExports/SQLScripts against your databases, with /Characters/ against your characters database and /World/ against your world database
 2. Copy contents of <PATH_WORKING_FOLDER>/WOWExports/DBCFilesServer into your server's dbc files location (typically located in the "data" folder during AzerothCore setup)
-3. Place the patch file inside <PATH_WORKING_FOLDER>/WOWExports as defined by configuration value PATH_CLIENT_PATCH_FILE_NAME_NO_EXT into your wow client data folder (<PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER>/Data/enUS/)
+3. Place the (*.mpq) patch files inside <PATH_WORKING_FOLDER>/WOWExports into the (<PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER>/Data/) and (<PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER>/Data/<local>/) folders as appropriate
+4. Copy the AddOn from your <PATH_WORKING_FOLDER>/AddOnsReady into the (<PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER>/Interface/AddOns/) folder.
 
 # Special Thanks
 In no particular order...
