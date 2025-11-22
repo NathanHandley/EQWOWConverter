@@ -20,8 +20,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class ADTMapChunk : WOWChunkedObject
     {
-        private UInt32 TileXIndex;
-        private UInt32 TileYIndex;
         private UInt32 ChunkXIndex;
         private UInt32 ChunkYIndex;
         private UInt32 AreaID;
@@ -45,8 +43,6 @@ namespace EQWOWConverter.WOWFiles
 
         public ADTMapChunk(UInt32 tileXIndex, UInt32 tileYIndex, UInt32 chunkXIndex, UInt32 chunkYIndex, float baseHeight, UInt32 areaID)
         {
-            TileXIndex = tileXIndex;
-            TileYIndex = tileYIndex;
             ChunkXIndex = chunkXIndex;
             ChunkYIndex = chunkYIndex;
             AreaID = areaID;

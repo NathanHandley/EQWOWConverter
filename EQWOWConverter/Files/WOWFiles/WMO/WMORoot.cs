@@ -76,13 +76,13 @@ namespace EQWOWConverter.WOWFiles
             RootBytes.AddRange(GenerateMOLTChunk(zone.LightInstances));
 
             // MODS (Doodad Set Definitions) ------------------------------------------------------
-            RootBytes.AddRange(GenerateMODSChunk(zone.DoodadInstances));
+            //RootBytes.AddRange(GenerateMODSChunk(zone.DoodadInstances));
 
             // MODN (List of M2s) -----------------------------------------------------------------
             RootBytes.AddRange(GenerateMODNChunk());
 
             // MODD (Doodad Instance Information) -------------------------------------------------
-            RootBytes.AddRange(GenerateMODDChunk(zone.DoodadInstances));
+            //RootBytes.AddRange(GenerateMODDChunk(zone.DoodadInstances));
 
             // MFOG (Fog Information) -------------------------------------------------------------
             RootBytes.AddRange(GenerateMFOGChunk());
@@ -497,8 +497,8 @@ namespace EQWOWConverter.WOWFiles
 
             foreach (ZoneDoodadInstance doodadInstance in doodadInstances)
             {
-                doodadInstance.ObjectNameOffset = DoodadPathOffsetsByName[doodadInstance.ObjectName];
-                chunkBytes.AddRange(doodadInstance.ToBytes());
+                doodadInstance.WMOObjectNameOffset = DoodadPathOffsetsByName[doodadInstance.ObjectName];
+                chunkBytes.AddRange(doodadInstance.ToBytesForWMO());
             }
 
             // Align
@@ -549,25 +549,25 @@ namespace EQWOWConverter.WOWFiles
 
         private void PopulateDoodadPathStringOffsets(List<ZoneDoodadInstance> objectInstances, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder)
         {
-            int curPathOffset = 0;
-            foreach (ZoneDoodadInstance objectInstance in objectInstances)
-            {
-                string objectName = objectInstance.ObjectName;
-                string objectFullPath = string.Empty;
-                if (objectInstance.DoodadType == ZoneDoodadInstanceType.StaticObject)
-                    objectFullPath = Path.Combine(relativeStaticDoodadsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
-                else if (objectInstance.DoodadType == ZoneDoodadInstanceType.ZoneMaterial || objectInstance.DoodadType == ZoneDoodadInstanceType.SoundInstance)
-                    objectFullPath = Path.Combine(relativeZoneObjectsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
-                else
-                    Logger.WriteError("Unhandled type of doodad instance '" + objectInstance.DoodadType.ToString() + "' for doodad name '" + objectInstance.ObjectName + "'");
+            //int curPathOffset = 0;
+            //foreach (ZoneDoodadInstance objectInstance in objectInstances)
+            //{
+            //    string objectName = objectInstance.ObjectName;
+            //    string objectFullPath = string.Empty;
+            //    if (objectInstance.DoodadType == ZoneDoodadInstanceType.StaticObject)
+            //        objectFullPath = Path.Combine(relativeStaticDoodadsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
+            //    else if (objectInstance.DoodadType == ZoneDoodadInstanceType.ZoneMaterial || objectInstance.DoodadType == ZoneDoodadInstanceType.SoundInstance)
+            //        objectFullPath = Path.Combine(relativeZoneObjectsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
+            //    else
+            //        Logger.WriteError("Unhandled type of doodad instance '" + objectInstance.DoodadType.ToString() + "' for doodad name '" + objectInstance.ObjectName + "'");
                 
-                if (DoodadPathOffsetsByName.ContainsKey(objectName) == false)
-                {
-                    DoodadPathOffsetsByName.Add(objectName, Convert.ToUInt32(curPathOffset));
-                    DoodadPathStrings.Add(objectFullPath);
-                    curPathOffset += objectFullPath.Length;
-                }
-            }
+            //    if (DoodadPathOffsetsByName.ContainsKey(objectName) == false)
+            //    {
+            //        DoodadPathOffsetsByName.Add(objectName, Convert.ToUInt32(curPathOffset));
+            //        DoodadPathStrings.Add(objectFullPath);
+            //        curPathOffset += objectFullPath.Length;
+            //    }
+            //}
         }
     }
 }

@@ -114,42 +114,42 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MODF (WMO placement information)
         /// </summary>
-        private List<byte> GenerateMODFChunk(Zone zone)
-        {
-            List<byte> chunkBytes = new List<byte>();
+        //private List<byte> GenerateMODFChunk(Zone zone)
+        //{
+        //    List<byte> chunkBytes = new List<byte>();
 
-            // If there's an orientation issue, it could be that this matrix will need to map to world coordinates...
-            // ID.  Unsure what this is exactly, so setting to zero for now
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+        //    // If there's an orientation issue, it could be that this matrix will need to map to world coordinates...
+        //    // ID.  Unsure what this is exactly, so setting to zero for now
+        //    chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
-            // Unique ID.
-            chunkBytes.AddRange(BitConverter.GetBytes((zone.MODFIdentifier)));
+        //    // Unique ID.
+        //    chunkBytes.AddRange(BitConverter.GetBytes((zone.MODFIdentifier)));
 
-            // Position - Set zero now, and maybe mess with later
-            Vector3 positionVector = new Vector3();
-            chunkBytes.AddRange(positionVector.ToBytes());
+        //    // Position - Set zero now, and maybe mess with later
+        //    Vector3 positionVector = new Vector3();
+        //    chunkBytes.AddRange(positionVector.ToBytes());
 
-            // Rotation - Set zero now, and maybe mess with later.  Format is ABC not XYZ....
-            Vector3 rotation = new Vector3();
-            chunkBytes.AddRange(rotation.ToBytes());
+        //    // Rotation - Set zero now, and maybe mess with later.  Format is ABC not XYZ....
+        //    Vector3 rotation = new Vector3();
+        //    chunkBytes.AddRange(rotation.ToBytes());
 
-            // Bounding Box (Upper Extents then Lower Extents)
-            chunkBytes.AddRange(zone.AllGeometryBoundingBox.ToBytesForWDT());
+        //    // Bounding Box (Upper Extents then Lower Extents)
+        //    chunkBytes.AddRange(zone.AllGeometryBoundingBox.ToBytesForWDT());
 
-            // Flags - I don't think any are relevant, so zeroing it out (IsDestructible = 1, UsesLOD = 2)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+        //    // Flags - I don't think any are relevant, so zeroing it out (IsDestructible = 1, UsesLOD = 2)
+        //    chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
 
-            // DoodadSet - None for now
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+        //    // DoodadSet - None for now
+        //    chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
 
-            // NameSet - Unsure on purpose
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+        //    // NameSet - Unsure on purpose
+        //    chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
 
-            // Unsure / Unused?
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+        //    // Unsure / Unused?
+        //    chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
 
-            return WrapInChunk("MODF", chunkBytes.ToArray());
-        }
+        //    return WrapInChunk("MODF", chunkBytes.ToArray());
+        //}
 
         public void WriteToDisk(string baseFolderPath)
         {
