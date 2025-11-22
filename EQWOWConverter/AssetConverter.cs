@@ -2090,10 +2090,6 @@ namespace EQWOWConverter
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
             foreach (Zone zone in zones)
             {
-                // Only process for zones with zone lines
-                //if (zone.ZoneProperties.ZoneLineBoxes.Count == 0)
-                //    continue;
-
                 // Convert zone geometry to map display geometry
                 int mapOutputWidth = 1002;
                 int mapOutputHeight = 668;
@@ -2111,50 +2107,10 @@ namespace EQWOWConverter
                 int mapOutputStartX = ((mapOutputContentWidth - scaledZoneGeometryWidth) / 2) + Configuration.GENERATE_MAPS_LEFT_BORDER_PIXEL_SIZE;
                 int mapOutputStartY = ((mapOutputContentHeight - scaledZoneGeometryHeight) / 2) + Configuration.GENERATE_MAPS_TOP_BORDER_PIXEL_SIZE;
 
-                // Make a link for every zone line box
-                StringBuilder zoneBlockSB = new StringBuilder();
-                zoneBlockSB.AppendLine(string.Concat("[", zone.ZoneProperties.DBCWorldMapAreaID, "] = {"));
-                int addedBoxes = 0;
-                foreach (ZonePropertiesZoneLineBox zoneLineBox in zone.ZoneProperties.ZoneLineBoxes)
-                {
-                    // Just skip any to the same zone
-                    if (zoneLineBox.TargetZoneShortName == zone.ZoneProperties.ShortName)
-                        continue;
-
-                    // Skip any to any not loaded zones
-                    if (zonePropertiesByShortName.ContainsKey(zoneLineBox.TargetZoneShortName) == false)
-                        continue;
-                    ZoneProperties targetZoneProperties = zonePropertiesByShortName[zoneLineBox.TargetZoneShortName];
-
-                    float unscaledZoneLineBoxWestEdgeNoOffset = (-1 * zoneLineBox.WestEdgeWorldScaled) + unscaledZoneGeometryOffsetX;
-                    float unscaledZoneLineBoxEastEdgeNoOffset = (-1 * zoneLineBox.EastEdgeWorldScaled) + unscaledZoneGeometryOffsetX;
-                    float unscaledZoneLineBoxNorthEdgeNoOffset = (-1 * zoneLineBox.NorthEdgeWorldScaled) + unscaledZoneGeometryOffsetY;
-                    float unscaledZoneLineBoxSouthEdgeNoOffset = (-1 * zoneLineBox.SouthEdgeWorldScaled) + unscaledZoneGeometryOffsetY;
-
-                    //// Calculate display box
-                    int displayMapBoxLeft = Convert.ToInt32(((unscaledZoneLineBoxWestEdgeNoOffset * pixelScale) + mapOutputStartX));
-                    int displayMapBoxRight = Convert.ToInt32(((unscaledZoneLineBoxEastEdgeNoOffset * pixelScale) + mapOutputStartX));
-                    int displayMapBoxTop = Convert.ToInt32(((unscaledZoneLineBoxNorthEdgeNoOffset * pixelScale) + mapOutputStartY));
-                    int displayMapBoxBottom = Convert.ToInt32(((unscaledZoneLineBoxSouthEdgeNoOffset * pixelScale) + mapOutputStartY));
-
-                    // Add it as a link
-                    zoneBlockSB.Append("   {name=\"");
-                    zoneBlockSB.Append(targetZoneProperties.DescriptiveName);
-                    zoneBlockSB.Append("\", mapID=");
-                    zoneBlockSB.Append(targetZoneProperties.DBCWorldMapAreaID.ToString());
-                    zoneBlockSB.Append(", x=");
-                    zoneBlockSB.Append(displayMapBoxLeft);
-                    zoneBlockSB.Append(", y=");
-                    zoneBlockSB.Append(displayMapBoxTop);
-                    zoneBlockSB.Append(", w=");
-                    zoneBlockSB.Append(displayMapBoxRight- displayMapBoxLeft);
-                    zoneBlockSB.Append(", h=");
-                    zoneBlockSB.Append(displayMapBoxBottom - displayMapBoxTop);
-                    zoneBlockSB.AppendLine("},");
-                    addedBoxes++;
-                }
-
                 // Make a link for every display map link
+                StringBuilder zoneLinkBlockSB = new StringBuilder();
+                zoneLinkBlockSB.AppendLine(string.Concat("[", zone.ZoneProperties.DBCWorldMapAreaID, "] = {"));
+                int addedBoxes = 0;
                 foreach (ZonePropertiesDisplayMapLinkBox mapLinkBox in zone.ZoneProperties.DisplayMapLinkBoxes)
                 {
                     // Skip any to any not loaded zones
@@ -2182,26 +2138,26 @@ namespace EQWOWConverter
                         displayMapBoxHeight -= (displayMapBoxTop + displayMapBoxHeight) - mapOutputHeight;
 
                     // Add it as a link
-                    zoneBlockSB.Append("   {name=\"");
-                    zoneBlockSB.Append(linkedZoneProperties.DescriptiveName);
-                    zoneBlockSB.Append("\", mapID=");
-                    zoneBlockSB.Append(linkedZoneProperties.DBCWorldMapAreaID.ToString());
-                    zoneBlockSB.Append(", x=");
-                    zoneBlockSB.Append(displayMapBoxLeft);
-                    zoneBlockSB.Append(", y=");
-                    zoneBlockSB.Append(displayMapBoxTop);
-                    zoneBlockSB.Append(", w=");
-                    zoneBlockSB.Append(displayMapBoxWidth);
-                    zoneBlockSB.Append(", h=");
-                    zoneBlockSB.Append(displayMapBoxHeight);
-                    zoneBlockSB.AppendLine("},");
+                    zoneLinkBlockSB.Append("   {name=\"");
+                    zoneLinkBlockSB.Append(linkedZoneProperties.DescriptiveName);
+                    zoneLinkBlockSB.Append("\", mapID=");
+                    zoneLinkBlockSB.Append(linkedZoneProperties.DBCWorldMapAreaID.ToString());
+                    zoneLinkBlockSB.Append(", x=");
+                    zoneLinkBlockSB.Append(displayMapBoxLeft);
+                    zoneLinkBlockSB.Append(", y=");
+                    zoneLinkBlockSB.Append(displayMapBoxTop);
+                    zoneLinkBlockSB.Append(", w=");
+                    zoneLinkBlockSB.Append(displayMapBoxWidth);
+                    zoneLinkBlockSB.Append(", h=");
+                    zoneLinkBlockSB.Append(displayMapBoxHeight);
+                    zoneLinkBlockSB.AppendLine("},");
                     addedBoxes++;
                 }
 
                 if (addedBoxes > 0)
                 {
-                    zoneBlockSB.AppendLine("},");
-                    outputLinksFileTextSB.Append(zoneBlockSB.ToString());
+                    zoneLinkBlockSB.AppendLine("},");
+                    outputLinksFileTextSB.Append(zoneLinkBlockSB.ToString());
                 }
             }
             outputLinksFileTextSB.AppendLine("}");
