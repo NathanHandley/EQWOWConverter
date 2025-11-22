@@ -857,6 +857,12 @@ namespace EQWOWConverter.Zones
 
             // Generate a bounding box for the mesh data
             BoundingBox curMeshBoundingBox = BoundingBox.GenerateBoxFromVectors(curMaterialMeshData.Vertices, 0.0f);
+
+            if (curMaterialMeshData.Vertices.Count == 0)
+            {
+                Logger.WriteDebug("GenerateAndAddDoodadsForZoneMaterial in zone ", ShortName, " had no mesh vertices for material index ", material.Index.ToString(), ", so skipping.");
+                return;
+            }
             AnimatedMaterialGeometryBoundingBoxes.Add(curMeshBoundingBox);
 
             // Split the zone into chunks if it passes a threashold
