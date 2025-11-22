@@ -440,7 +440,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Determine which materials are animated or transparent and create objects to represent them
-            if (Configuration.ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY == false)
+            if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
             {
                 foreach (Material material in Materials)
                     if ((material.IsAnimated() || material.HasTransparency()) && material.IsRenderable())
@@ -706,7 +706,7 @@ namespace EQWOWConverter.Zones
         {
 
             bool excludeAnimatedAndTransparent = true;
-            if (Configuration.ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY == true)
+            if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == true)
                 excludeAnimatedAndTransparent = false;
 
             // Reduce meshdata to what will actually be rendered

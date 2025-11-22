@@ -113,7 +113,7 @@ namespace EQWOWConverter.Zones
 
                 // Skip materials that shouldn't be rendered
                 // Don't add the texture if the material won't be used anyway
-                if (Configuration.ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY == false)
+                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
                 {
                     if (materials[curMaterialIndex].IsAnimated() == true)
                         continue;

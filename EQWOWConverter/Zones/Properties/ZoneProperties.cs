@@ -83,7 +83,7 @@ namespace EQWOWConverter.Zones
 
         protected void DisableSunlight()
         {
-            if (Configuration.ZONE_ALLOW_SUN_HIDING_WITH_SHADOWBOX_ENABLED == true)
+            if (Configuration.ZONE_ALLOW_SUN_HIDING_WITH_SHADOWBOX_ENABLED == true && Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
                 HasShadowBox = true;
         }
 

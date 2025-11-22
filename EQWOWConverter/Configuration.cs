@@ -189,6 +189,10 @@ namespace EQWOWConverter
         //=====================================================================
         // Zone General
         //=====================================================================
+        // When true, many various proprties are changed to support generation of minimaps, such as 'baking' in animated textures
+        // Leave this false unless generating maps in order to make minimaps
+        public static readonly bool ZONE_MINIMAP_GENERATION_MODE_ENABLED = false;
+
         // If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging
         public static readonly bool ZONE_SHOW_STATIC_GEOMETRY = true;
 
@@ -215,9 +219,6 @@ namespace EQWOWConverter
 
         // Maxinum number of triangle faces that can be in any zone-to-material-object
         public static readonly int ZONE_MAX_FACES_PER_ZONE_MATERIAL_OBJECT = 2000;
-
-        // When true, otherwise animated zone materials which animate (like water) will be 'fixed' as zone geometry.  Leave this false unless generating minimaps.
-        public static readonly bool ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY = false;
 
         // BSP tree nodes will stop subdividing when this many (or less) triangles are found
         public static readonly UInt16 ZONE_BTREE_MIN_SPLIT_SIZE = 10;

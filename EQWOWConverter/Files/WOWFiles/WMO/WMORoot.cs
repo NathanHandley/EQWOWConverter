@@ -113,7 +113,7 @@ namespace EQWOWConverter.WOWFiles
             UInt32 numOfTextures = 0;
             foreach (Material material in materials)
             {
-                if (Configuration.ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY == false)
+                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
                 {
                     if (material.IsAnimated() || material.HasTransparency())
                         continue;
@@ -170,7 +170,7 @@ namespace EQWOWConverter.WOWFiles
             foreach (Material material in materials)
             {
                 // Don't add the texture if the material won't be used anyway
-                if (Configuration.ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY == false)
+                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
                 {
                     if (material.IsAnimated() || material.HasTransparency())
                         continue;
@@ -208,7 +208,7 @@ namespace EQWOWConverter.WOWFiles
                 Material material = materials[i];
 
                 // Skip any non-rendered materials
-                if (Configuration.ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY == false)
+                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
                 {
                     if (material.IsAnimated() || material.HasTransparency())
                         continue;
@@ -217,7 +217,7 @@ namespace EQWOWConverter.WOWFiles
                     continue;
 
                 // For kedge, put in the front
-                if (name == "kedge" && Configuration.ZONE_INCLUDE_TRANSPARENT_AND_ANIMATED_IN_RENDER_GEOMETRY == false)
+                if (name == "kedge" && Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
                     BatchMaterialIDsByMaterialIndex.Add(0, curBatchMaterialID);
                 else
                     BatchMaterialIDsByMaterialIndex.Add(i, curBatchMaterialID);
