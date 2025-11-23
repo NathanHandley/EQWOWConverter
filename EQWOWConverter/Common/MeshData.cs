@@ -522,15 +522,15 @@ namespace EQWOWConverter.Common
             return extractedMeshData;
         }
 
-        public MeshData GetMeshDataExcludingNonRenderedAndAnimatedMaterials(bool excludeNonRendered, bool excludeAnimatedAndTransparent, params Material[] allMaterials)
+        public MeshData GetMeshDataExcludingNonRenderedAndAnimatedMaterials(bool excludeNonRendered, params Material[] allMaterials)
         {
             // Extract out copies of the geometry data specific to data that would be considered zone static and rendered materials
             List<Material> includedMaterials = new List<Material>();
             foreach (Material material in allMaterials)
             {
-                if (material.IsAnimated() && excludeAnimatedAndTransparent)
+                if (material.IsAnimated())
                     continue;
-                if (material.HasTransparency() && excludeAnimatedAndTransparent)
+                if (material.HasTransparency())
                     continue;
                 if (material.IsRenderable() == false && excludeNonRendered)
                     continue;

@@ -25,7 +25,7 @@ namespace EQWOWConverter.WOWFiles
         public List<byte> ObjectBytes = new List<byte>();
         private string BaseFileName;
 
-        public WDT(Zone zone, string wmoFileName, int minADTX, int maxADTX, int minADTY, int maxADTY)
+        public WDT(Zone zone, string wmoFileName, int minADTX, int maxADTX, int minADTY, int maxADTY, UInt32 uniqueWMOID)
         {
             BaseFileName = zone.ShortName;
 
@@ -42,7 +42,7 @@ namespace EQWOWConverter.WOWFiles
             ObjectBytes.AddRange(GenerateMWMOChunk(zone, wmoFileName));
 
             // MODF (WMO placement information) ---------------------------------------------------
-            //ObjectBytes.AddRange(GenerateMODFChunk(zone)); // Only used for a global WMO
+            //ObjectBytes.AddRange(GenerateMODFChunk(zone), uniqueWMOID); // Only used for a global WMO
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MODF (WMO placement information)
         /// </summary>
-        private List<byte> GenerateMODFChunk(Zone zone)
+        private List<byte> GenerateMODFChunk(Zone zone, UInt32 uniqueWMOID)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -122,7 +122,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
             // Unique ID.
-            chunkBytes.AddRange(BitConverter.GetBytes(ADT.GenerateUniqueModelID()));
+            chunkBytes.AddRange(BitConverter.GetBytes(uniqueWMOID));
 
             // Position - Set zero now, and maybe mess with later
             Vector3 positionVector = new Vector3();

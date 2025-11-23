@@ -1112,16 +1112,19 @@ namespace EQWOWConverter
             tileYMin = Math.Min(31, tileYMin);
             tileYMax = Math.Max(32, tileYMax);
 
+            // Generate a WMO ID for the zone-wide WMO
+            UInt32 uniqueWMOID = ADT.GenerateUniqueModelID();
+
             // Create the WDT
-            WDT zoneWDT = new WDT(curZone, zoneWMO.RootFileRelativePathWithFileName, tileXMin, tileXMax, tileYMin, tileYMax);
+            WDT zoneWDT = new WDT(curZone, zoneWMO.RootFileRelativePathWithFileName, tileXMin, tileXMax, tileYMin, tileYMax, uniqueWMOID);
             zoneWDT.WriteToDisk(exportMPQRootFolder);
 
-            // Create the ADT
+            // Create the ADTs
             for (UInt32 y = Convert.ToUInt32(tileYMin); y <= Convert.ToUInt32(tileYMax); y++)
                 for (UInt32 x = Convert.ToUInt32(tileXMin); x <= Convert.ToUInt32(tileXMax); x++)
                 {
                     ADT zoneADT = new ADT(curZone, zoneWMO.RootFileRelativePathWithFileName, x, y, (curZone.AllGeometryBoundingBox.TopCorner.Z + 5f),
-                        relativeStaticDoodadsPath, relativeZoneObjectsPath);
+                        relativeStaticDoodadsPath, relativeZoneObjectsPath, uniqueWMOID);
                     zoneADT.WriteToDisk(exportMPQRootFolder);
                 }
 

@@ -119,11 +119,8 @@ namespace EQWOWConverter.WOWFiles
             UInt32 numOfTextures = 0;
             foreach (Material material in materials)
             {
-                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
-                {
-                    if (material.IsAnimated() || material.HasTransparency())
-                        continue;
-                }
+                if (material.IsAnimated() || material.HasTransparency())
+                    continue;
                 if (material.IsRenderable() == false)
                     continue;
                 if (material.TextureNames.Count > 0)
@@ -176,11 +173,8 @@ namespace EQWOWConverter.WOWFiles
             foreach (Material material in materials)
             {
                 // Don't add the texture if the material won't be used anyway
-                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
-                {
-                    if (material.IsAnimated() || material.HasTransparency())
-                        continue;
-                }
+                if (material.IsAnimated() || material.HasTransparency())
+                    continue;
                 if (material.IsRenderable() == false)
                     continue;
 
@@ -214,16 +208,13 @@ namespace EQWOWConverter.WOWFiles
                 Material material = materials[i];
 
                 // Skip any non-rendered materials
-                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
-                {
-                    if (material.IsAnimated() || material.HasTransparency())
-                        continue;
-                }
+                if (material.IsAnimated() || material.HasTransparency())
+                    continue;
                 if (material.IsRenderable() == false)
                     continue;
 
-                // For kedge, put in the front
-                if (name == "kedge" && Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
+                // For kedge, put in the front since there are no non-animated textures in the zone
+                if (name == "kedge")
                     BatchMaterialIDsByMaterialIndex.Add(0, curBatchMaterialID);
                 else
                     BatchMaterialIDsByMaterialIndex.Add(i, curBatchMaterialID);

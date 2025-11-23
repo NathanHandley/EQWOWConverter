@@ -36,7 +36,7 @@ namespace EQWOWConverter.WOWFiles
         private static UInt32 CUR_UNIQUE_MODEL_ID = UNIQUE_MODEL_ID_START;
 
         public ADT(Zone zone, string wmoFileName, UInt32 tileXIndex, UInt32 tileYIndex, float zoneFloorHeight,
-            string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder)
+            string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder, UInt32 uniqueWMOID)
         {
             ZoneObject = zone;
             WMOFileName = wmoFileName;
@@ -56,12 +56,13 @@ namespace EQWOWConverter.WOWFiles
                 Dictionary<string, int> doodadPathStringIndicesByPathString = new Dictionary<string, int>();
                 foreach (var doodadInstance in zone.DoodadInstances)
                 {
-                    float doodadXInWorldSpace = doodadInstance.Position.Y * -1;
-                    float doodadYInWorldSpace = doodadInstance.Position.X * -1;
+                    //float doodadXInWorldSpace = doodadInstance.Position.Y * -1;
+                    //float doodadYInWorldSpace = doodadInstance.Position.X * -1;
 
-                    if (doodadXInWorldSpace >= tileMinX && doodadXInWorldSpace < tileMaxX &&
-                        doodadYInWorldSpace >= tileMinY && doodadYInWorldSpace < tileMaxY)
-                    {
+                    // Math wasn't working out, so enabling for all
+                    //if (doodadXInWorldSpace >= tileMinX && doodadXInWorldSpace < tileMaxX &&
+                    //    doodadYInWorldSpace >= tileMinY && doodadYInWorldSpace < tileMaxY)
+                    //{
                         TileDoodadInstances.Add(doodadInstance);
                         string doodadPath = GenerateAndGetPathForDoodad(doodadInstance, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
                         if (doodadPathStringIndicesByPathString.ContainsKey(doodadPath) == false)
@@ -70,10 +71,10 @@ namespace EQWOWConverter.WOWFiles
                             DoodadPathStrings.Add(doodadPath);
                         }
                         doodadInstance.ADTObjectNameIndex = Convert.ToUInt32(doodadPathStringIndicesByPathString[doodadPath]);
-                    }
+                    //}
                 }
             }
-            DataBytes = GenerateDataBytes(tileXIndex, tileYIndex);
+            DataBytes = GenerateDataBytes(tileXIndex, tileYIndex, uniqueWMOID);
         }
 
         public static UInt32 GenerateUniqueModelID()
@@ -86,7 +87,7 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
-        private List<byte> GenerateDataBytes(UInt32 tileXIndex, UInt32 tileYIndex)
+        private List<byte> GenerateDataBytes(UInt32 tileXIndex, UInt32 tileYIndex, UInt32 uniqueWMOID)
         {
             List<byte> discardByteArray = new List<byte>();
 
@@ -113,7 +114,7 @@ namespace EQWOWConverter.WOWFiles
             List<byte> modelPlacementBytes = GenerateMDDFChunk();
 
             // Generate WMO placement information (MODF)
-            List<byte> wmoPlacementInformationBytes = GenerateMODFChunk(ZoneObject);
+            List<byte> wmoPlacementInformationBytes = GenerateMODFChunk(ZoneObject, uniqueWMOID);
 
             // Calculate the offsets of all of the chunks which are relative to the data block of the header (MHDR)
             int headerRelativeOffsetCursor = 64; // Header (HMD) data size minus the magic/size subheader
@@ -315,7 +316,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MODF (WMO placement information)
         /// </summary>
-        private List<byte> GenerateMODFChunk(Zone zone)
+        private List<byte> GenerateMODFChunk(Zone zone, UInt32 uniqueWMOID)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -324,7 +325,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
             // Unique ID
-            chunkBytes.AddRange(BitConverter.GetBytes(GenerateUniqueModelID()));
+            chunkBytes.AddRange(BitConverter.GetBytes(uniqueWMOID));
 
             // Position
             // Note that WMOs have to be translated to map space, which has a different coordinate system and origin point
