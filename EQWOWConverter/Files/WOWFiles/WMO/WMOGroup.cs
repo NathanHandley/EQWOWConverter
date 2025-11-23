@@ -134,8 +134,10 @@ namespace EQWOWConverter.WOWFiles
                 chunkBytes.AddRange(GenerateMOLRChunk(worldObjectModel));
 
             // MODR (Doodad References) -----------------------------------------------------------
-            if (worldObjectModel.DoodadInstances.Count > 0)
-                chunkBytes.AddRange(GenerateMODRChunk(worldObjectModel));
+            //Dictionary<int, ZoneDoodadInstance> doodadInstances = worldObjectModel.DoodadInstances;
+            Dictionary<int, ZoneDoodadInstance> doodadInstances = new Dictionary<int, ZoneDoodadInstance>();
+            if (doodadInstances.Count > 0)
+                chunkBytes.AddRange(GenerateMODRChunk(worldObjectModel, doodadInstances));
 
             // MOBN (Nodes of the BSP tree) -------------------------------------------------------
             chunkBytes.AddRange(GenerateMOBNChunk(worldObjectModel));
@@ -282,10 +284,10 @@ namespace EQWOWConverter.WOWFiles
         /// MODR (Doodad References)
         /// Optional.  If has Doodads
         /// </summary>
-        private List<byte> GenerateMODRChunk(ZoneModelObject worldObjectModel)
+        private List<byte> GenerateMODRChunk(ZoneModelObject worldObjectModel, Dictionary<int, ZoneDoodadInstance> doodadInstances)
         {
             List<byte> chunkBytes = new List<byte>();
-            foreach (var doodadInstanceReference in worldObjectModel.DoodadInstances)
+            foreach (var doodadInstanceReference in doodadInstances)
                 chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(doodadInstanceReference.Key)));
             return WrapInChunk("MODR", chunkBytes.ToArray());
         }

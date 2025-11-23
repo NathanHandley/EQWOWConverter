@@ -162,8 +162,8 @@ namespace EQWOWConverter.Zones
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.IsIndoors);
             else
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.IsOutdoors);
-            if (DoodadInstances.Count > 0)
-                headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
+            //if (DoodadInstances.Count > 0)
+            //    headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
             if (IsCompletelyInLiquid == false)
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             if (LightInstanceIDs.Count > 0)
