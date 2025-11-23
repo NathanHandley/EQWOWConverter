@@ -404,6 +404,18 @@ namespace EQWOWConverter.Zones
                         break;
                     }
                 }
+                // Also skip if it's a special case for map generation
+                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == true)
+                {
+                    foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardGeometryBoxesMapGenOnly)
+                    {
+                        if (discardGeometryBox.ContainsPoint(doodadInstance.Position) == true)
+                        {
+                            skipDoodad = true;
+                            break;
+                        }
+                    }
+                }
                 if (skipDoodad == true)
                     continue;
 
