@@ -407,15 +407,20 @@ namespace EQWOWConverter.Zones
                 if (skipDoodad == true)
                     continue;
 
-                // Calculate the rotation
+                // Calculate the rotation (WMO)
                 float rotateYaw = Convert.ToSingle(Math.PI / 180) * -objectInstance.Rotation.Z;
                 float rotatePitch = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.X;
                 float rotateRoll = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.Y;
                 System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotateYaw, rotatePitch, rotateRoll);
-                doodadInstance.Orientation.X = rotationQ.X;
-                doodadInstance.Orientation.Y = rotationQ.Y;
-                doodadInstance.Orientation.Z = rotationQ.Z;
-                doodadInstance.Orientation.W = -rotationQ.W; // Flip the sign for handedness
+                doodadInstance.WMOOrientation.X = rotationQ.X;
+                doodadInstance.WMOOrientation.Y = rotationQ.Y;
+                doodadInstance.WMOOrientation.Z = rotationQ.Z;
+                doodadInstance.WMOOrientation.W = -rotationQ.W; // Flip the sign for handedness
+
+                // Calculate the rotation (ADT)
+                doodadInstance.ADTRotation.X = objectInstance.Rotation.Z;
+                doodadInstance.ADTRotation.Y = objectInstance.Rotation.Y - 180f;
+                doodadInstance.ADTRotation.Z = objectInstance.Rotation.X;
 
                 // Scale is confirmed to always have the same value in x, y, z
                 doodadInstance.Scale = objectInstance.Scale.X;
@@ -507,7 +512,7 @@ namespace EQWOWConverter.Zones
                         objectMeshData.VertexColors.Add(new ColorRGBA(0, 0, 0, 0));
 
                     // Perform transformatinos
-                    objectMeshData.ApplyRotationOnVertices(doodadInstance.Orientation);
+                    objectMeshData.ApplyRotationOnVertices(doodadInstance.WMOOrientation);
                     objectMeshData.ApplyScaleOnVertices(doodadInstance.Scale);
                     objectMeshData.ApplyTranslationOnVertices(doodadInstance.Position);
 

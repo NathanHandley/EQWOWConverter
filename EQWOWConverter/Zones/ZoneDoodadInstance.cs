@@ -26,7 +26,8 @@ namespace EQWOWConverter.Zones
         public UInt32 ADTObjectNameIndex = 0;
         public ZoneDoodadInstanceFlags Flags = ZoneDoodadInstanceFlags.AcceptProjectedTexture; // Not yet implemented
         public Vector3 Position = new Vector3();
-        public Quaternion Orientation = new Quaternion();
+        public Quaternion WMOOrientation = new Quaternion();
+        public Vector3 ADTRotation = new Vector3();
         public float Scale = 1.0f;
         public ColorRGBA Color = new ColorRGBA();
 
@@ -42,7 +43,7 @@ namespace EQWOWConverter.Zones
             // The flags and name offset share a UInt32, effectively making it UInt24 and UInt8
             returnBytes.AddRange(BitConverter.GetBytes(WMOObjectNameOffset));
             returnBytes.AddRange(Position.ToBytes());
-            returnBytes.AddRange(Orientation.ToBytes());
+            returnBytes.AddRange(WMOOrientation.ToBytes());
             returnBytes.AddRange(BitConverter.GetBytes(Scale));
             returnBytes.AddRange(Color.ToBytesBGRA());
             return returnBytes;
@@ -52,12 +53,13 @@ namespace EQWOWConverter.Zones
         {
             // Note that models have to be translated to map space, which has a different origin point
             float centerPointValue = 51200f / 3f; // 64 x 533.333/2
-            Vector3 positionVector = new Vector3(centerPointValue + Position.X, Position.Y, centerPointValue + Position.Z);
+            Vector3 positionVector = new Vector3(centerPointValue + Position.Y, Position.Z, centerPointValue + Position.X);
+
             List<byte> returnBytes = new List<byte>();
             returnBytes.AddRange(BitConverter.GetBytes(ADTObjectNameIndex));
             returnBytes.AddRange(BitConverter.GetBytes(uniqueID));
             returnBytes.AddRange(positionVector.ToBytes());
-            returnBytes.AddRange(Orientation.ToMDDFEulerDegrees().ToBytes());
+            returnBytes.AddRange(ADTRotation.ToBytes());
             returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(1024))); // Scale, 1024 = 1.0f
             returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // Flags, always zero
             return returnBytes;
