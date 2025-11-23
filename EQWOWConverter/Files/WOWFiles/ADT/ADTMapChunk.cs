@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Zones;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -24,6 +25,7 @@ namespace EQWOWConverter.WOWFiles
         private UInt32 ChunkYIndex;
         private UInt32 AreaID;
         private Vector3 Position;
+        private List<ZoneDoodadInstance> ChunkDoodadInstances = new List<ZoneDoodadInstance>();
         private UInt32 MCVTOffset = 0;
         private List<byte> MCVTBytes = new List<byte>();
         private UInt32 MCNROffset = 0;
@@ -41,11 +43,35 @@ namespace EQWOWConverter.WOWFiles
         private UInt32 MCSHOffset = 0;
         private List<byte> MCSHBytes = new List<byte>();
 
-        public ADTMapChunk(UInt32 tileXIndex, UInt32 tileYIndex, UInt32 chunkXIndex, UInt32 chunkYIndex, float baseHeight, UInt32 areaID)
+        public ADTMapChunk(UInt32 tileXIndex, UInt32 tileYIndex, UInt32 chunkXIndex, UInt32 chunkYIndex, float baseHeight, UInt32 areaID,
+            List<ZoneDoodadInstance> doodadInstances)
         {
             ChunkXIndex = chunkXIndex;
             ChunkYIndex = chunkYIndex;
             AreaID = areaID;
+
+            // Calculate position
+            // Chunks in a tile span 0-533.3333 on each axis
+            // tileIndex between 31 and 32 is zero, with lower going positive
+            // X <=> Y (seems x/y are inverted)
+            float step = 100f / 3f; // Ensures proper repeating 33.33333....
+            float startY = (32f - tileYIndex) * (16f * step);
+            float startX = (32f - tileXIndex) * (16f * step);
+            float xPosition = startX + (chunkXIndex * step * -1f);
+            float yPosition = startY + (chunkYIndex * step * -1f);
+            float zPosition = baseHeight;
+            Position = new Vector3(yPosition, xPosition, zPosition); // Intentionally inverted x/y
+
+            // Capture the doodads
+            ChunkDoodadInstances = doodadInstances;
+            //foreach (ZoneDoodadInstance doodadInstance in doodadInstances)
+            //{
+            //    if (doodadInstance.Position.Y >= tileMinX && doodadInstance.Position.Y < tileMaxX &&
+            //        doodadInstance.Position.X >= tileMinY && doodadInstance.Position.X < tileMaxY)
+            //    {
+
+            //    }
+            //}
 
             // MCVT (Height values)
             // Making it flat
@@ -71,8 +97,7 @@ namespace EQWOWConverter.WOWFiles
             MCLYBytes = WrapInChunk("MCLY", MCLYBytes.ToArray());
 
             // MCRF (References?)
-            MCRFBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-            MCRFBytes = WrapInChunk("MCRF", MCRFBytes.ToArray());
+            MCRFBytes = GenerateMCRFChunk();
 
             // MCAL (Alpha Maps for additional texture layers)
             // None
@@ -89,18 +114,23 @@ namespace EQWOWConverter.WOWFiles
             // MCLQ (Liquids)
             // None
             MCLQBytes = WrapInChunk("MCLQ", MCLQBytes.ToArray());
+        }
 
-            // Calculate position
-            // Chunks in a tile span 0-533.3333 on each axis
-            // tileIndex between 31 and 32 is zero, with lower going positive
-            // X <=> Y (seems x/y are inverted)
-            float step = 100f / 3f; // Ensures proper repeating 33.33333....
-            float startY = (32f - tileYIndex) * (16f * step);
-            float startX = (32f - tileXIndex) * (16f * step);
-            float xPosition = startX + (chunkXIndex * step * -1f);
-            float yPosition = startY + (chunkYIndex * step * -1f);
-            float zPosition = baseHeight;
-            Position = new Vector3(yPosition, xPosition, zPosition); // Intentionally inverted x/y
+        /// <summary>
+        /// MCRF (Model References)
+        /// </summary>
+        private List<byte> GenerateMCRFChunk()
+        {
+            List<byte> chunkBytes = new List<byte>();
+
+            // All doodads are being added, so use their position in the array as the index
+            for (int i = 0; i < ChunkDoodadInstances.Count; i++)
+                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(i)));
+
+            // Add "0" for the zonewide WMO
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            return WrapInChunk("MCRF", chunkBytes.ToArray());
         }
 
         private List<byte> GetHeaderBytes()
@@ -120,7 +150,7 @@ namespace EQWOWConverter.WOWFiles
             headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
             // Number of doodad references
-            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(ChunkDoodadInstances.Count)));
 
             // Offset into height data
             headerBytes.AddRange(BitConverter.GetBytes(MCVTOffset));
@@ -149,7 +179,7 @@ namespace EQWOWConverter.WOWFiles
             // AreaID
             headerBytes.AddRange(BitConverter.GetBytes(AreaID));
 
-            // Number of Map Object References
+            // Number of Map Object References (1 for zone WMO)
             headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1)));
 
             // Number of holes (not using terrain, so just making it a hole) unless in creature debug mode
@@ -207,7 +237,7 @@ namespace EQWOWConverter.WOWFiles
             nonHeaderBytes.AddRange(MCVTBytes);
 
             // Normals data
-            MCNROffset = MCVTOffset + (UInt32)MCVTBytes.Count; 
+            MCNROffset = MCVTOffset + (UInt32)MCVTBytes.Count;
             nonHeaderBytes.AddRange(MCNRBytes);
 
             // Layer data
