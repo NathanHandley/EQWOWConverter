@@ -106,15 +106,32 @@ namespace EQWOWConverter.ObjectModels.Properties
 
         private static void PopulateObjectPropertiesList()
         {
-            ObjectPropertiesByByName.Clear();
-            ObjectPropertiesByByName.Add("ladder14", new Ladder14ObjectProperties());
-            ObjectPropertiesByByName.Add("ladder20", new Ladder20ObjectProperties());
-            ObjectPropertiesByByName.Add("ladder28", new Ladder14ObjectProperties());
-            ObjectPropertiesByByName.Add("ladder42", new Ladder14ObjectProperties());
-            ObjectPropertiesByByName.Add("ladder60", new Ladder14ObjectProperties());
-            ObjectPropertiesByByName.Add("slbraz101", new SLBraz101ObjectPreperties());
-            ObjectPropertiesByByName.Add("slfountain101", new SLFountain101ObjectProperties());
-            ObjectPropertiesByByName.Add("sltorch101", new SLTorch101ObjectProperties());
+            lock (ObjectModelsLock)
+            {
+                ObjectPropertiesByByName.Clear();
+
+                string objectModelPropertiesFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ObjectModelProperties.csv");
+                Logger.WriteDebug("Populating Object Model Properties list via file '" + objectModelPropertiesFileName + "'");
+                List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(objectModelPropertiesFileName, "|");
+                foreach (Dictionary<string, string> columns in rows)
+                {
+                    ObjectModelProperties newObjectModelProperties = new ObjectModelProperties();
+                    newObjectModelProperties.Name = columns["Name"];
+                    switch (columns["SpecialCollisionType"])
+                    {
+                        case "ladder": newObjectModelProperties.SetCustomCollisionType(ObjectModelCustomCollisionType.Ladder); break;
+                        default:break;
+                    }
+                    string alwaysBrightMaterialNames = columns["AlwaysBrightMaterials"];
+                    if (alwaysBrightMaterialNames.Length > 0)
+                    {
+                        string[] materialNames = alwaysBrightMaterialNames.Split(',');
+                        foreach (string materialName in materialNames)
+                            newObjectModelProperties.AddAlwaysBrightMaterial(materialName);
+                    }
+                    ObjectPropertiesByByName.Add(newObjectModelProperties.Name, newObjectModelProperties);
+                }
+            }
         }
 
         private void PopulateAllMaterialAlphaBlendMaterials()

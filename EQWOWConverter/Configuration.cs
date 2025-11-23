@@ -190,8 +190,8 @@ namespace EQWOWConverter
         // Zone General
         //=====================================================================
         // When true, many various proprties are changed to support generation of minimaps, such as 'baking' in animated textures
-        public static readonly bool ZONE_MINIMAP_GENERATION_MODE_ENABLED = false;
         // Leave this false unless generating maps in order to make minimaps, otherwise you'll have terrible visuals and performance
+        public static readonly bool ZONE_MINIMAP_GENERATION_MODE_ENABLED = false;
 
         // If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging
         public static readonly bool ZONE_SHOW_STATIC_GEOMETRY = true;
