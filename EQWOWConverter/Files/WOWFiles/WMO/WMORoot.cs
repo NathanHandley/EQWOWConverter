@@ -33,9 +33,12 @@ namespace EQWOWConverter.WOWFiles
         public WMORoot(Zone zone, string textureRelativeOutputFolder, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder,
             bool addConvexVolumePlanes)
         {
-            //List<ZoneDoodadInstance> doodadInstances = zone.DoodadInstances;
-            List<ZoneDoodadInstance> doodadInstances = new List<ZoneDoodadInstance>();
-
+            List<ZoneDoodadInstance> doodadInstances;
+            if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == true)
+                doodadInstances = new List<ZoneDoodadInstance>();
+            else
+                doodadInstances = zone.DoodadInstances;
+            
             PopulateDoodadPathStringOffsets(doodadInstances, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
 
             // MVER (Version) ---------------------------------------------------------------------

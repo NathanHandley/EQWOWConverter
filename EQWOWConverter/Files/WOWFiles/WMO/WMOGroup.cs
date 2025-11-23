@@ -134,8 +134,11 @@ namespace EQWOWConverter.WOWFiles
                 chunkBytes.AddRange(GenerateMOLRChunk(worldObjectModel));
 
             // MODR (Doodad References) -----------------------------------------------------------
-            //Dictionary<int, ZoneDoodadInstance> doodadInstances = worldObjectModel.DoodadInstances;
-            Dictionary<int, ZoneDoodadInstance> doodadInstances = new Dictionary<int, ZoneDoodadInstance>();
+            Dictionary<int, ZoneDoodadInstance> doodadInstances;
+            if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == true)
+                doodadInstances = new Dictionary<int, ZoneDoodadInstance>();
+            else
+                doodadInstances = worldObjectModel.DoodadInstances;
             if (doodadInstances.Count > 0)
                 chunkBytes.AddRange(GenerateMODRChunk(worldObjectModel, doodadInstances));
 

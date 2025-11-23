@@ -44,26 +44,33 @@ namespace EQWOWConverter.WOWFiles
             TileXIndex = tileXIndex;
             TileYIndex = tileYIndex;
 
-            // Filter doodads that belong in this tile, factoring for the change in coordinate systems
-            float tileLength = 1600f / 3f; // Comes out to 533.333 repeat, doing the math here to make it be as exact as possible
-            float tileMinX = tileXIndex * tileLength - 32 * tileLength;
-            float tileMinY = tileYIndex * tileLength - 32 * tileLength;
-            float tileMaxX = tileMinX + tileLength;
-            float tileMaxY = tileMinY + tileLength;
-            Dictionary<string, int> doodadPathStringIndicesByPathString = new Dictionary<string, int>();
-            foreach (var doodadInstance in zone.DoodadInstances)
+            // Add doodads only if trying to generate minimaps
+            if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == true)
             {
-                if (doodadInstance.Position.Y >= tileMinX && doodadInstance.Position.Y < tileMaxX &&
-                    doodadInstance.Position.X >= tileMinY && doodadInstance.Position.X < tileMaxY)
+                // Filter doodads that belong in this tile, factoring for the change in coordinate systems
+                float tileLength = 1600f / 3f; // Comes out to 533.333 repeat, doing the math here to make it be as exact as possible
+                float tileMinX = tileXIndex * tileLength - 32 * tileLength;
+                float tileMinY = tileYIndex * tileLength - 32 * tileLength;
+                float tileMaxX = tileMinX + tileLength;
+                float tileMaxY = tileMinY + tileLength;
+                Dictionary<string, int> doodadPathStringIndicesByPathString = new Dictionary<string, int>();
+                foreach (var doodadInstance in zone.DoodadInstances)
                 {
-                    TileDoodadInstances.Add(doodadInstance);
-                    string doodadPath = GenerateAndGetPathForDoodad(doodadInstance, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
-                    if (doodadPathStringIndicesByPathString.ContainsKey(doodadPath) == false)
+                    float doodadXInWorldSpace = doodadInstance.Position.Y * -1;
+                    float doodadYInWorldSpace = doodadInstance.Position.X * -1;
+
+                    if (doodadXInWorldSpace >= tileMinX && doodadXInWorldSpace < tileMaxX &&
+                        doodadYInWorldSpace >= tileMinY && doodadYInWorldSpace < tileMaxY)
                     {
-                        doodadPathStringIndicesByPathString.Add(doodadPath, DoodadPathStrings.Count);
-                        DoodadPathStrings.Add(doodadPath);
+                        TileDoodadInstances.Add(doodadInstance);
+                        string doodadPath = GenerateAndGetPathForDoodad(doodadInstance, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
+                        if (doodadPathStringIndicesByPathString.ContainsKey(doodadPath) == false)
+                        {
+                            doodadPathStringIndicesByPathString.Add(doodadPath, DoodadPathStrings.Count);
+                            DoodadPathStrings.Add(doodadPath);
+                        }
+                        doodadInstance.ADTObjectNameIndex = Convert.ToUInt32(doodadPathStringIndicesByPathString[doodadPath]);
                     }
-                    doodadInstance.ADTObjectNameIndex = Convert.ToUInt32(doodadPathStringIndicesByPathString[doodadPath]);
                 }
             }
             DataBytes = GenerateDataBytes(tileXIndex, tileYIndex);
