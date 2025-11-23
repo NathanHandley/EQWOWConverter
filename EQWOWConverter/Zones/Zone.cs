@@ -419,7 +419,7 @@ namespace EQWOWConverter.Zones
 
                 // Calculate the rotation (ADT)
                 doodadInstance.ADTRotation.X = objectInstance.Rotation.Z;
-                doodadInstance.ADTRotation.Y = objectInstance.Rotation.Y - 180f;
+                doodadInstance.ADTRotation.Y = -1 * objectInstance.Rotation.Y;
                 doodadInstance.ADTRotation.Z = objectInstance.Rotation.X;
 
                 // Scale is confirmed to always have the same value in x, y, z
