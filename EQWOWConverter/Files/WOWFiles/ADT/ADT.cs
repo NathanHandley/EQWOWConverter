@@ -44,26 +44,26 @@ namespace EQWOWConverter.WOWFiles
             TileXIndex = tileXIndex;
             TileYIndex = tileYIndex;
 
-            // Filter doodads that belong in this tile
+            // Filter doodads that belong in this tile, factoring for the change in coordinate systems
             float tileLength = 1600f / 3f; // Comes out to 533.333 repeat, doing the math here to make it be as exact as possible
             float tileMinX = tileXIndex * tileLength - 32 * tileLength;
-            float tileMinZ = tileYIndex * tileLength - 32 * tileLength;
+            float tileMinY = tileYIndex * tileLength - 32 * tileLength;
             float tileMaxX = tileMinX + tileLength;
-            float tileMaxZ = tileMinZ + tileLength;
+            float tileMaxY = tileMinY + tileLength;
             Dictionary<string, int> doodadPathStringIndicesByPathString = new Dictionary<string, int>();
-            foreach (var doodad in zone.DoodadInstances)
+            foreach (var doodadInstance in zone.DoodadInstances)
             {
-                if (doodad.Position.X >= tileMinX && doodad.Position.X < tileMaxX &&
-                    doodad.Position.Z >= tileMinZ && doodad.Position.Z < tileMaxZ)
+                if (doodadInstance.Position.Y >= tileMinX && doodadInstance.Position.Y < tileMaxX &&
+                    doodadInstance.Position.X >= tileMinY && doodadInstance.Position.X < tileMaxY)
                 {
-                    TileDoodadInstances.Add(doodad);
-                    string doodadPath = GenerateAndGetPathForDoodad(doodad, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
+                    TileDoodadInstances.Add(doodadInstance);
+                    string doodadPath = GenerateAndGetPathForDoodad(doodadInstance, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
                     if (doodadPathStringIndicesByPathString.ContainsKey(doodadPath) == false)
                     {
                         doodadPathStringIndicesByPathString.Add(doodadPath, DoodadPathStrings.Count);
                         DoodadPathStrings.Add(doodadPath);
                     }
-                    doodad.ADTObjectNameIndex = Convert.ToUInt32(doodadPathStringIndicesByPathString[doodadPath]);
+                    doodadInstance.ADTObjectNameIndex = Convert.ToUInt32(doodadPathStringIndicesByPathString[doodadPath]);
                 }
             }
             DataBytes = GenerateDataBytes(tileXIndex, tileYIndex);
@@ -130,7 +130,6 @@ namespace EQWOWConverter.WOWFiles
             List<byte> headerBytes = GenerateMHDRChunk(offsetMCIN, offsetMTEX, offsetMMDX, offsetMMID, offsetMWMO, offsetMWID, offsetMDDF, offsetMODF);
 
             // Generate map chunks (MCNKs) and their info objects (MCIN)
-            //List<ADTMapChunk> mapChunks = new List<ADTMapChunk>();
             List<ADTMapChunkInfo> mapChunkInfos = new List<ADTMapChunkInfo>();
             List<byte> mapChunkBytes = new List<byte>();
             int curMCNKOffset = headerRelativeOffsetCursor + wmoPlacementInformationBytes.Count + versionChunkBytes.Count + 8;
@@ -138,7 +137,8 @@ namespace EQWOWConverter.WOWFiles
                 for (UInt16 x = 0; x < 16; x++)
                 {
                     // Make the chunk
-                    ADTMapChunk curChunk = new ADTMapChunk(tileXIndex, tileYIndex, x, y, ZoneFloorHeight, ZoneObject.DefaultArea.DBCAreaTableID);
+                    ADTMapChunk curChunk = new ADTMapChunk(tileXIndex, tileYIndex, x, y, ZoneFloorHeight, ZoneObject.DefaultArea.DBCAreaTableID,
+                        TileDoodadInstances);
                     List<byte> curChunkBytes = curChunk.GetDataBytes();
                     mapChunkBytes.AddRange(curChunkBytes);
 
