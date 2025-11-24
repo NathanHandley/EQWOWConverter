@@ -44,6 +44,7 @@ namespace EQWOWConverter.ObjectModels.Properties
         public bool SpellEmitterSpraysFromHands = false;
         public bool RenderingEnabled = true; // Note: This is also makes it non-interactive (non-clickable)
         public ItemEquipUnitType EquipUnitType = ItemEquipUnitType.Player;
+        public bool IncludeInMinimapGeneration = false;
 
         public ObjectModelProperties() { }
         public ObjectModelProperties(ObjectModelProperties other)
@@ -129,6 +130,7 @@ namespace EQWOWConverter.ObjectModels.Properties
                         foreach (string materialName in materialNames)
                             newObjectModelProperties.AddAlwaysBrightMaterial(materialName);
                     }
+                    newObjectModelProperties.IncludeInMinimapGeneration = columns["IncludeInMinimap"] == "1" ? true : false;
                     ObjectPropertiesByByName.Add(newObjectModelProperties.Name, newObjectModelProperties);
                 }
             }

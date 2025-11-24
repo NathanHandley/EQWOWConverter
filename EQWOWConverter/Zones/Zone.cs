@@ -401,7 +401,7 @@ namespace EQWOWConverter.Zones
                     if (discardGeometryBox.ContainsPoint(doodadInstance.Position) == true)
                     {
                         skipDoodad = true;
-                        break;
+                        continue;
                     }
                 }
                 // Also skip if it's a special case for map generation
@@ -412,8 +412,14 @@ namespace EQWOWConverter.Zones
                         if (discardGeometryBox.ContainsPoint(doodadInstance.Position) == true)
                         {
                             skipDoodad = true;
-                            break;
+                            continue;
                         }
+                    }
+                    ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(doodadInstance.ObjectName.ToLower());
+                    if (objectProperties.IncludeInMinimapGeneration == false)
+                    {
+                        skipDoodad = true;
+                        continue;
                     }
                 }
                 if (skipDoodad == true)
