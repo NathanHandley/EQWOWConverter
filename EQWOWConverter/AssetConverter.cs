@@ -2091,8 +2091,12 @@ namespace EQWOWConverter
             outputLinksFileTextSB.AppendLine("EQ_MapLinks.LINKS = {");
             List<ZoneContinent> zoneContinents = ZoneContinent.GetZoneContinents();
             Dictionary<ZoneContinentType, ZoneContinent> zoneContinentsByContinentType = new Dictionary<ZoneContinentType, ZoneContinent>();
+            Dictionary<string, ZoneContinent> zoneContinentsByContinentShortname = new Dictionary<string, ZoneContinent>();
             foreach (ZoneContinent continent in zoneContinents)
+            {
                 zoneContinentsByContinentType.Add(continent.ContinentType, continent);
+                zoneContinentsByContinentShortname.Add(continent.ShortName, continent);
+            }
 
             // Create the map links by zone properties
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
@@ -2190,16 +2194,26 @@ namespace EQWOWConverter
                 int addedBoxes = 0;
                 foreach (ZoneContinent.MapLink mapLinkBox in mapLinks)
                 {
-                    // Skip any to any not loaded zones
-                    if (zonePropertiesByShortName.ContainsKey(mapLinkBox.LinkedZoneShortName) == false)
+                    // Skip any not loaded zones or continents
+                    if (zonePropertiesByShortName.ContainsKey(mapLinkBox.LinkedZoneShortName) == true)
+                    {
+                        ZoneProperties linkedZoneProperties = zonePropertiesByShortName[mapLinkBox.LinkedZoneShortName];
+                        zoneLinkBlockSB.Append("   {name=\"");
+                        zoneLinkBlockSB.Append(linkedZoneProperties.DescriptiveName);
+                        zoneLinkBlockSB.Append("\", mapID=");
+                        zoneLinkBlockSB.Append(linkedZoneProperties.DBCWorldMapAreaID.ToString());
+                    }
+                    else if (zoneContinentsByContinentShortname.ContainsKey(mapLinkBox.LinkedZoneShortName) == true)
+                    {
+                        ZoneContinent linkedZoneContinent = zoneContinentsByContinentShortname[mapLinkBox.LinkedZoneShortName];
+                        zoneLinkBlockSB.Append("   {name=\"");
+                        zoneLinkBlockSB.Append(linkedZoneContinent.DescriptiveName);
+                        zoneLinkBlockSB.Append("\", mapID=");
+                        zoneLinkBlockSB.Append(linkedZoneContinent.DBCWorldMapAreaID.ToString());
+                    }
+                    else
                         continue;
-                    ZoneProperties linkedZoneProperties = zonePropertiesByShortName[mapLinkBox.LinkedZoneShortName];
 
-                    // Add it as a link
-                    zoneLinkBlockSB.Append("   {name=\"");
-                    zoneLinkBlockSB.Append(linkedZoneProperties.DescriptiveName);
-                    zoneLinkBlockSB.Append("\", mapID=");
-                    zoneLinkBlockSB.Append(linkedZoneProperties.DBCWorldMapAreaID.ToString());
                     zoneLinkBlockSB.Append(", x=");
                     zoneLinkBlockSB.Append(mapLinkBox.Left);
                     zoneLinkBlockSB.Append(", y=");
