@@ -25,11 +25,15 @@ EQ_MapLinkerDB = EQ_MapLinkerDB or { showLinks = true }
 EQ_MapLinker.db = EQ_MapLinkerDB
 
 EQ_MapLinker:RegisterEvent("ADDON_LOADED")
+EQ_MapLinker:RegisterEvent("PLAYER_LOGIN")
+
 EQ_MapLinker:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == "EQ_MapLinker" then
         self:Init()
     elseif event == "WORLD_MAP_UPDATE" then
         self:UpdateButtons()
+    elseif event == "PLAYER_LOGIN" then
+        self:HookZoomOutButton()
     end
 end)
 
@@ -52,6 +56,25 @@ function EQ_MapLinker:Init()
     self.buttons = {}
     self:BuildTargetIndex()
     self:HookMap()
+end
+
+function EQ_MapLinker:HookZoomOutButton()
+    WorldMapZoomOutButton:HookScript("OnClick", function()
+		local currentMapID = GetCurrentMapAreaID()
+		local mapEntry = nil
+        if EQ_MapLinker.LINKS[currentMapID] then
+            mapEntry = EQ_MapLinker.LINKS[currentMapID]
+        else
+            local originalID = currentMapID - 1
+            if EQ_MapLinks and EQ_MapLinks.LINKS and EQ_MapLinks.LINKS[originalID] then
+                mapEntry = EQ_MapLinks.LINKS[originalID]
+            end
+        end
+		if mapEntry then
+			local customZoomOut = mapEntry and mapEntry.zoomOutMapID
+			SetMapByID(customZoomOut)
+		end
+    end)
 end
 
 function EQ_MapLinker:CreateToggleButton()
