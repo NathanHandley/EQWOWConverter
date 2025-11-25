@@ -251,6 +251,19 @@ namespace EQWOWConverter
                 footstepTerrainLookupDBC.AddRow(footstepIDBySoundID.Value, footstepIDBySoundID.Key);
 
             // Zone-specific records
+            List<ZoneContinent> zoneContinents = ZoneContinent.GetZoneContinents();
+            Dictionary<ZoneContinentType, ZoneContinent> zoneContinentsByContinentType = new Dictionary<ZoneContinentType, ZoneContinent>();
+            foreach (ZoneContinent continent in zoneContinents)
+            {
+                string mapFolderName = string.Concat("EQ_", continent.ShortName);
+
+                // Map
+                mapDBC.AddRow(continent.DBCMapID, mapFolderName, continent.DescriptiveName, 0, 0);
+
+                // World Map Area
+                worldMapAreaDBC.AddRow(continent.DBCWorldMapAreaID, continent.DBCMapID, 0, mapFolderName, 1, -1, 1, -1, 0);
+                zoneContinentsByContinentType.Add(continent.ContinentType, continent);
+            }
             foreach (Zone zone in zones)
             {
                 ZoneProperties zoneProperties = zone.ZoneProperties;
@@ -338,8 +351,11 @@ namespace EQWOWConverter
                 if (Configuration.GENERATE_MAPS == true)
                 {
                     string mapFolderName = string.Concat("EQ_", zoneProperties.ShortName);
+                    int parentWorldMapID = 0;
+                    if (zoneContinentsByContinentType.ContainsKey(zoneProperties.Continent) == true)
+                        parentWorldMapID = zoneContinentsByContinentType[zoneProperties.Continent].DBCWorldMapAreaID;
                     worldMapAreaDBC.AddRow(zoneProperties.DBCWorldMapAreaID, zoneProperties.DBCMapID, Convert.ToInt32(zoneProperties.DefaultZoneArea.DBCAreaTableID), mapFolderName,
-                        zoneProperties.DisplayMapMainLeft, zoneProperties.DisplayMapMainRight, zoneProperties.DisplayMapMainTop, zoneProperties.DisplayMapMainBottom);
+                        zoneProperties.DisplayMapMainLeft, zoneProperties.DisplayMapMainRight, zoneProperties.DisplayMapMainTop, zoneProperties.DisplayMapMainBottom, parentWorldMapID);
                 }
 
                 // WMOAreaTable (Header than groups)

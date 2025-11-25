@@ -2089,6 +2089,10 @@ namespace EQWOWConverter
             outputLinksFileTextSB.AppendLine("EQ_MapLinks = EQ_MapLinks or {}");
             outputLinksFileTextSB.AppendLine("");
             outputLinksFileTextSB.AppendLine("EQ_MapLinks.LINKS = {");
+            List<ZoneContinent> zoneContinents = ZoneContinent.GetZoneContinents();
+            Dictionary<ZoneContinentType, ZoneContinent> zoneContinentsByContinentType = new Dictionary<ZoneContinentType, ZoneContinent>();
+            foreach (ZoneContinent continent in zoneContinents)
+                zoneContinentsByContinentType.Add(continent.ContinentType, continent);
 
             // Create the map links by zone properties
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
@@ -2110,10 +2114,16 @@ namespace EQWOWConverter
                 int scaledZoneGeometryHeight = (int)Math.Round(unscaledZoneGeometryHeight * pixelScale);
                 int mapOutputStartX = ((mapOutputContentWidth - scaledZoneGeometryWidth) / 2) + Configuration.GENERATE_MAPS_LEFT_BORDER_PIXEL_SIZE;
                 int mapOutputStartY = ((mapOutputContentHeight - scaledZoneGeometryHeight) / 2) + Configuration.GENERATE_MAPS_TOP_BORDER_PIXEL_SIZE;
-
-                // Make a link for every display map link
+                
+                // Start a link config section
                 StringBuilder zoneLinkBlockSB = new StringBuilder();
                 zoneLinkBlockSB.AppendLine(string.Concat("[", zone.ZoneProperties.DBCWorldMapAreaID, "] = {"));
+
+                // Append a click-up continent if it exists
+                if (zoneContinentsByContinentType.ContainsKey(zone.ZoneProperties.Continent) == true)
+                    zoneLinkBlockSB.AppendLine(string.Concat("   zoomOutMapID = ", zoneContinentsByContinentType[zone.ZoneProperties.Continent].DBCWorldMapAreaID, ","));
+
+                // Make a link for every display map link
                 int addedBoxes = 0;
                 foreach (ZonePropertiesDisplayMapLinkBox mapLinkBox in zone.ZoneProperties.DisplayMapLinkBoxes)
                 {
@@ -2154,6 +2164,50 @@ namespace EQWOWConverter
                     zoneLinkBlockSB.Append(displayMapBoxWidth);
                     zoneLinkBlockSB.Append(", h=");
                     zoneLinkBlockSB.Append(displayMapBoxHeight);
+                    zoneLinkBlockSB.AppendLine("},");
+                    addedBoxes++;
+                }
+
+                if (addedBoxes > 0)
+                {
+                    zoneLinkBlockSB.AppendLine("},");
+                    outputLinksFileTextSB.Append(zoneLinkBlockSB.ToString());
+                }
+            }
+
+            // Create the map links by zone continent
+            foreach (ZoneContinent zoneContinent in zoneContinents)
+            {
+                List<ZoneContinent.MapLink> mapLinks = ZoneContinent.GetMapLinksForContinent(zoneContinent.ShortName);
+                if (mapLinks.Count == 0)
+                    continue;
+
+                // Start a link config section
+                StringBuilder zoneLinkBlockSB = new StringBuilder();
+                zoneLinkBlockSB.AppendLine(string.Concat("[", zoneContinent.DBCWorldMapAreaID, "] = {"));
+
+                // Make a link for every display map link
+                int addedBoxes = 0;
+                foreach (ZoneContinent.MapLink mapLinkBox in mapLinks)
+                {
+                    // Skip any to any not loaded zones
+                    if (zonePropertiesByShortName.ContainsKey(mapLinkBox.LinkedZoneShortName) == false)
+                        continue;
+                    ZoneProperties linkedZoneProperties = zonePropertiesByShortName[mapLinkBox.LinkedZoneShortName];
+
+                    // Add it as a link
+                    zoneLinkBlockSB.Append("   {name=\"");
+                    zoneLinkBlockSB.Append(linkedZoneProperties.DescriptiveName);
+                    zoneLinkBlockSB.Append("\", mapID=");
+                    zoneLinkBlockSB.Append(linkedZoneProperties.DBCWorldMapAreaID.ToString());
+                    zoneLinkBlockSB.Append(", x=");
+                    zoneLinkBlockSB.Append(mapLinkBox.Left);
+                    zoneLinkBlockSB.Append(", y=");
+                    zoneLinkBlockSB.Append(mapLinkBox.Top);
+                    zoneLinkBlockSB.Append(", w=");
+                    zoneLinkBlockSB.Append(mapLinkBox.Width);
+                    zoneLinkBlockSB.Append(", h=");
+                    zoneLinkBlockSB.Append(mapLinkBox.Height);
                     zoneLinkBlockSB.AppendLine("},");
                     addedBoxes++;
                 }

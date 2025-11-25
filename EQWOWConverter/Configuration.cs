@@ -697,7 +697,7 @@ namespace EQWOWConverter
         public static readonly int DBCID_LOADINGSCREEN_ID_START = 255;
 
         // Identifies Maps in Map.dbc and MapDifficulty.dbc
-        // Note: This value is hard coded in /WorldData/ZoneProperties.csv and /TransportShips.csv, so you cannot change only this value
+        // Note: This value is hard coded in /WorldData/ZoneProperties.csv, TransportShips.csv, and ZoneDisplayMapContinents.csv, so you cannot change only this value
         public static readonly int DBCID_MAP_ID_START = 750;
         public static readonly int DBCID_MAP_ID_END = 899;
 

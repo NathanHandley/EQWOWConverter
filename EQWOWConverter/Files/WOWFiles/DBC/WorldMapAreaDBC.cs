@@ -19,7 +19,7 @@ namespace EQWOWConverter.WOWFiles;
 internal class WorldMapAreaDBC : DBCFile
 {
     public void AddRow(int rowID, int zoneMapID, int areaTableID, string mapFolderNameNoExt, float locationLeft,
-        float locationRight, float locationTop, float locationBottom)
+        float locationRight, float locationTop, float locationBottom, int parentWorldMapID)
     {
         DBCRow newRow = new DBCRow();
 
@@ -33,7 +33,7 @@ internal class WorldMapAreaDBC : DBCFile
         newRow.AddFloat(locationBottom); // LocBottom, position at the bottom
         newRow.AddInt32(-1); // DisplayMapID, Virtual Map ID (Map.dbc.id)
         newRow.AddInt32(0); // DefaultDungeonFloor, Dungeon Map / Floor ID (DungeonMap.dbc.id)
-        newRow.AddInt32(0); // ParentWorldMapID
+        newRow.AddInt32(parentWorldMapID); // ParentWorldMapID
 
         // Set the sort
         newRow.SortValue1 = rowID;

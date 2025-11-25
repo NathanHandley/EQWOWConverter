@@ -56,6 +56,12 @@ function EQ_MapLinker:Init()
     self.buttons = {}
     self:BuildTargetIndex()
     self:HookMap()
+	
+	WorldMapButton:HookScript("OnMouseUp", function(self, button)
+		if button == "RightButton" then
+			WorldMapZoomOutButton:Click()
+		end
+	end)
 end
 
 function EQ_MapLinker:HookZoomOutButton()
@@ -164,8 +170,7 @@ function EQ_MapLinker:UpdateButtons()
     local sy = parent:GetHeight() / MAP_H
 
     for i, link in ipairs(list) do
-	
-        local btn = CreateFrame("Button", "ML_Btn"..i, parent, "SecureActionButtonTemplate")
+		local btn = CreateFrame("Button", "ML_Btn"..i, parent)
         btn:SetSize(link.w * sx, link.h * sy)
         btn:SetPoint("TOPLEFT", parent, "TOPLEFT", link.x * sx, -link.y * sy)
         btn:SetFrameStrata("HIGH")
@@ -237,9 +242,18 @@ function EQ_MapLinker:UpdateButtons()
             end
         end)
 
-        -- Click
-        btn:SetAttribute("type", "macro")
-        btn:SetAttribute("macrotext", "/run SetMapByID("..link.mapID..")")
+        -- Click (Left: switch map)
+        btn:RegisterForClicks("LeftButtonUp")
+        btn:SetScript("OnClick", function()
+            SetMapByID(link.mapID)
+        end)
+
+        -- Click (Right: zoom out)
+        btn:SetScript("OnMouseUp", function(self, button)
+            if button == "RightButton" then
+                WorldMapZoomOutButton:Click()
+            end
+        end)
 
         btn:Show()
         table.insert(self.buttons, btn)
