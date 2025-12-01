@@ -350,6 +350,9 @@ namespace EQWOWConverter
         // If true, custom mailboxes are put into the game as 'postmen'
         public static readonly bool OBJECT_GAMEOBJECT_ENABLE_MAILBOXES = true;
 
+        // The maximim number of animated vertices that get converted into bones
+        public static readonly int OBJECT_MAX_ANIMATED_VERTEX_FRAMES = 64;
+
         //=====================================================================
         // Creatures
         //=====================================================================
