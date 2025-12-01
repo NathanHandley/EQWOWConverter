@@ -2024,7 +2024,7 @@ namespace EQWOWConverter.ObjectModels
             if (Properties.CustomCollisionType != ObjectModelCustomCollisionType.None)
                 ApplyCustomCollision(Properties.CustomCollisionType, ref collisionVertices, ref collisionTriangleFaces);
 
-            // Calculate normals using the triangles provided
+            // Calculate face normals using the triangles provided
             if (doGenerateNormals == true)
             {
                 foreach (TriangleFace collisionTriangle in collisionTriangleFaces)

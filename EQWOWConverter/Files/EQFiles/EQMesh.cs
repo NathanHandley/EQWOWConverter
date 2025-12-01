@@ -232,7 +232,6 @@ namespace EQWOWConverter.EQFiles
                     Meshdata.VertexColors.Add(new ColorRGBA());
             }
 
-            Meshdata.DeleteInvalidTriangles();
             if (Meshdata.AnimatedVertexFramesByVertexIndex.Count > 0)
                 if (Meshdata.AnimatedVertexFramesByVertexIndex.Count != Meshdata.Vertices.Count)
                 {
