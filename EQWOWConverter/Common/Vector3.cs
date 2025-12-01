@@ -149,28 +149,34 @@ namespace EQWOWConverter.Common
             return scaledVector;
         }
 
-        public float GetMagnitude()
-        {
-            return MathF.Sqrt(X * X + Y * Y + Z * Z);
-        }
-
-        public static Vector3 GetNormalized(Vector3 v)
-        {
-            float magnitude = v.GetMagnitude();
-            if (magnitude > 0)
-            {
-                return v / magnitude;
-            }
-            else
-            {
-                // Return a zero vector if the magnitude is zero to avoid division by zero
-                return new Vector3(0, 0, 0);
-            }
-        }
-
         public float GetLengthSquared()
         {
             return X * X + Y * Y + Z * Z;
+        }
+
+        public static Vector3 CalculateNormalFromVectors(Vector3 vertex1, Vector3 vertex2, Vector3 vertex3)
+        {
+            // Calculate two edges
+            Vector3 edge1 = vertex2 - vertex1;
+            Vector3 edge2 = vertex3 - vertex1;
+
+            // Cross product determines the vector, then normalize (using C# libraries to save coding time)
+            System.Numerics.Vector3 edge1System = new System.Numerics.Vector3(edge1.X, edge1.Y, edge1.Z);
+            System.Numerics.Vector3 edge2System = new System.Numerics.Vector3(edge2.X, edge2.Y, edge2.Z);
+            System.Numerics.Vector3 normalSystem = System.Numerics.Vector3.Cross(edge1System, edge2System);
+            System.Numerics.Vector3 normalizedNormalSystem = System.Numerics.Vector3.Normalize(normalSystem);
+
+            // Remove NaNs
+            if (float.IsNaN(normalizedNormalSystem.X))
+                normalizedNormalSystem.X = 0;
+            if (float.IsNaN(normalizedNormalSystem.Y))
+                normalizedNormalSystem.Y = 0;
+            if (float.IsNaN(normalizedNormalSystem.Z))
+                normalizedNormalSystem.Z = 0;
+
+            // Invert the normal due to winding order difference
+            Vector3 normal = new Vector3(normalizedNormalSystem.X, normalizedNormalSystem.Y, normalizedNormalSystem.Z);
+            return normal;
         }
     }
 }

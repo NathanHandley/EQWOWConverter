@@ -549,21 +549,12 @@ namespace EQWOWConverter.Zones
                 Vector3 v1 = collisionMeshData.Vertices[face.V1];
                 Vector3 v2 = collisionMeshData.Vertices[face.V2];
                 Vector3 v3 = collisionMeshData.Vertices[face.V3];
-
-                // Calculate two edges of the triangle
-                Vector3 edge1 = v2 - v1;
-                Vector3 edge2 = v3 - v1;
-
-                // Compute the face normal
-                Vector3 faceNormal = Vector3.Cross(edge1, edge2);
-
-                // Normalize the face normal to ensure it's a unit vector
-                faceNormal = Vector3.GetNormalized(faceNormal);
+                Vector3 normal = Vector3.CalculateNormalFromVectors(v1, v2, v3);
 
                 // Accumulate the face normal into the vertex normals
-                collisionMeshData.Normals[face.V1] += faceNormal;
-                collisionMeshData.Normals[face.V2] += faceNormal;
-                collisionMeshData.Normals[face.V3] += faceNormal;
+                collisionMeshData.Normals[face.V1] += normal;
+                collisionMeshData.Normals[face.V2] += normal;
+                collisionMeshData.Normals[face.V3] += normal;
             }
 
             // Constrain the maximum collision area, if set
