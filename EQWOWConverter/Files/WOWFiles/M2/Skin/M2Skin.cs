@@ -23,6 +23,7 @@ namespace EQWOWConverter.WOWFiles
     {
         private M2SkinHeader Header = new M2SkinHeader();
         private List<byte> SkinBytes = new List<byte>();
+        private int MaxBones = 0;
 
         public M2Skin(ObjectModel wowObjectModel)
         {
@@ -71,6 +72,16 @@ namespace EQWOWConverter.WOWFiles
             nonHeaderBytes.AddRange(textureUnitsBytes);
             AddBytesToAlign(ref nonHeaderBytes, ref curOffset, 16);
 
+            // Set the bone counts
+            if (MaxBones > 64)
+                Header.BoneCountMax = 256;
+            else if (MaxBones > 53)
+                Header.BoneCountMax = 64;
+            else if (MaxBones > 21)
+                Header.BoneCountMax = 53;
+            else
+                Header.BoneCountMax = 21;
+
             // Assemble the byte stream together, header first
             SkinBytes.AddRange(Header.ToBytes());
             SkinBytes.AddRange(nonHeaderBytes);
@@ -104,7 +115,7 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateBoneIndicesBlock(ObjectModel modelObject)
         {
             List<byte> blockBytes = new List<byte>();
-            foreach(ObjectModelVertex modelVertex in modelObject.ModelVertices)
+            foreach (ObjectModelVertex modelVertex in modelObject.ModelVertices)
             {
                 M2SkinBoneIndices curIndices = new M2SkinBoneIndices(modelVertex.BoneIndicesLookup);
                 blockBytes.AddRange(curIndices.ToBytes());
@@ -193,6 +204,8 @@ namespace EQWOWConverter.WOWFiles
                     if (numberOfBones == 0)
                         numberOfBones = 1;
 
+                    MaxBones = Math.Max(numberOfBones, MaxBones);
+
                     // Build the sub mesh
                     M2SkinSubMesh curSubMesh = new M2SkinSubMesh(Convert.ToUInt16(startVertexIndex), Convert.ToUInt16(numberOfVertices),
                         Convert.ToUInt16(startTriangleIndex * 3), Convert.ToUInt16(numberOfTrianges * 3), numberOfBones, startBoneIndex);
@@ -205,7 +218,7 @@ namespace EQWOWConverter.WOWFiles
                         curModelMaterial.ColorIndex);
                     textureUnits.Add(curTextureUnit);
                 }
-            }            
+            }
 
             List<byte> blockBytes = new List<byte>();
             foreach (M2SkinSubMesh subMesh in subMeshes)
@@ -219,7 +232,7 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateTextureUnitsBlock(List<M2SkinTextureUnit> textureUnits)
         {
             List<byte> blockBytes = new List<byte>();
-            foreach(var textureUnit in textureUnits)
+            foreach (var textureUnit in textureUnits)
                 blockBytes.AddRange(textureUnit.ToBytes());
             return blockBytes;
         }

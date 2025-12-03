@@ -14,11 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -30,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
         public M2SkinHeaderElement BoneIndices = new M2SkinHeaderElement(); // I've also seen this as 'properties' for some reason.  Relates to Vertices
         public M2SkinHeaderElement SubMeshes = new M2SkinHeaderElement();
         public M2SkinHeaderElement TextureUnits = new M2SkinHeaderElement(); // "Batches"?
-        private UInt32 BoneCountMax = 21;   // Values seem to be 21, 53, 64, 256
+        public UInt32 BoneCountMax = 21;   // Values seem to be 21, 53, 64, 256
 
         public List<byte> ToBytes()
         {
