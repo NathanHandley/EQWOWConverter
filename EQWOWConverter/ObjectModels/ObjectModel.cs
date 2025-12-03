@@ -1410,7 +1410,7 @@ namespace EQWOWConverter.ObjectModels
                     } break;
                 case KeyBoneType.CCH:
                     {
-                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "root"); // Complete guess as I don't know what CCH is
+                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "ch", "root"); // Complete guess as I don't know what CCH is
                     } break;
                 default:
                     {
