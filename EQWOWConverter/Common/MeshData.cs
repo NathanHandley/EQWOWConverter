@@ -507,126 +507,62 @@ namespace EQWOWConverter.Common
 
         public MeshData GetMeshDataForFaces(List<TriangleFace> faces)
         {
-            // Since the face list is likely to not include all faces, rebuild the render object lists
-            MeshData extractedMeshData = new MeshData();
+            MeshData result = new MeshData();
+            Dictionary<int, int> oldToNew = new Dictionary<int, int>();
 
-            // Size the data objects to avoid constant resizing (performance)
-            HashSet<int> vertIndicesInFaces = new HashSet<int>();
-            for (int i = 0; i < faces.Count; i++)
+            List<Vector3> vertices = new List<Vector3>();
+            List<Vector3> normals = new List<Vector3>();
+            List<TextureCoordinates> textureCoordinates = new List<TextureCoordinates>();
+            List<ColorRGBA> vertexColors = new List<ColorRGBA>();
+            List<byte> boneIDs = new List<byte>();
+            List<AnimatedVertexFrames> animVertexFrames = new List<AnimatedVertexFrames>();
+
+            List<TriangleFace> newFaces = new List<TriangleFace>(faces.Count);
+
+            foreach (TriangleFace face in faces)
             {
-                TriangleFace curTriangleFace = faces[i];
-                vertIndicesInFaces.Add(curTriangleFace.V1);
-                vertIndicesInFaces.Add(curTriangleFace.V2);
-                vertIndicesInFaces.Add(curTriangleFace.V3);
+                int v1 = MapVertex(face.V1, oldToNew, vertices, normals, textureCoordinates, vertexColors, boneIDs, animVertexFrames);
+                int v2 = MapVertex(face.V2, oldToNew, vertices, normals, textureCoordinates, vertexColors, boneIDs, animVertexFrames);
+                int v3 = MapVertex(face.V3, oldToNew, vertices, normals, textureCoordinates, vertexColors, boneIDs, animVertexFrames);
+
+                newFaces.Add(new TriangleFace(face.MaterialIndex, v1, v2, v3));
             }
-            extractedMeshData.TriangleFaces = new List<TriangleFace>(faces.Count);
-            extractedMeshData.Vertices = new List<Vector3>(vertIndicesInFaces.Count);
-            if (Normals.Count > 0)
-                extractedMeshData.Normals = new List<Vector3>(vertIndicesInFaces.Count);
-            if (TextureCoordinates.Count > 0)
-                extractedMeshData.TextureCoordinates = new List<TextureCoordinates>(vertIndicesInFaces.Count);
-            if (VertexColors.Count > 0)
-                extractedMeshData.VertexColors = new List<ColorRGBA>(vertIndicesInFaces.Count);
+
+            result.TriangleFaces = newFaces;
+            result.Vertices = vertices;
+            result.Normals = normals;
+            result.TextureCoordinates = textureCoordinates;
+            result.VertexColors = vertexColors;
+            result.BoneIDs = boneIDs;
+            result.AnimatedVertexFramesByVertexIndex = animVertexFrames;
+            result.AnimatedVerticesDelayInMS = AnimatedVerticesDelayInMS;
+
+            return result;
+        }
+
+        private int MapVertex(int oldIndex, Dictionary<int, int> map,
+            List<Vector3> verts, List<Vector3> normals, List<TextureCoordinates> textureCoordinates,
+            List<ColorRGBA> vertexColors, List<byte> boneIDs, List<AnimatedVertexFrames> animVertexFrames)
+        {
+            if (map.TryGetValue(oldIndex, out int newIndex))
+                return newIndex;
+
+            newIndex = verts.Count;
+            map[oldIndex] = newIndex;
+
+            verts.Add(Vertices[oldIndex]);
+            if (Normals.Count != 0)
+                normals.Add(Normals[oldIndex]);
+            if (TextureCoordinates.Count != 0)
+                textureCoordinates.Add(TextureCoordinates[oldIndex]);
+            if (VertexColors.Count != 0)
+                vertexColors.Add(VertexColors[oldIndex]);
             if (BoneIDs.Count != 0)
-                extractedMeshData.BoneIDs = new List<byte>(vertIndicesInFaces.Count);
-            if (AnimatedVertexFramesByVertexIndex.Count > 0)
-                extractedMeshData.AnimatedVertexFramesByVertexIndex = new List<AnimatedVertexFrames>(vertIndicesInFaces.Count);
+                boneIDs.Add(BoneIDs[oldIndex]);
+            if (AnimatedVertexFramesByVertexIndex.Count != 0)
+                animVertexFrames.Add(AnimatedVertexFramesByVertexIndex[oldIndex]);
 
-            // Remap
-            Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>(vertIndicesInFaces.Count);
-            for (int i = 0; i < faces.Count; i++)
-            {
-                TriangleFace curTriangleFace = faces[i];
-
-                // Face vertex 1
-                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V1))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V1 = oldNewVertexIndices[curTriangleFace.V1];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V1;
-                    int newVertIndex = extractedMeshData.Vertices.Count;
-                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V1 = newVertIndex;
-
-                    // Add objects
-                    extractedMeshData.Vertices.Add(Vertices[oldVertIndex]);
-                    if (TextureCoordinates.Count != 0)
-                        extractedMeshData.TextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
-                    if (Normals.Count != 0)
-                        extractedMeshData.Normals.Add(Normals[oldVertIndex]);
-                    if (VertexColors.Count != 0)
-                        extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
-                    if (BoneIDs.Count != 0)
-                        extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
-                    if (AnimatedVertexFramesByVertexIndex.Count != 0)
-                        extractedMeshData.AnimatedVertexFramesByVertexIndex.Add(AnimatedVertexFramesByVertexIndex[oldVertIndex]);
-                }
-
-                // Face vertex 2
-                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V2))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V2 = oldNewVertexIndices[curTriangleFace.V2];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V2;
-                    int newVertIndex = extractedMeshData.Vertices.Count;
-                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V2 = newVertIndex;
-
-                    // Add objects
-                    extractedMeshData.Vertices.Add(Vertices[oldVertIndex]);
-                    if (TextureCoordinates.Count != 0)
-                        extractedMeshData.TextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
-                    if (Normals.Count != 0)
-                        extractedMeshData.Normals.Add(Normals[oldVertIndex]);
-                    if (VertexColors.Count != 0)
-                        extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
-                    if (BoneIDs.Count != 0)
-                        extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
-                    if (AnimatedVertexFramesByVertexIndex.Count != 0)
-                        extractedMeshData.AnimatedVertexFramesByVertexIndex.Add(AnimatedVertexFramesByVertexIndex[oldVertIndex]);
-                }
-
-                // Face vertex 3
-                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V3))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V3 = oldNewVertexIndices[curTriangleFace.V3];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V3;
-                    int newVertIndex = extractedMeshData.Vertices.Count;
-                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V3 = newVertIndex;
-
-                    // Add objects
-                    extractedMeshData.Vertices.Add(Vertices[oldVertIndex]);
-                    if (TextureCoordinates.Count != 0)
-                        extractedMeshData.TextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
-                    if (Normals.Count != 0)
-                        extractedMeshData.Normals.Add(Normals[oldVertIndex]);
-                    if (VertexColors.Count != 0)
-                        extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
-                    if (BoneIDs.Count != 0)
-                        extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
-                    if (AnimatedVertexFramesByVertexIndex.Count != 0)
-                        extractedMeshData.AnimatedVertexFramesByVertexIndex.Add(AnimatedVertexFramesByVertexIndex[oldVertIndex]);
-                }
-
-                // Save this updated triangle
-                extractedMeshData.TriangleFaces.Add(curTriangleFace);
-            }
-            extractedMeshData.AnimatedVerticesDelayInMS = AnimatedVerticesDelayInMS;
-            return extractedMeshData;
+            return newIndex;
         }
 
         public void CondenseAndRenumberVertexIndices()
@@ -760,7 +696,7 @@ namespace EQWOWConverter.Common
                 // Build the list of boneIDs that can be found for this material
                 int curMaterialIndex = vertexIndicesForMaterial.Key;
                 SortedSet<byte> boneIDsInMaterial = new SortedSet<byte>();
-                foreach(TriangleFace triangleFace in TriangleFaces)
+                foreach (TriangleFace triangleFace in TriangleFaces)
                 {
                     if (triangleFace.MaterialIndex == curMaterialIndex)
                     {
@@ -774,10 +710,10 @@ namespace EQWOWConverter.Common
                 }
 
                 // Look at each bone and update references
-                foreach(byte boneId in boneIDsInMaterial)
+                foreach (byte boneId in boneIDsInMaterial)
                 {
                     // Iterate through vertices and save off bone matches
-                    foreach(int oldIndex in vertexIndicesForMaterial.Value)
+                    foreach (int oldIndex in vertexIndicesForMaterial.Value)
                     {
                         if (BoneIDs[oldIndex] == boneId)
                         {
