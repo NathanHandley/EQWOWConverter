@@ -315,7 +315,7 @@ namespace EQWOWConverter.ObjectModels
         private void GenerateBoneLookups()
         {
             // Create bone lookups on a per submesh basis (which are grouped by material)
-            // Note: Vertices are sorted by material and then by bone index already, so we can trust that here
+            // Note: Vertices are sorted by material
             List<int> vertexMaterialIDs = new List<int>();
             for (int vertexIndex = 0; vertexIndex < ModelVertices.Count; vertexIndex++)
                 vertexMaterialIDs.Add(-1);
@@ -341,7 +341,7 @@ namespace EQWOWConverter.ObjectModels
                     BoneLookupsByMaterialIndex[currentMaterialID].Add(curBoneIndex);
 
                 // Add a lookup reference based on the lookup index
-                ModelVertices[vertexIndex].BoneIndicesLookup[0] = Convert.ToByte(BoneLookupsByMaterialIndex[currentMaterialID].Count - 1);
+                ModelVertices[vertexIndex].BoneIndicesLookup[0] = Convert.ToByte(BoneLookupsByMaterialIndex[currentMaterialID].IndexOf(curBoneIndex));
             }
         }
 
