@@ -660,7 +660,7 @@ namespace EQWOWConverter.Common
         public void SortDataByMaterialAndBones()
         {
             // Sort triangles by material
-            SortTriangleFacesByMaterial();
+            TriangleFaces.Sort();
 
             // Stop if no bone IDs
             if (BoneIDs.Count == 0)
@@ -750,117 +750,6 @@ namespace EQWOWConverter.Common
 
             // Save everything
             TriangleFaces = updatedTriangleFaces;
-            Vertices = sortedVertices;
-            Normals = sortedNormals;
-            TextureCoordinates = sortedTextureCoordinates;
-            VertexColors = sortedVertexColors;
-            BoneIDs = sortedBoneIndexes;
-            AnimatedVertexFramesByVertexIndex = sortedAnimatedVertexFrames;
-        }
-
-        public void SortTriangleFacesByMaterial()
-        {
-            // Sort triangles first by material
-            TriangleFaces.Sort();
-
-            // Reorder the vertices / texcoords / normals / to match the sorted triangle faces
-            List<Vector3> sortedVertices = new List<Vector3>();
-            List<Vector3> sortedNormals = new List<Vector3>();
-            List<TextureCoordinates> sortedTextureCoordinates = new List<TextureCoordinates>();
-            List<TriangleFace> sortedTriangleFaces = new List<TriangleFace>();
-            List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>();
-            List<byte> sortedBoneIndexes = new List<byte>();
-            List<AnimatedVertexFrames> sortedAnimatedVertexFrames = new List<AnimatedVertexFrames>();
-
-            Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
-            for (int i = 0; i < TriangleFaces.Count; i++)
-            {
-                TriangleFace curTriangleFace = TriangleFaces[i];
-
-                // Face vertex 1
-                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V1))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V1 = oldNewVertexIndices[curTriangleFace.V1];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V1;
-                    int newVertIndex = sortedVertices.Count;
-                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V1 = newVertIndex;
-
-                    // Add vertices
-                    sortedVertices.Add(Vertices[oldVertIndex]);
-                    sortedNormals.Add(Normals[oldVertIndex]);
-                    sortedTextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
-                    if (VertexColors.Count != 0)
-                        sortedVertexColors.Add(VertexColors[oldVertIndex]);
-                    if (BoneIDs.Count != 0)
-                        sortedBoneIndexes.Add(BoneIDs[oldVertIndex]);
-                    if (AnimatedVertexFramesByVertexIndex.Count != 0)
-                        sortedAnimatedVertexFrames.Add(AnimatedVertexFramesByVertexIndex[oldVertIndex]);
-                }
-
-                // Face vertex 2
-                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V2))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V2 = oldNewVertexIndices[curTriangleFace.V2];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V2;
-                    int newVertIndex = sortedVertices.Count;
-                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V2 = newVertIndex;
-
-                    // Add vertices
-                    sortedVertices.Add(Vertices[oldVertIndex]);
-                    sortedNormals.Add(Normals[oldVertIndex]);
-                    sortedTextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
-                    if (VertexColors.Count != 0)
-                        sortedVertexColors.Add(VertexColors[oldVertIndex]);
-                    if (BoneIDs.Count != 0)
-                        sortedBoneIndexes.Add(BoneIDs[oldVertIndex]);
-                    if (AnimatedVertexFramesByVertexIndex.Count != 0)
-                        sortedAnimatedVertexFrames.Add(AnimatedVertexFramesByVertexIndex[oldVertIndex]);
-                }
-
-                // Face vertex 3
-                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V3))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V3 = oldNewVertexIndices[curTriangleFace.V3];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V3;
-                    int newVertIndex = sortedVertices.Count;
-                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V3 = newVertIndex;
-
-                    // Add vertices
-                    sortedVertices.Add(Vertices[oldVertIndex]);
-                    sortedNormals.Add(Normals[oldVertIndex]);
-                    sortedTextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
-                    if (VertexColors.Count != 0)
-                        sortedVertexColors.Add(VertexColors[oldVertIndex]);
-                    if (BoneIDs.Count != 0)
-                        sortedBoneIndexes.Add(BoneIDs[oldVertIndex]);
-                    if (AnimatedVertexFramesByVertexIndex.Count != 0)
-                        sortedAnimatedVertexFrames.Add(AnimatedVertexFramesByVertexIndex[oldVertIndex]);
-                }
-
-                // Save this updated triangle
-                sortedTriangleFaces.Add(curTriangleFace);
-            }
-
-            // Save the sorted values
-            TriangleFaces = sortedTriangleFaces;
             Vertices = sortedVertices;
             Normals = sortedNormals;
             TextureCoordinates = sortedTextureCoordinates;
