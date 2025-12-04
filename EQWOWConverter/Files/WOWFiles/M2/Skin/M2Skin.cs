@@ -208,7 +208,8 @@ namespace EQWOWConverter.WOWFiles
 
                     // Build the sub mesh
                     M2SkinSubMesh curSubMesh = new M2SkinSubMesh(Convert.ToUInt16(startVertexIndex), Convert.ToUInt16(numberOfVertices),
-                        Convert.ToUInt16(startTriangleIndex * 3), Convert.ToUInt16(numberOfTrianges * 3), numberOfBones, startBoneIndex);
+                        Convert.ToUInt16(startTriangleIndex * 3), Convert.ToUInt16(numberOfTrianges * 3), numberOfBones, startBoneIndex,
+                        subMeshVertices[0].BoneIndicesTrue[0]);
                     curSubMesh.CalculatePositionAndBoundingData(subMeshVertices);
                     subMeshes.Add(curSubMesh);
 
