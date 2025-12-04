@@ -36,12 +36,13 @@ namespace EQWOWConverter.WOWFiles
         public UInt16 BoneCount = 1;
         public UInt16 BoneLookupIndex = 0;
         public UInt16 NumOfBonesInfluencing = 1; // Max number of bones needed at one time?  How does this differ from Bone Count?
-        public UInt16 centerBoneIndex = 0;  // This will likely need to change later
+        public UInt16 CenterBoneIndex = 0;
         public Vector3 AverageVertexCenterPosition = new Vector3(); // Average position between all verts
         public Vector3 BoundingBoxCenterPosition = new Vector3(); // Center point from a bounding box wrapped around the vertices
         public float BoundingBoxFurthestVertexDistanceFromCenter = 0;   // Probably too long of a name, but I'll forget it otherwise
 
-        public M2SkinSubMesh(UInt16 vertexStart, UInt16 vertexCount, UInt16 startTriangleIndex, UInt16 triangleIndexCount, UInt16 boneCount, UInt16 boneLookupIndex)
+        public M2SkinSubMesh(UInt16 vertexStart, UInt16 vertexCount, UInt16 startTriangleIndex, UInt16 triangleIndexCount, UInt16 boneCount, UInt16 boneLookupIndex,
+            UInt16 centerBoneIndex)
         {
             VertexStart = vertexStart;
             VertexCount = vertexCount;
@@ -49,6 +50,7 @@ namespace EQWOWConverter.WOWFiles
             TriangleIndexCount = triangleIndexCount;
             BoneCount = boneCount;
             BoneLookupIndex = boneLookupIndex;
+            CenterBoneIndex = centerBoneIndex;
         }
 
         public void CalculatePositionAndBoundingData(List<ObjectModelVertex> modelVertices)
@@ -90,7 +92,7 @@ namespace EQWOWConverter.WOWFiles
             bytes.AddRange(BitConverter.GetBytes(BoneCount));
             bytes.AddRange(BitConverter.GetBytes(BoneLookupIndex));
             bytes.AddRange(BitConverter.GetBytes(NumOfBonesInfluencing));
-            bytes.AddRange(BitConverter.GetBytes(centerBoneIndex));
+            bytes.AddRange(BitConverter.GetBytes(CenterBoneIndex));
             bytes.AddRange(AverageVertexCenterPosition.ToBytes());
             bytes.AddRange(BoundingBoxCenterPosition.ToBytes());
             bytes.AddRange(BitConverter.GetBytes(BoundingBoxFurthestVertexDistanceFromCenter));
