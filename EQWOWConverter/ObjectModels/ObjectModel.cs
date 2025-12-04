@@ -19,6 +19,7 @@ using EQWOWConverter.Creatures;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Spells;
+using Org.BouncyCastle.Crypto.Engines;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -35,9 +36,9 @@ namespace EQWOWConverter.ObjectModels
         public List<ObjectModelBone> ModelBones = new List<ObjectModelBone>();
         public List<ObjectModelTextureAnimation> ModelTextureAnimations = new List<ObjectModelTextureAnimation>();
         public List<Int16> ModelBoneKeyLookups = new List<Int16>();
-        public SortedDictionary<int, List<Int16>> BoneLookupsByMaterialIndex = new SortedDictionary<int, List<Int16>>();
         public List<ObjectModelMaterial> ModelMaterials = new List<ObjectModelMaterial>();
         public List<ObjectModelTexture> ModelTextures = new List<ObjectModelTexture>();
+        public List<ObjectModelRenderGroup> ModelRenderGroups = new List<ObjectModelRenderGroup>();
         public List<Int16> ModelTextureLookups = new List<Int16>();
         public List<Int16> ModelTextureMappingLookups = new List<Int16>();
         public List<Int16> ModelReplaceableTextureLookups = new List<Int16>();
@@ -175,6 +176,9 @@ namespace EQWOWConverter.ObjectModels
             if (GlobalLoopSequenceLimits.Count == 0 && (ModelType != ObjectModelType.ParticleEmitter && ModelType != ObjectModelType.SpellProjectile))
                 GlobalLoopSequenceLimits.Add(0);
 
+            // Generate the render groups
+            GenerateRenderGroups(ModelVertices, ModelTriangles);
+
             // Store the final state mesh data
             MeshData = meshData;
 
@@ -220,10 +224,7 @@ namespace EQWOWConverter.ObjectModels
 
                 // Animation data needs to added if there are sprite list effects
                 if (spriteListEffects != null)
-                {
                     AddAnimationDataForSpriteListEffects(spriteListEffects);
-                    GenerateBoneLookups();
-                }
             }
 
             // Non Skeletal / Static objects
@@ -302,8 +303,6 @@ namespace EQWOWConverter.ObjectModels
                         nameplateBone.TranslationTrack.AddValueToSequence(i, 0, adjustmentVector);
                 }
 
-                GenerateBoneLookups();
-
                 if (IsSkeletal)
                 {
                     // Set the portrait camera locations
@@ -312,37 +311,91 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private void GenerateBoneLookups()
+        private void GenerateRenderGroups(List<ObjectModelVertex> modelVertices, List<TriangleFace> modelTriangles)
         {
-            // Create bone lookups on a per submesh basis (which are grouped by material)
-            // Note: Vertices are sorted by material
-            List<int> vertexMaterialIDs = new List<int>();
-            for (int vertexIndex = 0; vertexIndex < ModelVertices.Count; vertexIndex++)
-                vertexMaterialIDs.Add(-1);
-            foreach (TriangleFace modelTriangle in ModelTriangles)
-            {
-                vertexMaterialIDs[modelTriangle.V1] = modelTriangle.MaterialIndex;
-                vertexMaterialIDs[modelTriangle.V2] = modelTriangle.MaterialIndex;
-                vertexMaterialIDs[modelTriangle.V3] = modelTriangle.MaterialIndex;
-            }
+            ModelRenderGroups.Clear();
+
+            // Render groups are grouped by material, and then no more than 64 bones in each
+            // EverQuest models have unique vertices per material, in that no vertex is referenced by difference faces with different materials
             int currentMaterialID = -1;
-            for (int vertexIndex = 0; vertexIndex < ModelVertices.Count; vertexIndex++)
+            ObjectModelRenderGroup curRenderGroup = new ObjectModelRenderGroup(0, 0, 0);
+            HashSet<int> vertexIndicesInCurGroup = new HashSet<int>();
+            for (int triangleIndex = 0; triangleIndex < modelTriangles.Count; ++triangleIndex)
             {
-                // Expand list if new material encountered
-                if (currentMaterialID != vertexMaterialIDs[vertexIndex])
+                TriangleFace curTriangle = modelTriangles[triangleIndex];
+
+                // New render group if the material switched
+                if (currentMaterialID != curTriangle.MaterialIndex)
                 {
-                    currentMaterialID = vertexMaterialIDs[vertexIndex];
-                    BoneLookupsByMaterialIndex.Add(currentMaterialID, new List<short>());
+                    currentMaterialID = curTriangle.MaterialIndex;
+                    if (currentMaterialID != -1)
+                    {
+                        ModelRenderGroups.Add(curRenderGroup);
+                        UInt16 newTriangleStart = Convert.ToUInt16(curRenderGroup.TriangleStart + curRenderGroup.TriangleCount);
+                        UInt16 newVertexStart = Convert.ToUInt16(curRenderGroup.VertexStart + curRenderGroup.Vertices.Count);
+                        curRenderGroup = new ObjectModelRenderGroup(newVertexStart, newTriangleStart, Convert.ToUInt16(currentMaterialID));
+                        vertexIndicesInCurGroup.Clear();
+                    }
+                    else
+                        curRenderGroup.MaterialIndex = Convert.ToUInt16(currentMaterialID);
                 }
 
-                // Add lookup if new bone is encountered
-                byte curBoneIndex = ModelVertices[vertexIndex].BoneIndicesTrue[0];
-                if (BoneLookupsByMaterialIndex[currentMaterialID].Contains(curBoneIndex) == false)
-                    BoneLookupsByMaterialIndex[currentMaterialID].Add(curBoneIndex);
+                // Capture the vertex bones, with only consideration of the first influence
+                byte v1BoneIndexTrue = modelVertices[curTriangle.V1].BoneIndicesTrue[0];
+                byte v2BoneIndexTrue = modelVertices[curTriangle.V2].BoneIndicesTrue[0];
+                byte v3BoneIndexTrue = modelVertices[curTriangle.V3].BoneIndicesTrue[0];
 
-                // Add a lookup reference based on the lookup index
-                ModelVertices[vertexIndex].BoneIndicesLookup[0] = Convert.ToByte(BoneLookupsByMaterialIndex[currentMaterialID].IndexOf(curBoneIndex));
+                // If new bones are found and would cause more than 64 bones to be in the render group, make a new
+                int numOfCurrentBones = curRenderGroup.BoneLookupIndices.Count;
+                numOfCurrentBones += curRenderGroup.BoneLookupIndices.Contains(v1BoneIndexTrue) == true ? 1 : 0;
+                numOfCurrentBones += curRenderGroup.BoneLookupIndices.Contains(v2BoneIndexTrue) == true ? 1 : 0;
+                numOfCurrentBones += curRenderGroup.BoneLookupIndices.Contains(v3BoneIndexTrue) == true ? 1 : 0;
+                if (numOfCurrentBones > 64)
+                {
+                    ModelRenderGroups.Add(curRenderGroup);
+                    UInt16 newVertexStart = Convert.ToUInt16(curRenderGroup.VertexStart + curRenderGroup.Vertices.Count);
+                    UInt16 newTriangleStart = Convert.ToUInt16(curRenderGroup.TriangleStart + curRenderGroup.TriangleCount);                   
+                    curRenderGroup = new ObjectModelRenderGroup(newVertexStart, newTriangleStart, Convert.ToUInt16(currentMaterialID));
+                    vertexIndicesInCurGroup.Clear();
+                }
+
+                // Track vertices
+                if (vertexIndicesInCurGroup.Contains(curTriangle.V1) == false)
+                {
+                    vertexIndicesInCurGroup.Add(curTriangle.V1);
+                    curRenderGroup.Vertices.Add(modelVertices[curTriangle.V1]);
+                }
+                if (vertexIndicesInCurGroup.Contains(curTriangle.V2) == false)
+                {
+                    vertexIndicesInCurGroup.Add(curTriangle.V2);
+                    curRenderGroup.Vertices.Add(modelVertices[curTriangle.V2]);
+                }
+                if (vertexIndicesInCurGroup.Contains(curTriangle.V3) == false)
+                {
+                    vertexIndicesInCurGroup.Add(curTriangle.V3);
+                    curRenderGroup.Vertices.Add(modelVertices[curTriangle.V3]);
+                }
+
+                // Add the bones and update the lookup bone indices in the vertices
+                if (curRenderGroup.BoneLookupIndices.Contains(v1BoneIndexTrue) == false)
+                    curRenderGroup.BoneLookupIndices.Add(v1BoneIndexTrue);
+                if (curRenderGroup.BoneLookupIndices.Contains(v2BoneIndexTrue) == false)
+                    curRenderGroup.BoneLookupIndices.Add(v2BoneIndexTrue);
+                if (curRenderGroup.BoneLookupIndices.Contains(v3BoneIndexTrue) == false)
+                    curRenderGroup.BoneLookupIndices.Add(v3BoneIndexTrue);
+                modelVertices[curTriangle.V1].BoneIndicesLookup[0] = Convert.ToByte(curRenderGroup.BoneLookupIndices.IndexOf(v1BoneIndexTrue));
+                modelVertices[curTriangle.V2].BoneIndicesLookup[0] = Convert.ToByte(curRenderGroup.BoneLookupIndices.IndexOf(v2BoneIndexTrue));
+                modelVertices[curTriangle.V3].BoneIndicesLookup[0] = Convert.ToByte(curRenderGroup.BoneLookupIndices.IndexOf(v3BoneIndexTrue));
+
+                // Update indices and any boundries in the render group
+                if (curRenderGroup.RootBone == 0)
+                    curRenderGroup.RootBone = Math.Min(Math.Min(v1BoneIndexTrue, v2BoneIndexTrue), v3BoneIndexTrue);
+                curRenderGroup.TriangleCount++;
             }
+
+            // Add the final one, if needed
+            if (currentMaterialID != -1)
+                ModelRenderGroups.Add(curRenderGroup);
         }
 
         private void GenerateSpriteListModelData(ref List<Material> initialMaterials, ref MeshData meshData, ref List<EQSpellsEFF.EFFSpellSpriteListEffect> spriteListEffects)

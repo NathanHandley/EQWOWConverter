@@ -14,11 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 
@@ -31,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
         // which appears to be because it's mixed into SkinSectionID.  But, I think every skin can be 0 anyway looking at data in WOTLK.
         public UInt16 VertexStart = 0;
         public UInt16 VertexCount = 0;
-        public UInt16 StartTriangleIndex = 0;
+        public UInt16 TriangleIndexStart = 0;
         public UInt16 TriangleIndexCount = 0;
         public UInt16 BoneCount = 1;
         public UInt16 BoneLookupIndex = 0;
@@ -41,19 +36,19 @@ namespace EQWOWConverter.WOWFiles
         public Vector3 BoundingBoxCenterPosition = new Vector3(); // Center point from a bounding box wrapped around the vertices
         public float BoundingBoxFurthestVertexDistanceFromCenter = 0;   // Probably too long of a name, but I'll forget it otherwise
 
-        public M2SkinSubMesh(UInt16 vertexStart, UInt16 vertexCount, UInt16 startTriangleIndex, UInt16 triangleIndexCount, UInt16 boneCount, UInt16 boneLookupIndex,
-            UInt16 centerBoneIndex)
+        public M2SkinSubMesh(ObjectModelRenderGroup renderGroup, UInt16 boneLookupIndex)
         {
-            VertexStart = vertexStart;
-            VertexCount = vertexCount;
-            StartTriangleIndex = startTriangleIndex;
-            TriangleIndexCount = triangleIndexCount;
-            BoneCount = boneCount;
+            VertexStart = renderGroup.VertexStart;
+            VertexCount = Convert.ToUInt16(renderGroup.Vertices.Count);
+            TriangleIndexStart = Convert.ToUInt16(renderGroup.TriangleStart * 3); // The number of indices in the triangles
+            TriangleIndexCount = Convert.ToUInt16(renderGroup.TriangleCount * 3); // The number of indices in the triangles
+            BoneCount = Convert.ToUInt16(renderGroup.BoneLookupIndices.Count);
             BoneLookupIndex = boneLookupIndex;
-            CenterBoneIndex = centerBoneIndex;
+            CenterBoneIndex = renderGroup.RootBone;
+            CalculatePositionAndBoundingData(renderGroup.Vertices);
         }
 
-        public void CalculatePositionAndBoundingData(List<ObjectModelVertex> modelVertices)
+        private void CalculatePositionAndBoundingData(List<ObjectModelVertex> modelVertices)
         {
             // Do nothing if empty
             if (modelVertices.Count == 0)
@@ -87,7 +82,7 @@ namespace EQWOWConverter.WOWFiles
             bytes.AddRange(BitConverter.GetBytes(SkinSectionID));
             bytes.AddRange(BitConverter.GetBytes(VertexStart));
             bytes.AddRange(BitConverter.GetBytes(VertexCount));
-            bytes.AddRange(BitConverter.GetBytes(StartTriangleIndex));
+            bytes.AddRange(BitConverter.GetBytes(TriangleIndexStart));
             bytes.AddRange(BitConverter.GetBytes(TriangleIndexCount));
             bytes.AddRange(BitConverter.GetBytes(BoneCount));
             bytes.AddRange(BitConverter.GetBytes(BoneLookupIndex));

@@ -123,7 +123,7 @@ namespace EQWOWConverter.WOWFiles
             Materials.AddArray(wowObjectModel.ModelMaterials);
 
             // Bone Lookup
-            if (wowObjectModel.BoneLookupsByMaterialIndex.Count == 0)
+            if (wowObjectModel.ModelRenderGroups.Count == 0)
             {
                 BoneLookup.Add(new M2Int16(0));
                 BoneLookup.Add(new M2Int16(0));
@@ -132,8 +132,8 @@ namespace EQWOWConverter.WOWFiles
             }
             else
             {
-                foreach (var boneLookupsPerMaterialIndex in wowObjectModel.BoneLookupsByMaterialIndex)
-                    foreach (Int16 boneIndex in boneLookupsPerMaterialIndex.Value)
+                foreach (ObjectModelRenderGroup renderGroup in wowObjectModel.ModelRenderGroups)
+                    foreach (Int16 boneIndex in renderGroup.BoneLookupIndices)
                         BoneLookup.Add(new M2Int16(boneIndex));
             }
 

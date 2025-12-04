@@ -16,6 +16,8 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
+using EQWOWConverter.Zones;
+using LanternExtractor.EQ.Wld.Helpers;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -134,89 +136,34 @@ namespace EQWOWConverter.WOWFiles
             // Only build the mesh if this object has rendering enabled
             if (modelObject.Properties.RenderingEnabled == true)
             {
-                // Build a list of material-to-vertex for later calculations
-                List<int> vertexMaterialIDs = new List<int>();
-                for (int vertexIndex = 0; vertexIndex < modelObject.ModelVertices.Count; vertexIndex++)
-                    vertexMaterialIDs.Add(-1);
-                foreach (TriangleFace modelTriangle in modelObject.ModelTriangles)
+                // Build material lookups for zone objects
+                Dictionary<int, int> materialIndexLookup = new Dictionary<int, int>();
+                if (modelObject.ModelType == ObjectModelType.ZoneModel)
                 {
-                    vertexMaterialIDs[modelTriangle.V1] = modelTriangle.MaterialIndex;
-                    vertexMaterialIDs[modelTriangle.V2] = modelTriangle.MaterialIndex;
-                    vertexMaterialIDs[modelTriangle.V3] = modelTriangle.MaterialIndex;
-                }
+                    for (int i = 0; i < modelObject.ModelMaterials.Count; i++)
+                        materialIndexLookup.Add(Convert.ToInt32(modelObject.ModelMaterials[i].Material.Index), i);
+                }               
 
-                // Each material gets a new sub mesh and texture unit
-                // Note: It's expected that triangles and vertices are sorted by texture already
-                for (UInt16 materialIter = 0; materialIter < modelObject.ModelMaterials.Count; materialIter++)
+                // One texture unit and sub mesh per render group
+                UInt16 curBoneLookupIndex = 0;
+                for (int i = 0; i < modelObject.ModelRenderGroups.Count; i++)
                 {
-                    ObjectModelMaterial curModelMaterial = modelObject.ModelMaterials[materialIter];
-                    int curMaterialIndex = Convert.ToInt32(curModelMaterial.Material.Index);
-
-                    // Count number of triangles and find starting offset
-                    int startTriangleIndex = -1;
-                    int numberOfTrianges = 0;
-                    for (int triangleIndex = 0; triangleIndex < modelObject.ModelTriangles.Count; triangleIndex++)
-                    {
-                        TriangleFace curTriangle = modelObject.ModelTriangles[triangleIndex];
-                        if (curTriangle.MaterialIndex == curMaterialIndex)
-                        {
-                            if (startTriangleIndex == -1)
-                                startTriangleIndex = triangleIndex;
-                            numberOfTrianges++;
-                        }
-                    }
-
-                    // If there were no triangles with this material, there there's no reason to make a mesh for it
-                    if (startTriangleIndex == -1)
+                    ObjectModelRenderGroup renderGroup = modelObject.ModelRenderGroups[i];
+                    if (renderGroup.Vertices.Count == 0)
                         continue;
-
-                    // Count the number of vertices and find starting offset, and save them for later
-                    int startVertexIndex = -1;
-                    int numberOfVertices = 0;
-                    List<ObjectModelVertex> subMeshVertices = new List<ObjectModelVertex>();
-                    for (int vertexIndex = 0; vertexIndex < vertexMaterialIDs.Count; vertexIndex++)
-                    {
-                        int vertexMaterialID = vertexMaterialIDs[vertexIndex];
-                        if (vertexMaterialID == curMaterialIndex)
-                        {
-                            if (startVertexIndex == -1)
-                                startVertexIndex = vertexIndex;
-                            numberOfVertices++;
-                            subMeshVertices.Add(modelObject.ModelVertices[vertexIndex]);
-                        }
-                    }
-
-                    // Count the number of bones and find the starting offset
-                    UInt16 startBoneIndex = 0;
-                    UInt16 numberOfBones = 0;
-                    foreach (var boneLookupByMaterialIndex in modelObject.BoneLookupsByMaterialIndex)
-                    {
-                        if (boneLookupByMaterialIndex.Key != curMaterialIndex)
-                            startBoneIndex += Convert.ToUInt16(boneLookupByMaterialIndex.Value.Count);
-                        else
-                        {
-                            numberOfBones = Convert.ToUInt16(boneLookupByMaterialIndex.Value.Count);
-                            break;
-                        }
-                    }
-
-                    // Some models don't have bones, so control for that
-                    if (numberOfBones == 0)
-                        numberOfBones = 1;
-
-                    MaxBones = Math.Max(numberOfBones, MaxBones);
+                    MaxBones = Math.Max(renderGroup.BoneLookupIndices.Count, MaxBones);
 
                     // Build the sub mesh
-                    M2SkinSubMesh curSubMesh = new M2SkinSubMesh(Convert.ToUInt16(startVertexIndex), Convert.ToUInt16(numberOfVertices),
-                        Convert.ToUInt16(startTriangleIndex * 3), Convert.ToUInt16(numberOfTrianges * 3), numberOfBones, startBoneIndex,
-                        subMeshVertices[0].BoneIndicesTrue[0]);
-                    curSubMesh.CalculatePositionAndBoundingData(subMeshVertices);
+                    M2SkinSubMesh curSubMesh = new M2SkinSubMesh(renderGroup, curBoneLookupIndex);
+                    curBoneLookupIndex += Convert.ToUInt16(renderGroup.BoneLookupIndices.Count);
                     subMeshes.Add(curSubMesh);
 
                     // Create a texture unit
-                    UInt16 transparencyLookupIndex = modelObject.ModelTextureTransparencyLookups[materialIter];
-                    M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(materialIter, materialIter, materialIter, transparencyLookupIndex,
-                        curModelMaterial.ColorIndex);
+                    UInt16 materialID = renderGroup.MaterialIndex;
+                    if (modelObject.ModelType == ObjectModelType.ZoneModel)
+                        materialID = Convert.ToUInt16(materialIndexLookup[renderGroup.MaterialIndex]);
+                    UInt16 transparencyLookupIndex = modelObject.ModelTextureTransparencyLookups[Convert.ToInt32(materialID)];
+                    M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(materialID, materialID, materialID, transparencyLookupIndex, -1);
                     textureUnits.Add(curTextureUnit);
                 }
             }

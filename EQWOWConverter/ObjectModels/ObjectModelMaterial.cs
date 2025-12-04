@@ -23,7 +23,7 @@ namespace EQWOWConverter.ObjectModels
         public ObjectModelMaterialFlag Flags = ObjectModelMaterialFlag.None;
         public ObjectModelMaterialBlendType BlendingMode;
         public Material Material;
-        public Int16 ColorIndex = -1;
+        //public Int16 ColorIndex = -1;
 
         public ObjectModelMaterial(Material material, ObjectModelMaterialBlendType blendType)
         {
