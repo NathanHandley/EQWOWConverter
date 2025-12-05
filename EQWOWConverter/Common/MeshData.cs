@@ -26,6 +26,17 @@ namespace EQWOWConverter.Common
         public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
         public List<byte> BoneIDs = new List<byte>(); // Note: Only single associations, but WOW can support up to 4 w/weights
         public List<AnimatedVertexFrames> AnimatedVertexFramesByVertexIndex = new List<AnimatedVertexFrames>();
+        public List<MeshRenderGroup> RenderGroups = new List<MeshRenderGroup>();
+
+        public struct MeshRenderGroup
+        {
+            public int MaterialIndex;
+            public int VertexStart;
+            public int VertexCount;
+            public int TriangleStart;
+            public int TriangleCount;
+            public HashSet<byte> BonesIDsUsed;
+        }
 
         public MeshData() { }
 
@@ -659,103 +670,140 @@ namespace EQWOWConverter.Common
 
         public void SortDataByMaterialAndBones()
         {
-            // Sort triangles by material
+            RenderGroups.Clear();
+
+            // Presort the triangles by material ID
             TriangleFaces.Sort();
 
-            // Stop if no bone IDs
             if (BoneIDs.Count == 0)
                 return;
 
-            // Determine the material IDs and grab the indices by them
-            SortedDictionary<int, HashSet<int>> VertexIndicesByMaterialID = new SortedDictionary<int, HashSet<int>>();
-            foreach (TriangleFace triangleFace in TriangleFaces)
+            List<TriangleFace> triangleFaces = new List<TriangleFace>();
+            List<Vector3> vertices = new List<Vector3>();
+            List<Vector3> normals = new List<Vector3>();
+            List<TextureCoordinates> textureCoordinates = new List<TextureCoordinates>();
+            List<ColorRGBA> vertexColors = new List<ColorRGBA>();
+            List<byte> boneIDs = new List<byte>();
+            List<AnimatedVertexFrames> animatedVertexFramesByVertexIndex = new List<AnimatedVertexFrames>();
+
+            // Group the triangles by material
+            var trianglesByMaterial = TriangleFaces
+                .GroupBy(t => t.MaterialIndex)
+                .OrderBy(g => g.Key);
+
+            // Material is the highest sorter
+            foreach (var materialGroup in trianglesByMaterial)
             {
-                if (VertexIndicesByMaterialID.ContainsKey(triangleFace.MaterialIndex) == false)
-                    VertexIndicesByMaterialID.Add(triangleFace.MaterialIndex, new HashSet<int>());
-                VertexIndicesByMaterialID[triangleFace.MaterialIndex].Add(triangleFace.V1);
-                VertexIndicesByMaterialID[triangleFace.MaterialIndex].Add(triangleFace.V2);
-                VertexIndicesByMaterialID[triangleFace.MaterialIndex].Add(triangleFace.V3);
-            }
+                List<TriangleFace> trianglesInMaterial = materialGroup.ToList();
 
-            // Pre-populate the vertex index lookup
-            Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
-            for (int i = 0; i < Vertices.Count; i++)
-                oldNewVertexIndices.Add(i, i);
-
-            // Begin sorted lists of elements
-            List<Vector3> sortedVertices = new List<Vector3>();
-            List<Vector3> sortedNormals = new List<Vector3>();
-            List<TextureCoordinates> sortedTextureCoordinates = new List<TextureCoordinates>();
-            List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>();
-            List<byte> sortedBoneIndexes = new List<byte>();
-            List<AnimatedVertexFrames> sortedAnimatedVertexFrames = new List<AnimatedVertexFrames>();
-
-            // Go through vertices on a material-by-material basis
-            foreach (var vertexIndicesForMaterial in VertexIndicesByMaterialID)
-            {
-                // Build the list of boneIDs that can be found for this material
-                int curMaterialIndex = vertexIndicesForMaterial.Key;
-                SortedSet<byte> boneIDsInMaterial = new SortedSet<byte>();
-                foreach (TriangleFace triangleFace in TriangleFaces)
+                // Further sort triangles by bones
+                trianglesInMaterial.Sort((a, b) =>
                 {
-                    if (triangleFace.MaterialIndex == curMaterialIndex)
+                    byte maxA = Math.Max(BoneIDs[a.V1], Math.Max(BoneIDs[a.V2], BoneIDs[a.V3]));
+                    byte maxB = Math.Max(BoneIDs[b.V1], Math.Max(BoneIDs[b.V2], BoneIDs[b.V3]));
+                    int cmp = maxA.CompareTo(maxB);
+                    if (cmp != 0) return cmp;
+                    byte minA = Math.Min(BoneIDs[a.V1], Math.Min(BoneIDs[a.V2], BoneIDs[a.V3]));
+                    byte minB = Math.Min(BoneIDs[b.V1], Math.Min(BoneIDs[b.V2], BoneIDs[b.V3]));
+                    return minA.CompareTo(minB);
+                });
+
+                int triangleIndex = 0;
+                while (triangleIndex < trianglesInMaterial.Count)
+                {
+                    MeshRenderGroup group = new MeshRenderGroup
                     {
-                        if (boneIDsInMaterial.Contains(BoneIDs[triangleFace.V1]) == false)
-                            boneIDsInMaterial.Add(BoneIDs[triangleFace.V1]);
-                        if (boneIDsInMaterial.Contains(BoneIDs[triangleFace.V2]) == false)
-                            boneIDsInMaterial.Add(BoneIDs[triangleFace.V2]);
-                        if (boneIDsInMaterial.Contains(BoneIDs[triangleFace.V3]) == false)
-                            boneIDsInMaterial.Add(BoneIDs[triangleFace.V3]);
+                        MaterialIndex = materialGroup.Key,
+                        TriangleStart = triangleFaces.Count,
+                        BonesIDsUsed = new HashSet<byte>()
+                    };
+
+                    int groupVertexStart = vertices.Count;
+                    Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
+                    SortedSet<byte> bonesInThisGroup = new SortedSet<byte>();
+                    List<TriangleFace> tempGroupTriangleFaces = new List<TriangleFace>();
+
+                    while (triangleIndex < trianglesInMaterial.Count)
+                    {
+                        TriangleFace curTriangle = trianglesInMaterial[triangleIndex];
+                        byte b1 = BoneIDs[curTriangle.V1];
+                        byte b2 = BoneIDs[curTriangle.V2];
+                        byte b3 = BoneIDs[curTriangle.V3];
+
+                        HashSet<byte> testSet = new HashSet<byte>(group.BonesIDsUsed);
+                        testSet.Add(b1); 
+                        testSet.Add(b2); 
+                        testSet.Add(b3);
+
+                        // M2 skin meshes can't have more than 64 bones per submesh
+                        if (testSet.Count > 64)
+                            break;
+
+                        group.BonesIDsUsed.Add(b1);
+                        group.BonesIDsUsed.Add(b2);
+                        group.BonesIDsUsed.Add(b3);
+                        bonesInThisGroup.Add(b1);
+                        bonesInThisGroup.Add(b2);
+                        bonesInThisGroup.Add(b3);
+
+                        tempGroupTriangleFaces.Add(curTriangle);
+                        triangleIndex++;
                     }
-                }
 
-                // Look at each bone and update references
-                foreach (byte boneId in boneIDsInMaterial)
-                {
-                    // Iterate through vertices and save off bone matches
-                    foreach (int oldIndex in vertexIndicesForMaterial.Value)
+                    foreach (byte boneId in bonesInThisGroup)
                     {
-                        if (BoneIDs[oldIndex] == boneId)
-                        {
-                            // Store the lookup map
-                            int newIndex = sortedVertices.Count;
-                            oldNewVertexIndices[oldIndex] = newIndex;
+                        // Collect all unique old vertex indices that use this bone and appear in this group's triangles
+                        HashSet<int> verticesInThisBone = new HashSet<int>();
 
-                            // Create copied values
-                            sortedVertices.Add(Vertices[oldIndex]);
-                            sortedNormals.Add(Normals[oldIndex]);
-                            sortedTextureCoordinates.Add(TextureCoordinates[oldIndex]);
-                            if (VertexColors.Count != 0)
-                                sortedVertexColors.Add(VertexColors[oldIndex]);
-                            if (BoneIDs.Count != 0)
-                                sortedBoneIndexes.Add(BoneIDs[oldIndex]);
-                            if (AnimatedVertexFramesByVertexIndex.Count != 0)
-                                sortedAnimatedVertexFrames.Add(AnimatedVertexFramesByVertexIndex[oldIndex]);
+                        foreach (TriangleFace triangleFace in tempGroupTriangleFaces)
+                        {
+                            if (BoneIDs[triangleFace.V1] == boneId)
+                                verticesInThisBone.Add(triangleFace.V1);
+                            if (BoneIDs[triangleFace.V2] == boneId)
+                                verticesInThisBone.Add(triangleFace.V2);
+                            if (BoneIDs[triangleFace.V3] == boneId)
+                                verticesInThisBone.Add(triangleFace.V3);
+                        }
+
+                        foreach (int oldIdx in verticesInThisBone)
+                        {
+                            int newIdx = vertices.Count;
+                            oldNewVertexIndices[oldIdx] = newIdx;
+
+                            vertices.Add(Vertices[oldIdx]);
+                            normals.Add(Normals[oldIdx]);
+                            textureCoordinates.Add(TextureCoordinates[oldIdx]);
+                            if (VertexColors.Count > 0) 
+                                vertexColors.Add(VertexColors[oldIdx]);
+                            boneIDs.Add(BoneIDs[oldIdx]);
+                            if (AnimatedVertexFramesByVertexIndex.Count > 0)
+                                animatedVertexFramesByVertexIndex.Add(AnimatedVertexFramesByVertexIndex[oldIdx]);
                         }
                     }
+
+                    foreach (TriangleFace triangleFace in tempGroupTriangleFaces)
+                    {
+                        int v1 = oldNewVertexIndices[triangleFace.V1];
+                        int v2 = oldNewVertexIndices[triangleFace.V2];
+                        int v3 = oldNewVertexIndices[triangleFace.V3];
+                        triangleFaces.Add(new TriangleFace(triangleFace.MaterialIndex, v1, v2, v3));
+                    }
+
+                    group.TriangleCount = tempGroupTriangleFaces.Count;
+                    group.VertexStart = groupVertexStart;
+                    group.VertexCount = vertices.Count - groupVertexStart;
+
+                    RenderGroups.Add(group);
                 }
             }
 
-            // Update the triangle references
-            List<TriangleFace> updatedTriangleFaces = new List<TriangleFace>();
-            foreach (TriangleFace curFace in TriangleFaces)
-            {
-                int materialIndex = curFace.MaterialIndex;
-                int v1 = oldNewVertexIndices[curFace.V1];
-                int v2 = oldNewVertexIndices[curFace.V2];
-                int v3 = oldNewVertexIndices[curFace.V3];
-                TriangleFace newFace = new TriangleFace(materialIndex, v1, v2, v3);
-                updatedTriangleFaces.Add(newFace);
-            }
-
-            // Save everything
-            TriangleFaces = updatedTriangleFaces;
-            Vertices = sortedVertices;
-            Normals = sortedNormals;
-            TextureCoordinates = sortedTextureCoordinates;
-            VertexColors = sortedVertexColors;
-            BoneIDs = sortedBoneIndexes;
-            AnimatedVertexFramesByVertexIndex = sortedAnimatedVertexFrames;
+            TriangleFaces = triangleFaces;
+            Vertices = vertices;
+            Normals = normals;
+            TextureCoordinates = textureCoordinates;
+            VertexColors = vertexColors;
+            BoneIDs = boneIDs;
+            AnimatedVertexFramesByVertexIndex = animatedVertexFramesByVertexIndex;
         }
 
         // TODO: Look into collapsing into the following method since there is a lot of shared code

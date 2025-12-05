@@ -175,11 +175,11 @@ namespace EQWOWConverter.ObjectModels
             if (GlobalLoopSequenceLimits.Count == 0 && (ModelType != ObjectModelType.ParticleEmitter && ModelType != ObjectModelType.SpellProjectile))
                 GlobalLoopSequenceLimits.Add(0);
 
-            // Generate the render groups
-            GenerateRenderGroups(ModelVertices, ModelTriangles);
-
             // Store the final state mesh data
             MeshData = meshData;
+
+            // Generate the render groups
+            GenerateRenderGroups(MeshData, ModelVertices, ModelTriangles);
 
             // Mark as loaded
             IsLoaded = true;
@@ -310,102 +310,63 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private void GenerateRenderGroups(List<ObjectModelVertex> modelVertices, List<TriangleFace> modelTriangles)
+        private void GenerateRenderGroups(MeshData meshData, List<ObjectModelVertex> modelVertices, List<TriangleFace> modelTriangles)
         {
             ModelRenderGroups.Clear();
 
-            // Render groups are grouped by material, and then no more than 64 bones in each
-            // EverQuest models have unique vertices per material, in that no vertex is referenced by difference faces with different materials
-            int currentMaterialID = -1;
-            ObjectModelRenderGroup curRenderGroup = new ObjectModelRenderGroup();
-            UInt16 nextGroupTriangleStartIndex = 0;
-            for (int triangleIndex = 0; triangleIndex < modelTriangles.Count; ++triangleIndex)
+            // Render groups are already sorted out by earlier methods.  Ultimately, they are grouped by
+            // material and restricted to 64 max bones
+            foreach (MeshData.MeshRenderGroup meshRenderGroup in meshData.RenderGroups)
             {
-                TriangleFace curTriangle = modelTriangles[triangleIndex];
+                ObjectModelRenderGroup curRenderGroup = new ObjectModelRenderGroup(meshRenderGroup);
+                curRenderGroup.MaterialIndex = Convert.ToUInt16(modelTriangles[meshRenderGroup.TriangleStart].MaterialIndex);
 
-                // New render group if the material switched
-                if (currentMaterialID != curTriangle.MaterialIndex)
+                // Gather and update bone reference data for the render group
+                for (int triangleIndex = curRenderGroup.TriangleStart; triangleIndex < curRenderGroup.TriangleStart + curRenderGroup.TriangleCount; triangleIndex++)
                 {
-                    if (currentMaterialID != -1)
+                    TriangleFace curTriangle = modelTriangles[triangleIndex];
+
+                    // Capture the vertex bones
+                    byte v1BoneIndexTrue = modelVertices[curTriangle.V1].BoneIndicesTrue[0];
+                    byte v2BoneIndexTrue = modelVertices[curTriangle.V2].BoneIndicesTrue[0];
+                    byte v3BoneIndexTrue = modelVertices[curTriangle.V3].BoneIndicesTrue[0];
+
+                    // Add the bones and update the lookup bone indices in the vertices
+                    if (curRenderGroup.BoneLookupIndices.Contains(v1BoneIndexTrue) == false)
+                        curRenderGroup.BoneLookupIndices.Add(v1BoneIndexTrue);
+                    if (curRenderGroup.BoneLookupIndices.Contains(v2BoneIndexTrue) == false)
+                        curRenderGroup.BoneLookupIndices.Add(v2BoneIndexTrue);
+                    if (curRenderGroup.BoneLookupIndices.Contains(v3BoneIndexTrue) == false)
+                        curRenderGroup.BoneLookupIndices.Add(v3BoneIndexTrue);
+                    modelVertices[curTriangle.V1].BoneIndicesLookup[0] = Convert.ToByte(curRenderGroup.BoneLookupIndices.IndexOf(v1BoneIndexTrue));
+                    modelVertices[curTriangle.V2].BoneIndicesLookup[0] = Convert.ToByte(curRenderGroup.BoneLookupIndices.IndexOf(v2BoneIndexTrue));
+                    modelVertices[curTriangle.V3].BoneIndicesLookup[0] = Convert.ToByte(curRenderGroup.BoneLookupIndices.IndexOf(v3BoneIndexTrue));
+
+                    // Track vertices
+                    if (curRenderGroup.VertexIndicies.Contains(curTriangle.V1) == false)
                     {
-                        // Save active
-                        UInt16 newTriangleStart = nextGroupTriangleStartIndex;
-                        UInt16 newTriangleCount = Convert.ToUInt16(triangleIndex - newTriangleStart);
-                        curRenderGroup.Save(newTriangleStart, newTriangleCount, Convert.ToUInt16(currentMaterialID));
-                        ModelRenderGroups.Add(curRenderGroup);
-                        nextGroupTriangleStartIndex = Convert.ToUInt16(newTriangleStart + newTriangleCount);
-
-                        // Start new
-                        curRenderGroup = new ObjectModelRenderGroup();
+                        curRenderGroup.VertexIndicies.Add(curTriangle.V1);
+                        curRenderGroup.Vertices.Add(modelVertices[curTriangle.V1]);
                     }
-                    currentMaterialID = curTriangle.MaterialIndex;
+                    if (curRenderGroup.VertexIndicies.Contains(curTriangle.V2) == false)
+                    {
+                        curRenderGroup.VertexIndicies.Add(curTriangle.V2);
+                        curRenderGroup.Vertices.Add(modelVertices[curTriangle.V2]);
+                    }
+                    if (curRenderGroup.VertexIndicies.Contains(curTriangle.V3) == false)
+                    {
+                        curRenderGroup.VertexIndicies.Add(curTriangle.V3);
+                        curRenderGroup.Vertices.Add(modelVertices[curTriangle.V3]);
+                    }
+
+                    // Update indices and any boundries in the render group
+                    if (curRenderGroup.RootBone == 0)
+                        curRenderGroup.RootBone = Math.Min(Math.Min(v1BoneIndexTrue, v2BoneIndexTrue), v3BoneIndexTrue);
+                    else
+                        curRenderGroup.RootBone = Math.Min(Math.Min(Math.Min(v1BoneIndexTrue, v2BoneIndexTrue), v3BoneIndexTrue), curRenderGroup.RootBone);
                 }
 
-                // Capture the vertex bones, with only consideration of the first influence
-                byte v1BoneIndexTrue = modelVertices[curTriangle.V1].BoneIndicesTrue[0];
-                byte v2BoneIndexTrue = modelVertices[curTriangle.V2].BoneIndicesTrue[0];
-                byte v3BoneIndexTrue = modelVertices[curTriangle.V3].BoneIndicesTrue[0];
-
-                // If new bones are found and would cause more than 64 bones to be in the render group, make a new
-                int numOfCurrentBones = curRenderGroup.BoneLookupIndices.Count;
-                numOfCurrentBones += curRenderGroup.BoneLookupIndices.Contains(v1BoneIndexTrue) == true ? 1 : 0;
-                numOfCurrentBones += curRenderGroup.BoneLookupIndices.Contains(v2BoneIndexTrue) == true ? 1 : 0;
-                numOfCurrentBones += curRenderGroup.BoneLookupIndices.Contains(v3BoneIndexTrue) == true ? 1 : 0;
-                if (numOfCurrentBones > 64)
-                {
-                    // Save active
-                    UInt16 newTriangleStart = nextGroupTriangleStartIndex;
-                    UInt16 newTriangleCount = Convert.ToUInt16(triangleIndex - newTriangleStart);
-                    curRenderGroup.Save(newTriangleStart, newTriangleCount, Convert.ToUInt16(currentMaterialID));
-                    ModelRenderGroups.Add(curRenderGroup);
-                    nextGroupTriangleStartIndex = Convert.ToUInt16(newTriangleStart + newTriangleCount);
-
-                    // Start new
-                    curRenderGroup = new ObjectModelRenderGroup();
-                }
-
-                // Track vertices
-                if (curRenderGroup.VertexIndicies.Contains(curTriangle.V1) == false)
-                {
-                    curRenderGroup.VertexIndicies.Add(curTriangle.V1);
-                    curRenderGroup.Vertices.Add(modelVertices[curTriangle.V1]);
-                }
-                if (curRenderGroup.VertexIndicies.Contains(curTriangle.V2) == false)
-                {
-                    curRenderGroup.VertexIndicies.Add(curTriangle.V2);
-                    curRenderGroup.Vertices.Add(modelVertices[curTriangle.V2]);
-                }
-                if (curRenderGroup.VertexIndicies.Contains(curTriangle.V3) == false)
-                {
-                    curRenderGroup.VertexIndicies.Add(curTriangle.V3);
-                    curRenderGroup.Vertices.Add(modelVertices[curTriangle.V3]);
-                }
-
-                // Add the bones and update the lookup bone indices in the vertices
-                if (curRenderGroup.BoneLookupIndices.Contains(v1BoneIndexTrue) == false)
-                    curRenderGroup.BoneLookupIndices.Add(v1BoneIndexTrue);
-                if (curRenderGroup.BoneLookupIndices.Contains(v2BoneIndexTrue) == false)
-                    curRenderGroup.BoneLookupIndices.Add(v2BoneIndexTrue);
-                if (curRenderGroup.BoneLookupIndices.Contains(v3BoneIndexTrue) == false)
-                    curRenderGroup.BoneLookupIndices.Add(v3BoneIndexTrue);
-                modelVertices[curTriangle.V1].BoneIndicesLookup[0] = Convert.ToByte(curRenderGroup.BoneLookupIndices.IndexOf(v1BoneIndexTrue));
-                modelVertices[curTriangle.V2].BoneIndicesLookup[0] = Convert.ToByte(curRenderGroup.BoneLookupIndices.IndexOf(v2BoneIndexTrue));
-                modelVertices[curTriangle.V3].BoneIndicesLookup[0] = Convert.ToByte(curRenderGroup.BoneLookupIndices.IndexOf(v3BoneIndexTrue));
-
-                // Update indices and any boundries in the render group
-                if (curRenderGroup.RootBone == 0)
-                    curRenderGroup.RootBone = Math.Min(Math.Min(v1BoneIndexTrue, v2BoneIndexTrue), v3BoneIndexTrue);
-                else
-                    curRenderGroup.RootBone = Math.Min(Math.Min(Math.Min(v1BoneIndexTrue, v2BoneIndexTrue), v3BoneIndexTrue), curRenderGroup.RootBone);
-                curRenderGroup.TriangleCount++;
-            }
-
-            // Add the final one, if needed
-            if (currentMaterialID != -1)
-            {
-                UInt16 newTriangleStart = nextGroupTriangleStartIndex;
-                UInt16 newTriangleCount = Convert.ToUInt16((modelTriangles.Count - 1) - newTriangleStart);
-                curRenderGroup.Save(newTriangleStart, newTriangleCount, Convert.ToUInt16(currentMaterialID));
+                // Store it
                 ModelRenderGroups.Add(curRenderGroup);
             }
         }

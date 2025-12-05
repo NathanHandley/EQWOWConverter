@@ -16,8 +16,6 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
-using EQWOWConverter.Zones;
-using LanternExtractor.EQ.Wld.Helpers;
 
 namespace EQWOWConverter.WOWFiles
 {

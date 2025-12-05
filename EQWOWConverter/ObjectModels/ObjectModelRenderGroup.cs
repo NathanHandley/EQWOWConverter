@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
+
 namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelRenderGroup
@@ -33,13 +35,12 @@ namespace EQWOWConverter.ObjectModels
 
         }
 
-        public void Save(UInt16 triangleStart, UInt16 triangleCount, UInt16 materialIndex)
+        public ObjectModelRenderGroup(MeshData.MeshRenderGroup meshRenderGroup)
         {
-            VertexStart = Convert.ToUInt16(VertexIndicies.Min());
-            VertexCount = Convert.ToUInt16((VertexIndicies.Max() + 1) - VertexIndicies.Min());
-            TriangleStart = triangleStart;
-            TriangleCount = triangleCount;
-            MaterialIndex = materialIndex;
+            VertexStart = Convert.ToUInt16(meshRenderGroup.VertexStart);
+            VertexCount = Convert.ToUInt16(meshRenderGroup.VertexCount);
+            TriangleStart = Convert.ToUInt16(meshRenderGroup.TriangleStart);
+            TriangleCount = Convert.ToUInt16(meshRenderGroup.TriangleCount);
         }
     }
 }
