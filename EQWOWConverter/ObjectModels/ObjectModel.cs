@@ -1581,6 +1581,15 @@ namespace EQWOWConverter.ObjectModels
 
         private void ProcessMaterials(List<Material> initialMaterials, ref MeshData meshData)
         {
+            // Normalize the material IDs as they stand (so they start with index 0)
+            Dictionary<UInt32, UInt32> oldToNewMaterialMap = new Dictionary<UInt32, UInt32>();
+            for (UInt32 i = 0; i < initialMaterials.Count; i++)
+            {
+                oldToNewMaterialMap.Add(initialMaterials[Convert.ToInt32(i)].Index, i);
+                initialMaterials[Convert.ToInt32(i)].Index = i;
+            }
+            meshData.RemapMaterialIDs(oldToNewMaterialMap);
+
             // Purge any invalid material references
             // TODO: Look into making this work for non-skeletal
             if (IsSkeletal)

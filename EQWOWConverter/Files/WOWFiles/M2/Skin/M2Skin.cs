@@ -134,15 +134,7 @@ namespace EQWOWConverter.WOWFiles
             // Only build the mesh if this object has rendering enabled
             if (modelObject.Properties.RenderingEnabled == true)
             {
-                // Build material lookups for zone objects
-                Dictionary<int, int> materialIndexLookup = new Dictionary<int, int>();
-                if (modelObject.ModelType == ObjectModelType.ZoneModel)
-                {
-                    for (int i = 0; i < modelObject.ModelMaterials.Count; i++)
-                        materialIndexLookup.Add(Convert.ToInt32(modelObject.ModelMaterials[i].Material.Index), i);
-                }               
-
-                // One texture unit and sub mesh per render group
+                // One texture unit and sub mesh per render group, unless the related material is animated
                 UInt16 curBoneLookupIndex = 0;
                 for (int i = 0; i < modelObject.ModelRenderGroups.Count; i++)
                 {
@@ -158,8 +150,6 @@ namespace EQWOWConverter.WOWFiles
 
                     // Create a texture unit
                     UInt16 materialID = renderGroup.MaterialIndex;
-                    if (modelObject.ModelType == ObjectModelType.ZoneModel)
-                        materialID = Convert.ToUInt16(materialIndexLookup[renderGroup.MaterialIndex]);
                     UInt16 transparencyLookupIndex = modelObject.ModelTextureTransparencyLookups[Convert.ToInt32(materialID)];
                     M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(Convert.ToUInt16(subMeshes.Count()-1), materialID, 
                         materialID, transparencyLookupIndex, -1);

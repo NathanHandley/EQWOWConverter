@@ -328,6 +328,25 @@ namespace EQWOWConverter.Common
             }
         }
 
+        public void RemapMaterialIDs(Dictionary<UInt32, UInt32> oldToNewMaterialMap)
+        {
+            // Remap in triangles
+            for (int i = 0; i < TriangleFaces.Count; i++)
+            {
+                TriangleFace curTriangle = TriangleFaces[i];
+                curTriangle.MaterialIndex = Convert.ToInt32(oldToNewMaterialMap[Convert.ToUInt32(curTriangle.MaterialIndex)]);
+                TriangleFaces[i] = curTriangle;
+            }
+
+            // Remap in render groups
+            for (int i = 0; i < RenderGroups.Count; i++)
+            {
+                MeshRenderGroup curRenderGroup = RenderGroups[i];
+                curRenderGroup.MaterialIndex = Convert.ToInt32(oldToNewMaterialMap[Convert.ToUInt32(curRenderGroup.MaterialIndex)]);
+                RenderGroups[i] = curRenderGroup;
+            }                
+        }
+
         public void AddMeshData(MeshData meshDataToAdd)
         {
             // Increase the vertex information for the mesh data being added in since the vertices array will increase
