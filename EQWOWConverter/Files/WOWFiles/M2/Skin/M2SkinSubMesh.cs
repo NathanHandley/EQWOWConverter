@@ -39,7 +39,7 @@ namespace EQWOWConverter.WOWFiles
         public M2SkinSubMesh(ObjectModelRenderGroup renderGroup, UInt16 boneLookupIndex)
         {
             VertexStart = renderGroup.VertexStart;
-            VertexCount = Convert.ToUInt16(renderGroup.Vertices.Count);
+            VertexCount = renderGroup.VertexCount;
             TriangleIndexStart = Convert.ToUInt16(renderGroup.TriangleStart * 3); // The number of indices in the triangles
             TriangleIndexCount = Convert.ToUInt16(renderGroup.TriangleCount * 3); // The number of indices in the triangles
             BoneCount = Convert.ToUInt16(renderGroup.BoneLookupIndices.Count);

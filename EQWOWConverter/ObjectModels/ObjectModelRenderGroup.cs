@@ -20,16 +20,25 @@ namespace EQWOWConverter.ObjectModels
     {
         public List<Int16> BoneLookupIndices = new List<Int16>();
         public UInt16 VertexStart = UInt16.MaxValue;
+        public UInt16 VertexCount = 0;
         public UInt16 TriangleStart = UInt16.MaxValue;
         public UInt16 TriangleCount = 0;
         public UInt16 RootBone = 0;
         public UInt16 MaterialIndex = 0;
         public List<ObjectModelVertex> Vertices = new List<ObjectModelVertex>();
+        public HashSet<int> VertexIndicies = new HashSet<int>();
 
-        public ObjectModelRenderGroup(UInt16 vertexStart, UInt16 triangleStart, UInt16 materialIndex)
+        public ObjectModelRenderGroup()
         {
-            VertexStart = vertexStart;
+
+        }
+
+        public void Save(UInt16 triangleStart, UInt16 triangleCount, UInt16 materialIndex)
+        {
+            VertexStart = Convert.ToUInt16(VertexIndicies.Min());
+            VertexCount = Convert.ToUInt16(VertexIndicies.Max() - VertexIndicies.Min());
             TriangleStart = triangleStart;
+            TriangleCount = triangleCount;
             MaterialIndex = materialIndex;
         }
     }

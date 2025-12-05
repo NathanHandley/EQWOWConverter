@@ -163,7 +163,8 @@ namespace EQWOWConverter.WOWFiles
                     if (modelObject.ModelType == ObjectModelType.ZoneModel)
                         materialID = Convert.ToUInt16(materialIndexLookup[renderGroup.MaterialIndex]);
                     UInt16 transparencyLookupIndex = modelObject.ModelTextureTransparencyLookups[Convert.ToInt32(materialID)];
-                    M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(materialID, materialID, materialID, transparencyLookupIndex, -1);
+                    M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(Convert.ToUInt16(subMeshes.Count()-1), materialID, 
+                        materialID, transparencyLookupIndex, -1);
                     textureUnits.Add(curTextureUnit);
                 }
             }

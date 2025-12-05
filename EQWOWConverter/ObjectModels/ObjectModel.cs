@@ -19,7 +19,6 @@ using EQWOWConverter.Creatures;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Spells;
-using Org.BouncyCastle.Crypto.Engines;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -318,8 +317,9 @@ namespace EQWOWConverter.ObjectModels
             // Render groups are grouped by material, and then no more than 64 bones in each
             // EverQuest models have unique vertices per material, in that no vertex is referenced by difference faces with different materials
             int currentMaterialID = -1;
-            ObjectModelRenderGroup curRenderGroup = new ObjectModelRenderGroup(0, 0, 0);
-            HashSet<int> vertexIndicesInCurGroup = new HashSet<int>();
+            ObjectModelRenderGroup curRenderGroup = new ObjectModelRenderGroup();
+            UInt16 nextGroupTriangleStartIndex = 0;
+            //Dictionary<byte, int> minimumBoneIndicesByBoneIndexTrue = new Dictionary<byte, int>();
             for (int triangleIndex = 0; triangleIndex < modelTriangles.Count; ++triangleIndex)
             {
                 TriangleFace curTriangle = modelTriangles[triangleIndex];
@@ -327,17 +327,19 @@ namespace EQWOWConverter.ObjectModels
                 // New render group if the material switched
                 if (currentMaterialID != curTriangle.MaterialIndex)
                 {
-                    currentMaterialID = curTriangle.MaterialIndex;
                     if (currentMaterialID != -1)
                     {
+                        // Save active
+                        UInt16 newTriangleStart = nextGroupTriangleStartIndex;
+                        UInt16 newTriangleCount = Convert.ToUInt16(triangleIndex - newTriangleStart);
+                        curRenderGroup.Save(newTriangleStart, newTriangleCount, Convert.ToUInt16(currentMaterialID));
                         ModelRenderGroups.Add(curRenderGroup);
-                        UInt16 newTriangleStart = Convert.ToUInt16(curRenderGroup.TriangleStart + curRenderGroup.TriangleCount);
-                        UInt16 newVertexStart = Convert.ToUInt16(curRenderGroup.VertexStart + curRenderGroup.Vertices.Count);
-                        curRenderGroup = new ObjectModelRenderGroup(newVertexStart, newTriangleStart, Convert.ToUInt16(currentMaterialID));
-                        vertexIndicesInCurGroup.Clear();
+                        nextGroupTriangleStartIndex = Convert.ToUInt16(newTriangleStart + newTriangleCount);
+
+                        // Start new
+                        curRenderGroup = new ObjectModelRenderGroup();
                     }
-                    else
-                        curRenderGroup.MaterialIndex = Convert.ToUInt16(currentMaterialID);
+                    currentMaterialID = curTriangle.MaterialIndex;
                 }
 
                 // Capture the vertex bones, with only consideration of the first influence
@@ -352,27 +354,45 @@ namespace EQWOWConverter.ObjectModels
                 numOfCurrentBones += curRenderGroup.BoneLookupIndices.Contains(v3BoneIndexTrue) == true ? 1 : 0;
                 if (numOfCurrentBones > 64)
                 {
+                    // Save active
+                    UInt16 newTriangleStart = nextGroupTriangleStartIndex;
+                    UInt16 newTriangleCount = Convert.ToUInt16(triangleIndex - newTriangleStart);
+                    curRenderGroup.Save(newTriangleStart, newTriangleCount, Convert.ToUInt16(currentMaterialID));
                     ModelRenderGroups.Add(curRenderGroup);
-                    UInt16 newVertexStart = Convert.ToUInt16(curRenderGroup.VertexStart + curRenderGroup.Vertices.Count);
-                    UInt16 newTriangleStart = Convert.ToUInt16(curRenderGroup.TriangleStart + curRenderGroup.TriangleCount);                   
-                    curRenderGroup = new ObjectModelRenderGroup(newVertexStart, newTriangleStart, Convert.ToUInt16(currentMaterialID));
-                    vertexIndicesInCurGroup.Clear();
+                    nextGroupTriangleStartIndex = Convert.ToUInt16(newTriangleStart + newTriangleCount);
+
+                    // Start new
+                    curRenderGroup = new ObjectModelRenderGroup();
                 }
 
+                // Recalculate boundaries
+                //if (minimumBoneIndicesByBoneIndexTrue.ContainsKey(v1BoneIndexTrue) == false)
+                //    minimumBoneIndicesByBoneIndexTrue.Add(v1BoneIndexTrue, curTriangle.V1);
+                //else
+                //    minimumBoneIndicesByBoneIndexTrue[v1BoneIndexTrue] = Math.Min(minimumBoneIndicesByBoneIndexTrue[v1BoneIndexTrue], curTriangle.V1);
+                //if (minimumBoneIndicesByBoneIndexTrue.ContainsKey(v2BoneIndexTrue) == false)
+                //    minimumBoneIndicesByBoneIndexTrue.Add(v2BoneIndexTrue, curTriangle.V2);
+                //else
+                //    minimumBoneIndicesByBoneIndexTrue[v2BoneIndexTrue] = Math.Min(minimumBoneIndicesByBoneIndexTrue[v2BoneIndexTrue], curTriangle.V2);
+                //if (minimumBoneIndicesByBoneIndexTrue.ContainsKey(v3BoneIndexTrue) == false)
+                //    minimumBoneIndicesByBoneIndexTrue.Add(v3BoneIndexTrue, curTriangle.V3);
+                //else
+                //    minimumBoneIndicesByBoneIndexTrue[v3BoneIndexTrue] = Math.Min(minimumBoneIndicesByBoneIndexTrue[v3BoneIndexTrue], curTriangle.V3);
+
                 // Track vertices
-                if (vertexIndicesInCurGroup.Contains(curTriangle.V1) == false)
+                if (curRenderGroup.VertexIndicies.Contains(curTriangle.V1) == false)
                 {
-                    vertexIndicesInCurGroup.Add(curTriangle.V1);
+                    curRenderGroup.VertexIndicies.Add(curTriangle.V1);
                     curRenderGroup.Vertices.Add(modelVertices[curTriangle.V1]);
                 }
-                if (vertexIndicesInCurGroup.Contains(curTriangle.V2) == false)
+                if (curRenderGroup.VertexIndicies.Contains(curTriangle.V2) == false)
                 {
-                    vertexIndicesInCurGroup.Add(curTriangle.V2);
+                    curRenderGroup.VertexIndicies.Add(curTriangle.V2);
                     curRenderGroup.Vertices.Add(modelVertices[curTriangle.V2]);
                 }
-                if (vertexIndicesInCurGroup.Contains(curTriangle.V3) == false)
+                if (curRenderGroup.VertexIndicies.Contains(curTriangle.V3) == false)
                 {
-                    vertexIndicesInCurGroup.Add(curTriangle.V3);
+                    curRenderGroup.VertexIndicies.Add(curTriangle.V3);
                     curRenderGroup.Vertices.Add(modelVertices[curTriangle.V3]);
                 }
 
@@ -390,12 +410,19 @@ namespace EQWOWConverter.ObjectModels
                 // Update indices and any boundries in the render group
                 if (curRenderGroup.RootBone == 0)
                     curRenderGroup.RootBone = Math.Min(Math.Min(v1BoneIndexTrue, v2BoneIndexTrue), v3BoneIndexTrue);
+                else
+                    curRenderGroup.RootBone = Math.Min(Math.Min(Math.Min(v1BoneIndexTrue, v2BoneIndexTrue), v3BoneIndexTrue), curRenderGroup.RootBone);
                 curRenderGroup.TriangleCount++;
             }
 
             // Add the final one, if needed
             if (currentMaterialID != -1)
+            {
+                UInt16 newTriangleStart = nextGroupTriangleStartIndex;
+                UInt16 newTriangleCount = Convert.ToUInt16((modelTriangles.Count - 1) - newTriangleStart);
+                curRenderGroup.Save(newTriangleStart, newTriangleCount, Convert.ToUInt16(currentMaterialID));
                 ModelRenderGroups.Add(curRenderGroup);
+            }
         }
 
         private void GenerateSpriteListModelData(ref List<Material> initialMaterials, ref MeshData meshData, ref List<EQSpellsEFF.EFFSpellSpriteListEffect> spriteListEffects)
