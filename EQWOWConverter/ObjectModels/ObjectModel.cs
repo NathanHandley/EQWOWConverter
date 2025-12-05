@@ -319,7 +319,6 @@ namespace EQWOWConverter.ObjectModels
             int currentMaterialID = -1;
             ObjectModelRenderGroup curRenderGroup = new ObjectModelRenderGroup();
             UInt16 nextGroupTriangleStartIndex = 0;
-            //Dictionary<byte, int> minimumBoneIndicesByBoneIndexTrue = new Dictionary<byte, int>();
             for (int triangleIndex = 0; triangleIndex < modelTriangles.Count; ++triangleIndex)
             {
                 TriangleFace curTriangle = modelTriangles[triangleIndex];
@@ -364,20 +363,6 @@ namespace EQWOWConverter.ObjectModels
                     // Start new
                     curRenderGroup = new ObjectModelRenderGroup();
                 }
-
-                // Recalculate boundaries
-                //if (minimumBoneIndicesByBoneIndexTrue.ContainsKey(v1BoneIndexTrue) == false)
-                //    minimumBoneIndicesByBoneIndexTrue.Add(v1BoneIndexTrue, curTriangle.V1);
-                //else
-                //    minimumBoneIndicesByBoneIndexTrue[v1BoneIndexTrue] = Math.Min(minimumBoneIndicesByBoneIndexTrue[v1BoneIndexTrue], curTriangle.V1);
-                //if (minimumBoneIndicesByBoneIndexTrue.ContainsKey(v2BoneIndexTrue) == false)
-                //    minimumBoneIndicesByBoneIndexTrue.Add(v2BoneIndexTrue, curTriangle.V2);
-                //else
-                //    minimumBoneIndicesByBoneIndexTrue[v2BoneIndexTrue] = Math.Min(minimumBoneIndicesByBoneIndexTrue[v2BoneIndexTrue], curTriangle.V2);
-                //if (minimumBoneIndicesByBoneIndexTrue.ContainsKey(v3BoneIndexTrue) == false)
-                //    minimumBoneIndicesByBoneIndexTrue.Add(v3BoneIndexTrue, curTriangle.V3);
-                //else
-                //    minimumBoneIndicesByBoneIndexTrue[v3BoneIndexTrue] = Math.Min(minimumBoneIndicesByBoneIndexTrue[v3BoneIndexTrue], curTriangle.V3);
 
                 // Track vertices
                 if (curRenderGroup.VertexIndicies.Contains(curTriangle.V1) == false)

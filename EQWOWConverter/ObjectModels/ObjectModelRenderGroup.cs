@@ -36,7 +36,7 @@ namespace EQWOWConverter.ObjectModels
         public void Save(UInt16 triangleStart, UInt16 triangleCount, UInt16 materialIndex)
         {
             VertexStart = Convert.ToUInt16(VertexIndicies.Min());
-            VertexCount = Convert.ToUInt16(VertexIndicies.Max() - VertexIndicies.Min());
+            VertexCount = Convert.ToUInt16((VertexIndicies.Max() + 1) - VertexIndicies.Min());
             TriangleStart = triangleStart;
             TriangleCount = triangleCount;
             MaterialIndex = materialIndex;
