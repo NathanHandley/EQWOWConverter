@@ -327,9 +327,9 @@ namespace EQWOWConverter.ObjectModels
                     TriangleFace curTriangle = modelTriangles[triangleIndex];
 
                     // Capture the vertex bones
-                    byte v1BoneIndexTrue = modelVertices[curTriangle.V1].BoneIndicesTrue[0];
-                    byte v2BoneIndexTrue = modelVertices[curTriangle.V2].BoneIndicesTrue[0];
-                    byte v3BoneIndexTrue = modelVertices[curTriangle.V3].BoneIndicesTrue[0];
+                    UInt16 v1BoneIndexTrue = modelVertices[curTriangle.V1].BoneIndicesTrue[0];
+                    UInt16 v2BoneIndexTrue = modelVertices[curTriangle.V2].BoneIndicesTrue[0];
+                    UInt16 v3BoneIndexTrue = modelVertices[curTriangle.V3].BoneIndicesTrue[0];
 
                     // Add the bones and update the lookup bone indices in the vertices
                     if (curRenderGroup.BoneLookupIndices.Contains(v1BoneIndexTrue) == false)

@@ -74,7 +74,7 @@ namespace EQWOWConverter.EQFiles
                     vertexBone.AlternateMeshName = string.Empty;
                     vertexBone.ParticleCloudName = string.Empty;
                     BoneStructures.Add(vertexBone);
-                    meshData.BoneIDs.Add(Convert.ToByte(curBoneID));
+                    meshData.BoneIDs.Add(Convert.ToUInt16(curBoneID));
                     rootBone.Children.Add(curBoneID);
                     curBoneID++;
                 }

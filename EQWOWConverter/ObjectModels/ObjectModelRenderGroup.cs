@@ -20,7 +20,7 @@ namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelRenderGroup
     {
-        public List<Int16> BoneLookupIndices = new List<Int16>();
+        public List<UInt16> BoneLookupIndices = new List<UInt16>();
         public UInt16 VertexStart = UInt16.MaxValue;
         public UInt16 VertexCount = 0;
         public UInt16 TriangleStart = UInt16.MaxValue;

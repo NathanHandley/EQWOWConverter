@@ -24,7 +24,7 @@ namespace EQWOWConverter.Common
         public List<TextureCoordinates> TextureCoordinates = new List<TextureCoordinates>();
         public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
         public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
-        public List<byte> BoneIDs = new List<byte>(); // Note: Only single associations, but WOW can support up to 4 w/weights
+        public List<UInt16> BoneIDs = new List<UInt16>(); // Note: Only single associations, but WOW can support up to 4 w/weights
         public List<AnimatedVertexFrames> AnimatedVertexFramesByVertexIndex = new List<AnimatedVertexFrames>();
         public List<MeshRenderGroup> RenderGroups = new List<MeshRenderGroup>();
 
@@ -35,7 +35,7 @@ namespace EQWOWConverter.Common
             public int VertexCount;
             public int TriangleStart;
             public int TriangleCount;
-            public HashSet<byte> BonesIDsUsed;
+            public HashSet<UInt16> BonesIDsUsed;
         }
 
         public MeshData() { }
@@ -47,7 +47,7 @@ namespace EQWOWConverter.Common
             TextureCoordinates = new List<TextureCoordinates>(meshData.TextureCoordinates);
             TriangleFaces = new List<TriangleFace>(meshData.TriangleFaces);
             VertexColors = new List<ColorRGBA>(meshData.VertexColors);
-            BoneIDs = new List<byte>(meshData.BoneIDs);
+            BoneIDs = new List<UInt16>(meshData.BoneIDs);
             AnimatedVertexFramesByVertexIndex = new List<AnimatedVertexFrames>(meshData.AnimatedVertexFramesByVertexIndex.Count);
             AnimatedVerticesDelayInMS = meshData.AnimatedVerticesDelayInMS;
             foreach (AnimatedVertexFrames frames in meshData.AnimatedVertexFramesByVertexIndex)
@@ -214,7 +214,7 @@ namespace EQWOWConverter.Common
             }
         }
 
-        public void GenerateAsQuad(int materialIndex, Vector3 topLeftCorner, Vector3 bottomRightCorner, byte boneID)
+        public void GenerateAsQuad(int materialIndex, Vector3 topLeftCorner, Vector3 bottomRightCorner, UInt16 boneID)
         {
             // Clear prior data
             Vertices.Clear();
@@ -544,7 +544,7 @@ namespace EQWOWConverter.Common
             List<Vector3> normals = new List<Vector3>();
             List<TextureCoordinates> textureCoordinates = new List<TextureCoordinates>();
             List<ColorRGBA> vertexColors = new List<ColorRGBA>();
-            List<byte> boneIDs = new List<byte>();
+            List<UInt16> boneIDs = new List<UInt16>();
             List<AnimatedVertexFrames> animVertexFrames = new List<AnimatedVertexFrames>();
 
             List<TriangleFace> newFaces = new List<TriangleFace>(faces.Count);
@@ -572,7 +572,7 @@ namespace EQWOWConverter.Common
 
         private int MapVertex(int oldIndex, Dictionary<int, int> map,
             List<Vector3> verts, List<Vector3> normals, List<TextureCoordinates> textureCoordinates,
-            List<ColorRGBA> vertexColors, List<byte> boneIDs, List<AnimatedVertexFrames> animVertexFrames)
+            List<ColorRGBA> vertexColors, List<UInt16> boneIDs, List<AnimatedVertexFrames> animVertexFrames)
         {
             if (map.TryGetValue(oldIndex, out int newIndex))
                 return newIndex;
@@ -603,7 +603,7 @@ namespace EQWOWConverter.Common
             List<Vector3> sortedNormals = new List<Vector3>(Normals.Count);
             List<TextureCoordinates> sortedTextureCoordinates = new List<TextureCoordinates>(TextureCoordinates.Count);
             List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>(VertexColors.Count);
-            List<byte> sortedBoneIndexes = new List<byte>(BoneIDs.Count);
+            List<UInt16> sortedBoneIndexes = new List<UInt16>(BoneIDs.Count);
             List<AnimatedVertexFrames> sortedAnimatedVertexFrames = new List<AnimatedVertexFrames>(AnimatedVertexFramesByVertexIndex.Count);
 
             bool hasNormals = Normals.Count != 0;
@@ -760,7 +760,7 @@ namespace EQWOWConverter.Common
                     VertexCount = sourceGroup.VertexCount,
                     TriangleStart = currentClonedTriangleOffset,
                     TriangleCount = sourceGroup.TriangleCount,
-                    BonesIDsUsed = new HashSet<byte>(sourceGroup.BonesIDsUsed)
+                    BonesIDsUsed = new HashSet<UInt16>(sourceGroup.BonesIDsUsed)
                 };
 
                 RenderGroups.Add(newGroup);
@@ -788,7 +788,7 @@ namespace EQWOWConverter.Common
             List<Vector3> normals = new List<Vector3>();
             List<TextureCoordinates> textureCoordinates = new List<TextureCoordinates>();
             List<ColorRGBA> vertexColors = new List<ColorRGBA>();
-            List<byte> boneIDs = new List<byte>();
+            List<UInt16> boneIDs = new List<UInt16>();
             List<AnimatedVertexFrames> animatedVertexFramesByVertexIndex = new List<AnimatedVertexFrames>();
 
             // Group the triangles by material
@@ -804,12 +804,12 @@ namespace EQWOWConverter.Common
                 // Further sort triangles by bones
                 trianglesInMaterial.Sort((a, b) =>
                 {
-                    byte maxA = Math.Max(BoneIDs[a.V1], Math.Max(BoneIDs[a.V2], BoneIDs[a.V3]));
-                    byte maxB = Math.Max(BoneIDs[b.V1], Math.Max(BoneIDs[b.V2], BoneIDs[b.V3]));
+                    UInt16 maxA = Math.Max(BoneIDs[a.V1], Math.Max(BoneIDs[a.V2], BoneIDs[a.V3]));
+                    UInt16 maxB = Math.Max(BoneIDs[b.V1], Math.Max(BoneIDs[b.V2], BoneIDs[b.V3]));
                     int cmp = maxA.CompareTo(maxB);
                     if (cmp != 0) return cmp;
-                    byte minA = Math.Min(BoneIDs[a.V1], Math.Min(BoneIDs[a.V2], BoneIDs[a.V3]));
-                    byte minB = Math.Min(BoneIDs[b.V1], Math.Min(BoneIDs[b.V2], BoneIDs[b.V3]));
+                    UInt16 minA = Math.Min(BoneIDs[a.V1], Math.Min(BoneIDs[a.V2], BoneIDs[a.V3]));
+                    UInt16 minB = Math.Min(BoneIDs[b.V1], Math.Min(BoneIDs[b.V2], BoneIDs[b.V3]));
                     return minA.CompareTo(minB);
                 });
 
@@ -820,22 +820,22 @@ namespace EQWOWConverter.Common
                     {
                         MaterialIndex = materialGroup.Key,
                         TriangleStart = triangleFaces.Count,
-                        BonesIDsUsed = new HashSet<byte>()
+                        BonesIDsUsed = new HashSet<UInt16>()
                     };
 
                     int groupVertexStart = vertices.Count;
                     Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
-                    SortedSet<byte> bonesInThisGroup = new SortedSet<byte>();
+                    SortedSet<UInt16> bonesInThisGroup = new SortedSet<UInt16>();
                     List<TriangleFace> tempGroupTriangleFaces = new List<TriangleFace>();
 
                     while (triangleIndex < trianglesInMaterial.Count)
                     {
                         TriangleFace curTriangle = trianglesInMaterial[triangleIndex];
-                        byte b1 = BoneIDs[curTriangle.V1];
-                        byte b2 = BoneIDs[curTriangle.V2];
-                        byte b3 = BoneIDs[curTriangle.V3];
+                        UInt16 b1 = BoneIDs[curTriangle.V1];
+                        UInt16 b2 = BoneIDs[curTriangle.V2];
+                        UInt16 b3 = BoneIDs[curTriangle.V3];
 
-                        HashSet<byte> testSet = new HashSet<byte>(group.BonesIDsUsed);
+                        HashSet<UInt16> testSet = new HashSet<UInt16>(group.BonesIDsUsed);
                         testSet.Add(b1); 
                         testSet.Add(b2); 
                         testSet.Add(b3);
@@ -855,7 +855,7 @@ namespace EQWOWConverter.Common
                         triangleIndex++;
                     }
 
-                    foreach (byte boneId in bonesInThisGroup)
+                    foreach (UInt16 boneId in bonesInThisGroup)
                     {
                         // Collect all unique old vertex indices that use this bone and appear in this group's triangles
                         HashSet<int> verticesInThisBone = new HashSet<int>();
