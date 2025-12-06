@@ -114,7 +114,7 @@ namespace EQWOWConverter.ObjectModels
                 GenerateSpriteListModelData(ref initialMaterials, ref meshData, ref spriteListEffects);
 
             // Sort the geometry
-            meshData.SortDataByMaterialAndBones();
+            meshData.SortDataByMaterialBonesAndGenerateRenderGroups();
 
             // Perform EQ->WoW translations if this is coming from a raw EQ object
             if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.Transport || ModelType == ObjectModelType.EquipmentHeld)
@@ -1644,7 +1644,8 @@ namespace EQWOWConverter.ObjectModels
                     ExpandAnimatedMaterialAndAddAnimationProperties(material, ref expandedMaterials, out curAnimationMaterials);
 
                     // Add the additional geometry for the new frames
-                    //AddGeometryForExpandedMaterialFrames(curAnimationMaterials, ref meshData);
+                    foreach (Material curAnimationMaterial in curAnimationMaterials)
+                        meshData.CloneRenderGroupsForMaterial(Convert.ToInt32(material.Index), Convert.ToInt32(curAnimationMaterial.Index));
                 }
                 // If static, build single-frame animation properties
                 else
@@ -2161,63 +2162,6 @@ namespace EQWOWConverter.ObjectModels
             // Save this global sequence so that it loops
             GlobalLoopSequenceLimits.Add(Convert.ToUInt32(curAnimationMaterials.Count) * initialMaterial.AnimationDelayMs);
         }
-
-        //private void AddGeometryForExpandedMaterialFrames(List<Material> frameMaterials, ref MeshData meshData)
-        //{
-        //    for (int i = 1; i < frameMaterials.Count; i++)
-        //    {
-        //        // Create new triangles
-        //        List<TriangleFace> newTriangleFaces = new List<TriangleFace>();
-
-        //        // Determine what the min vertex index is for the triangles, as well as capture the reference indices for vertex copies
-        //        int minSourceTriangleVertexIndex = -1;
-        //        int maxSourceTriangleVertexIndex = -1;
-        //        foreach (TriangleFace triangleFace in meshData.TriangleFaces)
-        //        {
-        //            if (triangleFace.MaterialIndex != frameMaterials[0].Index)
-        //                continue;
-
-        //            // Store the vertex offsets to be used in the next section
-        //            if (minSourceTriangleVertexIndex == -1 || triangleFace.GetSmallestIndex() < minSourceTriangleVertexIndex)
-        //                minSourceTriangleVertexIndex = triangleFace.GetSmallestIndex();
-        //            if (maxSourceTriangleVertexIndex == -1 || triangleFace.GetLargestIndex() > maxSourceTriangleVertexIndex)
-        //                maxSourceTriangleVertexIndex = triangleFace.GetLargestIndex();
-        //        }
-        //        if (minSourceTriangleVertexIndex == -1)
-        //        {
-        //            Logger.WriteError("Could not find any triangle face vertices for material '" + frameMaterials[0].UniqueName + "' in object '" + Name + "'");
-        //            continue;
-        //        }
-
-        //        // Create new triangles using the min identified earlier
-        //        int newVertexIndexStartOffsetAdd = meshData.Vertices.Count - minSourceTriangleVertexIndex;
-        //        foreach (TriangleFace triangleFace in meshData.TriangleFaces)
-        //        {
-        //            if (triangleFace.MaterialIndex != frameMaterials[0].Index)
-        //                continue;
-        //            TriangleFace newTriangleFace = new TriangleFace(triangleFace);
-        //            newTriangleFace.V1 += newVertexIndexStartOffsetAdd;
-        //            newTriangleFace.V2 += newVertexIndexStartOffsetAdd;
-        //            newTriangleFace.V3 += newVertexIndexStartOffsetAdd;
-        //            newTriangleFace.MaterialIndex = Convert.ToInt32(frameMaterials[i].Index);
-        //            newTriangleFaces.Add(newTriangleFace);
-        //        }
-        //        foreach (TriangleFace triangleFace in newTriangleFaces)
-        //            meshData.TriangleFaces.Add(triangleFace);
-
-        //        // Create new geometry data                        
-        //        for (int vi = minSourceTriangleVertexIndex; vi <= maxSourceTriangleVertexIndex; ++vi)
-        //        {
-        //            meshData.Vertices.Add(new Vector3(meshData.Vertices[vi]));
-        //            meshData.Normals.Add(new Vector3(meshData.Normals[vi]));
-        //            meshData.TextureCoordinates.Add(new TextureCoordinates(meshData.TextureCoordinates[vi]));
-        //            if (meshData.BoneIDs.Count > 0)
-        //                meshData.BoneIDs.Add(meshData.BoneIDs[vi]);
-        //            if (meshData.VertexColors.Count > 0)
-        //                meshData.VertexColors.Add(new ColorRGBA(meshData.VertexColors[vi]));
-        //        }
-        //    }
-        //}
 
         private UInt32 GetUniqueMaterialIDFromMaterials(List<Material> materials)
         {

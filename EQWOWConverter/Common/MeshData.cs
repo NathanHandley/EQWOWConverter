@@ -687,7 +687,91 @@ namespace EQWOWConverter.Common
             AnimatedVertexFramesByVertexIndex = sortedAnimatedVertexFrames;
         }
 
-        public void SortDataByMaterialAndBones()
+        public void CloneRenderGroupsForMaterial(int sourceMaterialID, int newMaterialID)
+        {
+            // Find all render groups that use the source material ID
+            var groupsToClone = RenderGroups
+                .Where(g => g.MaterialIndex == sourceMaterialID)
+                .ToList();
+            if (groupsToClone.Any() == false)
+                return;
+
+            int preCloneVertexCount = Vertices.Count;
+            int clonedVertexStart = preCloneVertexCount;
+            int preCloneTriangleFaceCount = TriangleFaces.Count;
+            Dictionary<int, int> oldNewClonedVertexIndices = new Dictionary<int, int>();
+            List<TriangleFace> clonedTriangleFaces = new List<TriangleFace>();
+
+            // Clone verticies used by the source material groups
+            foreach (var group in groupsToClone)
+            {
+                int startVertexIndex = group.VertexStart;
+                int endVertIndex = startVertexIndex + group.VertexCount - 1;
+                for (int oldIndex = startVertexIndex; oldIndex <= endVertIndex; oldIndex++)
+                {
+                    if (oldNewClonedVertexIndices.ContainsKey(oldIndex) == true)
+                        continue;
+
+                    // Clone all vertex data
+                    int newVertexIndex = Vertices.Count;                    
+                    Vertices.Add(Vertices[oldIndex]);
+                    Normals.Add(Normals[oldIndex]);
+                    TextureCoordinates.Add(TextureCoordinates[oldIndex]);
+                    if (VertexColors.Count > 0)
+                        VertexColors.Add(VertexColors[oldIndex]);
+                    if (BoneIDs.Count > 0)
+                        BoneIDs.Add(BoneIDs[oldIndex]);
+                    if (AnimatedVertexFramesByVertexIndex.Count > 0)
+                        AnimatedVertexFramesByVertexIndex.Add(AnimatedVertexFramesByVertexIndex[oldIndex]);
+
+                    oldNewClonedVertexIndices[oldIndex] = newVertexIndex;
+                }
+            }
+
+            // Clone triangles
+            foreach (var group in groupsToClone)
+            {
+                int startTriangle = group.TriangleStart;
+                int endTriangle = startTriangle + group.TriangleCount - 1;
+
+                for (int triangleIndexIter = startTriangle; triangleIndexIter <= endTriangle; triangleIndexIter++)
+                {
+                    TriangleFace sourceTriangle = TriangleFaces[triangleIndexIter];
+
+                    int v1 = oldNewClonedVertexIndices[sourceTriangle.V1];
+                    int v2 = oldNewClonedVertexIndices[sourceTriangle.V2];
+                    int v3 = oldNewClonedVertexIndices[sourceTriangle.V3];
+
+                    clonedTriangleFaces.Add(new TriangleFace(newMaterialID, v1, v2, v3));
+                }
+            }
+            int clonedTriangleStart = TriangleFaces.Count;
+            TriangleFaces.AddRange(clonedTriangleFaces);
+
+            // Generate rendergroups
+            int currentClonedVertexOffset = clonedVertexStart;
+            int currentClonedTriangleOffset = clonedTriangleStart;
+            foreach (var sourceGroup in groupsToClone)
+            {
+                MeshRenderGroup newGroup = new MeshRenderGroup
+                {
+                    MaterialIndex = newMaterialID,
+                    VertexStart = currentClonedVertexOffset,
+                    VertexCount = sourceGroup.VertexCount,
+                    TriangleStart = currentClonedTriangleOffset,
+                    TriangleCount = sourceGroup.TriangleCount,
+                    BonesIDsUsed = new HashSet<byte>(sourceGroup.BonesIDsUsed)
+                };
+
+                RenderGroups.Add(newGroup);
+
+                currentClonedVertexOffset += sourceGroup.VertexCount;
+                currentClonedTriangleOffset += sourceGroup.TriangleCount;
+            }
+        }
+
+
+        public void SortDataByMaterialBonesAndGenerateRenderGroups()
         {
             RenderGroups.Clear();
 
