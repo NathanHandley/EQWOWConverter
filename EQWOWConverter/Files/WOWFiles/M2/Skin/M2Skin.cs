@@ -141,7 +141,7 @@ namespace EQWOWConverter.WOWFiles
                     ObjectModelRenderGroup renderGroup = modelObject.ModelRenderGroups[i];
                     if (renderGroup.Vertices.Count == 0)
                         continue;
-                    if (renderGroup.MaterialIndex >= 10000)
+                    if (renderGroup.MaterialIndex >= Configuration.OBJECT_IGNORE_RENDER_MATERIAL_ID_START)
                         continue;
                     MaxBones = Math.Max(renderGroup.BoneLookupIndices.Count, MaxBones);
 

@@ -353,6 +353,9 @@ namespace EQWOWConverter
         // The maximim number of animated vertex frames supported (>64 crashes)
         public static readonly int OBJECT_MAX_ANIMATED_VERTEX_FRAMES = 64;
 
+        // The starting ID for any material index that should be ignored from rendering
+        public static readonly int OBJECT_IGNORE_RENDER_MATERIAL_ID_START = 10000;
+
         //=====================================================================
         // Creatures
         //=====================================================================

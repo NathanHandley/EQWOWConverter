@@ -1582,10 +1582,10 @@ namespace EQWOWConverter.ObjectModels
         private void ProcessMaterials(List<Material> initialMaterials, ref MeshData meshData)
         {
             // Normalize the material IDs as they stand (so they start with index 0)
-            // Any non-texture ones will start at 10000 to get them out of the way
+            // Any non-texture ones will start at a high value to get them out of the way
             Dictionary<UInt32, UInt32> oldToNewMaterialMap = new Dictionary<UInt32, UInt32>();
             UInt32 curTexturedMaterialID = 0;
-            UInt32 curUntexturedMaterialID = 10000;
+            UInt32 curUntexturedMaterialID = Convert.ToUInt32(Configuration.OBJECT_IGNORE_RENDER_MATERIAL_ID_START);
             foreach (Material material in initialMaterials)
             {
                 if (material.TextureNames.Count == 0)
