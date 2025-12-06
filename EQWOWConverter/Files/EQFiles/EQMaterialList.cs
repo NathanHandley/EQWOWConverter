@@ -27,23 +27,23 @@ namespace EQWOWConverter.EQFiles
         {
             Logger.WriteDebug(" - Creating EQ Material List Data for Invisible Man (IVM)...");
             MaterialsByTextureVariation.Add(new List<Material>());
-            MaterialsByTextureVariation[0].Add(new Material("00", "00", 0, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("01", "01", 1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("02", "02", 2, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("03", "03", 3, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("04", "04", 4, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("05", "05", 5, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("06", "06", 6, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("07", "07", 7, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("08", "08", 8, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("09", "09", 9, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("10", "10", 10, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("11", "11", 11, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("12", "12", 12, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("13", "13", 13, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("14", "14", 14, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("15", "15", 15, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            MaterialsByTextureVariation[0].Add(new Material("16", "16", 16, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("00", "00", 0, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("01", "01", 1, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("02", "02", 2, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("03", "03", 3, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("04", "04", 4, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("05", "05", 5, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("06", "06", 6, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("07", "07", 7, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("08", "08", 8, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("09", "09", 9, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("10", "10", 10, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("11", "11", 11, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("12", "12", 12, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("13", "13", 13, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("14", "14", 14, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("15", "15", 15, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("16", "16", 16, -1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
             Logger.WriteDebug(" - Done creating material list data for IVM");
         }
 
@@ -176,7 +176,7 @@ namespace EQWOWConverter.EQFiles
                     }
 
                     // Create and add it
-                    Material newMaterial = new Material(name, name, index, materialType, sourceTextureNameArray, animationDelayInMS,
+                    Material newMaterial = new Material(name, name, index, -1, materialType, sourceTextureNameArray, animationDelayInMS,
                         sourceTextureWidth, sourceTextureHeight, false);
                     MaterialsByTextureVariation[variationIndex].Add(newMaterial);
                 }

@@ -19,6 +19,7 @@ namespace EQWOWConverter.Common
     internal class Material
     {
         public UInt32 Index = 0;
+        public Int32 ParentIndex = -1;
         public MaterialType MaterialType = MaterialType.Diffuse;
         public string Name = string.Empty;
         public string UniqueName = string.Empty;
@@ -43,14 +44,16 @@ namespace EQWOWConverter.Common
             TextureWidth = material.TextureWidth;
             TextureHeight = material.TextureHeight;
             AlwaysBrightOverride = material.AlwaysBrightOverride;
+            ParentIndex = material.ParentIndex;
         }
 
-        public Material(string name, string originalName, UInt32 index, MaterialType materialType, List<string> textureNames,
-            UInt32 animationDelayMS, int sourceTextureWidth, int sourceTextureHeight, bool alwaysBrightOverride)
+        public Material(string name, string originalName, UInt32 index, Int32 parentIndex, MaterialType materialType, 
+            List<string> textureNames, UInt32 animationDelayMS, int sourceTextureWidth, int sourceTextureHeight, bool alwaysBrightOverride)
         {
             UniqueName = name;
             Name = originalName;
             Index = index;
+            ParentIndex = parentIndex;
             MaterialType = materialType;
             TextureNames = textureNames;
             AnimationDelayMs = animationDelayMS;

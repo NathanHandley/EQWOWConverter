@@ -131,6 +131,28 @@ namespace EQWOWConverter.WOWFiles
             List<M2SkinSubMesh> subMeshes = new List<M2SkinSubMesh>();
             textureUnits = new List<M2SkinTextureUnit>();
 
+            // Pre-store a material tree for any animated materials
+            Dictionary<int, List<ObjectModelMaterial>> materialChainByRootMaterialID = new Dictionary<int, List<ObjectModelMaterial>>();
+            for (int i = 0; i < modelObject.ModelMaterials.Count; i++)
+            {
+                ObjectModelMaterial curMaterial = modelObject.ModelMaterials[i];
+                int rootMaterialID = Convert.ToInt32(curMaterial.Material.Index);
+                if (curMaterial.Material.ParentIndex == -1)
+                {
+                    if (materialChainByRootMaterialID.ContainsKey(rootMaterialID) == false)
+                        materialChainByRootMaterialID.Add(rootMaterialID, new List<ObjectModelMaterial>());
+                    materialChainByRootMaterialID[rootMaterialID].Add(curMaterial);
+                }
+                else
+                {
+                    ObjectModelMaterial parentMaterial = modelObject.ModelMaterials[curMaterial.Material.ParentIndex];
+                    int parentMaterialID = Convert.ToInt32(parentMaterial.Material.Index);
+                    if (materialChainByRootMaterialID.ContainsKey(parentMaterialID) == false)
+                        materialChainByRootMaterialID.Add(parentMaterialID, new List<ObjectModelMaterial>());
+                    materialChainByRootMaterialID[parentMaterialID].Add(curMaterial);
+                }
+            }
+
             // Only build the mesh if this object has rendering enabled
             if (modelObject.Properties.RenderingEnabled == true)
             {
@@ -141,19 +163,25 @@ namespace EQWOWConverter.WOWFiles
                     ObjectModelRenderGroup renderGroup = modelObject.ModelRenderGroups[i];
                     if (renderGroup.Vertices.Count == 0)
                         continue;
+                    if (renderGroup.MaterialIndex >= 10000)
+                        continue;
                     MaxBones = Math.Max(renderGroup.BoneLookupIndices.Count, MaxBones);
 
-                    // Build the sub mesh
-                    M2SkinSubMesh curSubMesh = new M2SkinSubMesh(renderGroup, curBoneLookupIndex);
-                    curBoneLookupIndex += Convert.ToUInt16(renderGroup.BoneLookupIndices.Count);
-                    subMeshes.Add(curSubMesh);
+                    // Every related material in the material tree gets a sub mesh and texture unit
+                    foreach (ObjectModelMaterial material in materialChainByRootMaterialID[renderGroup.MaterialIndex])
+                    {
+                        // Build the sub mesh
+                        M2SkinSubMesh curSubMesh = new M2SkinSubMesh(renderGroup, curBoneLookupIndex);
+                        curBoneLookupIndex += Convert.ToUInt16(renderGroup.BoneLookupIndices.Count);
+                        subMeshes.Add(curSubMesh);
 
-                    // Create a texture unit
-                    UInt16 materialID = renderGroup.MaterialIndex;
-                    UInt16 transparencyLookupIndex = modelObject.ModelTextureTransparencyLookups[Convert.ToInt32(materialID)];
-                    M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(Convert.ToUInt16(subMeshes.Count()-1), materialID, 
-                        materialID, transparencyLookupIndex, -1);
-                    textureUnits.Add(curTextureUnit);
+                        // Create a texture unit
+                        UInt16 materialID = Convert.ToUInt16(material.Material.Index);
+                        UInt16 transparencyLookupIndex = modelObject.ModelTextureTransparencyLookups[Convert.ToInt32(materialID)];
+                        M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(Convert.ToUInt16(subMeshes.Count() - 1), materialID,
+                            materialID, transparencyLookupIndex, -1);
+                        textureUnits.Add(curTextureUnit);
+                    }
                 }
             }
 
