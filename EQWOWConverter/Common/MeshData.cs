@@ -778,8 +778,10 @@ namespace EQWOWConverter.Common
             // Presort the triangles by material ID
             TriangleFaces.Sort();
 
+            // Create a single bone reference if there were none
             if (BoneIDs.Count == 0)
-                return;
+                foreach (Vector3 vertex in Vertices)
+                    BoneIDs.Add(0);
 
             List<TriangleFace> triangleFaces = new List<TriangleFace>();
             List<Vector3> vertices = new List<Vector3>();
