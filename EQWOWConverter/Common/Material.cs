@@ -45,8 +45,8 @@ namespace EQWOWConverter.Common
             AlwaysBrightOverride = material.AlwaysBrightOverride;
         }
 
-        public Material(string name, string originalName, UInt32 index, Int32 parentIndex, MaterialType materialType, 
-            List<string> textureNames, UInt32 animationDelayMS, int sourceTextureWidth, int sourceTextureHeight, bool alwaysBrightOverride)
+        public Material(string name, string originalName, UInt32 index, MaterialType materialType, List<string> textureNames, 
+            UInt32 animationDelayMS, int sourceTextureWidth, int sourceTextureHeight, bool alwaysBrightOverride)
         {
             UniqueName = name;
             Name = originalName;

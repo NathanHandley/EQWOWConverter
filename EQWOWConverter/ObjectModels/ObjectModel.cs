@@ -402,7 +402,7 @@ namespace EQWOWConverter.ObjectModels
                     UInt32 curMaterialID = Convert.ToUInt32(initialMaterials.Count);
                     UInt32 animationDelay = Convert.ToUInt32((textureNamesChainByRootTexture.Value.Count == 1) ? 0 : Configuration.SPELL_EFFECT_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS);
                     materialIDBySpriteListRootName.Add(textureNamesChainByRootTexture.Key, Convert.ToInt32(curMaterialID));
-                    Material newMaterial = new Material(textureNamesChainByRootTexture.Key, textureNamesChainByRootTexture.Key, curMaterialID, -1, MaterialType.TransparentAdditive, 
+                    Material newMaterial = new Material(textureNamesChainByRootTexture.Key, textureNamesChainByRootTexture.Key, curMaterialID, MaterialType.TransparentAdditive, 
                         textureNamesChainByRootTexture.Value, animationDelay, 64, 64, true);
                     newMaterial.IsParticleEffect = true;
                     initialMaterials.Add(newMaterial);
@@ -2126,7 +2126,7 @@ namespace EQWOWConverter.ObjectModels
                 {
                     UInt32 newMaterialIndex = GetUniqueMaterialIDFromMaterials(expandedMaterials);
                     List<string> newMaterialTextureName = new List<string>() { initialMaterial.TextureNames[textureIter] };
-                    Material newAnimationMaterial = new Material(curMaterialName, initialMaterial.UniqueName, newMaterialIndex, Convert.ToInt32(initialMaterial.Index), initialMaterial.MaterialType,
+                    Material newAnimationMaterial = new Material(curMaterialName, initialMaterial.UniqueName, newMaterialIndex, initialMaterial.MaterialType,
                         newMaterialTextureName, initialMaterial.AnimationDelayMs, initialMaterial.TextureWidth, initialMaterial.TextureHeight, initialMaterial.AlwaysBrightOverride);
                     curMaterial = newAnimationMaterial;
                     expandedMaterials.Add(curMaterial);
