@@ -493,8 +493,14 @@ namespace EQWOWConverter.Zones
             if (Configuration.ZONE_COLLISION_ENABLED == false)
                 return;
 
+            // Special logic for making all render geometry collidable
+            if (Configuration.ZONE_ENABLE_COLLISION_ON_ALL_ZONE_RENDER_MATERIALS == true)
+            {
+                collisionMeshData = new MeshData(renderMeshData);
+            }
+
             // Determine if preset collision mesh data should be used, or if the render data should be used to generate it
-            if (collisionMeshData.Vertices.Count == 0 || collisionMeshData.TriangleFaces.Count == 0)
+            else if (collisionMeshData.Vertices.Count == 0 || collisionMeshData.TriangleFaces.Count == 0)
             {
                 Logger.WriteDebug("For zone '" + ShortName + "', collision is generated from rendermesh");
                 collisionMeshData = new MeshData(renderMeshData);
