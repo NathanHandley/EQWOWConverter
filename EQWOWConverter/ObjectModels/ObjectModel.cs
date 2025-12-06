@@ -1581,6 +1581,15 @@ namespace EQWOWConverter.ObjectModels
 
         private void ProcessMaterials(List<Material> initialMaterials, ref MeshData meshData)
         {
+            // Purge any invalid material references
+            // TODO: Look into making this work for non-skeletal
+            if (IsSkeletal)
+            {
+                List<Material> updatedMaterialList;
+                meshData.RemoveInvalidMaterialReferences(initialMaterials, out updatedMaterialList);
+                initialMaterials = updatedMaterialList;
+            }
+
             // Normalize the material IDs as they stand (so they start with index 0)
             // Any non-texture ones will start at a high value to get them out of the way
             Dictionary<UInt32, UInt32> oldToNewMaterialMap = new Dictionary<UInt32, UInt32>();
@@ -1601,16 +1610,7 @@ namespace EQWOWConverter.ObjectModels
                     curTexturedMaterialID++;
                 }
             }
-            meshData.RemapMaterialIDs(oldToNewMaterialMap);
-
-            // Purge any invalid material references
-            // TODO: Look into making this work for non-skeletal
-            if (IsSkeletal)
-            {
-                List<Material> updatedMaterialList;
-                meshData.RemoveInvalidMaterialReferences(initialMaterials, out updatedMaterialList);
-                initialMaterials = updatedMaterialList;
-            }                    
+            meshData.RemapMaterialIDs(oldToNewMaterialMap);  
 
             // Remove the non-rendered materials
             List<Material> renderedMaterials = new List<Material>();

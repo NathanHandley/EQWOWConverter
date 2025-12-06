@@ -374,40 +374,20 @@ namespace EQWOWConverter.Common
 
         public void RemoveInvalidMaterialReferences(List<Material> startingMaterialList, out List<Material> newMaterialList)
         {
-            // Figure out what materials have geometry, and remap
-            Dictionary<int, int> oldNewMaterialMappings = new Dictionary<int, int>();
+            // Figure out what materials have geometry, and save in the output list
             newMaterialList = new List<Material>();
             for (int i = 0; i <  startingMaterialList.Count; i++)
             {
-                bool matchFound = false;
                 for (int j = 0; j < TriangleFaces.Count; j++)
                 {
                     if (TriangleFaces[j].MaterialIndex == startingMaterialList[i].Index)
                     {
                         // Match found, keep it
                         Material materialCopy = new Material(startingMaterialList[i]);
-                        materialCopy.Index = Convert.ToUInt32(newMaterialList.Count);
-                        oldNewMaterialMappings[i] = Convert.ToInt32(materialCopy.Index);
                         newMaterialList.Add(materialCopy);
-                        matchFound = true;
                         break;
                     }
                 }
-                if (matchFound == false)
-                {
-                    // No match found, so delete it
-                    oldNewMaterialMappings[i] = -1;
-                }
-            }
-
-            // Update all of the material mappings in TriangleFaces
-            for (int i = 0; i < TriangleFaces.Count; i++)
-            {
-                TriangleFaces[i] = new TriangleFace(
-                    oldNewMaterialMappings[TriangleFaces[i].MaterialIndex],
-                    TriangleFaces[i].V1,
-                    TriangleFaces[i].V2,
-                    TriangleFaces[i].V3);
             }
         }
 
