@@ -1798,48 +1798,58 @@ namespace EQWOWConverter.ObjectModels
         {
             switch (customCollisionType)
             {
+                case ObjectModelCustomCollisionType.LadderRightAngle:
                 case ObjectModelCustomCollisionType.Ladder:
                     {
                         // Determine the boundary box
                         BoundingBox workingBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionVertices, 0.01f);
-
-                        // Control for world scaling
-                        float extendDistance = Configuration.OBJECT_STATIC_LADDER_EXTEND_DISTANCE * Configuration.GENERATE_WORLD_SCALE;
-                        float stepDistance = Configuration.OBJECT_STATIC_LADDER_STEP_DISTANCE * Configuration.GENERATE_WORLD_SCALE;
-
+                        
+                        // Ladders climb up on the 'wider' side
+                        float xDist = workingBoundingBox.GetXDistance();
+                        float yDist = workingBoundingBox.GetYDistance();
+                        bool swapXY = xDist > yDist;
+                        
                         // Purge the existing collision data
                         collisionVertices.Clear();
                         collisionTriangleFaces.Clear();
+                        
+                        // Determine the low/mid/high of the ladder and edges
+                        float extendDistance = Configuration.OBJECT_STATIC_LADDER_EXTEND_DISTANCE;
+                        float stepAcrossHigh = swapXY ? workingBoundingBox.TopCorner.Y + extendDistance : workingBoundingBox.TopCorner.X + extendDistance;
+                        float stepAcrossMid = swapXY ? workingBoundingBox.TopCorner.Y - (yDist * 0.5f) : workingBoundingBox.TopCorner.X - (xDist * 0.5f);
+                        float stepAcrossLow = swapXY ? workingBoundingBox.BottomCorner.Y - extendDistance : workingBoundingBox.BottomCorner.X - extendDistance;
+                        float stepAlongHigh = swapXY ? workingBoundingBox.TopCorner.X : workingBoundingBox.TopCorner.Y;
+                        float stepAlongMid = swapXY ? workingBoundingBox.TopCorner.X - (xDist * 0.5f) : workingBoundingBox.TopCorner.Y - (yDist * 0.5f);
+                        float stepAlongLow = swapXY ? workingBoundingBox.BottomCorner.X : workingBoundingBox.BottomCorner.Y;
 
-                        // Build steps, extending outword from the longer side
-                        float stepHighX = workingBoundingBox.TopCorner.X + extendDistance;
-                        float stepMidX = workingBoundingBox.TopCorner.X - (workingBoundingBox.GetXDistance() * 0.5f);
-                        float stepLowX = workingBoundingBox.BottomCorner.X - extendDistance;
-                        float stepHighY = workingBoundingBox.TopCorner.Y;
-                        float stepMidY = workingBoundingBox.TopCorner.Y - (workingBoundingBox.GetYDistance() * 0.5f);
-                        float stepLowY = workingBoundingBox.BottomCorner.Y;
+                        Vector3 MakeOrientedVector(float across, float along, float z)
+                        {
+                            return swapXY ? new Vector3(along, across, z) : new Vector3(across, along, z);
+                        }
 
                         // Build 'steps' by adding collision quads angled away from the center jutting out the longer sides (makes an upside-down V shape)
+                        float stepDistance = Configuration.OBJECT_STATIC_LADDER_STEP_DISTANCE;
+                        float stepDropAmount = Configuration.OBJECT_STATIC_LADDER_STEP_DROP_DISTANCE_MOD * MathF.Abs(stepAcrossHigh - stepAcrossMid);
                         for (float curZ = workingBoundingBox.BottomCorner.Z; curZ <= workingBoundingBox.TopCorner.Z; curZ += stepDistance)
                         {
                             // 2-step Angle (splits from the middle, angles down and away)
                             int stepStartVert = collisionVertices.Count;
-                            collisionVertices.Add(new Vector3(stepMidX, stepHighY, curZ));
-                            collisionVertices.Add(new Vector3(stepMidX, stepLowY, curZ));
-                            collisionVertices.Add(new Vector3(stepLowX, stepLowY, curZ - (stepDistance * 3)));
-                            collisionVertices.Add(new Vector3(stepLowX, stepHighY, curZ - (stepDistance * 3)));
+                            collisionVertices.Add(MakeOrientedVector(stepAcrossMid, stepAlongHigh, curZ));
+                            collisionVertices.Add(MakeOrientedVector(stepAcrossMid, stepAlongLow, curZ));
+                            collisionVertices.Add(MakeOrientedVector(stepAcrossLow, stepAlongLow, curZ - (stepDropAmount)));
+                            collisionVertices.Add(MakeOrientedVector(stepAcrossLow, stepAlongHigh, curZ - (stepDropAmount)));
                             collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert, stepStartVert + 3));
                             collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert + 3, stepStartVert + 2));
 
                             stepStartVert = collisionVertices.Count;
-                            collisionVertices.Add(new Vector3(stepHighX, stepHighY, curZ - (stepDistance * 3)));
-                            collisionVertices.Add(new Vector3(stepHighX, stepLowY, curZ - (stepDistance * 3)));
-                            collisionVertices.Add(new Vector3(stepMidX, stepLowY, curZ));
-                            collisionVertices.Add(new Vector3(stepMidX, stepHighY, curZ));
+                            collisionVertices.Add(MakeOrientedVector(stepAcrossHigh, stepAlongHigh, curZ - (stepDropAmount)));
+                            collisionVertices.Add(MakeOrientedVector(stepAcrossHigh, stepAlongLow, curZ - (stepDropAmount)));
+                            collisionVertices.Add(MakeOrientedVector(stepAcrossMid, stepAlongLow, curZ));
+                            collisionVertices.Add(MakeOrientedVector(stepAcrossMid, stepAlongHigh, curZ));
                             collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert, stepStartVert + 3));
                             collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert + 3, stepStartVert + 2));
                         }
-
+                        
                         // Add collision walls on the sides
                         float highX = workingBoundingBox.TopCorner.X;
                         float lowX = workingBoundingBox.BottomCorner.X;
@@ -1847,53 +1857,63 @@ namespace EQWOWConverter.ObjectModels
                         float lowY = workingBoundingBox.BottomCorner.Y;
                         float highZ = workingBoundingBox.TopCorner.Z;
                         float lowZ = workingBoundingBox.BottomCorner.Z;
-
-                        // Reduce size of short sides to make you step more 'inside' the ladder
-                        highX -= workingBoundingBox.GetXDistance() * 0.2f;
-                        lowX += workingBoundingBox.GetXDistance() * 0.2f;
-
+                        
+                        // Shrink the short side
+                        if (swapXY)
+                        {
+                            highY -= yDist * 0.2f;
+                            lowY += yDist * 0.2f;
+                        }
+                        else
+                        {
+                            highX -= xDist * 0.2f;
+                            lowX += xDist * 0.2f;
+                        } 
+                        float wallAcrossHigh = swapXY ? highY : highX;
+                        float wallAcrossLow = swapXY ? lowY : lowX;
+                        float wallAlongHigh = swapXY ? highX : highY;
+                        float wallAlongLow = swapXY ? lowX : lowY;
+                        
                         // Side 1 (side)
                         int wallStartVert = collisionVertices.Count;
-                        collisionVertices.Add(new Vector3(highX, lowY, highZ));
-                        collisionVertices.Add(new Vector3(highX, lowY, lowZ));
-                        collisionVertices.Add(new Vector3(lowX, lowY, lowZ));
-                        collisionVertices.Add(new Vector3(lowX, lowY, highZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossHigh, wallAlongLow, highZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossHigh, wallAlongLow, lowZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossLow, wallAlongLow, lowZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossLow, wallAlongLow, highZ));
                         collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert, wallStartVert + 3));
                         collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
 
                         // Side 2 (side)
                         wallStartVert = collisionVertices.Count;
-                        collisionVertices.Add(new Vector3(highX, highY, highZ));
-                        collisionVertices.Add(new Vector3(lowX, highY, highZ));
-                        collisionVertices.Add(new Vector3(lowX, highY, lowZ));
-                        collisionVertices.Add(new Vector3(highX, highY, lowZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossHigh, wallAlongHigh, highZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossLow, wallAlongHigh, highZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossLow, wallAlongHigh, lowZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossHigh, wallAlongHigh, lowZ));
                         collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert, wallStartVert + 3));
                         collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
 
                         // Side 3
                         wallStartVert = collisionVertices.Count;
-                        collisionVertices.Add(new Vector3(highX, highY, highZ));
-                        collisionVertices.Add(new Vector3(highX, highY, lowZ));
-                        collisionVertices.Add(new Vector3(highX, lowY, lowZ));
-                        collisionVertices.Add(new Vector3(highX, lowY, highZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossHigh, wallAlongHigh, highZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossHigh, wallAlongHigh, lowZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossHigh, wallAlongLow, lowZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossHigh, wallAlongLow, highZ));
                         collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert, wallStartVert + 3));
                         collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
-
+                        
                         // Side 4
                         wallStartVert = collisionVertices.Count;
-                        collisionVertices.Add(new Vector3(lowX, highY, highZ));
-                        collisionVertices.Add(new Vector3(lowX, lowY, highZ));
-                        collisionVertices.Add(new Vector3(lowX, lowY, lowZ));
-                        collisionVertices.Add(new Vector3(lowX, highY, lowZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossLow, wallAlongHigh, highZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossLow, wallAlongLow, highZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossLow, wallAlongLow, lowZ));
+                        collisionVertices.Add(MakeOrientedVector(wallAcrossLow, wallAlongHigh, lowZ));
                         collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert, wallStartVert + 3));
                         collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
-                    }
-                    break;
+                    } break;
                 default:
                     {
                         Logger.WriteError("ApplyCustomCollision has unhandled custom collision type of '" + customCollisionType + "'");
-                    }
-                    break;
+                    } break;
             }
         }
 

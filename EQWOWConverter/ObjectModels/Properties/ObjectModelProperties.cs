@@ -121,6 +121,7 @@ namespace EQWOWConverter.ObjectModels.Properties
                     switch (columns["SpecialCollisionType"])
                     {
                         case "ladder": newObjectModelProperties.SetCustomCollisionType(ObjectModelCustomCollisionType.Ladder); break;
+                        case "ladder_right_angle": newObjectModelProperties.SetCustomCollisionType(ObjectModelCustomCollisionType.LadderRightAngle); break;
                         default:break;
                     }
                     string alwaysBrightMaterialNames = columns["AlwaysBrightMaterials"];
