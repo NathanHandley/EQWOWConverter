@@ -45,6 +45,7 @@ namespace EQWOWConverter.ObjectModels.Properties
         public bool RenderingEnabled = true; // Note: This is also makes it non-interactive (non-clickable)
         public ItemEquipUnitType EquipUnitType = ItemEquipUnitType.Player;
         public bool IncludeInMinimapGeneration = false;
+        public string AlternateModelSwapName = string.Empty;
 
         public ObjectModelProperties() { }
         public ObjectModelProperties(ObjectModelProperties other)
@@ -130,6 +131,11 @@ namespace EQWOWConverter.ObjectModels.Properties
                         string[] materialNames = alwaysBrightMaterialNames.Split(',');
                         foreach (string materialName in materialNames)
                             newObjectModelProperties.AddAlwaysBrightMaterial(materialName);
+                    }
+                    string alternateModelSwapName = columns["AlternateModelSwap"].Trim();
+                    if (alternateModelSwapName.Length > 0)
+                    {
+                        newObjectModelProperties.AlternateModelSwapName = alternateModelSwapName;
                     }
                     newObjectModelProperties.IncludeInMinimapGeneration = columns["IncludeInMinimap"] == "1" ? true : false;
                     ObjectPropertiesByByName.Add(newObjectModelProperties.Name, newObjectModelProperties);

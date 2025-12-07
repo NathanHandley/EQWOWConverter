@@ -376,15 +376,22 @@ namespace EQWOWConverter.Zones
             // Create doodad instances from EQ object instances
             foreach (ObjectInstance objectInstance in eqObjectInstances)
             {
+                string modelName = objectInstance.ModelName;
+                ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(modelName.ToLower());
+
+                // Handle model swaps
+                if (objectProperties.AlternateModelSwapName.Length > 0)
+                    modelName = objectProperties.AlternateModelSwapName;
+
                 // Skip any invalid instances
-                if (ObjectModel.StaticObjectModelsByName.ContainsKey(objectInstance.ModelName) == false)
+                if (ObjectModel.StaticObjectModelsByName.ContainsKey(modelName) == false)
                 {
-                    Logger.WriteDebug("WARNING (or maybe Error): Could not generate doodad instance since model '" + objectInstance.ModelName + "' does not exist.  Either is was missing on export, or you need to generate objects");
+                    Logger.WriteDebug("WARNING (or maybe Error): Could not generate doodad instance since model '" + modelName + "' does not exist.  Either is was missing on export, or you need to generate objects");
                     continue;
                 }
 
                 ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance(ZoneDoodadInstanceType.StaticObject);
-                doodadInstance.ObjectName = objectInstance.ModelName;
+                doodadInstance.ObjectName = modelName;
                 doodadInstance.Position.X = objectInstance.Position.X * Configuration.GENERATE_WORLD_SCALE;
                 // Invert Z and Y because of mapping differences
                 doodadInstance.Position.Z = objectInstance.Position.Y * Configuration.GENERATE_WORLD_SCALE;
@@ -415,7 +422,6 @@ namespace EQWOWConverter.Zones
                             continue;
                         }
                     }
-                    ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(doodadInstance.ObjectName.ToLower());
                     if (objectProperties.IncludeInMinimapGeneration == false)
                     {
                         skipDoodad = true;
