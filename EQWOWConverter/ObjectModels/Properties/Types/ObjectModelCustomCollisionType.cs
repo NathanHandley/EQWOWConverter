@@ -20,6 +20,6 @@ namespace EQWOWConverter.ObjectModels.Properties
     {
         None,
         Ladder,
-        LadderRightAngle
+        LadderWallAttached
     }
 }
