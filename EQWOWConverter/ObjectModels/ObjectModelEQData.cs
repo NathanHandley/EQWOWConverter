@@ -17,6 +17,7 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.EQFiles;
+using EQWOWConverter.ObjectModels.Properties;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -35,7 +36,7 @@ namespace EQWOWConverter.ObjectModels
         private string MaterialListFileName = string.Empty;
         public EQSkeleton SkeletonData = new EQSkeleton();
 
-        public void LoadObjectDataFromDisk(string name, string eqInputObjectFileName, string inputObjectFolder, CreatureModelTemplate? creatureModelTemplate = null)
+        public void LoadObjectDataFromDisk(string name, ObjectModelProperties objectProperties, string eqInputObjectFileName, string inputObjectFolder, CreatureModelTemplate? creatureModelTemplate = null)
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {
@@ -128,7 +129,7 @@ namespace EQWOWConverter.ObjectModels
                     Materials = materialListData.MaterialsByTextureVariation[0];
                 }
                 else
-                    LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, creatureModelTemplate.TextureIndex);
+                    LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, creatureModelTemplate.TextureIndex, objectProperties.CustomMaterialListLine);
 
                 // For multi-face races, swap the faces
                 if (creatureModelTemplate.FaceIndex > 0 && (raceID < 13 || raceID == 70 || raceID == 128 || raceID == 130))
@@ -224,7 +225,7 @@ namespace EQWOWConverter.ObjectModels
                 LoadRenderMeshData(name, meshBoneIndexByName, inputObjectFolder);
 
                 // Load Materials
-                LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, 0);
+                LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, 0, objectProperties.CustomMaterialListLine);
 
                 // Load the rest
                 // If this object uses animated vertices, then it should have a skeleton and animation generated
@@ -294,12 +295,12 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private void LoadMaterialDataFromDisk(string inputObjectName, string inputObjectFolder, int materialIndex)
+        private void LoadMaterialDataFromDisk(string inputObjectName, string inputObjectFolder, int materialIndex, string customMaterialListLine)
         {
             Logger.WriteDebug("- [" + inputObjectName + "]: Reading materials...");
             string materialListFileName = Path.Combine(inputObjectFolder, "MaterialLists", inputObjectName + ".txt");
             EQMaterialList materialListData = new EQMaterialList();
-            if (materialListData.LoadFromDisk(materialListFileName) == false)
+            if (materialListData.LoadFromDisk(materialListFileName, customMaterialListLine) == false)
                 Logger.WriteError("- [" + inputObjectName + "]: No material data found.");
             else
             {

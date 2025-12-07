@@ -47,7 +47,7 @@ namespace EQWOWConverter.EQFiles
             Logger.WriteDebug(" - Done creating material list data for IVM");
         }
 
-        public bool LoadFromDisk(string fileFullPath)
+        public bool LoadFromDisk(string fileFullPath, string customMaterialListLine = "")
         {
             Logger.WriteDebug(" - Reading EQ Material List Data from '" + fileFullPath + "'...");
             if (File.Exists(fileFullPath) == false)
@@ -55,6 +55,11 @@ namespace EQWOWConverter.EQFiles
                 Logger.WriteError("- Could not find material list file that should be at '" + fileFullPath + "'");
                 return false;
             }
+
+            // Break out the custom material list line material ID
+            UInt32 customMaterialLineMaterialID = UInt32.MaxValue;
+            if (customMaterialListLine.Length > 0)
+                customMaterialLineMaterialID = Convert.ToUInt32(customMaterialListLine.Split(",")[0]);
 
             // Load the core data
             string inputData = FileTool.ReadAllDataFromFile(fileFullPath);
@@ -67,16 +72,24 @@ namespace EQWOWConverter.EQFiles
                 // Skip Blank
                 if (inputRow.Length == 0)
                     continue;
+
                 // Skip Comments
                 else if (inputRow.StartsWith("#"))
                     continue;
+                
                 string[] blocks = inputRow.Split(",");
                 if (blocks.Length < 3)
                 {
                     Logger.WriteError("Material data must be 3+ components");
                     continue;
                 }
+
                 UInt32 index = uint.Parse(blocks[0]);
+
+                // Replace in a custom material line if it matches
+                if (index == customMaterialLineMaterialID)
+                    blocks = customMaterialListLine.Split(",");
+
                 string[] variationParts = blocks[1].Split(';');
                 if (variationParts.Length > variationCount)
                     variationCount = variationParts.Length;
@@ -110,6 +123,10 @@ namespace EQWOWConverter.EQFiles
 
                     // Always Index first
                     UInt32 index = uint.Parse(blocks[0]);
+
+                    // Replace in a custom material line if it matches
+                    if (index == customMaterialLineMaterialID)
+                        blocks = customMaterialListLine.Split(",");
 
                     // Next is material name and the array of textures
                     string[] variationParts = blocks[1].Split(';');
