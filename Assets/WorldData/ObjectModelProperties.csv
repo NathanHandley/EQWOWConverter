@@ -34,6 +34,7 @@ cazmon1|1||||
 cazmon2|1||||
 cazmonbig|1||||
 cazpyr2|1||||
+cbfire101alt1|0|cbfire101|||
 cdbraz101alt1|0|cdbraz101|||
 cdbraz102|0||||3,tau_fire1:fire1:fire2:fire3:fire4,100,64,64
 cdtorch101alt1|0|cdtorch101|||
@@ -44,6 +45,8 @@ corrall|1||||
 dcat1|1||||
 destent|1||||
 divingbrd|1||||
+dnfire101|0|dnfire101alt1|||
+dnfire102|0|dnfire102alt1|||
 dolmen|1||||
 dolmen1|1||||
 dolmen2|1||||
@@ -96,6 +99,7 @@ kihouse|1||||
 kihruin|1||||
 kinn|1||||
 kstump|1||||
+kurbrazier101|0|kurbrazier100alt1|||
 ladder14|1||ladder||
 ladder20|1||ladder||
 ladder28|1||ladder||
@@ -180,3 +184,4 @@ trleanto|1||||
 wagon|1||||
 wmill|1||||
 woodsupport|1||||
+kurtorch101|0|kurtorch101alt1|||

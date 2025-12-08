@@ -14,19 +14,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class DalnirZoneProperties : ZoneProperties
     {
         public DalnirZoneProperties() : base()
         {
-
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 113.215393f, -718.826904f, 82.814590f, -778.763916f, -83.968681f, 10f); // Upper east pool with a checker rim
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 4.930180f, -745.163025f, -18.033091f, -752.353027f, -193.937424f, 10f); // Lower east pool that is a plus shape, north-south
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", -3.185510f, -737.162292f, -10.629220f, -760.183655f, -193.937424f, 10f); // Lower east pool that is a plus shape, west-east
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 352.562042f, -12.688230f, 109.452881f, -406.200043f, -182.937485f, 10f); // Large west cave water area plus a little room near it
         }
     }
 }
