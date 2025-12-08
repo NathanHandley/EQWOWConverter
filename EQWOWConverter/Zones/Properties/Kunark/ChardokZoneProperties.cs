@@ -42,8 +42,19 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidVolume(ZoneLiquidType.Water, -331.944275f, 209.909393f, -333.985300f, 199.901260f, -33.046249f, -93.573936f); // Top waterfall above door frame - Step 1 South
             AddLiquidVolume(ZoneLiquidType.Water, -333.995300f, 209.909393f, -336.289561f, 199.901260f, -33.046249f, -95.590172f); // Top waterfall above door frame - Step 2 South
             AddLiquidVolume(ZoneLiquidType.Water, -336.299561f, 209.909393f, -341.824473f, 199.901260f, -33.046249f, -96.968697f); // Top waterfall above door frame - Step 3 South
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_charpoop1", -169.871796f, 40.012051f, -229.886078f, 29.965820f, -165.752747f, 300f); // Bottom waterfall, eastmost straight part
+            AddTrapezoidLiquidAxisAlignedZLevelShape(ZoneLiquidType.Water, "t75_charpoop1", -149.936691f, -170.134033f, 30.012831f, 19.987000f, 39.970360f, 30.001060f, -165.752747f, 300f, 0.4f); // Bottom waterfall, segment towards north 1
+            AddTrapezoidLiquidAxisAlignedZLevelShape(ZoneLiquidType.Water, "t75_charpoop1", -119.924599f, -149.974518f, -0.001660f, -10.007690f, 30.296391f, 20.338970f, -165.752747f, 300f, 0.4f); // Bottom waterfall, segment towards north 2
+            AddTrapezoidLiquidAxisAlignedZLevelShape(ZoneLiquidType.Water, "t75_charpoop1", -99.727631f, -119.934599f, -9.842380f, -20.124001f, 0.010350f, -10.002630f, -165.752747f, 300f, 0.4f); // Bottom waterfall, segment towards north 3
 
-            // Lower surface = -309.875000
+
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_charpoop1", 104.317886f, 92.410110f, -97.481148f, -15.401990f, -309.875000f, 200f);  // Bottom waterfall room, north segment (bulk)
+            AddTrapezoidLiquidAxisAlignedZLevelShape(ZoneLiquidType.Water, "t75_charpoop1", -96.311836f, -120.171806f, 36.136162f, -11.942400f, 36.136162f, -0.897420f, -309.875000f, 200f, 0.4f);  // Bottom waterfall room, north part east waterfall edge
+
+
+
+
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_charpoop1", -90.736572f, -20.900070f, -262.887299f, -50.600559f, -309.875000f, 200f);  // Bottom waterfall room, south segment (bulk)
         }
     }
 }
