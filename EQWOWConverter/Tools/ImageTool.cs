@@ -336,7 +336,8 @@ namespace EQWOWConverter
             Creature,
             Clothing,
             SpellParticle,
-            InGameMap
+            InGameMap,
+            StaticObject
         }
 
         public static void GenerateColoredTintedTexture(string inputTextureFolder, string inputTextureFileNameNoExt, string workingDirectory,
@@ -450,13 +451,17 @@ namespace EQWOWConverter
                     {
                         formatArg = "/FBLP_DXT5"; // TODO: Look into this, it may be the wrong format
                     } break;
+                case ImageAssociationType.StaticObject:
+                    {
+                        formatArg = "/FBLP_DXT5";
+                    } break;
                 case ImageAssociationType.InGameMap:
                     {
                         formatArg = "/FBLP_DXT1_A1";
                     } break;
                 default:
                     {
-                        Logger.WriteError("ConvertPNGTexturesToBLP failed. Unhandled image type of '" + imageType + "'");
+                        Logger.WriteError("ConvertPNGTexturesToBLP error. Unhandled image type of '" + imageType + "'");
                     } break;
             }
 

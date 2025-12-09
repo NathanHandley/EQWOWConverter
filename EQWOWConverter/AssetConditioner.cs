@@ -681,6 +681,44 @@ namespace EQWOWConverter
             Logger.WriteInfo("Creating icon files complete.");
         }
 
+        public void ApplyObjectTextureColorChangesToBLPs()
+        {
+            Logger.WriteInfo("Applying object texture color changes to BLPs...");
+
+            // Make the working folder
+            string workingFolderName = Path.Combine(Configuration.PATH_WORKING_FOLDER, "WorkingTextureColorChanges");
+            if (Directory.Exists(workingFolderName) == true)
+                Directory.Delete(workingFolderName, true);
+            Directory.CreateDirectory(workingFolderName);
+
+            // Make the object texture changes
+            string objectTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "objects", "textures");
+            string objectTextureColorChangesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ObjectTextureColorChanges.csv");
+            List<Dictionary<string, string>> colorChangeFileRows = FileTool.ReadAllRowsFromFileWithHeader(objectTextureColorChangesFile, "|");
+            foreach (Dictionary<string, string> colorChangeFileColumns in colorChangeFileRows)
+            {
+                // Pull properties
+                string textureNameNoExt = colorChangeFileColumns["TextureName"];
+                byte rValue = Convert.ToByte(colorChangeFileColumns["BlendRed"]);
+                byte gValue = Convert.ToByte(colorChangeFileColumns["BlendGreen"]);
+                byte bValue = Convert.ToByte(colorChangeFileColumns["BlendBlue"]);
+                ColorRGBA blendColor = new ColorRGBA(rValue, gValue, bValue);
+
+                // Generate the texture
+                ImageTool.GenerateColoredTintedTexture(objectTextureFolder, textureNameNoExt, workingFolderName, textureNameNoExt, blendColor,
+                    ImageTool.ImageAssociationType.StaticObject, true);
+
+                // Replace the conditioned version
+                string fullColoredTextureFileName = Path.Combine(workingFolderName, textureNameNoExt + ".blp");
+                string targetTextureFullFileName = Path.Combine(objectTextureFolder, textureNameNoExt + ".blp");
+                File.Copy(fullColoredTextureFileName, targetTextureFullFileName, true);
+            }
+
+            // Clean up the working folder
+            Directory.Delete(workingFolderName, true);
+            Logger.WriteInfo("Object texture color changes for BLPs complete.");
+        }
+
         public bool ConvertPNGFilesToBLP()
         {
             // Make sure the tool is there
@@ -807,6 +845,9 @@ namespace EQWOWConverter
             {
                 PNGToBLPConversionThreadWorker(1, blpConverterFullPath, progressCounter);
             }
+
+            // Apply any texture color changes
+            ApplyObjectTextureColorChangesToBLPs();
 
             return true;
         }

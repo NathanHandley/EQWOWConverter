@@ -211,13 +211,13 @@ namespace EQWOWConverter
         // If true, allow collision with world model objects. This will also impact music and ambient sounds, since they align to areas which require collision detection
         public static readonly bool ZONE_COLLISION_ENABLED = true;
 
-        // If true, this makes all visable geometry collidable.  Should only be used for development/debugging purposes (like water coordinates).
+        // If true, this makes all visable geometry collidable. Should only be used for development/debugging purposes (like water coordinates).
         public static readonly bool ZONE_ENABLE_COLLISION_ON_ALL_ZONE_RENDER_MATERIALS = false;
 
         // When zone geometry gets broken into cuboids, this is the max side length of the area
         public static readonly int ZONE_SPLIT_COLLISION_CUBOID_MAX_EDGE_LEGNTH = 1200;
 
-        // If set to 'true', show a box where the music zones are. This is for debugging only.  Only works when collision is enabled
+        // If set to 'true', show a box where the music zones are. This is for debugging only. Only works when collision is enabled
         public static readonly bool ZONE_DRAW_COLLIDABLE_SUB_AREAS_AS_BOXES = false;
 
         // Maxinum number of triangle faces that can be in any zone-to-material-object
