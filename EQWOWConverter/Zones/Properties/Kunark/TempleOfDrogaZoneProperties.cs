@@ -14,19 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class TempleOfDrogaZoneProperties : ZoneProperties
     {
         public TempleOfDrogaZoneProperties() : base()
         {
-
+            AddOctagonLiquidShape(ZoneLiquidType.Blood, "t50_redwat01", 546.104858f, 493.395386f, 1986.771484f, 1916.085938f, 1968.937866f, 1933.504761f, 1968.937866f, 1933.504761f,
+                529.461609f, 509.902405f, 529.461609f, 509.902405f, -269.906158f, 15f);
         }
     }
 }
