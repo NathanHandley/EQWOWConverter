@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class EmeraldJungleZoneProperties : ZoneProperties
@@ -28,6 +22,9 @@ namespace EQWOWConverter.Zones.Properties
         {
             AddZoneLineBox("citymist", 300.490265f, -1799.661743f, -334.968658f, ZoneLineOrientationType.East,
                 10.193290f, -783.147522f, 34.308090f, -10.191010f, -844.774231f, -0.500000f);
+
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1b", 4096.996094f, 99.285179f, 3197.614746f, -1874.321289f,
+                -364.780731f, 200f);
         }
     }
 }
