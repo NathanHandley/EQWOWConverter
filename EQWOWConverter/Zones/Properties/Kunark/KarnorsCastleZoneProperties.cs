@@ -34,8 +34,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_evilwater1", 110.700623f, -444.724426f, 81.681648f, -463.419128f, -41.968719f, 250f); // 3 Chamber center - lower
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_evilwater1", 131.344391f, -464.575592f, 61.678761f, -476.624115f, -39.968731f, 250f); // 3 Chamber center - upper 1
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_evilwater1", 83.274887f, -440.070251f, 61.678761f, -476.624115f, -39.968731f, 250f); // 3 Chamber center - upper 2
-
-
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_evilwater1", 34.267399f, -367.748413f, -5.826000f, -393.603516f, -39.968750f, 250f); // Underside small area, westmost in the basement
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_evilwater1", 34.267399f, -367.748413f, -17.474190f, -378.753052f, -39.968750f, 250f); // Underside small area, westmost in the basement
         }
