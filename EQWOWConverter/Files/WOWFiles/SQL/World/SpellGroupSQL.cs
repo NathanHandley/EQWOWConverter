@@ -28,7 +28,6 @@ namespace EQWOWConverter.WOWFiles
             SQLRow newRow = new SQLRow();
             newRow.AddInt("id", id);
             newRow.AddInt("spell_id", wowSpellID);
-            newRow.AddInt("special_flag", 0); // SPELL_GROUP_SPECIAL_FLAG_FORCED_STRONGEST
             Rows.Add(newRow);
         }
     }
