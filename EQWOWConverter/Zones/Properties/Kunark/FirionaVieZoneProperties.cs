@@ -101,9 +101,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1316.940552f, 3505.984863f, 1272.021851f, 3496.672607f, 202.656540f, 202.652985f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1313.632202f, 3516.552246f, 1271.579956f, 3505.950439f, 206.156479f, 202.653107f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1312.970093f, 3545.086670f, 1266.212036f, 3516.517334f, 206.156433f, 206.153046f, ZoneLiquidSlantType.WestHighEastLow, 250f);
-
-
-
         }
     }
 }
