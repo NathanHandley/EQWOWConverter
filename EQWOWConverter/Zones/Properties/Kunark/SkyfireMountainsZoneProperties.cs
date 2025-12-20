@@ -162,12 +162,14 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -106.985603f, 3846.649902f, -172.448013f, 3828.104980f, -20.244671f, -28.391390f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -112.082268f, 3873.234131f, -175.338165f, 3846.615479f, -14.986900f, -20.248110f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -100.783234f, 3885.388916f, -179.088562f, 3873.199707f, -9.155550f, -14.990350f, ZoneLiquidSlantType.WestHighEastLow, 250f);
-            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -144.892166f, 3970.535889f, -183.240128f, 3885.354248f, 8.715150f, -9.158990f, ZoneLiquidSlantType.WestHighEastLow, 250f);
-            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -145.009598f, 3971.612549f, -111.492538f, 3970.501709f, 3.727540f, 8.711700f, ZoneLiquidSlantType.WestHighEastLow, 250f);
-            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -143.897415f, 3982.509521f, -110.812721f, 3971.577881f, -7.593560f, 3.724090f, ZoneLiquidSlantType.WestHighEastLow, 250f);
-            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -113.117233f, 4001.271240f, -174.614746f, 3982.475098f, -7.406060f, -7.597010f, ZoneLiquidSlantType.WestHighEastLow, 250f);
-            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -112.845467f, 4023.670166f, -173.759537f, 4001.236816f, -0.286780f, -7.409500f, ZoneLiquidSlantType.WestHighEastLow, 250f);
-            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -120.466797f, 4049.970215f, -165.593811f, 4023.635498f, 12.234940f, -0.290230f, ZoneLiquidSlantType.WestHighEastLow, 250f);
+            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -121.861862f, 3871.805664f, -167.520920f, 3859.306885f, -15.222460f, -17.181931f, ZoneLiquidSlantType.WestHighEastLow, 250f);
+            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -119.304779f, 3884.506348f, -162.768112f, 3871.771240f, -9.156050f, -15.225910f, ZoneLiquidSlantType.WestHighEastLow, 250f);
+            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -100.875458f, 3974.226807f, -171.522583f, 3884.471436f, -9.155640f, -9.159490f, ZoneLiquidSlantType.WestHighEastLow, 250f);
+            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -114.926376f, 3982.721680f, -168.794327f, 3974.192383f, -7.549100f, -9.159090f, ZoneLiquidSlantType.WestHighEastLow, 250f);
+            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -120.713287f, 4001.106445f, -167.195160f, 3982.687256f, -7.406050f, -7.552550f, ZoneLiquidSlantType.WestHighEastLow, 250f);
+            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -123.429543f, 4013.115479f, -166.671509f, 4001.072266f, -3.842970f, -7.409500f, ZoneLiquidSlantType.WestHighEastLow, 250f);
+            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -115.145218f, 4031.338867f, -169.346313f, 4013.081055f, 2.862070f, -3.846420f, ZoneLiquidSlantType.WestHighEastLow, 250f);
+            AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -121.373497f, 4047.773438f, -171.007034f, 4031.304199f, 10.867440f, 2.858620f, ZoneLiquidSlantType.WestHighEastLow, 250f);
 
             // East from middle pool, climb east at the start
             AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", 179.462265f, -176.535965f, 113.597397f, -198.304718f, -227.266724f, -249.409698f, ZoneLiquidSlantType.EastHighWestLow, 250f);
