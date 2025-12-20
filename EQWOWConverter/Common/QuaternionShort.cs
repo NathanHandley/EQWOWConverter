@@ -52,37 +52,18 @@ namespace EQWOWConverter.Common
             return 8;
         }
 
-        public void RecalculateToShortest()
-        {
-            // Normalize it
-            System.Numerics.Quaternion currentRotation = new System.Numerics.Quaternion(X, Y, Z, W);
-            System.Numerics.Quaternion.Normalize(currentRotation);
-
-            // Use SLEPRT to find shortest
-            System.Numerics.Quaternion shortestRotation = System.Numerics.Quaternion.Slerp(System.Numerics.Quaternion.Identity, currentRotation, 1.0f);
-            X = shortestRotation.X;
-            Y = shortestRotation.Y;
-            Z = shortestRotation.Z;
-            W = shortestRotation.W;
-        }
-
         public void RecalculateToShortestFromOther(QuaternionShort otherQuaternion)
         {
-            // Create and normalize the other
             System.Numerics.Quaternion otherRotation = new System.Numerics.Quaternion(otherQuaternion.X,
                 otherQuaternion.Y, otherQuaternion.Z, otherQuaternion.W);
-            System.Numerics.Quaternion.Normalize(otherRotation);
-
-            // Normalize this
             System.Numerics.Quaternion currentRotation = new System.Numerics.Quaternion(X, Y, Z, W);
-            System.Numerics.Quaternion.Normalize(currentRotation);
-
-            // Use SLEPRT to find shortest
-            System.Numerics.Quaternion shortestRotation = System.Numerics.Quaternion.Slerp(otherRotation, currentRotation, 1.0f);
-            X = shortestRotation.X;
-            Y = shortestRotation.Y;
-            Z = shortestRotation.Z;
-            W = shortestRotation.W;
+            if (System.Numerics.Quaternion.Dot(currentRotation, otherRotation) < 0)
+            {
+                X *= -1;
+                Y *= -1;
+                Z *= -1;
+                W *= -1;
+            }
         }
 
         public List<Byte> ToBytes()
