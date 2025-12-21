@@ -20,6 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public SkyfireMountainsZoneProperties() : base()
         {
+            AddAlwaysBrightMaterial("d_lava001");
+
             AddZoneLineBox("burningwood", 5087.0146f, 1740.0859f, -163.56395f, ZoneLineOrientationType.South, -5623.817f, 1910.7054f, -56.840195f, -5703.1704f, 1580.5497f, -164.28036f); // Zone-in had no geometery
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", 3761.557861f, 3470.733398f, 3268.780273f, 3050.660889f, 208.125198f, 300f); // North lava crater, north part
