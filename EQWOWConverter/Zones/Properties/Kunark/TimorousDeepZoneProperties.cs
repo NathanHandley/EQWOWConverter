@@ -14,19 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class TimorousDeepZoneProperties : ZoneProperties
     {
         public TimorousDeepZoneProperties() : base()
         {
-
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 10909.680664f, 6219.642090f, -14022.179688f, -8289.734375f, -4.337450f, 200f); // Ocean, stops above firepot room
         }
     }
 }
