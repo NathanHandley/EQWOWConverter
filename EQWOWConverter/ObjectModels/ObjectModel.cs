@@ -1218,6 +1218,11 @@ namespace EQWOWConverter.ObjectModels
             else
                 compatibleAnimationTypes = overrideEQAnimationTypes;
 
+            // Determine if there is a z rotation needed
+            bool doRotateOnZAxis = false;
+            if ((!IsSkeletal || ModelType == ObjectModelType.StaticDoodad) && ModelType != ObjectModelType.EquipmentHeld)
+                doRotateOnZAxis = true;
+
             foreach (EQAnimationType compatibleAnimationType in compatibleAnimationTypes)
             {
                 // Look for a match, and process it if found
@@ -1284,6 +1289,15 @@ namespace EQWOWConverter.ObjectModels
                                                                                     -animationFrame.YRotation,
                                                                                     -animationFrame.ZRotation,
                                                                                     animationFrame.WRotation);
+
+                                // Rotate on Z, if needed
+                                if (doRotateOnZAxis)
+                                {
+                                    frameTranslation.X = -frameTranslation.X;
+                                    frameTranslation.Y = -frameTranslation.Y;
+                                    frameRotation.X = -frameRotation.X;
+                                    frameRotation.Y = -frameRotation.Y;
+                                }
 
                                 // Make sure the frames don't do an extra 180 degree rotation
                                 if (curBone.RotationTrack.Values.Count > 0 && curBone.RotationTrack.Values[curBone.RotationTrack.Values.Count - 1].Values.Count > 0)
