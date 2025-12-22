@@ -511,6 +511,52 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
+        protected void AddTriangleLiquidShapeNorthEdgeAligned(ZoneLiquidType liquidType, string materialName, float southX, float southY, float northEdgeX, float northWestY,
+            float northEastY, float allCornerZ, float minDepth, float stepSize)
+        {
+            float curXTop = northEdgeX;
+            bool moreXToWalk = true;
+
+            float xDeltaWest = southX - northEdgeX;
+            float xDeltaEast = southX - northEdgeX;
+            float yWestDelta = southY - northWestY;
+            float yEastDelta = southY - northEastY;
+
+            float northWestToSouthDistance = MathF.Sqrt(xDeltaWest * xDeltaWest + yWestDelta * yWestDelta);
+            float northEastToSouthDistance = MathF.Sqrt(xDeltaEast * xDeltaEast + yEastDelta * yEastDelta);
+
+            // Generate a new group
+            int curLiquidGroupID = LiquidGroups.Count;
+            LiquidGroups.Add(new ZoneLiquidGroup());
+
+            while (moreXToWalk == true)
+            {
+                // Calculate the bottom edge, and align bottom edge if extends
+                float curXBottom = curXTop - stepSize;
+                if (curXBottom < southX)
+                {
+                    curXBottom = southX;
+                    moreXToWalk = false;
+                }
+
+                // Determine NW position (using west line: northWest -> south)
+                float nwX = curXTop;
+                float nwY = GetYOnLineAtX(northEdgeX, northWestY, southX, southY, curXTop);
+
+                // Determine SE position (using east line: northEast -> south)
+                float seX = curXBottom;
+                float seY = GetYOnLineAtX(northEdgeX, northEastY, southX, southY, curXBottom);
+
+                // Add the plane if the bounds are good
+                if (nwX > seX && nwY > seY)
+                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornerZ, minDepth, curLiquidGroupID);
+
+                // Set new top factoring for overlap
+                curXTop = curXBottom - Configuration.LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
+            }
+        }
+
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         // TODO: BUG: The plane may be inverted, but seems to work properly in WoW
         protected void AddLiquidCylinder(ZoneLiquidType liquidType, string materialName, float centerX, float centerY, float radius, float topZ,
             float height, float maxX, float maxY, float minX, float minY, float stepSize)
