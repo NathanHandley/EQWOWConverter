@@ -26,6 +26,7 @@ namespace EQWOWConverter.Zones.Properties
             AddAlwaysBrightMaterial("d_veelava1");
             AddAlwaysBrightMaterial("d_velavaf1");
             AddAlwaysBrightMaterial("d_m0000");
+            AddAlwaysBrightMaterial("d_m0001");
             AddAlwaysBrightMaterial("velavaf1");
 
             // Southeast lava pit
