@@ -20,6 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public MinesOfNurgaZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsIndoors(1, 15, 1, ZoneFogType.Heavy);
+            OverrideVertexColorIntensity(0.4);
+
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_drowatr1", -1607.364746f, 1672.431396f, -1989.492432f, 1287.276245f, -319.874939f, 200f); // Westmost water room and connecting side
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_drowatr1", -1632.191650f, 1407.210693f, -1718.308350f, 1302.216797f, -277.874908f, 15f); // West area, upper room pond
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_drowatr1", -1693.050903f, 1402.835083f, -1712.303101f, 1379.131714f, -277.874908f, 15f); // West area, upper room pond out to waterfall

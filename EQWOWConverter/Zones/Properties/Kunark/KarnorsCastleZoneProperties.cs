@@ -20,6 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public KarnorsCastleZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsOutdoorsNoSky(26, 26, 26, ZoneFogType.Heavy, 1f);
+            OverrideVertexColorIntensity(0.4);
+
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_evilwater1", 295.424438f, 173.621353f, -255.738693f, -245.662964f, -3.999990f, 250f); // West half
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_evilwater1", -155.515335f, -162.706802f, -261.283539f, -450.118439f, -3.999990f, 250f); // South Outer
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_evilwater1", -140.480286f, -340.426453f, -158.544907f, -358.408356f, -3.999990f, 16f); // Small inlet on south outer

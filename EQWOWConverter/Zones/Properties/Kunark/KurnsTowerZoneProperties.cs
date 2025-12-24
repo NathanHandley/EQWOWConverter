@@ -20,6 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public KurnsTowerZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsIndoors(50, 50, 50, ZoneFogType.Heavy);
+            OverrideVertexColorIntensity(0.4);
+
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_kw1", -106.792099f, 288.794922f, -127.122070f, 268.549042f, -125.937500f, 250f); // Tiny water pool in the SW corner
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_kw1", 123.125381f, 187.597153f, 99.923401f, 158.069412f, -120.937492f, 250f); // Small pool in the NW corner
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_kw1", -66.340874f, -101.648552f, -78.201767f, -112.540199f, -108.968742f, 250f); // Reall small pool in the middle-south

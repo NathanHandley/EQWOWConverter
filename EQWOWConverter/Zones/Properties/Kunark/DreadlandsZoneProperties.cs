@@ -14,18 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class DreadlandsZoneProperties : ZoneProperties
     {
         public DreadlandsZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsOutdoorsWithSky(95, 89, 75, ZoneFogType.Clear, 0.5f, 1f);
+
             AddZoneLineBox("burningwood", -4247.9624f, -712.7452f, 245.30704f, ZoneLineOrientationType.North,
                 3057.91f, -414.8485f, 319.16867f, 2988.2588f, -1083.3096f, 240.4023f);
         }

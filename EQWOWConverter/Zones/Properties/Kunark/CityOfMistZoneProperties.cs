@@ -22,6 +22,9 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Any in-zone teleports?
             // TODO: There is a lift "CMLIFT101".  See Doors table
+
+            SetZonewideEnvironmentAsOutdoorsNoSky(9, 11, 6, ZoneFogType.Heavy, 1f);
+
             AddZoneLineBox("emeraldjungle", 0.121500f, -774.691650f, 0.000000f, ZoneLineOrientationType.West, 309.691193f, -1730.243408f, -300.343506f, 291.030334f, -1789.959473f, -335.468658f);
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_agua1", 181.788925f, 434.332367f, -168.714798f, 123.955620f, -17.999960f, 75); // Water around westmost building

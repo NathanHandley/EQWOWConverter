@@ -20,6 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public VeeshansPeakZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsIndoors(1, 1, 1, ZoneFogType.Heavy);
+            OverrideVertexColorIntensity(0.4);
+
             AddAlwaysBrightMaterial("d_veelava1");
             AddAlwaysBrightMaterial("d_velavaf1");
             AddAlwaysBrightMaterial("d_m0000");

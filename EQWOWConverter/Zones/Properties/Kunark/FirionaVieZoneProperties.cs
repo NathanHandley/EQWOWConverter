@@ -20,6 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public FirionaVieZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsOutdoorsWithSky(95, 89, 75, ZoneFogType.Clear, 0.5f, 1f);
+
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -355.170837f, 4835.860840f, -10012.150391f, -5163.290039f, -126.468178f, 500f); // Ocean
 
             // River that runs north-south

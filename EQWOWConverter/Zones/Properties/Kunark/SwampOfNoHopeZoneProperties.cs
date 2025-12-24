@@ -20,6 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public SwampOfNoHopeZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsOutdoorsNoSky(26, 26, 26, ZoneFogType.Heavy, 1f);
+
             AddZoneLineBox("cabeast", -98.067253f, -657.688232f, 0.000070f, ZoneLineOrientationType.North, 3172.572266f, 3068.755859f, 43.239300f, 3137.161865f, 3040.213135f, -0.374930f);
             AddZoneLineBox("cabeast", -280.219482f, -476.267853f, 0.000010f, ZoneLineOrientationType.West, 2955.181396f, 3256.399658f, -0.375170f, 2955.181396f, 3256.399658f, -0.375170f);
 

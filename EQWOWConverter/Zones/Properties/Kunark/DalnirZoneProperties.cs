@@ -20,6 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public DalnirZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsIndoors(20, 10, 25, ZoneFogType.Medium);
+            OverrideVertexColorIntensity(0.4);
+
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 113.215393f, -718.826904f, 82.814590f, -778.763916f, -83.968681f, 10f); // Upper east pool with a checker rim
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 4.930180f, -745.163025f, -18.033091f, -752.353027f, -193.937424f, 10f); // Lower east pool that is a plus shape, north-south
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", -3.185510f, -737.162292f, -10.629220f, -760.183655f, -193.937424f, 10f); // Lower east pool that is a plus shape, west-east

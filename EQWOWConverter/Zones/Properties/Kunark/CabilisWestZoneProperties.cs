@@ -22,6 +22,8 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Texture holes in the waterways
 
+            SetZonewideEnvironmentAsOutdoorsNoSky(12, 12, 8, ZoneFogType.Heavy, 1f);
+
             AddZoneLineBox("cabeast", -28.278749f, 314.920990f, 0.000030f, ZoneLineOrientationType.South, -20.735310f, 322.030548f, 12.469000f, -33.827209f, 302.649109f, -0.499990f);
             AddZoneLineBox("cabeast", -28.944679f, 335.877106f, -24.860720f, ZoneLineOrientationType.South, -20.975170f, 350.067322f, 12.469000f, -41.966270f, 321.681580f, -42.468739f);
             AddZoneLineBox("cabeast", -28.406759f, 357.039429f, 0.000260f, ZoneLineOrientationType.South, -27.676720f, 364.034607f, 12.469000f, -49.269180f, 349.616089f, -0.500000f);

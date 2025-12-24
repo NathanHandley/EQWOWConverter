@@ -20,6 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public EmeraldJungleZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsOutdoorsNoSky(22, 26, 23, ZoneFogType.Heavy, 1f);
+
             AddZoneLineBox("citymist", 300.490265f, -1799.661743f, -334.968658f, ZoneLineOrientationType.East,
                 10.193290f, -783.147522f, 34.308090f, -10.191010f, -844.774231f, -0.500000f);
 

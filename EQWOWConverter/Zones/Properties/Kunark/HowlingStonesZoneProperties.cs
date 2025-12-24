@@ -14,18 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class HowlingStonesZoneProperties : ZoneProperties
     {
         public HowlingStonesZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsIndoors(160, 180, 200, ZoneFogType.Medium);
+            OverrideVertexColorIntensity(0.4);
+
             AddZoneLineBox("overthere", -83.674156f, 825.339172f, -506.624969f, ZoneLineOrientationType.East, // Consider moving to the stone?
                 -2.369990f, -722.148010f, 34.469002f, -15.200140f, -734.827942f, 17.500111f);
         }

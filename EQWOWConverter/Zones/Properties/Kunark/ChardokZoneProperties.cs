@@ -20,6 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public ChardokZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsIndoors(26, 26, 26, ZoneFogType.Medium);
+            OverrideVertexColorIntensity(0.4);
+
             AddZoneLineBox("burningwood", 7357.6494f, -4147.4604f, -235.93742f, ZoneLineOrientationType.North, -20.012981f, 879.84973f, 137.60643f, -70.907234f, 839.5071f, 99.46923f);
             AddZoneLineBox("burningwood", 7357.6494f, -4147.4604f, -235.93742f, ZoneLineOrientationType.North, 220.71272f, 895.73254f, 138.4065f, 157.77734f, 839.54913f, 99.468735f);
 

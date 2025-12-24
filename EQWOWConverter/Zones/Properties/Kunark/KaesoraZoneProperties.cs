@@ -20,6 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public KaesoraZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsIndoors(26, 26, 26, ZoneFogType.Medium);
+            OverrideVertexColorIntensity(0.4);
+
             AddDiscardGeometryBox(19.384069f, 22.773911f, 39.682812f, -20.191750f, -27.478559f, -7.144740f); // 0 0 0 cat room
         }
     }

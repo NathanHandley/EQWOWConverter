@@ -20,6 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public CabilisEastZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsOutdoorsNoSky(12, 12, 8, ZoneFogType.Heavy, 1f);
+
             AddZoneLineBox("fieldofbone", -2557.7278f, 3688.0273f, 4.093815f, ZoneLineOrientationType.East, 1377.6309f, -455.81412f, 97.201485f, 1346.7754f, -497.1183f, -0.49989557f);
             AddZoneLineBox("fieldofbone", -2747.7383f, 3530.195f, 4.093984f, ZoneLineOrientationType.North, 1236.0558f, -605.5564f, 128.95297f, 1192.7297f, -635.9432f, -0.4994932f);
             AddZoneLineBox("cabwest", -13.886450f, 314.975342f, 0.000000f, ZoneLineOrientationType.North, -3.434140f, 322.059662f, 12.469000f, -21.590590f, 307.681549f, -0.499970f);

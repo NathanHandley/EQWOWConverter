@@ -20,6 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public TempleOfDrogaZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsIndoors(26, 26, 26, ZoneFogType.Medium);
+            OverrideVertexColorIntensity(0.4);
+
             AddOctagonLiquidShape(ZoneLiquidType.Blood, "t50_redwat01", 546.104858f, 493.395386f, 1986.771484f, 1916.085938f, 1968.937866f, 1933.504761f, 1968.937866f, 1933.504761f,
                 529.461609f, 509.902405f, 529.461609f, 509.902405f, -269.906158f, 15f);
 

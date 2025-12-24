@@ -14,18 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class BurningWoodZoneProperties : ZoneProperties
     {
         public BurningWoodZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsOutdoorsNoSky(26, 26, 26, ZoneFogType.Heavy, 1f);
+
             AddZoneLineBox("skyfire", -5439.923f, 1772.0016f, -162.23752f, ZoneLineOrientationType.North,
                 5302.864258f, 1900f, -110.222794f, 5118.025879f, 1400.658936f, -170.772964f);
             AddZoneLineBox("chardok", -2.107779f, 858.89545f, 99.968796f, ZoneLineOrientationType.North,

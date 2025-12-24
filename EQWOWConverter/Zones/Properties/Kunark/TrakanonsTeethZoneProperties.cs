@@ -20,6 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public TrakanonsTeethZoneProperties() : base()
         {
+            SetZonewideEnvironmentAsOutdoorsNoSky(23, 26, 24, ZoneFogType.Heavy, 1f);
+
             // Big lake in the open air
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1b", 2027.573242f, 2519.995117f, -308.817078f, 766.641052f, -450.531128f, 500f);
 
