@@ -58,6 +58,9 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlane(ZoneLiquidType.Water, "t75_spwt01b", 1418.668213f, 4532.038086f, 1367.153076f, 4400.397461f, -195.617920f, -222.259613f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "t75_spwt01b", 1367.187622f, 4530.801270f, 1346.300049f, 4390.177734f, -188.730774f, -195.621353f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "t75_spwt01b", 1346.334595f, 4858.749512f, 758.170227f, 4232.570312f, -187.999893f, -188.734238f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
+
+            AddDiscardGeometryBox(-2683.587891f, 751.149780f, 912.378296f, -2961.855957f, 463.150513f, 446.286072f); // Floating tree in the south
+            AddDiscardGeometryBox(-154.989319f, 3470.648926f, 618.667847f, -356.593872f, 3271.615479f, 414.874786f); // Floating plant in the west (south-ish)
         }
     }
 }

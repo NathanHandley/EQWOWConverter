@@ -33,6 +33,9 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_cbw1", 607.391602f, -424.373993f, 396.922333f, -1025.532593f, -14, 45f); // East water tunnels off the main area
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_cbw1", 873.178711f, -495.658478f, 821.317810f, -551.591064f, -125.937424f, 30f); // Eastern area sphere-shaped carve out room small pond
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_cbw1", -348.487427f, -39.968380f, -496.760773f, -213.096375f, -0.999940f, 20f); // South area wading pools
+
+            AddDiscardGeometryBox(-352.861359f, 68.610992f, -6.312210f, -522.594238f, -20.493219f, -108.501801f); // Rock and some water below the map
+            AddDiscardGeometryBox(-360.150452f, 194.734756f, 135.514343f, -503.430725f, 105.218224f, -43.974831f); // Two out-of-bounds water strips
         }
     }
 }

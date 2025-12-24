@@ -22,6 +22,9 @@ namespace EQWOWConverter.Zones.Properties
         {
             AddOctagonLiquidShape(ZoneLiquidType.Blood, "t50_redwat01", 546.104858f, 493.395386f, 1986.771484f, 1916.085938f, 1968.937866f, 1933.504761f, 1968.937866f, 1933.504761f,
                 529.461609f, 509.902405f, 529.461609f, 509.902405f, -269.906158f, 15f);
+
+            AddDiscardGeometryBox(1564.696899f, 319.372986f, 29.451771f, 1499.377930f, 233.304977f, -1.483220f); // Cat head area at entry
+            AddDiscardGeometryBox(40.813339f, 26.727400f, 53.282471f, -39.816051f, -119.195923f, -4.358200f); // Floating 0 0 0
         }
     }
 }

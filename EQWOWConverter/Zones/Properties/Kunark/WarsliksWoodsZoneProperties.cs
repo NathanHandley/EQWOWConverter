@@ -223,6 +223,10 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -1319.832764f, 3906.741211f, -1383.997803f, 3756.398682f, 535.870972f, 535.840515f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -1316.570923f, 3942.244873f, -1397.807495f, 3906.706299f, 535.875122f, 535.867493f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -1324.020630f, 4181.326172f, -1680.196533f, 3942.210449f, 535.871643f, 535.871643f, ZoneLiquidSlantType.WestHighEastLow, 250f);
+
+            AddDiscardGeometryBox(3457.450928f, -2906.989990f,  1407.824463f, 765.621033f, -4829.969238f, 445.377960f); // East floating trees
+            AddDiscardGeometryBox(2791.680664f, 4618.571777f, 940.455688f, 2595.156006f, 4286.382324f, 424.159668f); // West floating tree
         }
     }
 }
+

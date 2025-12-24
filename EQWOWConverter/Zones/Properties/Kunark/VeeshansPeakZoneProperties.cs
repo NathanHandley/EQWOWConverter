@@ -83,6 +83,8 @@ namespace EQWOWConverter.Zones.Properties
             // North bottom lava
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_m0000", 1723.944824f, 841.598022f, 1283.606812f, 286.755402f, 254.906387f, 50f); // North part
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_m0000", 1723.944824f, 804.284851f, 1208.281250f, 286.755402f, 254.906387f, 50f); // North part
+
+            AddDiscardGeometryBox(99.455254f, 57.394550f, 150.158112f, -50.228031f, -140.100006f, -23.634960f); // 0 0 0 spawn cat box
         }
     }
 }
