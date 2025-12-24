@@ -20,8 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public DreadlandsZoneProperties() : base()
         {
-            SetZonewideEnvironmentAsOutdoorsWithSky(95, 89, 75, ZoneFogType.Clear, 0.5f, 1f);
-
             AddZoneLineBox("burningwood", -4247.9624f, -712.7452f, 245.30704f, ZoneLineOrientationType.North,
                 3057.91f, -414.8485f, 319.16867f, 2988.2588f, -1083.3096f, 240.4023f);
         }
