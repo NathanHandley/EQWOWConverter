@@ -130,11 +130,7 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -223.427643f, 1030.810059f, -294.995148f, 1005.614319f, -60.468719f, -60.472210f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -237.966156f, 1132.851318f, -355.408386f, 1030.775513f, -60.468739f, -60.472160f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -316.002441f, 1315.138672f, -449.388947f, 1132.816895f, -60.468449f, -60.472179f, ZoneLiquidSlantType.WestHighEastLow, 250f);
-
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "tau_stwt01", -345.432312f, 1172.962769f, -372.350372f, 1064.579834f, -60.468449f, 20f);
-            
-            
-            
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -422.484192f, 1326.021606f, -463.285004f, 1315.104126f, -55.723679f, -60.471901f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -415.861389f, 1335.558350f, -462.104553f, 1325.987183f, -55.715618f, -55.727131f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -417.307892f, 1345.812622f, -456.978638f, 1335.523926f, -49.609322f, -55.719070f, ZoneLiquidSlantType.WestHighEastLow, 250f);
@@ -227,7 +223,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -1319.832764f, 3906.741211f, -1383.997803f, 3756.398682f, 535.870972f, 535.840515f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -1316.570923f, 3942.244873f, -1397.807495f, 3906.706299f, 535.875122f, 535.867493f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -1324.020630f, 4181.326172f, -1680.196533f, 3942.210449f, 535.871643f, 535.871643f, ZoneLiquidSlantType.WestHighEastLow, 250f);
-
         }
     }
 }
