@@ -5,14 +5,14 @@ Converts the EverQuest assets from the original game into World of Warcraft 3.3.
 
 To see video references, go here: https://www.youtube.com/@WoWEverQuest
 
-**Note: The creator of this converter (Nathan) has no affiliation with any server provider/hoster, hosts no server, does not assist in server setups, and provides no client files for either EverQuest or World of Warcraft.  This project is for education and preservation purposes only** 
+**Note: The creator of this converter (Nathan) has no affiliation with any server provider/hoster, hosts no server, and provides no client files for either EverQuest or World of Warcraft.  This project is for education and preservation purposes only.** 
 
 # Current State
 It is currently in an Alpha state, but all content types (tradeskills, spells, quests, etc) are working to some degree.  Only classic (pre-Kunark) is in a semi-polished state, but you can enable Kunark and/or Velious content by setting the configuration values starting with GENERATE_EQ_EXPANSION_ID_.  Many things, such as zone lines and water volumes will not work in Kunark and above right now.
 
 # Requirements
 - Windows build environment
-- AzerothCore based WoW 3.3.5 server (at least through this changeset: https://github.com/azerothcore/azerothcore-wotlk/commit/9ad7cef3c474faacd2999b8575cbfc79a4d58852)
+- AzerothCore based WoW 3.3.5 server (at least through this changeset: https://github.com/azerothcore/azerothcore-wotlk/commit/a8c05b236c13fd6574fbc4024c7170abd99de50f)
 - Install the "mod-everquest" mod into AzerothCore (https://github.com/NathanHandley/mod-everquest)
 - Installed unpatched client of the EverQuest Trilogy
 - Installed 3.3.5a WoW client, US version (which must be patched to not check for MD5 signatures, similar to other modded projects) 
