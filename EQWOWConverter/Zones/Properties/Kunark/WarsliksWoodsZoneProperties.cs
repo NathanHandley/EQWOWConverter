@@ -27,6 +27,9 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("cabwest", 688.666626f, 1327.751099f, 0.000030f, ZoneLineOrientationType.South,
                 -2420.843750f, -917.836975f, 399.112671f, -2473.554932f, -946.380981f, 262.313660f);
 
+            AddZoneLineBox("dalnir", 6.630970f, 62.347679f, 0.976860f, ZoneLineOrientationType.East,
+                4573.925293f, 2592.124023f, -223.179184f, 4508.052246f, 2541.819824f, -250.936874f); // Test Z
+
             // Ocean
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 7868.704590f, 7324.179199f, 685.372620f, -6605.181641f, -217.343323f, 500f);
 
