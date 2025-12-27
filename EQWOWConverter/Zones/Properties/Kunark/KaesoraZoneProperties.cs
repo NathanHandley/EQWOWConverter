@@ -23,6 +23,10 @@ namespace EQWOWConverter.Zones.Properties
             SetZonewideEnvironmentAsIndoors(26, 26, 26, ZoneFogType.Medium);
             OverrideVertexColorIntensity(0.4);
 
+            // Fix Z
+            AddZoneLineBox("fieldofbone", -1893.204956f, -182.732758f, -130.822327f, ZoneLineOrientationType.East,
+                52.377048f, 425.008514f, 141.641708f, 23.726810f, 389.831665f, 92.980698f);
+
             AddDiscardGeometryBox(19.384069f, 22.773911f, 39.682812f, -20.191750f, -27.478559f, -7.144740f); // 0 0 0 cat room
         }
     }

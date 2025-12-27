@@ -25,6 +25,10 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("cabeast", -98.067253f, -657.688232f, 0.000070f, ZoneLineOrientationType.North, 3172.572266f, 3068.755859f, 43.239300f, 3137.161865f, 3040.213135f, -0.374930f);
             AddZoneLineBox("cabeast", -280.219482f, -476.267853f, 0.000010f, ZoneLineOrientationType.West, 2955.181396f, 3256.399658f, -0.375170f, 2955.181396f, 3256.399658f, -0.375170f);
 
+            // Fix Z
+            AddZoneLineBox("fieldofbone", -3328.373047f, 1095.472534f, 11.665150f, ZoneLineOrientationType.North,
+                1506.837646f, 5282.202637f, 311.342499f, 580.232666f, 5086.843262f, -68.642906f);
+
             // Main water
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_spwt01", 4014.024414f, 3982.306152f, -3986.161865f, -4018.020264f, -20.530670f, 500f);
 
