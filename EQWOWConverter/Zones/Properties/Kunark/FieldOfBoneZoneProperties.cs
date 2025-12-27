@@ -25,6 +25,10 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("cabeast", 1179.1279f, -619.062f, 0.000174f, ZoneLineOrientationType.South,
                 -2768.011f, 3545.4978f, 86.73899f, -2829.281f, 3514.2957f, 3.5937567f);
 
+            // Fix Z
+            AddZoneLineBox("emeraldjungle", -1901.190918f, 5196.096191f, -9.045620f, ZoneLineOrientationType.East,
+                -1273.950073f, -1469.073242f, 272.566742f, -1835.171875f, -2379.717773f, -35.978790f);
+
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 4608.963867f, 4793.761230f, 1746.790283f, -1613.797729f, -179.124878f, 500f);
         
         }

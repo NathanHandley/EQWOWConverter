@@ -26,6 +26,10 @@ namespace EQWOWConverter.Zones.Properties
             // Fix Z
             AddZoneLineBox("dreadlands", 2360.625732f, -3406.440674f, 137.522598f, ZoneLineOrientationType.West,
                 -3201.033691f, -3734.184326f, -313.857239f, -3265.977051f, -3868.127441f, -354.653534f);
+            AddZoneLineBox("droga", 1410.232056f, 376.219910f, 0.776180f, ZoneLineOrientationType.South,
+                2982.568115f, 3269.139404f, 359.866669f, 2914.926758f, 3213.493164f, 336.742157f);
+            AddZoneLineBox("nurga", -2220.826904f, -1798.888184f, 1.368590f, ZoneLineOrientationType.North,
+                -475.103729f, -2604.649170f, -475.357574f, -556.315918f, -2669.104492f, -506.329834f);
         }
     }
 }

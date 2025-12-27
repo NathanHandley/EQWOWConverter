@@ -22,6 +22,11 @@ namespace EQWOWConverter.Zones.Properties
         {
             SetZonewideEnvironmentAsOutdoorsNoSky(23, 26, 24, ZoneFogType.Heavy, 1f);
 
+            // Fix Z
+            AddZoneLineBox("emeraldjungle", -3416.802979f, 1518.184814f, -343.731567f, ZoneLineOrientationType.North,
+                1638.688843f, 4095.828369f, -287.712830f, 1376.905640f, 3995.097900f, -361.280029f);
+
+
             // Big lake in the open air
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1b", 2027.573242f, 2519.995117f, -308.817078f, 766.641052f, -450.531128f, 500f);
 
