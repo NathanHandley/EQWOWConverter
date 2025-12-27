@@ -16,9 +16,9 @@
 
 namespace EQWOWConverter.Zones.Properties
 {
-    internal class OldSebilisZoneProperties : ZoneProperties
+    internal class RuinsOfSebilisZoneProperties : ZoneProperties
     {
-        public OldSebilisZoneProperties() : base()
+        public RuinsOfSebilisZoneProperties() : base()
         {
             SetZonewideEnvironmentAsIndoors(20, 10, 60, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
