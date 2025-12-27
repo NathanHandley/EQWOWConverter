@@ -20,6 +20,10 @@ namespace EQWOWConverter.Zones.Properties
     {
         public FirionaVieZoneProperties() : base()
         {
+            // Fix Z
+            AddZoneLineBox("dreadlands", 344.637085f, -6136.062500f, 136.437515f, ZoneLineOrientationType.North,
+                6081.367676f, 435.862000f, -34.554569f, 5902.338379f, 264.265533f, -100.851601f);
+
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -355.170837f, 4835.860840f, -10012.150391f, -5163.290039f, -126.468178f, 500f); // Ocean
 
             // River that runs north-south
