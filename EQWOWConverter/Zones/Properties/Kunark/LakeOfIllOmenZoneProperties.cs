@@ -23,6 +23,14 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("cabwest", -802.654480f, 767.458740f, -0.000070f, ZoneLineOrientationType.North, 6577.715820f, -6613.837891f, 145.213730f, 6533.130859f, -6645.066895f, 34.593719f);
             AddZoneLineBox("cabwest", -985.943787f, 584.806458f, 0.000380f, ZoneLineOrientationType.East, 6344.193848f, -6799.043945f, 182.103806f, 6315.685547f, -6843.227051f, 34.595600f);
 
+            // Fix Z
+            AddZoneLineBox("firiona", 1292.149292f, 3306.101807f, 187.548737f, ZoneLineOrientationType.East,
+                -4380.426758f, 1431.185181f, 487.776611f, -4773.780273f, 662.696167f, 190.810226f);
+            AddZoneLineBox("frontiermtns", -660.689392f, -4141.462402f, 114.727158f, ZoneLineOrientationType.West,
+                3693.796875f, -114.581352f, 366.001709f, 3351.493652f, -891.873901f, 4.848970f);
+            AddZoneLineBox("warslikswood", -3657.177002f, 1188.529663f, 52.453812f, ZoneLineOrientationType.West,
+                1339.878052f, 4400.304688f, 205.636200f, 1054.167725f, 4284.637695f, 28.188250f);
+
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 1502.120117f, 1338.126587f, -2497.938965f, -1861.968262f, 65.187592f, 400f); // Middle lake
 
             // River Start - Climb north

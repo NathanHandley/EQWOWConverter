@@ -32,7 +32,10 @@ namespace EQWOWConverter.Zones.Properties
                 4573.925293f, 2592.124023f, -223.179184f, 4508.052246f, 2541.819824f, -250.936874f);
             AddZoneLineBox("fieldofbone", 1363.532104f, 4415.593750f, 0.605050f, ZoneLineOrientationType.East,
                 -3685.515625f, 1738.753296f, 276.207886f, -4066.117188f, 1084.381348f, -45.409512f);
-
+            AddZoneLineBox("lakeofillomen", 4240.515625f, 1077.258179f, 48.587341f, ZoneLineOrientationType.East,
+                1122.609375f, -3611.486084f, 128.471436f, 1033.167114f, -3852.555420f, 30.334721f);
+            AddZoneLineBox("overthere", 62.135712f, -3927.562988f, 227.780319f, ZoneLineOrientationType.West,
+                4580.014648f, 727.563416f, 696.519043f, 3995.653076f, -408.334595f, 201.359283f);
 
             // Ocean
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 7868.704590f, 7324.179199f, 685.372620f, -6605.181641f, -217.343323f, 500f);

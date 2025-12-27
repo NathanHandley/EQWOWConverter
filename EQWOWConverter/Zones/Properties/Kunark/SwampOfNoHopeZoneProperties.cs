@@ -28,6 +28,12 @@ namespace EQWOWConverter.Zones.Properties
             // Fix Z
             AddZoneLineBox("fieldofbone", -3328.373047f, 1095.472534f, 11.665150f, ZoneLineOrientationType.North,
                 1506.837646f, 5282.202637f, 311.342499f, 580.232666f, 5086.843262f, -68.642906f);
+            AddZoneLineBox("firiona", 4701.068848f, 2735.671387f, 2.964530f, ZoneLineOrientationType.South,
+                4242.100586f, -4049.404053f, 411.519196f, 762.219116f, -5414.640137f, -38.468048f); // West
+            AddZoneLineBox("firiona", 3480.393066f, -2352.897461f, -107.809769f, ZoneLineOrientationType.South,
+                -1492.873291f, -4380.570801f, 318.756927f, -3491.343018f, -5243.627930f, -164.285263f); // East
+            AddZoneLineBox("trakanon", 1571.971069f, 4444.021484f, -272.870789f, ZoneLineOrientationType.North,
+                -4403.036133f, 2029.501465f, 127.860313f, -4617.994141f, 1757.333618f, 27.355209f);
 
             // Main water
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_spwt01", 4014.024414f, 3982.306152f, -3986.161865f, -4018.020264f, -20.530670f, 500f);

@@ -30,6 +30,10 @@ namespace EQWOWConverter.Zones.Properties
                 2982.568115f, 3269.139404f, 359.866669f, 2914.926758f, 3213.493164f, 336.742157f);
             AddZoneLineBox("nurga", -2220.826904f, -1798.888184f, 1.368590f, ZoneLineOrientationType.North,
                 -475.103729f, -2604.649170f, -475.357574f, -556.315918f, -2669.104492f, -506.329834f);
+            AddZoneLineBox("lakeofillomen", -430.327026f, 3112.575684f, 112.031601f, ZoneLineOrientationType.East,
+                -4319.731445f, -406.436157f, 476.974548f, -4843.364746f, -932.939514f, 35.422649f);
+            AddZoneLineBox("overthere", -3839.407471f, 1460.350830f, 313.150482f, ZoneLineOrientationType.North,
+                2008.723511f, 5587.589844f, 1066.942993f, 813.669495f, 4569.660156f, 238.345154f);
         }
     }
 }
