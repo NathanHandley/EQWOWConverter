@@ -23,11 +23,9 @@ namespace EQWOWConverter.Zones.Properties
             AddAlwaysBrightMaterial("d_lava001");
 
             AddZoneLineBox("burningwood", 5087.0146f, 1740.0859f, -163.56395f, ZoneLineOrientationType.South, -5623.817f, 1910.7054f, -56.840195f, -5703.1704f, 1580.5497f, -164.28036f); // Zone-in had no geometery
-
-            // Fix Z
-            AddZoneLineBox("overthere", -988.312561f, 4201.076660f, 99.492737f, ZoneLineOrientationType.East,
+            AddZoneLineBox("overthere", -988.312561f, 4201.076660f, 95.625771f, ZoneLineOrientationType.East,
                 -1063.791504f, -4348.341309f, 108.087097f, -1129.249390f, -4404.932129f, 26.440439f); // North
-            AddZoneLineBox("overthere", -1097.624146f, 4200.114258f, 99.154114f, ZoneLineOrientationType.East,
+            AddZoneLineBox("overthere", -1097.624146f, 4200.114258f, 95.625771f, ZoneLineOrientationType.East,
                 -1161.999390f, -4349.868164f, 108.087097f, -1231.563721f, -4408.827148f, 26.019140f); // South
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", 3761.557861f, 3470.733398f, 3268.780273f, 3050.660889f, 208.125198f, 300f); // North lava crater, north part

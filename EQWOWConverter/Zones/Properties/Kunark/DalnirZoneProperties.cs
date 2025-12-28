@@ -20,10 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public DalnirZoneProperties() : base()
         {
-            // Test/Update Z
-            AddZoneLineBox("warslikswood", 2581.582275f, 4587.688965f, -244.136932f, ZoneLineOrientationType.West,
+            AddZoneLineBox("warslikswood", 2581.582275f, 4587.688965f, -244.718704f, ZoneLineOrientationType.West,
                 23.855680f, 178.400238f, 17.282030f, -18.799231f, 82.444389f, -12.233050f); // Main walk entry
-            AddZoneLineBox("warslikswood", 2581.582275f, 4587.688965f, -244.136932f, ZoneLineOrientationType.West,
+            AddZoneLineBox("warslikswood", 2581.582275f, 4587.688965f, -244.718704f, ZoneLineOrientationType.West,
                 -334.306122f, -67.596291f, -166.470016f, -353.670563f, -90.821373f, -187.702927f); // Telepad at bottom
 
             SetZonewideEnvironmentAsIndoors(20, 10, 25, ZoneFogType.Medium);

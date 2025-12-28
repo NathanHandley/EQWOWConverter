@@ -23,12 +23,11 @@ namespace EQWOWConverter.Zones.Properties
             SetZonewideEnvironmentAsIndoors(1, 15, 1, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
 
-            // Fix Z
-            AddZoneLineBox("droga", -1389.241333f, 263.044464f, -191.757477f, ZoneLineOrientationType.North,
+            AddZoneLineBox("droga", -1389.241333f, 263.044464f, -191.937393f, ZoneLineOrientationType.North,
                 -942.595520f, 225.447723f, -80.635323f, -1016.506470f, 91.078529f, -126.038986f); // West
-            AddZoneLineBox("droga", -1311.640869f, -919.159363f, -79.589958f, ZoneLineOrientationType.North,
+            AddZoneLineBox("droga", -1311.640869f, -919.159363f, -79.968773f, ZoneLineOrientationType.North,
                 -748.473267f, -809.300537f, -145.098434f, -823.214478f, -941.389526f, -183.636047f); // East
-            AddZoneLineBox("frontiermtns", -2698.660400f, -539.507812f, -498.115234f, ZoneLineOrientationType.South,
+            AddZoneLineBox("frontiermtns", -2698.660400f, -539.507812f, -499.937439f, ZoneLineOrientationType.South,
                 -2243.407227f, -1780.908203f, 19.086390f, -2328.118652f, -1935.406616f, -9.129420f);
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_drowatr1", -1607.364746f, 1672.431396f, -1989.492432f, 1287.276245f, -319.874939f, 200f); // Westmost water room and connecting side

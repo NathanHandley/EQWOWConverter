@@ -22,10 +22,9 @@ namespace EQWOWConverter.Zones.Properties
         {
             SetZonewideEnvironmentAsOutdoorsNoSky(23, 26, 24, ZoneFogType.Heavy, 1f);
 
-            // Fix Z
-            AddZoneLineBox("emeraldjungle", -3416.802979f, 1518.184814f, -343.731567f, ZoneLineOrientationType.North,
+            AddZoneLineBox("emeraldjungle", -3416.802979f, 1518.184814f, -344.468475f, ZoneLineOrientationType.North,
                 4095.828369f, 1638.688843f, -287.712830f, 3995.097900f, 1376.905640f, -361.280029f);
-            AddZoneLineBox("swampofnohope", 1726.424438f, -4536.817871f, 87.676399f, ZoneLineOrientationType.South,
+            AddZoneLineBox("swampofnohope", 1726.424438f, -4536.817871f, 83.899193f, ZoneLineOrientationType.South,
                 1500.656372f, 4591.247070f, -78.103142f, 1311.524170f, 4358.406738f, -300.810669f);
 
             // Big lake in the open air

@@ -23,10 +23,9 @@ namespace EQWOWConverter.Zones.Properties
             SetZonewideEnvironmentAsIndoors(20, 10, 60, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
 
-            // Test
-            AddZoneLineBox("trakanon", -1628.483887f, -4764.273926f, -475.387787f, ZoneLineOrientationType.South,
+            AddZoneLineBox("trakanon", -1628.483887f, -4764.273926f, -476.531189f, ZoneLineOrientationType.South,
                 -90.748070f, -65.824310f, -16.669720f, -102.438210f, -78.004112f, -37.766270f); // Top exit teleporter
-            AddZoneLineBox("trakanon", -1628.483887f, -4764.273926f, -475.387787f, ZoneLineOrientationType.South,
+            AddZoneLineBox("trakanon", -1628.483887f, -4764.273926f, -476.531189f, ZoneLineOrientationType.South,
                 -669.088440f, -3.538890f, -152.304398f, -679.783447f, -15.525920f, -180.885757f); // Bottom exit teleporter
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_greenagua1", -1791.199951f, -292.427155f, -2109.412842f, -539.693359f, -197.906174f, 400f); // Trakanon's room

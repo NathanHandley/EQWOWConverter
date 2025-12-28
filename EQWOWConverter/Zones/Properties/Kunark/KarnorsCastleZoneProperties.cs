@@ -20,11 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public KarnorsCastleZoneProperties() : base()
         {
-
-            // Fix Z
-            AddZoneLineBox("dreadlands", 698.158325f, -1907.232056f, 23.048800f, ZoneLineOrientationType.West,
+            AddZoneLineBox("dreadlands", 698.158325f, -1907.232056f, 23.062679f, ZoneLineOrientationType.West,
                 175.202133f, 493.402069f, 26.870760f, 79.528343f, 404.663788f, -6.118140f); // North entry
-            AddZoneLineBox("dreadlands", 500.771332f, -1914.368774f, 23.239189f, ZoneLineOrientationType.West,
+            AddZoneLineBox("dreadlands", 500.771332f, -1914.368774f, 23.062679f, ZoneLineOrientationType.West,
                 -33.678230f, 505.477692f, 67.481300f, -160.809219f, 403.366791f, -9.480820f); // South entry
 
             SetZonewideEnvironmentAsOutdoorsNoSky(26, 26, 26, ZoneFogType.Heavy, 1f);
