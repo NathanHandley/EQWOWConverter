@@ -25,7 +25,8 @@ namespace EQWOWConverter.Zones.Properties
 
             SetZonewideEnvironmentAsOutdoorsNoSky(9, 11, 6, ZoneFogType.Heavy, 1f);
 
-            AddZoneLineBox("emeraldjungle", 0.121500f, -774.691650f, 0.000000f, ZoneLineOrientationType.West, 309.691193f, -1730.243408f, -300.343506f, 291.030334f, -1789.959473f, -335.468658f);
+            AddZoneLineBox("emeraldjungle", 300.948212f, -1798.700195f, -334.972931f, ZoneLineOrientationType.East,
+                21.656549f, -808.069702f, 59.639500f,  -15.719450f, -854.674255f, -7.938090f);
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_agua1", 181.788925f, 434.332367f, -168.714798f, 123.955620f, -17.999960f, 75); // Water around westmost building
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_agua1", 62.186371f, -87.708946f, -113.876907f, -366.743774f, -35.999989f, 100f); // Water in the middle building (ring of water) and some eastbound tunnel
