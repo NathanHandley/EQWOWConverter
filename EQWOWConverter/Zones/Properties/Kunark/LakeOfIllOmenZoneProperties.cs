@@ -25,11 +25,11 @@ namespace EQWOWConverter.Zones.Properties
 
             // Fix Z
             AddZoneLineBox("firiona", 1292.149292f, 3306.101807f, 187.548737f, ZoneLineOrientationType.East,
-                -4380.426758f, 1431.185181f, 487.776611f, -4773.780273f, 662.696167f, 190.810226f);
+                1431.185181f, -4380.426758f, 487.776611f, 662.696167f, -4773.780273f, 190.810226f);
             AddZoneLineBox("frontiermtns", -660.689392f, -4141.462402f, 114.727158f, ZoneLineOrientationType.West,
-                3693.796875f, -114.581352f, 366.001709f, 3351.493652f, -891.873901f, 4.848970f);
+                -114.581352f, 3693.796875f, 366.001709f, -891.873901f, 3351.493652f, 4.848970f);
             AddZoneLineBox("warslikswood", -3657.177002f, 1188.529663f, 52.453812f, ZoneLineOrientationType.West,
-                1339.878052f, 4400.304688f, 205.636200f, 1054.167725f, 4284.637695f, 28.188250f);
+                4400.304688f, 1339.878052f, 205.636200f, 4284.637695f, 1054.167725f, 28.188250f);
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 1502.120117f, 1338.126587f, -2497.938965f, -1861.968262f, 65.187592f, 400f); // Middle lake
 

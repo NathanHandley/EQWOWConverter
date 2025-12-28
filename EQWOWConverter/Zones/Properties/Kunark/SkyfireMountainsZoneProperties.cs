@@ -26,9 +26,9 @@ namespace EQWOWConverter.Zones.Properties
 
             // Fix Z
             AddZoneLineBox("overthere", -988.312561f, 4201.076660f, 99.492737f, ZoneLineOrientationType.East,
-                -4348.341309f, -1063.791504f, 108.087097f, -4404.932129f, -1129.249390f, 26.440439f); // North
+                -1063.791504f, -4348.341309f, 108.087097f, -1129.249390f, -4404.932129f, 26.440439f); // North
             AddZoneLineBox("overthere", -1097.624146f, 4200.114258f, 99.154114f, ZoneLineOrientationType.East,
-                -4349.868164f, -1161.999390f, 108.087097f, -4408.827148f, -1231.563721f, 26.019140f); // South
+                -1161.999390f, -4349.868164f, 108.087097f, -1231.563721f, -4408.827148f, 26.019140f); // South
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", 3761.557861f, 3470.733398f, 3268.780273f, 3050.660889f, 208.125198f, 300f); // North lava crater, north part
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", 3614.604736f, 3515.087158f, 3084.947754f, 3062.883789f, 208.125198f, 300f); // North lava crater, south part

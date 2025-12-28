@@ -25,11 +25,11 @@ namespace EQWOWConverter.Zones.Properties
 
             // Fix Z
             AddZoneLineBox("droga", -1389.241333f, 263.044464f, -191.757477f, ZoneLineOrientationType.North,
-                225.447723f, -942.595520f, -80.635323f, 91.078529f, -1016.506470f, -126.038986f); // West
+                -942.595520f, 225.447723f, -80.635323f, -1016.506470f, 91.078529f, -126.038986f); // West
             AddZoneLineBox("droga", -1311.640869f, -919.159363f, -79.589958f, ZoneLineOrientationType.North,
-                -809.300537f, -748.473267f, -145.098434f, -941.389526f, -823.214478f, -183.636047f); // East
+                -748.473267f, -809.300537f, -145.098434f, -823.214478f, -941.389526f, -183.636047f); // East
             AddZoneLineBox("frontiermtns", -2698.660400f, -539.507812f, -498.115234f, ZoneLineOrientationType.South,
-                -1780.908203f, -2243.407227f, 19.086390f, -1935.406616f, -2328.118652f, -9.129420f);
+                -2243.407227f, -1780.908203f, 19.086390f, -2328.118652f, -1935.406616f, -9.129420f);
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_drowatr1", -1607.364746f, 1672.431396f, -1989.492432f, 1287.276245f, -319.874939f, 200f); // Westmost water room and connecting side
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_drowatr1", -1632.191650f, 1407.210693f, -1718.308350f, 1302.216797f, -277.874908f, 15f); // West area, upper room pond

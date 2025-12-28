@@ -23,9 +23,9 @@ namespace EQWOWConverter.Zones.Properties
 
             // Fix Z
             AddZoneLineBox("dreadlands", 698.158325f, -1907.232056f, 23.048800f, ZoneLineOrientationType.West,
-                493.402069f, 175.202133f, 26.870760f, 404.663788f, 79.528343f, -6.118140f); // North entry
+                175.202133f, 493.402069f, 26.870760f, 79.528343f, 404.663788f, -6.118140f); // North entry
             AddZoneLineBox("dreadlands", 500.771332f, -1914.368774f, 23.239189f, ZoneLineOrientationType.West,
-                505.477692f, -33.678230f, 67.481300f, 403.366791f, -160.809219f, -9.480820f); // South entry
+                -33.678230f, 505.477692f, 67.481300f, -160.809219f, 403.366791f, -9.480820f); // South entry
 
             SetZonewideEnvironmentAsOutdoorsNoSky(26, 26, 26, ZoneFogType.Heavy, 1f);
             OverrideVertexColorIntensity(0.4);
