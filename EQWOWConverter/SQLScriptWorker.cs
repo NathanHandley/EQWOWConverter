@@ -999,6 +999,12 @@ namespace EQWOWConverter
                             string scriptComment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUID, " Chain Activates GUID ", gameObject.TriggerGameObjectGUID);
                             smartScriptsSQL.AddRowForGameObjectStateTriggerEvent(gameObject.GameObjectTemplateEntryID, gameObject.TriggerGameObjectGUID, gameObject.TriggerGameObjectTemplateEntryID, scriptComment);
                         }
+                        else if (gameObject.ObjectType == GameObjects.GameObjectType.Teleport)
+                        {
+                            string scriptComment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUID, " Teleports to ", gameObject.DestinationZoneShortName);
+                            smartScriptsSQL.AddRowForGameObjectTriggeredTeleport(gameObject.GameObjectTemplateEntryID, gameObject.DestinationMapID, gameObject.DestinationPosition.X,
+                                gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
+                        }
                     }
                 }
             }

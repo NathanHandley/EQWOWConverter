@@ -58,6 +58,8 @@ namespace EQWOWConverter.GameObjects
         public float Orientation;
         public float EQHeading;
         public float EQIncline;
+        public string DestinationZoneShortName = string.Empty;
+        public int DestinationMapID;
         public Vector3 DestinationPosition = new Vector3();
         public float DestinationEQHeading;
         public float DestinationOrientation;
@@ -223,6 +225,8 @@ namespace EQWOWConverter.GameObjects
                     }
                     else
                     {
+                        newGameObject.DestinationZoneShortName = targetZoneShortName;
+                        newGameObject.DestinationMapID = zonePropertiesByShortName[targetZoneShortName].DBCMapID;
                         float xDestinationPosition = float.Parse(gameObjectsRow["dest_x"]) * Configuration.GENERATE_WORLD_SCALE;
                         float yDestinationPosition = float.Parse(gameObjectsRow["dest_y"]) * Configuration.GENERATE_WORLD_SCALE;
                         float zDestinationPosition = float.Parse(gameObjectsRow["dest_z"]) * Configuration.GENERATE_WORLD_SCALE;
@@ -480,6 +484,7 @@ namespace EQWOWConverter.GameObjects
                                     curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                 } break;
                             case GameObjectType.TradeskillFocus:
+                            case GameObjectType.Teleport:
                                 {
                                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                                     objectProperties.DoGenerateCollisionFromMeshData = gameObject.HasColission;

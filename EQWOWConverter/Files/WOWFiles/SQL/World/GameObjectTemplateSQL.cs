@@ -45,7 +45,7 @@ namespace EQWOWConverter.WOWFiles
         public void AddRowForGameObject(string name, GameObject gameObject)
         {
             string aiName = string.Empty;
-            if (gameObject.TriggerGameObjectGUID != 0)
+            if (gameObject.TriggerGameObjectGUID != 0 || gameObject.ObjectType == GameObjectType.Teleport)
                 aiName = "SmartGameObjectAI";
 
             switch (gameObject.ObjectType)
@@ -80,6 +80,15 @@ namespace EQWOWConverter.WOWFiles
                             0, // Start open
                             0, // "ID" from Lock.dbc
                             gameObject.CloseTimeInMS, // Autoclose time in MS
+                            1, // "Area of Interest" is set to infinite (see from any distance)
+                            0, gameObject.Scale, aiName);
+                    } break;
+                case GameObjectType.Teleport:
+                    {
+                        AddRow(gameObject.GameObjectTemplateEntryID,
+                            10, // Goober / Clickable
+                            gameObject.GameObjectDisplayInfoID, name,
+                            0, 0, 0,
                             1, // "Area of Interest" is set to infinite (see from any distance)
                             0, gameObject.Scale, aiName);
                     } break;
