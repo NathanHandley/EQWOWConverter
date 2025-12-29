@@ -65,6 +65,10 @@ namespace EQWOWConverter.WOWFiles
                    7,          // SMART_TARGET_SELF = 1
                    0,
                    0,
+                   0,
+                   0,
+                   0,
+                   0,
                    comment
             );
         }
@@ -87,6 +91,10 @@ namespace EQWOWConverter.WOWFiles
                 14, // SMART_TARGET_GAMEOBJECT_GUID
                 targetGameObjectGUID,
                 targetGameObjectEntryID,
+                0,
+                0,
+                0,
+                0,
                 comment);
         }
 
@@ -108,6 +116,10 @@ namespace EQWOWConverter.WOWFiles
                wowSpellID,
                96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
                2, // SMART_TARGET_VICTIM
+               0,
+               0,
+               0,
+               0,
                0,
                0,
                comment
@@ -134,6 +146,10 @@ namespace EQWOWConverter.WOWFiles
                7, // SMART_TARGET_ACTION_INVOKER
                0,
                0,
+               0,
+               0,
+               0,
+               0,
                comment
             );
         }
@@ -158,6 +174,10 @@ namespace EQWOWConverter.WOWFiles
                1, // SMART_TARGET_SELF
                0,
                0,
+               0,
+               0,
+               0,
+               0,
                comment
             );
         }
@@ -178,6 +198,10 @@ namespace EQWOWConverter.WOWFiles
                wowSpellID,
                64, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting)
                2, // SMART_TARGET_VICTIM
+               0,
+               0,
+               0,
+               0,
                0,
                0,
                comment
@@ -201,6 +225,10 @@ namespace EQWOWConverter.WOWFiles
                wowSpellID,
                64, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting)
                2, // SMART_TARGET_VICTIM
+               0,
+               0,
+               0,
+               0,
                0,
                0,
                comment
@@ -227,8 +255,35 @@ namespace EQWOWConverter.WOWFiles
             //);
         }
 
+        public void AddRowForGameObjectTriggeredTeleport(int gameObjectTemplateID, int targetMapID, float targetX, float targetY, float targetZ, 
+            float targetOrientation, string comment)
+        {
+            AddRow(gameObjectTemplateID, // Negative for GUID, Positive for Entry
+                1,  // SMART_SCRIPT_TYPE_GAMEOBJECT
+                64, // SMART_EVENT_GOSSIP_HELLO - When you click on it
+                100,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                62,  // SMART_ACTION_TELEPORT,
+                targetMapID,
+                0,
+                7, // SMART_TARGET_ACTION_INVOKER
+                0,
+                0,
+                targetX,
+                targetY,
+                targetZ,
+                targetOrientation,
+                comment);
+        }
+
         public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventChance, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
-            int eventParam5, int eventParam6, int actionType, int actionParam1, int actionParam2, int targetType, int targetParam1, int targetParam2, string comment)
+            int eventParam5, int eventParam6, int actionType, int actionParam1, int actionParam2, int targetType, int targetParam1, int targetParam2,
+            float targetX, float targetY, float targetZ, float targetOrientation, string comment)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entryorguid", entryOrGUIDID);
@@ -257,10 +312,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("target_param2", targetParam2);
             newRow.AddInt("target_param3", 0);
             newRow.AddInt("target_param4", 0);
-            newRow.AddFloat("target_x", 0);
-            newRow.AddFloat("target_y", 0);
-            newRow.AddFloat("target_z", 0);
-            newRow.AddFloat("target_o", 0);
+            newRow.AddFloat("target_x", targetX);
+            newRow.AddFloat("target_y", targetY);
+            newRow.AddFloat("target_z", targetZ);
+            newRow.AddFloat("target_o", targetOrientation);
             newRow.AddString("comment", comment);
             Rows.Add(newRow);
         }

@@ -58,6 +58,9 @@ namespace EQWOWConverter.GameObjects
         public float Orientation;
         public float EQHeading;
         public float EQIncline;
+        public Vector3 DestinationPosition = new Vector3();
+        public float DestinationEQHeading;
+        public float DestinationOrientation;
         public ObjectModel? ObjectModel = null;
         public int GameObjectGUID;
         public int GameObjectTemplateEntryID;
@@ -164,7 +167,7 @@ namespace EQWOWConverter.GameObjects
             Dictionary<(string, int), GameObject> interactiveGameObjectsByZoneShortNameAndDoorID = new Dictionary<(string, int), GameObject>();
 
             // Process the rows
-            List<string> validZoneShortNames = ZoneProperties.GetZonePropertyListByShortName().Keys.ToList();
+            Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
             foreach (Dictionary<string, string> gameObjectsRow in gameObjectsRows)
             {
                 // Skip disabled
@@ -198,17 +201,45 @@ namespace EQWOWConverter.GameObjects
                 // Skip invalid object types
                 GameObjectType gameObjectType = GetType(gameObjectsRow["type"]);
                 if (gameObjectType != GameObjectType.Door && gameObjectType != GameObjectType.NonInteract && gameObjectType != GameObjectType.TradeskillFocus
-                    && gameObjectType != GameObjectType.Bridge && gameObjectType != GameObjectType.Mailbox)
+                    && gameObjectType != GameObjectType.Bridge && gameObjectType != GameObjectType.Mailbox && gameObjectType != GameObjectType.Teleport)
                     continue;
                 if (Configuration.OBJECT_GAMEOBJECT_ENABLE_MAILBOXES == false && gameObjectType == GameObjectType.Mailbox)
                     continue;
 
                 // Skip zones not being loaded
-                if (validZoneShortNames.Contains(zoneShortName) == false)
+                if (zonePropertiesByShortName.ContainsKey(zoneShortName) == false)
                     continue;
 
                 GameObject newGameObject = new GameObject();
                 newGameObject.ID = int.Parse(gameObjectsRow["id"]);
+                if (gameObjectType == GameObjectType.Teleport)
+                {
+                    // If the target zone isn't a loaded zone, just make it non-interactive
+                    string targetZoneShortName = gameObjectsRow["dest_zone"].Trim();
+                    if (zonePropertiesByShortName.ContainsKey(targetZoneShortName) == false)
+                    {
+                        Logger.WriteDebug("GameObject with ID ", newGameObject.ID.ToString(), " is a teleportation object, but the target zone of ", targetZoneShortName, " is not being generated, so switching to non-interact");
+                        gameObjectType = GameObjectType.NonInteract;
+                    }
+                    else
+                    {
+                        float xDestinationPosition = float.Parse(gameObjectsRow["dest_x"]) * Configuration.GENERATE_WORLD_SCALE;
+                        float yDestinationPosition = float.Parse(gameObjectsRow["dest_y"]) * Configuration.GENERATE_WORLD_SCALE;
+                        float zDestinationPosition = float.Parse(gameObjectsRow["dest_z"]) * Configuration.GENERATE_WORLD_SCALE;
+                        newGameObject.DestinationPosition = new Vector3(xDestinationPosition, yDestinationPosition, zDestinationPosition);
+
+                        // "Heading" in EQ was 0-512 instead of 0-360, and the result needs to rotate 180 degrees due to y axis difference
+                        newGameObject.DestinationEQHeading = float.Parse(gameObjectsRow["dest_heading"]);
+                        if (newGameObject.DestinationEQHeading == 0)
+                            newGameObject.DestinationOrientation = MathF.PI;
+                        if (newGameObject.DestinationEQHeading != 0)
+                        {
+                            float destOrientationInDegrees = (newGameObject.DestinationEQHeading / 512) * 360;
+                            float destOrientationInRadians = destOrientationInDegrees * MathF.PI / 180.0f;
+                            newGameObject.DestinationOrientation = destOrientationInRadians + MathF.PI;
+                        }
+                    }   
+                }
                 newGameObject.GameObjectTemplateEntryID = int.Parse(gameObjectsRow["gotemplate_id"]);
                 newGameObject.DoorID = int.Parse(gameObjectsRow["doorid"]);
                 newGameObject.TriggerDoorID = int.Parse(gameObjectsRow["triggerdoor"]);
