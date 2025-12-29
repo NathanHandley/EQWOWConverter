@@ -26,18 +26,14 @@ namespace EQWOWConverter.Zones.Properties
                 2987.374512f, 3344.827637f, 137.718796f, 2941.379639f, 3248.237549f, -34.482761f);
             AddZoneLineBox("cabeast", -181.223022f, -455.999146f, 0.000040f, ZoneLineOrientationType.North,
                 3244.827637f, 3072.955811f, 137.718994f, 3128.712891f, 2986.207031f, -68.965530f);
-            AddZoneLineBox("firiona", 3480.393066f, -2352.897461f, -112.392548f, ZoneLineOrientationType.South,
-                -4380.570801f, -1492.873291f, 318.756927f, -5243.627930f, -3491.343018f, -164.285263f); // East
             AddZoneLineBox("trakanon", 1571.971069f, 4444.021484f, -280.291809f, ZoneLineOrientationType.North,
                 2029.501465f, -4403.036133f, 127.860313f, 1757.333618f, -4617.994141f, 27.355209f);
-
-            // Redo
-            AddZoneLineBox("fieldofbone", -3328.373047f, 1095.472534f, 8.811680f, ZoneLineOrientationType.North,
-                5282.202637f, 1506.837646f, 311.342499f, 5086.843262f, 580.232666f, -68.642906f);
-
-            // Retest
-            AddZoneLineBox("firiona", 4701.068848f, 2735.671387f, 0.595480f, ZoneLineOrientationType.South,
-                -3444.940186f, 4242.100586f, 411.519196f, -5414.640137f, 762.219116f, -38.468048f); // West
+            AddZoneLineBox("firiona", 2799.611572f, 2990.437012f, -81.785332f, ZoneLineOrientationType.South,
+                -3570.572266f, 3672.467773f, 463.980804f, -4000f, 2239.987305f, -150f); // West
+            AddZoneLineBox("firiona", 2821.060059f, -2125.918701f, -59.864441f, ZoneLineOrientationType.South,
+                -2810.122559f, -1689.736694f, 914.994080f, -4110.231934f, -3271.348145f, -115.132233f); // East
+            AddZoneLineBox("fieldofbone", -2631.684326f, 506.494110f, 8.625390f, ZoneLineOrientationType.North,
+                5372.649414f, 1621.067383f, 491.251678f, 4752.186035f, 601.566467f, -159.590729f);
 
             // Main water
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_spwt01", 4014.024414f, 3982.306152f, -3986.161865f, -4018.020264f, -20.530670f, 500f);

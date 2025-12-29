@@ -30,14 +30,12 @@ namespace EQWOWConverter.Zones.Properties
                 504.123322f, 947.919067f, 115.329117f, 443.650513f, 923.330933f, 54.821972f); // East
             AddZoneLineBox("kaesora", 369.378082f, 39.647121f, 95.968773f, ZoneLineOrientationType.South,
                 -1876.434204f, -27.546480f, -102.778427f, -1915.887939f, -154.983429f, -189.135834f);
-
-            // Fix
-            AddZoneLineBox("emeraldjungle", -1901.190918f, 5196.096191f, -9.045620f, ZoneLineOrientationType.East,
-                -1469.073242f, -1273.950073f, 272.566742f, -2379.717773f, -1835.171875f, -35.978790f);
-            AddZoneLineBox("swampofnohope", 4919.936523f, 1160.701660f, 29.458639f, ZoneLineOrientationType.South,
-                -3451.142822f, 1648.809570f, 343.569519f, -4156.723633f, 583.717896f, -66.526421f);
-            AddZoneLineBox("warslikswood", 1572.644287f, -3552.959717f, 1.012120f, ZoneLineOrientationType.West,
-                1801.588013f, 5128.291504f, 383.528931f, 886.039978f, 4616.152832f, -61.082981f);
+            AddZoneLineBox("emeraldjungle", -1248.687012f, 4822.778809f, -10.562540f, ZoneLineOrientationType.East,
+                -728.203369f, -810.171387f, 292.050262f, -1687.132812f, -1426.814819f, -240.731918f);
+            AddZoneLineBox("warslikswood", 1695.040771f, -3486.741699f, 1.675020f, ZoneLineOrientationType.West,
+                1750.624023f, 4812.213379f, 611.543274f, 771.424744f, 3729.381348f, -231.297836f);
+            AddZoneLineBox("swampofnohope", 4577.290527f, 1101.923096f, 58.393021f, ZoneLineOrientationType.South,
+                -2649.325439f, 1160.931030f, 396.166199f, -3491.827881f, -7.119500f, -122.874771f);
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 4608.963867f, 4793.761230f, 1746.790283f, -1613.797729f, -179.124878f, 500f);
         

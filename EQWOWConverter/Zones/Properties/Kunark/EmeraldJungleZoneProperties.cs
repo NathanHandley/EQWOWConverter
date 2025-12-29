@@ -22,10 +22,8 @@ namespace EQWOWConverter.Zones.Properties
         {
             SetZonewideEnvironmentAsOutdoorsNoSky(22, 26, 23, ZoneFogType.Heavy, 1f);
 
-            // Broken
-            AddZoneLineBox("fieldofbone", -1972.522217f, -1195.001099f, -1.372020f, ZoneLineOrientationType.West,
-                -784.296265f, 5763.723633f, 158.024155f, -2307.601807f, 5487.835449f, -61.162090f);
-
+            AddZoneLineBox("fieldofbone", -1234.403564f, -767.976746f, -8.242520f, ZoneLineOrientationType.West,
+                -536.343384f, 5581.730957f, 293.219910f, -1628.799805f, 4909.223145f, -143.907333f);
             AddZoneLineBox("citymist", -0.518530f, -774.348938f, 0.000000f, ZoneLineOrientationType.West,
                 313.793121f, -1718.521484f, -293.553589f, 255.748840f, -1765.517334f, -340.562408f);
             AddZoneLineBox("trakanon", 3958.170654f, 1500.808472f, -344.466949f, ZoneLineOrientationType.South,

@@ -24,10 +24,10 @@ namespace EQWOWConverter.Zones.Properties
                 435.862000f, 6081.367676f, -34.554569f, 264.265533f, 5902.338379f, -100.851601f);
             AddZoneLineBox("lakeofillomen", 1294.271118f, -4322.280273f, 208.467178f, ZoneLineOrientationType.West,
                 1434.877808f, 4066.415771f, 549.152283f, 1029.942871f, 3403.977295f, 143.228012f);
-            AddZoneLineBox("swampofnohope", -3422.964111f, 2325.960449f, 4.511410f, ZoneLineOrientationType.North,
-                5576.097168f, 4064.805664f, 329.773285f, 4867.129395f, 2067.873047f, -45.306099f); // West
-            AddZoneLineBox("swampofnohope", -3847.188721f, -2265.904785f, 1.211880f, ZoneLineOrientationType.North,
-                4732.521973f, -1630.775146f, 427.483246f, 3637.427002f, -2960.880859f, -195.061737f); // East
+            AddZoneLineBox("swampofnohope", -3529.421875f, 2375.426025f, 16.446251f, ZoneLineOrientationType.North,
+                5011.051758f, 4177.166016f, 751.968750f, 2959.246338f, 1712.352905f, -120.101540f); // West
+            AddZoneLineBox("swampofnohope", -2535.899170f, -2158.673340f, 44.126610f, ZoneLineOrientationType.North,
+                4814.504395f, -1717.879517f, 1012.971863f, 3438.907471f, -3290.471924f, -278.979065f); // East
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -355.170837f, 4835.860840f, -10012.150391f, -5163.290039f, -126.468178f, 500f); // Ocean
 

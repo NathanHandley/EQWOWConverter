@@ -20,10 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public DreadlandsZoneProperties() : base()
         {
-            // Fix this one
             AddZoneLineBox("burningwood", -4247.9624f, -712.7452f, 245.30704f, ZoneLineOrientationType.North,
-                3057.91f, -414.8485f, 319.16867f, 2988.2588f, -1083.3096f, 240.4023f);
-
+                4832.997559f, 42.463902f, 1087.840820f, 2864.077393f, -1472.783569f, 40.859489f);
             AddZoneLineBox("karnor", 115.772827f, 341.605042f, 0f, ZoneLineOrientationType.East,
                 720.839783f, -1986.169312f, 63.532600f, 675.693604f, -2042.756836f, 18.183969f); // Karnor North entry
             AddZoneLineBox("karnor", -81.997353f, 341.945251f, 0f, ZoneLineOrientationType.East,

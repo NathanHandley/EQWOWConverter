@@ -32,10 +32,8 @@ namespace EQWOWConverter.Zones.Properties
                 727.563416f, 4580.014648f, 696.519043f, -408.334595f, 3995.653076f, 201.359283f);
             AddZoneLineBox("dalnir", 6.630970f, 62.347679f, 0.004290f, ZoneLineOrientationType.East,
                 2592.124023f, 4573.925293f, -223.179184f, 2541.819824f, 4508.052246f, -250.936874f);
-
-            // Change zone-in point
-            AddZoneLineBox("fieldofbone", 1363.532104f, 4415.593750f, 0.605050f, ZoneLineOrientationType.East,
-                1738.753296f, -3685.515625f, 276.207886f, 1084.381348f, -4066.117188f, -45.409512f);            
+            AddZoneLineBox("fieldofbone", 1413.743408f, 3554.795898f, -0.695750f, ZoneLineOrientationType.East,
+                1922.704956f, -3688.215576f, 919.834229f, 830.668396f, -4323.236816f, -194.401077f);
 
             // Ocean
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 7868.704590f, 7324.179199f, 685.372620f, -6605.181641f, -217.343323f, 500f);
