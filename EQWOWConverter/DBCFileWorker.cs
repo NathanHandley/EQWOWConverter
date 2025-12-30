@@ -394,12 +394,18 @@ namespace EQWOWConverter
                         closeSoundEntryID = closeSoundsByModelNameAndOpenType[nameAndOpenType].DBCID;
                     }
 
+                    BoundingBox geoboxBounding = new BoundingBox(gameObjectModelsByNameAndOpenType[nameAndOpenType].VisibilityBoundingBox);
+
+                    // This is a bit of a hack right now to ensure that rotated objects are always interactable
+                    float maxDistance = Math.Max(geoboxBounding.GetZDistance(), Math.Max(geoboxBounding.GetYDistance(), geoboxBounding.GetXDistance()));
+                    geoboxBounding.ExpandToMinimumSize(maxDistance);
+
                     // Display info
                     string fileName = string.Concat(nameAndOpenType.Item1, "_", nameAndOpenType.Item2.ToString());
                     string relativeObjectFileName = Path.Combine("World", "Everquest", "GameObjects", fileName, fileName + ".mdx");
                     gameObjectDisplayInfoDBC.AddRow(gameObjectDisplayInfoIDsByModelNameAndOpenType[nameAndOpenType],
                         relativeObjectFileName.ToLower(),
-                        gameObjectModelsByNameAndOpenType[nameAndOpenType].VisibilityBoundingBox,
+                        geoboxBounding,
                         openSoundEntryID, closeSoundEntryID);
                 }
                 string soundDirectoryRelative = Path.Combine("Sound", "GameObjects");
