@@ -58,6 +58,8 @@ namespace EQWOWConverter.GameObjects
         public float Orientation;
         public float EQHeading;
         public float EQIncline;
+        public bool UseOrientationForRotation = true;
+        public Quaternion InteractiveRotation = new Quaternion();
         public string DestinationZoneShortName = string.Empty;
         public int DestinationMapID;
         public Vector3 DestinationPosition = new Vector3();
@@ -297,6 +299,8 @@ namespace EQWOWConverter.GameObjects
                     newGameObject.Orientation = orientationInRadians + MathF.PI;
                 }
                 newGameObject.EQIncline = float.Parse(gameObjectsRow["incline"]);
+                if (newGameObject.EQIncline != 0 && newGameObject.ObjectType == GameObjectType.Teleport)
+                    newGameObject.UseOrientationForRotation = true;
 
                 // Sound, if enabled
                 if (newGameObject.SoundEnabled)

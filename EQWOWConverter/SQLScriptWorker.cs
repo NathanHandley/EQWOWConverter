@@ -55,6 +55,7 @@ namespace EQWOWConverter
         private GossipMenuOptionSQL gossipMenuOptionSQL = new GossipMenuOptionSQL();
         private GraveyardZoneSQL graveyardZoneSQL = new GraveyardZoneSQL();
         private GameObjectSQL gameObjectSQL = new GameObjectSQL();
+        private GameObjectAddonSQL gameObjectAddonSQL = new GameObjectAddonSQL();
         private GameObjectTemplateSQL gameObjectTemplateSQL = new GameObjectTemplateSQL();
         private GameObjectTemplateAddonSQL gameObjectTemplateAddonSQL = new GameObjectTemplateAddonSQL();
         private InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
@@ -866,7 +867,7 @@ namespace EQWOWConverter
                 int mapID = mapIDsByShortName[transportLift.SpawnZoneShortName.ToLower().Trim()];
                 gameObjectTemplateSQL.AddRowForTransportLift(transportLift.GameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name, transportLift.EndTimestamp);
                 gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.GameObjectTemplateID);
-                gameObjectSQL.AddRow(transportLift.GameObjectGUID, transportLift.GameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation);
+                gameObjectSQL.AddRow(transportLift.GameObjectGUID, transportLift.GameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation, new Quaternion());
             }
             foreach (TransportLiftTrigger transportLiftTrigger in TransportLiftTrigger.GetAllTransportLiftTriggers())
             {
@@ -886,7 +887,7 @@ namespace EQWOWConverter
                 gameObjectTemplateSQL.AddRowForTransportLiftTrigger(transportLiftTrigger.GameObjectTemplateID, transportLiftTrigger.GameObjectDisplayInfoID, name, transportLiftTrigger.ResetTimeInMS);
                 gameObjectTemplateAddonSQL.AddRowNoDespawn(transportLiftTrigger.GameObjectTemplateID);
                 gameObjectSQL.AddRow(transportLiftTrigger.GameObjectGUID, transportLiftTrigger.GameObjectTemplateID, mapID, areaID, new Vector3(transportLiftTrigger.SpawnX, transportLiftTrigger.SpawnY,
-                    transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation);
+                    transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation, new Quaternion());
             }
         }
 
@@ -989,9 +990,11 @@ namespace EQWOWConverter
                         if (name.Length == 0)
                             name = comment;
                         int mapID = mapIDsByShortName[gameObjectByShortName.Key];
-                        gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, comment);
+                        gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, gameObject.InteractiveRotation, comment);
                         gameObjectTemplateSQL.AddRowForGameObject(name, gameObject);
                         gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateEntryID);
+                        if (gameObject.UseOrientationForRotation == true)
+                            gameObjectAddonSQL.AddRow(gameObject.GameObjectGUID); // If this record doesn't exist, only "Orientation" will be honored from the SQL table gameobject
 
                         // Attach any smart scripts
                         if (gameObject.TriggerGameObjectGUID != 0)
@@ -1029,6 +1032,7 @@ namespace EQWOWConverter
             gameEventSQL.SaveToDisk("game_event", SQLFileType.World);
             gameGraveyardSQL.SaveToDisk("game_graveyard", SQLFileType.World);
             gameObjectSQL.SaveToDisk("gameobject", SQLFileType.World);
+            gameObjectAddonSQL.SaveToDisk("gameobject_addon", SQLFileType.World);
             gameObjectTemplateSQL.SaveToDisk("gameobject_template", SQLFileType.World);
             gameObjectTemplateAddonSQL.SaveToDisk("gameobject_template_addon", SQLFileType.World);
             gameTeleSQL.SaveToDisk("game_tele", SQLFileType.World);

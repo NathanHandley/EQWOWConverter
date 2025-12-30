@@ -576,6 +576,20 @@ namespace EQWOWConverter
                         }
                         curObject.ModelName = staticObjectNameMap[curObject.OriginalModelName];
                     }
+
+                    // Process any rotation data by first making a rotation vector, and then converting to the appropriate quarterion
+                    // Note that EQ uses 0-512, so normalize that first
+                    float rotationDegrees = ((curObject.EQHeading / 512) * -360f); // Reverse for orientation handiness difference
+                    float tiltInDegrees = (curObject.EQIncline / 512) * 360;
+                    Vector3 rotationVector = new Vector3(0, rotationDegrees, tiltInDegrees);
+                    float rotateYaw = Convert.ToSingle(Math.PI / 180) * rotationVector.Z;
+                    float rotatePitch = Convert.ToSingle(Math.PI / 180) * (rotationVector.X + 180f); // Seems like a 180 flip is needed.  Revisit if issues.
+                    float rotateRoll = Convert.ToSingle(Math.PI / 180) * rotationVector.Y; 
+                    System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotateYaw, rotatePitch, rotateRoll);
+                    curObject.InteractiveRotation.X = rotationQ.X;
+                    curObject.InteractiveRotation.Y = rotationQ.Y;
+                    curObject.InteractiveRotation.Z = rotationQ.Z;
+                    curObject.InteractiveRotation.W = -rotationQ.W; // Flip the sign for handedness
                 }
             }
             Dictionary<string, List<GameObject>> nonInteractiveGameObjectsByZoneShortname = GameObject.GetDoodadGameObjectsByZoneShortNames();

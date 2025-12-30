@@ -27,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM gameobject WHERE `id` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `id` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
-        public void AddRow(int gameObjectGUID, int gameObjectTemplateID, int mapID, int areaID, Vector3 position, float orientation, string comment = "")
+        public void AddRow(int gameObjectGUID, int gameObjectTemplateID, int mapID, int areaID, Vector3 position, float orientation, Quaternion rotation, string comment = "")
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("guid", gameObjectGUID);
@@ -41,10 +41,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("position_y", position.Y);
             newRow.AddFloat("position_z", position.Z);
             newRow.AddFloat("orientation", orientation);
-            newRow.AddFloat("rotation0", 0);
-            newRow.AddFloat("rotation1", 0);
-            newRow.AddFloat("rotation2", 0);
-            newRow.AddFloat("rotation3", 0);
+            newRow.AddFloat("rotation0", rotation.X); // These 4 columns are ignored unless there is a record in gameobject_addon
+            newRow.AddFloat("rotation1", rotation.Y); //
+            newRow.AddFloat("rotation2", rotation.Z); //
+            newRow.AddFloat("rotation3", rotation.W); //
             newRow.AddInt("spawntimesecs", 0);
             newRow.AddInt("animprogress", 0);
             newRow.AddInt("state", 1);
