@@ -86,7 +86,7 @@ namespace EQWOWConverter.WOWFiles
                 case GameObjectType.Teleport:
                     {
                         AddRow(gameObject.GameObjectTemplateEntryID,
-                            10, // Goober / Clickable
+                            0, // Door <- Overrides the visibility distance making it visible from very far away, but should be "10" (Goober)
                             gameObject.GameObjectDisplayInfoID, name,
                             0, 0, 0,
                             1, // "Area of Interest" is set to infinite (see from any distance)
