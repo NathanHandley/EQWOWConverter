@@ -664,7 +664,9 @@ namespace EQWOWConverter
                     case GameObjectOpenType.TYPE56:
                     case GameObjectOpenType.TYPE57:
                     case GameObjectOpenType.TYPE58:
-                        {
+                    case GameObjectOpenType.TYPE59:
+                    case GameObjectOpenType.TYPE145:
+                    {
                             ObjectModelProperties objectProperties = new ObjectModelProperties();
                             objectProperties.DoGenerateCollisionFromMeshData = nonInteractiveGameObject.HasColission;
                             objectProperties.RenderingEnabled = nonInteractiveGameObject.RenderingEnabled;
@@ -672,6 +674,7 @@ namespace EQWOWConverter
                             curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, nonInteractiveGameObject.ModelName);
                         } break;
                     case GameObjectOpenType.TYPE105:
+                    case GameObjectOpenType.TYPE106:
                         {
                             ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnIdleRotateAroundYClockwise, 0, 9000, nonInteractiveGameObject.HasColission, nonInteractiveGameObject.RenderingEnabled);
                             curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
@@ -684,8 +687,6 @@ namespace EQWOWConverter
                             curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                             curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, nonInteractiveGameObject.ModelName);
                         } break;
-                    case GameObjectOpenType.TYPE59: // TODO: mischiefplane (POMTORCH2000), frontiermtns (FRONTROCK102B)
-                    case GameObjectOpenType.TYPE106: // TODO: Droga, DNWINCH102
                     case GameObjectOpenType.TYPE156: // TODO: Sleeper, SLFF200
                     default:
                         {

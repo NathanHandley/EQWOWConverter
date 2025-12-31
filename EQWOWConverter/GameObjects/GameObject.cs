@@ -439,6 +439,8 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE12:
                                         case GameObjectOpenType.TYPE15:
                                         case GameObjectOpenType.TYPE17:
+                                        case GameObjectOpenType.TYPE21:
+                                        case GameObjectOpenType.TYPE22:
                                         case GameObjectOpenType.TYPE26:                                        
                                             {
                                                 ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateSlideLeft, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
@@ -450,6 +452,8 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE65:
                                         case GameObjectOpenType.TYPE66: 
                                         case GameObjectOpenType.TYPE70:
+                                        case GameObjectOpenType.TYPE71:
+                                        case GameObjectOpenType.TYPE72:
                                         case GameObjectOpenType.TYPE75:
                                         case GameObjectOpenType.TYPE76:
                                             {
@@ -464,16 +468,11 @@ namespace EQWOWConverter.GameObjects
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE10: // TODO: Figure this out, Thurgadin Door (probably slide).  Velious.
-                                        case GameObjectOpenType.TYPE21: // TODO: two in CityMist. CMGATE101
-                                        case GameObjectOpenType.TYPE22: // TODO: Only in charasis.  SBDOOR102
                                         case GameObjectOpenType.TYPE25: // TODO: Only in mischiefplane (KNBOOKC101 and BRISPORT202)
                                         case GameObjectOpenType.TYPE30: // TODO: Only in mischiefplane (POMDOOR206)
                                         case GameObjectOpenType.TYPE35: // TODO: Only in sleeper (SLTDOOR200)
-                                        case GameObjectOpenType.TYPE71: // TODO: Only in Sebilis (SBDOOR103)
-                                        case GameObjectOpenType.TYPE72: // TODO: Only in CityMist (CMDOOR2) and Sebilis (SBDOOR101)
                                         case GameObjectOpenType.TYPE74: // TODO: Only in Skyshrine (MARBDOOR200)
                                         case GameObjectOpenType.TYPE77: // TODO: Only in sleeper (SHRINEGATE200)
-                                        case GameObjectOpenType.TYPE145: // TODO: Only in Timorous (FAYBRAZIER)
                                         default:
                                             {
                                                 Logger.WriteError("Unhandled door open type of " + gameObject.OpenType);
@@ -683,6 +682,7 @@ namespace EQWOWConverter.GameObjects
                 case GameObjectOpenType.TYPE22: // LARGE_SLIDING_STONE
                 case GameObjectOpenType.TYPE25:
                 case GameObjectOpenType.TYPE26: // GIANT_SLIDING_METAL
+                case GameObjectOpenType.TYPE72: // LARGE_SLIDING_UPWARDS_STONE
                     {
                         openSound = GetSound("sldorsto.wav");
                         closeSound = GetSound("sldorstc.wav");
@@ -714,7 +714,6 @@ namespace EQWOWConverter.GameObjects
                 case GameObjectOpenType.TYPE66: // MEDIUM_SLIDING_UPWARDS_METAL
                 case GameObjectOpenType.TYPE70: // LARGE_SLIDING_UPWARDS
                 case GameObjectOpenType.TYPE71: // LARGE_SLIDING_UPWARDS_METAL
-                case GameObjectOpenType.TYPE72: // LARGE_SLIDING_UPWARDS_STONE
                 case GameObjectOpenType.TYPE75: // GIANT_SLIDING_UPWARDS
                 case GameObjectOpenType.TYPE76: // GIANT_SLIDING_UPWARDS_METAL
                 case GameObjectOpenType.TYPE77:
