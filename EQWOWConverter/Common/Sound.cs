@@ -97,6 +97,8 @@ namespace EQWOWConverter.Common
                     case "streamlg": volume = 0.2f; break;
                     case "streammd": volume = 0.15f; break;
                     case "streamsm": volume = 0.2f; break;
+                    case "swabird1": volume = 0.2f; break;
+                    case "swafrg1": volume = 0.2f; break;
                     case "swmp1": volume = 0.2f; break;
                     case "swmp2": volume = 0.2f; break;
                     case "swmp3": volume = 0.2f; break;
@@ -111,6 +113,7 @@ namespace EQWOWConverter.Common
                     case "wind_lp2": volume = 0.2f; break;
                     case "wind_lp3": volume = 0.2f; break;
                     case "wind_lp4": volume = 0.2f; break;
+                    case "wind_wh1": volume = 0.2f; break;
                     case "wtr_pool": volume = 0.2f; break;
                     default:
                         {
