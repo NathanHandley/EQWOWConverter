@@ -72,15 +72,20 @@ namespace EQWOWConverter.Common
                     case "elevloop": volume = 0.25f; break;
                     case "fire_lp": volume = 0.15f; break;
                     case "flagloop": volume = 0.2f; break;
+                    case "fordbrd2": volume = 0.2f; break;
                     case "lakelap1": volume = 0.2f; break;
+                    case "lakelap3": volume = 0.2f; break;
+                    case "lakelap4": volume = 0.2f; break;
                     case "lava_lp": volume = 0.25f; break;
                     case "lava2_lp": volume = 0.25f; break;
                     case "lever": volume = 0.25f; break;
                     case "night": volume = 0.2f; break;
                     case "ocean": volume = 0.2f; break;
+                    case "oceabrd1": volume = 0.2f; break;
                     case "oceanlap": volume = 0.2f; break;
                     case "oceanwav": volume = 0.2f; break;
                     case "portc_lp": volume = 0.2f; break;
+                    case "plancrk1": volume = 0.2f; break;
                     case "portcstp": volume = 0.2f; break;
                     case "rumblelp": volume = 0.2f; break;
                     case "silence": volume = 0f; break;
@@ -92,6 +97,7 @@ namespace EQWOWConverter.Common
                     case "space": volume = 0.25f; break;
                     case "speardn": volume = 0.25f; break;
                     case "spearup": volume = 0.25f; break;
+                    case "spelltrav": volume = 0.2f; break;
                     case "spinnrlp": volume = 0.36f; break;
                     case "steamlp": volume = 0.18f; break;
                     case "streamlg": volume = 0.2f; break;
@@ -107,6 +113,7 @@ namespace EQWOWConverter.Common
                     case "torch3d": volume = 0.15f; break;
                     case "torch_lp": volume = 0.2f; break;
                     case "trapdoor": volume = 0.2f; break;
+                    case "waterlp": volume = 0.2f; break;
                     case "wfall_lg": volume = 0.2f; break;
                     case "wfall_md": volume = 0.2f; break;
                     case "wind_lp1": volume = 0.2f; break;
