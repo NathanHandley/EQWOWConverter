@@ -20,6 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public LakeOfIllOmenZoneProperties() : base()
         {
+            SetZonewideAmbienceSound("", "darkwds1");
+            Enable2DSoundInstances("wind_lp3", "wind_lp4", "lakelap3");
+
             AddZoneLineBox("cabwest", -802.654480f, 767.458740f, -0.000070f, ZoneLineOrientationType.North, 6577.715820f, -6613.837891f, 145.213730f, 6533.130859f, -6645.066895f, 34.593719f);
             AddZoneLineBox("cabwest", -985.943787f, 584.806458f, 0.000380f, ZoneLineOrientationType.East, 6344.193848f, -6799.043945f, 182.103806f, 6315.685547f, -6843.227051f, 34.595600f);
             AddZoneLineBox("firiona", 1292.149292f, 3306.101807f, 183.356964f, ZoneLineOrientationType.East,

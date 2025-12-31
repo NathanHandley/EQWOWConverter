@@ -22,6 +22,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             SetZonewideEnvironmentAsIndoors(26, 26, 26, ZoneFogType.Medium);
             OverrideVertexColorIntensity(0.4);
+            Enable2DSoundInstances("caveloop", "wind_lp4", "wind_wh1");
 
             AddZoneLineBox("fieldofbone", -1893.204956f, -182.732758f, -131.190842f, ZoneLineOrientationType.East,
                 425.008514f, 52.377048f, 141.641708f, 389.831665f, 23.726810f, 92.980698f);

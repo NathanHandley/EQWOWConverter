@@ -20,6 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public OldSebilisZoneProperties() : base()
         {
+            Enable2DSoundInstances("caveloop");
+
             SetZonewideEnvironmentAsIndoors(20, 10, 60, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
 

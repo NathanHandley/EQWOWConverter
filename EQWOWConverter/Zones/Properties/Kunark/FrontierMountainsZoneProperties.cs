@@ -20,6 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public FrontierMountainsZoneProperties() : base()
         {
+            SetZonewideAmbienceSound("", "night");
+            Enable2DSoundInstances("wind_lp2", "wind_lp3", "wind_lp3");
+
             AddZoneLineBox("burningwood", -2965.3167f, -4515.809f, -51.462868f, ZoneLineOrientationType.West,
                 -2312.331f, 4184.5947f, -433.798f, -2418.7312f, 4063.2607f, -472.19543f);
             AddZoneLineBox("dreadlands", 2360.625732f, -3406.440674f, 135.156448f, ZoneLineOrientationType.West,

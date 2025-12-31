@@ -20,6 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public FirionaVieZoneProperties() : base()
         {
+            Enable2DSoundInstances("streammd", "wfall_lg", "wfall_md", "oceanwav", "oceabrd1", "wind_lp3", "fordbrd2");
+
             AddZoneLineBox("dreadlands", 344.637085f, -6136.062500f, 135.156677f, ZoneLineOrientationType.North,
                 435.862000f, 6081.367676f, -34.554569f, 264.265533f, 5902.338379f, -100.851601f);
             AddZoneLineBox("lakeofillomen", 1294.271118f, -4322.280273f, 208.467178f, ZoneLineOrientationType.West,
