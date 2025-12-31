@@ -20,6 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public WarsliksWoodsZoneProperties() : base()
         {
+            // TODO: Clip water surface geometry near Dalnir
+
             SetZonewideEnvironmentAsOutdoorsNoSky(26, 26, 26, ZoneFogType.Heavy, 1f);
 
             AddZoneLineBox("cabwest", 870.207581f, 1143.751831f, 0.000020f, ZoneLineOrientationType.East,
@@ -36,7 +38,8 @@ namespace EQWOWConverter.Zones.Properties
                 1922.704956f, -3688.215576f, 919.834229f, 830.668396f, -4323.236816f, -194.401077f);
 
             // Ocean
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 7868.704590f, 7324.179199f, 685.372620f, -6605.181641f, -217.343323f, 500f);
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 7868.704590f, 3807.709961f, 685.372620f, -6605.181641f, -217.343323f, 500f);
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 7868.704590f, 7324.179199f, 3210.743896f, 3807.709961f, -217.343323f, 500f);
 
             // River mouth to river source
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", 704.767456f, 302.805481f, 679.463501f, 229.940414f, -210.159805f, -217.097382f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
