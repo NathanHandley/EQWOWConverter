@@ -943,7 +943,7 @@ namespace EQWOWConverter.Zones
             AddZonePropertiesByShortName(zonePropertiesByShortName, "rathemtn", new RatheMountainsZoneProperties());
             AddZonePropertiesByShortName(zonePropertiesByShortName, "rivervale", new RivervaleZoneProperties());
             AddZonePropertiesByShortName(zonePropertiesByShortName, "runnyeye", new RunnyeyeCitadelZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "sebilis", new RuinsOfSebilisZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesByShortName, "sebilis", new OldSebilisZoneProperties());
             AddZonePropertiesByShortName(zonePropertiesByShortName, "sirens", new SirensGrottoZoneProperties());
             AddZonePropertiesByShortName(zonePropertiesByShortName, "skyfire", new SkyfireMountainsZoneProperties());
             AddZonePropertiesByShortName(zonePropertiesByShortName, "skyshrine", new SkyshrineZoneProperties());
