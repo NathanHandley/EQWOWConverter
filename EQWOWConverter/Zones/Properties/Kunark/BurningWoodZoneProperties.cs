@@ -21,6 +21,8 @@ namespace EQWOWConverter.Zones.Properties
         public BurningWoodZoneProperties() : base()
         {
             SetZonewideEnvironmentAsOutdoorsNoSky(26, 26, 26, ZoneFogType.Heavy, 1f);
+            SetZonewideAmbienceSound("", "darkwds2");
+            Enable2DSoundInstances("wind_lp2", "wind_lp4");
 
             AddZoneLineBox("skyfire", -5439.923f, 1772.0016f, -162.23752f, ZoneLineOrientationType.North,
                 5302.864258f, 1900f, -110.222794f, 5118.025879f, 1400.658936f, -170.772964f);

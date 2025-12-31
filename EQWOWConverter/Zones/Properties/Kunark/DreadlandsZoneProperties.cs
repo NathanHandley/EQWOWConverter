@@ -20,6 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public DreadlandsZoneProperties() : base()
         {
+            SetZonewideAmbienceSound("", "darkwds1");
+            Enable2DSoundInstances("wind_lp2", "wind_lp4");
+
             AddZoneLineBox("burningwood", -4247.9624f, -712.7452f, 245.30704f, ZoneLineOrientationType.North,
                 4832.997559f, 42.463902f, 1087.840820f, 2864.077393f, -1472.783569f, 40.859489f);
             AddZoneLineBox("karnor", 115.772827f, 341.605042f, 0f, ZoneLineOrientationType.East,

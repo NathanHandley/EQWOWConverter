@@ -22,6 +22,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             SetZonewideEnvironmentAsIndoors(160, 180, 200, ZoneFogType.Medium);
             OverrideVertexColorIntensity(0.4);
+            Enable2DSoundInstances("caveloop", "fire_lp");
 
             AddZoneLineBox("overthere", -83.674156f, 825.339172f, -506.624969f, ZoneLineOrientationType.East, // Consider moving to the stone?
                 -2.369990f, -722.148010f, 34.469002f, -15.200140f, -734.827942f, 17.500111f);
