@@ -3977,18 +3977,18 @@ id|eq_id|gotemplate_id|enabled|doorid|zone|type|model_name|model_is_skeletal|mod
 3976|35879|273975|1|0|lavastorm|NonInteract|SOLPLUG|0|0|0||908|484|15.4|0|58||0|0|0|0|1|0|0|0|0|NONE|0|0|0|0|0|0|100|0|5|1|1|1|0|0|
 3977|35881|273976|0|100|freporte|Door|DOOR1|0|0|0||-1044.98|-14.1626|-55.9678|383.7|54||0|0|0|0|1|0|0|0|0|NONE|0|0|0|0|0|0|100|0|5|1|1|1|1|0|
 3978|35883|273977|1|140|mischiefplane|Door|DOOR2|0|0|0||347.796|-457.043|70.0268|384|2||0|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|0|
-3979|1|273978|1|0|kaesora|NonInteract|IT128|0|1|0|Loom|201|-171|-124|395|0||30|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|892|Was an object, but made non-interactive
+3979|1|273978|1|0|kaesora|NonInteract|IT128|0|1|0|Loom|201|-171|-127.937477|395|0||30|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|892|Was an object, but made non-interactive
 3980|3|273979|1|0|highkeep|NonInteract|IT70|0|1|0|Brew Barrel|60|-223|26|383|0||19|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1116|Was an object, but made non-interactive
 3981|4|273980|1|0|highkeep|TradeskillFocus|IT69|0|1|0|Oven|28|-236|30|261|0|CookingFire|15|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1114|
-3982|5|273981|1|0|cabeast|TradeskillFocus|IT66|0|1|0|Forge|220|-316|3|147|0|Forge|17|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
-3983|6|273982|1|0|cabeast|NonInteract|IT70|0|1|0|Brew Barrel|686|-16|2|256|0||19|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1116|Was an object, but made non-interactive
-3984|7|273983|1|0|cabeast|NonInteract|IT128|0|1|0|Loom|50|-85|0|250|0||16|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|892|Was an object, but made non-interactive
-3985|8|273984|1|0|cabeast|TradeskillFocus|IT73|0|1|0|Oven|261|-219|0|260|0|CookingFire|22|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1113|
-3986|9|273985|1|0|cabeast|NonInteract|IT74|0|1|0|Pottery Wheel|230|-196|0|485|0||21|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1112|Was an object, but made non-interactive
+3982|5|273981|1|0|cabeast|TradeskillFocus|IT66|0|1|0|Forge|220|-316|-2|147|0|Forge|17|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
+3983|6|273982|1|0|cabeast|NonInteract|IT70|0|1|0|Brew Barrel|686|-16|-2|256|0||19|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1116|Was an object, but made non-interactive
+3984|7|273983|1|0|cabeast|NonInteract|IT128|0|1|0|Loom|50|-85|-2|250|0||16|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|892|Was an object, but made non-interactive
+3985|8|273984|1|0|cabeast|TradeskillFocus|IT73|0|1|0|Oven|261|-219|-2|260|0|CookingFire|22|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1113|
+3986|9|273985|1|0|cabeast|NonInteract|IT74|0|1|0|Pottery Wheel|230|-196|-2|485|0||21|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1112|Was an object, but made non-interactive
 3987|10|273986|1|0|cabeast|NonInteract|IT70|0|1|0|Brew Barrel|907|-65|0|396|0||19|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1116|Was an object, but made non-interactive
-3988|11|273987|1|0|cabeast|TradeskillFocus|IT69|0|1|0|Oven|522|148|6|254|0|CookingFire|15|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1114|
+3988|11|273987|1|0|cabeast|TradeskillFocus|IT69|0|1|0|Oven|522|148|2|254|0|CookingFire|15|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1114|
 3989|12|273988|1|0|cabeast|TradeskillFocus|IT66|0|1|0|Forge|-379|-34|0|387|0|Forge|17|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
-3990|13|273989|1|0|cabeast|TradeskillFocus|IT66|0|1|0|Forge|-531|-24|59|252|0|Forge|38|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
+3990|13|273989|1|0|cabeast|TradeskillFocus|IT66|0|1|0|Forge|-531|-24|55.968861|252|0|Forge|38|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
 3991|14|273990|1|0|oggok|NonInteract|IT74|0|1|0|Pottery Wheel|281|680|0|372|0||21|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1112|Was an object, but made non-interactive
 3992|15|273991|1|0|oggok|TradeskillFocus|IT73|0|1|0|Oven|296|684|0|465|0|CookingFire|22|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1113|
 3993|16|273992|1|0|oggok|NonInteract|IT70|0|1|0|Brew Barrel|263|-252|0|508|0||19|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1116|Was an object, but made non-interactive
@@ -4037,10 +4037,10 @@ id|eq_id|gotemplate_id|enabled|doorid|zone|type|model_name|model_is_skeletal|mod
 4036|61|274035|1|0|rivervale|TradeskillFocus|IT66|0|1|0|Forge|180|-183|-2.83178|301|0|Forge|49|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
 4037|62|274036|1|0|rivervale|NonInteract|IT128|0|1|0|Loom|-1|-240|0|412|0||16|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|892|Was an object, but made non-interactive
 4038|64|274037|0|0|oasis|NonInteract|CHEST1|0|0|0|Chest|-517|148|-43|333|0||7|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|837|Was an object, but made non-interactive
-4039|73|274038|1|0|firiona|NonInteract|IT128|0|1|0|Loom|-3636|2030|-100|452|0||16|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|892|Was an object, but made non-interactive
-4040|74|274039|1|0|firiona|TradeskillFocus|IT66|0|1|0|Forge|-2877|2685|-76|127|0|Forge|17|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
-4041|75|274040|1|0|firiona|TradeskillFocus|IT69|0|1|0|Oven|-2863|2686|-76|163|0|CookingFire|15|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1114|
-4042|76|274041|1|0|firiona|NonInteract|IT70|0|1|0|Brew Barrel|-2941|2985|-76|4|0||19|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1116|Was an object, but made non-interactive
+4039|73|274038|1|0|firiona|NonInteract|IT128|0|1|0|Loom|-3636|2030|-104.968613|452|0||16|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|892|Was an object, but made non-interactive
+4040|74|274039|1|0|firiona|TradeskillFocus|IT66|0|1|0|Forge|-2877|2685|-79.937363|127|0|Forge|17|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
+4041|75|274040|1|0|firiona|TradeskillFocus|IT69|0|1|0|Oven|-2863|2686|-79.937363|163|0|CookingFire|15|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1114|
+4042|76|274041|1|0|firiona|NonInteract|IT70|0|1|0|Brew Barrel|-2941|2985|-81.093422|4|0||19|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1116|Was an object, but made non-interactive
 4043|77|274042|1|0|neriaka|NonInteract|IT70|0|1|0|Brew Barrel|226|-172|14|69|0||19|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1116|Was an object, but made non-interactive
 4044|78|274043|1|0|neriaka|TradeskillFocus|IT73|0|1|0|Oven|208|-80|0|0|0|CookingFire|22|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1113|
 4045|79|274044|1|0|neriaka|NonInteract|IT74|0|1|0|Pottery Wheel|200|-66|0|380|0||21|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1112|Was an object, but made non-interactive
@@ -4090,13 +4090,13 @@ id|eq_id|gotemplate_id|enabled|doorid|zone|type|model_name|model_is_skeletal|mod
 4089|179|274088|1|0|paineel|TradeskillFocus|IT66|0|1|0|Forge|930|415|-123.937492|256|0|Forge|17|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
 4090|180|274089|1|0|paineel|TradeskillFocus|IT66|0|1|0|Forge|923|426|-123.937393|131|0|Forge|50|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
 4091|181|274090|1|0|paineel|NonInteract|IT128|0|1|0|Loom|970|699|-69.968712|7|0||16|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|892|Was an object, but made non-interactive
-4092|182|274091|1|0|citymist|NonInteract|IT70|0|1|0|Brew Barrel|-132|-637|76|135|0||19|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1116|Was an object, but made non-interactive
-4093|183|274092|1|0|overthere|NonInteract|IT128|0|1|0|Loom|2847|2370|-49|79|0||16|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|892|Was an object, but made non-interactive
-4094|184|274093|1|0|overthere|TradeskillFocus|IT73|0|1|0|Oven|2866|2383|-49|137|0|CookingFire|22|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1113|
-4095|185|274094|1|0|overthere|NonInteract|IT74|0|1|0|Pottery Wheel|2861|2400|-49|390|0||21|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1112|Was an object, but made non-interactive
-4096|186|274095|1|0|overthere|NonInteract|IT70|0|1|0|Brew Barrel|2690|2385|-49|395|0||19|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1116|Was an object, but made non-interactive
-4097|187|274096|1|0|overthere|TradeskillFocus|IT69|0|1|0|Oven|2694|2358|-49|140|0|CookingFire|15|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1114|
-4098|188|274097|1|0|overthere|TradeskillFocus|IT66|0|1|0|Forge|2504|3252|-137|425|0|Forge|17|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
+4092|182|274091|1|0|citymist|NonInteract|IT70|0|1|0|Brew Barrel|-132|-637|71.969101|135|0||19|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1116|Was an object, but made non-interactive
+4093|183|274092|1|0|overthere|NonInteract|IT128|0|1|0|Loom|2847|2370|-53.09362|79|0||16|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|892|Was an object, but made non-interactive
+4094|184|274093|1|0|overthere|TradeskillFocus|IT73|0|1|0|Oven|2866|2383|-53.09362|137|0|CookingFire|22|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1113|
+4095|185|274094|1|0|overthere|NonInteract|IT74|0|1|0|Pottery Wheel|2861|2400|-53.09362|390|0||21|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1112|Was an object, but made non-interactive
+4096|186|274095|1|0|overthere|NonInteract|IT70|0|1|0|Brew Barrel|2690|2385|-53.09351|395|0||19|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1116|Was an object, but made non-interactive
+4097|187|274096|1|0|overthere|TradeskillFocus|IT69|0|1|0|Oven|2694|2358|-53.09351|140|0|CookingFire|15|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1114|
+4098|188|274097|1|0|overthere|TradeskillFocus|IT66|0|1|0|Forge|2504|3252|-140.036377|425|0|Forge|17|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
 4099|201|274098|1|0|qeynos|TradeskillFocus|IT66|0|1|0|Forge|179|-296|0|369|0|Forge|17|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
 4100|202|274099|1|0|qeynos|TradeskillFocus|IT73|0|1|0|Oven|537|-307|-0.99993|363|0|CookingFire|22|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1113|
 4101|203|274100|1|0|qeynos|NonInteract|IT74|0|1|0|Pottery Wheel|551|-291|-0.99996|127|0||21|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1112|Was an object, but made non-interactive
@@ -4106,8 +4106,8 @@ id|eq_id|gotemplate_id|enabled|doorid|zone|type|model_name|model_is_skeletal|mod
 4105|207|274104|1|0|qeynos|TradeskillFocus|IT66|0|1|0|Forge|482|-30|0|492|0|Forge|17|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
 4106|208|274105|1|0|qeynos|TradeskillFocus|IT66|0|1|0|Forge|374|-369|0|185|0|Forge|40|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
 4107|209|274106|1|0|qeynos|NonInteract|IT128|0|1|0|Loom|136|-45|0|252|0||16|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|892|Was an object, but made non-interactive
-4108|210|274107|1|0|droga|TradeskillFocus|IT69|0|1|0|Oven|742|1961|-265|42|0|CookingFire|30|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1114|
-4109|211|274108|1|0|droga|NonInteract|IT74|0|1|0|Pottery Wheel|-198|1113|-251|358|0||30|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1112|Was an object, but made non-interactive
+4108|210|274107|1|0|droga|TradeskillFocus|IT69|0|1|0|Oven|742|1961|-267.905945|42|0|CookingFire|30|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1114|
+4109|211|274108|1|0|droga|NonInteract|IT74|0|1|0|Pottery Wheel|-198|1113|-255.906158|358|0||30|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1112|Was an object, but made non-interactive
 4110|232|274109|1|0|stonebrunt|NonInteract|IT74|0|1|0|Pottery Wheel|1389|-561|1025.122681|376|0||21|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1112|Was an object, but made non-interactive
 4111|233|274110|1|0|stonebrunt|TradeskillFocus|IT73|0|1|0|Oven|1354|-527|1025.122681|130|0|CookingFire|22|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1113|
 4112|234|274111|1|0|stonebrunt|TradeskillFocus|IT66|0|1|0|Forge|1354|-595|1025.122681|259|0|Forge|17|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
@@ -4162,7 +4162,7 @@ id|eq_id|gotemplate_id|enabled|doorid|zone|type|model_name|model_is_skeletal|mod
 4161|289|274160|1|0|erudnext|NonInteract|IT74|0|1|0|Pottery Wheel|-923|-153|47.968788|129|0||21|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|1112|Was an object, but made non-interactive
 4162|290|274161|1|0|erudnext|TradeskillFocus|IT66|0|1|0|Forge|-738|-263|48.968781|396|0|Forge|50|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
 4163|291|274162|1|0|erudnext|NonInteract|IT128|0|1|0|Loom|-871|-55|47.968788|102|0||16|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|892|Was an object, but made non-interactive
-4164|96153|274163|1|0|dalnir|TradeskillFocus|IT66|0|1|0|Forge|-232|30|-179|260|0|Forge|30|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
+4164|96153|274163|1|0|dalnir|TradeskillFocus|IT66|0|1|0|Forge|-232|30|-181.9375|260|0|Forge|30|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|1115|
 4165|228353|274164|1|0|qrg|TradeskillFocus|IT66|0|1|0|Forge|125|-11|0|133|0|Forge|17|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|1|0|
 4166|228357|274165|0|0|hole|NonInteract|IT5_ACTORDEF|0|0|0||589|334|-892|0|0||1|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|0|"Objects Model ""IT5_ACTORDEF"" with item ID 7007 and charges 1"
 4167|228358|274166|0|0|hole|NonInteract|IT63_ACTORDEF|0|0|0||877|786|-848.4|0|0||1|0|0|0|0|0|0|0|-1|NONE|0|0|0|0|0|0|100|0|5|0|1|1|0|0|"Objects Model ""IT63_ACTORDEF"" with item ID 22758 charges 1"
