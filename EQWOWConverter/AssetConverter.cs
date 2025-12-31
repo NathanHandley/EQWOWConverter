@@ -602,7 +602,7 @@ namespace EQWOWConverter
                     staticObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
                 string curZoneSkeletalObjectNameMapFileName = Path.Combine(curZoneFolder, "gameobject_skeletal_map.txt");
                 Dictionary<string, string> skeletalObjectNameMap = new Dictionary<string, string>();
-                foreach (string row in FileTool.ReadAllStringLinesFromFile(curZoneStaticObjectNameMapFileName, false, true))
+                foreach (string row in FileTool.ReadAllStringLinesFromFile(curZoneSkeletalObjectNameMapFileName, false, true))
                     skeletalObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
                 foreach (GameObject curObject in nonInteractiveGameObjectsInZone.Value)
                 {
