@@ -454,9 +454,12 @@ namespace EQWOWConverter.Zones
             }
 
             // Determine which materials are animated or transparent and create objects to represent them
-            foreach (Material material in Materials)
-                if ((material.IsAnimated() || material.HasTransparency()) && material.IsRenderable())
-                    GenerateAndAddDoodadsForZoneMaterial(material, renderMeshData);
+            if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
+            {
+                foreach (Material material in Materials)
+                    if ((material.IsAnimated() || material.HasTransparency()) && material.IsRenderable())
+                        GenerateAndAddDoodadsForZoneMaterial(material, renderMeshData);
+            }            
 
             // If enabled, show light instances as torches for debugging
             if (Configuration.LIGHT_INSTANCES_DRAWN_AS_TORCHES == true)
@@ -712,8 +715,12 @@ namespace EQWOWConverter.Zones
 
         private void GenerateRenderWorldObjectModels(MeshData renderMeshData)
         {
+            bool excludeAnimatedAndTransparent = true;
+            if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == true)
+                excludeAnimatedAndTransparent = false;
+
             // Reduce meshdata to what will actually be rendered
-            MeshData staticMeshData = renderMeshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(true, Materials.ToArray());
+            MeshData staticMeshData = renderMeshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(true, excludeAnimatedAndTransparent, Materials.ToArray());
 
             // If set, show the area box
             if (Configuration.ZONE_DRAW_COLLIDABLE_SUB_AREAS_AS_BOXES == true)
