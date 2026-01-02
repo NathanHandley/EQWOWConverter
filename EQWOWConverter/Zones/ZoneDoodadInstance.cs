@@ -60,7 +60,7 @@ namespace EQWOWConverter.Zones
             returnBytes.AddRange(BitConverter.GetBytes(uniqueID));
             returnBytes.AddRange(positionVector.ToBytes());
             returnBytes.AddRange(ADTRotation.ToBytes());
-            returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(1024))); // Scale, 1024 = 1.0f
+            returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(1024 * Scale))); // Scale, 1024 = 1.0f
             returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // Flags, always zero
             return returnBytes;
         }
