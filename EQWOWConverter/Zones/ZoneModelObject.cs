@@ -112,10 +112,13 @@ namespace EQWOWConverter.Zones
                 int curMaterialIndex = MeshData.TriangleFaces[i].MaterialIndex;
 
                 // Skip materials that shouldn't be rendered
-                if (materials[curMaterialIndex].IsAnimated() == true)
-                    continue;
-                if (materials[curMaterialIndex].HasTransparency() == true)
-                    continue;
+                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
+                {
+                    if (materials[curMaterialIndex].IsAnimated() == true)
+                        continue;
+                    if (materials[curMaterialIndex].HasTransparency() == true)
+                        continue;
+                }
                 if (materials[curMaterialIndex].IsRenderable() == false)
                     continue;
 
