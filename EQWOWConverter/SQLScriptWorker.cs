@@ -113,10 +113,10 @@ namespace EQWOWConverter
             PopulateCreatureData(creatureTemplates, creatureModelTemplates, creatureSpawnPools, spellTemplatesByEQID);
 
             // Game Events
-            DateTime eventEnd = new DateTime(2025, 12, 30, 23, 0, 0);
-            DateTime dayStart = new DateTime(2012, 10, 29, 6, 0, 0);
+            DateTime eventEnd = new DateTime(2037, 12, 30, 23, 0, 0);
+            DateTime dayStart = new DateTime(2000, 10, 29, 6, 0, 0);
             gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_DAY, dayStart, eventEnd, 1440, 840, "EQ Day");
-            DateTime nightStart = new DateTime(2016, 10, 28, 20, 0, 0);
+            DateTime nightStart = new DateTime(2000, 10, 28, 20, 0, 0);
             gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_NIGHT, nightStart, eventEnd, 1440, 600, "EQ Night");
 
             // Items
