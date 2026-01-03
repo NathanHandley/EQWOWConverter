@@ -40,7 +40,7 @@ namespace EQWOWConverter.Zones.Properties
             AddDiscardGeometryBox(-5995.371094f, 3177.649170f, 1415.053223f, -8271.257812f, 138.334351f, 55.707771f); // Zone line that goes into overthere
             AddDiscardGeometryBox(2433.276123f, 6587.121094f, -170.880447f, 2244.266357f, -5349.100586f, -318.306976f); // South ocean line
             AddDiscardGeometryBox(11478.570312f, 6019.192871f, 80.366348f, 2074.491211f, 5719.526367f, -782.104858f); // West ocean line
-            AddDiscardGeometryBox(11958.745117f, -4814.552246f, -149.413879f, 2023.581299f, -5258.393555f, -635.455322f); // East ocean line
+            AddDiscardGeometryBox(11958.745117f, -4814.552246f, -149.413879f, 2023.581299f, -5293.455566f, -635.455322f); // East ocean line
 
         }
     }
