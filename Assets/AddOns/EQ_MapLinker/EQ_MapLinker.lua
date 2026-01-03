@@ -86,7 +86,7 @@ end
 function EQ_MapLinker:CreateToggleButton()
     local btn = CreateFrame("CheckButton", "EQ_MapLinkerShowLinks", WorldMapFrame, "OptionsCheckButtonTemplate")
     btn:SetSize(24, 24)
-    btn:SetPoint("BOTTOMLEFT", WorldMapDetailFrame, "BOTTOMLEFT", 0, -27)
+    btn:SetPoint("BOTTOMLEFT", WorldMapDetailFrame, "BOTTOMLEFT", 0, -26)
     btn:SetFrameStrata("TOOLTIP")        -- Must be TOOLTIP
     btn:SetFrameLevel(5000)              -- Very high level
 
