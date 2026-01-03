@@ -41,7 +41,8 @@ namespace EQWOWConverter.Zones.Properties
                 -2649.325439f, 1160.931030f, 396.166199f, -3491.827881f, -7.119500f, -122.874771f);
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 4608.963867f, 4793.761230f, 1746.790283f, -1613.797729f, -179.124878f, 500f);
-        
+
+            AddDiscardGeometryBox(-3801.098633f, 2171.918945f, 1147.039185f, -6046.062012f, 159.970657f, -312.337341f); // Extra geometery into swamp of no hope
         }
     }
 }
