@@ -208,6 +208,8 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -3544.243896f, -1644.605713f, -3557.204834f, -1686.366211f, -196.612473f, -199.440613f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -3557.170166f, -1649.538574f, -3566.607910f, -1691.911987f, -192.928818f, -196.615921f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Magma, "d_lava001", -3566.573486f, -1652.060059f, -3593.246826f, -1694.820435f, -192.132156f, -192.932266f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
+
+            AddDiscardGeometryBox(-6226.796387f, 2464.754883f, 148.686218f, -7040.175293f, 1019.074219f, -517.262451f); // Reduce zone line to burning wood
         }
     }
 }

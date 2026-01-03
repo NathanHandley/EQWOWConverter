@@ -242,6 +242,9 @@ namespace EQWOWConverter.Zones.Properties
 
             AddDiscardGeometryBox(3457.450928f, -2906.989990f,  1407.824463f, 765.621033f, -4829.969238f, 445.377960f); // East floating trees
             AddDiscardGeometryBox(2791.680664f, 4618.571777f, 940.455688f, 2595.156006f, 4286.382324f, 424.159668f); // West floating tree
+            AddDiscardGeometryBox(7998.143555f, 7353.765137f, 300f, 5706.836914f, -6763.924316f, -817.483948f); // North ocean
+            AddDiscardGeometryBox(7957.047852f, -5333.209473f, 300f, 245.584427f, -6688.142090f, -961.281433f); // East ocean
+            AddDiscardGeometryBox(7961.234375f, 7341.193359f, 300f, 333.546814f, 5675.820801f, -648.958923f); // West ocean
         }
     }
 }
