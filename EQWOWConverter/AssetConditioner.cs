@@ -852,6 +852,66 @@ namespace EQWOWConverter
             return true;
         }
 
+        public bool ConditionWorldMapFilesOnly()
+        {
+            // Make sure the tool is there
+            string blpConverterFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "blpconverter", "BLPConverter.exe");
+            if (File.Exists(blpConverterFullPath) == false)
+            {
+                Logger.WriteError("Failed to condition map files. '" + blpConverterFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
+                return false;
+            }
+
+            // Condition the maps
+            GenerateMaps();
+
+            // Build paths and store in a process array
+            List<string> textureFoldersToProcess = new List<string>();
+            string mapRootFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "worldmaps");
+            if (Directory.Exists(mapRootFolder) == false)
+            {
+                Logger.WriteError("Failed to condition map files, as the world maps folder did not exist at '" + mapRootFolder + "'");
+                return false;
+            }
+            string[] mapDirectories = Directory.GetDirectories(mapRootFolder);
+            textureFoldersToProcess.AddRange(mapDirectories);
+
+            // Get all the individual files to process
+            Logger.WriteInfo("Building list of png files to convert...");
+            foreach (string folderToProcess in textureFoldersToProcess)
+            {
+                string[] curFolderPNGFiles = Directory.GetFiles(folderToProcess, "*.png");
+                foreach (string curPngFile in curFolderPNGFiles)
+                {
+                    Logger.WriteDebug("Adding file '" + curPngFile + "' for conversion");
+                    PNGtoBLPFilesToConvert.Add(curPngFile);
+                }
+            }
+
+            LogCounter progressCounter = new LogCounter("Converting png files to blp files...", 0, PNGtoBLPFilesToConvert.Count);
+            progressCounter.Write(0);
+            if (Configuration.CORE_ENABLE_MULTITHREADING == true)
+            {
+                int taskCount = Configuration.CORE_PNGTOBLPCONVERSION_THREAD_COUNT;
+                Task[] tasks = new Task[taskCount];
+                for (int i = 0; i < taskCount; i++)
+                {
+                    int iCopy = i + 1;
+                    tasks[i] = Task.Factory.StartNew(() =>
+                    {
+                        PNGToBLPConversionThreadWorker(iCopy, blpConverterFullPath, progressCounter);
+                    });
+                }
+                Task.WaitAll(tasks);
+            }
+            else
+            {
+                PNGToBLPConversionThreadWorker(1, blpConverterFullPath, progressCounter);
+            }
+
+            return true;
+        }
+
         private void PNGToBLPConversionThreadWorker(int threadID, string blpConverterFullPath, LogCounter progressCounter)
         {
             Logger.WriteInfo(string.Concat("<+> Thread [PNG to BLP Subworker ", threadID.ToString(), "] Started"));

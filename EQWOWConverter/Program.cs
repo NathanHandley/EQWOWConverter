@@ -26,12 +26,14 @@ internal class Program
         Logger.WriteInfo("");
         Logger.WriteInfo("Options:");
         Logger.WriteInfo(" ");
-        Logger.WriteInfo(" [1] - Perform Everything (Do this if not sure)");
+        Logger.WriteInfo(" [1] [All] - Perform Everything (Do this if not sure)");
         Logger.WriteInfo(" ");
-        Logger.WriteInfo(" [2] - Extract EQ Data ONLY");
-        Logger.WriteInfo(" [3] - Condition Extracted EQ Data ONLY");
-        Logger.WriteInfo(" [4] - Convert PNG files into BLP ONLY");
-        Logger.WriteInfo(" [5] - Convert EQ Data to WOW ONLY");
+        Logger.WriteInfo(" [2] [Conditioner] - Extract EQ Data ONLY");
+        Logger.WriteInfo(" [3] [Conditioner] - Condition Extracted EQ Data ONLY");
+        Logger.WriteInfo(" [4] [Conditioner] - Convert PNG files into BLP ONLY");
+        Logger.WriteInfo(" [5] [Conditioner] - Split raw world map images up and change to BLP");
+        Logger.WriteInfo(" ");
+        Logger.WriteInfo(" [6] [Converter] - Convert EQ Data to WOW ONLY");
         Logger.WriteInfo(" ");
         Logger.WriteInfo(" [X] - Exit");
         Logger.WriteInfo(" ");
@@ -46,7 +48,7 @@ internal class Program
             Console.ReadKey();
             return;
         }
-        if (enteredCommand == "5")
+        if (enteredCommand == "6" || enteredCommand == "1")
         {
             //if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true && Configuration.CREATURE_ADD_DEBUG_VALUES_TO_NAME == true)
             //    Logger.WriteInfo("- CREATURE_ADD_DEBUG_VALUES_TO_NAME is true, so creature names will be in debug mode");
@@ -151,6 +153,13 @@ internal class Program
                             }
                             break;
                         case "5":
+                        {
+                            {
+                                AssetConditioner conditioner = new AssetConditioner();
+                                conditioner.ConditionWorldMapFilesOnly();
+                            }
+                        } break;
+                        case "6":
                             {
                                 AssetConverter converter = new AssetConverter();
                                 bool conversionResult = converter.ConvertEQDataToWOW();
