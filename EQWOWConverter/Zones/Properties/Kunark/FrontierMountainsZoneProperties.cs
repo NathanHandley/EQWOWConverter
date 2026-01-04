@@ -37,6 +37,7 @@ namespace EQWOWConverter.Zones.Properties
                 5587.589844f, 2008.723511f, 1066.942993f, 4569.660156f, 813.669495f, 238.345154f);
 
             AddDiscardGeometryBox(8489.225586f, 2753.701172f, 1165.576416f, 6490.531250f, 361.942871f, 165.254105f); // Overthere zone line
+            AddDiscardGeometryBox(6638.459473f, 2376.372314f, 1292.566162f, 5230.738770f, 517.452332f, 102.275459f); // More Overthere zone line
         }
     }
 }
