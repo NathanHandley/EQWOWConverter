@@ -7,8 +7,8 @@ EQ_MapLinker.LINKS = EQ_MapLinker.LINKS or {}
 local ZoneText = CreateFrame("Frame", "EQ_MapLinkerZoneText", WorldMapFrame)
 ZoneText:SetFrameStrata("TOOLTIP")
 ZoneText:SetFrameLevel(1000)
-ZoneText:SetSize(600, 60)
-ZoneText:SetPoint("TOP", WorldMapDetailFrame, "TOP", 0, -15)
+ZoneText:SetSize(600, 80)
+ZoneText:SetPoint("TOP", WorldMapDetailFrame, "TOP", 0, 15)
 ZoneText:Hide()
 
 local ZoneTextString = ZoneText:CreateFontString(nil, "OVERLAY")
@@ -18,8 +18,17 @@ ZoneTextString:SetTextColor(1, 1, 1)
 ZoneTextString:SetShadowOffset(0, 0)
 ZoneTextString:SetShadowColor(0, 0, 0, 0)
 
+-- Level range font (smaller, below zone name)
+local LevelTextString = ZoneText:CreateFontString(nil, "OVERLAY")
+LevelTextString:SetPoint("TOP", ZoneTextString, "BOTTOM", 0, -2)
+LevelTextString:SetFont("Fonts\\FRIZQT__.TTF", 18, "OUTLINE, THICK")
+LevelTextString:SetTextColor(1, 1, 0.8)
+LevelTextString:SetShadowOffset(0, 0)
+LevelTextString:SetShadowColor(0, 0, 0, 0)
+
 EQ_MapLinker.ZoneText = ZoneText
 EQ_MapLinker.ZoneTextString = ZoneTextString
+EQ_MapLinker.LevelTextString = LevelTextString
 
 EQ_MapLinkerDB = EQ_MapLinkerDB or { showLinks = true }
 EQ_MapLinker.db = EQ_MapLinkerDB
@@ -198,13 +207,12 @@ function EQ_MapLinker:UpdateButtons()
 
         -- Hover In: Glow THIS + ALL buttons to same target
         btn:SetScript("OnEnter", function(self)
-            -- Glow current button
+			-- Glow current button
             UIFrameFadeIn(self.glow, 0.2, 0, 1)
             
             -- Glow ALL buttons to same target mapID
             local targetButtons = EQ_MapLinker.targetButtons[self.targetMapID] or {}
             for _, targetInfo in ipairs(targetButtons) do
-                -- Find current map's buttons only
                 for _, currentBtn in ipairs(EQ_MapLinker.buttons) do
                     if currentBtn.targetMapID == self.targetMapID then
                         UIFrameFadeIn(currentBtn.glow, 0.2, 0, 1)
@@ -214,6 +222,14 @@ function EQ_MapLinker:UpdateButtons()
             
             -- Show floating text
             EQ_MapLinker.ZoneTextString:SetText(self.zoneName)
+
+            -- Show level range if present on this specific link
+            local levelText = ""
+            if link.sugLevelMin and link.sugLevelMax then
+                levelText = link.sugLevelMin .. " - " .. link.sugLevelMax
+            end
+            EQ_MapLinker.LevelTextString:SetText(levelText)
+
             UIFrameFadeIn(EQ_MapLinker.ZoneText, 0.2, 0, 1)
         end)
 

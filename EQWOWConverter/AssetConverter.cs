@@ -2183,6 +2183,10 @@ namespace EQWOWConverter
                     zoneLinkBlockSB.Append(displayMapBoxWidth);
                     zoneLinkBlockSB.Append(", h=");
                     zoneLinkBlockSB.Append(displayMapBoxHeight);
+                    zoneLinkBlockSB.Append(", sugLevelMin=");
+                    zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMinLevel);
+                    zoneLinkBlockSB.Append(", sugLevelMax=");
+                    zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMaxLevel);
                     zoneLinkBlockSB.AppendLine("},");
                     addedBoxes++;
                 }
@@ -2237,6 +2241,14 @@ namespace EQWOWConverter
                     zoneLinkBlockSB.Append(mapLinkBox.Width);
                     zoneLinkBlockSB.Append(", h=");
                     zoneLinkBlockSB.Append(mapLinkBox.Height);
+                    if (zonePropertiesByShortName.ContainsKey(mapLinkBox.LinkedZoneShortName) == true)
+                    {
+                        ZoneProperties linkedZoneProperties = zonePropertiesByShortName[mapLinkBox.LinkedZoneShortName];
+                        zoneLinkBlockSB.Append(", sugLevelMin=");
+                        zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMinLevel);
+                        zoneLinkBlockSB.Append(", sugLevelMax=");
+                        zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMaxLevel);
+                    }
                     zoneLinkBlockSB.AppendLine("},");
                     addedBoxes++;
                 }

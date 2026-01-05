@@ -60,6 +60,8 @@ namespace EQWOWConverter.Zones
         public float DisplayMapMainTop = 0;
         public float DisplayMapMainBottom = 0;
         public List<ZonePropertiesDisplayMapLinkBox> DisplayMapLinkBoxes = new List<ZonePropertiesDisplayMapLinkBox>();
+        public int SuggestedMinLevel = 0;
+        public int SuggestedMaxLevel = 0;
 
         private static readonly object ListReadLock = new object();
         private static readonly object DBCWMOIDLock = new object();
@@ -805,6 +807,8 @@ namespace EQWOWConverter.Zones
                 zoneProperties.DisplayMapMainRight = float.Parse(propertiesRow["DisplayMapMainRight"]);
                 zoneProperties.DisplayMapMainTop = float.Parse(propertiesRow["DisplayMapMainTop"]);
                 zoneProperties.DisplayMapMainBottom = float.Parse(propertiesRow["DisplayMapMainBottom"]);
+                zoneProperties.SuggestedMinLevel = int.Parse(propertiesRow["SugLevelMin"]);
+                zoneProperties.SuggestedMaxLevel = int.Parse(propertiesRow["SugLevelMax"]);
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
             else
