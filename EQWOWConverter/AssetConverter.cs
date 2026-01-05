@@ -2156,7 +2156,7 @@ namespace EQWOWConverter
 
                     // Calculate display box
                     int displayMapBoxLeft = Convert.ToInt32(((unscaledMapLinkWestEdgeNoOffset * pixelScale) + mapOutputStartX));
-                    int displayMapBoxTop = Convert.ToInt32(((unscaledMapLinkNorthEdgeNoOffset * pixelScale) + mapOutputStartY));                    
+                    int displayMapBoxTop = Convert.ToInt32(((unscaledMapLinkNorthEdgeNoOffset * pixelScale) + mapOutputStartY));
                     int displayMapBoxWidth = Convert.ToInt32(mapLinkBox.Width * pixelScale);
                     int displayMapBoxHeight = Convert.ToInt32(mapLinkBox.Height * pixelScale);
 
@@ -2183,10 +2183,13 @@ namespace EQWOWConverter
                     zoneLinkBlockSB.Append(displayMapBoxWidth);
                     zoneLinkBlockSB.Append(", h=");
                     zoneLinkBlockSB.Append(displayMapBoxHeight);
-                    zoneLinkBlockSB.Append(", sugLevelMin=");
-                    zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMinLevel);
-                    zoneLinkBlockSB.Append(", sugLevelMax=");
-                    zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMaxLevel);
+                    if (linkedZoneProperties.SuggestedMaxLevel != 0 && linkedZoneProperties.SuggestedMaxLevel != 0)
+                    {
+                        zoneLinkBlockSB.Append(", sugLevelMin=");
+                        zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMinLevel);
+                        zoneLinkBlockSB.Append(", sugLevelMax=");
+                        zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMaxLevel);
+                    }
                     zoneLinkBlockSB.AppendLine("},");
                     addedBoxes++;
                 }
@@ -2244,10 +2247,13 @@ namespace EQWOWConverter
                     if (zonePropertiesByShortName.ContainsKey(mapLinkBox.LinkedZoneShortName) == true)
                     {
                         ZoneProperties linkedZoneProperties = zonePropertiesByShortName[mapLinkBox.LinkedZoneShortName];
-                        zoneLinkBlockSB.Append(", sugLevelMin=");
-                        zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMinLevel);
-                        zoneLinkBlockSB.Append(", sugLevelMax=");
-                        zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMaxLevel);
+                        if (linkedZoneProperties.SuggestedMaxLevel != 0 && linkedZoneProperties.SuggestedMaxLevel != 0)
+                        {
+                            zoneLinkBlockSB.Append(", sugLevelMin=");
+                            zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMinLevel);
+                            zoneLinkBlockSB.Append(", sugLevelMax=");
+                            zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMaxLevel);
+                        }
                     }
                     zoneLinkBlockSB.AppendLine("},");
                     addedBoxes++;
