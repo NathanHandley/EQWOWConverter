@@ -393,12 +393,31 @@ namespace EQWOWConverter
                 Directory.Delete(targetFolder, true);
             Directory.CreateDirectory(targetFolder);
 
-            // Processing is on a zone-by-zone basis
+            // Processing is on a zone-by-zone basis, then by continent
             LogCounter mapProcessCounter = new LogCounter("Converting display maps...", 0, ZoneProperties.GetZonePropertyListByShortName().Count);
             foreach (ZoneProperties zoneProperties in ZoneProperties.GetZonePropertyListByShortName().Values)
             {
                 // Copy in the complete zone map & slice it up
                 string baseMapFileNameNoExt = string.Concat("EQ_", zoneProperties.ShortName);
+                string inputZoneMapImage = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "maps", baseMapFileNameNoExt + ".png");
+                if (File.Exists(inputZoneMapImage) == false)
+                {
+                    Logger.WriteWarning("GenerateZoneMaps couldn't find a source map file named ", inputZoneMapImage, ", so skipping");
+                    continue;
+                }
+                string targetMapFolder = Path.Combine(targetFolder, baseMapFileNameNoExt);
+                Directory.CreateDirectory(targetMapFolder);
+                List<string> outputImageFullPaths;
+                ImageTool.SplitMapImageInto12Segments(inputZoneMapImage, targetMapFolder, out outputImageFullPaths);
+            }
+            foreach (ZoneContinent zoneContinent in ZoneContinent.GetZoneContinents())
+            {
+                // Skip any expansions beyond the set one
+                if (zoneContinent.ExpansionID > Configuration.GENERATE_EQ_EXPANSION_ID_ZONES)
+                    continue;
+
+                // Copy in the complete zone map & slice it up
+                string baseMapFileNameNoExt = string.Concat("EQ_", zoneContinent.ShortName);
                 string inputZoneMapImage = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "maps", baseMapFileNameNoExt + ".png");
                 if (File.Exists(inputZoneMapImage) == false)
                 {
