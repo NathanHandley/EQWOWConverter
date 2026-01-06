@@ -68,7 +68,7 @@ namespace EQWOWConverter
                 Logger.WriteInfo("- Note: DBC File Extraction is set to false in the Configuration");
 
             // Extract minimap metadata
-            if (Configuration.GENERATE_MAPS == true)
+            if (Configuration.GENERATE_WORLDMAPS == true)
                 ExtractMinimapMD5TranslateFile();
 
             // Thread 1: Objects and Zones
@@ -85,7 +85,7 @@ namespace EQWOWConverter
                 ConvertEQZonesToWOW(out zones);
 
                 // Maps
-                if (Configuration.GENERATE_MAPS == true)
+                if (Configuration.GENERATE_WORLDMAPS == true)
                 {
                     CopyZoneMaps();
                     GenerateMapAddOns(zones);
@@ -249,7 +249,7 @@ namespace EQWOWConverter
                     CreateMainPatchMPQ();
                 else
                     UpdateMainPatchMPQ();
-                if (Configuration.GENERATE_MAPS == true)
+                if (Configuration.GENERATE_WORLDMAPS == true)
                     CreateMinimapPatchMPQ();
 
                 // Deploy 
@@ -2120,8 +2120,8 @@ namespace EQWOWConverter
                 // Convert zone geometry to map display geometry
                 int mapOutputWidth = 1002;
                 int mapOutputHeight = 668;
-                int mapOutputContentWidth = mapOutputWidth - (Configuration.GENERATE_MAPS_LEFT_BORDER_PIXEL_SIZE + Configuration.GENERATE_MAPS_RIGHT_BORDER_PIXEL_SIZE);
-                int mapOutputContentHeight = mapOutputHeight - (Configuration.GENERATE_MAPS_TOP_BORDER_PIXEL_SIZE + Configuration.GENERATE_MAPS_BOTTOM_BORDER_PIXEL_SIZE);
+                int mapOutputContentWidth = mapOutputWidth - (Configuration.WORLDMAP_LEFT_BORDER_PIXEL_SIZE + Configuration.WORLDMAP_RIGHT_BORDER_PIXEL_SIZE);
+                int mapOutputContentHeight = mapOutputHeight - (Configuration.WORLDMAP_TOP_BORDER_PIXEL_SIZE + Configuration.WORLDMAP_BOTTOM_BORDER_PIXEL_SIZE);
                 float unscaledZoneGeometryWidth = (float)zone.RenderedGeometryBoundingBox.GetYDistance();
                 float unscaledZoneGeometryHeight = (float)zone.RenderedGeometryBoundingBox.GetXDistance();
                 float unscaledZoneGeometryOffsetX = -1 * zone.RenderedGeometryBoundingBox.BottomCorner.Y; // Geometry is flipped between WMO space and map/world space
@@ -2131,8 +2131,8 @@ namespace EQWOWConverter
                 float pixelScale = Math.Min(scaleByWidth, scaleByHeight);
                 int scaledZoneGeometryWidth = (int)Math.Round(unscaledZoneGeometryWidth * pixelScale);
                 int scaledZoneGeometryHeight = (int)Math.Round(unscaledZoneGeometryHeight * pixelScale);
-                int mapOutputStartX = ((mapOutputContentWidth - scaledZoneGeometryWidth) / 2) + Configuration.GENERATE_MAPS_LEFT_BORDER_PIXEL_SIZE;
-                int mapOutputStartY = ((mapOutputContentHeight - scaledZoneGeometryHeight) / 2) + Configuration.GENERATE_MAPS_TOP_BORDER_PIXEL_SIZE;
+                int mapOutputStartX = ((mapOutputContentWidth - scaledZoneGeometryWidth) / 2) + Configuration.WORLDMAP_LEFT_BORDER_PIXEL_SIZE;
+                int mapOutputStartY = ((mapOutputContentHeight - scaledZoneGeometryHeight) / 2) + Configuration.WORLDMAP_TOP_BORDER_PIXEL_SIZE;
                 
                 // Start a link config section
                 StringBuilder zoneLinkBlockSB = new StringBuilder();
@@ -2183,7 +2183,7 @@ namespace EQWOWConverter
                     zoneLinkBlockSB.Append(displayMapBoxWidth);
                     zoneLinkBlockSB.Append(", h=");
                     zoneLinkBlockSB.Append(displayMapBoxHeight);
-                    if (linkedZoneProperties.SuggestedMaxLevel != 0 && linkedZoneProperties.SuggestedMaxLevel != 0)
+                    if (linkedZoneProperties.SuggestedMaxLevel != 0 && linkedZoneProperties.SuggestedMaxLevel != 0 && Configuration.WORLDMAP_SHOW_SUGGESTED_LEVELS_ON_LINKED_MAPS == true)
                     {
                         zoneLinkBlockSB.Append(", sugLevelMin=");
                         zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMinLevel);
@@ -2244,7 +2244,7 @@ namespace EQWOWConverter
                     zoneLinkBlockSB.Append(mapLinkBox.Width);
                     zoneLinkBlockSB.Append(", h=");
                     zoneLinkBlockSB.Append(mapLinkBox.Height);
-                    if (zonePropertiesByShortName.ContainsKey(mapLinkBox.LinkedZoneShortName) == true)
+                    if (zonePropertiesByShortName.ContainsKey(mapLinkBox.LinkedZoneShortName) == true && Configuration.WORLDMAP_SHOW_SUGGESTED_LEVELS_ON_LINKED_MAPS == true)
                     {
                         ZoneProperties linkedZoneProperties = zonePropertiesByShortName[mapLinkBox.LinkedZoneShortName];
                         if (linkedZoneProperties.SuggestedMaxLevel != 0 && linkedZoneProperties.SuggestedMaxLevel != 0)
@@ -2653,7 +2653,7 @@ namespace EQWOWConverter
             FileTool.CopyFile(sourcePatchFileNameAndPath, targetPatchFileNameAndPath);
 
             // Also deploy the minimaps patch & addon, if configured to do so
-            if (Configuration.GENERATE_MAPS == true)
+            if (Configuration.GENERATE_WORLDMAPS == true)
             {
                 // Make sure a patch was created
                 string dataPatchName = string.Concat("patch-", Configuration.PATCH_CLIENT_DATA_ID, ".MPQ");

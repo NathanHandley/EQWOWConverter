@@ -112,7 +112,7 @@ namespace EQWOWConverter.Zones
                 int curMaterialIndex = MeshData.TriangleFaces[i].MaterialIndex;
 
                 // Skip materials that shouldn't be rendered
-                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
+                if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
                 {
                     if (materials[curMaterialIndex].IsAnimated() == true)
                         continue;
@@ -161,7 +161,7 @@ namespace EQWOWConverter.Zones
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.IsIndoors);
             else
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.IsOutdoors);
-            if (DoodadInstances.Count > 0 && Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
+            if (DoodadInstances.Count > 0 && Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
             if (IsCompletelyInLiquid == false)
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);

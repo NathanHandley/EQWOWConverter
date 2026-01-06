@@ -135,7 +135,7 @@ namespace EQWOWConverter.WOWFiles
 
             // MODR (Doodad References) -----------------------------------------------------------
             Dictionary<int, ZoneDoodadInstance> doodadInstances;
-            if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == true)
+            if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == true)
                 doodadInstances = new Dictionary<int, ZoneDoodadInstance>();
             else
                 doodadInstances = worldObjectModel.DoodadInstances;

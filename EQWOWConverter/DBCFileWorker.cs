@@ -348,7 +348,7 @@ namespace EQWOWConverter
                 }
 
                 // World map (in-game display)
-                if (Configuration.GENERATE_MAPS == true)
+                if (Configuration.GENERATE_WORLDMAPS == true)
                 {
                     string mapFolderName = string.Concat("EQ_", zoneProperties.ShortName);
                     int parentWorldMapID = 0;

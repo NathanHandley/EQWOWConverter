@@ -108,10 +108,10 @@ namespace EQWOWConverter
 
         // Identifier for what subset of expansion data to work with.  0 = Classic, 1 = Kunark, 2 = Velious
         public static readonly int GENERATE_EQ_EXPANSION_ID_GENERAL = 2; // Not advisable to set this lower than 2
-        public static readonly int GENERATE_EQ_EXPANSION_ID_ZONES = 0; // Zone lines and water volumes will not work in most Kunark and Velious zones (currently)
         public static readonly int GENERATE_EQ_EXPANSION_ID_TRANSPORTS = 0;
         public static readonly int GENERATE_EQ_EXPANSION_ID_TRADESKILLS = 0;
         public static readonly int GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS = 0;
+        public static readonly int GENERATE_EQ_EXPANSION_ID_ZONES = 1; // Zone lines and water volumes will not work in most Kunark and Velious zones (currently)
 
         // If true, DBC files are extracted every time.
         public static readonly bool GENERATE_EXTRACT_DBC_FILES = true;
@@ -132,13 +132,7 @@ namespace EQWOWConverter
         public static readonly bool GENERATE_QUESTS = true;
 
         // If true, generate and copy maps / minimaps
-        public static readonly bool GENERATE_MAPS = true;
-
-        // Borders on any maps that were generated
-        public static readonly int GENERATE_MAPS_LEFT_BORDER_PIXEL_SIZE = 2;
-        public static readonly int GENERATE_MAPS_RIGHT_BORDER_PIXEL_SIZE = 2;
-        public static readonly int GENERATE_MAPS_TOP_BORDER_PIXEL_SIZE = 2;
-        public static readonly int GENERATE_MAPS_BOTTOM_BORDER_PIXEL_SIZE = 2;
+        public static readonly bool GENERATE_WORLDMAPS = true;
 
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones
@@ -189,10 +183,6 @@ namespace EQWOWConverter
         //=====================================================================
         // Zone General
         //=====================================================================
-        // When true, many various proprties are changed to support generation of minimaps, such as 'baking' in animated textures
-        // Leave this false unless generating maps in order to make minimaps, otherwise you'll have terrible visuals and performance
-        public static readonly bool ZONE_MINIMAP_GENERATION_MODE_ENABLED = false;
-
         // If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging
         public static readonly bool ZONE_SHOW_STATIC_GEOMETRY = true;
 
@@ -243,6 +233,22 @@ namespace EQWOWConverter
 
         // If true, characters can fly in the zones if they have a mount
         public static readonly bool ZONE_FLYING_ALLOWED = true;
+
+        //=====================================================================
+        // World Maps (and Minimaps)
+        //=====================================================================
+        // When true, many various proprties are changed to support generation of minimaps, such as 'baking' in animated textures
+        // Leave this false unless generating maps in order to make minimaps, otherwise you'll have terrible visuals and performance
+        public static readonly bool WORLDMAP_DEBUG_GENERATION_MODE_ENABLED = false;
+
+        // Borders on any maps that were generated, which is blank space and important to mark since coordinates in map space are calculated at generation
+        public static readonly int WORLDMAP_LEFT_BORDER_PIXEL_SIZE = 2;
+        public static readonly int WORLDMAP_RIGHT_BORDER_PIXEL_SIZE = 2;
+        public static readonly int WORLDMAP_TOP_BORDER_PIXEL_SIZE = 2;
+        public static readonly int WORLDMAP_BOTTOM_BORDER_PIXEL_SIZE = 2;
+
+        // Controls showing suggested levels on the linked maps
+        public static readonly bool WORLDMAP_SHOW_SUGGESTED_LEVELS_ON_LINKED_MAPS = true;
 
         //=====================================================================
         // Liquid

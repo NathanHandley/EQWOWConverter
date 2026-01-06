@@ -34,7 +34,7 @@ namespace EQWOWConverter.WOWFiles
             bool addConvexVolumePlanes)
         {
             List<ZoneDoodadInstance> doodadInstances;
-            if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == true)
+            if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == true)
                 doodadInstances = new List<ZoneDoodadInstance>();
             else
                 doodadInstances = zone.DoodadInstances;
@@ -119,7 +119,7 @@ namespace EQWOWConverter.WOWFiles
             UInt32 numOfTextures = 0;
             foreach (Material material in materials)
             {
-                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
+                if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
                 {
                     if (material.IsAnimated() || material.HasTransparency())
                         continue;
@@ -176,7 +176,7 @@ namespace EQWOWConverter.WOWFiles
             foreach (Material material in materials)
             {
                 // Don't add the texture if the material won't be used anyway
-                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
+                if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
                 {
                     if (material.IsAnimated() || material.HasTransparency())
                         continue;
@@ -214,7 +214,7 @@ namespace EQWOWConverter.WOWFiles
                 Material material = materials[i];
 
                 // Skip any non-rendered materials
-                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
+                if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
                 {
                     if (material.IsAnimated() || material.HasTransparency())
                         continue;
@@ -223,7 +223,7 @@ namespace EQWOWConverter.WOWFiles
                     continue;
 
                 // For kedge, put in the front since there are no non-animated textures in the zone
-                if (name == "kedge" && Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
+                if (name == "kedge" && Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
                     BatchMaterialIDsByMaterialIndex.Add(0, curBatchMaterialID);
                 else
                     BatchMaterialIDsByMaterialIndex.Add(i, curBatchMaterialID);

@@ -45,7 +45,7 @@ namespace EQWOWConverter.WOWFiles
             TileYIndex = tileYIndex;
 
             // Add doodads only if trying to generate minimaps
-            if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == true)
+            if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == true)
             {
                 // Filter doodads that belong in this tile, factoring for the change in coordinate systems
                 float tileLength = 1600f / 3f; // Comes out to 533.333 repeat, doing the math here to make it be as exact as possible

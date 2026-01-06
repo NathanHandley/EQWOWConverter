@@ -412,7 +412,7 @@ namespace EQWOWConverter.Zones
                     }
                 }
                 // Also skip if it's a special case for map generation
-                if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == true)
+                if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == true)
                 {
                     foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardGeometryBoxesMapGenOnly)
                     {
@@ -454,7 +454,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Determine which materials are animated or transparent and create objects to represent them
-            if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == false)
+            if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
             {
                 foreach (Material material in Materials)
                     if ((material.IsAnimated() || material.HasTransparency()) && material.IsRenderable())
@@ -716,7 +716,7 @@ namespace EQWOWConverter.Zones
         private void GenerateRenderWorldObjectModels(MeshData renderMeshData)
         {
             bool excludeAnimatedAndTransparent = true;
-            if (Configuration.ZONE_MINIMAP_GENERATION_MODE_ENABLED == true)
+            if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == true)
                 excludeAnimatedAndTransparent = false;
 
             // Reduce meshdata to what will actually be rendered
