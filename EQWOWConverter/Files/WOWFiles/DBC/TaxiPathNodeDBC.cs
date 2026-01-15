@@ -45,11 +45,48 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // DepatureEventID
 
             // Set sorting
-            newRow.SortValue1 = CUR_ID;
+            newRow.SortValue1 = pathID;
+            newRow.SortValue2 = nodeIndex;
 
             Rows.Add(newRow);
 
             CUR_ID++;
+        }
+
+        protected override void OnPostLoadDataFromDisk()
+        {
+            // Convert any raw data rows to actual data rows (which should be all of them)
+            foreach (DBCRow row in Rows)
+            {
+                // This shouldn't be possible, but control for it just in case
+                if (row.SourceRawBytes.Count == 0)
+                {
+                    Logger.WriteError("TaxiPathNodeDBC had no source raw bytes when converting a row in OnPostLoadDataFromDisk");
+                    continue;
+                }
+
+                // Fill every field
+                int byteCursor = 0;
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddFloatFromSourceRawBytes(ref byteCursor);
+                row.AddFloatFromSourceRawBytes(ref byteCursor);
+                row.AddFloatFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+
+
+                // Attach the sort rows
+                row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[1]).Value; // PathID
+                row.SortValue2 = ((DBCRow.DBCFieldInt32)row.AddedFields[2]).Value; // NodeIndex
+
+                // Purge raw data
+                row.SourceRawBytes.Clear();
+            }
         }
     }
 }
