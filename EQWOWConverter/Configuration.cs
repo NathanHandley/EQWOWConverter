@@ -661,6 +661,7 @@ namespace EQWOWConverter
         public static readonly float TRANSPORT_PAUSE_MULTIPLIER = 0.5f; // Pause as in 'stop at a port'. 1 will be EQ-like
         public static readonly int TRANSPORT_MOVE_SPEED = 30; // Most boats are 30 in WoW, but a value of around 9 is EQ-like
         public static readonly int TRANSPORT_ACCELERATION = 1;
+        public static readonly bool TRANSPORT_ALLOW_FIXED_SPEEDS = true; // If true, allows "fixed_speed" to override TRANSPORT_MOVE_SPEED
 
         // ====================================================================
         // WOW DBC/File IDs

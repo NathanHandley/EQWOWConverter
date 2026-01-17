@@ -845,9 +845,12 @@ namespace EQWOWConverter
                     continue;
                 string name = "Ship EQ (" + transportShip.Name + ")";
                 string longName = transportShip.TouchedZones + " (" + name + ")";
+                int moveSpeed = Configuration.TRANSPORT_MOVE_SPEED;
+                if (transportShip.FixedSpeed > 0 && Configuration.TRANSPORT_ALLOW_FIXED_SPEEDS == true)
+                    moveSpeed = transportShip.FixedSpeed;
                 transportsSQL.AddRow(transportShip.WOWGameObjectTemplateID, longName);
                 gameObjectTemplateSQL.AddRowForTransportShip(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
-                    transportShip.TaxiPathID, Convert.ToInt32(transportShip.MapID));
+                    transportShip.TaxiPathID, Convert.ToInt32(transportShip.MapID), moveSpeed);
                 gameObjectTemplateAddonSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID);
             }
             foreach (TransportLift transportLift in TransportLift.GetAllTransportLifts())

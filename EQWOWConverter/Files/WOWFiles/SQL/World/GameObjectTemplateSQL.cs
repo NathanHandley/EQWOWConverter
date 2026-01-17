@@ -27,9 +27,9 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM gameobject_template WHERE `entry` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `entry` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
-        public void AddRowForTransportShip(int entryID, int displayID, string name, int taxiPathID, int spawnMap)
+        public void AddRowForTransportShip(int entryID, int displayID, string name, int taxiPathID, int spawnMap, int moveSpeed)
         {
-            AddRow(entryID, 15, displayID, name, taxiPathID, Configuration.TRANSPORT_MOVE_SPEED, Configuration.TRANSPORT_ACCELERATION, spawnMap, 0, 1, string.Empty);
+            AddRow(entryID, 15, displayID, name, taxiPathID, moveSpeed, Configuration.TRANSPORT_ACCELERATION, spawnMap, 0, 1, string.Empty);
         }
 
         public void AddRowForTransportLift(int entryID, int displayID, string name, int endTimestamp)

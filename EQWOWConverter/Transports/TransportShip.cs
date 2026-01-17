@@ -38,6 +38,7 @@ namespace EQWOWConverter.Transports
         public int EQTexture = 0;
         public float EQRunSpeed = 0;
         public float EQWalkSpeed = 0;
+        public int FixedSpeed = -1;
         public string MeshName = string.Empty;
         public int GameObjectDisplayInfoID = 0;
         public int TaxiPathID = 0;
@@ -91,6 +92,7 @@ namespace EQWOWConverter.Transports
                 curTransportShip.TouchedZones = columns["touchedzones"];
                 curTransportShip.TaxiPathID = TaxiPathDBC.GenerateID();
                 curTransportShip.MapID = int.Parse(columns["wow_mapID"]);
+                curTransportShip.FixedSpeed = int.Parse(columns["fixed_speed"]);
                 TransportShips.Add(curTransportShip);
             }
 
