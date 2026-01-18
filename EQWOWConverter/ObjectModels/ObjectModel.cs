@@ -2309,5 +2309,96 @@ namespace EQWOWConverter.ObjectModels
                     highestExistingID = material.Index;
             return highestExistingID + 1;
         }
+
+        public MeshData GetMeshDataByPose(params EQAnimationType[] eqAnimationTypes)
+        {
+            // Only process for skeletal
+            if (IsSkeletal == false)
+                return new MeshData(MeshData);
+
+            // Look for a suitable animation
+            int useAnimIndex = GetFirstAnimationIndexForEQAnimationTypes(eqAnimationTypes);
+            if (useAnimIndex == -1)
+            {
+                Logger.WriteError("Could not find suitable animation for object named ", Name);
+                return new MeshData(MeshData);
+            }
+
+            // Extract local transforms for every bone the selected animation
+            List<System.Numerics.Vector3> curAnimTranslations = new List<System.Numerics.Vector3>(ModelBones.Count);
+            List<System.Numerics.Quaternion> curAnimRotations = new List<System.Numerics.Quaternion>(ModelBones.Count);
+            for (int boneIndex = 0; boneIndex < ModelBones.Count; boneIndex++)
+            {
+                ObjectModelBone bone = ModelBones[boneIndex];
+                Vector3 translation = new Vector3(0, 0, 0);
+                System.Numerics.Quaternion rotation = System.Numerics.Quaternion.Identity;
+
+                // Translation track
+                ObjectModelTrackSequences<Vector3> translationTrack = bone.TranslationTrack;
+                if (useAnimIndex < translationTrack.Values.Count && translationTrack.Values[useAnimIndex].Values.Count > 0)
+                    translation = translationTrack.Values[useAnimIndex].Values[0];
+
+                // Rotation track
+                ObjectModelTrackSequences<QuaternionShort> rotationTrack = bone.RotationTrack;
+                if (useAnimIndex < rotationTrack.Values.Count && rotationTrack.Values[useAnimIndex].Values.Count > 0)
+                {
+                    QuaternionShort qs = rotationTrack.Values[useAnimIndex].Values[0];
+                    rotation = new System.Numerics.Quaternion(qs.X, qs.Y, qs.Z, qs.W);
+                    rotation = System.Numerics.Quaternion.Normalize(rotation);
+                }
+
+                curAnimTranslations.Add(new System.Numerics.Vector3(translation.X, translation.Y, translation.Z));
+                curAnimRotations.Add(rotation);
+            }
+
+            // Compute bone matrices
+            List<System.Numerics.Matrix4x4> absoluteBoneMatrices = new List<System.Numerics.Matrix4x4>(ModelBones.Count);
+            for (int boneIndex = 0; boneIndex < ModelBones.Count; boneIndex++)
+            {
+                ObjectModelBone bone = ModelBones[boneIndex];
+                System.Numerics.Vector3 pivot = new System.Numerics.Vector3(bone.PivotPoint.X, bone.PivotPoint.Y, bone.PivotPoint.Z);
+
+                // Translate to pivot, apply rotation, translate back from pivot, apply bone translation
+                System.Numerics.Matrix4x4 localMatrix =
+                    System.Numerics.Matrix4x4.CreateTranslation(curAnimTranslations[boneIndex]) *
+                    System.Numerics.Matrix4x4.CreateTranslation(pivot) *
+                    System.Numerics.Matrix4x4.CreateFromQuaternion(curAnimRotations[boneIndex]) *
+                    System.Numerics.Matrix4x4.CreateTranslation(-pivot);
+                System.Numerics.Matrix4x4 absoluteMatrix;
+
+                if (bone.ParentBone == -1)
+                    absoluteMatrix = localMatrix;
+                else
+                {
+                    // Multiply by parent absolute matrix if a child bone
+                    absoluteMatrix = System.Numerics.Matrix4x4.Multiply(absoluteBoneMatrices[bone.ParentBone], localMatrix);
+                }
+
+                absoluteBoneMatrices.Add(absoluteMatrix);
+            }
+
+            // Apply transformations to all vertices / normals
+            MeshData posedMeshData = new MeshData(MeshData);
+            for (int i = 0; i < posedMeshData.Vertices.Count; i++)
+            {
+                int boneIndex = posedMeshData.BoneIDs[i] + 1; // Add 1 because of root
+                if (boneIndex < 0 || boneIndex >= ModelBones.Count)
+                    continue;
+
+                System.Numerics.Matrix4x4 boneMatrix = absoluteBoneMatrices[boneIndex];
+                System.Numerics.Vector3 originalPos = new System.Numerics.Vector3(posedMeshData.Vertices[i].X, posedMeshData.Vertices[i].Y, posedMeshData.Vertices[i].Z);
+                System.Numerics.Vector3 originalNormal = new System.Numerics.Vector3(posedMeshData.Normals[i].X, posedMeshData.Normals[i].Y, posedMeshData.Normals[i].Z);
+
+                // Transform vertex
+                System.Numerics.Vector3 transform = System.Numerics.Vector3.Transform(originalPos, boneMatrix);
+                posedMeshData.Vertices[i] = new Vector3(transform.X, transform.Y, transform.Z);
+
+                // Transform normal
+                System.Numerics.Vector3 transformNormal = System.Numerics.Vector3.TransformNormal(originalNormal, boneMatrix);
+                posedMeshData.Normals[i] = new Vector3(transformNormal.X, transformNormal.Y, transformNormal.Z);
+            }
+
+            return posedMeshData;
+        }
     }
 }

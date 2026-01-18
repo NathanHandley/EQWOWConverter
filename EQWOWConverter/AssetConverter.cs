@@ -324,7 +324,7 @@ namespace EQWOWConverter
                     // Load it
                     Zone curZone = new Zone(transportShip.MeshName, transportShip.Name);
                     Logger.WriteDebug("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "'");
-                    curZone.LoadFromEQObject(transportShip.MeshName, charactersFolderRoot);
+                    curZone.LoadFromEQCharacterData(transportShip.MeshName, charactersFolderRoot);
                     Logger.WriteDebug("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "' complete");
 
                     // Convert to WMO
