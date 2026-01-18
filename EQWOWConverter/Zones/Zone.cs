@@ -179,7 +179,7 @@ namespace EQWOWConverter.Zones
             if (objectData.SkeletonData.BoneStructures.Count > 0)
             {
                 // Load an object model
-                ObjectModel objectModel = new ObjectModel(inputObjectFileName, new ObjectModelProperties(), ObjectModelType.Creature, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+                ObjectModel objectModel = new ObjectModel(inputObjectFileName, new ObjectModelProperties(), ObjectModelType.Transport, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                 objectModel.LoadEQObjectFromFile(inputCharacterFolderFullPath, inputObjectFileName);
                 MeshData firstFrameMeshData = objectModel.GetMeshDataByPose(EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose);
                 EQZoneData.RenderMeshData = firstFrameMeshData;
@@ -190,7 +190,7 @@ namespace EQWOWConverter.Zones
                 MeshData renderMeshData = firstFrameMeshData;
                 //renderMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
                 //renderMeshData.ApplyEQToWoWVertexColor(-1);
-                MeshData collisionMeshData = firstFrameMeshData;
+                MeshData collisionMeshData = firstFrameMeshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(true, true, objectData.Materials.ToArray());
                 //collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
 
                 // Update the materials

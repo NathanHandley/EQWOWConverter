@@ -132,7 +132,7 @@ namespace EQWOWConverter.ObjectModels
 
                 // Determine if rotation is needed
                 bool doRotateOnZAxis = false;
-                if ((!IsSkeletal || ModelType == ObjectModelType.StaticDoodad) && ModelType != ObjectModelType.EquipmentHeld)
+                if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.Transport || ModelType == ObjectModelType.EquipmentHeld)
                     doRotateOnZAxis = true;
 
                 // Mesh Data
@@ -1220,7 +1220,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Determine if there is a z rotation needed
             bool doRotateOnZAxis = false;
-            if ((!IsSkeletal || ModelType == ObjectModelType.StaticDoodad) && ModelType != ObjectModelType.EquipmentHeld)
+            if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.Transport || ModelType == ObjectModelType.EquipmentHeld)
                 doRotateOnZAxis = true;
 
             foreach (EQAnimationType compatibleAnimationType in compatibleAnimationTypes)
