@@ -88,7 +88,9 @@ namespace EQWOWConverter.WOWFiles
                         AddRow(gameObject.GameObjectTemplateEntryID,
                             0, // Door <- Overrides the visibility distance making it visible from very far away, but should be "10" (Goober)
                             gameObject.GameObjectDisplayInfoID, name,
-                            0, 0, 0,
+                            0, // Start clickable
+                            0, // "ID" from Lock.dbc
+                            50, // Autoclose time in MS (which is the 'make reusable time' in this case)
                             1, // "Area of Interest" is set to infinite (see from any distance)
                             0, gameObject.Scale, aiName);
                     } break;
