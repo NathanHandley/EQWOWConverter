@@ -94,7 +94,9 @@ namespace EQWOWConverter.ObjectModels
 
         private bool DoRotateModelOnZAxis()
         {
-            if ((!IsSkeletal || ModelType == ObjectModelType.StaticDoodad) && ModelType != ObjectModelType.EquipmentHeld)
+            if (ModelType == ObjectModelType.EquipmentHeld)
+                return false;
+            if (!IsSkeletal || ModelType == ObjectModelType.StaticDoodad)
                 return true;
             else
                 return false;
