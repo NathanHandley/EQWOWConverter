@@ -1,11 +1,11 @@
 ﻿eq_npc_id|wow_gotemplate_id|wow_mapID|enabled|name|mesh|touchedzones|path_group|spawn_zone|spawn_x|spawn_y|spawn_z|heading|prev_eq_z|race|gender|texture|runspeed|walkspeed|fixed_speed|min_expansion|special_abilities|Comments
-770|279970|873|1|Stormbreaker|pre|butcher,freporte,oot|1|freporte|-748|-1853|-77|0|-77|72|2|2|3|1.5|-1|0|"10|1^24|1^35|1"|
-771|279971|874|1|SirensBane|pre|butcher,freporte,oot|2|butcher|2090|4591|372.931091|0|-15|72|2|2|3|1.5|-1|0|"10|1^24|1^35|1"|
-772|279972|875|1|Sea_King|pre|erudnext,erudsxing,qeynos|3|erudnext|-584|-1606|0|-1|0|72|2|2|1.25|0.625|-1|0|"10|1^24|1^35|1"|This was moved to touch the dock in order to remove the ferry.  This is due to a WOW client bug that will crash sometimes if a game object transport enters a WMO transport
-773|279973|876|0|Golden_Maiden|pre|erudnext,erudsxing,qeynos|4|qeynos|260|775|-22|192|-22|72|2|2|1.25|0.625|-1|0|"10|1^24|1^35|1"|This was moved to touch the dock in order to remove the ferry.  This is due to a WOW client bug that will crash sometimes if a game object transport enters a WMO transport
-838|279974|877|1|Maidens_Voyage|els|firiona,timorous|5|firiona|-5685|4421|-143|0|-143|72|0|2|6.25|6.25|-1|1|"10|1^19|1^20|1^24|1^35|1"|
-839|279975|878|1|Bloated_Belly|ogs|overthere,timorous|7|overthere|4846|1589|-181|0|-181|72|2|2|3|1.6|-1|1|"19|1^20|1^24|1^35|1"|
-840|279976|879|1|Barrel_Barge|oglaunch101|oasis,timorous|8|oasis|1568|-1185|-36.664532|165|-4|73|2|1|1.25|0.625|-1|1|"10|1^19|1^20|1^24|1^35|1"|
+770|279970|873|1|Stormbreaker|ship|butcher,freporte,oot|1|freporte|-748|-1853|-77|0|-77|72|2|2|3|1.5|-1|0|"10|1^24|1^35|1"|
+771|279971|874|1|SirensBane|ship|butcher,freporte,oot|2|butcher|2090|4591|372.931091|0|-15|72|2|2|3|1.5|-1|0|"10|1^24|1^35|1"|
+772|279972|875|1|Sea_King|ship|erudnext,erudsxing,qeynos|3|erudnext|-584|-1606|0|-1|0|72|2|2|1.25|0.625|-1|0|"10|1^24|1^35|1"|This was moved to touch the dock in order to remove the ferry.  This is due to a WOW client bug that will crash sometimes if a game object transport enters a WMO transport
+773|279973|876|0|Golden_Maiden|ship|erudnext,erudsxing,qeynos|4|qeynos|260|775|-22|192|-22|72|2|2|1.25|0.625|-1|0|"10|1^24|1^35|1"|This was moved to touch the dock in order to remove the ferry.  This is due to a WOW client bug that will crash sometimes if a game object transport enters a WMO transport
+838|279974|877|0|Maidens_Voyage|els|firiona,timorous|5|firiona|-5685|4421|-143|0|-143|72|0|2|6.25|6.25|-1|1|"10|1^19|1^20|1^24|1^35|1"|
+839|279975|878|0|Bloated_Belly|ogs|overthere,timorous|7|overthere|4846|1589|-181|0|-181|72|2|2|3|1.6|-1|1|"19|1^20|1^24|1^35|1"|
+840|279976|879|0|Barrel_Barge|oglaunch101|oasis,timorous|8|oasis|1568|-1185|-36.664532|165|-4|73|2|1|1.25|0.625|-1|1|"10|1^19|1^20|1^24|1^35|1"|
 841|279977|880|0|Muckskimmer||oasis,timorous|9|timorous|7581|5359|-2|178|-2|73|2|1|1.25|0.625|-1|1|"12|1^13|1^14|1^15|1^16|1^17|1^18|1^19|1^20|1^21|1^22|1^23|1^24|1^25|1^28|1^31|1^35|1^39|1"|
 842|279978|881|0|Captains_Skiff||butcher,timorous|-1|butcher|0|0|0|0|0|73|0|1|1.25|0.625|-1|1|"10|1^19|1^20|1^24|1^35|1"|Shows 2 zones, but missing pathgrid
 843|279979|882|0|pirate_runners_skiff||iceclad,nro|10|iceclad|3556|-23000|-40|61|-40|73|2|0|3.75|1.75|-1|2|"19|1^20|1^24|1^35|1"|
