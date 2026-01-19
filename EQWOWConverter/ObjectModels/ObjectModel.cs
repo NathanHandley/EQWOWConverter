@@ -92,6 +92,14 @@ namespace EQWOWConverter.ObjectModels
             Load(EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces);
         }
 
+        private bool DoRotateModelOnZAxis()
+        {
+            if ((!IsSkeletal || ModelType == ObjectModelType.StaticDoodad) && ModelType != ObjectModelType.EquipmentHeld)
+                return true;
+            else
+                return false;
+        }
+
         // TODO: Vertex Colors
         public void Load(List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces,
             List<EQSpellsEFF.EFFSpellSpriteListEffect>? spriteListEffects = null)
@@ -130,13 +138,8 @@ namespace EQWOWConverter.ObjectModels
                         scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
                 }
 
-                // Determine if rotation is needed
-                bool doRotateOnZAxis = false;
-                if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.Transport || ModelType == ObjectModelType.EquipmentHeld)
-                    doRotateOnZAxis = true;
-
                 // Mesh Data
-                meshData.ApplyEQToWoWGeometryTranslationsAndScale(doRotateOnZAxis, scaleAmount);
+                meshData.ApplyEQToWoWGeometryTranslationsAndScale(DoRotateModelOnZAxis(), scaleAmount);
 
                 // If there is any collision data, also translate that too
                 if (collisionVertices.Count > 0)
@@ -145,7 +148,7 @@ namespace EQWOWConverter.ObjectModels
                     MeshData collisionMeshData = new MeshData();
                     collisionMeshData.TriangleFaces = collisionTriangleFaces;
                     collisionMeshData.Vertices = collisionVertices;
-                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(doRotateOnZAxis, scaleAmount);
+                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(DoRotateModelOnZAxis(), scaleAmount);
                     // Copy back
                     collisionTriangleFaces = collisionMeshData.TriangleFaces;
                     collisionVertices = collisionMeshData.Vertices;
@@ -1218,11 +1221,6 @@ namespace EQWOWConverter.ObjectModels
             else
                 compatibleAnimationTypes = overrideEQAnimationTypes;
 
-            // Determine if there is a z rotation needed
-            bool doRotateOnZAxis = false;
-            if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.Transport || ModelType == ObjectModelType.EquipmentHeld)
-                doRotateOnZAxis = true;
-
             foreach (EQAnimationType compatibleAnimationType in compatibleAnimationTypes)
             {
                 // Look for a match, and process it if found
@@ -1291,7 +1289,7 @@ namespace EQWOWConverter.ObjectModels
                                                                                     animationFrame.WRotation);
 
                                 // Rotate on Z, if needed
-                                if (doRotateOnZAxis)
+                                if (DoRotateModelOnZAxis())
                                 {
                                     frameTranslation.X = -frameTranslation.X;
                                     frameTranslation.Y = -frameTranslation.Y;
