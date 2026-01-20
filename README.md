@@ -5,10 +5,10 @@ Converts the EverQuest assets from the original game into World of Warcraft 3.3.
 
 To see video references, go here: https://www.youtube.com/@WoWEverQuest
 
-**Note: The creator of this converter (Nathan) has no affiliation with any server provider/hoster, hosts no server, and provides no client files for either EverQuest or World of Warcraft.  This project is for education and preservation purposes only.** 
+**Note: The creator of this converter (Nathan) has no affiliation with any server provider/hoster, and provides no client files for either EverQuest or World of Warcraft. This project is for education and preservation purposes only.** 
 
 # Current State
-It is currently in an Alpha state, but all content types (tradeskills, spells, quests, etc) are working to some degree.  Only classic (pre-Kunark) is in a semi-polished state, but you can enable Kunark and/or Velious content by setting the configuration values starting with GENERATE_EQ_EXPANSION_ID_.  Many things, such as zone lines and water volumes will not work in Kunark and above right now.
+It is currently in an Alpha state, but all content types (tradeskills, spells, quests, etc) are working to some degree.  Only classic and Kunark are in a semi-polished state, but you can change the enabled expansions with the Configuration.cs variable GENERATE_EQ_EXPANSION_ID_.  Many things, such as zone lines and water volumes will not work in Velious right now.
 
 # Requirements
 - Windows build environment
