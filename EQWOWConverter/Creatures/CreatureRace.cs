@@ -126,7 +126,8 @@ namespace EQWOWConverter.Creatures
                 return;
             if (soundName == "null24.wav")
                 return;
-            Sound newSound = new Sound(soundName, soundName, SoundType.NPCCombat, 8, 20, false);
+            Sound newSound = new Sound(soundName, soundName, SoundType.NPCCombat, Configuration.AUDIO_CREATURE_MIN_DISTANCE, 
+                Configuration.AUDIO_CREATURE_DISTANCE_CUTOFF, false);
             newSound.NoOverlap = true;
             SoundsBySoundName[soundName] = newSound;
         }

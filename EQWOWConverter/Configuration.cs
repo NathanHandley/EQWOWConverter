@@ -334,6 +334,10 @@ namespace EQWOWConverter
         // Volume of creature sound effects like attacks and being hit
         public static readonly float AUDIO_CREATURE_SOUND_VOLUME = 0.3f;
 
+        // Creature sound distance properties for idle sounds
+        public static readonly float AUDIO_CREATURE_MIN_DISTANCE = 8f;
+        public static readonly float AUDIO_CREATURE_DISTANCE_CUTOFF = 20f;
+
         // Volume of spells and other effects
         public static readonly float AUDIO_SPELL_SOUND_VOLUME = 0.3f;
 
