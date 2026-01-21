@@ -158,7 +158,7 @@ EQFactionID|WOWFactionID|SourceFactionName|TargetFactionName|Comment
 315|1237|Trakanon|EQ Creature KOS No Flee|
 316|1206|Scouts of Tunare|Wood Elves of Kelethin|
 317|1237|Undead Frogloks of Guk|EQ Creature KOS No Flee|
-318|1217|Venril Sathir|Dark Elves of Nariak|TODO: Map to its own rep (Venril Sathir)
+318|1234|Venril Sathir|Venril Sathir|
 319|1237|Vox|EQ Creature KOS No Flee|
 320|1204|Wolves of the North|Barbarians of Halas|
 321|1223|Split Paw Clan|EQ Creature KOS|
@@ -217,7 +217,7 @@ EQFactionID|WOWFactionID|SourceFactionName|TargetFactionName|Comment
 398|1223|Riptide Goblins|EQ Creature KOS|
 401|1206|Song Weavers|Wood Elves of Kelethin|
 402|1225|Oracle of K`Arnon|EQ Creature Neutral|
-404|1234|Truespirit|Truespirit|For Epics
+404|1225|Truespirit|EQ Creature Neutral|For Epics, TODO: make quests work without the rep
 405|1235|Dain Frostreaver IV|The Coldain|
 406|1235|Coldain|The Coldain|
 407|1223|Ry`Gorr Clan Snow Orcs|EQ Creature KOS|
