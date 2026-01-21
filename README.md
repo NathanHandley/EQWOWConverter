@@ -36,7 +36,7 @@ Automatic Deployment **Highly Recommended**:
 Manual Deployment (Alternate):
 1. Run the .sql files located in <PATH_WORKING_FOLDER>/WOWExports/SQLScripts against your databases, with /Characters/ against your characters database and /World/ against your world database
 2. Copy contents of <PATH_WORKING_FOLDER>/WOWExports/DBCFilesServer into your server's dbc files location (typically located in the "data" folder during AzerothCore setup)
-3. Place the (*.mpq) patch file inside <PATH_WORKING_FOLDER>/WOWExports into the (<PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER>/Data/) and (<PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER>/Data/<LOCALE>/) folders.
+3. Place the (*.mpq) patch file inside <PATH_WORKING_FOLDER>/WOWExports into the (<PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER>/Data/) and (<PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER>/Data/enUS/) folders. (note that enUS may be different depending on your locale)
 4. Copy the AddOn from your <PATH_WORKING_FOLDER>/AddOnsReady into the (<PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER>/Interface/AddOns/) folder.
 
 # Special Thanks
