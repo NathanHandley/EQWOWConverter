@@ -3,7 +3,7 @@ Converts the EverQuest assets from the original game into World of Warcraft 3.3.
 
 <img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/WestFreeportInterior.jpg?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/Nagafen.jpg?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/KelethinHighFog.jpg?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/Neriak.jpg?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/OnABoat.jpg?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/Mistmoore.jpg?raw=true" width="300"/>
 
-To see video references, go here: https://www.youtube.com/@WoWEverQuest
+To see video references, go here: [YouTube Playlist](https://youtube.com/playlist?list=PLB5LJGQjmSQTqbmGEf3WAZc_VvI_ogf3g&si=B7HPIb46PemFglAB)
 
 **Note: The creator of this converter (Nathan) has no affiliation with any server provider/hoster, and provides no client files for either EverQuest or World of Warcraft. This project is for education and preservation purposes only.** 
 
