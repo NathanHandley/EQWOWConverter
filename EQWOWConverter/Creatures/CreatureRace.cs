@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using System.Diagnostics.Eventing.Reader;
 
 namespace EQWOWConverter.Creatures
 {
@@ -54,6 +55,7 @@ namespace EQWOWConverter.Creatures
         public string SoundAttackName = string.Empty;
         public string SoundSpellAttackName = string.Empty;
         public string SoundTechnicalAttackName = string.Empty;
+        public int SoundMaxDistance = Configuration.AUDIO_CREATURE_DISTANCE_CUTOFF;
         public Vector3 CameraPositionMod = new Vector3();
         public Vector3 CameraTargetPositionMod = new Vector3();
         public float GeoboxInradius = 0;
@@ -61,7 +63,7 @@ namespace EQWOWConverter.Creatures
         public int WOWCreatureFamily = 0;
         public int WOWCreatureType = 0;
 
-        public static Dictionary<string, Sound> SoundsBySoundName = new Dictionary<string, Sound>();
+        public static Dictionary<string, Dictionary<int, Sound>> SoundsBySoundNameAndDistance = new Dictionary<string, Dictionary<int, Sound>>();
         public static Dictionary<string, int> FootstepIDBySoundName = new Dictionary<string, int>();
         public static Dictionary<int, int> FootstepIDBySoundID = new Dictionary<int, int>();
         private static int CUR_CREATURE_FOOTSTEP_ID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START;
@@ -81,55 +83,65 @@ namespace EQWOWConverter.Creatures
 
                 foreach (CreatureRace creatureRace in CreatureRaces)
                 {
-                    GenerateSoundIfUnique(creatureRace.SoundLoopName);
-                    GenerateSoundIfUnique(creatureRace.SoundIdle1Name);
-                    GenerateSoundIfUnique(creatureRace.SoundIdle2Name);
-                    GenerateSoundIfUnique(creatureRace.SoundJumpName);
-                    GenerateSoundIfUnique(creatureRace.SoundHit1Name);
-                    GenerateSoundIfUnique(creatureRace.SoundHit2Name);
-                    GenerateSoundIfUnique(creatureRace.SoundHit3Name);
-                    GenerateSoundIfUnique(creatureRace.SoundHit4Name);
-                    GenerateSoundIfUnique(creatureRace.SoundGasp1Name);
-                    GenerateSoundIfUnique(creatureRace.SoundGasp2Name);
-                    GenerateSoundIfUnique(creatureRace.SoundDeathName);
-                    GenerateSoundIfUnique(creatureRace.SoundDrownName);
-                    GenerateSoundIfUnique(creatureRace.SoundWalkingName);
-                    GenerateSoundIfUnique(creatureRace.SoundAttackName);
-                    GenerateSoundIfUnique(creatureRace.SoundSpellAttackName);
-                    GenerateSoundIfUnique(creatureRace.SoundTechnicalAttackName);
-                    GenerateSoundIfUnique(creatureRace.SoundRunningName);
+                    GenerateSoundIfUnique(creatureRace.SoundLoopName, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundIdle1Name, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundIdle2Name, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundJumpName, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundHit1Name, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundHit2Name, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundHit3Name, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundHit4Name, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundGasp1Name, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundGasp2Name, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundDeathName, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundDrownName, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundWalkingName, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundAttackName, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundSpellAttackName, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundTechnicalAttackName, creatureRace.SoundMaxDistance);
+                    GenerateSoundIfUnique(creatureRace.SoundRunningName, creatureRace.SoundMaxDistance);
 
                     if (FootstepIDBySoundName.ContainsKey(creatureRace.SoundWalkingName) == false)
                     {
                         FootstepIDBySoundName.Add(creatureRace.SoundWalkingName, CUR_CREATURE_FOOTSTEP_ID);
-                        FootstepIDBySoundID.Add(GetSoundIDForSound(creatureRace.SoundWalkingName), CUR_CREATURE_FOOTSTEP_ID);
+                        FootstepIDBySoundID.Add(GetSoundIDForSound(creatureRace.SoundWalkingName, creatureRace.SoundMaxDistance), CUR_CREATURE_FOOTSTEP_ID);
                         CUR_CREATURE_FOOTSTEP_ID++;
                     }
                 }
             }
         }
 
-        public static int GetSoundIDForSound(string soundName)
+        public static int GetSoundIDForSound(string soundName, int distance)
         {
             lock (CreatureLock)
             {
-                if (SoundsBySoundName.ContainsKey(soundName))
-                    return SoundsBySoundName[soundName].DBCID;
+                if (SoundsBySoundNameAndDistance.ContainsKey(soundName))
+                {
+                    if (SoundsBySoundNameAndDistance[soundName].ContainsKey(distance))
+                        return SoundsBySoundNameAndDistance[soundName][distance].DBCID;
+                    else
+                        return 0;
+                }   
                 else
                     return 0;
             }
         }
 
-        private static void GenerateSoundIfUnique(string soundName)
+        private static void GenerateSoundIfUnique(string soundName, int distance)
         {
-            if (SoundsBySoundName.ContainsKey(soundName))
-                return;
             if (soundName == "null24.wav")
                 return;
-            Sound newSound = new Sound(soundName, soundName, SoundType.NPCCombat, Configuration.AUDIO_CREATURE_MIN_DISTANCE, 
-                Configuration.AUDIO_CREATURE_DISTANCE_CUTOFF, false);
+            if (SoundsBySoundNameAndDistance.ContainsKey(soundName) == true)
+            {
+                if (SoundsBySoundNameAndDistance[soundName].ContainsKey(distance) == true)
+                    return;
+            }
+            else
+                SoundsBySoundNameAndDistance.Add(soundName, new Dictionary<int, Sound>());
+            Sound newSound = new Sound(soundName, soundName, SoundType.NPCCombat, Configuration.AUDIO_CREATURE_MIN_DISTANCE,
+                distance, false);
             newSound.NoOverlap = true;
-            SoundsBySoundName[soundName] = newSound;
+            SoundsBySoundNameAndDistance[soundName][distance] = newSound;
         }
 
         public static List<CreatureRace> GetAllCreatureRaces()
@@ -208,6 +220,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.SoundAttackName = columns["SndAttack"];
                 newCreatureRace.SoundSpellAttackName = columns["SndSAttack"];
                 newCreatureRace.SoundTechnicalAttackName = columns["SndTAttack"];
+                newCreatureRace.SoundMaxDistance = (int)Math.Ceiling(float.Parse(columns["SndMaxDistancePreScale"]) * Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE);
                 float cameraPositionModX = float.Parse(columns["CamPosModX"]) * Configuration.GENERATE_CREATURE_SCALE;
                 float cameraPositionModY = float.Parse(columns["CamPosModY"]) * Configuration.GENERATE_CREATURE_SCALE;
                 float cameraPositionModZ = float.Parse(columns["CamPosModZ"]) * Configuration.GENERATE_CREATURE_SCALE;

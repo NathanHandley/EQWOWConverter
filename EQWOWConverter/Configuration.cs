@@ -335,8 +335,9 @@ namespace EQWOWConverter
         public static readonly float AUDIO_CREATURE_SOUND_VOLUME = 0.3f;
 
         // Creature sound distance properties for idle sounds
+        // Note: Distance Cutoff is overwritten by CreatureRaces, and may be deletable
         public static readonly float AUDIO_CREATURE_MIN_DISTANCE = 8f;
-        public static readonly float AUDIO_CREATURE_DISTANCE_CUTOFF = 20f;
+        public static readonly int AUDIO_CREATURE_DISTANCE_CUTOFF = 20;
 
         // Volume of spells and other effects
         public static readonly float AUDIO_SPELL_SOUND_VOLUME = 0.3f;

@@ -15,12 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Creatures;
-using EQWOWConverter.Zones;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -30,21 +24,21 @@ namespace EQWOWConverter.WOWFiles
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundAttackName)); // Exertion SoundEntriesDBC.ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundAttackName)); // Exertion Critical SoundEntriesDBC.ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundHit1Name)); // Injury SoundEntriesDBC.ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundHit3Name)); // Injury Critical SoundEntriesDBC.ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundHit4Name)); // Injury Crushing Blow SoundEntriesDBC.ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundDeathName)); // Death SoundEntriesDBC.ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundHit2Name)); // Stun SoundEntriesDBC.ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundLoopName)); // Stand SoundEntriesDBC.ID
+            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundAttackName, creatureRace.SoundMaxDistance)); // Exertion SoundEntriesDBC.ID
+            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundAttackName, creatureRace.SoundMaxDistance)); // Exertion Critical SoundEntriesDBC.ID
+            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundHit1Name, creatureRace.SoundMaxDistance)); // Injury SoundEntriesDBC.ID
+            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundHit3Name, creatureRace.SoundMaxDistance)); // Injury Critical SoundEntriesDBC.ID
+            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundHit4Name, creatureRace.SoundMaxDistance)); // Injury Crushing Blow SoundEntriesDBC.ID
+            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundDeathName, creatureRace.SoundMaxDistance)); // Death SoundEntriesDBC.ID
+            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundHit2Name, creatureRace.SoundMaxDistance)); // Stun SoundEntriesDBC.ID
+            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundLoopName, creatureRace.SoundMaxDistance)); // Stand SoundEntriesDBC.ID
             newRow.AddInt32(creatureFootstepSoundID); // Footstep sound in FootstepTerrainLookupDBC.ID
             newRow.AddInt32(0); // Agro SoundEntriesDBC.ID
             newRow.AddInt32(0); // Wing Flap SoundEntriesDBC.ID
             newRow.AddInt32(0); // Wing Glide SoundEntriesDBC.ID
             newRow.AddInt32(0); // Alert SoundEntriesDBC.ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundIdle1Name)); // Fidget 1 SoundEntriesDBC.ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundIdle2Name)); // Fidget 2 SoundEntriesDBC.ID
+            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundIdle1Name, creatureRace.SoundMaxDistance)); // Fidget 1 SoundEntriesDBC.ID
+            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundIdle2Name, creatureRace.SoundMaxDistance)); // Fidget 2 SoundEntriesDBC.ID
             newRow.AddInt32(0); // Fidget 3 SoundEntriesDBC.ID
             newRow.AddInt32(0); // Fidget 4 SoundEntriesDBC.ID
             newRow.AddInt32(0); // Fidget 5 SoundEntriesDBC.ID
@@ -53,9 +47,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // Custom Attack 3 SoundEntriesDBC.ID
             newRow.AddInt32(0); // Custom Attack 4 SoundEntriesDBC.ID
             newRow.AddInt32(0); // NPC Sound SoundEntriesDBC.ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundLoopName)); // Loop Sound (idle?) SoundEntriesDBC.ID
+            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundLoopName, creatureRace.SoundMaxDistance)); // Loop Sound (idle?) SoundEntriesDBC.ID
             newRow.AddInt32(0); // Creature impact type
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundJumpName)); // Jump Start ID SoundEntriesDBC.ID
+            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundJumpName, creatureRace.SoundMaxDistance)); // Jump Start ID SoundEntriesDBC.ID
             newRow.AddInt32(0); // Jump End ID SoundEntriesDBC.ID
             newRow.AddInt32(0); // Pet Attack ID SoundEntriesDBC.ID
             newRow.AddInt32(0); // Pet Order ID SoundEntriesDBC.ID
@@ -63,7 +57,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0); // Fidget Delay Seconds Min (Time / Interval? 30 seconds?)
             newRow.AddFloat(0); // Fidget Delay Seconds Max (Time / Interval? 60 seconds?)
             newRow.AddInt32(0); // Birth SoundEntriesDBC.ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundSpellAttackName)); // Spell Cast Directed SoundEntriesDBC.ID
+            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundSpellAttackName, creatureRace.SoundMaxDistance)); // Spell Cast Directed SoundEntriesDBC.ID
             newRow.AddInt32(0); // Submerge SoundEntriesDBC.ID
             newRow.AddInt32(0); // Submerged SoundEntriesDBC.ID
             newRow.AddInt32(0); // Creature Sound Data ID Pet (?) SoundEntriesDBC.ID

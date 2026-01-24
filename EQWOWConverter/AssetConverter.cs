@@ -1271,10 +1271,10 @@ namespace EQWOWConverter
             if (Directory.Exists(exportCreatureSoundsDirectory) == true)
                 Directory.Delete(exportCreatureSoundsDirectory, true);
             FileTool.CreateBlankDirectory(exportCreatureSoundsDirectory, false);
-            foreach (var sound in CreatureRace.SoundsBySoundName)
+            foreach (var sound in CreatureRace.SoundsBySoundNameAndDistance)
             {
-                string sourceSoundFileName = Path.Combine(inputSoundFolderRoot, sound.Value.Name);
-                string targetSoundFileName = Path.Combine(exportCreatureSoundsDirectory, sound.Value.Name);
+                string sourceSoundFileName = Path.Combine(inputSoundFolderRoot, sound.Value.First().Value.Name);
+                string targetSoundFileName = Path.Combine(exportCreatureSoundsDirectory, sound.Value.First().Value.Name);
                 if (File.Exists(targetSoundFileName) == false)
                     FileTool.CopyFile(sourceSoundFileName, targetSoundFileName);
             }
@@ -1430,10 +1430,10 @@ namespace EQWOWConverter
             if (Directory.Exists(exportCreatureSoundsDirectory) == true)
                 Directory.Delete(exportCreatureSoundsDirectory, true);
             FileTool.CreateBlankDirectory(exportCreatureSoundsDirectory, false);
-            foreach (var sound in CreatureRace.SoundsBySoundName)
+            foreach (var sound in CreatureRace.SoundsBySoundNameAndDistance)
             {
-                string sourceSoundFileName = Path.Combine(inputSoundFolderRoot, sound.Value.Name);
-                string targetSoundFileName = Path.Combine(exportCreatureSoundsDirectory, sound.Value.Name);
+                string sourceSoundFileName = Path.Combine(inputSoundFolderRoot, sound.Value.First().Value.Name);
+                string targetSoundFileName = Path.Combine(exportCreatureSoundsDirectory, sound.Value.First().Value.Name);
                 if (File.Exists(targetSoundFileName) == false)
                     FileTool.CopyFile(sourceSoundFileName, targetSoundFileName);
             }

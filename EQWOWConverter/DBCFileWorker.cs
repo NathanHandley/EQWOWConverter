@@ -235,8 +235,9 @@ namespace EQWOWConverter
                 creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, creatureModelTemplate.Race, CreatureRace.FootstepIDBySoundName[creatureModelTemplate.Race.SoundWalkingName]);
             }
             string creatureSoundsDirectory = "Sound\\Creature\\Everquest";
-            foreach (var sound in CreatureRace.SoundsBySoundName)
-                soundEntriesDBC.AddRow(sound.Value, sound.Value.Name, creatureSoundsDirectory);
+            foreach (var soundByName in CreatureRace.SoundsBySoundNameAndDistance)
+                foreach (var soundByDistance in soundByName.Value)
+                    soundEntriesDBC.AddRow(soundByDistance.Value, soundByDistance.Value.Name, creatureSoundsDirectory);
 
             // Faction
             foreach (CreatureFaction creatureFaction in CreatureFaction.GetCreatureFactionsByFactionID().Values)
