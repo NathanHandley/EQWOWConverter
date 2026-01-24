@@ -55,7 +55,7 @@ namespace EQWOWConverter.Creatures
         public string SoundAttackName = string.Empty;
         public string SoundSpellAttackName = string.Empty;
         public string SoundTechnicalAttackName = string.Empty;
-        public int SoundMaxDistance = Configuration.AUDIO_CREATURE_DISTANCE_CUTOFF;
+        public int SoundMaxDistance = 20;
         public Vector3 CameraPositionMod = new Vector3();
         public Vector3 CameraTargetPositionMod = new Vector3();
         public float GeoboxInradius = 0;
@@ -127,21 +127,21 @@ namespace EQWOWConverter.Creatures
             }
         }
 
-        private static void GenerateSoundIfUnique(string soundName, int distance)
+        private static void GenerateSoundIfUnique(string soundName, int radius)
         {
             if (soundName == "null24.wav")
                 return;
             if (SoundsBySoundNameAndDistance.ContainsKey(soundName) == true)
             {
-                if (SoundsBySoundNameAndDistance[soundName].ContainsKey(distance) == true)
+                if (SoundsBySoundNameAndDistance[soundName].ContainsKey(radius) == true)
                     return;
             }
             else
                 SoundsBySoundNameAndDistance.Add(soundName, new Dictionary<int, Sound>());
-            Sound newSound = new Sound(soundName, soundName, SoundType.NPCCombat, Configuration.AUDIO_CREATURE_MIN_DISTANCE,
-                distance, false);
+            float minDistance = radius * Configuration.AUDIO_CREATURE_MIN_DISTANCE_MOD;
+            Sound newSound = new Sound(soundName, soundName, SoundType.NPCCombat, minDistance, radius, false);
             newSound.NoOverlap = true;
-            SoundsBySoundNameAndDistance[soundName][distance] = newSound;
+            SoundsBySoundNameAndDistance[soundName][radius] = newSound;
         }
 
         public static List<CreatureRace> GetAllCreatureRaces()
@@ -220,7 +220,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.SoundAttackName = columns["SndAttack"];
                 newCreatureRace.SoundSpellAttackName = columns["SndSAttack"];
                 newCreatureRace.SoundTechnicalAttackName = columns["SndTAttack"];
-                newCreatureRace.SoundMaxDistance = (int)Math.Ceiling(float.Parse(columns["SndMaxDistancePreScale"]) * Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE);
+                newCreatureRace.SoundMaxDistance = (int)Math.Ceiling(float.Parse(columns["SndMaxDistance"]) * Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE);
                 float cameraPositionModX = float.Parse(columns["CamPosModX"]) * Configuration.GENERATE_CREATURE_SCALE;
                 float cameraPositionModY = float.Parse(columns["CamPosModY"]) * Configuration.GENERATE_CREATURE_SCALE;
                 float cameraPositionModZ = float.Parse(columns["CamPosModZ"]) * Configuration.GENERATE_CREATURE_SCALE;
