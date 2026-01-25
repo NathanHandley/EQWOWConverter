@@ -22,7 +22,7 @@ namespace EQWOWConverter.ObjectModels
         ZoneModel,
         SoundInstance,
         Creature,
-        Transport,
+        TransportShip,
         EquipmentHeld,
         ParticleEmitter,
         SpellProjectile

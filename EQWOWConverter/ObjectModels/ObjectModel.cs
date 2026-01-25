@@ -98,7 +98,7 @@ namespace EQWOWConverter.ObjectModels
                 return false;
             if (IsSkeletal == false)
                 return true;
-            if (ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.Transport)
+            if (ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.TransportShip)
                 return true;
             else
                 return false;
@@ -129,7 +129,7 @@ namespace EQWOWConverter.ObjectModels
             meshData.SortDataByMaterialBonesAndGenerateRenderGroups();
 
             // Perform EQ->WoW translations if this is coming from a raw EQ object
-            if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.Transport || ModelType == ObjectModelType.EquipmentHeld)
+            if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.TransportShip || ModelType == ObjectModelType.EquipmentHeld)
             {
                 float scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_WORLD_SCALE;
                 if (ModelType == ObjectModelType.Creature)
@@ -175,15 +175,15 @@ namespace EQWOWConverter.ObjectModels
             // Note: Must come after bounding box generation (in GenerateModelVertices)
             ProcessBonesAndAnimation(spriteListEffects);
 
+            // Store the final state mesh data
+            MeshData = meshData;
+
             // Collision data
             ProcessCollisionData(meshData, initialMaterials, collisionVertices, collisionTriangleFaces);
 
             // Create a global sequence if there is none and it's not an emitter or projectile
             if (GlobalLoopSequenceLimits.Count == 0 && (ModelType != ObjectModelType.ParticleEmitter && ModelType != ObjectModelType.SpellProjectile))
                 GlobalLoopSequenceLimits.Add(0);
-
-            // Store the final state mesh data
-            MeshData = meshData;
 
             // Generate the render groups
             GenerateRenderGroups(MeshData, ModelVertices, ModelTriangles);
@@ -2141,6 +2141,13 @@ namespace EQWOWConverter.ObjectModels
                 CollisionFaceNormals.Add(new Vector3(-0.000000f, -1.000000f, 0.000000f));
                 CollisionFaceNormals.Add(new Vector3(-0.000000f, -1.000000f, 0.000000f));
                 doGenerateNormals = false;
+            }
+            // Transport ships need collision data calculated from the first frame of animation
+            else if (ModelType == ObjectModelType.TransportShip)
+            {
+                MeshData firstFrameMeshData = GetMeshDataByPose(true, EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose);
+                collisionVertices = firstFrameMeshData.Vertices;
+                collisionTriangleFaces = firstFrameMeshData.TriangleFaces;
             }
             // Generate collision data if there is none and it's from an EQ object
             else if (collisionVertices.Count == 0 && Properties.DoGenerateCollisionFromMeshData == true &&

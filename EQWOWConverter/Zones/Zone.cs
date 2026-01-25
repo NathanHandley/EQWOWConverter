@@ -16,7 +16,6 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
-using EQWOWConverter.EQFiles;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
@@ -181,10 +180,18 @@ namespace EQWOWConverter.Zones
             objectProperties.CreatureModelTemplate = creatureModelTemplate;
             objectProperties.ModelScalePreWorldScale = transportRace.ModelScale;
             objectProperties.ModelLiftPreWorldScale = transportRace.Lift;
-            ObjectModel curObject = new ObjectModel(inputObjectFileName, new ObjectModelProperties(), ObjectModelType.Transport, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+            ObjectModel curObject = new ObjectModel(inputObjectFileName, new ObjectModelProperties(), ObjectModelType.TransportShip, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
             curObject.LoadEQObjectFromFile(inputCharacterFolderFullPath, inputObjectFileName);
 
 
+
+            // Grab collision data
+            //MeshData firstFrameMeshData = curObject.GetMeshDataByPose(true, EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose);
+            //curObject.Coll
+            //EQZoneData.RenderMeshData = firstFrameMeshData;
+            //EQZoneData.CollisionMeshData = firstFrameMeshData;
+            //EQZoneData.Materials = objectData.Materials;
+            //MeshData collisionMeshData = firstFrameMeshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(true, true, objectData.Materials.ToArray());
 
 
 

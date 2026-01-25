@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
+using EQWOWConverter.EQFiles;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
@@ -330,7 +331,7 @@ namespace EQWOWConverter
                     objectProperties.CreatureModelTemplate = creatureModelTemplate;
                     objectProperties.ModelScalePreWorldScale = transportRace.ModelScale;
                     objectProperties.ModelLiftPreWorldScale = transportRace.Lift;
-                    ObjectModel curObject = new ObjectModel(transportShip.MeshName, new ObjectModelProperties(), ObjectModelType.Transport, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+                    ObjectModel curObject = new ObjectModel(transportShip.MeshName, new ObjectModelProperties(), ObjectModelType.TransportShip, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                     curObject.LoadEQObjectFromFile(charactersFolderRoot, transportShip.MeshName);
 
                     // Create the M2 and Skin
