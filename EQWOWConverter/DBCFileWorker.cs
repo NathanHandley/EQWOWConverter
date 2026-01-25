@@ -581,13 +581,6 @@ namespace EQWOWConverter
                     foreach (ZoneModelObject wmo in transportWMOByID.Value.Zone.ZoneObjectModels)
                         wmoAreaTableDBC.AddRow(Convert.ToInt32(transportWMOByID.Value.Zone.ZoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, 0, wmo.DisplayName);
                 }
-                // TODO: Delete?
-                //string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
-                //foreach (var transportObjectModelByID in TransportShip.TransportShipObjectModelsByGameObjectDisplayInfoID)
-                //{
-                //    string modelPath = Path.Combine(relativeStaticDoodadsPath.ToLower(), transportObjectModelByID.Value.Name.ToLower(), transportObjectModelByID.Value.Name.ToLower() + ".mdx");
-                //    gameObjectDisplayInfoDBC.AddRow(transportObjectModelByID.Key, modelPath.ToLower(), transportObjectModelByID.Value.CollisionBoundingBox);
-                //}
                 Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
                 foreach (Zone zone in zones)
                     mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);

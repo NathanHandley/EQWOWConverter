@@ -15,14 +15,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.WOWFiles;
-using EQWOWConverter.ObjectModels;
 
 namespace EQWOWConverter.Transports
 {
     internal class TransportShip
     {
         private static List<TransportShip> TransportShips = new List<TransportShip>();
-        public static Dictionary<int, ObjectModel> TransportShipObjectModelsByGameObjectDisplayInfoID = new Dictionary<int, ObjectModel>();
         public static Dictionary<int, WMO> TransportShipWMOsByGameObjectDisplayInfoID = new Dictionary<int, WMO>();
 
         public int EQNPCID = 0;

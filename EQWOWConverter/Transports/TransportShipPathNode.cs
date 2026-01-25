@@ -57,7 +57,6 @@ namespace EQWOWConverter.Transports
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(transportShipPathNodesFile, "|");
             foreach (Dictionary<string, string> columns in rows)
             {
-                // TODO: Here
                 TransportShipPathNode curNode = new TransportShipPathNode();
                 curNode.PathGroup = int.Parse(columns["path_group"]);
                 curNode.MapShortName = columns["map_short_name"];

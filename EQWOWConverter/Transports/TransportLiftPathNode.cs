@@ -54,7 +54,6 @@ namespace EQWOWConverter.Transports
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(transportLiftPathNodesFile, "|");
             foreach (Dictionary<string, string> columns in rows)
             {
-                // TODO: Here
                 TransportLiftPathNode curNode = new TransportLiftPathNode();
                 curNode.PathGroup = int.Parse(columns["path_group"]);
                 curNode.ZoneShortName = columns["zone_shortname"];

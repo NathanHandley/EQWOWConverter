@@ -16,7 +16,6 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
-using EQWOWConverter.EQFiles;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
@@ -359,7 +358,6 @@ namespace EQWOWConverter
                     int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
                     transportShipZoneModelsByMeshName.Add(transportShip.MeshName, curZone);
                     gameObjectDisplayInfoIDsByMeshName.Add(transportShip.MeshName, gameObjectDisplayInfoID);
-                    TransportShip.TransportShipObjectModelsByGameObjectDisplayInfoID.Add(gameObjectDisplayInfoID, curObject); // TODO: Can we delete this?
                     TransportShip.TransportShipWMOsByGameObjectDisplayInfoID.Add(gameObjectDisplayInfoID, transportWMO);
                 }
                 transportShip.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportShip.MeshName];
