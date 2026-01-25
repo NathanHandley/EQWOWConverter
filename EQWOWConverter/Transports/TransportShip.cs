@@ -40,6 +40,7 @@ namespace EQWOWConverter.Transports
         public float EQWalkSpeed = 0;
         public int FixedSpeed = -1;
         public string MeshName = string.Empty;
+        public bool IsSkeletal = false;
         public int GameObjectDisplayInfoID = 0;
         public int TaxiPathID = 0;
         public int MapID = 0;
@@ -78,6 +79,7 @@ namespace EQWOWConverter.Transports
                 curTransportShip.WOWGameObjectTemplateID = int.Parse(columns["wow_gotemplate_id"]);
                 curTransportShip.Name = columns["name"];
                 curTransportShip.MeshName = columns["mesh"];
+                curTransportShip.IsSkeletal = columns["is_skeletal"] == "1" ? true : false;
                 curTransportShip.PathGroupID = int.Parse(columns["path_group"]);
                 curTransportShip.SpawnZoneShortName = columns["spawn_zone"];
                 curTransportShip.SpawnX = float.Parse(columns["spawn_x"]) * Configuration.GENERATE_WORLD_SCALE;
