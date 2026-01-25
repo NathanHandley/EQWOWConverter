@@ -176,7 +176,17 @@ namespace EQWOWConverter.Zones
             Materials.Add(dummyMaterial);
 
             // Set up collision data
-            MeshData renderMeshData = shipModel.GetMeshDataByPose(true, EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose);
+            MeshData collisionMeshData = shipModel.GetMeshDataByPose(true, EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose);
+            if (shipModel.Properties.TransportNonCollideMaterialNames.Count > 0)
+            {
+                List<Material> validMaterials = new List<Material>();
+                foreach (ObjectModelMaterial modelmaterial in shipModel.ModelMaterials)
+                {
+                    if (shipModel.Properties.TransportNonCollideMaterialNames.Contains(modelmaterial.Material.Name.ToLower()) == false)
+                        validMaterials.Add(modelmaterial.Material);
+                }
+                collisionMeshData = collisionMeshData.GetMeshDataForMaterials(validMaterials.ToArray());
+            }
 
             // Create a doodad instance
             ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance(ZoneDoodadInstanceType.StaticObject);
@@ -184,7 +194,7 @@ namespace EQWOWConverter.Zones
             DoodadInstances.Add(doodadInstance);
 
             // Generate the collidable areas (zone areas, liquid)
-            GenerateCollidableWorldObjectModels(renderMeshData, renderMeshData, true);
+            GenerateCollidableWorldObjectModels(collisionMeshData, collisionMeshData, true);
 
             // Bind doodads to wmos
             AssociateDoodadsWithWMOs();

@@ -47,6 +47,7 @@ namespace EQWOWConverter.ObjectModels.Properties
         public bool IncludeInMinimapGeneration = false;
         public string AlternateModelSwapName = string.Empty;
         public string CustomMaterialListLine = string.Empty;
+        public List<string> TransportNonCollideMaterialNames = new List<string>();
 
         public ObjectModelProperties() { }
         public ObjectModelProperties(ObjectModelProperties other)
@@ -64,7 +65,15 @@ namespace EQWOWConverter.ObjectModels.Properties
             DoGenerateCollisionFromMeshData = other.DoGenerateCollisionFromMeshData;
             SingleSpriteSpellParticleEmitters.AddRange(other.SingleSpriteSpellParticleEmitters);
             SpellVisualEffectNameDBCID = other.SpellVisualEffectNameDBCID;
+            SpellVisualEffectStageType = other.SpellVisualEffectStageType;
+            SpellVisualType = other.SpellVisualType;
+            SpellEmitterSpraysFromHands = other.SpellEmitterSpraysFromHands;
             RenderingEnabled = other.RenderingEnabled;
+            EquipUnitType = other.EquipUnitType;
+            IncludeInMinimapGeneration = other.IncludeInMinimapGeneration;
+            AlternateModelSwapName = other.AlternateModelSwapName;
+            CustomMaterialListLine = other.CustomMaterialListLine;
+            TransportNonCollideMaterialNames = new List<string>(other.TransportNonCollideMaterialNames);
         }
 
         public ObjectModelProperties(ActiveDoodadAnimType? activeDoodadAnimationType, float activeDoodadAnimSlideValue, int activeDoodadAnimTimeInMS, bool hasCollision,
@@ -136,6 +145,13 @@ namespace EQWOWConverter.ObjectModels.Properties
                     newObjectModelProperties.AlternateModelSwapName = columns["AlternateModelSwap"].Trim();
                     newObjectModelProperties.CustomMaterialListLine = columns["CustomMaterialListLine"].Trim();
                     newObjectModelProperties.IncludeInMinimapGeneration = columns["IncludeInMinimap"] == "1" ? true : false;
+                    string transportNonCollideMaterials = columns["TransportNonCollideMaterials"].Trim();
+                    if (transportNonCollideMaterials.Length > 0)
+                    {
+                        string[] materials = transportNonCollideMaterials.Split(",");
+                        foreach (string material in materials)
+                            newObjectModelProperties.TransportNonCollideMaterialNames.Add(material.Trim());
+                    }
                     ObjectPropertiesByByName.Add(newObjectModelProperties.Name, newObjectModelProperties);
                 }
             }
