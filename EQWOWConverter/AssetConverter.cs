@@ -327,7 +327,7 @@ namespace EQWOWConverter
                     if (transportShip.IsSkeletal == true)
                     {
                         CreatureRace transportRace = new CreatureRace(999, CreatureGenderType.Male, 0, transportShip.MeshName, transportShip.MeshName, string.Empty,
-                            3, 1, 6, 0.2f, 1.96078f, 0, 0);
+                            0, 1, 6, 0.2f, 1.96078f, 0, 0);
                         CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(transportRace, CreatureGenderType.Male, 0, 0, 0, 0, 1f);
                         objectProperties.CreatureModelTemplate = creatureModelTemplate;
                         objectProperties.ModelScalePreWorldScale = transportRace.ModelScale;

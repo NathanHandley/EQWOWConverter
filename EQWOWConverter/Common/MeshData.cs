@@ -958,6 +958,29 @@ namespace EQWOWConverter.Common
             }
         }
 
+        public List<Plane> GenerateConvexVolumePlanes()
+        {
+            if (Vertices.Count == 0)
+                return new List<Plane>();
+
+            Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+            foreach (Vector3 v in Vertices)
+            {
+                min = Vector3.GetMin(min, v);
+                max = Vector3.GetMax(max, v);
+            }
+
+            List<Plane> planes = new List<Plane>();
+            planes.Add(new Plane(-1f, 0f, 0f, min.X));
+            planes.Add(new Plane(1f, 0f, 0f, -max.X));
+            planes.Add(new Plane(0f, -1f, 0f, min.Y));
+            planes.Add(new Plane(0f, 1f, 0f, -max.Y));
+            planes.Add(new Plane(0f, 0f, -1f, min.Z));
+            planes.Add(new Plane(0f, 0f, 1f, -max.Z));
+            return planes;
+        }
+
         public static List<MeshData> GetGeometrySplitIntoCubiods(MeshData meshData, float maxSpanPerCubiod = -1, int maxFaceCountPerCubiod = -1)
         {
             // Put self into the queue as a single item

@@ -95,7 +95,7 @@ namespace EQWOWConverter.WOWFiles
 
             // MCVP (Convex Volume Planes (optional)) ---------------------------------------------
             if (addConvexVolumePlanes == true)
-                RootBytes.AddRange(GenerateMCVPChunk());
+                RootBytes.AddRange(GenerateMCVPChunk(zone));
         }
 
         /// <summary>
@@ -536,17 +536,10 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MCVP (Convex Volume Planes), optional
         /// </summary>
-        private List<byte> GenerateMCVPChunk()
+        private List<byte> GenerateMCVPChunk(Zone zone)
         {
             // This could be done better, but functions as desired
-            List<Plane> convexVolumePlanes = new List<Plane>();
-            convexVolumePlanes.Add(new Plane(0.000000f, 0.000000f, 1.000000f, -1f));
-            convexVolumePlanes.Add(new Plane(0.000000f, 0.000000f, -1.000000f, -1f));
-            convexVolumePlanes.Add(new Plane(0.000000f, 1.000000f, 0.000000f, -1f));
-            convexVolumePlanes.Add(new Plane(0.000000f, -1.000000f, 0.000000f, -1f));
-            convexVolumePlanes.Add(new Plane(1.000000f, 0.000000f, 0.000000f, -1f));
-            convexVolumePlanes.Add(new Plane(-1.000000f, 0.000000f, 0.000000f, -1f));
-
+            List<Plane> convexVolumePlanes = zone.OverallCollisionMeshData.GenerateConvexVolumePlanes();
             List<byte> chunkBytes = new List<byte>();
             foreach (Plane plane in convexVolumePlanes)
                 chunkBytes.AddRange(plane.ToBytes());

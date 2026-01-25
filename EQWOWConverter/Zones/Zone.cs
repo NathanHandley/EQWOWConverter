@@ -48,6 +48,7 @@ namespace EQWOWConverter.Zones
         public List<ZoneArea> SubAreas = new List<ZoneArea>();
         public List<SoundInstance> SoundInstances = new List<SoundInstance>();
         public List<ObjectModel> SoundInstanceObjectModels = new List<ObjectModel>();
+        public MeshData OverallCollisionMeshData = new MeshData();
 
         public Zone(string shortName, string descriptiveName)
         {
@@ -592,6 +593,9 @@ namespace EQWOWConverter.Zones
                     collisionMeshData = keptMeshData;
                 }
             }
+
+            // Save a copy of collision data
+            OverallCollisionMeshData = new MeshData(collisionMeshData);
 
             // Helper for clipping operations below
             void GenerateLiquidCollisionAreas(ZoneArea zoneArea, ZoneLiquidGroup liquidGroup)
