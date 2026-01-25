@@ -2145,9 +2145,9 @@ namespace EQWOWConverter.ObjectModels
             // Transport ships need collision data calculated from the first frame of animation
             else if (ModelType == ObjectModelType.TransportShip)
             {
-                MeshData firstFrameMeshData = GetMeshDataByPose(true, EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose);
-                collisionVertices = firstFrameMeshData.Vertices;
-                collisionTriangleFaces = firstFrameMeshData.TriangleFaces;
+                //MeshData firstFrameMeshData = GetMeshDataByPose(true, EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose);
+                //collisionVertices = firstFrameMeshData.Vertices;
+                //collisionTriangleFaces = firstFrameMeshData.TriangleFaces;
             }
             // Generate collision data if there is none and it's from an EQ object
             else if (collisionVertices.Count == 0 && Properties.DoGenerateCollisionFromMeshData == true &&

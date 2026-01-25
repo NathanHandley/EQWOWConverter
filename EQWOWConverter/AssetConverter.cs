@@ -314,13 +314,13 @@ namespace EQWOWConverter
             Logger.WriteDebug("Loading transport ships...");
             List<TransportShip> transportShips = TransportShip.GetAllTransportShips();
             Dictionary<string, int> gameObjectDisplayInfoIDsByMeshName = new Dictionary<string, int>();
-            Dictionary<string, ObjectModel> transportShipObjectModelsByMeshName = new Dictionary<string, ObjectModel>();
+            Dictionary<string, Zone> transportShipZoneModelsByMeshName = new Dictionary<string, Zone>();
             string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
             string objectsFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");
             foreach (TransportShip transportShip in transportShips)
             {
                 // Load the mesh if it hasen't been yet
-                if (transportShipObjectModelsByMeshName.ContainsKey(transportShip.MeshName) == false)
+                if (transportShipZoneModelsByMeshName.ContainsKey(transportShip.MeshName) == false)
                 {
                     // Load an object as a 'creature' since it was actually a character folder object
                     // Note: Placeholder values are from "Giant Rat"
@@ -344,10 +344,23 @@ namespace EQWOWConverter
                     string objectTextureFolder = Path.Combine(charactersFolderRoot, "textures");
                     ExportTexturesForObject(curObject, new List<string>() { objectTextureFolder }, m2OutputFolder);
 
+                    // Load a zone for it
+                    Zone curZone = new Zone(transportShip.MeshName, transportShip.Name);
+                    Logger.WriteDebug("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "'");
+                    curZone.LoadAsTransportShip(curObject);
+                    Logger.WriteDebug("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "' complete");
+
+                    // Generate a WMO
+                    string relativeTransportObjectsPath = Path.Combine("World", "Everquest", "TransportObjects", transportShip.MeshName);
+                    WMO transportWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\TRANSPORTTEXTURES", relativeStaticDoodadsPath, relativeTransportObjectsPath, true);
+                    transportWMO.WriteToDisk();
+                    // Note: WMO is collision only so no textures are required
+
                     int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
-                    transportShipObjectModelsByMeshName.Add(transportShip.MeshName, curObject);
+                    transportShipZoneModelsByMeshName.Add(transportShip.MeshName, curZone);
                     gameObjectDisplayInfoIDsByMeshName.Add(transportShip.MeshName, gameObjectDisplayInfoID);
-                    TransportShip.TransportShipObjectModelsByGameObjectDisplayInfoID.Add(gameObjectDisplayInfoID, curObject);
+                    TransportShip.TransportShipObjectModelsByGameObjectDisplayInfoID.Add(gameObjectDisplayInfoID, curObject); // TODO: Can we delete this?
+                    TransportShip.TransportShipWMOsByGameObjectDisplayInfoID.Add(gameObjectDisplayInfoID, transportWMO);
                 }
                 transportShip.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportShip.MeshName];
             }
