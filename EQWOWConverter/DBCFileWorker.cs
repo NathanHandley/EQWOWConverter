@@ -574,12 +574,14 @@ namespace EQWOWConverter
             // Transports
             if (Configuration.GENERATE_TRANSPORTS == true)
             {
-                foreach (var transportWMOByID in TransportShip.TransportShipWMOsByGameObjectDisplayInfoID)
+                string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
+                foreach (var transportObjectModelByID in TransportShip.TransportShipObjectModelsByGameObjectDisplayInfoID)
                 {
-                    gameObjectDisplayInfoDBC.AddRow(transportWMOByID.Key, transportWMOByID.Value.RootFileRelativePathWithFileName.ToLower(), transportWMOByID.Value.BoundingBox);
-                    wmoAreaTableDBC.AddRow(Convert.ToInt32(transportWMOByID.Value.Zone.ZoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, 0, transportWMOByID.Value.Zone.DescriptiveName); // Header record
-                    foreach (ZoneModelObject wmo in transportWMOByID.Value.Zone.ZoneObjectModels)
-                        wmoAreaTableDBC.AddRow(Convert.ToInt32(transportWMOByID.Value.Zone.ZoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, 0, wmo.DisplayName);
+                    string modelPath = Path.Combine(relativeStaticDoodadsPath.ToLower(), transportObjectModelByID.Value.Name.ToLower(), transportObjectModelByID.Value.Name.ToLower() + ".mdx");
+                    gameObjectDisplayInfoDBC.AddRow(transportObjectModelByID.Key, modelPath.ToLower(), transportObjectModelByID.Value.CollisionBoundingBox);
+                    //wmoAreaTableDBC.AddRow(Convert.ToInt32(transportWMOByID.Value.Zone.ZoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, 0, transportWMOByID.Value.Zone.DescriptiveName); // Header record
+                    //foreach (ZoneModelObject wmo in transportWMOByID.Value.Zone.ZoneObjectModels)
+                    //    wmoAreaTableDBC.AddRow(Convert.ToInt32(transportWMOByID.Value.Zone.ZoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, 0, wmo.DisplayName);
                 }
                 Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
                 foreach (Zone zone in zones)
@@ -603,7 +605,7 @@ namespace EQWOWConverter
                     validTransportGroupIDs.Add(curTransportShip.PathGroupID);
 
                     // TODO: Make loading screen configurable
-                    mapDBC.AddRow(Convert.ToInt32(curTransportShip.MapID), curTransportShip.MeshName, curTransportShip.Name, 0, Configuration.DBCID_LOADINGSCREEN_ID_START);
+                    //mapDBC.AddRow(Convert.ToInt32(curTransportShip.MapID), curTransportShip.MeshName, curTransportShip.Name, 0, Configuration.DBCID_LOADINGSCREEN_ID_START);
                     taxiPathDBC.AddRow(curTransportShip.TaxiPathID);
                 }
                 foreach (TransportShipPathNode shipNode in TransportShipPathNode.GetAllPathNodesSorted())

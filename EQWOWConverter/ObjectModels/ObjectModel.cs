@@ -96,7 +96,9 @@ namespace EQWOWConverter.ObjectModels
         {
             if (ModelType == ObjectModelType.EquipmentHeld)
                 return false;
-            if (!IsSkeletal || ModelType == ObjectModelType.StaticDoodad)
+            if (IsSkeletal == false)
+                return true;
+            if (ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.Transport)
                 return true;
             else
                 return false;
@@ -2310,7 +2312,7 @@ namespace EQWOWConverter.ObjectModels
             return highestExistingID + 1;
         }
 
-        public MeshData GetMeshDataByPose(params EQAnimationType[] eqAnimationTypes)
+        public MeshData GetMeshDataByPose(bool ignoreMultiframeBoneVertices, params EQAnimationType[] eqAnimationTypes)
         {
             // Only process for skeletal
             if (IsSkeletal == false)
@@ -2336,15 +2338,21 @@ namespace EQWOWConverter.ObjectModels
                 // Translation track
                 ObjectModelTrackSequences<Vector3> translationTrack = bone.TranslationTrack;
                 if (useAnimIndex < translationTrack.Values.Count && translationTrack.Values[useAnimIndex].Values.Count > 0)
-                    translation = translationTrack.Values[useAnimIndex].Values[0];
+                {
+                    if (ignoreMultiframeBoneVertices == false || translationTrack.Values[useAnimIndex].Values.Count == 1)
+                        translation = translationTrack.Values[useAnimIndex].Values[0];
+                }
 
                 // Rotation track
                 ObjectModelTrackSequences<QuaternionShort> rotationTrack = bone.RotationTrack;
                 if (useAnimIndex < rotationTrack.Values.Count && rotationTrack.Values[useAnimIndex].Values.Count > 0)
                 {
-                    QuaternionShort qs = rotationTrack.Values[useAnimIndex].Values[0];
-                    rotation = new System.Numerics.Quaternion(qs.X, qs.Y, qs.Z, qs.W);
-                    rotation = System.Numerics.Quaternion.Normalize(rotation);
+                    if (ignoreMultiframeBoneVertices == false || rotationTrack.Values[useAnimIndex].Values.Count == 1)
+                    {
+                        QuaternionShort qs = rotationTrack.Values[useAnimIndex].Values[0];
+                        rotation = new System.Numerics.Quaternion(qs.X, qs.Y, qs.Z, qs.W);
+                        rotation = System.Numerics.Quaternion.Normalize(rotation);
+                    }
                 }
 
                 curAnimTranslations.Add(new System.Numerics.Vector3(translation.X, translation.Y, translation.Z));

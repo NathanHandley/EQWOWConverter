@@ -313,49 +313,40 @@ namespace EQWOWConverter
             Logger.WriteDebug("Loading transport ships...");
             List<TransportShip> transportShips = TransportShip.GetAllTransportShips();
             Dictionary<string, int> gameObjectDisplayInfoIDsByMeshName = new Dictionary<string, int>();
-            Dictionary<string, Zone> transportShipZoneModelsByMeshName = new Dictionary<string, Zone>();
+            Dictionary<string, ObjectModel> transportShipObjectModelsByMeshName = new Dictionary<string, ObjectModel>();
             string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
             string objectsFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");
             foreach (TransportShip transportShip in transportShips)
             {
                 // Load the mesh if it hasen't been yet
-                if (transportShipZoneModelsByMeshName.ContainsKey(transportShip.MeshName) == false)
+                if (transportShipObjectModelsByMeshName.ContainsKey(transportShip.MeshName) == false)
                 {
-                    // Load it
-                    Zone curZone = new Zone(transportShip.MeshName, transportShip.Name);
-                    Logger.WriteDebug("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "'");
-                    curZone.LoadFromEQCharacterData(transportShip.MeshName, charactersFolderRoot);
-                    Logger.WriteDebug("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "' complete");
+                    // Load an object as a 'creature' since it was actually a character folder object
+                    // Note: Placeholder values are from "Giant Rat"
+                    CreatureRace transportRace = new CreatureRace(999, CreatureGenderType.Male, 0, transportShip.MeshName, transportShip.MeshName, string.Empty,
+                        3, 1, 6, 0.2f, 1.96078f, 0, 0);
+                    CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(transportRace, CreatureGenderType.Male, 0, 0, 0, 0, 1f);
+                    ObjectModelProperties objectProperties = new ObjectModelProperties(ObjectModelProperties.GetObjectPropertiesForObject(transportShip.MeshName));
+                    objectProperties.CreatureModelTemplate = creatureModelTemplate;
+                    objectProperties.ModelScalePreWorldScale = transportRace.ModelScale;
+                    objectProperties.ModelLiftPreWorldScale = transportRace.Lift;
+                    ObjectModel curObject = new ObjectModel(transportShip.MeshName, new ObjectModelProperties(), ObjectModelType.Transport, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+                    curObject.LoadEQObjectFromFile(charactersFolderRoot, transportShip.MeshName);
 
-                    // Convert to WMO
-                    string relativeTransportObjectsPath = Path.Combine("World", "Everquest", "TransportObjects", transportShip.MeshName);
-                    WMO transportWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\TRANSPORTTEXTURES", relativeStaticDoodadsPath, relativeTransportObjectsPath, true);
-                    transportWMO.WriteToDisk();
+                    // Create the M2 and Skin
+                    string relativeM2Path = Path.Combine(relativeStaticDoodadsPath, transportShip.MeshName);
+                    M2 objectM2 = new M2(curObject, relativeM2Path);
+                    string m2OutputFolder = Path.Combine(exportMPQRootFolder, relativeM2Path);
+                    objectM2.WriteToDisk(curObject.Name, m2OutputFolder);
 
-                    // Copy the textures
-                    string transportOutputTextureFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "TransportTextures", transportShip.MeshName);
-                    if (Directory.Exists(transportOutputTextureFolder) == false)
-                        FileTool.CreateBlankDirectory(transportOutputTextureFolder, true);
-                    foreach (Material material in curZone.Materials)
-                    {
-                        foreach (string textureName in material.TextureNames)
-                        {
-                            string sourceTextureFullPath = Path.Combine(charactersFolderRoot, "Textures", string.Concat(textureName, ".blp"));
-                            string outputTextureFullPath = Path.Combine(transportOutputTextureFolder, string.Concat(textureName, ".blp"));
-                            if (File.Exists(sourceTextureFullPath) == false)
-                            {
-                                Logger.WriteError("Could not copy texture '" + sourceTextureFullPath + "', it did not exist. Did you run blpconverter?");
-                                continue;
-                            }
-                            FileTool.CopyFile(sourceTextureFullPath, outputTextureFullPath);
-                            Logger.WriteDebug(string.Concat("- [", transportShip.Name, "]: Texture named '", textureName, "' copied"));
-                        }
-                    }
+                    // Place the related textures
+                    string objectTextureFolder = Path.Combine(charactersFolderRoot, "textures");
+                    ExportTexturesForObject(curObject, new List<string>() { objectTextureFolder }, m2OutputFolder);
 
                     int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
-                    transportShipZoneModelsByMeshName.Add(transportShip.MeshName, curZone);
+                    transportShipObjectModelsByMeshName.Add(transportShip.MeshName, curObject);
                     gameObjectDisplayInfoIDsByMeshName.Add(transportShip.MeshName, gameObjectDisplayInfoID);
-                    TransportShip.TransportShipWMOsByGameObjectDisplayInfoID.Add(gameObjectDisplayInfoID, transportWMO);
+                    TransportShip.TransportShipObjectModelsByGameObjectDisplayInfoID.Add(gameObjectDisplayInfoID, curObject);
                 }
                 transportShip.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportShip.MeshName];
             }

@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Creatures;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.ObjectModels;
@@ -171,86 +172,99 @@ namespace EQWOWConverter.Zones
                 return;
             }
 
-            // Load the object data to test for skeleton
-            ObjectModelEQData objectData = new ObjectModelEQData();
-            objectData.LoadObjectDataFromDisk(inputObjectFileName, new ObjectModelProperties(), inputObjectFileName, inputCharacterFolderFullPath);
+            // Load an object as a 'creature' since it was actually a character folder object
+            // Note: Placeholder values are from "Giant Rat"
+            CreatureRace transportRace = new CreatureRace(999, CreatureGenderType.Male, 0, inputObjectFileName, inputObjectFileName, string.Empty,
+                3, 1, 6, 0.2f, 1.96078f, 0, 0);
+            CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(transportRace, CreatureGenderType.Male, 0, 0, 0, 0, 1f);
+            ObjectModelProperties objectProperties = new ObjectModelProperties(ObjectModelProperties.GetObjectPropertiesForObject(inputObjectFileName));
+            objectProperties.CreatureModelTemplate = creatureModelTemplate;
+            objectProperties.ModelScalePreWorldScale = transportRace.ModelScale;
+            objectProperties.ModelLiftPreWorldScale = transportRace.Lift;
+            ObjectModel curObject = new ObjectModel(inputObjectFileName, new ObjectModelProperties(), ObjectModelType.Transport, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+            curObject.LoadEQObjectFromFile(inputCharacterFolderFullPath, inputObjectFileName);
 
-            // Skeletal
-            if (objectData.SkeletonData.BoneStructures.Count > 0)
-            {
-                // Load an object model
-                ObjectModel objectModel = new ObjectModel(inputObjectFileName, new ObjectModelProperties(), ObjectModelType.Transport, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
-                objectModel.LoadEQObjectFromFile(inputCharacterFolderFullPath, inputObjectFileName);
-                MeshData firstFrameMeshData = objectModel.GetMeshDataByPose(EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose);
-                EQZoneData.RenderMeshData = firstFrameMeshData;
-                EQZoneData.CollisionMeshData = firstFrameMeshData;
-                EQZoneData.Materials = objectData.Materials;
 
-                // Use the first frame of an idle pose for the render and collision data
-                MeshData renderMeshData = firstFrameMeshData;
-                //renderMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
-                //renderMeshData.ApplyEQToWoWVertexColor(-1);
-                MeshData collisionMeshData = firstFrameMeshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(true, true, objectData.Materials.ToArray());
-                //collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
 
-                // Update the materials
-                Materials = EQZoneData.Materials;
 
-                // Create doodad instances
-                GenerateDoodadInstances(EQZoneData.ObjectInstances, new List<GameObject>(), renderMeshData);
 
-                // Generate the collidable areas (zone areas, liquid)
-                GenerateCollidableWorldObjectModels(renderMeshData, collisionMeshData);
 
-                // Generate the render objects
-                GenerateRenderWorldObjectModels(renderMeshData);
+            //// Skeletal
+            //if (objectData.SkeletonData.BoneStructures.Count > 0)
+            //{
+            //    // Load an object model
+            //    ObjectModel objectModel = new ObjectModel(inputObjectFileName, new ObjectModelProperties(), ObjectModelType.Transport, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+            //    objectModel.LoadEQObjectFromFile(inputCharacterFolderFullPath, inputObjectFileName);
+            //    MeshData firstFrameMeshData = objectModel.GetMeshDataByPose(true, EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose);
+            //    EQZoneData.RenderMeshData = firstFrameMeshData;
+            //    EQZoneData.CollisionMeshData = firstFrameMeshData;
+            //    EQZoneData.Materials = objectData.Materials;
 
-                if (inputObjectFileName == "pre")
-                {
-                    int x = 5;
-                }
-            }
+            //    // Use the first frame of an idle pose for the render and collision data
+            //    MeshData renderMeshData = firstFrameMeshData;
+            //    //renderMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
+            //    //renderMeshData.ApplyEQToWoWVertexColor(-1);
+            //    MeshData collisionMeshData = firstFrameMeshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(true, true, objectData.Materials.ToArray());
+            //    //collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
 
-            // Non-Skeletal
-            else
-            {
-                // Load the EQ data
-                EQZoneData.LoadDataFromObjectOnDisk(inputObjectFileName, inputCharacterFolderFullPath);
+            //    // Update the materials
+            //    Materials = EQZoneData.Materials;
 
-                // Get and convert/translate the EverQuest mesh data
-                MeshData renderMeshData = EQZoneData.RenderMeshData;
-                renderMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
-                renderMeshData.ApplyEQToWoWVertexColor(-1);
-                MeshData collisionMeshData = EQZoneData.CollisionMeshData;
-                collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
+            //    // Create doodad instances
+            //    GenerateDoodadInstances(EQZoneData.ObjectInstances, new List<GameObject>(), renderMeshData);
 
-                // Update the materials
-                Materials = EQZoneData.Materials;
+            //    // Generate the collidable areas (zone areas, liquid)
+            //    GenerateCollidableWorldObjectModels(renderMeshData, collisionMeshData);
 
-                // Create doodad instances
-                GenerateDoodadInstances(EQZoneData.ObjectInstances, new List<GameObject>(), renderMeshData);
+            //    // Generate the render objects
+            //    GenerateRenderWorldObjectModels(renderMeshData);
 
-                // Generate the collidable areas (zone areas, liquid)
-                GenerateCollidableWorldObjectModels(renderMeshData, collisionMeshData);
+            //    if (inputObjectFileName == "pre")
+            //    {
+            //        int x = 5;
+            //    }
+            //}
 
-                // Generate the render objects
-                GenerateRenderWorldObjectModels(renderMeshData);
-            }
+            //// Non-Skeletal
+            //else
+            //{
+            //    // Load the EQ data
+            //    EQZoneData.LoadDataFromObjectOnDisk(inputObjectFileName, inputCharacterFolderFullPath);
 
-            // Bind doodads to wmos
-            AssociateDoodadsWithWMOs();
+            //    // Get and convert/translate the EverQuest mesh data
+            //    MeshData renderMeshData = EQZoneData.RenderMeshData;
+            //    renderMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
+            //    renderMeshData.ApplyEQToWoWVertexColor(-1);
+            //    MeshData collisionMeshData = EQZoneData.CollisionMeshData;
+            //    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
 
-            // Rebuild the bounding box
-            List<BoundingBox> allBoundingBoxes = new List<BoundingBox>();
-            foreach (ZoneModelObject zoneObject in ZoneObjectModels)
-                allBoundingBoxes.Add(zoneObject.BoundingBox);
-            AllGeometryBoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
+            //    // Update the materials
+            //    Materials = EQZoneData.Materials;
 
-            // Set any area parent relationships
-            SetAreaParentRelationships();
+            //    // Create doodad instances
+            //    GenerateDoodadInstances(EQZoneData.ObjectInstances, new List<GameObject>(), renderMeshData);
 
-            // Completely loaded
-            IsLoaded = true;
+            //    // Generate the collidable areas (zone areas, liquid)
+            //    GenerateCollidableWorldObjectModels(renderMeshData, collisionMeshData);
+
+            //    // Generate the render objects
+            //    GenerateRenderWorldObjectModels(renderMeshData);
+            //}
+
+            //// Bind doodads to wmos
+            //AssociateDoodadsWithWMOs();
+
+            //// Rebuild the bounding box
+            //List<BoundingBox> allBoundingBoxes = new List<BoundingBox>();
+            //foreach (ZoneModelObject zoneObject in ZoneObjectModels)
+            //    allBoundingBoxes.Add(zoneObject.BoundingBox);
+            //AllGeometryBoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
+
+            //// Set any area parent relationships
+            //SetAreaParentRelationships();
+
+            //// Completely loaded
+            //IsLoaded = true;
         }
 
         private void RemoveDiscardedGeometry(ref MeshData renderMeshData, ref MeshData collisionMeshData)

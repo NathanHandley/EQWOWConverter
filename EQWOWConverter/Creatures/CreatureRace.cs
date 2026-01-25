@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using System.Diagnostics.Eventing.Reader;
 
 namespace EQWOWConverter.Creatures
 {
@@ -67,6 +66,29 @@ namespace EQWOWConverter.Creatures
         public static Dictionary<string, int> FootstepIDBySoundName = new Dictionary<string, int>();
         public static Dictionary<int, int> FootstepIDBySoundID = new Dictionary<int, int>();
         private static int CUR_CREATURE_FOOTSTEP_ID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START;
+
+        public CreatureRace()
+        {
+
+        }
+
+        public CreatureRace(int raceID, CreatureGenderType gender, int variantID, string name, string skeletonName, string skeleton2Name, float lift, 
+            float modelScale, float height, float spawnSizeMod, float geoboxInradius, int wowCreatureFamily, int wowCreatureType)
+        {
+            ID = raceID;
+            Gender = gender;
+            VariantID = variantID;
+            Name = name;
+            SkeletonName = skeletonName;
+            Skeleton2Name = skeleton2Name;
+            Lift = lift;
+            ModelScale = modelScale;
+            Height = height;
+            SpawnSizeMod = spawnSizeMod;
+            GeoboxInradius = geoboxInradius;
+            WOWCreatureFamily = wowCreatureFamily;
+            WOWCreatureType = wowCreatureType;
+        }
 
         public static void GenerateAllSounds()
         {
