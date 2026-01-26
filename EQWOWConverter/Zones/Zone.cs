@@ -195,12 +195,12 @@ namespace EQWOWConverter.Zones
                 ConvexVolumePlanes = collisionMeshData.GenerateConvexVolumePlanes();
             else
             {
-                ConvexVolumePlanes.Add(new Plane(-1f, 0f, 0f, transportShip.ConvexVolumePlaneXMin));
-                ConvexVolumePlanes.Add(new Plane(1f, 0f, 0f, -1 * transportShip.ConvexVolumePlaneXMax));
-                ConvexVolumePlanes.Add(new Plane(0f, -1f, 0f, transportShip.ConvexVolumePlaneYMin));
-                ConvexVolumePlanes.Add(new Plane(0f, 1f, 0f, -1 * transportShip.ConvexVolumePlaneYMax));
-                ConvexVolumePlanes.Add(new Plane(0f, 0f, -1f, transportShip.ConvexVolumePlaneZMin));
-                ConvexVolumePlanes.Add(new Plane(0f, 0f, 1f, -1 * transportShip.ConvexVolumePlaneZMax));
+                ConvexVolumePlanes.Add(new Plane(-1f, 0f, 0f, transportShip.ConvexVolumePlaneXMin * Configuration.GENERATE_WORLD_SCALE * shipModel.Properties.ModelScalePreWorldScale));
+                ConvexVolumePlanes.Add(new Plane(1f, 0f, 0f, -1 * transportShip.ConvexVolumePlaneXMax * Configuration.GENERATE_WORLD_SCALE * shipModel.Properties.ModelScalePreWorldScale));
+                ConvexVolumePlanes.Add(new Plane(0f, -1f, 0f, transportShip.ConvexVolumePlaneYMin * Configuration.GENERATE_WORLD_SCALE * shipModel.Properties.ModelScalePreWorldScale));
+                ConvexVolumePlanes.Add(new Plane(0f, 1f, 0f, -1 * transportShip.ConvexVolumePlaneYMax * Configuration.GENERATE_WORLD_SCALE * shipModel.Properties.ModelScalePreWorldScale));
+                ConvexVolumePlanes.Add(new Plane(0f, 0f, -1f, transportShip.ConvexVolumePlaneZMin * Configuration.GENERATE_WORLD_SCALE * shipModel.Properties.ModelScalePreWorldScale));
+                ConvexVolumePlanes.Add(new Plane(0f, 0f, 1f, -1 * transportShip.ConvexVolumePlaneZMax * Configuration.GENERATE_WORLD_SCALE * shipModel.Properties.ModelScalePreWorldScale));
             }
 
             // Create a doodad instance
