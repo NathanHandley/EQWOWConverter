@@ -131,16 +131,7 @@ namespace EQWOWConverter.ObjectModels
             // Perform EQ->WoW translations if this is coming from a raw EQ object
             if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.TransportShip || ModelType == ObjectModelType.EquipmentHeld)
             {
-                float scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_WORLD_SCALE;
-                if (ModelType == ObjectModelType.Creature)
-                    scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_CREATURE_SCALE;
-                else if (ModelType == ObjectModelType.EquipmentHeld)
-                {
-                    if (Properties.EquipUnitType == Items.ItemEquipUnitType.Player)
-                        scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
-                    else if (Properties.EquipUnitType == Items.ItemEquipUnitType.Creature)
-                        scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
-                }
+                float scaleAmount = GetScaleAmount();
 
                 // Mesh Data
                 meshData.ApplyEQToWoWGeometryTranslationsAndScale(DoRotateModelOnZAxis(), scaleAmount);
@@ -1212,6 +1203,21 @@ namespace EQWOWConverter.ObjectModels
             }            
         }
 
+        private float GetScaleAmount()
+        {
+            float scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_WORLD_SCALE;
+            if (ModelType == ObjectModelType.Creature)
+                scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_CREATURE_SCALE;
+            else if (ModelType == ObjectModelType.EquipmentHeld)
+            {
+                if (Properties.EquipUnitType == Items.ItemEquipUnitType.Player)
+                    scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
+                else if (Properties.EquipUnitType == Items.ItemEquipUnitType.Creature)
+                    scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
+            }
+            return scaleAmount;
+        }
+
         public void FindAndSetAnimationForType(AnimationType animationType, List<EQAnimationType>? overrideEQAnimationTypes = null)
         {
             CreatureRace? creatureRace = null;
@@ -1224,6 +1230,8 @@ namespace EQWOWConverter.ObjectModels
                 compatibleAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType, creatureRace);
             else
                 compatibleAnimationTypes = overrideEQAnimationTypes;
+
+            float worldScaleAmount = GetScaleAmount();
 
             foreach (EQAnimationType compatibleAnimationType in compatibleAnimationTypes)
             {
@@ -1255,10 +1263,6 @@ namespace EQWOWConverter.ObjectModels
                             bone.TranslationTrack.AddSequence();
                         }
 
-                        float worldScaleAmount = Configuration.GENERATE_CREATURE_SCALE;
-                        if (ModelType == ObjectModelType.StaticDoodad)
-                            worldScaleAmount = Configuration.GENERATE_WORLD_SCALE;
-
                         // Add the animation-bone transformations to the bone objects for each frame
                         Dictionary<string, int> curTimestampsByBoneName = new Dictionary<string, int>();
                         for (int i = 0; i < animation.Value.AnimationFrames.Count; i++)
@@ -1283,9 +1287,9 @@ namespace EQWOWConverter.ObjectModels
                             else
                             {
                                 // Format and transform the animation frame values from EQ to WoW
-                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * worldScaleAmount * Properties.ModelScalePreWorldScale,
-                                                                       animationFrame.YPosition * worldScaleAmount * Properties.ModelScalePreWorldScale,
-                                                                       animationFrame.ZPosition * worldScaleAmount * Properties.ModelScalePreWorldScale);
+                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * worldScaleAmount,
+                                                                       animationFrame.YPosition * worldScaleAmount,
+                                                                       animationFrame.ZPosition * worldScaleAmount);
                                 Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
                                 QuaternionShort frameRotation = new QuaternionShort(-animationFrame.XRotation,
                                                                                     -animationFrame.YRotation,
