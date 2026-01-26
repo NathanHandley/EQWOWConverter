@@ -45,6 +45,12 @@ namespace EQWOWConverter.Transports
         public int TaxiPathID = 0;
         public int MapID = 0;
         public float Scale = 1f;
+        public float ConvexVolumePlaneXMin = 0;
+        public float ConvexVolumePlaneXMax = 0;
+        public float ConvexVolumePlaneYMin = 0;
+        public float ConvexVolumePlaneYMax = 0;
+        public float ConvexVolumePlaneZMin = 0;
+        public float ConvexVolumePlaneZMax = 0;
 
         public List<string> GetTouchedZonesSplitOut()
         {
@@ -97,6 +103,13 @@ namespace EQWOWConverter.Transports
                 curTransportShip.MapID = int.Parse(columns["wow_mapID"]);
                 curTransportShip.FixedSpeed = int.Parse(columns["fixed_speed"]);
                 curTransportShip.Scale = float.Parse(columns["scale"]);
+                curTransportShip.ConvexVolumePlaneXMin = float.Parse(columns["mcvp_x_min"]);
+                curTransportShip.ConvexVolumePlaneXMax = float.Parse(columns["mcvp_x_max"]);
+                curTransportShip.ConvexVolumePlaneYMin = float.Parse(columns["mcvp_y_min"]);
+                curTransportShip.ConvexVolumePlaneYMax = float.Parse(columns["mcvp_y_max"]);
+                curTransportShip.ConvexVolumePlaneZMin = float.Parse(columns["mcvp_z_min"]);
+                curTransportShip.ConvexVolumePlaneZMax = float.Parse(columns["mcvp_z_max"]);
+
                 TransportShips.Add(curTransportShip);
             }
 

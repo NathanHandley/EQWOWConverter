@@ -30,8 +30,7 @@ namespace EQWOWConverter.WOWFiles
         public UInt32 GroupNameOffset = 0;
         public UInt32 GroupNameDescriptiveOffset = 0;
 
-        public WMORoot(Zone zone, string textureRelativeOutputFolder, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder,
-            bool addConvexVolumePlanes)
+        public WMORoot(Zone zone, string textureRelativeOutputFolder, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder)
         {
             List<ZoneDoodadInstance> doodadInstances;
             if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == true)
@@ -94,7 +93,7 @@ namespace EQWOWConverter.WOWFiles
             RootBytes.AddRange(GenerateMFOGChunk());
 
             // MCVP (Convex Volume Planes (optional)) ---------------------------------------------
-            if (addConvexVolumePlanes == true)
+            if (zone.ConvexVolumePlanes.Count > 0 == true)
                 RootBytes.AddRange(GenerateMCVPChunk(zone));
         }
 
@@ -538,10 +537,8 @@ namespace EQWOWConverter.WOWFiles
         /// </summary>
         private List<byte> GenerateMCVPChunk(Zone zone)
         {
-            // This could be done better, but functions as desired
-            List<Plane> convexVolumePlanes = zone.OverallCollisionMeshData.GenerateConvexVolumePlanes();
             List<byte> chunkBytes = new List<byte>();
-            foreach (Plane plane in convexVolumePlanes)
+            foreach (Plane plane in zone.ConvexVolumePlanes)
                 chunkBytes.AddRange(plane.ToBytes());
             return WrapInChunk("MCVP", chunkBytes.ToArray());
         }

@@ -19,6 +19,7 @@ using EQWOWConverter.EQFiles;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
+using EQWOWConverter.Transports;
 using System.Text.RegularExpressions;
 
 namespace EQWOWConverter.Zones
@@ -48,7 +49,7 @@ namespace EQWOWConverter.Zones
         public List<ZoneArea> SubAreas = new List<ZoneArea>();
         public List<SoundInstance> SoundInstances = new List<SoundInstance>();
         public List<ObjectModel> SoundInstanceObjectModels = new List<ObjectModel>();
-        public MeshData OverallCollisionMeshData = new MeshData();
+        public List<Plane> ConvexVolumePlanes = new List<Plane>();
 
         public Zone(string shortName, string descriptiveName)
         {
@@ -164,7 +165,7 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsTransportShip(ObjectModel shipModel)
+        public void LoadAsTransportShip(TransportShip transportShip, ObjectModel shipModel)
         {
             if (IsLoaded == true)
             {
@@ -189,6 +190,19 @@ namespace EQWOWConverter.Zones
                 collisionMeshData = collisionMeshData.GetMeshDataForMaterials(validMaterials.ToArray());
             }
 
+            // Generate or pull convex plane information
+            if (transportShip.ConvexVolumePlaneZMax == 0 && transportShip.ConvexVolumePlaneZMin == 0)
+                ConvexVolumePlanes = collisionMeshData.GenerateConvexVolumePlanes();
+            else
+            {
+                ConvexVolumePlanes.Add(new Plane(-1f, 0f, 0f, transportShip.ConvexVolumePlaneXMin));
+                ConvexVolumePlanes.Add(new Plane(1f, 0f, 0f, -1 * transportShip.ConvexVolumePlaneXMax));
+                ConvexVolumePlanes.Add(new Plane(0f, -1f, 0f, transportShip.ConvexVolumePlaneYMin));
+                ConvexVolumePlanes.Add(new Plane(0f, 1f, 0f, -1 * transportShip.ConvexVolumePlaneYMax));
+                ConvexVolumePlanes.Add(new Plane(0f, 0f, -1f, transportShip.ConvexVolumePlaneZMin));
+                ConvexVolumePlanes.Add(new Plane(0f, 0f, 1f, -1 * transportShip.ConvexVolumePlaneZMax));
+            }
+
             // Create a doodad instance
             ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance(ZoneDoodadInstanceType.StaticObject);
             doodadInstance.ObjectName = shipModel.Name;
@@ -208,7 +222,7 @@ namespace EQWOWConverter.Zones
 
             // Set any area parent relationships
             SetAreaParentRelationships();
-
+            
             // Completely loaded
             IsLoaded = true;
         }
@@ -593,9 +607,6 @@ namespace EQWOWConverter.Zones
                     collisionMeshData = keptMeshData;
                 }
             }
-
-            // Save a copy of collision data
-            OverallCollisionMeshData = new MeshData(collisionMeshData);
 
             // Helper for clipping operations below
             void GenerateLiquidCollisionAreas(ZoneArea zoneArea, ZoneLiquidGroup liquidGroup)

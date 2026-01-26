@@ -349,12 +349,12 @@ namespace EQWOWConverter
                     // Load a zone for it
                     Zone curZone = new Zone(transportShip.MeshName, transportShip.Name);
                     Logger.WriteDebug("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "'");
-                    curZone.LoadAsTransportShip(curObject);
+                    curZone.LoadAsTransportShip(transportShip, curObject);
                     Logger.WriteDebug("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "' complete");
 
                     // Generate a WMO
                     string relativeTransportObjectsPath = Path.Combine("World", "Everquest", "TransportObjects", transportShip.MeshName);
-                    WMO transportWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\TRANSPORTTEXTURES", relativeStaticDoodadsPath, relativeTransportObjectsPath, true);
+                    WMO transportWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\TRANSPORTTEXTURES", relativeStaticDoodadsPath, relativeTransportObjectsPath);
                     transportWMO.WriteToDisk();
                     // Note: WMO is collision only so no textures are required
 
@@ -1112,7 +1112,7 @@ namespace EQWOWConverter
             curZone.LoadFromEQZone(zoneShortName, curZoneDirectory, GameObject.GetDoodadGameObjectsForZoneShortname(zoneShortName));
 
             // Create the zone WMO objects
-            WMO zoneWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\ZONETEXTURES", relativeStaticDoodadsPath, relativeZoneObjectsPath, false);
+            WMO zoneWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\ZONETEXTURES", relativeStaticDoodadsPath, relativeZoneObjectsPath);
             zoneWMO.WriteToDisk();
 
             // Calculate range of ADTs to generate based on zone dimensions

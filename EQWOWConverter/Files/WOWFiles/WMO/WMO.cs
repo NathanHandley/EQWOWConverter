@@ -29,15 +29,14 @@ namespace EQWOWConverter.WOWFiles
         public BoundingBox BoundingBox;
         public Zone Zone;
 
-        public WMO(Zone zone, string baseFolderPath, string textureRelativeOutputFolder, string exportStaticDoodadsFolder, string exportZoneObjectsFolder,
-            bool addConvexVolumePlanes)
+        public WMO(Zone zone, string baseFolderPath, string textureRelativeOutputFolder, string exportStaticDoodadsFolder, string exportZoneObjectsFolder)
         {
             Zone = zone;
             BaseFileName = zone.ShortName;
             BoundingBox = zone.AllGeometryBoundingBox;
 
             // Create root object
-            RootObject = new WMORoot(zone, textureRelativeOutputFolder, exportStaticDoodadsFolder, exportZoneObjectsFolder, addConvexVolumePlanes);
+            RootObject = new WMORoot(zone, textureRelativeOutputFolder, exportStaticDoodadsFolder, exportZoneObjectsFolder);
 
             // Create the groups
             foreach(ZoneModelObject curWorldObjectModel in zone.ZoneObjectModels)
