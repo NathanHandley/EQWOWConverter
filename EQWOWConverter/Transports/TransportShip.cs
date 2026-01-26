@@ -44,6 +44,7 @@ namespace EQWOWConverter.Transports
         public int GameObjectDisplayInfoID = 0;
         public int TaxiPathID = 0;
         public int MapID = 0;
+        public float Scale = 1f;
 
         public List<string> GetTouchedZonesSplitOut()
         {
@@ -95,6 +96,7 @@ namespace EQWOWConverter.Transports
                 curTransportShip.TaxiPathID = TaxiPathDBC.GenerateID();
                 curTransportShip.MapID = int.Parse(columns["wow_mapID"]);
                 curTransportShip.FixedSpeed = int.Parse(columns["fixed_speed"]);
+                curTransportShip.Scale = float.Parse(columns["scale"]);
                 TransportShips.Add(curTransportShip);
             }
 
