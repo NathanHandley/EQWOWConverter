@@ -173,7 +173,7 @@ namespace EQWOWConverter.ObjectModels
             ProcessCollisionData(meshData, initialMaterials, collisionVertices, collisionTriangleFaces);
 
             // Create a global sequence if there is none and it's not an emitter or projectile
-            if (GlobalLoopSequenceLimits.Count == 0 && (ModelType != ObjectModelType.ParticleEmitter && ModelType != ObjectModelType.SpellProjectile))
+            if (GlobalLoopSequenceLimits.Count == 0 && (ModelType != ObjectModelType.ParticleEmitter && ModelType != ObjectModelType.SpellProjectile && ModelType != ObjectModelType.TransportShip))
                 GlobalLoopSequenceLimits.Add(0);
 
             // Generate the render groups
@@ -1020,79 +1020,96 @@ namespace EQWOWConverter.ObjectModels
             AnimationLookups.Clear();
             for (Int16 i = 0; i <= 281; i++)
                 AnimationLookups.Add(-1);
-            SetAnimationIndicesForAnimationType(AnimationType.Stand);
 
             // Set the various animations (note: Do not change the order of the first 4)
-            FindAndSetAnimationForType(AnimationType.Stand);
-            
-            if (IsSkeletal)
+            if (ModelType == ObjectModelType.TransportShip)
             {
-                FindAndSetAnimationForType(AnimationType.Stand); // Stand mid-idle
-                FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.o01StandIdle, EQAnimationType.o02StandArmsToSide, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 1 / Fidget            
-                FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.o02StandArmsToSide, EQAnimationType.o01StandIdle, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 2 / Fidget
-                FindAndSetAnimationForType(AnimationType.Death);
-                FindAndSetAnimationForType(AnimationType.AttackUnarmed);
-                FindAndSetAnimationForType(AnimationType.Attack1H);
-                FindAndSetAnimationForType(AnimationType.Attack1HPierce);
-                FindAndSetAnimationForType(AnimationType.Attack2H);
-                FindAndSetAnimationForType(AnimationType.Attack2HL);
-                FindAndSetAnimationForType(AnimationType.AttackOff);
-                FindAndSetAnimationForType(AnimationType.AttackOffPierce);
-                FindAndSetAnimationForType(AnimationType.AttackRifle);
-                FindAndSetAnimationForType(AnimationType.AttackBow);
-                FindAndSetAnimationForType(AnimationType.ReadyRifle);
-                FindAndSetAnimationForType(AnimationType.FireBow);
-                FindAndSetAnimationForType(AnimationType.Walk);
-                FindAndSetAnimationForType(AnimationType.Walkbackwards);
-                FindAndSetAnimationForType(AnimationType.Run);
-                FindAndSetAnimationForType(AnimationType.ShuffleLeft);
-                FindAndSetAnimationForType(AnimationType.ShuffleRight);
-                FindAndSetAnimationForType(AnimationType.Swim);
-                FindAndSetAnimationForType(AnimationType.SwimIdle);
-                FindAndSetAnimationForType(AnimationType.SwimBackwards);
-                FindAndSetAnimationForType(AnimationType.SwimLeft);
-                FindAndSetAnimationForType(AnimationType.SwimRight);
-                FindAndSetAnimationForType(AnimationType.CombatWound);
-                FindAndSetAnimationForType(AnimationType.CombatCritical);
-                FindAndSetAnimationForType(AnimationType.SpellCastOmni);
-                FindAndSetAnimationForType(AnimationType.SpellCastDirected);
-                FindAndSetAnimationForType(AnimationType.Hover);
-                FindAndSetAnimationForType(AnimationType.SitGround);
-                FindAndSetAnimationForType(AnimationType.SitGroundUp);
-                FindAndSetAnimationForType(AnimationType.SitGroundDown);
-                FindAndSetAnimationForType(AnimationType.EmotePoint);
-                FindAndSetAnimationForType(AnimationType.EmoteCheer);
-                FindAndSetAnimationForType(AnimationType.EmoteLaugh);
-                FindAndSetAnimationForType(AnimationType.Kick);
-                FindAndSetAnimationForType(AnimationType.Drown);
-                //FindAndSetAnimationForType(AnimationType.StealthStand);
-                FindAndSetAnimationForType(AnimationType.StealthWalk);
-                FindAndSetAnimationForType(AnimationType.JumpStart);
-                FindAndSetAnimationForType(AnimationType.KneelStart);
-                FindAndSetAnimationForType(AnimationType.KneelEnd);
-                FindAndSetAnimationForType(AnimationType.Loot);
-                FindAndSetAnimationForType(AnimationType.LootUp);
+                FindAndSetAnimationForType(AnimationType.ShipMoving);
+                ModelAnimations[0].NextAnimation = 1;
+                ModelAnimations[0].AliasNext = 0;
+                ModelAnimations[0].PlayFrequency = 16383;
+                ModelAnimations[0].Flags = ObjectModelAnimationFlags.AnimationInM2;
+                FindAndSetAnimationForType(AnimationType.ShipMoving);
+                ModelAnimations[1].SubAnimationID = 1;
+                ModelAnimations[1].PlayFrequency = 16383;
+                ModelAnimations[1].Flags = ObjectModelAnimationFlags.AnimationInM2;
+                FindAndSetAnimationForType(AnimationType.ShipStop);
+                FindAndSetAnimationForType(AnimationType.ShipStart);
+                FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose });
+            }
+            else
+            { 
+                FindAndSetAnimationForType(AnimationType.Stand);
 
-                // Update the stand/fidget animation timers so that there is a fidget sometimes
-                if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)
+                if (IsSkeletal)
                 {
-                    // Update timers
-                    int fidgetSliceAll = Convert.ToInt32(32767 * (Convert.ToDouble(Configuration.CREATURE_FIDGET_TIME_PERCENT) / 100));
-                    int nonFidgetSliceAll = 32767 - fidgetSliceAll;
-                    int nonFidgetSlice1 = nonFidgetSliceAll / 2;
-                    int nonFidgetSlice2 = nonFidgetSliceAll - nonFidgetSlice1;
-                    int fidgetSlice1 = fidgetSliceAll / 2;
-                    int fidgetSlice2 = fidgetSliceAll - fidgetSlice1;
-                    ModelAnimations[0].PlayFrequency = Convert.ToInt16(nonFidgetSlice1);
-                    ModelAnimations[1].PlayFrequency = Convert.ToInt16(nonFidgetSlice2);
-                    ModelAnimations[2].PlayFrequency = Convert.ToInt16(fidgetSlice1);
-                    ModelAnimations[3].PlayFrequency = Convert.ToInt16(fidgetSlice2);
+                    FindAndSetAnimationForType(AnimationType.Stand); // Stand mid-idle
+                    FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.o01StandIdle, EQAnimationType.o02StandArmsToSide, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 1 / Fidget            
+                    FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.o02StandArmsToSide, EQAnimationType.o01StandIdle, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 2 / Fidget
+                    FindAndSetAnimationForType(AnimationType.Death);
+                    FindAndSetAnimationForType(AnimationType.AttackUnarmed);
+                    FindAndSetAnimationForType(AnimationType.Attack1H);
+                    FindAndSetAnimationForType(AnimationType.Attack1HPierce);
+                    FindAndSetAnimationForType(AnimationType.Attack2H);
+                    FindAndSetAnimationForType(AnimationType.Attack2HL);
+                    FindAndSetAnimationForType(AnimationType.AttackOff);
+                    FindAndSetAnimationForType(AnimationType.AttackOffPierce);
+                    FindAndSetAnimationForType(AnimationType.AttackRifle);
+                    FindAndSetAnimationForType(AnimationType.AttackBow);
+                    FindAndSetAnimationForType(AnimationType.ReadyRifle);
+                    FindAndSetAnimationForType(AnimationType.FireBow);
+                    FindAndSetAnimationForType(AnimationType.Walk);
+                    FindAndSetAnimationForType(AnimationType.Walkbackwards);
+                    FindAndSetAnimationForType(AnimationType.Run);
+                    FindAndSetAnimationForType(AnimationType.ShuffleLeft);
+                    FindAndSetAnimationForType(AnimationType.ShuffleRight);
+                    FindAndSetAnimationForType(AnimationType.Swim);
+                    FindAndSetAnimationForType(AnimationType.SwimIdle);
+                    FindAndSetAnimationForType(AnimationType.SwimBackwards);
+                    FindAndSetAnimationForType(AnimationType.SwimLeft);
+                    FindAndSetAnimationForType(AnimationType.SwimRight);
+                    FindAndSetAnimationForType(AnimationType.CombatWound);
+                    FindAndSetAnimationForType(AnimationType.CombatCritical);
+                    FindAndSetAnimationForType(AnimationType.SpellCastOmni);
+                    FindAndSetAnimationForType(AnimationType.SpellCastDirected);
+                    FindAndSetAnimationForType(AnimationType.Hover);
+                    FindAndSetAnimationForType(AnimationType.SitGround);
+                    FindAndSetAnimationForType(AnimationType.SitGroundUp);
+                    FindAndSetAnimationForType(AnimationType.SitGroundDown);
+                    FindAndSetAnimationForType(AnimationType.EmotePoint);
+                    FindAndSetAnimationForType(AnimationType.EmoteCheer);
+                    FindAndSetAnimationForType(AnimationType.EmoteLaugh);
+                    FindAndSetAnimationForType(AnimationType.Kick);
+                    FindAndSetAnimationForType(AnimationType.Drown);
+                    //FindAndSetAnimationForType(AnimationType.StealthStand);
+                    FindAndSetAnimationForType(AnimationType.StealthWalk);
+                    FindAndSetAnimationForType(AnimationType.JumpStart);
+                    FindAndSetAnimationForType(AnimationType.KneelStart);
+                    FindAndSetAnimationForType(AnimationType.KneelEnd);
+                    FindAndSetAnimationForType(AnimationType.Loot);
+                    FindAndSetAnimationForType(AnimationType.LootUp);
 
-                    // Link animations
-                    ModelAnimations[0].NextAnimation = 2;
-                    ModelAnimations[1].NextAnimation = 3;
-                    ModelAnimations[2].NextAnimation = 1;
-                    ModelAnimations[3].NextAnimation = 0;
+                    // Update the stand/fidget animation timers so that there is a fidget sometimes
+                    if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)
+                    {
+                        // Update timers
+                        int fidgetSliceAll = Convert.ToInt32(32767 * (Convert.ToDouble(Configuration.CREATURE_FIDGET_TIME_PERCENT) / 100));
+                        int nonFidgetSliceAll = 32767 - fidgetSliceAll;
+                        int nonFidgetSlice1 = nonFidgetSliceAll / 2;
+                        int nonFidgetSlice2 = nonFidgetSliceAll - nonFidgetSlice1;
+                        int fidgetSlice1 = fidgetSliceAll / 2;
+                        int fidgetSlice2 = fidgetSliceAll - fidgetSlice1;
+                        ModelAnimations[0].PlayFrequency = Convert.ToInt16(nonFidgetSlice1);
+                        ModelAnimations[1].PlayFrequency = Convert.ToInt16(nonFidgetSlice2);
+                        ModelAnimations[2].PlayFrequency = Convert.ToInt16(fidgetSlice1);
+                        ModelAnimations[3].PlayFrequency = Convert.ToInt16(fidgetSlice2);
+
+                        // Link animations
+                        ModelAnimations[0].NextAnimation = 2;
+                        ModelAnimations[1].NextAnimation = 3;
+                        ModelAnimations[2].NextAnimation = 1;
+                        ModelAnimations[3].NextAnimation = 0;
+                    }
                 }
             }
 

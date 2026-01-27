@@ -62,6 +62,9 @@ namespace EQWOWConverter.ObjectModels
                     case AnimationType.SwimRight: Loop = true; break;
                     case AnimationType.Hover: Loop = true; break;
                     case AnimationType.StealthWalk: Loop = true; break;
+                    case AnimationType.ShipMoving: Loop = true; break;
+                    case AnimationType.ShipStop: Loop = true; break;
+                    case AnimationType.ShipStart: Loop = true; break;
                     default: break; // Do nothing
                 }
 
@@ -497,6 +500,27 @@ namespace EQWOWConverter.ObjectModels
                 case AnimationType.AttackRifle:
                     {
                         returnTypes.Add(EQAnimationType.c09AttackBow);
+                    } 
+                    break;
+                case AnimationType.ShipStop:
+                    {
+                        returnTypes.Add(EQAnimationType.l01Walk);
+                        returnTypes.Add(EQAnimationType.p01StandPassive);                        
+                        returnTypes.Add(EQAnimationType.posStandPose);
+                    }
+                    break;
+                case AnimationType.ShipStart:
+                    {
+                        returnTypes.Add(EQAnimationType.l01Walk);
+                        returnTypes.Add(EQAnimationType.p01StandPassive);                
+                        returnTypes.Add(EQAnimationType.posStandPose);
+                    }
+                    break;
+                case AnimationType.ShipMoving:
+                    {
+                        returnTypes.Add(EQAnimationType.l01Walk);
+                        returnTypes.Add(EQAnimationType.p01StandPassive);                        
+                        returnTypes.Add(EQAnimationType.posStandPose);
                     }
                     break;
                 default: break;
