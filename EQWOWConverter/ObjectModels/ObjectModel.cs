@@ -1025,16 +1025,7 @@ namespace EQWOWConverter.ObjectModels
             if (ModelType == ObjectModelType.TransportShip)
             {
                 FindAndSetAnimationForType(AnimationType.ShipMoving);
-                ModelAnimations[0].NextAnimation = 1;
-                ModelAnimations[0].AliasNext = 0;
-                ModelAnimations[0].PlayFrequency = 16383;
                 ModelAnimations[0].Flags = ObjectModelAnimationFlags.AnimationInM2;
-                FindAndSetAnimationForType(AnimationType.ShipMoving);
-                ModelAnimations[1].SubAnimationID = 1;
-                ModelAnimations[1].PlayFrequency = 16383;
-                ModelAnimations[1].Flags = ObjectModelAnimationFlags.AnimationInM2;
-                FindAndSetAnimationForType(AnimationType.ShipStop);
-                FindAndSetAnimationForType(AnimationType.ShipStart);
                 FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose });
             }
             else
