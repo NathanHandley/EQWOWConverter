@@ -2379,10 +2379,10 @@ namespace EQWOWConverter.ObjectModels
 
                 // Translate to pivot, apply rotation, translate back from pivot, apply bone translation
                 System.Numerics.Matrix4x4 localMatrix =
-                    System.Numerics.Matrix4x4.CreateTranslation(curAnimTranslations[boneIndex]) *
-                    System.Numerics.Matrix4x4.CreateTranslation(pivot) *
-                    System.Numerics.Matrix4x4.CreateFromQuaternion(curAnimRotations[boneIndex]) *
-                    System.Numerics.Matrix4x4.CreateTranslation(-pivot);
+                  System.Numerics.Matrix4x4.CreateTranslation(-pivot) *
+                  System.Numerics.Matrix4x4.CreateFromQuaternion(curAnimRotations[boneIndex]) *
+                  System.Numerics.Matrix4x4.CreateTranslation(pivot) *
+                  System.Numerics.Matrix4x4.CreateTranslation(curAnimTranslations[boneIndex]);
                 System.Numerics.Matrix4x4 absoluteMatrix;
 
                 if (bone.ParentBone == -1)
