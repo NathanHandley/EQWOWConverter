@@ -878,6 +878,10 @@ namespace EQWOWConverter
         public static readonly int SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START = 1750;
         public static readonly int SQL_SPELL_GROUP_ID_END = 1999;
 
+        // Start and end IDs for trainers
+        public static readonly int SQL_TRAINER_ID_START = 151;
+        public static readonly int SQL_TRAINER_ID_END = 1050;
+
         // Start and end IDs for transports
         public static readonly int SQL_TRANSPORTS_GUID_START = 21;
         public static readonly int SQL_TRANSPORTS_GUID_END = 41;
