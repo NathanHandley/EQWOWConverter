@@ -2580,7 +2580,7 @@ namespace EQWOWConverter.Spells
             if (eqSpellCategory > 250) // AA Abilities = 999
                 return;
 
-            // Damage detrimental effects should stack from multiple sources / spells
+            // Damage detrimental effects should stack from multiple sources / spells, but not exact same ones from the same player
             if (eqSpellCategory == 7 || // Damage over time (magic)
                 eqSpellCategory == 8 || // Damage over time (undead)
                 eqSpellCategory == 9 || // Damage over time (life taps)
@@ -2588,9 +2588,9 @@ namespace EQWOWConverter.Spells
                 eqSpellCategory == 130 || // Damage over time (ice)
                 eqSpellCategory == 131 || // Damage over time (poison)
                 eqSpellCategory == 132) // Damage over time (disease)
-                spellTemplate.SpellGroupStackingRule = 2; // SPELL_GROUP_STACK_FLAG_NOT_SAME_CASTER
-            else
-                spellTemplate.SpellGroupStackingRule |= 8; // SPELL_GROUP_STACK_FLAG_NEVER_STACK
+            {
+                spellTemplate.SpellGroupStackingRule = 2; // SPELL_GROUP_STACK_RULE_EXCLUSIVE_FROM_SAME_CASTER
+            }
 
             // Calculate the category
             int groupStackingID;
