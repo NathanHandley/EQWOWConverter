@@ -412,13 +412,14 @@ namespace EQWOWConverter
         // Values for creatures without a default detection/agro range (note: This is NOT scaled by WORLD_SCALE)
         public static readonly float CREATURE_DEFAULT_DETECTION_RANGE = 20f;
 
-        // ID for the class trainer menu text (328 exists already and is just "Greetings, $n")
-        public static readonly int CREATURE_CLASS_TRAINER_NPC_TEXT_ID = 328;
+        // ID for the menu text (328 exists already and is just "Greetings, $n")
+        public static readonly int CREATURE_GOSSIP_NPC_TEXT_ID = 328;
 
-        // ID for the class trainer menu broadcast texts 
-        public static readonly int CREATURE_CLASS_TRAINER_TRAIN_BROADCAST_TEXT_ID = 2548; // Pre-exists, "I would like to train."
-        public static readonly int CREATURE_CLASS_TRAINER_UNLEARN_BROADCAST_TEXT_ID = 62295; // Pre-exists, "I wish to unlearn my talents."
-        public static readonly int CREATURE_CLASS_TRAINER_DUALTALENT_BROADCAST_TEXT_ID = 33762; // Pre-exists, "I wish to know about Dual Talent Specialization."
+        // ID for the menu broadcast texts 
+        public static readonly int CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID = 2548; // Pre-exists, "I would like to train."
+        public static readonly int CREATURE_GOSSIP_UNLEARN_BROADCAST_TEXT_ID = 62295; // Pre-exists, "I wish to unlearn my talents."
+        public static readonly int CREATURE_GOSSIP_DUALTALENT_BROADCAST_TEXT_ID = 33762; // Pre-exists, "I wish to know about Dual Talent Specialization."
+        public static readonly int CREATURE_GOSSIP_PURCHASE_BROADCAST_TEXT_ID = 3370; // Pre-exists, "I want to browse your goods."
 
         // IDs for menus specific to class trainer
         public static readonly int CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID = 4461; // Pre-exists

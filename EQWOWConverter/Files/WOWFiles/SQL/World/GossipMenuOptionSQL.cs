@@ -14,9 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Spells;
-using System.Text;
-
 namespace EQWOWConverter.WOWFiles
 {
     internal class GossipMenuOptionSQL : SQLFile
@@ -26,7 +23,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM `gossip_menu_option` WHERE `MenuID` >= " + Configuration.SQL_GOSSIPMENU_MENUID_START.ToString() + " AND `MenuID` <= " + Configuration.SQL_GOSSIPMENU_MENUID_END + ";";
         }
 
-        public void AddRowForClassTrainer(int menuID, int optionID, int optionIcon, string optionText, int optionBroadcastTextID, int optionType,
+        public void AddRow(int menuID, int optionID, int optionIcon, string optionText, int optionBroadcastTextID, int optionType,
             int optionNpcFlag, int actionMenuID)
         {
             SQLRow newRow = new SQLRow();

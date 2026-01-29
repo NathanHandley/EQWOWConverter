@@ -37,6 +37,7 @@ namespace EQWOWConverter
         private AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
         private AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
         private BroadcastTextSQL broadcastTextSQL = new BroadcastTextSQL();
+        private ConditionsSQL conditionsSQL = new ConditionsSQL();
         private CreatureSQL creatureSQL = new CreatureSQL();
         private CreatureAddonSQL creatureAddonSQL = new CreatureAddonSQL();
         private CreatureDefaultTrainerSQL creatureDefaultTrainerSQL = new CreatureDefaultTrainerSQL();
@@ -765,7 +766,7 @@ namespace EQWOWConverter
                 if (classType == ClassType.All || classType == ClassType.None)
                     continue;
                 trainerIDsByClass.Add(classType, TrainerSQL.GenerateUniqueTrainerID());
-                trainerSQL.AddRow(trainerIDsByClass[classType], 0, (int)classType, "Greetings");
+                trainerSQL.AddRow(trainerIDsByClass[classType], 0, (int)classType, "What would you like to learn?");
                 foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForClass(classType))
                     trainerSpellSQL.AddRow(trainerIDsByClass[classType], trainerAbility);
             }
@@ -778,7 +779,7 @@ namespace EQWOWConverter
                     continue;
                 
                 trainerIDsByTradeskill.Add(tradeskillType, TrainerSQL.GenerateUniqueTrainerID());
-                trainerSQL.AddRow(trainerIDsByTradeskill[tradeskillType], 2, 0, "Greetings");
+                trainerSQL.AddRow(trainerIDsByTradeskill[tradeskillType], 2, 0, "What would you like to learn?");
                 trainerSpellSQL.AddDevelopmentSkillsForTradeskill(trainerIDsByTradeskill[tradeskillType], tradeskillType);
                 foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForTradeskill(tradeskillType))
                     trainerSpellSQL.AddRow(trainerIDsByTradeskill[tradeskillType], trainerAbility);
@@ -786,7 +787,7 @@ namespace EQWOWConverter
 
             // Trainer Abilities - Riding Trainer
             int trainerIDForRidingTrainer = TrainerSQL.GenerateUniqueTrainerID();
-            trainerSQL.AddRow(trainerIDForRidingTrainer, 1, 0, "Greetings");
+            trainerSQL.AddRow(trainerIDForRidingTrainer, 1, 0, "What would you like to learn?");
             trainerSpellSQL.AddRiderSkills(trainerIDForRidingTrainer);
 
             // Pre-generate class trainer menus
@@ -799,16 +800,34 @@ namespace EQWOWConverter
                 // Base menu
                 int gossipMenuID = GossipMenuSQL.GenerateUniqueMenuID();
                 classTrainerMenuIDs.Add(classType, gossipMenuID);
-                gossipMenuSQL.AddRow(gossipMenuID, Configuration.CREATURE_CLASS_TRAINER_NPC_TEXT_ID);
+                gossipMenuSQL.AddRow(gossipMenuID, Configuration.CREATURE_GOSSIP_NPC_TEXT_ID);
 
                 // Menu options
-                gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 0, 3, "I would like to train.",
-                    Configuration.CREATURE_CLASS_TRAINER_TRAIN_BROADCAST_TEXT_ID, 5, 16, 0);
-                gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 1, 0, "I wish to unlearn my talents",
-                    Configuration.CREATURE_CLASS_TRAINER_UNLEARN_BROADCAST_TEXT_ID, 16, 16, Configuration.CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID);
-                gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 2, 0, "I wish to know about Dual Talent Specialization.",
-                    Configuration.CREATURE_CLASS_TRAINER_DUALTALENT_BROADCAST_TEXT_ID, 20, 1, Configuration.CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID);
+                gossipMenuOptionSQL.AddRow(gossipMenuID, 0, 3, "I would like to train.",
+                    Configuration.CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID, 5, 16, 0);
+                gossipMenuOptionSQL.AddRow(gossipMenuID, 1, 0, "I wish to unlearn my talents",
+                    Configuration.CREATURE_GOSSIP_UNLEARN_BROADCAST_TEXT_ID, 16, 16, Configuration.CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID);
+                gossipMenuOptionSQL.AddRow(gossipMenuID, 2, 0, "I wish to know about Dual Talent Specialization.",
+                    Configuration.CREATURE_GOSSIP_DUALTALENT_BROADCAST_TEXT_ID, 20, 1, Configuration.CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID);
+
+                // Restrictions to menu options
+                string conditionsComment = string.Concat("Restrict menu option for class ", classType.ToString());
+                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, 0, classType, conditionsComment);
+                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, 1, classType, conditionsComment);
+                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, 2, classType, conditionsComment);
             }
+
+            // Pre-generate profession/rider trainer menus
+            int nonClassTrainerGossipMenuIDNoShop = GossipMenuSQL.GenerateUniqueMenuID();
+            gossipMenuSQL.AddRow(nonClassTrainerGossipMenuIDNoShop, Configuration.CREATURE_GOSSIP_NPC_TEXT_ID);
+            gossipMenuOptionSQL.AddRow(nonClassTrainerGossipMenuIDNoShop, 0, 3, "I would like to train.",
+                Configuration.CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID, 5, 16, 0);
+            int nonClassTrainerGossipMenuIDWithShop = GossipMenuSQL.GenerateUniqueMenuID();
+            gossipMenuSQL.AddRow(nonClassTrainerGossipMenuIDWithShop, Configuration.CREATURE_GOSSIP_NPC_TEXT_ID);
+            gossipMenuOptionSQL.AddRow(nonClassTrainerGossipMenuIDWithShop, 0, 3, "I would like to train.",
+                Configuration.CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID, 5, 16, 0);
+            gossipMenuOptionSQL.AddRow(nonClassTrainerGossipMenuIDWithShop, 1, 1, "I want to browse your goods.",
+                Configuration.CREATURE_GOSSIP_PURCHASE_BROADCAST_TEXT_ID, 3, 128, 0);
 
             // Associate creature templates to trainer lists
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
@@ -818,10 +837,22 @@ namespace EQWOWConverter
                     creatureDefaultTrainerSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, trainerIDsByClass[creatureTemplate.ClassTrainerType]);
                     creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];
                 }
-                if (creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
+                else if (creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
+                {
                     creatureDefaultTrainerSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, trainerIDsByTradeskill[creatureTemplate.TradeskillTrainerType]);
+                    if (creatureTemplate.MerchantID != 0)
+                        creatureTemplate.GossipMenuID = nonClassTrainerGossipMenuIDWithShop;
+                    else
+                        creatureTemplate.GossipMenuID = nonClassTrainerGossipMenuIDNoShop;
+                }
                 if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == true && creatureTemplate.IsRidingTrainer == true)
+                {
                     creatureDefaultTrainerSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, trainerIDForRidingTrainer);
+                    if (creatureTemplate.MerchantID != 0)
+                        creatureTemplate.GossipMenuID = nonClassTrainerGossipMenuIDWithShop;
+                    else
+                        creatureTemplate.GossipMenuID = nonClassTrainerGossipMenuIDNoShop;
+                }
             }
         }
 
@@ -1023,6 +1054,7 @@ namespace EQWOWConverter
             areaTriggerSQL.SaveToDisk("areatrigger", SQLFileType.World);
             areaTriggerTeleportSQL.SaveToDisk("areatrigger_teleport", SQLFileType.World);
             broadcastTextSQL.SaveToDisk("broadcast_text", SQLFileType.World);
+            conditionsSQL.SaveToDisk("conditions", SQLFileType.World);
             creatureSQL.SaveToDisk("creature", SQLFileType.World);
             creatureAddonSQL.SaveToDisk("creature_addon", SQLFileType.World);
             creatureDefaultTrainerSQL.SaveToDisk("creature_default_trainer", SQLFileType.World);
