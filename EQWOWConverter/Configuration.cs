@@ -876,7 +876,7 @@ namespace EQWOWConverter
 
         // Start and end IDs for trainers
         public static readonly int SQL_TRAINER_ID_START = 151;
-        public static readonly int SQL_TRAINER_ID_END = 1050;
+        public static readonly int SQL_TRAINER_ID_END = 176;
 
         // Start and end IDs for transports
         public static readonly int SQL_TRANSPORTS_GUID_START = 21;

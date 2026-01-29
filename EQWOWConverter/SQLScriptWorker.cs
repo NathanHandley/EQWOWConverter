@@ -110,6 +110,9 @@ namespace EQWOWConverter
             Dictionary<string, int> mapIDsByShortName;
             PopulateZoneData(zones, zonePropertiesByShortName, out mapIDsByShortName);
 
+            // Trainer Abilities (Class and Profession)
+            PopulateTrainerData(creatureTemplates);
+
             // Creatures
             Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
             PopulateCreatureData(creatureTemplates, creatureModelTemplates, creatureSpawnPools, spellTemplatesByEQID);
@@ -134,9 +137,6 @@ namespace EQWOWConverter
 
             // Spells
             PopulateSpellAndTradeskillData(spellTemplates, tradeskillRecipes, itemTemplatesByWOWEntryID);
-
-            // Trainer Abilities (Class and Profession)
-            PopulateTrainerData(creatureTemplates);
 
             // Transports
             if (Configuration.GENERATE_TRANSPORTS == true)
@@ -776,8 +776,10 @@ namespace EQWOWConverter
             {
                 if (tradeskillType == TradeskillType.Unknown || tradeskillType == TradeskillType.None)
                     continue;
+                
                 trainerIDsByTradeskill.Add(tradeskillType, TrainerSQL.GenerateUniqueTrainerID());
-                trainerSQL.AddRow(trainerIDsByTradeskill[tradeskillType], 0, 0, "Greetings");
+                trainerSQL.AddRow(trainerIDsByTradeskill[tradeskillType], 2, 0, "Greetings");
+                trainerSpellSQL.AddDevelopmentSkillsForTradeskill(trainerIDsByTradeskill[tradeskillType], tradeskillType);
                 foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForTradeskill(tradeskillType))
                     trainerSpellSQL.AddRow(trainerIDsByTradeskill[tradeskillType], trainerAbility);
             }
