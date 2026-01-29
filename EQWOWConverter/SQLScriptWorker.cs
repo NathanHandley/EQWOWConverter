@@ -784,6 +784,11 @@ namespace EQWOWConverter
                     trainerSpellSQL.AddRow(trainerIDsByTradeskill[tradeskillType], trainerAbility);
             }
 
+            // Trainer Abilities - Riding Trainer
+            int trainerIDForRidingTrainer = TrainerSQL.GenerateUniqueTrainerID();
+            trainerSQL.AddRow(trainerIDForRidingTrainer, 1, 0, "Greetings");
+            trainerSpellSQL.AddRiderSkills(trainerIDForRidingTrainer);
+
             // Pre-generate class trainer menus
             Dictionary<ClassType, int> classTrainerMenuIDs = new Dictionary<ClassType, int>();
             foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
@@ -814,16 +819,9 @@ namespace EQWOWConverter
                     creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];
                 }
                 if (creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
-                { 
                     creatureDefaultTrainerSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, trainerIDsByTradeskill[creatureTemplate.TradeskillTrainerType]);
-                }
                 if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == true && creatureTemplate.IsRidingTrainer == true)
-                {
-                    // TODO: Riding Trainers
-                    // npcTrainerSQL.AddRowForTrainerReference(202010, creatureTemplate.WOWCreatureTemplateID); // Same as Binjy Featherwhistle
-                    // if (Configuration.CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY == true)
-                    //    npcTrainerSQL.AddRowForTrainerReference(202011, creatureTemplate.WOWCreatureTemplateID); // Same as Hargen Bronzewing
-                }
+                    creatureDefaultTrainerSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, trainerIDForRidingTrainer);
             }
         }
 

@@ -61,6 +61,17 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
+        public void AddRiderSkills(int trainerID)
+        {
+            AddRow(trainerID, 33388, 40000, 762, 0, 20, 0);
+            AddRow(trainerID, 33391, 500000, 762, 75, 40, 0);
+            if (Configuration.CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY == true)
+            {
+                AddRow(trainerID, 34090, 2500000, 762, 150, 60, 0);
+                AddRow(trainerID, 34091, 50000000, 762, 225, 70, 0);
+            }
+        }
+
         public void AddDevelopmentSkillsForTradeskill(int trainerID, TradeskillType tradeskillType)
         {
             switch (tradeskillType)
