@@ -12,7 +12,7 @@ It is currently in an Alpha state, but all content types (tradeskills, spells, q
 
 # Requirements
 - Windows build environment
-- AzerothCore based WoW 3.3.5 server (at least through this changeset: https://github.com/azerothcore/azerothcore-wotlk/commit/a8c05b236c13fd6574fbc4024c7170abd99de50f)
+- AzerothCore based WoW 3.3.5 server (at least through this changeset: https://github.com/azerothcore/azerothcore-wotlk/commit/6043acac0ab309824f5ffb14bd52162e8e6a1482)
 - Install the "mod-everquest" mod into AzerothCore (https://github.com/NathanHandley/mod-everquest)
 - Installed unpatched client of the EverQuest Trilogy
 - Installed 3.3.5a WoW client, US version (which must be patched to not check for MD5 signatures, similar to other modded projects) 

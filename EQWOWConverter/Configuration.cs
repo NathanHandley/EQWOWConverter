@@ -856,10 +856,6 @@ namespace EQWOWConverter
         public static readonly int SQL_NPCTEXT_ID_START = 80000;
         public static readonly int SQL_NPCTEXT_ID_END = 99999;
 
-        // Start ID for npc_trainer entries
-        public static readonly int SQL_NPCTRAINER_ID_START = 210000;
-        public static readonly int SQL_NPCTRAINER_ID_END = 211000;
-
         // Start ID for pet_name_generation entries
         public static readonly int SQL_PETNAMEGENERATION_ID_START = 400;
 

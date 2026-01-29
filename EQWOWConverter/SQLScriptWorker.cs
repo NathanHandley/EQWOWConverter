@@ -39,6 +39,7 @@ namespace EQWOWConverter
         private BroadcastTextSQL broadcastTextSQL = new BroadcastTextSQL();
         private CreatureSQL creatureSQL = new CreatureSQL();
         private CreatureAddonSQL creatureAddonSQL = new CreatureAddonSQL();
+        private CreatureDefaultTrainerSQL creatureDefaultTrainerSQL = new CreatureDefaultTrainerSQL();
         private CreatureLootTemplateSQL creatureLootTableSQL = new CreatureLootTemplateSQL();
         private CreatureModelInfoSQL creatureModelInfoSQL = new CreatureModelInfoSQL();
         private CreatureQuestEnderSQL creatureQuestEnderSQL = new CreatureQuestEnderSQL();
@@ -70,7 +71,6 @@ namespace EQWOWConverter
         private ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
         private ModEverquestQuestReactionSQL modEverquestQuestReactionSQL = new ModEverquestQuestReactionSQL();
         private NPCTextSQL npcTextSQL = new NPCTextSQL();
-        private NPCTrainerSQL npcTrainerSQL = new NPCTrainerSQL();
         private NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
         private PetNameGenerationSQL petNameGenerationSQL = new PetNameGenerationSQL();
         private PlayerCreateInfoSQL playerCreateInfoSQL = new PlayerCreateInfoSQL();
@@ -86,6 +86,8 @@ namespace EQWOWConverter
         private SpellLinkedSpellSQL spellLinkedSpellSQL = new SpellLinkedSpellSQL();
         private SpellScriptNamesSQL spellScriptNamesSQL = new SpellScriptNamesSQL();
         private SpellTargetPositionSQL spellTargetPositionSQL = new SpellTargetPositionSQL();
+        private TrainerSQL trainerSQL = new TrainerSQL();
+        private TrainerSpellSQL trainerSpellSQL = new TrainerSpellSQL();
         private TransportsSQL transportsSQL = new TransportsSQL();
         private WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
 
@@ -133,8 +135,8 @@ namespace EQWOWConverter
             // Spells
             PopulateSpellAndTradeskillData(spellTemplates, tradeskillRecipes, itemTemplatesByWOWEntryID);
 
-            // Trainer Abilities
-            PopulateTrainerAbilityListData();
+            // Trainer Abilities (Class and Profession)
+            PopulateTrainerData(creatureTemplates);
 
             // Transports
             if (Configuration.GENERATE_TRANSPORTS == true)
@@ -166,27 +168,6 @@ namespace EQWOWConverter
         private void PopulateCreatureData(List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
             List<CreatureSpawnPool> creatureSpawnPools, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
         {
-            // Pre-generate class trainer menus
-            Dictionary<ClassType, int> classTrainerMenuIDs = new Dictionary<ClassType, int>();
-            foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
-            {
-                if (classType == ClassType.All || classType == ClassType.None)
-                    continue;
-
-                // Base menu
-                int gossipMenuID = GossipMenuSQL.GenerateUniqueMenuID();
-                classTrainerMenuIDs.Add(classType, gossipMenuID);
-                gossipMenuSQL.AddRow(gossipMenuID, Configuration.CREATURE_CLASS_TRAINER_NPC_TEXT_ID);
-
-                // Menu options
-                gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 0, 3, "I would like to train.",
-                    Configuration.CREATURE_CLASS_TRAINER_TRAIN_BROADCAST_TEXT_ID, 5, 16, 0);
-                gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 1, 0, "I wish to unlearn my talents",
-                    Configuration.CREATURE_CLASS_TRAINER_UNLEARN_BROADCAST_TEXT_ID, 16, 16, Configuration.CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID);
-                gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 2, 0, "I wish to know about Dual Talent Specialization.",
-                    Configuration.CREATURE_CLASS_TRAINER_DUALTALENT_BROADCAST_TEXT_ID, 20, 1, Configuration.CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID);
-            }
-
             // Creature Templates
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
@@ -213,31 +194,6 @@ namespace EQWOWConverter
 
                 // All creature data
                 modEverquestCreatureSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.Race.CanHoldVisualItems, creatureTemplate.Race.CanHoldVisualShields);
-
-                // Class Trainers
-                if (creatureTemplate.ClassTrainerType != ClassType.All && creatureTemplate.ClassTrainerType != ClassType.None)
-                {
-                    // Trainers need a line in the npc trainers table
-                    npcTrainerSQL.AddRowForTrainerReference(SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWClassTrainer(creatureTemplate.ClassTrainerType), creatureTemplate.WOWCreatureTemplateID);
-
-                    // Associate the menu
-                    creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];
-                }
-
-                // Profession Trainers
-                if (creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
-                {
-                    // Trainers need a line in the npc trainers table
-                    npcTrainerSQL.AddRowForTrainerReference(SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer(creatureTemplate.TradeskillTrainerType), creatureTemplate.WOWCreatureTemplateID);
-                }
-
-                // Riding trainers
-                if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == true && creatureTemplate.IsRidingTrainer == true)
-                {
-                    npcTrainerSQL.AddRowForTrainerReference(202010, creatureTemplate.WOWCreatureTemplateID); // Same as Binjy Featherwhistle
-                    if (Configuration.CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY == true)
-                        npcTrainerSQL.AddRowForTrainerReference(202011, creatureTemplate.WOWCreatureTemplateID); // Same as Hargen Bronzewing
-                }
 
                 // Determine the display id
                 int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;
@@ -800,29 +756,72 @@ namespace EQWOWConverter
             }
         }
 
-        private void PopulateTrainerAbilityListData()
+        private void PopulateTrainerData(List<CreatureTemplate> creatureTemplates)
         {
             // Trainer Abilities - Class
+            Dictionary<ClassType, int> trainerIDsByClass = new Dictionary<ClassType, int>();
+            foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
+            {
+                if (classType == ClassType.All || classType == ClassType.None)
+                    continue;
+                trainerIDsByClass.Add(classType, TrainerSQL.GenerateUniqueTrainerID());
+                trainerSQL.AddRow(trainerIDsByClass[classType], 0, (int)classType, "Greetings");
+                foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForClass(classType))
+                    trainerSpellSQL.AddRow(trainerIDsByClass[classType], trainerAbility);
+            }
+
+            // Trainer Abilities - Tradeskills
+            Dictionary<TradeskillType, int> trainerIDsByTradeskill = new Dictionary<TradeskillType, int>();
+            foreach (TradeskillType tradeskillType in Enum.GetValues(typeof(TradeskillType)))
+            {
+                if (tradeskillType == TradeskillType.Unknown || tradeskillType == TradeskillType.None)
+                    continue;
+                trainerIDsByTradeskill.Add(tradeskillType, TrainerSQL.GenerateUniqueTrainerID());
+                trainerSQL.AddRow(trainerIDsByTradeskill[tradeskillType], 0, 0, "Greetings");
+                foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForTradeskill(tradeskillType))
+                    trainerSpellSQL.AddRow(trainerIDsByTradeskill[tradeskillType], trainerAbility);
+            }
+
+            // Pre-generate class trainer menus
+            Dictionary<ClassType, int> classTrainerMenuIDs = new Dictionary<ClassType, int>();
             foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
             {
                 if (classType == ClassType.All || classType == ClassType.None)
                     continue;
 
-                int lineID = SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWClassTrainer(classType);
-                foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForClass(classType))
-                    npcTrainerSQL.AddRowForTrainerAbility(lineID, trainerAbility);
+                // Base menu
+                int gossipMenuID = GossipMenuSQL.GenerateUniqueMenuID();
+                classTrainerMenuIDs.Add(classType, gossipMenuID);
+                gossipMenuSQL.AddRow(gossipMenuID, Configuration.CREATURE_CLASS_TRAINER_NPC_TEXT_ID);
+
+                // Menu options
+                gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 0, 3, "I would like to train.",
+                    Configuration.CREATURE_CLASS_TRAINER_TRAIN_BROADCAST_TEXT_ID, 5, 16, 0);
+                gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 1, 0, "I wish to unlearn my talents",
+                    Configuration.CREATURE_CLASS_TRAINER_UNLEARN_BROADCAST_TEXT_ID, 16, 16, Configuration.CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID);
+                gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 2, 0, "I wish to know about Dual Talent Specialization.",
+                    Configuration.CREATURE_CLASS_TRAINER_DUALTALENT_BROADCAST_TEXT_ID, 20, 1, Configuration.CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID);
             }
 
-            // Trainer Abilities - Tradeskills
-            foreach (TradeskillType tradeskillType in Enum.GetValues(typeof(TradeskillType)))
+            // Associate creature templates to trainer lists
+            foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
-                if (tradeskillType == TradeskillType.Unknown || tradeskillType == TradeskillType.None)
-                    continue;
-
-                int lineID = SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer(tradeskillType);
-                npcTrainerSQL.AddDevelopmentSkillsForTradeskill(lineID, tradeskillType);
-                foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForTradeskill(tradeskillType))
-                    npcTrainerSQL.AddRowForTrainerAbility(lineID, trainerAbility);
+                if (creatureTemplate.ClassTrainerType != ClassType.All && creatureTemplate.ClassTrainerType != ClassType.None)
+                {
+                    creatureDefaultTrainerSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, trainerIDsByClass[creatureTemplate.ClassTrainerType]);
+                    creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];
+                }
+                if (creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
+                { 
+                    creatureDefaultTrainerSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, trainerIDsByTradeskill[creatureTemplate.TradeskillTrainerType]);
+                }
+                if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == true && creatureTemplate.IsRidingTrainer == true)
+                {
+                    // TODO: Riding Trainers
+                    // npcTrainerSQL.AddRowForTrainerReference(202010, creatureTemplate.WOWCreatureTemplateID); // Same as Binjy Featherwhistle
+                    // if (Configuration.CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY == true)
+                    //    npcTrainerSQL.AddRowForTrainerReference(202011, creatureTemplate.WOWCreatureTemplateID); // Same as Hargen Bronzewing
+                }
             }
         }
 
@@ -1026,6 +1025,7 @@ namespace EQWOWConverter
             broadcastTextSQL.SaveToDisk("broadcast_text", SQLFileType.World);
             creatureSQL.SaveToDisk("creature", SQLFileType.World);
             creatureAddonSQL.SaveToDisk("creature_addon", SQLFileType.World);
+            creatureDefaultTrainerSQL.SaveToDisk("creature_default_trainer", SQLFileType.World);
             creatureLootTableSQL.SaveToDisk("creature_loot_template", SQLFileType.World);
             creatureModelInfoSQL.SaveToDisk("creature_model_info", SQLFileType.World);
             creatureTemplateSQL.SaveToDisk("creature_template", SQLFileType.World);
@@ -1055,7 +1055,6 @@ namespace EQWOWConverter
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
             modEverquestQuestReactionSQL.SaveToDisk("mod_everquest_quest_reaction", SQLFileType.World);
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
-            npcTrainerSQL.SaveToDisk("npc_trainer", SQLFileType.World);
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
             petNameGenerationSQL.SaveToDisk("pet_name_generation", SQLFileType.World);
             playerCreateInfoSQL.SaveToDisk("playercreateinfo", SQLFileType.World);
@@ -1069,6 +1068,8 @@ namespace EQWOWConverter
             spellLinkedSpellSQL.SaveToDisk("spell_linked_spell", SQLFileType.World);
             spellScriptNamesSQL.SaveToDisk("spell_script_names", SQLFileType.World);
             spellTargetPositionSQL.SaveToDisk("spell_target_position", SQLFileType.World);
+            trainerSQL.SaveToDisk("trainer", SQLFileType.World);
+            trainerSpellSQL.SaveToDisk("trainer_spell", SQLFileType.World);
             transportsSQL.SaveToDisk("transports", SQLFileType.World);
             waypointDataSQL.SaveToDisk("waypoint_data", SQLFileType.World);
             if (Configuration.GENERATE_QUESTS == true)

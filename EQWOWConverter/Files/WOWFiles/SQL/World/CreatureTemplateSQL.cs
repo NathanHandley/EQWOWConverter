@@ -36,8 +36,6 @@ namespace EQWOWConverter.WOWFiles
             // Determine flags and types
             int typeFlags = 0;
             int npcFlags = 0;
-            int trainerType = 0;
-            int trainerClass = 0;
             int numOfRoles = 0;
             string iconName = string.Empty;
             if (creatureTemplate.MerchantID != 0)
@@ -54,8 +52,6 @@ namespace EQWOWConverter.WOWFiles
             {
                 npcFlags |= 16;    // 0x00000010 = Is a trainer
                 npcFlags |= 32;    // 0x00000020 = Is Class Trainer
-                trainerType = 0;    // 0 = Class Trainer
-                trainerClass = Convert.ToInt32(creatureTemplate.ClassTrainerType);
                 iconName = "Trainer";
                 numOfRoles+=2;
             }
@@ -63,14 +59,12 @@ namespace EQWOWConverter.WOWFiles
             {
                 npcFlags |= 16;    // 0x00000010 = Is a trainer
                 npcFlags |= 64;    // 0x00000040 = Is Profession Trainer
-                trainerType = 2;    // 2 = Profession Trainer
                 iconName = "Trainer";
                 numOfRoles += 1;
             }
             else if (creatureTemplate.IsRidingTrainer == true)
             {
                 npcFlags |= 16;    // 0x00000010 = Is a trainer
-                trainerType = 1;   // 1 = Mount Trainer
                 iconName = "Trainer";
                 numOfRoles += 1;
             }
@@ -135,10 +129,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("unit_flags2", 2048); // Most have 2048 here, TODO Look into it
             newRow.AddInt("dynamicflags", 0);
             newRow.AddInt("family", creatureTemplate.Race.WOWCreatureFamily); // I see other values here, like 1 and 3
-            newRow.AddInt("trainer_type", trainerType);
-            newRow.AddInt("trainer_spell", 0);
-            newRow.AddInt("trainer_class", trainerClass);
-            newRow.AddInt("trainer_race", 0);
             if (creatureTemplate.IsPet == true)
                 newRow.AddInt("type", 3); // Note: If the pet isn't a demon, the name won't generate randomly (for random name types).  If undead the name will be random, but will not heed if resummoned.
             else

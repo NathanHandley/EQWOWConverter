@@ -21,13 +21,10 @@ namespace EQWOWConverter.Spells
 {
     internal class SpellTrainerAbility
     {
-        private static Dictionary<ClassType, int> ClassTrainerSpellsReferenceLineIDsByClassType = new Dictionary<ClassType, int>();
         private static Dictionary<ClassType, List<SpellTrainerAbility>> ClassTrainerAbilitiesByClassType = new Dictionary<ClassType, List<SpellTrainerAbility>>();
-        private static Dictionary<TradeskillType, int> TradeskillSpellsReferenceLineIDsByTradeskillType = new Dictionary<TradeskillType, int>();
         private static Dictionary<TradeskillType, List<SpellTrainerAbility>> TradeskillTrainerAbilitiesByTradeskillType = new Dictionary<TradeskillType, List<SpellTrainerAbility>>();
         private static readonly object SpellTrainerReadLock = new object();
         private static readonly object SpellTrainerWriteLock = new object();
-        private static int CURRENT_NPCTRAINER_ID = Configuration.SQL_NPCTRAINER_ID_START;
 
         public ClassType ClassType = ClassType.None;
         public TradeskillType TradeskillType = TradeskillType.None;
@@ -55,6 +52,16 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        public static List<SpellTrainerAbility> GetTrainerSpellsForTradeskill(TradeskillType tradeskillType)
+        {
+            lock (SpellTrainerReadLock)
+            {
+                if (ClassTrainerAbilitiesByClassType.Count == 0)
+                    PopulateClassTrainerAbilities();
+                return TradeskillTrainerAbilitiesByTradeskillType[tradeskillType];
+            }
+        }
+
         public static List<SpellTrainerAbility> GetTrainerSpellsForClass(ClassType classType)
         {
             lock (SpellTrainerReadLock)
@@ -65,61 +72,10 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        public static List<SpellTrainerAbility> GetTrainerSpellsForTradeskill(TradeskillType tradeskillType)
-        {
-            lock (SpellTrainerReadLock)
-            {
-                if (TradeskillSpellsReferenceLineIDsByTradeskillType.Count == 0)
-                {
-                    Logger.WriteError("GetTrainerSpellsForTradeskill called before PopulateTradeskillAbilities");
-                    return new List<SpellTrainerAbility>();
-                }
-                return TradeskillTrainerAbilitiesByTradeskillType[tradeskillType];
-            }
-        }
-
-        public static int GetTrainerSpellsReferenceLineIDForWOWClassTrainer(ClassType trainerClassType)
-        {
-            lock (SpellTrainerReadLock)
-            {
-                if (ClassTrainerSpellsReferenceLineIDsByClassType.Count == 0)
-                    PopulateClassTrainerAbilities();
-                return ClassTrainerSpellsReferenceLineIDsByClassType[trainerClassType];
-            }
-        }
-
-        public static int GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer(TradeskillType trainerTradeskillType)
-        {
-            lock (SpellTrainerReadLock)
-            {
-                if (TradeskillSpellsReferenceLineIDsByTradeskillType.Count == 0)
-                {
-                    Logger.WriteError("GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer called before PopulateTradeskillAbilities");
-                    return 0;
-                }
-                return TradeskillSpellsReferenceLineIDsByTradeskillType[trainerTradeskillType];
-            }
-        }
-
         public static void PopulateTradeskillAbilities(Dictionary<TradeskillType, List<TradeskillRecipe>> recipesByTradeskillType)
         {
             lock (SpellTrainerWriteLock)
             {
-                if (TradeskillSpellsReferenceLineIDsByTradeskillType.Count != 0)
-                {
-                    Logger.WriteError("Attempted to PopulateTradeskillAbilities twice");
-                    return;
-                }
-
-                // Generate the IDs on a per-tradeskill basis                
-                foreach (TradeskillType tradeskillType in Enum.GetValues(typeof(TradeskillType)))
-                {
-                    if (tradeskillType == TradeskillType.Unknown || tradeskillType == TradeskillType.None)
-                        continue;
-                    TradeskillSpellsReferenceLineIDsByTradeskillType.Add(tradeskillType, CURRENT_NPCTRAINER_ID);
-                    CURRENT_NPCTRAINER_ID++;
-                }
-
                 // Add spells for each recipe
                 foreach (TradeskillType tradeskillType in recipesByTradeskillType.Keys)
                 {
@@ -147,15 +103,6 @@ namespace EQWOWConverter.Spells
         {
             lock (SpellTrainerWriteLock)
             {
-                // Generate the IDs on a per-class basis                
-                foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
-                {
-                    if (classType == ClassType.All || classType == ClassType.None)
-                        continue;
-                    ClassTrainerSpellsReferenceLineIDsByClassType.Add(classType, CURRENT_NPCTRAINER_ID);
-                    CURRENT_NPCTRAINER_ID++;
-                }
-
                 // Read in the trainer spell list
                 string classTrainerSpellsFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpellClassTrainerSpells.csv");
                 Logger.WriteDebug("Populating class trainer spells via file '" + classTrainerSpellsFileName + "'");
