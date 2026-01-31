@@ -2410,7 +2410,7 @@ namespace EQWOWConverter.ObjectModels
                 else
                 {
                     // Multiply by parent absolute matrix if a child bone
-                    absoluteMatrix = System.Numerics.Matrix4x4.Multiply(absoluteBoneMatrices[bone.ParentBone], localMatrix);
+                    absoluteMatrix = System.Numerics.Matrix4x4.Multiply(localMatrix, absoluteBoneMatrices[bone.ParentBone]);
                 }
 
                 absoluteBoneMatrices.Add(absoluteMatrix);
