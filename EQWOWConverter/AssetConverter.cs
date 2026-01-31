@@ -901,27 +901,13 @@ namespace EQWOWConverter
                             }
                             if (matchFound == false)
                                 itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.First().Value;
+                            else
+                                itemReference.itemIDParentWOW = requiredItemTemplate.WOWEntryID;
                         }
                         else
                         {
-                            bool validItemFound = false;
-                            foreach (var classSpecificItem in requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID)
-                            {
-                                if (itemTemplatesByWOWEntryID.ContainsKey(classSpecificItem.Value) == true)
-                                {
-                                    itemReference.itemIDWOW = itemTemplatesByWOWEntryID[classSpecificItem.Value].WOWEntryID;
-                                    validItemFound = true;
-                                    break;
-                                }
-                            }
-                            if (validItemFound == false)
-                            {
-                                Logger.WriteError("Quest ", questTemplate.QuestIDWOW.ToString(), " has no valid class specific item reference for wowid of ", itemReference.itemIDWOW.ToString());
-                                questTemplate.IsValidQuest = false;
-                                continue;
-                            }                                
+                            itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.First().Value;
                         }
-                        itemReference.itemIDParentWOW = requiredItemTemplate.WOWEntryID;
                     }
                     else
                     {
