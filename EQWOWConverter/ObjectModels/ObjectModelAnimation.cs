@@ -518,6 +518,7 @@ namespace EQWOWConverter.ObjectModels
                     break;
                 case AnimationType.ShipMoving:
                     {
+                        returnTypes.Add(EQAnimationType.l02Run);
                         returnTypes.Add(EQAnimationType.l01Walk);
                         returnTypes.Add(EQAnimationType.p01StandPassive);                        
                         returnTypes.Add(EQAnimationType.posStandPose);

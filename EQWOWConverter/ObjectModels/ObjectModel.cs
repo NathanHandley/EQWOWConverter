@@ -1024,8 +1024,11 @@ namespace EQWOWConverter.ObjectModels
             // Set the various animations (note: Do not change the order of the first 4)
             if (ModelType == ObjectModelType.TransportShip)
             {
+                FindAndSetAnimationForType(AnimationType.ShipStart);
                 FindAndSetAnimationForType(AnimationType.ShipMoving);
                 ModelAnimations[0].Flags = ObjectModelAnimationFlags.AnimationInM2;
+                ModelAnimations[0].NextAnimation = 1;
+                ModelAnimations[1].Flags = ObjectModelAnimationFlags.AnimationInM2;
                 FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose });
             }
             else
@@ -1528,20 +1531,6 @@ namespace EQWOWConverter.ObjectModels
 
         private void SetAllAnimationLookups()
         {
-        }
-
-        private void SetAnimationIndicesForAnimationType(AnimationType animationType)
-        {
-            List<EQAnimationType> validPreferredEQAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType, null);
-            int firstAnimationIndex = GetFirstAnimationIndexForEQAnimationTypes(validPreferredEQAnimationTypes.ToArray());
-            if (firstAnimationIndex == -1)
-                return;
-            if (Convert.ToInt32(animationType) >= AnimationLookups.Count)
-            {
-                for (int i = AnimationLookups.Count; i < Convert.ToInt32(animationType) + 1; i++)
-                    AnimationLookups.Add(-1);
-            }
-            AnimationLookups[Convert.ToInt32(animationType)] = Convert.ToInt16(firstAnimationIndex);
         }
 
         private int GetFirstAnimationIndexForEQAnimationTypes(params EQAnimationType[] eqAnimationTypes)
