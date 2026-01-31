@@ -2348,11 +2348,13 @@ namespace EQWOWConverter.ObjectModels
             // Extract local transforms for every bone the selected animation
             List<System.Numerics.Vector3> curAnimTranslations = new List<System.Numerics.Vector3>(ModelBones.Count);
             List<System.Numerics.Quaternion> curAnimRotations = new List<System.Numerics.Quaternion>(ModelBones.Count);
+            List<System.Numerics.Vector3> curAnimScales = new List<System.Numerics.Vector3>(ModelBones.Count);
             for (int boneIndex = 0; boneIndex < ModelBones.Count; boneIndex++)
             {
                 ObjectModelBone bone = ModelBones[boneIndex];
                 Vector3 translation = new Vector3(0, 0, 0);
                 System.Numerics.Quaternion rotation = System.Numerics.Quaternion.Identity;
+                Vector3 scale = new Vector3(1, 1, 1);
 
                 // Translation track
                 ObjectModelTrackSequences<Vector3> translationTrack = bone.TranslationTrack;
@@ -2374,8 +2376,17 @@ namespace EQWOWConverter.ObjectModels
                     }
                 }
 
+                // Scale track
+                ObjectModelTrackSequences < Vector3 > scaleTrack = bone.ScaleTrack;
+                if (useAnimIndex < scaleTrack.Values.Count && scaleTrack.Values[useAnimIndex].Values.Count > 0)
+                {
+                    if (ignoreMultiframeBoneVertices == false || scaleTrack.Values[useAnimIndex].Values.Count == 1)
+                        scale = scaleTrack.Values[useAnimIndex].Values[0];
+                }
+
                 curAnimTranslations.Add(new System.Numerics.Vector3(translation.X, translation.Y, translation.Z));
                 curAnimRotations.Add(rotation);
+                curAnimScales.Add(new System.Numerics.Vector3(scale.X, scale.Y, scale.Z));
             }
 
             // Compute bone matrices
@@ -2385,9 +2396,10 @@ namespace EQWOWConverter.ObjectModels
                 ObjectModelBone bone = ModelBones[boneIndex];
                 System.Numerics.Vector3 pivot = new System.Numerics.Vector3(bone.PivotPoint.X, bone.PivotPoint.Y, bone.PivotPoint.Z);
 
-                // Translate to pivot, apply rotation, translate back from pivot, apply bone translation
+                // Translate to pivot, apply scale, apply rotation, translate back from pivot, apply bone translation
                 System.Numerics.Matrix4x4 localMatrix =
                   System.Numerics.Matrix4x4.CreateTranslation(-pivot) *
+                  System.Numerics.Matrix4x4.CreateScale(curAnimScales[boneIndex]) *
                   System.Numerics.Matrix4x4.CreateFromQuaternion(curAnimRotations[boneIndex]) *
                   System.Numerics.Matrix4x4.CreateTranslation(pivot) *
                   System.Numerics.Matrix4x4.CreateTranslation(curAnimTranslations[boneIndex]);
