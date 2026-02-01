@@ -64,7 +64,6 @@ namespace EQWOWConverter.ObjectModels
                     case AnimationType.StealthWalk: Loop = true; break;
                     case AnimationType.ShipMoving: Loop = true; break;
                     case AnimationType.ShipStop: Loop = true; break;
-                    case AnimationType.ShipStart: Loop = true; break;
                     default: break; // Do nothing
                 }
 
@@ -511,6 +510,7 @@ namespace EQWOWConverter.ObjectModels
                     break;
                 case AnimationType.ShipStart:
                     {
+                        returnTypes.Add(EQAnimationType.l02Run);
                         returnTypes.Add(EQAnimationType.l01Walk);
                         returnTypes.Add(EQAnimationType.p01StandPassive);                
                         returnTypes.Add(EQAnimationType.posStandPose);
