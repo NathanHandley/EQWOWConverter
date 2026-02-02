@@ -54,6 +54,7 @@ namespace EQWOWConverter.Transports
         public int TriggeredByGameObjectTemplateID = 0;
         public int TriggeredByStepNum = -1;
         public int TriggeredToStepNum = -1;
+        public bool DoesTriggerOthers = false;
 
         public List<string> GetTouchedZonesSplitOut()
         {
@@ -73,6 +74,7 @@ namespace EQWOWConverter.Transports
             string transportShipsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "TransportShips.csv");
             Logger.WriteDebug("Populating Transport Ships list via file '" + transportShipsFile + "'");
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(transportShipsFile, "|");
+            HashSet<int> triggeringGUIDs = new HashSet<int>();
             foreach (Dictionary<string, string> columns in rows)
             {
                 // Skip invalid expansions and those that just aren't enabled
@@ -113,10 +115,19 @@ namespace EQWOWConverter.Transports
                 curTransportShip.ConvexVolumePlaneZMin = float.Parse(columns["mcvp_z_min"]);
                 curTransportShip.ConvexVolumePlaneZMax = float.Parse(columns["mcvp_z_max"]);
                 curTransportShip.TriggeredByGameObjectTemplateID = int.Parse(columns["triggered_by_gotemplate_id"]);
+                if (curTransportShip.TriggeredByGameObjectTemplateID > 0 && triggeringGUIDs.Contains(curTransportShip.TriggeredByGameObjectTemplateID) == false)
+                    triggeringGUIDs.Add(curTransportShip.TriggeredByGameObjectTemplateID);
                 curTransportShip.TriggeredByStepNum = int.Parse(columns["triggered_by_step_num"]);
                 curTransportShip.TriggeredToStepNum = int.Parse(columns["triggers_to_step_num"]);
 
                 TransportShips.Add(curTransportShip);
+            }
+
+            // Mark any transport ships that trigger others
+            foreach (TransportShip transportShip in TransportShips)
+            {
+                if (triggeringGUIDs.Contains(transportShip.WOWGameObjectTemplateID) == true)
+                    transportShip.DoesTriggerOthers = true;
             }
 
             // Fill the path node IDs
