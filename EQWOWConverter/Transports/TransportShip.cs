@@ -53,7 +53,7 @@ namespace EQWOWConverter.Transports
         public float ConvexVolumePlaneZMax = 0;
         public int TriggeredByGameObjectTemplateID = 0;
         public int TriggeredByStepNum = -1;
-        public int TriggeredToStepNum = -1;
+        public int TriggeredActivateStepNum = -1;
         public bool DoesTriggerOthers = false;
 
         public List<string> GetTouchedZonesSplitOut()
@@ -118,7 +118,7 @@ namespace EQWOWConverter.Transports
                 if (curTransportShip.TriggeredByGameObjectTemplateID > 0 && triggeringGUIDs.Contains(curTransportShip.TriggeredByGameObjectTemplateID) == false)
                     triggeringGUIDs.Add(curTransportShip.TriggeredByGameObjectTemplateID);
                 curTransportShip.TriggeredByStepNum = int.Parse(columns["triggered_by_step_num"]);
-                curTransportShip.TriggeredToStepNum = int.Parse(columns["triggers_to_step_num"]);
+                curTransportShip.TriggeredActivateStepNum = int.Parse(columns["triggers_to_step_num"]);
 
                 TransportShips.Add(curTransportShip);
             }

@@ -69,6 +69,7 @@ namespace EQWOWConverter
         private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
         private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
         private ModEverquestSystemConfigsSQL modEverquestSystemConfigsSQL = new ModEverquestSystemConfigsSQL();
+        private ModEverquestTransportTriggerSQL modEverquestTransportTriggerSQL = new ModEverquestTransportTriggerSQL();
         private ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
         private ModEverquestQuestReactionSQL modEverquestQuestReactionSQL = new ModEverquestQuestReactionSQL();
         private NPCTextSQL npcTextSQL = new NPCTextSQL();
@@ -882,6 +883,11 @@ namespace EQWOWConverter
                 gameObjectTemplateSQL.AddRowForTransportShip(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
                     transportShip.TaxiPathID, Convert.ToInt32(transportShip.MapID), moveSpeed, transportShip.DoesTriggerOthers);
                 gameObjectTemplateAddonSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID);
+                if (transportShip.TriggeredByGameObjectTemplateID > 0)
+                {
+                    modEverquestTransportTriggerSQL.AddRow(transportShip.TriggeredByGameObjectTemplateID, transportShip.WOWGameObjectTemplateID,
+                        transportShip.TriggeredByStepNum, transportShip.TriggeredActivateStepNum);
+                }
             }
             foreach (TransportLift transportLift in TransportLift.GetAllTransportLifts())
             {
@@ -1085,6 +1091,7 @@ namespace EQWOWConverter
             modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
             modEverquestSystemConfigsSQL.SaveToDisk("mod_everquest_systemconfigs", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
+            modEverquestTransportTriggerSQL.SaveToDisk("mod_everquest_transport_trigger", SQLFileType.World);
             modEverquestQuestReactionSQL.SaveToDisk("mod_everquest_quest_reaction", SQLFileType.World);
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
