@@ -878,9 +878,12 @@ namespace EQWOWConverter
                 int moveSpeed = Configuration.TRANSPORT_MOVE_SPEED;
                 if (transportShip.FixedSpeed > 0 && Configuration.TRANSPORT_ALLOW_FIXED_SPEEDS == true)
                     moveSpeed = transportShip.FixedSpeed;
+                bool hasTrigger = false;
+                if (transportShip.TriggeredByGameObjectTemplateID > 0)
+                    hasTrigger = true;
                 transportsSQL.AddRow(transportShip.WOWGameObjectTemplateID, longName);
                 gameObjectTemplateSQL.AddRowForTransportShip(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
-                    transportShip.TaxiPathID, Convert.ToInt32(transportShip.MapID), moveSpeed);
+                    transportShip.TaxiPathID, Convert.ToInt32(transportShip.MapID), moveSpeed, hasTrigger);
                 gameObjectTemplateAddonSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID);
             }
             foreach (TransportLift transportLift in TransportLift.GetAllTransportLifts())

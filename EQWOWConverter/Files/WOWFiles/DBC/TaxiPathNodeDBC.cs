@@ -79,7 +79,6 @@ namespace EQWOWConverter.WOWFiles
                 row.AddIntFromSourceRawBytes(ref byteCursor);
                 row.AddIntFromSourceRawBytes(ref byteCursor);
 
-
                 // Attach the sort rows
                 row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[1]).Value; // PathID
                 row.SortValue2 = ((DBCRow.DBCFieldInt32)row.AddedFields[2]).Value; // NodeIndex
