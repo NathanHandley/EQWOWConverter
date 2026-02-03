@@ -833,6 +833,8 @@ namespace EQWOWConverter
         // - TarnsportLifts.csv and TransportLiftTriggers.csv own rows 279900 - 279999
         public static readonly int SQL_GAMEOBJECTTEMPLATE_ID_START = 270000;
         public static readonly int SQL_GAMEOBJECTTEMPLATE_ID_END = 279999;
+        public static readonly int SQL_GAMEOBJECTTEMPLATE_SHIP_ID_START = 279970;
+        public static readonly int SQL_GAMEOBJECTTEMPLATE_SHIP_ID_END = 279989;
 
         // Start row for `game_tele` records. (~2000-2400)
         public static readonly int SQL_GAMETELE_ROWID_START = 2000;
