@@ -885,7 +885,7 @@ namespace EQWOWConverter
                     moveSpeed = transportShip.FixedSpeed;
                 transportsSQL.AddRow(transportShip.WOWGameObjectTemplateID, longName);
                 gameObjectTemplateSQL.AddRowForTransportShip(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
-                    transportShip.TaxiPathID, Convert.ToInt32(transportShip.MapID), moveSpeed, transportShip.DoesTriggerOthers);
+                    transportShip.TaxiPathID, Convert.ToInt32(transportShip.MapID), moveSpeed);
                 gameObjectTemplateAddonSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID);
                 if (transportShip.TriggeredByGameObjectTemplateID > 0)
                 {
