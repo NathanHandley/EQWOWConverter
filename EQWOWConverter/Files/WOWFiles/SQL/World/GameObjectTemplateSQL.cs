@@ -29,17 +29,17 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRowForTransportShip(int entryID, int displayID, string name, int taxiPathID, int spawnMap, int moveSpeed)
         {
-            AddRow(entryID, 15, displayID, name, taxiPathID, moveSpeed, Configuration.TRANSPORT_ACCELERATION, spawnMap, 0, 1, string.Empty, "EverQuest_TransportScript");
+            AddRow(entryID, 15, displayID, name, taxiPathID, moveSpeed, Configuration.TRANSPORT_ACCELERATION, spawnMap, 1, 0, 1, string.Empty, "EverQuest_TransportScript");
         }
 
         public void AddRowForTransportLift(int entryID, int displayID, string name, int endTimestamp)
         {
-            AddRow(entryID, 11, displayID, name, endTimestamp, 0, 0, 0, 0, 1, string.Empty, string.Empty);
+            AddRow(entryID, 11, displayID, name, endTimestamp, 0, 0, 0, 0, 0, 1, string.Empty, string.Empty);
         }
 
         public void AddRowForTransportLiftTrigger(int entryID, int displayID, string name, int resetInMS)
         {
-            AddRow(entryID, 1, displayID, name, 0, 0, resetInMS, 0, 0, 1, string.Empty, string.Empty);
+            AddRow(entryID, 1, displayID, name, 0, 0, resetInMS, 0, 0, 0, 1, string.Empty, string.Empty);
         }
 
         public void AddRowForGameObject(string name, GameObject gameObject)
@@ -56,7 +56,7 @@ namespace EQWOWConverter.WOWFiles
                             19, // Mailbox
                             gameObject.GameObjectDisplayInfoID, 
                             name,
-                            0, 0, 0, 0, 0, 
+                            0, 0, 0, 0, 0, 0, 
                             gameObject.Scale, aiName, string.Empty);
                     }
                     break;
@@ -69,7 +69,7 @@ namespace EQWOWConverter.WOWFiles
                             0, // "ID" from Lock.dbc
                             gameObject.CloseTimeInMS, // Autoclose time in MS
                             1, // "Area of Interest" is set to infinite (see from any distance)
-                            0, gameObject.Scale, aiName, string.Empty);
+                            0, 0, gameObject.Scale, aiName, string.Empty);
                     }
                     break;
                 case GameObjectType.Door:
@@ -81,7 +81,7 @@ namespace EQWOWConverter.WOWFiles
                             0, // "ID" from Lock.dbc
                             gameObject.CloseTimeInMS, // Autoclose time in MS
                             1, // "Area of Interest" is set to infinite (see from any distance)
-                            0, gameObject.Scale, aiName, string.Empty);
+                            0, 0, gameObject.Scale, aiName, string.Empty);
                     } break;
                 case GameObjectType.Teleport:
                     {
@@ -92,7 +92,7 @@ namespace EQWOWConverter.WOWFiles
                             0, // "ID" from Lock.dbc
                             50, // Autoclose time in MS (which is the 'make reusable time' in this case)
                             1, // "Area of Interest" is set to infinite (see from any distance)
-                            0, gameObject.Scale, aiName, string.Empty);
+                            0, 0, gameObject.Scale, aiName, string.Empty);
                     } break;
                 case GameObjectType.TradeskillFocus:
                     {
@@ -108,16 +108,16 @@ namespace EQWOWConverter.WOWFiles
                             gameObject.GameObjectDisplayInfoID, name,
                             spellFocusTypeID, // Fire vs Forge
                             Configuration.OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE,
-                            0, 0, 0, gameObject.Scale, aiName, string.Empty);
+                            0, 0, 0, 0, gameObject.Scale, aiName, string.Empty);
                         } break;
                 default:
                     {
-                        AddRow(gameObject.GameObjectTemplateEntryID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, 0, gameObject.Scale, aiName, string.Empty);
+                        AddRow(gameObject.GameObjectTemplateEntryID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, 0, 0, gameObject.Scale, aiName, string.Empty);
                     } break;
             }
         }
 
-        public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, int data10, float scale, string aiName, string scriptName)
+        public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, int data8, int data10, float scale, string aiName, string scriptName)
         {
             SQLRow newRow = new SQLRow();
 			newRow.AddInt("entry", entryID);
@@ -136,7 +136,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("Data5", 0); // Transport physics, 0 or 1
             newRow.AddInt("Data6", data6);
             newRow.AddInt("Data7", 0);
-            newRow.AddInt("Data8", 0);
+            newRow.AddInt("Data8", data8);
             newRow.AddInt("Data9", 0);
             newRow.AddInt("Data10", data10);
             newRow.AddInt("Data11", 0);
