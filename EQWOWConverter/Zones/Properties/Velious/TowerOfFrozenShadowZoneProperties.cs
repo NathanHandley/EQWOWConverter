@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class TowerOfFrozenShadowZoneProperties : ZoneProperties
@@ -27,6 +21,9 @@ namespace EQWOWConverter.Zones.Properties
         public TowerOfFrozenShadowZoneProperties() : base()
         {
             //AddValidMusicInstanceTrackIndexes(1, 2, 3);
+
+            AddDiscardGeometryBox(31.701481f, 29.270439f, 59.071331f, -32.516190f, -33.924229f, -25.988199f); // Original tele-in box
+            AddDiscardGeometryBox(373.025665f, -23.719351f, 71.730370f, 258.410400f, -149.362305f, -25.652889f); //  Floating white geometry
         }
     }
 }

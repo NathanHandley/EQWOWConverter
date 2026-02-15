@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class CrystalCavernsZoneProperties : ZoneProperties
@@ -27,6 +21,8 @@ namespace EQWOWConverter.Zones.Properties
         public CrystalCavernsZoneProperties() : base()
         {
             //AddValidMusicInstanceTrackIndexes(1, 2, 3);
+
+            AddDiscardGeometryBox(84.275253f, 112.314201f, 101.736282f, -96.444649f, -101.200287f, -19.467871f); // Original tele-in box
         }
     }
 }

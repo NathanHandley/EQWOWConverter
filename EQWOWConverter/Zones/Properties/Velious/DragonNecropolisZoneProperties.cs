@@ -14,19 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class DragonNecropolisZoneProperties : ZoneProperties
     {
         public DragonNecropolisZoneProperties() : base()
         {
-            
+            AddDiscardGeometryBox(34.417820f, 44.596588f, 100.655647f, -36.627048f, -34.659981f, -10.816700f); // Tele-in box
         }
     }
 }

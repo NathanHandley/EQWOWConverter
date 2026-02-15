@@ -447,6 +447,14 @@ namespace EQWOWConverter.Zones
                         continue;
                     }
                 }
+                foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardGeometryBoxesObjectsOnly)
+                {
+                    if (discardGeometryBox.ContainsPoint(doodadInstance.Position) == true)
+                    {
+                        skipDoodad = true;
+                        continue;
+                    }
+                }
                 if (skipDoodad == true)
                     continue;
 

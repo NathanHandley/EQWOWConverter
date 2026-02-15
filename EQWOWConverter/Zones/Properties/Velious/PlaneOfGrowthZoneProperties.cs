@@ -14,18 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class PlaneOfGrowthZoneProperties : ZoneProperties
     {
         public PlaneOfGrowthZoneProperties() : base()
         {
+
+            AddDiscardGeometryBox(4753.002441f, -240.692780f, -8.933920f, 3961.775635f, -1794.440796f, -617.112305f); // Out of bound bottom-aligned trees on the north wall
 
         }
     }

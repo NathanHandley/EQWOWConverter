@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class GreatDivideZoneProperties : ZoneProperties
@@ -27,6 +21,7 @@ namespace EQWOWConverter.Zones.Properties
         public GreatDivideZoneProperties() : base()
         {
 
+            AddDiscardGeometryBox(-868.208313f, -5640.160645f, 1327.317749f, -3538.594482f, -7877.706055f, -256.147705f); // East protrusion area into next zone
         }
     }
 }

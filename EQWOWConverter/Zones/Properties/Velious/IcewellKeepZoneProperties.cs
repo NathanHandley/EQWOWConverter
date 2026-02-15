@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class IcewellKeepZoneProperties : ZoneProperties
@@ -27,6 +21,8 @@ namespace EQWOWConverter.Zones.Properties
         public IcewellKeepZoneProperties() : base()
         {
             //AddValidMusicInstanceTrackIndexes(0, 1);
+
+            AddDiscardGeometryBox(13.033260f, 17.105900f, 43.301620f, -16.485941f, -12.658110f, -4.878450f); // Tele-in room
         }
     }
 }

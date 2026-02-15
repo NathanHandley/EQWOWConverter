@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class IcecladOceanZoneProperties : ZoneProperties
@@ -27,6 +21,7 @@ namespace EQWOWConverter.Zones.Properties
         public IcecladOceanZoneProperties() : base()
         {
 
+            AddDiscardGeometryBox(9054.257812f, 13000.738281f, 1601.720581f, -8966.244141f, 12283.692383f, -468.898254f); // West sliver at end of bridge
         }
     }
 }

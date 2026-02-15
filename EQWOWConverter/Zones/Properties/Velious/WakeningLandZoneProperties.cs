@@ -21,6 +21,8 @@ namespace EQWOWConverter.Zones.Properties
         public WakeningLandZoneProperties() : base()
         {
             //AddValidMusicInstanceTrackIndexes(0, 1);
+
+            AddDiscardGeometryBox(5312.046875f, 5181.260742f, 391.377960f, 3551.554199f, -5015.944824f, -366.186066f); // Northern edge
         }
     }
 }

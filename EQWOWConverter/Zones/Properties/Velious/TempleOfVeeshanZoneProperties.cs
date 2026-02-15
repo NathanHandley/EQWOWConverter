@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class TempleOfVeeshanZoneProperties : ZoneProperties
@@ -27,6 +21,7 @@ namespace EQWOWConverter.Zones.Properties
         public TempleOfVeeshanZoneProperties() : base()
         {
             //AddValidMusicInstanceTrackIndexes(0, 2, 3);
+            AddDiscardGeometryBox(24.609921f, 49.312328f, 41.225788f, -29.206511f, -14.658490f, -19.866989f); // Tele-in box
         }
     }
 }

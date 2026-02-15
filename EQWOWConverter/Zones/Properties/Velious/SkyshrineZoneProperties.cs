@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class SkyshrineZoneProperties : ZoneProperties
@@ -27,6 +21,8 @@ namespace EQWOWConverter.Zones.Properties
         public SkyshrineZoneProperties() : base()
         {
             //AddValidMusicInstanceTrackIndexes(0, 2, 3, 6);
+
+            AddDiscardGeometryBox(44.391918f, 37.071850f, 178.697174f, -25.827579f, -46.697441f, -17.149811f); // Tele-in and floating banner above it
         }
     }
 }
