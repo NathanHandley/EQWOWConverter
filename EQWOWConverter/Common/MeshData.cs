@@ -507,6 +507,9 @@ namespace EQWOWConverter.Common
                     continue;
                 if (material.IsRenderable() == false && excludeNonRendered)
                     continue;
+                // This "holo" is a placeholder texture, so skip from rendering
+                if (material.TextureNames.Count == 1 && material.TextureNames[0].ToLower() == "holo")
+                    continue;
                 includedMaterials.Add(material);
             }
             if (includedMaterials.Count == 0)
