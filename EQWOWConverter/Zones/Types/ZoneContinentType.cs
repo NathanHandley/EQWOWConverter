@@ -18,6 +18,7 @@ namespace EQWOWConverter.Zones
 {
     internal enum ZoneContinentType
     {
+        Norrath = -1,
         Antonica = 0,
         Odus = 1,
         Faydwer = 2,

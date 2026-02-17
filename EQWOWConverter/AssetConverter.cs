@@ -2205,6 +2205,10 @@ namespace EQWOWConverter
                 StringBuilder zoneLinkBlockSB = new StringBuilder();
                 zoneLinkBlockSB.AppendLine(string.Concat("[", zoneContinent.DBCWorldMapAreaID, "] = {"));
 
+                // Append a click-up to world if viable
+                if (zoneContinent.ShortName.ToLower() != "norrath")
+                    zoneLinkBlockSB.AppendLine(string.Concat("   zoomOutMapID = ", zoneContinentsByContinentType[ZoneContinentType.Norrath].DBCWorldMapAreaID, ","));
+
                 // Make a link for every display map link
                 int addedBoxes = 0;
                 foreach (ZoneContinent.MapLink mapLinkBox in mapLinks)

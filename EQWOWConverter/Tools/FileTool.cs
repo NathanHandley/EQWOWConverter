@@ -111,7 +111,7 @@ namespace EQWOWConverter
                 foreach (DirectoryInfo subDirectory in sourceDirectoryInfos)
                 {
                     string newTargetDirectory = Path.Combine(targetDirectory, subDirectory.Name);
-                    CopyDirectoryAndContents(subDirectory.FullName, newTargetDirectory, deleteTargetContents, recursive);
+                    CopyDirectoryAndContents(subDirectory.FullName, newTargetDirectory, deleteTargetContents, recursive, searchPattern);
                 }
             }
 
