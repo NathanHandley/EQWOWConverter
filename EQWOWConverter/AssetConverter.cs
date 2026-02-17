@@ -2187,7 +2187,7 @@ namespace EQWOWConverter
                     addedBoxes++;
                 }
 
-                if (addedBoxes > 0)
+                if (addedBoxes > 0 || zoneContinentsByContinentType.ContainsKey(zone.ZoneProperties.Continent) == true)
                 {
                     zoneLinkBlockSB.AppendLine("},");
                     outputLinksFileTextSB.Append(zoneLinkBlockSB.ToString());
