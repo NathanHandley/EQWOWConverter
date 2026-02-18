@@ -63,6 +63,7 @@ namespace EQWOWConverter.Zones
         public List<ZonePropertiesDisplayMapLinkBox> DisplayMapLinkBoxes = new List<ZonePropertiesDisplayMapLinkBox>();
         public int SuggestedMinLevel = 0;
         public int SuggestedMaxLevel = 0;
+        public bool AlwaysZoomOutMapToNorrathMap = false;
 
         private static readonly object ListReadLock = new object();
         private static readonly object DBCWMOIDLock = new object();
@@ -825,6 +826,7 @@ namespace EQWOWConverter.Zones
                 zoneProperties.DisplayMapMainBottom = float.Parse(propertiesRow["DisplayMapMainBottom"]);
                 zoneProperties.SuggestedMinLevel = int.Parse(propertiesRow["SugLevelMin"]);
                 zoneProperties.SuggestedMaxLevel = int.Parse(propertiesRow["SugLevelMax"]);
+                zoneProperties.AlwaysZoomOutMapToNorrathMap = int.Parse(propertiesRow["AlwaysZoomOutToNorrathMap"]) == 1 ? true : false;
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
             else

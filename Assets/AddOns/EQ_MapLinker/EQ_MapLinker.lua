@@ -26,6 +26,9 @@ LevelTextString:SetTextColor(1, 1, 0.8)
 LevelTextString:SetShadowOffset(0, 0)
 LevelTextString:SetShadowColor(0, 0, 0, 0)
 
+-- Storing MapID for zoom Out
+local PreviousMapID = 0
+
 EQ_MapLinker.ZoneText = ZoneText
 EQ_MapLinker.ZoneTextString = ZoneTextString
 EQ_MapLinker.LevelTextString = LevelTextString
@@ -68,7 +71,10 @@ function EQ_MapLinker:Init()
 	
 	WorldMapButton:HookScript("OnMouseUp", function(self, button)
 		if button == "RightButton" then
-			WorldMapZoomOutButton:Click()
+			local currentMapID = GetCurrentMapAreaID()
+			if EQ_MapLinker.LINKS[currentMapID] then
+				WorldMapZoomOutButton:Click()
+			end	
 		end
 	end)
 end
@@ -76,6 +82,12 @@ end
 function EQ_MapLinker:HookZoomOutButton()
     WorldMapZoomOutButton:HookScript("OnClick", function()
 		local currentMapID = GetCurrentMapAreaID()
+		if currentMapID == 0 and EQ_MapLinks.LINKS[PreviousMapID] then
+			currentMapID = EQ_MapLinks.LINKS[PreviousMapID].zoomOutMapID + 1
+			PreviousMapID = 0
+		else
+			PreviousMapID = currentMapID
+		end
 		local mapEntry = nil
         if EQ_MapLinker.LINKS[currentMapID] then
             mapEntry = EQ_MapLinker.LINKS[currentMapID]

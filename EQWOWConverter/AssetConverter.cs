@@ -2132,7 +2132,9 @@ namespace EQWOWConverter
                 zoneLinkBlockSB.AppendLine(string.Concat("[", zone.ZoneProperties.DBCWorldMapAreaID, "] = {"));
 
                 // Append a click-up continent if it exists
-                if (zoneContinentsByContinentType.ContainsKey(zone.ZoneProperties.Continent) == true)
+                if (zone.ZoneProperties.AlwaysZoomOutMapToNorrathMap == true)
+                    zoneLinkBlockSB.AppendLine(string.Concat("   zoomOutMapID = ", zoneContinentsByContinentType[ZoneContinentType.Norrath].DBCWorldMapAreaID, ","));
+                else if (zoneContinentsByContinentType.ContainsKey(zone.ZoneProperties.Continent) == true)
                     zoneLinkBlockSB.AppendLine(string.Concat("   zoomOutMapID = ", zoneContinentsByContinentType[zone.ZoneProperties.Continent].DBCWorldMapAreaID, ","));
 
                 // Make a link for every display map link
