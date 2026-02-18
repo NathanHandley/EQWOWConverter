@@ -72,9 +72,9 @@ function EQ_MapLinker:Init()
 	WorldMapButton:HookScript("OnMouseUp", function(self, button)
 		if button == "RightButton" then
 			local currentMapID = GetCurrentMapAreaID()
-			if EQ_MapLinker.LINKS[currentMapID] then
+			--if EQ_MapLinker.LINKS[currentMapID] then
 				WorldMapZoomOutButton:Click()
-			end	
+			--end	
 		end
 	end)
 end
@@ -150,23 +150,9 @@ end
 function EQ_MapLinker:HookMap()
     if WorldMapFrame then
         WorldMapFrame:HookScript("OnShow", function() self:UpdateButtons() end)
-        hooksecurefunc("SetMapZoom", function() self:DelayUpdate() end)
-        hooksecurefunc("SetMapByID", function() self:DelayUpdate() end)
+        hooksecurefunc("SetMapZoom", function() self:UpdateButtons() end)
+        hooksecurefunc("SetMapByID", function() self:UpdateButtons() end)
     end
-end
-
-function EQ_MapLinker:DelayUpdate()
-    if self.timer then return end
-    self.timer = true
-    local elapsed = 0
-    self:SetScript("OnUpdate", function(_, dt)
-        elapsed = elapsed + dt
-        if elapsed > 0.2 then
-            self:UpdateButtons()
-            self:SetScript("OnUpdate", nil)
-            self.timer = nil
-        end
-    end)
 end
 
 function EQ_MapLinker:GetCurrentMapID()
@@ -287,6 +273,3 @@ function EQ_MapLinker:UpdateButtons()
         table.insert(self.buttons, btn)
     end
 end
-
-EQ_MapLinker:RegisterEvent("WORLD_MAP_UPDATE")
-EQ_MapLinker:RegisterEvent("PLAYER_ENTERING_WORLD")
