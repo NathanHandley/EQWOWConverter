@@ -26,8 +26,8 @@ LevelTextString:SetTextColor(1, 1, 0.8)
 LevelTextString:SetShadowOffset(0, 0)
 LevelTextString:SetShadowColor(0, 0, 0, 0)
 
--- Storing MapID for zoom Out
-local PreviousMapID = 0
+-- Tracking which map was last clicked on or away from
+local currentMapContext = nil
 
 EQ_MapLinker.ZoneText = ZoneText
 EQ_MapLinker.ZoneTextString = ZoneTextString
@@ -49,16 +49,30 @@ EQ_MapLinker:SetScript("OnEvent", function(self, event, arg1)
     end
 end)
 
+function EQ_MapLinker:GetCurrentMapID()
+	-- Need to decrease the ID by 1 to fix an index offset issue
+	if GetCurrentMapAreaID() and GetCurrentMapAreaID() ~= 0 then
+		local adjustedMapID = GetCurrentMapAreaID() - 1
+		return adjustedMapID
+	else
+		return 0
+	end
+end
+
+function EQ_MapLinker:ZoomOut()
+	local currentMapID = EQ_MapLinker:GetCurrentMapID()
+	if EQ_MapLinker.LINKS[currentMapID] then
+		WorldMapZoomOutButton:Click()
+	else
+		if currentMapID == 0 and currentMapContext then
+			WorldMapZoomOutButton:Click()
+		end		
+	end	
+end
+
 function EQ_MapLinker:Init()
     if EQ_MapLinks then self.LINKS = EQ_MapLinks.LINKS or {} end
-    
-	-- Add 1 to all of the source map IDs since it's 0 vs 1 based index
-	local newLinks = {}
-    for sourceMapID, links in pairs(self.LINKS) do
-        local newSourceID = sourceMapID + 1
-        newLinks[newSourceID] = links
-    end
-	self.LINKS = newLinks
+
 	self:BuildTargetIndex()
 	
 	self:CreateToggleButton()
@@ -71,35 +85,33 @@ function EQ_MapLinker:Init()
 	
 	WorldMapButton:HookScript("OnMouseUp", function(self, button)
 		if button == "RightButton" then
-			local currentMapID = GetCurrentMapAreaID()
-			--if EQ_MapLinker.LINKS[currentMapID] then
-				WorldMapZoomOutButton:Click()
-			--end	
+			EQ_MapLinker:ZoomOut()
 		end
 	end)
 end
 
 function EQ_MapLinker:HookZoomOutButton()
     WorldMapZoomOutButton:HookScript("OnClick", function()
-		local currentMapID = GetCurrentMapAreaID()
-		if currentMapID == 0 and EQ_MapLinks.LINKS[PreviousMapID] then
-			currentMapID = EQ_MapLinks.LINKS[PreviousMapID].zoomOutMapID + 1
-			PreviousMapID = 0
-		else
-			PreviousMapID = currentMapID
+		local currentMapID = EQ_MapLinker:GetCurrentMapID()
+		
+		-- MapID will be 0 if it's a continent map
+		DEFAULT_CHAT_FRAME:AddMessage("HookZoomOutButton::currentMapID (before): " .. currentMapID)
+		if currentMapID == 0 then
+			if currentMapContext and currentMapContext.mapID then
+				currentMapID = currentMapContext.mapID
+				DEFAULT_CHAT_FRAME:AddMessage("HookZoomOutButton::currentMapID (after): " .. currentMapID)
+			end
 		end
-		local mapEntry = nil
-        if EQ_MapLinker.LINKS[currentMapID] then
-            mapEntry = EQ_MapLinker.LINKS[currentMapID]
-        else
-            local originalID = currentMapID - 1
-            if EQ_MapLinks and EQ_MapLinks.LINKS and EQ_MapLinks.LINKS[originalID] then
-                mapEntry = EQ_MapLinks.LINKS[originalID]
-            end
-        end
-		if mapEntry then
-			local customZoomOut = mapEntry and mapEntry.zoomOutMapID
-			SetMapByID(customZoomOut)
+		
+		if EQ_MapLinker.LINKS[currentMapID] and EQ_MapLinker.LINKS[currentMapID].zoomOutMapID then
+			local newContextMapID = EQ_MapLinker.LINKS[currentMapID].zoomOutMapID
+			currentMapContext = {
+				mapID = newContextMapID,
+				zoomOutMapID = EQ_MapLinker.LINKS[newContextMapID].zoomOutMapID
+			}
+			SetMapByID(currentMapContext.mapID)
+		else
+			currentMapContext = nil
 		end
     end)
 end
@@ -155,14 +167,10 @@ function EQ_MapLinker:HookMap()
     end
 end
 
-function EQ_MapLinker:GetCurrentMapID()
-    return GetCurrentMapAreaID() or 0
-end
-
 function EQ_MapLinker:UpdateButtons()
     if not WorldMapFrame or not WorldMapFrame:IsShown() then return end
 
-    local mapID = self:GetCurrentMapID()
+    local mapID = EQ_MapLinker:GetCurrentMapID()
     local list = self.LINKS[mapID]
 
     -- Hide all
@@ -170,7 +178,9 @@ function EQ_MapLinker:UpdateButtons()
     self.buttons = {}
     if self.ZoneText then self.ZoneText:Hide() end
 
-    if not list then return end
+    if not list then
+      return
+	end
 
     local parent = WorldMapDetailFrame
     local sx = parent:GetWidth() / MAP_W
@@ -259,13 +269,18 @@ function EQ_MapLinker:UpdateButtons()
         -- Click (Left: switch map)
         btn:RegisterForClicks("LeftButtonUp")
         btn:SetScript("OnClick", function()
-            SetMapByID(link.mapID)
+			DEFAULT_CHAT_FRAME:AddMessage("OnLinkClick::link.mapID: " .. link.mapID)
+			currentMapContext = {
+				mapID = link.mapID,
+				zoomOutMapID = EQ_MapLinker.LINKS[link.mapID] and EQ_MapLinker.LINKS[link.mapID].zoomOutMapID
+			}
+			SetMapByID(link.mapID)
         end)
 
         -- Click (Right: zoom out)
         btn:SetScript("OnMouseUp", function(self, button)
             if button == "RightButton" then
-                WorldMapZoomOutButton:Click()
+				EQ_MapLinker:ZoomOut()
             end
         end)
 
