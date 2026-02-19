@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class PlaneOfHateZoneProperties : ZoneProperties
@@ -31,6 +25,8 @@ namespace EQWOWConverter.Zones.Properties
             SetZonewideEnvironmentAsIndoors(10, 10, 10, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.5);
             DisableSunlight();
+
+            AddDiscardGeometryBox(818.014099f, 700.247253f, 259.781738f, -719.814148f, -721.046875f, 181.490906f); // Ceiling
         }
     }
 }

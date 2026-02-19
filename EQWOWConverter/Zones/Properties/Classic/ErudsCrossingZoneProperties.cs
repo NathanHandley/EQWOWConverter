@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class ErudsCrossingZoneProperties : ZoneProperties
@@ -46,6 +39,9 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 5036.591309f, -4999.445801f, 1787.470825f, -20.062160f, 500); // West
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -1693.079224f, 5036.591309f, -4999.445801f, -3051.582520f, -20.062160f, 500); // South
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 796.321411f, -4999.445801f, -3051.582520f, -20.062160f, 500); // East
+
+            AddDiscardGeometryBox(3278.904541f, -3049.615723f, -8.505950f, -5080.248047f, -3092.001221f, -365.908600f); // East Edge
+            AddDiscardGeometryBox(-4998.655273f, 5111.410645f, -16.397030f, -5241.749512f, -3074.986572f, -335.999634f); // South Edge
         }
     }
 }
