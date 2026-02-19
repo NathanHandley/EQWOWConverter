@@ -95,11 +95,9 @@ function EQ_MapLinker:HookZoomOutButton()
 		local currentMapID = EQ_MapLinker:GetCurrentMapID()
 		
 		-- MapID will be 0 if it's a continent map
-		DEFAULT_CHAT_FRAME:AddMessage("HookZoomOutButton::currentMapID (before): " .. currentMapID)
 		if currentMapID == 0 then
 			if currentMapContext and currentMapContext.mapID then
 				currentMapID = currentMapContext.mapID
-				DEFAULT_CHAT_FRAME:AddMessage("HookZoomOutButton::currentMapID (after): " .. currentMapID)
 			end
 		end
 		
@@ -185,6 +183,14 @@ function EQ_MapLinker:UpdateButtons()
     local parent = WorldMapDetailFrame
     local sx = parent:GetWidth() / MAP_W
     local sy = parent:GetHeight() / MAP_H
+	
+	-- This catches the map flip when selecting from the drop down
+	if GetCurrentMapContinent() >= 0 then
+		currentMapContext = {
+			mapID = mapID,
+			zoomOutMapID = EQ_MapLinker.LINKS[mapID] and EQ_MapLinker.LINKS[mapID].zoomOutMapID
+		}
+	end
 
     for i, link in ipairs(list) do
 		local btn = CreateFrame("Button", "ML_Btn"..i, parent)
@@ -269,7 +275,6 @@ function EQ_MapLinker:UpdateButtons()
         -- Click (Left: switch map)
         btn:RegisterForClicks("LeftButtonUp")
         btn:SetScript("OnClick", function()
-			DEFAULT_CHAT_FRAME:AddMessage("OnLinkClick::link.mapID: " .. link.mapID)
 			currentMapContext = {
 				mapID = link.mapID,
 				zoomOutMapID = EQ_MapLinker.LINKS[link.mapID] and EQ_MapLinker.LINKS[link.mapID].zoomOutMapID
