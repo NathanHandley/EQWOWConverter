@@ -64,6 +64,7 @@ namespace EQWOWConverter.Zones
         public int SuggestedMinLevel = 0;
         public int SuggestedMaxLevel = 0;
         public bool AlwaysZoomOutMapToNorrathMap = false;
+        public bool DisableObjectsInMapGenMode = false;
 
         private static readonly object ListReadLock = new object();
         private static readonly object DBCWMOIDLock = new object();

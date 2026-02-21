@@ -736,7 +736,7 @@ namespace EQWOWConverter.Zones
                 excludeAnimatedAndTransparent = false;
 
             // Only for minimap mode, add geometry from doodads into the render geometry
-            if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == true)
+            if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == true && ZoneProperties.DisableObjectsInMapGenMode == false)
             {
                 string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
                 string objectsFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");

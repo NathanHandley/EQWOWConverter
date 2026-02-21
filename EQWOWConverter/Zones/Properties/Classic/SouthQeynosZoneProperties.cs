@@ -20,6 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public SouthQeynosZoneProperties() : base()
         {
+            // Too many objects, so it overruns the material max if this isn't set
+            DisableObjectsInMapGenMode = true;
+
             // TODO: Port Authority lamp is missing
             // TODO: Make arena PVP
             // TODO: Junk geometry in the sky near a zone line
