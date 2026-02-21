@@ -129,7 +129,7 @@ namespace EQWOWConverter.Zones
             GenerateCollidableWorldObjectModels(renderMeshData, collisionMeshData);
 
             // Generate the render objects
-            GenerateRenderWorldObjectModels(renderMeshData);
+            GenerateRenderWorldObjectModels(renderMeshData, EQZoneData.ObjectInstances);
 
             // Bind doodads to wmos
             AssociateDoodadsWithWMOs();
@@ -433,19 +433,20 @@ namespace EQWOWConverter.Zones
                 // Also skip if it's a special case for map generation
                 if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == true)
                 {
-                    foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardGeometryBoxesMapGenOnly)
-                    {
-                        if (discardGeometryBox.ContainsPoint(doodadInstance.Position) == true)
-                        {
-                            skipDoodad = true;
-                            continue;
-                        }
-                    }
-                    if (objectProperties.IncludeInMinimapGeneration == false)
-                    {
-                        skipDoodad = true;
-                        continue;
-                    }
+                    skipDoodad = true;
+                    //foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardGeometryBoxesMapGenOnly)
+                    //{
+                    //    if (discardGeometryBox.ContainsPoint(doodadInstance.Position) == true)
+                    //    {
+                    //        skipDoodad = true;
+                    //        continue;
+                    //    }
+                    //}
+                    //if (objectProperties.IncludeInMinimapGeneration == false)
+                    //{
+                    //    skipDoodad = true;
+                    //    continue;
+                    //}
                 }
                 foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardGeometryBoxesObjectsOnly)
                 {
@@ -670,7 +671,7 @@ namespace EQWOWConverter.Zones
                 }
             }
 
-            // Generate collision areas for each liquid group in the default area
+            // Generate collision areas for each liquid group in the default areaHDNFU
             foreach (ZoneLiquidGroup liquidGroup in DefaultArea.LiquidGroups)
                 GenerateLiquidCollisionAreas(DefaultArea, liquidGroup);
 
@@ -740,11 +741,145 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void GenerateRenderWorldObjectModels(MeshData renderMeshData)
+        private void GenerateRenderWorldObjectModels(MeshData renderMeshData, List<ObjectInstance> eqObjectInstances)
         {
             bool excludeAnimatedAndTransparent = true;
             if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == true)
                 excludeAnimatedAndTransparent = false;
+
+            // Only for minimap mode, add geometry from doodads into the render geometry
+            if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == true)
+            {
+                string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
+                string objectsFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");
+
+                foreach (ObjectInstance objectInstance in eqObjectInstances)
+                {
+                    string modelName = objectInstance.ModelName;
+                    ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(modelName.ToLower());
+
+                    // Handle model swaps
+                    if (objectProperties.AlternateModelSwapName.Length > 0)
+                        modelName = objectProperties.AlternateModelSwapName;
+
+                    // Skip any invalid instances
+                    if (ObjectModel.StaticObjectModelsByName.ContainsKey(modelName) == false)
+                    {
+                        Logger.WriteDebug("WARNING (or maybe Error): Could not generate doodad instance since model '" + modelName + "' does not exist.  Either is was missing on export, or you need to generate objects");
+                        continue;
+                    }
+
+                    // Explicitly excluded
+                    if (objectProperties.IncludeInMinimapGeneration == false)
+                        continue;
+
+                    // Generate doodad instance locally to test position
+                    ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance(ZoneDoodadInstanceType.StaticObject);
+                    doodadInstance.ObjectName = modelName;
+                    doodadInstance.Position.X = objectInstance.Position.X * Configuration.GENERATE_WORLD_SCALE;
+                    // Invert Z and Y because of mapping differences
+                    doodadInstance.Position.Z = objectInstance.Position.Y * Configuration.GENERATE_WORLD_SCALE;
+                    doodadInstance.Position.Y = objectInstance.Position.Z * Configuration.GENERATE_WORLD_SCALE;
+
+                    // Also rotate the X and Y positions around Z axis 180 degrees
+                    doodadInstance.Position.X = -doodadInstance.Position.X;
+                    doodadInstance.Position.Y = -doodadInstance.Position.Y;
+
+                    // Skip it if it's in a discarded geometry sections
+                    bool skipDoodad = false;
+                    foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardGeometryBoxes)
+                    {
+                        if (discardGeometryBox.ContainsPoint(doodadInstance.Position) == true)
+                        {
+                            skipDoodad = true;
+                            continue;
+                        }
+                    }
+                    foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardGeometryBoxesMapGenOnly)
+                    {
+                        if (discardGeometryBox.ContainsPoint(doodadInstance.Position) == true)
+                        {
+                            skipDoodad = true;
+                            continue;
+                        }
+                    }
+                    foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardGeometryBoxesObjectsOnly)
+                    {
+                        if (discardGeometryBox.ContainsPoint(doodadInstance.Position) == true)
+                        {
+                            skipDoodad = true;
+                            continue;
+                        }
+                    }
+                    if (skipDoodad == true)
+                        continue;
+
+                    // Load an object
+                    ObjectModel curObjectModel = new ObjectModel(modelName, objectProperties, ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+                    curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, modelName);
+
+                    // Calculate the rotation (WMO)
+                    float rotateYaw = Convert.ToSingle(Math.PI / 180) * -objectInstance.Rotation.Z;
+                    float rotatePitch = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.X;
+                    float rotateRoll = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.Y;
+                    System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotateYaw, rotatePitch, rotateRoll);
+                    doodadInstance.WMOOrientation.X = rotationQ.X;
+                    doodadInstance.WMOOrientation.Y = rotationQ.Y;
+                    doodadInstance.WMOOrientation.Z = rotationQ.Z;
+                    doodadInstance.WMOOrientation.W = -rotationQ.W; // Flip the sign for handedness
+
+                    MeshData curObjectMeshData = new MeshData();
+
+                    // Update model geometry to reflect doodad properties
+                    for (int i = 0; i < curObjectModel.MeshData.Vertices.Count; i++)
+                    {
+                        Vector3 newVertex = curObjectModel.ModelVertices[i].Position;
+
+                        // Scale based on doodad
+                        newVertex.X *= doodadInstance.Scale;
+                        newVertex.Y *= doodadInstance.Scale;
+                        newVertex.Z *= doodadInstance.Scale;
+
+                        // Rotate based on doodad
+                        System.Numerics.Vector3 systemVector3 = new System.Numerics.Vector3(newVertex.X, newVertex.Y, newVertex.Z);
+                        System.Numerics.Quaternion systemQuaternion = new System.Numerics.Quaternion(doodadInstance.WMOOrientation.X,
+                            doodadInstance.WMOOrientation.Y, doodadInstance.WMOOrientation.Z, doodadInstance.WMOOrientation.W);
+                        System.Numerics.Vector3 rotatedVector3 = System.Numerics.Vector3.Transform(systemVector3, systemQuaternion);
+                        newVertex.X = rotatedVector3.X;
+                        newVertex.Y = rotatedVector3.Y;
+                        newVertex.Z = rotatedVector3.Z;
+
+                        // Transform based on doodad
+                        newVertex.X += doodadInstance.Position.X;
+                        newVertex.Y += doodadInstance.Position.Y;
+                        newVertex.Z += doodadInstance.Position.Z;
+
+                        curObjectMeshData.Vertices.Add(newVertex);
+                        curObjectMeshData.Normals.Add(curObjectModel.ModelVertices[i].Normal);
+                        curObjectMeshData.TextureCoordinates.Add(curObjectModel.ModelVertices[i].Texture1TextureCoordinates);
+                        curObjectMeshData.VertexColors.Add(new ColorRGBA());
+                    }
+
+                    // TEMP
+                    for (int i = 0; i < curObjectModel.ModelTriangles.Count; i++)
+                    {
+                        TriangleFace curTriangle = curObjectModel.ModelTriangles[i];
+                        curTriangle.MaterialIndex = 0;
+                        curObjectModel.ModelTriangles[i] = curTriangle;
+
+                        curObjectMeshData.TriangleFaces.Add(curTriangle);
+                    }
+                    // Update material references based on existing zone materials
+                    // Add missing textures, and save them for later copy references
+
+                    // Bulid a mesh data
+
+
+                    // Add the geometry
+
+                    renderMeshData.AddMeshData(curObjectMeshData);
+                }
+            }
 
             // Reduce meshdata to what will actually be rendered
             MeshData staticMeshData = renderMeshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(true, excludeAnimatedAndTransparent, Materials.ToArray());
