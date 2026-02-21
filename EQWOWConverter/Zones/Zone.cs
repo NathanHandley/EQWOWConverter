@@ -783,7 +783,7 @@ namespace EQWOWConverter.Zones
                             continue;
                         }
                     }
-                    foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardGeometryBoxesMapGenOnly)
+                    foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardObjectGeometryBoxesMapGenOnly)
                     {
                         if (discardGeometryBox.ContainsPoint(doodadInstance.Position) == true)
                         {
@@ -883,6 +883,13 @@ namespace EQWOWConverter.Zones
                     MeshData discardedRenderMeshData;
                     MeshData keptRenderMeshData;
                     MeshData.GetSplitMeshDataWithClipping(renderMeshData, discardBox, out discardedRenderMeshData, out keptRenderMeshData);
+                    renderMeshData = keptRenderMeshData;
+                }
+                foreach (BoundingBox discardBoxMapGenOnly in ZoneProperties.DiscardObjectGeometryBoxesMapGenOnly)
+                {
+                    MeshData discardedRenderMeshData;
+                    MeshData keptRenderMeshData;
+                    MeshData.GetSplitMeshDataWithClipping(renderMeshData, discardBoxMapGenOnly, out discardedRenderMeshData, out keptRenderMeshData);
                     renderMeshData = keptRenderMeshData;
                 }
             }

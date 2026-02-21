@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class OasisOfMarrZoneProperties : ZoneProperties
@@ -140,6 +133,8 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 324.968842f, 928.367065f, -592.296204f, -231.830185f, -41.718739f, 300f); // Oasis, north
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -592.196204f, 962.252136f, -1073.070679f, 135.639008f, -41.718739f, 300f); // Oasis, south west
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -592.196204f, 135.739008f, -1130.410278f, -507.798889f, -41.718739f, 300f); // Oasis, south east
+
+            AddDiscardGeometryBoxMapGenOnly(3675.973389f, 2283.462158f, 845.077942f, 3204.878174f, -1836.829224f, -209.976166f); // North edge
         }
     }
 }

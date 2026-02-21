@@ -54,7 +54,7 @@ namespace EQWOWConverter.Zones
         public int SnowChanceFall = 0;
         public float CollisionMaxZ = 0;
         public List<BoundingBox> DiscardGeometryBoxes = new List<BoundingBox>();
-        public List<BoundingBox> DiscardGeometryBoxesMapGenOnly = new List<BoundingBox>();
+        public List<BoundingBox> DiscardObjectGeometryBoxesMapGenOnly = new List<BoundingBox>();
         public List<BoundingBox> DiscardGeometryBoxesObjectsOnly = new List<BoundingBox>();
         public float DisplayMapMainLeft = 0;
         public float DisplayMapMainRight = 0;
@@ -298,7 +298,7 @@ namespace EQWOWConverter.Zones
             postScaleBox.BottomCorner.Y = preScaleBox.TopCorner.Y * -Configuration.GENERATE_WORLD_SCALE;
             postScaleBox.BottomCorner.Z = preScaleBox.BottomCorner.Z * Configuration.GENERATE_WORLD_SCALE;
 
-            DiscardGeometryBoxesMapGenOnly.Add(postScaleBox);
+            DiscardObjectGeometryBoxesMapGenOnly.Add(postScaleBox);
         }
 
         protected void AddDiscardGeometryBoxObjectsOnly(float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ)
