@@ -42,6 +42,7 @@ namespace EQWOWConverter.Zones.Properties
 
             AddDiscardGeometryBox(3278.904541f, -3049.615723f, -8.505950f, -5080.248047f, -3092.001221f, -365.908600f); // East Edge
             AddDiscardGeometryBox(-4998.655273f, 5111.410645f, -16.397030f, -5241.749512f, -3074.986572f, -335.999634f); // South Edge
+            AddDiscardGeometryBox(3332.018311f, 5252.545898f, -19.575190f, -5004.250488f, 5036.571289f, -396.631653f); // West Edge
         }
     }
 }
