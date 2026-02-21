@@ -50,6 +50,7 @@ namespace EQWOWConverter.Zones
         public List<SoundInstance> SoundInstances = new List<SoundInstance>();
         public List<ObjectModel> SoundInstanceObjectModels = new List<ObjectModel>();
         public List<Plane> ConvexVolumePlanes = new List<Plane>();
+        public Dictionary<string, int> MaterialIndexForObjectMaterialNameToCopyForMapGenerations = new Dictionary<string, int>();
 
         public Zone(string shortName, string descriptiveName)
         {
@@ -434,19 +435,6 @@ namespace EQWOWConverter.Zones
                 if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == true)
                 {
                     skipDoodad = true;
-                    //foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardGeometryBoxesMapGenOnly)
-                    //{
-                    //    if (discardGeometryBox.ContainsPoint(doodadInstance.Position) == true)
-                    //    {
-                    //        skipDoodad = true;
-                    //        continue;
-                    //    }
-                    //}
-                    //if (objectProperties.IncludeInMinimapGeneration == false)
-                    //{
-                    //    skipDoodad = true;
-                    //    continue;
-                    //}
                 }
                 foreach (BoundingBox discardGeometryBox in ZoneProperties.DiscardGeometryBoxesObjectsOnly)
                 {
@@ -860,24 +848,42 @@ namespace EQWOWConverter.Zones
                         curObjectMeshData.VertexColors.Add(new ColorRGBA());
                     }
 
-                    // TEMP
+                    // Bring in texture/material references
+                    Dictionary<int, int> materialReferenceChanges = new Dictionary<int, int>();
+                    for (int i = 0; i < curObjectModel.ModelMaterials.Count; i++)
+                    {
+                        ObjectModelMaterial curMaterial = curObjectModel.ModelMaterials[i];
+                        if (MaterialIndexForObjectMaterialNameToCopyForMapGenerations.ContainsKey(curMaterial.Material.Name) == false)
+                        {
+                            MaterialIndexForObjectMaterialNameToCopyForMapGenerations.Add(curMaterial.Material.Name, Materials.Count);
+                            Material newMaterial = new Material(curMaterial.Material);
+                            newMaterial.Index = Convert.ToUInt32(Materials.Count);
+                            Materials.Add(newMaterial);
+                        }
+                        materialReferenceChanges.Add(i, MaterialIndexForObjectMaterialNameToCopyForMapGenerations[curMaterial.Material.Name]);
+                    }
+
+                    // Update the material references / Triangles
                     for (int i = 0; i < curObjectModel.ModelTriangles.Count; i++)
                     {
                         TriangleFace curTriangle = curObjectModel.ModelTriangles[i];
-                        curTriangle.MaterialIndex = 0;
+                        curTriangle.MaterialIndex = materialReferenceChanges[curTriangle.MaterialIndex];
                         curObjectModel.ModelTriangles[i] = curTriangle;
 
                         curObjectMeshData.TriangleFaces.Add(curTriangle);
                     }
-                    // Update material references based on existing zone materials
-                    // Add missing textures, and save them for later copy references
-
-                    // Bulid a mesh data
-
 
                     // Add the geometry
-
                     renderMeshData.AddMeshData(curObjectMeshData);
+                }
+
+                // Re-remove discarded geometry to account for new object render data
+                foreach (BoundingBox discardBox in ZoneProperties.DiscardGeometryBoxes)
+                {
+                    MeshData discardedRenderMeshData;
+                    MeshData keptRenderMeshData;
+                    MeshData.GetSplitMeshDataWithClipping(renderMeshData, discardBox, out discardedRenderMeshData, out keptRenderMeshData);
+                    renderMeshData = keptRenderMeshData;
                 }
             }
 

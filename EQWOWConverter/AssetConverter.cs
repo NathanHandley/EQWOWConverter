@@ -2990,12 +2990,16 @@ namespace EQWOWConverter
                 FileTool.CreateBlankDirectory(zoneOutputTextureFolder, true);
 
             // Go through every texture to move and put it there
-            foreach (Material material in zone.Materials)
+            for (int i = 0; i < zone.Materials.Count; i++)
             {
+                Material material = zone.Materials[i];
                 foreach (string textureName in material.TextureNames)
                 {
                     string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", string.Concat(textureName, ".blp"));
                     string outputTextureFullPath = Path.Combine(zoneOutputTextureFolder, string.Concat(textureName, ".blp"));
+                    if (zone.MaterialIndexForObjectMaterialNameToCopyForMapGenerations.ContainsKey(material.Name))
+                        sourceTextureFullPath = Path.Combine(inputObjectTextureFolder, string.Concat(textureName, ".blp"));
+
                     if (File.Exists(sourceTextureFullPath) == false)
                     {
                         Logger.WriteError("Could not copy texture '" + sourceTextureFullPath + "', it did not exist. Did you run blpconverter?");
