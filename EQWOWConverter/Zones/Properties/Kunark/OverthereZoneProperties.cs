@@ -20,8 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public OverthereZoneProperties() : base()
         {
-            Enable2DSoundInstances("ocean", "wind_lp2", "wind_lp3", "wind_lp4");
-
             AddZoneLineBox("frontiermtns", 4213.145020f, 1414.458862f, 330.642303f, ZoneLineOrientationType.South,
                 -3983.190186f, 2076.854248f, 1054.334229f, -4890.632812f, 1141.867676f, 288.149506f);
             AddZoneLineBox("skyfire", -1091.753296f, -4317.972656f, 36.156670f, ZoneLineOrientationType.West,

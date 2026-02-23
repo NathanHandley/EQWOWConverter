@@ -21,9 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public TempleOfSolusekRoZoneProperties() : base()
         {
             // TODO: Add zone areas (maybe?)
-            SetZonewideEnvironmentAsIndoors(180, 5, 5, ZoneFogType.Heavy);
-            OverrideVertexColorIntensity(0.3);
-            Enable2DSoundInstances("rumblelp", "steamlp");
             AddZoneLineBox("lavastorm", 1346.515381f, 330.955505f, 146.188034f, ZoneLineOrientationType.South, 244.129364f, 62.161572f, 9.468010f, 219.713821f, 44.408550f, -1.500000f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_m0002", 499.080811f, 32.964199f, 472.570038f, -48.240250f, 5.000010f, 12.6f);   // Top area, lowest lava
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_m0002", 519.093750f, -58.637852f, 474.333313f, -114.066833f, 12.000010f, 15f);   // Top area, east upper level (east side)

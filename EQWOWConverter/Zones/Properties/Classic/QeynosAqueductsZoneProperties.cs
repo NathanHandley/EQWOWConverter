@@ -22,10 +22,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Add more zone areas
             // TODO: Secret pot to Tox
-            SetZonewideEnvironmentAsIndoors(11, 36, 28, ZoneFogType.Medium);
-            OverrideVertexColorIntensity(0.4);
-            SetZonewideMusic("qcat-00", "qcat-00", true);
-
             AddZoneArea("Plague Bringer Tunnels", "qcat-01", "qcat-01");
             AddZoneAreaBox("Plague Bringer Tunnels", 489.128876f, -212.308807f, 196.282455f, 144.117630f, -698.131470f, -43.918282f);
             AddZoneAreaBox("Plague Bringer Tunnels", 517.676575f, 51.978771f, -18.997459f, 346.800323f, -256.628723f, -43.918282f);

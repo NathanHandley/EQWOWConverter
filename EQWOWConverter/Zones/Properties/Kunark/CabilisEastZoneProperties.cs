@@ -20,9 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public CabilisEastZoneProperties() : base()
         {
-            SetZonewideEnvironmentAsOutdoorsNoSky(12, 12, 8, ZoneFogType.Heavy, 1f);
-            Enable2DSoundInstances("lakelap4");
-
             // Retest
             AddZoneLineBox("swampofnohope", 2971.826660f, 3241.556885f, 0.125060f, ZoneLineOrientationType.East,
                 -32.775379f,  -628.916870f, 175.343414f, -196.997025f, -687.232239f, -12.133560f);

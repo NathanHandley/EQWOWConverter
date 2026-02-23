@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class FeerrottZoneProperties : ZoneProperties 
@@ -28,10 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public FeerrottZoneProperties() : base()
         {
             // TODO: Add zone areas
-            SetZonewideEnvironmentAsOutdoorsNoSky(30, 46, 15, ZoneFogType.Heavy, 1f);
-            OverrideVertexColorIntensity(0.4);
-            DisableSunlight();
-            Enable2DSoundInstances("swmp1", "swmp2", "swmp3", "torch_lp");
             AddZoneLineBox("cazicthule", 55.471420f, -67.975937f, 0.000000f, ZoneLineOrientationType.North, -1469.255859f, -100.275429f, 58.405380f, -1499.662231f, -120.661491f, 47.437580f);
             AddZoneLineBox("oggok", -373.311127f, -102.846184f, -0.000000f, ZoneLineOrientationType.North, 1700.901245f, 832.210693f, 110.609047f, 1669.091797f, 786.900452f, 56.781330f);
             AddZoneLineBox("innothule", -1120.934570f, 1876.716309f, -12.343200f, ZoneLineOrientationType.East, -1053.738770f, -3064.860107f, 34.236019f, -1118.701904f, -3134.157959f, -12.843610f);

@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class KithicorForestZoneProperties : ZoneProperties
@@ -28,10 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public KithicorForestZoneProperties() : base()
         {
             // TODO: Add zone areas
-            SetZonewideEnvironmentAsOutdoorsNoSky(72, 84, 60, ZoneFogType.Heavy, 1f);
-            DisableSunlight();
-            SetZonewideAmbienceSound("", "darkwds1");
-            Enable2DSoundInstances("wtr_pool", "wind_lp1", "wind_lp2", "wind_lp4");
             AddZoneLineBox("commons", 1032.412720f, 4154.744629f, -52.093071f, ZoneLineOrientationType.North, 1408.693237f, -1098.195190f, 55.470139f, 1378.633545f, -1153.891724f, -52.593639f);
             AddZoneLineBox("highpass", -980.394165f, 90.663696f, -0.000010f, ZoneLineOrientationType.North, 569.884521f, 4903.054199f, 742.436829f, 558.181274f, 4885.024414f, 689.404907f);
             AddZoneLineBox("rivervale", -371.955841f, -282.273224f, 0.000020f, ZoneLineOrientationType.North, 2028.557495f, 3831.161621f, 472.718994f, 2020.498779f, 3818.663086f, 461.750427f);

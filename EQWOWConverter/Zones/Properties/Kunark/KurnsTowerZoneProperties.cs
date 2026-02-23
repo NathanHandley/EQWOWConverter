@@ -20,9 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public KurnsTowerZoneProperties() : base()
         {
-            SetZonewideEnvironmentAsIndoors(50, 50, 50, ZoneFogType.Heavy);
-            OverrideVertexColorIntensity(0.4);
-
             AddZoneLineBox("fieldofbone", 457.210114f, 1023.003540f, 61.312550f, ZoneLineOrientationType.East,
                 -270.226410f, 57.504761f, 60.692108f, -328.150085f, 13.331530f, -7.441490f); // West
             AddZoneLineBox("fieldofbone", 458.615234f, 962.632263f, 61.312550f, ZoneLineOrientationType.West,

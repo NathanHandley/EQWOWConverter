@@ -14,22 +14,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class SouthKaranaZoneProperties : ZoneProperties
     {
         public SouthKaranaZoneProperties() : base()
         {
-            SetZonewideAmbienceSound("", "darkwds1");
-            Enable2DSoundInstances("wind_lp3", "wind_lp4", "wind_lp2");
-
             AddZoneArea("The Well", "southkarana-00", "southkarana-00", false);
             AddZoneAreaBox("The Well", 115.009888f, 21.298410f, 42.651821f, -204.788803f, -257.898560f, -18.088860f);
 

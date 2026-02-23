@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class AkAnonZoneProperties : ZoneProperties
@@ -29,8 +23,6 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Improve the angle water room water surfaces
             // TODO: Swimming up the entry waterfall will allow you to exit the map
             // TODO: Waterwheel in the deepest water room
-            Enable2DSoundInstances("spinnrlp");
-
             AddZoneArea("Entry", "akanon-00", "akanon-00");
             AddZoneAreaBox("Entry", 257.142761f, 118.389160f, 1000, -131.215698f, -96.817497f, -1000f);
             
@@ -73,8 +65,6 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Zoo", "akanon-06", "akanon-06");
             AddZoneAreaBox("Zoo", 1375.437500f, -726.707092f, -28.450760f, 1228.063110f, -839.659973f, -300);
             
-            SetZonewideEnvironmentAsIndoors(0, 30, 0, ZoneFogType.Heavy);
-            OverrideVertexColorIntensity(0.4);
             AddZoneLineBox("steamfont", -2059.579834f, 528.815857f, -111.126549f, ZoneLineOrientationType.North, 70.830750f, -69.220848f, 12.469000f, 60.770279f, -84.162193f, -0.500000f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 718.719971f, 143.395935f, 517.753479f, -379.726532f, -28.999929f, 60f); // Large water pool, south outer
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 1065.541504f, 141.236343f, 517.743479f, -31.595591f, -28.999929f, 60f); // Large water pool, west outer

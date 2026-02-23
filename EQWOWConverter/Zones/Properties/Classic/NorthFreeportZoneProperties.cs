@@ -20,8 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public NorthFreeportZoneProperties() : base()
         {
-            Enable2DSoundInstances("wind_lp4");
-
             AddZoneArea("Temple of Marr", "freportn-12", "freportn-12");
             AddZoneAreaBox("Temple of Marr", 154.301849f, 404.686890f, 1000f, 117.155739f, 294.509674f, -1000f);
             AddZoneAreaBox("Temple of Marr", 137.158463f, 420.520691f, 1000f, -110.719597f, 279.679901f, -1000f);

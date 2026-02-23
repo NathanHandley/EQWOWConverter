@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class InnothuleSwampZoneProperties : ZoneProperties
@@ -28,10 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public InnothuleSwampZoneProperties() : base()
         {            
             // TODO: Add more zone areas (may not be needed)
-            SetZonewideEnvironmentAsOutdoorsNoSky(106, 100, 56, ZoneFogType.Heavy, 1f);
-            DisableSunlight();
-            SetZonewideAmbienceSound("swmp1", "swmp1");
-            Enable2DSoundInstances("slmestrm", "streammd", "darkwds2", "darkwds1");
             AddZoneArea("Guk");
             AddZoneAreaBox("Guk", 305.515717f, -560.334473f, 68.895988f, 51.747478f, -913.086060f, -65.152344f);
 

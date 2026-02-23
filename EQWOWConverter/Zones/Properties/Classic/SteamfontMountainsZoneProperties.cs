@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class SteamfontMountainsZoneProperties : ZoneProperties
@@ -28,9 +22,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Look into possibly more zone areas
             // TODO: Darken the Minotaur Caves
-            SetZonewideAmbienceSound("", "darkwds1");
-            Enable2DSoundInstances("wind_lp4", "steamlp");
-
             AddZoneArea("The Windmills", "steamfont-02", "steamfont-02", false);
             AddZoneAreaBox("The Windmills", 668.587585f, -75.615662f, 409.540710f, -391.177246f, -1247.875854f, -228.816513f);
 
@@ -57,7 +48,6 @@ namespace EQWOWConverter.Zones.Properties
                 AddZoneArea("North Kobold Camp");
             AddZoneAreaBox("North Kobold Camp", 1931.113281f, 1453.376221f, 88.200996f, 1453.425171f, 947.308777f, -200.573578f);
 
-            SetZonewideEnvironmentAsOutdoorsWithSky(152, 152, 167, ZoneFogType.Medium, 0.75f, 1f);
             AddZoneLineBox("akanon", 57.052101f, -77.213501f, 0.000010f, ZoneLineOrientationType.South, -2064.9805f, 535.8183f, -98.656f, -2077.9038f, 521.43134f, -111.624886f);
             AddZoneLineBox("lfaydark", 930.675537f, -2166.410400f, -4.781320f, ZoneLineOrientationType.West, 608.013672f, 2214.515625f, 26.767950f, 559.319153f, 2202.571045f, -113.749878f);
         }

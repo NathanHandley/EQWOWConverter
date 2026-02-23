@@ -20,9 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public TrakanonsTeethZoneProperties() : base()
         {
-            SetZonewideEnvironmentAsOutdoorsNoSky(23, 26, 24, ZoneFogType.Heavy, 1f);
-            Enable2DSoundInstances("lakelap1", "swafrg1", "swmp1", "swmp3");
-
             AddZoneLineBox("emeraldjungle", -3416.802979f, 1518.184814f, -344.468475f, ZoneLineOrientationType.North,
                 4095.828369f, 1638.688843f, -287.712830f, 3995.097900f, 1376.905640f, -361.280029f);
             AddZoneLineBox("swampofnohope", 1726.424438f, -4536.817871f, 83.899193f, ZoneLineOrientationType.South,

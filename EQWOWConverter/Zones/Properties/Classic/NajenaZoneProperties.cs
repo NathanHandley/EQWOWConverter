@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class NajenaZoneProperties : ZoneProperties
@@ -28,10 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public NajenaZoneProperties() : base()
         {
             // TODO: Add a key system
-            SetZonewideEnvironmentAsIndoors(10, 10, 10, ZoneFogType.Heavy);
-            DisableSunlight();
-            OverrideVertexColorIntensity(0.4);
-
             AddZoneArea("Najena's Room");
             AddZoneAreaBox("Najena's Room", 381.038269f, 145.555283f, 25.470989f, 290.597717f, 78.611732f, -3.714120f);
             AddZoneAreaBox("Najena's Room", 354.981506f, 87.133827f, 18.075880f, 334.488220f, 68.708702f, -2.803370f);

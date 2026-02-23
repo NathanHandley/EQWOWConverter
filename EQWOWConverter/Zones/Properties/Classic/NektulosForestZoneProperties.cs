@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class NektulosForestZoneProperties : ZoneProperties
@@ -30,10 +23,6 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Trees below the zone need to be deleted
             // TODO: More zone areas
             // TODO: BUG: Missing block at 2522.321289f, 677.535767f, -8.108790f, see reference
-            SetZonewideEnvironmentAsOutdoorsNoSky(57, 64, 50, ZoneFogType.Heavy, 1f);
-            DisableSunlight();
-            SetZonewideAmbienceSound("wind_lp4", "darkwds2");
-
             AddZoneArea("Neriak");
             AddZoneAreaBox("Neriak", 2539.906494f, -707.843018f, 120.655533f, 2091.832031f, -1205.748169f, -28.141399f);
 

@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class EstateOfUnrestZoneProperties : ZoneProperties
@@ -28,9 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public EstateOfUnrestZoneProperties() : base()
         {
             // TODO: Add zone areas
-            SetZonewideEnvironmentAsIndoors(10, 0, 30, ZoneFogType.Heavy);
-            DisableSunlight();
-            Enable2DSoundInstances("wind_lp2", "wind_lp3", "wind_lp4");
             AddZoneLineBox("cauldron", -2014.301880f, -627.332886f, 90.001083f, ZoneLineOrientationType.North, 113.163170f, 340.068451f, 18.469000f, 72.315872f, 319.681549f, -0.500000f);
             AddOctagonLiquidShape(ZoneLiquidType.Water, "d_m0006", 296.937286f, 232.862274f, 36.855289f, 12.970670f, 32.835838f, 17.249861f, 32.835838f, 17.249861f,
                 292.667419f, 236.893173f, 292.667419f, 236.893173f, 2.000010f, 25f, 0.4f); // West fountain

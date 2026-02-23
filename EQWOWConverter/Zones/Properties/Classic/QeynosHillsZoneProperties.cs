@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class QeynosHillsZoneProperties : ZoneProperties
@@ -28,9 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public QeynosHillsZoneProperties() : base()
         {
             // TODO: Add a few more zone areas
-            Enable2DSoundInstances("wind_lp2", "wind_lp3", "wind_lp4");
-            SetZonewideAmbienceSound("", "darkwds2");
-
             AddZoneArea("Haunted Ruins", "qeytoqrg-03", "qeytoqrg-03");
             AddZoneAreaBox("Haunted Ruins", 4967.319824f, -563.435852f, 276.213654f, 4375.154297f, -1166.364746f, -71.360802f);
 

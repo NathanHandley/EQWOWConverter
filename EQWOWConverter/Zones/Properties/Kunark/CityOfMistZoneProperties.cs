@@ -21,10 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public CityOfMistZoneProperties() : base()
         {
             // TODO: Any in-zone teleports?
-            // TODO: There is a lift "CMLIFT101".  See Doors table
-
-            SetZonewideEnvironmentAsOutdoorsNoSky(9, 11, 6, ZoneFogType.Heavy, 1f);
-
             AddZoneLineBox("emeraldjungle", 300.948212f, -1798.700195f, -334.972931f, ZoneLineOrientationType.East,
                 21.656549f, -808.069702f, 59.639500f,  -15.719450f, -854.674255f, -7.938090f);
 

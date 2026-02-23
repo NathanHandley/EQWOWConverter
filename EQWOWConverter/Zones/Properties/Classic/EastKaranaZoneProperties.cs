@@ -21,9 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public EastKaranaZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            SetZonewideAmbienceSound("silence", "darkwds2");
-            Enable2DSoundInstances("wind_lp3");
-
             AddZoneArea("North Karana Bridge", "eastkarana-01", "eastkarana-01");
             AddZoneAreaBox("North Karana Bridge", 447.861389f, 1756.020508f, 338.753632f, -259.226746f, 225.282013f, -307.166260f);
 

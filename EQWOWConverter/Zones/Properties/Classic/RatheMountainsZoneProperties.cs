@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class RatheMountainsZoneProperties : ZoneProperties
@@ -27,9 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public RatheMountainsZoneProperties() : base()
         {
             // TODO: More zone areas
-            SetZonewideAmbienceSound("", "darkwds1");
-            Enable2DSoundInstances("wind_lp2", "wind_lp4");
-
             AddZoneArea("Gypsy Camp", "rathemtn-02", "rathemtn-02");
             AddZoneAreaBox("Gypsy Camp", 4175.352051f, 1592.331055f, 150.293793f, 3752.229492f, 1326.794067f, -57.868710f);
 

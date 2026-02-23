@@ -21,9 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public SouthDesertOfRoZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            SetZonewideAmbienceSound("", "darkwds1");
-            Enable2DSoundInstances("wind_lp3", "wind_lp2", "wind_lp4");
-
             AddZoneArea("Desert", "", "", false, "", "silence");
             AddZoneAreaBox("Desert", 2655.683594f, 1829.046021f, 396.438385f, -924.193787f, -1038.153442f, -238.829483f);
 

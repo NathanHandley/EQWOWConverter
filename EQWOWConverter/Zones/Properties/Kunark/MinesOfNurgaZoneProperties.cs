@@ -20,10 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public MinesOfNurgaZoneProperties() : base()
         {
-            SetZonewideEnvironmentAsIndoors(1, 15, 1, ZoneFogType.Heavy);
-            OverrideVertexColorIntensity(0.4);
-            Enable2DSoundInstances("wind_lp3", "caveloop");
-
             AddZoneLineBox("droga", -1389.241333f, 263.044464f, -191.937393f, ZoneLineOrientationType.North,
                 -942.595520f, 225.447723f, -80.635323f, -1016.506470f, 91.078529f, -126.038986f); // West
             AddZoneLineBox("droga", -1311.640869f, -919.159363f, -79.968773f, ZoneLineOrientationType.North,

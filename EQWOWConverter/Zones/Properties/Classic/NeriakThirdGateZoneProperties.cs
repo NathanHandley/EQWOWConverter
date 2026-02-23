@@ -21,9 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public NeriakThirdGateZoneProperties() : base()
         {
             // TODO: Could add a few more zone areas
-            SetZonewideEnvironmentAsIndoors(35, 22, 59, ZoneFogType.Heavy);
-            Enable2DSoundInstances("wfall_md", "streamsm");
-
             AddZoneArea("The Dark Guilds", "neriakc-12", "neriakc-12");
             AddZoneAreaBox("The Dark Guilds", 1447.035645f, -1021.734131f, 65.887840f, 1072.562500f, -1394.093628f, -135.926941f);
 

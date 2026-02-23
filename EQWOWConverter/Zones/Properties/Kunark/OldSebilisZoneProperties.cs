@@ -20,11 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public OldSebilisZoneProperties() : base()
         {
-            Enable2DSoundInstances("caveloop");
-
-            SetZonewideEnvironmentAsIndoors(20, 10, 60, ZoneFogType.Heavy);
-            OverrideVertexColorIntensity(0.4);
-
             AddZoneLineBox("trakanon", -1628.483887f, -4764.273926f, -476.531189f, ZoneLineOrientationType.South,
                 -90.748070f, -65.824310f, -16.669720f, -102.438210f, -78.004112f, -37.766270f); // Top exit teleporter
             AddZoneLineBox("trakanon", -1628.483887f, -4764.273926f, -476.531189f, ZoneLineOrientationType.South,

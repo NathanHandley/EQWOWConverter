@@ -20,10 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public EmeraldJungleZoneProperties() : base()
         {
-            SetZonewideEnvironmentAsOutdoorsNoSky(22, 26, 23, ZoneFogType.Heavy, 1f);
-            SetZonewideAmbienceSound("", "darkwds2");
-            Enable2DSoundInstances("swmp1", "swmp3", "wind_lp3", "wtr_pool");
-
             AddZoneLineBox("fieldofbone", -1234.403564f, -767.976746f, -8.242520f, ZoneLineOrientationType.West,
                 -536.343384f, 5581.730957f, 293.219910f, -1628.799805f, 4909.223145f, -143.907333f);
             AddZoneLineBox("citymist", -0.518530f, -774.348938f, 0.000000f, ZoneLineOrientationType.West,

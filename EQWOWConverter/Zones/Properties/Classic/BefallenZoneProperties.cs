@@ -20,10 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public BefallenZoneProperties() : base()
         {
-            SetZonewideEnvironmentAsIndoors(0, 0, 60, ZoneFogType.Heavy, 130, 130, 130);
-            SetZonewideAmbienceSound("caveloop", "caveloop");
-            OverrideVertexColorIntensity(0.6);
-
             AddZoneArea("Entry", "befallen-06", "befallen-06");
             AddZoneAreaBox("Entry", 54.481789f, 55.857861f, 37.370251f, -124.496246f, -144.035538f, -5.204370f);
             AddZoneAreaBox("Entry", 26.557690f, 11.077470f, 20.215931f, -203.251007f, -90.467781f, -4.588550f);

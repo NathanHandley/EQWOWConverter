@@ -21,11 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public ToxxuliaForestZoneProperties() : base()
         {
             // TODO: Is there a boat to Kerra?
-            SetZonewideEnvironmentAsOutdoorsNoSky(138, 125, 19, ZoneFogType.Heavy, 1f);
-            DisableSunlight();
-            SetZonewideAmbienceSound("", "darkwds1");
-            SetZonewideMusic("tox-01", "tox-01", true);
-
             AddZoneArea("Wizard Spires", "tox-00", "tox-00");
             AddZoneAreaBox("Wizard Spires", -1226.949219f, -589.685974f, 301.723328f, -1772.627075f, -1188.614136f, -150.917084f);
 

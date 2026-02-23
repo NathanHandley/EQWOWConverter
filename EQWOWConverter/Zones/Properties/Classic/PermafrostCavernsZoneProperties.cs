@@ -22,10 +22,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Add zone areas
             DefaultZoneArea.DoShowBreath = true;
-            SetZonewideEnvironmentAsIndoors(30, 40, 60, ZoneFogType.Heavy);
-            Enable2DSoundInstances("wind_lp2", "wind_lp4", "caveloop", "torch_lp");
-            OverrideVertexColorIntensity(0.3);
-            DisableSunlight();
             AddZoneLineBox("everfrost", 2019.599976f, -7040.121094f, -63.843819f, ZoneLineOrientationType.West, -39.775318f, 172.344788f, 38.435791f, -80.162201f, 102.044090f, -0.499990f);
         }
     }

@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class NeriakForeignQuarterZoneProperties : ZoneProperties
@@ -28,8 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public NeriakForeignQuarterZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            SetZonewideEnvironmentAsIndoors(35, 22, 59, ZoneFogType.Heavy);
-
             AddZoneArea("Guard House", "neriaka-02", "neriaka-02");
             AddZoneAreaBox("Guard House", 13.058960f, -84.772346f, 28.154770f, -12.747060f, -128.748932f, -2.394260f);
             AddZoneAreaBox("Guard House", 38.669739f, -98.807129f, 15.071800f, -39.769070f, -127.396881f, -4.807590f);

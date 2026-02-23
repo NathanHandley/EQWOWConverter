@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class NorthDesertOfRoZoneProperties : ZoneProperties
@@ -28,7 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public NorthDesertOfRoZoneProperties() : base()
         {
             // Add more zone areas
-            Enable2DSoundInstances("wind_lp4", "wind_lp2", "wind_lp3");
 
             AddZoneArea("Field Camp", "nro-03", "nro-03", true, "", "night");
             AddZoneAreaBox("Field Camp", 3560.148438f, 583.294373f, 43.290260f, 3067.353516f, -159.970612f, -61.339088f);

@@ -21,8 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public OceanOfTearsZoneProperties() : base()
         {
             // TODO: Add zone areas
-            Enable2DSoundInstances("wind_lp4");
-            SetZonewideAmbienceSound("ocean", "ocean");
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3854.056396f, 11660.213867f, -5955.389648f, -11718.996094f, -20.063040f, 300f);
         }
     }

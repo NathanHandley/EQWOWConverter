@@ -21,9 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public NorthKaladimZoneProperties() : base()
         {
             // TODO: BUG: Bug in the northwest tunnel (some of it doesn't trigger)
-            SetZonewideEnvironmentAsIndoors(31, 22, 09, ZoneFogType.Heavy);
-            OverrideVertexColorIntensity(0.4);
-
             AddZoneArea("Gemstone Mine");
             AddZoneAreaBox("Gemstone Mine", 795.009949f, 457.298615f, -38.483971f, 520.949097f, 140.156342f, -133.599564f);
 

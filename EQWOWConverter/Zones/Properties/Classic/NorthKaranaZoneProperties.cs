@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class NorthKaranaZoneProperties : ZoneProperties
@@ -28,9 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public NorthKaranaZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            Enable2DSoundInstances("wind_lp4", "wind_lp2", "wind_lp3");
-            SetZonewideAmbienceSound("", "darkwds2");
-
             AddZoneArea("East Karana Bridge", "northkarana-01", "northkarana-01");
             AddZoneAreaBox("East Karana Bridge", 417.789734f, -2260.625488f, 325.672272f, -620.213074f, -3664.720215f, -278.519135f);
 

@@ -22,9 +22,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Add zone areas
             DefaultZoneArea.DoShowBreath = true;
-            SetZonewideEnvironmentAsOutdoorsNoSky(144, 165, 183, ZoneFogType.Heavy, 1f);
-            DisableSunlight();
-            SetZonewideAmbienceSound("wind_lp2", "wind_lp4");
             AddZoneLineBox("blackburrow", 64.26508f, -340.1918f, 0.00073920796f, ZoneLineOrientationType.South, -3054.6953f, -515.55963f, -99.7185f, -3094.8235f, -547f, -113.68753f);
             AddZoneLineBox("halas", -647.768616f, -75.159027f, 0.000020f, ZoneLineOrientationType.North, 3756.428467f, 397.611786f, 38.469002f, 3706.500488f, 347.150665f, -0.499760f);
             AddZoneLineBox("permafrost", -61.690048f, 84.215889f, 0.000010f, ZoneLineOrientationType.East, 2040.192261f, -7055.080078f, -8.999750f, 1989.364502f, -7120.806641f, -64.344040f);

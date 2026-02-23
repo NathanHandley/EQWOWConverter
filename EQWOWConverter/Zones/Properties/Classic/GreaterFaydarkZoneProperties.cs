@@ -20,12 +20,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public GreaterFaydarkZoneProperties() : base()
         {
-            // TODO: Lifts for Kelethin (look at how the lifts work for Thunder Bluffs?)
-            // TODO: Add more zone areas / child areas
-            SetZonewideEnvironmentAsOutdoorsNoSky(140, 155, 122, ZoneFogType.Heavy, 1f);
-            DisableSunlight();
-            SetZonewideAmbienceSound("wind_lp2", "darkwds1");
-            
+            // TODO: Add more zone areas / child areas          
             AddZoneArea("Kelethin", "gfaydark-04", "gfaydark-04", true, "silence", "silence");
             AddZoneAreaBox("Kelethin", 1218.981567f, 858.808472f, 486.386993f, -736.565674f, -711.635437f, -136.266785f);
 

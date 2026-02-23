@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class LairOfTheSplitpawZoneProperties : ZoneProperties
@@ -28,10 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public LairOfTheSplitpawZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            SetZonewideEnvironmentAsIndoors(30, 25, 10, ZoneFogType.Heavy);
-            OverrideVertexColorIntensity(0.4);
-            DisableSunlight();
-
             AddZoneArea("Entry", "paw-01", "paw-01");
             AddZoneAreaBox("Entry", 304.315002f, 164.917114f, 76.783112f, -248.294434f, -242.120102f, -14.874890f);
 

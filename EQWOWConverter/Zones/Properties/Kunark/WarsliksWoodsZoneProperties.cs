@@ -21,12 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public WarsliksWoodsZoneProperties() : base()
         {
             // TODO: Clip water surface geometry near Dalnir
-
-            SetZonewideEnvironmentAsOutdoorsNoSky(26, 26, 26, ZoneFogType.Heavy, 1f);
-
-            SetZonewideAmbienceSound("", "darkwds1");
-            Enable2DSoundInstances("wtr_pool", "streamsm", "wind_lp2", "wind_lp4");
-
             AddZoneLineBox("cabwest", 870.207581f, 1143.751831f, 0.000020f, ZoneLineOrientationType.East,
                 -2237.151123f, -1135.133423f, 381.612640f, -2268.348633f, -1180.958496f, 262.312653f);
             AddZoneLineBox("cabwest", 688.666626f, 1327.751099f, 0.000030f, ZoneLineOrientationType.South,

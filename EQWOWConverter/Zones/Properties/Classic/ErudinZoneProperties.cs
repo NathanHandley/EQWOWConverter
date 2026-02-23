@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class ErudinZoneProperties : ZoneProperties
@@ -28,7 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public ErudinZoneProperties() : base()
         {
             // TODO: Add zone areas
-            Enable2DSoundInstances("wind_lp2");
             AddZoneLineBox("tox", 2543.662842f, 297.415588f, -48.407711f, ZoneLineOrientationType.South, -1559.726196f, -175.747467f, -17.531000f, -1584.182617f, -211.414566f, -48.468529f);
             AddTeleportPad("erudnext", -1410.466431f, -184.863327f, 34.000938f, ZoneLineOrientationType.North, -1392.625977f, -254.981995f, -42.968651f, 6.0f);
             AddTeleportPad("erudnext", -1410.336670f, -310.649994f, -45.968410f, ZoneLineOrientationType.South, -1410.323730f, -310.856049f, 37.000172f, 6.0f);

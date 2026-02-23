@@ -20,9 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public ErudsCrossingZoneProperties() : base()
         {
-            // TODO: There's a boat that connects to erudnext and qeynos (south)
-            SetZonewideAmbienceSound("ocean", "ocean");
-
             AddZoneArea("Fishing Camp", "erudsxing-01", "erudsxing-01", true, "", "", 0.8f); // Music was too loud
             AddZoneAreaBox("Fishing Camp", -1387.844849f, 1039.357910f, 99.225990f, -1675.524048f, 651.345337f, -107.792427f);
 

@@ -22,9 +22,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Traps, like the crushing rock at -624 -243 -74
             // TODO: More zone areas
-            SetZonewideEnvironmentAsIndoorWithSky(180, 30, 30, ZoneFogType.Heavy, 0.5f);
-            OverrideVertexColorIntensity(0.3);
-
             AddZoneArea("Nagafen's Approach", "soldungb-01", "soldungb-01");
             AddZoneAreaBox("Nagafen's Approach", -1026.479004f, -697.811218f, 191.205917f, -1171.921631f, -925.477905f, -105.790352f);
             AddZoneAreaBox("Nagafen's Approach", -1009.089600f, -596.286011f, 51.420120f, -1159.054321f, -798.325256f, 8.479850f);

@@ -20,10 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public DalnirZoneProperties() : base()
         {
-            SetZonewideEnvironmentAsIndoors(20, 10, 25, ZoneFogType.Medium);
-            OverrideVertexColorIntensity(0.4);
-            Enable2DSoundInstances("lakelap4", "waterlp", "caveloop");
-
             AddZoneLineBox("warslikswood", 2581.582275f, 4587.688965f, -244.718704f, ZoneLineOrientationType.West,
                 23.855680f, 178.400238f, 17.282030f, -18.799231f, 82.444389f, -12.233050f); // Main walk entry
             AddZoneLineBox("warslikswood", 2581.582275f, 4587.688965f, -244.718704f, ZoneLineOrientationType.West,

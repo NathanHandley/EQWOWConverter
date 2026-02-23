@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class PlaneOfSkyZoneProperties : ZoneProperties
@@ -30,7 +24,6 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Enable flying
             // TODO: Add teleport pads
             // TODO: wrap the skybox all the way around
-            Enable2DSoundInstances("wind_lp2", "wind_lp3", "wind_lp4");
             AddZoneLineBox("freporte", -363.75037f, -1778.4629f, 100f, ZoneLineOrientationType.West, 3000f, 3000f, -1000f, -3000f, -3000f, -1200f);
         }
     }

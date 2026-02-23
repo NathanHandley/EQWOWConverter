@@ -20,11 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public SurefallGladeZoneProperties() : base()
         {
-            SetZonewideEnvironmentAsOutdoorsNoSky(114, 111, 116, ZoneFogType.Heavy, 1f);
-            DisableSunlight();
-            SetZonewideAmbienceSound("", "night");
-            Enable2DSoundInstances("wind_lp2");
-
             AddZoneArea("Ranger's Guild", "qrg-03", "qrg-03", true, "", "silence");
             AddZoneAreaBox("Ranger's Guild", 194.394394f, -1.289240f, 13.855110f, 113.035820f, -70.200150f, -1.086660f);
             AddZoneAreaBox("Ranger's Guild", 152.741501f, -68.650978f, 13.855110f, 99.090302f, -124.775002f, -1.086660f);

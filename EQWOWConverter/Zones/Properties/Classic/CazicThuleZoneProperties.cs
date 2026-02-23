@@ -21,10 +21,7 @@ namespace EQWOWConverter.Zones.Properties
         public CazicThuleZoneProperties() : base()
         {
             // TODO: Indoor Lighting
-            // TODO: Bug: Near the entry pools, the textures collide on the surface
-            SetZonewideEnvironmentAsOutdoorsWithSky(40, 65, 16, ZoneFogType.Heavy, 0.5f, 1.0f);
-            Enable2DSoundInstances("slmestrm", "wind_lp2", "lakelap1", "torch_lp");
-            
+            // TODO: Bug: Near the entry pools, the textures collide on the surface          
             AddZoneArea("Archon Pyramid");
             AddZoneAreaBox("Archon Pyramid", 1224.566162f, -26.975229f, 213.322754f, 711.677063f, -519.299316f, 26.708981f);
             

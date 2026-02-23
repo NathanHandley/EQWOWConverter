@@ -22,10 +22,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Add zone areas
             // TODO: Need to identify a new zone in / zone out for this zone
-            SetZonewideEnvironmentAsIndoors(10, 10, 10, ZoneFogType.Heavy);
-            OverrideVertexColorIntensity(0.5);
-            DisableSunlight();
-
             AddDiscardGeometryBox(818.014099f, 700.247253f, 259.781738f, -719.814148f, -721.046875f, 181.490906f); // Ceiling
         }
     }

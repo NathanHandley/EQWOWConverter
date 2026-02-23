@@ -21,11 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public LesserFaydarkZoneProperties() : base()
         {
             // TODO: A few unmapped zone areas (bandit camps)
-            SetZonewideEnvironmentAsOutdoorsNoSky(140, 155, 122, ZoneFogType.Heavy, 1f);
-            DisableSunlight();
-            SetZonewideAmbienceSound("", "night");
-            Enable2DSoundInstances("wind_lp4", "darkwds1");
-
             AddZoneArea("The Monument", "lfaydark-02", "lfaydark-02", false);
             AddZoneAreaBox("The Monument", -233.679443f, -1672.593140f, 200f, -554.176331f, -2018.064331f, -200f);
 

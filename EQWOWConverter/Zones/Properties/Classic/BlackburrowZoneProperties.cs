@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class BlackburrowZoneProperties : ZoneProperties
@@ -47,7 +40,6 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Upper Pass", -12.067100f, 218.226166f, 137.255905f, -188.310562f, 82.957489f, -2.601680f);
             AddZoneAreaBox("Upper Pass", 259.061310f, -155.000031f, 128.912827f, 1.519120f, -358.437653f, -1.126700f);
             
-            SetZonewideEnvironmentAsOutdoorsWithSky(35, 69, 62, ZoneFogType.Heavy, 0.5f, 1.0f);
             AddZoneLineBox("everfrost", -3027.1943f, -532.2794f, -113.18725f, ZoneLineOrientationType.North, 106.64458f, -329.8163f, 13.469f, 80.88026f, -358.2026f, -0.49926078f);
             AddZoneLineBox("qeytoqrg", 3432.621094f, -1142.645020f, 0.000010f, ZoneLineOrientationType.East, -154.74507f, 20.123898f, 10.469f, -174.6326f, 10.831751f, -0.49996006f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 43.036591f, 68.592300f, -16.785101f, -17.381670f, -1.999990f, 3.5f); // Top Water

@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class KedgeKeepZoneProperties : ZoneProperties
@@ -28,9 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public KedgeKeepZoneProperties() : base()
         {
             // TODO: Zone Areas
-            SetZonewideEnvironmentAsIndoors(66, 101, 134, ZoneFogType.Heavy, 170, 248, 248);
-            OverrideVertexColorIntensity(0.4);
-            SetZonewideMusic("gl-08", "gl-08", true); // Underwater music sound
             AddZoneLineBox("cauldron", -1170.507080f, -1030.383179f, -315.376831f, ZoneLineOrientationType.East, 140.130951f, 14.514380f, 348.342682f, 119.745049f, -10.192420f, 299.375000f);
 
             // Make one giant liquid surface that covers the whole zone

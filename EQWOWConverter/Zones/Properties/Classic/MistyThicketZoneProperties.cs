@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class MistyThicketZoneProperties : ZoneProperties
@@ -28,9 +22,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Add child sub areas
             // TODO: Smooth out the southeast line of "West Misty Thicket" area
-            SetZonewideEnvironmentAsOutdoorsNoSky(67, 81, 34, ZoneFogType.Heavy, 1.0f);
-            DisableSunlight();
-            SetZonewideAmbienceSound("", "night");
             AddZoneArea("West Misty Thicket", "", "", false, "", "darkwds1");
             AddZoneAreaBox("West Misty Thicket", 1299.867676f, 1559.016846f, 466.514893f, -1342.874023f, -28.964359f, -165.042603f); // West from top of wall
             AddZoneAreaBox("West Misty Thicket", -456.799561f, 1559.016846f, 466.514893f, -1342.874023f, -307.651550f, -165.042603f); // West from top of first N-S

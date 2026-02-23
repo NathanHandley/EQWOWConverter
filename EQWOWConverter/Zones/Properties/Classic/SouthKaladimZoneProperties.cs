@@ -14,23 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class SouthKaladimZoneProperties : ZoneProperties
     {
         public SouthKaladimZoneProperties() : base()
         {
-            // TODO: Arena PVP
-            SetZonewideEnvironmentAsIndoors(31, 22, 09, ZoneFogType.Heavy);
-            OverrideVertexColorIntensity(0.4);
-            
+            // TODO: Arena PVP            
             AddZoneArea("Main Gate", "kaladima-00", "kaladima-00", false);
             AddZoneAreaBox("Main Gate", 146.431183f, 62.509140f, 70.454086f, -109.933128f, -110.416473f, -10.129540f);
 

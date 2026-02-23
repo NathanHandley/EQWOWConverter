@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class RivervaleZoneProperties : ZoneProperties
@@ -28,10 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public RivervaleZoneProperties() : base()
         {
             // TODO: Bug - You can fall through the waterfall base
-            SetZonewideMusic("rivervale-00", "rivervale-00", true);
-            SetZonewideAmbienceSound("", "night");
-            Enable2DSoundInstances("wind_lp4", "wind_lp2");
-
             AddZoneArea("Bank of Rivervale", "", "", false, "", "silence");
             AddZoneAreaBox("Bank of Rivervale", 134.691025f, -143.286545f, 150f, 67.445671f, -214.820267f, -50f);
             AddZoneAreaBox("Bank of Rivervale", 122.784729f, -133.233475f, 150f, 67.445671f, -214.820267f, -50f);
@@ -54,7 +43,6 @@ namespace EQWOWConverter.Zones.Properties
             //AddZoneArea("Fool's Gold", "", "", false, "", "silence");
             //AddZoneAreaOctagonBox("Fool's Gold", -25.015270f, -94.932991f, -156.925949f, -226.882187f, -179.992004f, -203.906723f, -179.962494f, -203.859238f, -48.034370f, -72.003288f, -48.034370f, -72.003288f, 150f, -50f);
 
-            SetZonewideEnvironmentAsOutdoorsWithSky(144, 151, 144, ZoneFogType.Heavy, 0.5f, 1f);
             AddZoneLineBox("kithicor", 2012.985229f, 3825.189209f, 462.250427f, ZoneLineOrientationType.South, -384.065887f, -275.682556f, 22.469000f, -396.650330f, -290.013977f, -0.499910f);
             AddZoneLineBox("misty", 407.486847f, -2571.641357f, -10.749720f, ZoneLineOrientationType.West, -69.729698f, 134.790482f, 22.466999f, -96.162209f, 113.427109f, -0.500000f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 215.891556f, -251.910565f, -15.339250f, -512.838562f, -11.999970f, 200f); // South lake (lower)

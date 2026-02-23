@@ -21,8 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public PaineelZoneProperties() : base()
         {
             // TODO: Add zone areas
-            Enable2DSoundInstances("wind_lp2");
-
             AddZoneArea("Upper Field", "", "", false, "", "darkwds1");
             AddZoneAreaBox("Upper Field", 1673.565552f, -19.627020f, 190.996979f, 951.911377f, -1130.305054f, -42.332539f);
             AddZoneAreaBox("Upper Field", 1673.565552f, -140.071136f, 190.996979f, 628.185669f, -727.651978f, -42.332539f);

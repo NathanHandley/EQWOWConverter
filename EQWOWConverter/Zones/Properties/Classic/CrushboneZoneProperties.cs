@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class CrushboneZoneProperties : ZoneProperties
@@ -28,8 +21,6 @@ namespace EQWOWConverter.Zones.Properties
         public CrushboneZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            SetZonewideEnvironmentAsOutdoorsWithSky(71, 71, 150, ZoneFogType.Heavy, 0.5f, 1.0f);
-            SetZonewideAmbienceSound("wind_lp4", "night");
             AddZoneLineBox("gfaydark", 2561.247803f, -52.142502f, 15.843880f, ZoneLineOrientationType.South, -640.919861f, 187.129715f, 39.221329f, -732.241028f, 141.981308f, -0.500000f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_m0002", 257.281067f, 826.939575f, -280.881683f, 567.900513f, -34.999939f, 150f); // NW water plane
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_m0002", -252.334946f, 658.722595f, -608.327148f, 420.405396f, -11.999990f, 50f); // SW water plane (higher up)

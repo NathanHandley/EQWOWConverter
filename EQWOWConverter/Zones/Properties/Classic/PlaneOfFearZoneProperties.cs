@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class PlaneOfFearZoneProperties : ZoneProperties
@@ -29,9 +23,6 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Set more zone areas
             // TODO: Use audio track 3
             // TODO: Bug: Fetid House area is broken, fix it
-            SetZonewideEnvironmentAsPlaneOfFear();
-            SetZonewideAmbienceSound("", "night");
-            Enable2DSoundInstances("darkwds1", "wind_lp4");
 
             AddZoneArea("Portal", "fearplane-00", "fearplane-00");
             AddZoneAreaBox("Portal", -701.058350f, 1154.465820f, 215.094101f, -904.929810f, 922.794373f, -45.228722f);
@@ -51,11 +42,6 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Boogie House", -850.897034f, 526.810608f, 164.968903f, -1123.206177f, 272.315460f, -200f);
 
             AddZoneLineBox("feerrott", -2347.395752f, 2604.589111f, 10.280410f, ZoneLineOrientationType.North, -790.410828f, 1052.103638f, 150.821121f, -803.796631f, 1015.684509f, 105.875198f);
-        }
-
-        protected void SetZonewideEnvironmentAsPlaneOfFear()
-        {
-            SetZonewideEnvironmentAsOutdoorsNoSky(167, 33, 7, ZoneFogType.Medium, 1f, 0.75f);
         }
     }
 }

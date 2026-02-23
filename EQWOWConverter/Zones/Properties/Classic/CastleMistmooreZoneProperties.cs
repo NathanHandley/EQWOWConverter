@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class CastleMistmooreZoneProperties : ZoneProperties
@@ -76,8 +69,6 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Dining Hall");
             AddZoneAreaBox("Dining Hall", -95.846069f, -69.394127f, -167.270004f, -181.243073f, -156.531387f, -194.436142f);
             
-            SetZonewideEnvironmentAsIndoors(30, 0, 60, ZoneFogType.Heavy);
-            DisableSunlight();
             AddZoneLineBox("lfaydark", -1166.805908f, 3263.892578f, 0.000850f, ZoneLineOrientationType.East, -279.682556f, 141.644180f, -78.362358f, -339.412628f, 108.218033f, -182.437500f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", -207.922714f, 518.252563f, -409.548492f, 418.513092f, -237.916143f, 100f); // Entry pool, big
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 2.439530f, 95.290939f, -14.319680f, 84.488243f, -194.937485f, 5f); // Courtyard Pool Base 1

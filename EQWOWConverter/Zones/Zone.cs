@@ -69,7 +69,7 @@ namespace EQWOWConverter.Zones
             else
                 DescriptiveNameOnlyLetters = shortName;
             DefaultArea = zoneProperties.DefaultZoneArea;
-            SubAreas = zoneProperties.ZoneAreas;
+            SubAreas = zoneProperties.SubZoneAreas;
         }
 
         public void LoadFromEQZone(string inputZoneFolderName, string inputZoneFolderFullPath, List<GameObject> nonInteractiveGameObjects)
@@ -629,7 +629,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Build collision areas based on zone areas
-            foreach (ZoneArea subArea in ZoneProperties.ZoneAreas)
+            foreach (ZoneArea subArea in ZoneProperties.SubZoneAreas)
             {
                 // Generate collision areas for each liquid group in the area
                 foreach (ZoneLiquidGroup liquidGroup in subArea.LiquidGroups)
