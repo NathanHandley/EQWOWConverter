@@ -322,7 +322,8 @@ namespace EQWOWConverter.Zones
 
         protected void SetZonewideMusic(string musicFileNameNoExtDay, string musicFileNameNoExtNight, bool loop = true, float musicVolume = 1f)
         {
-            DefaultZoneArea.SetMusic(musicFileNameNoExtDay, musicFileNameNoExtNight, loop, musicVolume);
+            // TODO: Delete
+            //DefaultZoneArea.SetMusic(musicFileNameNoExtDay, musicFileNameNoExtNight, loop, musicVolume);
         }
 
         protected void SetZonewideAmbienceSound(string ambienceFileNameNoExtDay, string ambienceFileNameNoExtNight)
@@ -839,6 +840,8 @@ namespace EQWOWConverter.Zones
                 if (Configuration.ZONE_ALLOW_SUN_HIDING_WITH_SHADOWBOX_ENABLED == true && Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
                     zoneProperties.HasShadowBox = propertiesRow["DisableSunlight"].Trim() == "1" ? true : false;
                 zoneProperties.DefaultZoneArea.SetAmbientSound(propertiesRow["AmbienceSoundDay"].Trim(), propertiesRow["AmbienceSoundNight"].Trim());
+                zoneProperties.DefaultZoneArea.SetMusic(propertiesRow["Music"].Trim(), propertiesRow["Music"].Trim(), true, Convert.ToSingle(propertiesRow["MusicVolume"]));
+
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
             else
@@ -1011,8 +1014,8 @@ namespace EQWOWConverter.Zones
             foreach (Dictionary<string, string> propertiesRow in zonePropertiesRows)
             {
                 ZoneProperties curZoneProperties = ZonePropertyListByShortName[propertiesRow["ShortName"]];
-                //propertiesRow["AmbienceSoundDay"] = curZoneProperties.DefaultZoneArea.AmbientSoundFileNameNoExtDay;
-                //propertiesRow["AmbienceSoundNight"] = curZoneProperties.DefaultZoneArea.AmbientSoundFileNameNoExtNight;
+                //propertiesRow["Music"] = curZoneProperties.DefaultZoneArea.MusicFileNameNoExtDay;
+                //propertiesRow["MusicVolume"] = curZoneProperties.DefaultZoneArea.MusicVolume.ToString();
                 //propertiesRow["HasShadowBox"] = curZoneProperties.HasShadowBox == true ? "1" : "0";
                 //StringBuilder enabled2DSoundInstancesSB = new StringBuilder();
                 //int numOfStrings = 0;
@@ -1024,12 +1027,12 @@ namespace EQWOWConverter.Zones
                 //        enabled2DSoundInstancesSB.Append(",");
                 //}
                 //propertiesRow["Enabled2DSoundInstances"] = enabled2DSoundInstancesSB.ToString();
-                string soundDay = curZoneProperties.DefaultZoneArea.AmbientSoundFileNameNoExtDay;
-                string soundNight = curZoneProperties.DefaultZoneArea.AmbientSoundFileNameNoExtNight;
+                string music = curZoneProperties.DefaultZoneArea.MusicFileNameNoExtDay;
+                float musicVolume = curZoneProperties.DefaultZoneArea.MusicVolume;
                 int y = 5;
             }
             //FileTool.WriteAllRowsToFileWithHeader(zonePropertiesFile, "|", zonePropertiesRows);
-            int x = 5;
+            //int x = 5;
             // END TEMP
         }
     }
