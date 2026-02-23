@@ -278,12 +278,6 @@ namespace EQWOWConverter
         // Sets the modifier to add to the attenuation to define the start, calculated by multiplying this value to it
         public static readonly float LIGHT_INSTANCE_ATTENUATION_START_PROPORTION = 0.25f;
 
-        // How much of the EQ original vertex color to apply to surfaces
-        public static readonly double LIGHT_DEFAULT_VERTEX_COLOR_INTENSITY = 0.2;
-
-        // Default ambience to apply to indoor areas (sets to r g and b). To have colors pop more like in EQ, set it lower like 96 or so.
-        public static readonly byte LIGHT_DEFAULT_INDOOR_AMBIENCE = 165;
-
         // Amonut of glow to add to outdoor areas (ranges are 0-1)
         public static readonly float LIGHT_OUTSIDE_GLOW_CLEAR_WEATHER = 0.4f;
         public static readonly float LIGHT_OUTSIDE_GLOW_STORMY_WEATHER = 0.2f;

@@ -55,10 +55,7 @@ namespace EQWOWConverter.Zones.Properties
 
         protected void SetZonewideEnvironmentAsPlaneOfFear()
         {
-            if (CustomZonewideEnvironmentProperties != null)
-                Logger.WriteInfo("Warning: Environment set as Plane of Fear, but the zonewide environment settings were already set");
-            CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
-            CustomZonewideEnvironmentProperties.SetAsOutdoors(167, 33, 7, ZoneFogType.Medium, false, 0.75f, 1f, ZoneSkySpecialType.FearPlane);
+            SetZonewideEnvironmentAsOutdoorsNoSky(167, 33, 7, ZoneFogType.Medium, 1f, 0.75f);
         }
     }
 }

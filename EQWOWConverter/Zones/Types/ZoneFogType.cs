@@ -18,8 +18,8 @@ namespace EQWOWConverter.Zones
 {
     internal enum ZoneFogType
     {
-        Heavy,
+        Light,
         Medium,
-        Clear,
+        Heavy,
     }
 }

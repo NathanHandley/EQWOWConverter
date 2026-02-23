@@ -999,9 +999,6 @@ namespace EQWOWConverter
             if (Directory.Exists(exportMusicFolder) == false)
                 Directory.CreateDirectory(exportMusicFolder);
 
-            // Load shared environment settings
-            ZoneProperties.CommonOutdoorEnvironmentProperties.SetAsOutdoors(77, 120, 143, ZoneFogType.Clear, true, 0.5f, 1.0f, ZoneSkySpecialType.None);
-
             // Get the list of zones to process
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(inputZoneFolder);
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();

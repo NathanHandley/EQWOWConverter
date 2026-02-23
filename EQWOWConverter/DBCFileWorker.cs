@@ -202,20 +202,6 @@ namespace EQWOWConverter
             ZoneMusicDBC zoneMusicDBC = new ZoneMusicDBC();
             zoneMusicDBC.LoadFromDisk(dbcInputFolder, "ZoneMusic.dbc");
 
-            // Save common light parameters
-            lightFloatBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeather);
-            lightFloatBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeatherUnderwater);
-            lightFloatBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeather);
-            lightFloatBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeatherUnderwater);
-            lightIntBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeather);
-            lightIntBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeatherUnderwater);
-            lightIntBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeather);
-            lightIntBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeatherUnderwater);
-            lightParamsDBC.AddRow(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeather);
-            lightParamsDBC.AddRow(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeatherUnderwater);
-            lightParamsDBC.AddRow(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeather);
-            lightParamsDBC.AddRow(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeatherUnderwater);
-
             // Liquid is common
             liquidTypeDBC.AddRows();
 
@@ -280,31 +266,24 @@ namespace EQWOWConverter
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
 
                 // Light Tables
-                if (zoneProperties.CustomZonewideEnvironmentProperties != null)
-                {
-                    ZoneEnvironmentSettings curZoneEnvironmentSettings = zoneProperties.CustomZonewideEnvironmentProperties;
+                ZoneEnvironmentSettings curZoneEnvironmentSettings = zoneProperties.ZonewideEnvironmentProperties;
 
-                    lightDBC.AddRow(zoneProperties.DBCMapID, curZoneEnvironmentSettings);
+                lightDBC.AddRow(zoneProperties.DBCMapID, curZoneEnvironmentSettings);
 
-                    lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeather);
-                    lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
-                    lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeather);
-                    lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
+                lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeather);
+                lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
+                lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeather);
+                lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
 
-                    lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeather);
-                    lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
-                    lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeather);
-                    lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
+                lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeather);
+                lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
+                lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeather);
+                lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
 
-                    lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersClearWeather);
-                    lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
-                    lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersStormyWeather);
-                    lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
-                }
-                else
-                {
-                    lightDBC.AddRow(zoneProperties.DBCMapID, ZoneProperties.CommonOutdoorEnvironmentProperties);
-                }
+                lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersClearWeather);
+                lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
+                lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersStormyWeather);
+                lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
 
                 // Map
                 mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.LoadingScreenID);

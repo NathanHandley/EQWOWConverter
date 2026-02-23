@@ -23,7 +23,6 @@ namespace EQWOWConverter.Zones
     internal class ZoneProperties
     {
         private static Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
-        public static ZoneEnvironmentSettings CommonOutdoorEnvironmentProperties = new ZoneEnvironmentSettings();
 
         public int DBCMapID;
         public int DBCMapDifficultyID;
@@ -39,8 +38,8 @@ namespace EQWOWConverter.Zones
         public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();
         public List<ZoneLiquidGroup> LiquidGroups = new List<ZoneLiquidGroup>();
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
-        public ZoneEnvironmentSettings? CustomZonewideEnvironmentProperties = null;
-        public double VertexColorIntensityOverride = -1;
+        public ZoneEnvironmentSettings ZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
+        public double VertexColorIntensity = 0.2f;
         public ZoneArea DefaultZoneArea = new ZoneArea(string.Empty, string.Empty);
         public List<ZoneArea> ZoneAreas = new List<ZoneArea>();
         public HashSet<string> Enabled2DSoundInstancesByDaySoundName = new HashSet<string>();
@@ -67,6 +66,19 @@ namespace EQWOWConverter.Zones
         public bool AlwaysZoomOutMapToNorrathMap = false;
         public bool DisableObjectsInMapGenMode = false;
 
+        // TODO: Delete
+        //public bool TempIsOutdoors = true;
+        //public bool TempIsSkyVisible = true;
+        //public ZoneFogType TempFogType = ZoneFogType.Light;
+        //public float TempFogRed = 77;
+        //public float TempFogGreen = 120;
+        //public float TempFogBlue = 143;
+        //public float TempInsideAmbientRed = 0;
+        //public float TempInsideAmbientGreen = 0;
+        //public float TempInsideAmbientBlue = 0;
+        //public float TempAmbientBrightnessMod = 1f;
+        //public float TempCloudDensity = 0.5f;
+
         private static readonly object ListReadLock = new object();
         private static readonly object DBCWMOIDLock = new object();
 
@@ -76,6 +88,7 @@ namespace EQWOWConverter.Zones
         public ZoneProperties()
         {
             DBCWMOID = GenerateDBCWMOID();
+            //SetZonewideEnvironmentAsOutdoorsWithSky(77, 120, 143, ZoneFogType.Light, 0.5f, 1.0f);
         }
 
         public static UInt32 GenerateDBCWMOID()
@@ -107,47 +120,88 @@ namespace EQWOWConverter.Zones
 
         protected void SetZonewideEnvironmentAsIndoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType)
         {
-            if (CustomZonewideEnvironmentProperties != null)
-                Logger.WriteInfo("Warning: Environment set as indoor foggy, but the zonewide environment settings were already set. There could be issues.");
-            CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
-            CustomZonewideEnvironmentProperties.SetAsIndoors(fogRed, fogGreen, fogBlue, fogType,
-                Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE,
-                Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE,
-                Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE);
+            //ZonewideEnvironmentProperties.SetAsIndoors(fogRed, fogGreen, fogBlue, fogType,
+            //    Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE,
+            //    Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE,
+            //    Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE);
+            //TempIsOutdoors = false;
+            //TempIsSkyVisible = false;
+            //TempFogType = fogType;
+            //TempFogRed = fogRed;
+            //TempFogGreen = fogGreen;
+            //TempFogBlue = fogBlue;
+            //TempInsideAmbientRed = Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE;
+            //TempInsideAmbientGreen = Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE;
+            //TempInsideAmbientBlue = Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE;
+            //TempAmbientBrightnessMod = 1f;
+            //TempCloudDensity = 1f;
         }
 
         protected void SetZonewideEnvironmentAsIndoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, byte ambientRed, byte ambientGreen, byte ambientBlue)
         {
-            if (CustomZonewideEnvironmentProperties != null)
-                Logger.WriteInfo("Warning: Environment set as indoor foggy, but the zonewide environment settings were already set. There could be issues.");
-            CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
-            CustomZonewideEnvironmentProperties.SetAsIndoors(fogRed, fogGreen, fogBlue, fogType, ambientRed, ambientGreen, ambientBlue);
+            //ZonewideEnvironmentProperties.SetAsIndoors(fogRed, fogGreen, fogBlue, fogType, ambientRed, ambientGreen, ambientBlue);
+            //TempIsOutdoors = false;
+            //TempIsSkyVisible = false;
+            //TempFogType = fogType;
+            //TempFogRed = fogRed;
+            //TempFogGreen = fogGreen;
+            //TempFogBlue = fogBlue;
+            //TempInsideAmbientRed = ambientRed;
+            //TempInsideAmbientGreen = ambientGreen;
+            //TempInsideAmbientBlue = ambientBlue;
+            //TempAmbientBrightnessMod = 1f;
+            //TempCloudDensity = 1f;
         }
 
         protected void SetZonewideEnvironmentAsOutdoorsWithSky(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, float cloudDensity,
             float ambientBrightnessMod)
         {
-            if (CustomZonewideEnvironmentProperties != null)
-                Logger.WriteInfo("Warning: Environment set as outdoor with sky, but the zonewide environment settings were already set.");
-            CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
-            CustomZonewideEnvironmentProperties.SetAsOutdoors(fogRed, fogGreen, fogBlue, fogType, true, cloudDensity, ambientBrightnessMod, ZoneSkySpecialType.None);
+            //ZonewideEnvironmentProperties.SetAsOutdoors(fogRed, fogGreen, fogBlue, fogType, cloudDensity, true);
+            //TempIsOutdoors = true;
+            //TempIsSkyVisible = true;
+            //TempFogType = fogType;
+            //TempFogRed = fogRed;
+            //TempFogGreen = fogGreen;
+            //TempFogBlue = fogBlue;
+            //TempInsideAmbientRed = Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE;
+            //TempInsideAmbientGreen = Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE;
+            //TempInsideAmbientBlue = Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE;
+            //TempAmbientBrightnessMod = ambientBrightnessMod;
+            //TempCloudDensity = cloudDensity;
         }
 
         protected void SetZonewideEnvironmentAsIndoorWithSky(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, float cloudDensity)
         {
-            if (CustomZonewideEnvironmentProperties != null)
-                Logger.WriteInfo("Warning: Environment set as indoor with sky, but the zonewide environment settings were already set.");
-            CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
-            CustomZonewideEnvironmentProperties.SetAsIndoorsWithSky(fogRed, fogGreen, fogBlue, fogType, Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE,
-                Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE, Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE, cloudDensity);
+            //ZonewideEnvironmentProperties.SetAsIndoorsWithSky(fogRed, fogGreen, fogBlue, fogType, Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE,
+            //    Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE, Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE, cloudDensity);
+            //TempIsOutdoors = false;
+            //TempIsSkyVisible = true;
+            //TempFogType = fogType;
+            //TempFogRed = fogRed;
+            //TempFogGreen = fogGreen;
+            //TempFogBlue = fogBlue;
+            //TempInsideAmbientRed = Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE;
+            //TempInsideAmbientGreen = Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE;
+            //TempInsideAmbientBlue = Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE;
+            //TempAmbientBrightnessMod = 1f;
+            ////TempCloudDensity = cloudDensity;
         }
 
-        protected void SetZonewideEnvironmentAsOutdoorsNoSky(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, float ambientBrightnessMod)
+        protected void SetZonewideEnvironmentAsOutdoorsNoSky(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, float ambientBrightnessMod,
+            float cloudDensity = 1f)
         {
-            if (CustomZonewideEnvironmentProperties != null)
-                Logger.WriteInfo("Warning: Environment set as outdoor no sky, but the zonewide environment settings were already set");
-            CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
-            CustomZonewideEnvironmentProperties.SetAsOutdoors(fogRed, fogGreen, fogBlue, fogType, false, 1f, ambientBrightnessMod, ZoneSkySpecialType.None);
+            //ZonewideEnvironmentProperties.SetAsOutdoors(fogRed, fogGreen, fogBlue, fogType, cloudDensity, false);
+            //TempIsOutdoors = true;
+            //TempIsSkyVisible = false;
+            //TempFogType = fogType;
+            //TempFogRed = fogRed;
+            //TempFogGreen = fogGreen;
+            //TempFogBlue = fogBlue;
+            //TempInsideAmbientRed = Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE;
+            //TempInsideAmbientGreen = Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE;
+            //TempInsideAmbientBlue = Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE;
+            //TempAmbientBrightnessMod = ambientBrightnessMod;
+            //TempCloudDensity = cloudDensity;
         }
 
         protected void OverrideVertexColorIntensity(double overrideIntensityAmount)
@@ -827,6 +881,8 @@ namespace EQWOWConverter.Zones
                 zoneProperties.SnowChanceSummer = int.Parse(propertiesRow["snow_chance_summer"]);
                 zoneProperties.SnowChanceFall = int.Parse(propertiesRow["snow_chance_fall"]);
                 zoneProperties.CollisionMaxZ = float.Parse(propertiesRow["CollisionGeometryMaxZ"]);
+
+                // World map
                 zoneProperties.DisplayMapMainLeft = float.Parse(propertiesRow["DisplayMapMainLeft"]);
                 zoneProperties.DisplayMapMainRight = float.Parse(propertiesRow["DisplayMapMainRight"]);
                 zoneProperties.DisplayMapMainTop = float.Parse(propertiesRow["DisplayMapMainTop"]);
@@ -834,13 +890,46 @@ namespace EQWOWConverter.Zones
                 zoneProperties.SuggestedMinLevel = int.Parse(propertiesRow["SugLevelMin"]);
                 zoneProperties.SuggestedMaxLevel = int.Parse(propertiesRow["SugLevelMax"]);
                 zoneProperties.AlwaysZoomOutMapToNorrathMap = propertiesRow["AlwaysZoomOutToNorrathMap"].Trim() == "1" ? true : false;
-                foreach(string enabled2DSoundInstanceName in propertiesRow["Enabled2DSoundInstances"].Split(","))
+
+                // Sound and Music
+                foreach (string enabled2DSoundInstanceName in propertiesRow["Enabled2DSoundInstances"].Split(","))
                     zoneProperties.Enabled2DSoundInstancesByDaySoundName.Add(enabled2DSoundInstanceName.Trim());
-                zoneProperties.VertexColorIntensityOverride = float.Parse(propertiesRow["VertexColorIntensityOverride"]);
-                if (Configuration.ZONE_ALLOW_SUN_HIDING_WITH_SHADOWBOX_ENABLED == true && Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
-                    zoneProperties.HasShadowBox = propertiesRow["DisableSunlight"].Trim() == "1" ? true : false;
                 zoneProperties.DefaultZoneArea.SetAmbientSound(propertiesRow["AmbienceSoundDay"].Trim(), propertiesRow["AmbienceSoundNight"].Trim());
                 zoneProperties.DefaultZoneArea.SetMusic(propertiesRow["Music"].Trim(), propertiesRow["Music"].Trim(), true, Convert.ToSingle(propertiesRow["MusicVolume"]));
+
+                // Environment
+                zoneProperties.VertexColorIntensity = float.Parse(propertiesRow["VertexColorIntensity"]);
+                if (Configuration.ZONE_ALLOW_SUN_HIDING_WITH_SHADOWBOX_ENABLED == true && Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
+                    zoneProperties.HasShadowBox = propertiesRow["DisableSunlight"].Trim() == "1" ? true : false;
+                bool isOutdoors = propertiesRow["IsOutdoors"].Trim() == "1" ? true : false;
+                bool isSkyVisible = propertiesRow["IsSkyVisible"].Trim() == "1" ? true : false;
+                byte fogRed = byte.Parse(propertiesRow["FogRed"]);
+                byte fogGreen = byte.Parse(propertiesRow["FogGreen"]);
+                byte fogBlue = byte.Parse(propertiesRow["FogBlue"]);
+                byte insideAmbientRed = byte.Parse(propertiesRow["InsideAmbientRed"]);
+                byte insideAmbientGreen = byte.Parse(propertiesRow["InsideAmbientGreen"]);
+                byte insideAmbientBlue = byte.Parse(propertiesRow["InsideAmbientBlue"]);
+                float cloudDensity = float.Parse(propertiesRow["CloudDensity"]);
+                ZoneFogType fogType = ZoneFogType.Light;
+                switch (propertiesRow["FogType"].Trim().ToLower())
+                {
+                    case "light": fogType = ZoneFogType.Light; break;
+                    case "medium": fogType = ZoneFogType.Medium; break;
+                    case "heavy": fogType = ZoneFogType.Heavy; break;
+                    default:
+                        {
+                            Logger.WriteError("ZoneProperties::AddZonePropertiesByShortName invalid fog type of '", propertiesRow["FogType"], "' for zone '", shortName, "' ");
+                        } break;
+                }
+                if (isOutdoors == true)
+                    zoneProperties.ZonewideEnvironmentProperties.SetAsOutdoors(fogRed, fogGreen, fogBlue, fogType, cloudDensity, isSkyVisible);
+                else
+                {
+                    if (isSkyVisible == true)
+                        zoneProperties.ZonewideEnvironmentProperties.SetAsIndoorsWithSky(fogRed, fogGreen, fogBlue, fogType, insideAmbientRed, insideAmbientGreen, insideAmbientBlue, cloudDensity);
+                    else
+                        zoneProperties.ZonewideEnvironmentProperties.SetAsIndoors(fogRed, fogGreen, fogBlue, fogType, insideAmbientRed, insideAmbientGreen, insideAmbientBlue);
+                }
 
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
@@ -1014,6 +1103,18 @@ namespace EQWOWConverter.Zones
             foreach (Dictionary<string, string> propertiesRow in zonePropertiesRows)
             {
                 ZoneProperties curZoneProperties = ZonePropertyListByShortName[propertiesRow["ShortName"]];
+
+                //propertiesRow["IsOutdoors"] = curZoneProperties.TempIsOutdoors == true ? "1" : "0";
+                //propertiesRow["IsSkyVisible"] = curZoneProperties.TempIsSkyVisible == true ? "1" : "0";
+                //propertiesRow["FogType"] = curZoneProperties.TempFogType.ToString().ToLower();
+                //propertiesRow["FogRed"] = curZoneProperties.TempFogRed.ToString();
+                //propertiesRow["FogGreen"] = curZoneProperties.TempFogGreen.ToString();
+                //propertiesRow["FogBlue"] = curZoneProperties.TempFogBlue.ToString();
+                //propertiesRow["InsideAmbientRed"] = curZoneProperties.TempInsideAmbientRed.ToString();
+                //propertiesRow["InsideAmbientGreen"] = curZoneProperties.TempInsideAmbientGreen.ToString();
+                //propertiesRow["InsideAmbientBlue"] = curZoneProperties.TempInsideAmbientBlue.ToString();
+                //propertiesRow["CloudDensity"] = curZoneProperties.TempCloudDensity.ToString();
+
                 //propertiesRow["Music"] = curZoneProperties.DefaultZoneArea.MusicFileNameNoExtDay;
                 //propertiesRow["MusicVolume"] = curZoneProperties.DefaultZoneArea.MusicVolume.ToString();
                 //propertiesRow["HasShadowBox"] = curZoneProperties.HasShadowBox == true ? "1" : "0";
@@ -1027,8 +1128,8 @@ namespace EQWOWConverter.Zones
                 //        enabled2DSoundInstancesSB.Append(",");
                 //}
                 //propertiesRow["Enabled2DSoundInstances"] = enabled2DSoundInstancesSB.ToString();
-                string music = curZoneProperties.DefaultZoneArea.MusicFileNameNoExtDay;
-                float musicVolume = curZoneProperties.DefaultZoneArea.MusicVolume;
+                //string music = curZoneProperties.DefaultZoneArea.MusicFileNameNoExtDay;
+                //float musicVolume = curZoneProperties.DefaultZoneArea.MusicVolume;
                 int y = 5;
             }
             //FileTool.WriteAllRowsToFileWithHeader(zonePropertiesFile, "|", zonePropertiesRows);
