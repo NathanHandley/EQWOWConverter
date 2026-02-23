@@ -151,7 +151,8 @@ namespace EQWOWConverter.Zones
 
         protected void OverrideVertexColorIntensity(double overrideIntensityAmount)
         {
-            VertexColorIntensityOverride = overrideIntensityAmount;
+            // TODO: Delete
+            //VertexColorIntensityOverride = overrideIntensityAmount;
         }
 
         // These areas must be made in descending priority order, as every area will isolate its own geometry
@@ -832,6 +833,7 @@ namespace EQWOWConverter.Zones
                 zoneProperties.AlwaysZoomOutMapToNorrathMap = int.Parse(propertiesRow["AlwaysZoomOutToNorrathMap"]) == 1 ? true : false;
                 foreach(string enabled2DSoundInstanceName in propertiesRow["Enabled2DSoundInstances"].Split(","))
                     zoneProperties.Enabled2DSoundInstancesByDaySoundName.Add(enabled2DSoundInstanceName.Trim());
+                zoneProperties.VertexColorIntensityOverride = float.Parse(propertiesRow["VertexColorIntensityOverride"]);
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
             else
@@ -1004,20 +1006,21 @@ namespace EQWOWConverter.Zones
             foreach (Dictionary<string, string> propertiesRow in zonePropertiesRows)
             {
                 ZoneProperties curZoneProperties = ZonePropertyListByShortName[propertiesRow["ShortName"]];
-
-                StringBuilder enabled2DSoundInstancesSB = new StringBuilder();
-                int numOfStrings = 0;
-                foreach (string enabled2DSoundInstanceName in curZoneProperties.Enabled2DSoundInstancesByDaySoundName)
-                {
-                    enabled2DSoundInstancesSB.Append(enabled2DSoundInstanceName);
-                    numOfStrings++;
-                    if (numOfStrings < curZoneProperties.Enabled2DSoundInstancesByDaySoundName.Count)
-                        enabled2DSoundInstancesSB.Append(",");
-                }
-                propertiesRow["Enabled2DSoundInstances"] = enabled2DSoundInstancesSB.ToString();
+                //propertiesRow["VertexColorIntensityOverride"] = curZoneProperties.VertexColorIntensityOverride.ToString();
+                //StringBuilder enabled2DSoundInstancesSB = new StringBuilder();
+                //int numOfStrings = 0;
+                //foreach (string enabled2DSoundInstanceName in curZoneProperties.Enabled2DSoundInstancesByDaySoundName)
+                //{
+                //    enabled2DSoundInstancesSB.Append(enabled2DSoundInstanceName);
+                //    numOfStrings++;
+                //    if (numOfStrings < curZoneProperties.Enabled2DSoundInstancesByDaySoundName.Count)
+                //        enabled2DSoundInstancesSB.Append(",");
+                //}
+                //propertiesRow["Enabled2DSoundInstances"] = enabled2DSoundInstancesSB.ToString();
+                int y = 5;
             }
             //FileTool.WriteAllRowsToFileWithHeader(zonePropertiesFile, "|", zonePropertiesRows);
-            //int x = 5;
+            int x = 5;
             // END TEMP
         }
     }
