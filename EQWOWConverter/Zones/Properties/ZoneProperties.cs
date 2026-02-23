@@ -327,7 +327,8 @@ namespace EQWOWConverter.Zones
 
         protected void SetZonewideAmbienceSound(string ambienceFileNameNoExtDay, string ambienceFileNameNoExtNight)
         {
-            DefaultZoneArea.SetAmbientSound(ambienceFileNameNoExtDay, ambienceFileNameNoExtNight);
+            // TODO: Delete
+            //DefaultZoneArea.SetAmbientSound(ambienceFileNameNoExtDay, ambienceFileNameNoExtNight);
         }
 
         protected void AddAlwaysBrightMaterial(string materialName)
@@ -837,6 +838,7 @@ namespace EQWOWConverter.Zones
                 zoneProperties.VertexColorIntensityOverride = float.Parse(propertiesRow["VertexColorIntensityOverride"]);
                 if (Configuration.ZONE_ALLOW_SUN_HIDING_WITH_SHADOWBOX_ENABLED == true && Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
                     zoneProperties.HasShadowBox = propertiesRow["DisableSunlight"].Trim() == "1" ? true : false;
+                zoneProperties.DefaultZoneArea.SetAmbientSound(propertiesRow["AmbienceSoundDay"].Trim(), propertiesRow["AmbienceSoundNight"].Trim());
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
             else
@@ -1009,6 +1011,8 @@ namespace EQWOWConverter.Zones
             foreach (Dictionary<string, string> propertiesRow in zonePropertiesRows)
             {
                 ZoneProperties curZoneProperties = ZonePropertyListByShortName[propertiesRow["ShortName"]];
+                //propertiesRow["AmbienceSoundDay"] = curZoneProperties.DefaultZoneArea.AmbientSoundFileNameNoExtDay;
+                //propertiesRow["AmbienceSoundNight"] = curZoneProperties.DefaultZoneArea.AmbientSoundFileNameNoExtNight;
                 //propertiesRow["HasShadowBox"] = curZoneProperties.HasShadowBox == true ? "1" : "0";
                 //StringBuilder enabled2DSoundInstancesSB = new StringBuilder();
                 //int numOfStrings = 0;
@@ -1020,7 +1024,8 @@ namespace EQWOWConverter.Zones
                 //        enabled2DSoundInstancesSB.Append(",");
                 //}
                 //propertiesRow["Enabled2DSoundInstances"] = enabled2DSoundInstancesSB.ToString();
-                bool hasShadowbox = curZoneProperties.HasShadowBox;
+                string soundDay = curZoneProperties.DefaultZoneArea.AmbientSoundFileNameNoExtDay;
+                string soundNight = curZoneProperties.DefaultZoneArea.AmbientSoundFileNameNoExtNight;
                 int y = 5;
             }
             //FileTool.WriteAllRowsToFileWithHeader(zonePropertiesFile, "|", zonePropertiesRows);
