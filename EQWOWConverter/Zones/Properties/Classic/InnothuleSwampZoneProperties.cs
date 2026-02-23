@@ -20,7 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public InnothuleSwampZoneProperties() : base()
         {            
-            // TODO: Add more zone areas (may not be needed)
             AddZoneArea("Guk");
             AddZoneAreaBox("Guk", 305.515717f, -560.334473f, 68.895988f, 51.747478f, -913.086060f, -65.152344f);
 

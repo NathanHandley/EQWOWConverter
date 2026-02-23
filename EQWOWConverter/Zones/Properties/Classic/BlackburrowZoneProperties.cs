@@ -20,10 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public BlackburrowZoneProperties() : base()
         {
-            // TODO: Consider making more zone areas
-            // TODO: Bug: See-through ceiling in water at 78.642151f, -130.569107f, -166.715637f
-            // TODO: Indoor Lighting / Make darker
-
             AddZoneArea("Dark Path", "blackburrow-01", "blackburrow-00");
             AddZoneAreaBox("Dark Path", -69.372070f, -207.378036f, 48.338322f, -271.918854f, -267.815552f, -4.489510f);
             AddZoneAreaBox("Dark Path", -194.507523f, -13.117310f, 26.550440f, -275.522034f, -214.835419f, -25.327290f);
@@ -53,8 +49,7 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 234.584244f, -90.963503f, 170.944214f, -124.503326f, -158.947485f, 150f); // Bottom Water, east (north)
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 170.954214f, -90.963503f, 93.964104f, -160.562027f, -158.947485f, 150f); // Bottom Water, east (south)
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 282.843597f, -79.548123f, 267.529062f, -90.973503f, -158.947485f, 150f); // Bottom Water, waterfall
-            AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType.Water, "t50_agua1", 259.918518f, -90.954803f, 248.863174f, -77.377518f, 237.386520f, -90.410217f, 240.733398f, -108.128197f,
-                -158.947485f, 150f); // Bottom Water, waterfall diagonal
+            AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType.Water, "t50_agua1", 259.918518f, -90.954803f, 248.863174f, -77.377518f, 237.386520f, -90.410217f, 240.733398f, -108.128197f, -158.947485f, 150f); // Bottom Water, waterfall diagonal
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 324.693939f, -41.142281f, 238.570114f, -153.171570f, -169.944504f, 150f); // Very bottom of the waterfall
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 93.974104f, -120.654640f, -97.214737f, -158.702621f, -158.947485f, 150f); // Bottom water, east strip
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", -6.093100f, -96.252602f, -127.042976f, -120.664640f, -158.947485f, 150f); // Bottom water, southeast

@@ -20,16 +20,14 @@ namespace EQWOWConverter.Zones.Properties
     {
         public TrakanonsTeethZoneProperties() : base()
         {
-            AddZoneLineBox("emeraldjungle", -3416.802979f, 1518.184814f, -344.468475f, ZoneLineOrientationType.North,
-                4095.828369f, 1638.688843f, -287.712830f, 3995.097900f, 1376.905640f, -361.280029f);
-            AddZoneLineBox("swampofnohope", 1726.424438f, -4536.817871f, 83.899193f, ZoneLineOrientationType.South,
-                1500.656372f, 4591.247070f, -78.103142f, 1311.524170f, 4358.406738f, -300.810669f);
+            AddZoneLineBox("emeraldjungle", -3416.802979f, 1518.184814f, -344.468475f, ZoneLineOrientationType.North, 4095.828369f, 1638.688843f, -287.712830f, 3995.097900f, 1376.905640f, -361.280029f);
+            AddZoneLineBox("swampofnohope", 1726.424438f, -4536.817871f, 83.899193f, ZoneLineOrientationType.South, 1500.656372f, 4591.247070f, -78.103142f, 1311.524170f, 4358.406738f, -300.810669f);
 
-            // Big lake in the open air
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1b", 2027.573242f, 2519.995117f, -308.817078f, 766.641052f, -450.531128f, 500f);
+            
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1b", 2027.573242f, 2519.995117f, -308.817078f, 766.641052f, -450.531128f, 500f); // Big lake in the open air
 
-            // River and cave lake
-            AddLiquidPlane(ZoneLiquidType.Water, "t75_spwt01b", 1849.669067f, 2148.218994f, 1808.432617f, 2142.884521f, -445.021027f, -450.463287f, ZoneLiquidSlantType.WestHighEastLow, 250f);
+            
+            AddLiquidPlane(ZoneLiquidType.Water, "t75_spwt01b", 1849.669067f, 2148.218994f, 1808.432617f, 2142.884521f, -445.021027f, -450.463287f, ZoneLiquidSlantType.WestHighEastLow, 250f); // River and cave lake
             AddLiquidPlane(ZoneLiquidType.Water, "t75_spwt01b", 1848.512329f, 2195.042480f, 1810.330200f, 2148.184326f, -421.902649f, -445.024475f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "t75_spwt01b", 1867.952271f, 2201.937012f, 1816.423096f, 2195.008057f, -420.754028f, -421.906067f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "t75_spwt01b", 1864.834595f, 2208.954102f, 1818.095093f, 2201.902588f, -414.203766f, -420.757507f, ZoneLiquidSlantType.WestHighEastLow, 250f);

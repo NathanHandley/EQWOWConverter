@@ -20,7 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public LairOfTheSplitpawZoneProperties() : base()
         {
-            // TODO: Add more zone areas
             AddZoneArea("Entry", "paw-01", "paw-01");
             AddZoneAreaBox("Entry", 304.315002f, 164.917114f, 76.783112f, -248.294434f, -242.120102f, -14.874890f);
 

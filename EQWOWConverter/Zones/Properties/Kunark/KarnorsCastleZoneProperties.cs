@@ -20,10 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public KarnorsCastleZoneProperties() : base()
         {
-            AddZoneLineBox("dreadlands", 698.158325f, -1907.232056f, 23.062679f, ZoneLineOrientationType.West,
-                175.202133f, 493.402069f, 26.870760f, 79.528343f, 404.663788f, -6.118140f); // North entry
-            AddZoneLineBox("dreadlands", 500.771332f, -1914.368774f, 23.062679f, ZoneLineOrientationType.West,
-                -33.678230f, 505.477692f, 67.481300f, -160.809219f, 403.366791f, -9.480820f); // South entry
+            AddZoneLineBox("dreadlands", 698.158325f, -1907.232056f, 23.062679f, ZoneLineOrientationType.West, 175.202133f, 493.402069f, 26.870760f, 79.528343f, 404.663788f, -6.118140f, "North entry");
+            AddZoneLineBox("dreadlands", 500.771332f, -1914.368774f, 23.062679f, ZoneLineOrientationType.West, -33.678230f, 505.477692f, 67.481300f, -160.809219f, 403.366791f, -9.480820f, "South entry");
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_evilwater1", 295.424438f, 173.621353f, -255.738693f, -245.662964f, -3.999990f, 250f); // West half
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_evilwater1", -155.515335f, -162.706802f, -261.283539f, -450.118439f, -3.999990f, 250f); // South Outer

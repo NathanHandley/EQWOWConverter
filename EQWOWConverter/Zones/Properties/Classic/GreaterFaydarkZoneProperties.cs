@@ -19,8 +19,7 @@ namespace EQWOWConverter.Zones.Properties
     internal class GreaterFaydarkZoneProperties : ZoneProperties
     {
         public GreaterFaydarkZoneProperties() : base()
-        {
-            // TODO: Add more zone areas / child areas          
+        {       
             AddZoneArea("Kelethin", "gfaydark-04", "gfaydark-04", true, "silence", "silence");
             AddZoneAreaBox("Kelethin", 1218.981567f, 858.808472f, 486.386993f, -736.565674f, -711.635437f, -136.266785f);
 

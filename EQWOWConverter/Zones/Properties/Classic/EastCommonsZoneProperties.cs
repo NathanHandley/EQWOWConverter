@@ -20,7 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public EastCommonsZoneProperties() : base()
         {
-            // TODO: Add more zone areas
             AddZoneArea("Commons Tunnel", "", "", false, "silence", "silence");
             AddZoneAreaBox("Commons Tunnel", -1174.802734f, 917.358459f, 66.066406f, -3512.139893f, -1800.614136f, -49.265629f);
 

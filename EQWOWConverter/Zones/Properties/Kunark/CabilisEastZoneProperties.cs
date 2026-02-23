@@ -21,10 +21,8 @@ namespace EQWOWConverter.Zones.Properties
         public CabilisEastZoneProperties() : base()
         {
             // Retest
-            AddZoneLineBox("swampofnohope", 2971.826660f, 3241.556885f, 0.125060f, ZoneLineOrientationType.East,
-                -32.775379f,  -628.916870f, 175.343414f, -196.997025f, -687.232239f, -12.133560f);
-            AddZoneLineBox("swampofnohope", 3115.613770f, 3062.930908f, 0.125170f, ZoneLineOrientationType.South,
-                 -211.574753f, -411.067505f, 241.294952f,  -340.382843f, -496.183960f, -13.999000f);
+            AddZoneLineBox("swampofnohope", 2971.826660f, 3241.556885f, 0.125060f, ZoneLineOrientationType.East, -32.775379f,  -628.916870f, 175.343414f, -196.997025f, -687.232239f, -12.133560f);
+            AddZoneLineBox("swampofnohope", 3115.613770f, 3062.930908f, 0.125170f, ZoneLineOrientationType.South, -211.574753f, -411.067505f, 241.294952f,  -340.382843f, -496.183960f, -13.999000f);
 
             AddZoneLineBox("fieldofbone", -2557.7278f, 3688.0273f, 4.093815f, ZoneLineOrientationType.East, 1377.6309f, -455.81412f, 97.201485f, 1346.7754f, -497.1183f, -0.49989557f);
             AddZoneLineBox("fieldofbone", -2747.7383f, 3530.195f, 4.093984f, ZoneLineOrientationType.North, 1236.0558f, -605.5564f, 128.95297f, 1192.7297f, -635.9432f, -0.4994932f);

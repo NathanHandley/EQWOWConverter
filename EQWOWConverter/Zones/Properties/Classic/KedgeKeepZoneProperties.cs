@@ -20,11 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public KedgeKeepZoneProperties() : base()
         {
-            // TODO: Zone Areas
             AddZoneLineBox("cauldron", -1170.507080f, -1030.383179f, -315.376831f, ZoneLineOrientationType.East, 140.130951f, 14.514380f, 348.342682f, 119.745049f, -10.192420f, 299.375000f);
-
-            // Make one giant liquid surface that covers the whole zone
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "Dummy", 370f, 370f, -430f, -680f, 400f, 1030f);
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "Dummy", 370f, 370f, -430f, -680f, 400f, 1030f); // One giant liquid surface that covers the whole zone
         }
     }
 }

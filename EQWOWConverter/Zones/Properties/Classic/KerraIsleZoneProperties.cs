@@ -20,7 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public KerraIsleZoneProperties() : base()
         {
-            // TODO: Add Zone Areas
             AddZoneLineBox("tox", -510.562134f, 2635.008545f, -38.249962f, ZoneLineOrientationType.East, 430.005493f, -948.882141f, 38.436760f, 399.657959f, -979.802734f, 19.500050f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_agua1", 921.841675f, -298.145691f, -803.680969f, -652.802063f, -0.009930f, 100f); // North and Eastern section
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_agua1", 105.104973f, 487.097412f, -463.912354f, -299.266937f, -0.009930f, 100f); // Main lake, north

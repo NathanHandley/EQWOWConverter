@@ -30,6 +30,7 @@ namespace EQWOWConverter.Zones
         public float BoxWidth;
         public float BoxHeight;
         public float BoxOrientation = 0.0f;
+        public string TempComment = string.Empty;
 
         public ZonePropertiesZoneLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY,
             float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY,

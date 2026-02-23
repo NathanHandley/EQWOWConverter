@@ -20,8 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public GukBottomZoneProperties() : base()
         {
-            // TDOO: Add zone areas
-            // TODO: Bug - Clear ceiling in north tunnel at 1510 -459 -136
             AddZoneLineBox("guktop", 1113.605835f, 617.183350f, -88.333542f, ZoneLineOrientationType.East, 1161.719360f, 662.774170f, -81.499748f, 1143.830933f, 656.943542f, -110f);
             AddZoneLineBox("innothule", 144.032776f, -821.548645f, -11.500000f, ZoneLineOrientationType.West, -123.419243f, 84.161140f, -225.437256f, -140f, 69.775558f, -238.406235f);
             AddZoneLineBox("guktop", 1620.083008f, 181.952133f, -88.660629f, ZoneLineOrientationType.West, 1675.066772f, -37.624660f, -70f, 1648.329590f, -92.907097f, -138.851685f);
@@ -58,12 +56,9 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_wguk1", 896.710388f, 620.336731f, 856.116089f, 603.203186f, -167.937393f, 350f); // West upper waterfall block-in near the waterfall line
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_wguk1", 896.710388f, 603.158020f, 859.755066f, 595.460449f, -167.937393f, 350f); // West upper waterfall block-in near the waterfall line
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_wguk1", 896.710388f, 595.470449f, 864.465759f, 591.912842f, -167.937393f, 350f); // West upper waterfall block-in near the waterfall line
-            AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType.Water, "t50_wguk1", 896.710388f, 587.925903f, 895.350647f, 599.822693f, 873.723572f, 587.733887f,
-                883.672058f, 585.779114f, -167.937393f, 350f); // West upper waterfall, north part
-            AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType.Water, "t50_wguk1", 879.013733f, 589.615356f, 873.382874f, 596.898560f, 863.668030f, 591.743713f,
-                873.733572f, 587.733887f, -167.937393f, 350f); // West upper waterfall, east part
-            AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType.Water, "t50_wguk1", 867.500549f, 593.786804f, 857.799255f, 606.497314f, 853.164795f, 602.243958f, 863.647827f,
-                591.752808f, -167.937393f, 350f); // West upper waterfall, south part
+            AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType.Water, "t50_wguk1", 896.710388f, 587.925903f, 895.350647f, 599.822693f, 873.723572f, 587.733887f, 883.672058f, 585.779114f, -167.937393f, 350f); // West upper waterfall, north part
+            AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType.Water, "t50_wguk1", 879.013733f, 589.615356f, 873.382874f, 596.898560f, 863.668030f, 591.743713f, 873.733572f, 587.733887f, -167.937393f, 350f); // West upper waterfall, east part
+            AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType.Water, "t50_wguk1", 867.500549f, 593.786804f, 857.799255f, 606.497314f, 853.164795f, 602.243958f, 863.647827f, 591.752808f, -167.937393f, 350f); // West upper waterfall, south part
             AddDiscardGeometryBox(1213.268311f, 483.649078f, 123.331970f, 500.296051f, 192.795837f, -118.007584f);
             AddDiscardGeometryBox(676.638184f, 358.906494f, 131.725525f, -249.973938f, -240.713974f, -149.239975f);
             AddDiscardGeometryBox(407.490448f, -277.517090f, -21.701771f, 363.984009f, -342.402832f, -85.482300f);

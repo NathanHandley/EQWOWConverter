@@ -22,17 +22,14 @@ namespace EQWOWConverter.Zones.Properties
         {
             AddZoneLineBox("cabwest", -802.654480f, 767.458740f, -0.000070f, ZoneLineOrientationType.North, 6577.715820f, -6613.837891f, 145.213730f, 6533.130859f, -6645.066895f, 34.593719f);
             AddZoneLineBox("cabwest", -985.943787f, 584.806458f, 0.000380f, ZoneLineOrientationType.East, 6344.193848f, -6799.043945f, 182.103806f, 6315.685547f, -6843.227051f, 34.595600f);
-            AddZoneLineBox("firiona", 1292.149292f, 3306.101807f, 183.356964f, ZoneLineOrientationType.East,
-                1431.185181f, -4380.426758f, 487.776611f, 662.696167f, -4773.780273f, 190.810226f);
-            AddZoneLineBox("frontiermtns", -660.689392f, -4141.462402f, 109.009789f, ZoneLineOrientationType.West,
-                -114.581352f, 3693.796875f, 366.001709f, -891.873901f, 3351.493652f, 4.848970f);
-            AddZoneLineBox("warslikswood", -3657.177002f, 1188.529663f, 50.093948f, ZoneLineOrientationType.West,
-                4400.304688f, 1339.878052f, 205.636200f, 4284.637695f, 1054.167725f, 28.188250f);
+            AddZoneLineBox("firiona", 1292.149292f, 3306.101807f, 183.356964f, ZoneLineOrientationType.East, 1431.185181f, -4380.426758f, 487.776611f, 662.696167f, -4773.780273f, 190.810226f);
+            AddZoneLineBox("frontiermtns", -660.689392f, -4141.462402f, 109.009789f, ZoneLineOrientationType.West, -114.581352f, 3693.796875f, 366.001709f, -891.873901f, 3351.493652f, 4.848970f);
+            AddZoneLineBox("warslikswood", -3657.177002f, 1188.529663f, 50.093948f, ZoneLineOrientationType.West, 4400.304688f, 1339.878052f, 205.636200f, 4284.637695f, 1054.167725f, 28.188250f);
 
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 1502.120117f, 1338.126587f, -2497.938965f, -1861.968262f, 65.187592f, 400f); // Middle lake
 
-            // River Start - Climb north
-            AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1057.156494f, -1526.031250f, 1046.186157f, -1568.453613f, 76.780998f, 65.334740f, ZoneLiquidSlantType.NorthHighSouthLow, 250f);
+            
+            AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1057.156494f, -1526.031250f, 1046.186157f, -1568.453613f, 76.780998f, 65.334740f, ZoneLiquidSlantType.NorthHighSouthLow, 250f); // River Start - Climb north
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1066.649658f, -1521.955566f, 1057.121948f, -1568.549805f, 76.784126f, 76.777550f, ZoneLiquidSlantType.NorthHighSouthLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1076.824097f, -1519.179199f, 1066.615112f, -1569.547485f, 80.597839f, 76.780693f, ZoneLiquidSlantType.NorthHighSouthLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1086.842896f, -1516.144775f, 1076.789673f, -1567.664429f, 83.023109f, 80.594391f, ZoneLiquidSlantType.NorthHighSouthLow, 250f);
@@ -60,8 +57,8 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1423.321777f, -1515.364502f, 1407.456421f, -1557.912354f, 140.687592f, 137.062454f, ZoneLiquidSlantType.NorthHighSouthLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1511.767822f, -1511.982300f, 1423.287231f, -1594.153809f, 140.785187f, 140.684143f, ZoneLiquidSlantType.NorthHighSouthLow, 250f);
 
-            // River - Climb East to the smaller pond
-            AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1516.639526f, -1593.098999f, 1475.529175f, -1606.193726f, 143.579330f, 140.684113f, ZoneLiquidSlantType.EastHighWestLow, 250f);
+            
+            AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1516.639526f, -1593.098999f, 1475.529175f, -1606.193726f, 143.579330f, 140.684113f, ZoneLiquidSlantType.EastHighWestLow, 250f); // River - Climb East to the smaller pond
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1526.462891f, -1606.159180f, 1471.671875f, -1655.633301f, 143.593964f, 143.575882f, ZoneLiquidSlantType.EastHighWestLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1528.309814f, -1655.598755f, 1476.245605f, -1676.088745f, 151.295792f, 143.590515f, ZoneLiquidSlantType.EastHighWestLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1524.292480f, -1676.054443f, 1471.291992f, -1701.217896f, 151.424042f, 151.292343f, ZoneLiquidSlantType.EastHighWestLow, 250f);
@@ -99,12 +96,11 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1726.093750f, -2628.260254f, 1674.633179f, -2697.706787f, 240.000214f, 234.497467f, ZoneLiquidSlantType.EastHighWestLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1727.597168f, -2697.672607f, 1660.036743f, -2787.904297f, 239.995834f, 239.996765f, ZoneLiquidSlantType.EastHighWestLow, 250f);
 
-            // Pond
-            AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 2160.357422f, -2787.869873f, 1569.326050f, -3408.995605f, 239.826523f, 239.992401f, ZoneLiquidSlantType.EastHighWestLow, 250f);
+            
+            AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 2160.357422f, -2787.869873f, 1569.326050f, -3408.995605f, 239.826523f, 239.992401f, ZoneLiquidSlantType.EastHighWestLow, 250f); // Pond
 
-            // River from pond, going east
-            // TODO: Look into this, may have issues with plane angle
-            AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1813.692139f, -3408.960938f, 1695.484009f, -3457.455322f, 239.844315f, 239.823074f, ZoneLiquidSlantType.WestHighEastLow, 250f);
+            
+            AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1813.692139f, -3408.960938f, 1695.484009f, -3457.455322f, 239.844315f, 239.823074f, ZoneLiquidSlantType.WestHighEastLow, 250f); // River from pond, going east
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1755.496460f, -3457.420898f, 1687.469727f, -3473.864014f, 239.843964f, 239.840897f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1733.052856f, -3473.829346f, 1678.287720f, -3494.605713f, 239.964401f, 239.840515f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1733.524048f, -3494.571289f, 1676.670288f, -3507.121582f, 239.718933f, 239.960953f, ZoneLiquidSlantType.WestHighEastLow, 250f);
@@ -123,14 +119,14 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1717.357422f, -3884.368408f, 1672.623413f, -3896.118164f, 211.780746f, 214.521133f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1717.979004f, -3896.083740f, 1645.276123f, -3963.036377f, 211.955261f, 211.777298f, ZoneLiquidSlantType.WestHighEastLow, 250f);
 
-            // Remaining river
-            AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1613.246826f, -3928.399902f, 1266.356323f, -4396.597168f, 211.687607f, 211.684494f, ZoneLiquidSlantType.WestHighEastLow, 250f);
+            
+            AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1613.246826f, -3928.399902f, 1266.356323f, -4396.597168f, 211.687607f, 211.684494f, ZoneLiquidSlantType.WestHighEastLow, 250f); // Remaining river
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1314.427612f, -4396.562988f, 1266.572510f, -4416.723145f, 211.605606f, 211.684158f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1313.520630f, -4416.688965f, 1268.381348f, -4436.162598f, 206.250275f, 211.602142f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1317.944946f, -4436.127930f, 1266.869263f, -4446.029785f, 206.156296f, 206.246841f, ZoneLiquidSlantType.WestHighEastLow, 250f);
 
-            // Added bits of river
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_stwt01", 1647.470215f, -3925.617920f, 1612.418457f, -3997.034180f, 211.687607f, 20f);
+            
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_stwt01", 1647.470215f, -3925.617920f, 1612.418457f, -3997.034180f, 211.687607f, 20f); // Added bits of river
             AddLiquidPlane(ZoneLiquidType.Water, "d_stwt01", 1705.320215f, -3814.825195f, 1670.027100f, -3833.773193f, 214.669403f, 222.305893f, ZoneLiquidSlantType.WestHighEastLow, 250f);
         }
     }

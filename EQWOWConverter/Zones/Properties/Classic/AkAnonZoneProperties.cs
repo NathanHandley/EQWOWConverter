@@ -20,9 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public AkAnonZoneProperties() : base()
         {
-            // TODO: Improve the angle water room water surfaces
-            // TODO: Swimming up the entry waterfall will allow you to exit the map
-            // TODO: Waterwheel in the deepest water room
             AddZoneArea("Entry", "akanon-00", "akanon-00");
             AddZoneAreaBox("Entry", 257.142761f, 118.389160f, 1000, -131.215698f, -96.817497f, -1000f);
             

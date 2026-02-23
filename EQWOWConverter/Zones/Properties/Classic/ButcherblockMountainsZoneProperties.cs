@@ -19,10 +19,7 @@ namespace EQWOWConverter.Zones.Properties
     internal class ButcherblockMountainsZoneProperties : ZoneProperties
     {
         public ButcherblockMountainsZoneProperties() : base()
-        {
-            // TODO: Add more zone areas
-            // Note: There should be a boat to Firiona Vie [Timorous Deep] (NYI) and a boat to Freeport [Ocean of Tears] (NYI)
-                        
+        {                       
             AddZoneArea("Kaladim Entrance", "butcher-01", "butcher-01");
             AddZoneAreaBox("Kaladim Entrance", 3046.260742f, 334.174408f, 335.738495f, 2679.131836f, -575.568665f, -52.174461f);
             

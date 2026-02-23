@@ -255,21 +255,23 @@ namespace EQWOWConverter.Zones
         // The box is oriented when facing north (when using .gps, orientation = 0 and no tilt) since zone lines are axis aligned in EQ
         protected void AddZoneLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY,
             float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY,
-            float boxTopNorthwestZ, float boxBottomSoutheastX, float boxBottomSoutheastY, float boxBottomSoutheastZ)
+            float boxTopNorthwestZ, float boxBottomSoutheastX, float boxBottomSoutheastY, float boxBottomSoutheastZ, string comment = "")
         {
             ZonePropertiesZoneLineBox zoneLineBox = new ZonePropertiesZoneLineBox(targetZoneShortName, targetZonePositionX, targetZonePositionY,
                 targetZonePositionZ, targetZoneOrientation, boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ, boxBottomSoutheastX,
                 boxBottomSoutheastY, boxBottomSoutheastZ);
+            zoneLineBox.TempComment = comment;
             ZoneLineBoxes.Add(zoneLineBox);
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddTeleportPad(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY, float targetZonePositionZ,
             ZoneLineOrientationType targetZoneOrientation, float padBottomCenterXPosition, float padBottomCenterYPosition, float padBottomCenterZPosition,
-            float padWidth)
+            float padWidth, string comment = "")
         {
             ZonePropertiesZoneLineBox zoneLineBox = new ZonePropertiesZoneLineBox(targetZoneShortName, targetZonePositionX, targetZonePositionY, targetZonePositionZ,
-            targetZoneOrientation, padBottomCenterXPosition, padBottomCenterYPosition, padBottomCenterZPosition, padWidth);
+                targetZoneOrientation, padBottomCenterXPosition, padBottomCenterYPosition, padBottomCenterZPosition, padWidth);
+            zoneLineBox.TempComment = comment;
             ZoneLineBoxes.Add(zoneLineBox);
         }
 

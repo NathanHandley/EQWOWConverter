@@ -19,9 +19,7 @@ namespace EQWOWConverter.Zones.Properties
     internal class CazicThuleZoneProperties : ZoneProperties
     {
         public CazicThuleZoneProperties() : base()
-        {
-            // TODO: Indoor Lighting
-            // TODO: Bug: Near the entry pools, the textures collide on the surface          
+        {     
             AddZoneArea("Archon Pyramid");
             AddZoneAreaBox("Archon Pyramid", 1224.566162f, -26.975229f, 213.322754f, 711.677063f, -519.299316f, 26.708981f);
             
@@ -86,8 +84,7 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1019.354065f, -394.024109f, 995.515015f, -417.751160f, -15.999990f, 25.25f); // Box room, bottom floating boxes, EN
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 907.568542f, -394.017395f, 883.673218f, -417.884613f, -15.999990f, 25.25f); // Box room, bottom floating boxes, ES
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 955.654907f, -275.840149f, 947.576904f, -283.912537f, 105.968758f, 7.75f); // Box room, water column cap
-            AddOctagonLiquidShape(ZoneLiquidType.Water, "t50_water1", 955.654907f, 947.576904f, -275.840149f, -283.912537f, -278.828613f, -280.928589f,
-                -278.828613f, -280.928589f, 952.661194f, 950.571838f, 952.661194f, 950.571838f, 105.968758f, 118f, 0.4f); // Box room, water column
+            AddOctagonLiquidShape(ZoneLiquidType.Water, "t50_water1", 955.654907f, 947.576904f, -275.840149f, -283.912537f, -278.828613f, -280.928589f, -278.828613f, -280.928589f, 952.661194f, 950.571838f, 952.661194f, 950.571838f, 105.968758f, 118f, 0.4f); // Box room, water column
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 980.440186f, -254.128174f, 923.192810f, -305.867035f, 0.001150f, 13.5f); // Box room, upper main pool 1
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 977.539307f, -251.266257f, 923.788025f, -308.644434f, 0.001150f, 13.5f); // Box room, upper main pool 2
             AddLiquidPlaneZLevel(ZoneLiquidType.GreenWater, "t50_grnwtr1", 1000.311096f, 234.174606f, 678.456055f, 89.293968f, -71.968689f, 50f); // Green Pools, 2 NE pools (one north of the other)

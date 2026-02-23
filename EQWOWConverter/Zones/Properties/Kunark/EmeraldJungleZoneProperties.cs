@@ -20,15 +20,11 @@ namespace EQWOWConverter.Zones.Properties
     {
         public EmeraldJungleZoneProperties() : base()
         {
-            AddZoneLineBox("fieldofbone", -1234.403564f, -767.976746f, -8.242520f, ZoneLineOrientationType.West,
-                -536.343384f, 5581.730957f, 293.219910f, -1628.799805f, 4909.223145f, -143.907333f);
-            AddZoneLineBox("citymist", -0.518530f, -774.348938f, 0.000000f, ZoneLineOrientationType.West,
-                313.793121f, -1718.521484f, -293.553589f, 255.748840f, -1765.517334f, -340.562408f);
-            AddZoneLineBox("trakanon", 3958.170654f, 1500.808472f, -344.466949f, ZoneLineOrientationType.South,
-                -3444.631104f, 1653.905151f, -278.644684f, -3532.577637f, 1392.652588f, -369.231049f);
+            AddZoneLineBox("fieldofbone", -1234.403564f, -767.976746f, -8.242520f, ZoneLineOrientationType.West, -536.343384f, 5581.730957f, 293.219910f, -1628.799805f, 4909.223145f, -143.907333f);
+            AddZoneLineBox("citymist", -0.518530f, -774.348938f, 0.000000f, ZoneLineOrientationType.West, 313.793121f, -1718.521484f, -293.553589f, 255.748840f, -1765.517334f, -340.562408f);
+            AddZoneLineBox("trakanon", 3958.170654f, 1500.808472f, -344.466949f, ZoneLineOrientationType.South, -3444.631104f, 1653.905151f, -278.644684f, -3532.577637f, 1392.652588f, -369.231049f);
 
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1b", 4096.996094f, 99.285179f, 3197.614746f, -1874.321289f,
-                -364.780731f, 200f);
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1b", 4096.996094f, 99.285179f, 3197.614746f, -1874.321289f, -364.780731f, 200f);
         }
     }
 }

@@ -20,8 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public GukTopZoneProperties() : base()
         {
-            // TODO: Add zone areas
-            // "gap" that falls down at 931 -2 -125
             AddZoneLineBox("gukbottom", 1154.039917f, 670.316589f, -93.968727f, ZoneLineOrientationType.West, 1122.238281f, 644.556519f, -77.740372f, 1105.369995f, 629.647583f, -95.468483f);
             AddZoneLineBox("gukbottom", 1665.729126f, -107.982651f, -102.307808f, ZoneLineOrientationType.East, 1623.884277f, 142.214523f, -60f, 1563.454590f, 117.747520f, -110f);
             AddZoneLineBox("gukbottom", 1493.752930f, -1.347960f, -91.878059f, ZoneLineOrientationType.East, 1575f, -205.689896f, -80f, 1550.644043f, -155.016663f, -115f);

@@ -20,26 +20,17 @@ namespace EQWOWConverter.Zones.Properties
     {
         public WarsliksWoodsZoneProperties() : base()
         {
-            // TODO: Clip water surface geometry near Dalnir
-            AddZoneLineBox("cabwest", 870.207581f, 1143.751831f, 0.000020f, ZoneLineOrientationType.East,
-                -2237.151123f, -1135.133423f, 381.612640f, -2268.348633f, -1180.958496f, 262.312653f);
-            AddZoneLineBox("cabwest", 688.666626f, 1327.751099f, 0.000030f, ZoneLineOrientationType.South,
-                -2420.843750f, -917.836975f, 399.112671f, -2473.554932f, -946.380981f, 262.313660f);
-            AddZoneLineBox("lakeofillomen", 4240.515625f, 1077.258179f, 47.625381f, ZoneLineOrientationType.East,
-                -3611.486084f, 1122.609375f, 128.471436f, -3852.555420f, 1033.167114f, 30.334721f);
-            AddZoneLineBox("overthere", 62.135712f, -3927.562988f, 225.718140f, ZoneLineOrientationType.West,
-                727.563416f, 4580.014648f, 696.519043f, -408.334595f, 3995.653076f, 201.359283f);
-            AddZoneLineBox("dalnir", 6.630970f, 62.347679f, 0.004290f, ZoneLineOrientationType.East,
-                2592.124023f, 4573.925293f, -223.179184f, 2541.819824f, 4508.052246f, -250.936874f);
-            AddZoneLineBox("fieldofbone", 1413.743408f, 3554.795898f, -0.695750f, ZoneLineOrientationType.East,
-                1922.704956f, -3688.215576f, 919.834229f, 830.668396f, -4323.236816f, -194.401077f);
+            AddZoneLineBox("cabwest", 870.207581f, 1143.751831f, 0.000020f, ZoneLineOrientationType.East, -2237.151123f, -1135.133423f, 381.612640f, -2268.348633f, -1180.958496f, 262.312653f);
+            AddZoneLineBox("cabwest", 688.666626f, 1327.751099f, 0.000030f, ZoneLineOrientationType.South, -2420.843750f, -917.836975f, 399.112671f, -2473.554932f, -946.380981f, 262.313660f);
+            AddZoneLineBox("lakeofillomen", 4240.515625f, 1077.258179f, 47.625381f, ZoneLineOrientationType.East, -3611.486084f, 1122.609375f, 128.471436f, -3852.555420f, 1033.167114f, 30.334721f);
+            AddZoneLineBox("overthere", 62.135712f, -3927.562988f, 225.718140f, ZoneLineOrientationType.West, 727.563416f, 4580.014648f, 696.519043f, -408.334595f, 3995.653076f, 201.359283f);
+            AddZoneLineBox("dalnir", 6.630970f, 62.347679f, 0.004290f, ZoneLineOrientationType.East, 2592.124023f, 4573.925293f, -223.179184f, 2541.819824f, 4508.052246f, -250.936874f);
+            AddZoneLineBox("fieldofbone", 1413.743408f, 3554.795898f, -0.695750f, ZoneLineOrientationType.East, 1922.704956f, -3688.215576f, 919.834229f, 830.668396f, -4323.236816f, -194.401077f);
 
-            // Ocean
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 7868.704590f, 3807.709961f, 685.372620f, -6605.181641f, -217.343323f, 500f);
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 7868.704590f, 7324.179199f, 3210.743896f, 3807.709961f, -217.343323f, 500f);
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 7868.704590f, 3807.709961f, 685.372620f, -6605.181641f, -217.343323f, 500f); // Ocean
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 7868.704590f, 7324.179199f, 3210.743896f, 3807.709961f, -217.343323f, 500f); // Ocean
 
-            // River mouth to river source
-            AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", 704.767456f, 302.805481f, 679.463501f, 229.940414f, -210.159805f, -217.097382f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
+            AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", 704.767456f, 302.805481f, 679.463501f, 229.940414f, -210.159805f, -217.097382f, ZoneLiquidSlantType.SouthHighNorthLow, 250f); // River mouth to river source
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", 679.497925f, 313.543152f, 670.920349f, 243.223053f, -208.409500f, -210.163254f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", 670.954834f, 365.387665f, 644.602173f, 248.104843f, -208.406235f, -208.412933f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", 644.636658f, 358.672852f, 636.972839f, 286.180603f, -206.417175f, -208.409683f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
@@ -118,12 +109,8 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -1783.299561f, 878.762085f, -1794.438354f, 835.720581f, 72.971779f, 66.016281f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -1794.404053f, 890.505310f, -1807.737549f, 836.741028f, 74.323730f, 72.968330f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -1807.703247f, 972.878235f, -1896.468018f, 842.674744f, 74.593849f, 74.320282f, ZoneLiquidSlantType.SouthHighNorthLow, 250f);
-
-            // River source lake (North)
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "tau_stwt01", -1892.384521f, 1100.665283f, -2186.869873f, 746.563660f, 74.593903f, 40f);
-
-            // West river fork towards other source
-            AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -27.414471f, 706.799377f, -152.214462f, 604.894714f, -107.562447f, -107.565941f, ZoneLiquidSlantType.WestHighEastLow, 250f);
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "tau_stwt01", -1892.384521f, 1100.665283f, -2186.869873f, 746.563660f, 74.593903f, 40f); // River source lake (North)
+            AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -27.414471f, 706.799377f, -152.214462f, 604.894714f, -107.562447f, -107.565941f, ZoneLiquidSlantType.WestHighEastLow, 250f); // West river fork towards other source
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -120.170860f, 805.514709f, -258.724731f, 706.764954f, -107.510979f, -107.565903f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -226.907379f, 815.770691f, -265.902313f, 805.480225f, -100.028198f, -107.514427f, ZoneLiquidSlantType.WestHighEastLow, 250f);
             AddLiquidPlane(ZoneLiquidType.Water, "tau_stwt01", -225.687698f, 825.346130f, -268.661652f, 815.736267f, -100.031143f, -100.031647f, ZoneLiquidSlantType.WestHighEastLow, 250f);

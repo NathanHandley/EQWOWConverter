@@ -20,7 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public HoleZoneProperties() : base()
         {
-            // TDOO: Add zone areas.  Note: There is no music or sound effects in this zone
             // TODO: Bad object at 117 164 -349 (1x scale)
             // TODO: Forge in first building when coming in needs damage zone
             AddZoneLineBox("paineel", 588.502197f, -941.292969f, -93.159729f, ZoneLineOrientationType.South, 608.765930f, -935.432007f, -82.499748f, 580.660583f, -947.818420f, -98.468742f);

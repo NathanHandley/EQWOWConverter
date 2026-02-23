@@ -37,8 +37,7 @@ namespace EQWOWConverter.Zones.Properties
 
             AddZoneLineBox("beholder", 903.2041f, -1850.1808f, 1.0001143f, ZoneLineOrientationType.West, -102.775955f, 12.901143f, 15.468005f, -119.129944f, -8.304958f, -0.49999338f);
             AddZoneLineBox("misty", -816.631531f, 1427.580444f, -10.751390f, ZoneLineOrientationType.North, 271.099457f, 170f, 15.469000f, 250.497299f, 135.744324f, 0.501060f);
-            AddOctagonLiquidShape(ZoneLiquidType.Water, "t50_agua1", 6.060460f, -4.080790f, 5.092600f, -5.076620f, 2.997610f, -2.994190f, 2.997610f, -2.994190f,
-                4.004600f, -1.993800f, 4.004600f, -1.993800f, -128.937500f, 100f); // Bottom well entry
+            AddOctagonLiquidShape(ZoneLiquidType.Water, "t50_agua1", 6.060460f, -4.080790f, 5.092600f, -5.076620f, 2.997610f, -2.994190f, 2.997610f, -2.994190f, 4.004600f, -1.993800f, 4.004600f, -1.993800f, -128.937500f, 100f); // Bottom well entry
             AddLiquidVolume(ZoneLiquidType.Water, 20.882460f, 26.487289f, -28.736370f, -28.261860f, -148.937500f, -172.924393f); // Bottom well outlet into the lowest path area
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 294.765076f, 106.255119f, 6.004130f, -258.832855f, -134.937424f, 150f); // North lower area
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", -4.007230f, 20.985340f, -278.851288f, -264.851929f, -134.937424f, 150f); // South lower area

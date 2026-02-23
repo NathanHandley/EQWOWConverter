@@ -20,8 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public HalasZoneProperties() : base()
         {
-            // TODO: PVP in Pit of Doom
-            // TODO: Perhaps add Mac's Kilts as a zone area
             AddZoneArea("Entry Tunnel", "halas-01", "halas-01", false);
             AddZoneAreaBox("Entry Tunnel", -461.854279f, 79.028740f, 114.175423f, -817.487427f, -169.417740f, -163.384399f);
 
@@ -54,8 +52,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("McDaniel's Smokes and Spirits", 384.345398f, -236.876526f, 92.159866f, 307.601257f, -352.602509f, 11.183750f);
 
             AddZoneArea("McQuaid's Dark Stout", "halas-04", "halas-04");
-            AddZoneAreaOctagonBox("McQuaid's Dark Stout", 129.972458f, 82.012718f, -183.867081f, -273.888367f, -189.872543f, -268.952698f, -194.811661f, -266.338409f,
-                110.081520f, 100.430153f, 109.239693f, 97.214653f, 37.773350f, -2.628820f);
+            AddZoneAreaOctagonBox("McQuaid's Dark Stout", 129.972458f, 82.012718f, -183.867081f, -273.888367f, -189.872543f, -268.952698f, -194.811661f, -266.338409f, 110.081520f, 100.430153f, 109.239693f, 97.214653f, 37.773350f, -2.628820f);
 
             AddZoneArea("McDonald's Fire Cider");
             AddZoneAreaBox("McDonald's Fire Cider", 247.267914f, -134.631378f, 38.144821f, 175.779739f, -180.837265f, -2.174550f);
@@ -65,8 +62,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Yee Majik", 160.033524f, -339.226288f, 26.357410f, 86.067749f, -399.233185f, -4.376070f);
 
             AddZoneArea("McPherson's Bloody Blades");
-            AddZoneAreaOctagonBox("McPherson's Bloody Blades", 232.164093f, 165.558990f, -265.482086f, -340.089294f, -286.648346f, -302.833740f,
-                -286.727203f, -301.972076f, 219.922913f, 179.911942f, 219.197540f, 180.743759f, 30.383160f, -5.666800f);
+            AddZoneAreaOctagonBox("McPherson's Bloody Blades", 232.164093f, 165.558990f, -265.482086f, -340.089294f, -286.648346f, -302.833740f, -286.727203f, -301.972076f, 219.922913f, 179.911942f, 219.197540f, 180.743759f, 30.383160f, -5.666800f);
 
             AddZoneLineBox("everfrost", 3682.792725f, 372.904633f, 0.000240f, ZoneLineOrientationType.South, -664.463196f, -50.776440f, 37.469002f, -744.483093f, -101.162247f, -0.499990f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_agua1", -16.822701f, 195.248566f, -464.163391f, -189.505676f, -2.999970f, 250f); // Pool at zone line
