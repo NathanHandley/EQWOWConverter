@@ -90,8 +90,9 @@ namespace EQWOWConverter.Zones
 
         protected void DisableSunlight()
         {
-            if (Configuration.ZONE_ALLOW_SUN_HIDING_WITH_SHADOWBOX_ENABLED == true && Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
-                HasShadowBox = true;
+            // TODO: Delete
+            //if (Configuration.ZONE_ALLOW_SUN_HIDING_WITH_SHADOWBOX_ENABLED == true && Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
+            //    HasShadowBox = true;
         }
 
         protected void Enable2DSoundInstances(params string[] daySoundNames)
@@ -814,7 +815,7 @@ namespace EQWOWConverter.Zones
                 zoneProperties.Continent = (ZoneContinentType)int.Parse(propertiesRow["ContinentID"]);
                 zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);
                 zoneProperties.DefaultZoneArea.DisplayName = propertiesRow["DescriptiveName"];
-                zoneProperties.IsRestingZoneWide = int.Parse(propertiesRow["RestZoneWide"]) == 1 ? true : false;
+                zoneProperties.IsRestingZoneWide = propertiesRow["RestZoneWide"].Trim() == "1" ? true : false;
                 zoneProperties.RainChanceWinter = int.Parse(propertiesRow["rain_chance_winter"]);
                 zoneProperties.RainChanceSpring = int.Parse(propertiesRow["rain_chance_spring"]);
                 zoneProperties.RainChanceSummer = int.Parse(propertiesRow["rain_chance_summer"]);
@@ -830,10 +831,12 @@ namespace EQWOWConverter.Zones
                 zoneProperties.DisplayMapMainBottom = float.Parse(propertiesRow["DisplayMapMainBottom"]);
                 zoneProperties.SuggestedMinLevel = int.Parse(propertiesRow["SugLevelMin"]);
                 zoneProperties.SuggestedMaxLevel = int.Parse(propertiesRow["SugLevelMax"]);
-                zoneProperties.AlwaysZoomOutMapToNorrathMap = int.Parse(propertiesRow["AlwaysZoomOutToNorrathMap"]) == 1 ? true : false;
+                zoneProperties.AlwaysZoomOutMapToNorrathMap = propertiesRow["AlwaysZoomOutToNorrathMap"].Trim() == "1" ? true : false;
                 foreach(string enabled2DSoundInstanceName in propertiesRow["Enabled2DSoundInstances"].Split(","))
                     zoneProperties.Enabled2DSoundInstancesByDaySoundName.Add(enabled2DSoundInstanceName.Trim());
                 zoneProperties.VertexColorIntensityOverride = float.Parse(propertiesRow["VertexColorIntensityOverride"]);
+                if (Configuration.ZONE_ALLOW_SUN_HIDING_WITH_SHADOWBOX_ENABLED == true && Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
+                    zoneProperties.HasShadowBox = propertiesRow["DisableSunlight"].Trim() == "1" ? true : false;
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
             else
@@ -1006,7 +1009,7 @@ namespace EQWOWConverter.Zones
             foreach (Dictionary<string, string> propertiesRow in zonePropertiesRows)
             {
                 ZoneProperties curZoneProperties = ZonePropertyListByShortName[propertiesRow["ShortName"]];
-                //propertiesRow["VertexColorIntensityOverride"] = curZoneProperties.VertexColorIntensityOverride.ToString();
+                //propertiesRow["HasShadowBox"] = curZoneProperties.HasShadowBox == true ? "1" : "0";
                 //StringBuilder enabled2DSoundInstancesSB = new StringBuilder();
                 //int numOfStrings = 0;
                 //foreach (string enabled2DSoundInstanceName in curZoneProperties.Enabled2DSoundInstancesByDaySoundName)
@@ -1017,6 +1020,7 @@ namespace EQWOWConverter.Zones
                 //        enabled2DSoundInstancesSB.Append(",");
                 //}
                 //propertiesRow["Enabled2DSoundInstances"] = enabled2DSoundInstancesSB.ToString();
+                bool hasShadowbox = curZoneProperties.HasShadowBox;
                 int y = 5;
             }
             //FileTool.WriteAllRowsToFileWithHeader(zonePropertiesFile, "|", zonePropertiesRows);
