@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Text;
+
 namespace EQWOWConverter
 {
     internal class FileTool
@@ -225,6 +227,44 @@ namespace EQWOWConverter
             }
 
             return returnRows;
+        }
+
+        public static void WriteAllRowsToFileWithHeader(string fileName, string delimeter, List<Dictionary<string, string>> outputColumnRows)
+        {
+            if (File.Exists(fileName))
+                File.Delete(fileName);
+
+            List<string> outputLines = new List<string>();
+
+            // Header
+            StringBuilder headerSB = new StringBuilder();
+            for (int i = 0; i < outputColumnRows[0].Keys.Count; i++)
+            {
+                string columnName = outputColumnRows[0].Keys.ToList()[i];
+                headerSB.Append(columnName);
+                if (i < outputColumnRows[0].Keys.Count - 1)
+                    headerSB.Append(delimeter);
+            }
+            outputLines.Add(headerSB.ToString());
+
+            // Body
+            foreach (Dictionary<string, string> row in outputColumnRows)
+            {
+                StringBuilder bodySB = new StringBuilder();
+                for (int j = 0; j < row.Values.Count; j++)
+                {
+                    string value = row.Values.ToList()[j];
+                    bodySB.Append(value);
+                    if (j < outputColumnRows[0].Keys.Count - 1)
+                        bodySB.Append(delimeter);
+                }
+                outputLines.Add(bodySB.ToString());
+            }
+
+            // output the file
+            using (var outputFile = new StreamWriter(fileName))
+                foreach (string outputLine in outputLines)
+                    outputFile.WriteLine(outputLine);
         }
 
         public static bool IsFileLocked(string fileName)

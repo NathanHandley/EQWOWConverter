@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Zones.Properties;
+using System.Text;
 
 namespace EQWOWConverter.Zones
 {
@@ -95,11 +96,12 @@ namespace EQWOWConverter.Zones
 
         protected void Enable2DSoundInstances(params string[] daySoundNames)
         {
-            foreach (string daySoundName in daySoundNames)
-            {
-                if (Enabled2DSoundInstancesByDaySoundName.Contains(daySoundName) == false)
-                    Enabled2DSoundInstancesByDaySoundName.Add(daySoundName);
-            }
+            // TODO: Delete
+            //foreach (string daySoundName in daySoundNames)
+            //{
+            //    if (Enabled2DSoundInstancesByDaySoundName.Contains(daySoundName) == false)
+            //        Enabled2DSoundInstancesByDaySoundName.Add(daySoundName);
+            //}
         }
 
         protected void SetZonewideEnvironmentAsIndoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType)
@@ -828,6 +830,8 @@ namespace EQWOWConverter.Zones
                 zoneProperties.SuggestedMinLevel = int.Parse(propertiesRow["SugLevelMin"]);
                 zoneProperties.SuggestedMaxLevel = int.Parse(propertiesRow["SugLevelMax"]);
                 zoneProperties.AlwaysZoomOutMapToNorrathMap = int.Parse(propertiesRow["AlwaysZoomOutToNorrathMap"]) == 1 ? true : false;
+                foreach(string enabled2DSoundInstanceName in propertiesRow["Enabled2DSoundInstances"].Split(","))
+                    zoneProperties.Enabled2DSoundInstancesByDaySoundName.Add(enabled2DSoundInstanceName.Trim());
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
             else
@@ -995,6 +999,26 @@ namespace EQWOWConverter.Zones
             AddZonePropertiesByShortName(zonePropertiesByShortName, "westwastes", new WesternWastesZoneProperties());
 
             PopulateDisplayMapLinkList();
+
+            // TEMP: This is used for the effort of migrating values from the zone properties code to config
+            foreach (Dictionary<string, string> propertiesRow in zonePropertiesRows)
+            {
+                ZoneProperties curZoneProperties = ZonePropertyListByShortName[propertiesRow["ShortName"]];
+
+                StringBuilder enabled2DSoundInstancesSB = new StringBuilder();
+                int numOfStrings = 0;
+                foreach (string enabled2DSoundInstanceName in curZoneProperties.Enabled2DSoundInstancesByDaySoundName)
+                {
+                    enabled2DSoundInstancesSB.Append(enabled2DSoundInstanceName);
+                    numOfStrings++;
+                    if (numOfStrings < curZoneProperties.Enabled2DSoundInstancesByDaySoundName.Count)
+                        enabled2DSoundInstancesSB.Append(",");
+                }
+                propertiesRow["Enabled2DSoundInstances"] = enabled2DSoundInstancesSB.ToString();
+            }
+            //FileTool.WriteAllRowsToFileWithHeader(zonePropertiesFile, "|", zonePropertiesRows);
+            //int x = 5;
+            // END TEMP
         }
     }
 }
