@@ -1,0 +1,287 @@
+ZoneShortName|AreaName|OrderID|AreaTableDBCID|ParentSubAreaName|MusicDay|MusicNight|MusicDayAlt|MusicNightAlt|MusicVolume|DoLoopMusic|AmbientSoundDay|AmbientSoundNight
+akanon|Entry|0|5102||akanon-00|akanon-00|akanon-00|akanon-00|1|1||
+akanon|Command|1|5103||akanon-00|akanon-00|akanon-00|akanon-00|1|1||
+akanon|Supply Area|2|5104||akanon-04|akanon-04|akanon-04|akanon-04|1|1||
+akanon|Barracks|3|5105||akanon-06|akanon-06|akanon-06|akanon-06|1|1||
+akanon|Market|4|5106||akanon-07|akanon-07|akanon-07|akanon-07|1|1||
+akanon|Library Mechanamagica|5|5107||akanon-02|akanon-02|akanon-02|akanon-02|1|1||
+akanon|Abbey of Deep Musing|6|5108||akanon-01|akanon-01|akanon-01|akanon-01|1|1||
+akanon|The Falls|7|5109||||||1|1||
+akanon|Lower Tunnels|8|5110||akanon-07|akanon-07|akanon-07|akanon-07|1|1||
+akanon|The Turbine|9|5111||||||1|0|spinnrlp|spinnrlp
+akanon|Zoo|10|5112||akanon-06|akanon-06|akanon-06|akanon-06|1|1||
+befallen|Entry|0|5115||befallen-06|befallen-06|befallen-06|befallen-06|1|1||
+befallen|Well|1|5116||befallen-00|befallen-00|befallen-00|befallen-00|1|1||
+befallen|Bottom South|2|5117||befallen-07|befallen-07|befallen-07|befallen-07|1|1||
+befallen|Middle West|3|5118||befallen-01|befallen-01|befallen-01|befallen-01|1|1||
+befallen|Bottom Center|4|5119||befallen-04|befallen-04|befallen-04|befallen-04|1|1||
+befallen|Bottom North|5|5120||befallen-05|befallen-05|befallen-05|befallen-05|1|1||
+befallen|Middle West|6|5121||befallen-01|befallen-01|befallen-01|befallen-01|1|1||
+befallen|Middle East|7|5122||befallen-03|befallen-03|befallen-03|befallen-03|1|1||
+befallen|Top|8|5123||befallen-02|befallen-02|befallen-02|befallen-02|1|1||
+blackburrow|Dark Path|0|5126||blackburrow-01|blackburrow-00|blackburrow-01|blackburrow-00|1|1||
+blackburrow|Rear Depths|1|5127||blackburrow-05|blackburrow-00|blackburrow-05|blackburrow-00|1|1||
+blackburrow|Upper Pass|2|5128||blackburrow-10|blackburrow-10|blackburrow-10|blackburrow-10|1|1||
+butcher|Kaladim Entrance|0|5131||butcher-01|butcher-01|butcher-01|butcher-01|1|1||
+butcher|Skeleton Point|1|5132||butcher-00|butcher-00|butcher-00|butcher-00|1|1||
+butcher|Faydwer Port|2|5133||||||1|1||
+butcher|Chess Board|3|5134||||||1|1||
+cazicthule|Archon Pyramid|0|5139||||||1|1||
+cazicthule|Archon Pools|1|5140||||||1|1||
+cazicthule|Avatar of Fear Shrine|2|5141||||||1|1||
+cazicthule|Sewers|3|5142||||||1|1||
+cazicthule|Gator Pit|4|5143||||||1|1||
+cazicthule|High Throne|5|5144||||||1|1||
+cazicthule|The Maze|6|5145||||||1|1||
+eastkarana|North Karana Bridge|0|5157||eastkarana-01|eastkarana-01|eastkarana-01|eastkarana-01|1|1||
+eastkarana|High Hold Gorge|1|5158||||||1|0|wind_lp4|wind_lp4
+eastkarana|Gorge of King Xorbb Entry|2|5159||||||1|0|wind_lp2|wind_lp2
+ecommons|Commons Tunnel|0|5162||||||1|0|silence|silence
+erudsxing|Fishing Camp|0|5167||erudsxing-01|erudsxing-01|erudsxing-01|erudsxing-01|1|1||
+erudsxing|Shipwreck|1|5168||||||1|1||
+erudsxing|Island West|2|5169||erudsxing-00|erudsxing-00|erudsxing-00|erudsxing-00|1|1||
+erudsxing|Island|3|5170||||||1|1||
+fearplane|Portal|0|5173||fearplane-00|fearplane-00|fearplane-00|fearplane-00|1|1||
+fearplane|Graveyard|1|5174||fearplane-02|fearplane-02|fearplane-02|fearplane-02|1|1||
+fearplane|Castle|2|5175||fearplane-01|fearplane-01|fearplane-01|fearplane-01|1|1||
+fearplane|Fetid House|3|5176||fearplane-06|fearplane-06|fearplane-06|fearplane-06|1|1||
+fearplane|Boogie House|4|5177||fearplane-05|fearplane-05|fearplane-05|fearplane-05|1|1||
+felwithea|Entry|0|5180||felwithea-01|felwithea-01|felwithea-01|felwithea-01|1|0||
+felwithea|Water Outlook|1|5181||||felwithea-02|felwithea-02|1|1||
+freporte|Field North Camp|0|5186||freporte-04|freporte-04|freporte-04|freporte-04|1|1||night
+freporte|South Gate|1|5187||||||1|0||night
+freporte|South Field|2|5188||||||1|0||night
+freporte|Grub n Grog Tavern|3|5189||||||1|1||
+freporte|Freeport Inn|4|5190||freporte-02|freporte-01|freporte-02|freporte-01|1|1||
+freporte|The Dark Corner|5|5191||freporte-07|freporte-07|freporte-07|freporte-07|1|1||
+freporte|Portside Tunnel|6|5192||freporte-06|freporte-06|freporte-06|freporte-06|1|1||
+freporte|Undermarket|7|5193||freporte-07|freporte-07|freporte-07|freporte-07|1|1||
+freporte|Central Tunnel|8|5194||||||1|1||
+freporte|Shady Market|9|5195||freporte-06|freporte-06|freporte-06|freporte-06|1|1||
+freporte|South Tunnels|10|5196||freporte-06|freporte-06|freporte-06|freporte-06|1|1||
+freporte|Seafarer's Roost|11|5197||freporte-03|freporte-03|freporte-03|freporte-03|1|1||
+freporte|Armor by Ikthar|12|5198||||||1|1||
+freporte|Trader's Holiday|13|5199||||||1|1||
+freporte|Velithe & Bardo's|14|5200||||||1|1||
+freporte|Leather and Hide|15|5201||||||1|1||
+freporte|Hallard's Resales|16|5202||||||1|1||
+freporte|Port Authority|17|5203|Freeport Port|||||1|1||
+freporte|Freeport Port|18|5204||freporte-00|freporte-00|freporte-00|freporte-00|1|1||
+freportn|Temple of Marr|0|5206||freportn-12|freportn-12|freportn-12|freportn-12|1|1||
+freportn|South Block|1|5207||freportn-07|freportn-07|freportn-07|freportn-07|1|1||
+freportn|Marsheart's Chords|2|5208|West Block|||||1|1||
+freportn|City Hall|3|5209|West Block|||||1|1||
+freportn|Groflah's Forge|4|5210|West Block|||||1|1||
+freportn|West Block|5|5211||freportn-09|freportn-13|freportn-09|freportn-13|1|1||
+freportn|Office of the People|6|5212||||freportn-04|freportn-04|1|1||
+freportn|The Jade Tiger's Den|7|5213||||freportn-01|freportn-01|1|1||
+freportn|Hall of Truth|8|5214||freportn-10|freportn-10|freportn-10|freportn-10|1|0||
+freportn|Bank of Freeport|9|5215||freportn-05|freportn-05|freportn-05|freportn-05|1|1||
+freportn|The Emporium|10|5216||||||1|1||
+freportn|Tassel's Tavern|11|5217||freportn-08|freportn-08|freportn-08|freportn-08|1|1||
+freportn|Palola's Inn|12|5218||freportn-07|freportn-07|freportn-07|freportn-07|1|1||
+freportn|North Tunnels|13|5219||||||1|0|caveloop|caveloop
+freportn|Northeast Tunnels|14|5220||||||1|1||
+freportw|West Gate|0|5222||freportw-00|freportw-00|freportw-00|freportw-00|1|0||night
+freportw|West Field|1|5223||||||1|0||night
+freportw|Freeport Militia Yard|2|5224||freportw-01|freportw-01|freportw-01|freportw-01|1|1||
+freportw|Freeport Militia House|3|5225||freportw-02|freportw-02|freportw-02|freportw-02|1|1||
+freportw|The Gallows|4|5226||freportw-03|freportw-03|freportw-03|freportw-03|1|1||
+freportw|Hogcallers' Inn|5|5227||freportw-01|freportw-01|freportw-01|freportw-01|1|1||
+freportw|The Ashen Order|6|5228||freportw-02|freportw-02|freportw-02|freportw-02|1|1||
+freportw|Threater of the Tranquil|7|5229||freportw-01|freportw-01|freportw-01|freportw-01|1|1||
+freportw|Academy of Arcane Science|8|5230||freportw-06|freportw-06|freportw-06|freportw-06|1|1||
+freportw|Freeport Arena|9|5231||freportw-03|freportw-03|freportw-03|freportw-03|1|1||
+freportw|Torlig's Herbs and Medicines|10|5232||||||1|1||
+freportw|North Tunnels|11|5233||||||1|0|caveloop|caveloop
+freportw|South Tunnels|12|5234||||||1|0|caveloop|caveloop
+freportw|Northeast Tunnels|13|5235||||||1|1||
+gfaydark|Kelethin|0|5239||gfaydark-04|gfaydark-04|gfaydark-04|gfaydark-04|1|1|silence|silence
+gfaydark|Felwithe|1|5240||||||1|0|silence|silence
+gfaydark|Outside Felwithe|2|5241||gfaydark-02|gfaydark-00|gfaydark-02|gfaydark-00|1|0||
+gfaydark|Wizard Spires|3|5242||gfaydark-00|gfaydark-03|gfaydark-00|gfaydark-03|1|0||
+gfaydark|Crushbone|4|5243||gfaydark-05|gfaydark-05|gfaydark-05|gfaydark-05|1|1||
+halas|Entry Tunnel|0|5250||halas-01|halas-01|halas-01|halas-01|1|0||
+halas|The Bound Mermaid|1|5251||||||1|1||
+halas|Halas Hold|2|5252||||||1|1||
+halas|DoK's Cigars|3|5253||||||1|1||
+halas|The Golden Torc|4|5254||halas-08|halas-08|halas-08|halas-08|1|1||
+halas|Shaman's Den|5|5255||||||1|1||
+halas|Pit of Doom|6|5256||halas-03|halas-03|halas-03|halas-03|1|1||
+halas|McDaniel's Smokes and Spirits|7|5257||halas-07|halas-07|halas-07|halas-07|1|1||
+halas|McQuaid's Dark Stout|8|5258||halas-04|halas-04|halas-04|halas-04|1|1||
+halas|McDonald's Fire Cider|9|5259||||||1|1||
+halas|Yee Majik|10|5260||halas-09|halas-09|halas-09|halas-09|1|1||
+halas|McPherson's Bloody Blades|11|5261||||||1|1||
+innothule|Guk|0|5268||||||1|1||
+innothule|North Hand|1|5269||innothule-00|innothule-00|innothule-00|innothule-00|1|0||
+innothule|South Hand|2|5270||innothule-03|innothule-03|innothule-03|innothule-03|1|1||
+innothule|Dead Tower|3|5271||innothule-02|innothule-02|innothule-02|innothule-02|1|1||
+kaladima|Main Gate|0|5275||kaladima-00|kaladima-00|kaladima-00|kaladima-00|1|0||
+kaladima|Pub Kal|1|5276||kaladima-04|kaladima-04|kaladima-04|kaladima-04|1|1||
+kaladima|Irontoe's Eats|2|5277||kaladima-05|kaladima-05|kaladima-05|kaladima-05|1|1||
+kaladima|Tanned Assets|3|5278||||||1|1||
+kaladima|Redfist's Metal|4|5279||||||1|1||
+kaladima|Staff and Spear|5|5280||||||1|1||
+kaladima|Gem Room|6|5281|Kaladim Castle|kaladima-03|kaladima-03|kaladima-03|kaladima-03|1|1||
+kaladima|Kaladim Castle|7|5282||kaladima-07|kaladima-07|kaladima-07|kaladima-07|1|1||
+kaladima|Castle Tunnel|8|5283||||||1|0|wind_lp2|wind_lp2
+kaladima|East Tunnel|9|5284||||||1|0|wind_lp3|wind_lp3
+kaladima|West Tunnel|10|5285||||||1|0|wind_lp2|wind_lp2
+kaladima|Northwest Tunnel|11|5286||||||1|0|wind_lp4|wind_lp4
+kaladima|Kaladim Arena|12|5287||kaladima-01|kaladima-01|kaladima-01|kaladima-01|1|1||
+kaladima|Warrior's Hall|13|5288||kaladima-02|kaladima-02|kaladima-02|kaladima-02|1|1||
+kaladimb|Gemstone Mine|0|5290||||||1|1||
+kaladimb|Temple of Brell Serilis|1|5291||kaladima-02|kaladima-02|kaladima-02|kaladima-02|1|1||
+kaladimb|Greybloom Farms|2|5292||||||1|1||
+kaladimb|Everhot Forge|3|5293||||||1|1||
+kaladimb|Southwest Tunnel|4|5294||||||1|0|wind_lp2|wind_lp2
+kaladimb|Central Tunnel|5|5295||||||1|0|wind_lp4|wind_lp4
+kaladimb|Northwest Tunnel|6|5296||||||1|0|wind_lp4|wind_lp4
+lavastorm|Druid Ring|0|5305||lavastorm-01|lavastorm-01|lavastorm-01|lavastorm-01|1|1||
+lavastorm|Najena|1|5306||lavastorm-01|lavastorm-01|lavastorm-01|lavastorm-01|1|1||
+lfaydark|The Monument|0|5308||lfaydark-02|lfaydark-02|lfaydark-02|lfaydark-02|1|0||
+lfaydark|Gnome Camp|1|5309||lfaydark-01|lfaydark-01|lfaydark-01|lfaydark-01|1|1||
+lfaydark|Wood Elf Outpost|2|5310||lfaydark-05|lfaydark-05|lfaydark-05|lfaydark-05|1|1||
+lfaydark|East Orc Camp|3|5311||lfaydark-03|lfaydark-03|lfaydark-03|lfaydark-03|1|1||
+lfaydark|East Central Orc Camp|4|5312||lfaydark-03|lfaydark-03|lfaydark-03|lfaydark-03|1|1||
+lfaydark|Brownie Compound|5|5313||lfaydark-01|lfaydark-01|lfaydark-01|lfaydark-01|1|1||
+lfaydark|Faerie Village|6|5314||lfaydark-01|lfaydark-01|lfaydark-01|lfaydark-01|1|1||
+lfaydark|West Orc Camp|7|5315||lfaydark-03|lfaydark-03|lfaydark-03|lfaydark-03|1|1||
+lfaydark|West Central Orc Camp|8|5316||lfaydark-03|lfaydark-03|lfaydark-03|lfaydark-03|1|1||
+lfaydark|Abandoned Stone Ring|9|5317||lfaydark-04|lfaydark-04|lfaydark-04|lfaydark-04|1|1||
+mistmoore|Main Entryway|0|5321||mistmoore-03|mistmoore-03|mistmoore-03|mistmoore-03|1|0||
+mistmoore|Castle Front|1|5322||mistmoore-01|mistmoore-01|mistmoore-01|mistmoore-01|1|1||night
+mistmoore|Tomb|2|5323||||||1|1||
+mistmoore|Graveyard|3|5324||||||1|0||night
+mistmoore|The Tower|4|5325||||||1|1||
+mistmoore|Outer Pass|5|5326||||||1|0||night
+mistmoore|Courtyard|6|5327||||||1|0||night
+mistmoore|Crypt|7|5328||||||1|1||
+mistmoore|Kitchen|8|5329||||||1|1||
+mistmoore|Throne Room|9|5330||||||1|1||
+mistmoore|Drawing Room|10|5331||||||1|1||
+mistmoore|Library|11|5332||||||1|1||
+mistmoore|Dining Hall|12|5333||||||1|1||
+misty|West Misty Thicket|0|5335||||||1|0||darkwds1
+najena|Najena's Room|0|5337||||||1|1||
+najena|Outer Cells|1|5338||najena-05|najena-05|najena-05|najena-05|1|1||
+najena|Inner Caves|2|5339||najena-01|najena-01|najena-01|najena-01|1|1||
+najena|Prison|3|5340||||najena-00|najena-00|1|1||
+najena|Slaughter Halls|4|5341||||najena-06|najena-06|1|1||
+najena|Torture Halls|5|5342||||najena-02|najena-02|1|1||
+najena|Main Entry|6|5343||najena-07|najena-07|najena-07|najena-07|1|1||
+nektulos|Neriak|0|5346||||||1|1||
+nektulos|Lavastorm Path|1|5347||nektulos-00|nektulos-00|nektulos-00|nektulos-00|1|1|wind_lp2|wind_lp2
+neriaka|Guard House|0|5349||neriaka-02|neriaka-02|neriaka-02|neriaka-02|1|1||
+neriaka|Front Gate|1|5350||neriaka-00|neriaka-00|neriaka-00|neriaka-00|1|1||
+neriaka|Commons Path|2|5351||neriaka-01|neriaka-01|neriaka-01|neriaka-01|1|1||
+neriakc|The Dark Guilds|0|5354||neriakc-12|neriakc-12|neriakc-12|neriakc-12|1|1||
+neriakc|Temple of Innoruuk|1|5355||||||1|1||
+neriakc|X'Lottl Mansion|2|5356||||||1|1||
+neriakc|J'Narus Mansion|3|5357||||||1|1||
+neriakc|The Maiden's Fancy|4|5358||neriakc-17|neriakc-17|neriakc-17|neriakc-17|1|1||
+neriakc|Cuisine Excelsior|5|5359||neriakc-16|neriakc-16|neriakc-16|neriakc-16|1|1||
+neriakc|Neriak Library|6|5360||neriakc-13|neriakc-13|neriakc-13|neriakc-13|1|1||
+neriakc|Nobles' Quarter|7|5361||neriakc-14|neriakc-14|neriakc-14|neriakc-14|1|1||
+northkarana|East Karana Bridge|0|5363||northkarana-01|northkarana-01|northkarana-01|northkarana-01|1|1||
+northkarana|South Karana Bridge|1|5364||northkarana-01|northkarana-01|northkarana-01|northkarana-01|1|1||
+nro|Field Camp|0|5366||nro-03|nro-03|nro-03|nro-03|1|1||night
+nro|Fishing Village|1|5367||nro-02|nro-02|nro-02|nro-02|1|1||
+nro|Haunted Ruins|2|5368||nro-04|nro-04|nro-04|nro-04|1|1||
+nro|Freeport Field|3|5369||||||1|0||night
+nro|Commons Tunnel|4|5370||||||1|1||
+nro|Desert|5|5371||nro-00|nro-00|nro-00|nro-00|1|1||
+paineel|Upper Field|0|5378||||||1|0||darkwds1
+paw|Entry|0|5380||paw-01|paw-01|paw-01|paw-01|1|1||
+paw|Inner Pass|1|5381||paw-00|paw-00|paw-00|paw-00|1|1||
+paw|Prison|2|5382||paw-02|paw-02|paw-02|paw-02|1|1||
+qcat|Plague Bringer Tunnels|0|5385||qcat-01|qcat-01|qcat-01|qcat-01|1|1||
+qcat|Crow's Way|1|5386||qcat-02|qcat-02|qcat-02|qcat-02|1|1||
+qey2hh1|Northwest Hamlet|0|5388||qey2hh1-00|qey2hh1-00|qey2hh1-00|qey2hh1-00|1|1||
+qey2hh1|Mid-North Homestead|1|5389||qey2hh1-00|qey2hh1-00|qey2hh1-00|qey2hh1-00|1|1||
+qey2hh1|Southeast Barns|2|5390||qey2hh1-01|qey2hh1-01|qey2hh1-01|qey2hh1-01|1|1||
+qey2hh1|Southeast Coast|3|5391||qey2hh1-02|qey2hh1-02|qey2hh1-02|qey2hh1-02|1|1||
+qeynos|Mermaid's Lure|0|5393||qeynos-07|qeynos-07|qeynos-07|qeynos-07|1|1||
+qeynos|Port Authority|1|5394|Qeynos Port|qeynos-11|qeynos-11|qeynos-11|qeynos-11|1|1||silence
+qeynos|Qeynos Port|2|5395||qeynos-11|qeynos-11|qeynos-11|qeynos-11|1|1||night
+qeynos|Lion's Mane Tavern|3|5396||qeynos-08|qeynos-08|qeynos-08|qeynos-08|1|1||
+qeynos|Fhara's Leather and Thread|4|5397|Portside Market|||||1|1||
+qeynos|Lion's Mane Inn|5|5398|Portside Market|||||1|1||
+qeynos|Portside Market|6|5399||qeynos-01|qeynos-01|qeynos-01|qeynos-01|1|1||
+qeynos|The Wind Spirit's Song|7|5400||qeynos-05|qeynos-01|qeynos-05|qeynos-01|1|1||
+qeynos|The Tin Soldier|8|5401||||||1|1||
+qeynos|Shrine of The Burning Prince|9|5402||qeynos-04|qeynos-04|qeynos-04|qeynos-04|1|1||
+qeynos|The Herb Jar|10|5403||||||1|1||
+qeynos|Office of the People|11|5404||||||1|1||
+qeynos|Qeynos Hold|12|5405||||||1|1||
+qeynos|Bag n' Barrel|13|5406||||||1|1||
+qeynos|Nesiff's Wooden Weapons|14|5407||||||1|1||
+qeynos|Clock Courtyard|15|5408||||||1|1||
+qeynos|Fish's Ale|16|5409||qeynos-09|qeynos-09|qeynos-09|qeynos-09|1|1||
+qeynos|Voleen's Bakery|17|5410||||||1|1||
+qeynos|Fireprides|18|5411||||||1|1||
+qeynos|Alter of the Rainbringer|19|5412|The Rainbringers|||||1|0|thunder1|thunder2
+qeynos|The Rainbringers|20|5413||||||1|1||
+qeynos|Undertunnels|21|5414|Grounds of Fate|||||1|1||
+qeynos|Grounds of Fate|22|5415||qeynos-00|qeynos-00|qeynos-00|qeynos-00|1|1||
+qeynos|Arena Market|23|5416||qeynos-07|qeynos-07|qeynos-07|qeynos-07|1|1||
+qeynos2|Kliknik Tunnel|0|5418||||||1|0||night
+qeynos2|North Gate|1|5419|North Qeynos|||||1|0||night
+qeynos2|North Field|2|5420||||||1|0||night
+qeynos2|Qeynos Underbelly|3|5421||||qeynos2-03|qeynos2-03|1|1||
+qeynos2|Reflecting Pond|4|5422|North Qeynos|||||1|1||
+qeynos2|The Cobbler|5|5423|North Qeynos|||||1|1||
+qeynos2|Order of the Silent Fist|6|5424|North Qeynos|||||1|1||
+qeynos2|Crows Pub and Casino|7|5425||||||1|1||
+qeynos2|Sneed Galliway's Trading Post|8|5426|North Qeynos|||||1|1||
+qeynos2|Ironforge Estate|9|5427|North Qeynos|||||1|1||
+qeynos2|North Qeynos|10|5428||qeynos2-01|qeynos2-01|qeynos2-01|qeynos2-01|1|1||
+qeynos2|Shrine of the Prime Healer|11|5429|Temple of Life|qeynos2-04|qeynos2-04|qeynos2-04|qeynos2-04|1|1|space|space
+qeynos2|Temple of Life|12|5430||qeynos2-04|qeynos2-04|qeynos2-04|qeynos2-04|1|1||
+qeytoqrg|Haunted Ruins|0|5432||qeytoqrg-03|qeytoqrg-03|qeytoqrg-03|qeytoqrg-03|1|1||
+qeytoqrg|Surefall Glade|1|5433||qeytoqrg-01|qeytoqrg-01|qeytoqrg-01|qeytoqrg-01|1|1||
+qeytoqrg|Sayer's House|2|5434||qeytoqrg-05|qeytoqrg-05|qeytoqrg-05|qeytoqrg-05|1|1||
+qeytoqrg|Blackburrow|3|5435||qeytoqrg-02|qeytoqrg-02|qeytoqrg-02|qeytoqrg-02|1|1||
+qeytoqrg|Guard Tower|4|5436||qeytoqrg-00|qeytoqrg-00|qeytoqrg-00|qeytoqrg-00|1|1||
+qeytoqrg|The Split|5|5437||qeytoqrg-04|qeytoqrg-04|qeytoqrg-04|qeytoqrg-04|1|1||
+qrg|Ranger's Guild|0|5439||qrg-03|qrg-03|qrg-03|qrg-03|1|1||silence
+qrg|Jaggedpine Treefolk|1|5440||||||1|0||silence
+qrg|Caves|2|5441||||||1|0||silence
+qrg|Shrine of Tunare|3|5442||qrg-02|qrg-02|qrg-02|qrg-02|1|1||silence
+rathemtn|Gypsy Camp|0|5444||rathemtn-02|rathemtn-02|rathemtn-02|rathemtn-02|1|1||
+rivervale|Bank of Rivervale|0|5446||||||1|0||silence
+rivervale|Fiddy's Fishing Dock|1|5447||||||1|1||
+rivervale|Weary Foot Rest Inn|2|5448||||||1|0||silence
+rivervale|Bristlebane's Hall|3|5449||||||1|0||silence
+runnyeye|Upper Pools|0|5451||runnyeye-00|runnyeye-00|runnyeye-00|runnyeye-00|1|1||
+runnyeye|Eye Pool|1|5452||runnyeye-01|runnyeye-01|runnyeye-01|runnyeye-01|1|1||
+runnyeye|Blood Room|2|5453||runnyeye-02|runnyeye-00|runnyeye-02|runnyeye-00|1|1||
+soldungb|Nagafen's Approach|0|5461||soldungb-01|soldungb-01|soldungb-01|soldungb-01|1|1||
+soldungb|Lavaflow Bridge|1|5462||soldungb-00|soldungb-00|soldungb-00|soldungb-00|1|1||
+soldungb|Throne of King Tranix|2|5463||soldungb-05|soldungb-05|soldungb-05|soldungb-05|1|1||
+soldungb|The Fire Throne|3|5464||soldungb-02|soldungb-02|soldungb-02|soldungb-02|1|0||
+soldungb|Giant's Way|4|5465||soldungb-07|soldungb-07|soldungb-07|soldungb-07|1|1||
+soldungb|Spider Nest|5|5466||soldungb-02|soldungb-02|soldungb-02|soldungb-02|1|0||
+southkarana|The Well|0|5469||southkarana-00|southkarana-00|southkarana-00|southkarana-00|1|0||
+southkarana|North Bridge|1|5470||southkarana-01|southkarana-01|southkarana-01|southkarana-01|1|1||
+southkarana|Undead Ruins|2|5471||southkarana-02|southkarana-02|southkarana-02|southkarana-02|1|1||
+southkarana|Lair of the Splitpaw|3|5472||southkarana-02|southkarana-02|southkarana-02|southkarana-02|1|1||
+southkarana|Cursed Wizard Stones|4|5473||southkarana-03|southkarana-03|southkarana-03|southkarana-03|1|1||
+southkarana|Centaur Town|5|5474||southkarana-01|southkarana-01|southkarana-01|southkarana-01|1|1||
+southkarana|Hermit House|6|5475||southkarana-04|southkarana-04|southkarana-04|southkarana-04|1|1||
+southkarana|Aviak Town|7|5476||southkarana-05|southkarana-05|southkarana-05|southkarana-05|1|1||
+southkarana|Ruined Stone Ring|8|5477||||||1|1||
+sro|Desert|0|5480||||||1|0||silence
+steamfont|The Windmills|0|5482||steamfont-02|steamfont-02|steamfont-02|steamfont-02|1|0||
+steamfont|Minotaur Caves|1|5483||steamfont-00|steamfont-00|steamfont-00|steamfont-00|1|1||
+steamfont|Ak'Anon|2|5484||steamfont-03|steamfont-03|steamfont-03|steamfont-03|1|1||
+steamfont|Druid Stone Ring|3|5485||steamfont-01|steamfont-01|steamfont-01|steamfont-01|1|1||
+steamfont|South Kobold Camp|4|5486||steamfont-05|steamfont-05|steamfont-05|steamfont-05|1|1||
+steamfont|Dragon Skeleton|5|5487||steamfont-06|steamfont-06|steamfont-06|steamfont-06|1|0||
+steamfont|North Kobold Camp|6|5488||||steamfont-05|steamfont-05|1|1||
+timorous|Firepot Room|0|5494||||||1|0|silence|silence
+tox|Wizard Spires|0|5496||tox-00|tox-00|tox-00|tox-00|1|1||
+tox|Paineel|1|5497||tox-03|tox-03|tox-03|tox-03|1|1||
+tox|Erudin|2|5498||||||1|1||
+tox|Kerra Isle|3|5499||||||1|1||
