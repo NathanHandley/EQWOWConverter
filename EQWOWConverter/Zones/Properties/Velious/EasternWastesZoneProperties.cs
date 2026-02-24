@@ -20,10 +20,10 @@ namespace EQWOWConverter.Zones.Properties
     {
         public EasternWastesZoneProperties() : base()
         {
-            AddDiscardGeometryBox(4209.238281f, -7449.717285f, 104.720337f, -13431.015625f, -9256.558594f, -283.213837f); // East strip, up to the bridge
-            AddDiscardGeometryBoxObjectsOnly(2011.942383f, -4501.451172f, 853.347229f, 9.276880f, -7326.402344f, -621.480286f); // Trees in the water
-            AddDiscardGeometryBox(4280.932129f, 8445.250000f, 16.208639f, -659.456482f, 5984.957031f, -490.946625f); // Northwest water
-            AddDiscardGeometryBox(-8961.625977f, 7940.808105f, 155.420395f, -13581.579102f, 5991.803711f, -314.520233f); // Southwest water
+            AddDiscardGeometryBox(4209.238281f, -7449.717285f, 104.720337f, -13431.015625f, -9256.558594f, -283.213837f, "East strip, up to the bridge"); // East strip, up to the bridge
+            AddDiscardGeometryBoxObjectsOnly(2011.942383f, -4501.451172f, 853.347229f, 9.276880f, -7326.402344f, -621.480286f, "Trees in the water"); // Trees in the water
+            AddDiscardGeometryBox(4280.932129f, 8445.250000f, 16.208639f, -659.456482f, 5984.957031f, -490.946625f, "Northwest water"); // Northwest water
+            AddDiscardGeometryBox(-8961.625977f, 7940.808105f, 155.420395f, -13581.579102f, 5991.803711f, -314.520233f, "Southwest water"); // Southwest water
         }
     }
 }

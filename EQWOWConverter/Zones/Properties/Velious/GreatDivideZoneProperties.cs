@@ -21,7 +21,7 @@ namespace EQWOWConverter.Zones.Properties
         public GreatDivideZoneProperties() : base()
         {
 
-            AddDiscardGeometryBox(-868.208313f, -5640.160645f, 1327.317749f, -3538.594482f, -7877.706055f, -256.147705f); // East protrusion area into next zone
+            AddDiscardGeometryBox(-868.208313f, -5640.160645f, 1327.317749f, -3538.594482f, -7877.706055f, -256.147705f, "East protrusion area into next zone"); // East protrusion area into next zone
         }
     }
 }

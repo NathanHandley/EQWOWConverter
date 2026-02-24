@@ -39,7 +39,7 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_cbw1", -432.142548f, 35.032619f, -467.754150f, -17.948999f, -85.968727f, 100f); // Bottom pool outlet
             AddLiquidPlaneZLevel(ZoneLiquidType.Blood, "t75_b1", 322.494659f, 798.303650f, 292.494659f, 768.633362f, 12f, 20f); // Blood pool
 
-            AddDiscardGeometryBox(26.142830f, 21.469500f, 61.976299f, -26.144300f, -23.115879f, -10.437380f); // 0 0 0 spawn room
+            AddDiscardGeometryBox(26.142830f, 21.469500f, 61.976299f, -26.144300f, -23.115879f, -10.437380f, "0 0 0 spawn room"); // 0 0 0 spawn room
         }
     }
 }

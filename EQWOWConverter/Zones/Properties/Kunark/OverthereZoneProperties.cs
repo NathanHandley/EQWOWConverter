@@ -29,10 +29,10 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1ot", -858.570618f, 2560.836914f, -1082.936523f, 2292.712646f, -58.593769f, 30f); // Mud puddle (west)
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 11259.541992f, 5907.908691f, 2288.494873f, -5216.059082f, -181.781113f, 500f); // Ocean
 
-            AddDiscardGeometryBox(-5995.371094f, 3177.649170f, 1415.053223f, -8271.257812f, 138.334351f, 55.707771f); // Zone line that goes into overthere
-            AddDiscardGeometryBox(2433.276123f, 6587.121094f, -170.880447f, 2244.266357f, -5349.100586f, -318.306976f); // South ocean line
-            AddDiscardGeometryBox(11478.570312f, 6019.192871f, 80.366348f, 2074.491211f, 5719.526367f, -782.104858f); // West ocean line
-            AddDiscardGeometryBox(11958.745117f, -4814.552246f, -149.413879f, 2023.581299f, -5293.455566f, -635.455322f); // East ocean line
+            AddDiscardGeometryBox(-5995.371094f, 3177.649170f, 1415.053223f, -8271.257812f, 138.334351f, 55.707771f, "Zone line that goes into overthere"); // Zone line that goes into overthere
+            AddDiscardGeometryBox(2433.276123f, 6587.121094f, -170.880447f, 2244.266357f, -5349.100586f, -318.306976f, "South ocean line"); // South ocean line
+            AddDiscardGeometryBox(11478.570312f, 6019.192871f, 80.366348f, 2074.491211f, 5719.526367f, -782.104858f, "West ocean line"); // West ocean line
+            AddDiscardGeometryBox(11958.745117f, -4814.552246f, -149.413879f, 2023.581299f, -5293.455566f, -635.455322f, "East ocean line"); // East ocean line
 
         }
     }

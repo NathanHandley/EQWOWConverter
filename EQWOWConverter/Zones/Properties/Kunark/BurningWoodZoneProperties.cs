@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("frontiermtns", -2404.3184f, 4043.9534f, -457.12997f, ZoneLineOrientationType.East, -2845.6619f, -4620.881f, 5.9380794f, -2976.7217f, -4548.8438f, -48.21263f);
             AddZoneLineBox("dreadlands", 2797.4214f, -814.58563f, 195.71893f, ZoneLineOrientationType.South, -4431.6133f, -509.9672f, 457.6962f, -4849.6196f, -1052.6932f, 176.06267f);
 
-            AddDiscardGeometryBox(-5612.707031f, 282.552094f, 617.565186f, -6199.320312f, -1748.371826f, -61.609772f); // Dreadlands zone line
+            AddDiscardGeometryBox(-5612.707031f, 282.552094f, 617.565186f, -6199.320312f, -1748.371826f, -61.609772f, "Dreadlands zone line"); // Dreadlands zone line
         }
     }
 }

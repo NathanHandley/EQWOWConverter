@@ -37,9 +37,9 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -1693.079224f, 5036.591309f, -4999.445801f, -3051.582520f, -20.062160f, 500); // South
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 796.321411f, -4999.445801f, -3051.582520f, -20.062160f, 500); // East
 
-            AddDiscardGeometryBox(3278.904541f, -3049.615723f, -8.505950f, -5080.248047f, -3092.001221f, -365.908600f); // East Edge
-            AddDiscardGeometryBox(-4998.655273f, 5111.410645f, -16.397030f, -5241.749512f, -3074.986572f, -335.999634f); // South Edge
-            AddDiscardGeometryBox(3332.018311f, 5252.545898f, -19.575190f, -5004.250488f, 5036.571289f, -396.631653f); // West Edge
+            AddDiscardGeometryBox(3278.904541f, -3049.615723f, -8.505950f, -5080.248047f, -3092.001221f, -365.908600f, "East Edge"); // East Edge
+            AddDiscardGeometryBox(-4998.655273f, 5111.410645f, -16.397030f, -5241.749512f, -3074.986572f, -335.999634f, "South Edge"); // South Edge
+            AddDiscardGeometryBox(3332.018311f, 5252.545898f, -19.575190f, -5004.250488f, 5036.571289f, -396.631653f, "West Edge"); // West Edge
         }
     }
 }

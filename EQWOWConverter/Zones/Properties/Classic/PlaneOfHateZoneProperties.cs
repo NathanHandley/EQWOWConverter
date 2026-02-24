@@ -22,7 +22,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Add zone areas
             // TODO: Need to identify a new zone in / zone out for this zone
-            AddDiscardGeometryBox(818.014099f, 700.247253f, 259.781738f, -719.814148f, -721.046875f, 181.490906f); // Ceiling
+            AddDiscardGeometryBox(818.014099f, 700.247253f, 259.781738f, -719.814148f, -721.046875f, 181.490906f, "Ceiling"); // Ceiling
         }
     }
 }

@@ -22,8 +22,8 @@ namespace EQWOWConverter.Zones.Properties
         {
             //AddValidMusicInstanceTrackIndexes(1, 2, 3);
 
-            AddDiscardGeometryBox(31.701481f, 29.270439f, 59.071331f, -32.516190f, -33.924229f, -25.988199f); // Original tele-in box
-            AddDiscardGeometryBox(373.025665f, -23.719351f, 71.730370f, 258.410400f, -149.362305f, -25.652889f); //  Floating white geometry
+            AddDiscardGeometryBox(31.701481f, 29.270439f, 59.071331f, -32.516190f, -33.924229f, -25.988199f, "Original tele-in box"); // Original tele-in box
+            AddDiscardGeometryBox(373.025665f, -23.719351f, 71.730370f, 258.410400f, -149.362305f, -25.652889f, " Floating white geometry"); //  Floating white geometry
         }
     }
 }

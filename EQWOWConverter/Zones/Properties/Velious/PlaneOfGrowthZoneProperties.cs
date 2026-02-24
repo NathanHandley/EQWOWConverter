@@ -21,7 +21,7 @@ namespace EQWOWConverter.Zones.Properties
         public PlaneOfGrowthZoneProperties() : base()
         {
 
-            AddDiscardGeometryBox(4753.002441f, -240.692780f, -8.933920f, 3961.775635f, -1794.440796f, -617.112305f); // Out of bound bottom-aligned trees on the north wall
+            AddDiscardGeometryBox(4753.002441f, -240.692780f, -8.933920f, 3961.775635f, -1794.440796f, -617.112305f, "Out of bound bottom-aligned trees on the north wall"); // Out of bound bottom-aligned trees on the north wall
 
         }
     }

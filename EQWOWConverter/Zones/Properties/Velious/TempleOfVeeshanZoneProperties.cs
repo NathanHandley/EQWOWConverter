@@ -21,7 +21,7 @@ namespace EQWOWConverter.Zones.Properties
         public TempleOfVeeshanZoneProperties() : base()
         {
             //AddValidMusicInstanceTrackIndexes(0, 2, 3);
-            AddDiscardGeometryBox(24.609921f, 49.312328f, 41.225788f, -29.206511f, -14.658490f, -19.866989f); // Tele-in box
+            AddDiscardGeometryBox(24.609921f, 49.312328f, 41.225788f, -29.206511f, -14.658490f, -19.866989f, "Tele-in box"); // Tele-in box
         }
     }
 }

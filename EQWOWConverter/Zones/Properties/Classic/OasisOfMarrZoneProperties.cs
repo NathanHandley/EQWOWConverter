@@ -133,7 +133,7 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -592.196204f, 962.252136f, -1073.070679f, 135.639008f, -41.718739f, 300f); // Oasis, south west
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -592.196204f, 135.739008f, -1130.410278f, -507.798889f, -41.718739f, 300f); // Oasis, south east
 
-            AddDiscardGeometryBoxMapGenOnly(3675.973389f, 2283.462158f, 845.077942f, 3204.878174f, -1836.829224f, -209.976166f); // North edge
+            AddDiscardGeometryBoxMapGenOnly(3675.973389f, 2283.462158f, 845.077942f, 3204.878174f, -1836.829224f, -209.976166f, "North edge"); // North edge
         }
     }
 }

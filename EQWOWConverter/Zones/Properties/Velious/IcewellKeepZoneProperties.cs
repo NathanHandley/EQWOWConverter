@@ -22,7 +22,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             //AddValidMusicInstanceTrackIndexes(0, 1);
 
-            AddDiscardGeometryBox(13.033260f, 17.105900f, 43.301620f, -16.485941f, -12.658110f, -4.878450f); // Tele-in room
+            AddDiscardGeometryBox(13.033260f, 17.105900f, 43.301620f, -16.485941f, -12.658110f, -4.878450f, "Tele-in room"); // Tele-in room
         }
     }
 }

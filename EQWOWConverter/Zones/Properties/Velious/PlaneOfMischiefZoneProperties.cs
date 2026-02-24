@@ -20,9 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public PlaneOfMischiefZoneProperties() : base()
         {
-            AddDiscardGeometryBox(730.961975f, -702.425354f, 383.608917f, 590.080750f, -846.646484f, 308.057251f); //  Floating purple curtians
-            AddDiscardGeometryBox(329.129425f, -379.572754f, 233.762146f, 329.129425f, -379.572754f, 233.762146f); // White walls and floating purple liquid room near the middle
-            AddDiscardGeometryBox(458.106323f, -380.777161f, 239.702957f, 338.721161f, -438.332611f, 104.364090f); // Tele-in room in the underside
+            AddDiscardGeometryBox(730.961975f, -702.425354f, 383.608917f, 590.080750f, -846.646484f, 308.057251f, " Floating purple curtians"); //  Floating purple curtians
+            AddDiscardGeometryBox(329.129425f, -379.572754f, 233.762146f, 329.129425f, -379.572754f, 233.762146f, "White walls and floating purple liquid room near the middle"); // White walls and floating purple liquid room near the middle
+            AddDiscardGeometryBox(458.106323f, -380.777161f, 239.702957f, 338.721161f, -438.332611f, 104.364090f, "Tele-in room in the underside"); // Tele-in room in the underside
         }
     }
 }

@@ -20,9 +20,9 @@ namespace EQWOWConverter.Zones.Properties
     {
         public WesternWastesZoneProperties() : base()
         {
-            AddDiscardGeometryBox(-6907.262695f, 7068.784668f, -223.119186f, -7047.204590f, -6294.494629f, -441.381866f); // South ocean paremeter
-            AddDiscardGeometryBox(7345.539062f, 7049.416992f, -274.974518f, -7073.721191f, 6972.919922f, -521.189514f); // West ocean paremeter
-            AddDiscardGeometryBox(7350.208008f, -4984.016602f, -282.146088f, -7002.995117f, -6198.897949f, -689.360107f); // East ocean parameter
+            AddDiscardGeometryBox(-6907.262695f, 7068.784668f, -223.119186f, -7047.204590f, -6294.494629f, -441.381866f, "South ocean paremeter"); // South ocean paremeter
+            AddDiscardGeometryBox(7345.539062f, 7049.416992f, -274.974518f, -7073.721191f, 6972.919922f, -521.189514f, "West ocean paremeter"); // West ocean paremeter
+            AddDiscardGeometryBox(7350.208008f, -4984.016602f, -282.146088f, -7002.995117f, -6198.897949f, -689.360107f, "East ocean parameter"); // East ocean parameter
         }
     }
 }

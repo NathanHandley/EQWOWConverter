@@ -20,7 +20,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public DragonNecropolisZoneProperties() : base()
         {
-            AddDiscardGeometryBox(34.417820f, 44.596588f, 100.655647f, -36.627048f, -34.659981f, -10.816700f); // Tele-in box
+            AddDiscardGeometryBox(34.417820f, 44.596588f, 100.655647f, -36.627048f, -34.659981f, -10.816700f, "Tele-in box"); // Tele-in box
         }
     }
 }

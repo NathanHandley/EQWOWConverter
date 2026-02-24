@@ -34,7 +34,7 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_drowatr1", -1939.819946f, -1610.540527f, -2047.140381f, -1659.428345f, -47.968719f, 500f); // Crossover water source
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_drowatr1", -2014.838501f, -1566.985718f, -2174.728760f, -1709.796753f, -191.937347f, 30f); // Big pool at the bottom of the east waterfalls
 
-            AddDiscardGeometryBox(32.933071f, 44.520969f, 115.778313f, -20.912889f, -48.130749f, -8.768160f); // 0 0 0 spawn box
+            AddDiscardGeometryBox(32.933071f, 44.520969f, 115.778313f, -20.912889f, -48.130749f, -8.768160f, "0 0 0 spawn box"); // 0 0 0 spawn box
         }
     }
 }

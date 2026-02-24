@@ -22,7 +22,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             //AddValidMusicInstanceTrackIndexes(0, 2, 3, 6);
 
-            AddDiscardGeometryBox(44.391918f, 37.071850f, 178.697174f, -25.827579f, -46.697441f, -17.149811f); // Tele-in and floating banner above it
+            AddDiscardGeometryBox(44.391918f, 37.071850f, 178.697174f, -25.827579f, -46.697441f, -17.149811f, "Tele-in and floating banner above it"); // Tele-in and floating banner above it
         }
     }
 }

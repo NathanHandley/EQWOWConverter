@@ -22,7 +22,21 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneProperties
     {
+        class RawDiscardedGeometryBox
+        {
+            public string ShortName = string.Empty;
+            public string TypeString = string.Empty;
+            public float NWCornerX;
+            public float NWCornerY;
+            public float NWCornerZ;
+            public float SECornerX;
+            public float SECornerY;
+            public float SECornerZ;
+            public string Comment = string.Empty;
+        }
+
         private static Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
+        private static Dictionary<string, List<RawDiscardedGeometryBox>> RawDiscardGeometryBoxesByZoneShortName = new Dictionary<string, List<RawDiscardedGeometryBox>>();
 
         public int DBCMapID;
         public int DBCMapDifficultyID;
@@ -206,49 +220,19 @@ namespace EQWOWConverter.Zones
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         // Coordinates flip due to world <-> wmo space
-        protected void AddDiscardGeometryBox(float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ)
+        protected void AddDiscardGeometryBox(float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ, string comment = "")
         {
-            BoundingBox preScaleBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
-            BoundingBox postScaleBox = new BoundingBox();
-
-            postScaleBox.TopCorner.X = preScaleBox.BottomCorner.X * -Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.TopCorner.Y = preScaleBox.BottomCorner.Y * -Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.TopCorner.Z = preScaleBox.TopCorner.Z * Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.BottomCorner.X = preScaleBox.TopCorner.X * -Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.BottomCorner.Y = preScaleBox.TopCorner.Y * -Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.BottomCorner.Z = preScaleBox.BottomCorner.Z * Configuration.GENERATE_WORLD_SCALE;
-
-            DiscardGeometryBoxes.Add(postScaleBox);
+            // TODO: Delete
         }
 
-        protected void AddDiscardGeometryBoxMapGenOnly(float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ)
+        protected void AddDiscardGeometryBoxMapGenOnly(float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ, string comment = "")
         {
-            BoundingBox preScaleBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
-            BoundingBox postScaleBox = new BoundingBox();
-
-            postScaleBox.TopCorner.X = preScaleBox.BottomCorner.X * -Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.TopCorner.Y = preScaleBox.BottomCorner.Y * -Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.TopCorner.Z = preScaleBox.TopCorner.Z * Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.BottomCorner.X = preScaleBox.TopCorner.X * -Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.BottomCorner.Y = preScaleBox.TopCorner.Y * -Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.BottomCorner.Z = preScaleBox.BottomCorner.Z * Configuration.GENERATE_WORLD_SCALE;
-
-            DiscardObjectGeometryBoxesMapGenOnly.Add(postScaleBox);
+            // TODO: Delete
         }
 
-        protected void AddDiscardGeometryBoxObjectsOnly(float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ)
+        protected void AddDiscardGeometryBoxObjectsOnly(float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ, string comment = "")
         {
-            BoundingBox preScaleBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
-            BoundingBox postScaleBox = new BoundingBox();
-
-            postScaleBox.TopCorner.X = preScaleBox.BottomCorner.X * -Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.TopCorner.Y = preScaleBox.BottomCorner.Y * -Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.TopCorner.Z = preScaleBox.TopCorner.Z * Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.BottomCorner.X = preScaleBox.TopCorner.X * -Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.BottomCorner.Y = preScaleBox.TopCorner.Y * -Configuration.GENERATE_WORLD_SCALE;
-            postScaleBox.BottomCorner.Z = preScaleBox.BottomCorner.Z * Configuration.GENERATE_WORLD_SCALE;
-
-            DiscardGeometryBoxesObjectsOnly.Add(postScaleBox);
+            // TODO: Delete
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
@@ -730,6 +714,32 @@ namespace EQWOWConverter.Zones
                 foreach (string alwaysBrightMaterialName in propertiesRow["AlwaysBrightMaterials"].Split(","))
                     zoneProperties.AlwaysBrightMaterialsByName.Add(alwaysBrightMaterialName.Trim());
                 zoneProperties.ZoneLineBoxes.AddRange(ZonePropertiesZoneLineBox.GetZoneLineBoxesForSourceZone(shortName));
+                if (RawDiscardGeometryBoxesByZoneShortName.ContainsKey(zoneProperties.ShortName) == true)
+                {
+                    foreach (RawDiscardedGeometryBox discardedGeometryBox in RawDiscardGeometryBoxesByZoneShortName[zoneProperties.ShortName])
+                    {
+                        BoundingBox preScaleBox = new BoundingBox(discardedGeometryBox.SECornerX, discardedGeometryBox.SECornerY,
+                            discardedGeometryBox.SECornerZ, discardedGeometryBox.NWCornerX, discardedGeometryBox.NWCornerY, 
+                            discardedGeometryBox.NWCornerZ);
+                        BoundingBox postScaleBox = new BoundingBox();
+                        postScaleBox.TopCorner.X = preScaleBox.BottomCorner.X * -Configuration.GENERATE_WORLD_SCALE;
+                        postScaleBox.TopCorner.Y = preScaleBox.BottomCorner.Y * -Configuration.GENERATE_WORLD_SCALE;
+                        postScaleBox.TopCorner.Z = preScaleBox.TopCorner.Z * Configuration.GENERATE_WORLD_SCALE;
+                        postScaleBox.BottomCorner.X = preScaleBox.TopCorner.X * -Configuration.GENERATE_WORLD_SCALE;
+                        postScaleBox.BottomCorner.Y = preScaleBox.TopCorner.Y * -Configuration.GENERATE_WORLD_SCALE;
+                        postScaleBox.BottomCorner.Z = preScaleBox.BottomCorner.Z * Configuration.GENERATE_WORLD_SCALE;
+                        switch (discardedGeometryBox.TypeString.Trim().ToLower())
+                        {
+                            case "all": zoneProperties.DiscardGeometryBoxes.Add(postScaleBox); break;
+                            case "mapgenonly": zoneProperties.DiscardObjectGeometryBoxesMapGenOnly.Add(postScaleBox); break;
+                            case "objectsonly": zoneProperties.DiscardGeometryBoxesObjectsOnly.Add(postScaleBox); break;
+                            default:
+                                {
+                                    Logger.WriteError("ZoneProperties::AddZonePropertiesByShortName invalid discarded geometry box type of '", discardedGeometryBox.TypeString.Trim().ToLower(), "' for zone '", shortName, "' ");
+                                } break;
+                        }
+                    }
+                }
 
                 // World map
                 zoneProperties.DisplayMapMainLeft = float.Parse(propertiesRow["DisplayMapMainLeft"]);
@@ -822,11 +832,33 @@ namespace EQWOWConverter.Zones
 
         private static void PopulateZonePropertiesList()
         {
-            // Load the file first
+            // Load the raw discard geometry box information
+            string discardedGeometryBoxesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneDiscardedGeometryBoxes.csv");
+            Logger.WriteDebug("Populating Discarded Geometry Boxes via file '" + discardedGeometryBoxesFile + "'");
+            List<Dictionary<string, string>> discardedGeometryBoxesRows = FileTool.ReadAllRowsFromFileWithHeader(discardedGeometryBoxesFile, "|");
+            foreach (Dictionary<string, string> discardedGeometryBoxRow in discardedGeometryBoxesRows)
+            {
+                RawDiscardedGeometryBox newDiscardedGeometryBox = new RawDiscardedGeometryBox();
+                newDiscardedGeometryBox.ShortName = discardedGeometryBoxRow["ZoneShortName"];
+                newDiscardedGeometryBox.TypeString = discardedGeometryBoxRow["Type"];
+                newDiscardedGeometryBox.NWCornerX = Convert.ToSingle(discardedGeometryBoxRow["NWCornerX"]);
+                newDiscardedGeometryBox.NWCornerY = Convert.ToSingle(discardedGeometryBoxRow["NWCornerY"]);
+                newDiscardedGeometryBox.NWCornerZ = Convert.ToSingle(discardedGeometryBoxRow["NWCornerZ"]);
+                newDiscardedGeometryBox.SECornerX = Convert.ToSingle(discardedGeometryBoxRow["SECornerX"]);
+                newDiscardedGeometryBox.SECornerY = Convert.ToSingle(discardedGeometryBoxRow["SECornerY"]);
+                newDiscardedGeometryBox.SECornerZ = Convert.ToSingle(discardedGeometryBoxRow["SECornerZ"]);
+                newDiscardedGeometryBox.Comment = discardedGeometryBoxRow["Comment"];
+
+                if (RawDiscardGeometryBoxesByZoneShortName.ContainsKey(newDiscardedGeometryBox.ShortName) == false)
+                    RawDiscardGeometryBoxesByZoneShortName.Add(newDiscardedGeometryBox.ShortName, new List<RawDiscardedGeometryBox>());
+                RawDiscardGeometryBoxesByZoneShortName[newDiscardedGeometryBox.ShortName].Add(newDiscardedGeometryBox);
+            }
+
+            // Load the zone properties file
             string zonePropertiesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneProperties.csv");
             Logger.WriteDebug("Populating Zone Properties list via file '" + zonePropertiesFile + "'");
             List<Dictionary<string, string>> zonePropertiesRows = FileTool.ReadAllRowsFromFileWithHeader(zonePropertiesFile, "|");
-            
+
             // Remap the rows for quicker lookups
             Dictionary<string, Dictionary<string, string>> zonePropertiesByShortName = new Dictionary<string, Dictionary<string, string>>();
             foreach (Dictionary<string, string> propertiesRow in zonePropertiesRows)
@@ -1033,7 +1065,29 @@ namespace EQWOWConverter.Zones
             //    //int y = 5;
             //}
             //FileTool.WriteAllRowsToFileWithHeader(zonePropertiesFile, "|", zonePropertiesRows);
-            
+
+            // TODO: DELETE
+            //string zoneDiscardBoxes = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneDiscardedGeometryBoxes.csv");
+            //List<Dictionary<string, string>> zoneDiscardedGeometryBoxes = FileTool.ReadAllRowsFromFileWithHeader(zoneDiscardBoxes, "|");
+            //foreach (ZoneProperties curZoneProperties in ZonePropertyListByShortName.Values)
+            //{
+            //    foreach (DiscardBox discardBox in curZoneProperties.discardBoxes)
+            //    {
+            //        Dictionary<string, string> newRow = new Dictionary<string, string>();
+            //        newRow.Add("ZoneShortName", curZoneProperties.ShortName);
+            //        newRow.Add("Type", discardBox.typeString);
+            //        newRow.Add("NWCornerX", CleanSmallValue(discardBox.nwCornerX).ToString());
+            //        newRow.Add("NWCornerY", CleanSmallValue(discardBox.nwCornerY).ToString());
+            //        newRow.Add("NWCornerZ", CleanSmallValue(discardBox.nwCornerZ).ToString());
+            //        newRow.Add("SECornerX", CleanSmallValue(discardBox.seCornerX).ToString());
+            //        newRow.Add("SECornerY", CleanSmallValue(discardBox.seCornerY).ToString());
+            //        newRow.Add("SECornerZ", CleanSmallValue(discardBox.seCornerZ).ToString());
+            //        newRow.Add("Comment", discardBox.comment.Trim());
+            //        zoneDiscardedGeometryBoxes.Add(newRow);
+            //    }
+            //}
+            //FileTool.WriteAllRowsToFileWithHeader(zoneDiscardBoxes, "|", zoneDiscardedGeometryBoxes);
+            //int z = 0;
             // END TEMP
         }
     }
