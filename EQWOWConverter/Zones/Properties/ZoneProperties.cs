@@ -22,9 +22,45 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneProperties
     {
-        class RawDiscardedGeometryBox
+        class ConfigZoneSubArea
         {
-            public string ShortName = string.Empty;
+            public string ZoneShortName = string.Empty;
+            public string AreaName = string.Empty;
+            public int OrderID;
+            public UInt32 DBCAreaTableID;
+            public string ParentSubAreaName = string.Empty;
+            public string MusicFileNameNoExtDay = string.Empty;
+            public string MusicFileNameNoExtNight = string.Empty;
+            public float MusicVolume = 1f;
+            public bool DoLoopMusic = true;
+            public string AmbientSoundFileNameNoExtDay = string.Empty;
+            public string AmbientSoundFileNameNoExtNight = string.Empty;
+        }
+
+        class ConfigZoneSubAreaBox
+        {
+            public string ZoneShortName = string.Empty;
+            public string AreaName = string.Empty;
+            public string Shape = "box";
+            public float NorthX;
+            public float SouthX;
+            public float WestY;
+            public float EastY;
+            public float TopZ;
+            public float BottomZ;
+            public float OctagonNorthWestY;
+            public float OctagonNorthEastY;
+            public float OctagonSouthWestY;
+            public float OctagonSouthEastY;
+            public float OctagonWestNorthX;
+            public float OctagonWestSouthX;
+            public float OctagonEastNorthX;
+            public float OctagonEastSouthX;
+        }
+
+        class ConfigDiscardedGeometryBox
+        {
+            public string ZoneShortName = string.Empty;
             public string TypeString = string.Empty;
             public float NWCornerX;
             public float NWCornerY;
@@ -36,7 +72,9 @@ namespace EQWOWConverter.Zones
         }
 
         private static Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
-        private static Dictionary<string, List<RawDiscardedGeometryBox>> RawDiscardGeometryBoxesByZoneShortName = new Dictionary<string, List<RawDiscardedGeometryBox>>();
+        private static Dictionary<string, List<ConfigDiscardedGeometryBox>> ConfigDiscardGeometryBoxesByZoneShortName = new Dictionary<string, List<ConfigDiscardedGeometryBox>>();
+        private static Dictionary<string, List<ConfigZoneSubArea>> ConfigSubAreasByZoneShortName = new Dictionary<string, List<ConfigZoneSubArea>>();
+        private static Dictionary<string, List<ConfigZoneSubAreaBox>> ConfigSubAreaBoxesByZoneShortName = new Dictionary<string, List<ConfigZoneSubAreaBox>>();
 
         public int DBCMapID;
         public int DBCMapDifficultyID;
@@ -54,7 +92,7 @@ namespace EQWOWConverter.Zones
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
         public ZoneEnvironmentSettings ZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
         public double VertexColorIntensity = 0.2f;
-        public ZoneArea DefaultZoneArea = new ZoneArea(string.Empty, string.Empty);
+        public ZoneArea DefaultZoneArea = new ZoneArea(string.Empty, string.Empty, 0);
         public List<ZoneArea> SubZoneAreas = new List<ZoneArea>();
         public HashSet<string> Enabled2DSoundInstancesByDaySoundName = new HashSet<string>();
         public bool IsRestingZoneWide = false;
@@ -103,21 +141,22 @@ namespace EQWOWConverter.Zones
 
         // These areas must be made in descending priority order, as every area will isolate its own geometry
         // Ambient sound of "silence" will override a parent's ambience with no sound
-        protected void AddZoneArea(string name, string musicFileNameNoExtDay = "", string musicFileNameNoExtNight = "", bool loopMusic = true,
+        protected void AddZoneArea(string name, UInt32 areaTableDBCID, string musicFileNameNoExtDay = "", string musicFileNameNoExtNight = "", bool loopMusic = true,
             string ambientSoundFileNameNoExtDay = "", string ambientSoundFileNameNoExtNight = "", float musicVolume = 1f)
         {
-            AddChildZoneArea(name, string.Empty, musicFileNameNoExtDay, musicFileNameNoExtNight, loopMusic, ambientSoundFileNameNoExtDay,
+            AddChildZoneArea(name, areaTableDBCID, string.Empty, musicFileNameNoExtDay, musicFileNameNoExtNight, loopMusic, ambientSoundFileNameNoExtDay,
                 ambientSoundFileNameNoExtNight, musicVolume);
         }
 
         // These areas must be made in descending priority order, as every area will isolate its own geometry
         // IMPORTANT: These must be defined before the parent area if they share geometry
         // Ambient sound of "silence" will override a parent's ambience with no sound
-        protected void AddChildZoneArea(string name, string parentName, string musicFileNameNoExtDay = "", string musicFileNameNoExtNight = "", bool loopMusic = true,
-            string ambientSoundFileNameNoExtDay = "", string ambientSoundFileNameNoExtNight = "", float musicVolume = 1f)
+        private int AreaOrderIDCounter = 0;
+        protected void AddChildZoneArea(string name, UInt32 areaTableDBCID, string parentName, string musicFileNameNoExtDay = "", string musicFileNameNoExtNight = "", 
+            bool loopMusic = true, string ambientSoundFileNameNoExtDay = "", string ambientSoundFileNameNoExtNight = "", float musicVolume = 1f)
         {
             // Create it
-            ZoneArea newZoneArea = new ZoneArea(name, parentName);
+            ZoneArea newZoneArea = new ZoneArea(name, parentName, areaTableDBCID);
             SubZoneAreas.Add(newZoneArea);
 
             // Music
@@ -130,7 +169,8 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
-        protected void AddZoneAreaBox(string zoneAreaName, float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ)
+        protected void AddZoneAreaBox(string zoneAreaName, UInt32 areaTableDBCID, float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, 
+            float seCornerZ, bool fromOctagon = false)
         {
             BoundingBox boundingBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
 
@@ -146,8 +186,9 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
-        protected void AddZoneAreaOctagonBox(string zoneAreaName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
-            float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float topZ, float bottomZ)
+        protected void AddZoneAreaOctagonBox(string zoneAreaName, UInt32 areaTableDBCID, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, 
+            float northWestY, float northEastY, float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, 
+            float topZ, float bottomZ)
         {
             // TODO: Consider moving this to a config
             float stepSize = 0.3f;
@@ -173,7 +214,7 @@ namespace EQWOWConverter.Zones
                 if (curXTop <= westNorthX && curXTop <= eastNorthX && curXTop >= westSouthX && curXTop >= eastSouthX)
                 {
                     float highestSouthEastX = MathF.Max(westSouthX, eastSouthX);
-                    AddZoneAreaBox(zoneAreaName, curXTop, westEdgeY, topZ, highestSouthEastX, eastEdgeY, bottomZ);
+                    AddZoneAreaBox(zoneAreaName, areaTableDBCID, curXTop, westEdgeY, topZ, highestSouthEastX, eastEdgeY, bottomZ, true);
                     curXTop = highestSouthEastX;
                 }
 
@@ -210,7 +251,7 @@ namespace EQWOWConverter.Zones
                 // Add the box if the bounds are good
                 if (nwX > seX && nwY > seY)
                 {
-                    AddZoneAreaBox(zoneAreaName, nwX, nwY, topZ, seX, seY, bottomZ);
+                    AddZoneAreaBox(zoneAreaName, areaTableDBCID, nwX, nwY, topZ, seX, seY, bottomZ, true);
                 }
 
                 // Set new top factoring for overlap
@@ -709,14 +750,15 @@ namespace EQWOWConverter.Zones
                 zoneProperties.Continent = (ZoneContinentType)int.Parse(propertiesRow["ContinentID"]);
                 zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);
                 zoneProperties.DefaultZoneArea.DisplayName = propertiesRow["DescriptiveName"];
+                zoneProperties.DefaultZoneArea.DBCAreaTableID = Convert.ToUInt32(propertiesRow["DefaultAreaAreaTableDBCID"]);
                 zoneProperties.IsRestingZoneWide = propertiesRow["RestZoneWide"].Trim() == "1" ? true : false;
                 zoneProperties.CollisionMaxZ = float.Parse(propertiesRow["CollisionGeometryMaxZ"]);
                 foreach (string alwaysBrightMaterialName in propertiesRow["AlwaysBrightMaterials"].Split(","))
                     zoneProperties.AlwaysBrightMaterialsByName.Add(alwaysBrightMaterialName.Trim());
                 zoneProperties.ZoneLineBoxes.AddRange(ZonePropertiesZoneLineBox.GetZoneLineBoxesForSourceZone(shortName));
-                if (RawDiscardGeometryBoxesByZoneShortName.ContainsKey(zoneProperties.ShortName) == true)
+                if (ConfigDiscardGeometryBoxesByZoneShortName.ContainsKey(zoneProperties.ShortName) == true)
                 {
-                    foreach (RawDiscardedGeometryBox discardedGeometryBox in RawDiscardGeometryBoxesByZoneShortName[zoneProperties.ShortName])
+                    foreach (ConfigDiscardedGeometryBox discardedGeometryBox in ConfigDiscardGeometryBoxesByZoneShortName[zoneProperties.ShortName])
                     {
                         BoundingBox preScaleBox = new BoundingBox(discardedGeometryBox.SECornerX, discardedGeometryBox.SECornerY,
                             discardedGeometryBox.SECornerZ, discardedGeometryBox.NWCornerX, discardedGeometryBox.NWCornerY, 
@@ -832,14 +874,14 @@ namespace EQWOWConverter.Zones
 
         private static void PopulateZonePropertiesList()
         {
-            // Load the raw discard geometry box information
+            // Load the discarded geometry box information
             string discardedGeometryBoxesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneDiscardedGeometryBoxes.csv");
             Logger.WriteDebug("Populating Discarded Geometry Boxes via file '" + discardedGeometryBoxesFile + "'");
             List<Dictionary<string, string>> discardedGeometryBoxesRows = FileTool.ReadAllRowsFromFileWithHeader(discardedGeometryBoxesFile, "|");
             foreach (Dictionary<string, string> discardedGeometryBoxRow in discardedGeometryBoxesRows)
             {
-                RawDiscardedGeometryBox newDiscardedGeometryBox = new RawDiscardedGeometryBox();
-                newDiscardedGeometryBox.ShortName = discardedGeometryBoxRow["ZoneShortName"];
+                ConfigDiscardedGeometryBox newDiscardedGeometryBox = new ConfigDiscardedGeometryBox();
+                newDiscardedGeometryBox.ZoneShortName = discardedGeometryBoxRow["ZoneShortName"];
                 newDiscardedGeometryBox.TypeString = discardedGeometryBoxRow["Type"];
                 newDiscardedGeometryBox.NWCornerX = Convert.ToSingle(discardedGeometryBoxRow["NWCornerX"]);
                 newDiscardedGeometryBox.NWCornerY = Convert.ToSingle(discardedGeometryBoxRow["NWCornerY"]);
@@ -849,9 +891,74 @@ namespace EQWOWConverter.Zones
                 newDiscardedGeometryBox.SECornerZ = Convert.ToSingle(discardedGeometryBoxRow["SECornerZ"]);
                 newDiscardedGeometryBox.Comment = discardedGeometryBoxRow["Comment"];
 
-                if (RawDiscardGeometryBoxesByZoneShortName.ContainsKey(newDiscardedGeometryBox.ShortName) == false)
-                    RawDiscardGeometryBoxesByZoneShortName.Add(newDiscardedGeometryBox.ShortName, new List<RawDiscardedGeometryBox>());
-                RawDiscardGeometryBoxesByZoneShortName[newDiscardedGeometryBox.ShortName].Add(newDiscardedGeometryBox);
+                if (ConfigDiscardGeometryBoxesByZoneShortName.ContainsKey(newDiscardedGeometryBox.ZoneShortName) == false)
+                    ConfigDiscardGeometryBoxesByZoneShortName.Add(newDiscardedGeometryBox.ZoneShortName, new List<ConfigDiscardedGeometryBox>());
+                ConfigDiscardGeometryBoxesByZoneShortName[newDiscardedGeometryBox.ZoneShortName].Add(newDiscardedGeometryBox);
+            }
+
+            // Load the sub areas
+            string subAreaFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneSubAreas.csv");
+            Logger.WriteDebug("Populating Sub Areas via file '" + subAreaFile + "'");
+            List<Dictionary<string, string>> subAreaRows = FileTool.ReadAllRowsFromFileWithHeader(subAreaFile, "|");
+            foreach (Dictionary<string, string> subAreaRow in subAreaRows)
+            {
+                ConfigZoneSubArea newConfigZoneSubArea = new ConfigZoneSubArea();
+                newConfigZoneSubArea.ZoneShortName = subAreaRow["ZoneShortName"].Trim().ToLower();
+                newConfigZoneSubArea.AreaName = subAreaRow["AreaName"].Trim().ToLower();
+                newConfigZoneSubArea.OrderID = int.Parse(subAreaRow["OrderID"]);
+                newConfigZoneSubArea.DBCAreaTableID = UInt32.Parse(subAreaRow["AreaTableDBCID"]);
+                newConfigZoneSubArea.ParentSubAreaName = subAreaRow["ParentSubAreaName"].Trim().ToLower();
+                if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
+                {
+                    newConfigZoneSubArea.MusicFileNameNoExtDay = subAreaRow["MusicDayAlt"].Trim().ToLower();
+                    newConfigZoneSubArea.MusicFileNameNoExtNight = subAreaRow["MusicNightAlt"].Trim().ToLower();
+                }
+                else
+                {
+                    newConfigZoneSubArea.MusicFileNameNoExtDay = subAreaRow["MusicDay"].Trim().ToLower();
+                    newConfigZoneSubArea.MusicFileNameNoExtNight = subAreaRow["MusicNight"].Trim().ToLower();
+                }                
+                newConfigZoneSubArea.MusicVolume = float.Parse(subAreaRow["MusicVolume"]);
+                newConfigZoneSubArea.DoLoopMusic = subAreaRow["DoLoopMusic"].Trim() == "1" ? true : false;
+                newConfigZoneSubArea.AmbientSoundFileNameNoExtDay = subAreaRow["AmbientSoundDay"].Trim().ToLower();
+                newConfigZoneSubArea.AmbientSoundFileNameNoExtNight = subAreaRow["AmbientSoundNight"].Trim().ToLower();
+
+                if (ConfigSubAreasByZoneShortName.ContainsKey(newConfigZoneSubArea.ZoneShortName) == false)
+                    ConfigSubAreasByZoneShortName.Add(newConfigZoneSubArea.ZoneShortName, new List<ConfigZoneSubArea>());
+                ConfigSubAreasByZoneShortName[newConfigZoneSubArea.ZoneShortName].Add(newConfigZoneSubArea);
+            }
+            // Sort by OrderID for now (ascending)
+            foreach (List<ConfigZoneSubArea> subAreasInZone in ConfigSubAreasByZoneShortName.Values)
+                subAreasInZone.Sort((a, b) => a.OrderID.CompareTo(b.OrderID));
+
+            // Load the sub area boxes
+            string subAreaBoxesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneSubAreaBoxes.csv");
+            Logger.WriteDebug("Populating Sub Areas Boxes via file '" + subAreaBoxesFile + "'");
+            List<Dictionary<string, string>> subAreaBoxRows = FileTool.ReadAllRowsFromFileWithHeader(subAreaBoxesFile, "|");
+            foreach (Dictionary<string, string> subAreaBoxRow in subAreaBoxRows)
+            {
+                ConfigZoneSubAreaBox newAreaBox = new ConfigZoneSubAreaBox();
+                newAreaBox.ZoneShortName = subAreaBoxRow["ZoneShortName"].Trim().ToLower();
+                newAreaBox.AreaName = subAreaBoxRow["AreaName"].Trim().ToLower();
+                newAreaBox.Shape = subAreaBoxRow["Shape"].Trim().ToLower();
+                newAreaBox.NorthX = float.Parse(subAreaBoxRow["NorthX"]);
+                newAreaBox.SouthX = float.Parse(subAreaBoxRow["SouthX"]);
+                newAreaBox.WestY = float.Parse(subAreaBoxRow["WestY"]);
+                newAreaBox.EastY = float.Parse(subAreaBoxRow["EastY"]);
+                newAreaBox.TopZ = float.Parse(subAreaBoxRow["TopZ"]);
+                newAreaBox.BottomZ = float.Parse(subAreaBoxRow["BottomZ"]);
+                newAreaBox.OctagonNorthWestY = float.Parse(subAreaBoxRow["OctagonNorthWestY"]);
+                newAreaBox.OctagonNorthEastY = float.Parse(subAreaBoxRow["OctagonNorthEastY"]);
+                newAreaBox.OctagonSouthWestY = float.Parse(subAreaBoxRow["OctagonSouthWestY"]);
+                newAreaBox.OctagonSouthEastY = float.Parse(subAreaBoxRow["OctagonSouthEastY"]);
+                newAreaBox.OctagonWestNorthX = float.Parse(subAreaBoxRow["OctagonWestNorthX"]);
+                newAreaBox.OctagonWestSouthX = float.Parse(subAreaBoxRow["OctagonWestSouthX"]);
+                newAreaBox.OctagonEastNorthX = float.Parse(subAreaBoxRow["OctagonEastNorthX"]);
+                newAreaBox.OctagonEastSouthX = float.Parse(subAreaBoxRow["OctagonEastSouthX"]);
+
+                if (ConfigSubAreaBoxesByZoneShortName.ContainsKey(newAreaBox.ZoneShortName) == false)
+                    ConfigSubAreaBoxesByZoneShortName.Add(newAreaBox.ZoneShortName, new List<ConfigZoneSubAreaBox>());
+                ConfigSubAreaBoxesByZoneShortName[newAreaBox.ZoneShortName].Add(newAreaBox);
             }
 
             // Load the zone properties file
@@ -998,30 +1105,34 @@ namespace EQWOWConverter.Zones
                 return Math.Abs(value) <= 0.0001f ? 0f : value;
             }
 
-            //string zoneLineBoxesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneLineBoxes.csv");
-            //List<Dictionary<string, string>> zoneLineBoxesRows = FileTool.ReadAllRowsFromFileWithHeader(zoneLineBoxesFile, "|");
+            //string zoneSubAreasBoxesFiles = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneSubAreaBoxes.csv");
+            //List<Dictionary<string, string>> zoneSubAreaBoxRows = FileTool.ReadAllRowsFromFileWithHeader(zoneSubAreasBoxesFiles, "|");
             //foreach (ZoneProperties curZoneProperties in ZonePropertyListByShortName.Values)
             //{
-            //    foreach (ZonePropertiesZoneLineBox zoneLineBox in curZoneProperties.ZoneLineBoxes)
+            //    foreach (ConfigZoneSubAreaBox zoneSubAreaBox in curZoneProperties.TempConfigSubAreaBoxes)
             //    {
             //        Dictionary<string, string> newRow = new Dictionary<string, string>();
-            //        newRow.Add("SourceZoneShortName", curZoneProperties.ShortName);
-            //        newRow.Add("SourceBoxTopNW_X", CleanSmallValue(zoneLineBox.TempboxTopNorthwestX).ToString());
-            //        newRow.Add("SourceBoxTopNW_Y", CleanSmallValue(zoneLineBox.TempboxTopNorthwestY).ToString());
-            //        newRow.Add("SourceBoxTopNW_Z", CleanSmallValue(zoneLineBox.TempboxTopNorthwestZ).ToString());
-            //        newRow.Add("SourceBoxBottomSE_X", CleanSmallValue(zoneLineBox.TempboxBottomSoutheastX).ToString());
-            //        newRow.Add("SourceBoxBottomSE_Y", CleanSmallValue(zoneLineBox.TempboxBottomSoutheastY).ToString());
-            //        newRow.Add("SourceBoxBottomSE_Z", CleanSmallValue(zoneLineBox.TempBoxBottomSoutheastZ).ToString());
-            //        newRow.Add("TargetZoneShortName", zoneLineBox.TempTargetZoneShortName);
-            //        newRow.Add("TargetPosX", CleanSmallValue(zoneLineBox.TemptargetZonePositionX).ToString());
-            //        newRow.Add("TargetPosY", CleanSmallValue(zoneLineBox.TemptargetZonePositionY).ToString());
-            //        newRow.Add("TargetPosZ", CleanSmallValue(zoneLineBox.TemptargetZonePositionZ).ToString());
-            //        newRow.Add("TargetPosOrientation", zoneLineBox.TemptargetZoneOrientation.ToString().ToLower());
-            //        newRow.Add("Comment", zoneLineBox.TempComment);
-            //        zoneLineBoxesRows.Add(newRow);
+            //        newRow.Add("ZoneShortName", curZoneProperties.ShortName);
+            //        newRow.Add("AreaName", zoneSubAreaBox.AreaName);
+            //        newRow.Add("Shape", zoneSubAreaBox.Shape);
+            //        newRow.Add("NorthX", CleanSmallValue(zoneSubAreaBox.NorthX).ToString());
+            //        newRow.Add("WestY", CleanSmallValue(zoneSubAreaBox.WestY).ToString());
+            //        newRow.Add("TopZ", CleanSmallValue(zoneSubAreaBox.TopZ).ToString());
+            //        newRow.Add("SouthX", CleanSmallValue(zoneSubAreaBox.SouthX).ToString());
+            //        newRow.Add("EastY", CleanSmallValue(zoneSubAreaBox.EastY).ToString());
+            //        newRow.Add("BottomZ", CleanSmallValue(zoneSubAreaBox.BottomZ).ToString());
+            //        newRow.Add("OctagonNorthWestY", CleanSmallValue(zoneSubAreaBox.OctagonNorthWestY).ToString());
+            //        newRow.Add("OctagonNorthEastY", CleanSmallValue(zoneSubAreaBox.OctagonNorthEastY).ToString());
+            //        newRow.Add("OctagonSouthWestY", CleanSmallValue(zoneSubAreaBox.OctagonSouthWestY).ToString());
+            //        newRow.Add("OctagonSouthEastY", CleanSmallValue(zoneSubAreaBox.OctagonSouthEastY).ToString());
+            //        newRow.Add("OctagonWestNorthX", CleanSmallValue(zoneSubAreaBox.OctagonWestNorthX).ToString());
+            //        newRow.Add("OctagonWestSouthX", CleanSmallValue(zoneSubAreaBox.OctagonWestSouthX).ToString());
+            //        newRow.Add("OctagonEastNorthX", CleanSmallValue(zoneSubAreaBox.OctagonEastNorthX).ToString());
+            //        newRow.Add("OctagonEastSouthX", CleanSmallValue(zoneSubAreaBox.OctagonEastSouthX).ToString());
+            //        zoneSubAreaBoxRows.Add(newRow);
             //    }
             //}
-            //FileTool.WriteAllRowsToFileWithHeader(zoneLineBoxesFile, "|", zoneLineBoxesRows);
+            //FileTool.WriteAllRowsToFileWithHeader(zoneSubAreasBoxesFiles, "|", zoneSubAreaBoxRows);
             //int x = 5;
 
 

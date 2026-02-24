@@ -56,7 +56,7 @@ namespace EQWOWConverter.Zones
         {
             ShortName = shortName;
             SetDescriptiveName(descriptiveName);
-            DefaultArea = new ZoneArea("", "");
+            DefaultArea = new ZoneArea("", "", 0);
             ZoneProperties = new ZoneProperties();
         }
 

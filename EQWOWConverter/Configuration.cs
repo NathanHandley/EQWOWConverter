@@ -673,6 +673,7 @@ namespace EQWOWConverter
         public static readonly int DBCID_AREATABLE_AREABIT_BLOCK_3_END = 4095;
 
         // Identifies Area rows in AreaTable.dbc
+        // Note: These are hardcoded in ZoneSubAreas.csv and ZoneProperties.csv
         public static readonly UInt32 DBCID_AREATABLE_ID_START = 5100;
         public static readonly UInt32 DBCID_AREATABLE_ID_END = 6500;
 

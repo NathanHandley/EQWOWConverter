@@ -20,9 +20,6 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneArea
     {
-        private static UInt32 CURRENT_AREATABLEID = Configuration.DBCID_AREATABLE_ID_START;
-        private static readonly object AREATABLEIDLock = new object();
-
         public UInt32 DBCAreaTableID;
         public UInt32 DBCParentAreaTableID = 0; // Zero is no parent
         public string DisplayName = string.Empty;
@@ -40,15 +37,11 @@ namespace EQWOWConverter.Zones
         public ZoneAreaAmbientSound? AreaAmbientSound = null;
         public bool DoShowBreath = false;
 
-        public ZoneArea(string displayName, string parentAreaDisplayName)
+        public ZoneArea(string displayName, string parentAreaDisplayName, UInt32 dbcAreaTableID)
         {
-            lock (AREATABLEIDLock)
-            {
-                DBCAreaTableID = CURRENT_AREATABLEID;
-                CURRENT_AREATABLEID++;
-            }
             DisplayName = displayName;
             ParentAreaDisplayName = parentAreaDisplayName;
+            DBCAreaTableID = dbcAreaTableID;
         }
 
         public void AddBoundingBox(BoundingBox boundingBox, bool scaleAndRotate)
