@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Zones.Properties;
+using System.Text;
 
 namespace EQWOWConverter.Zones
 {
@@ -248,12 +249,6 @@ namespace EQWOWConverter.Zones
             postScaleBox.BottomCorner.Z = preScaleBox.BottomCorner.Z * Configuration.GENERATE_WORLD_SCALE;
 
             DiscardGeometryBoxesObjectsOnly.Add(postScaleBox);
-        }
-
-        protected void AddAlwaysBrightMaterial(string materialName)
-        {
-            if (AlwaysBrightMaterialsByName.Contains(materialName) == false)
-                AlwaysBrightMaterialsByName.Add(materialName);
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
@@ -736,15 +731,9 @@ namespace EQWOWConverter.Zones
                 zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);
                 zoneProperties.DefaultZoneArea.DisplayName = propertiesRow["DescriptiveName"];
                 zoneProperties.IsRestingZoneWide = propertiesRow["RestZoneWide"].Trim() == "1" ? true : false;
-                zoneProperties.RainChanceWinter = int.Parse(propertiesRow["rain_chance_winter"]);
-                zoneProperties.RainChanceSpring = int.Parse(propertiesRow["rain_chance_spring"]);
-                zoneProperties.RainChanceSummer = int.Parse(propertiesRow["rain_chance_summer"]);
-                zoneProperties.RainChanceFall = int.Parse(propertiesRow["rain_chance_fall"]);
-                zoneProperties.SnowChanceWinter = int.Parse(propertiesRow["snow_chance_winter"]);
-                zoneProperties.SnowChanceSpring = int.Parse(propertiesRow["snow_chance_spring"]);
-                zoneProperties.SnowChanceSummer = int.Parse(propertiesRow["snow_chance_summer"]);
-                zoneProperties.SnowChanceFall = int.Parse(propertiesRow["snow_chance_fall"]);
                 zoneProperties.CollisionMaxZ = float.Parse(propertiesRow["CollisionGeometryMaxZ"]);
+                foreach (string alwaysBrightMaterialName in propertiesRow["AlwaysBrightMaterials"].Split(","))
+                    zoneProperties.AlwaysBrightMaterialsByName.Add(alwaysBrightMaterialName.Trim());
 
                 // World map
                 zoneProperties.DisplayMapMainLeft = float.Parse(propertiesRow["DisplayMapMainLeft"]);
@@ -763,6 +752,14 @@ namespace EQWOWConverter.Zones
                     zoneProperties.DefaultZoneArea.SetMusic(propertiesRow["Music"].Trim(), propertiesRow["Music"].Trim(), true, Convert.ToSingle(propertiesRow["MusicVolume"]));
 
                 // Environment
+                zoneProperties.RainChanceWinter = int.Parse(propertiesRow["rain_chance_winter"]);
+                zoneProperties.RainChanceSpring = int.Parse(propertiesRow["rain_chance_spring"]);
+                zoneProperties.RainChanceSummer = int.Parse(propertiesRow["rain_chance_summer"]);
+                zoneProperties.RainChanceFall = int.Parse(propertiesRow["rain_chance_fall"]);
+                zoneProperties.SnowChanceWinter = int.Parse(propertiesRow["snow_chance_winter"]);
+                zoneProperties.SnowChanceSpring = int.Parse(propertiesRow["snow_chance_spring"]);
+                zoneProperties.SnowChanceSummer = int.Parse(propertiesRow["snow_chance_summer"]);
+                zoneProperties.SnowChanceFall = int.Parse(propertiesRow["snow_chance_fall"]);
                 zoneProperties.VertexColorIntensity = float.Parse(propertiesRow["VertexColorIntensity"]);
                 if (Configuration.ZONE_ALLOW_SUN_HIDING_WITH_SHADOWBOX_ENABLED == true && Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == false)
                     zoneProperties.HasShadowBox = propertiesRow["DisableSunlight"].Trim() == "1" ? true : false;
@@ -795,6 +792,7 @@ namespace EQWOWConverter.Zones
                     else
                         zoneProperties.ZonewideEnvironmentProperties.SetAsIndoors(fogRed, fogGreen, fogBlue, fogType, insideAmbientRed, insideAmbientGreen, insideAmbientBlue);
                 }
+                zoneProperties.DefaultZoneArea.DoShowBreath = propertiesRow["ShowBreath"].Trim() == "1" ? true : false;
 
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
@@ -985,17 +983,17 @@ namespace EQWOWConverter.Zones
                 //propertiesRow["HasShadowBox"] = curZoneProperties.HasShadowBox == true ? "1" : "0";
                 //StringBuilder enabled2DSoundInstancesSB = new StringBuilder();
                 //int numOfStrings = 0;
-                //foreach (string enabled2DSoundInstanceName in curZoneProperties.Enabled2DSoundInstancesByDaySoundName)
+                //foreach (string enabled2DSoundInstanceName in curZoneProperties.AlwaysBrightMaterialsByName)
                 //{
                 //    enabled2DSoundInstancesSB.Append(enabled2DSoundInstanceName);
                 //    numOfStrings++;
-                //    if (numOfStrings < curZoneProperties.Enabled2DSoundInstancesByDaySoundName.Count)
+                //    if (numOfStrings < curZoneProperties.AlwaysBrightMaterialsByName.Count)
                 //        enabled2DSoundInstancesSB.Append(",");
                 //}
-                //propertiesRow["Enabled2DSoundInstances"] = enabled2DSoundInstancesSB.ToString();
+                //propertiesRow["AlwaysBrightMaterials"] = enabled2DSoundInstancesSB.ToString();
                 //string music = curZoneProperties.DefaultZoneArea.MusicFileNameNoExtDay;
                 //float musicVolume = curZoneProperties.DefaultZoneArea.MusicVolume;
-                int y = 5;
+                //int y = 5;
             }
             //FileTool.WriteAllRowsToFileWithHeader(zonePropertiesFile, "|", zonePropertiesRows);
             //int x = 5;

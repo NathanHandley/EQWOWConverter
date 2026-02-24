@@ -20,12 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public VeeshansPeakZoneProperties() : base()
         {
-            AddAlwaysBrightMaterial("d_veelava1");
-            AddAlwaysBrightMaterial("d_velavaf1");
-            AddAlwaysBrightMaterial("d_m0000");
-            AddAlwaysBrightMaterial("d_m0001");
-            AddAlwaysBrightMaterial("velavaf1");
-
             // Southeast lava pit
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_m0000", -457.174774f, -1272.401733f, -744.802429f, -1463.637573f, 299.875092f, 500f);
             AddLiquidVolume(ZoneLiquidType.Magma, -457.174774f, -1224.742310f, -909.169739f, -1516.084106f, 272.158234f, 67.459221f);

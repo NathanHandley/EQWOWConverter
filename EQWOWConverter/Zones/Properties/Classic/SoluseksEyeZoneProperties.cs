@@ -50,13 +50,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", -333.911011f, -519.980408f, -400.758453f, -611.953796f, -13.999950f, 150f); // Main Lava - Northwest lower
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", -276.853088f, -684.851990f, -412.576324f, -943.044861f, 20.000010f, 150f); // Main Lava - East area
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", -348.883087f, -610.981750f, -382.591187f, -943.044861f, 10.000240f, 150f); // Main Lava - West area
-            AddAlwaysBrightMaterial("d_lava001");
-            AddAlwaysBrightMaterial("d_lavafall1");
-            AddAlwaysBrightMaterial("d_m0005");
-            AddAlwaysBrightMaterial("d_m0018");
-            AddAlwaysBrightMaterial("d_m0020");
-            AddAlwaysBrightMaterial("d_m0021");
-            AddAlwaysBrightMaterial("d_underlava1");
 
             AddDiscardGeometryBox(39.520981f, 106.092484f, 187.744125f, -99.078056f, -88.709084f, -22.915991f);
             AddDiscardGeometryBox(-116.743721f, -477.417908f, 30.357321f, -172.616547f, -513.795044f, -10.188220f);

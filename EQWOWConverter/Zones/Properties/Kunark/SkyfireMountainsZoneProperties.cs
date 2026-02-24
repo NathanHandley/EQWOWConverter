@@ -20,8 +20,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public SkyfireMountainsZoneProperties() : base()
         {
-            AddAlwaysBrightMaterial("d_lava001");
-
             AddZoneLineBox("burningwood", 5087.0146f, 1740.0859f, -163.56395f, ZoneLineOrientationType.South, -5623.817f, 1910.7054f, -56.840195f, -5703.1704f, 1580.5497f, -164.28036f); // Zone-in had no geometery
             AddZoneLineBox("overthere", -988.312561f, 4201.076660f, 95.625771f, ZoneLineOrientationType.East,
                 -1063.791504f, -4348.341309f, 108.087097f, -1129.249390f, -4404.932129f, 26.440439f); // North

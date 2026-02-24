@@ -22,7 +22,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: PVP in Pit of Doom
             // TODO: Perhaps add Mac's Kilts as a zone area
-            DefaultZoneArea.DoShowBreath = true;
             AddZoneArea("Entry Tunnel", "halas-01", "halas-01", false);
             AddZoneAreaBox("Entry Tunnel", -461.854279f, 79.028740f, 114.175423f, -817.487427f, -169.417740f, -163.384399f);
 
