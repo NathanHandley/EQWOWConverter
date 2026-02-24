@@ -21,17 +21,17 @@ namespace EQWOWConverter.Zones.Properties
         public WestKaranaZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            AddZoneArea("Northwest Hamlet", "qey2hh1-00", "qey2hh1-00");
-            AddZoneAreaBox("Northwest Hamlet", 1223.739380f, -1487.628906f, 231.617340f, 559.132690f, -2312.511475f, -60.952278f);
+            // AddZoneArea("Northwest Hamlet", "qey2hh1-00", "qey2hh1-00");
+            // AddZoneAreaBox("Northwest Hamlet", 1223.739380f, -1487.628906f, 231.617340f, 559.132690f, -2312.511475f, -60.952278f);
 
-            AddZoneArea("Mid-North Homestead", "qey2hh1-00", "qey2hh1-00");
-            AddZoneAreaBox("Mid-North Homestead", 908.460876f, -3888.105957f, 183.641541f, -25.542351f, -4726.118164f, -104.216919f);
+            // AddZoneArea("Mid-North Homestead", "qey2hh1-00", "qey2hh1-00");
+            // AddZoneAreaBox("Mid-North Homestead", 908.460876f, -3888.105957f, 183.641541f, -25.542351f, -4726.118164f, -104.216919f);
 
-            AddZoneArea("Southeast Barns", "qey2hh1-01", "qey2hh1-01");
-            AddZoneAreaBox("Southeast Barns", -2672.723145f, -13052.273438f, 206.617233f, -3370.593018f, -13696.852539f, -40.511162f);
+            // AddZoneArea("Southeast Barns", "qey2hh1-01", "qey2hh1-01");
+            // AddZoneAreaBox("Southeast Barns", -2672.723145f, -13052.273438f, 206.617233f, -3370.593018f, -13696.852539f, -40.511162f);
 
-            AddZoneArea("Southeast Coast", "qey2hh1-02", "qey2hh1-02");
-            AddZoneAreaBox("Southeast Coast", -3650.354980f, -6696.0483f, 300f, -4754.3965f, -16549.589f, -200f);
+            // AddZoneArea("Southeast Coast", "qey2hh1-02", "qey2hh1-02");
+            // AddZoneAreaBox("Southeast Coast", -3650.354980f, -6696.0483f, 300f, -4754.3965f, -16549.589f, -200f);
 
             AddZoneLineBox("qeytoqrg", 1513.821777f, -2144.436768f, -4.343770f, ZoneLineOrientationType.West, 75.848831f, -542.542114f, 69.329170f, -31.425360f, -581.946533f, -7.499270f);
             AddZoneLineBox("northkarana", -4427.983887f, 3694.417480f, -69.281387f, ZoneLineOrientationType.East, -4419.286621f, -15945, 200.000000f, -5000.286621f, -15975, -100.000000f);

@@ -169,7 +169,7 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
-        protected void AddZoneAreaBox(string zoneAreaName, UInt32 areaTableDBCID, float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, 
+        protected void AddZoneAreaBox(string zoneAreaName, float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, 
             float seCornerZ, bool fromOctagon = false)
         {
             BoundingBox boundingBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
@@ -186,7 +186,7 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
-        protected void AddZoneAreaOctagonBox(string zoneAreaName, UInt32 areaTableDBCID, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, 
+        protected void AddZoneAreaOctagonBox(string zoneAreaName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, 
             float northWestY, float northEastY, float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, 
             float topZ, float bottomZ)
         {
@@ -214,7 +214,7 @@ namespace EQWOWConverter.Zones
                 if (curXTop <= westNorthX && curXTop <= eastNorthX && curXTop >= westSouthX && curXTop >= eastSouthX)
                 {
                     float highestSouthEastX = MathF.Max(westSouthX, eastSouthX);
-                    AddZoneAreaBox(zoneAreaName, areaTableDBCID, curXTop, westEdgeY, topZ, highestSouthEastX, eastEdgeY, bottomZ, true);
+                    AddZoneAreaBox(zoneAreaName, curXTop, westEdgeY, topZ, highestSouthEastX, eastEdgeY, bottomZ, true);
                     curXTop = highestSouthEastX;
                 }
 
@@ -251,7 +251,7 @@ namespace EQWOWConverter.Zones
                 // Add the box if the bounds are good
                 if (nwX > seX && nwY > seY)
                 {
-                    AddZoneAreaBox(zoneAreaName, areaTableDBCID, nwX, nwY, topZ, seX, seY, bottomZ, true);
+                    AddZoneAreaBox(zoneAreaName, nwX, nwY, topZ, seX, seY, bottomZ, true);
                 }
 
                 // Set new top factoring for overlap
@@ -749,8 +749,6 @@ namespace EQWOWConverter.Zones
                 zoneProperties.TeleOrientation = float.Parse(propertiesRow["TeleOrientation"]);
                 zoneProperties.Continent = (ZoneContinentType)int.Parse(propertiesRow["ContinentID"]);
                 zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);
-                zoneProperties.DefaultZoneArea.DisplayName = propertiesRow["DescriptiveName"];
-                zoneProperties.DefaultZoneArea.DBCAreaTableID = Convert.ToUInt32(propertiesRow["DefaultAreaAreaTableDBCID"]);
                 zoneProperties.IsRestingZoneWide = propertiesRow["RestZoneWide"].Trim() == "1" ? true : false;
                 zoneProperties.CollisionMaxZ = float.Parse(propertiesRow["CollisionGeometryMaxZ"]);
                 foreach (string alwaysBrightMaterialName in propertiesRow["AlwaysBrightMaterials"].Split(","))
@@ -777,7 +775,7 @@ namespace EQWOWConverter.Zones
                             case "objectsonly": zoneProperties.DiscardGeometryBoxesObjectsOnly.Add(postScaleBox); break;
                             default:
                                 {
-                                    Logger.WriteError("ZoneProperties::AddZonePropertiesByShortName invalid discarded geometry box type of '", discardedGeometryBox.TypeString.Trim().ToLower(), "' for zone '", shortName, "' ");
+                                    Logger.WriteError("Invalid discarded geometry box type of '", discardedGeometryBox.TypeString.Trim().ToLower(), "' for zone '", shortName, "' ");
                                 } break;
                         }
                     }
@@ -829,7 +827,7 @@ namespace EQWOWConverter.Zones
                     case "heavy": fogType = ZoneFogType.Heavy; break;
                     default:
                         {
-                            Logger.WriteError("ZoneProperties::AddZonePropertiesByShortName invalid fog type of '", propertiesRow["FogType"], "' for zone '", shortName, "' ");
+                            Logger.WriteError("Invalid fog type of '", propertiesRow["FogType"], "' for zone '", shortName, "' ");
                         } break;
                 }
                 if (isOutdoors == true)
@@ -841,7 +839,54 @@ namespace EQWOWConverter.Zones
                     else
                         zoneProperties.ZonewideEnvironmentProperties.SetAsIndoors(fogRed, fogGreen, fogBlue, fogType, insideAmbientRed, insideAmbientGreen, insideAmbientBlue);
                 }
+                
+                // Areas
+                zoneProperties.DefaultZoneArea.DisplayName = propertiesRow["DescriptiveName"];
+                //zoneProperties.DefaultZoneArea.DBCAreaTableID = Convert.ToUInt32(propertiesRow["DefaultAreaAreaTableDBCID"]);
                 zoneProperties.DefaultZoneArea.DoShowBreath = propertiesRow["ShowBreath"].Trim() == "1" ? true : false;
+                if (ConfigSubAreasByZoneShortName.ContainsKey(shortName) == true)
+                {
+                    foreach (ConfigZoneSubArea subArea in ConfigSubAreasByZoneShortName[shortName])
+                    {
+                        if (subArea.ParentSubAreaName.Trim().Length > 0)
+                        {
+                            zoneProperties.AddChildZoneArea(subArea.AreaName, subArea.DBCAreaTableID, subArea.ParentSubAreaName, subArea.MusicFileNameNoExtDay,
+                                subArea.MusicFileNameNoExtNight, subArea.DoLoopMusic, subArea.AmbientSoundFileNameNoExtDay, subArea.AmbientSoundFileNameNoExtNight,
+                                subArea.MusicVolume);
+                        }
+                        else
+                        {
+                            zoneProperties.AddZoneArea(subArea.AreaName, subArea.DBCAreaTableID, subArea.MusicFileNameNoExtDay,
+                                subArea.MusicFileNameNoExtNight, subArea.DoLoopMusic, subArea.AmbientSoundFileNameNoExtDay, subArea.AmbientSoundFileNameNoExtNight,
+                                subArea.MusicVolume);
+                        }
+                    }
+                }
+                if (ConfigSubAreaBoxesByZoneShortName.ContainsKey(shortName) == true)
+                {
+                    foreach (ConfigZoneSubAreaBox areaBox in ConfigSubAreaBoxesByZoneShortName[shortName])
+                    {
+                        switch (areaBox.Shape)
+                        {
+                            case "box":
+                                {
+                                    zoneProperties.AddZoneAreaBox(areaBox.AreaName, areaBox.NorthX, areaBox.WestY, areaBox.TopZ,
+                                        areaBox.SouthX, areaBox.EastY, areaBox.BottomZ, false);
+                                } break;
+                            case "octagon":
+                                {
+                                    zoneProperties.AddZoneAreaOctagonBox(areaBox.AreaName, areaBox.NorthX, areaBox.SouthX, areaBox.WestY, areaBox.EastY,
+                                        areaBox.OctagonNorthWestY, areaBox.OctagonNorthEastY, areaBox.OctagonSouthWestY, areaBox.OctagonSouthEastY,
+                                        areaBox.OctagonWestNorthX, areaBox.OctagonWestSouthX, areaBox.OctagonEastNorthX, areaBox.OctagonEastSouthX, 
+                                        areaBox.TopZ, areaBox.BottomZ);
+                                } break;
+                            default:
+                                {
+                                    Logger.WriteError("Invalid area box shape type of '", areaBox.Shape, "' for zone '", shortName, "' ");
+                                } break;
+                        }
+                    }
+                }
 
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
@@ -904,10 +949,10 @@ namespace EQWOWConverter.Zones
             {
                 ConfigZoneSubArea newConfigZoneSubArea = new ConfigZoneSubArea();
                 newConfigZoneSubArea.ZoneShortName = subAreaRow["ZoneShortName"].Trim().ToLower();
-                newConfigZoneSubArea.AreaName = subAreaRow["AreaName"].Trim().ToLower();
+                newConfigZoneSubArea.AreaName = subAreaRow["AreaName"].Trim();
                 newConfigZoneSubArea.OrderID = int.Parse(subAreaRow["OrderID"]);
                 newConfigZoneSubArea.DBCAreaTableID = UInt32.Parse(subAreaRow["AreaTableDBCID"]);
-                newConfigZoneSubArea.ParentSubAreaName = subAreaRow["ParentSubAreaName"].Trim().ToLower();
+                newConfigZoneSubArea.ParentSubAreaName = subAreaRow["ParentSubAreaName"].Trim();
                 if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
                 {
                     newConfigZoneSubArea.MusicFileNameNoExtDay = subAreaRow["MusicDayAlt"].Trim().ToLower();
@@ -939,7 +984,7 @@ namespace EQWOWConverter.Zones
             {
                 ConfigZoneSubAreaBox newAreaBox = new ConfigZoneSubAreaBox();
                 newAreaBox.ZoneShortName = subAreaBoxRow["ZoneShortName"].Trim().ToLower();
-                newAreaBox.AreaName = subAreaBoxRow["AreaName"].Trim().ToLower();
+                newAreaBox.AreaName = subAreaBoxRow["AreaName"].Trim();
                 newAreaBox.Shape = subAreaBoxRow["Shape"].Trim().ToLower();
                 newAreaBox.NorthX = float.Parse(subAreaBoxRow["NorthX"]);
                 newAreaBox.SouthX = float.Parse(subAreaBoxRow["SouthX"]);

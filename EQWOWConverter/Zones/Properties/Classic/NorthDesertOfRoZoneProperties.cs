@@ -22,24 +22,24 @@ namespace EQWOWConverter.Zones.Properties
         {
             // Add more zone areas
 
-            AddZoneArea("Field Camp", "nro-03", "nro-03", true, "", "night");
-            AddZoneAreaBox("Field Camp", 3560.148438f, 583.294373f, 43.290260f, 3067.353516f, -159.970612f, -61.339088f);
+            // AddZoneArea("Field Camp", "nro-03", "nro-03", true, "", "night");
+            // AddZoneAreaBox("Field Camp", 3560.148438f, 583.294373f, 43.290260f, 3067.353516f, -159.970612f, -61.339088f);
 
-            AddZoneArea("Fishing Village", "nro-02", "nro-02");
-            AddZoneAreaBox("Fishing Village", 2463.193359f, -670.508850f, 91.106056f, 1987.107544f, -1045.745361f, -122.241547f);
+            // AddZoneArea("Fishing Village", "nro-02", "nro-02");
+            // AddZoneAreaBox("Fishing Village", 2463.193359f, -670.508850f, 91.106056f, 1987.107544f, -1045.745361f, -122.241547f);
 
-            AddZoneArea("Haunted Ruins", "nro-04", "nro-04");
-            AddZoneAreaBox("Haunted Ruins", 547.317871f, 569.168884f, 90.754204f, 285.208160f, 296.018585f, -77.585022f);
+            // AddZoneArea("Haunted Ruins", "nro-04", "nro-04");
+            // AddZoneAreaBox("Haunted Ruins", 547.317871f, 569.168884f, 90.754204f, 285.208160f, 296.018585f, -77.585022f);
 
-            AddZoneArea("Freeport Field", "", "", false, "", "night");
-            AddZoneAreaBox("Freeport Field", 4867.109375f, 1739.585815f, 415.479492f, 2493.980713f, -1006.311584f, -119.600151f);
+            // AddZoneArea("Freeport Field", "", "", false, "", "night");
+            // AddZoneAreaBox("Freeport Field", 4867.109375f, 1739.585815f, 415.479492f, 2493.980713f, -1006.311584f, -119.600151f);
 
-            AddZoneArea("Commons Tunnel");
-            AddZoneAreaBox("Commons Tunnel", 4107.152832f, 4106.853027f, 152.150986f, 1893.781738f, 1889.344116f, -43.641651f);
-            AddZoneAreaBox("Commons Tunnel", 2089.186279f, 1911.286377f, 58.350510f, 1809.794556f, 1460.291260f, -43.495338f);
+            // AddZoneArea("Commons Tunnel");
+            // AddZoneAreaBox("Commons Tunnel", 4107.152832f, 4106.853027f, 152.150986f, 1893.781738f, 1889.344116f, -43.641651f);
+            // AddZoneAreaBox("Commons Tunnel", 2089.186279f, 1911.286377f, 58.350510f, 1809.794556f, 1460.291260f, -43.495338f);
 
-            AddZoneArea("Desert", "nro-00", "nro-00");
-            AddZoneAreaBox("Desert", 2503.120117f, 3843.550293f, 427.859924f, -2788.978027f, -1005.688293f, -222.964447f);
+            // AddZoneArea("Desert", "nro-00", "nro-00");
+            // AddZoneAreaBox("Desert", 2503.120117f, 3843.550293f, 427.859924f, -2788.978027f, -1005.688293f, -222.964447f);
 
             AddZoneLineBox("freporte", -1316.303711f, -128.602051f, -55.968739f, ZoneLineOrientationType.North, 4202.241699f, 935.000000f, 200.000000f, 4172.241699f, 895.000000f, -100.000000f);
             AddZoneLineBox("freporte", -1316.303711f, -148.602051f, -55.968739f, ZoneLineOrientationType.North, 4202.241699f, 895.000000f, 200.000000f, 4172.241699f, 875.000000f, -100.000000f);

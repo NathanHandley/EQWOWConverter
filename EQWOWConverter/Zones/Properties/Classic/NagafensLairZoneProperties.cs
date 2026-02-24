@@ -22,37 +22,37 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Traps, like the crushing rock at -624 -243 -74
             // TODO: More zone areas
-            AddZoneArea("Nagafen's Approach", "soldungb-01", "soldungb-01");
-            AddZoneAreaBox("Nagafen's Approach", -1026.479004f, -697.811218f, 191.205917f, -1171.921631f, -925.477905f, -105.790352f);
-            AddZoneAreaBox("Nagafen's Approach", -1009.089600f, -596.286011f, 51.420120f, -1159.054321f, -798.325256f, 8.479850f);
-            AddZoneAreaBox("Nagafen's Approach", -1070.369019f, -478.119873f, 42.968170f, -1111.067017f, -600.529846f, 22.500040f);
+            // AddZoneArea("Nagafen's Approach", "soldungb-01", "soldungb-01");
+            // AddZoneAreaBox("Nagafen's Approach", -1026.479004f, -697.811218f, 191.205917f, -1171.921631f, -925.477905f, -105.790352f);
+            // AddZoneAreaBox("Nagafen's Approach", -1009.089600f, -596.286011f, 51.420120f, -1159.054321f, -798.325256f, 8.479850f);
+            // AddZoneAreaBox("Nagafen's Approach", -1070.369019f, -478.119873f, 42.968170f, -1111.067017f, -600.529846f, 22.500040f);
 
-            AddZoneArea("Lavaflow Bridge", "soldungb-00", "soldungb-00");
-            AddZoneAreaBox("Lavaflow Bridge", -1101.103882f, -372.184631f, 106.126839f, -1302.329346f, -605.535645f, -94.956772f);
-            AddZoneAreaBox("Lavaflow Bridge", -1289.656494f, -407.897888f, 24.564480f, -1309.975830f, -573.198486f, -25.534201f);
-            AddZoneAreaBox("Lavaflow Bridge", -1308.074341f, -423.045685f, 0.599690f, -1370.250732f, -571.934509f, -31.199739f);
+            // AddZoneArea("Lavaflow Bridge", "soldungb-00", "soldungb-00");
+            // AddZoneAreaBox("Lavaflow Bridge", -1101.103882f, -372.184631f, 106.126839f, -1302.329346f, -605.535645f, -94.956772f);
+            // AddZoneAreaBox("Lavaflow Bridge", -1289.656494f, -407.897888f, 24.564480f, -1309.975830f, -573.198486f, -25.534201f);
+            // AddZoneAreaBox("Lavaflow Bridge", -1308.074341f, -423.045685f, 0.599690f, -1370.250732f, -571.934509f, -31.199739f);
 
-            AddZoneArea("Throne of King Tranix", "soldungb-05", "soldungb-05");
-            AddZoneAreaBox("Throne of King Tranix", -1419.468262f, -228.701233f, 176.609436f, -1604.000000f, -516.171143f, -5.5f);
-            AddZoneAreaBox("Throne of King Tranix", -1361.342285f, -416.458374f, 100.927483f, -1487.224854f, -578.718201f, -5.5f);
-            AddZoneAreaBox("Throne of King Tranix", -1408.245117f, -370.650482f, 9.384310f, -1428.008057f, -401.037292f, -5.5f);
-            AddZoneAreaBox("Throne of King Tranix", -1391.465454f, -314.153931f, 44.355862f, -1431.244019f, -354.326691f, 5.5f);
+            // AddZoneArea("Throne of King Tranix", "soldungb-05", "soldungb-05");
+            // AddZoneAreaBox("Throne of King Tranix", -1419.468262f, -228.701233f, 176.609436f, -1604.000000f, -516.171143f, -5.5f);
+            // AddZoneAreaBox("Throne of King Tranix", -1361.342285f, -416.458374f, 100.927483f, -1487.224854f, -578.718201f, -5.5f);
+            // AddZoneAreaBox("Throne of King Tranix", -1408.245117f, -370.650482f, 9.384310f, -1428.008057f, -401.037292f, -5.5f);
+            // AddZoneAreaBox("Throne of King Tranix", -1391.465454f, -314.153931f, 44.355862f, -1431.244019f, -354.326691f, 5.5f);
 
-            AddZoneArea("The Fire Throne", "soldungb-02", "soldungb-02", false);
-            AddZoneAreaBox("The Fire Throne", -1169.901123f, -658.686951f, 259.537445f, -1612.063477f, -1034.010498f, 50.566200f);
+            // AddZoneArea("The Fire Throne", "soldungb-02", "soldungb-02", false);
+            // AddZoneAreaBox("The Fire Throne", -1169.901123f, -658.686951f, 259.537445f, -1612.063477f, -1034.010498f, 50.566200f);
 
-            AddZoneArea("Giant's Way", "soldungb-07", "soldungb-07");
-            AddZoneAreaBox("Giant's Way", -1071.361206f, -88.478058f, 3.491110f, -1409.042114f, -416.305786f, -120.157570f);
-            AddZoneAreaBox("Giant's Way", -1345.837402f, -92.634537f, 3.491110f, -1430.996948f, -359.219788f, -111.393219f);
-            AddZoneAreaBox("Giant's Way", -1316.308105f, -414.373993f, -8.087370f, -1352.504639f, -423.421906f, -111f);
+            // AddZoneArea("Giant's Way", "soldungb-07", "soldungb-07");
+            // AddZoneAreaBox("Giant's Way", -1071.361206f, -88.478058f, 3.491110f, -1409.042114f, -416.305786f, -120.157570f);
+            // AddZoneAreaBox("Giant's Way", -1345.837402f, -92.634537f, 3.491110f, -1430.996948f, -359.219788f, -111.393219f);
+            // AddZoneAreaBox("Giant's Way", -1316.308105f, -414.373993f, -8.087370f, -1352.504639f, -423.421906f, -111f);
 
-            AddZoneArea("Spider Nest", "soldungb-02", "soldungb-02", false);
-            AddZoneAreaBox("Spider Nest", -850.344666f, -159.938919f, -76.230370f, -981.864624f, -273.035370f, -102.008614f);
-            AddZoneAreaBox("Spider Nest", -908.719421f, -117.953796f, -55.930199f, -982.007629f, -270.992645f, -94.869087f);
-            AddZoneAreaBox("Spider Nest", -912.183899f, -219.328934f, -56.561481f, -987.776001f, -279.686646f, -96.371910f);
-            AddZoneAreaBox("Spider Nest", -919.447815f, -266.971771f, -59.360470f, -1017.795898f, -383.344727f, -107.645638f);
-            AddZoneAreaBox("Spider Nest", -939.086731f, -323.987701f, -59.004881f, -1028.977051f, -340.745850f, -100f);
-            AddZoneAreaBox("Spider Nest", -931.537170f, -374.653961f, -59.030109f, -1008.247498f, -399.725647f, -100f);
+            // AddZoneArea("Spider Nest", "soldungb-02", "soldungb-02", false);
+            // AddZoneAreaBox("Spider Nest", -850.344666f, -159.938919f, -76.230370f, -981.864624f, -273.035370f, -102.008614f);
+            // AddZoneAreaBox("Spider Nest", -908.719421f, -117.953796f, -55.930199f, -982.007629f, -270.992645f, -94.869087f);
+            // AddZoneAreaBox("Spider Nest", -912.183899f, -219.328934f, -56.561481f, -987.776001f, -279.686646f, -96.371910f);
+            // AddZoneAreaBox("Spider Nest", -919.447815f, -266.971771f, -59.360470f, -1017.795898f, -383.344727f, -107.645638f);
+            // AddZoneAreaBox("Spider Nest", -939.086731f, -323.987701f, -59.004881f, -1028.977051f, -340.745850f, -100f);
+            // AddZoneAreaBox("Spider Nest", -931.537170f, -374.653961f, -59.030109f, -1008.247498f, -399.725647f, -100f);
 
             AddZoneLineBox("lavastorm", 909.788574f, 484.493713f, 51.688461f, ZoneLineOrientationType.North, -399.037048f, -259.033051f, -101.499748f, -410.349213f, -270.100739f, -112.467888f);
             AddZoneLineBox("soldunga", -166.265717f, -572.437744f, 15.365680f, ZoneLineOrientationType.West, -158.744904f, -540.487061f, 35.468010f, -173.130875f, -581.914795f, 13.500010f);

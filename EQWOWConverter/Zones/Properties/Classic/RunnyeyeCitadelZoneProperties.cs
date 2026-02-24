@@ -21,19 +21,19 @@ namespace EQWOWConverter.Zones.Properties
         public RunnyeyeCitadelZoneProperties() : base()
         {
             // TODO: Add zone areas
-            AddZoneArea("Upper Pools", "runnyeye-00", "runnyeye-00");
-            AddZoneAreaBox("Upper Pools", 228.738785f, 134.024902f, 28.439110f, -49.520500f, 36.699299f, -19.277330f);
-            AddZoneAreaBox("Upper Pools", 220.338425f, 141.395691f, 24.374371f, 103.887222f, 33.761250f, -21.572861f);
-            AddZoneAreaBox("Upper Pools", 120.590248f, 136.948044f, 21.733240f, -44.972610f, -34.389851f, -15.163530f);
-            AddZoneAreaBox("Upper Pools", 79.259552f, 35.387619f, 52.870529f, -22.043350f, -110.600601f, -16.695601f);
+            // AddZoneArea("Upper Pools", "runnyeye-00", "runnyeye-00");
+            // AddZoneAreaBox("Upper Pools", 228.738785f, 134.024902f, 28.439110f, -49.520500f, 36.699299f, -19.277330f);
+            // AddZoneAreaBox("Upper Pools", 220.338425f, 141.395691f, 24.374371f, 103.887222f, 33.761250f, -21.572861f);
+            // AddZoneAreaBox("Upper Pools", 120.590248f, 136.948044f, 21.733240f, -44.972610f, -34.389851f, -15.163530f);
+            // AddZoneAreaBox("Upper Pools", 79.259552f, 35.387619f, 52.870529f, -22.043350f, -110.600601f, -16.695601f);
 
-            AddZoneArea("Eye Pool", "runnyeye-01", "runnyeye-01");
-            AddZoneAreaBox("Eye Pool", 155.185547f, -59.430408f, -20.543591f, 53.687580f, -145.624680f, -67.274200f);
+            // AddZoneArea("Eye Pool", "runnyeye-01", "runnyeye-01");
+            // AddZoneAreaBox("Eye Pool", 155.185547f, -59.430408f, -20.543591f, 53.687580f, -145.624680f, -67.274200f);
 
-            AddZoneArea("Blood Room", "runnyeye-02", "runnyeye-00");
-            AddZoneAreaBox("Blood Room", 35.168320f, 72.665810f, -18.138041f, -59f, -68.910408f, -63.175690f);
-            AddZoneAreaBox("Blood Room", 35.168320f, 48.297878f, -18.138041f, -59f, -52.180302f, -63.175690f);
-            AddZoneAreaBox("Blood Room", -58.263672f, 40.957069f, -46.533749f, -76f, -37.296391f, -50f);
+            // AddZoneArea("Blood Room", "runnyeye-02", "runnyeye-00");
+            // AddZoneAreaBox("Blood Room", 35.168320f, 72.665810f, -18.138041f, -59f, -68.910408f, -63.175690f);
+            // AddZoneAreaBox("Blood Room", 35.168320f, 48.297878f, -18.138041f, -59f, -52.180302f, -63.175690f);
+            // AddZoneAreaBox("Blood Room", -58.263672f, 40.957069f, -46.533749f, -76f, -37.296391f, -50f);
 
             AddZoneLineBox("beholder", 903.2041f, -1850.1808f, 1.0001143f, ZoneLineOrientationType.West, -102.775955f, 12.901143f, 15.468005f, -119.129944f, -8.304958f, -0.49999338f);
             AddZoneLineBox("misty", -816.631531f, 1427.580444f, -10.751390f, ZoneLineOrientationType.North, 271.099457f, 170f, 15.469000f, 250.497299f, 135.744324f, 0.501060f);

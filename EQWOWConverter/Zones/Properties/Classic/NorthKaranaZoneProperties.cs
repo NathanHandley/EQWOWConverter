@@ -21,11 +21,11 @@ namespace EQWOWConverter.Zones.Properties
         public NorthKaranaZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            AddZoneArea("East Karana Bridge", "northkarana-01", "northkarana-01");
-            AddZoneAreaBox("East Karana Bridge", 417.789734f, -2260.625488f, 325.672272f, -620.213074f, -3664.720215f, -278.519135f);
+            // AddZoneArea("East Karana Bridge", "northkarana-01", "northkarana-01");
+            // AddZoneAreaBox("East Karana Bridge", 417.789734f, -2260.625488f, 325.672272f, -620.213074f, -3664.720215f, -278.519135f);
 
-            AddZoneArea("South Karana Bridge", "northkarana-01", "northkarana-01");
-            AddZoneAreaBox("South Karana Bridge", -3813.526123f, 1621.521606f, 147.434830f, -5799.481445f, 609.983521f, -336.900055f);
+            // AddZoneArea("South Karana Bridge", "northkarana-01", "northkarana-01");
+            // AddZoneAreaBox("South Karana Bridge", -3813.526123f, 1621.521606f, 147.434830f, -5799.481445f, 609.983521f, -336.900055f);
 
             AddZoneLineBox("eastkarana", 13.189000f, 1166.973999f, -37.343681f, ZoneLineOrientationType.East, 38.130348f, -3110.049316f, 42.091228f, -17.969540f, -3238.555908f, -37.988708f);
             AddZoneLineBox("southkarana", 2777.505371f, 906.202576f, -34.406231f, ZoneLineOrientationType.South, -4530.517090f, 1250.382690f, 59.137932f, -4598.474609f, 1171.919800f, -36.060040f);

@@ -23,12 +23,12 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Trees below the zone need to be deleted
             // TODO: More zone areas
             // TODO: BUG: Missing block at 2522.321289f, 677.535767f, -8.108790f, see reference
-            AddZoneArea("Neriak");
-            AddZoneAreaBox("Neriak", 2539.906494f, -707.843018f, 120.655533f, 2091.832031f, -1205.748169f, -28.141399f);
+            // AddZoneArea("Neriak");
+            // AddZoneAreaBox("Neriak", 2539.906494f, -707.843018f, 120.655533f, 2091.832031f, -1205.748169f, -28.141399f);
 
-            AddZoneArea("Lavastorm Path", "nektulos-00", "nektulos-00", true, "wind_lp2", "wind_lp2", 0.75f); // Lowered music volume a bit
-            AddZoneAreaBox("Lavastorm Path", 3581.946777f, 863.359070f, 281.967194f, 2433.607910f, 437.545807f, -117.007523f);
-            AddZoneAreaBox("Lavastorm Path", 3581.946777f, 863.359070f, 281.967194f, 2675.020264f, 170.838821f, -162.906296f);
+            // AddZoneArea("Lavastorm Path", "nektulos-00", "nektulos-00", true, "wind_lp2", "wind_lp2", 0.75f); // Lowered music volume a bit
+            // AddZoneAreaBox("Lavastorm Path", 3581.946777f, 863.359070f, 281.967194f, 2433.607910f, 437.545807f, -117.007523f);
+            // AddZoneAreaBox("Lavastorm Path", 3581.946777f, 863.359070f, 281.967194f, 2675.020264f, 170.838821f, -162.906296f);
 
             AddZoneLineBox("ecommons", 1569.311157f, 667.254028f, -21.531260f, ZoneLineOrientationType.East, -2666.610596f, -550.025208f, 31.661320f, -2707.922119f, -636.140076f, -22.031050f);
             AddZoneLineBox("lavastorm", -2075.322998f, -189.802826f, -19.598631f, ZoneLineOrientationType.North, 3164.449707f, 385.575653f, 151.052231f, 3094.654785f, 237.925507f, -19.999571f);

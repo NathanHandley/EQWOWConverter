@@ -20,17 +20,17 @@ namespace EQWOWConverter.Zones.Properties
     {
         public LairOfTheSplitpawZoneProperties() : base()
         {
-            AddZoneArea("Entry", "paw-01", "paw-01");
-            AddZoneAreaBox("Entry", 304.315002f, 164.917114f, 76.783112f, -248.294434f, -242.120102f, -14.874890f);
+            // AddZoneArea("Entry", "paw-01", "paw-01");
+            // AddZoneAreaBox("Entry", 304.315002f, 164.917114f, 76.783112f, -248.294434f, -242.120102f, -14.874890f);
 
-            AddZoneArea("Inner Pass", "paw-00", "paw-00");
-            AddZoneAreaBox("Inner Pass", 414.866638f, 160.217361f, 60.530499f, 283.930664f, -10.214720f, -1.216620f);
+            // AddZoneArea("Inner Pass", "paw-00", "paw-00");
+            // AddZoneAreaBox("Inner Pass", 414.866638f, 160.217361f, 60.530499f, 283.930664f, -10.214720f, -1.216620f);
 
-            AddZoneArea("Prison", "paw-02", "paw-02");
-            AddZoneAreaBox("Prison", 533.833862f, 355.961914f, 15.6f, 374.045227f, 120.173988f, -4.906780f);
-            AddZoneAreaBox("Prison", 435.937653f, 357.812988f, 15.6f, 264.710632f, 193.642593f, 5.684790f);
-            AddZoneAreaBox("Prison", 581.031372f, 241.429214f, 15.6f, 542.096375f, 181.379074f, 8.723260f);
-            AddZoneAreaBox("Prison", 550.940308f, 217.146118f, 12.983020f, 502.867828f, 180.879517f, 8.999980f);
+            // AddZoneArea("Prison", "paw-02", "paw-02");
+            // AddZoneAreaBox("Prison", 533.833862f, 355.961914f, 15.6f, 374.045227f, 120.173988f, -4.906780f);
+            // AddZoneAreaBox("Prison", 435.937653f, 357.812988f, 15.6f, 264.710632f, 193.642593f, 5.684790f);
+            // AddZoneAreaBox("Prison", 581.031372f, 241.429214f, 15.6f, 542.096375f, 181.379074f, 8.723260f);
+            // AddZoneAreaBox("Prison", 550.940308f, 217.146118f, 12.983020f, 502.867828f, 180.879517f, 8.999980f);
 
             AddZoneLineBox("southkarana", -3118.534424f, 908.824341f, -11.938860f, ZoneLineOrientationType.West, -95.775307f, 64.159088f, 14.467540f, -112.163208f, 29.530199f, -0.499950f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 1171.132324f, 159.264618f, 1098.533813f, 89.405617f, -5.999900f, 100f); // Western water (higher) - Northmost

@@ -20,8 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public EastCommonsZoneProperties() : base()
         {
-            AddZoneArea("Commons Tunnel", "", "", false, "silence", "silence");
-            AddZoneAreaBox("Commons Tunnel", -1174.802734f, 917.358459f, 66.066406f, -3512.139893f, -1800.614136f, -49.265629f);
+            // AddZoneArea("Commons Tunnel", "", "", false, "silence", "silence");
+            // AddZoneAreaBox("Commons Tunnel", -1174.802734f, 917.358459f, 66.066406f, -3512.139893f, -1800.614136f, -49.265629f);
 
             AddZoneLineBox("nro", 2033.690186f, 1875.838257f, 0.000120f, ZoneLineOrientationType.East, -3004.062744f, -1183.421265f, 28.469000f, -3087.551270f, -1212.701660f, -0.499900f);
             AddZoneLineBox("nektulos", -2686.337891f, -529.951477f, -21.531050f, ZoneLineOrientationType.West, 1591.733643f, 696.248291f, 23.553110f, 1554.580811f, 679.187378f, -22.031260f);

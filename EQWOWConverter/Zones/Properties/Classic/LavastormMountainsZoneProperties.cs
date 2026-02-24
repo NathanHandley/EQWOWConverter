@@ -21,11 +21,11 @@ namespace EQWOWConverter.Zones.Properties
         public LavastormMountainsZoneProperties() : base()
         {
             // TODO: Add zone areas            
-            AddZoneArea("Druid Ring", "lavastorm-01", "lavastorm-01");
-            AddZoneAreaBox("Druid Ring", 1133.413452f, 1478.240601f, 250.740173f, 778.254822f, 1252.916504f, -11.904970f);
+            // AddZoneArea("Druid Ring", "lavastorm-01", "lavastorm-01");
+            // AddZoneAreaBox("Druid Ring", 1133.413452f, 1478.240601f, 250.740173f, 778.254822f, 1252.916504f, -11.904970f);
 
-            AddZoneArea("Najena", "lavastorm-01", "lavastorm-01");
-            AddZoneAreaBox("Najena", -765.062378f, -682.962402f, 96.069473f, -1213.208984f, -1208.900757f, -100);
+            // AddZoneArea("Najena", "lavastorm-01", "lavastorm-01");
+            // AddZoneAreaBox("Najena", -765.062378f, -682.962402f, 96.069473f, -1213.208984f, -1208.900757f, -100);
             
             AddZoneLineBox("soltemple", 255.801758f, 55.676472f, -0.999090f, ZoneLineOrientationType.North, 1381.412109f, 336.848877f, 156.155457f, 1356.645630f, 324.494568f, 145.188034f);
             AddZoneLineBox("soldunga", -449.347717f, -524.520508f, 69.968758f, ZoneLineOrientationType.South, 784.385925f, 231.909103f, 139.531494f, 763.337830f, 221.400375f, 126.562843f);

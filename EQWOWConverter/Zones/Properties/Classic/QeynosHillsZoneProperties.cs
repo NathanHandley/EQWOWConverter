@@ -21,23 +21,23 @@ namespace EQWOWConverter.Zones.Properties
         public QeynosHillsZoneProperties() : base()
         {
             // TODO: Add a few more zone areas
-            AddZoneArea("Haunted Ruins", "qeytoqrg-03", "qeytoqrg-03");
-            AddZoneAreaBox("Haunted Ruins", 4967.319824f, -563.435852f, 276.213654f, 4375.154297f, -1166.364746f, -71.360802f);
+            // AddZoneArea("Haunted Ruins", "qeytoqrg-03", "qeytoqrg-03");
+            // AddZoneAreaBox("Haunted Ruins", 4967.319824f, -563.435852f, 276.213654f, 4375.154297f, -1166.364746f, -71.360802f);
 
-            AddZoneArea("Surefall Glade", "qeytoqrg-01", "qeytoqrg-01");
-            AddZoneAreaBox("Surefall Glade", 5390.475098f, 497.818268f, 150.691086f, 4613.062988f, -150.386963f, -68.285263f);
+            // AddZoneArea("Surefall Glade", "qeytoqrg-01", "qeytoqrg-01");
+            // AddZoneAreaBox("Surefall Glade", 5390.475098f, 497.818268f, 150.691086f, 4613.062988f, -150.386963f, -68.285263f);
 
-            AddZoneArea("Sayer's House", "qeytoqrg-05", "qeytoqrg-05");
-            AddZoneAreaBox("Sayer's House", 1563.561646f, 472.160248f, 184.760742f, 1252.555176f, 175.282623f, -86.300293f);
+            // AddZoneArea("Sayer's House", "qeytoqrg-05", "qeytoqrg-05");
+            // AddZoneAreaBox("Sayer's House", 1563.561646f, 472.160248f, 184.760742f, 1252.555176f, 175.282623f, -86.300293f);
 
-            AddZoneArea("Blackburrow", "qeytoqrg-02", "qeytoqrg-02");
-            AddZoneAreaBox("Blackburrow", 3568.570557f, -889.109131f, 155.928177f, 3193.234619f, -1199.968018f, -65.464127f);
+            // AddZoneArea("Blackburrow", "qeytoqrg-02", "qeytoqrg-02");
+            // AddZoneAreaBox("Blackburrow", 3568.570557f, -889.109131f, 155.928177f, 3193.234619f, -1199.968018f, -65.464127f);
 
-            AddZoneArea("Guard Tower", "qeytoqrg-00", "qeytoqrg-00");
-            AddZoneAreaBox("Guard Tower", 1290.776367f, -694.181519f, 136.614410f, 758.098083f, -1093.738770f, -41.893970f);
+            // AddZoneArea("Guard Tower", "qeytoqrg-00", "qeytoqrg-00");
+            // AddZoneAreaBox("Guard Tower", 1290.776367f, -694.181519f, 136.614410f, 758.098083f, -1093.738770f, -41.893970f);
 
-            AddZoneArea("The Split", "qeytoqrg-04", "qeytoqrg-04");
-            AddZoneAreaBox("The Split", 688.133545f, 266.737915f, 74.388199f, 362.325439f, -70.620377f, -69.278679f);
+            // AddZoneArea("The Split", "qeytoqrg-04", "qeytoqrg-04");
+            // AddZoneAreaBox("The Split", 688.133545f, 266.737915f, 74.388199f, 362.325439f, -70.620377f, -69.278679f);
 
             AddZoneLineBox("blackburrow", -163.06775f, 29.47728f, 0.000014f, ZoneLineOrientationType.West, 3442.5054f, -1124.6694f, 11.548047f, 3424.3691f, -1135.8118f, -0.4999545f);
             AddZoneLineBox("qey2hh1", 16.735029f, -634.390564f, -7.000000f, ZoneLineOrientationType.East, 1511.327637f, -2226.687500f, 67.544861f, 1317.927246f, -2336.197754f, -4.843780f);

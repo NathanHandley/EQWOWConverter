@@ -21,32 +21,32 @@ namespace EQWOWConverter.Zones.Properties
         public NorthKaladimZoneProperties() : base()
         {
             // TODO: BUG: Bug in the northwest tunnel (some of it doesn't trigger)
-            AddZoneArea("Gemstone Mine");
-            AddZoneAreaBox("Gemstone Mine", 795.009949f, 457.298615f, -38.483971f, 520.949097f, 140.156342f, -133.599564f);
+            // AddZoneArea("Gemstone Mine");
+            // AddZoneAreaBox("Gemstone Mine", 795.009949f, 457.298615f, -38.483971f, 520.949097f, 140.156342f, -133.599564f);
 
-            if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
-                AddZoneArea("Temple of Brell Serilis", "kaladima-02", "kaladima-02");
-            else
-                AddZoneArea("Temple of Brell Serilis");
-            AddZoneAreaBox("Temple of Brell Serilis", 1483.537109f, 206.665359f, 92.547607f, 657.100952f, 67.384972f, -2.300760f);
+            //if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
+                // AddZoneArea("Temple of Brell Serilis", "kaladima-02", "kaladima-02");
+            //else
+                // AddZoneArea("Temple of Brell Serilis");
+            // AddZoneAreaBox("Temple of Brell Serilis", 1483.537109f, 206.665359f, 92.547607f, 657.100952f, 67.384972f, -2.300760f);
 
-            AddZoneArea("Greybloom Farms");
-            AddZoneAreaBox("Greybloom Farms", 700.961914f, -55.230789f, 58.052711f, 569.156677f, -215.507767f, -37.635891f);
+            // AddZoneArea("Greybloom Farms");
+            // AddZoneAreaBox("Greybloom Farms", 700.961914f, -55.230789f, 58.052711f, 569.156677f, -215.507767f, -37.635891f);
 
-            AddZoneArea("Everhot Forge");
-            AddZoneAreaBox("Everhot Forge", 406.560242f, -144.992920f, 52.823269f, 340.473755f, -212.804214f, -5.368430f);
+            // AddZoneArea("Everhot Forge");
+            // AddZoneAreaBox("Everhot Forge", 406.560242f, -144.992920f, 52.823269f, 340.473755f, -212.804214f, -5.368430f);
 
-            AddZoneArea("Southwest Tunnel", "", "", false, "wind_lp2", "wind_lp2");
-            AddZoneAreaBox("Southwest Tunnel", 473.453552f, 358.147095f, 24.729561f, 336.825073f, 256.194977f, -27.863100f);
-            AddZoneAreaBox("Southwest Tunnel", 454.195770f, -214.330215f, 44.012981f, 316.785950f, -288.690063f, -27.863100f);
+            // AddZoneArea("Southwest Tunnel", "", "", false, "wind_lp2", "wind_lp2");
+            // AddZoneAreaBox("Southwest Tunnel", 473.453552f, 358.147095f, 24.729561f, 336.825073f, 256.194977f, -27.863100f);
+            // AddZoneAreaBox("Southwest Tunnel", 454.195770f, -214.330215f, 44.012981f, 316.785950f, -288.690063f, -27.863100f);
 
-            AddZoneArea("Central Tunnel", "", "", false, "wind_lp4", "wind_lp4");
-            AddZoneAreaBox("Central Tunnel", 562.377991f, 182.709274f, 32.009251f, 392.926910f, -35.701130f, -35.316898f);
+            // AddZoneArea("Central Tunnel", "", "", false, "wind_lp4", "wind_lp4");
+            // AddZoneAreaBox("Central Tunnel", 562.377991f, 182.709274f, 32.009251f, 392.926910f, -35.701130f, -35.316898f);
 
-            AddZoneArea("Northwest Tunnel", "", "", false, "wind_lp4", "wind_lp4");
-            AddZoneAreaBox("Northwest Tunnel", 715.138184f, 313.482269f, 102.215286f, 626.388977f, -8.161750f, -38.159229f);
-            AddZoneAreaBox("Northwest Tunnel", 715.138184f, 177.230865f, 102.215286f, 557.901489f, -8.161750f, -38.159229f);
-            AddZoneAreaBox("Northwest Tunnel", 646.349792f, -178.952515f, 73.669640f, 471.682922f, -286.248322f, -9.044160f);
+            // AddZoneArea("Northwest Tunnel", "", "", false, "wind_lp4", "wind_lp4");
+            // AddZoneAreaBox("Northwest Tunnel", 715.138184f, 313.482269f, 102.215286f, 626.388977f, -8.161750f, -38.159229f);
+            // AddZoneAreaBox("Northwest Tunnel", 715.138184f, 177.230865f, 102.215286f, 557.901489f, -8.161750f, -38.159229f);
+            // AddZoneAreaBox("Northwest Tunnel", 646.349792f, -178.952515f, 73.669640f, 471.682922f, -286.248322f, -9.044160f);
 
             AddZoneLineBox("kaladima", 306.093964f, 231.490326f, 0.020500f, ZoneLineOrientationType.South, 394.649292f, 346.066956f, -1.531000f, 397.138519f, 312.694366f, -24.499941f);
             AddZoneLineBox("kaladima", 393.919128f, -263.472565f, 0.000040f, ZoneLineOrientationType.South, 384.053192f, -259.715820f, 22.414330f, 373.654907f, -272.101318f, -0.499970f);

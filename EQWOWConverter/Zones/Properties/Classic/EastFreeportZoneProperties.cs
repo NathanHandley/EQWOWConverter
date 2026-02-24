@@ -27,86 +27,86 @@ namespace EQWOWConverter.Zones.Properties
     {
         public EastFreeportZoneProperties() : base()
         {
-            AddZoneArea("Field North Camp", "freporte-04", "freporte-04", true, "", "night");
-            AddZoneAreaBox("Field North Camp", -341.816437f, -60.168308f, 200, -540.543701f, -266.745239f, -60f);
+            // AddZoneArea("Field North Camp", "freporte-04", "freporte-04", true, "", "night");
+            // AddZoneAreaBox("Field North Camp", -341.816437f, -60.168308f, 200, -540.543701f, -266.745239f, -60f);
 
-            AddZoneArea("South Gate", "", "", false, "", "night");
-            AddZoneAreaBox("South Gate", -342.407654f, -411.425812f, 100f, -564.648193f, -887.039978f, -60f);
-            AddZoneAreaBox("South Gate", -280.112610f, -560.106567f, 100f, -350.181793f, -770.032776f, -60f);
+            // AddZoneArea("South Gate", "", "", false, "", "night");
+            // AddZoneAreaBox("South Gate", -342.407654f, -411.425812f, 100f, -564.648193f, -887.039978f, -60f);
+            // AddZoneAreaBox("South Gate", -280.112610f, -560.106567f, 100f, -350.181793f, -770.032776f, -60f);
 
-            AddZoneArea("South Field", "", "", false, "", "night");
-            AddZoneAreaBox("South Field", -342.360107f, -65.000290f, -55f, -2010.536743f, -966.472961f, -56.5f);
-            AddZoneAreaBox("South Field", -348.634613f, -926.667175f, -55f, -2010.536743f, -990.134460f, -56.5f);
-            AddZoneAreaBox("South Field", -412.658569f, -990.025208f, -55f, -2010.536743f, -1281.146729f, -56.5f);
+            // AddZoneArea("South Field", "", "", false, "", "night");
+            // AddZoneAreaBox("South Field", -342.360107f, -65.000290f, -55f, -2010.536743f, -966.472961f, -56.5f);
+            // AddZoneAreaBox("South Field", -348.634613f, -926.667175f, -55f, -2010.536743f, -990.134460f, -56.5f);
+            // AddZoneAreaBox("South Field", -412.658569f, -990.025208f, -55f, -2010.536743f, -1281.146729f, -56.5f);
 
-            AddZoneArea("Grub n Grog Tavern");
-            AddZoneAreaBox("Grub n Grog Tavern", 111.895752f, -657.588135f, 100f, 42.035801f, -700.445862f, -60f);
-            AddZoneAreaBox("Grub n Grog Tavern", 112.624428f, -699.819946f, 100f, -27.890490f, -769.804749f, -60f);
+            // AddZoneArea("Grub n Grog Tavern");
+            // AddZoneAreaBox("Grub n Grog Tavern", 111.895752f, -657.588135f, 100f, 42.035801f, -700.445862f, -60f);
+            // AddZoneAreaBox("Grub n Grog Tavern", 112.624428f, -699.819946f, 100f, -27.890490f, -769.804749f, -60f);
 
-            AddZoneArea("Freeport Inn", "freporte-02", "freporte-01");
-            AddZoneAreaBox("Freeport Inn", 29.813869f, -600.123047f, 100f, -126.564362f, -770.024475f, -60f);
+            // AddZoneArea("Freeport Inn", "freporte-02", "freporte-01");
+            // AddZoneAreaBox("Freeport Inn", 29.813869f, -600.123047f, 100f, -126.564362f, -770.024475f, -60f);
 
-            AddZoneArea("The Dark Corner", "freporte-07", "freporte-07");
-            AddZoneAreaBox("The Dark Corner", -219.618500f, -893.643677f, -81.657059f, -351.893951f, -979.860413f, -121.632477f);
-            AddZoneAreaBox("The Dark Corner", -172.636154f, -784.387573f, -88.136513f, -363.913147f, -979.860413f, -120.643372f);
-            AddZoneAreaBox("The Dark Corner", -263.556030f, -730.539856f, -90.290993f, -357.307373f, -877.569580f, -112.743217f);
+            // AddZoneArea("The Dark Corner", "freporte-07", "freporte-07");
+            // AddZoneAreaBox("The Dark Corner", -219.618500f, -893.643677f, -81.657059f, -351.893951f, -979.860413f, -121.632477f);
+            // AddZoneAreaBox("The Dark Corner", -172.636154f, -784.387573f, -88.136513f, -363.913147f, -979.860413f, -120.643372f);
+            // AddZoneAreaBox("The Dark Corner", -263.556030f, -730.539856f, -90.290993f, -357.307373f, -877.569580f, -112.743217f);
 
-            AddZoneArea("Portside Tunnel", "freporte-06", "freporte-06");
-            AddZoneAreaBox("Portside Tunnel", -261.986359f, -960.989624f, -69.464958f, -345.707611f, -1026.206177f, -111);
-            AddZoneAreaBox("Portside Tunnel", -294.081604f, -984.719849f, -69.464958f, -405.236694f, -1039.854858f, -111);
-            AddZoneAreaBox("Portside Tunnel", -308.852722f, -987.433044f, -62.899090f, -491.365112f, -1049.549805f, -111);
-            AddZoneAreaBox("Portside Tunnel", -476.421814f, -989.723145f, -56.559040f, -593.941284f, -1119.387939f, -111);
-            AddZoneAreaBox("Portside Tunnel", -416.091278f, -1020.019226f, -60.956261f, -423.911926f, -1035.786377f, -111);
+            // AddZoneArea("Portside Tunnel", "freporte-06", "freporte-06");
+            // AddZoneAreaBox("Portside Tunnel", -261.986359f, -960.989624f, -69.464958f, -345.707611f, -1026.206177f, -111);
+            // AddZoneAreaBox("Portside Tunnel", -294.081604f, -984.719849f, -69.464958f, -405.236694f, -1039.854858f, -111);
+            // AddZoneAreaBox("Portside Tunnel", -308.852722f, -987.433044f, -62.899090f, -491.365112f, -1049.549805f, -111);
+            // AddZoneAreaBox("Portside Tunnel", -476.421814f, -989.723145f, -56.559040f, -593.941284f, -1119.387939f, -111);
+            // AddZoneAreaBox("Portside Tunnel", -416.091278f, -1020.019226f, -60.956261f, -423.911926f, -1035.786377f, -111);
 
-            AddZoneArea("Undermarket", "freporte-07", "freporte-07");
-            AddZoneAreaBox("Undermarket", -111.269089f, -164.807983f, -93.928459f, -250.684006f, -331.247040f, -112.361656f);
-            AddZoneAreaBox("Undermarket", -14.607160f, -167.825241f, -84.865463f, -112.624840f, -307.052856f, -99.015457f);
+            // AddZoneArea("Undermarket", "freporte-07", "freporte-07");
+            // AddZoneAreaBox("Undermarket", -111.269089f, -164.807983f, -93.928459f, -250.684006f, -331.247040f, -112.361656f);
+            // AddZoneAreaBox("Undermarket", -14.607160f, -167.825241f, -84.865463f, -112.624840f, -307.052856f, -99.015457f);
 
-            AddZoneArea("Central Tunnel");
-            AddZoneAreaBox("Central Tunnel", -194.367798f, -79.156219f, - 111.427818f, -353.227386f, -794.283813f, -146.810425f);
-            AddZoneAreaBox("Central Tunnel", -152.643631f, -74.156021f, -111.076973f, -225.211441f, -112.659233f, -146.810425f);
+            // AddZoneArea("Central Tunnel");
+            // AddZoneAreaBox("Central Tunnel", -194.367798f, -79.156219f, - 111.427818f, -353.227386f, -794.283813f, -146.810425f);
+            // AddZoneAreaBox("Central Tunnel", -152.643631f, -74.156021f, -111.076973f, -225.211441f, -112.659233f, -146.810425f);
 
-            AddZoneArea("Shady Market", "freporte-06", "freporte-06");
-            AddZoneAreaBox("Shady Market", -83.636902f, -41.591999f, 50f, -342.550507f, -357.456238f, -84.468719f);
-            AddZoneAreaBox("Shady Market", 20.045830f, -188.963806f, 50f, -146.404694f, -413.418121f, -84.468719f);
+            // AddZoneArea("Shady Market", "freporte-06", "freporte-06");
+            // AddZoneAreaBox("Shady Market", -83.636902f, -41.591999f, 50f, -342.550507f, -357.456238f, -84.468719f);
+            // AddZoneAreaBox("Shady Market", 20.045830f, -188.963806f, 50f, -146.404694f, -413.418121f, -84.468719f);
 
-            AddZoneArea("South Tunnels", "freporte-06", "freporte-06");
-            AddZoneAreaBox("South Tunnels", -22.523890f, 414.279907f, -85.259438f, -265.123016f, -168.912506f, -150f);
-            AddZoneAreaBox("South Tunnels", -337.013611f, 55.357231f, -53.954090f, -392.767914f, -68.238281f, -150f);
-            AddZoneAreaBox("South Tunnels", -59.927891f, 300.814484f, -53.954090f, -392.767914f, -68.238281f, -150f);
+            // AddZoneArea("South Tunnels", "freporte-06", "freporte-06");
+            // AddZoneAreaBox("South Tunnels", -22.523890f, 414.279907f, -85.259438f, -265.123016f, -168.912506f, -150f);
+            // AddZoneAreaBox("South Tunnels", -337.013611f, 55.357231f, -53.954090f, -392.767914f, -68.238281f, -150f);
+            // AddZoneAreaBox("South Tunnels", -59.927891f, 300.814484f, -53.954090f, -392.767914f, -68.238281f, -150f);
 
-            AddZoneArea("Seafarer's Roost", "freporte-03", "freporte-03");
-            AddZoneAreaBox("Seafarer's Roost", -182.084061f, -797.880615f, 100f, -265.703278f, -909.308350f, -84.705994f);
+            // AddZoneArea("Seafarer's Roost", "freporte-03", "freporte-03");
+            // AddZoneAreaBox("Seafarer's Roost", -182.084061f, -797.880615f, 100f, -265.703278f, -909.308350f, -84.705994f);
 
-            AddZoneArea("Armor by Ikthar");
-            AddZoneAreaBox("Armor by Ikthar", 83.689796f, -154.161804f, 2.793000f, 28.222139f, -251.543106f, -100f);
+            // AddZoneArea("Armor by Ikthar");
+            // AddZoneAreaBox("Armor by Ikthar", 83.689796f, -154.161804f, 2.793000f, 28.222139f, -251.543106f, -100f);
 
-            AddZoneArea("Trader's Holiday");
-            AddZoneAreaBox("Trader's Holiday", 167.701202f, -238.067795f, 2.793000f, 112.369164f, -349.568359f, -100f);
-            AddZoneAreaBox("Trader's Holiday", 167.701202f, -238.067795f, 2.793000f, 82.095016f, -279.520264f, -100f);
+            // AddZoneArea("Trader's Holiday");
+            // AddZoneAreaBox("Trader's Holiday", 167.701202f, -238.067795f, 2.793000f, 112.369164f, -349.568359f, -100f);
+            // AddZoneAreaBox("Trader's Holiday", 167.701202f, -238.067795f, 2.793000f, 82.095016f, -279.520264f, -100f);
 
-            AddZoneArea("Velithe & Bardo's");
-            AddZoneAreaBox("Velithe & Bardo's", 167.565765f, -364.155640f, 2.793000f, 56.067902f, -419.576172f, -100f);
-            AddZoneAreaBox("Velithe & Bardo's", 111.770233f, -392.137573f, 2.793000f, 56.067902f, -503.620117f, -100f);
+            // AddZoneArea("Velithe & Bardo's");
+            // AddZoneAreaBox("Velithe & Bardo's", 167.565765f, -364.155640f, 2.793000f, 56.067902f, -419.576172f, -100f);
+            // AddZoneAreaBox("Velithe & Bardo's", 111.770233f, -392.137573f, 2.793000f, 56.067902f, -503.620117f, -100f);
 
-            AddZoneArea("Leather and Hide");
-            AddZoneAreaBox("Leather and Hide", 97.780190f, -532.112793f, 2.793000f, 28.198851f, -587.479797f, -100f);
+            // AddZoneArea("Leather and Hide");
+            // AddZoneAreaBox("Leather and Hide", 97.780190f, -532.112793f, 2.793000f, 28.198851f, -587.479797f, -100f);
 
-            AddZoneArea("Hallard's Resales");
-            AddZoneAreaBox("Hallard's Resales", -14.271970f, -434.044525f, 50f, -125.575272f, -503.412567f, -150f);
-            AddZoneAreaBox("Hallard's Resales", -14.271970f, -434.044525f, 50f, -153.549210f, -475.407990f, -150f);
+            // AddZoneArea("Hallard's Resales");
+            // AddZoneAreaBox("Hallard's Resales", -14.271970f, -434.044525f, 50f, -125.575272f, -503.412567f, -150f);
+            // AddZoneAreaBox("Hallard's Resales", -14.271970f, -434.044525f, 50f, -153.549210f, -475.407990f, -150f);
 
-            AddChildZoneArea("Port Authority", "Freeport Port");
-            AddZoneAreaBox("Port Authority", 111.771873f, -797.825439f, -11.962730f, 42.381168f, -909.340637f, -57.018581f);
+            // AddChildZoneArea("Port Authority", "Freeport Port");
+            // AddZoneAreaBox("Port Authority", 111.771873f, -797.825439f, -11.962730f, 42.381168f, -909.340637f, -57.018581f);
 
-            AddZoneArea("Freeport Port", "freporte-00", "freporte-00");
-            AddZoneAreaBox("Freeport Port", 1064.131104f, -810.813171f, 100f, 118.151123f, -3000f, -200f);
-            AddZoneAreaBox("Freeport Port", 172.718567f, -810.813171f, 100f, 109.435837f, -3000f, -200f);
-            AddZoneAreaBox("Freeport Port", 114.289108f, -775.425415f, 100f, -264.093933f, -3000f, -200f);
-            AddZoneAreaBox("Freeport Port", -261.120789f, -1010.070984f, 100f, -527.188660f, -3000f, -200f);
-            AddZoneAreaBox("Freeport Port", -521.252380f, -1115.864502f, 100f, -602.331726f, -3000f, -200f);
-            AddZoneAreaBox("Freeport Port", -593.839050f, -1200.171387f, 100f, -642.278320f, -3000f, -200f);
-            AddZoneAreaBox("Freeport Port", -632.776367f, -1298.205444f, 100f, -1406.162598f, -3000f, -200f);
+            // AddZoneArea("Freeport Port", "freporte-00", "freporte-00");
+            // AddZoneAreaBox("Freeport Port", 1064.131104f, -810.813171f, 100f, 118.151123f, -3000f, -200f);
+            // AddZoneAreaBox("Freeport Port", 172.718567f, -810.813171f, 100f, 109.435837f, -3000f, -200f);
+            // AddZoneAreaBox("Freeport Port", 114.289108f, -775.425415f, 100f, -264.093933f, -3000f, -200f);
+            // AddZoneAreaBox("Freeport Port", -261.120789f, -1010.070984f, 100f, -527.188660f, -3000f, -200f);
+            // AddZoneAreaBox("Freeport Port", -521.252380f, -1115.864502f, 100f, -602.331726f, -3000f, -200f);
+            // AddZoneAreaBox("Freeport Port", -593.839050f, -1200.171387f, 100f, -642.278320f, -3000f, -200f);
+            // AddZoneAreaBox("Freeport Port", -632.776367f, -1298.205444f, 100f, -1406.162598f, -3000f, -200f);
 
             AddZoneLineBox("nro", 4152.241699f, 905.000000f, -28.031219f, ZoneLineOrientationType.South, -1336.303711f, -98.602051f, 200.000000f, -1366.303711f, -138.602051f, -100.000000f);
             AddZoneLineBox("nro", 4152.241699f, 885.000000f, -28.031000f, ZoneLineOrientationType.South, -1336.303711f, -138.602051f, 200.000000f, -1366.303711f, -158.602051f, -100.000000f);
