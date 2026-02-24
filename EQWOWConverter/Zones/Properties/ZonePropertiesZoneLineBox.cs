@@ -21,6 +21,9 @@ namespace EQWOWConverter.Zones
 {
     internal class ZonePropertiesZoneLineBox
     {
+        private static Dictionary<string, List<ZonePropertiesZoneLineBox>> ZoneLineBoxesBySourceZoneShortName = new Dictionary<string, List<ZonePropertiesZoneLineBox>>();
+        private static readonly object ZoneLineBoxesLock = new object();
+
         public int AreaTriggerID;
         public string TargetZoneShortName = string.Empty;
         public Vector3 TargetZonePosition = new Vector3();
@@ -30,7 +33,60 @@ namespace EQWOWConverter.Zones
         public float BoxWidth;
         public float BoxHeight;
         public float BoxOrientation = 0.0f;
-        public string TempComment = string.Empty;
+
+        private static void PopulateZoneLineBoxesFromFile()
+        {
+            ZoneLineBoxesBySourceZoneShortName.Clear();
+            string zoneLineBoxesFilePath = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneLineBoxes.csv");
+            Logger.WriteDebug("Populating Zone Line Boxes via file '" + zoneLineBoxesFilePath + "'");
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(zoneLineBoxesFilePath, "|");
+            foreach (Dictionary<string, string> columns in rows)
+            {
+                string sourceZoneShortName = columns["SourceZoneShortName"];
+                string targetZoneShortName = columns["TargetZoneShortName"];
+                float targetZonePositionX = Convert.ToSingle(columns["TargetPosX"]);
+                float targetZonePositionY = Convert.ToSingle(columns["TargetPosY"]);
+                float targetZonePositionZ = Convert.ToSingle(columns["TargetPosZ"]);
+                float boxTopNorthwestX = Convert.ToSingle(columns["SourceBoxTopNW_X"]);
+                float boxTopNorthwestY = Convert.ToSingle(columns["SourceBoxTopNW_Y"]);
+                float boxTopNorthwestZ = Convert.ToSingle(columns["SourceBoxTopNW_Z"]);
+                float boxBottomSoutheastX = Convert.ToSingle(columns["SourceBoxBottomSE_X"]);
+                float boxBottomSoutheastY = Convert.ToSingle(columns["SourceBoxBottomSE_Y"]);
+                float boxBottomSoutheastZ = Convert.ToSingle(columns["SourceBoxBottomSE_Z"]);
+                ZoneLineOrientationType targetZoneOrientation = ZoneLineOrientationType.North;
+                switch (columns["TargetPosOrientation"].ToLower().Trim())
+                {
+                    case "north": targetZoneOrientation = ZoneLineOrientationType.North; break;
+                    case "south": targetZoneOrientation = ZoneLineOrientationType.South; break;
+                    case "east": targetZoneOrientation = ZoneLineOrientationType.East; break;
+                    case "west": targetZoneOrientation = ZoneLineOrientationType.West; break;
+                    case "northwest": targetZoneOrientation = ZoneLineOrientationType.NorthWest; break;
+                    default:
+                        {
+                            Logger.WriteError("PopulateZoneLineBoxesFromFile found unhandled orientation of '", columns["TargetPosOrientation"], "'");
+                        } break;
+                }
+                ZonePropertiesZoneLineBox zoneLineBox = new ZonePropertiesZoneLineBox(targetZoneShortName, targetZonePositionX,
+                    targetZonePositionY, targetZonePositionZ, targetZoneOrientation, boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ,
+                    boxBottomSoutheastX, boxBottomSoutheastY, boxBottomSoutheastZ);
+                if (ZoneLineBoxesBySourceZoneShortName.ContainsKey(sourceZoneShortName) == false)
+                    ZoneLineBoxesBySourceZoneShortName.Add(sourceZoneShortName, new List<ZonePropertiesZoneLineBox>());
+                ZoneLineBoxesBySourceZoneShortName[sourceZoneShortName].Add(zoneLineBox);
+            }
+        }
+
+        public static List<ZonePropertiesZoneLineBox> GetZoneLineBoxesForSourceZone(string zoneShortName)
+        {
+            lock (ZoneLineBoxesLock)
+            {
+                if (ZoneLineBoxesBySourceZoneShortName.Count == 0)
+                    PopulateZoneLineBoxesFromFile();
+                if (ZoneLineBoxesBySourceZoneShortName.ContainsKey(zoneShortName) == false)
+                    return new List<ZonePropertiesZoneLineBox>();
+                else
+                    return ZoneLineBoxesBySourceZoneShortName[zoneShortName];
+            }
+        }
 
         public ZonePropertiesZoneLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY,
             float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY,
@@ -62,48 +118,6 @@ namespace EQWOWConverter.Zones
             }
 
             // Calculate the dimensions in the form needed by a wow trigger zone
-            BoundingBox zoneLineBoxBounding = new BoundingBox(boxBottomSoutheastX, boxBottomSoutheastY, boxBottomSoutheastZ,
-                boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ);
-            BoxPosition = zoneLineBoxBounding.GetCenter();
-            BoxWidth = zoneLineBoxBounding.GetYDistance();
-            BoxLength = zoneLineBoxBounding.GetXDistance();
-            BoxHeight = zoneLineBoxBounding.GetZDistance();
-        }
-
-        public ZonePropertiesZoneLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY, float targetZonePositionZ,
-            ZoneLineOrientationType targetZoneOrientation, float padBottomCenterXPosition, float padBottomCenterYPosition, float padBottomCenterZPosition,
-            float padWidth)
-        {
-            AreaTriggerID = AreaTriggerDBC.GetGeneratedAreaTriggerID();
-
-            // Scale input values
-            targetZonePositionX *= Configuration.GENERATE_WORLD_SCALE;
-            targetZonePositionY *= Configuration.GENERATE_WORLD_SCALE;
-            targetZonePositionZ *= Configuration.GENERATE_WORLD_SCALE;
-            padBottomCenterXPosition *= Configuration.GENERATE_WORLD_SCALE;
-            padBottomCenterYPosition *= Configuration.GENERATE_WORLD_SCALE;
-            padBottomCenterZPosition *= Configuration.GENERATE_WORLD_SCALE;
-            padWidth *= Configuration.GENERATE_WORLD_SCALE;
-
-            // Create the box base values
-            TargetZoneShortName = targetZoneShortName;
-            TargetZonePosition = new Vector3(targetZonePositionX, targetZonePositionY, targetZonePositionZ);
-            switch (targetZoneOrientation)
-            {
-                case ZoneLineOrientationType.North: TargetZoneOrientation = 0; break;
-                case ZoneLineOrientationType.South: TargetZoneOrientation = Convert.ToSingle(Math.PI); break;
-                case ZoneLineOrientationType.West: TargetZoneOrientation = Convert.ToSingle(Math.PI * 0.5); break;
-                case ZoneLineOrientationType.East: TargetZoneOrientation = Convert.ToSingle(Math.PI * 1.5); break;
-                case ZoneLineOrientationType.NorthWest: TargetZoneOrientation = Convert.ToSingle(Math.PI * 0.25); break;
-            }
-
-            // Calculate the dimensions in the form needed by a wow trigger zone
-            float boxBottomSoutheastX = padBottomCenterXPosition - (padWidth / 2);
-            float boxBottomSoutheastY = padBottomCenterYPosition - (padWidth / 2);
-            float boxBottomSoutheastZ = padBottomCenterZPosition - (0.25f * Configuration.GENERATE_WORLD_SCALE);
-            float boxTopNorthwestX = boxBottomSoutheastX + padWidth;
-            float boxTopNorthwestY = boxBottomSoutheastY + padWidth;
-            float boxTopNorthwestZ = padBottomCenterZPosition + (5.0f * Configuration.GENERATE_WORLD_SCALE);
             BoundingBox zoneLineBoxBounding = new BoundingBox(boxBottomSoutheastX, boxBottomSoutheastY, boxBottomSoutheastZ,
                 boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ);
             BoxPosition = zoneLineBoxBounding.GetCenter();

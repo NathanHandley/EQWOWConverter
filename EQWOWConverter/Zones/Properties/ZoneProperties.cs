@@ -257,11 +257,7 @@ namespace EQWOWConverter.Zones
             float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY,
             float boxTopNorthwestZ, float boxBottomSoutheastX, float boxBottomSoutheastY, float boxBottomSoutheastZ, string comment = "")
         {
-            ZonePropertiesZoneLineBox zoneLineBox = new ZonePropertiesZoneLineBox(targetZoneShortName, targetZonePositionX, targetZonePositionY,
-                targetZonePositionZ, targetZoneOrientation, boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ, boxBottomSoutheastX,
-                boxBottomSoutheastY, boxBottomSoutheastZ);
-            zoneLineBox.TempComment = comment;
-            ZoneLineBoxes.Add(zoneLineBox);
+            // TODO: Delete
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
@@ -269,10 +265,7 @@ namespace EQWOWConverter.Zones
             ZoneLineOrientationType targetZoneOrientation, float padBottomCenterXPosition, float padBottomCenterYPosition, float padBottomCenterZPosition,
             float padWidth, string comment = "")
         {
-            ZonePropertiesZoneLineBox zoneLineBox = new ZonePropertiesZoneLineBox(targetZoneShortName, targetZonePositionX, targetZonePositionY, targetZonePositionZ,
-                targetZoneOrientation, padBottomCenterXPosition, padBottomCenterYPosition, padBottomCenterZPosition, padWidth);
-            zoneLineBox.TempComment = comment;
-            ZoneLineBoxes.Add(zoneLineBox);
+            // TODO: Delete
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
@@ -736,6 +729,7 @@ namespace EQWOWConverter.Zones
                 zoneProperties.CollisionMaxZ = float.Parse(propertiesRow["CollisionGeometryMaxZ"]);
                 foreach (string alwaysBrightMaterialName in propertiesRow["AlwaysBrightMaterials"].Split(","))
                     zoneProperties.AlwaysBrightMaterialsByName.Add(alwaysBrightMaterialName.Trim());
+                zoneProperties.ZoneLineBoxes.AddRange(ZonePropertiesZoneLineBox.GetZoneLineBoxesForSourceZone(shortName));
 
                 // World map
                 zoneProperties.DisplayMapMainLeft = float.Parse(propertiesRow["DisplayMapMainLeft"]);
@@ -965,40 +959,80 @@ namespace EQWOWConverter.Zones
             PopulateDisplayMapLinkList();
 
             // TEMP: This is used for the effort of migrating values from the zone properties code to config
-            foreach (Dictionary<string, string> propertiesRow in zonePropertiesRows)
+
+            float CleanSmallValue(float value)
             {
-                ZoneProperties curZoneProperties = ZonePropertyListByShortName[propertiesRow["ShortName"]];
-
-                //propertiesRow["IsOutdoors"] = curZoneProperties.TempIsOutdoors == true ? "1" : "0";
-                //propertiesRow["IsSkyVisible"] = curZoneProperties.TempIsSkyVisible == true ? "1" : "0";
-                //propertiesRow["FogType"] = curZoneProperties.TempFogType.ToString().ToLower();
-                //propertiesRow["FogRed"] = curZoneProperties.TempFogRed.ToString();
-                //propertiesRow["FogGreen"] = curZoneProperties.TempFogGreen.ToString();
-                //propertiesRow["FogBlue"] = curZoneProperties.TempFogBlue.ToString();
-                //propertiesRow["InsideAmbientRed"] = curZoneProperties.TempInsideAmbientRed.ToString();
-                //propertiesRow["InsideAmbientGreen"] = curZoneProperties.TempInsideAmbientGreen.ToString();
-                //propertiesRow["InsideAmbientBlue"] = curZoneProperties.TempInsideAmbientBlue.ToString();
-                //propertiesRow["CloudDensity"] = curZoneProperties.TempCloudDensity.ToString();
-
-                //propertiesRow["Music"] = curZoneProperties.DefaultZoneArea.MusicFileNameNoExtDay;
-                //propertiesRow["MusicVolume"] = curZoneProperties.DefaultZoneArea.MusicVolume.ToString();
-                //propertiesRow["HasShadowBox"] = curZoneProperties.HasShadowBox == true ? "1" : "0";
-                //StringBuilder enabled2DSoundInstancesSB = new StringBuilder();
-                //int numOfStrings = 0;
-                //foreach (string enabled2DSoundInstanceName in curZoneProperties.AlwaysBrightMaterialsByName)
-                //{
-                //    enabled2DSoundInstancesSB.Append(enabled2DSoundInstanceName);
-                //    numOfStrings++;
-                //    if (numOfStrings < curZoneProperties.AlwaysBrightMaterialsByName.Count)
-                //        enabled2DSoundInstancesSB.Append(",");
-                //}
-                //propertiesRow["AlwaysBrightMaterials"] = enabled2DSoundInstancesSB.ToString();
-                //string music = curZoneProperties.DefaultZoneArea.MusicFileNameNoExtDay;
-                //float musicVolume = curZoneProperties.DefaultZoneArea.MusicVolume;
-                //int y = 5;
+                return Math.Abs(value) <= 0.0001f ? 0f : value;
             }
-            //FileTool.WriteAllRowsToFileWithHeader(zonePropertiesFile, "|", zonePropertiesRows);
+
+            //string zoneLineBoxesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneLineBoxes.csv");
+            //List<Dictionary<string, string>> zoneLineBoxesRows = FileTool.ReadAllRowsFromFileWithHeader(zoneLineBoxesFile, "|");
+            //foreach (ZoneProperties curZoneProperties in ZonePropertyListByShortName.Values)
+            //{
+            //    foreach (ZonePropertiesZoneLineBox zoneLineBox in curZoneProperties.ZoneLineBoxes)
+            //    {
+            //        Dictionary<string, string> newRow = new Dictionary<string, string>();
+            //        newRow.Add("SourceZoneShortName", curZoneProperties.ShortName);
+            //        newRow.Add("SourceBoxTopNW_X", CleanSmallValue(zoneLineBox.TempboxTopNorthwestX).ToString());
+            //        newRow.Add("SourceBoxTopNW_Y", CleanSmallValue(zoneLineBox.TempboxTopNorthwestY).ToString());
+            //        newRow.Add("SourceBoxTopNW_Z", CleanSmallValue(zoneLineBox.TempboxTopNorthwestZ).ToString());
+            //        newRow.Add("SourceBoxBottomSE_X", CleanSmallValue(zoneLineBox.TempboxBottomSoutheastX).ToString());
+            //        newRow.Add("SourceBoxBottomSE_Y", CleanSmallValue(zoneLineBox.TempboxBottomSoutheastY).ToString());
+            //        newRow.Add("SourceBoxBottomSE_Z", CleanSmallValue(zoneLineBox.TempBoxBottomSoutheastZ).ToString());
+            //        newRow.Add("TargetZoneShortName", zoneLineBox.TempTargetZoneShortName);
+            //        newRow.Add("TargetPosX", CleanSmallValue(zoneLineBox.TemptargetZonePositionX).ToString());
+            //        newRow.Add("TargetPosY", CleanSmallValue(zoneLineBox.TemptargetZonePositionY).ToString());
+            //        newRow.Add("TargetPosZ", CleanSmallValue(zoneLineBox.TemptargetZonePositionZ).ToString());
+            //        newRow.Add("TargetPosOrientation", zoneLineBox.TemptargetZoneOrientation.ToString().ToLower());
+            //        newRow.Add("Comment", zoneLineBox.TempComment);
+            //        zoneLineBoxesRows.Add(newRow);
+            //    }
+            //}
+            //FileTool.WriteAllRowsToFileWithHeader(zoneLineBoxesFile, "|", zoneLineBoxesRows);
             //int x = 5;
+
+
+
+            //foreach (Dictionary<string, string> propertiesRow in zonePropertiesRows)
+            //{
+            //    ZoneProperties curZoneProperties = ZonePropertyListByShortName[propertiesRow["ShortName"]];
+
+            //    //propertiesRow["IsOutdoors"] = curZoneProperties.TempIsOutdoors == true ? "1" : "0";
+            //    //propertiesRow["IsSkyVisible"] = curZoneProperties.TempIsSkyVisible == true ? "1" : "0";
+            //    //propertiesRow["FogType"] = curZoneProperties.TempFogType.ToString().ToLower();
+            //    //propertiesRow["FogRed"] = curZoneProperties.TempFogRed.ToString();
+            //    //propertiesRow["FogGreen"] = curZoneProperties.TempFogGreen.ToString();
+            //    //propertiesRow["FogBlue"] = curZoneProperties.TempFogBlue.ToString();
+            //    //propertiesRow["InsideAmbientRed"] = curZoneProperties.TempInsideAmbientRed.ToString();
+            //    //propertiesRow["InsideAmbientGreen"] = curZoneProperties.TempInsideAmbientGreen.ToString();
+            //    //propertiesRow["InsideAmbientBlue"] = curZoneProperties.TempInsideAmbientBlue.ToString();
+            //    //propertiesRow["CloudDensity"] = curZoneProperties.TempCloudDensity.ToString();
+
+
+
+
+
+
+
+            //    //propertiesRow["Music"] = curZoneProperties.DefaultZoneArea.MusicFileNameNoExtDay;
+            //    //propertiesRow["MusicVolume"] = curZoneProperties.DefaultZoneArea.MusicVolume.ToString();
+            //    //propertiesRow["HasShadowBox"] = curZoneProperties.HasShadowBox == true ? "1" : "0";
+            //    //StringBuilder enabled2DSoundInstancesSB = new StringBuilder();
+            //    //int numOfStrings = 0;
+            //    //foreach (string enabled2DSoundInstanceName in curZoneProperties.AlwaysBrightMaterialsByName)
+            //    //{
+            //    //    enabled2DSoundInstancesSB.Append(enabled2DSoundInstanceName);
+            //    //    numOfStrings++;
+            //    //    if (numOfStrings < curZoneProperties.AlwaysBrightMaterialsByName.Count)
+            //    //        enabled2DSoundInstancesSB.Append(",");
+            //    //}
+            //    //propertiesRow["AlwaysBrightMaterials"] = enabled2DSoundInstancesSB.ToString();
+            //    //string music = curZoneProperties.DefaultZoneArea.MusicFileNameNoExtDay;
+            //    //float musicVolume = curZoneProperties.DefaultZoneArea.MusicVolume;
+            //    //int y = 5;
+            //}
+            //FileTool.WriteAllRowsToFileWithHeader(zonePropertiesFile, "|", zonePropertiesRows);
+            
             // END TEMP
         }
     }
