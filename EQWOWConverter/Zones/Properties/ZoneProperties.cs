@@ -739,6 +739,7 @@ namespace EQWOWConverter.Zones
                 zoneProperties.SuggestedMinLevel = int.Parse(propertiesRow["SugLevelMin"]);
                 zoneProperties.SuggestedMaxLevel = int.Parse(propertiesRow["SugLevelMax"]);
                 zoneProperties.AlwaysZoomOutMapToNorrathMap = propertiesRow["AlwaysZoomOutToNorrathMap"].Trim() == "1" ? true : false;
+                zoneProperties.DisableObjectsInMapGenMode = propertiesRow["DisableObjectsInMapGenMode"].Trim() == "1" ? true : false;
 
                 // Sound and Music
                 foreach (string enabled2DSoundInstanceName in propertiesRow["Enabled2DSoundInstances"].Split(","))
