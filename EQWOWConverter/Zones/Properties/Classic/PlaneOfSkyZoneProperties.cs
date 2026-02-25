@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Enable flying
             // TODO: Add teleport pads
             // TODO: wrap the skybox all the way around
-            AddZoneLineBox("freporte", -363.75037f, -1778.4629f, 100f, ZoneLineOrientationType.West, 3000f, 3000f, -1000f, -3000f, -3000f, -1200f);
+            // AddZoneLineBox("freporte", -363.75037f, -1778.4629f, 100f, ZoneLineOrientationType.West, 3000f, 3000f, -1000f, -3000f, -3000f, -1200f);
         }
     }
 }

@@ -24,8 +24,8 @@ namespace EQWOWConverter.Zones.Properties
             // AddZoneArea("Desert", "", "", false, "", "silence");
             // AddZoneAreaBox("Desert", 2655.683594f, 1829.046021f, 396.438385f, -924.193787f, -1038.153442f, -238.829483f);
 
-            AddZoneLineBox("innothule", 2537.843262f, 1157.335449f, -28.670191f, ZoneLineOrientationType.South, -3172.916504f, 1030f, 38.835121f, -3225.501709f, 1057.282593f, -30f);
-            AddZoneLineBox("oasis", -1859.231567f, 182.460098f, 2.406740f, ZoneLineOrientationType.North, 1526.327637f, 9.256500f, 131.793716f, 1478.424438f, 292.955048f, 1.148580f);
+            // AddZoneLineBox("innothule", 2537.843262f, 1157.335449f, -28.670191f, ZoneLineOrientationType.South, -3172.916504f, 1030f, 38.835121f, -3225.501709f, 1057.282593f, -30f);
+            // AddZoneLineBox("oasis", -1859.231567f, 182.460098f, 2.406740f, ZoneLineOrientationType.North, 1526.327637f, 9.256500f, 131.793716f, 1478.424438f, 292.955048f, 1.148580f);
 
             AddDiscardGeometryBoxMapGenOnly(3307.842773f, 2282.771484f, 1356.119629f, -3674.315430f, 1544.682129f, -200.446121f, "West wall"); // West wall
             AddDiscardGeometryBoxMapGenOnly(3597.069336f, 2262.191650f, 1164.133789f, 2182.963623f, -1836.698120f, -267.743073f, "North edge"); // North edge

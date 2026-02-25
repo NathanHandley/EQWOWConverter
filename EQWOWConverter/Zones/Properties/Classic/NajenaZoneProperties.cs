@@ -63,11 +63,11 @@ namespace EQWOWConverter.Zones.Properties
             // AddZoneAreaBox("Main Entry", 59.568878f, 237.314423f, 43.435940f, -123.449753f, 30.747480f, -4.009430f);
             // AddZoneAreaBox("Main Entry", 52.602741f, 37.922661f, 23.360029f, -28.192450f, -100.173920f, -4f);
 
-            AddZoneLineBox("lavastorm", -937.992371f, -1044.653320f, 12.625020f, ZoneLineOrientationType.West, 0.193110f, 929.818542f, 48.437752f, -30.192530f, 883.758789f, -0.499850f);
-            AddLiquidPlaneZLevel(ZoneLiquidType.Blood, "t75_b1", 352.940308f, 213.064240f, 308.154907f, 178.544678f, -28.999861f, 5f); // Blood pool under bridge
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 271.931427f, 65.983147f, 182.312454f, -28.775570f, -16.000010f, 30f); // East / Upper water
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 253.706802f, 122.485786f, 184.148834f, 61.766312f, -21.999990f, 30f); // West / Lower water
-            AddLiquidPlaneZLevel(ZoneLiquidType.Blood, "t75_b1", 126.516800f, -139.600418f, 110.629539f, -155.153397f, 0.000040f, 10f); // Blood pool with spikes
+            // AddZoneLineBox("lavastorm", -937.992371f, -1044.653320f, 12.625020f, ZoneLineOrientationType.West, 0.193110f, 929.818542f, 48.437752f, -30.192530f, 883.758789f, -0.499850f);
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Blood, "t75_b1", 352.940308f, 213.064240f, 308.154907f, 178.544678f, -28.999861f, 5f); // Blood pool under bridge
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 271.931427f, 65.983147f, 182.312454f, -28.775570f, -16.000010f, 30f); // East / Upper water
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 253.706802f, 122.485786f, 184.148834f, 61.766312f, -21.999990f, 30f); // West / Lower water
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Blood, "t75_b1", 126.516800f, -139.600418f, 110.629539f, -155.153397f, 0.000040f, 10f); // Blood pool with spikes
         }
     }
 }

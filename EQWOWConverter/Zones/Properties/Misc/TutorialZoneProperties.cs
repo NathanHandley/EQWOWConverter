@@ -20,8 +20,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public TutorialZoneProperties() : base()
         {
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 99.116943f, 98.680382f, -101.066818f, -103.535660f, -14.000000f, 350f); // Middle circle of water
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", -316.934570f, -120.476463f, -436.932068f, -189.277786f, -0.999990f, 350f); // Waterfall area
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 99.116943f, 98.680382f, -101.066818f, -103.535660f, -14.000000f, 350f); // Middle circle of water
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", -316.934570f, -120.476463f, -436.932068f, -189.277786f, -0.999990f, 350f); // Waterfall area
         }
     }
 }

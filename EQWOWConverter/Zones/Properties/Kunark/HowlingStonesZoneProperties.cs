@@ -20,7 +20,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public HowlingStonesZoneProperties() : base()
         {
-            AddZoneLineBox("overthere", -83.674156f, 825.339172f, -506.624969f, ZoneLineOrientationType.East, -2.369990f, -722.148010f, 34.469002f, -15.200140f, -734.827942f, 17.500111f);
+            // AddZoneLineBox("overthere", -83.674156f, 825.339172f, -506.624969f, ZoneLineOrientationType.East, -2.369990f, -722.148010f, 34.469002f, -15.200140f, -734.827942f, 17.500111f);
         }
     }
 }

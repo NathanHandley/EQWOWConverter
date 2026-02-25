@@ -20,7 +20,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public CobaltScarZoneProperties() : base()
         {
-            AddZoneLineBox("sirens", -595.916992f, 73.038841f, -96.968727f, ZoneLineOrientationType.North, 1604.295898f, 1636.723511f, 87.406502f, 1588.378052f, 1616.337891f, 62.437771f);
+            // AddZoneLineBox("sirens", -595.916992f, 73.038841f, -96.968727f, ZoneLineOrientationType.North, 1604.295898f, 1636.723511f, 87.406502f, 1588.378052f, 1616.337891f, 62.437771f);
 
             AddDiscardGeometryBox(2097.724854f, -1996.453125f, 100.228210f, -1827.655151f, -6000f, -246.045593f, "Northeast water"); // Northeast water
         }

@@ -41,7 +41,7 @@ namespace EQWOWConverter.Zones.Properties
             // AddZoneArea("Boogie House", "fearplane-05", "fearplane-05");
             // AddZoneAreaBox("Boogie House", -850.897034f, 526.810608f, 164.968903f, -1123.206177f, 272.315460f, -200f);
 
-            AddZoneLineBox("feerrott", -2347.395752f, 2604.589111f, 10.280410f, ZoneLineOrientationType.North, -790.410828f, 1052.103638f, 150.821121f, -803.796631f, 1015.684509f, 105.875198f);
+            // AddZoneLineBox("feerrott", -2347.395752f, 2604.589111f, 10.280410f, ZoneLineOrientationType.North, -790.410828f, 1052.103638f, 150.821121f, -803.796631f, 1015.684509f, 105.875198f);
         }
     }
 }

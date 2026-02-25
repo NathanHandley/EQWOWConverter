@@ -32,10 +32,10 @@ namespace EQWOWConverter.Zones.Properties
             // AddZoneArea("Island");
             // AddZoneAreaBox("Island", -356.611389f, 2056.785889f, 388.188568f, -2012.822754f, 514.036499f, -340.110535f);
 
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 5036.591309f, -758.372131f, -3051.582520f, -20.062160f, 500); // North
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 5036.591309f, -4999.445801f, 1787.470825f, -20.062160f, 500); // West
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -1693.079224f, 5036.591309f, -4999.445801f, -3051.582520f, -20.062160f, 500); // South
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 796.321411f, -4999.445801f, -3051.582520f, -20.062160f, 500); // East
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 5036.591309f, -758.372131f, -3051.582520f, -20.062160f, 500); // North
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 5036.591309f, -4999.445801f, 1787.470825f, -20.062160f, 500); // West
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -1693.079224f, 5036.591309f, -4999.445801f, -3051.582520f, -20.062160f, 500); // South
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 796.321411f, -4999.445801f, -3051.582520f, -20.062160f, 500); // East
 
             AddDiscardGeometryBox(3278.904541f, -3049.615723f, -8.505950f, -5080.248047f, -3092.001221f, -365.908600f, "East Edge"); // East Edge
             AddDiscardGeometryBox(-4998.655273f, 5111.410645f, -16.397030f, -5241.749512f, -3074.986572f, -335.999634f, "South Edge"); // South Edge

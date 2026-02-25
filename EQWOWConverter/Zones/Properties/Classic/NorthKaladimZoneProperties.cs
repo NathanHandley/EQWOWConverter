@@ -48,12 +48,12 @@ namespace EQWOWConverter.Zones.Properties
             // AddZoneAreaBox("Northwest Tunnel", 715.138184f, 177.230865f, 102.215286f, 557.901489f, -8.161750f, -38.159229f);
             // AddZoneAreaBox("Northwest Tunnel", 646.349792f, -178.952515f, 73.669640f, 471.682922f, -286.248322f, -9.044160f);
 
-            AddZoneLineBox("kaladima", 306.093964f, 231.490326f, 0.020500f, ZoneLineOrientationType.South, 394.649292f, 346.066956f, -1.531000f, 397.138519f, 312.694366f, -24.499941f);
-            AddZoneLineBox("kaladima", 393.919128f, -263.472565f, 0.000040f, ZoneLineOrientationType.South, 384.053192f, -259.715820f, 22.414330f, 373.654907f, -272.101318f, -0.499970f);
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 789.445374f, 379.175079f, 736.143677f, 226.058517f, -75.968742f, 50f); // NW Rail Pool
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 1203.536499f, 188.962967f, 1120.689331f, 76.613777f, 22.000019f, 50f); // Outside north temple area
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 628.413330f, -26.542490f, 443.050323f, -200.405060f, -3.999960f, 50f); // Large dock area, north
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 460.282043f, -42.519150f, 330.709229f, -153.390045f, -3.999960f, 50f); // Large dock area, south
+            // AddZoneLineBox("kaladima", 306.093964f, 231.490326f, 0.020500f, ZoneLineOrientationType.South, 394.649292f, 346.066956f, -1.531000f, 397.138519f, 312.694366f, -24.499941f);
+            // AddZoneLineBox("kaladima", 393.919128f, -263.472565f, 0.000040f, ZoneLineOrientationType.South, 384.053192f, -259.715820f, 22.414330f, 373.654907f, -272.101318f, -0.499970f);
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 789.445374f, 379.175079f, 736.143677f, 226.058517f, -75.968742f, 50f); // NW Rail Pool
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 1203.536499f, 188.962967f, 1120.689331f, 76.613777f, 22.000019f, 50f); // Outside north temple area
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 628.413330f, -26.542490f, 443.050323f, -200.405060f, -3.999960f, 50f); // Large dock area, north
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 460.282043f, -42.519150f, 330.709229f, -153.390045f, -3.999960f, 50f); // Large dock area, south
             AddDiscardGeometryBox(90.402496f, 120.624077f, 150.558655f, -159.783142f, -113.751511f, -71.242851f);
         }
     }

@@ -31,12 +31,12 @@ namespace EQWOWConverter.Zones.Properties
             // AddZoneAreaBox("Water Outlook", 392.955811f, -536.260681f, 44.567032f, 74.084091f, -926.284851f, -77.346931f);
             // AddZoneAreaBox("Water Outlook", 122.281776f, -638.404175f, 3.277470f, -162.649353f, -939.232300f, -119.733437f);
 
-            AddZoneLineBox("felwitheb", 251.268646f, -832.815125f, -13.999020f, ZoneLineOrientationType.North, 364.650452f, -711.921509f, -1.531000f, 342.316345f, -727.911865f, -14.499750f);
-            AddZoneLineBox("gfaydark", -1931.678101f, -2613.879639f, 20.406450f, ZoneLineOrientationType.West, 56.161152f, 242.410782f, 26.469000f, 27.806530f, 193.596893f, -0.500000f);
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 137.808594f, -34.700352f, 31.669941f, -209.193726f, -14.01f, 300f); // West pool
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 42.782681f, -41.832130f, -32.244209f, -154.059235f, -14.01f, 300f);
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", -27.781460f, -41.832870f, -130.866898f, -209.193726f, -14.01f, 300f);
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 305.541901f, -629.289001f, -168.728821f, -835.178894f, -27.997999f, 300f); // East pool
+            // AddZoneLineBox("felwitheb", 251.268646f, -832.815125f, -13.999020f, ZoneLineOrientationType.North, 364.650452f, -711.921509f, -1.531000f, 342.316345f, -727.911865f, -14.499750f);
+            // AddZoneLineBox("gfaydark", -1931.678101f, -2613.879639f, 20.406450f, ZoneLineOrientationType.West, 56.161152f, 242.410782f, 26.469000f, 27.806530f, 193.596893f, -0.500000f);
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 137.808594f, -34.700352f, 31.669941f, -209.193726f, -14.01f, 300f); // West pool
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 42.782681f, -41.832130f, -32.244209f, -154.059235f, -14.01f, 300f);
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", -27.781460f, -41.832870f, -130.866898f, -209.193726f, -14.01f, 300f);
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 305.541901f, -629.289001f, -168.728821f, -835.178894f, -27.997999f, 300f); // East pool
         }
     }
 }

@@ -32,15 +32,15 @@ namespace EQWOWConverter.Zones.Properties
             // AddZoneAreaBox("Prison", 581.031372f, 241.429214f, 15.6f, 542.096375f, 181.379074f, 8.723260f);
             // AddZoneAreaBox("Prison", 550.940308f, 217.146118f, 12.983020f, 502.867828f, 180.879517f, 8.999980f);
 
-            AddZoneLineBox("southkarana", -3118.534424f, 908.824341f, -11.938860f, ZoneLineOrientationType.West, -95.775307f, 64.159088f, 14.467540f, -112.163208f, 29.530199f, -0.499950f);
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 1171.132324f, 159.264618f, 1098.533813f, 89.405617f, -5.999900f, 100f); // Western water (higher) - Northmost
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 1098.633813f, 198.262665f, 931.602183f, 82.047173f, -5.999900f, 100f); // Western water (higher) - Southmost
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 931.612183f, 223.869247f, 679.216797f, 20.784540f, -31.999950f, 100f); // Western water (lower) - Southwest
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 918.777344f, 20.794540f, 784.150146f, -90.593658f, -31.999950f, 100f); // Western water (lower) - Eastern
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 711.465454f, -170.612061f, 618.156555f, -243.180054f, -0.009000f, 100f); // Southeast Water, upper column and part swim under
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 723.807068f, -112.854370f, 661.784668f, -173.061676f, -40.978719f, 100f); // Southeast Water, middle
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 727.727112f, 19.525690f, 616.720337f, -117.570297f, -40.978719f, 100f); // Southeast Water, southwest
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 769.085815f, -69.982788f, 727.627112f, -117.570297f, -40.978719f, 100f); // Southeast Water, southwest
+            // AddZoneLineBox("southkarana", -3118.534424f, 908.824341f, -11.938860f, ZoneLineOrientationType.West, -95.775307f, 64.159088f, 14.467540f, -112.163208f, 29.530199f, -0.499950f);
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 1171.132324f, 159.264618f, 1098.533813f, 89.405617f, -5.999900f, 100f); // Western water (higher) - Northmost
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 1098.633813f, 198.262665f, 931.602183f, 82.047173f, -5.999900f, 100f); // Western water (higher) - Southmost
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 931.612183f, 223.869247f, 679.216797f, 20.784540f, -31.999950f, 100f); // Western water (lower) - Southwest
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 918.777344f, 20.794540f, 784.150146f, -90.593658f, -31.999950f, 100f); // Western water (lower) - Eastern
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 711.465454f, -170.612061f, 618.156555f, -243.180054f, -0.009000f, 100f); // Southeast Water, upper column and part swim under
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 723.807068f, -112.854370f, 661.784668f, -173.061676f, -40.978719f, 100f); // Southeast Water, middle
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 727.727112f, 19.525690f, 616.720337f, -117.570297f, -40.978719f, 100f); // Southeast Water, southwest
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 769.085815f, -69.982788f, 727.627112f, -117.570297f, -40.978719f, 100f); // Southeast Water, southwest
         }
     }
 }

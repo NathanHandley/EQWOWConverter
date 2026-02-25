@@ -20,7 +20,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public KaesoraZoneProperties() : base()
         {
-            AddZoneLineBox("fieldofbone", -1893.204956f, -182.732758f, -131.190842f, ZoneLineOrientationType.East, 425.008514f, 52.377048f, 141.641708f, 389.831665f, 23.726810f, 92.980698f);
+            // AddZoneLineBox("fieldofbone", -1893.204956f, -182.732758f, -131.190842f, ZoneLineOrientationType.East, 425.008514f, 52.377048f, 141.641708f, 389.831665f, 23.726810f, 92.980698f);
 
             AddDiscardGeometryBox(19.384069f, 22.773911f, 39.682812f, -20.191750f, -27.478559f, -7.144740f, "0 0 0 cat room"); // 0 0 0 cat room
         }

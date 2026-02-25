@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public ArenaZoneProperties() : base()
         {
-            AddZoneLineBox("lakerathe", 2345.1172f, 2692.0679f, 92.193184f, ZoneLineOrientationType.East, -44.28722f, -845.03625f, 45.75025f, -74.66106f, -871.419f, 7.0403852f);
+            // AddZoneLineBox("lakerathe", 2345.1172f, 2692.0679f, 92.193184f, ZoneLineOrientationType.East, -44.28722f, -845.03625f, 45.75025f, -74.66106f, -871.419f, 7.0403852f);
         }
     }
 }

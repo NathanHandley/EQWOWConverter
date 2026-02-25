@@ -64,9 +64,9 @@ namespace EQWOWConverter.Zones.Properties
             // AddZoneArea("McPherson's Bloody Blades");
             //AddZoneAreaOctagonBox("McPherson's Bloody Blades", 232.164093f, 165.558990f, -265.482086f, -340.089294f, -286.648346f, -302.833740f, -286.727203f, -301.972076f, 219.922913f, 179.911942f, 219.197540f, 180.743759f, 30.383160f, -5.666800f);
 
-            AddZoneLineBox("everfrost", 3682.792725f, 372.904633f, 0.000240f, ZoneLineOrientationType.South, -664.463196f, -50.776440f, 37.469002f, -744.483093f, -101.162247f, -0.499990f);
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_agua1", -16.822701f, 195.248566f, -464.163391f, -189.505676f, -2.999970f, 250f); // Pool at zone line
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_agua1", 199.293900f, -199.563965f, 177.719742f, -224.856445f, -0.999970f, 250f); // Well
+            // AddZoneLineBox("everfrost", 3682.792725f, 372.904633f, 0.000240f, ZoneLineOrientationType.South, -664.463196f, -50.776440f, 37.469002f, -744.483093f, -101.162247f, -0.499990f);
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_agua1", -16.822701f, 195.248566f, -464.163391f, -189.505676f, -2.999970f, 250f); // Pool at zone line
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_agua1", 199.293900f, -199.563965f, 177.719742f, -224.856445f, -0.999970f, 250f); // Well
         }
     }
 }

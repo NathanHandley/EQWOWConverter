@@ -22,7 +22,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             // AddZoneArea("Firepot Room", "", "", false, "silence", "silence");
             // AddZoneAreaBox("Firepot Room", -12172.980469f, 4448.128906f, -205.908478f, -12340.497070f, 4279.826660f, -296.149963f);
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 10909.680664f, 6219.642090f, -14022.179688f, -8289.734375f, -4.337450f, 200f); // Ocean, stops above firepot room
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 10909.680664f, 6219.642090f, -14022.179688f, -8289.734375f, -4.337450f, 200f); // Ocean, stops above firepot room
         }
     }
 }

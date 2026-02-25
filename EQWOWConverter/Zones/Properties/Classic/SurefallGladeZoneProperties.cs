@@ -44,10 +44,10 @@ namespace EQWOWConverter.Zones.Properties
             // AddZoneAreaBox("Shrine of Tunare", -181.442581f, -409.380524f, 4f, -238.635086f, -446.004974f, -0.831980f);
             // AddZoneAreaBox("Shrine of Tunare", -200.574402f, -443.506012f, 10.636270f, -219.384384f, -446.005951f, 9.609200f);
 
-            AddZoneLineBox("qeytoqrg", 5180.557617f, 161.911987f, -6.594880f, ZoneLineOrientationType.West, -623.557495f, 168.640945f, 0.500030f, -639.942505f, 150.659027f, -0.499970f);
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 264.136719f, 37.288700f, 48.358829f, -182.936539f, -3.999990f, 100f); // Pool around house on stilts
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 688.963257f, -248.454926f, 141.856928f, -567.358032f, -1.000000f, 100f); // Cave water, high
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 141.866928f, -420.606171f, 89.630241f, -567.358032f, -3.999990f, 100f); // Cave water, low
+            // AddZoneLineBox("qeytoqrg", 5180.557617f, 161.911987f, -6.594880f, ZoneLineOrientationType.West, -623.557495f, 168.640945f, 0.500030f, -639.942505f, 150.659027f, -0.499970f);
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 264.136719f, 37.288700f, 48.358829f, -182.936539f, -3.999990f, 100f); // Pool around house on stilts
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 688.963257f, -248.454926f, 141.856928f, -567.358032f, -1.000000f, 100f); // Cave water, high
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 141.866928f, -420.606171f, 89.630241f, -567.358032f, -3.999990f, 100f); // Cave water, low
 
             AddDiscardGeometryBox(-764.951904f, 1593.462036f, 205.199814f, -3237.470947f, 595.941406f, -25.695980f);
             AddDiscardGeometryBox(-808.012268f, -342.384247f, 256.177734f, -3137.830322f, -1837.453735f, -69.050812f);

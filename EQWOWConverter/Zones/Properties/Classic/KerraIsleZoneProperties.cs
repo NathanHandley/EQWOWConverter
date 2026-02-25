@@ -20,11 +20,11 @@ namespace EQWOWConverter.Zones.Properties
     {
         public KerraIsleZoneProperties() : base()
         {
-            AddZoneLineBox("tox", -510.562134f, 2635.008545f, -38.249962f, ZoneLineOrientationType.East, 430.005493f, -948.882141f, 38.436760f, 399.657959f, -979.802734f, 19.500050f);
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_agua1", 921.841675f, -298.145691f, -803.680969f, -652.802063f, -0.009930f, 100f); // North and Eastern section
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_agua1", 105.104973f, 487.097412f, -463.912354f, -299.266937f, -0.009930f, 100f); // Main lake, north
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_agua1", -463.825409f, 451.519562f, -803.680969f, -107.275681f, -0.009930f, 100f); // Main lake, west
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_agua1", -548.308899f, -105.716133f, -803.680969f, -299.282684f, -0.009930f, 100f); // Main lake, south
+            // AddZoneLineBox("tox", -510.562134f, 2635.008545f, -38.249962f, ZoneLineOrientationType.East, 430.005493f, -948.882141f, 38.436760f, 399.657959f, -979.802734f, 19.500050f);
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_agua1", 921.841675f, -298.145691f, -803.680969f, -652.802063f, -0.009930f, 100f); // North and Eastern section
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_agua1", 105.104973f, 487.097412f, -463.912354f, -299.266937f, -0.009930f, 100f); // Main lake, north
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_agua1", -463.825409f, 451.519562f, -803.680969f, -107.275681f, -0.009930f, 100f); // Main lake, west
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_agua1", -548.308899f, -105.716133f, -803.680969f, -299.282684f, -0.009930f, 100f); // Main lake, south
             AddDiscardGeometryBox(651.856262f, -487.628387f, 881.300537f, 417.506042f, -644.917297f, 547.413452f);
         }
     }

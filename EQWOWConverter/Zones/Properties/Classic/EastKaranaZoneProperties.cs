@@ -30,12 +30,12 @@ namespace EQWOWConverter.Zones.Properties
             // AddZoneArea("Gorge of King Xorbb Entry", "", "", false, "wind_lp2", "wind_lp2");
             // AddZoneAreaBox("Gorge of King Xorbb Entry", 5282.254395f, -1306.117920f, 699.679443f, 2186.515137f, -2606.609863f, -105.504097f);
 
-            AddZoneLineBox("beholder", -1385.247f, -659.5757f, 60.639446f, ZoneLineOrientationType.North, 3388.710449f, -2134.555420f, 322.495361f, 3160.392090f, -2401.121826f, -100);
-            AddZoneLineBox("northkarana", 10.664860f, -3093.490234f, -37.343510f, ZoneLineOrientationType.West, 38.202431f, 1198.431396f, 32.241810f, -13.265930f, 1182.535156f, -37.843681f);
-            AddZoneLineBox("highpass", 818.462402f, 132.797134f, 0.000120f, ZoneLineOrientationType.West, -3062.753662f, -8301.240234f, 737.270081f, -3082.371826f, -8324.481445f, 689.406372f);
+            // AddZoneLineBox("beholder", -1385.247f, -659.5757f, 60.639446f, ZoneLineOrientationType.North, 3388.710449f, -2134.555420f, 322.495361f, 3160.392090f, -2401.121826f, -100);
+            // AddZoneLineBox("northkarana", 10.664860f, -3093.490234f, -37.343510f, ZoneLineOrientationType.West, 38.202431f, 1198.431396f, 32.241810f, -13.265930f, 1182.535156f, -37.843681f);
+            // AddZoneLineBox("highpass", 818.462402f, 132.797134f, 0.000120f, ZoneLineOrientationType.West, -3062.753662f, -8301.240234f, 737.270081f, -3082.371826f, -8324.481445f, 689.406372f);
            
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3007.819092f, 1837.666504f, -3782.756836f, 551.661438f, -74.156052f, 500f);
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -3772.680420f, 1837.766504f, -5798.433105f, -4512.786133f, -74.156052f, 500f);
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3007.819092f, 1837.666504f, -3782.756836f, 551.661438f, -74.156052f, 500f);
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -3772.680420f, 1837.766504f, -5798.433105f, -4512.786133f, -74.156052f, 500f);
         }
     }
 }

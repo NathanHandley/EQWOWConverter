@@ -20,13 +20,13 @@ namespace EQWOWConverter.Zones.Properties
     {
         public DalnirZoneProperties() : base()
         {
-            AddZoneLineBox("warslikswood", 2581.582275f, 4587.688965f, -244.718704f, ZoneLineOrientationType.West, 23.855680f, 178.400238f, 17.282030f, -18.799231f, 82.444389f, -12.233050f, "Main walk entry");
-            AddZoneLineBox("warslikswood", 2581.582275f, 4587.688965f, -244.718704f, ZoneLineOrientationType.West, -334.306122f, -67.596291f, -166.470016f, -353.670563f, -90.821373f, -187.702927f, "Telepad at bottom");
+            // AddZoneLineBox("warslikswood", 2581.582275f, 4587.688965f, -244.718704f, ZoneLineOrientationType.West, 23.855680f, 178.400238f, 17.282030f, -18.799231f, 82.444389f, -12.233050f, "Main walk entry");
+            // AddZoneLineBox("warslikswood", 2581.582275f, 4587.688965f, -244.718704f, ZoneLineOrientationType.West, -334.306122f, -67.596291f, -166.470016f, -353.670563f, -90.821373f, -187.702927f, "Telepad at bottom");
 
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 113.215393f, -718.826904f, 82.814590f, -778.763916f, -83.968681f, 10f); // Upper east pool with a checker rim
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 4.930180f, -745.163025f, -18.033091f, -752.353027f, -193.937424f, 10f); // Lower east pool that is a plus shape, north-south
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", -3.185510f, -737.162292f, -10.629220f, -760.183655f, -193.937424f, 10f); // Lower east pool that is a plus shape, west-east
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 352.562042f, -12.688230f, 109.452881f, -406.200043f, -182.937485f, 10f); // Large west cave water area plus a little room near it
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 113.215393f, -718.826904f, 82.814590f, -778.763916f, -83.968681f, 10f); // Upper east pool with a checker rim
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 4.930180f, -745.163025f, -18.033091f, -752.353027f, -193.937424f, 10f); // Lower east pool that is a plus shape, north-south
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", -3.185510f, -737.162292f, -10.629220f, -760.183655f, -193.937424f, 10f); // Lower east pool that is a plus shape, west-east
+            // AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 352.562042f, -12.688230f, 109.452881f, -406.200043f, -182.937485f, 10f); // Large west cave water area plus a little room near it
         }
     }
 }
