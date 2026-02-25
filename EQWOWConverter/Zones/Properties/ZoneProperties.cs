@@ -106,7 +106,6 @@ namespace EQWOWConverter.Zones
             public string ForcedAlignedAreaName = string.Empty;
         }
 
-        private static readonly object DBCWMOIDLock = new object();
         private static readonly object ListReadLock = new object();
         private static Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
 
@@ -152,22 +151,9 @@ namespace EQWOWConverter.Zones
         public bool AlwaysZoomOutMapToNorrathMap = false;
         public bool DisableObjectsInMapGenMode = false;
 
-        // DBCIDs
-        private static UInt32 CURRENT_WMOID = Configuration.DBCID_WMOAREATABLE_WMOID_START;
-
-        public ZoneProperties()
+        public ZoneProperties(UInt32 wmoAreaTableDBCID)
         {
-            DBCWMOID = GenerateDBCWMOID();
-        }
-
-        public static UInt32 GenerateDBCWMOID()
-        {
-            lock (DBCWMOIDLock)
-            {
-                UInt32 dbcWMOID = CURRENT_WMOID;
-                CURRENT_WMOID++;
-                return dbcWMOID;
-            }
+            DBCWMOID = wmoAreaTableDBCID;
         }
 
         // These areas must be made in descending priority order, as every area will isolate its own geometry
@@ -953,7 +939,8 @@ namespace EQWOWConverter.Zones
             // Load any found zones
             foreach (Dictionary<string, string> propertiesRow in zonePropertiesRows)
             {
-                ZoneProperties zoneProperties = new ZoneProperties();
+                UInt32 wmoAreaTableDBCID = Convert.ToUInt32(propertiesRow["WMOAreaTableDBCID"]);
+                ZoneProperties zoneProperties = new ZoneProperties(wmoAreaTableDBCID);
 
                 // Only include intended zones
                 string shortName = propertiesRow["ShortName"];

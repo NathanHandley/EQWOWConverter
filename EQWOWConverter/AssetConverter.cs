@@ -348,7 +348,7 @@ namespace EQWOWConverter
                     ExportTexturesForObject(curObject, new List<string>() { objectTextureFolder }, m2OutputFolder);
 
                     // Load a zone for it
-                    Zone curZone = new Zone(shipName, transportShip.Name);
+                    Zone curZone = new Zone(shipName, transportShip.Name, transportShip.WMOAreaTableDBCID);
                     Logger.WriteDebug("- [" + shipName + "]: Importing EQ transport ship object '" + shipName + "'");
                     curZone.LoadAsTransportShip(transportShip, curObject);
                     Logger.WriteDebug("- [" + shipName + "]: Importing EQ transport ship object '" + shipName + "' complete");

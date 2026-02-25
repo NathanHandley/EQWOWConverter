@@ -25,6 +25,7 @@ namespace EQWOWConverter.Transports
 
         public int EQNPCID = 0;
         public int WOWGameObjectTemplateID = 0;
+        public UInt32 WMOAreaTableDBCID = 0;
         public string Name = string.Empty;
         public int PathGroupID = 0;
         public float SpawnX = 0;
@@ -88,6 +89,7 @@ namespace EQWOWConverter.Transports
                 TransportShip curTransportShip = new TransportShip();
                 curTransportShip.EQNPCID = int.Parse(columns["eq_npc_id"]);
                 curTransportShip.WOWGameObjectTemplateID = int.Parse(columns["wow_gotemplate_id"]);
+                curTransportShip.WMOAreaTableDBCID = UInt32.Parse(columns["wmo_area_table_ID"]);
                 curTransportShip.Name = columns["name"];
                 curTransportShip.MeshName = columns["mesh"];
                 curTransportShip.IsSkeletal = columns["is_skeletal"] == "1" ? true : false;

@@ -52,12 +52,12 @@ namespace EQWOWConverter.Zones
         public List<Plane> ConvexVolumePlanes = new List<Plane>();
         public Dictionary<string, int> MaterialIndexForObjectMaterialNameToCopyForMapGenerations = new Dictionary<string, int>();
 
-        public Zone(string shortName, string descriptiveName)
+        public Zone(string shortName, string descriptiveName, UInt32 wmoAreaTableDBCID)
         {
             ShortName = shortName;
             SetDescriptiveName(descriptiveName);
             DefaultArea = new ZoneArea("", "", 0);
-            ZoneProperties = new ZoneProperties();
+            ZoneProperties = new ZoneProperties(wmoAreaTableDBCID);
         }
 
         public Zone(string shortName, ZoneProperties zoneProperties)
