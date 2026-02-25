@@ -41,7 +41,7 @@ namespace EQWOWConverter.Zones
         {
             public string ZoneShortName = string.Empty;
             public string AreaName = string.Empty;
-            public string Shape = "box";
+            public string ShapeType = "box";
             public float NorthX;
             public float SouthX;
             public float WestY;
@@ -112,6 +112,7 @@ namespace EQWOWConverter.Zones
         private static Dictionary<string, List<ConfigDiscardedGeometryBox>> ConfigDiscardGeometryBoxesByZoneShortName = new Dictionary<string, List<ConfigDiscardedGeometryBox>>();
         private static Dictionary<string, List<ConfigZoneSubArea>> ConfigSubAreasByZoneShortName = new Dictionary<string, List<ConfigZoneSubArea>>();
         private static Dictionary<string, List<ConfigZoneSubAreaBox>> ConfigSubAreaBoxesByZoneShortName = new Dictionary<string, List<ConfigZoneSubAreaBox>>();
+        private static Dictionary<string, List<ConfigLiquid>> ConfigLiquidsByZoneShortName = new Dictionary<string, List<ConfigLiquid>>();
 
         public int DBCMapID;
         public int DBCMapDifficultyID;
@@ -157,9 +158,6 @@ namespace EQWOWConverter.Zones
 
         private static readonly object ListReadLock = new object();
         private static readonly object DBCWMOIDLock = new object();
-
-        private List<ConfigLiquid> TempConfigLiquids = new List<ConfigLiquid>();
-
 
         // DBCIDs
         private static UInt32 CURRENT_WMOID = Configuration.DBCID_WMOAREATABLE_WMOID_START;
@@ -320,46 +318,16 @@ namespace EQWOWConverter.Zones
         protected void AddLiquidVolume(ZoneLiquidType liquidType, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float highZ, float lowZ)
         {
-            // TEMP Store
-            ConfigLiquid newLiquid = new ConfigLiquid();
-            newLiquid.LiquidType = liquidType.ToString().ToLower();
-            newLiquid.ShapeType = "volume";
-            newLiquid.NorthX = nwCornerX;
-            newLiquid.WestY = nwCornerY;
-            newLiquid.SouthX = seCornerX;
-            newLiquid.EastY = seCornerY;
-            newLiquid.TopOrOnlyZ = highZ;
-            newLiquid.BottomZ = lowZ;
-            TempConfigLiquids.Add(newLiquid);
-            //
-
             ZoneLiquid liquidVolume = new ZoneLiquid(liquidType, "", nwCornerX, nwCornerY, seCornerX, seCornerY, highZ, highZ - lowZ, ZoneLiquidShapeType.Volume);
-            ZoneLiquidGroup newLiquidGroup = new ZoneLiquidGroup();
-            newLiquidGroup.AddLiquidChunk(liquidVolume);
-            LiquidGroups.Add(newLiquidGroup);
+            ZoneLiquidGroup liquidGroup = new ZoneLiquidGroup();
+            liquidGroup.AddLiquidChunk(liquidVolume);
+            LiquidGroups.Add(liquidGroup);
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddLiquidPlane(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float highZ, float lowZ, ZoneLiquidSlantType slantType, float minDepth, int liquidGroupID = -1, string forcedAreaAlignment = "")
         {
-            // TEMP Store
-            ConfigLiquid newLiquid = new ConfigLiquid();
-            newLiquid.LiquidType = liquidType.ToString().ToLower();
-            newLiquid.ShapeType = "slantedplane";
-            newLiquid.MaterialName = materialName;
-            newLiquid.SlantType = slantType.ToString().ToLower();
-            newLiquid.ForcedAlignedAreaName = forcedAreaAlignment;
-            newLiquid.MinDepthOrHeight = minDepth;
-            newLiquid.NorthX = nwCornerX;
-            newLiquid.WestY = nwCornerY;
-            newLiquid.SouthX = seCornerX;
-            newLiquid.EastY = seCornerY;
-            newLiquid.TopOrOnlyZ = highZ;
-            newLiquid.BottomZ = lowZ;
-            TempConfigLiquids.Add(newLiquid);
-            //
-
             ZoneLiquid liquidPlane = new ZoneLiquid(liquidType, materialName, nwCornerX, nwCornerY, seCornerX, seCornerY,
                 highZ, lowZ, slantType, minDepth);
             if (liquidGroupID == -1)
@@ -380,25 +348,8 @@ namespace EQWOWConverter.Zones
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddLiquidPlaneZLevel(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float fixedZ, float minDepth, int liquidGroupID = -1, bool fromAdvancedShape = false)
+            float fixedZ, float minDepth, int liquidGroupID = -1)
         {
-            // TEMP Store
-            if (fromAdvancedShape == false)
-            {
-                ConfigLiquid newLiquid = new ConfigLiquid();
-                newLiquid.LiquidType = liquidType.ToString().ToLower();
-                newLiquid.ShapeType = "levelplane";
-                newLiquid.MaterialName = materialName;
-                newLiquid.MinDepthOrHeight = minDepth;
-                newLiquid.NorthX = nwCornerX;
-                newLiquid.WestY = nwCornerY;
-                newLiquid.SouthX = seCornerX;
-                newLiquid.EastY = seCornerY;
-                newLiquid.TopOrOnlyZ = fixedZ;
-                TempConfigLiquids.Add(newLiquid);
-            }
-            //
-
             ZoneLiquid liquidPlane = new ZoneLiquid(liquidType, materialName, nwCornerX, nwCornerY, seCornerX,
                 seCornerY, fixedZ, minDepth, ZoneLiquidShapeType.Plane);
             if (liquidGroupID == -1)
@@ -431,29 +382,6 @@ namespace EQWOWConverter.Zones
             float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth, float northXLimit, float westYLimit,
             float southXLimit, float eastYLimit, float stepSize)
         {
-            // TEMP Store
-            ConfigLiquid newLiquid = new ConfigLiquid();
-            newLiquid.LiquidType = liquidType.ToString().ToLower();
-            newLiquid.ShapeType = "quadrilateral";
-            newLiquid.MaterialName = materialName;
-            newLiquid.NorthX = northMostX;
-            newLiquid.NorthY = northMostY;
-            newLiquid.WestX = westMostX;
-            newLiquid.WestY = westMostY;
-            newLiquid.SouthX = southMostX;
-            newLiquid.SouthY = southMostY;
-            newLiquid.EastX = eastMostX;
-            newLiquid.EastY = eastMostY;
-            newLiquid.TopOrOnlyZ = allCornersZ;
-            newLiquid.MinDepthOrHeight = minDepth;
-            newLiquid.NorthXLimit = northXLimit;
-            newLiquid.WestYLimit = westYLimit;
-            newLiquid.SouthXLimit = southXLimit;
-            newLiquid.EastYLimit = eastYLimit;
-            newLiquid.StepSize = stepSize;
-            TempConfigLiquids.Add(newLiquid);
-            //
-
             // Boundary Control (very limited)
             if (northMostX < southMostX)
             {
@@ -507,7 +435,7 @@ namespace EQWOWConverter.Zones
 
                 // Add the plane if the bounds are good
                 if (nwX > seX && nwY > seY)
-                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth, curLiquidGroupID, true);
+                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth, curLiquidGroupID);
 
                 // Set new top factoring for overlap
                 curXTop = curXBottom -= Configuration.LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
@@ -518,22 +446,6 @@ namespace EQWOWConverter.Zones
         protected void AddTriangleLiquidShapeSouthEdgeAligned(ZoneLiquidType liquidType, string materialName, float northX, float northY, float southEdgeX, float southWestY,
             float southEastY, float allCornerZ, float minDepth, float stepSize)
         {
-            // TEMP Store
-            ConfigLiquid newLiquid = new ConfigLiquid();
-            newLiquid.LiquidType = liquidType.ToString().ToLower();
-            newLiquid.ShapeType = "trianglepointnorth";
-            newLiquid.MaterialName = materialName;
-            newLiquid.MinDepthOrHeight = minDepth;
-            newLiquid.NorthX = northX;
-            newLiquid.NorthY = northY;
-            newLiquid.SouthX = southEdgeX;
-            newLiquid.SouthWestY = southWestY;
-            newLiquid.SouthEastY = southEastY;
-            newLiquid.TopOrOnlyZ = allCornerZ;
-            newLiquid.StepSize = stepSize;
-            TempConfigLiquids.Add(newLiquid);
-            //
-
             float curXTop = northX;
             bool moreXToWalk = true;
             float xDelta = southEdgeX - northX;
@@ -566,7 +478,7 @@ namespace EQWOWConverter.Zones
 
                 // Add the plane if the bounds are good
                 if (nwX > seX && nwY > seY)
-                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornerZ, minDepth, curLiquidGroupID, true);
+                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornerZ, minDepth, curLiquidGroupID);
 
                 // Set new top factoring for overlap
                 curXTop = curXBottom -= Configuration.LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
@@ -577,22 +489,6 @@ namespace EQWOWConverter.Zones
         protected void AddTriangleLiquidShapeNorthEdgeAligned(ZoneLiquidType liquidType, string materialName, float southX, float southY, float northEdgeX, float northWestY,
             float northEastY, float allCornerZ, float minDepth, float stepSize)
         {
-            // TEMP Store
-            ConfigLiquid newLiquid = new ConfigLiquid();
-            newLiquid.LiquidType = liquidType.ToString().ToLower();
-            newLiquid.ShapeType = "trianglepointsouth";
-            newLiquid.MaterialName = materialName;
-            newLiquid.MinDepthOrHeight = minDepth;
-            newLiquid.SouthX = southX;
-            newLiquid.SouthY = southY;
-            newLiquid.NorthX = northEdgeX;
-            newLiquid.NorthWestY = northWestY;
-            newLiquid.NorthEastY = northEastY;
-            newLiquid.TopOrOnlyZ = allCornerZ;
-            newLiquid.StepSize = stepSize;
-            TempConfigLiquids.Add(newLiquid);
-            //
-
             float curXTop = northEdgeX;
             bool moreXToWalk = true;
 
@@ -628,7 +524,7 @@ namespace EQWOWConverter.Zones
 
                 // Add the plane if the bounds are good
                 if (nwX > seX && nwY > seY)
-                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornerZ, minDepth, curLiquidGroupID, true);
+                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornerZ, minDepth, curLiquidGroupID);
 
                 // Set new top factoring for overlap
                 curXTop = curXBottom - Configuration.LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
@@ -640,24 +536,6 @@ namespace EQWOWConverter.Zones
         protected void AddLiquidCylinder(ZoneLiquidType liquidType, string materialName, float centerX, float centerY, float radius, float topZ,
             float height, float maxX, float maxY, float minX, float minY, float stepSize)
         {
-            // TEMP Store
-            ConfigLiquid newLiquid = new ConfigLiquid();
-            newLiquid.LiquidType = liquidType.ToString().ToLower();
-            newLiquid.ShapeType = "cylinder";
-            newLiquid.MaterialName = materialName;
-            newLiquid.CylinderCenterX = centerX;
-            newLiquid.CylinderCenterY = centerY;
-            newLiquid.CylinderRadius = radius;
-            newLiquid.TopOrOnlyZ = topZ;
-            newLiquid.MinDepthOrHeight = height;
-            newLiquid.NorthXLimit = maxX;
-            newLiquid.SouthXLimit = minX;
-            newLiquid.WestYLimit = maxY;
-            newLiquid.EastYLimit = minY;
-            newLiquid.StepSize = stepSize;
-            TempConfigLiquids.Add(newLiquid);
-            //
-
             // Generate a new group
             int curLiquidGroupID = LiquidGroups.Count;
             LiquidGroups.Add(new ZoneLiquidGroup());
@@ -684,7 +562,7 @@ namespace EQWOWConverter.Zones
                 seY = MathF.Max(seY, minY);
 
                 // Make the plane
-                AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, topZ, height, curLiquidGroupID, true);
+                AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, topZ, height, curLiquidGroupID);
 
                 // Step
                 relativeWorkingX -= stepSize;
@@ -695,23 +573,6 @@ namespace EQWOWConverter.Zones
         protected void AddTrapezoidLiquidAxisAlignedZLevelShape(ZoneLiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float northWestY, float northEastY,
             float southWestY, float southEastY, float topZ, float height, float stepSize)
         {
-            // TEMP Store
-            ConfigLiquid newLiquid = new ConfigLiquid();
-            newLiquid.LiquidType = liquidType.ToString().ToLower();
-            newLiquid.ShapeType = "trapezoid";
-            newLiquid.MaterialName = materialName;
-            newLiquid.NorthX = northEdgeX;
-            newLiquid.SouthX = southEdgeX;
-            newLiquid.NorthWestY = northWestY;
-            newLiquid.NorthEastY = northEastY;
-            newLiquid.SouthWestY = southWestY;
-            newLiquid.SouthEastY = southEastY;
-            newLiquid.TopOrOnlyZ = topZ;
-            newLiquid.MinDepthOrHeight = height;
-            newLiquid.StepSize = stepSize;
-            TempConfigLiquids.Add(newLiquid);
-            //
-
             // Generate a new group
             int curLiquidGroupID = LiquidGroups.Count;
             LiquidGroups.Add(new ZoneLiquidGroup());
@@ -738,7 +599,7 @@ namespace EQWOWConverter.Zones
 
                 // Add the plane if the bounds are good
                 if (nwX > seX && nwY > seY)
-                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, topZ, height, curLiquidGroupID, true);
+                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, topZ, height, curLiquidGroupID);
 
                 // Set new top factoring for overlap
                 curXTop = curXBottom -= Configuration.LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
@@ -765,29 +626,6 @@ namespace EQWOWConverter.Zones
         protected void AddOctagonLiquidShape(ZoneLiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
             float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float allCornersZ, float minDepth, float stepSize)
         {
-            // TEMP Store
-            ConfigLiquid newLiquid = new ConfigLiquid();
-            newLiquid.LiquidType = liquidType.ToString().ToLower();
-            newLiquid.ShapeType = "octagon";
-            newLiquid.MaterialName = materialName;
-            newLiquid.NorthX = northEdgeX;
-            newLiquid.SouthX = southEdgeX;
-            newLiquid.WestY = westEdgeY;
-            newLiquid.EastY = eastEdgeY;
-            newLiquid.NorthWestY = northWestY;
-            newLiquid.NorthEastY = northEastY;
-            newLiquid.SouthWestY = southWestY;
-            newLiquid.SouthEastY = southEastY;
-            newLiquid.WestNorthX = westNorthX;
-            newLiquid.WestSouthX = westSouthX;
-            newLiquid.EastNorthX = eastNorthX;
-            newLiquid.EastSouthX = eastSouthX;
-            newLiquid.TopOrOnlyZ = allCornersZ;
-            newLiquid.MinDepthOrHeight = minDepth;
-            newLiquid.StepSize = stepSize;
-            TempConfigLiquids.Add(newLiquid);
-            //
-
             // Boundary Control (very limited)
             if (northEdgeX < southEdgeX)
             {
@@ -813,7 +651,7 @@ namespace EQWOWConverter.Zones
                 if (curXTop <= westNorthX && curXTop <= eastNorthX && curXTop >= westSouthX && curXTop >= eastSouthX)
                 {
                     float highestSouthEastX = MathF.Max(westSouthX, eastSouthX);
-                    AddLiquidPlaneZLevel(liquidType, materialName, curXTop, westEdgeY, highestSouthEastX, eastEdgeY, allCornersZ, minDepth, curLiquidGroupID, true);
+                    AddLiquidPlaneZLevel(liquidType, materialName, curXTop, westEdgeY, highestSouthEastX, eastEdgeY, allCornersZ, minDepth, curLiquidGroupID);
                     curXTop = highestSouthEastX;
                 }
 
@@ -849,7 +687,7 @@ namespace EQWOWConverter.Zones
 
                 // Add the plane if the bounds are good
                 if (nwX > seX && nwY > seY)
-                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth, curLiquidGroupID, true);
+                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth, curLiquidGroupID);
 
                 // Set new top factoring for overlap
                 curXTop = curXBottom -= Configuration.LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
@@ -859,14 +697,6 @@ namespace EQWOWConverter.Zones
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddLiquidCazicSphere(ZoneLiquidType liquidType, string materialName)
         {
-            // TEMP Store
-            ConfigLiquid newLiquid = new ConfigLiquid();
-            newLiquid.LiquidType = liquidType.ToString().ToLower();
-            newLiquid.ShapeType = "cazicsphere";
-            newLiquid.MaterialName = materialName;
-            TempConfigLiquids.Add(newLiquid);
-            //
-
             // TODO: Redo this to be calculated smarter. It's very hacky now. Consider that the "sphere" is wider than it is tall.
 
             // Set boundaries
@@ -880,7 +710,7 @@ namespace EQWOWConverter.Zones
             float sphereTrueCenterZ = -71.49229f;
 
             // Create the center column
-            AddLiquidPlaneZLevel(liquidType, materialName, sphereCenterX + 4.01f, sphereCenterY + 4.01f, sphereCenterX - 4.01f, sphereCenterY - 4.01f, maxZ, (maxZ - sphereTrueCenterZ) * 2f, -1, true);
+            AddLiquidPlaneZLevel(liquidType, materialName, sphereCenterX + 4.01f, sphereCenterY + 4.01f, sphereCenterX - 4.01f, sphereCenterY - 4.01f, maxZ, (maxZ - sphereTrueCenterZ) * 2f, -1);
 
             // Walk across the x in 2 unit steps, total of 48. Center column is 8 units.
             for (int xi = 0; xi < 48; xi += 2)
@@ -962,7 +792,7 @@ namespace EQWOWConverter.Zones
                         xi += 6;
 
                     // Create the plane
-                    AddLiquidPlaneZLevel(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curDepth, -1, true);
+                    AddLiquidPlaneZLevel(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curDepth, -1);
                 }
             }
         }
@@ -1155,7 +985,7 @@ namespace EQWOWConverter.Zones
                 {
                     foreach (ConfigZoneSubAreaBox areaBox in ConfigSubAreaBoxesByZoneShortName[shortName])
                     {
-                        switch (areaBox.Shape)
+                        switch (areaBox.ShapeType)
                         {
                             case "box":
                                 {
@@ -1171,8 +1001,95 @@ namespace EQWOWConverter.Zones
                                 } break;
                             default:
                                 {
-                                    Logger.WriteError("Invalid area box shape type of '", areaBox.Shape, "' for zone '", shortName, "' ");
+                                    Logger.WriteError("Invalid area box shape type of '", areaBox.ShapeType, "' for zone '", shortName, "' ");
                                 } break;
+                        }
+                    }
+                }
+
+                // Liquids
+                if (ConfigLiquidsByZoneShortName.ContainsKey(shortName) == true)
+                {
+                    foreach (ConfigLiquid liquid in ConfigLiquidsByZoneShortName[shortName])
+                    {
+                        // Convert the enums
+                        ZoneLiquidType liquidType = ZoneLiquidType.None;
+                        switch (liquid.LiquidType)
+                        {
+                            case "blood": liquidType = ZoneLiquidType.Blood; break;
+                            case "magma": liquidType = ZoneLiquidType.Magma; break;
+                            case "greenwater": liquidType = ZoneLiquidType.GreenWater; break;
+                            case "water": liquidType = ZoneLiquidType.Water; break;
+                            case "slime": liquidType = ZoneLiquidType.Slime; break;
+                            default: Logger.WriteError("Invalid liquid type of '", liquid.LiquidType, "' for zone '", shortName, "' "); break;
+                        }
+                        ZoneLiquidSlantType slantType = ZoneLiquidSlantType.None;
+                        switch (liquid.SlantType)
+                        {
+                            case "": slantType = ZoneLiquidSlantType.None; break;
+                            case "none": slantType = ZoneLiquidSlantType.None; break;
+                            case "northhighsouthlow": slantType = ZoneLiquidSlantType.NorthHighSouthLow; break;
+                            case "westhigheastlow": slantType = ZoneLiquidSlantType.WestHighEastLow; break;
+                            case "easthighwestlow": slantType = ZoneLiquidSlantType.EastHighWestLow; break;
+                            case "southhighnorthlow": slantType = ZoneLiquidSlantType.SouthHighNorthLow; break;
+                            default: Logger.WriteError("Invalid liquid slant type of '", liquid.SlantType, "' for zone '", shortName, "' "); break;
+                        }
+
+                        // Load the liquid based on shape
+                        switch (liquid.ShapeType)
+                        {
+                            case "volume":
+                                {
+                                    zoneProperties.AddLiquidVolume(liquidType, liquid.NorthX, liquid.WestY, liquid.SouthX, liquid.EastY,
+                                        liquid.TopOrOnlyZ, liquid.BottomZ);
+                                } break;
+                            case "slantedplane":
+                                {
+                                    zoneProperties.AddLiquidPlane(liquidType, liquid.MaterialName, liquid.NorthX, liquid.WestY, liquid.SouthX,
+                                        liquid.EastY, liquid.TopOrOnlyZ, liquid.BottomZ, slantType, liquid.MinDepthOrHeight, -1, liquid.ForcedAlignedAreaName);
+                                } break;
+                            case "levelplane":
+                                {
+                                    zoneProperties.AddLiquidPlaneZLevel(liquidType, liquid.MaterialName, liquid.NorthX, liquid.WestY, liquid.SouthX,
+                                        liquid.EastY, liquid.TopOrOnlyZ, liquid.MinDepthOrHeight);
+                                } break;
+                            case "quadrilateral":
+                                {
+                                    zoneProperties.AddQuadrilateralLiquidShapeZLevel(liquidType, liquid.MaterialName, liquid.NorthX, liquid.NorthY,
+                                        liquid.WestX, liquid.WestY, liquid.SouthX, liquid.SouthY, liquid.EastX, liquid.EastY, liquid.TopOrOnlyZ,
+                                        liquid.MinDepthOrHeight, liquid.NorthXLimit, liquid.WestYLimit, liquid.SouthXLimit, liquid.EastYLimit, liquid.StepSize);
+                                } break;
+                            case "trianglepointnorth":
+                                {
+                                    zoneProperties.AddTriangleLiquidShapeSouthEdgeAligned(liquidType, liquid.MaterialName, liquid.NorthX, liquid.NorthY,
+                                        liquid.SouthX, liquid.SouthWestY, liquid.SouthEastY, liquid.TopOrOnlyZ, liquid.MinDepthOrHeight, liquid.StepSize);
+                                } break;
+                            case "trianglepointsouth":
+                                {
+                                    zoneProperties.AddTriangleLiquidShapeNorthEdgeAligned(liquidType, liquid.MaterialName, liquid.SouthX, liquid.SouthY, liquid.NorthX,
+                                        liquid.NorthWestY, liquid.NorthEastY, liquid.TopOrOnlyZ, liquid.MinDepthOrHeight, liquid.StepSize);
+                                } break;
+                            case "cylinder":
+                                {
+                                    zoneProperties.AddLiquidCylinder(liquidType, liquid.MaterialName, liquid.CylinderCenterX, liquid.CylinderCenterY, liquid.CylinderRadius,
+                                        liquid.TopOrOnlyZ, liquid.MinDepthOrHeight, liquid.NorthXLimit, liquid.WestYLimit, liquid.SouthXLimit, liquid.EastYLimit, liquid.StepSize);
+                                } break;
+                            case "trapezoid":
+                                {
+                                    zoneProperties.AddTrapezoidLiquidAxisAlignedZLevelShape(liquidType, liquid.MaterialName, liquid.NorthX, liquid.SouthX, liquid.NorthWestY,
+                                        liquid.NorthEastY, liquid.SouthWestY, liquid.SouthEastY, liquid.TopOrOnlyZ, liquid.MinDepthOrHeight, liquid.StepSize);
+                                } break;
+                            case "octagon":
+                                {
+                                    zoneProperties.AddOctagonLiquidShape(liquidType, liquid.MaterialName, liquid.NorthX, liquid.SouthX, liquid.WestY, liquid.EastY,
+                                        liquid.NorthWestY, liquid.NorthEastY, liquid.SouthWestY, liquid.SouthEastY, liquid.WestNorthX, liquid.WestSouthX,
+                                        liquid.EastNorthX, liquid.EastSouthX, liquid.TopOrOnlyZ, liquid.MinDepthOrHeight, liquid.StepSize);
+                                } break;
+                            case "cazicsphere":
+                                {
+                                    zoneProperties.AddLiquidCazicSphere(liquidType, liquid.MaterialName);
+                                } break;
+                            default: Logger.WriteError("Invalid liquid shape type of '", liquid.ShapeType, "' for zone '", shortName, "' "); break;
                         }
                     }
                 }
@@ -1274,7 +1191,7 @@ namespace EQWOWConverter.Zones
                 ConfigZoneSubAreaBox newAreaBox = new ConfigZoneSubAreaBox();
                 newAreaBox.ZoneShortName = subAreaBoxRow["ZoneShortName"].Trim().ToLower();
                 newAreaBox.AreaName = subAreaBoxRow["AreaName"].Trim();
-                newAreaBox.Shape = subAreaBoxRow["Shape"].Trim().ToLower();
+                newAreaBox.ShapeType = subAreaBoxRow["Shape"].Trim().ToLower();
                 newAreaBox.NorthX = float.Parse(subAreaBoxRow["NorthX"]);
                 newAreaBox.SouthX = float.Parse(subAreaBoxRow["SouthX"]);
                 newAreaBox.WestY = float.Parse(subAreaBoxRow["WestY"]);
@@ -1293,6 +1210,52 @@ namespace EQWOWConverter.Zones
                 if (ConfigSubAreaBoxesByZoneShortName.ContainsKey(newAreaBox.ZoneShortName) == false)
                     ConfigSubAreaBoxesByZoneShortName.Add(newAreaBox.ZoneShortName, new List<ConfigZoneSubAreaBox>());
                 ConfigSubAreaBoxesByZoneShortName[newAreaBox.ZoneShortName].Add(newAreaBox);
+            }
+
+            // Load the liquids
+            string liquidsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneLiquids.csv");
+            Logger.WriteDebug("Populating Liquids file '" + liquidsFile + "'");
+            List<Dictionary<string, string>> liquidRows = FileTool.ReadAllRowsFromFileWithHeader(liquidsFile, "|");
+            foreach (Dictionary<string, string> liquidRow in liquidRows)
+            {
+                ConfigLiquid newLiquid = new ConfigLiquid();
+                newLiquid.ZoneShortName = liquidRow["ZoneShortName"];
+                newLiquid.ShapeType = liquidRow["ShapeType"].ToLower().Trim();
+                newLiquid.LiquidType = liquidRow["LiquidType"].ToLower().Trim();
+                newLiquid.SlantType = liquidRow["SlantType"].ToLower().Trim();
+                newLiquid.MaterialName = liquidRow["MaterialName"].Trim();
+                newLiquid.NorthX = Convert.ToSingle(liquidRow["NorthX"]);
+                newLiquid.SouthX = Convert.ToSingle(liquidRow["SouthX"]);
+                newLiquid.WestY = Convert.ToSingle(liquidRow["WestY"]);
+                newLiquid.EastY = Convert.ToSingle(liquidRow["EastY"]);
+                newLiquid.TopOrOnlyZ = Convert.ToSingle(liquidRow["TopOrOnlyZ"]);
+                newLiquid.BottomZ = Convert.ToSingle(liquidRow["BottomZ"]);
+                newLiquid.MinDepthOrHeight = Convert.ToSingle(liquidRow["MinDepthOrHeight"]);
+                newLiquid.StepSize = Convert.ToSingle(liquidRow["StepSize"]);
+                newLiquid.NorthY = Convert.ToSingle(liquidRow["NorthY"]);
+                newLiquid.SouthY = Convert.ToSingle(liquidRow["SouthY"]);
+                newLiquid.WestX = Convert.ToSingle(liquidRow["WestX"]);
+                newLiquid.EastX = Convert.ToSingle(liquidRow["EastX"]);
+                newLiquid.NorthXLimit = Convert.ToSingle(liquidRow["NorthXLimit"]);
+                newLiquid.SouthXLimit = Convert.ToSingle(liquidRow["SouthXLimit"]);
+                newLiquid.WestYLimit = Convert.ToSingle(liquidRow["WestYLimit"]);
+                newLiquid.EastYLimit = Convert.ToSingle(liquidRow["EastYLimit"]);
+                newLiquid.NorthWestY = Convert.ToSingle(liquidRow["NorthWestY"]);
+                newLiquid.NorthEastY = Convert.ToSingle(liquidRow["NorthEastY"]);
+                newLiquid.SouthWestY = Convert.ToSingle(liquidRow["SouthWestY"]);
+                newLiquid.SouthEastY = Convert.ToSingle(liquidRow["SouthEastY"]);
+                newLiquid.EastNorthX = Convert.ToSingle(liquidRow["EastNorthX"]);
+                newLiquid.EastSouthX = Convert.ToSingle(liquidRow["EastSouthX"]);
+                newLiquid.WestNorthX = Convert.ToSingle(liquidRow["WestNorthX"]);
+                newLiquid.WestSouthX = Convert.ToSingle(liquidRow["WestSouthX"]);
+                newLiquid.CylinderCenterX = Convert.ToSingle(liquidRow["CylinderCenterX"]);
+                newLiquid.CylinderCenterY = Convert.ToSingle(liquidRow["CylinderCenterY"]);
+                newLiquid.CylinderRadius = Convert.ToSingle(liquidRow["CylinderRadius"]);
+                newLiquid.ForcedAlignedAreaName = liquidRow["ForcedAlignedAreaName"];
+
+                if (ConfigLiquidsByZoneShortName.ContainsKey(newLiquid.ZoneShortName) == false)
+                    ConfigLiquidsByZoneShortName.Add(newLiquid.ZoneShortName, new List<ConfigLiquid>());
+                ConfigLiquidsByZoneShortName[newLiquid.ZoneShortName].Add(newLiquid);
             }
 
             // Load the zone properties file
@@ -1434,56 +1397,56 @@ namespace EQWOWConverter.Zones
 
             // TEMP: This is used for the effort of migrating values from the zone properties code to config
 
-            float CleanSmallValue(float value)
-            {
-                return Math.Abs(value) <= 0.0001f ? 0f : value;
-            }
+            //float CleanSmallValue(float value)
+            //{
+            //    return Math.Abs(value) <= 0.0001f ? 0f : value;
+            //}
 
-            string zoneLiquidsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneLiquids.csv");
-            List<Dictionary<string, string>> zoneLiquidRows = FileTool.ReadAllRowsFromFileWithHeader(zoneLiquidsFile, "|");
-            foreach (ZoneProperties curZoneProperties in ZonePropertyListByShortName.Values)
-            {
-                foreach (ConfigLiquid zoneLiquid in curZoneProperties.TempConfigLiquids)
-                {
-                    Dictionary<string, string> newRow = new Dictionary<string, string>();
-                    newRow.Add("ZoneShortName", curZoneProperties.ShortName);
-                    newRow.Add("ShapeType", zoneLiquid.ShapeType);
-                    newRow.Add("LiquidType", zoneLiquid.LiquidType);
-                    newRow.Add("SlantType", zoneLiquid.SlantType);
-                    newRow.Add("MaterialName", zoneLiquid.MaterialName);
-                    newRow.Add("NorthX", CleanSmallValue(zoneLiquid.NorthX).ToString());
-                    newRow.Add("SouthX", CleanSmallValue(zoneLiquid.SouthX).ToString());
-                    newRow.Add("WestY", CleanSmallValue(zoneLiquid.WestY).ToString());
-                    newRow.Add("EastY", CleanSmallValue(zoneLiquid.EastY).ToString());
-                    newRow.Add("TopOrOnlyZ", CleanSmallValue(zoneLiquid.TopOrOnlyZ).ToString());
-                    newRow.Add("BottomZ", CleanSmallValue(zoneLiquid.BottomZ).ToString());
-                    newRow.Add("MinDepthOrHeight", CleanSmallValue(zoneLiquid.MinDepthOrHeight).ToString());
-                    newRow.Add("StepSize", CleanSmallValue(zoneLiquid.StepSize).ToString());
-                    newRow.Add("NorthY", CleanSmallValue(zoneLiquid.NorthY).ToString());
-                    newRow.Add("SouthY", CleanSmallValue(zoneLiquid.SouthY).ToString());
-                    newRow.Add("WestX", CleanSmallValue(zoneLiquid.WestX).ToString());
-                    newRow.Add("EastX", CleanSmallValue(zoneLiquid.EastX).ToString());
-                    newRow.Add("NorthXLimit", CleanSmallValue(zoneLiquid.NorthXLimit).ToString());
-                    newRow.Add("SouthXLimit", CleanSmallValue(zoneLiquid.SouthXLimit).ToString());
-                    newRow.Add("WestYLimit", CleanSmallValue(zoneLiquid.WestYLimit).ToString());
-                    newRow.Add("EastYLimit", CleanSmallValue(zoneLiquid.EastYLimit).ToString());
-                    newRow.Add("NorthWestY", CleanSmallValue(zoneLiquid.NorthWestY).ToString());
-                    newRow.Add("NorthEastY", CleanSmallValue(zoneLiquid.NorthEastY).ToString());
-                    newRow.Add("SouthWestY", CleanSmallValue(zoneLiquid.SouthWestY).ToString());
-                    newRow.Add("SouthEastY", CleanSmallValue(zoneLiquid.SouthEastY).ToString());
-                    newRow.Add("EastNorthX", CleanSmallValue(zoneLiquid.EastNorthX).ToString());
-                    newRow.Add("EastSouthX", CleanSmallValue(zoneLiquid.EastSouthX).ToString());
-                    newRow.Add("WestNorthX", CleanSmallValue(zoneLiquid.WestNorthX).ToString());
-                    newRow.Add("WestSouthX", CleanSmallValue(zoneLiquid.WestSouthX).ToString());
-                    newRow.Add("CylinderCenterX", CleanSmallValue(zoneLiquid.CylinderCenterX).ToString());
-                    newRow.Add("CylinderCenterY", CleanSmallValue(zoneLiquid.CylinderCenterY).ToString());
-                    newRow.Add("CylinderRadius", CleanSmallValue(zoneLiquid.CylinderRadius).ToString());
-                    newRow.Add("ForcedAlignedAreaName", zoneLiquid.ForcedAlignedAreaName);
-                    zoneLiquidRows.Add(newRow);
-                }
-            }
-            FileTool.WriteAllRowsToFileWithHeader(zoneLiquidsFile, "|", zoneLiquidRows);
-            int x = 5;
+            //string zoneLiquidsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneLiquids.csv");
+            //List<Dictionary<string, string>> zoneLiquidRows = FileTool.ReadAllRowsFromFileWithHeader(zoneLiquidsFile, "|");
+            //foreach (ZoneProperties curZoneProperties in ZonePropertyListByShortName.Values)
+            //{
+            //    foreach (ConfigLiquid zoneLiquid in curZoneProperties.TempConfigLiquids)
+            //    {
+            //        Dictionary<string, string> newRow = new Dictionary<string, string>();
+            //        newRow.Add("ZoneShortName", curZoneProperties.ShortName);
+            //        newRow.Add("ShapeType", zoneLiquid.ShapeType);
+            //        newRow.Add("LiquidType", zoneLiquid.LiquidType);
+            //        newRow.Add("SlantType", zoneLiquid.SlantType);
+            //        newRow.Add("MaterialName", zoneLiquid.MaterialName);
+            //        newRow.Add("NorthX", CleanSmallValue(zoneLiquid.NorthX).ToString());
+            //        newRow.Add("SouthX", CleanSmallValue(zoneLiquid.SouthX).ToString());
+            //        newRow.Add("WestY", CleanSmallValue(zoneLiquid.WestY).ToString());
+            //        newRow.Add("EastY", CleanSmallValue(zoneLiquid.EastY).ToString());
+            //        newRow.Add("TopOrOnlyZ", CleanSmallValue(zoneLiquid.TopOrOnlyZ).ToString());
+            //        newRow.Add("BottomZ", CleanSmallValue(zoneLiquid.BottomZ).ToString());
+            //        newRow.Add("MinDepthOrHeight", CleanSmallValue(zoneLiquid.MinDepthOrHeight).ToString());
+            //        newRow.Add("StepSize", CleanSmallValue(zoneLiquid.StepSize).ToString());
+            //        newRow.Add("NorthY", CleanSmallValue(zoneLiquid.NorthY).ToString());
+            //        newRow.Add("SouthY", CleanSmallValue(zoneLiquid.SouthY).ToString());
+            //        newRow.Add("WestX", CleanSmallValue(zoneLiquid.WestX).ToString());
+            //        newRow.Add("EastX", CleanSmallValue(zoneLiquid.EastX).ToString());
+            //        newRow.Add("NorthXLimit", CleanSmallValue(zoneLiquid.NorthXLimit).ToString());
+            //        newRow.Add("SouthXLimit", CleanSmallValue(zoneLiquid.SouthXLimit).ToString());
+            //        newRow.Add("WestYLimit", CleanSmallValue(zoneLiquid.WestYLimit).ToString());
+            //        newRow.Add("EastYLimit", CleanSmallValue(zoneLiquid.EastYLimit).ToString());
+            //        newRow.Add("NorthWestY", CleanSmallValue(zoneLiquid.NorthWestY).ToString());
+            //        newRow.Add("NorthEastY", CleanSmallValue(zoneLiquid.NorthEastY).ToString());
+            //        newRow.Add("SouthWestY", CleanSmallValue(zoneLiquid.SouthWestY).ToString());
+            //        newRow.Add("SouthEastY", CleanSmallValue(zoneLiquid.SouthEastY).ToString());
+            //        newRow.Add("EastNorthX", CleanSmallValue(zoneLiquid.EastNorthX).ToString());
+            //        newRow.Add("EastSouthX", CleanSmallValue(zoneLiquid.EastSouthX).ToString());
+            //        newRow.Add("WestNorthX", CleanSmallValue(zoneLiquid.WestNorthX).ToString());
+            //        newRow.Add("WestSouthX", CleanSmallValue(zoneLiquid.WestSouthX).ToString());
+            //        newRow.Add("CylinderCenterX", CleanSmallValue(zoneLiquid.CylinderCenterX).ToString());
+            //        newRow.Add("CylinderCenterY", CleanSmallValue(zoneLiquid.CylinderCenterY).ToString());
+            //        newRow.Add("CylinderRadius", CleanSmallValue(zoneLiquid.CylinderRadius).ToString());
+            //        newRow.Add("ForcedAlignedAreaName", zoneLiquid.ForcedAlignedAreaName);
+            //        zoneLiquidRows.Add(newRow);
+            //    }
+            //}
+            //FileTool.WriteAllRowsToFileWithHeader(zoneLiquidsFile, "|", zoneLiquidRows);
+            //int x = 5;
 
 
 
