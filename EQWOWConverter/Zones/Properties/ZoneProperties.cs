@@ -15,8 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.Zones.Properties;
-using System.Text;
 
 namespace EQWOWConverter.Zones
 {
@@ -108,11 +106,9 @@ namespace EQWOWConverter.Zones
             public string ForcedAlignedAreaName = string.Empty;
         }
 
+        private static readonly object DBCWMOIDLock = new object();
+        private static readonly object ListReadLock = new object();
         private static Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
-        private static Dictionary<string, List<ConfigDiscardedGeometryBox>> ConfigDiscardGeometryBoxesByZoneShortName = new Dictionary<string, List<ConfigDiscardedGeometryBox>>();
-        private static Dictionary<string, List<ConfigZoneSubArea>> ConfigSubAreasByZoneShortName = new Dictionary<string, List<ConfigZoneSubArea>>();
-        private static Dictionary<string, List<ConfigZoneSubAreaBox>> ConfigSubAreaBoxesByZoneShortName = new Dictionary<string, List<ConfigZoneSubAreaBox>>();
-        private static Dictionary<string, List<ConfigLiquid>> ConfigLiquidsByZoneShortName = new Dictionary<string, List<ConfigLiquid>>();
 
         public int DBCMapID;
         public int DBCMapDifficultyID;
@@ -155,9 +151,6 @@ namespace EQWOWConverter.Zones
         public int SuggestedMaxLevel = 0;
         public bool AlwaysZoomOutMapToNorrathMap = false;
         public bool DisableObjectsInMapGenMode = false;
-
-        private static readonly object ListReadLock = new object();
-        private static readonly object DBCWMOIDLock = new object();
 
         // DBCIDs
         private static UInt32 CURRENT_WMOID = Configuration.DBCID_WMOAREATABLE_WMOID_START;
@@ -295,23 +288,6 @@ namespace EQWOWConverter.Zones
                 // Set new top factoring for overlap
                 curXTop = curXBottom;
             }
-        }
-
-        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
-        // Coordinates flip due to world <-> wmo space
-        protected void AddDiscardGeometryBox(float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ, string comment = "")
-        {
-            // TODO: Delete
-        }
-
-        protected void AddDiscardGeometryBoxMapGenOnly(float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ, string comment = "")
-        {
-            // TODO: Delete
-        }
-
-        protected void AddDiscardGeometryBoxObjectsOnly(float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ, string comment = "")
-        {
-            // TODO: Delete
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
@@ -606,22 +582,6 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        // Values should be pre-Scaling(before* EQTOWOW_WORLD_SCALE)
-        //protected void AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
-        //    float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth)
-        //{
-        //    AddQuadrilateralLiquidShapeZLevel(liquidType, materialName, northMostX, northMostY, westMostX, westMostY, southMostX, southMostY,
-        //        eastMostX, eastMostY, allCornersZ, minDepth, northMostX, westMostY, southMostX, eastMostY, Configuration.LIQUID_QUADGEN_EDGE_WALK_SIZE);
-        //}
-
-        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
-        //protected void AddOctagonLiquidShape(ZoneLiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
-        //    float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float allCornersZ, float minDepth)
-        //{
-        //    AddOctagonLiquidShape(liquidType, materialName, northEdgeX, southEdgeX, westEdgeY, eastEdgeY, northWestY, northEastY, southWestY, southEastY, westNorthX,
-        //        westSouthX, eastNorthX, eastSouthX, allCornersZ, minDepth, Configuration.LIQUID_QUADGEN_EDGE_WALK_SIZE);
-        //}
-
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddOctagonLiquidShape(ZoneLiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
             float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float allCornersZ, float minDepth, float stepSize)
@@ -823,16 +783,181 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private static void AddZonePropertiesByShortName(Dictionary<string, Dictionary<string, string>> zonePropertiesByShortName, string shortName, ZoneProperties zoneProperties)
+        private static void PopulateDisplayMapLinkList()
         {
-            if (zonePropertiesByShortName.ContainsKey(shortName) == true)
+            string mapLinkListFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneDisplayMapLinks.csv");
+            Logger.WriteDebug("Populating Zone Display Map Links via file '" + mapLinkListFile + "'");
+            List<Dictionary<string, string>> mapLinkFileRows = FileTool.ReadAllRowsFromFileWithHeader(mapLinkListFile, "|");
+            foreach (Dictionary<string, string> mapLinkFileColumns in mapLinkFileRows)
             {
-                Dictionary<string, string> propertiesRow = zonePropertiesByShortName[shortName];
+                // Skip any for zones that aren't loaded
+                string ownerZoneShortName = mapLinkFileColumns["OwnerZoneShortName"];
+                if (ZonePropertyListByShortName.ContainsKey(ownerZoneShortName) == false)
+                    continue;
 
-                // Skip if the expansion doesn't line up, and it wasn't an explicit add
+                string linkedZoneShortName = mapLinkFileColumns["LinkedZoneShortName"];
+                float west = Convert.ToSingle(mapLinkFileColumns["West"]);
+                float north = Convert.ToSingle(mapLinkFileColumns["North"]);
+                float east = Convert.ToSingle(mapLinkFileColumns["East"]);
+                float south = Convert.ToSingle(mapLinkFileColumns["South"]);
+
+                ZonePropertiesDisplayMapLinkBox newMapLink = new ZonePropertiesDisplayMapLinkBox(linkedZoneShortName, west, north, east, south);
+                ZonePropertyListByShortName[ownerZoneShortName].DisplayMapLinkBoxes.Add(newMapLink);
+            }
+        }
+
+        private static void PopulateZonePropertiesList()
+        {
+            // Load the discarded geometry box information
+            Dictionary<string, List<ConfigDiscardedGeometryBox>> configDiscardGeometryBoxesByZoneShortName = new Dictionary<string, List<ConfigDiscardedGeometryBox>>();
+            string discardedGeometryBoxesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneDiscardedGeometryBoxes.csv");
+            Logger.WriteDebug("Populating Discarded Geometry Boxes via file '" + discardedGeometryBoxesFile + "'");
+            List<Dictionary<string, string>> discardedGeometryBoxesRows = FileTool.ReadAllRowsFromFileWithHeader(discardedGeometryBoxesFile, "|");
+            foreach (Dictionary<string, string> discardedGeometryBoxRow in discardedGeometryBoxesRows)
+            {
+                ConfigDiscardedGeometryBox newDiscardedGeometryBox = new ConfigDiscardedGeometryBox();
+                newDiscardedGeometryBox.ZoneShortName = discardedGeometryBoxRow["ZoneShortName"];
+                newDiscardedGeometryBox.TypeString = discardedGeometryBoxRow["Type"];
+                newDiscardedGeometryBox.NWCornerX = Convert.ToSingle(discardedGeometryBoxRow["NWCornerX"]);
+                newDiscardedGeometryBox.NWCornerY = Convert.ToSingle(discardedGeometryBoxRow["NWCornerY"]);
+                newDiscardedGeometryBox.NWCornerZ = Convert.ToSingle(discardedGeometryBoxRow["NWCornerZ"]);
+                newDiscardedGeometryBox.SECornerX = Convert.ToSingle(discardedGeometryBoxRow["SECornerX"]);
+                newDiscardedGeometryBox.SECornerY = Convert.ToSingle(discardedGeometryBoxRow["SECornerY"]);
+                newDiscardedGeometryBox.SECornerZ = Convert.ToSingle(discardedGeometryBoxRow["SECornerZ"]);
+                newDiscardedGeometryBox.Comment = discardedGeometryBoxRow["Comment"];
+
+                if (configDiscardGeometryBoxesByZoneShortName.ContainsKey(newDiscardedGeometryBox.ZoneShortName) == false)
+                    configDiscardGeometryBoxesByZoneShortName.Add(newDiscardedGeometryBox.ZoneShortName, new List<ConfigDiscardedGeometryBox>());
+                configDiscardGeometryBoxesByZoneShortName[newDiscardedGeometryBox.ZoneShortName].Add(newDiscardedGeometryBox);
+            }
+
+            // Load the sub areas
+            Dictionary<string, List<ConfigZoneSubArea>> configSubAreasByZoneShortName = new Dictionary<string, List<ConfigZoneSubArea>>();
+            string subAreaFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneSubAreas.csv");
+            Logger.WriteDebug("Populating Sub Areas via file '" + subAreaFile + "'");
+            List<Dictionary<string, string>> subAreaRows = FileTool.ReadAllRowsFromFileWithHeader(subAreaFile, "|");
+            foreach (Dictionary<string, string> subAreaRow in subAreaRows)
+            {
+                ConfigZoneSubArea newConfigZoneSubArea = new ConfigZoneSubArea();
+                newConfigZoneSubArea.ZoneShortName = subAreaRow["ZoneShortName"].Trim().ToLower();
+                newConfigZoneSubArea.AreaName = subAreaRow["AreaName"].Trim();
+                newConfigZoneSubArea.OrderID = int.Parse(subAreaRow["OrderID"]);
+                newConfigZoneSubArea.DBCAreaTableID = UInt32.Parse(subAreaRow["AreaTableDBCID"]);
+                newConfigZoneSubArea.ParentSubAreaName = subAreaRow["ParentSubAreaName"].Trim();
+                if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
+                {
+                    newConfigZoneSubArea.MusicFileNameNoExtDay = subAreaRow["MusicDayAlt"].Trim().ToLower();
+                    newConfigZoneSubArea.MusicFileNameNoExtNight = subAreaRow["MusicNightAlt"].Trim().ToLower();
+                }
+                else
+                {
+                    newConfigZoneSubArea.MusicFileNameNoExtDay = subAreaRow["MusicDay"].Trim().ToLower();
+                    newConfigZoneSubArea.MusicFileNameNoExtNight = subAreaRow["MusicNight"].Trim().ToLower();
+                }                
+                newConfigZoneSubArea.MusicVolume = float.Parse(subAreaRow["MusicVolume"]);
+                newConfigZoneSubArea.DoLoopMusic = subAreaRow["DoLoopMusic"].Trim() == "1" ? true : false;
+                newConfigZoneSubArea.AmbientSoundFileNameNoExtDay = subAreaRow["AmbientSoundDay"].Trim().ToLower();
+                newConfigZoneSubArea.AmbientSoundFileNameNoExtNight = subAreaRow["AmbientSoundNight"].Trim().ToLower();
+
+                if (configSubAreasByZoneShortName.ContainsKey(newConfigZoneSubArea.ZoneShortName) == false)
+                    configSubAreasByZoneShortName.Add(newConfigZoneSubArea.ZoneShortName, new List<ConfigZoneSubArea>());
+                configSubAreasByZoneShortName[newConfigZoneSubArea.ZoneShortName].Add(newConfigZoneSubArea);
+            }
+            // Sort by OrderID for now (ascending)
+            foreach (List<ConfigZoneSubArea> subAreasInZone in configSubAreasByZoneShortName.Values)
+                subAreasInZone.Sort((a, b) => a.OrderID.CompareTo(b.OrderID));
+
+            // Load the sub area boxes
+            Dictionary<string, List<ConfigZoneSubAreaBox>> configSubAreaBoxesByZoneShortName = new Dictionary<string, List<ConfigZoneSubAreaBox>>();
+            string subAreaBoxesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneSubAreaBoxes.csv");
+            Logger.WriteDebug("Populating Sub Areas Boxes via file '" + subAreaBoxesFile + "'");
+            List<Dictionary<string, string>> subAreaBoxRows = FileTool.ReadAllRowsFromFileWithHeader(subAreaBoxesFile, "|");
+            foreach (Dictionary<string, string> subAreaBoxRow in subAreaBoxRows)
+            {
+                ConfigZoneSubAreaBox newAreaBox = new ConfigZoneSubAreaBox();
+                newAreaBox.ZoneShortName = subAreaBoxRow["ZoneShortName"].Trim().ToLower();
+                newAreaBox.AreaName = subAreaBoxRow["AreaName"].Trim();
+                newAreaBox.ShapeType = subAreaBoxRow["Shape"].Trim().ToLower();
+                newAreaBox.NorthX = float.Parse(subAreaBoxRow["NorthX"]);
+                newAreaBox.SouthX = float.Parse(subAreaBoxRow["SouthX"]);
+                newAreaBox.WestY = float.Parse(subAreaBoxRow["WestY"]);
+                newAreaBox.EastY = float.Parse(subAreaBoxRow["EastY"]);
+                newAreaBox.TopZ = float.Parse(subAreaBoxRow["TopZ"]);
+                newAreaBox.BottomZ = float.Parse(subAreaBoxRow["BottomZ"]);
+                newAreaBox.OctagonNorthWestY = float.Parse(subAreaBoxRow["OctagonNorthWestY"]);
+                newAreaBox.OctagonNorthEastY = float.Parse(subAreaBoxRow["OctagonNorthEastY"]);
+                newAreaBox.OctagonSouthWestY = float.Parse(subAreaBoxRow["OctagonSouthWestY"]);
+                newAreaBox.OctagonSouthEastY = float.Parse(subAreaBoxRow["OctagonSouthEastY"]);
+                newAreaBox.OctagonWestNorthX = float.Parse(subAreaBoxRow["OctagonWestNorthX"]);
+                newAreaBox.OctagonWestSouthX = float.Parse(subAreaBoxRow["OctagonWestSouthX"]);
+                newAreaBox.OctagonEastNorthX = float.Parse(subAreaBoxRow["OctagonEastNorthX"]);
+                newAreaBox.OctagonEastSouthX = float.Parse(subAreaBoxRow["OctagonEastSouthX"]);
+
+                if (configSubAreaBoxesByZoneShortName.ContainsKey(newAreaBox.ZoneShortName) == false)
+                    configSubAreaBoxesByZoneShortName.Add(newAreaBox.ZoneShortName, new List<ConfigZoneSubAreaBox>());
+                configSubAreaBoxesByZoneShortName[newAreaBox.ZoneShortName].Add(newAreaBox);
+            }
+
+            // Load the liquids
+            Dictionary<string, List<ConfigLiquid>> configLiquidsByZoneShortName = new Dictionary<string, List<ConfigLiquid>>();
+            string liquidsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneLiquids.csv");
+            Logger.WriteDebug("Populating Liquids file '" + liquidsFile + "'");
+            List<Dictionary<string, string>> liquidRows = FileTool.ReadAllRowsFromFileWithHeader(liquidsFile, "|");
+            foreach (Dictionary<string, string> liquidRow in liquidRows)
+            {
+                ConfigLiquid newLiquid = new ConfigLiquid();
+                newLiquid.ZoneShortName = liquidRow["ZoneShortName"];
+                newLiquid.ShapeType = liquidRow["ShapeType"].ToLower().Trim();
+                newLiquid.LiquidType = liquidRow["LiquidType"].ToLower().Trim();
+                newLiquid.SlantType = liquidRow["SlantType"].ToLower().Trim();
+                newLiquid.MaterialName = liquidRow["MaterialName"].Trim();
+                newLiquid.NorthX = Convert.ToSingle(liquidRow["NorthX"]);
+                newLiquid.SouthX = Convert.ToSingle(liquidRow["SouthX"]);
+                newLiquid.WestY = Convert.ToSingle(liquidRow["WestY"]);
+                newLiquid.EastY = Convert.ToSingle(liquidRow["EastY"]);
+                newLiquid.TopOrOnlyZ = Convert.ToSingle(liquidRow["TopOrOnlyZ"]);
+                newLiquid.BottomZ = Convert.ToSingle(liquidRow["BottomZ"]);
+                newLiquid.MinDepthOrHeight = Convert.ToSingle(liquidRow["MinDepthOrHeight"]);
+                newLiquid.StepSize = Convert.ToSingle(liquidRow["StepSize"]);
+                newLiquid.NorthY = Convert.ToSingle(liquidRow["NorthY"]);
+                newLiquid.SouthY = Convert.ToSingle(liquidRow["SouthY"]);
+                newLiquid.WestX = Convert.ToSingle(liquidRow["WestX"]);
+                newLiquid.EastX = Convert.ToSingle(liquidRow["EastX"]);
+                newLiquid.NorthXLimit = Convert.ToSingle(liquidRow["NorthXLimit"]);
+                newLiquid.SouthXLimit = Convert.ToSingle(liquidRow["SouthXLimit"]);
+                newLiquid.WestYLimit = Convert.ToSingle(liquidRow["WestYLimit"]);
+                newLiquid.EastYLimit = Convert.ToSingle(liquidRow["EastYLimit"]);
+                newLiquid.NorthWestY = Convert.ToSingle(liquidRow["NorthWestY"]);
+                newLiquid.NorthEastY = Convert.ToSingle(liquidRow["NorthEastY"]);
+                newLiquid.SouthWestY = Convert.ToSingle(liquidRow["SouthWestY"]);
+                newLiquid.SouthEastY = Convert.ToSingle(liquidRow["SouthEastY"]);
+                newLiquid.EastNorthX = Convert.ToSingle(liquidRow["EastNorthX"]);
+                newLiquid.EastSouthX = Convert.ToSingle(liquidRow["EastSouthX"]);
+                newLiquid.WestNorthX = Convert.ToSingle(liquidRow["WestNorthX"]);
+                newLiquid.WestSouthX = Convert.ToSingle(liquidRow["WestSouthX"]);
+                newLiquid.CylinderCenterX = Convert.ToSingle(liquidRow["CylinderCenterX"]);
+                newLiquid.CylinderCenterY = Convert.ToSingle(liquidRow["CylinderCenterY"]);
+                newLiquid.CylinderRadius = Convert.ToSingle(liquidRow["CylinderRadius"]);
+                newLiquid.ForcedAlignedAreaName = liquidRow["ForcedAlignedAreaName"];
+
+                if (configLiquidsByZoneShortName.ContainsKey(newLiquid.ZoneShortName) == false)
+                    configLiquidsByZoneShortName.Add(newLiquid.ZoneShortName, new List<ConfigLiquid>());
+                configLiquidsByZoneShortName[newLiquid.ZoneShortName].Add(newLiquid);
+            }
+
+            // Load the zone properties file
+            string zonePropertiesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneProperties.csv");
+            Logger.WriteDebug("Populating Zone Properties list via file '" + zonePropertiesFile + "'");
+            List<Dictionary<string, string>> zonePropertiesRows = FileTool.ReadAllRowsFromFileWithHeader(zonePropertiesFile, "|");
+
+            // Load any found zones
+            foreach (Dictionary<string, string> propertiesRow in zonePropertiesRows)
+            {
+                ZoneProperties zoneProperties = new ZoneProperties();
+
+                // Only include intended zones
+                string shortName = propertiesRow["ShortName"];
                 zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);
-
-                // If this is an explict add, respond accordingly
                 if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count != 0)
                 {
                     bool foundShortname = false;
@@ -847,14 +972,13 @@ namespace EQWOWConverter.Zones
                     if (foundShortname == false)
                     {
                         Logger.WriteDebug(string.Concat("Skipping zone with shortname '", shortName, "' since the Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES was populated but did not include this shortname"));
-                        return;
+                        continue;
                     }
                 }
-
                 else if (Configuration.GENERATE_EQ_EXPANSION_ID_ZONES < zoneProperties.ExpansionID)
                 {
                     Logger.WriteDebug(string.Concat("Skipping zone with shortname '", shortName, "' since the expansionID is > the configured expansion ID"));
-                    return;
+                    continue;
                 }
 
                 zoneProperties.ShortName = shortName;
@@ -873,12 +997,12 @@ namespace EQWOWConverter.Zones
                 foreach (string alwaysBrightMaterialName in propertiesRow["AlwaysBrightMaterials"].Split(","))
                     zoneProperties.AlwaysBrightMaterialsByName.Add(alwaysBrightMaterialName.Trim());
                 zoneProperties.ZoneLineBoxes.AddRange(ZonePropertiesZoneLineBox.GetZoneLineBoxesForSourceZone(shortName));
-                if (ConfigDiscardGeometryBoxesByZoneShortName.ContainsKey(zoneProperties.ShortName) == true)
+                if (configDiscardGeometryBoxesByZoneShortName.ContainsKey(zoneProperties.ShortName) == true)
                 {
-                    foreach (ConfigDiscardedGeometryBox discardedGeometryBox in ConfigDiscardGeometryBoxesByZoneShortName[zoneProperties.ShortName])
+                    foreach (ConfigDiscardedGeometryBox discardedGeometryBox in configDiscardGeometryBoxesByZoneShortName[zoneProperties.ShortName])
                     {
                         BoundingBox preScaleBox = new BoundingBox(discardedGeometryBox.SECornerX, discardedGeometryBox.SECornerY,
-                            discardedGeometryBox.SECornerZ, discardedGeometryBox.NWCornerX, discardedGeometryBox.NWCornerY, 
+                            discardedGeometryBox.SECornerZ, discardedGeometryBox.NWCornerX, discardedGeometryBox.NWCornerY,
                             discardedGeometryBox.NWCornerZ);
                         BoundingBox postScaleBox = new BoundingBox();
                         postScaleBox.TopCorner.X = preScaleBox.BottomCorner.X * -Configuration.GENERATE_WORLD_SCALE;
@@ -958,14 +1082,14 @@ namespace EQWOWConverter.Zones
                     else
                         zoneProperties.ZonewideEnvironmentProperties.SetAsIndoors(fogRed, fogGreen, fogBlue, fogType, insideAmbientRed, insideAmbientGreen, insideAmbientBlue);
                 }
-                
+
                 // Areas
                 zoneProperties.DefaultZoneArea.DisplayName = propertiesRow["DescriptiveName"];
                 zoneProperties.DefaultZoneArea.DBCAreaTableID = Convert.ToUInt32(propertiesRow["DefaultAreaAreaTableDBCID"]);
                 zoneProperties.DefaultZoneArea.DoShowBreath = propertiesRow["ShowBreath"].Trim() == "1" ? true : false;
-                if (ConfigSubAreasByZoneShortName.ContainsKey(shortName) == true)
+                if (configSubAreasByZoneShortName.ContainsKey(shortName) == true)
                 {
-                    foreach (ConfigZoneSubArea subArea in ConfigSubAreasByZoneShortName[shortName])
+                    foreach (ConfigZoneSubArea subArea in configSubAreasByZoneShortName[shortName])
                     {
                         if (subArea.ParentSubAreaName.Trim().Length > 0)
                         {
@@ -981,9 +1105,9 @@ namespace EQWOWConverter.Zones
                         }
                     }
                 }
-                if (ConfigSubAreaBoxesByZoneShortName.ContainsKey(shortName) == true)
+                if (configSubAreaBoxesByZoneShortName.ContainsKey(shortName) == true)
                 {
-                    foreach (ConfigZoneSubAreaBox areaBox in ConfigSubAreaBoxesByZoneShortName[shortName])
+                    foreach (ConfigZoneSubAreaBox areaBox in configSubAreaBoxesByZoneShortName[shortName])
                     {
                         switch (areaBox.ShapeType)
                         {
@@ -996,7 +1120,7 @@ namespace EQWOWConverter.Zones
                                 {
                                     zoneProperties.AddZoneAreaOctagonBox(areaBox.AreaName, areaBox.NorthX, areaBox.SouthX, areaBox.WestY, areaBox.EastY,
                                         areaBox.OctagonNorthWestY, areaBox.OctagonNorthEastY, areaBox.OctagonSouthWestY, areaBox.OctagonSouthEastY,
-                                        areaBox.OctagonWestNorthX, areaBox.OctagonWestSouthX, areaBox.OctagonEastNorthX, areaBox.OctagonEastSouthX, 
+                                        areaBox.OctagonWestNorthX, areaBox.OctagonWestSouthX, areaBox.OctagonEastNorthX, areaBox.OctagonEastSouthX,
                                         areaBox.TopZ, areaBox.BottomZ);
                                 } break;
                             default:
@@ -1008,9 +1132,9 @@ namespace EQWOWConverter.Zones
                 }
 
                 // Liquids
-                if (ConfigLiquidsByZoneShortName.ContainsKey(shortName) == true)
+                if (configLiquidsByZoneShortName.ContainsKey(shortName) == true)
                 {
-                    foreach (ConfigLiquid liquid in ConfigLiquidsByZoneShortName[shortName])
+                    foreach (ConfigLiquid liquid in configLiquidsByZoneShortName[shortName])
                     {
                         // Convert the enums
                         ZoneLiquidType liquidType = ZoneLiquidType.None;
@@ -1096,423 +1220,8 @@ namespace EQWOWConverter.Zones
 
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
-            else
-                Logger.WriteError("Could not find the properties for short name '" + shortName + "' which should be in the ZoneProperties.csv file");
-        }
-
-        private static void PopulateDisplayMapLinkList()
-        {
-            string mapLinkListFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneDisplayMapLinks.csv");
-            Logger.WriteDebug("Populating Zone Display Map Links via file '" + mapLinkListFile + "'");
-            List<Dictionary<string, string>> mapLinkFileRows = FileTool.ReadAllRowsFromFileWithHeader(mapLinkListFile, "|");
-            foreach (Dictionary<string, string> mapLinkFileColumns in mapLinkFileRows)
-            {
-                // Skip any for zones that aren't loaded
-                string ownerZoneShortName = mapLinkFileColumns["OwnerZoneShortName"];
-                if (ZonePropertyListByShortName.ContainsKey(ownerZoneShortName) == false)
-                    continue;
-
-                string linkedZoneShortName = mapLinkFileColumns["LinkedZoneShortName"];
-                float west = Convert.ToSingle(mapLinkFileColumns["West"]);
-                float north = Convert.ToSingle(mapLinkFileColumns["North"]);
-                float east = Convert.ToSingle(mapLinkFileColumns["East"]);
-                float south = Convert.ToSingle(mapLinkFileColumns["South"]);
-
-                ZonePropertiesDisplayMapLinkBox newMapLink = new ZonePropertiesDisplayMapLinkBox(linkedZoneShortName, west, north, east, south);
-                ZonePropertyListByShortName[ownerZoneShortName].DisplayMapLinkBoxes.Add(newMapLink);
-            }
-        }
-
-        private static void PopulateZonePropertiesList()
-        {
-            // Load the discarded geometry box information
-            string discardedGeometryBoxesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneDiscardedGeometryBoxes.csv");
-            Logger.WriteDebug("Populating Discarded Geometry Boxes via file '" + discardedGeometryBoxesFile + "'");
-            List<Dictionary<string, string>> discardedGeometryBoxesRows = FileTool.ReadAllRowsFromFileWithHeader(discardedGeometryBoxesFile, "|");
-            foreach (Dictionary<string, string> discardedGeometryBoxRow in discardedGeometryBoxesRows)
-            {
-                ConfigDiscardedGeometryBox newDiscardedGeometryBox = new ConfigDiscardedGeometryBox();
-                newDiscardedGeometryBox.ZoneShortName = discardedGeometryBoxRow["ZoneShortName"];
-                newDiscardedGeometryBox.TypeString = discardedGeometryBoxRow["Type"];
-                newDiscardedGeometryBox.NWCornerX = Convert.ToSingle(discardedGeometryBoxRow["NWCornerX"]);
-                newDiscardedGeometryBox.NWCornerY = Convert.ToSingle(discardedGeometryBoxRow["NWCornerY"]);
-                newDiscardedGeometryBox.NWCornerZ = Convert.ToSingle(discardedGeometryBoxRow["NWCornerZ"]);
-                newDiscardedGeometryBox.SECornerX = Convert.ToSingle(discardedGeometryBoxRow["SECornerX"]);
-                newDiscardedGeometryBox.SECornerY = Convert.ToSingle(discardedGeometryBoxRow["SECornerY"]);
-                newDiscardedGeometryBox.SECornerZ = Convert.ToSingle(discardedGeometryBoxRow["SECornerZ"]);
-                newDiscardedGeometryBox.Comment = discardedGeometryBoxRow["Comment"];
-
-                if (ConfigDiscardGeometryBoxesByZoneShortName.ContainsKey(newDiscardedGeometryBox.ZoneShortName) == false)
-                    ConfigDiscardGeometryBoxesByZoneShortName.Add(newDiscardedGeometryBox.ZoneShortName, new List<ConfigDiscardedGeometryBox>());
-                ConfigDiscardGeometryBoxesByZoneShortName[newDiscardedGeometryBox.ZoneShortName].Add(newDiscardedGeometryBox);
-            }
-
-            // Load the sub areas
-            string subAreaFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneSubAreas.csv");
-            Logger.WriteDebug("Populating Sub Areas via file '" + subAreaFile + "'");
-            List<Dictionary<string, string>> subAreaRows = FileTool.ReadAllRowsFromFileWithHeader(subAreaFile, "|");
-            foreach (Dictionary<string, string> subAreaRow in subAreaRows)
-            {
-                ConfigZoneSubArea newConfigZoneSubArea = new ConfigZoneSubArea();
-                newConfigZoneSubArea.ZoneShortName = subAreaRow["ZoneShortName"].Trim().ToLower();
-                newConfigZoneSubArea.AreaName = subAreaRow["AreaName"].Trim();
-                newConfigZoneSubArea.OrderID = int.Parse(subAreaRow["OrderID"]);
-                newConfigZoneSubArea.DBCAreaTableID = UInt32.Parse(subAreaRow["AreaTableDBCID"]);
-                newConfigZoneSubArea.ParentSubAreaName = subAreaRow["ParentSubAreaName"].Trim();
-                if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
-                {
-                    newConfigZoneSubArea.MusicFileNameNoExtDay = subAreaRow["MusicDayAlt"].Trim().ToLower();
-                    newConfigZoneSubArea.MusicFileNameNoExtNight = subAreaRow["MusicNightAlt"].Trim().ToLower();
-                }
-                else
-                {
-                    newConfigZoneSubArea.MusicFileNameNoExtDay = subAreaRow["MusicDay"].Trim().ToLower();
-                    newConfigZoneSubArea.MusicFileNameNoExtNight = subAreaRow["MusicNight"].Trim().ToLower();
-                }                
-                newConfigZoneSubArea.MusicVolume = float.Parse(subAreaRow["MusicVolume"]);
-                newConfigZoneSubArea.DoLoopMusic = subAreaRow["DoLoopMusic"].Trim() == "1" ? true : false;
-                newConfigZoneSubArea.AmbientSoundFileNameNoExtDay = subAreaRow["AmbientSoundDay"].Trim().ToLower();
-                newConfigZoneSubArea.AmbientSoundFileNameNoExtNight = subAreaRow["AmbientSoundNight"].Trim().ToLower();
-
-                if (ConfigSubAreasByZoneShortName.ContainsKey(newConfigZoneSubArea.ZoneShortName) == false)
-                    ConfigSubAreasByZoneShortName.Add(newConfigZoneSubArea.ZoneShortName, new List<ConfigZoneSubArea>());
-                ConfigSubAreasByZoneShortName[newConfigZoneSubArea.ZoneShortName].Add(newConfigZoneSubArea);
-            }
-            // Sort by OrderID for now (ascending)
-            foreach (List<ConfigZoneSubArea> subAreasInZone in ConfigSubAreasByZoneShortName.Values)
-                subAreasInZone.Sort((a, b) => a.OrderID.CompareTo(b.OrderID));
-
-            // Load the sub area boxes
-            string subAreaBoxesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneSubAreaBoxes.csv");
-            Logger.WriteDebug("Populating Sub Areas Boxes via file '" + subAreaBoxesFile + "'");
-            List<Dictionary<string, string>> subAreaBoxRows = FileTool.ReadAllRowsFromFileWithHeader(subAreaBoxesFile, "|");
-            foreach (Dictionary<string, string> subAreaBoxRow in subAreaBoxRows)
-            {
-                ConfigZoneSubAreaBox newAreaBox = new ConfigZoneSubAreaBox();
-                newAreaBox.ZoneShortName = subAreaBoxRow["ZoneShortName"].Trim().ToLower();
-                newAreaBox.AreaName = subAreaBoxRow["AreaName"].Trim();
-                newAreaBox.ShapeType = subAreaBoxRow["Shape"].Trim().ToLower();
-                newAreaBox.NorthX = float.Parse(subAreaBoxRow["NorthX"]);
-                newAreaBox.SouthX = float.Parse(subAreaBoxRow["SouthX"]);
-                newAreaBox.WestY = float.Parse(subAreaBoxRow["WestY"]);
-                newAreaBox.EastY = float.Parse(subAreaBoxRow["EastY"]);
-                newAreaBox.TopZ = float.Parse(subAreaBoxRow["TopZ"]);
-                newAreaBox.BottomZ = float.Parse(subAreaBoxRow["BottomZ"]);
-                newAreaBox.OctagonNorthWestY = float.Parse(subAreaBoxRow["OctagonNorthWestY"]);
-                newAreaBox.OctagonNorthEastY = float.Parse(subAreaBoxRow["OctagonNorthEastY"]);
-                newAreaBox.OctagonSouthWestY = float.Parse(subAreaBoxRow["OctagonSouthWestY"]);
-                newAreaBox.OctagonSouthEastY = float.Parse(subAreaBoxRow["OctagonSouthEastY"]);
-                newAreaBox.OctagonWestNorthX = float.Parse(subAreaBoxRow["OctagonWestNorthX"]);
-                newAreaBox.OctagonWestSouthX = float.Parse(subAreaBoxRow["OctagonWestSouthX"]);
-                newAreaBox.OctagonEastNorthX = float.Parse(subAreaBoxRow["OctagonEastNorthX"]);
-                newAreaBox.OctagonEastSouthX = float.Parse(subAreaBoxRow["OctagonEastSouthX"]);
-
-                if (ConfigSubAreaBoxesByZoneShortName.ContainsKey(newAreaBox.ZoneShortName) == false)
-                    ConfigSubAreaBoxesByZoneShortName.Add(newAreaBox.ZoneShortName, new List<ConfigZoneSubAreaBox>());
-                ConfigSubAreaBoxesByZoneShortName[newAreaBox.ZoneShortName].Add(newAreaBox);
-            }
-
-            // Load the liquids
-            string liquidsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneLiquids.csv");
-            Logger.WriteDebug("Populating Liquids file '" + liquidsFile + "'");
-            List<Dictionary<string, string>> liquidRows = FileTool.ReadAllRowsFromFileWithHeader(liquidsFile, "|");
-            foreach (Dictionary<string, string> liquidRow in liquidRows)
-            {
-                ConfigLiquid newLiquid = new ConfigLiquid();
-                newLiquid.ZoneShortName = liquidRow["ZoneShortName"];
-                newLiquid.ShapeType = liquidRow["ShapeType"].ToLower().Trim();
-                newLiquid.LiquidType = liquidRow["LiquidType"].ToLower().Trim();
-                newLiquid.SlantType = liquidRow["SlantType"].ToLower().Trim();
-                newLiquid.MaterialName = liquidRow["MaterialName"].Trim();
-                newLiquid.NorthX = Convert.ToSingle(liquidRow["NorthX"]);
-                newLiquid.SouthX = Convert.ToSingle(liquidRow["SouthX"]);
-                newLiquid.WestY = Convert.ToSingle(liquidRow["WestY"]);
-                newLiquid.EastY = Convert.ToSingle(liquidRow["EastY"]);
-                newLiquid.TopOrOnlyZ = Convert.ToSingle(liquidRow["TopOrOnlyZ"]);
-                newLiquid.BottomZ = Convert.ToSingle(liquidRow["BottomZ"]);
-                newLiquid.MinDepthOrHeight = Convert.ToSingle(liquidRow["MinDepthOrHeight"]);
-                newLiquid.StepSize = Convert.ToSingle(liquidRow["StepSize"]);
-                newLiquid.NorthY = Convert.ToSingle(liquidRow["NorthY"]);
-                newLiquid.SouthY = Convert.ToSingle(liquidRow["SouthY"]);
-                newLiquid.WestX = Convert.ToSingle(liquidRow["WestX"]);
-                newLiquid.EastX = Convert.ToSingle(liquidRow["EastX"]);
-                newLiquid.NorthXLimit = Convert.ToSingle(liquidRow["NorthXLimit"]);
-                newLiquid.SouthXLimit = Convert.ToSingle(liquidRow["SouthXLimit"]);
-                newLiquid.WestYLimit = Convert.ToSingle(liquidRow["WestYLimit"]);
-                newLiquid.EastYLimit = Convert.ToSingle(liquidRow["EastYLimit"]);
-                newLiquid.NorthWestY = Convert.ToSingle(liquidRow["NorthWestY"]);
-                newLiquid.NorthEastY = Convert.ToSingle(liquidRow["NorthEastY"]);
-                newLiquid.SouthWestY = Convert.ToSingle(liquidRow["SouthWestY"]);
-                newLiquid.SouthEastY = Convert.ToSingle(liquidRow["SouthEastY"]);
-                newLiquid.EastNorthX = Convert.ToSingle(liquidRow["EastNorthX"]);
-                newLiquid.EastSouthX = Convert.ToSingle(liquidRow["EastSouthX"]);
-                newLiquid.WestNorthX = Convert.ToSingle(liquidRow["WestNorthX"]);
-                newLiquid.WestSouthX = Convert.ToSingle(liquidRow["WestSouthX"]);
-                newLiquid.CylinderCenterX = Convert.ToSingle(liquidRow["CylinderCenterX"]);
-                newLiquid.CylinderCenterY = Convert.ToSingle(liquidRow["CylinderCenterY"]);
-                newLiquid.CylinderRadius = Convert.ToSingle(liquidRow["CylinderRadius"]);
-                newLiquid.ForcedAlignedAreaName = liquidRow["ForcedAlignedAreaName"];
-
-                if (ConfigLiquidsByZoneShortName.ContainsKey(newLiquid.ZoneShortName) == false)
-                    ConfigLiquidsByZoneShortName.Add(newLiquid.ZoneShortName, new List<ConfigLiquid>());
-                ConfigLiquidsByZoneShortName[newLiquid.ZoneShortName].Add(newLiquid);
-            }
-
-            // Load the zone properties file
-            string zonePropertiesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneProperties.csv");
-            Logger.WriteDebug("Populating Zone Properties list via file '" + zonePropertiesFile + "'");
-            List<Dictionary<string, string>> zonePropertiesRows = FileTool.ReadAllRowsFromFileWithHeader(zonePropertiesFile, "|");
-
-            // Remap the rows for quicker lookups
-            Dictionary<string, Dictionary<string, string>> zonePropertiesByShortName = new Dictionary<string, Dictionary<string, string>>();
-            foreach (Dictionary<string, string> propertiesRow in zonePropertiesRows)
-                zonePropertiesByShortName.Add(propertiesRow["ShortName"].Trim().ToLower(), propertiesRow);
-
-            // Add any valid properties
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "airplane", new PlaneOfSkyZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "akanon", new AkAnonZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "arena", new ArenaZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "befallen", new BefallenZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "beholder", new GorgeOfKingXorbbZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "blackburrow", new BlackburrowZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "burningwood", new BurningWoodZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "butcher", new ButcherblockMountainsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "cabeast", new CabilisEastZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "cabwest", new CabilisWestZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "cauldron", new DagnorsCauldronZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "cazicthule", new CazicThuleZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "charasis", new HowlingStonesZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "chardok", new ChardokZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "citymist", new CityOfMistZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "cobaltscar", new CobaltScarZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "commons", new WestCommonsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "crushbone", new CrushboneZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "crystal", new CrystalCavernsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "dalnir", new DalnirZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "dreadlands", new DreadlandsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "droga", new TempleOfDrogaZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "eastkarana", new EastKaranaZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "eastwastes", new EasternWastesZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "ecommons", new EastCommonsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "emeraldjungle", new EmeraldJungleZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "erudnext", new ErudinZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "erudnint", new ErudinPalaceZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "erudsxing", new ErudsCrossingZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "everfrost", new EverfrostZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "fearplane", new PlaneOfFearZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "feerrott", new FeerrottZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "felwithea", new NorthFelwitheZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "felwitheb", new SouthFelwitheZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "fieldofbone", new FieldOfBoneZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "firiona", new FirionaVieZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "freporte", new EastFreeportZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "freportn", new NorthFreeportZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "freportw", new WestFreeportZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "frontiermtns", new FrontierMountainsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "frozenshadow", new TowerOfFrozenShadowZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "gfaydark", new GreaterFaydarkZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "greatdivide", new GreatDivideZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "grobb", new GrobbZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "growthplane", new PlaneOfGrowthZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "gukbottom", new GukBottomZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "guktop", new GukTopZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "halas", new HalasZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "hateplane", new PlaneOfHateZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "highkeep", new HighKeepZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "highpass", new HighpassHoldZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "hole", new HoleZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "iceclad", new IcecladOceanZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "innothule", new InnothuleSwampZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "kael", new KaelDrakkalZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "kaesora", new KaesoraZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "kaladima", new SouthKaladimZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "kaladimb", new NorthKaladimZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "karnor", new KarnorsCastleZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "kedge", new KedgeKeepZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "kerraridge", new KerraIsleZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "kithicor", new KithicorForestZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "kurn", new KurnsTowerZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "lakeofillomen", new LakeOfIllOmenZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "lakerathe", new LakeRathetearZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "lavastorm", new LavastormMountainsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "lfaydark", new LesserFaydarkZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "load", new LoadingAreaZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "mischiefplane", new PlaneOfMischiefZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "mistmoore", new CastleMistmooreZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "misty", new MistyThicketZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "najena", new NajenaZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "necropolis", new DragonNecropolisZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "nektulos", new NektulosForestZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "neriaka", new NeriakForeignQuarterZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "neriakb", new NeriakCommonsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "neriakc", new NeriakThirdGateZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "northkarana", new NorthKaranaZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "nro", new NorthDesertOfRoZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "nurga", new MinesOfNurgaZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "oasis", new OasisOfMarrZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "oggok", new OggokZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "oot", new OceanOfTearsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "overthere", new OverthereZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "paineel", new PaineelZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "paw", new LairOfTheSplitpawZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "permafrost", new PermafrostCavernsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "qcat", new QeynosAqueductsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "qey2hh1", new WestKaranaZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "qeynos", new SouthQeynosZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "qeynos2", new NorthQeynosZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "qeytoqrg", new QeynosHillsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "qrg", new SurefallGladeZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "rathemtn", new RatheMountainsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "rivervale", new RivervaleZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "runnyeye", new RunnyeyeCitadelZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "sebilis", new OldSebilisZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "sirens", new SirensGrottoZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "skyfire", new SkyfireMountainsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "skyshrine", new SkyshrineZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "sleeper", new SleeperTombZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "soldunga", new SoluseksEyeZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "soldungb", new NagafensLairZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "soltemple", new TempleOfSolusekRoZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "southkarana", new SouthKaranaZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "swampofnohope", new SwampOfNoHopeZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "sro", new SouthDesertOfRoZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "steamfont", new SteamfontMountainsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "stonebrunt", new StonebruntMountainsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "templeveeshan", new TempleOfVeeshanZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "thurgadina", new ThurgadinZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "thurgadinb", new IcewellKeepZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "timorous", new TimorousDeepZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "tox", new ToxxuliaForestZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "trakanon", new TrakanonsTeethZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "tutorial", new TutorialZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "veeshan", new VeeshansPeakZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "velketor", new VelketorsLabyrinthZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "unrest", new EstateOfUnrestZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "wakening", new WakeningLandZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "warrens", new WarrensZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "warslikswood", new WarsliksWoodsZoneProperties());
-            AddZonePropertiesByShortName(zonePropertiesByShortName, "westwastes", new WesternWastesZoneProperties());
 
             PopulateDisplayMapLinkList();
-
-            // TEMP: This is used for the effort of migrating values from the zone properties code to config
-
-            //float CleanSmallValue(float value)
-            //{
-            //    return Math.Abs(value) <= 0.0001f ? 0f : value;
-            //}
-
-            //string zoneLiquidsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneLiquids.csv");
-            //List<Dictionary<string, string>> zoneLiquidRows = FileTool.ReadAllRowsFromFileWithHeader(zoneLiquidsFile, "|");
-            //foreach (ZoneProperties curZoneProperties in ZonePropertyListByShortName.Values)
-            //{
-            //    foreach (ConfigLiquid zoneLiquid in curZoneProperties.TempConfigLiquids)
-            //    {
-            //        Dictionary<string, string> newRow = new Dictionary<string, string>();
-            //        newRow.Add("ZoneShortName", curZoneProperties.ShortName);
-            //        newRow.Add("ShapeType", zoneLiquid.ShapeType);
-            //        newRow.Add("LiquidType", zoneLiquid.LiquidType);
-            //        newRow.Add("SlantType", zoneLiquid.SlantType);
-            //        newRow.Add("MaterialName", zoneLiquid.MaterialName);
-            //        newRow.Add("NorthX", CleanSmallValue(zoneLiquid.NorthX).ToString());
-            //        newRow.Add("SouthX", CleanSmallValue(zoneLiquid.SouthX).ToString());
-            //        newRow.Add("WestY", CleanSmallValue(zoneLiquid.WestY).ToString());
-            //        newRow.Add("EastY", CleanSmallValue(zoneLiquid.EastY).ToString());
-            //        newRow.Add("TopOrOnlyZ", CleanSmallValue(zoneLiquid.TopOrOnlyZ).ToString());
-            //        newRow.Add("BottomZ", CleanSmallValue(zoneLiquid.BottomZ).ToString());
-            //        newRow.Add("MinDepthOrHeight", CleanSmallValue(zoneLiquid.MinDepthOrHeight).ToString());
-            //        newRow.Add("StepSize", CleanSmallValue(zoneLiquid.StepSize).ToString());
-            //        newRow.Add("NorthY", CleanSmallValue(zoneLiquid.NorthY).ToString());
-            //        newRow.Add("SouthY", CleanSmallValue(zoneLiquid.SouthY).ToString());
-            //        newRow.Add("WestX", CleanSmallValue(zoneLiquid.WestX).ToString());
-            //        newRow.Add("EastX", CleanSmallValue(zoneLiquid.EastX).ToString());
-            //        newRow.Add("NorthXLimit", CleanSmallValue(zoneLiquid.NorthXLimit).ToString());
-            //        newRow.Add("SouthXLimit", CleanSmallValue(zoneLiquid.SouthXLimit).ToString());
-            //        newRow.Add("WestYLimit", CleanSmallValue(zoneLiquid.WestYLimit).ToString());
-            //        newRow.Add("EastYLimit", CleanSmallValue(zoneLiquid.EastYLimit).ToString());
-            //        newRow.Add("NorthWestY", CleanSmallValue(zoneLiquid.NorthWestY).ToString());
-            //        newRow.Add("NorthEastY", CleanSmallValue(zoneLiquid.NorthEastY).ToString());
-            //        newRow.Add("SouthWestY", CleanSmallValue(zoneLiquid.SouthWestY).ToString());
-            //        newRow.Add("SouthEastY", CleanSmallValue(zoneLiquid.SouthEastY).ToString());
-            //        newRow.Add("EastNorthX", CleanSmallValue(zoneLiquid.EastNorthX).ToString());
-            //        newRow.Add("EastSouthX", CleanSmallValue(zoneLiquid.EastSouthX).ToString());
-            //        newRow.Add("WestNorthX", CleanSmallValue(zoneLiquid.WestNorthX).ToString());
-            //        newRow.Add("WestSouthX", CleanSmallValue(zoneLiquid.WestSouthX).ToString());
-            //        newRow.Add("CylinderCenterX", CleanSmallValue(zoneLiquid.CylinderCenterX).ToString());
-            //        newRow.Add("CylinderCenterY", CleanSmallValue(zoneLiquid.CylinderCenterY).ToString());
-            //        newRow.Add("CylinderRadius", CleanSmallValue(zoneLiquid.CylinderRadius).ToString());
-            //        newRow.Add("ForcedAlignedAreaName", zoneLiquid.ForcedAlignedAreaName);
-            //        zoneLiquidRows.Add(newRow);
-            //    }
-            //}
-            //FileTool.WriteAllRowsToFileWithHeader(zoneLiquidsFile, "|", zoneLiquidRows);
-            //int x = 5;
-
-
-
-            //foreach (Dictionary<string, string> propertiesRow in zonePropertiesRows)
-            //{
-            //    ZoneProperties curZoneProperties = ZonePropertyListByShortName[propertiesRow["ShortName"]];
-
-            //    //propertiesRow["IsOutdoors"] = curZoneProperties.TempIsOutdoors == true ? "1" : "0";
-            //    //propertiesRow["IsSkyVisible"] = curZoneProperties.TempIsSkyVisible == true ? "1" : "0";
-            //    //propertiesRow["FogType"] = curZoneProperties.TempFogType.ToString().ToLower();
-            //    //propertiesRow["FogRed"] = curZoneProperties.TempFogRed.ToString();
-            //    //propertiesRow["FogGreen"] = curZoneProperties.TempFogGreen.ToString();
-            //    //propertiesRow["FogBlue"] = curZoneProperties.TempFogBlue.ToString();
-            //    //propertiesRow["InsideAmbientRed"] = curZoneProperties.TempInsideAmbientRed.ToString();
-            //    //propertiesRow["InsideAmbientGreen"] = curZoneProperties.TempInsideAmbientGreen.ToString();
-            //    //propertiesRow["InsideAmbientBlue"] = curZoneProperties.TempInsideAmbientBlue.ToString();
-            //    //propertiesRow["CloudDensity"] = curZoneProperties.TempCloudDensity.ToString();
-
-
-
-
-
-
-
-            //    //propertiesRow["Music"] = curZoneProperties.DefaultZoneArea.MusicFileNameNoExtDay;
-            //    //propertiesRow["MusicVolume"] = curZoneProperties.DefaultZoneArea.MusicVolume.ToString();
-            //    //propertiesRow["HasShadowBox"] = curZoneProperties.HasShadowBox == true ? "1" : "0";
-            //    //StringBuilder enabled2DSoundInstancesSB = new StringBuilder();
-            //    //int numOfStrings = 0;
-            //    //foreach (string enabled2DSoundInstanceName in curZoneProperties.AlwaysBrightMaterialsByName)
-            //    //{
-            //    //    enabled2DSoundInstancesSB.Append(enabled2DSoundInstanceName);
-            //    //    numOfStrings++;
-            //    //    if (numOfStrings < curZoneProperties.AlwaysBrightMaterialsByName.Count)
-            //    //        enabled2DSoundInstancesSB.Append(",");
-            //    //}
-            //    //propertiesRow["AlwaysBrightMaterials"] = enabled2DSoundInstancesSB.ToString();
-            //    //string music = curZoneProperties.DefaultZoneArea.MusicFileNameNoExtDay;
-            //    //float musicVolume = curZoneProperties.DefaultZoneArea.MusicVolume;
-            //    //int y = 5;
-            //}
-            //FileTool.WriteAllRowsToFileWithHeader(zonePropertiesFile, "|", zonePropertiesRows);
-
-            // TODO: DELETE
-            //string zoneDiscardBoxes = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneDiscardedGeometryBoxes.csv");
-            //List<Dictionary<string, string>> zoneDiscardedGeometryBoxes = FileTool.ReadAllRowsFromFileWithHeader(zoneDiscardBoxes, "|");
-            //foreach (ZoneProperties curZoneProperties in ZonePropertyListByShortName.Values)
-            //{
-            //    foreach (DiscardBox discardBox in curZoneProperties.discardBoxes)
-            //    {
-            //        Dictionary<string, string> newRow = new Dictionary<string, string>();
-            //        newRow.Add("ZoneShortName", curZoneProperties.ShortName);
-            //        newRow.Add("Type", discardBox.typeString);
-            //        newRow.Add("NWCornerX", CleanSmallValue(discardBox.nwCornerX).ToString());
-            //        newRow.Add("NWCornerY", CleanSmallValue(discardBox.nwCornerY).ToString());
-            //        newRow.Add("NWCornerZ", CleanSmallValue(discardBox.nwCornerZ).ToString());
-            //        newRow.Add("SECornerX", CleanSmallValue(discardBox.seCornerX).ToString());
-            //        newRow.Add("SECornerY", CleanSmallValue(discardBox.seCornerY).ToString());
-            //        newRow.Add("SECornerZ", CleanSmallValue(discardBox.seCornerZ).ToString());
-            //        newRow.Add("Comment", discardBox.comment.Trim());
-            //        zoneDiscardedGeometryBoxes.Add(newRow);
-            //    }
-            //}
-            //FileTool.WriteAllRowsToFileWithHeader(zoneDiscardBoxes, "|", zoneDiscardedGeometryBoxes);
-            //int z = 0;
-            // END TEMP
-        }
+         }
     }
 }
