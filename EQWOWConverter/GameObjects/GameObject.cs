@@ -422,7 +422,7 @@ namespace EQWOWConverter.GameObjects
                                     {
                                         case GameObjectOpenType.TYPE0:
                                         case GameObjectOpenType.TYPE1:
-                                        case GameObjectOpenType.TYPE2:                                        
+                                        case GameObjectOpenType.TYPE2:
                                             {
                                                 ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
                                                 curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
@@ -436,6 +436,7 @@ namespace EQWOWConverter.GameObjects
                                                 curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
+                                        case GameObjectOpenType.TYPE10:
                                         case GameObjectOpenType.TYPE12:
                                         case GameObjectOpenType.TYPE15:
                                         case GameObjectOpenType.TYPE17:
@@ -454,25 +455,24 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE70:
                                         case GameObjectOpenType.TYPE71:
                                         case GameObjectOpenType.TYPE72:
+                                        case GameObjectOpenType.TYPE74:
                                         case GameObjectOpenType.TYPE75:
                                         case GameObjectOpenType.TYPE76:
+                                        case GameObjectOpenType.TYPE77:
                                             {
                                                 ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateSlideUp, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
                                                 curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE16:
+                                        case GameObjectOpenType.TYPE35: // TODO: Only in sleeper (SLTDOOR200)
                                             {
                                                 ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
                                                 curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
-                                        case GameObjectOpenType.TYPE10: // TODO: Figure this out, Thurgadin Door (probably slide).  Velious.
                                         case GameObjectOpenType.TYPE25: // TODO: Only in mischiefplane (KNBOOKC101 and BRISPORT202)
                                         case GameObjectOpenType.TYPE30: // TODO: Only in mischiefplane (POMDOOR206)
-                                        case GameObjectOpenType.TYPE35: // TODO: Only in sleeper (SLTDOOR200)
-                                        case GameObjectOpenType.TYPE74: // TODO: Only in Skyshrine (MARBDOOR200)
-                                        case GameObjectOpenType.TYPE77: // TODO: Only in sleeper (SHRINEGATE200)
                                         default:
                                             {
                                                 Logger.WriteError("Unhandled door open type of " + gameObject.OpenType);
@@ -666,7 +666,7 @@ namespace EQWOWConverter.GameObjects
                     } break;
                 case GameObjectOpenType.TYPE2: // STANDARD_STONE
                 case GameObjectOpenType.TYPE7: // STANDARD_STONE_CLOCKWISE
-                case GameObjectOpenType.TYPE74: // Marble door in Skyshrine
+                case GameObjectOpenType.TYPE74: // Marble door in Skyshrine (eqemu has it as portc_lp)
                 case GameObjectOpenType.TYPE140: // BLOCK_ON_CHAIN
                 case GameObjectOpenType.TYPE145:
                     {
