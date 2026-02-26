@@ -465,7 +465,7 @@ namespace EQWOWConverter.GameObjects
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE16:
-                                        case GameObjectOpenType.TYPE35: // TODO: Only in sleeper (SLTDOOR200)
+                                        case GameObjectOpenType.TYPE35:
                                             {
                                                 ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
                                                 curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
