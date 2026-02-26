@@ -556,7 +556,7 @@ namespace EQWOWConverter
                     staticObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
                 string curZoneSkeletalObjectNameMapFileName = Path.Combine(curZoneFolder, "gameobject_skeletal_map.txt");
                 Dictionary<string, string> skeletalObjectNameMap = new Dictionary<string, string>();
-                foreach (string row in FileTool.ReadAllStringLinesFromFile(curZoneStaticObjectNameMapFileName, false, true))
+                foreach (string row in FileTool.ReadAllStringLinesFromFile(curZoneSkeletalObjectNameMapFileName, false, true))
                     skeletalObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
                 foreach(GameObject curObject in interactiveGameObjectsInZone.Value)
                 {
@@ -569,7 +569,7 @@ namespace EQWOWConverter
                     {
                         if (skeletalObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
                         {
-                            Logger.WriteError(string.Concat("Unable to find original model name ", curObject.OriginalModelName, " in zone ", interactiveGameObjectsInZone.Key));
+                            Logger.WriteError(string.Concat("Unable to find interactive skeletal original model name ", curObject.OriginalModelName, " in zone ", interactiveGameObjectsInZone.Key));
                             continue;
                         }
                         curObject.ModelName = skeletalObjectNameMap[curObject.OriginalModelName];
@@ -578,7 +578,7 @@ namespace EQWOWConverter
                     {
                         if (staticObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
                         {
-                            Logger.WriteError(string.Concat("Unable to find original model name ", curObject.OriginalModelName, " in zone ", interactiveGameObjectsInZone.Key));
+                            Logger.WriteError(string.Concat("Unable to find interactive static original model name ", curObject.OriginalModelName, " in zone ", interactiveGameObjectsInZone.Key));
                             continue;
                         }
                         curObject.ModelName = staticObjectNameMap[curObject.OriginalModelName];
@@ -622,7 +622,7 @@ namespace EQWOWConverter
                     {
                         if (skeletalObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
                         {
-                            Logger.WriteError(string.Concat("Unable to find original model name ", curObject.OriginalModelName, " in zone ", nonInteractiveGameObjectsInZone.Key));
+                            Logger.WriteError(string.Concat("Unable to find non-interactive original skeletal model name ", curObject.OriginalModelName, " in zone ", nonInteractiveGameObjectsInZone.Key));
                             continue;
                         }
                         curObject.ModelName = skeletalObjectNameMap[curObject.OriginalModelName];
@@ -631,7 +631,7 @@ namespace EQWOWConverter
                     {
                         if (staticObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
                         {
-                            Logger.WriteError(string.Concat("Unable to find original model name ", curObject.OriginalModelName, " in zone ", nonInteractiveGameObjectsInZone.Key));
+                            Logger.WriteError(string.Concat("Unable to find non-interactive original static model name ", curObject.OriginalModelName, " in zone ", nonInteractiveGameObjectsInZone.Key));
                             continue;
                         }
                         curObject.ModelName = staticObjectNameMap[curObject.OriginalModelName];
