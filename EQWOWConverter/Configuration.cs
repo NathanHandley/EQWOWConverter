@@ -783,9 +783,6 @@ namespace EQWOWConverter
         // Specific rows in WMOAreaTable.dbc
         public static readonly int DBCID_WMOAREATABLE_ID_START = 52000;
 
-        // Identifies WMO Roots.  Found in WMOAreaTable.dbc and AreaTable.dbc
-        public static readonly UInt32 DBCID_WMOAREATABLE_WMOID_START = 7000;
-
         // Identifies WMO Groups. Found in WMOAreaTable.dbc and the .wmo files
         public static readonly UInt32 DBCID_WMOAREATABLE_WMOGROUPID_START = 30000;
 

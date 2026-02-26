@@ -20,6 +20,8 @@ namespace EQWOWConverter.Common
     {
         private static int CURRENT_SOUNDENTRY_ID = Configuration.DBCID_SOUNDENTRIES_ID_START;
         private static readonly object SoundLock = new object();
+        private static Dictionary<string, float> AmbientSoundVolumesByAudioFileNameNoExt = new Dictionary<string, float>();
+        private static Dictionary<string, string> SoundFileNameRemapsBySourceName = new Dictionary<string, string>();
 
         public int DBCID;
         public string Name = string.Empty;
@@ -35,10 +37,15 @@ namespace EQWOWConverter.Common
         {
             lock (SoundLock)
             {
+                if (AmbientSoundVolumesByAudioFileNameNoExt.Count == 0)
+                    PopulateSoundPropertiesFromFile();
+
                 DBCID = CURRENT_SOUNDENTRY_ID;
                 CURRENT_SOUNDENTRY_ID++;
                 Name = name;
                 AudioFileNameNoExt = audioFileNameNoExt;
+                if (SoundFileNameRemapsBySourceName.ContainsKey(AudioFileNameNoExt.Trim().ToLower()) == true)
+                    AudioFileNameNoExt = SoundFileNameRemapsBySourceName[AudioFileNameNoExt.Trim().ToLower()];
                 Type = type;
                 MinDistance = minDistance;
                 DistanceCutoff = distanceCutoff;
@@ -47,87 +54,34 @@ namespace EQWOWConverter.Common
             }
         }
 
+        private static void PopulateSoundPropertiesFromFile()
+        {
+            string volumeFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneSounds.csv");
+            Logger.WriteDebug("Populating ambient sound volumes via file '" + volumeFile + "'");
+            List<Dictionary<string, string>> volumeRows = FileTool.ReadAllRowsFromFileWithHeader(volumeFile, "|");
+            foreach (Dictionary<string, string> volumeRow in volumeRows)
+            {
+                string fileName = volumeRow["SoundFileNameNoExt"].ToLower().Trim();
+                float volume = Convert.ToSingle(volumeRow["AmbientVolume"]);
+                AmbientSoundVolumesByAudioFileNameNoExt.Add(fileName, volume);
+                string remapFileName = volumeRow["FileNameRemap"].ToLower().Trim();
+                if (remapFileName.Length > 0)
+                    SoundFileNameRemapsBySourceName.Add(fileName, remapFileName);
+            }
+        }
+
         public float GetVolume()
         {
             float volume = Volume;
             if (Type == SoundType.GameObject || Type == SoundType.ZoneAmbience)
             {
-                switch (AudioFileNameNoExt.ToLower().Trim())
-                {
-                    case "bigbell": volume = 0.2f; break;
-                    case "darkwds1": volume = 0.2f; break;
-                    case "darkwds2": volume = 0.2f; break;
-                    case "cauldron": volume = 0.15f; break;
-                    case "caveloop": volume = 0.2f; break;
-                    case "clock": volume = 0.2f; break;
-                    case "dbrdg_lp": volume = 0.3f; break;
-                    case "dbrdgstp": volume = 0.3f; break;
-                    case "dockbell": volume = 0.2f; break;
-                    case "doormt_c": volume = 0.2f; break;
-                    case "doormt_o": volume = 0.2f; break;
-                    case "doorst_c": volume = 0.2f; break;
-                    case "doorst_o": volume = 0.2f; break;                    
-                    case "doorwd_c": volume = 0.2f; break;
-                    case "doorwd_o": volume = 0.2f; break;
-                    case "elevloop": volume = 0.25f; break;
-                    case "fire_lp": volume = 0.15f; break;
-                    case "flagloop": volume = 0.2f; break;
-                    case "fordbrd2": volume = 0.2f; break;
-                    case "lakelap1": volume = 0.2f; break;
-                    case "lakelap3": volume = 0.2f; break;
-                    case "lakelap4": volume = 0.2f; break;
-                    case "lava_lp": volume = 0.25f; break;
-                    case "lava2_lp": volume = 0.25f; break;
-                    case "lever": volume = 0.25f; break;
-                    case "night": volume = 0.2f; break;
-                    case "ocean": volume = 0.2f; break;
-                    case "oceabrd1": volume = 0.2f; break;
-                    case "oceanlap": volume = 0.2f; break;
-                    case "oceanwav": volume = 0.2f; break;
-                    case "portc_lp": volume = 0.2f; break;
-                    case "plancrk1": volume = 0.2f; break;
-                    case "portcstp": volume = 0.2f; break;
-                    case "rumblelp": volume = 0.2f; break;
-                    case "silence": volume = 0f; break;
-                    case "slmefall": volume = 0.2f; break;
-                    case "slmeloop": volume = 0.2f; break;
-                    case "slmestrm": volume = 0.15f; break;
-                    case "sldorstc": volume = 0.2f; break;
-                    case "sldorsto": volume = 0.2f; break;
-                    case "space": volume = 0.25f; break;
-                    case "speardn": volume = 0.25f; break;
-                    case "spearup": volume = 0.25f; break;
-                    case "spelltrav": volume = 0.2f; break;
-                    case "spinnrlp": volume = 0.36f; break;
-                    case "steamlp": volume = 0.18f; break;
-                    case "streamlg": volume = 0.2f; break;
-                    case "streammd": volume = 0.15f; break;
-                    case "streamsm": volume = 0.2f; break;
-                    case "swabird1": volume = 0.2f; break;
-                    case "swafrg1": volume = 0.2f; break;
-                    case "swmp1": volume = 0.2f; break;
-                    case "swmp2": volume = 0.2f; break;
-                    case "swmp3": volume = 0.2f; break;
-                    case "thunder1": volume = 0.2f; break;
-                    case "thunder2": volume = 0.2f; break;
-                    case "torch3d": volume = 0.15f; break;
-                    case "torch_lp": volume = 0.2f; break;
-                    case "trapdoor": volume = 0.2f; break;
-                    case "waterlp": volume = 0.2f; break;
-                    case "wfall_lg": volume = 0.2f; break;
-                    case "wfall_md": volume = 0.2f; break;
-                    case "wind_lp1": volume = 0.2f; break;
-                    case "wind_lp2": volume = 0.2f; break;
-                    case "wind_lp3": volume = 0.2f; break;
-                    case "wind_lp4": volume = 0.2f; break;
-                    case "wind_wh1": volume = 0.2f; break;
-                    case "wtr_pool": volume = 0.2f; break;
-                    default:
-                        {
-                            Logger.WriteInfo("No static defined volume for sound with file name '" + AudioFileNameNoExt + "'");
-                        }
-                        break;
-                }
+                // Volume
+                if (AmbientSoundVolumesByAudioFileNameNoExt.ContainsKey(AudioFileNameNoExt.ToLower().Trim()) == true)
+                    volume = AmbientSoundVolumesByAudioFileNameNoExt[AudioFileNameNoExt.ToLower().Trim()];
+                else
+                    Logger.WriteInfo("No static defined volume for sound with file name '" + AudioFileNameNoExt + "'");
+                    
+                // Mods
                 if (Type == SoundType.GameObject)
                     return volume * Configuration.AUDIO_SOUNDINSTANCE_VOLUME_MOD;
                 else
@@ -148,6 +102,6 @@ namespace EQWOWConverter.Common
 
             Logger.WriteError("Type of SoundType is not handled, so volume will be 1");
             return volume;
-        }
+        }            
     }
 }
