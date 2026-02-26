@@ -33,6 +33,7 @@ namespace EQWOWConverter.Zones
             public bool DoLoopMusic = true;
             public string AmbientSoundFileNameNoExtDay = string.Empty;
             public string AmbientSoundFileNameNoExtNight = string.Empty;
+            public List<ConfigZoneSubArea> ChildrenSubAreas = new List<ConfigZoneSubArea>();
         }
 
         class ConfigZoneSubAreaBox
@@ -849,9 +850,28 @@ namespace EQWOWConverter.Zones
                     configSubAreasByZoneShortName.Add(newConfigZoneSubArea.ZoneShortName, new List<ConfigZoneSubArea>());
                 configSubAreasByZoneShortName[newConfigZoneSubArea.ZoneShortName].Add(newConfigZoneSubArea);
             }
-            // Sort by OrderID for now (ascending)
             foreach (List<ConfigZoneSubArea> subAreasInZone in configSubAreasByZoneShortName.Values)
+            {
+                // Move any children to the parent areas
+                for (int i = subAreasInZone.Count-1; i >= 0; i--)
+                {
+                    if (subAreasInZone[i].ParentSubAreaName.Length > 0)
+                    {
+                        for (int j = 0; j < subAreasInZone.Count; j++)
+                        {
+                            if (subAreasInZone[j].AreaName == subAreasInZone[i].ParentSubAreaName)
+                            {
+                                subAreasInZone[j].ChildrenSubAreas.Add(subAreasInZone[i]);
+                                subAreasInZone.RemoveAt(i);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Sort by OrderID
                 subAreasInZone.Sort((a, b) => a.OrderID.CompareTo(b.OrderID));
+            }
 
             // Load the sub area boxes
             Dictionary<string, List<ConfigZoneSubAreaBox>> configSubAreaBoxesByZoneShortName = new Dictionary<string, List<ConfigZoneSubAreaBox>>();
@@ -1078,18 +1098,16 @@ namespace EQWOWConverter.Zones
                 {
                     foreach (ConfigZoneSubArea subArea in configSubAreasByZoneShortName[shortName])
                     {
-                        if (subArea.ParentSubAreaName.Trim().Length > 0)
+                        // Children always before the parent so the geoemetry allots properly
+                        foreach (ConfigZoneSubArea childSubArea in subArea.ChildrenSubAreas)
                         {
-                            zoneProperties.AddChildZoneArea(subArea.AreaName, subArea.DBCAreaTableID, subArea.ParentSubAreaName, subArea.MusicFileNameNoExtDay,
-                                subArea.MusicFileNameNoExtNight, subArea.DoLoopMusic, subArea.AmbientSoundFileNameNoExtDay, subArea.AmbientSoundFileNameNoExtNight,
-                                subArea.MusicVolume);
+                            zoneProperties.AddChildZoneArea(childSubArea.AreaName, childSubArea.DBCAreaTableID, childSubArea.ParentSubAreaName, childSubArea.MusicFileNameNoExtDay,
+                                childSubArea.MusicFileNameNoExtNight, childSubArea.DoLoopMusic, childSubArea.AmbientSoundFileNameNoExtDay, childSubArea.AmbientSoundFileNameNoExtNight,
+                                childSubArea.MusicVolume);
                         }
-                        else
-                        {
-                            zoneProperties.AddZoneArea(subArea.AreaName, subArea.DBCAreaTableID, subArea.MusicFileNameNoExtDay,
-                                subArea.MusicFileNameNoExtNight, subArea.DoLoopMusic, subArea.AmbientSoundFileNameNoExtDay, subArea.AmbientSoundFileNameNoExtNight,
-                                subArea.MusicVolume);
-                        }
+                        zoneProperties.AddZoneArea(subArea.AreaName, subArea.DBCAreaTableID, subArea.MusicFileNameNoExtDay,
+                            subArea.MusicFileNameNoExtNight, subArea.DoLoopMusic, subArea.AmbientSoundFileNameNoExtDay, subArea.AmbientSoundFileNameNoExtNight,
+                            subArea.MusicVolume);
                     }
                 }
                 if (configSubAreaBoxesByZoneShortName.ContainsKey(shortName) == true)
