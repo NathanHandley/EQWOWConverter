@@ -65,6 +65,11 @@ namespace EQWOWConverter.EQFiles
                     newSoundInstance.Position.Z = float.Parse(blocks[2]);
                     newSoundInstance.Radius = int.Parse(blocks[3]);
                     newSoundInstance.SoundFileNameDayNoExt = blocks[4];
+                    if (newSoundInstance.SoundFileNameDayNoExt == "Unknown")
+                    {
+                        Logger.WriteWarning("Found 'Unknown' sound in '", fileFullPath, "', skipping row");
+                        continue;
+                    }
                     newSoundInstance.SoundFileNameNightNoExt = blocks[4];
                     newSoundInstance.CooldownInMSDay = int.Parse(blocks[5]);
                     newSoundInstance.CooldownInMSNight = int.Parse(blocks[5]);
