@@ -23,6 +23,7 @@ namespace EQWOWConverter.Common
         OnActivateSlideUp,
         OnActivateRotateAroundZClockwiseHalf,
         OnActivateRotateAroundZCounterclockwiseQuarter,
+        OnActivateRotateAroundZCounterclockwiseFull,
         OnActivateRotateAroundZClockwiseQuarter,
         OnActivateRotateUpOpen,
         OnActivateRotateDownClosedBackwards,

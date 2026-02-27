@@ -468,6 +468,13 @@ namespace EQWOWConverter.GameObjects
                                                 curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
+                                        case GameObjectOpenType.TYPE156: // TODO: Sleeper, SLFF200
+                                            {
+                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateAroundZCounterclockwiseFull, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_SLEEPER_FIELD_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
+                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                                curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
+                                            }
+                                            break;
                                         case GameObjectOpenType.TYPE25: // TODO: Only in mischiefplane (KNBOOKC101 and BRISPORT202)
                                         case GameObjectOpenType.TYPE30: // TODO: Only in mischiefplane (POMDOOR206)
                                         default:

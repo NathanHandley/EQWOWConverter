@@ -696,7 +696,6 @@ namespace EQWOWConverter
                             curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                             curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, nonInteractiveGameObject.ModelName);
                         } break;
-                    case GameObjectOpenType.TYPE156: // TODO: Sleeper, SLFF200
                     default:
                         {
                             Logger.WriteError("Error loading non interactive game object named " + modelFileName + " due to unhandled OpenType " + nonInteractiveGameObject.OpenType);

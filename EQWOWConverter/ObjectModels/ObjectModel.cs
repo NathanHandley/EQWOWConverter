@@ -660,6 +660,15 @@ namespace EQWOWConverter.ObjectModels
                         ModelBones[0].RotationTrack.AddValueToSequence(0, 0, new QuaternionShort());
                         ModelBones[0].RotationTrack.AddValueToSequence(0, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new QuaternionShort(0, 0, -0.7071f, 0.7071f));
                     } break;
+                case ActiveDoodadAnimType.OnActivateRotateAroundZCounterclockwiseFull:
+                    {
+                        ModelBones[0].RotationTrack.AddValueToSequence(0, 0, new QuaternionShort());
+                        ModelBones[0].RotationTrack.AddValueToSequence(0, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS * 0.25), new QuaternionShort(0, 0, 0.7071f, 0.7071f));
+                        ModelBones[0].RotationTrack.AddValueToSequence(0, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS * 0.5), new QuaternionShort(0, 0, 1f, 0));
+                        ModelBones[0].RotationTrack.AddValueToSequence(0, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS * 0.75), new QuaternionShort(0, 0, 0.7071f, -0.7071f));
+                        ModelBones[0].RotationTrack.AddValueToSequence(0, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new QuaternionShort(0, 0, 0, -1f));
+                    }
+                    break;
                 case ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseQuarter:
                     {
                         ModelBones[0].RotationTrack.AddValueToSequence(0, 0, new QuaternionShort());
@@ -722,6 +731,10 @@ namespace EQWOWConverter.ObjectModels
                 case ActiveDoodadAnimType.OnActivateRotateAroundZCounterclockwiseQuarter:
                     {
                         ModelBones[0].RotationTrack.AddValueToSequence(1, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new QuaternionShort(0, 0, -0.7071f, 0.7071f));
+                    } break;
+                case ActiveDoodadAnimType.OnActivateRotateAroundZCounterclockwiseFull:
+                    {
+                        ModelBones[0].RotationTrack.AddValueToSequence(1, 0, new QuaternionShort());
                     } break;
                 case ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseQuarter:
                     {
@@ -787,6 +800,10 @@ namespace EQWOWConverter.ObjectModels
                     {
                         ModelBones[0].RotationTrack.AddValueToSequence(2, 0, new QuaternionShort(0, 0, -0.7071f, 0.7071f));
                         ModelBones[0].RotationTrack.AddValueToSequence(2, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new QuaternionShort());
+                    } break;
+                case ActiveDoodadAnimType.OnActivateRotateAroundZCounterclockwiseFull:
+                    {
+                        ModelBones[0].RotationTrack.AddValueToSequence(2, 0, new QuaternionShort());
                     } break;
                 case ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseQuarter:
                     {
