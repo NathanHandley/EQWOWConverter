@@ -420,7 +420,13 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE0:
                                         case GameObjectOpenType.TYPE1:
                                         case GameObjectOpenType.TYPE2:
+                                        case GameObjectOpenType.TYPE25: // TODO: Only in mischiefplane (KNBOOKC101 and BRISPORT202) - This is not the proper animation
+                                        case GameObjectOpenType.TYPE30: // TODO: Only in mischiefplane (POMDOOR206) - This is not the proper animation
                                             {
+                                                if (gameObject.OpenType == GameObjectOpenType.TYPE25 || gameObject.OpenType == GameObjectOpenType.TYPE30)
+                                                {
+                                                    Logger.WriteWarning("Proper implementation of door opentype ", gameObject.OpenType.ToString(), " not yet implemented.  Using standard");
+                                                }
                                                 ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
                                                 curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
@@ -475,8 +481,6 @@ namespace EQWOWConverter.GameObjects
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             }
                                             break;
-                                        case GameObjectOpenType.TYPE25: // TODO: Only in mischiefplane (KNBOOKC101 and BRISPORT202)
-                                        case GameObjectOpenType.TYPE30: // TODO: Only in mischiefplane (POMDOOR206)
                                         default:
                                             {
                                                 Logger.WriteError("Unhandled door open type of " + gameObject.OpenType);
