@@ -558,7 +558,7 @@ namespace EQWOWConverter
                 Dictionary<string, string> skeletalObjectNameMap = new Dictionary<string, string>();
                 foreach (string row in FileTool.ReadAllStringLinesFromFile(curZoneSkeletalObjectNameMapFileName, false, true))
                     skeletalObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
-                foreach(GameObject curObject in interactiveGameObjectsInZone.Value)
+                foreach (GameObject curObject in interactiveGameObjectsInZone.Value)
                 {
                     if (curObject.ModelIsInEquipmentFolder == true || curObject.ObjectType == GameObjects.GameObjectType.Mailbox)
                     {
@@ -585,13 +585,15 @@ namespace EQWOWConverter
                     }
 
                     // Process any rotation data by first making a rotation vector, and then converting to the appropriate quarterion
-                    // Note that EQ uses 0-512, so normalize that first
-                    float rotationDegrees = ((curObject.EQHeading / 512) * -360f); // Reverse for orientation handiness difference
-                    float tiltInDegrees = (curObject.EQIncline / 512) * 360;
+                    // Note that EQ uses 0-512, so normalize that first
+                    float rotationDegrees = ((curObject.EQHeading / 512f) * -360f); // Reverse for orientation handiness difference
+                    float tiltInDegrees = -(curObject.EQIncline / 512f) * 360f;
+                    if (tiltInDegrees >= 1f || tiltInDegrees <= -1f)
+                        tiltInDegrees -= 180f;
                     Vector3 rotationVector = new Vector3(0, rotationDegrees, tiltInDegrees);
-                    float rotateYaw = Convert.ToSingle(Math.PI / 180) * rotationVector.Z;
-                    float rotatePitch = Convert.ToSingle(Math.PI / 180) * (rotationVector.X + 180f); // Seems like a 180 flip is needed.  Revisit if issues.
-                    float rotateRoll = Convert.ToSingle(Math.PI / 180) * rotationVector.Y; 
+                    float rotateYaw = Convert.ToSingle(Math.PI / 180f) * rotationVector.Z;
+                    float rotatePitch = Convert.ToSingle(Math.PI / 180f) * (rotationVector.X + 180f); // Seems like a 180 flip is needed. Revisit if issues.
+                    float rotateRoll = Convert.ToSingle(Math.PI / 180f) * rotationVector.Y;
                     System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotateYaw, rotatePitch, rotateRoll);
                     curObject.InteractiveRotation.X = rotationQ.X;
                     curObject.InteractiveRotation.Y = rotationQ.Y;
