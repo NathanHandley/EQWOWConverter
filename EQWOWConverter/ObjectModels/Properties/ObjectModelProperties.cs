@@ -49,6 +49,7 @@ namespace EQWOWConverter.ObjectModels.Properties
         public string CustomMaterialListLine = string.Empty;
         public List<string> TransportNonCollideMaterialNames = new List<string>();
         public bool ApplyCollisionIfTransparent = false;
+        public int MaterialTransparencyPercentOverride = -1;
 
         public ObjectModelProperties() { }
         public ObjectModelProperties(ObjectModelProperties other)
@@ -154,6 +155,7 @@ namespace EQWOWConverter.ObjectModels.Properties
                             newObjectModelProperties.TransportNonCollideMaterialNames.Add(material.Trim());
                     }
                     newObjectModelProperties.ApplyCollisionIfTransparent = columns["ApplyCollisionIfTransparent"] == "1" ? true : false;
+                    newObjectModelProperties.MaterialTransparencyPercentOverride = Convert.ToInt32(columns["MaterialTransparencyPercentOverride"]);
                     ObjectPropertiesByByName.Add(newObjectModelProperties.Name, newObjectModelProperties);
                 }
             }

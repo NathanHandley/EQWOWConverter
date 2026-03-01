@@ -171,16 +171,22 @@ namespace EQWOWConverter.Common
             return correctedCoordinates;
         }
 
-        public short GetTransparencyValue()
+        public short GetTransparencyValue(int overrideTransparencyPercent)
         {
             // Calculated by 32767 / (percent)
+            short transparencyValue = Int16.MaxValue;
             switch (MaterialType)
             {
-                case MaterialType.Transparent25Percent: return 8192;
-                case MaterialType.Transparent50Percent: return 16384;
-                case MaterialType.Transparent75Percent: return 24575;
+                case MaterialType.Transparent25Percent: transparencyValue = 8192; break;
+                case MaterialType.Transparent50Percent: transparencyValue = 16384; break;
+                case MaterialType.Transparent75Percent: transparencyValue = 24575; break;
                 default: return Int16.MaxValue;
             }
+
+            if (overrideTransparencyPercent > -1)
+                return (Int16)((double)Int16.MaxValue * ((double)(100 - overrideTransparencyPercent) / 100));
+
+            return transparencyValue;
         }
     }
 }

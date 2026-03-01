@@ -1685,7 +1685,7 @@ namespace EQWOWConverter.ObjectModels
                     // Make a 'blank' animation for this material/texture, since it's static
                     ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)] = new ObjectModelTrackSequences<Fixed16>();
                     ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)].AddSequence();
-                    ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)].AddValueToSequence(0, 0, new Fixed16(material.GetTransparencyValue()));
+                    ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)].AddValueToSequence(0, 0, new Fixed16(material.GetTransparencyValue(Properties.MaterialTransparencyPercentOverride)));
                     ModelTextureTransparencyLookups.Add(Convert.ToUInt16(ModelTextureTransparencyLookups.Count));
                 }
             }
@@ -2312,7 +2312,7 @@ namespace EQWOWConverter.ObjectModels
                 }
 
                 // Add this shown (non-transparent) frame
-                newAnimation.AddValueToSequence(0, curAnimationTimestamp, new Fixed16(curMaterial.GetTransparencyValue()));
+                newAnimation.AddValueToSequence(0, curAnimationTimestamp, new Fixed16(curMaterial.GetTransparencyValue(Properties.MaterialTransparencyPercentOverride)));
 
                 // Add this animation and the texture lookup, which should match current count
                 ModelTextureTransparencySequenceSetByMaterialIndex[curMaterialIndex] = newAnimation;
