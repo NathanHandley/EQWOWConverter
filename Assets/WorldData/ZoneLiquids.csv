@@ -1634,3 +1634,8 @@ warslikswood|slantedplane|water|westhigheastlow|tau_stwt01|-1319.8328|-1383.9978
 warslikswood|slantedplane|water|westhigheastlow|tau_stwt01|-1316.5709|-1397.8075|3942.2449|3906.7063|535.8751|535.8675|250|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 warslikswood|slantedplane|water|westhigheastlow|tau_stwt01|-1324.0206|-1680.1965|4181.326|3942.2104|535.87164|535.87164|250|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 westwastes|levelplane|water||d_w1|7253.02002|-6906.446289|6972.58252|-4983.635742|-329.062683|0|114|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
+frozenshadow|levelplane|blood||t75_b1|1036.903931|1020.829346|490.74707|447.114746|64.968773|0|20|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Bloody pool in northwest room
+frozenshadow|levelplane|water||t75_w1|343.117493|154.632736|-374.885132|-562.779175|-0.99995|0|40|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southeast lower water rim
+frozenshadow|levelplane|water||t75_w1|804.17981|722.766296|-293.51001|-353.254211|-1.99997|0|40|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Two pools at a tele-in
+frozenshadow|levelplane|blood||t75_b1|485.904175|453.886993|-138.252792|-169.659073|215.906281|0|20|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||2nd from top room blood pool
+frozenshadow|levelplane|water||t75_w1|1318.009521|1261.287598|-349.61441|-440.515625|43.968868|0|50|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Northeast most room, cresent shaped pool
