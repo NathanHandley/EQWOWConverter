@@ -2198,7 +2198,7 @@ namespace EQWOWConverter.ObjectModels
                         Logger.WriteDebug("Attempted to build collision data for object '" + Name + "', but could not find material with ID '" + face.MaterialIndex + "'");
                         continue;
                     }
-                    if (curMaterial.HasTransparency() == true)
+                    if (curMaterial.HasTransparency() == true && Properties.ApplyCollisionIfTransparent == false)
                         continue;
                     if (foundMaterials.ContainsKey(curMaterial.Index) == true)
                         continue;
