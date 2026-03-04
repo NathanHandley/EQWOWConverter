@@ -1656,12 +1656,12 @@ sirens|volume|water|||-146.673523|-265.457855|225.373138|132.01416|-33.950291|-1
 sirens|volume|water|||-246.368027|-428.355347|227.405212|52.776531|-83.829697|-178.069107|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Channel from large vert stack pool, bottom south section
 sirens|levelplane|water||t50_m0007|-449.896332|-712.928223|288.408813|134.15892|-131.9375|0|130|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest pool in column, and some channel south of it
 sirens|levelplane|water||t50_m0007|-283.54895|-562.796021|136.770126|-87.26207|-97.968727|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Mid west bridge room, south part of pool
-sirens|levelplane|water||t50_m0007|-193.336807|77.680252|58.453018|-63.42725|-97.968727|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Mid west bridge room, north part of pool
+sirens|levelplane|water||t50_m0007|-193.336807|-291.138611|58.453018|-63.42725|-97.968727|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Mid west bridge room, north part of pool
 sirens|levelplane|water||t50_m0007|-578.490479|-832.874573|259.609497|-86.945389|-157.9375|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest lower channels and westmost pool surface
-sirens|levelplane|water||t50_m0007|-699.526733|-932.697388|-5.98386|-228.818497|-157.9375|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest lower channels and south-southwest pool
-sirens|levelplane|water||t50_m0007|-831.075989|-924.288452|-205.363815|-801.032166|-157.9375|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||South lower channels and two pools (south and east)
-sirens|volume|water|||-605.127686|-693.148743|-110.615334|-211.976974|-159.909912|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest lower channel connector to south larger room
-sirens|volume|water|||-656.664917|-1038.213989|-673.633911|-781.133057|-262.993317|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southeast channel corner
+sirens|levelplane|water||t50_m0007|-699.526733|-932.697388|-5.98386|-228.818497|-159.937271|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest lower channels and south-southwest pool
+sirens|levelplane|water||t50_m0007|-831.075989|-924.288452|-205.363815|-801.032166|-159.937271|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||South lower channels and two pools (south and east)
+sirens|volume|water|||-605.127686|-693.148743|-110.615334|-211.976974|-159.909912|-262.993317|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest lower channel connector to south larger room
+sirens|volume|water|||-656.664917|-1038.213989|-673.633911|-781.133057|-159.909912|-262.993317|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southeast channel corner
 sirens|levelplane|water||t50_m0007|-609.399536|-665.56012|-713.570374|-771.102783|-201.906097|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower east pool under the flat platforms
 sirens|volume|water|||-353.451233|-614.583374|-676.480408|-797.981628|-138.949661|-235.970581|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower east area, NE corner channel
 sirens|levelplane|water||t50_m0007|-355.318909|-470.624146|-568.85437|-725.913513|-156.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower east area, NE most pool
