@@ -899,6 +899,45 @@ sebilis|levelplane|water||t75_greenagua1|-252.25008|-581.20935|292.36813|-57.572
 sebilis|levelplane|water||t75_greenagua1|-165.97864|-409.9558|275.32147|-146.30562|-89.96874|0|58|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 sebilis|octagon|water||t75_greenagua1|-307.83923|-321.94992|-127.78751|-141.97043|-81.74319|0|500|0.2|0|0|0|0|0|0|0|0|-131.87672|-137.9832|-131.87672|-137.9832|-311.7231|-318.01154|-311.7231|-318.01154|0|0|0||
 sebilis|octagon|water||t75_greenagua1|-181.80072|-196.02888|268.02063|253.80402|-81.74319|0|500|0.2|0|0|0|0|0|0|0|0|264.03986|257.7712|264.03986|257.7712|-185.87013|-192.0723|-185.87013|-192.0723|0|0|0||
+sirens|levelplane|water||t50_m0007|-124.431267|-177.805267|198.321213|136.943893|61.968761|0|300|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Highest water pool column
+sirens|volume|water|||-146.673523|-265.457855|225.373138|132.01416|-33.950291|-143.208923|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Channel from large vert stack pool, first step south and down
+sirens|volume|water|||-246.368027|-428.355347|227.405212|52.776531|-83.829697|-178.069107|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Channel from large vert stack pool, bottom south section
+sirens|levelplane|water||t50_m0007|-449.896332|-712.928223|288.408813|134.15892|-131.9375|0|130|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest pool in column, and some channel south of it
+sirens|levelplane|water||t50_m0007|-283.54895|-562.796021|136.770126|-87.26207|-97.968727|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Mid west bridge room, south part of pool
+sirens|levelplane|water||t50_m0007|-193.336807|-291.138611|58.453018|-63.42725|-97.968727|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Mid west bridge room, north part of pool
+sirens|levelplane|water||t50_m0007|-578.490479|-832.874573|259.609497|-86.945389|-157.9375|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest lower channels and westmost pool surface
+sirens|levelplane|water||t50_m0007|-699.526733|-932.697388|-5.98386|-228.818497|-159.937271|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest lower channels and south-southwest pool
+sirens|levelplane|water||t50_m0007|-831.075989|-924.288452|-205.363815|-801.032166|-159.937271|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||South lower channels and two pools (south and east)
+sirens|volume|water|||-605.127686|-693.148743|-110.615334|-211.976974|-159.909912|-262.993317|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest lower channel connector to south larger room
+sirens|volume|water|||-656.664917|-1038.213989|-673.633911|-781.133057|-159.909912|-262.993317|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southeast channel corner
+sirens|levelplane|water||t50_m0007|-609.399536|-665.56012|-713.570374|-771.102783|-201.906097|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower east pool under the flat platforms
+sirens|volume|water|||-353.451233|-614.583374|-676.480408|-797.981628|-138.949661|-235.970581|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower east area, NE corner channel
+sirens|levelplane|water||t50_m0007|-355.318909|-470.624146|-568.85437|-725.913513|-156.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower east area, NE most pool
+sirens|levelplane|water||t50_m0007|-409.777832|-675.714417|-86.959244|-432.807251|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Middle area with 3 bridges - West & North
+sirens|levelplane|water||t50_m0007|-506.020386|-767.009033|-182.172913|-550.326355|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Middle area with 3 bridges - East & South and the west side of the room to the east
+sirens|levelplane|water||t50_m0007|-662.783752|-788.639893|-544.497803|-663.085144|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||East room near stair room, southeast part
+sirens|levelplane|water||t50_m0007|-484.501068|-612.718323|-546.780334|-663.062256|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||East room near stair room, northeast part
+sirens|levelplane|water||t50_m0007|-612.718323|-662.783752|-550.326355|-618.925903|-155.935547|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||East room inner small pool
+sirens|volume|water|||-44.821651|-508.449005|-18.171101|-498.236725|-139.0375|-249.015244|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower channel into the north larger room
+sirens|levelplane|water||t50_m0007|32.523022|-55.469349|64.788399|-174.581146|-138.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, large cresent pool
+sirens|volume|water|||61.636742|-4.77461|-19.207399|-80.29882|-138.9375|-179.923203|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, connect large crescent pool to waterfall pool
+sirens|volume|water|||175.304855|94.541878|-29.839821|-126.270439|-139.937485|-205.370544|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, connect waterfall pool to the more northeast pool
+sirens|levelplane|water||t50_m0007|215.868484|175.304855|-96.337196|-131.026581|-142.9375|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room area, northeast side pool that connects
+sirens|levelplane|water||t50_m0007|287.331055|244.329163|-16.93124|-84.680977|-139.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower northmost little room
+sirens|levelplane|water||t50_m0007|164.451141|71.915092|-157.550262|-190.264313|-140.9375|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room area two east small pools
+sirens|levelplane|water||t50_m0007|97.665329|-33.362621|139.102478|-74.148163|-2|0|30.1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Top of the north water pillar that is enclosed in glass
+sirens|octagon|water||t50_m0007|82.95118|71.000481|-44.99942|-61.931271|-2|0|153|0.2|0|0|0|0|0|0|0|0|-47.775318|-59.015659|-47.775318|-59.015659|80.36528|74.38485|80.36528|74.38485|0|0|0||Pillar in the upper to lower pool
+sirens|levelplane|water||t50_m0007|99.159073|82.95118|-26.10017|-86.309128|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (North)
+sirens|levelplane|water||t50_m0007|71.000481|49.294659|-26.10017|-86.309128|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (South)
+sirens|levelplane|water||t50_m0007|99.159073|49.294659|-26.10017|-44.99942|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (West)
+sirens|levelplane|water||t50_m0007|99.159073|49.294659|-61.931271|-86.309128|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (East)
+sirens|trianglepointsouth|water||t50_m0007|82.95118|80.36528|0|0|-132.937485|0|150|0.2|0|-44.99942|0|0|0|0|0|0|-44.99942|-47.975318|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (Northwest corner)
+sirens|trianglepointsouth|water||t50_m0007|82.95118|80.36528|0|0|-132.937485|0|150|0.2|0|-61.931271|0|0|0|0|0|0|-58.815659|-61.931271|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (Northeast corner)
+sirens|trianglepointnorth|water||t50_m0007|74.38485|71.000481|0|0|-132.937485|0|150|0.2|-44.99942|0|0|0|0|0|0|0|0|0|-44.99942|-47.975318|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (Southwest corner)
+sirens|trianglepointnorth|water||t50_m0007|74.38485|71.000481|0|0|-132.937485|0|150|0.2|-61.931271|0|0|0|0|0|0|0|0|0|-58.815659|-61.931271|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (Southeast corner)
+sirens|levelplane|water||t50_m0007|-32.414131|-210.679077|137.045837|-151.43454|-2|0|70|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Top pool up against the large waterfall
+sirens|trianglepointsouth|water||t50_m0007|-210.679077|-217.344788|0|0|-2|0|35|0.2|0|26.45566|0|0|0|0|0|0|41.49324|-8.013|0|0|0|0|0|0|0|0|0||Top pool up against the large waterfall - West tip going over waterfall
+sirens|trianglepointsouth|water||t50_m0007|-210.679077|-220.941544|0|0|-2|0|35|0.2|0|-49.190331|0|0|0|0|0|0|-27.008169|-70|0|0|0|0|0|0|0|0|0||Top pool up against the large waterfall - East tip going over waterfall
 skyfire|levelplane|magma||d_lava001|3761.5579|3268.7803|3470.7334|3050.661|208.1252|0|300|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 skyfire|levelplane|magma||d_lava001|3614.6047|3084.9478|3515.0872|3062.8838|208.1252|0|300|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 skyfire|levelplane|magma||d_lava001|1390.4008|-1002.3347|1879.0989|-450.88947|-249.40617|0|500|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
@@ -1034,6 +1073,10 @@ skyfire|levelplane|magma||d_lava001|-526.1424|-3549.5261|463.9536|-1719.309|-199
 skyfire|slantedplane|magma|southhighnorthlow|d_lava001|-3544.244|-3557.2048|-1644.6057|-1686.3662|-196.61247|-199.44061|250|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 skyfire|slantedplane|magma|southhighnorthlow|d_lava001|-3557.1702|-3566.608|-1649.5386|-1691.912|-192.92882|-196.61592|250|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 skyfire|slantedplane|magma|southhighnorthlow|d_lava001|-3566.5735|-3593.2468|-1652.06|-1694.8204|-192.13216|-192.93227|250|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
+sleeper|levelplane|water||d_foam1|-1255.822632|-1400.647095|-7.80493|-152.3815|102.000069|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Water around statue in the middle-top
+sleeper|levelplane|water||d_foam1|-2136.084717|-2631.898438|872.087097|376.002167|-705.999817|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||At the bottom of the trap door pit
+sleeper|levelplane|water||d_foam1|-2224.090332|-2543.761475|-368.198334|-783.781067|-993.999817|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Room before the Sleeper
+sleeper|levelplane|water||d_foam1|-1664.089966|-3103.854492|-786.102783|-2193.398682|-1060|0|200|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||In the Sleeper's room
 soldunga|levelplane|magma||d_lava001|-959.7035|-1042.3479|-446.71677|-549.78186|-17.99999|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 soldunga|levelplane|magma||d_lava001|-982.68744|-1021.0776|-546.7024|-573.82623|10.00004|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 soldunga|levelplane|magma||d_lava001|-881.593|-1002.4079|-522.54846|-596.95886|10.00004|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
@@ -1647,43 +1690,3 @@ warslikswood|slantedplane|water|westhigheastlow|tau_stwt01|-1319.8328|-1383.9978
 warslikswood|slantedplane|water|westhigheastlow|tau_stwt01|-1316.5709|-1397.8075|3942.2449|3906.7063|535.8751|535.8675|250|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 warslikswood|slantedplane|water|westhigheastlow|tau_stwt01|-1324.0206|-1680.1965|4181.326|3942.2104|535.87164|535.87164|250|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 westwastes|levelplane|water||d_w1|7253.02002|-6906.446289|6972.58252|-4983.635742|-329.062683|0|114|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
-sleeper|levelplane|water||d_foam1|-1255.822632|-1400.647095|-7.80493|-152.3815|102.000069|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Water around statue in the middle-top
-sleeper|levelplane|water||d_foam1|-2136.084717|-2631.898438|872.087097|376.002167|-705.999817|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||At the bottom of the trap door pit
-sleeper|levelplane|water||d_foam1|-2224.090332|-2543.761475|-368.198334|-783.781067|-993.999817|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Room before the Sleeper
-sleeper|levelplane|water||d_foam1|-1664.089966|-3103.854492|-786.102783|-2193.398682|-1060|0|200|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||In the Sleeper's room
-sirens|levelplane|water||t50_m0007|-124.431267|-177.805267|198.321213|136.943893|61.968761|0|300|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Highest water pool column
-sirens|volume|water|||-146.673523|-265.457855|225.373138|132.01416|-33.950291|-143.208923|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Channel from large vert stack pool, first step south and down
-sirens|volume|water|||-246.368027|-428.355347|227.405212|52.776531|-83.829697|-178.069107|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Channel from large vert stack pool, bottom south section
-sirens|levelplane|water||t50_m0007|-449.896332|-712.928223|288.408813|134.15892|-131.9375|0|130|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest pool in column, and some channel south of it
-sirens|levelplane|water||t50_m0007|-283.54895|-562.796021|136.770126|-87.26207|-97.968727|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Mid west bridge room, south part of pool
-sirens|levelplane|water||t50_m0007|-193.336807|-291.138611|58.453018|-63.42725|-97.968727|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Mid west bridge room, north part of pool
-sirens|levelplane|water||t50_m0007|-578.490479|-832.874573|259.609497|-86.945389|-157.9375|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest lower channels and westmost pool surface
-sirens|levelplane|water||t50_m0007|-699.526733|-932.697388|-5.98386|-228.818497|-159.937271|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest lower channels and south-southwest pool
-sirens|levelplane|water||t50_m0007|-831.075989|-924.288452|-205.363815|-801.032166|-159.937271|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||South lower channels and two pools (south and east)
-sirens|volume|water|||-605.127686|-693.148743|-110.615334|-211.976974|-159.909912|-262.993317|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southwest lower channel connector to south larger room
-sirens|volume|water|||-656.664917|-1038.213989|-673.633911|-781.133057|-159.909912|-262.993317|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Southeast channel corner
-sirens|levelplane|water||t50_m0007|-609.399536|-665.56012|-713.570374|-771.102783|-201.906097|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower east pool under the flat platforms
-sirens|volume|water|||-353.451233|-614.583374|-676.480408|-797.981628|-138.949661|-235.970581|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower east area, NE corner channel
-sirens|levelplane|water||t50_m0007|-355.318909|-470.624146|-568.85437|-725.913513|-156.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower east area, NE most pool
-sirens|levelplane|water||t50_m0007|-409.777832|-675.714417|-86.959244|-432.807251|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Middle area with 3 bridges - West & North
-sirens|levelplane|water||t50_m0007|-506.020386|-767.009033|-182.172913|-550.326355|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Middle area with 3 bridges - East & South and the west side of the room to the east
-sirens|levelplane|water||t50_m0007|-662.783752|-788.639893|-544.497803|-663.085144|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||East room near stair room, southeast part
-sirens|levelplane|water||t50_m0007|-484.501068|-612.718323|-546.780334|-663.062256|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||East room near stair room, northeast part
-sirens|levelplane|water||t50_m0007|-612.718323|-662.783752|-550.326355|-618.925903|-155.935547|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||East room inner small pool
-sirens|volume|water|||-44.821651|-508.449005|-18.171101|-498.236725|-139.0375|-249.015244|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower channel into the north larger room
-sirens|levelplane|water||t50_m0007|32.523022|-55.469349|64.788399|-174.581146|-138.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, large cresent pool
-sirens|volume|water|||61.636742|-4.77461|-19.207399|-80.29882|-138.9375|-179.923203|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, connect large crescent pool to waterfall pool
-sirens|volume|water|||175.304855|94.541878|-29.839821|-126.270439|-139.937485|-205.370544|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, connect waterfall pool to the more northeast pool
-sirens|levelplane|water||t50_m0007|215.868484|175.304855|-96.337196|-131.026581|-142.9375|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room area, northeast side pool that connects
-sirens|levelplane|water||t50_m0007|287.331055|244.329163|-16.93124|-84.680977|-139.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower northmost little room
-sirens|levelplane|water||t50_m0007|164.451141|71.915092|-157.550262|-190.264313|-140.9375|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room area two east small pools
-sirens|levelplane|water||t50_m0007|97.665329|-33.362621|139.102478|-74.148163|-2|0|30.1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Top of the north water pillar that is enclosed in glass
-sirens|octagon|water||t50_m0007|82.95118|71.000481|-44.99942|-61.931271|-2|0|153|0.2|0|0|0|0|0|0|0|0|-47.775318|-59.015659|-47.775318|-59.015659|80.36528|74.38485|80.36528|74.38485|0|0|0||Pillar in the upper to lower pool
-sirens|levelplane|water||t50_m0007|99.159073|82.95118|-26.10017|-86.309128|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (North)
-sirens|levelplane|water||t50_m0007|71.000481|49.294659|-26.10017|-86.309128|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (South)
-sirens|levelplane|water||t50_m0007|99.159073|49.294659|-26.10017|-44.99942|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (West)
-sirens|levelplane|water||t50_m0007|99.159073|49.294659|-61.931271|-86.309128|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (East)
-sirens|trianglepointsouth|water|nw|t50_m0007|82.95118|80.36528|0|0|-132.937485|0|150|0.2|0|-44.99942|0|0|0|0|0|0|-44.99942|-47.775318|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (Northwest corner)
-sirens|trianglepointsouth|water|ne|t50_m0007|82.95118|80.36528|0|0|-132.937485|0|150|0.2|0|-61.931271|0|0|0|0|0|0|-59.015659|-61.931271|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (Northeast corner)
-sirens|trianglepointnorth|water|sw|t50_m0007|74.38485|71.000481|0|0|-132.937485|0|150|0.2|-44.99942|0|0|0|0|0|0|0|0|0|-44.99942|-47.775318|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (Southwest corner)
-sirens|trianglepointnorth|water|se|t50_m0007|74.38485|71.000481|0|0|-132.937485|0|150|0.2|-61.931271|0|0|0|0|0|0|0|0|0|-59.015659|-61.931271|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (Southeast corner)
