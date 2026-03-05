@@ -1672,7 +1672,6 @@ sirens|levelplane|water||t50_m0007|-484.501068|-612.718323|-546.780334|-663.0622
 sirens|levelplane|water||t50_m0007|-612.718323|-662.783752|-550.326355|-618.925903|-155.935547|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||East room inner small pool
 sirens|volume|water|||-44.821651|-508.449005|-18.171101|-498.236725|-139.0375|-249.015244|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower channel into the north larger room
 sirens|levelplane|water||t50_m0007|32.523022|-55.469349|64.788399|-174.581146|-138.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, large cresent pool
-sirens|levelplane|water||t50_m0007|99.159073|49.294659|-26.10017|-86.309128|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into
 sirens|volume|water|||61.636742|-4.77461|-19.207399|-80.29882|-138.9375|-179.923203|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, connect large crescent pool to waterfall pool
 sirens|volume|water|||175.304855|94.541878|-29.839821|-126.270439|-139.937485|-205.370544|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, connect waterfall pool to the more northeast pool
 sirens|levelplane|water||t50_m0007|215.868484|175.304855|-96.337196|-131.026581|-142.9375|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room area, northeast side pool that connects
@@ -1680,3 +1679,11 @@ sirens|levelplane|water||t50_m0007|287.331055|244.329163|-16.93124|-84.680977|-1
 sirens|levelplane|water||t50_m0007|164.451141|71.915092|-157.550262|-190.264313|-140.9375|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room area two east small pools
 sirens|levelplane|water||t50_m0007|97.665329|-33.362621|139.102478|-74.148163|-2|0|30.1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Top of the north water pillar that is enclosed in glass
 sirens|octagon|water||t50_m0007|82.95118|71.000481|-44.99942|-61.931271|-2|0|153|0.2|0|0|0|0|0|0|0|0|-47.775318|-59.015659|-47.775318|-59.015659|80.36528|74.38485|80.36528|74.38485|0|0|0||Pillar in the upper to lower pool
+sirens|levelplane|water||t50_m0007|99.159073|82.95118|-26.10017|-86.309128|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (North)
+sirens|levelplane|water||t50_m0007|71.000481|49.294659|-26.10017|-86.309128|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (South)
+sirens|levelplane|water||t50_m0007|99.159073|49.294659|-26.10017|-44.99942|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (West)
+sirens|levelplane|water||t50_m0007|99.159073|49.294659|-61.931271|-86.309128|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (East)
+sirens|trianglepointsouth|water|nw|t50_m0007|82.95118|80.36528|0|0|-132.937485|0|150|0.2|0|-44.99942|0|0|0|0|0|0|-44.99942|-47.775318|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (Northwest corner)
+sirens|trianglepointsouth|water|ne|t50_m0007|82.95118|80.36528|0|0|-132.937485|0|150|0.2|0|-61.931271|0|0|0|0|0|0|-59.015659|-61.931271|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (Northeast corner)
+sirens|trianglepointnorth|water|sw|t50_m0007|74.38485|71.000481|0|0|-132.937485|0|150|0.2|-44.99942|0|0|0|0|0|0|0|0|0|-44.99942|-47.775318|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (Southwest corner)
+sirens|trianglepointnorth|water|se|t50_m0007|74.38485|71.000481|0|0|-132.937485|0|150|0.2|-61.931271|0|0|0|0|0|0|0|0|0|-59.015659|-61.931271|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into (Southeast corner)
