@@ -1670,3 +1670,9 @@ sirens|levelplane|water||t50_m0007|-506.020386|-767.009033|-182.172913|-550.3263
 sirens|levelplane|water||t50_m0007|-662.783752|-788.639893|-544.497803|-663.085144|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||East room near stair room, southeast part
 sirens|levelplane|water||t50_m0007|-484.501068|-612.718323|-546.780334|-663.062256|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||East room near stair room, northeast part
 sirens|levelplane|water||t50_m0007|-612.718323|-662.783752|-550.326355|-618.925903|-155.935547|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||East room inner small pool
+sirens|volume|water||t50_m0007|-44.821651|-508.449005|-18.171101|-498.236725|-139.0375|-249.015244|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower channel into the north larger room
+sirens|levelplane|water||t50_m0007|32.523022|-55.469349|64.788399|-174.581146|-138.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, large cresent pool
+sirens|levelplane|water||t50_m0007|99.159073|49.294659|-26.10017|-86.309128|-132.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, pool the waterfall cylinder falls into
+sirens|volume|water|||61.636742|-4.77461|-19.207399|-80.29882|-138.9375|-179.923203|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, connect large crescent pool to waterfall pool
+sirens|volume|water|||175.304855|94.541878|-29.839821|-126.270439|-139.937485|-205.370544|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room, connect waterfall pool to the more northeast pool
+sirens|levelplane|water||t50_m0007|215.868484|175.304855|-96.337196|-131.026581|-142.9375|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower north room area, northeast side pool that connects
