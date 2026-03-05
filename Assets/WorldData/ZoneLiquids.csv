@@ -1665,3 +1665,8 @@ sirens|volume|water|||-656.664917|-1038.213989|-673.633911|-781.133057|-159.9099
 sirens|levelplane|water||t50_m0007|-609.399536|-665.56012|-713.570374|-771.102783|-201.906097|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower east pool under the flat platforms
 sirens|volume|water|||-353.451233|-614.583374|-676.480408|-797.981628|-138.949661|-235.970581|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower east area, NE corner channel
 sirens|levelplane|water||t50_m0007|-355.318909|-470.624146|-568.85437|-725.913513|-156.937485|0|150|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower east area, NE most pool
+sirens|levelplane|water||t50_m0007|-409.777832|-675.714417|-86.959244|-432.807251|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Middle area with 3 bridges - West & North
+sirens|levelplane|water||t50_m0007|-506.020386|-767.009033|-182.172913|-550.326355|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Middle area with 3 bridges - East & South and the west side of the room to the east
+sirens|levelplane|water||t50_m0007|-662.783752|-788.639893|-544.497803|-663.085144|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||East room near stair room, southeast part
+sirens|levelplane|water||t50_m0007|-484.501068|-612.718323|-546.780334|-663.062256|-97.968727|0|350|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||East room near stair room, northeast part
+sirens|levelplane|water||t50_m0007|-612.718323|-662.783752|-550.326355|-618.925903|-155.935547|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||East room inner small pool
