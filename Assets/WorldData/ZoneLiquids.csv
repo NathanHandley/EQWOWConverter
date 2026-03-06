@@ -688,6 +688,16 @@ lakeofillomen|levelplane|water||d_stwt01|1647.4702|1612.4185|-3925.618|-3997.034
 lakeofillomen|slantedplane|water|westhigheastlow|d_stwt01|1705.3202|1670.0271|-3814.8252|-3833.7732|214.6694|222.3059|250|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 lakerathe|levelplane|water||d_w1|3984.728|-1043.5431|2968.631|-1923.547|-44.15572|0|400|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 lavastorm|levelplane|magma||d_lava001|1329.5205|-1583.6549|1471.6552|-1024.3691|-11.90597|0|300|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
+mischiefplane|levelplane|water||t75_wsurface1|-49.175381|-624.713135|384.205627|-1214.641602|89.968758|0|80|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Big water area out front
+mischiefplane|levelplane|water||t75_wsurface1|472.802612|412.851349|-896.89679|-962.164856|109.968742|0|16|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Pool in the black and white room
+mischiefplane|volume|water|||263.160797|211.332047|-36.010342|-148.931915|211.199402|164.029709|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Water connecting the two sideways rooms
+mischiefplane|levelplane|magma||d_lava001|362.551575|322.318634|-362.403473|-422.599396|69.969818|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower Lava - Bottom pool surface
+mischiefplane|levelplane|magma||d_lava001|261.550659|243.42804|-308.171661|-326.325226|114.968742|0|200|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower Lava - Top west pool surface
+mischiefplane|levelplane|magma||d_lava001|261.550659|243.42804|-458.529907|-476.632599|114.968742|0|200|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower Lava - Top east pool surface
+mischiefplane|volume|magma|||282.474823|239.786667|-430.883728|-477.371826|85.129478|0|200|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower Lava - Under tunnel area, upper east block
+mischiefplane|volume|magma|||282.474823|239.786667|-307.951263|-328.243591|85.129478|0|200|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower Lava - Under tunnel area, upper west block pt 1 (south)
+mischiefplane|volume|magma|||282.474823|261.993469|-307.951263|-355.944244|85.129478|0|200|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower Lava - Under tunnel area, upper west block pt 2 (north)
+mischiefplane|volume|magma|||362.294952|253.707687|-330.597656|-453.359467|65.374313|27.76741|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower Lava - Under tunnel area, bottom area
 mistmoore|levelplane|water||t50_w1|-207.92271|-409.5485|518.25256|418.5131|-237.91614|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 mistmoore|levelplane|water||t50_w1|2.43953|-14.31968|95.29094|84.48824|-194.93748|0|5|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 mistmoore|levelplane|water||t50_w1|0.89984|-12.82369|96.85715|83.04908|-194.93748|0|5|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
@@ -1418,6 +1428,8 @@ swampofnohope|slantedplane|water|southhighnorthlow|d_spwt01|1666.205|1623.1422|-
 swampofnohope|slantedplane|water|southhighnorthlow|d_spwt01|1623.1766|1569.536|-4444.3955|-4584.3564|167.96101|140.4741|250|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 swampofnohope|slantedplane|water|southhighnorthlow|d_spwt01|1569.5706|1547.7656|-4469.008|-4589.85|175.1467|167.95758|250|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 swampofnohope|slantedplane|water|southhighnorthlow|d_spwt01|1547.8002|960.92474|-3939.1023|-4745.595|175.3081|175.14323|250|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
+templeveeshan|levelplane|magma||t50_m0002|943.058777|-308.391754|-18.777519|-1581.670776|-599.75|0|100|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Boiling water at the bottom of the big pit (bridge area)
+templeveeshan|octagon|water||t50_m0003|1831.691162|1766.266602|-1226.470215|-1292.137817|159.937607|0|20|0.2|0|0|0|0|0|0|0|0|-1237.576904|-1281.157349|-1237.576904|-1281.157349|1820.245972|1777.820435|1820.245972|1777.820435|0|0|0||Pool in north plus room
 thurgadina|levelplane|water||t75_w1|-455.727844|-507.950134|137.098434|-158.191925|-2|0|20|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Central bridge river
 thurgadina|levelplane|water||t75_w1|128.402191|91.635208|-130.663071|-222.102753|-41.96875|0|50|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Lower cave pool
 thurgadinb|levelplane|water||t50_m0003|644.823303|565.178589|36.711571|-29.032101|-106.968712|0|60|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||Castle well
