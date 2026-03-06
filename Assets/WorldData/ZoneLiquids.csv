@@ -1690,3 +1690,13 @@ warslikswood|slantedplane|water|westhigheastlow|tau_stwt01|-1319.8328|-1383.9978
 warslikswood|slantedplane|water|westhigheastlow|tau_stwt01|-1316.5709|-1397.8075|3942.2449|3906.7063|535.8751|535.8675|250|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 warslikswood|slantedplane|water|westhigheastlow|tau_stwt01|-1324.0206|-1680.1965|4181.326|3942.2104|535.87164|535.87164|250|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
 westwastes|levelplane|water||d_w1|7253.02002|-6906.446289|6972.58252|-4983.635742|-329.062683|0|114|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0||
+skyshrine|levelplane|water||t75_vewater1|2856.477783|2454.313477|2250.334473|1698.025879|-189.937241|0|50||||||||||||||||||||||Water in Lord Yelinak's room
+skyshrine|levelplane|water||t75_vewater1|1643.164307|1312.578857|1764.156372|1434.018066|-59.96854|0|200||||||||||||||||||||||Ice bridge room in the northwest section
+skyshrine|levelplane|water||t75_vewater1|622.289246|544.969238|679.416382|310.06427|35|0|200||||||||||||||||||||||South center lower room with square water (North)
+skyshrine|levelplane|water||t75_vewater1|344.699768|267.280304|679.416382|310.06427|35|0|200||||||||||||||||||||||South center lower room with square water (South)
+skyshrine|levelplane|water||t75_vewater1|621.384094|267.280304|679.416382|600.108643|35|0|200||||||||||||||||||||||South center lower room with square water (West)
+skyshrine|levelplane|water||t75_vewater1|622.289246|267.280304|389.628693|310.06427|35|0|200||||||||||||||||||||||South center lower room with square water (East)
+skyshrine|levelplane|water||t75_vewater1|622.289246|540.592468|679.416382|595.391602|35|0|200||||||||||||||||||||||South center lower room with square water (Northwest)
+skyshrine|levelplane|water||t75_vewater1|622.289246|540.388|394.280884|310.06427|35|0|200||||||||||||||||||||||South center lower room with square water (Northeast)
+skyshrine|levelplane|water||t75_vewater1|348.764374|267.280304|679.416382|595.977722|35|0|200||||||||||||||||||||||South center lower room with square water (Southwest)
+skyshrine|levelplane|water||t75_vewater1|348.910919|267.280304|394.656494|310.06427|35|0|200||||||||||||||||||||||South center lower room with square water (Southeast)
