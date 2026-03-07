@@ -219,7 +219,8 @@ namespace EQWOWConverter.Zones
             List<BoundingBox> allBoundingBoxes = new List<BoundingBox>();
             foreach (ZoneModelObject zoneObject in ZoneObjectModels)
                 allBoundingBoxes.Add(zoneObject.BoundingBox);
-            AllGeometryBoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
+            if (allBoundingBoxes.Count > 0) // This will be 0 if collision is disabled in Configuration
+                AllGeometryBoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
 
             // Set any area parent relationships
             SetAreaParentRelationships();
@@ -371,7 +372,8 @@ namespace EQWOWConverter.Zones
                         curZoneObjectModelIndex = i;
                     }
                 }
-                ZoneObjectModels[curZoneObjectModelIndex].DoodadInstances.Add(di, doodadInstance);
+                if (ZoneObjectModels.Count > 0) // This will be 0 if collision is disabled in Configuration
+                    ZoneObjectModels[curZoneObjectModelIndex].DoodadInstances.Add(di, doodadInstance);
             }
         }
 
