@@ -108,9 +108,9 @@ namespace EQWOWConverter
 
         // Identifier for what subset of expansion data to work with.  0 = Classic, 1 = Kunark, 2 = Velious
         public static readonly int GENERATE_EQ_EXPANSION_ID_GENERAL = 2; // Not advisable to set this lower than 2
-        public static readonly int GENERATE_EQ_EXPANSION_ID_ZONES = 1; // Zone lines and water volumes will not work in most Kunark and Velious zones (currently)
-        public static readonly int GENERATE_EQ_EXPANSION_ID_TRANSPORTS = 1;
-        public static readonly int GENERATE_EQ_EXPANSION_ID_TRADESKILLS = 1;
+        public static readonly int GENERATE_EQ_EXPANSION_ID_ZONES = 2;
+        public static readonly int GENERATE_EQ_EXPANSION_ID_TRANSPORTS = 2;
+        public static readonly int GENERATE_EQ_EXPANSION_ID_TRADESKILLS = 2;
         public static readonly int GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS = 1;
 
         // If true, DBC files are extracted every time.
