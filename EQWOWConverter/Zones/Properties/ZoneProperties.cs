@@ -1043,7 +1043,8 @@ namespace EQWOWConverter.Zones
 
                 // Sound and Music
                 foreach (string enabled2DSoundInstanceName in propertiesRow["Enabled2DSoundInstances"].Split(","))
-                    zoneProperties.Enabled2DSoundInstancesByDaySoundName.Add(enabled2DSoundInstanceName.Trim());
+                    if (enabled2DSoundInstanceName.Trim().Length > 0)
+                        zoneProperties.Enabled2DSoundInstancesByDaySoundName.Add(enabled2DSoundInstanceName.Trim());
                 zoneProperties.DefaultZoneArea.SetAmbientSound(propertiesRow["AmbienceSoundDay"].Trim(), propertiesRow["AmbienceSoundNight"].Trim());
                 if (propertiesRow["MusicIsAltTrack"].Trim() == "0" || Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
                     zoneProperties.DefaultZoneArea.SetMusic(propertiesRow["Music"].Trim(), propertiesRow["Music"].Trim(), true, Convert.ToSingle(propertiesRow["MusicVolume"]));
