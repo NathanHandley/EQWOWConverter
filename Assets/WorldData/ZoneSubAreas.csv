@@ -33,6 +33,12 @@ cazicthule|Sewers|3|5253||||||1|1||
 cazicthule|Gator Pit|4|5254||||||1|1||
 cazicthule|High Throne|5|5255||||||1|1||
 cazicthule|The Maze|6|5256||||||1|1||
+cobaltscar|North Othmir Camp|0|5509||cobaltscar-00|cobaltscar-00|cobaltscar-00|cobaltscar-00|1|1||
+cobaltscar|Central Othmir Camp|1|5510||cobaltscar-00|cobaltscar-00|cobaltscar-00|cobaltscar-00|1|1||
+cobaltscar|South Othmir Camp|2|5511||cobaltscar-00|cobaltscar-00|cobaltscar-00|cobaltscar-00|1|1||
+crystal|Coldain Caves East|0|5512||crystal-03|crystal-03|crystal-03|crystal-03|1|1||
+crystal|Coldain Caves West|1|5513||crystal-01|crystal-01|crystal-01|crystal-01|1|1||
+crystal|Coldain Camp|2|5514||crystal-02|crystal-02|crystal-02|crystal-02|1|1||
 eastkarana|North Karana Bridge|0|5257||eastkarana-01|eastkarana-01|eastkarana-01|eastkarana-01|1|1||
 eastkarana|High Hold Gorge|1|5258||||||1|0|wind_lp4|wind_lp4
 eastkarana|Gorge of King Xorbb Entry|2|5259||||||1|0|wind_lp2|wind_lp2
@@ -96,6 +102,15 @@ freportw|Torlig's Herbs and Medicines|10|5316||||||1|1||
 freportw|North Tunnels|11|5317||||||1|0|caveloop|caveloop
 freportw|South Tunnels|12|5318||||||1|0|caveloop|caveloop
 freportw|Northeast Tunnels|13|5319||||||1|1||
+frozenshadow|Floor 1|0|5515||||||0|0||
+frozenshadow|Floor 2|1|5516||frozenshadow-01|frozenshadow-01|frozenshadow-01|frozenshadow-01|1|1||
+frozenshadow|Floor 3|2|5517||||||0|0||
+frozenshadow|Floor 4|3|5518||||||0|0||
+frozenshadow|Floor 5|4|5519||frozenshadow-03|frozenshadow-03|frozenshadow-03|frozenshadow-03|1|1||
+frozenshadow|Floor 6A Statue Room|5|5520||frozenshadow-02|frozenshadow-02|frozenshadow-02|frozenshadow-02|1|1||
+frozenshadow|Floor 6A|6|5521||||||0|0||
+frozenshadow|Floor 6B|7|5522||||||0|0||
+frozenshadow|Floor 7|8|5523||||||0|0||
 gfaydark|Kelethin|0|5320||gfaydark-04|gfaydark-04|gfaydark-04|gfaydark-04|1|1|silence|silence
 gfaydark|Felwithe|1|5321||||||1|0|silence|silence
 gfaydark|Outside Felwithe|2|5322||gfaydark-02|gfaydark-00|gfaydark-02|gfaydark-00|1|0||
@@ -117,6 +132,9 @@ innothule|Guk|0|5337||||||1|1||
 innothule|North Hand|1|5338||innothule-00|innothule-00|innothule-00|innothule-00|1|0||
 innothule|South Hand|2|5339||innothule-03|innothule-03|innothule-03|innothule-03|1|1||
 innothule|Dead Tower|3|5340||innothule-02|innothule-02|innothule-02|innothule-02|1|1||
+kael|Inner Keep|0|5524||kael-01|kael-01|kael-01|kael-01|1|1||
+kael|Temple of Rallos Zek|1|5525||kael-00|kael-00|kael-00|kael-00|1|1||
+kael|Halls of War|2|5526||kael-02|kael-02|kael-02|kael-02|1|1||
 kaladima|Main Gate|0|5341||kaladima-00|kaladima-00|kaladima-00|kaladima-00|1|0||
 kaladima|Pub Kal|1|5342||kaladima-04|kaladima-04|kaladima-04|kaladima-04|1|1||
 kaladima|Irontoe's Eats|2|5343||kaladima-05|kaladima-05|kaladima-05|kaladima-05|1|1||
