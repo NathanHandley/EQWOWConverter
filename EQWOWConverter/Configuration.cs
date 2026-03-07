@@ -673,7 +673,7 @@ namespace EQWOWConverter
         // Identifies Area rows in AreaTable.dbc
         // Note: These are hardcoded in ZoneSubAreas.csv and ZoneProperties.csv
         public static readonly UInt32 DBCID_AREATABLE_ID_START = 5100;
-        public static readonly UInt32 DBCID_AREATABLE_ID_END = 6500;
+        public static readonly UInt32 DBCID_AREATABLE_ID_END = 6000;
 
         // IDs for AreaTrigger.DBC. These will be generated in ascending order by MapID, and referenced in SQL scripts
         // for teleports as well any other area-based triggers
