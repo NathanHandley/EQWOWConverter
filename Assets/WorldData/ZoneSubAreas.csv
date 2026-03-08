@@ -304,6 +304,10 @@ steamfont|Druid Stone Ring|3|5500||steamfont-01|steamfont-01|steamfont-01|steamf
 steamfont|South Kobold Camp|4|5501||steamfont-05|steamfont-05|steamfont-05|steamfont-05|1|1||
 steamfont|Dragon Skeleton|5|5502||steamfont-06|steamfont-06|steamfont-06|steamfont-06|1|0||
 steamfont|North Kobold Camp|6|5503||||steamfont-05|steamfont-05|1|1||
+templeveeshan|Central Area|0|5533||||||0|0||
+templeveeshan|North Wing|1|5534||templeveeshan-03|templeveeshan-03|templeveeshan-03|templeveeshan-03|1|1||
+templeveeshan|East Wing|2|5535||templeveeshan-02|templeveeshan-02|templeveeshan-02|templeveeshan-02|1|1||
+templeveeshan|West Wing|3|5536||||||0|0||
 timorous|Firepot Room|0|5504||||||1|0|silence|silence
 tox|Wizard Spires|0|5505||tox-00|tox-00|tox-00|tox-00|1|1||
 tox|Paineel|1|5506||tox-03|tox-03|tox-03|tox-03|1|1||
