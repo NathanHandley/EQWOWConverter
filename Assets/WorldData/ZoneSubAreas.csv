@@ -39,6 +39,7 @@ cobaltscar|South Othmir Camp|2|5511||cobaltscar-00|cobaltscar-00|cobaltscar-00|c
 crystal|Coldain Caves East|0|5512||crystal-03|crystal-03|crystal-03|crystal-03|1|1||
 crystal|Coldain Caves West|1|5513||crystal-01|crystal-01|crystal-01|crystal-01|1|1||
 crystal|Coldain Camp|2|5514||crystal-02|crystal-02|crystal-02|crystal-02|1|1||
+crystal|Stair Room|3|5527||crystal-02|crystal-02|||1|1||
 eastkarana|North Karana Bridge|0|5257||eastkarana-01|eastkarana-01|eastkarana-01|eastkarana-01|1|1||
 eastkarana|High Hold Gorge|1|5258||||||1|0|wind_lp4|wind_lp4
 eastkarana|Gorge of King Xorbb Entry|2|5259||||||1|0|wind_lp2|wind_lp2
@@ -275,6 +276,11 @@ rivervale|Bristlebane's Hall|3|5477||||||1|0||silence
 runnyeye|Upper Pools|0|5478||runnyeye-00|runnyeye-00|runnyeye-00|runnyeye-00|1|1||
 runnyeye|Eye Pool|1|5479||runnyeye-01|runnyeye-01|runnyeye-01|runnyeye-01|1|1||
 runnyeye|Blood Room|2|5480||runnyeye-02|runnyeye-00|runnyeye-02|runnyeye-00|1|1||
+skyshrine|Lord Yelinak's Lair|0|5528||||||1|1||
+skyshrine|Susarrak's Lair|1|5529||skyshrine-02|skyshrine-02|skyshrine-02|skyshrine-02|1|1||
+skyshrine|Orb Room|2|5530||skyshrine-06|skyshrine-06|skyshrine-06|skyshrine-06|1|1||
+skyshrine|Fe'Dhar Library|3|5531||skyshrine-03|skyshrine-03|skyshrine-03|skyshrine-03|1|1||
+skyshrine|Jortreva's Lair|4|5532||skyshrine-00|skyshrine-00|skyshrine-00|skyshrine-00|1|1||
 soldungb|Nagafen's Approach|0|5481||soldungb-01|soldungb-01|soldungb-01|soldungb-01|1|1||
 soldungb|Lavaflow Bridge|1|5482||soldungb-00|soldungb-00|soldungb-00|soldungb-00|1|1||
 soldungb|Throne of King Tranix|2|5483||soldungb-05|soldungb-05|soldungb-05|soldungb-05|1|1||
