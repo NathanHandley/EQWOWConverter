@@ -33,13 +33,6 @@ cazicthule|Sewers|3|5253||||||1|1||
 cazicthule|Gator Pit|4|5254||||||1|1||
 cazicthule|High Throne|5|5255||||||1|1||
 cazicthule|The Maze|6|5256||||||1|1||
-cobaltscar|North Othmir Camp|0|5509||cobaltscar-00|cobaltscar-00|cobaltscar-00|cobaltscar-00|1|1||
-cobaltscar|Central Othmir Camp|1|5510||cobaltscar-00|cobaltscar-00|cobaltscar-00|cobaltscar-00|1|1||
-cobaltscar|South Othmir Camp|2|5511||cobaltscar-00|cobaltscar-00|cobaltscar-00|cobaltscar-00|1|1||
-crystal|Coldain Caves East|0|5512||crystal-03|crystal-03|crystal-03|crystal-03|1|1||
-crystal|Coldain Caves West|1|5513||crystal-01|crystal-01|crystal-01|crystal-01|1|1||
-crystal|Coldain Camp|2|5514||crystal-02|crystal-02|crystal-02|crystal-02|1|1||
-crystal|Stair Room|3|5527||crystal-02|crystal-02|||1|1||
 eastkarana|North Karana Bridge|0|5257||eastkarana-01|eastkarana-01|eastkarana-01|eastkarana-01|1|1||
 eastkarana|High Hold Gorge|1|5258||||||1|0|wind_lp4|wind_lp4
 eastkarana|Gorge of King Xorbb Entry|2|5259||||||1|0|wind_lp2|wind_lp2
@@ -103,15 +96,6 @@ freportw|Torlig's Herbs and Medicines|10|5316||||||1|1||
 freportw|North Tunnels|11|5317||||||1|0|caveloop|caveloop
 freportw|South Tunnels|12|5318||||||1|0|caveloop|caveloop
 freportw|Northeast Tunnels|13|5319||||||1|1||
-frozenshadow|Floor 1|0|5515||||||0|0||
-frozenshadow|Floor 2|1|5516||frozenshadow-01|frozenshadow-01|frozenshadow-01|frozenshadow-01|1|1||
-frozenshadow|Floor 3|2|5517||||||0|0||
-frozenshadow|Floor 4|3|5518||||||0|0||
-frozenshadow|Floor 5|4|5519||frozenshadow-03|frozenshadow-03|frozenshadow-03|frozenshadow-03|1|1||
-frozenshadow|Floor 6A Statue Room|5|5520||frozenshadow-02|frozenshadow-02|frozenshadow-02|frozenshadow-02|1|1||
-frozenshadow|Floor 6A|6|5521||||||0|0||
-frozenshadow|Floor 6B|7|5522||||||0|0||
-frozenshadow|Floor 7|8|5523||||||0|0||
 gfaydark|Kelethin|0|5320||gfaydark-04|gfaydark-04|gfaydark-04|gfaydark-04|1|1|silence|silence
 gfaydark|Felwithe|1|5321||||||1|0|silence|silence
 gfaydark|Outside Felwithe|2|5322||gfaydark-02|gfaydark-00|gfaydark-02|gfaydark-00|1|0||
@@ -133,9 +117,6 @@ innothule|Guk|0|5337||||||1|1||
 innothule|North Hand|1|5338||innothule-00|innothule-00|innothule-00|innothule-00|1|0||
 innothule|South Hand|2|5339||innothule-03|innothule-03|innothule-03|innothule-03|1|1||
 innothule|Dead Tower|3|5340||innothule-02|innothule-02|innothule-02|innothule-02|1|1||
-kael|Inner Keep|0|5524||kael-01|kael-01|kael-01|kael-01|1|1||
-kael|Temple of Rallos Zek|1|5525||kael-00|kael-00|kael-00|kael-00|1|1||
-kael|Halls of War|2|5526||kael-02|kael-02|kael-02|kael-02|1|1||
 kaladima|Main Gate|0|5341||kaladima-00|kaladima-00|kaladima-00|kaladima-00|1|0||
 kaladima|Pub Kal|1|5342||kaladima-04|kaladima-04|kaladima-04|kaladima-04|1|1||
 kaladima|Irontoe's Eats|2|5343||kaladima-05|kaladima-05|kaladima-05|kaladima-05|1|1||
@@ -276,11 +257,6 @@ rivervale|Bristlebane's Hall|3|5477||||||1|0||silence
 runnyeye|Upper Pools|0|5478||runnyeye-00|runnyeye-00|runnyeye-00|runnyeye-00|1|1||
 runnyeye|Eye Pool|1|5479||runnyeye-01|runnyeye-01|runnyeye-01|runnyeye-01|1|1||
 runnyeye|Blood Room|2|5480||runnyeye-02|runnyeye-00|runnyeye-02|runnyeye-00|1|1||
-skyshrine|Lord Yelinak's Lair|0|5528||||||1|1||
-skyshrine|Susarrak's Lair|1|5529||skyshrine-02|skyshrine-02|skyshrine-02|skyshrine-02|1|1||
-skyshrine|Orb Room|2|5530||skyshrine-06|skyshrine-06|skyshrine-06|skyshrine-06|1|1||
-skyshrine|Fe'Dhar Library|3|5531||skyshrine-03|skyshrine-03|skyshrine-03|skyshrine-03|1|1||
-skyshrine|Jortreva's Lair|4|5532||skyshrine-00|skyshrine-00|skyshrine-00|skyshrine-00|1|1||
 soldungb|Nagafen's Approach|0|5481||soldungb-01|soldungb-01|soldungb-01|soldungb-01|1|1||
 soldungb|Lavaflow Bridge|1|5482||soldungb-00|soldungb-00|soldungb-00|soldungb-00|1|1||
 soldungb|Throne of King Tranix|2|5483||soldungb-05|soldungb-05|soldungb-05|soldungb-05|1|1||
@@ -304,6 +280,35 @@ steamfont|Druid Stone Ring|3|5500||steamfont-01|steamfont-01|steamfont-01|steamf
 steamfont|South Kobold Camp|4|5501||steamfont-05|steamfont-05|steamfont-05|steamfont-05|1|1||
 steamfont|Dragon Skeleton|5|5502||steamfont-06|steamfont-06|steamfont-06|steamfont-06|1|0||
 steamfont|North Kobold Camp|6|5503||||steamfont-05|steamfont-05|1|1||
+timorous|Firepot Room|0|5504||||||1|0|silence|silence
+tox|Wizard Spires|0|5505||tox-00|tox-00|tox-00|tox-00|1|1||
+tox|Paineel|1|5506||tox-03|tox-03|tox-03|tox-03|1|1||
+tox|Erudin|2|5507||||||1|1||
+tox|Kerra Isle|3|5508||||||1|1||
+cobaltscar|North Othmir Camp|0|5509||cobaltscar-00|cobaltscar-00|cobaltscar-00|cobaltscar-00|1|1||
+cobaltscar|Central Othmir Camp|1|5510||cobaltscar-00|cobaltscar-00|cobaltscar-00|cobaltscar-00|1|1||
+cobaltscar|South Othmir Camp|2|5511||cobaltscar-00|cobaltscar-00|cobaltscar-00|cobaltscar-00|1|1||
+crystal|Coldain Caves East|0|5512||crystal-03|crystal-03|crystal-03|crystal-03|1|1||
+crystal|Coldain Caves West|1|5513||crystal-01|crystal-01|crystal-01|crystal-01|1|1||
+crystal|Coldain Camp|2|5514||crystal-02|crystal-02|crystal-02|crystal-02|1|1||
+frozenshadow|Floor 1|0|5515||||||0|0||
+frozenshadow|Floor 2|1|5516||frozenshadow-01|frozenshadow-01|frozenshadow-01|frozenshadow-01|1|1||
+frozenshadow|Floor 3|2|5517||||||0|0||
+frozenshadow|Floor 4|3|5518||||||0|0||
+frozenshadow|Floor 5|4|5519||frozenshadow-03|frozenshadow-03|frozenshadow-03|frozenshadow-03|1|1||
+frozenshadow|Floor 6A Statue Room|5|5520||frozenshadow-02|frozenshadow-02|frozenshadow-02|frozenshadow-02|1|1||
+frozenshadow|Floor 6A|6|5521||||||0|0||
+frozenshadow|Floor 6B|7|5522||||||0|0||
+frozenshadow|Floor 7|8|5523||||||0|0||
+kael|Inner Keep|0|5524||kael-01|kael-01|kael-01|kael-01|1|1||
+kael|Temple of Rallos Zek|1|5525||kael-00|kael-00|kael-00|kael-00|1|1||
+kael|Halls of War|2|5526||kael-02|kael-02|kael-02|kael-02|1|1||
+crystal|Stair Room|3|5527||crystal-02|crystal-02|||1|1||
+skyshrine|Lord Yelinak's Lair|0|5528||||||1|1||
+skyshrine|Susarrak's Lair|1|5529||skyshrine-02|skyshrine-02|skyshrine-02|skyshrine-02|1|1||
+skyshrine|Orb Room|2|5530||skyshrine-06|skyshrine-06|skyshrine-06|skyshrine-06|1|1||
+skyshrine|Fe'Dhar Library|3|5531||skyshrine-03|skyshrine-03|skyshrine-03|skyshrine-03|1|1||
+skyshrine|Jortreva's Lair|4|5532||skyshrine-00|skyshrine-00|skyshrine-00|skyshrine-00|1|1||
 templeveeshan|Central Area|0|5533||||||0|0||
 templeveeshan|North Wing|1|5534||templeveeshan-03|templeveeshan-03|templeveeshan-03|templeveeshan-03|1|1||
 templeveeshan|East Wing|2|5535||templeveeshan-02|templeveeshan-02|templeveeshan-02|templeveeshan-02|1|1||
@@ -314,9 +319,7 @@ thurgadina|Temple of Brell|2|5539||thurgadina-04|thurgadina-04|thurgadina-04|thu
 thurgadinb|Hall of Ancestors|0|5540||thurgadinb-00|thurgadinb-00|thurgadinb-00|thurgadinb-00|1|1||
 thurgadinb|The Undertunnels|1|5541||||||0|0||
 thurgadinb|The Keep|2|5542||thurgadinb-01|thurgadinb-01|thurgadinb-01|thurgadinb-01|1|1||
-timorous|Firepot Room|0|5504||||||1|0|silence|silence
-tox|Wizard Spires|0|5505||tox-00|tox-00|tox-00|tox-00|1|1||
-tox|Paineel|1|5506||tox-03|tox-03|tox-03|tox-03|1|1||
-tox|Erudin|2|5507||||||1|1||
-tox|Kerra Isle|3|5508||||||1|1||
 velketor|Throne Room|0|5543||velketor-01|velketor-01|velketor-01|velketor-01|1|1||
+wakening|Tower of Tunare|0|5544||wakening-00|wakening-00|wakening-00|wakening-00|1|1||
+wakening|Sifaye Village|1|5545||wakening-00|wakening-00|wakening-00|wakening-00|1|1||
+wakening|Unicorn Grove|2|5546||wakening-00|wakening-00|wakening-00|wakening-00|1|1||
