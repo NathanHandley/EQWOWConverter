@@ -151,7 +151,7 @@ namespace EQWOWConverter.Creatures
 
             // Load in an object
             float lift = Race.Lift;
-            ObjectModelProperties objectProperties = new ObjectModelProperties(ObjectModelProperties.GetObjectPropertiesForObject(skeletonName));
+            ObjectModelProperties objectProperties = new ObjectModelProperties(ObjectModelProperties.GetObjectPropertiesForObject(skeletonName.ToLower()));
             objectProperties.CreatureModelTemplate = this;
             objectProperties.ModelScalePreWorldScale = Race.ModelScale;
             objectProperties.ModelLiftPreWorldScale = lift;
