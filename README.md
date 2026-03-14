@@ -8,7 +8,7 @@ To see video references, go here: [YouTube Playlist](https://youtube.com/playlis
 **Note: The creator of this converter (Nathan) has no affiliation with any server provider/hoster, and provides no client files for either EverQuest or World of Warcraft. This project is for education and preservation purposes only.** 
 
 # Current State
-It is currently in an Alpha state, but all content types (tradeskills, spells, quests, etc) are working to some degree.  Only classic and Kunark are in a semi-polished state, but you can change the enabled expansions with the Configuration.cs variable GENERATE_EQ_EXPANSION_ID_.  Many things, such as zone lines and water volumes will not work in Velious right now.
+It is currently in an Alpha state, but all content types (tradeskills, spells, quests, etc) are working to some degree.  Classic, Kunark, and Velious are all enabled and playable by default.  Non-spell particles (weapon and environment particles) are still TBD, and many things need balancing and bug fixing.
 
 # Requirements
 - Windows build environment
