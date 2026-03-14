@@ -41,10 +41,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("position_y", position.Y);
             newRow.AddFloat("position_z", position.Z);
             newRow.AddFloat("orientation", orientation);
-            newRow.AddFloat("rotation0", rotation.X); // These 4 columns are ignored unless there is a record in gameobject_addon
-            newRow.AddFloat("rotation1", rotation.Y); //
-            newRow.AddFloat("rotation2", rotation.Z); //
-            newRow.AddFloat("rotation3", rotation.W); //
+            newRow.AddFloat("rotation0", rotation.X);
+            newRow.AddFloat("rotation1", rotation.Y);
+            newRow.AddFloat("rotation2", rotation.Z);
+            newRow.AddFloat("rotation3", rotation.W);
             newRow.AddInt("spawntimesecs", 0);
             newRow.AddInt("animprogress", 0);
             newRow.AddInt("state", 1);

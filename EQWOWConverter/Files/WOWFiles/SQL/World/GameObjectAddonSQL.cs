@@ -27,6 +27,10 @@ namespace EQWOWConverter.WOWFiles
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("guid", gameObjectGUID);
+            newRow.AddFloat("parent_rotation0", 0);
+            newRow.AddFloat("parent_rotation1", 0);
+            newRow.AddFloat("parent_rotation2", 0);
+            newRow.AddFloat("parent_rotation3", 0);
             newRow.AddInt("invisibilityType", 0);
             newRow.AddInt("invisibilityValue", 0);
             Rows.Add(newRow);

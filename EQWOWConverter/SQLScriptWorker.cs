@@ -1037,7 +1037,7 @@ namespace EQWOWConverter
                         gameObjectTemplateSQL.AddRowForGameObject(name, gameObject);
                         gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateEntryID);
                         if (gameObject.EQIncline != 0)
-                            gameObjectAddonSQL.AddRow(gameObject.GameObjectGUID); // If this record doesn't exist, only "Orientation" will be honored from the SQL table gameobject
+                            gameObjectAddonSQL.AddRow(gameObject.GameObjectGUID);
 
                         // Attach any smart scripts
                         if (gameObject.TriggerGameObjectGUID != 0)

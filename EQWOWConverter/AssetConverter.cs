@@ -586,19 +586,30 @@ namespace EQWOWConverter
 
                     // Process any rotation data by first making a rotation vector, and then converting to the appropriate quarterion
                     // Note that EQ uses 0-512, so normalize that first
-                    float rotationDegrees = ((curObject.EQHeading / 512f) * -360f); // Reverse for orientation handiness difference
-                    float tiltInDegrees = -(curObject.EQIncline / 512f) * 360f;
-                    if (tiltInDegrees >= 1f || tiltInDegrees <= -1f)
-                        tiltInDegrees -= 180f;
-                    Vector3 rotationVector = new Vector3(0, rotationDegrees, tiltInDegrees);
-                    float rotateYaw = Convert.ToSingle(Math.PI / 180f) * rotationVector.Z;
-                    float rotatePitch = Convert.ToSingle(Math.PI / 180f) * (rotationVector.X + 180f); // Seems like a 180 flip is needed. Revisit if issues.
-                    float rotateRoll = Convert.ToSingle(Math.PI / 180f) * rotationVector.Y;
-                    System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotateYaw, rotatePitch, rotateRoll);
-                    curObject.InteractiveRotation.X = rotationQ.X;
-                    curObject.InteractiveRotation.Y = rotationQ.Y;
-                    curObject.InteractiveRotation.Z = rotationQ.Z;
-                    curObject.InteractiveRotation.W = -rotationQ.W; // Flip the sign for handedness
+                    if (curObject.EQIncline == 0)
+                    {
+                        float halfOri = curObject.Orientation / 2.0f;
+                        curObject.InteractiveRotation.X = 0;
+                        curObject.InteractiveRotation.Y = 0;
+                        curObject.InteractiveRotation.Z = MathF.Sin(halfOri);
+                        curObject.InteractiveRotation.W = MathF.Cos(halfOri);
+                    }
+                    else
+                    {
+                        float rotationDegrees = ((curObject.EQHeading / 512f) * -360f); // Reverse for orientation handiness difference
+                        float tiltInDegrees = -(curObject.EQIncline / 512f) * 360f;
+                        if (tiltInDegrees >= 1f || tiltInDegrees <= -1f)
+                            tiltInDegrees -= 180f;
+                        Vector3 rotationVector = new Vector3(0, rotationDegrees, tiltInDegrees);
+                        float rotateYaw = Convert.ToSingle(Math.PI / 180f) * rotationVector.Z;
+                        float rotatePitch = Convert.ToSingle(Math.PI / 180f) * (rotationVector.X + 180f); // Seems like a 180 flip is needed. Revisit if issues.
+                        float rotateRoll = Convert.ToSingle(Math.PI / 180f) * rotationVector.Y;
+                        System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotateYaw, rotatePitch, rotateRoll);
+                        curObject.InteractiveRotation.X = rotationQ.X;
+                        curObject.InteractiveRotation.Y = rotationQ.Y;
+                        curObject.InteractiveRotation.Z = rotationQ.Z;
+                        curObject.InteractiveRotation.W = -rotationQ.W; // Flip the sign for handedness
+                    }
                 }
             }
             Dictionary<string, List<GameObject>> nonInteractiveGameObjectsByZoneShortname = GameObject.GetDoodadGameObjectsByZoneShortNames();
