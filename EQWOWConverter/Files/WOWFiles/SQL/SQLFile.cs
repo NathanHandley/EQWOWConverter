@@ -153,7 +153,7 @@ namespace EQWOWConverter.WOWFiles
 
                 // Calculate what rows to output
                 int startRowIter = i * rowsPerBatch;
-                int endRowIter = ((i + 1) * rowsPerBatch) - 1;
+                int endRowIter = (i + 1) * rowsPerBatch;
                 if (endRowIter > Rows.Count)
                     endRowIter = Rows.Count;
 

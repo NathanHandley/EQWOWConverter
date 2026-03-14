@@ -16,7 +16,7 @@ It is currently in an Alpha state, but all content types (tradeskills, spells, q
 - Install the "mod-everquest" mod into AzerothCore (https://github.com/NathanHandley/mod-everquest)
 - Installed unpatched client of the EverQuest Trilogy
 - Installed 3.3.5a WoW client, US version (which must be patched to not check for MD5 signatures, similar to other modded projects) 
-- If you want armor textures, install a texture pack.  A human one can be found here: https://github.com/NathanHandley/EQWOWConverter-HumTexturePack
+- If you want armor textures, install a texture pack.  One can be found here: https://github.com/NathanHandley/EQWOWConverter-HumTexturePack
 
 # Instructions
 1. Set the configuration values in Configuration.cs within the first two sections ("Paths and Files" and "Deployment Rules", at the top)
