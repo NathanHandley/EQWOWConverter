@@ -338,8 +338,11 @@ namespace EQWOWConverter
                     {
                         int waypointGUID = creatureGUID * 1000;
                         creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID);
-                        foreach (CreaturePathGridEntry pathGridEntry in pathGridEntries)
-                            waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                        for (int i = 0; i < pathGridEntries.Count; i++)
+                        {
+                            CreaturePathGridEntry pathGridEntry = pathGridEntries[i];
+                            waypointDataSQL.AddRow(waypointGUID, i+1, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                        }                            
                         creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                             spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path,
                             spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
@@ -394,8 +397,11 @@ namespace EQWOWConverter
                             {
                                 int waypointGUID = creatureGUID * 1000;
                                 creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID);
-                                foreach (CreaturePathGridEntry pathGridEntry in pathGridEntries)
-                                    waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                                for (int i = 0; i < pathGridEntries.Count; i++)
+                                {
+                                    CreaturePathGridEntry pathGridEntry = pathGridEntries[i];
+                                    waypointDataSQL.AddRow(waypointGUID, i + 1, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                                }                                    
                                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                     spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path,
                                     spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
@@ -445,8 +451,11 @@ namespace EQWOWConverter
                         {
                             int waypointGUID = creatureGUID * 1000;
                             creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID);
-                            foreach (CreaturePathGridEntry pathGridEntry in pathGridEntries)
-                                waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                            for (int i = 0; i < pathGridEntries.Count; i++)
+                            {
+                                CreaturePathGridEntry pathGridEntry = pathGridEntries[i];
+                                waypointDataSQL.AddRow(waypointGUID, i + 1, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                            }
                             creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                 spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path,
                                 spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
