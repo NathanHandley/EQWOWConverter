@@ -47,8 +47,6 @@ namespace EQWOWConverter.ObjectModels
         public List<UInt16> ModelSecondTextureMaterialOverrides = new List<UInt16>();
         public List<TriangleFace> ModelTriangles = new List<TriangleFace>();
         public List<string> GeneratedTextureNames = new List<string>();
-        public BoundingBox GeometryBoundingBox = new BoundingBox();
-        public BoundingBox VisibilityBoundingBox = new BoundingBox();
         public Dictionary<AnimationType, Sound> SoundsByAnimationType = new Dictionary<AnimationType, Sound>();
         public int NumOfFidgetSounds = 0;
         public Vector3 PortraitCameraPosition = new Vector3();
@@ -61,15 +59,14 @@ namespace EQWOWConverter.ObjectModels
         public List<TriangleFace> CollisionTriangles = new List<TriangleFace>();
         public BoundingBox CollisionBoundingBox = new BoundingBox();
         public float CollisionSphereRaidus = 0f;
-        private float MinimumVisibilityBoundingBoxSize;
         public static Dictionary<string, ObjectModel> StaticObjectModelsByName = new Dictionary<string, ObjectModel>();
+        public BoundingBox InteractionBoundingBox = new BoundingBox();
 
-        public ObjectModel(string name, ObjectModelProperties objectProperties, ObjectModelType modelType, float minimumVisibilityBoundingBoxSize)
+        public ObjectModel(string name, ObjectModelProperties objectProperties, ObjectModelType modelType)
         {
             Name = name;
             Properties = objectProperties;
             ModelType = modelType;
-            MinimumVisibilityBoundingBoxSize = minimumVisibilityBoundingBoxSize;
         }
 
         public void LoadEQObjectFromFile(string inputRootFolder, string eqInputObjectFileName)
@@ -169,8 +166,11 @@ namespace EQWOWConverter.ObjectModels
             // Store the final state mesh data
             MeshData = meshData;
 
-            // Collision data
-            ProcessCollisionData(meshData, initialMaterials, collisionVertices, collisionTriangleFaces);
+            // Collision data (must be after MeshData assignment)
+            ProcessCollisionData(initialMaterials, collisionVertices, collisionTriangleFaces);
+
+            // Determine interaction boundary (must be after MeshData assignment)
+            CalculateInteractionAndVisualBoundingBoxes();
 
             // Create a global sequence if there is none and it's not an emitter or projectile
             if (GlobalLoopSequenceLimits.Count == 0 && (ModelType != ObjectModelType.ParticleEmitter && ModelType != ObjectModelType.SpellProjectile && ModelType != ObjectModelType.TransportShip))
@@ -181,6 +181,20 @@ namespace EQWOWConverter.ObjectModels
 
             // Mark as loaded
             IsLoaded = true;
+        }
+
+        private void CalculateInteractionAndVisualBoundingBoxes()
+        {
+            // Interaction
+            MeshData poseMesh = GetMeshDataByPose(true, EQAnimationType.p01StandPassive, EQAnimationType.o01StandIdle, EQAnimationType.l01Walk, EQAnimationType.posStandPose, EQAnimationType.drfStandPose);
+            InteractionBoundingBox = BoundingBox.GenerateBoxFromVectors(poseMesh.Vertices, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+
+            // Update animations
+            foreach (ObjectModelAnimation animation in ModelAnimations)
+            {
+                animation.BoundingBox = InteractionBoundingBox;
+                animation.BoundingRadius = InteractionBoundingBox.FurthestPointDistanceFromCenter();
+            }
         }
 
         private void ProcessBonesAndAnimation(List<EQSpellsEFF.EFFSpellSpriteListEffect>? spriteListEffects)
@@ -196,8 +210,6 @@ namespace EQWOWConverter.ObjectModels
 
                 // Make one animation, TODO: Missle
                 ModelAnimations.Add(new ObjectModelAnimation());
-                ModelAnimations[0].BoundingBox = VisibilityBoundingBox;
-                ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
 
                 if (Properties.SpellVisualEffectStageType == Spells.SpellVisualStageType.Impact)
                 {
@@ -237,8 +249,6 @@ namespace EQWOWConverter.ObjectModels
                 {
                     // Make one animation (standing) for normal static objects
                     ModelAnimations.Add(new ObjectModelAnimation());
-                    ModelAnimations[0].BoundingBox = VisibilityBoundingBox;
-                    ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
                 }
                 else
                 {
@@ -259,8 +269,6 @@ namespace EQWOWConverter.ObjectModels
                     ObjectModelBone newBone = new ObjectModelBone("root", -1);
                     ModelBones.Add(newBone);
                     ModelAnimations.Add(new ObjectModelAnimation());
-                    ModelAnimations[0].BoundingBox = VisibilityBoundingBox;
-                    ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
                     return;
                 }
 
@@ -270,8 +278,6 @@ namespace EQWOWConverter.ObjectModels
 
                     // Make one animation (standing)
                     ModelAnimations.Add(new ObjectModelAnimation());
-                    ModelAnimations[0].BoundingBox = VisibilityBoundingBox;
-                    ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
                     return;
                 }
 
@@ -627,11 +633,11 @@ namespace EQWOWConverter.ObjectModels
                 default: break; // nothing
             }
 
+            BoundingBox modelVertGeometryBoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices);
+
             // Open
             ObjectModelAnimation animationOpen = new ObjectModelAnimation();
             animationOpen.AnimationType = AnimationType.Open;
-            animationOpen.BoundingBox = VisibilityBoundingBox;
-            animationOpen.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
             animationOpen.DurationInMS = Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS);
             switch (Properties.ActiveDoodadAnimationType)
             {
@@ -643,12 +649,12 @@ namespace EQWOWConverter.ObjectModels
                 case ActiveDoodadAnimType.OnActivateSlideLeft:
                     {
                         ModelBones[0].TranslationTrack.AddValueToSequence(0, 0, new Vector3(0, 0, 0));
-                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new Vector3(0, GeometryBoundingBox.GetYDistance(), 0));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new Vector3(0, modelVertGeometryBoundingBox.GetYDistance(), 0));
                     } break;
                 case ActiveDoodadAnimType.OnActivateSlideUp:
                     {
                         ModelBones[0].TranslationTrack.AddValueToSequence(0, 0, new Vector3(0, 0, 0));
-                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new Vector3(0, 0, GeometryBoundingBox.GetZDistance()));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new Vector3(0, 0, modelVertGeometryBoundingBox.GetZDistance()));
                     } break;
                 case ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseHalf:
                     {
@@ -707,8 +713,6 @@ namespace EQWOWConverter.ObjectModels
             // Opened
             ObjectModelAnimation animationOpened = new ObjectModelAnimation();
             animationOpened.AnimationType = AnimationType.Opened;
-            animationOpened.BoundingBox = VisibilityBoundingBox;
-            animationOpened.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
             animationOpened.DurationInMS = Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS);
             switch (Properties.ActiveDoodadAnimationType)
             {
@@ -718,11 +722,11 @@ namespace EQWOWConverter.ObjectModels
                     } break;
                 case ActiveDoodadAnimType.OnActivateSlideLeft:
                     {
-                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new Vector3(0, GeometryBoundingBox.GetYDistance(), 0));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new Vector3(0, modelVertGeometryBoundingBox.GetYDistance(), 0));
                     } break;
                 case ActiveDoodadAnimType.OnActivateSlideUp:
                     {
-                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new Vector3(0, 0, GeometryBoundingBox.GetZDistance()));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new Vector3(0, 0, modelVertGeometryBoundingBox.GetZDistance()));
                     } break;
                 case ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseHalf:
                     {
@@ -771,8 +775,6 @@ namespace EQWOWConverter.ObjectModels
             // Close
             ObjectModelAnimation animationClose = new ObjectModelAnimation();
             animationClose.AnimationType = AnimationType.Close;
-            animationClose.BoundingBox = VisibilityBoundingBox;
-            animationClose.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
             animationClose.DurationInMS = Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS);
             switch (Properties.ActiveDoodadAnimationType)
             {
@@ -783,12 +785,12 @@ namespace EQWOWConverter.ObjectModels
                     } break;
                 case ActiveDoodadAnimType.OnActivateSlideLeft:
                     {
-                        ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, GeometryBoundingBox.GetYDistance(), 0));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, modelVertGeometryBoundingBox.GetYDistance(), 0));
                         ModelBones[0].TranslationTrack.AddValueToSequence(2, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new Vector3(0, 0, 0));                        
                     } break;
                 case ActiveDoodadAnimType.OnActivateSlideUp:
                     {
-                        ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, 0, GeometryBoundingBox.GetZDistance()));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, 0, modelVertGeometryBoundingBox.GetZDistance()));
                         ModelBones[0].TranslationTrack.AddValueToSequence(2, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new Vector3(0, 0, 0));
                     } break;
                 case ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseHalf:
@@ -843,8 +845,6 @@ namespace EQWOWConverter.ObjectModels
             // Stand
             ObjectModelAnimation animationStand = new ObjectModelAnimation();
             animationStand.AnimationType = AnimationType.Stand;
-            animationStand.BoundingBox = VisibilityBoundingBox;
-            animationStand.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
             animationStand.DurationInMS = Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS);
             switch (Properties.ActiveDoodadAnimationType)
             {
@@ -877,8 +877,6 @@ namespace EQWOWConverter.ObjectModels
             // Closed
             ObjectModelAnimation animationClosed = new ObjectModelAnimation();
             animationClosed.AnimationType = AnimationType.Closed;
-            animationClosed.BoundingBox = VisibilityBoundingBox;
-            animationClosed.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
             animationClosed.DurationInMS = Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS);
             switch (Properties.ActiveDoodadAnimationType)
             {
@@ -1277,8 +1275,6 @@ namespace EQWOWConverter.ObjectModels
                         newAnimation.AnimationType = animationType;
                         newAnimation.EQAnimationTypeTrue = animation.Value.EQAnimationType;
                         newAnimation.EQAnimationTypePreferred = compatibleAnimationTypes[0];
-                        newAnimation.BoundingBox = VisibilityBoundingBox;
-                        newAnimation.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
                         newAnimation.AliasNext = Convert.ToUInt16(ModelAnimations.Count); // The next animation is itself, so it's a loop (TODO: Change this)
                         newAnimation.NumOfFramesFromEQTemplate = animation.Value.FrameCount;
                         ModelAnimations.Add(newAnimation);
@@ -1604,11 +1600,6 @@ namespace EQWOWConverter.ObjectModels
                     newModelVertex.BoneIndicesTrue[0] = meshData.BoneIDs[i];
                 ModelVertices.Add(newModelVertex);
             }
-
-            // Generate bounding box
-            GeometryBoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices);
-            VisibilityBoundingBox = new BoundingBox(GeometryBoundingBox);
-            VisibilityBoundingBox.ExpandToMinimumSize(MinimumVisibilityBoundingBoxSize);
         }
 
         private void ProcessMaterials(List<Material> initialMaterials, ref MeshData meshData)
@@ -2089,32 +2080,7 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private MeshData GenerateCollisionMeshDataForSkeletalModel(MeshData baseMeshData)
-        {
-            if (IsSkeletal == false)
-            {
-                Logger.WriteError("GenerateMeshDataForSkeletalModel failed as object '" + Name + "' was not skeletal");
-                return baseMeshData;
-            }
-
-            // Mesh data returned by this will be the first frame of a standing animation
-            MeshData collisionMeshData = new MeshData(baseMeshData);
-            for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
-            {
-                // Add 1 to the bone ID since there would have been an added bone
-                int boneID = collisionMeshData.BoneIDs[i] + 1;
-
-                // Only process if there was an animation frame here
-                if (ModelBones[boneID].TranslationTrack.Values.Count > 0 && ModelBones[boneID].TranslationTrack.Values[0].Values.Count > 0)
-                {
-                    Vector3 frame1Translation = ModelBones[boneID].TranslationTrack.Values[0].Values[0];
-                    collisionMeshData.Vertices[i] = collisionMeshData.Vertices[i] + frame1Translation;
-                }
-            }
-            return collisionMeshData;
-        }
-
-        private void ProcessCollisionData(MeshData meshData, List<Material> materials, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
+        private void ProcessCollisionData(List<Material> materials, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
         {
             // Skip collision for particles and projectiles
             if (ModelType == ObjectModelType.ParticleEmitter || ModelType == ObjectModelType.SpellProjectile)
@@ -2160,23 +2126,16 @@ namespace EQWOWConverter.ObjectModels
                 CollisionFaceNormals.Add(new Vector3(-0.000000f, -1.000000f, 0.000000f));
                 doGenerateNormals = false;
             }
-            // Transport ships need collision data calculated from the first frame of animation
-            else if (ModelType == ObjectModelType.TransportShip)
-            {
-                //MeshData firstFrameMeshData = GetMeshDataByPose(true, EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose);
-                //collisionVertices = firstFrameMeshData.Vertices;
-                //collisionTriangleFaces = firstFrameMeshData.TriangleFaces;
-            }
             // Generate collision data if there is none and it's from an EQ object
             else if (collisionVertices.Count == 0 && Properties.DoGenerateCollisionFromMeshData == true &&
                 (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance && ModelType != ObjectModelType.EquipmentHeld))
             {
                 // Skeletal objects need specially generated mesh data utilizing the animation positioning
                 MeshData workingMeshData;
-                if (IsSkeletal == true && meshData.AnimatedVertexFramesByVertexIndex.Count == 0)
-                    workingMeshData = GenerateCollisionMeshDataForSkeletalModel(meshData);
+                if (IsSkeletal == true && MeshData.AnimatedVertexFramesByVertexIndex.Count == 0)
+                    workingMeshData = GetMeshDataByPose(true, EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose);
                 else
-                    workingMeshData = meshData;
+                    workingMeshData = MeshData;
 
                 // Take any non-transparent material geometry and use that to build a mesh
                 Dictionary<UInt32, Material> foundMaterials = new Dictionary<UInt32, Material>();

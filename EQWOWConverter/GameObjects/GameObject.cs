@@ -399,13 +399,13 @@ namespace EQWOWConverter.GameObjects
                             modelDataRootFolder = charactersFolderRoot;
 
                         // Tradeskill items have an atypically small visibility range
-                        float objectVisibilityBoundingBoxMinSize = Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE;
-                        if (gameObject.TradeskillFocusType != GameObjectTradeskillFocusType.None)
-                            objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE;
-                        else if (gameObject.ObjectType == GameObjectType.Door || gameObject.ObjectType == GameObjectType.Bridge)
-                            objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_DOORBRIDGE_INTERACT_BOUNDARY_MIN_SIZE;
-                        else if (gameObject.ObjectType == GameObjectType.Mailbox)
-                            objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_MAILBOX_INTERACT_BOUNDARY_MIN_SIZE;
+                        //float objectVisibilityBoundingBoxMinSize = Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE;
+                        //if (gameObject.TradeskillFocusType != GameObjectTradeskillFocusType.None)
+                        //    objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE;
+                        //else if (gameObject.ObjectType == GameObjectType.Door || gameObject.ObjectType == GameObjectType.Bridge)
+                        //    objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_DOORBRIDGE_INTERACT_BOUNDARY_MIN_SIZE;
+                        //else if (gameObject.ObjectType == GameObjectType.Mailbox)
+                        //    objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_MAILBOX_INTERACT_BOUNDARY_MIN_SIZE;
 
                         // Load it
                         string modelFileName = string.Concat(gameObject.OriginalModelName, "_", gameObject.OpenType.ToString());
@@ -428,7 +428,7 @@ namespace EQWOWConverter.GameObjects
                                                     Logger.WriteWarning("Proper implementation of door opentype ", gameObject.OpenType.ToString(), " not yet implemented.  Using standard");
                                                 }
                                                 ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
-                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE5:
@@ -436,7 +436,7 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE7:
                                             {
                                                 ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateAroundZCounterclockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
-                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE10:
@@ -448,7 +448,7 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE26:                                        
                                             {
                                                 ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateSlideLeft, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
-                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE60: 
@@ -464,20 +464,20 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE77:
                                             {
                                                 ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateSlideUp, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
-                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE16:
                                         case GameObjectOpenType.TYPE35:
                                             {
                                                 ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
-                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE156: // TODO: Sleeper, SLFF200
                                             {
                                                 ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateAroundZCounterclockwiseFull, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_SLEEPER_FIELD_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
-                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             }
                                             break;
@@ -491,7 +491,7 @@ namespace EQWOWConverter.GameObjects
                             case GameObjectType.Bridge:
                                 {
                                     ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateDownClosedBackwards, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
-                                    curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                    curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad);
                                     curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                 } break;
                             case GameObjectType.TradeskillFocus:
@@ -500,7 +500,7 @@ namespace EQWOWConverter.GameObjects
                                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                                     objectProperties.DoGenerateCollisionFromMeshData = gameObject.HasColission;
                                     objectProperties.RenderingEnabled = gameObject.RenderingEnabled;
-                                    curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                    curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad);
                                     curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.ModelName);
                                 } break;
                             case GameObjectType.Mailbox:
@@ -519,7 +519,7 @@ namespace EQWOWConverter.GameObjects
                                     objectProperties.CreatureModelTemplate = creatureModelTemplate;
                                     objectProperties.ModelScalePreWorldScale = creatureRace.ModelScale;
                                     objectProperties.ModelLiftPreWorldScale = creatureRace.Lift;
-                                    curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.Creature, objectVisibilityBoundingBoxMinSize);
+                                    curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.Creature);
                                     curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.ModelName);
                                 } break;
                             default:

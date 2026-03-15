@@ -349,7 +349,7 @@ namespace EQWOWConverter.Items
                 // Create a new model
                 ObjectModels.Properties.ObjectModelProperties objectModelProperties = new ObjectModels.Properties.ObjectModelProperties();
                 objectModelProperties.EquipUnitType = equipUnitType;
-                ObjectModel equipmentModel = new ObjectModel(outputName, objectModelProperties, modelType, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+                ObjectModel equipmentModel = new ObjectModel(outputName, objectModelProperties, modelType);
                 equipmentModel.LoadEQObjectFromFile(equipmentSourceBasePath, eqAssetFileName);
 
                 // Determine the output folder based on item type

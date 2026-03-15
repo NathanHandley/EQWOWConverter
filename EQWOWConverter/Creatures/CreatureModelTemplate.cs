@@ -155,7 +155,7 @@ namespace EQWOWConverter.Creatures
             objectProperties.CreatureModelTemplate = this;
             objectProperties.ModelScalePreWorldScale = Race.ModelScale;
             objectProperties.ModelLiftPreWorldScale = lift;
-            ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Creature, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+            ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Creature);
             curObject.LoadEQObjectFromFile(charactersFolderRoot, skeletonName);
             StringBuilder nameSB = new StringBuilder();
             nameSB.Append(Race.Name);

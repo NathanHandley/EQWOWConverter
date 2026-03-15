@@ -374,7 +374,7 @@ namespace EQWOWConverter
                         closeSoundEntryID = closeSoundsByModelNameAndOpenType[nameAndOpenType].DBCID;
                     }
 
-                    BoundingBox geoboxBounding = new BoundingBox(gameObjectModelsByNameAndOpenType[nameAndOpenType].VisibilityBoundingBox);
+                    BoundingBox geoboxBounding = new BoundingBox(gameObjectModelsByNameAndOpenType[nameAndOpenType].InteractionBoundingBox);
 
                     // This is a bit of a hack right now to ensure that rotated objects are always interactable
                     float maxDistance = Math.Max(geoboxBounding.GetZDistance(), Math.Max(geoboxBounding.GetYDistance(), geoboxBounding.GetXDistance()));
@@ -596,7 +596,7 @@ namespace EQWOWConverter
                 foreach (var m2ByGameObjectID in TransportLift.ObjectModelM2ByMeshGameObjectDisplayID)
                 {
                     string relativeObjectFileName = Path.Combine("World", "Everquest", "Transports", m2ByGameObjectID.Value.ObjectModel.Name, m2ByGameObjectID.Value.ObjectModel.Name + ".mdx");
-                    gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.VisibilityBoundingBox);
+                    gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.InteractionBoundingBox);
                 }
                 foreach (var m2ByGameObjectID in TransportLiftTrigger.ObjectModelM2ByMeshGameObjectDisplayID)
                 {
@@ -607,7 +607,7 @@ namespace EQWOWConverter
                     int closeSoundEntryID = 0;
                     if (m2ByGameObjectID.Value.ObjectModel.SoundsByAnimationType.ContainsKey(AnimationType.Close) == true)
                         closeSoundEntryID = m2ByGameObjectID.Value.ObjectModel.SoundsByAnimationType[AnimationType.Close].DBCID;
-                    gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.VisibilityBoundingBox, openSoundEntryID, closeSoundEntryID);
+                    gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.InteractionBoundingBox, openSoundEntryID, closeSoundEntryID);
                 }
                 foreach (TransportLiftPathNode pathNode in TransportLiftPathNode.GetAllPathNodesSorted())
                 {

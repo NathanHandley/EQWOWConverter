@@ -154,7 +154,7 @@ namespace EQWOWConverter.WOWFiles
                 TextureAnimationsLookup.Add(new M2Int16(value));
 
             // Bounding Box
-            BoundingBox = wowObjectModel.VisibilityBoundingBox;
+            BoundingBox = wowObjectModel.InteractionBoundingBox;
 
             // Bounding Sphere Radius
             BoundingSphereRadius = BoundingBox.FurthestPointDistanceFromCenter();

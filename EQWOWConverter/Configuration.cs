@@ -156,7 +156,7 @@ namespace EQWOWConverter
         public static readonly bool GENERATE_FORCE_SQL_UPDATES = true;
 
         // The minimum size that boundary boxes should be for any object models when output
-        public static readonly float GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE = 25.1f;
+        public static readonly float GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE = 1f;
 
         //=====================================================================
         // Player
@@ -346,10 +346,6 @@ namespace EQWOWConverter
         // How long (in ms) the open/close animation will be for game objects
         public static readonly int OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS = 1000;
         public static readonly int OBJECT_GAMEOBJECT_OPENCLOSE_SLEEPER_FIELD_ANIMATIONTIME_INMS = 5000;
-
-        // Minimum distance/size that clickable items (doors, mailboxes, bridges, etc) should be interactable
-        public static readonly int OBJECT_GAMEOBJECT_DOORBRIDGE_INTERACT_BOUNDARY_MIN_SIZE = 5;
-        public static readonly int OBJECT_GAMEOBJECT_MAILBOX_INTERACT_BOUNDARY_MIN_SIZE = 3;
 
         // How big of an area that a tradeskill focus item (forge, cooking fire) covers in effect
         public static readonly int OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE = 5;
