@@ -29,7 +29,7 @@ namespace EQWOWConverter.Creatures
         public string Name = string.Empty;
         public string SkeletonName = string.Empty;
         public string Skeleton2Name = string.Empty;
-        public float BoundaryRadius;
+        public float ClickBoundaryRadius;
         public float BoundaryHeight;
         public float Lift = 0;
         public float ModelScale = 1;
@@ -221,7 +221,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.ModelScale = float.Parse(columns["ModelScale"]);
                 newCreatureRace.Height = float.Parse(columns["Height"]);
                 newCreatureRace.SpawnSizeMod = float.Parse(columns["SpawnSizeMod"]);
-                newCreatureRace.BoundaryRadius = float.Parse(columns["BoundRadius"]);
+                newCreatureRace.ClickBoundaryRadius = float.Parse(columns["ClickBoundRadius"]) * Configuration.GENERATE_CREATURE_SCALE;
                 newCreatureRace.BoundaryHeight = float.Parse(columns["BoundHeight"]);
                 newCreatureRace.CanHoldVisualItems = columns["CanHoldVisualItems"].Trim() == "1";
                 newCreatureRace.CanHoldVisualShields = columns["CanHoldVisualShields"].Trim() == "1";

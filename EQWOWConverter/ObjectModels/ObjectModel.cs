@@ -193,7 +193,17 @@ namespace EQWOWConverter.ObjectModels
             foreach (ObjectModelAnimation animation in ModelAnimations)
             {
                 animation.BoundingBox = InteractionBoundingBox;
-                animation.BoundingRadius = InteractionBoundingBox.FurthestPointDistanceFromCenter();
+                if (Properties.CreatureModelTemplate != null)
+                {
+                    animation.BoundingRadius = Properties.CreatureModelTemplate.Race.ClickBoundaryRadius;
+                    float lift = Properties.CreatureModelTemplate.Race.Lift * Configuration.GENERATE_CREATURE_SCALE;
+                    animation.BoundingBox = new BoundingBox(new Vector3(0, 0, lift), Properties.CreatureModelTemplate.Race.ClickBoundaryRadius);
+                }
+                else
+                {
+                    animation.BoundingRadius = InteractionBoundingBox.FurthestPointDistanceFromCenter();
+                    animation.BoundingBox = InteractionBoundingBox;
+                }                
             }
         }
 
