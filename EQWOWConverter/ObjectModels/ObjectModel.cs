@@ -195,9 +195,16 @@ namespace EQWOWConverter.ObjectModels
                 animation.BoundingBox = InteractionBoundingBox;
                 if (Properties.CreatureModelTemplate != null)
                 {
-                    animation.BoundingRadius = Properties.CreatureModelTemplate.Race.ClickBoundaryRadius;
                     float lift = Properties.CreatureModelTemplate.Race.Lift * Configuration.GENERATE_CREATURE_SCALE;
-                    animation.BoundingBox = new BoundingBox(new Vector3(0, 0, lift), Properties.CreatureModelTemplate.Race.ClickBoundaryRadius);
+                    float halfHeight = Properties.CreatureModelTemplate.Race.BoundaryHeight / 2;
+                    float radius = Properties.CreatureModelTemplate.Race.BoundaryRadius;                   
+                    animation.BoundingRadius = radius;
+                    animation.BoundingBox.TopCorner.X = radius;
+                    animation.BoundingBox.TopCorner.Y = radius;
+                    animation.BoundingBox.TopCorner.Z = halfHeight + lift;
+                    animation.BoundingBox.BottomCorner.X = radius * -1;
+                    animation.BoundingBox.BottomCorner.Y = radius * -1;
+                    animation.BoundingBox.BottomCorner.Z = (halfHeight * -1) + lift;
                 }
                 else
                 {
