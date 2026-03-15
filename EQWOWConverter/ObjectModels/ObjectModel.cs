@@ -185,32 +185,37 @@ namespace EQWOWConverter.ObjectModels
 
         private void CalculateInteractionAndVisualBoundingBoxes()
         {
-            // Interaction
-            MeshData poseMesh = GetMeshDataByPose(true, EQAnimationType.p01StandPassive, EQAnimationType.o01StandIdle, EQAnimationType.l01Walk, EQAnimationType.posStandPose, EQAnimationType.drfStandPose);
+            MeshData poseMesh = GetMeshDataByPose(true, EQAnimationType.posStandPose, EQAnimationType.drfStandPose, EQAnimationType.p01StandPassive, EQAnimationType.o01StandIdle, EQAnimationType.l01Walk);
             InteractionBoundingBox = BoundingBox.GenerateBoxFromVectors(poseMesh.Vertices, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+
+            // Creatures have a lift variable to factor for
+            if (Properties.CreatureModelTemplate != null)
+            {
+                float lift = Properties.CreatureModelTemplate.Race.Lift * Configuration.GENERATE_CREATURE_SCALE;
+                if (Properties.CreatureModelTemplate.Race.BoundaryRadiusOverride > 0)
+                {
+                    float halfHeight = Properties.CreatureModelTemplate.Race.BoundaryHeightOverride / 2;
+                    float radius = Properties.CreatureModelTemplate.Race.BoundaryRadiusOverride;
+                    //animation.BoundingRadius = radius;
+                    InteractionBoundingBox.TopCorner.X = radius;
+                    InteractionBoundingBox.TopCorner.Y = radius;
+                    InteractionBoundingBox.TopCorner.Z = halfHeight + lift;
+                    InteractionBoundingBox.BottomCorner.X = radius * -1;
+                    InteractionBoundingBox.BottomCorner.Y = radius * -1;
+                    InteractionBoundingBox.BottomCorner.Z = (halfHeight * -1) + lift;
+                }
+                else
+                {
+                    InteractionBoundingBox.TopCorner.Z += lift;
+                    InteractionBoundingBox.BottomCorner.Z += lift;
+                }   
+            }
 
             // Update animations
             foreach (ObjectModelAnimation animation in ModelAnimations)
             {
+                animation.BoundingRadius = InteractionBoundingBox.FurthestPointDistanceFromCenter();
                 animation.BoundingBox = InteractionBoundingBox;
-                if (Properties.CreatureModelTemplate != null)
-                {
-                    float lift = Properties.CreatureModelTemplate.Race.Lift * Configuration.GENERATE_CREATURE_SCALE;
-                    float halfHeight = Properties.CreatureModelTemplate.Race.BoundaryHeight / 2;
-                    float radius = Properties.CreatureModelTemplate.Race.BoundaryRadius;                   
-                    animation.BoundingRadius = radius;
-                    animation.BoundingBox.TopCorner.X = radius;
-                    animation.BoundingBox.TopCorner.Y = radius;
-                    animation.BoundingBox.TopCorner.Z = halfHeight + lift;
-                    animation.BoundingBox.BottomCorner.X = radius * -1;
-                    animation.BoundingBox.BottomCorner.Y = radius * -1;
-                    animation.BoundingBox.BottomCorner.Z = (halfHeight * -1) + lift;
-                }
-                else
-                {
-                    animation.BoundingRadius = InteractionBoundingBox.FurthestPointDistanceFromCenter();
-                    animation.BoundingBox = InteractionBoundingBox;
-                }                
             }
         }
 

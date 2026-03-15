@@ -156,7 +156,7 @@ namespace EQWOWConverter
         public static readonly bool GENERATE_FORCE_SQL_UPDATES = true;
 
         // The minimum size that boundary boxes should be for any object models when output
-        public static readonly float GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE = 1f;
+        public static readonly float GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE = 5f;
 
         //=====================================================================
         // Player

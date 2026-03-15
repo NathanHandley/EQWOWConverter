@@ -163,6 +163,13 @@ namespace EQWOWConverter.Common
             return System.Numerics.Vector3.Distance(cornerSystem, centerSystem);
         }
 
+        public float FurthestPointDistanceFromCenterXorYOnly()
+        {
+            float xDistance = FurthestPointDistanceFromCenterXOnly();
+            float yDistance = FurthestPointDistanceFromCenterYOnly();
+            return MathF.Max(xDistance, yDistance);
+        }
+
         public bool ContainsPoint(Vector3 point)
         {
             if (point.X < BottomCorner.X)
