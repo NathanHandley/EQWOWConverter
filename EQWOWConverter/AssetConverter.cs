@@ -1650,16 +1650,29 @@ namespace EQWOWConverter
                             // Items that have class specific copies need to be added for each copy, otherwise just one
                             if (curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
                             {
-                                foreach (var classSpecificItem in curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID)
+                                // To ensure drop rates add up to 100% for the group, the drop rate has to be reduced across
+                                // the class-specific copies
+                                float remainderChance = itemDropEntry.Chance;
+                                float stepChance = remainderChance / curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count;
+                                for (int j = 0; j < curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count; j++)
                                 {
+                                    ClassType curClassType = curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.ToList()[j].Key;
+                                    int itemTemplateEntryID = curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.ToList()[j].Value;
+
                                     ItemLootTemplate newItemLootTemplate = new ItemLootTemplate();
                                     newItemLootTemplate.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
-                                    newItemLootTemplate.ItemTemplateEntryID = classSpecificItem.Value;
-                                    newItemLootTemplate.Chance = itemDropEntry.Chance;
-                                    newItemLootTemplate.Comment = string.Concat(creatureTemplate.Name, " - ", curItemTemplate.Name, " (", classSpecificItem.Key.ToString(), ")");
+                                    newItemLootTemplate.ItemTemplateEntryID = itemTemplateEntryID;
+                                    newItemLootTemplate.Comment = string.Concat(creatureTemplate.Name, " - ", curItemTemplate.Name, " (", curClassType.ToString(), ")");
                                     newItemLootTemplate.GroupID = itemGroupID;
                                     newItemLootTemplate.MinCount = Math.Max(lootTableEntry.MinDrop, 1);
                                     newItemLootTemplate.MaxCount = Math.Max(lootTableEntry.MinDrop, 1);
+                                    if (j < curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count - 1)
+                                    {
+                                        newItemLootTemplate.Chance = stepChance;
+                                        remainderChance -= stepChance;
+                                    }
+                                    else
+                                        newItemLootTemplate.Chance = remainderChance;
                                     itemLootTemplates.Add(newItemLootTemplate);
                                 }
                             }
