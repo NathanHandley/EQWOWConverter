@@ -170,7 +170,7 @@ namespace EQWOWConverter.ObjectModels
             ProcessCollisionData(initialMaterials, collisionVertices, collisionTriangleFaces);
 
             // Determine interaction boundary (must be after MeshData assignment)
-            CalculateInteractionAndVisualBoundingBoxes();
+            CalculateInteractionBoundingBoxes();
 
             // Create a global sequence if there is none and it's not an emitter or projectile
             if (GlobalLoopSequenceLimits.Count == 0 && (ModelType != ObjectModelType.ParticleEmitter && ModelType != ObjectModelType.SpellProjectile && ModelType != ObjectModelType.TransportShip))
@@ -183,13 +183,13 @@ namespace EQWOWConverter.ObjectModels
             IsLoaded = true;
         }
 
-        private void CalculateInteractionAndVisualBoundingBoxes()
+        private void CalculateInteractionBoundingBoxes()
         {
             MeshData poseMesh = GetMeshDataByPose(true, EQAnimationType.posStandPose, EQAnimationType.drfStandPose, EQAnimationType.p01StandPassive, EQAnimationType.o01StandIdle, EQAnimationType.l01Walk);
             InteractionBoundingBox = BoundingBox.GenerateBoxFromVectors(poseMesh.Vertices, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
 
             // Creatures have a lift variable to factor for
-            if (Properties.CreatureModelTemplate != null)
+            if (ModelType != ObjectModelType.TransportShip && Properties.CreatureModelTemplate != null)
             {
                 float lift = Properties.CreatureModelTemplate.Race.Lift * Configuration.GENERATE_CREATURE_SCALE;
                 if (Properties.CreatureModelTemplate.Race.BoundaryRadiusOverride > 0)
@@ -2150,7 +2150,8 @@ namespace EQWOWConverter.ObjectModels
             }
             // Generate collision data if there is none and it's from an EQ object
             else if (collisionVertices.Count == 0 && Properties.DoGenerateCollisionFromMeshData == true &&
-                (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance && ModelType != ObjectModelType.EquipmentHeld))
+                (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance && ModelType != ObjectModelType.EquipmentHeld
+                && ModelType != ObjectModelType.TransportShip))
             {
                 // Skeletal objects need specially generated mesh data utilizing the animation positioning
                 MeshData workingMeshData;
