@@ -1129,7 +1129,7 @@ namespace EQWOWConverter.Zones
                     Logger.WriteDebug("For zone '" + ShortName + "', skipping 3D sound instance which has no file name for the day sound");
                 else if (soundInstance3D.SoundFileNameDayNoExt != soundInstance3D.SoundFileNameNightNoExt)
                     Logger.WriteDebug("For zone '" + ShortName + "', skipping 3D sound instance which has mismatched day and night of '" + soundInstance3D.SoundFileNameDayNoExt + "' and '" + soundInstance3D.SoundFileNameNightNoExt + "'");
-                else
+                else if (ZoneProperties.Disabled3DSoundInstancesByName.Contains(soundInstance3D.SoundFileNameDayNoExt) == false)
                     ProcessSoundInstance(soundInstance3D);
             }
 
