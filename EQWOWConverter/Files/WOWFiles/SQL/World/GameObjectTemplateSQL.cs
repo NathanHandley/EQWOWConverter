@@ -20,8 +20,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class GameObjectTemplateSQL : SQLFile
     {
-        //private static int CUR_ID = Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START;
-
         public override string DeleteRowSQL()
         {
             return "DELETE FROM gameobject_template WHERE `entry` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `entry` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
@@ -157,12 +155,5 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("VerifiedBuild", 12340);            
             Rows.Add(newRow);
         }
-
-        //public static int GenerateID()
-        //{
-        //    int id = CUR_ID;
-        //    CUR_ID++;
-        //    return id;
-        //}
     }
 }

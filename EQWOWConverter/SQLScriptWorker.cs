@@ -120,11 +120,11 @@ namespace EQWOWConverter
             PopulateCreatureData(creatureTemplates, creatureModelTemplates, creatureSpawnPools, spellTemplatesByEQID);
 
             // Game Events
-            DateTime eventEnd = new DateTime(2037, 12, 30, 23, 0, 0);
-            DateTime dayStart = new DateTime(2000, 10, 29, 6, 0, 0);
-            gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_DAY, dayStart, eventEnd, 1440, 840, "EQ Day");
-            DateTime nightStart = new DateTime(2000, 10, 28, 20, 0, 0);
-            gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_NIGHT, nightStart, eventEnd, 1440, 600, "EQ Night");
+            //DateTime eventEnd = new DateTime(2037, 12, 30, 23, 0, 0);
+            //DateTime dayStart = new DateTime(2000, 10, 29, 6, 0, 0);
+            //gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_DAY, dayStart, eventEnd, 1440, 840, "EQ Day");
+            //DateTime nightStart = new DateTime(2000, 10, 28, 20, 0, 0);
+            //gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_NIGHT, nightStart, eventEnd, 1440, 600, "EQ Night");
 
             // Items
             PopulateItemData(itemLootTemplatesByCreatureTemplateID, spellTemplatesByEQID);
@@ -152,20 +152,16 @@ namespace EQWOWConverter
         {
             modEverquestSystemConfigsSQL.AddRow("ModVersion", Configuration.CORE_MOD_VERSION.ToString());
             modEverquestSystemConfigsSQL.AddRow("BardMaxConcurrentSongs", Configuration.SPELL_MAX_CONCURRENT_BARD_SONGS.ToString());
-            modEverquestSystemConfigsSQL.AddRow("DayEventID", Configuration.SQL_GAMEEVENT_ID_DAY.ToString());
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMin", Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString());
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMax", Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH.ToString());
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMin", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMax", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END.ToString());
-            modEverquestSystemConfigsSQL.AddRow("NightEventID", Configuration.SQL_GAMEEVENT_ID_NIGHT.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMin", Configuration.DBCID_MAP_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMax", Configuration.DBCID_MAP_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("ShipEntryTemplateIDMin", Configuration.SQL_GAMEOBJECTTEMPLATE_SHIP_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("ShipEntryTemplateIDMax", Configuration.SQL_GAMEOBJECTTEMPLATE_SHIP_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("SpellDBCIDMin", Configuration.DBCID_SPELL_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("SpellDBCIDMax", Configuration.DBCID_SPELL_ID_END.ToString());
-            modEverquestSystemConfigsSQL.AddRow("SpellDBCIDDayPhaseAura", Configuration.SPELLS_DAYPHASE_SPELLDBC_ID.ToString());
-            modEverquestSystemConfigsSQL.AddRow("SpellDBCIDNightPhaseAura", Configuration.SPELLS_NIGHTPHASE_SPELLDBC_ID.ToString());
             modEverquestSystemConfigsSQL.AddRow("QuestSQLIDMin", Configuration.SQL_QUEST_TEMPLATE_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("QuestSQLIDMax", Configuration.SQL_QUEST_TEMPLATE_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("WorldScale", Configuration.GENERATE_WORLD_SCALE.ToString());
@@ -187,7 +183,7 @@ namespace EQWOWConverter
                     string comment = string.Concat(creatureTemplate.Name, " - EQ Debug Creature");                    
                     creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, creatureTemplate.SpawnWaypointDebugMapID, creatureTemplate.SpawnWaypointDebugAreaID,
                         creatureTemplate.SpawnWaypointDebugAreaID, creatureTemplate.SpawnWaypointDebugXPosition, creatureTemplate.SpawnWaypointDebugYPosition, 
-                        creatureTemplate.SpawnWaypointDebugZPosition, 0, CreatureMovementType.None, 0, true, true, comment);                    
+                        creatureTemplate.SpawnWaypointDebugZPosition, 0, CreatureMovementType.None, 0, comment);                    
                     continue;
                 }
 
@@ -345,7 +341,7 @@ namespace EQWOWConverter
                         }                            
                         creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                             spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path,
-                            spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
+                            spawnPool.CreatureSpawnGroup.RoamDistance, comment);
                     }
                     else
                     {
@@ -355,7 +351,7 @@ namespace EQWOWConverter
                             movementType = CreatureMovementType.Random;
                         creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                             spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
-                            spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
+                            spawnPool.CreatureSpawnGroup.RoamDistance, comment);
                     }
                 }
 
@@ -404,7 +400,7 @@ namespace EQWOWConverter
                                 }                                    
                                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                     spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path,
-                                    spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
+                                    spawnPool.CreatureSpawnGroup.RoamDistance, comment);
                             }
                             else
                             {
@@ -414,7 +410,7 @@ namespace EQWOWConverter
                                     movementType = CreatureMovementType.Random;
                                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                     spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
-                                    spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
+                                    spawnPool.CreatureSpawnGroup.RoamDistance, comment);
                             }
                         }
                     }
@@ -458,7 +454,7 @@ namespace EQWOWConverter
                             }
                             creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                 spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path,
-                                spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
+                                spawnPool.CreatureSpawnGroup.RoamDistance, comment);
                         }
                         else
                         {
@@ -468,7 +464,7 @@ namespace EQWOWConverter
                                 movementType = CreatureMovementType.Random;
                             creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                 spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
-                                spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
+                                spawnPool.CreatureSpawnGroup.RoamDistance, comment);
                         }
                     }
                 }
@@ -1012,7 +1008,7 @@ namespace EQWOWConverter
                     int spiritHealerGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                     int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
                     creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID,
-                        graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 0, true, true, string.Empty);
+                        graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 0, string.Empty);
                 }
             }
 

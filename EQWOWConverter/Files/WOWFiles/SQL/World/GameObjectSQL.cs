@@ -36,7 +36,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("zoneId", areaID);
             newRow.AddInt("areaId", areaID);
             newRow.AddInt("spawnMask", 1);
-            newRow.AddInt("phaseMask", 6); // Day (2) + Night (4)
+            newRow.AddInt("phaseMask", 1);
             newRow.AddFloat("position_x", position.X);
             newRow.AddFloat("position_y", position.Y);
             newRow.AddFloat("position_z", position.Z);

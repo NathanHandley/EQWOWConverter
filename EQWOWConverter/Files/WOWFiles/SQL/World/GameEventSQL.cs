@@ -20,7 +20,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return string.Concat("DELETE FROM game_event WHERE `eventEntry` IN (", Configuration.SQL_GAMEEVENT_ID_DAY, ",", Configuration.SQL_GAMEEVENT_ID_NIGHT, ");");
+            return string.Concat("DELETE FROM game_event WHERE `eventEntry` IN (", Configuration.SQL_GAME_EVENTS_ID_START, ",", Configuration.SQL_GAME_EVENTS_ID_END, ");");
         }
 
         public void AddRow(int id, DateTime? startTime, DateTime? endTime, int occurence, int length, string description)

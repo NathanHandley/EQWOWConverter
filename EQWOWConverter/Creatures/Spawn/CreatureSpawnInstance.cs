@@ -30,8 +30,6 @@ namespace EQWOWConverter.Creatures
         public int RespawnTimeInSeconds = 0;
         public int Variance = 0; // TODO: Figure out what this is...
         public int PathGridID = 0;
-        public bool SpawnDay;
-        public bool SpawnNight;
 
         public int MapID = 0;
         public int AreaID = 0;
@@ -135,8 +133,6 @@ namespace EQWOWConverter.Creatures
                 newSpawnDetail.RespawnTimeInSeconds = int.Parse(columns["respawntime"]);
                 newSpawnDetail.Variance = int.Parse(columns["variance"]);
                 newSpawnDetail.PathGridID = int.Parse(columns["pathgrid"]);
-                newSpawnDetail.SpawnDay = int.Parse(columns["spawn_day"]) == 1 ? true : false;
-                newSpawnDetail.SpawnNight = int.Parse(columns["spawn_night"]) == 1 ? true : false;
 
                 // Get orientation from heading. EQ uses 0-256 range, and can be 2x that (512) and then convert to degrees and then radians
                 float modHeading = 0;

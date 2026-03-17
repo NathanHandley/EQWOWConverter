@@ -1913,34 +1913,6 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             spellTemplates.Add(bindAffinitySelfSpellTemplate);
 
-            // Phase aura 1 (Day)
-            SpellTemplate dayPhaseSpellTemplate = new SpellTemplate();
-            dayPhaseSpellTemplate.Name = "EQ Phase Day";
-            dayPhaseSpellTemplate.Category = 0;
-            dayPhaseSpellTemplate.WOWSpellID = Configuration.SPELLS_DAYPHASE_SPELLDBC_ID;
-            dayPhaseSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
-            dayPhaseSpellTemplate.Description = "Able to see day EQ creatures";
-            dayPhaseSpellTemplate.SpellIconID = 253;
-            dayPhaseSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Phase, 0, 0, 1, -1, 2, 0));
-            dayPhaseSpellTemplate.SchoolMask = 1;
-            dayPhaseSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
-            dayPhaseSpellTemplate.AuraDuration.IsInfinite = true;
-            spellTemplates.Add(dayPhaseSpellTemplate);
-
-            // Phase aura 2 (Night)
-            SpellTemplate nightPhaseSpellTemplate = new SpellTemplate();
-            nightPhaseSpellTemplate.Name = "EQ Phase Day";
-            nightPhaseSpellTemplate.Category = 0;
-            nightPhaseSpellTemplate.WOWSpellID = Configuration.SPELLS_NIGHTPHASE_SPELLDBC_ID;
-            nightPhaseSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
-            nightPhaseSpellTemplate.Description = "Able to see night EQ creatures";
-            nightPhaseSpellTemplate.SpellIconID = 253;
-            nightPhaseSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Phase, 0, 0, 1, -1, 4, 0));
-            nightPhaseSpellTemplate.SchoolMask = 1;
-            nightPhaseSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
-            nightPhaseSpellTemplate.AuraDuration.IsInfinite = true;
-            spellTemplates.Add(nightPhaseSpellTemplate);
-
             Logger.WriteDebug("Generating custom spells completed.");
         }
 

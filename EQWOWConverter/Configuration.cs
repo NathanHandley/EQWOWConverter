@@ -78,7 +78,7 @@ namespace EQWOWConverter
         // Core
         // ====================================================================
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static readonly int CORE_MOD_VERSION = 3;
+        public static readonly int CORE_MOD_VERSION = 4;
         
         // Plays a beep sound when the generate completes if set to true
         public static readonly bool CORE_CONSOLE_BEEP_ON_COMPLETE = true;
@@ -515,8 +515,6 @@ namespace EQWOWConverter
         // IDs for special spells that need an exact match of ID between this and mod-everquest
         public static readonly int SPELLS_GATECUSTOM_SPELLDBC_ID = 86900;
         public static readonly int SPELLS_BINDCUSTOM_SPELLDBC_ID = 86901;
-        public static readonly int SPELLS_DAYPHASE_SPELLDBC_ID = 86903;
-        public static readonly int SPELLS_NIGHTPHASE_SPELLDBC_ID = 86904;
 
         // How much to multiply the EQ range value for WoW
         public static readonly float SPELLS_RANGE_MULTIPLIER = 0.3333f;
@@ -810,9 +808,9 @@ namespace EQWOWConverter
         public static readonly int SQL_GAMEOBJECT_GUID_ID_START = 310000;
         public static readonly int SQL_GAMEOBJECT_GUID_ID_END = 319999;
 
-        // IDs for game_event records
-        public static readonly int SQL_GAMEEVENT_ID_DAY = 125;
-        public static readonly int SQL_GAMEEVENT_ID_NIGHT = 126;
+        // IDs for events
+        public static readonly int SQL_GAME_EVENTS_ID_START = 300;
+        public static readonly int SQL_GAME_EVENTS_ID_END = 400;
 
         // Start and end IDs for gameobject_template rows
         // - GameObjects.csv owns rows 270000 - 274999

@@ -30,7 +30,7 @@ namespace EQWOWConverter.WOWFiles
         }
 
         public void AddRow(int guid, int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition, 
-            float orientation, CreatureMovementType movementType, float wanderDistance, bool seeDay, bool seeNight, string comment)
+            float orientation, CreatureMovementType movementType, float wanderDistance, string comment)
         {
             int currentWaypoint = 0;
             if (movementType == CreatureMovementType.Path)
@@ -45,7 +45,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("zoneId", zoneID);
             newRow.AddInt("areaId", areaID);
             newRow.AddInt("spawnMask", 1);
-            newRow.AddInt("phaseMask", GetPhaseMask(seeDay, seeNight));
+            newRow.AddInt("phaseMask", 1);
             newRow.AddInt("equipment_id", 0);
             newRow.AddFloat("position_x", MathF.Round(xPosition, 6));
             newRow.AddFloat("position_y", MathF.Round(yPosition, 6));
@@ -65,21 +65,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("CreateObject", 0);
             newRow.AddString("Comment", comment);
             Rows.Add(newRow);
-        }
-
-        private int GetPhaseMask(bool seeDay, bool seeNight)
-        {
-            if (seeDay == true)
-            {
-                if (seeNight == true)
-                    return 6;
-                else
-                    return 2;
-            }
-            else if (seeNight == true)
-                return 4;
-            else
-                return 1;
         }
     }
 }
