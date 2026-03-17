@@ -1,0 +1,129 @@
+id|zone|cond_id|name|period|next_minute|next_hour|enabled|argument
+1|eastwastes|1|Enable Night|1440|1|21|1|1
+2|eastwastes|1|Disable Night|1440|0|7|1|0
+3|burningwood|2|Naxot Spawn|1440|1|13|1|1
+4|burningwood|2|Naxot Depsawn|1440|0|1|1|0
+5|commons|2|Enable Day|1440|1|7|1|1
+6|commons|2|Disable Day|1440|0|21|1|0
+7|commons|1|Enable Night|1440|1|21|1|1
+8|commons|1|Disable Night|1440|0|7|1|0
+9|everfrost|2|Enable Day|1440|1|7|1|1
+10|everfrost|2|Disable Day|1440|0|21|1|0
+11|everfrost|1|Enable Night|1440|1|21|1|1
+12|everfrost|1|Disable Night|1440|0|7|1|0
+13|kithicor|2|Enable Day|1440|1|5|1|1
+14|kithicor|2|Disable Day|1440|0|18|1|0
+15|kithicor|1|Enable Night|1440|1|19|1|1
+16|kithicor|1|Disable Night|1440|0|4|1|0
+17|lakerathe|2|Enable Day|1440|1|7|1|1
+18|lakerathe|2|Disable Day|1440|0|21|1|0
+19|lakerathe|1|Enable Night|1440|1|21|1|1
+20|lakerathe|1|Disable Night|1440|0|7|1|0
+21|lfaydark|1|Enable Night|1440|1|21|1|1
+22|lfaydark|1|Disable Night|1440|0|7|1|0
+23|northkarana|2|Enable Day|1440|1|7|1|1
+24|northkarana|2|Disable Day|1440|0|21|1|0
+25|northkarana|1|Enable Night|1440|1|21|1|1
+26|northkarana|1|Disable Night|1440|0|7|1|0
+27|oggok|2|Enable Ryn|1440|1|8|1|1
+28|oggok|2|Disable Ryn|1440|0|19|1|0
+29|oggok|1|Enable Gronk|1440|1|20|1|1
+30|oggok|1|Disable Gronk|1440|0|7|1|0
+31|qey2hh1|2|Enable Day|1440|1|7|1|1
+32|qey2hh1|2|Disable Day|1440|0|20|1|0
+33|qey2hh1|1|Enable Night|1440|1|20|1|1
+34|qey2hh1|1|Disable Night|1440|0|7|1|0
+35|rathemtn|2|Enable Hasten|1440|1|7|1|1
+36|rathemtn|2|Disable Hasten|1440|0|21|1|0
+37|rathemtn|1|Enable Zephyl|1440|1|21|1|1
+38|rathemtn|1|Disable Zephyl|1440|0|7|1|0
+43|southkarana|2|Enable Day|1440|1|7|1|1
+44|southkarana|2|Disable Day|1440|0|21|1|0
+45|southkarana|1|Enable Night|1440|1|21|1|1
+46|southkarana|1|Disable Night|1440|0|7|1|0
+48|qeynos|2|Enable Day|1440|1|8|1|1
+49|qeynos|2|Disable Day|1440|0|19|1|0
+50|qeynos|1|Enable Night|1440|1|20|1|1
+51|qeynos|1|Disable Night|1440|0|7|1|0
+52|qeynos2|2|Enable Day|1440|1|8|1|1
+53|qeynos2|2|Disable Day|1440|0|19|1|0
+54|qeynos2|1|Enable Night|1440|1|20|1|1
+55|qeynos2|1|Disable Night|1440|0|7|1|0
+56|qeytoqrg|2|Enable Day|1440|1|7|1|1
+57|qeytoqrg|2|Disable Day|1440|0|21|1|0
+58|qeytoqrg|1|Enable Night|1440|1|21|1|1
+59|qeytoqrg|1|Disable Night|1440|0|7|1|0
+60|freporte|2|Enable Day|1440|1|9|1|1
+61|freporte|2|Disable Day|1440|0|23|1|0
+62|freporte|1|Enable Night|1440|1|23|1|1
+63|freporte|1|Disable Night|1440|0|9|1|0
+64|overthere|2|Enable Day|1440|1|5|1|1
+65|overthere|2|Disable Day|1440|0|19|1|0
+66|overthere|1|Enable Night|1440|1|19|1|1
+67|overthere|1|Disable Night|1440|0|5|1|0
+68|thurgadinb|2|Enable Day|1440|0|8|1|1
+69|thurgadinb|2|Disable Day|1440|0|16|1|0
+70|thurgadinb|1|Enable Night|1440|0|17|1|1
+71|thurgadinb|1|Disable Night|1440|0|7|1|0
+100|lfaydark|2|enable_day|1440|1|7|1|1
+101|lfaydark|2|disableday|1440|0|21|1|0
+102|steamfont|1|EnableCargo|1440|1|7|1|1
+103|steamfont|1|DisbleCargo|1440|0|21|1|0
+104|neriakb|2|Enable Day|1440|1|7|1|1
+105|neriakb|2|Disable Day|1440|0|21|1|0
+106|neriakb|1|Enable Night|1440|1|21|1|1
+107|neriakb|1|Disable Night|1440|0|7|1|0
+108|fieldofbone|1|EnableNight|1440|1|21|1|1
+109|fieldofbone|1|DisableNight|1440|0|7|1|0
+110|fieldofbone|2|EnableDay|1440|1|7|1|1
+111|fieldofbone|2|DisableDay|1440|0|21|1|0
+120|neriakc|1|TaniDown|1440|1|19|1|0
+121|neriakc|1|TaniUp|1440|0|21|1|1
+122|qey2hh1|3|GuardTrigOn|1440|0|17|1|1
+123|qey2hh1|3|GuardTrigOff|1440|0|18|1|0
+124|soltemple|2|EnableDay|1440|1|9|1|1
+125|soltemple|2|DisableDay|1440|0|21|1|0
+126|soltemple|1|EnableNight|1440|1|21|1|1
+127|soltemple|1|DisableNight|1440|0|9|1|0
+128|swampofnohope|1|MysticDovanSpawn|1440|0|20|1|1
+129|swampofnohope|1|MysticDovanDespawn|1440|0|7|1|0
+130|swampofnohope|2|CaptainNedarSpawn|1440|0|12|1|1
+131|swampofnohope|2|CaptainNedarDespawn|1440|0|19|1|0
+132|firiona|1|TrackerDay|1440|1|7|1|1
+133|firiona|1|TrackerDaydepop|1440|0|21|1|0
+134|firiona|2|TrackerNight|1440|1|21|1|1
+135|firiona|2|TrackerNightDepop|1440|0|6|1|0
+152|qcat|1|CourierUp|1440|1|7|1|1
+153|qcat|1|CourierDown|1440|0|20|1|0
+154|qcat|2|MalkaUp|1440|1|21|1|1
+155|qcat|2|MalkaDown|1440|0|6|1|0
+156|kaladimb|1|FounyDown|1440|1|19|1|0
+157|kaladimb|1|FounyUp|1440|0|21|1|1
+162|mischiefplane|1|TheaterStart|1440|0|7|1|1
+163|mischiefplane|1|TheaterEnd|1440|0|10|1|0
+164|gukbottom|1|RasterSpawn|1440|0|5|1|1
+165|gukbottom|1|RasterDespawn|1440|0|8|1|0
+166|gukbottom|1|RasterSpawn|1440|0|10|1|1
+167|gukbottom|1|RasterSpawn|1440|0|19|1|1
+168|gfaydark|1|EnableNightHend|1440|0|20|1|1
+169|gfaydark|1|DisableNightHend|1440|0|7|1|0
+170|gfaydark|2|EnableDayHend|1440|0|8|1|1
+171|gfaydark|2|DisableDayHend|1440|0|19|1|0
+172|highpass|1|EnableNight|1440|0|21|1|1
+173|highpass|1|DisableNight|1440|0|8|1|0
+174|highpass|2|EnableDay|1440|0|9|1|1
+175|highpass|2|DisableDay|1440|0|20|1|0
+182|sro|2|Enable Day|1440|1|7|1|1
+183|sro|2|Disable Day|1440|0|20|1|0
+184|sro|1|Enable Night|1440|1|21|1|1
+185|sro|1|Disable Night|1440|0|6|1|0
+186|cabeast|2|EnableDay|1440|1|8|1|1
+187|cabeast|2|Disable Day|1440|0|19|1|0
+188|cabeast|1|Enable Night|1440|1|20|1|1
+189|cabeast|1|Disable Night|1440|0|7|1|0
+194|gfaydark|3|ExpinDown|1440|1|19|1|0
+195|gfaydark|3|ExpinUp|1440|5|19|1|1
+196|lakeofillomen|1|EnableNight|1440|1|21|1|1
+197|lakeofillomen|1|DisableNight|1440|0|7|1|0
+198|lakeofillomen|2|EnableDay|1440|1|7|1|1
+199|lakeofillomen|2|DisableDay|1440|0|21|1|0

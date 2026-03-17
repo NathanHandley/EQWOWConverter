@@ -19,6 +19,7 @@ namespace EQWOWConverter
     internal class CreatureSpawnEntry
     {
         private static List<CreatureSpawnEntry> SpawnEntryList = new List<CreatureSpawnEntry>();
+        private static readonly object SpawnLock = new object();
 
         public int SpawnGroupID = 0;
         public int EQCreatureTemplateID = 0;
@@ -26,9 +27,12 @@ namespace EQWOWConverter
 
         public static List<CreatureSpawnEntry> GetSpawnEntryList()
         {
-            if (SpawnEntryList.Count == 0)
-                PopulateSpawnEntryList();
-            return SpawnEntryList;
+            lock (SpawnLock)
+            {
+                if (SpawnEntryList.Count == 0)
+                    PopulateSpawnEntryList();
+                return SpawnEntryList;
+            }
         }
 
         private static void PopulateSpawnEntryList()
@@ -37,47 +41,24 @@ namespace EQWOWConverter
 
             string spawnEntriesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpawnEntries.csv");
             Logger.WriteDebug("Populating Spawn Entry list via file '" + spawnEntriesFile + "'");
-            string inputData = FileTool.ReadAllDataFromFile(spawnEntriesFile);
-            string[] inputRows = inputData.Split(Environment.NewLine);
-            if (inputRows.Length < 2)
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(spawnEntriesFile, "|");
+            foreach (Dictionary<string, string> columns in rows)
             {
-                Logger.WriteError("SpawnEntry list via file '" + spawnEntriesFile + "' did not have enough rows");
-                return;
-            }
-
-            // Load all of the data
-            bool headerRow = true;
-            foreach (string row in inputRows)
-            {
-                // Handle first row
-                if (headerRow == true)
-                {
-                    headerRow = false;
-                    continue;
-                }
-
-                // Skip blank rows
-                if (row.Trim().Length == 0)
-                    continue;
-
-                // Load the row
-                string[] rowBlocks = row.Split("|");
-                CreatureSpawnEntry newSpawnEntry = new CreatureSpawnEntry();
-                newSpawnEntry.SpawnGroupID = int.Parse(rowBlocks[0]);
-                newSpawnEntry.EQCreatureTemplateID = int.Parse(rowBlocks[1]);
-                newSpawnEntry.Chance = int.Parse(rowBlocks[2]);
-
                 // Skip any invalid expansion rows
                 if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == false)
                 {
-                    int minExpansion = int.Parse(rowBlocks[5]);
-                    int maxExpansion = int.Parse(rowBlocks[6]);
+                    int minExpansion = int.Parse(columns["min_expansion"]);
+                    int maxExpansion = int.Parse(columns["max_expansion"]);
                     if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                         continue;
                     if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                         continue;
                 }
 
+                CreatureSpawnEntry newSpawnEntry = new CreatureSpawnEntry();
+                newSpawnEntry.SpawnGroupID = int.Parse(columns["spawngroupID"]);
+                newSpawnEntry.EQCreatureTemplateID = int.Parse(columns["npcID"]);
+                newSpawnEntry.Chance = int.Parse(columns["chance"]);
                 SpawnEntryList.Add(newSpawnEntry);
             }
         }
