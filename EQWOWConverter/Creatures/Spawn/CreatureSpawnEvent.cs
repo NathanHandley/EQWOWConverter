@@ -26,9 +26,9 @@ namespace EQWOWConverter.Creatures
         public string ZoneShortName = string.Empty;
         public int ConditionID = 0;
         public string Name = string.Empty;
-        public int NextMinute = 0;
-        public int NextHour = 0;
-        public int Arguement = 0;
+        public CreatureSpawnEventNormalizeType NormalizeType = CreatureSpawnEventNormalizeType.None;
+        public int TriggerHour = 0;
+        public int DurationInHours = 0;
 
         public static List<CreatureSpawnEvent> GetSpawnEventsList()
         {
@@ -54,9 +54,18 @@ namespace EQWOWConverter.Creatures
                 spawnEvent.ZoneShortName = columns["zone"];
                 spawnEvent.ConditionID = int.Parse(columns["cond_id"]);
                 spawnEvent.Name = columns["name"];
-                spawnEvent.NextMinute = int.Parse(columns["next_minute"]);
-                spawnEvent.NextHour = int.Parse(columns["next_hour"]);
-                spawnEvent.Arguement = int.Parse(columns["argument"]);
+                switch (columns["normalize_type"].ToLower().Trim())
+                {
+                    case "day": spawnEvent.NormalizeType = CreatureSpawnEventNormalizeType.Day; break;
+                    case "night": spawnEvent.NormalizeType = CreatureSpawnEventNormalizeType.Night; break;
+                    case "none": spawnEvent.NormalizeType = CreatureSpawnEventNormalizeType.None; break;
+                    default:
+                        {
+                            Logger.WriteError("SpawnEvent named '", spawnEvent.Name, "' has an unhandled normalize_type of '", columns["normalize_type"].ToLower().Trim(), "'");
+                        } break;
+                }
+                spawnEvent.TriggerHour = int.Parse(columns["trigger_hour"]);
+                spawnEvent.DurationInHours = int.Parse(columns["duration_in_hour"]);
                 SpawnEvents.Add(spawnEvent);
             }
         }
