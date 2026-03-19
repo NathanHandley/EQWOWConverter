@@ -25,7 +25,6 @@ namespace EQWOWConverter.Events
         public DateTime? StartTime = null;
         public DateTime? EndTime = null;
         public int DurationInMinutes = 0;
-        public string Name = string.Empty;
         public string Description = string.Empty;
         public int Occurrance = 1440; // This default means daily
 

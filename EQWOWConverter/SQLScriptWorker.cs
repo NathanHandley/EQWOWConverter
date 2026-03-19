@@ -52,6 +52,7 @@ namespace EQWOWConverter
         private CreatureTextSQL creatureTextSQL = new CreatureTextSQL();
         private GameEventSQL gameEventSQL = new GameEventSQL();
         private GameEventCreatureSQL gameEventCreatureSQL = new GameEventCreatureSQL();
+        private GameEventPoolSQL gameEventPoolSQL = new GameEventPoolSQL();
         private GameGraveyardSQL gameGraveyardSQL = new GameGraveyardSQL();
         private GameTeleSQL gameTeleSQL = new GameTeleSQL();
         private GameWeatherSQL gameWeatherSQL = new GameWeatherSQL();
@@ -352,6 +353,8 @@ namespace EQWOWConverter
                             spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
                             spawnPool.CreatureSpawnGroup.RoamDistance, comment);
                     }
+                    if (spawnInstance.LinkedGameEvent != null)
+                        gameEventCreatureSQL.AddRow(spawnInstance.LinkedGameEvent.GameEventsSQLID, creatureGUID);
                 }
 
                 // Create a pool pools if there are multiple locations
@@ -367,6 +370,7 @@ namespace EQWOWConverter
                     foreach (string name in motherPoolNames)
                         motherPoolDescription += ", " + name;
                     poolTemplateSQL.AddRow(motherPoolTemplateID, motherPoolDescription + " - Master Pool", spawnPool.GetMaxSpawnCount());
+                    gameEventPoolSQL.AddRow(201, motherPoolTemplateID);
 
                     // Create by instance groups
                     for (int spawnInstanceIndex = 0; spawnInstanceIndex < spawnPool.CreatureSpawnInstances.Count; spawnInstanceIndex++)
@@ -377,6 +381,7 @@ namespace EQWOWConverter
                         int poolPoolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
                         string poolPoolDescription = motherPoolDescription + " - " + spawnInstanceIndex.ToString();
                         poolTemplateSQL.AddRow(poolPoolTemplateID, poolPoolDescription, 1);
+                        gameEventPoolSQL.AddRow(201, poolPoolTemplateID);
                         poolPoolSQL.AddRow(poolPoolTemplateID, motherPoolTemplateID, 0, poolPoolDescription);
 
                         // Create the creature records
@@ -411,6 +416,8 @@ namespace EQWOWConverter
                                     spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
                                     spawnPool.CreatureSpawnGroup.RoamDistance, comment);
                             }
+                            if (spawnInstance.LinkedGameEvent != null)
+                                gameEventCreatureSQL.AddRow(spawnInstance.LinkedGameEvent.GameEventsSQLID, creatureGUID);
                         }
                     }
                 }
@@ -432,6 +439,7 @@ namespace EQWOWConverter
                     // Create the pool template
                     int poolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
                     poolTemplateSQL.AddRow(poolTemplateID, poolDescription, spawnPool.GetMaxSpawnCount());
+                    gameEventPoolSQL.AddRow(201, poolTemplateID);
 
                     // Create the creature records
                     for (int creatureTemplateIndex = 0; creatureTemplateIndex < spawnPool.CreatureTemplates.Count; creatureTemplateIndex++)
@@ -465,6 +473,8 @@ namespace EQWOWConverter
                                 spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
                                 spawnPool.CreatureSpawnGroup.RoamDistance, comment);
                         }
+                        if (spawnInstance.LinkedGameEvent != null)
+                            gameEventCreatureSQL.AddRow(spawnInstance.LinkedGameEvent.GameEventsSQLID, creatureGUID);
                     }
                 }
             }
@@ -1081,6 +1091,7 @@ namespace EQWOWConverter
             creatureTextSQL.SaveToDisk("creature_text", SQLFileType.World);
             gameEventSQL.SaveToDisk("game_event", SQLFileType.World);
             gameEventCreatureSQL.SaveToDisk("game_event_creature", SQLFileType.World);
+            gameEventPoolSQL.SaveToDisk("game_event_pool", SQLFileType.World);
             gameGraveyardSQL.SaveToDisk("game_graveyard", SQLFileType.World);
             gameObjectSQL.SaveToDisk("gameobject", SQLFileType.World);
             gameObjectAddonSQL.SaveToDisk("gameobject_addon", SQLFileType.World);

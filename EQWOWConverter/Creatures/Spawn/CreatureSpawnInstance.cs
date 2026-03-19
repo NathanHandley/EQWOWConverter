@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Events;
+
 namespace EQWOWConverter.Creatures
 {
     internal class CreatureSpawnInstance
@@ -30,6 +32,9 @@ namespace EQWOWConverter.Creatures
         public int RespawnTimeInSeconds = 0;
         public int Variance = 0; // TODO: Figure out what this is...
         public int PathGridID = 0;
+        public int Condition = 0;
+
+        public GameEvent? LinkedGameEvent = null;
 
         public int MapID = 0;
         public int AreaID = 0;
@@ -133,6 +138,7 @@ namespace EQWOWConverter.Creatures
                 newSpawnDetail.RespawnTimeInSeconds = int.Parse(columns["respawntime"]);
                 newSpawnDetail.Variance = int.Parse(columns["variance"]);
                 newSpawnDetail.PathGridID = int.Parse(columns["pathgrid"]);
+                newSpawnDetail.Condition = int.Parse(columns["condition"]);
 
                 // Get orientation from heading. EQ uses 0-256 range, and can be 2x that (512) and then convert to degrees and then radians
                 float modHeading = 0;

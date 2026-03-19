@@ -23,6 +23,7 @@ namespace EQWOWConverter.Creatures
     {
         private static List<CreatureSpawnEvent> IndividualSpawnEvents = new List<CreatureSpawnEvent>();
         private static List<CreatureSpawnEvent> GroupedSpawnEvents = new List<CreatureSpawnEvent>();
+        private static Dictionary<string, Dictionary<int, CreatureSpawnEvent>> GroupedSpawnEventsByZoneAndConditionID = new Dictionary<string, Dictionary<int, CreatureSpawnEvent>>();
         private static readonly object SpawnEventsLock = new object();
 
         public List<int> EQIDs = new List<int>();
@@ -33,6 +34,7 @@ namespace EQWOWConverter.Creatures
         public CreatureSpawnEventNormalizeType NormalizeType = CreatureSpawnEventNormalizeType.None;
         public int TriggerHour = 0;
         public int DurationInHours = 0;
+        public GameEvent? LinkedGameEvent = null;
 
         public CreatureSpawnEvent()
         {
@@ -61,6 +63,22 @@ namespace EQWOWConverter.Creatures
             }
         }
 
+        public static CreatureSpawnEvent? GetGroupSpawnEvent(string zoneShortName, int conditionID)
+        {
+            lock (SpawnEventsLock)
+            {
+                if (GroupedSpawnEvents.Count == 0)
+                    PopulateSpawnEventsList();
+
+                if (GroupedSpawnEventsByZoneAndConditionID.ContainsKey(zoneShortName) == false)
+                    return null;
+                if (GroupedSpawnEventsByZoneAndConditionID[zoneShortName].ContainsKey(conditionID) == false)
+                    return null;
+                else
+                    return GroupedSpawnEventsByZoneAndConditionID[zoneShortName][conditionID];
+            }
+        }
+
         private static void PopulateSpawnEventsList()
         {
             GroupedSpawnEvents.Clear();
@@ -75,6 +93,7 @@ namespace EQWOWConverter.Creatures
                 dayEvent.TriggerHour = Configuration.EVENTS_NORMALIZED_DAY_SPAWN_START_HOUR;
                 dayEvent.DurationInHours = Configuration.EVENTS_NORMALIZED_DAY_SPAWN_LENGTH_IN_HOUR;
                 dayEvent.NormalizeType = CreatureSpawnEventNormalizeType.Day;
+                dayEvent.ConditionID = 2; // Must always be 2
                 GroupedSpawnEvents.Add(dayEvent);
 
                 // Night
@@ -83,6 +102,7 @@ namespace EQWOWConverter.Creatures
                 nightEvent.TriggerHour = Configuration.EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR;
                 nightEvent.DurationInHours = Configuration.EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR;
                 nightEvent.NormalizeType = CreatureSpawnEventNormalizeType.Night;
+                nightEvent.ConditionID = 1; // Must always be 1
                 GroupedSpawnEvents.Add(nightEvent);
             }
 
@@ -153,6 +173,17 @@ namespace EQWOWConverter.Creatures
                 else
                     zonePluralString = groupEvent.ZoneShortNames[0];
                 groupEvent.Description = string.Concat("EQ ", groupEvent.Name, " for ", zonePluralString);
+            }
+
+            // Create lookups by zone and condition
+            foreach (CreatureSpawnEvent groupEvent in GroupedSpawnEvents)
+            {
+                foreach (string zoneName in groupEvent.ZoneShortNames)
+                {
+                    if (GroupedSpawnEventsByZoneAndConditionID.ContainsKey(zoneName) == false)
+                        GroupedSpawnEventsByZoneAndConditionID.Add(zoneName, new Dictionary<int, CreatureSpawnEvent>());
+                    GroupedSpawnEventsByZoneAndConditionID[zoneName].Add(groupEvent.ConditionID, groupEvent);
+                }
             }
         }
     }

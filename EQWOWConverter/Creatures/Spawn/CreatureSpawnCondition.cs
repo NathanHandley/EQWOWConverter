@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Events;
+
 namespace EQWOWConverter.Creatures
 {
     internal class CreatureSpawnCondition
@@ -26,6 +28,7 @@ namespace EQWOWConverter.Creatures
         public int ID = 0;
         public int Value = 0;
         public int OnChange = 0;
+        public GameEvent? LinkedGameEvent = null;
 
         public static List<CreatureSpawnCondition> GetSpawnConditionList()
         {

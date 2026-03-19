@@ -105,6 +105,10 @@ namespace EQWOWConverter
             {
                 Logger.WriteInfo("<+> Thread [Creatures, Transports, Spawns, Events] Started");
 
+                // Events
+                Dictionary<string, Dictionary<int, CreatureSpawnCondition>> spawnConditionsByZoneAndID;
+                GenerateEvents(ref gameEvents, out spawnConditionsByZoneAndID);
+
                 // Creatures
                 CreatureRace.GenerateAllSounds();
                 if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
@@ -112,7 +116,7 @@ namespace EQWOWConverter
                     if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                         ConvertCreaturesForDebug(creatureTemplatesByEQID, ref creatureSpawnPools);
                     else
-                        ConvertCreatures(creatureTemplatesByEQID, ref creatureSpawnPools);
+                        ConvertCreatures(creatureTemplatesByEQID, ref creatureSpawnPools, spawnConditionsByZoneAndID);
                 }
                 else
                     Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
@@ -122,9 +126,6 @@ namespace EQWOWConverter
                     ConvertTransports();
                 else
                     Logger.WriteInfo("- Note: Transport generation is set to false in the Configuration");
-
-                // Events
-                GenerateEvents(ref gameEvents);
 
                 Logger.WriteInfo("<-> Thread [Creatures, Transports, Spawns] Ended");
             }, TaskCreationOptions.LongRunning);
@@ -308,21 +309,46 @@ namespace EQWOWConverter
             return true;
         }
 
-        public void GenerateEvents(ref List<GameEvent> gameEvents)
+        public void GenerateEvents(ref List<GameEvent> gameEvents, out Dictionary<string, Dictionary<int, CreatureSpawnCondition>> spawnConditionsByZoneAndID)
         {
             Logger.WriteInfo("Converting Events...");
 
-            // One for each creature spawn event
+            // Create one game event for each creature spawn event
             foreach (CreatureSpawnEvent spawnEvent in CreatureSpawnEvent.GetGroupSpawnEventsList())
             {
                 GameEvent newGameEvent = new GameEvent();
                 newGameEvent.GameEventsSQLID = GameEvent.GenerateEventSQLID();
-                newGameEvent.Name = spawnEvent.Name;
                 newGameEvent.Description = spawnEvent.Description;
                 newGameEvent.StartTime = new DateTime(2000, 10, 29, spawnEvent.TriggerHour, 0, 0);
                 newGameEvent.EndTime = new DateTime(Configuration.EVENTS_MAX_DATETIME_YEAR, 12, 30, 23, 0, 0);
                 newGameEvent.DurationInMinutes = spawnEvent.DurationInHours * 60;
                 gameEvents.Add(newGameEvent);
+                spawnEvent.LinkedGameEvent = newGameEvent;
+            }
+
+            // Create spawn conditions
+            spawnConditionsByZoneAndID = new Dictionary<string, Dictionary<int, CreatureSpawnCondition>>();
+            foreach (CreatureSpawnCondition spawnCondition in CreatureSpawnCondition.GetSpawnConditionList())
+            {
+                // Grab any existing game event if there's a spawn event
+                CreatureSpawnEvent? refSpawnEvent = CreatureSpawnEvent.GetGroupSpawnEvent(spawnCondition.ZoneShortName, spawnCondition.ID);
+                if (refSpawnEvent != null)
+                    spawnCondition.LinkedGameEvent = refSpawnEvent.LinkedGameEvent;
+                else
+                {
+                    GameEvent newGameEvent = new GameEvent();
+                    newGameEvent.GameEventsSQLID = GameEvent.GenerateEventSQLID();
+                    newGameEvent.Description = string.Concat("EQ Triggered ", spawnCondition.Name);
+                    newGameEvent.StartTime = new DateTime(2000, 01, 01, 14, 0, 0);
+                    newGameEvent.EndTime = new DateTime(2000, 01, 01, 14, 0, 0);
+                    newGameEvent.DurationInMinutes = 2592000;
+                    gameEvents.Add(newGameEvent);
+                    spawnCondition.LinkedGameEvent = newGameEvent;
+                }
+
+                if (spawnConditionsByZoneAndID.ContainsKey(spawnCondition.ZoneShortName) == false)
+                    spawnConditionsByZoneAndID.Add(spawnCondition.ZoneShortName, new Dictionary<int, CreatureSpawnCondition>());
+                spawnConditionsByZoneAndID[spawnCondition.ZoneShortName].Add(spawnCondition.ID, spawnCondition);
             }
 
             Logger.WriteInfo("Converting Events Complete.");
@@ -1311,7 +1337,8 @@ namespace EQWOWConverter
             return true;
         }
 
-        public bool ConvertCreatures(Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, ref List<CreatureSpawnPool> creatureSpawnPools)
+        public bool ConvertCreatures(Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, ref List<CreatureSpawnPool> creatureSpawnPools,
+            Dictionary<string, Dictionary<int, CreatureSpawnCondition>> spawnConditionsByZoneAndID)
         {
             Logger.WriteInfo("Converting EQ Creatures (skeletal objects) to WOW creature objects...");
 
@@ -1427,12 +1454,27 @@ namespace EQWOWConverter
                 creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID][mapID].Add(creaturePathGridEntry);
             }
 
-            // Associate path grid entries with relevant spawn instances
+            // Associate path grid entries with relevant spawn instances, and any event conditions
             Logger.WriteInfo("Relating creatures to spawn instances...");
             foreach (CreatureSpawnPool creatureSpawnPool in creatureSpawnPools)
             {
                 foreach (CreatureSpawnInstance creatureSpawnInstance in creatureSpawnPool.CreatureSpawnInstances)
                 {
+                    // Condition/Events
+                    if (creatureSpawnInstance.Condition > 0)
+                    {
+                        if (spawnConditionsByZoneAndID.ContainsKey(creatureSpawnInstance.ZoneShortName) == true &&
+                            spawnConditionsByZoneAndID[creatureSpawnInstance.ZoneShortName].ContainsKey(creatureSpawnInstance.Condition) == true)
+                        {
+                            creatureSpawnInstance.LinkedGameEvent = spawnConditionsByZoneAndID[creatureSpawnInstance.ZoneShortName][creatureSpawnInstance.Condition].LinkedGameEvent;
+                        }
+                        else
+                        {
+                            Logger.WriteError("Could not find spawn condition for createrSpawnInstance ID '", creatureSpawnInstance.ID.ToString(), "'");
+                        }
+                    }
+
+                    // Grid
                     if (creatureSpawnInstance.PathGridID != 0)
                     {
                         if (creaturePathGridEntriesByIDAndMapID.ContainsKey(creatureSpawnInstance.PathGridID) == false)

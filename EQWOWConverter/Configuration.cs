@@ -825,7 +825,7 @@ namespace EQWOWConverter
 
         // IDs for events
         public static readonly int SQL_GAME_EVENTS_ID_START = 200;
-        public static readonly int SQL_GAME_EVENTS_ID_END = 255;
+        public static readonly int SQL_GAME_EVENTS_ID_END = 225;
 
         // Start and end IDs for gameobject_template rows
         // - GameObjects.csv owns rows 270000 - 274999
