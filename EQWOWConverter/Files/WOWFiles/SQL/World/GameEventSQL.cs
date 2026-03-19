@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Events;
+
 namespace EQWOWConverter.WOWFiles
 {
     internal class GameEventSQL : SQLFile
@@ -23,17 +25,17 @@ namespace EQWOWConverter.WOWFiles
             return string.Concat("DELETE FROM game_event WHERE `eventEntry` >= ", Configuration.SQL_GAME_EVENTS_ID_START, " AND `eventEntry` <= ", Configuration.SQL_GAME_EVENTS_ID_END, ";");
         }
 
-        public void AddRow(int id, DateTime? startTime, DateTime? endTime, int occurence, int length, string description)
+        public void AddRow(GameEvent gameEvent)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("eventEntry", id);
-            newRow.AddDateTime("start_time", startTime);
-            newRow.AddDateTime("end_time", endTime);
-            newRow.AddInt("occurence", occurence);
-            newRow.AddInt("length", length);
+            newRow.AddInt("eventEntry", gameEvent.GameEventsSQLID);
+            newRow.AddDateTime("start_time", gameEvent.StartTime);
+            newRow.AddDateTime("end_time", gameEvent.EndTime);
+            newRow.AddInt("occurence", gameEvent.Occurrance);
+            newRow.AddInt("length", gameEvent.DurationInMinutes);
             newRow.AddInt("holiday", 0);
             newRow.AddInt("holidayStage", 0);
-            newRow.AddString("description", 255, description);
+            newRow.AddString("description", 255, gameEvent.Description);
             newRow.AddInt("world_event", 0);
             newRow.AddInt("announce", 2);
             Rows.Add(newRow);

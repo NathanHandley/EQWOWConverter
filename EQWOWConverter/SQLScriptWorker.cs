@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
+using EQWOWConverter.Events;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.Items;
 using EQWOWConverter.Player;
@@ -96,7 +97,7 @@ namespace EQWOWConverter
 
         public void CreateSQLScripts(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
             List<CreatureSpawnPool> creatureSpawnPools, Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, List<QuestTemplate> questTemplates,
-            List<TradeskillRecipe> tradeskillRecipes, List<SpellTemplate> spellTemplates)
+            List<TradeskillRecipe> tradeskillRecipes, List<SpellTemplate> spellTemplates, List<GameEvent> gameEvents)
         {
             Logger.WriteInfo("Creating SQL Scripts...");
 
@@ -121,9 +122,8 @@ namespace EQWOWConverter
             PopulateCreatureData(creatureTemplates, creatureModelTemplates, creatureSpawnPools, spellTemplatesByEQID);
 
             // Game Events
-            foreach (CreatureSpawnEvent creatureSpawnEvent in CreatureSpawnEvent.GetGroupSpawnEventsList())
-                gameEventSQL.AddRow(creatureSpawnEvent.GameEventsSQLID, creatureSpawnEvent.StartTime, creatureSpawnEvent.EndTime, 1440,
-                    creatureSpawnEvent.DurationInMinutes, creatureSpawnEvent.Description);
+            foreach (GameEvent gameEvent in gameEvents)
+                gameEventSQL.AddRow(gameEvent);
 
             // Items
             PopulateItemData(itemLootTemplatesByCreatureTemplateID, spellTemplatesByEQID);

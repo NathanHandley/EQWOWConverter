@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
+using EQWOWConverter.Events;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
@@ -96,12 +97,13 @@ namespace EQWOWConverter
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 zoneAndObjectTask.Wait();
 
-            // Thread 2: Creatures, Transports, Spawns and Maps
+            // Thread 2: Creatures, Transports, Spawns, Maps, Events
             Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
             List<CreatureSpawnPool> creatureSpawnPools = new List<CreatureSpawnPool>();
+            List<GameEvent> gameEvents = new List<GameEvent>();
             Task creaturesAndSpawnsTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Creatures, Transports, Spawns] Started");
+                Logger.WriteInfo("<+> Thread [Creatures, Transports, Spawns, Events] Started");
 
                 // Creatures
                 CreatureRace.GenerateAllSounds();
@@ -120,6 +122,9 @@ namespace EQWOWConverter
                     ConvertTransports();
                 else
                     Logger.WriteInfo("- Note: Transport generation is set to false in the Configuration");
+
+                // Events
+                GenerateEvents(ref gameEvents);
 
                 Logger.WriteInfo("<-> Thread [Creatures, Transports, Spawns] Ended");
             }, TaskCreationOptions.LongRunning);
@@ -275,7 +280,8 @@ namespace EQWOWConverter
                 // Create the SQL Scripts (note: this must always be after DBC files)
                 SQLScriptWorker sqlWorker = new SQLScriptWorker();
                 sqlWorker.CreateSQLScripts(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, 
-                    itemLootTemplatesByCreatureTemplateID, questTemplates, tradeskillRecipes, spellTemplates);
+                    itemLootTemplatesByCreatureTemplateID, questTemplates, tradeskillRecipes, spellTemplates,
+                    gameEvents);
 
                 if (Configuration.DEPLOY_SERVER_FILES == true)
                     DeployServerFiles();
@@ -300,6 +306,26 @@ namespace EQWOWConverter
 
             Logger.WriteInfo("Conversion of data complete");
             return true;
+        }
+
+        public void GenerateEvents(ref List<GameEvent> gameEvents)
+        {
+            Logger.WriteInfo("Converting Events...");
+
+            // One for each creature spawn event
+            foreach (CreatureSpawnEvent spawnEvent in CreatureSpawnEvent.GetGroupSpawnEventsList())
+            {
+                GameEvent newGameEvent = new GameEvent();
+                newGameEvent.GameEventsSQLID = GameEvent.GenerateEventSQLID();
+                newGameEvent.Name = spawnEvent.Name;
+                newGameEvent.Description = spawnEvent.Description;
+                newGameEvent.StartTime = new DateTime(2000, 10, 29, spawnEvent.TriggerHour, 0, 0);
+                newGameEvent.EndTime = new DateTime(Configuration.EVENTS_MAX_DATETIME_YEAR, 12, 30, 23, 0, 0);
+                newGameEvent.DurationInMinutes = spawnEvent.DurationInHours * 60;
+                gameEvents.Add(newGameEvent);
+            }
+
+            Logger.WriteInfo("Converting Events Complete.");
         }
 
         public void ConvertTransports()

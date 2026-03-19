@@ -158,10 +158,6 @@ namespace EQWOWConverter
         // The minimum size that boundary boxes should be for any object models when output
         public static readonly float GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE = 5f;
 
-        // This value is used in generating end timestamps in things like game_event. At time of writing, the max value of
-        // AzerothCore's game event time is based on MYSQL TIMESTAMP which caps at 2038-01-19 03:14:07
-        public static readonly int GENERATE_MAX_DATETIME_YEAR = 2037;
-
         //=====================================================================
         // Player
         //=====================================================================
@@ -253,6 +249,21 @@ namespace EQWOWConverter
 
         // Controls showing suggested levels on the linked maps
         public static readonly bool WORLDMAP_SHOW_SUGGESTED_LEVELS_ON_LINKED_MAPS = true;
+
+        //=====================================================================
+        // Events
+        //=====================================================================
+        // This value is used in generating end timestamps in things like game_event. At time of writing, the max value of
+        // AzerothCore's game event time is based on MYSQL TIMESTAMP which caps at 2038-01-19 03:14:07
+        public static readonly int EVENTS_MAX_DATETIME_YEAR = 2037;
+
+        // If true, all day or night creature spawn events will have their day/time normalized, and only
+        // one event will be created for each.
+        public static readonly bool EVENTS_DO_NORMALIZE_DAYNIGHT_SPAWN_EVENTS = true;
+        public static readonly int EVENTS_NORMALIZED_DAY_SPAWN_START_HOUR = 6;
+        public static readonly int EVENTS_NORMALIZED_DAY_SPAWN_LENGTH_IN_HOUR = 12;
+        public static readonly int EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR = 18;
+        public static readonly int EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR = 12;
 
         //=====================================================================
         // Liquid
