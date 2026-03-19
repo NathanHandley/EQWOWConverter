@@ -70,7 +70,36 @@ namespace EQWOWConverter.Creatures
 
         private static void PopulateSpawnEventsList()
         {
+            GroupedSpawnEvents.Clear();
             IndividualSpawnEvents.Clear();
+
+            // If normalizing, create the day/night records
+            if (Configuration.EVENTS_DO_NORMALIZE_DAYNIGHT_SPAWN_EVENTS == true)
+            {
+                // Day
+                CreatureSpawnEvent dayEvent = new CreatureSpawnEvent();
+                dayEvent.Name = "Day";
+                dayEvent.StartTime = new DateTime(2000, 10, 29, Configuration.EVENTS_NORMALIZED_DAY_SPAWN_START_HOUR, 0, 0);
+                dayEvent.TriggerHour = Configuration.EVENTS_NORMALIZED_DAY_SPAWN_START_HOUR;
+                dayEvent.EndTime = new DateTime(Configuration.EVENTS_MAX_DATETIME_YEAR, 12, 30, 23, 0, 0);
+                dayEvent.DurationInHours = Configuration.EVENTS_NORMALIZED_DAY_SPAWN_LENGTH_IN_HOUR;
+                dayEvent.DurationInMinutes = Configuration.EVENTS_NORMALIZED_DAY_SPAWN_LENGTH_IN_HOUR * 60;
+                dayEvent.NormalizeType = CreatureSpawnEventNormalizeType.Day;
+                dayEvent.GameEventsSQLID = GenerateEventID();
+                GroupedSpawnEvents.Add(dayEvent);
+
+                // Night
+                CreatureSpawnEvent nightEvent = new CreatureSpawnEvent();
+                nightEvent.Name = "Night";
+                nightEvent.StartTime = new DateTime(2000, 10, 29, Configuration.EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR, 0, 0);
+                nightEvent.TriggerHour = Configuration.EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR;
+                nightEvent.EndTime = new DateTime(Configuration.EVENTS_MAX_DATETIME_YEAR, 12, 30, 23, 0, 0);
+                nightEvent.DurationInHours = Configuration.EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR;
+                nightEvent.DurationInMinutes = Configuration.EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR * 60;
+                nightEvent.NormalizeType = CreatureSpawnEventNormalizeType.Night;
+                nightEvent.GameEventsSQLID = GenerateEventID();
+                GroupedSpawnEvents.Add(nightEvent);
+            }
 
             string spawnEventsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpawnEvents.csv");
             Logger.WriteDebug("Populating Spawn Events list via file '" + spawnEventsFile + "'");
@@ -97,13 +126,26 @@ namespace EQWOWConverter.Creatures
                 spawnEvent.DurationInHours = int.Parse(columns["duration_in_hour"]);
                 spawnEvent.DurationInMinutes = spawnEvent.DurationInHours * 60;
                 spawnEvent.StartTime = new DateTime(2000, 10, 29, spawnEvent.TriggerHour, 0, 0);
-                spawnEvent.EndTime = new DateTime(Configuration.GENERATE_MAX_DATETIME_YEAR, 12, 30, 23, 0, 0);
+                spawnEvent.EndTime = new DateTime(Configuration.EVENTS_MAX_DATETIME_YEAR, 12, 30, 23, 0, 0);
                 IndividualSpawnEvents.Add(spawnEvent);
 
                 // Also add to the grouped events since there's an upper limit in AzerothCore
                 bool groupExists = false;
                 foreach (CreatureSpawnEvent groupEvent in GroupedSpawnEvents)
                 {
+                    if (Configuration.EVENTS_DO_NORMALIZE_DAYNIGHT_SPAWN_EVENTS == true)
+                    {
+                        if (spawnEvent.NormalizeType != CreatureSpawnEventNormalizeType.None)
+                        {
+                            if (spawnEvent.NormalizeType == groupEvent.NormalizeType)
+                            {
+                                groupExists = true;
+                                groupEvent.ZoneShortNames.Add(spawnEvent.ZoneShortNames[0]);
+                                break;
+                            }
+                        }
+                    }
+
                     if (groupEvent.Name != spawnEvent.Name)
                         continue;
                     if (groupEvent.TriggerHour != spawnEvent.TriggerHour)
@@ -123,15 +165,23 @@ namespace EQWOWConverter.Creatures
             // Clean up descriptions of groups / Create IDs
             foreach (CreatureSpawnEvent groupEvent in GroupedSpawnEvents)
             {
-                string zonePluralString = "zone";
+                string zonePluralString = string.Empty;
                 if (groupEvent.ZoneShortNames.Count > 1)
-                    zonePluralString = "zones";
-                groupEvent.Description = string.Concat("EQ ", groupEvent.Name, " for ", groupEvent.ZoneShortNames.Count.ToString(), " ", zonePluralString);
-                groupEvent.GameEventsSQLID = CurGameEventsSQLID;
-                CurGameEventsSQLID++;
-                if (CurGameEventsSQLID > Configuration.SQL_GAME_EVENTS_ID_END)
-                    Logger.WriteError("game_event ID exceeded ", Configuration.SQL_GAME_EVENTS_ID_END.ToString());
+                    zonePluralString = string.Concat(groupEvent.ZoneShortNames.Count.ToString(), " zones");
+                else
+                    zonePluralString = groupEvent.ZoneShortNames[0];
+                groupEvent.Description = string.Concat("EQ ", groupEvent.Name, " for ", zonePluralString);
+                groupEvent.GameEventsSQLID = GenerateEventID();
             }
+        }
+
+        private static int GenerateEventID()
+        {
+            int returnEventID = CurGameEventsSQLID;
+            CurGameEventsSQLID++;
+            if (CurGameEventsSQLID > Configuration.SQL_GAME_EVENTS_ID_END)
+                Logger.WriteError("game_event ID exceeded ", Configuration.SQL_GAME_EVENTS_ID_END.ToString());
+            return returnEventID;
         }
     }
 }
