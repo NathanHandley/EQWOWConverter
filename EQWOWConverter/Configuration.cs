@@ -158,6 +158,10 @@ namespace EQWOWConverter
         // The minimum size that boundary boxes should be for any object models when output
         public static readonly float GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE = 5f;
 
+        // This value is used in generating end timestamps in things like game_event. At time of writing, the max value of
+        // AzerothCore's game event time is based on MYSQL TIMESTAMP which caps at 2038-01-19 03:14:07
+        public static readonly int GENERATE_MAX_DATETIME_YEAR = 2037;
+
         //=====================================================================
         // Player
         //=====================================================================
@@ -809,8 +813,8 @@ namespace EQWOWConverter
         public static readonly int SQL_GAMEOBJECT_GUID_ID_END = 319999;
 
         // IDs for events
-        public static readonly int SQL_GAME_EVENTS_ID_START = 300;
-        public static readonly int SQL_GAME_EVENTS_ID_END = 400;
+        public static readonly int SQL_GAME_EVENTS_ID_START = 200;
+        public static readonly int SQL_GAME_EVENTS_ID_END = 255;
 
         // Start and end IDs for gameobject_template rows
         // - GameObjects.csv owns rows 270000 - 274999

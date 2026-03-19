@@ -19,30 +19,58 @@ namespace EQWOWConverter.Creatures
     // Note: These always repeat daily
     internal class CreatureSpawnEvent
     {
-        private static List<CreatureSpawnEvent> SpawnEvents = new List<CreatureSpawnEvent>();
+        private static List<CreatureSpawnEvent> IndividualSpawnEvents = new List<CreatureSpawnEvent>();
+        private static List<CreatureSpawnEvent> GroupedSpawnEvents = new List<CreatureSpawnEvent>();
+        private static int CurGameEventsSQLID = Configuration.SQL_GAME_EVENTS_ID_START;
         private static readonly object SpawnEventsLock = new object();
 
-        public int ID = 0;
-        public string ZoneShortName = string.Empty;
+        public List<int> EQIDs = new List<int>();
+        public List<string> ZoneShortNames = new List<string>();
         public int ConditionID = 0;
         public string Name = string.Empty;
+        public string Description = string.Empty;
         public CreatureSpawnEventNormalizeType NormalizeType = CreatureSpawnEventNormalizeType.None;
         public int TriggerHour = 0;
         public int DurationInHours = 0;
+        public int DurationInMinutes = 0;
+        public int GameEventsSQLID = -1;
+        public DateTime? StartTime = null;
+        public DateTime? EndTime = null;
 
-        public static List<CreatureSpawnEvent> GetSpawnEventsList()
+        public CreatureSpawnEvent()
+        {
+
+        }
+
+        public CreatureSpawnEvent(CreatureSpawnEvent other)
+        {
+            EQIDs = other.EQIDs;
+            ZoneShortNames = other.ZoneShortNames;
+            ConditionID = other.ConditionID;
+            Name = other.Name;
+            Description = other.Description;
+            NormalizeType = other.NormalizeType;
+            TriggerHour = other.TriggerHour;
+            DurationInHours = other.DurationInHours;
+            DurationInMinutes = other.DurationInMinutes;
+            GameEventsSQLID = other.GameEventsSQLID;
+            StartTime = other.StartTime;
+            EndTime = other.EndTime;
+        }
+
+        public static List<CreatureSpawnEvent> GetGroupSpawnEventsList()
         {
             lock (SpawnEventsLock)
             {
-                if (SpawnEvents.Count == 0)
+                if (GroupedSpawnEvents.Count == 0)
                     PopulateSpawnEventsList();
-                return SpawnEvents;
+                return GroupedSpawnEvents;
             }
         }
 
         private static void PopulateSpawnEventsList()
         {
-            SpawnEvents.Clear();
+            IndividualSpawnEvents.Clear();
 
             string spawnEventsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpawnEvents.csv");
             Logger.WriteDebug("Populating Spawn Events list via file '" + spawnEventsFile + "'");
@@ -50,10 +78,11 @@ namespace EQWOWConverter.Creatures
             foreach (Dictionary<string, string> columns in rows)
             {
                 CreatureSpawnEvent spawnEvent = new CreatureSpawnEvent();
-                spawnEvent.ID = int.Parse(columns["id"]);
-                spawnEvent.ZoneShortName = columns["zone"];
+                spawnEvent.EQIDs.Add(int.Parse(columns["id"]));
+                spawnEvent.ZoneShortNames.Add(columns["zone"].Trim().ToLower());
                 spawnEvent.ConditionID = int.Parse(columns["cond_id"]);
                 spawnEvent.Name = columns["name"];
+                spawnEvent.Description = string.Concat("EQ ", spawnEvent.ZoneShortNames[0], " ", spawnEvent.Name);
                 switch (columns["normalize_type"].ToLower().Trim())
                 {
                     case "day": spawnEvent.NormalizeType = CreatureSpawnEventNormalizeType.Day; break;
@@ -66,7 +95,42 @@ namespace EQWOWConverter.Creatures
                 }
                 spawnEvent.TriggerHour = int.Parse(columns["trigger_hour"]);
                 spawnEvent.DurationInHours = int.Parse(columns["duration_in_hour"]);
-                SpawnEvents.Add(spawnEvent);
+                spawnEvent.DurationInMinutes = spawnEvent.DurationInHours * 60;
+                spawnEvent.StartTime = new DateTime(2000, 10, 29, spawnEvent.TriggerHour, 0, 0);
+                spawnEvent.EndTime = new DateTime(Configuration.GENERATE_MAX_DATETIME_YEAR, 12, 30, 23, 0, 0);
+                IndividualSpawnEvents.Add(spawnEvent);
+
+                // Also add to the grouped events since there's an upper limit in AzerothCore
+                bool groupExists = false;
+                foreach (CreatureSpawnEvent groupEvent in GroupedSpawnEvents)
+                {
+                    if (groupEvent.Name != spawnEvent.Name)
+                        continue;
+                    if (groupEvent.TriggerHour != spawnEvent.TriggerHour)
+                        continue;
+                    if (groupEvent.DurationInHours != spawnEvent.DurationInHours)
+                        continue;
+                    if (groupEvent.ConditionID != spawnEvent.ConditionID)
+                        continue;
+                    groupExists = true;
+                    groupEvent.ZoneShortNames.Add(spawnEvent.ZoneShortNames[0]);
+                    break;
+                }
+                if (groupExists == false)
+                    GroupedSpawnEvents.Add(new CreatureSpawnEvent(spawnEvent));
+            }
+
+            // Clean up descriptions of groups / Create IDs
+            foreach (CreatureSpawnEvent groupEvent in GroupedSpawnEvents)
+            {
+                string zonePluralString = "zone";
+                if (groupEvent.ZoneShortNames.Count > 1)
+                    zonePluralString = "zones";
+                groupEvent.Description = string.Concat("EQ ", groupEvent.Name, " for ", groupEvent.ZoneShortNames.Count.ToString(), " ", zonePluralString);
+                groupEvent.GameEventsSQLID = CurGameEventsSQLID;
+                CurGameEventsSQLID++;
+                if (CurGameEventsSQLID > Configuration.SQL_GAME_EVENTS_ID_END)
+                    Logger.WriteError("game_event ID exceeded ", Configuration.SQL_GAME_EVENTS_ID_END.ToString());
             }
         }
     }

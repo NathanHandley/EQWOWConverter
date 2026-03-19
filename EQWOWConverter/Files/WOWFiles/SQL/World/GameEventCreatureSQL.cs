@@ -1,5 +1,5 @@
 ﻿//  Author: Nathan Handley (nathanhandley@protonmail.com)
-//  Copyright (c) 2025 Nathan Handley
+//  Copyright (c) 2026 Nathan Handley
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,26 +16,21 @@
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class GameEventSQL : SQLFile
+    internal class GameEventCreatureSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
-            return string.Concat("DELETE FROM game_event WHERE `eventEntry` >= ", Configuration.SQL_GAME_EVENTS_ID_START, " AND `eventEntry` <= ", Configuration.SQL_GAME_EVENTS_ID_END, ";");
+            return string.Concat("DELETE FROM game_event_creature WHERE `eventEntry` >= ", Configuration.SQL_GAME_EVENTS_ID_START, " AND `eventEntry` <= ", Configuration.SQL_GAME_EVENTS_ID_END, ";");
         }
 
-        public void AddRow(int id, DateTime? startTime, DateTime? endTime, int occurence, int length, string description)
+        public void AddRow(int eventID, int creatureGUID, bool doSpawn)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("eventEntry", id);
-            newRow.AddDateTime("start_time", startTime);
-            newRow.AddDateTime("end_time", endTime);
-            newRow.AddInt("occurence", occurence);
-            newRow.AddInt("length", length);
-            newRow.AddInt("holiday", 0);
-            newRow.AddInt("holidayStage", 0);
-            newRow.AddString("description", 255, description);
-            newRow.AddInt("world_event", 0);
-            newRow.AddInt("announce", 2);
+            if (doSpawn == true)
+                newRow.AddInt("eventEntry", eventID);
+            else
+                newRow.AddInt("eventEntry", -1 * eventID); // Negative event IDs mean that the creature should despawn when the event starts
+            newRow.AddInt("guid", creatureGUID);
             Rows.Add(newRow);
         }
     }

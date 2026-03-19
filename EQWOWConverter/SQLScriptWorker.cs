@@ -50,6 +50,7 @@ namespace EQWOWConverter
         private CreatureTemplateSpellSQL creatureTemplateSpellSQL = new CreatureTemplateSpellSQL();
         private CreatureTextSQL creatureTextSQL = new CreatureTextSQL();
         private GameEventSQL gameEventSQL = new GameEventSQL();
+        private GameEventCreatureSQL gameEventCreatureSQL = new GameEventCreatureSQL();
         private GameGraveyardSQL gameGraveyardSQL = new GameGraveyardSQL();
         private GameTeleSQL gameTeleSQL = new GameTeleSQL();
         private GameWeatherSQL gameWeatherSQL = new GameWeatherSQL();
@@ -120,11 +121,9 @@ namespace EQWOWConverter
             PopulateCreatureData(creatureTemplates, creatureModelTemplates, creatureSpawnPools, spellTemplatesByEQID);
 
             // Game Events
-            //DateTime eventEnd = new DateTime(2037, 12, 30, 23, 0, 0);
-            //DateTime dayStart = new DateTime(2000, 10, 29, 6, 0, 0);
-            //gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_DAY, dayStart, eventEnd, 1440, 840, "EQ Day");
-            //DateTime nightStart = new DateTime(2000, 10, 28, 20, 0, 0);
-            //gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_NIGHT, nightStart, eventEnd, 1440, 600, "EQ Night");
+            foreach (CreatureSpawnEvent creatureSpawnEvent in CreatureSpawnEvent.GetGroupSpawnEventsList())
+                gameEventSQL.AddRow(creatureSpawnEvent.GameEventsSQLID, creatureSpawnEvent.StartTime, creatureSpawnEvent.EndTime, 1440,
+                    creatureSpawnEvent.DurationInMinutes, creatureSpawnEvent.Description);
 
             // Items
             PopulateItemData(itemLootTemplatesByCreatureTemplateID, spellTemplatesByEQID);
@@ -1081,6 +1080,7 @@ namespace EQWOWConverter
             creatureTemplateSpellSQL.SaveToDisk("creature_template_spell", SQLFileType.World);
             creatureTextSQL.SaveToDisk("creature_text", SQLFileType.World);
             gameEventSQL.SaveToDisk("game_event", SQLFileType.World);
+            gameEventCreatureSQL.SaveToDisk("game_event_creature", SQLFileType.World);
             gameGraveyardSQL.SaveToDisk("game_graveyard", SQLFileType.World);
             gameObjectSQL.SaveToDisk("gameobject", SQLFileType.World);
             gameObjectAddonSQL.SaveToDisk("gameobject_addon", SQLFileType.World);
