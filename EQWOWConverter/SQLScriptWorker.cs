@@ -319,115 +319,24 @@ namespace EQWOWConverter
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
                 creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
 
-            // Creature and Spawn Pools
+            // Creature and Creature Spawn Pools
             foreach (CreatureSpawnPool spawnPool in creatureSpawnPools)
             {
-                // For single element single location pools, just create a creature record
-                if (spawnPool.CreatureSpawnInstances.Count == 1 && spawnPool.CreatureTemplates.Count == 1)
+                bool isSingleInstance = spawnPool.CreatureSpawnInstances.Count == 1;
+                bool isSingleCreatureTemplate = spawnPool.CreatureTemplates.Count == 1;
+
+                // No pool needed, single instance
+                if (isSingleInstance == true && isSingleCreatureTemplate == true)
                 {
                     CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[0];
                     CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
-                    int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                    List<CreaturePathGridEntry> pathGridEntries = spawnInstance.GetPathGridEntries();
+                    int creatureSQLGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                     string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                    if (pathGridEntries.Count > 0)
-                    {
-                        int waypointGUID = creatureGUID * 1000;
-                        creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID);
-                        for (int i = 0; i < pathGridEntries.Count; i++)
-                        {
-                            CreaturePathGridEntry pathGridEntry = pathGridEntries[i];
-                            waypointDataSQL.AddRow(waypointGUID, i+1, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
-                        }                            
-                        creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                            spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path,
-                            spawnPool.CreatureSpawnGroup.RoamDistance, comment);
-                    }
-                    else
-                    {
-                        creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
-                        CreatureMovementType movementType = CreatureMovementType.None;
-                        if (spawnPool.CreatureSpawnGroup.RoamDistance > 1)
-                            movementType = CreatureMovementType.Random;
-                        creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                            spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
-                            spawnPool.CreatureSpawnGroup.RoamDistance, comment);
-                    }
-                    if (spawnInstance.LinkedGameEvent != null)
-                        gameEventCreatureSQL.AddRow(spawnInstance.LinkedGameEvent.GameEventsSQLID, creatureGUID);
+                    CreateCreatureAndRelatedSQLEntries(creatureSQLGUID, creatureTemplate, spawnInstance, spawnPool.CreatureSpawnGroup.RoamDistance, comment);
                 }
-
-                // Create a pool pools if there are multiple locations
-                else if (spawnPool.CreatureSpawnInstances.Count > 1)
-                {
-                    // Create the mother pool template
-                    int motherPoolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
-                    List<string> motherPoolNames = new List<string>();
-                    foreach (CreatureTemplate template in spawnPool.CreatureTemplates)
-                        if (motherPoolNames.Contains(template.Name) == false)
-                            motherPoolNames.Add(template.Name);
-                    string motherPoolDescription = "(" + spawnPool.CreatureSpawnGroup.ID + ")";
-                    foreach (string name in motherPoolNames)
-                        motherPoolDescription += ", " + name;
-                    poolTemplateSQL.AddRow(motherPoolTemplateID, motherPoolDescription + " - Master Pool", spawnPool.GetMaxSpawnCount());
-                    gameEventPoolSQL.AddRow(201, motherPoolTemplateID);
-
-                    // Create by instance groups
-                    for (int spawnInstanceIndex = 0; spawnInstanceIndex < spawnPool.CreatureSpawnInstances.Count; spawnInstanceIndex++)
-                    {
-                        CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[spawnInstanceIndex];
-
-                        // Create the pool pool
-                        int poolPoolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
-                        string poolPoolDescription = motherPoolDescription + " - " + spawnInstanceIndex.ToString();
-                        poolTemplateSQL.AddRow(poolPoolTemplateID, poolPoolDescription, 1);
-                        gameEventPoolSQL.AddRow(201, poolPoolTemplateID);
-                        poolPoolSQL.AddRow(poolPoolTemplateID, motherPoolTemplateID, 0, poolPoolDescription);
-
-                        // Create the creature records
-                        for (int creatureTemplateIndex = 0; creatureTemplateIndex < spawnPool.CreatureTemplates.Count; creatureTemplateIndex++)
-                        {
-                            CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[creatureTemplateIndex];
-                            int chance = spawnPool.CreatureTemplateChances[creatureTemplateIndex];
-                            int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                            poolCreatureSQL.AddRow(creatureGUID, poolPoolTemplateID, chance, creatureTemplate.Name);
-                            List<CreaturePathGridEntry> pathGridEntries = spawnInstance.GetPathGridEntries();
-                            string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                            if (pathGridEntries.Count > 0)
-                            {
-                                int waypointGUID = creatureGUID * 1000;
-                                creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID);
-                                for (int i = 0; i < pathGridEntries.Count; i++)
-                                {
-                                    CreaturePathGridEntry pathGridEntry = pathGridEntries[i];
-                                    waypointDataSQL.AddRow(waypointGUID, i + 1, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
-                                }                                    
-                                creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                                    spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path,
-                                    spawnPool.CreatureSpawnGroup.RoamDistance, comment);
-                            }
-                            else
-                            {
-                                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
-                                CreatureMovementType movementType = CreatureMovementType.None;
-                                if (spawnPool.CreatureSpawnGroup.RoamDistance > 1)
-                                    movementType = CreatureMovementType.Random;
-                                creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                                    spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
-                                    spawnPool.CreatureSpawnGroup.RoamDistance, comment);
-                            }
-                            if (spawnInstance.LinkedGameEvent != null)
-                                gameEventCreatureSQL.AddRow(spawnInstance.LinkedGameEvent.GameEventsSQLID, creatureGUID);
-                        }
-                    }
-                }
-
-                // No mother pool needed
-                else if (spawnPool.CreatureSpawnInstances.Count == 1 && spawnPool.CreatureTemplates.Count > 0)
-                {
-                    CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
-
-                    // Make the pool description
+                // Pool required
+                else
+                {                    
                     List<string> poolNames = new List<string>();
                     foreach (CreatureTemplate template in spawnPool.CreatureTemplates)
                         if (poolNames.Contains(template.Name) == false)
@@ -435,49 +344,83 @@ namespace EQWOWConverter
                     string poolDescription = "(" + spawnPool.CreatureSpawnGroup.ID + ")";
                     foreach (string name in poolNames)
                         poolDescription += ", " + name;
+                    int motherPoolId = CreatureSpawnPool.GetPoolTemplateSQLID();
+                    poolTemplateSQL.AddRow(motherPoolId, poolDescription + " - Mother Pool", spawnPool.GetMaxSpawnCount());
+                    //gameEventPoolSQL.AddRow(201, motherPoolId);
 
-                    // Create the pool template
-                    int poolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
-                    poolTemplateSQL.AddRow(poolTemplateID, poolDescription, spawnPool.GetMaxSpawnCount());
-                    gameEventPoolSQL.AddRow(201, poolTemplateID);
-
-                    // Create the creature records
-                    for (int creatureTemplateIndex = 0; creatureTemplateIndex < spawnPool.CreatureTemplates.Count; creatureTemplateIndex++)
+                    // Pooled single instances
+                    if (isSingleInstance == true)
                     {
-                        CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[creatureTemplateIndex];
-                        int chance = spawnPool.CreatureTemplateChances[creatureTemplateIndex];
-                        int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                        poolCreatureSQL.AddRow(creatureGUID, poolTemplateID, chance, creatureTemplate.Name);
-                        List<CreaturePathGridEntry> pathGridEntries = spawnInstance.GetPathGridEntries();
-                        string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                        if (pathGridEntries.Count > 0)
+                        int poolId = CreatureSpawnPool.GetPoolTemplateSQLID();
+                        poolTemplateSQL.AddRow(poolId, poolDescription, spawnPool.GetMaxSpawnCount());
+                        //gameEventPoolSQL.AddRow(201, poolId);
+                        poolPoolSQL.AddRow(poolId, motherPoolId, 0, poolDescription);
+                        CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
+
+                        for (int i = 0; i < spawnPool.CreatureTemplates.Count; i++)
                         {
-                            int waypointGUID = creatureGUID * 1000;
-                            creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID);
-                            for (int i = 0; i < pathGridEntries.Count; i++)
+                            CreatureTemplate template = spawnPool.CreatureTemplates[i];
+                            int chance = spawnPool.CreatureTemplateChances[i];
+                            int guid = CreatureTemplate.GenerateCreatureSQLGUID();
+                            poolCreatureSQL.AddRow(guid, poolId, chance, template.Name);
+                            string comment = $"{template.Name} - EQ Group: {spawnPool.CreatureSpawnGroup.ID}, EQ NPC ID: {template.EQCreatureTemplateID}, EQ Instance ID: {spawnInstance.ID}";
+                            CreateCreatureAndRelatedSQLEntries(guid, template, spawnInstance, spawnPool.CreatureSpawnGroup.RoamDistance, comment);
+                        }
+                    }
+                    // Pooled multiple instances
+                    else
+                    {                        
+                        for (int spawnInstanceIndex = 0; spawnInstanceIndex < spawnPool.CreatureSpawnInstances.Count; spawnInstanceIndex++)
+                        {
+                            CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[spawnInstanceIndex];
+                            int subPoolId = CreatureSpawnPool.GetPoolTemplateSQLID();
+                            string subPoolDescription = String.Concat(poolDescription, " - ", spawnInstanceIndex.ToString());
+                            poolTemplateSQL.AddRow(subPoolId, subPoolDescription, 1);
+                            //gameEventPoolSQL.AddRow(201, subPoolId);
+                            poolPoolSQL.AddRow(subPoolId, motherPoolId, 0, subPoolDescription);
+
+                            for (int i = 0; i < spawnPool.CreatureTemplates.Count; i++)
                             {
-                                CreaturePathGridEntry pathGridEntry = pathGridEntries[i];
-                                waypointDataSQL.AddRow(waypointGUID, i + 1, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                                CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[i];
+                                int chance = spawnPool.CreatureTemplateChances[i];
+                                int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                                poolCreatureSQL.AddRow(creatureGUID, subPoolId, chance, creatureTemplate.Name);
+                                string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
+                                CreateCreatureAndRelatedSQLEntries(creatureGUID, creatureTemplate, spawnInstance, spawnPool.CreatureSpawnGroup.RoamDistance, comment);
                             }
-                            creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                                spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path,
-                                spawnPool.CreatureSpawnGroup.RoamDistance, comment);
                         }
-                        else
-                        {
-                            creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
-                            CreatureMovementType movementType = CreatureMovementType.None;
-                            if (spawnPool.CreatureSpawnGroup.RoamDistance > 1)
-                                movementType = CreatureMovementType.Random;
-                            creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                                spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
-                                spawnPool.CreatureSpawnGroup.RoamDistance, comment);
-                        }
-                        if (spawnInstance.LinkedGameEvent != null)
-                            gameEventCreatureSQL.AddRow(spawnInstance.LinkedGameEvent.GameEventsSQLID, creatureGUID);
                     }
                 }
             }
+        }
+
+        private void CreateCreatureAndRelatedSQLEntries(int guid, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance,
+            float roamDistance, string comment)
+        {
+            List<CreaturePathGridEntry> pathEntries = spawnInstance.GetPathGridEntries();
+            CreatureMovementType movementType = CreatureMovementType.None;
+            if (roamDistance > 1)
+                movementType = CreatureMovementType.Random;
+
+            if (pathEntries.Count > 0)
+            {
+                int waypointGUID = guid * 1000;
+                creatureAddonSQL.AddRow(guid, waypointGUID, creatureTemplate.DefaultEmoteID);
+                for (int i = 0; i < pathEntries.Count; i++)
+                {
+                    CreaturePathGridEntry entry = pathEntries[i];
+                    waypointDataSQL.AddRow(waypointGUID, i + 1, entry.NodeX, entry.NodeY, entry.NodeZ, entry.PauseInSec * 1000);
+                }
+                movementType = CreatureMovementType.Path;
+            }
+            else
+                creatureAddonSQL.AddRow(guid, 0, creatureTemplate.DefaultEmoteID);
+
+            creatureSQL.AddRow(guid, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
+                spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, roamDistance, comment);
+
+            //if (instance.LinkedGameEvent != null)
+            //    gameEventCreatureSQL.AddRow(instance.LinkedGameEvent.GameEventsSQLID, guid);
         }
 
         private void PopulateItemData(Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
