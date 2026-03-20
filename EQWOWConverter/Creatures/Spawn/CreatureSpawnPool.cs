@@ -29,15 +29,13 @@ namespace EQWOWConverter.Creatures
         public float RoamDistance = 0;
         public int SpawnLimit = 0;
         public int SpawnGroupID = 0;
-        public int Condition = 0;
         public GameEvent? LinkedGameEvent = null;
 
-        public CreatureSpawnPool(CreatureSpawnGroup creatureSpawnGroup, int condition)
+        public CreatureSpawnPool(CreatureSpawnGroup creatureSpawnGroup)
         {
             RoamDistance = creatureSpawnGroup.RoamDistance;
             SpawnLimit = creatureSpawnGroup.SpawnLimit;
             SpawnGroupID = creatureSpawnGroup.ID;
-            Condition = condition;
         }
 
         public void AddCreatureTemplate(CreatureTemplate creatureTemplate, int chance)

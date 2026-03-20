@@ -23,11 +23,14 @@ namespace EQWOWConverter.WOWFiles
             return string.Concat("DELETE FROM game_event_pool WHERE `eventEntry` >= ", Configuration.SQL_GAME_EVENTS_ID_START, " AND `eventEntry` <= ", Configuration.SQL_GAME_EVENTS_ID_END, ";");
         }
 
-        public void AddRow(int eventID, int poolEntry)
+        public void AddRow(int eventID, int poolEntry, bool doSpawn)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("eventEntry", eventID);
-            newRow.AddInt("pool_entry", poolEntry); // Negative event IDs mean that the pool should despawn when the event starts
+            if (doSpawn == true)
+                newRow.AddInt("eventEntry", eventID);
+            else
+                newRow.AddInt("eventEntry", -1 * eventID); // Negative event IDs mean that the creature should despawn when the event starts
+            newRow.AddInt("pool_entry", poolEntry);
             Rows.Add(newRow);
         }
     }

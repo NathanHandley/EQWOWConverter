@@ -1,0 +1,63 @@
+id|zone|zone_event_id|name|normalize_type|is_scheduled|trigger_hour|duration_in_hour|orig_cond_id
+1|cabeast|1|Night|night|1|20|11|1
+2|cabeast|2|Day|day|1|8|11|2
+3|commons|1|Night|night|1|21|10|1
+4|commons|2|Day|day|1|7|14|2
+5|eastwastes|1|Night|night|1|21|10|1
+6|everfrost|1|Night|night|1|21|10|1
+7|everfrost|2|Day|day|1|7|14|2
+8|fearplane|1|Cazic Spawned|none|0|0|0|1
+9|fieldofbone|1|Night|night|1|21|10|1
+10|fieldofbone|2|Day|day|1|7|14|2
+11|firiona|1|Tracker Night|night|1|21|9|1
+12|firiona|2|Tracker Day|day|1|7|14|1
+13|freporte|1|Night|night|1|23|10|1
+14|freporte|2|Day|day|1|9|14|2
+15|gfaydark|1|Enable Night Hend|night|1|20|11|1
+16|gfaydark|2|Enable Day Hend|day|1|8|11|2
+17|greatdivide|1|Coldain War|none|0|0|0|1
+18|highpass|1|Night|night|1|21|11|1
+19|highpass|2|Day|day|1|9|11|2
+20|kithicor|1|Night|night|1|19|9|1
+21|kithicor|2|Day|day|1|5|13|2
+22|lakeofillomen|1|Night|night|1|21|10|1
+23|lakeofillomen|2|Day|day|1|7|14|2
+24|lakerathe|1|Night|night|1|21|10|1
+25|lakerathe|2|Day|day|1|7|14|2
+26|lfaydark|1|Night|night|1|21|10|1
+27|lfaydark|2|Day|day|1|7|14|2
+28|mischiefplane|1|Theate Event|none|1|7|3|1
+29|neriakb|1|Night|night|1|21|10|1
+30|neriakb|2|Day|day|1|7|14|2
+31|northkarana|1|Night|night|1|21|10|1
+32|northkarana|2|Day|day|1|7|14|2
+33|oggok|1|Enable Gronk|night|1|20|11|1
+34|oggok|2|Enable Ryn|day|1|8|11|2
+35|overthere|1|Night|night|1|19|10|1
+36|overthere|2|Day|day|1|5|14|2
+37|qcat|1|Malka Up|night|1|21|9|1
+38|qcat|2|Courier Up|day|1|7|13|1
+39|qey2hh1|1|Night|night|1|20|11|1
+40|qey2hh1|2|Day|day|1|7|13|2
+41|qey2hh1|3|Guard Trigger|none|1|17|1|3
+42|qeynos|1|Night|night|1|20|11|1
+43|qeynos|2|Day|day|1|8|11|2
+44|qeynos2|1|Night|night|1|20|11|1
+45|qeynos2|2|Day|day|1|8|11|2
+46|qeytoqrg|1|Night|night|1|21|10|1
+47|qeytoqrg|2|Day|day|1|7|14|2
+48|rathemtn|1|Enable Zephyl|night|1|21|10|1
+49|rathemtn|2|Enable Hasten|day|1|7|14|2
+50|soltemple|1|Night|night|1|21|12|1
+51|soltemple|2|Day|day|1|9|12|2
+52|southkarana|1|Night|night|1|21|10|1
+53|southkarana|2|Day|day|1|7|14|2
+54|sro|1|Night|night|1|21|9|1
+55|sro|2|Day|day|1|7|13|2
+56|steamfont|2|EnableCargo|day|1|7|14|1
+57|swampofnohope|1|Mystic Dovan Spawn|night|1|20|11|1
+58|swampofnohope|2|Captain Nedar|none|1|12|7|2
+59|thurgadina|4|Dead Coldain|deadcoldain|0|0|0|2
+60|thurgadinb|1|Night|night|1|17|14|1
+61|thurgadinb|2|Day|day|1|8|8|2
+62|thurgadinb|4|Dead Coldain|deadcoldain|0|0|0|2
