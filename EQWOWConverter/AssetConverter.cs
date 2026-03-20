@@ -1375,67 +1375,81 @@ namespace EQWOWConverter
             // Go through each spawn group and generate pools
             Logger.WriteInfo("Generating creature spawn pools...");
             Dictionary<int, CreatureSpawnGroup> spawnGroupsByGroupID = CreatureSpawnGroup.GetSpawnGroupsByGroupID();
-            Dictionary<int, CreatureSpawnPool> spawnPoolsByGroupID = new Dictionary<int, CreatureSpawnPool>();
             foreach (var spawnGroup in spawnGroupsByGroupID)
             {
                 // Confirm there are related instances
                 if (creatureSpawnInstancesByGroupID.ContainsKey(spawnGroup.Key) == false)
                     continue;
 
-                // Make the new pool
-                CreatureSpawnPool curSpawnPool = new CreatureSpawnPool(spawnGroup.Value);
-
-                // Add instances that are valid zones
+                // Grab valid instances, grouped by conditions in order to make event-bound groups
+                Dictionary<int, List<CreatureSpawnInstance>> spawnInstancesByConditionID = new Dictionary<int, List<CreatureSpawnInstance>>();
                 foreach (CreatureSpawnInstance spawnInstance in creatureSpawnInstancesByGroupID[spawnGroup.Key])
                 {
                     if (mapIDsByShortName.ContainsKey(spawnInstance.ZoneShortName.ToLower().Trim()))
                     {
                         spawnInstance.MapID = mapIDsByShortName[spawnInstance.ZoneShortName.ToLower().Trim()];
                         spawnInstance.AreaID = Convert.ToInt32(zonePropertiesByMapID[spawnInstance.MapID].DefaultZoneArea.DBCAreaTableID);
-                        curSpawnPool.AddSpawnInstance(spawnInstance);
+                        if (spawnInstancesByConditionID.ContainsKey(spawnInstance.Condition) == false)
+                            spawnInstancesByConditionID.Add(spawnInstance.Condition, new List<CreatureSpawnInstance>());
+                        spawnInstancesByConditionID[spawnInstance.Condition].Add(spawnInstance);
                     }
                 }
 
-                // Add spawns that are valid spawns
-                if (creatureSpawnEntriesByGroupID.ContainsKey(spawnGroup.Key))
+                // Create a pool for every condition group
+                foreach (var spawnInstancesForConditionID in spawnInstancesByConditionID)
                 {
-                    foreach (CreatureSpawnEntry spawnEntry in creatureSpawnEntriesByGroupID[spawnGroup.Key])
-                    {
-                        if (creatureTemplatesByEQID.ContainsKey(spawnEntry.EQCreatureTemplateID))
-                        {
-                            curSpawnPool.AddCreatureTemplate(creatureTemplatesByEQID[spawnEntry.EQCreatureTemplateID], spawnEntry.Chance);
+                    // Make the new pool
+                    CreatureSpawnPool curSpawnPool = new CreatureSpawnPool(spawnGroup.Value, spawnInstancesForConditionID.Key);
+                    foreach (CreatureSpawnInstance spawnInstance in spawnInstancesForConditionID.Value)
+                        curSpawnPool.AddSpawnInstance(spawnInstance);
 
-                            // If  this is a limited spawn, limit the group
-                            // TODO: This should be handled differently, as only specific creature templates should be limited
-                            if (creatureTemplatesByEQID[spawnEntry.EQCreatureTemplateID].LimitOneInSpawnPool == true)
-                                spawnGroup.Value.SpawnLimit = 1;
+                    // It's safe to assume all instances have the same zone name
+                    string zoneShortName = spawnInstancesForConditionID.Value[0].ZoneShortName;
+
+                    // Attach game event
+                    if (spawnConditionsByZoneAndID.ContainsKey(zoneShortName) == true && spawnConditionsByZoneAndID[zoneShortName].ContainsKey(spawnInstancesForConditionID.Key) == true)
+                        curSpawnPool.LinkedGameEvent = spawnConditionsByZoneAndID[zoneShortName][spawnInstancesForConditionID.Key].LinkedGameEvent;
+
+                    // Add spawns that are valid spawns
+                    if (creatureSpawnEntriesByGroupID.ContainsKey(spawnGroup.Key))
+                    {
+                        foreach (CreatureSpawnEntry spawnEntry in creatureSpawnEntriesByGroupID[spawnGroup.Key])
+                        {
+                            if (creatureTemplatesByEQID.ContainsKey(spawnEntry.EQCreatureTemplateID))
+                            {
+                                curSpawnPool.AddCreatureTemplate(creatureTemplatesByEQID[spawnEntry.EQCreatureTemplateID], spawnEntry.Chance);
+
+                                // If  this is a limited spawn, limit the group
+                                // TODO: This should be handled differently, as only specific creature templates should be limited
+                                if (creatureTemplatesByEQID[spawnEntry.EQCreatureTemplateID].LimitOneInSpawnPool == true)
+                                    spawnGroup.Value.SpawnLimit = 1;
+                            }
                         }
                     }
-                }
 
-                // Make sure there is at least one element
-                if (curSpawnPool.CreatureSpawnInstances.Count == 0)
-                {
-                    Logger.WriteDebug("Invalid creature spawn pool with groupID '" + spawnGroup.Key+ "', as there are no creature spawn instances. Skipping.");
-                    continue;
-                }
-                if (curSpawnPool.CreatureTemplates.Count == 0)
-                {
-                    Logger.WriteDebug("Invalid creature spawn pool with groupID '" + spawnGroup.Key+ "', as there are no valid creature templates. Skipping.");
-                    continue;
-                }
+                    // Make sure there is at least one element
+                    if (curSpawnPool.CreatureSpawnInstances.Count == 0)
+                    {
+                        Logger.WriteDebug("Invalid creature spawn pool with groupID '" + spawnGroup.Key + "', as there are no creature spawn instances. Skipping.");
+                        continue;
+                    }
+                    if (curSpawnPool.CreatureTemplates.Count == 0)
+                    {
+                        Logger.WriteDebug("Invalid creature spawn pool with groupID '" + spawnGroup.Key + "', as there are no valid creature templates. Skipping.");
+                        continue;
+                    }
 
-                // Validate the chances
-                if (curSpawnPool.DoChancesAddTo100() == false)
-                {
-                    Logger.WriteDebug("Invalid creature spawn pool with groupID '" + spawnGroup.Key + "', as chances did not add to 100. Rebalancing.");
-                    curSpawnPool.BalanceChancesTo100();
-                }
+                    // Validate the chances
+                    if (curSpawnPool.DoChancesAddTo100() == false)
+                    {
+                        Logger.WriteDebug("Invalid creature spawn pool with groupID '" + spawnGroup.Key + "', as chances did not add to 100. Rebalancing.");
+                        curSpawnPool.BalanceChancesTo100();
+                    }
 
-                // Add it
-                spawnPoolsByGroupID.Add(spawnGroup.Key, curSpawnPool);
+                    // Add it
+                    creatureSpawnPools.Add(curSpawnPool);
+                }
             }
-            creatureSpawnPools = spawnPoolsByGroupID.Values.ToList();
 
             // Make a list of path grid entries
             Dictionary<int, Dictionary<int, List<CreaturePathGridEntry>>> creaturePathGridEntriesByIDAndMapID = new Dictionary<int, Dictionary<int, List<CreaturePathGridEntry>>>();

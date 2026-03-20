@@ -331,40 +331,41 @@ namespace EQWOWConverter
                     CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[0];
                     CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
                     int creatureSQLGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                    string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                    CreateCreatureAndRelatedSQLEntries(creatureSQLGUID, creatureTemplate, spawnInstance, spawnPool.CreatureSpawnGroup.RoamDistance, comment);
+                    string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroupID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
+                    CreateCreatureAndRelatedSQLEntries(creatureSQLGUID, creatureTemplate, spawnInstance, spawnPool.RoamDistance, comment);
+                    if (spawnInstance.LinkedGameEvent != null)
+                        gameEventCreatureSQL.AddRow(spawnInstance.LinkedGameEvent.GameEventsSQLID, creatureSQLGUID);
                 }
                 // Pool required
                 else
-                {                    
+                {
                     List<string> poolNames = new List<string>();
                     foreach (CreatureTemplate template in spawnPool.CreatureTemplates)
                         if (poolNames.Contains(template.Name) == false)
                             poolNames.Add(template.Name);
-                    string poolDescription = "(" + spawnPool.CreatureSpawnGroup.ID + ")";
+                    string poolDescription = "(" + spawnPool.SpawnGroupID + ")";
                     foreach (string name in poolNames)
                         poolDescription += ", " + name;
-                    int motherPoolId = CreatureSpawnPool.GetPoolTemplateSQLID();
-                    poolTemplateSQL.AddRow(motherPoolId, poolDescription + " - Mother Pool", spawnPool.GetMaxSpawnCount());
-                    //gameEventPoolSQL.AddRow(201, motherPoolId);
+                    int motherPoolID = CreatureSpawnPool.GetPoolTemplateSQLID();
+                    poolTemplateSQL.AddRow(motherPoolID, poolDescription + " - Mother Pool", spawnPool.GetMaxSpawnCount());
+                    if (spawnPool.LinkedGameEvent != null)
+                        gameEventPoolSQL.AddRow(spawnPool.LinkedGameEvent.GameEventsSQLID, motherPoolID);
 
                     // Pooled single instances
                     if (isSingleInstance == true)
                     {
-                        int poolId = CreatureSpawnPool.GetPoolTemplateSQLID();
-                        poolTemplateSQL.AddRow(poolId, poolDescription, spawnPool.GetMaxSpawnCount());
-                        //gameEventPoolSQL.AddRow(201, poolId);
-                        poolPoolSQL.AddRow(poolId, motherPoolId, 0, poolDescription);
+                        int poolID = CreatureSpawnPool.GetPoolTemplateSQLID();
+                        poolTemplateSQL.AddRow(poolID, poolDescription, spawnPool.GetMaxSpawnCount());
+                        poolPoolSQL.AddRow(poolID, motherPoolID, 0, poolDescription);
                         CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
-
                         for (int i = 0; i < spawnPool.CreatureTemplates.Count; i++)
                         {
                             CreatureTemplate template = spawnPool.CreatureTemplates[i];
                             int chance = spawnPool.CreatureTemplateChances[i];
                             int guid = CreatureTemplate.GenerateCreatureSQLGUID();
-                            poolCreatureSQL.AddRow(guid, poolId, chance, template.Name);
-                            string comment = $"{template.Name} - EQ Group: {spawnPool.CreatureSpawnGroup.ID}, EQ NPC ID: {template.EQCreatureTemplateID}, EQ Instance ID: {spawnInstance.ID}";
-                            CreateCreatureAndRelatedSQLEntries(guid, template, spawnInstance, spawnPool.CreatureSpawnGroup.RoamDistance, comment);
+                            poolCreatureSQL.AddRow(guid, poolID, chance, template.Name);
+                            string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroupID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
+                            CreateCreatureAndRelatedSQLEntries(guid, template, spawnInstance, spawnPool.RoamDistance, comment);
                         }
                     }
                     // Pooled multiple instances
@@ -373,20 +374,18 @@ namespace EQWOWConverter
                         for (int spawnInstanceIndex = 0; spawnInstanceIndex < spawnPool.CreatureSpawnInstances.Count; spawnInstanceIndex++)
                         {
                             CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[spawnInstanceIndex];
-                            int subPoolId = CreatureSpawnPool.GetPoolTemplateSQLID();
+                            int subPoolID = CreatureSpawnPool.GetPoolTemplateSQLID();
                             string subPoolDescription = String.Concat(poolDescription, " - ", spawnInstanceIndex.ToString());
-                            poolTemplateSQL.AddRow(subPoolId, subPoolDescription, 1);
-                            //gameEventPoolSQL.AddRow(201, subPoolId);
-                            poolPoolSQL.AddRow(subPoolId, motherPoolId, 0, subPoolDescription);
-
+                            poolTemplateSQL.AddRow(subPoolID, subPoolDescription, 1);
+                            poolPoolSQL.AddRow(subPoolID, motherPoolID, 0, subPoolDescription);
                             for (int i = 0; i < spawnPool.CreatureTemplates.Count; i++)
                             {
                                 CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[i];
                                 int chance = spawnPool.CreatureTemplateChances[i];
                                 int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                                poolCreatureSQL.AddRow(creatureGUID, subPoolId, chance, creatureTemplate.Name);
-                                string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                                CreateCreatureAndRelatedSQLEntries(creatureGUID, creatureTemplate, spawnInstance, spawnPool.CreatureSpawnGroup.RoamDistance, comment);
+                                poolCreatureSQL.AddRow(creatureGUID, subPoolID, chance, creatureTemplate.Name);
+                                string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroupID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
+                                CreateCreatureAndRelatedSQLEntries(creatureGUID, creatureTemplate, spawnInstance, spawnPool.RoamDistance, comment);
                             }
                         }
                     }
@@ -418,9 +417,6 @@ namespace EQWOWConverter
 
             creatureSQL.AddRow(guid, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
                 spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, roamDistance, comment);
-
-            //if (instance.LinkedGameEvent != null)
-            //    gameEventCreatureSQL.AddRow(instance.LinkedGameEvent.GameEventsSQLID, guid);
         }
 
         private void PopulateItemData(Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, Dictionary<int, SpellTemplate> spellTemplatesByEQID)

@@ -14,20 +14,30 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Events;
+
 namespace EQWOWConverter.Creatures
 {
     internal class CreatureSpawnPool
     {
         private static int CURRENT_POOL_TEMPLATE_ENTRYID = Configuration.SQL_POOL_TEMPLATE_ID_START;
+        private static readonly object PoolLock = new object();
 
         public List<CreatureSpawnInstance> CreatureSpawnInstances = new List<CreatureSpawnInstance>();
         public List<CreatureTemplate> CreatureTemplates = new List<CreatureTemplate>();
         public List<int> CreatureTemplateChances = new List<int>();
-        public CreatureSpawnGroup CreatureSpawnGroup;
+        public float RoamDistance = 0;
+        public int SpawnLimit = 0;
+        public int SpawnGroupID = 0;
+        public int Condition = 0;
+        public GameEvent? LinkedGameEvent = null;
 
-        public CreatureSpawnPool(CreatureSpawnGroup creatureSpawnGroup)
+        public CreatureSpawnPool(CreatureSpawnGroup creatureSpawnGroup, int condition)
         {
-            CreatureSpawnGroup = creatureSpawnGroup;
+            RoamDistance = creatureSpawnGroup.RoamDistance;
+            SpawnLimit = creatureSpawnGroup.SpawnLimit;
+            SpawnGroupID = creatureSpawnGroup.ID;
+            Condition = condition;
         }
 
         public void AddCreatureTemplate(CreatureTemplate creatureTemplate, int chance)
@@ -38,10 +48,10 @@ namespace EQWOWConverter.Creatures
 
         public int GetMaxSpawnCount()
         {
-            if (CreatureSpawnGroup.SpawnLimit == 0)
+            if (SpawnLimit == 0)
                 return CreatureSpawnInstances.Count;
             else
-                return CreatureSpawnGroup.SpawnLimit;
+                return SpawnLimit;
         }
 
         public void AddSpawnInstance(CreatureSpawnInstance creatureSpawnInstance)
@@ -86,9 +96,12 @@ namespace EQWOWConverter.Creatures
 
         public static int GetPoolTemplateSQLID()
         {
-            int returnTemplateID = CURRENT_POOL_TEMPLATE_ENTRYID;
-            CURRENT_POOL_TEMPLATE_ENTRYID++;
-            return returnTemplateID;
+            lock (PoolLock)
+            {
+                int returnTemplateID = CURRENT_POOL_TEMPLATE_ENTRYID;
+                CURRENT_POOL_TEMPLATE_ENTRYID++;
+                return returnTemplateID;
+            }
         }
     }
 }
