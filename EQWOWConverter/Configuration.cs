@@ -259,11 +259,11 @@ namespace EQWOWConverter
 
         // If true, all day or night creature spawn events will have their day/time normalized, and only
         // one event will be created for each.
-        public static readonly bool EVENTS_DO_NORMALIZE_DAYNIGHT_SPAWN_EVENTS = true;
-        public static readonly int EVENTS_NORMALIZED_DAY_SPAWN_START_HOUR = 6;
-        public static readonly int EVENTS_NORMALIZED_DAY_SPAWN_LENGTH_IN_HOUR = 12;
-        public static readonly int EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR = 18;
-        public static readonly int EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR = 12;
+        public static readonly bool EVENTS_DO_NORMALIZE_GAME_EVENTS = true;
+        public static readonly int EVENTS_NORMALIZED_DAY_SPAWN_START_HOUR = 5;
+        public static readonly int EVENTS_NORMALIZED_DAY_SPAWN_LENGTH_IN_HOUR = 16;
+        public static readonly int EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR = 21;
+        public static readonly int EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR = 8;
 
         //=====================================================================
         // Liquid
