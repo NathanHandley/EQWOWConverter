@@ -20,7 +20,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return string.Concat("DELETE FROM game_event_pool WHERE `eventEntry` >= ", Configuration.SQL_GAME_EVENTS_ID_START, " AND `eventEntry` <= ", Configuration.SQL_GAME_EVENTS_ID_END, ";");
+            return string.Concat("DELETE FROM game_event_pool WHERE pool_entry >= ", Configuration.SQL_POOL_TEMPLATE_ID_START.ToString(), " AND pool_entry <= ", Configuration.SQL_POOL_TEMPLATE_ID_END.ToString(), ";");
         }
 
         public void AddRow(int eventID, int poolEntry, bool doSpawn)

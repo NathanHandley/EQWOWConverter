@@ -131,9 +131,9 @@ namespace EQWOWConverter.Events
                 deadColdainEvent.TriggerHour = 0;
                 deadColdainEvent.DurationInHours = 2;
                 deadColdainEvent.NormalizeType = GameEventNormalizeType.DeadColdain;
-                deadColdainEvent.ZoneEventID = 3; // Must always be 3
+                deadColdainEvent.ZoneEventID = 4; // Must always be 4
                 deadColdainEvent.IsScheduled = false;
-                GameEvents.Add(nightEvent);
+                GameEvents.Add(deadColdainEvent);
             }
 
             string gameEventsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "GameEvents.csv");
@@ -143,7 +143,7 @@ namespace EQWOWConverter.Events
             {
                 GameEvent spawnEvent = new GameEvent();
                 spawnEvent.ZoneShortNames.Add(columns["zone"].Trim().ToLower());
-                spawnEvent.ZoneEventID = int.Parse(columns["zone_event"]);
+                spawnEvent.ZoneEventID = int.Parse(columns["zone_event_id"]);
                 spawnEvent.Name = columns["name"];
                 spawnEvent.IsScheduled = columns["is_scheduled"] == "1" ? true : false;
                 spawnEvent.Description = string.Concat("EQ ", spawnEvent.ZoneShortNames[0], " ", spawnEvent.Name);
@@ -164,35 +164,32 @@ namespace EQWOWConverter.Events
 
                 // Group events since there's an upper limit in AzerothCore
                 bool groupExists = false;
-                if (spawnEvent.IsScheduled == true)
-                {   
-                    foreach (GameEvent groupEvent in GameEvents)
+                foreach (GameEvent groupEvent in GameEvents)
+                {
+                    if (Configuration.EVENTS_DO_NORMALIZE_GAME_EVENTS == true)
                     {
-                        if (Configuration.EVENTS_DO_NORMALIZE_GAME_EVENTS == true)
+                        if (spawnEvent.NormalizeType != GameEventNormalizeType.None)
                         {
-                            if (spawnEvent.NormalizeType != GameEventNormalizeType.None)
+                            if (spawnEvent.NormalizeType == groupEvent.NormalizeType)
                             {
-                                if (spawnEvent.NormalizeType == groupEvent.NormalizeType)
-                                {
-                                    groupExists = true;
-                                    groupEvent.ZoneShortNames.Add(spawnEvent.ZoneShortNames[0]);
-                                    break;
-                                }
+                                groupExists = true;
+                                groupEvent.ZoneShortNames.Add(spawnEvent.ZoneShortNames[0]);
+                                break;
                             }
                         }
-
-                        if (groupEvent.Name != spawnEvent.Name)
-                            continue;
-                        if (groupEvent.TriggerHour != spawnEvent.TriggerHour)
-                            continue;
-                        if (groupEvent.DurationInHours != spawnEvent.DurationInHours)
-                            continue;
-                        if (groupEvent.ZoneEventID != spawnEvent.ZoneEventID)
-                            continue;
-                        groupExists = true;
-                        groupEvent.ZoneShortNames.Add(spawnEvent.ZoneShortNames[0]);
-                        break;
                     }
+
+                    if (groupEvent.Name != spawnEvent.Name)
+                        continue;
+                    if (groupEvent.TriggerHour != spawnEvent.TriggerHour)
+                        continue;
+                    if (groupEvent.DurationInHours != spawnEvent.DurationInHours)
+                        continue;
+                    if (groupEvent.ZoneEventID != spawnEvent.ZoneEventID)
+                        continue;
+                    groupExists = true;
+                    groupEvent.ZoneShortNames.Add(spawnEvent.ZoneShortNames[0]);
+                    break;
                 }
                 if (groupExists == false)
                     GameEvents.Add(new GameEvent(spawnEvent));
@@ -224,11 +221,16 @@ namespace EQWOWConverter.Events
 
                 // Set remaining derived elements
                 gameEvent.StartTime = new DateTime(2000, 10, 29, gameEvent.TriggerHour, 0, 0);
-                gameEvent.EndTime = new DateTime(Configuration.EVENTS_MAX_DATETIME_YEAR, 12, 30, 23, 0, 0);
                 if (gameEvent.IsScheduled == false)
+                {
                     gameEvent.DurationInMinutes = 2592000;
+                    gameEvent.EndTime = new DateTime(2000, 10, 29, gameEvent.TriggerHour, 0, 0);
+                }
                 else
+                {
                     gameEvent.DurationInMinutes = gameEvent.DurationInHours * 60;
+                    gameEvent.EndTime = new DateTime(Configuration.EVENTS_MAX_DATETIME_YEAR, 12, 30, 23, 0, 0);
+                }
             }
         }
     }

@@ -29,7 +29,8 @@ namespace EQWOWConverter.Creatures
         public float RoamDistance = 0;
         public int SpawnLimit = 0;
         public int SpawnGroupID = 0;
-        public GameEvent? LinkedGameEvent = null;
+        public GameEvent? LinkedSpawnGameEvent = null;
+        public GameEvent? LinkedDespawnGameEvent = null;
 
         public CreatureSpawnPool(CreatureSpawnGroup creatureSpawnGroup)
         {

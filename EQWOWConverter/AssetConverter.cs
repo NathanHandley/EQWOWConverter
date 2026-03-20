@@ -1350,12 +1350,23 @@ namespace EQWOWConverter
                     curSpawnPool.AddSpawnInstance(spawnInstance);
 
                 // It's safe to assume all instances have the same zone name
-                string zoneShortName = curSpawnPool.CreatureSpawnInstances[0].ZoneShortName;
-
-                // Attach game events, if any
-                if ()
-                if (spawnConditionsByZoneAndID.ContainsKey(zoneShortName) == true && spawnConditionsByZoneAndID[zoneShortName].ContainsKey(spawnInstancesForConditionID.Key) == true)
-                    curSpawnPool.LinkedGameEvent = spawnConditionsByZoneAndID[zoneShortName][spawnInstancesForConditionID.Key].LinkedGameEvent;
+                string zoneShortName = spawnGroup.Value.ZoneShortName;
+                if (spawnGroup.Value.SpawnZoneEventID > 0)
+                {
+                    GameEvent? spawnGameEvent = GameEvent.GetGameEvent(zoneShortName, spawnGroup.Value.SpawnZoneEventID);
+                    if (spawnGameEvent == null)
+                        Logger.WriteError("Could not find game event for zone '", zoneShortName, "' and ID '", spawnGroup.Value.SpawnZoneEventID.ToString(), "' for spawn group '", spawnGroup.Key.ToString(), "'");
+                    else
+                        curSpawnPool.LinkedSpawnGameEvent = spawnGameEvent;
+                }
+                if (spawnGroup.Value.DespawnZoneEventID > 0)
+                {
+                    GameEvent? despawnGameEvent = GameEvent.GetGameEvent(zoneShortName, spawnGroup.Value.DespawnZoneEventID);
+                    if (despawnGameEvent == null)
+                        Logger.WriteError("Could not find game event for zone '", zoneShortName, "' and ID '", spawnGroup.Value.DespawnZoneEventID.ToString(), "' for spawn group '", spawnGroup.Key.ToString(), "'");
+                    else
+                        curSpawnPool.LinkedDespawnGameEvent = despawnGameEvent;
+                }
 
                 // Add spawns that are valid spawns
                 if (creatureSpawnEntriesByGroupID.ContainsKey(spawnGroup.Key))
@@ -1414,31 +1425,12 @@ namespace EQWOWConverter
                 creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID][mapID].Add(creaturePathGridEntry);
             }
 
-            // Associate path grid entries with relevant spawn instances, and any event conditions
+            // Associate path grid entries with relevant spawn instances
             Logger.WriteInfo("Relating creatures to spawn instances...");
             foreach (CreatureSpawnPool creatureSpawnPool in creatureSpawnPools)
             {
                 foreach (CreatureSpawnInstance creatureSpawnInstance in creatureSpawnPool.CreatureSpawnInstances)
                 {
-                    // Condition/Events
-                    if (creatureSpawnInstance.SpawnZoneEventID > 0)
-                    {
-                        if (spawnConditionsByZoneAndID.ContainsKey(creatureSpawnInstance.ZoneShortName) == true &&
-                            spawnConditionsByZoneAndID[creatureSpawnInstance.ZoneShortName].ContainsKey(creatureSpawnInstance.SpawnZoneEventID) == true)
-                            creatureSpawnInstance.LinkedSpawnGameEvent = spawnConditionsByZoneAndID[creatureSpawnInstance.ZoneShortName][creatureSpawnInstance.SpawnZoneEventID].LinkedGameEvent;
-                        else
-                            Logger.WriteError("Could not find spawn condition for createrSpawnInstance ID '", creatureSpawnInstance.ID.ToString(), "'");
-                    }
-                    if (creatureSpawnInstance.DespawnZoneEventID > 0)
-                    {
-                        if (spawnConditionsByZoneAndID.ContainsKey(creatureSpawnInstance.ZoneShortName) == true &&
-                            spawnConditionsByZoneAndID[creatureSpawnInstance.ZoneShortName].ContainsKey(creatureSpawnInstance.DespawnZoneEventID) == true)
-                            creatureSpawnInstance.LinkedSpawnGameEvent = spawnConditionsByZoneAndID[creatureSpawnInstance.ZoneShortName][creatureSpawnInstance.DespawnZoneEventID].LinkedGameEvent;
-                        else
-                            Logger.WriteError("Could not find spawn condition for createrSpawnInstance ID '", creatureSpawnInstance.ID.ToString(), "'");
-                    }
-
-                    // Grid
                     if (creatureSpawnInstance.PathGridID != 0)
                     {
                         if (creaturePathGridEntriesByIDAndMapID.ContainsKey(creatureSpawnInstance.PathGridID) == false)

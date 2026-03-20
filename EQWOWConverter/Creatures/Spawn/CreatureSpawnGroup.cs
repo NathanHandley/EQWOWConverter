@@ -24,6 +24,9 @@ namespace EQWOWConverter.Creatures
         public string Name = string.Empty;
         public int SpawnLimit = 0;
         public float RoamDistance = 0;
+        public int SpawnZoneEventID = 0;
+        public int DespawnZoneEventID = 0;
+        public string ZoneShortName = string.Empty;
 
         public static Dictionary<int, CreatureSpawnGroup> GetSpawnGroupsByGroupID()
         {
@@ -42,8 +45,11 @@ namespace EQWOWConverter.Creatures
                 // Load the row
                 CreatureSpawnGroup newSpawnGroup = new CreatureSpawnGroup();
                 newSpawnGroup.ID = Convert.ToInt32(columns["id"]);
+                newSpawnGroup.ZoneShortName = columns["zone"];
                 newSpawnGroup.Name = columns["name"];
                 newSpawnGroup.SpawnLimit = Convert.ToInt32(columns["spawn_limit"]);
+                newSpawnGroup.SpawnZoneEventID = int.Parse(columns["spawn_zone_event_id"]);
+                newSpawnGroup.DespawnZoneEventID = int.Parse(columns["despawn_zone_event_id"]);
 
                 // Calculate the wander distance
                 float maxX = float.Parse(columns["max_x"]);

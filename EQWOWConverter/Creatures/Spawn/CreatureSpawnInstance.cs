@@ -32,11 +32,6 @@ namespace EQWOWConverter.Creatures
         public int RespawnTimeInSeconds = 0;
         public int Variance = 0; // TODO: Figure out what this is...
         public int PathGridID = 0;
-        public int SpawnZoneEventID = 0;
-        public int DespawnZoneEventID = 0;
-
-        public GameEvent? LinkedSpawnGameEvent = null;
-        public GameEvent? LinkedDespawnGameEvent = null;
 
         public int MapID = 0;
         public int AreaID = 0;
@@ -132,7 +127,7 @@ namespace EQWOWConverter.Creatures
                 CreatureSpawnInstance newSpawnDetail = new CreatureSpawnInstance();
                 newSpawnDetail.ID = int.Parse(columns["eqid"]);
                 newSpawnDetail.SpawnGroupID = int.Parse(columns["spawngroupid"]);
-                newSpawnDetail.ZoneShortName = columns["zone"];
+                newSpawnDetail.ZoneShortName = columns["zone"].ToLower().Trim();
                 float spawnX = float.Parse(columns["x"]);
                 float spawnY = float.Parse(columns["y"]);
                 float spawnZ = float.Parse(columns["z"]);
@@ -140,8 +135,6 @@ namespace EQWOWConverter.Creatures
                 newSpawnDetail.RespawnTimeInSeconds = int.Parse(columns["respawntime"]);
                 newSpawnDetail.Variance = int.Parse(columns["variance"]);
                 newSpawnDetail.PathGridID = int.Parse(columns["pathgrid"]);
-                newSpawnDetail.SpawnZoneEventID = int.Parse(columns["spawn_zone_event_id"]);
-                newSpawnDetail.DespawnZoneEventID = int.Parse(columns["despawn_zone_event_id"]);
 
                 // Get orientation from heading. EQ uses 0-256 range, and can be 2x that (512) and then convert to degrees and then radians
                 float modHeading = 0;

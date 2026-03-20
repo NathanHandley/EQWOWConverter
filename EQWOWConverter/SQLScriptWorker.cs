@@ -333,8 +333,10 @@ namespace EQWOWConverter
                     int creatureSQLGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                     string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroupID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
                     CreateCreatureAndRelatedSQLEntries(creatureSQLGUID, creatureTemplate, spawnInstance, spawnPool.RoamDistance, comment);
-                    if (spawnInstance.LinkedGameEvent != null)
-                        gameEventCreatureSQL.AddRow(spawnInstance.LinkedGameEvent.GameEventsSQLID, creatureSQLGUID);
+                    if (spawnPool.LinkedSpawnGameEvent != null)
+                        gameEventCreatureSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, creatureSQLGUID, true);
+                    if (spawnPool.LinkedDespawnGameEvent != null)
+                        gameEventCreatureSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, creatureSQLGUID, false);
                 }
                 // Pool required
                 else
@@ -348,8 +350,10 @@ namespace EQWOWConverter
                         poolDescription += ", " + name;
                     int motherPoolID = CreatureSpawnPool.GetPoolTemplateSQLID();
                     poolTemplateSQL.AddRow(motherPoolID, poolDescription + " - Mother Pool", spawnPool.GetMaxSpawnCount());
-                    if (spawnPool.LinkedGameEvent != null)
-                        gameEventPoolSQL.AddRow(spawnPool.LinkedGameEvent.GameEventsSQLID, motherPoolID);
+                    if (spawnPool.LinkedSpawnGameEvent != null)
+                        gameEventPoolSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, motherPoolID, true);
+                    if (spawnPool.LinkedDespawnGameEvent != null)
+                        gameEventPoolSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, motherPoolID, false);
 
                     // Pooled single instances
                     if (isSingleInstance == true)
