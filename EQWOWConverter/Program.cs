@@ -20,6 +20,8 @@ internal class Program
 {
     private static void Main(string[] args)
     {
+        Configuration.LoadConfiguration();
+        Configuration.SaveConfiguration();
         Console.Title = "EverQuest to WoW Converter";
         Logger.ResetLog();
         Logger.WriteInfo("###### EQ WOW Converter ######");
