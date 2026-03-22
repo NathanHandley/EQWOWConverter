@@ -169,12 +169,12 @@ internal class Program
         Logger.WriteInfo(" ");
         Logger.WriteInfo(" [1] [All] - Perform Everything (Do this if not sure)");
         Logger.WriteInfo(" ");
-        Logger.WriteInfo(" [2] [Conditioner] - Extract EQ Data ONLY");
-        Logger.WriteInfo(" [3] [Conditioner] - Condition Extracted EQ Data ONLY");
-        Logger.WriteInfo(" [4] [Conditioner] - Convert PNG files into BLP ONLY");
-        Logger.WriteInfo(" [5] [Conditioner] - Split raw world map images up and change to BLP");
+        Logger.WriteInfo(" [2] [Conditioner] - Extract EQ Data ONLY (Only ever once)");
+        Logger.WriteInfo(" [3] [Conditioner] - Condition Extracted EQ Data ONLY (Usually only once)");
+        //Logger.WriteInfo(" [4] [Conditioner] - Convert PNG files into BLP ONLY");
+        //Logger.WriteInfo(" [5] [Conditioner] - Split raw world map images up and change to BLP");
         Logger.WriteInfo(" ");
-        Logger.WriteInfo(" [6] [Converter] - Convert EQ Data to WOW ONLY");
+        Logger.WriteInfo(" [6] [Converter] - Convert EQ Data to WOW ONLY (Typically called on updated versions)");
         Logger.WriteInfo(" ");
         Logger.WriteInfo(" [X] - Exit");
         Logger.WriteInfo(" ");
@@ -287,19 +287,19 @@ internal class Program
                                     Logger.WriteInfo("Extracted EQ Data Conditioning Succeeded.");
                             }
                             break;
-                        case "4":
-                            {
-                                AssetConditioner conditioner = new AssetConditioner();
-                                conditioner.ConvertPNGFilesToBLP();
-                            }
-                            break;
-                        case "5":
-                        {
-                            {
-                                AssetConditioner conditioner = new AssetConditioner();
-                                conditioner.ConditionWorldMapFilesOnly();
-                            }
-                        } break;
+                        //case "4":
+                        //    {
+                        //        AssetConditioner conditioner = new AssetConditioner();
+                        //        conditioner.ConvertPNGFilesToBLP();
+                        //    }
+                        //    break;
+                        //case "5":
+                        //{
+                        //    {
+                        //        AssetConditioner conditioner = new AssetConditioner();
+                        //        conditioner.ConditionWorldMapFilesOnly();
+                        //    }
+                        //} break;
                         case "6":
                             {
                                 AssetConverter converter = new AssetConverter();
