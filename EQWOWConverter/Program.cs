@@ -18,12 +18,84 @@ using EQWOWConverter;
 
 internal class Program
 {
-    private static void Main(string[] args)
+    public static bool LoadAndVerifyConfig()
     {
         Configuration.LoadConfiguration();
         Configuration.SaveConfiguration();
+
+        // Test WOW install directory
+        string wowExecutableFileName = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Wow.exe");
+        if (File.Exists(wowExecutableFileName) == false)
+        {
+            Logger.WriteError("Could not locate the World of Warcraft executable in the path defined by configuration variable PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER. ",
+                "Edit the config and ensure this path resolves to the World of Warcraft install directory which has the Wow.exe in it.");
+            return false;
+        }
+
+        // Test EverQuest Trilogy install directory
+        string eqExecutableFileName = Path.Combine(Configuration.PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER, "eqgame.exe");
+        if (File.Exists(eqExecutableFileName) == false)
+        {
+            Logger.WriteError("Could not locate the EverQuest executable in the path defined by configuration variable PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER. ",
+                "Edit the config and ensure this path resolves to the EverQuest Trilogy install directory which has the eqgame.exe in it.");
+            return false;
+        }
+        string eqThurgadinFileName = Path.Combine(Configuration.PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER, "thurgadina.s3d");
+        if (File.Exists(eqThurgadinFileName) == false)
+        {
+            Logger.WriteError("Could not locate the a specific Velious file inside the EverQuest defined by configuration variable PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER. ",
+                "While this may be an EverQuest folder, it is likely a version before EverQuest Trilogy. ",
+                "Edit the config and ensure this path resolves to an unpatched EverQuest Trilogy install directory.");
+            return false;
+        }
+        string eqShadowhavenFileName = Path.Combine(Configuration.PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER, "shadowhaven.s3d");
+        if (File.Exists(eqShadowhavenFileName) == true)
+        {
+            Logger.WriteError("Found a post-Velious file inside the EverQuest defined by configuration variable PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER. ",
+                "While this may be an EverQuest folder, it is likely a version after EverQuest Trilogy. ",
+                "Edit the config and ensure this path resolves to an unpatched EverQuest Trilogy install directory. ",
+                "Note that EverQuest Titanium is NOT compatible with this generator.");
+            return false;
+        }
+
+        // Test Tools directory
+        string toolsFolder = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "blpconverter");
+        if (Directory.Exists(toolsFolder) == false)
+        {
+            Logger.WriteError("Could not locate the tools folder PATH_TOOLS_FOLDER. Edit the config and ensure this path resolves to ",
+                "the folder that contains the tool folders, such as the 'blpconverter' folder or the 'ffmpeg' folder. ",
+                "By default, this is folder named 'Tools' that should have been located in the directory with the EQWOWConverter.exe");
+            return false;
+        }
+
+        // Test Assets directory
+        string assetsFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns");
+        if (Directory.Exists(assetsFolder) == false)
+        {
+            Logger.WriteError("Could not locate the tools folder PATH_ASSETS_FOLDER. Edit the config and ensure this path resolves to ",
+                "the folder that contains the asset folders, such as the 'AddOns' folder or the 'WorldData' folder. ",
+                "By default, this is folder named 'Assets' that should have been located in the directory with the EQWOWConverter.exe");
+            return false;
+        }
+
+        return true;
+    }
+
+
+    private static void Main(string[] args)
+    {
         Console.Title = "EverQuest to WoW Converter";
         Logger.ResetLog();
+
+        bool configLoadResult = LoadAndVerifyConfig();
+        if (configLoadResult == false)
+        {
+            Console.WriteLine("");
+            Console.WriteLine("Press any key to exit");
+            Console.ReadKey();
+            return;
+        }
+
         Logger.WriteInfo("###### EQ WOW Converter ######");
         Logger.WriteInfo("");
         Logger.WriteInfo("Options:");
