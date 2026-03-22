@@ -990,15 +990,15 @@ namespace EQWOWConverter
             OutputTextLineToConfig("# | 1. Manditory Path Settings (Set these before it will work)                |");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputBlankLineToConfig();
-            OutputVariableToConfig("PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER", PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER, "Location of the installed everquest trilogy client (this must have the eqgame.exe file in it)", true);
-            OutputVariableToConfig("PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER", PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Location of the installed enUS version of World of Warcaft client (this must have the wow.exe in it)", true);
+            OutputVariableToConfig("PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER", FileTool.RemoveRelativePathIfExists(PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER), "Location of the installed everquest trilogy client (this must have the eqgame.exe file in it)", true);
+            OutputVariableToConfig("PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER", FileTool.RemoveRelativePathIfExists(PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER), "Location of the installed enUS version of World of Warcaft client (this must have the wow.exe in it)", true);
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputTextLineToConfig("# | 2. Deployment Settings (Highly suggested to set to make install easier)   |");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputBlankLineToConfig();
             OutputVariableToConfig("DEPLOY_CLIENT_FILES", DEPLOY_CLIENT_FILES, "If true, deploy the client file (patch mpq) after building it");
             OutputVariableToConfig("DEPLOY_SERVER_FILES", DEPLOY_SERVER_FILES, "If true, deploy to the server files/data after building");
-            OutputVariableToConfig("DEPLOY_SERVER_DBC_FOLDER_LOCATION", DEPLOY_SERVER_DBC_FOLDER_LOCATION, "Location of where the server DBC files would be deployed to (only relevant if you set DEPLOY_SERVER_FILES to true, otherwise ignored)");
+            OutputVariableToConfig("DEPLOY_SERVER_DBC_FOLDER_LOCATION", FileTool.RemoveRelativePathIfExists(DEPLOY_SERVER_DBC_FOLDER_LOCATION), "Location of where the server DBC files would be deployed to (only relevant if you set DEPLOY_SERVER_FILES to true, otherwise ignored)");
             OutputVariableToConfig("DEPLOY_SERVER_SQL", DEPLOY_SERVER_SQL, "If true, deploy to the SQL to the server");
             OutputVariableToConfig("DEPLOY_SQL_CONNECTION_STRING_CHARACTERS", DEPLOY_SQL_CONNECTION_STRING_CHARACTERS, "If deploying to SQL, you need to set these to something real that points to your databases (only relevant if you set DEPLOY_SERVER_SQL to true, otherwise ignored)", false);
             OutputVariableToConfig("DEPLOY_SQL_CONNECTION_STRING_WORLD", DEPLOY_SQL_CONNECTION_STRING_WORLD, "");
@@ -1027,9 +1027,9 @@ namespace EQWOWConverter
             OutputTextLineToConfig("# | Other Settings (Tuning or Debugging, typically ignore)                    |");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputBlankLineToConfig();
-            OutputVariableToConfig("PATH_TOOLS_FOLDER", PATH_TOOLS_FOLDER, "The root of the tools directory (comes with this source code in a folder)");
-            OutputVariableToConfig("PATH_ASSETS_FOLDER", PATH_ASSETS_FOLDER, "The root of the assets directory (comes with this source code in a folder)");
-            OutputVariableToConfig("PATH_WORKING_FOLDER", PATH_WORKING_FOLDER, "The root folder where temporary folders and file will be generated (ensure at least 10GB of space is available in this location)");
+            OutputVariableToConfig("PATH_TOOLS_FOLDER", FileTool.RemoveRelativePathIfExists(PATH_TOOLS_FOLDER), "The root of the tools directory (comes with this source code in a folder)");
+            OutputVariableToConfig("PATH_ASSETS_FOLDER", FileTool.RemoveRelativePathIfExists(PATH_ASSETS_FOLDER), "The root of the assets directory (comes with this source code in a folder)");
+            OutputVariableToConfig("PATH_WORKING_FOLDER", FileTool.RemoveRelativePathIfExists(PATH_WORKING_FOLDER), "The root folder where temporary folders and file will be generated (ensure at least 10GB of space is available in this location)");
             OutputVariableToConfig("PATCH_CLIENT_DATA_ID", PATCH_CLIENT_DATA_ID, "ID to append to the end of the /Data/ patch file (such as the \"4\" in \"patch-4.mpq). Make it uniquely new.");
             OutputVariableToConfig("PATCH_CLIENT_DATA_LOC_ID", PATCH_CLIENT_DATA_LOC_ID, "ID to append to the localized patch file in /Data/<locale> (such as the \"5\" in patch-enUS-5.mpq). Make it uniquely new.");
             OutputVariableToConfig("PATCH_LOCALIZATION_STRING", PATCH_LOCALIZATION_STRING, "What language to generate things as");
@@ -1359,10 +1359,27 @@ namespace EQWOWConverter
 
         public static void LoadConfiguration()
         {
+            // Pull the configs off disk
             Dictionary<string, string> configValuesByVariableName = new Dictionary<string, string>();
+            List<string> configRows = FileTool.ReadAllStringLinesFromFile("configuration.txt", false, true);
+            for (int i = 0; i < configRows.Count; i++)
+            {
+                // Ignore anything past a # and blank rows
+                string row = configRows[i].Split("#")[0].Trim();
+                if (row.Length == 0)
+                    continue;
 
-            PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER = ReadVariableFromConfigString("PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER", configValuesByVariableName, PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER);
-            PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER = ReadVariableFromConfigString("PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER", configValuesByVariableName, PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER);
+                // Some strings have an equals symbol in the value, splitting only on first equals
+                int firstEqualsIndex = row.IndexOf('=');
+                if (firstEqualsIndex == -1)
+                    continue;
+                string variableName = row.Substring(0, firstEqualsIndex).Trim();
+                string variableValue = row.Substring(firstEqualsIndex + 1).Trim();
+                configValuesByVariableName.Add(variableName.ToUpper(), variableValue);
+            }
+
+            PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER = FileTool.CleanPath(ReadVariableFromConfigString("PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER", configValuesByVariableName, PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER));
+            PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER = FileTool.CleanPath(ReadVariableFromConfigString("PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER", configValuesByVariableName, PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER));
             PATH_TOOLS_FOLDER = FileTool.CleanPath(ReadVariableFromConfigString("PATH_TOOLS_FOLDER", configValuesByVariableName, PATH_TOOLS_FOLDER));
             PATH_ASSETS_FOLDER = FileTool.CleanPath(ReadVariableFromConfigString("PATH_ASSETS_FOLDER", configValuesByVariableName, PATH_ASSETS_FOLDER));
             PATH_WORKING_FOLDER = FileTool.CleanPath(ReadVariableFromConfigString("PATH_WORKING_FOLDER", configValuesByVariableName, PATH_WORKING_FOLDER));

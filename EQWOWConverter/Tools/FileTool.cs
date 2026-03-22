@@ -363,5 +363,10 @@ namespace EQWOWConverter
             // Return as relative
             return Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, inputPath));
         }
+
+        public static string RemoveRelativePathIfExists(string inputPathString)
+        {
+            return inputPathString.Replace(AppContext.BaseDirectory, string.Empty);
+        }
     }
 }
