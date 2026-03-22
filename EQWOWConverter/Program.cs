@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter;
+using MySql.Data.MySqlClient;
 
 internal class Program
 {
@@ -89,8 +90,60 @@ internal class Program
                     "the folder that is the DBC Folder of the server, or disable DEPLOY_SERVER_FILES");
                 return false;
             }
+            string spellDBCFile = Path.Combine(Configuration.DEPLOY_SERVER_DBC_FOLDER_LOCATION, "Spell.dbc");
+            if (File.Exists(spellDBCFile) == false)
+            {
+                Logger.WriteError("Could not locate a specific .dbc file in the server's DBC folder defined by DEPLOY_SERVER_DBC_FOLDER_LOCATION, and deploying ",
+                    "to server was set to true as defined in DEPLOY_SERVER_FILES. Edit the config and ensure this path resolves to ",
+                    "the folder that is the DBC Folder of the server (typically '/data/dbc' in AzerothCore build folder), or disable DEPLOY_SERVER_FILES");
+                return false;
+            }
+        }
 
+        // Test connections
+        if (Configuration.DEPLOY_SERVER_SQL == true)
+        {
+            // Character
+            try
+            {
+                MySqlConnection worldConnection = new MySqlConnection(Configuration.DEPLOY_SQL_CONNECTION_STRING_CHARACTERS);
+                worldConnection.Open();
+                worldConnection.Close();
+            }
+            catch (MySqlException e)
+            {
+                Logger.WriteError("Failed to connect to the character server as defined by the configuration connection string DEPLOY_SQL_CONNECTION_STRING_CHARACTERS, ",
+                    "and DEPLOY_SERVER_SQL is true.  Here is the message from the exception: ", e.Message);
+                return false;
+            }
+            catch (ArgumentException e)
+            {
+                Logger.WriteError("Failed to connect to the character server as defined by the configuration connection string DEPLOY_SQL_CONNECTION_STRING_CHARACTERS, ",
+                    "and DEPLOY_SERVER_SQL is true.  It's likely the format of that connection string is improper.  Here is the message from the exception: ",
+                    e.Message);
+                return false;
+            }
 
+            // World
+            try
+            {
+                MySqlConnection worldConnection = new MySqlConnection(Configuration.DEPLOY_SQL_CONNECTION_STRING_WORLD);
+                worldConnection.Open();
+                worldConnection.Close();
+            }
+            catch (MySqlException e)
+            {
+                Logger.WriteError("Failed to connect to the world server as defined by the configuration connection string DEPLOY_SQL_CONNECTION_STRING_WORLD, ",
+                    "and DEPLOY_SERVER_SQL is true.  Here is the message from the exception: ", e.Message);
+                return false;
+            }
+            catch (ArgumentException e)
+            {
+                Logger.WriteError("Failed to connect to the world server as defined by the configuration connection string DEPLOY_SQL_CONNECTION_STRING_WORLD, ",
+                    "and DEPLOY_SERVER_SQL is true.  It's likely the format of that connection string is improper.  Here is the message from the exception: ",
+                    e.Message);
+                return false;
+            }
         }
 
         return true;
