@@ -27,6 +27,8 @@ namespace EQWOWConverter
     {
         private static List<string> PNGtoBLPFilesToConvert = new List<string>();
         private static readonly object PNGtoBLPLock = new object();
+        private static Queue<string> MusicFilesToConvert = new Queue<string>();
+        private static readonly object MusicLock = new object();
 
         public bool ConditionEQOutput()
         {
@@ -592,9 +594,59 @@ namespace EQWOWConverter
                 return;
             }
 
-            // Process all of the xmi files, which contain the midi information
-            foreach (string musicXMIFile in musicXMIFiles)
+            // Queue up the files and send to threads for work
+            lock (MusicLock)
             {
+                foreach (string xmiFile in musicXMIFiles)
+                    MusicFilesToConvert.Enqueue(xmiFile);
+            }
+
+            progressCounter.Write(0);
+            if (Configuration.CORE_ENABLE_MULTITHREADING == true)
+            {
+                int taskCount = Configuration.CORE_MUSICCONVERSION_THREAD_COUNT;
+                Task[] tasks = new Task[taskCount];
+                for (int i = 0; i < taskCount; i++)
+                {
+                    int iCopy = i + 1;
+                    tasks[i] = Task.Factory.StartNew(() =>
+                    {
+                        MusicConversionThreadWorker(iCopy, ssplayerFileFullPath, musicDirectory, fluidsynthFileFullPath, soundfontFileFullPath, ffmpegFileFullPath, progressCounter);
+                    });
+                }
+                Task.WaitAll(tasks);
+            }
+            else
+            {
+                MusicConversionThreadWorker(1, ssplayerFileFullPath, musicDirectory, fluidsynthFileFullPath, soundfontFileFullPath, ffmpegFileFullPath, progressCounter);
+            }
+
+            // Cleanup the files
+            foreach (string midiFile in Directory.GetFiles(musicDirectory, "*.mid"))
+                File.Delete(midiFile);
+        }
+
+        private void MusicConversionThreadWorker(int threadID, string ssplayerFileFullPath, string musicDirectory,
+            string fluidsynthFileFullPath, string soundfontFileFullPath, string ffmpegFileFullPath, LogCounter progressCounter)
+        {
+            Logger.WriteInfo(string.Concat("<+> Thread [Music Conversion Subworker ", threadID.ToString(), "] Started"));
+
+            bool moreToProcess = true;
+            while (moreToProcess)
+            {
+                // Grab the next xmi
+                string musicXMIFile = String.Empty;
+                lock (MusicLock)
+                {
+                    if (MusicFilesToConvert.Count == 0)
+                    {
+                        moreToProcess = false;
+                        continue;
+                    }
+                    else
+                        musicXMIFile = MusicFilesToConvert.Dequeue();
+                }
+
                 // Extract XMI into 1 or more .mid
                 Logger.WriteDebug("Extracting XMI file at '" + musicXMIFile + "'");
                 string args = "-extractall \"" + musicXMIFile + "\"";
@@ -608,7 +660,8 @@ namespace EQWOWConverter
                 Console.Title = "EverQuest to WoW Converter";
 
                 // Go through each .mid to complete the conversion
-                string[] musicMidiFiles = Directory.GetFiles(musicDirectory, "*.mid");
+                string baseMidiFileName = Path.GetFileNameWithoutExtension(musicXMIFile);
+                string[] musicMidiFiles = Directory.GetFiles(musicDirectory, baseMidiFileName + "-*.mid");
                 Logger.WriteDebug("There are '" + musicMidiFiles.Count() + "' music .mid files created from '" + musicXMIFile + "'");
                 foreach (string musicMidiFile in musicMidiFiles)
                 {
@@ -636,13 +689,14 @@ namespace EQWOWConverter
                     process.WaitForExit();
                     Logger.WriteDebug(process.StandardOutput.ReadToEnd());
 
-                    // Delete the temp files
-                    File.Delete(musicMidiFile);
+                    // Delete the .wav
                     File.Delete(tempWavFileName);
 
                     progressCounter.Write(1);
                 }
             }
+
+            Logger.WriteInfo(string.Concat("<-> Thread [Music Conversion Subworker ", threadID.ToString(), "] Ended"));
         }
 
         public void CreateIndividualIconFiles()

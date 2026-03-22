@@ -82,7 +82,8 @@ namespace EQWOWConverter
         // If true, the conditioner & generator will run in multithreading mode
         public static bool CORE_ENABLE_MULTITHREADING = true;
         public static int CORE_ZONEGEN_THREAD_COUNT = 4;
-        public static int CORE_PNGTOBLPCONVERSION_THREAD_COUNT = 20;
+        public static int CORE_PNGTOBLPCONVERSION_THREAD_COUNT = 12;
+        public static int CORE_MUSICCONVERSION_THREAD_COUNT = 12;
 
         // ====================================================================
         // Logging
@@ -1038,7 +1039,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("CORE_CONSOLE_BEEP_ON_COMPLETE", CORE_CONSOLE_BEEP_ON_COMPLETE, "Plays a beep sound when the generate completes if set to true");
             OutputVariableToConfig("CORE_ENABLE_MULTITHREADING", CORE_ENABLE_MULTITHREADING, "If true, the conditioner & generator will run in multithreading mode", false);
             OutputVariableToConfig("CORE_ZONEGEN_THREAD_COUNT", CORE_ZONEGEN_THREAD_COUNT, "", false);
-            OutputVariableToConfig("CORE_PNGTOBLPCONVERSION_THREAD_COUNT", CORE_PNGTOBLPCONVERSION_THREAD_COUNT, "");
+            OutputVariableToConfig("CORE_PNGTOBLPCONVERSION_THREAD_COUNT", CORE_PNGTOBLPCONVERSION_THREAD_COUNT, "", false);
+            OutputVariableToConfig("CORE_MUSICCONVERSION_THREAD_COUNT", CORE_MUSICCONVERSION_THREAD_COUNT, "");
             OutputVariableToConfig("LOGGING_CONSOLE_MIN_LEVEL", LOGGING_CONSOLE_MIN_LEVEL, "Level of logs to write to the console and log file. 1: Error, 2: Info, 3: Debug", false);
             OutputVariableToConfig("LOGGING_FILE_MIN_LEVEL", LOGGING_FILE_MIN_LEVEL, "");
             OutputVariableToConfig("GENERATE_WORLD_SCALE", GENERATE_WORLD_SCALE, "The value EQ vertices multiply by when translated into WOW vertices. A WORLD_SCALE value of 0.25 seems to be 1:1 with EQ.  0.28 allows humans and 0.4 allows taurens to enter rivervale bank door", false);
@@ -1400,6 +1402,7 @@ namespace EQWOWConverter
             CORE_ENABLE_MULTITHREADING = ReadVariableFromConfigString("CORE_ENABLE_MULTITHREADING", configValuesByVariableName, CORE_ENABLE_MULTITHREADING);
             CORE_ZONEGEN_THREAD_COUNT = ReadVariableFromConfigString("CORE_ZONEGEN_THREAD_COUNT", configValuesByVariableName, CORE_ZONEGEN_THREAD_COUNT);
             CORE_PNGTOBLPCONVERSION_THREAD_COUNT = ReadVariableFromConfigString("CORE_PNGTOBLPCONVERSION_THREAD_COUNT", configValuesByVariableName, CORE_PNGTOBLPCONVERSION_THREAD_COUNT);
+            CORE_MUSICCONVERSION_THREAD_COUNT = ReadVariableFromConfigString("CORE_MUSICCONVERSION_THREAD_COUNT", configValuesByVariableName, CORE_MUSICCONVERSION_THREAD_COUNT);
 
             LOGGING_CONSOLE_MIN_LEVEL = ReadVariableFromConfigString("LOGGING_CONSOLE_MIN_LEVEL", configValuesByVariableName, LOGGING_CONSOLE_MIN_LEVEL);
             LOGGING_FILE_MIN_LEVEL = ReadVariableFromConfigString("LOGGING_FILE_MIN_LEVEL", configValuesByVariableName, LOGGING_FILE_MIN_LEVEL);
