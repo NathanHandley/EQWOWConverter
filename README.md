@@ -18,20 +18,20 @@ It is currently in an Alpha state, but all content types (tradeskills, spells, q
 - Installed 3.3.5a WoW client, US version (which must be patched to not check for MD5 signatures, similar to other modded projects) 
 - If you want armor textures, install a texture pack.  One can be found here: https://github.com/NathanHandley/EQWOWConverter-HumTexturePack
 
-# Instructions
-1. Set the configuration values in Configuration.cs within the first two sections ("Paths and Files" and "Deployment Rules", at the top)
-2. (Optional) Install a texture pack, such as one here: https://github.com/NathanHandley/EQWOWConverter-HumTexturePack
-3. Build and use EQWOWConverter and run the command "Perform Everything"
-4. Deploy your files manually or automatically (see below in "Deploying the Files").
-5. Regenerate map/vmap files for the server per AzerothCore instructions
-
+# Instructions (if building from source)
+1. Build and run the application once in order to generate a configuration.txt file.
+2. Open the configuration.txt file and set the desired values in sections 1, 2, and 3 (near the top)
+3. (Optional) Install a texture pack, such as one here: https://github.com/NathanHandley/EQWOWConverter-HumTexturePack
+4. Build and use EQWOWConverter and run the command "Perform Everything"
+5. (Optional) Deploy your files manually if you did not set up automatic deployment in the configuration
+6. Regenerate map/vmap files for the server per AzerothCore instructions
 
 Note: If you have a working install, you typically only need to select option 6 to keep up to date on future builds
 
 # Deploying the Files
 Automatic Deployment **Highly Recommended**:
-1. Set the configuration.cs values in "Deployment Rules"
-2. Build and let it deploy for you
+1. Set the configuration.txt deployment settings in "2. Deployment Settings"
+2. Build and let it deploy for you next time you run it
 
 Manual Deployment (Alternate):
 1. Run the .sql files located in <PATH_WORKING_FOLDER>/WOWExports/SQLScripts against your databases, with /Characters/ against your characters database and /World/ against your world database
