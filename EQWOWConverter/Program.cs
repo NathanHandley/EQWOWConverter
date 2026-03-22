@@ -82,8 +82,8 @@ internal class Program
                 Logger.WriteInfo("Unknown command, exiting...");
             else
             {
-                //try
-                //{
+                try
+                {
                     switch (enteredCommand.ToUpper())
                     {
                         case "X":
@@ -172,13 +172,13 @@ internal class Program
                         default: break;
                     }
                     Logger.WriteInfo("Exiting....");
-                //}
-                //catch (Exception ex)
-                //{
-                //    Logger.WriteError("Exception Occurred: " + ex.Message);
-                //    if (ex.StackTrace != null)
-                //        Logger.WriteDebug(ex.StackTrace);
-                //}
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteError("Exception Occurred: " + ex.Message);
+                    if (ex.StackTrace != null)
+                        Logger.WriteDebug(ex.StackTrace);
+                }
             }
         }
 

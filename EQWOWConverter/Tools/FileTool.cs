@@ -348,5 +348,20 @@ namespace EQWOWConverter
         {
             File.WriteAllBytes(filePath, bytes.ToArray());
         }
+
+        public static string CleanPath(string inputPath)
+        {
+            inputPath = inputPath.Trim();
+
+            if (string.IsNullOrWhiteSpace(inputPath) == true)
+                return AppContext.BaseDirectory;
+
+            // Rooted (like C:/...)
+            if (Path.IsPathRooted(inputPath))
+                return Path.GetFullPath(inputPath);
+
+            // Return as relative
+            return Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, inputPath));
+        }
     }
 }

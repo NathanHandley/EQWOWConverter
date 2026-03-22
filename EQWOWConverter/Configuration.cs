@@ -60,7 +60,7 @@ namespace EQWOWConverter
         public static bool DEPLOY_SERVER_FILES = false;
 
         // Location of where the server DBC files would be deployed to (only relevant if you set DEPLOY_SERVER_FILES to true, otherwise ignored)
-        public static string DEPLOY_SERVER_DBC_FOLDER_LOCATION = "";
+        public static string DEPLOY_SERVER_DBC_FOLDER_LOCATION = "C:\\";
 
         // If true, deploy to the SQL to the server
         // Note: May not work on remote servers (not tested)
@@ -1363,9 +1363,9 @@ namespace EQWOWConverter
 
             PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER = ReadVariableFromConfigString("PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER", configValuesByVariableName, PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER);
             PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER = ReadVariableFromConfigString("PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER", configValuesByVariableName, PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER);
-            PATH_TOOLS_FOLDER = ReadVariableFromConfigString("PATH_TOOLS_FOLDER", configValuesByVariableName, PATH_TOOLS_FOLDER);
-            PATH_ASSETS_FOLDER = ReadVariableFromConfigString("PATH_ASSETS_FOLDER", configValuesByVariableName, PATH_ASSETS_FOLDER);
-            PATH_WORKING_FOLDER = ReadVariableFromConfigString("PATH_WORKING_FOLDER", configValuesByVariableName, PATH_WORKING_FOLDER);
+            PATH_TOOLS_FOLDER = FileTool.CleanPath(ReadVariableFromConfigString("PATH_TOOLS_FOLDER", configValuesByVariableName, PATH_TOOLS_FOLDER));
+            PATH_ASSETS_FOLDER = FileTool.CleanPath(ReadVariableFromConfigString("PATH_ASSETS_FOLDER", configValuesByVariableName, PATH_ASSETS_FOLDER));
+            PATH_WORKING_FOLDER = FileTool.CleanPath(ReadVariableFromConfigString("PATH_WORKING_FOLDER", configValuesByVariableName, PATH_WORKING_FOLDER));
             PATCH_CLIENT_DATA_ID = ReadVariableFromConfigString("PATCH_CLIENT_DATA_ID", configValuesByVariableName, PATCH_CLIENT_DATA_ID);
             PATCH_CLIENT_DATA_LOC_ID = ReadVariableFromConfigString("PATCH_CLIENT_DATA_LOC_ID", configValuesByVariableName, PATCH_CLIENT_DATA_LOC_ID);
             PATCH_LOCALIZATION_STRING = ReadVariableFromConfigString("PATCH_LOCALIZATION_STRING", configValuesByVariableName, PATCH_LOCALIZATION_STRING);
@@ -1373,7 +1373,7 @@ namespace EQWOWConverter
             DEPLOY_CLIENT_FILES = ReadVariableFromConfigString("DEPLOY_CLIENT_FILES", configValuesByVariableName, DEPLOY_CLIENT_FILES);
             DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY = ReadVariableFromConfigString("DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY", configValuesByVariableName, DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY);
             DEPLOY_SERVER_FILES = ReadVariableFromConfigString("DEPLOY_SERVER_FILES", configValuesByVariableName, DEPLOY_SERVER_FILES);
-            DEPLOY_SERVER_DBC_FOLDER_LOCATION = ReadVariableFromConfigString("DEPLOY_SERVER_DBC_FOLDER_LOCATION", configValuesByVariableName, DEPLOY_SERVER_DBC_FOLDER_LOCATION);
+            DEPLOY_SERVER_DBC_FOLDER_LOCATION = FileTool.CleanPath(ReadVariableFromConfigString("DEPLOY_SERVER_DBC_FOLDER_LOCATION", configValuesByVariableName, DEPLOY_SERVER_DBC_FOLDER_LOCATION));
             DEPLOY_SERVER_SQL = ReadVariableFromConfigString("DEPLOY_SERVER_SQL", configValuesByVariableName, DEPLOY_SERVER_SQL);
             DEPLOY_SQL_CONNECTION_STRING_CHARACTERS = ReadVariableFromConfigString("DEPLOY_SQL_CONNECTION_STRING_CHARACTERS", configValuesByVariableName, DEPLOY_SQL_CONNECTION_STRING_CHARACTERS);
             DEPLOY_SQL_CONNECTION_STRING_WORLD = ReadVariableFromConfigString("DEPLOY_SQL_CONNECTION_STRING_WORLD", configValuesByVariableName, DEPLOY_SQL_CONNECTION_STRING_WORLD);
