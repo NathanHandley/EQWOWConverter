@@ -886,6 +886,52 @@ namespace EQWOWConverter
         public static string PATH_EQEXPORTSCONDITIONED_FOLDER { get => Path.Combine(PATH_WORKING_FOLDER, "EQClientExportConditioned"); }
         public static string PATH_EXPORT_FOLDER { get => Path.Combine(PATH_WORKING_FOLDER, "WOWExports"); }
 
+        public static List<string> SplitIntoFixedLines(string text, int maxLength = 80)
+        {
+            List<string> lines = new List<string>();
+            if (string.IsNullOrEmpty(text) == true)
+                return lines;
+
+            StringBuilder sb = new StringBuilder();
+            int currentLength = 0;
+            string[] words = text.Trim().Split(' ');
+            foreach (string word in words)
+            {
+                if (string.IsNullOrEmpty(word) == true)
+                    continue;
+
+                int wordLength = word.Length;
+                int addedLength = wordLength + (currentLength > 0 ? 1 : 0);
+                if (currentLength + addedLength > maxLength)
+                {
+                    if (currentLength > 0)
+                    {
+                        lines.Add(sb.ToString());
+                        sb.Clear();
+                        currentLength = 0;
+                    }
+                    if (wordLength > maxLength)
+                    {
+                        lines.Add(word);
+                        currentLength = 0;
+                        continue;
+                    }
+                }
+                if (currentLength > 0)
+                {
+                    sb.Append(' ');
+                    currentLength++;
+                }
+
+                sb.Append(word);
+                currentLength += wordLength;
+            }
+            if (currentLength > 0)
+                lines.Add(sb.ToString());
+
+            return lines;
+        }
+
         public static T ReadVariableFromConfigString<T>(string configVariableName, Dictionary<string, string> configValuesByVariableName, T defaultValue)
         {
             if (configValuesByVariableName.ContainsKey(configVariableName) == false)
@@ -906,23 +952,32 @@ namespace EQWOWConverter
             }
         }
 
+        public static void OutputTextLineToConfig(string textLine)
+        {
+            File.AppendAllText("configuration.txt", String.Concat(textLine, Environment.NewLine));
+        }
+
         public static void OutputBlankLineToConfig()
         {
             File.AppendAllText("configuration.txt", Environment.NewLine);
         }
 
-        public static void OutputVariableToConfig<T>(string configVariableName, T value, string comment)
+        public static void OutputVariableToConfig<T>(string configVariableName, T value, string comment, bool addBlankLineAfter = false)
         {
             StringBuilder outputContentSB = new StringBuilder();
-            outputContentSB.AppendLine(string.Empty);
-            if (comment.Trim().Length > 0)
+
+            List<string> restrictedComment = SplitIntoFixedLines(comment, 100);
+            foreach (string commentPart in restrictedComment)
             {
                 outputContentSB.Append("// ");
-                outputContentSB.AppendLine(comment);
+                outputContentSB.AppendLine(commentPart);
             }
             outputContentSB.Append(configVariableName);
             outputContentSB.Append(" = ");
             outputContentSB.Append(value);
+            outputContentSB.AppendLine(string.Empty);
+            if (addBlankLineAfter == true)
+                outputContentSB.AppendLine(string.Empty);
             File.AppendAllText("configuration.txt", outputContentSB.ToString());
         }
 
@@ -931,6 +986,9 @@ namespace EQWOWConverter
             if (File.Exists("configuration.txt") == true)
                 File.Delete("configuration.txt");
 
+            OutputTextLineToConfig("// +---------------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                           |");
+            OutputTextLineToConfig("// +---------------------------------------------------------------------------+");
             OutputVariableToConfig("PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER", PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER, "Location of the installed everquest trilogy client (this must have the eqgame.exe file in it)");
             OutputVariableToConfig("PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER", PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Location of the installed enUS version of World of Warcaft client (this must have the wow.exe in it)");
             OutputVariableToConfig("PATH_TOOLS_FOLDER", PATH_TOOLS_FOLDER, "The root of the tools directory (comes with this source code in a folder)");
@@ -940,6 +998,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("PATCH_CLIENT_DATA_LOC_ID", PATCH_CLIENT_DATA_LOC_ID, "ID to append to the localized patch file in /Data/<locale> (such as the \"5\" in patch-enUS-5.mpq). Make it uniquely new.");
             OutputVariableToConfig("PATCH_LOCALIZATION_STRING", PATCH_LOCALIZATION_STRING, "What language to generate things as");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("DEPLOY_CLIENT_FILES", DEPLOY_CLIENT_FILES, "If true, deploy the client file (patch mpq) after building it");
             OutputVariableToConfig("DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY", DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY, "If true and when deploying client files, clear the cache (only relevant if you set DEPLOY_CLIENT_FILES to true, otherwise ignored)");
             OutputVariableToConfig("DEPLOY_SERVER_FILES", DEPLOY_SERVER_FILES, "If true, deploy to the server files/data after building");
@@ -948,15 +1009,24 @@ namespace EQWOWConverter
             OutputVariableToConfig("DEPLOY_SQL_CONNECTION_STRING_CHARACTERS", DEPLOY_SQL_CONNECTION_STRING_CHARACTERS, "If deploying to SQL, you need to set these to something real that points to your databases (only relevant if you set DEPLOY_SERVER_SQL to true, otherwise ignored)");
             OutputVariableToConfig("DEPLOY_SQL_CONNECTION_STRING_WORLD", DEPLOY_SQL_CONNECTION_STRING_WORLD, "If deploying to SQL, you need to set these to something real that points to your databases (only relevant if you set DEPLOY_SERVER_SQL to true, otherwise ignored)");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("CORE_MOD_VERSION", CORE_MOD_VERSION, "This is the version that the mod-everquest AzerothCore module needs to be compatible with");
             OutputVariableToConfig("CORE_CONSOLE_BEEP_ON_COMPLETE", CORE_CONSOLE_BEEP_ON_COMPLETE, "Plays a beep sound when the generate completes if set to true");
             OutputVariableToConfig("CORE_ENABLE_MULTITHREADING", CORE_ENABLE_MULTITHREADING, "If true, the conditioner & generator will run in multithreading mode");
             OutputVariableToConfig("CORE_ZONEGEN_THREAD_COUNT", CORE_ZONEGEN_THREAD_COUNT, "If true, the conditioner & generator will run in multithreading mode");
             OutputVariableToConfig("CORE_PNGTOBLPCONVERSION_THREAD_COUNT", CORE_PNGTOBLPCONVERSION_THREAD_COUNT, "If true, the conditioner & generator will run in multithreading mode");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("LOGGING_CONSOLE_MIN_LEVEL", LOGGING_CONSOLE_MIN_LEVEL, "Level of logs to write to the console and log file. 1: Error, 2: Info, 3: Debug");
             OutputVariableToConfig("LOGGING_FILE_MIN_LEVEL", LOGGING_FILE_MIN_LEVEL, "Level of logs to write to the console and log file. 1: Error, 2: Info, 3: Debug");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("GENERATE_WORLD_SCALE", GENERATE_WORLD_SCALE, "The value EQ vertices multiply by when translated into WOW vertices");
             OutputVariableToConfig("GENERATE_CREATURE_SCALE", GENERATE_CREATURE_SCALE, "A WORLD_SCALE value of 0.25 seems to be 1:1 with EQ.  0.28 allows humans and 0.4 allows taurens to enter rivervale bank door");
             OutputVariableToConfig("GENERATE_EQUIPMENT_PLAYER_SCALE", GENERATE_EQUIPMENT_PLAYER_SCALE, "The size of equipment on players");
@@ -975,6 +1045,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("GENERATE_WORLDMAPS", GENERATE_WORLDMAPS, "If true, generate and copy maps / minimaps");
             OutputVariableToConfig("GENERATE_ONLY_LISTED_ZONE_SHORTNAMES", string.Join(",", GENERATE_ONLY_LISTED_ZONE_SHORTNAMES), "If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones will load and work properly");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("GENERATE_ADDED_BOUNDARY_AMOUNT", GENERATE_ADDED_BOUNDARY_AMOUNT, "An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.");
             OutputVariableToConfig("GENERATE_SQL_FILE_BATCH_SIZE", GENERATE_SQL_FILE_BATCH_SIZE, "How many insert rows to restrict in a SQL output file");
             OutputVariableToConfig("GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE", GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE, "How many insert rows to restrict in a SQL output file");
@@ -983,6 +1056,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("GENERATE_FORCE_SQL_UPDATES", GENERATE_FORCE_SQL_UPDATES, "If true, SQL files will be generated in a way where they will have a unique ID to force an update if ran by azerothcore, regardless of changes");
             OutputVariableToConfig("GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE", GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE, "The minimum size that boundary boxes should be for any object models when output");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("PLAYER_USE_EQ_START_LOCATION", PLAYER_USE_EQ_START_LOCATION, "If true, new players created will use the everquest start locations defined in PlayerClassRaceProperties");
             OutputVariableToConfig("PLAYER_USE_EQ_START_ITEMS", PLAYER_USE_EQ_START_ITEMS, "If true, players will start with an EQ item loadout instead of a WOW item loadout");
             OutputVariableToConfig("PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS", PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS, "If true, this will also add a hearthstone if using EQ items");
@@ -990,6 +1066,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED", PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED, "These properties are for replacing the collision for many race models that otherwise wouldn't fit in most doorways (bigger than human male)");
             OutputVariableToConfig("PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX", PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX, "Default value here is max that allows all but Halfling doors to be entered by all, which seems to be just above Night Elf Female");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("ZONE_SHOW_STATIC_GEOMETRY", ZONE_SHOW_STATIC_GEOMETRY, "If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging");
             OutputVariableToConfig("ZONE_MAX_FACES_PER_WMOGROUP", ZONE_MAX_FACES_PER_WMOGROUP, "Maximum number of faces that fit into a render WMO group before it subdivides (max is due to various variable limits)");
             OutputVariableToConfig("ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE", ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE, "Maximum size of any zone-to-material-object creation along the X and Y axis");
@@ -1008,6 +1087,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("ZONE_WEATHER_ENABLED", ZONE_WEATHER_ENABLED, "If true, enable weather in zones.");
             OutputVariableToConfig("ZONE_FLYING_ALLOWED", ZONE_FLYING_ALLOWED, "If true, characters can fly in the zones if they have a mount");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("WORLDMAP_DEBUG_GENERATION_MODE_ENABLED", WORLDMAP_DEBUG_GENERATION_MODE_ENABLED, "When true, many various proprties are changed to support generation of minimaps, such as 'baking' in animated textures");
             OutputVariableToConfig("WORLDMAP_LEFT_BORDER_PIXEL_SIZE", WORLDMAP_LEFT_BORDER_PIXEL_SIZE, "Borders on any maps that were generated, which is blank space and important to mark since coordinates in map space are calculated at generation");
             OutputVariableToConfig("WORLDMAP_RIGHT_BORDER_PIXEL_SIZE", WORLDMAP_RIGHT_BORDER_PIXEL_SIZE, "Borders on any maps that were generated, which is blank space and important to mark since coordinates in map space are calculated at generation");
@@ -1015,6 +1097,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("WORLDMAP_BOTTOM_BORDER_PIXEL_SIZE", WORLDMAP_BOTTOM_BORDER_PIXEL_SIZE, "Borders on any maps that were generated, which is blank space and important to mark since coordinates in map space are calculated at generation");
             OutputVariableToConfig("WORLDMAP_SHOW_SUGGESTED_LEVELS_ON_LINKED_MAPS", WORLDMAP_SHOW_SUGGESTED_LEVELS_ON_LINKED_MAPS, "Controls showing suggested levels on the linked maps");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("EVENTS_MAX_DATETIME_YEAR", EVENTS_MAX_DATETIME_YEAR, "This value is used in generating end timestamps in things like game_event. At time of writing, the max value of AzerothCore's game event time is based on MYSQL TIMESTAMP which caps at 2038-01-19 03:14:07");
             OutputVariableToConfig("EVENTS_DO_NORMALIZE_GAME_EVENTS", EVENTS_DO_NORMALIZE_GAME_EVENTS, "If true, all day or night creature spawn events will have their day/time normalized, and only one event will be created for each.");
             OutputVariableToConfig("EVENTS_NORMALIZED_DAY_SPAWN_START_HOUR", EVENTS_NORMALIZED_DAY_SPAWN_START_HOUR, "If true, all day or night creature spawn events will have their day/time normalized, and only one event will be created for each.");
@@ -1022,10 +1107,16 @@ namespace EQWOWConverter
             OutputVariableToConfig("EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR", EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR, "If true, all day or night creature spawn events will have their day/time normalized, and only one event will be created for each.");
             OutputVariableToConfig("EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR", EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR, "If true, all day or night creature spawn events will have their day/time normalized, and only one event will be created for each.");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("LIQUID_SHOW_TRUE_SURFACE", LIQUID_SHOW_TRUE_SURFACE, "If this is true, it will show the true surface line of water and not just the material from EQ.  This should only be used for debugging as it very visually unpleasant");
             OutputVariableToConfig("LIQUID_SURFACE_ADD_Z_HEIGHT", LIQUID_SURFACE_ADD_Z_HEIGHT, "How much 'height' to add to liquid surface, helps with rendering the waves");
             OutputVariableToConfig("LIQUID_QUADGEN_PLANE_OVERLAP_SIZE", LIQUID_QUADGEN_PLANE_OVERLAP_SIZE, "How much to overlap the planes when generating an irregular quad of liquid");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("LIGHT_INSTANCES_ENABLED", LIGHT_INSTANCES_ENABLED, "If true, light instances are enabled.  They don't work at this time, so leave false");
             OutputVariableToConfig("LIGHT_INSTANCES_DRAWN_AS_TORCHES", LIGHT_INSTANCES_DRAWN_AS_TORCHES, "If true, light instances are rendered as torches.  Use for debugging only, and typically leave false");
             OutputVariableToConfig("LIGHT_INSTANCE_ATTENUATION_START_PROPORTION", LIGHT_INSTANCE_ATTENUATION_START_PROPORTION, "Sets the modifier to add to the attenuation to define the start, calculated by multiplying this value to it");
@@ -1040,6 +1131,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("LIGHT_OUTSIDE_AMBIENT_TIME_22", LIGHT_OUTSIDE_AMBIENT_TIME_22, "Brightness of outdoor areas based on time");
             OutputVariableToConfig("LIGHT_STORM_COLOR_MOD", LIGHT_STORM_COLOR_MOD, "Storm brightness");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("AUDIO_SOUNDFONT_FILE_NAME", AUDIO_SOUNDFONT_FILE_NAME, "Set which soundfont to use in the Tools/soundfont folder.  Alternate option is synthusr_samplefix.sf2");
             OutputVariableToConfig("AUDIO_USE_ALTERNATE_TRACKS", AUDIO_USE_ALTERNATE_TRACKS, "If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience");
             OutputVariableToConfig("AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT", AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT, "How much to increase the music sound when converted from EverQuest");
@@ -1055,6 +1149,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("AUDIO_CREATURE_MIN_DISTANCE_MOD", AUDIO_CREATURE_MIN_DISTANCE_MOD, "Creature sound radius (in CreatureRaces) are multilpied for this for the min distance, which is the range of max volume");
             OutputVariableToConfig("AUDIO_SPELL_SOUND_VOLUME", AUDIO_SPELL_SOUND_VOLUME, "Volume of spells and other effects");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("OBJECT_STATIC_LADDER_EXTEND_DISTANCE", OBJECT_STATIC_LADDER_EXTEND_DISTANCE, "For ladders, this is how far to extend out the steppable area in front and back of it (percentage of thickness)");
             OutputVariableToConfig("OBJECT_STATIC_LADDER_STEP_DISTANCE", OBJECT_STATIC_LADDER_STEP_DISTANCE, "How much space between each step of a ladder along the Z axis (true units)");
             OutputVariableToConfig("OBJECT_STATIC_LADDER_STEP_DROP_DISTANCE_MOD", OBJECT_STATIC_LADDER_STEP_DROP_DISTANCE_MOD, "How much the lower edge of a ladder step-down plane should be in proportion to its thickness.");
@@ -1064,6 +1161,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("OBJECT_GAMEOBJECT_ENABLE_MAILBOXES", OBJECT_GAMEOBJECT_ENABLE_MAILBOXES, "If true, custom mailboxes are put into the game as 'postmen'");
             OutputVariableToConfig("OBJECT_IGNORE_RENDER_MATERIAL_ID_START", OBJECT_IGNORE_RENDER_MATERIAL_ID_START, "The starting ID for any material index that should be ignored from rendering");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("CREATURE_FIDGET_TIME_PERCENT", CREATURE_FIDGET_TIME_PERCENT, "This is the percent of the idle time that a 'fidget' occurs (1-100)");
             OutputVariableToConfig("CREATURE_STAT_MOD_HP_ADD", CREATURE_STAT_MOD_HP_ADD, "Stat modifiers for creatures");
             OutputVariableToConfig("CREATURE_STAT_MOD_HP_MIN", CREATURE_STAT_MOD_HP_MIN, "Stat modifiers for creatures");
@@ -1104,6 +1204,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT", CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT, "At what level of life a creature should cast a heal spell, if they have one");
             OutputVariableToConfig("CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE", CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE, "If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be done for debugging reasons, as the game will not look or feel anything like it should");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("ITEMS_USE_ALTERNATE_STATS", ITEMS_USE_ALTERNATE_STATS, "If true, this uses alternate stats for items that have been tweaked for balance reasons");
             OutputVariableToConfig("ITEMS_WEAPON_DELAY_REDUCTION_AMT", ITEMS_WEAPON_DELAY_REDUCTION_AMT, "This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;");
             OutputVariableToConfig("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", ITEMS_WEAPON_EFFECT_PPM_BASE_RATE, "This is the base PPM (Procs Per Minute) used for weapon proc weapons");
@@ -1116,9 +1219,15 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT, "If true, weight reduction on bags will translate to additional slots");
             OutputVariableToConfig("ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID", ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID, "This is the icon ID that is used for multi-item containers that contain more than one item");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("QUESTS_TEXT_DURATION_IN_MS", QUESTS_TEXT_DURATION_IN_MS, "How many milliseconds to display a text block from an NPC on quest events");
             OutputVariableToConfig("QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID", QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID, "This is the icon ID that is used for quest rewards that contain more than one random item");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR", SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR, "If this is true, use the level as defined in everquest for summoned pets as well as the control behavior.");
             OutputVariableToConfig("SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION", SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION, "If true, spells will balance around level 60 being the cap (EQ-like), otherwise it will be 80 like WOTLK");
             OutputVariableToConfig("SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL", SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL, "This is how high (WOW side) stats will be be scaled to.  This should almost always be set to the server max level configuration.");
@@ -1170,6 +1279,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_EFFECT_REVIVE_EXPPCT_TO_HPMP_MULTIPLIER", SPELL_EFFECT_REVIVE_EXPPCT_TO_HPMP_MULTIPLIER, "Revive will give HP/MP instead of EXP on revive, so this is the multiplier to use for that");
             OutputVariableToConfig("SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS", SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS, "Default time that a shrink/grow spell will last for");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("TRADESKILLS_CONVERSION_MOD", TRADESKILLS_CONVERSION_MOD, "How much to multiply EQ skill requirements by to reach the same for WoW on conversion");
             OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_LOW", TRADESKILLS_SKILL_TIER_DISTANCE_LOW, "Max distance between Grey -> Green -> Yellow -> Red steps");
             OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_HIGH", TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, "Max distance between Grey -> Green -> Yellow -> Red steps");
@@ -1187,11 +1299,17 @@ namespace EQWOWConverter
             OutputVariableToConfig("TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY", TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY, "ID for TotemCategory.dbc for specific tradeskills");
             OutputVariableToConfig("TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_FLETCHING", TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_FLETCHING, "ID for TotemCategory.dbc for specific tradeskills");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("TRANSPORT_PAUSE_MULTIPLIER", TRANSPORT_PAUSE_MULTIPLIER, "Pause as in 'stop at a port'. 1 will be EQ-like");
             OutputVariableToConfig("TRANSPORT_MOVE_SPEED", TRANSPORT_MOVE_SPEED, "Most boats are 30 in WoW, but a value of around 9 is EQ-like");
             OutputVariableToConfig("TRANSPORT_ACCELERATION", TRANSPORT_ACCELERATION, "Most boats are 30 in WoW, but a value of around 9 is EQ-like");
             OutputVariableToConfig("TRANSPORT_ALLOW_FIXED_SPEEDS", TRANSPORT_ALLOW_FIXED_SPEEDS, "If true, allows \"fixed_speed\" to override TRANSPORT_MOVE_SPEED");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_1_START", DBCID_AREATABLE_AREABIT_BLOCK_1_START, "IDs for AreaBit used in AreaTable, should be unique (max of 4095)");
             OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_1_END", DBCID_AREATABLE_AREABIT_BLOCK_1_END, "IDs for AreaBit used in AreaTable, should be unique (max of 4095)");
             OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_2_START", DBCID_AREATABLE_AREABIT_BLOCK_2_START, "IDs for AreaBit used in AreaTable, should be unique (max of 4095)");
@@ -1242,6 +1360,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("DBCID_WMOAREATABLE_WMOGROUPID_START", DBCID_WMOAREATABLE_WMOGROUPID_START, "Identifies WMO Groups.");
             OutputVariableToConfig("DBCID_ZONEMUSIC_START", DBCID_ZONEMUSIC_START, "ID for music in ZoneMusic.dbc, and how many IDs to reserve on a per-zone basis");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
+            OutputTextLineToConfig("// |                                                                  |");
+            OutputTextLineToConfig("// +------------------------------------------------------------------+");
             OutputVariableToConfig("SQL_BROADCASTTEXT_ID_START", SQL_BROADCASTTEXT_ID_START, "Start and end IDs for broadcast_text sql records");
             OutputVariableToConfig("SQL_BROADCASTTEXT_ID_END", SQL_BROADCASTTEXT_ID_END, "Start and end IDs for broadcast_text sql records");
             OutputVariableToConfig("SQL_CREATURE_GUID_LOW", SQL_CREATURE_GUID_LOW, "Record identifier for the creature sql table, need at least 31k");
