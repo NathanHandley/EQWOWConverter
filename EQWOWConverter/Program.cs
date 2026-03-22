@@ -43,7 +43,7 @@ internal class Program
         string eqThurgadinFileName = Path.Combine(Configuration.PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER, "thurgadina.s3d");
         if (File.Exists(eqThurgadinFileName) == false)
         {
-            Logger.WriteError("Could not locate the a specific Velious file inside the EverQuest defined by configuration variable PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER. ",
+            Logger.WriteError("Could not locate the a specific Velious file inside the EverQuest folder defined by configuration variable PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER. ",
                 "While this may be an EverQuest folder, it is likely a version before EverQuest Trilogy. ",
                 "Edit the config and ensure this path resolves to an unpatched EverQuest Trilogy install directory.");
             return false;
@@ -51,7 +51,7 @@ internal class Program
         string eqShadowhavenFileName = Path.Combine(Configuration.PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER, "shadowhaven.s3d");
         if (File.Exists(eqShadowhavenFileName) == true)
         {
-            Logger.WriteError("Found a post-Velious file inside the EverQuest defined by configuration variable PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER. ",
+            Logger.WriteError("Found a post-Velious file inside the EverQuest folder defined by configuration variable PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER. ",
                 "While this may be an EverQuest folder, it is likely a version after EverQuest Trilogy. ",
                 "Edit the config and ensure this path resolves to an unpatched EverQuest Trilogy install directory. ",
                 "Note that EverQuest Titanium is NOT compatible with this generator.");
@@ -59,8 +59,8 @@ internal class Program
         }
 
         // Test Tools directory
-        string toolsFolder = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "blpconverter");
-        if (Directory.Exists(toolsFolder) == false)
+        string toolsTestSubFolder = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "blpconverter");
+        if (Directory.Exists(toolsTestSubFolder) == false)
         {
             Logger.WriteError("Could not locate the tools folder PATH_TOOLS_FOLDER. Edit the config and ensure this path resolves to ",
                 "the folder that contains the tool folders, such as the 'blpconverter' folder or the 'ffmpeg' folder. ",
@@ -69,8 +69,8 @@ internal class Program
         }
 
         // Test Assets directory
-        string assetsFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns");
-        if (Directory.Exists(assetsFolder) == false)
+        string assetsTestSubFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns");
+        if (Directory.Exists(assetsTestSubFolder) == false)
         {
             Logger.WriteError("Could not locate the tools folder PATH_ASSETS_FOLDER. Edit the config and ensure this path resolves to ",
                 "the folder that contains the asset folders, such as the 'AddOns' folder or the 'WorldData' folder. ",
@@ -78,9 +78,23 @@ internal class Program
             return false;
         }
 
+        // Test DBC folder
+        if (Configuration.DEPLOY_SERVER_FILES == true)
+        {
+            string serverDBCFolder = Configuration.DEPLOY_SERVER_DBC_FOLDER_LOCATION;
+            if (Directory.Exists(serverDBCFolder) == false)
+            {
+                Logger.WriteError("Could not locate server's DBC folder defined by DEPLOY_SERVER_DBC_FOLDER_LOCATION, and deploying ",
+                    "to server was set to true as defined in DEPLOY_SERVER_FILES. Edit the config and ensure this path resolves to ",
+                    "the folder that is the DBC Folder of the server, or disable DEPLOY_SERVER_FILES");
+                return false;
+            }
+
+
+        }
+
         return true;
     }
-
 
     private static void Main(string[] args)
     {
