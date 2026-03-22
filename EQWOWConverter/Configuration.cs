@@ -24,19 +24,19 @@ namespace EQWOWConverter
         // Paths and Files
         // ====================================================================
         // Location of the installed everquest trilogy client (this must have the eqgame.exe file in it)
-        public static string PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER = "";
+        public static string PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER = "C:\\";
 
         // Location of the installed enUS version of World of Warcaft client (this must have the wow.exe in it)
-        public static string PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER = "";
+        public static string PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER = "C:\\";
 
         // The root of the tools directory (comes with this source code in a folder)
-        public static string PATH_TOOLS_FOLDER = "";
+        public static string PATH_TOOLS_FOLDER = "Tools";
 
         // The root of the assets directory (comes with this source code in a folder)
-        public static string PATH_ASSETS_FOLDER = "";
+        public static string PATH_ASSETS_FOLDER = "Assets";
 
         // The root folder where temporary folders and file will be generated (ensure at least 10GB of space is available in this location)
-        public static string PATH_WORKING_FOLDER = "";
+        public static string PATH_WORKING_FOLDER = "Output";
 
         // ID to append to the end of the /Data/ patch file (such as the "4" in "patch-4.mpq). Make it uniquely new.
         public static string PATCH_CLIENT_DATA_ID = "4";
@@ -51,20 +51,20 @@ namespace EQWOWConverter
         // Deployment Rules
         // ====================================================================
         // If true, deploy the client file (patch mpq) after building it
-        public static bool DEPLOY_CLIENT_FILES = true;
+        public static bool DEPLOY_CLIENT_FILES = false;
 
         // If true and when deploying client files, clear the cache (only relevant if you set DEPLOY_CLIENT_FILES to true, otherwise ignored)
         public static bool DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY = true;
 
         // If true, deploy to the server files/data after building
-        public static bool DEPLOY_SERVER_FILES = true;
+        public static bool DEPLOY_SERVER_FILES = false;
 
         // Location of where the server DBC files would be deployed to (only relevant if you set DEPLOY_SERVER_FILES to true, otherwise ignored)
         public static string DEPLOY_SERVER_DBC_FOLDER_LOCATION = "";
 
         // If true, deploy to the SQL to the server
         // Note: May not work on remote servers (not tested)
-        public static bool DEPLOY_SERVER_SQL = true;
+        public static bool DEPLOY_SERVER_SQL = false;
 
         // If deploying to SQL, you need to set these to something real that points to your databases (only relevant if you set DEPLOY_SERVER_SQL to true, otherwise ignored)
         public static string DEPLOY_SQL_CONNECTION_STRING_CHARACTERS = "Server=127.0.0.1;Database=acore_characters;Uid=root;Pwd=rootpass;";
@@ -159,10 +159,10 @@ namespace EQWOWConverter
         //=====================================================================
         // If true, new players created will use the everquest start locations defined in PlayerClassRaceProperties
         // WARNING: This will DELETE the existing start locations in WoW zones, so be certain you want this enabled before deploying
-        public static bool PLAYER_USE_EQ_START_LOCATION = true;
+        public static bool PLAYER_USE_EQ_START_LOCATION = false;
 
         // If true, players will start with an EQ item loadout instead of a WOW item loadout
-        public static bool PLAYER_USE_EQ_START_ITEMS = true;
+        public static bool PLAYER_USE_EQ_START_ITEMS = false;
 
         // If true, this will also add a hearthstone if using EQ items
         public static bool PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS = false;
@@ -309,7 +309,7 @@ namespace EQWOWConverter
         public static string AUDIO_SOUNDFONT_FILE_NAME = "AweROMGM.sf2";
 
         // If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience
-        public static bool AUDIO_USE_ALTERNATE_TRACKS = true;
+        public static bool AUDIO_USE_ALTERNATE_TRACKS = false;
 
         // How much to increase the music sound when converted from EverQuest
         public static decimal AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 1;
@@ -825,7 +825,7 @@ namespace EQWOWConverter
 
         // Start and end IDs for gameobject_template rows
         // - GameObjects.csv owns rows 270000 - 274999
-        // - TarnsportLifts.csv and TransportLiftTriggers.csv own rows 279900 - 279999
+        // - TransportLifts.csv and TransportLiftTriggers.csv own rows 279900 - 279999
         public static int SQL_GAMEOBJECTTEMPLATE_ID_START = 270000;
         public static int SQL_GAMEOBJECTTEMPLATE_ID_END = 279999;
         public static int SQL_GAMEOBJECTTEMPLATE_SHIP_ID_START = 279970;
@@ -936,7 +936,7 @@ namespace EQWOWConverter
         {
             if (configValuesByVariableName.ContainsKey(configVariableName) == false)
             {
-                Logger.WriteError("No variable found in config value with name '", configVariableName, "', so using default value");
+                Logger.WriteDebug("No variable found in config value with name '", configVariableName, "', so using default value");
                 return defaultValue;
             }
             if (string.IsNullOrWhiteSpace(configValuesByVariableName[configVariableName]) == true)
@@ -947,7 +947,7 @@ namespace EQWOWConverter
             }
             catch
             {
-                Logger.WriteError("Error parsing config value '", configValuesByVariableName[configVariableName], "' for variable '", configVariableName, "'");
+                Logger.WriteError("Error parsing config value '", configValuesByVariableName[configVariableName], "' for variable '", configVariableName, "', so using default");
                 return defaultValue;
             }
         }
@@ -987,13 +987,13 @@ namespace EQWOWConverter
                 File.Delete("configuration.txt");
 
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
-            OutputTextLineToConfig("# | Manditory Path Settings (Set these before it will work)                   |");
+            OutputTextLineToConfig("# | 1. Manditory Path Settings (Set these before it will work)                |");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputBlankLineToConfig();
             OutputVariableToConfig("PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER", PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER, "Location of the installed everquest trilogy client (this must have the eqgame.exe file in it)", true);
             OutputVariableToConfig("PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER", PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Location of the installed enUS version of World of Warcaft client (this must have the wow.exe in it)", true);
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
-            OutputTextLineToConfig("# | Deployment Settings (Highly suggested to set to make install easier)      |");
+            OutputTextLineToConfig("# | 2. Deployment Settings (Highly suggested to set to make install easier)   |");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputBlankLineToConfig();
             OutputVariableToConfig("DEPLOY_CLIENT_FILES", DEPLOY_CLIENT_FILES, "If true, deploy the client file (patch mpq) after building it");
@@ -1003,7 +1003,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("DEPLOY_SQL_CONNECTION_STRING_CHARACTERS", DEPLOY_SQL_CONNECTION_STRING_CHARACTERS, "If deploying to SQL, you need to set these to something real that points to your databases (only relevant if you set DEPLOY_SERVER_SQL to true, otherwise ignored)", false);
             OutputVariableToConfig("DEPLOY_SQL_CONNECTION_STRING_WORLD", DEPLOY_SQL_CONNECTION_STRING_WORLD, "");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
-            OutputTextLineToConfig("# | Enhancements / Customizations (Settings that alter the world from EQ)     |");
+            OutputTextLineToConfig("# | 3. Enhancements / Customizations (Settings that alter the world from EQ)  |");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputBlankLineToConfig();
             OutputVariableToConfig("PLAYER_USE_EQ_START_LOCATION", PLAYER_USE_EQ_START_LOCATION, "If true, new players created will use the everquest start locations defined in PlayerClassRaceProperties");
@@ -1016,8 +1016,11 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_GATE_TETHER_ENABLED", SPELLS_GATE_TETHER_ENABLED, "If true, the player can return to their gate point by clicking off the buff (within 30 minutes)");
             OutputVariableToConfig("SPELL_MAX_CONCURRENT_BARD_SONGS", SPELL_MAX_CONCURRENT_BARD_SONGS, "Bards can have this many songs playing at the same time.");
             OutputVariableToConfig("SPELL_PERIODIC_SECONDS_PER_TICK_EQ", SPELL_PERIODIC_SECONDS_PER_TICK_EQ, "Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier (WoW typically has 3)");
+            OutputVariableToConfig("CREATURE_RIDING_TRAINERS_ENABLED", CREATURE_RIDING_TRAINERS_ENABLED, "If true, riding trainers will be generated");
+            OutputVariableToConfig("CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY", CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY, "If true, riding trainers will include flying mounts as well");
             OutputVariableToConfig("ZONE_FLYING_ALLOWED", ZONE_FLYING_ALLOWED, "If true, characters can fly in the zones if they have a mount");
             OutputVariableToConfig("EVENTS_DO_NORMALIZE_GAME_EVENTS", EVENTS_DO_NORMALIZE_GAME_EVENTS, "If true, all day or night creature spawn events will have their day/time normalized, and only one event will be created for each. Config variables to tweak this further can be found further below");
+            OutputVariableToConfig("ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED", ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED, "If true, weight reduction on bags will translate to additional slots");
             OutputVariableToConfig("PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED", PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED, "These properties are for replacing the collision for many race models that otherwise wouldn't fit in most doorways (bigger than human male)");
             OutputVariableToConfig("PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX", PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX, "Default value here is max that allows all but Halfling doors to be entered by all, which seems to be just above Night Elf Female");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
@@ -1035,7 +1038,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CORE_CONSOLE_BEEP_ON_COMPLETE", CORE_CONSOLE_BEEP_ON_COMPLETE, "Plays a beep sound when the generate completes if set to true");
             OutputVariableToConfig("CORE_ENABLE_MULTITHREADING", CORE_ENABLE_MULTITHREADING, "If true, the conditioner & generator will run in multithreading mode", false);
             OutputVariableToConfig("CORE_ZONEGEN_THREAD_COUNT", CORE_ZONEGEN_THREAD_COUNT, "", false);
-            OutputVariableToConfig("CORE_PNGTOBLPCONVERSION_THREAD_COUNT", CORE_PNGTOBLPCONVERSION_THREAD_COUNT, "", false);
+            OutputVariableToConfig("CORE_PNGTOBLPCONVERSION_THREAD_COUNT", CORE_PNGTOBLPCONVERSION_THREAD_COUNT, "");
             OutputVariableToConfig("LOGGING_CONSOLE_MIN_LEVEL", LOGGING_CONSOLE_MIN_LEVEL, "Level of logs to write to the console and log file. 1: Error, 2: Info, 3: Debug", false);
             OutputVariableToConfig("LOGGING_FILE_MIN_LEVEL", LOGGING_FILE_MIN_LEVEL, "");
             OutputVariableToConfig("GENERATE_WORLD_SCALE", GENERATE_WORLD_SCALE, "The value EQ vertices multiply by when translated into WOW vertices. A WORLD_SCALE value of 0.25 seems to be 1:1 with EQ.  0.28 allows humans and 0.4 allows taurens to enter rivervale bank door", false);
@@ -1055,15 +1058,13 @@ namespace EQWOWConverter
             OutputVariableToConfig("GENERATE_QUESTS", GENERATE_QUESTS, "If true, quests are generated");
             OutputVariableToConfig("GENERATE_WORLDMAPS", GENERATE_WORLDMAPS, "If true, generate and copy maps / minimaps");
             OutputVariableToConfig("GENERATE_ONLY_LISTED_ZONE_SHORTNAMES", string.Join(",", GENERATE_ONLY_LISTED_ZONE_SHORTNAMES), "If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones will load and work properly");
-            OutputBlankLineToConfig();
             OutputVariableToConfig("GENERATE_ADDED_BOUNDARY_AMOUNT", GENERATE_ADDED_BOUNDARY_AMOUNT, "An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.");
-            OutputVariableToConfig("GENERATE_SQL_FILE_BATCH_SIZE", GENERATE_SQL_FILE_BATCH_SIZE, "How many insert rows to restrict in a SQL output file");
-            OutputVariableToConfig("GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE", GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE, "How many insert rows to restrict in a SQL output file");
+            OutputVariableToConfig("GENERATE_SQL_FILE_BATCH_SIZE", GENERATE_SQL_FILE_BATCH_SIZE, "How many insert rows to restrict in a SQL output file", false);
+            OutputVariableToConfig("GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE", GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE, "");
             OutputVariableToConfig("GENERATE_BLPCONVERTBATCHSIZE", GENERATE_BLPCONVERTBATCHSIZE, "How many file names to batch up when converting (must be greater or equal to 1)");
             OutputVariableToConfig("GENERATE_FLOAT_EPSILON", GENERATE_FLOAT_EPSILON, "What edge buffer to add when doing floating point month");
             OutputVariableToConfig("GENERATE_FORCE_SQL_UPDATES", GENERATE_FORCE_SQL_UPDATES, "If true, SQL files will be generated in a way where they will have a unique ID to force an update if ran by azerothcore, regardless of changes");
             OutputVariableToConfig("GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE", GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE, "The minimum size that boundary boxes should be for any object models when output");
-            OutputBlankLineToConfig();
             OutputVariableToConfig("ZONE_SHOW_STATIC_GEOMETRY", ZONE_SHOW_STATIC_GEOMETRY, "If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging");
             OutputVariableToConfig("ZONE_MAX_FACES_PER_WMOGROUP", ZONE_MAX_FACES_PER_WMOGROUP, "Maximum number of faces that fit into a render WMO group before it subdivides (max is due to various variable limits)");
             OutputVariableToConfig("ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE", ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE, "Maximum size of any zone-to-material-object creation along the X and Y axis");
@@ -1080,100 +1081,91 @@ namespace EQWOWConverter
             OutputVariableToConfig("ZONE_DEFAULT_GRAVEYARD_ID", ZONE_DEFAULT_GRAVEYARD_ID, "Which ID to use if a graveyard isn't mapped for a zone.  13 is in east commons next to EC tunnel.");
             OutputVariableToConfig("ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID", ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, "ID for the creature template for the spirit healer.");
             OutputVariableToConfig("ZONE_WEATHER_ENABLED", ZONE_WEATHER_ENABLED, "If true, enable weather in zones.");
-            OutputBlankLineToConfig();
             OutputVariableToConfig("WORLDMAP_DEBUG_GENERATION_MODE_ENABLED", WORLDMAP_DEBUG_GENERATION_MODE_ENABLED, "When true, many various proprties are changed to support generation of minimaps, such as 'baking' in animated textures");
-            OutputVariableToConfig("WORLDMAP_LEFT_BORDER_PIXEL_SIZE", WORLDMAP_LEFT_BORDER_PIXEL_SIZE, "Borders on any maps that were generated, which is blank space and important to mark since coordinates in map space are calculated at generation");
-            OutputVariableToConfig("WORLDMAP_RIGHT_BORDER_PIXEL_SIZE", WORLDMAP_RIGHT_BORDER_PIXEL_SIZE, "Borders on any maps that were generated, which is blank space and important to mark since coordinates in map space are calculated at generation");
-            OutputVariableToConfig("WORLDMAP_TOP_BORDER_PIXEL_SIZE", WORLDMAP_TOP_BORDER_PIXEL_SIZE, "Borders on any maps that were generated, which is blank space and important to mark since coordinates in map space are calculated at generation");
-            OutputVariableToConfig("WORLDMAP_BOTTOM_BORDER_PIXEL_SIZE", WORLDMAP_BOTTOM_BORDER_PIXEL_SIZE, "Borders on any maps that were generated, which is blank space and important to mark since coordinates in map space are calculated at generation");
+            OutputVariableToConfig("WORLDMAP_LEFT_BORDER_PIXEL_SIZE", WORLDMAP_LEFT_BORDER_PIXEL_SIZE, "Borders on any maps that were generated, which is blank space and important to mark since coordinates in map space are calculated at generation", false);
+            OutputVariableToConfig("WORLDMAP_RIGHT_BORDER_PIXEL_SIZE", WORLDMAP_RIGHT_BORDER_PIXEL_SIZE, "", false);
+            OutputVariableToConfig("WORLDMAP_TOP_BORDER_PIXEL_SIZE", WORLDMAP_TOP_BORDER_PIXEL_SIZE, "", false);
+            OutputVariableToConfig("WORLDMAP_BOTTOM_BORDER_PIXEL_SIZE", WORLDMAP_BOTTOM_BORDER_PIXEL_SIZE, "");
             OutputVariableToConfig("WORLDMAP_SHOW_SUGGESTED_LEVELS_ON_LINKED_MAPS", WORLDMAP_SHOW_SUGGESTED_LEVELS_ON_LINKED_MAPS, "Controls showing suggested levels on the linked maps");
-            OutputBlankLineToConfig();
             OutputVariableToConfig("EVENTS_MAX_DATETIME_YEAR", EVENTS_MAX_DATETIME_YEAR, "This value is used in generating end timestamps in things like game_event. At time of writing, the max value of AzerothCore's game event time is based on MYSQL TIMESTAMP which caps at 2038-01-19 03:14:07");
-            OutputVariableToConfig("EVENTS_NORMALIZED_DAY_SPAWN_START_HOUR", EVENTS_NORMALIZED_DAY_SPAWN_START_HOUR, "If true, all day or night creature spawn events will have their day/time normalized, and only one event will be created for each.");
-            OutputVariableToConfig("EVENTS_NORMALIZED_DAY_SPAWN_LENGTH_IN_HOUR", EVENTS_NORMALIZED_DAY_SPAWN_LENGTH_IN_HOUR, "If true, all day or night creature spawn events will have their day/time normalized, and only one event will be created for each.");
-            OutputVariableToConfig("EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR", EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR, "If true, all day or night creature spawn events will have their day/time normalized, and only one event will be created for each.");
-            OutputVariableToConfig("EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR", EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR, "If true, all day or night creature spawn events will have their day/time normalized, and only one event will be created for each.");
-            OutputBlankLineToConfig();
+            OutputVariableToConfig("EVENTS_NORMALIZED_DAY_SPAWN_START_HOUR", EVENTS_NORMALIZED_DAY_SPAWN_START_HOUR, "If true, all day or night creature spawn events will have their day/time normalized, and only one event will be created for each.", false);
+            OutputVariableToConfig("EVENTS_NORMALIZED_DAY_SPAWN_LENGTH_IN_HOUR", EVENTS_NORMALIZED_DAY_SPAWN_LENGTH_IN_HOUR, "", false);
+            OutputVariableToConfig("EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR", EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR, "", false);
+            OutputVariableToConfig("EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR", EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR, "");
             OutputVariableToConfig("LIQUID_SHOW_TRUE_SURFACE", LIQUID_SHOW_TRUE_SURFACE, "If this is true, it will show the true surface line of water and not just the material from EQ.  This should only be used for debugging as it very visually unpleasant");
             OutputVariableToConfig("LIQUID_SURFACE_ADD_Z_HEIGHT", LIQUID_SURFACE_ADD_Z_HEIGHT, "How much 'height' to add to liquid surface, helps with rendering the waves");
             OutputVariableToConfig("LIQUID_QUADGEN_PLANE_OVERLAP_SIZE", LIQUID_QUADGEN_PLANE_OVERLAP_SIZE, "How much to overlap the planes when generating an irregular quad of liquid");
-            OutputBlankLineToConfig();
             OutputVariableToConfig("LIGHT_INSTANCES_ENABLED", LIGHT_INSTANCES_ENABLED, "If true, light instances are enabled.  They don't work at this time, so leave false");
             OutputVariableToConfig("LIGHT_INSTANCES_DRAWN_AS_TORCHES", LIGHT_INSTANCES_DRAWN_AS_TORCHES, "If true, light instances are rendered as torches.  Use for debugging only, and typically leave false");
             OutputVariableToConfig("LIGHT_INSTANCE_ATTENUATION_START_PROPORTION", LIGHT_INSTANCE_ATTENUATION_START_PROPORTION, "Sets the modifier to add to the attenuation to define the start, calculated by multiplying this value to it");
             OutputVariableToConfig("LIGHT_OUTSIDE_GLOW_CLEAR_WEATHER", LIGHT_OUTSIDE_GLOW_CLEAR_WEATHER, "Amonut of glow to add to outdoor areas (ranges are 0-1)");
             OutputVariableToConfig("LIGHT_OUTSIDE_GLOW_STORMY_WEATHER", LIGHT_OUTSIDE_GLOW_STORMY_WEATHER, "Amonut of glow to add to outdoor areas (ranges are 0-1)");
             OutputVariableToConfig("LIGHT_OUTSIDE_GLOW_UNDERWATER", LIGHT_OUTSIDE_GLOW_UNDERWATER, "Amonut of glow to add to outdoor areas (ranges are 0-1)");
-            OutputVariableToConfig("LIGHT_OUTSIDE_AMBIENT_TIME_0", LIGHT_OUTSIDE_AMBIENT_TIME_0, "Brightness of outdoor areas based on time");
-            OutputVariableToConfig("LIGHT_OUTSIDE_AMBIENT_TIME_3", LIGHT_OUTSIDE_AMBIENT_TIME_3, "Brightness of outdoor areas based on time");
-            OutputVariableToConfig("LIGHT_OUTSIDE_AMBIENT_TIME_6", LIGHT_OUTSIDE_AMBIENT_TIME_6, "Brightness of outdoor areas based on time");
-            OutputVariableToConfig("LIGHT_OUTSIDE_AMBIENT_TIME_12", LIGHT_OUTSIDE_AMBIENT_TIME_12, "Brightness of outdoor areas based on time");
-            OutputVariableToConfig("LIGHT_OUTSIDE_AMBIENT_TIME_21", LIGHT_OUTSIDE_AMBIENT_TIME_21, "Brightness of outdoor areas based on time");
-            OutputVariableToConfig("LIGHT_OUTSIDE_AMBIENT_TIME_22", LIGHT_OUTSIDE_AMBIENT_TIME_22, "Brightness of outdoor areas based on time");
+            OutputVariableToConfig("LIGHT_OUTSIDE_AMBIENT_TIME_0", LIGHT_OUTSIDE_AMBIENT_TIME_0, "Brightness of outdoor areas based on time", false);
+            OutputVariableToConfig("LIGHT_OUTSIDE_AMBIENT_TIME_3", LIGHT_OUTSIDE_AMBIENT_TIME_3, "", false);
+            OutputVariableToConfig("LIGHT_OUTSIDE_AMBIENT_TIME_6", LIGHT_OUTSIDE_AMBIENT_TIME_6, "", false);
+            OutputVariableToConfig("LIGHT_OUTSIDE_AMBIENT_TIME_12", LIGHT_OUTSIDE_AMBIENT_TIME_12, "", false);
+            OutputVariableToConfig("LIGHT_OUTSIDE_AMBIENT_TIME_21", LIGHT_OUTSIDE_AMBIENT_TIME_21, "", false);
+            OutputVariableToConfig("LIGHT_OUTSIDE_AMBIENT_TIME_22", LIGHT_OUTSIDE_AMBIENT_TIME_22, "");
             OutputVariableToConfig("LIGHT_STORM_COLOR_MOD", LIGHT_STORM_COLOR_MOD, "Storm brightness");
-            OutputBlankLineToConfig();
             OutputVariableToConfig("AUDIO_SOUNDFONT_FILE_NAME", AUDIO_SOUNDFONT_FILE_NAME, "Set which soundfont to use in the Tools/soundfont folder.  Alternate option is synthusr_samplefix.sf2");
             OutputVariableToConfig("AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT", AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT, "How much to increase the music sound when converted from EverQuest");
-            OutputVariableToConfig("AUDIO_AMBIENT_SOUND_VOLUME_MOD", AUDIO_AMBIENT_SOUND_VOLUME_MOD, "Mod / multiplier to volumes (multiplies the volume by this value)");
-            OutputVariableToConfig("AUDIO_SOUNDINSTANCE_VOLUME_MOD", AUDIO_SOUNDINSTANCE_VOLUME_MOD, "Mod / multiplier to volumes (multiplies the volume by this value)");
-            OutputVariableToConfig("AUDIO_MUSIC_VOLUME_MOD", AUDIO_MUSIC_VOLUME_MOD, "Mod / multiplier to volumes (multiplies the volume by this value)");
+            OutputVariableToConfig("AUDIO_AMBIENT_SOUND_VOLUME_MOD", AUDIO_AMBIENT_SOUND_VOLUME_MOD, "Mod / multiplier to volumes (multiplies the volume by this value)", false);
+            OutputVariableToConfig("AUDIO_SOUNDINSTANCE_VOLUME_MOD", AUDIO_SOUNDINSTANCE_VOLUME_MOD, "", false);
+            OutputVariableToConfig("AUDIO_MUSIC_VOLUME_MOD", AUDIO_MUSIC_VOLUME_MOD, "");
             OutputVariableToConfig("AUDIO_SOUNDINSTANCE_DRAW_AS_BOX", AUDIO_SOUNDINSTANCE_DRAW_AS_BOX, "If this is 'true', draw any sound instances in a zone as a little box");
-            OutputVariableToConfig("AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD", AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD, "The radius of a sound instance is multiplied by this to get the min distance, which is the range which the sound is 100% volume");
-            OutputVariableToConfig("AUDIO_SOUNDINSTANCE_2D_MIN_DISTANCE_MOD", AUDIO_SOUNDINSTANCE_2D_MIN_DISTANCE_MOD, "The radius of a sound instance is multiplied by this to get the min distance, which is the range which the sound is 100% volume");
+            OutputVariableToConfig("AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD", AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD, "The radius of a sound instance is multiplied by this to get the min distance, which is the range which the sound is 100% volume", false);
+            OutputVariableToConfig("AUDIO_SOUNDINSTANCE_2D_MIN_DISTANCE_MOD", AUDIO_SOUNDINSTANCE_2D_MIN_DISTANCE_MOD, "");
             OutputVariableToConfig("AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE", AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE, "Size of the box when rendering a sound instance (Note: It's 1/2 the in-game size)");
             OutputVariableToConfig("AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME", AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME, "Name of the object material that is used when rendering the soundinstance object");
             OutputVariableToConfig("AUDIO_CREATURE_SOUND_VOLUME", AUDIO_CREATURE_SOUND_VOLUME, "Volume of creature sound effects like attacks and being hit");
             OutputVariableToConfig("AUDIO_CREATURE_MIN_DISTANCE_MOD", AUDIO_CREATURE_MIN_DISTANCE_MOD, "Creature sound radius (in CreatureRaces) are multilpied for this for the min distance, which is the range of max volume");
             OutputVariableToConfig("AUDIO_SPELL_SOUND_VOLUME", AUDIO_SPELL_SOUND_VOLUME, "Volume of spells and other effects");
-            OutputBlankLineToConfig();
             OutputVariableToConfig("OBJECT_STATIC_LADDER_EXTEND_DISTANCE", OBJECT_STATIC_LADDER_EXTEND_DISTANCE, "For ladders, this is how far to extend out the steppable area in front and back of it (percentage of thickness)");
             OutputVariableToConfig("OBJECT_STATIC_LADDER_STEP_DISTANCE", OBJECT_STATIC_LADDER_STEP_DISTANCE, "How much space between each step of a ladder along the Z axis (true units)");
             OutputVariableToConfig("OBJECT_STATIC_LADDER_STEP_DROP_DISTANCE_MOD", OBJECT_STATIC_LADDER_STEP_DROP_DISTANCE_MOD, "How much the lower edge of a ladder step-down plane should be in proportion to its thickness.");
-            OutputVariableToConfig("OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS", OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, "How long (in ms) the open/close animation will be for game objects");
-            OutputVariableToConfig("OBJECT_GAMEOBJECT_OPENCLOSE_SLEEPER_FIELD_ANIMATIONTIME_INMS", OBJECT_GAMEOBJECT_OPENCLOSE_SLEEPER_FIELD_ANIMATIONTIME_INMS, "How long (in ms) the open/close animation will be for game objects");
+            OutputVariableToConfig("OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS", OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, "How long (in ms) the open/close animation will be for game objects", false);
+            OutputVariableToConfig("OBJECT_GAMEOBJECT_OPENCLOSE_SLEEPER_FIELD_ANIMATIONTIME_INMS", OBJECT_GAMEOBJECT_OPENCLOSE_SLEEPER_FIELD_ANIMATIONTIME_INMS, "");
             OutputVariableToConfig("OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE", OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE, "How big of an area that a tradeskill focus item (forge, cooking fire) covers in effect");
             OutputVariableToConfig("OBJECT_IGNORE_RENDER_MATERIAL_ID_START", OBJECT_IGNORE_RENDER_MATERIAL_ID_START, "The starting ID for any material index that should be ignored from rendering");
-            OutputBlankLineToConfig();
             OutputVariableToConfig("CREATURE_FIDGET_TIME_PERCENT", CREATURE_FIDGET_TIME_PERCENT, "This is the percent of the idle time that a 'fidget' occurs (1-100)");
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_ADD", CREATURE_STAT_MOD_HP_ADD, "Stat modifiers for creatures");
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MIN", CREATURE_STAT_MOD_HP_MIN, "Stat modifiers for creatures");
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MAX_NORMAL", CREATURE_STAT_MOD_HP_MAX_NORMAL, "Stat modifiers for creatures");
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MAX_RARE", CREATURE_STAT_MOD_HP_MAX_RARE, "Stat modifiers for creatures");
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_SET_ELITE", CREATURE_STAT_MOD_HP_SET_ELITE, "Stat modifiers for creatures");
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_SET_ELITERARE", CREATURE_STAT_MOD_HP_SET_ELITERARE, "Stat modifiers for creatures");
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_SET_BOSS", CREATURE_STAT_MOD_HP_SET_BOSS, "Stat modifiers for creatures");
-            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_ADD", CREATURE_STAT_MOD_AVGDMG_ADD, "Stat modifiers for creatures");
-            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_MIN", CREATURE_STAT_MOD_AVGDMG_MIN, "Stat modifiers for creatures");
-            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL", CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL, "Stat modifiers for creatures");
-            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_MAX_RARE", CREATURE_STAT_MOD_AVGDMG_MAX_RARE, "Stat modifiers for creatures");
-            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_SET_ELITE", CREATURE_STAT_MOD_AVGDMG_SET_ELITE, "Stat modifiers for creatures");
-            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE", CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE, "Stat modifiers for creatures");
-            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_SET_BOSS", CREATURE_STAT_MOD_AVGDMG_SET_BOSS, "Stat modifiers for creatures");
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_ADD", CREATURE_STAT_MOD_HP_ADD, "Stat modifiers for creatures - \"MIN\" and \"MAX\" are applied after all other calculations", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MIN", CREATURE_STAT_MOD_HP_MIN, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MAX_NORMAL", CREATURE_STAT_MOD_HP_MAX_NORMAL, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MAX_RARE", CREATURE_STAT_MOD_HP_MAX_RARE, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_SET_ELITE", CREATURE_STAT_MOD_HP_SET_ELITE, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_SET_ELITERARE", CREATURE_STAT_MOD_HP_SET_ELITERARE, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_SET_BOSS", CREATURE_STAT_MOD_HP_SET_BOSS, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_ADD", CREATURE_STAT_MOD_AVGDMG_ADD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_MIN", CREATURE_STAT_MOD_AVGDMG_MIN, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL", CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_MAX_RARE", CREATURE_STAT_MOD_AVGDMG_MAX_RARE, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_SET_ELITE", CREATURE_STAT_MOD_AVGDMG_SET_ELITE, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE", CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_SET_BOSS", CREATURE_STAT_MOD_AVGDMG_SET_BOSS, "");
             OutputVariableToConfig("CREATURE_FACTION_ROOT_NAME", CREATURE_FACTION_ROOT_NAME, "The value to name the everquest parent reputation item as");
-            OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_DEFAULT", CREATURE_FACTION_TEMPLATE_DEFAULT, "The default faction values to use if none can be mapped.  Using the 'neutral' record for now.");
-            OutputVariableToConfig("CREATURE_FACTION_DEFAULT", CREATURE_FACTION_DEFAULT, "The default faction values to use if none can be mapped.  Using the 'neutral' record for now.");
-            OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_NEUTRAL", CREATURE_FACTION_TEMPLATE_NEUTRAL, "For any quest or merchant NPCs that aren't aligned to a raisable or lowerable faction, they will be mapped to this.  Default is Norrath Settlers.");
-            OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE", CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE, "For any quest or merchant NPCs that aren't aligned to a raisable or lowerable faction, they will be mapped to this.  Default is Norrath Settlers.");
+            OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_DEFAULT", CREATURE_FACTION_TEMPLATE_DEFAULT, "The default faction values to use if none can be mapped.  Using the 'neutral' record for now.", false);
+            OutputVariableToConfig("CREATURE_FACTION_DEFAULT", CREATURE_FACTION_DEFAULT, "");
+            OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_NEUTRAL", CREATURE_FACTION_TEMPLATE_NEUTRAL, "For any quest or merchant NPCs that aren't aligned to a raisable or lowerable faction, they will be mapped to this.  Default is Norrath Settlers.", false);
+            OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE", CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE, "");
             OutputVariableToConfig("CREATURE_FACTION_SHOW_ALL", CREATURE_FACTION_SHOW_ALL, "If set to true, all factions will show up for EverQuest in the faction list immediately");
             OutputVariableToConfig("CREATURE_REP_REWARD_MULTIPLIER", CREATURE_REP_REWARD_MULTIPLIER, "What to multiple the EverQuest reputation rewards by.  WOW is approx 20-30x that of EQ in band.");
             OutputVariableToConfig("CREATURE_DEFAULT_DETECTION_RANGE", CREATURE_DEFAULT_DETECTION_RANGE, "Values for creatures without a default detection/agro range (note: This is NOT scaled by WORLD_SCALE)");
             OutputVariableToConfig("CREATURE_GOSSIP_NPC_TEXT_ID", CREATURE_GOSSIP_NPC_TEXT_ID, "ID for the menu text (328 exists already and is just \"Greetings, $n\")");
-            OutputVariableToConfig("CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID", CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID, "ID for the menu broadcast texts");
-            OutputVariableToConfig("CREATURE_GOSSIP_UNLEARN_BROADCAST_TEXT_ID", CREATURE_GOSSIP_UNLEARN_BROADCAST_TEXT_ID, "ID for the menu broadcast texts");
-            OutputVariableToConfig("CREATURE_GOSSIP_DUALTALENT_BROADCAST_TEXT_ID", CREATURE_GOSSIP_DUALTALENT_BROADCAST_TEXT_ID, "ID for the menu broadcast texts");
-            OutputVariableToConfig("CREATURE_GOSSIP_PURCHASE_BROADCAST_TEXT_ID", CREATURE_GOSSIP_PURCHASE_BROADCAST_TEXT_ID, "ID for the menu broadcast texts");
-            OutputVariableToConfig("CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID", CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID, "IDs for menus specific to class trainer");
-            OutputVariableToConfig("CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID", CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID, "IDs for menus specific to class trainer");
-            OutputVariableToConfig("CREATURE_RIDING_TRAINERS_ENABLED", CREATURE_RIDING_TRAINERS_ENABLED, "If true, riding trainers will be generated");
-            OutputVariableToConfig("CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY", CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY, "If true, riding trainers will include flying mounts as well");
+            OutputTextLineToConfig("# ID for the menu broadcast texts");
+            OutputVariableToConfig("CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID", CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID, "Pre-exists, \"I would like to train.\"", false);
+            OutputVariableToConfig("CREATURE_GOSSIP_UNLEARN_BROADCAST_TEXT_ID", CREATURE_GOSSIP_UNLEARN_BROADCAST_TEXT_ID, "Pre-exists, \"I wish to unlearn my talents.\"", false);
+            OutputVariableToConfig("CREATURE_GOSSIP_DUALTALENT_BROADCAST_TEXT_ID", CREATURE_GOSSIP_DUALTALENT_BROADCAST_TEXT_ID, "Pre-exists, \"I wish to know about Dual Talent Specialization.\"", false);
+            OutputVariableToConfig("CREATURE_GOSSIP_PURCHASE_BROADCAST_TEXT_ID", CREATURE_GOSSIP_PURCHASE_BROADCAST_TEXT_ID, "Pre-exists, \"I want to browse your goods.\"");
+            OutputVariableToConfig("CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID", CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID, "IDs for menus specific to class trainer", false);
+            OutputVariableToConfig("CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID", CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID, "");
             OutputVariableToConfig("CREATURE_SPELL_OOC_BUFF_MIN_DURATION_IN_MS", CREATURE_SPELL_OOC_BUFF_MIN_DURATION_IN_MS, "Minimum amount of duration a creature buff buff needs to be in order to be cast out of combat");
-            OutputVariableToConfig("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS", CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS, "How long to wait initially before casting a buff, to stagger casting a bit");
-            OutputVariableToConfig("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS", CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS, "How long to wait initially before casting a buff, to stagger casting a bit");
-            OutputVariableToConfig("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS", CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS, "How long to wait initially before casting a buff, to stagger casting a bit");
+            OutputVariableToConfig("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS", CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS, "How long to wait initially before casting a buff, to stagger casting a bit", false);
+            OutputVariableToConfig("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS", CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS", CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS, "");
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD", CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD, "How much time to add the the max recast delay for combat spells so that there's a bit of variation");
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT", CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT, "At what level of life a creature should cast a heal spell, if they have one");
             OutputVariableToConfig("CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE", CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE, "If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be done for debugging reasons, as the game will not look or feel anything like it should");
-            OutputBlankLineToConfig();
             OutputVariableToConfig("ITEMS_USE_ALTERNATE_STATS", ITEMS_USE_ALTERNATE_STATS, "If true, this uses alternate stats for items that have been tweaked for balance reasons");
             OutputVariableToConfig("ITEMS_WEAPON_DELAY_REDUCTION_AMT", ITEMS_WEAPON_DELAY_REDUCTION_AMT, "This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;");
             OutputVariableToConfig("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", ITEMS_WEAPON_EFFECT_PPM_BASE_RATE, "This is the base PPM (Procs Per Minute) used for weapon proc weapons");
@@ -1182,13 +1174,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP", ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP, "If this is true, then weapons and armor that allow all normally-aligned classes to be classified as 'all'.");
             OutputVariableToConfig("ITEMS_STATS_LOW_BIAS_WEIGHT", ITEMS_STATS_LOW_BIAS_WEIGHT, "This is how much 'weight' the lower stat has when converting EQ to WoW stats, with values closer to 1 leaning towards the lower stat, and further from 1 leaning towards the higher stat.");
             OutputVariableToConfig("ITEMS_BAG_SLOT_MULTIPLIER", ITEMS_BAG_SLOT_MULTIPLIER, "How much to multiple the slot size of a bag in EQ.  EQ allows for 2x the number bags of WOW (not including starter)");
-            OutputVariableToConfig("ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED", ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED, "If true, weight reduction on bags will translate to additional slots");
-            OutputVariableToConfig("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT, "If true, weight reduction on bags will translate to additional slots");
+            OutputVariableToConfig("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT, "When ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED is true, this is how much to increase bag size by");
             OutputVariableToConfig("ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID", ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID, "This is the icon ID that is used for multi-item containers that contain more than one item");
-            OutputBlankLineToConfig();
             OutputVariableToConfig("QUESTS_TEXT_DURATION_IN_MS", QUESTS_TEXT_DURATION_IN_MS, "How many milliseconds to display a text block from an NPC on quest events");
             OutputVariableToConfig("QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID", QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID, "This is the icon ID that is used for quest rewards that contain more than one random item");
-            OutputBlankLineToConfig();
             OutputVariableToConfig("SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION", SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION, "If true, spells will balance around level 60 being the cap (EQ-like), otherwise it will be 80 like WOTLK");
             OutputVariableToConfig("SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL", SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL, "This is how high (WOW side) stats will be be scaled to.  This should almost always be set to the server max level configuration.");
             OutputVariableToConfig("SPELLS_GATECUSTOM_SPELLDBC_ID", SPELLS_GATECUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest");
@@ -1196,159 +1185,176 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_RANGE_MULTIPLIER", SPELLS_RANGE_MULTIPLIER, "How much to multiply the EQ range value for WoW");
             OutputVariableToConfig("SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE", SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE, "The most that a movement speed reduction can slow a target.  Should be above -100");
             OutputVariableToConfig("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", SPELL_PERIODIC_SECONDS_PER_TICK_WOW, "Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier");
-            OutputVariableToConfig("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS, "This is 'added time' in the periodic tick that comes from bard casters.", true);
+            OutputVariableToConfig("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS, "This is 'added time' in the periodic tick that comes from bard casters.");
             OutputVariableToConfig("SPELL_RECOVERY_TIME_MINIMUM_IN_MS", SPELL_RECOVERY_TIME_MINIMUM_IN_MS, "This is the minimum allowable recovery time any spell can have, which any smaller will become zero");
             OutputVariableToConfig("SPELLS_LEARNABLE_FROM_ITEMS_ENABLED", SPELLS_LEARNABLE_FROM_ITEMS_ENABLED, "If true, you can learn spells from items");
             OutputVariableToConfig("SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS", SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS, "All spell properties");
-            OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE", SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE, "How often weapon procs occur");
-            OutputVariableToConfig("SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE", SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE, "How often weapon procs occur");
+            OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE", SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE, "How often weapon procs occur", false);
+            OutputVariableToConfig("SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE", SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE, "");
             OutputVariableToConfig("SPELL_ENCHANT_ROGUE_POISON_ENCHANT_DURATION_ON_WEAPON_TIME_IN_SECONDS", SPELL_ENCHANT_ROGUE_POISON_ENCHANT_DURATION_ON_WEAPON_TIME_IN_SECONDS, "How long rogue poisons stay on the weapons");
             OutputVariableToConfig("SPELL_ENCHANT_ROGUE_POISON_APPLY_TIME_IN_MS", SPELL_ENCHANT_ROGUE_POISON_APPLY_TIME_IN_MS, "How long it takes to apply rogue poison");
-            OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_APPLYING_VISUAL_ID", SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_APPLYING_VISUAL_ID, "What to show when a rogue has a poison, 0 will disable it (and be more EQ like)");
-            OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_EFFECT_VISUAL_ID", SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_EFFECT_VISUAL_ID, "What to show when a rogue has a poison, 0 will disable it (and be more EQ like)");
-            OutputVariableToConfig("SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN", SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN, "Spell emitter particles");
-            OutputVariableToConfig("SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX", SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX, "Spell emitter particles");
-            OutputVariableToConfig("SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS", SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS, "Spell emitter particles");
-            OutputVariableToConfig("SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD", SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD, "Spell emitter particles");
-            OutputVariableToConfig("SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD", SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD, "Spell emitter particles");
-            OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_MINIMUM", SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_MINIMUM, "Spell emitter particles");
-            OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_DEFAULT", SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_DEFAULT, "Spell emitter particles");
-            OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_DEFAULT", SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_DEFAULT, "Spell emitter particles");
-            OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_MOD", SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_MOD, "Spell emitter particles");
-            OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_DISC_MOD", SPELL_EFFECT_EMITTER_SPAWN_RATE_DISC_MOD, "Spell emitter particles");
-            OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_MOD", SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_MOD, "Spell emitter particles");
-            OutputVariableToConfig("SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MIN", SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MIN, "Sprite List particles");
-            OutputVariableToConfig("SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX", SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX, "Sprite List particles");
-            OutputVariableToConfig("SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX_EQ_VALUE", SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX_EQ_VALUE, "Sprite List particles");
-            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_RADIUS_MOD", SPELL_EFFECT_SPRITE_LIST_RADIUS_MOD, "Sprite List particles");
-            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_ANIMATION_SCALE_MOD", SPELL_EFFECT_SPRITE_LIST_ANIMATION_SCALE_MOD, "Sprite List particles");
-            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS", SPELL_EFFECT_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS, "Sprite List particles");
-            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS", SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS, "Sprite List particles");
-            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_PULSE_RANGE", SPELL_EFFECT_SPRITE_LIST_PULSE_RANGE, "Sprite List particles");
-            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_CIRCULAR_SHIFT_MOD", SPELL_EFFECT_SPRITE_LIST_CIRCULAR_SHIFT_MOD, "Sprite List particles");
-            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_HIGH", SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_HIGH, "Sprite List particles");
-            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_LOW", SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_LOW, "Sprite List particles");
+            OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_APPLYING_VISUAL_ID", SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_APPLYING_VISUAL_ID, "What to show when a rogue has a poison, 0 will disable it (and be more EQ like)", false);
+            OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_EFFECT_VISUAL_ID", SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_EFFECT_VISUAL_ID, "");
+            OutputVariableToConfig("SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN", SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN, "Spell emitter particles",  false);
+            OutputVariableToConfig("SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX", SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX, "", false);
+            OutputVariableToConfig("SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS", SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS, "", false);
+            OutputVariableToConfig("SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD", SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD, "", false);
+            OutputVariableToConfig("SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD", SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_MINIMUM", SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_MINIMUM, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_DEFAULT", SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_DEFAULT, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_DEFAULT", SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_DEFAULT, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_MOD", SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_MOD, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_DISC_MOD", SPELL_EFFECT_EMITTER_SPAWN_RATE_DISC_MOD, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_MOD", SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_MOD, "");
+            OutputVariableToConfig("SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MIN", SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MIN, "Sprite List particles", false);
+            OutputVariableToConfig("SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX", SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX, "", false);
+            OutputVariableToConfig("SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX_EQ_VALUE", SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX_EQ_VALUE, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_RADIUS_MOD", SPELL_EFFECT_SPRITE_LIST_RADIUS_MOD, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_ANIMATION_SCALE_MOD", SPELL_EFFECT_SPRITE_LIST_ANIMATION_SCALE_MOD, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS", SPELL_EFFECT_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS", SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_PULSE_RANGE", SPELL_EFFECT_SPRITE_LIST_PULSE_RANGE, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_CIRCULAR_SHIFT_MOD", SPELL_EFFECT_SPRITE_LIST_CIRCULAR_SHIFT_MOD, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_HIGH", SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_HIGH, "", false);
+            OutputVariableToConfig("SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_LOW", SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_LOW, "");
             OutputVariableToConfig("SPELL_EFFECT_BARD_TICK_VISUAL_DURATION_MOD_FROM_TICK", SPELL_EFFECT_BARD_TICK_VISUAL_DURATION_MOD_FROM_TICK, "BardTick visuals have their durations multiplied by this ammount.");
             OutputVariableToConfig("SPELL_EFFECT_BARD_ADDITIONAL_TICK_ON_CAST", SPELL_EFFECT_BARD_ADDITIONAL_TICK_ON_CAST, "If this is true, then when a bard song is cast then a tick is applied immediately on targets");
             OutputVariableToConfig("SPELL_EFFECT_VALUE_LOW_BIAS_WEIGHT", SPELL_EFFECT_VALUE_LOW_BIAS_WEIGHT, "This is how much 'weight' the lower effect value has when converting EQ to WoW spell effects");
-            OutputVariableToConfig("SPELL_EFFECT_USE_DYNAMIC_EFFECT_VALUES", SPELL_EFFECT_USE_DYNAMIC_EFFECT_VALUES, "If true, the damage formula will honor spell level based values, otherwise it'll use maximum");
-            OutputVariableToConfig("SPELL_EFFECT_USE_DYNAMIC_AURA_DURATIONS", SPELL_EFFECT_USE_DYNAMIC_AURA_DURATIONS, "If true, the damage formula will honor spell level based values, otherwise it'll use maximum");
+            OutputVariableToConfig("SPELL_EFFECT_USE_DYNAMIC_EFFECT_VALUES", SPELL_EFFECT_USE_DYNAMIC_EFFECT_VALUES, "If true, the damage formula will honor spell level based values, otherwise it'll use maximum", false);
+            OutputVariableToConfig("SPELL_EFFECT_USE_DYNAMIC_AURA_DURATIONS", SPELL_EFFECT_USE_DYNAMIC_AURA_DURATIONS, "");
             OutputVariableToConfig("SPELL_EFFECT_REVIVE_EXPPCT_TO_HPMP_MULTIPLIER", SPELL_EFFECT_REVIVE_EXPPCT_TO_HPMP_MULTIPLIER, "Revive will give HP/MP instead of EXP on revive, so this is the multiplier to use for that");
             OutputVariableToConfig("SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS", SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS, "Default time that a shrink/grow spell will last for");
-            OutputBlankLineToConfig();
             OutputVariableToConfig("TRADESKILLS_CONVERSION_MOD", TRADESKILLS_CONVERSION_MOD, "How much to multiply EQ skill requirements by to reach the same for WoW on conversion");
-            OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_LOW", TRADESKILLS_SKILL_TIER_DISTANCE_LOW, "Max distance between Grey -> Green -> Yellow -> Red steps");
-            OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_HIGH", TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, "Max distance between Grey -> Green -> Yellow -> Red steps");
-            OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_1", TRADESKILL_LEARN_COST_AT_1, "The skill level of a tradeskill will be priced closest to the value for that WOW skill level");
-            OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_50", TRADESKILL_LEARN_COST_AT_50, "The skill level of a tradeskill will be priced closest to the value for that WOW skill level");
-            OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_100", TRADESKILL_LEARN_COST_AT_100, "The skill level of a tradeskill will be priced closest to the value for that WOW skill level");
-            OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_200", TRADESKILL_LEARN_COST_AT_200, "The skill level of a tradeskill will be priced closest to the value for that WOW skill level");
-            OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_300", TRADESKILL_LEARN_COST_AT_300, "The skill level of a tradeskill will be priced closest to the value for that WOW skill level");
-            OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_450", TRADESKILL_LEARN_COST_AT_450, "The skill level of a tradeskill will be priced closest to the value for that WOW skill level");
+            OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_LOW", TRADESKILLS_SKILL_TIER_DISTANCE_LOW, "Max distance between Grey -> Green -> Yellow -> Red steps", false);
+            OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_HIGH", TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, "");
+            OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_1", TRADESKILL_LEARN_COST_AT_1, "The skill level of a tradeskill will be priced closest to the value for that WOW skill level", false);
+            OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_50", TRADESKILL_LEARN_COST_AT_50, "", false);
+            OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_100", TRADESKILL_LEARN_COST_AT_100, "", false);
+            OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_200", TRADESKILL_LEARN_COST_AT_200, "", false);
+            OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_300", TRADESKILL_LEARN_COST_AT_300, "", false);
+            OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_450", TRADESKILL_LEARN_COST_AT_450, "");
             OutputVariableToConfig("TRADESKILL_CAST_TIME_IN_MS", TRADESKILL_CAST_TIME_IN_MS, "How long every tradeskill will take in milliseconds");
             OutputVariableToConfig("TRADESKILL_TOTEM_CATEGORY_START", TRADESKILL_TOTEM_CATEGORY_START, "Tradeskill items that need a totem in TotemCategory.dbc will align under this");
-            OutputVariableToConfig("TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING", TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING, "ID for TotemCategory.dbc for specific tradeskills");
-            OutputVariableToConfig("TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_TOOLBOX", TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_TOOLBOX, "ID for TotemCategory.dbc for specific tradeskills");
-            OutputVariableToConfig("TRADESKILL_TOTEM_CATEGORY_DBCID_JEWELCRAFTING", TRADESKILL_TOTEM_CATEGORY_DBCID_JEWELCRAFTING, "ID for TotemCategory.dbc for specific tradeskills");
-            OutputVariableToConfig("TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY", TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY, "ID for TotemCategory.dbc for specific tradeskills");
-            OutputVariableToConfig("TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_FLETCHING", TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_FLETCHING, "ID for TotemCategory.dbc for specific tradeskills");
-            OutputBlankLineToConfig();
+            OutputVariableToConfig("TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING", TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING, "ID for TotemCategory.dbc for specific tradeskills", false);
+            OutputVariableToConfig("TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_TOOLBOX", TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_TOOLBOX, "", false);
+            OutputVariableToConfig("TRADESKILL_TOTEM_CATEGORY_DBCID_JEWELCRAFTING", TRADESKILL_TOTEM_CATEGORY_DBCID_JEWELCRAFTING, "", false);
+            OutputVariableToConfig("TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY", TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY, "", false);
+            OutputVariableToConfig("TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_FLETCHING", TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_FLETCHING, "");
             OutputVariableToConfig("TRANSPORT_PAUSE_MULTIPLIER", TRANSPORT_PAUSE_MULTIPLIER, "Pause as in 'stop at a port'. 1 will be EQ-like");
             OutputVariableToConfig("TRANSPORT_MOVE_SPEED", TRANSPORT_MOVE_SPEED, "Most boats are 30 in WoW, but a value of around 9 is EQ-like");
             OutputVariableToConfig("TRANSPORT_ACCELERATION", TRANSPORT_ACCELERATION, "Most boats are 30 in WoW, but a value of around 9 is EQ-like");
             OutputVariableToConfig("TRANSPORT_ALLOW_FIXED_SPEEDS", TRANSPORT_ALLOW_FIXED_SPEEDS, "If true, allows \"fixed_speed\" to override TRANSPORT_MOVE_SPEED");
+            OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
+            OutputTextLineToConfig("# | DBC and SQL IDs (Only change these if you know what you're doing)         |");
+            OutputTextLineToConfig("# | - Typically only changed if other custom content uses the IDs             |");
+            OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputBlankLineToConfig();
-            OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_1_START", DBCID_AREATABLE_AREABIT_BLOCK_1_START, "IDs for AreaBit used in AreaTable, should be unique (max of 4095)");
-            OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_1_END", DBCID_AREATABLE_AREABIT_BLOCK_1_END, "IDs for AreaBit used in AreaTable, should be unique (max of 4095)");
-            OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_2_START", DBCID_AREATABLE_AREABIT_BLOCK_2_START, "IDs for AreaBit used in AreaTable, should be unique (max of 4095)");
-            OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_2_END", DBCID_AREATABLE_AREABIT_BLOCK_2_END, "IDs for AreaBit used in AreaTable, should be unique (max of 4095)");
-            OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_3_START", DBCID_AREATABLE_AREABIT_BLOCK_3_START, "IDs for AreaBit used in AreaTable, should be unique (max of 4095)");
-            OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_3_END", DBCID_AREATABLE_AREABIT_BLOCK_3_END, "IDs for AreaBit used in AreaTable, should be unique (max of 4095)");
-            OutputVariableToConfig("DBCID_AREATABLE_ID_START", DBCID_AREATABLE_ID_START, "Identifies Area rows in AreaTable.dbc");
-            OutputVariableToConfig("DBCID_AREATABLE_ID_END", DBCID_AREATABLE_ID_END, "Identifies Area rows in AreaTable.dbc");
+            OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_1_START", DBCID_AREATABLE_AREABIT_BLOCK_1_START, "IDs for AreaBit used in AreaTable, should be unique (max of 4095)", false);
+            OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_1_END", DBCID_AREATABLE_AREABIT_BLOCK_1_END, "", false);
+            OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_2_START", DBCID_AREATABLE_AREABIT_BLOCK_2_START, "", false);
+            OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_2_END", DBCID_AREATABLE_AREABIT_BLOCK_2_END, "", false);
+            OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_3_START", DBCID_AREATABLE_AREABIT_BLOCK_3_START, "", false);
+            OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_3_END", DBCID_AREATABLE_AREABIT_BLOCK_3_END, "");
+            OutputVariableToConfig("DBCID_AREATABLE_ID_START", DBCID_AREATABLE_ID_START, "Identifies Area rows in AreaTable.dbc. Note these are hardcoded in ZoneSubAreas.csv and ZoneProperties.csv", false);
+            OutputVariableToConfig("DBCID_AREATABLE_ID_END", DBCID_AREATABLE_ID_END, "");
             OutputVariableToConfig("DBCID_AREATRIGGER_ID_START", DBCID_AREATRIGGER_ID_START, "IDs for AreaTrigger.DBC.");
-            OutputVariableToConfig("DBCID_CREATUREDISPLAYINFO_ID_START", DBCID_CREATUREDISPLAYINFO_ID_START, "IDs for CreatureDisplayInfo.dbc");
-            OutputVariableToConfig("DBCID_CREATUREDISPLAYINFO_ID_END", DBCID_CREATUREDISPLAYINFO_ID_END, "IDs for CreatureDisplayInfo.dbc");
-            OutputVariableToConfig("DBCID_CREATUREMODELDATA_ID_START", DBCID_CREATUREMODELDATA_ID_START, "IDs for CreatureModelData.dbc");
-            OutputVariableToConfig("DBCID_CREATUREMODELDATA_ID_END", DBCID_CREATUREMODELDATA_ID_END, "IDs for CreatureModelData.dbc");
+            OutputVariableToConfig("DBCID_CREATUREDISPLAYINFO_ID_START", DBCID_CREATUREDISPLAYINFO_ID_START, "IDs for CreatureDisplayInfo.dbc", false);
+            OutputVariableToConfig("DBCID_CREATUREDISPLAYINFO_ID_END", DBCID_CREATUREDISPLAYINFO_ID_END, "");
+            OutputVariableToConfig("DBCID_CREATUREMODELDATA_ID_START", DBCID_CREATUREMODELDATA_ID_START, "IDs for CreatureModelData.dbc", false);
+            OutputVariableToConfig("DBCID_CREATUREMODELDATA_ID_END", DBCID_CREATUREMODELDATA_ID_END, "");
             OutputVariableToConfig("DBCID_CREATURESOUNDDATA_ID_START", DBCID_CREATURESOUNDDATA_ID_START, "IDs for CreatureSoundData.dbc");
-            OutputVariableToConfig("DBCID_FOOTSTEPTERRAINLOOKUP_ID_START", DBCID_FOOTSTEPTERRAINLOOKUP_ID_START, "IDs for FootstepTerrainLookup.dbc");
-            OutputVariableToConfig("DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START", DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START, "IDs for FootstepTerrainLookup.dbc");
+            OutputVariableToConfig("DBCID_FOOTSTEPTERRAINLOOKUP_ID_START", DBCID_FOOTSTEPTERRAINLOOKUP_ID_START, "IDs for FootstepTerrainLookup.dbc", false);
+            OutputVariableToConfig("DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START", DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START, "");
             OutputVariableToConfig("DBCID_GAMEOBJECTDISPLAYINFO_ID_START", DBCID_GAMEOBJECTDISPLAYINFO_ID_START, "IDs for rows inside GameObjectDisplayInfo.dbc");
             OutputVariableToConfig("DBCID_ITEMDISPLAYINFO_START", DBCID_ITEMDISPLAYINFO_START, "Start ID for item display info");
             OutputVariableToConfig("DBCID_LIGHT_ID_START", DBCID_LIGHT_ID_START, "Identifies the Light.DBC row, used for environmental properties");
             OutputVariableToConfig("DBCID_LIGHTPARAMS_ID_START", DBCID_LIGHTPARAMS_ID_START, "Identifies the LightParams.dbc, used for detailed values related to a Light.DBC row");
             OutputVariableToConfig("DBCID_LOADINGSCREEN_ID_START", DBCID_LOADINGSCREEN_ID_START, "IDs for the loading screen");
-            OutputVariableToConfig("DBCID_MAP_ID_START", DBCID_MAP_ID_START, "Identifies Maps in Map.dbc and MapDifficulty.dbc");
-            OutputVariableToConfig("DBCID_MAP_ID_END", DBCID_MAP_ID_END, "Identifies Maps in Map.dbc and MapDifficulty.dbc");
+            OutputVariableToConfig("DBCID_MAP_ID_START", DBCID_MAP_ID_START, "Identifies Maps in Map.dbc and MapDifficulty.dbc. This value is hard coded in /WorldData/ZoneProperties.csv, TransportShips.csv, and ZoneDisplayMapContinents.csv, so you cannot change only this value", false);
+            OutputVariableToConfig("DBCID_MAP_ID_END", DBCID_MAP_ID_END, "");
             OutputVariableToConfig("DBCID_SKILLLINE_ALTERATION_ID", DBCID_SKILLLINE_ALTERATION_ID, "ID for general/shared skill line holding EverQuest alteration abilities like gate found in SkillLine and SkillLineAbility.");
             OutputVariableToConfig("DBCID_SKILLLINEABILITY_ID_START", DBCID_SKILLLINEABILITY_ID_START, "ID for skill line abilities found in SkillLineAbility.dbc");
             OutputVariableToConfig("DBCID_SOUNDENTRIES_ID_START", DBCID_SOUNDENTRIES_ID_START, "ID for sounds found in SoundEntries.dbc");
             OutputVariableToConfig("DBCID_SOUNDAMBIENCE_ID_START", DBCID_SOUNDAMBIENCE_ID_START, "ID for sounds found in SoundAmbience.dbc");
-            OutputVariableToConfig("DBCID_SPELL_ID_START", DBCID_SPELL_ID_START, "ID for spells found in Spell.dbc");
-            OutputVariableToConfig("DBCID_SPELL_ID_GENERATED_START", DBCID_SPELL_ID_GENERATED_START, "ID for spells found in Spell.dbc");
-            OutputVariableToConfig("DBCID_SPELL_ID_END", DBCID_SPELL_ID_END, "ID for spells found in Spell.dbc");
+            OutputTextLineToConfig("# ID for spells found in Spell.dbc");
+            OutputTextLineToConfig("# - Manually created spells reserve IDs from 86900 to 86999.  See \"Spells\"");
+            OutputTextLineToConfig("# - Recipes reserve IDs 87000 to 91221");
+            OutputTextLineToConfig("# - Converted spells IDs start at 92000 and base spells range to 95826, with IDs after 96200 used for 'generated spell IDs");
+            OutputTextLineToConfig("# - SpellIDs 96000 - 96049 reserved for 'worn' effects (effects that always take effect when worn)");
+            OutputTextLineToConfig("# - SpellIDs 96100 - 96199 reserved for 'coat' effects that come from rogue poisons, triggering another spell");
+            OutputVariableToConfig("DBCID_SPELL_ID_START", DBCID_SPELL_ID_START, "", false);
+            OutputVariableToConfig("DBCID_SPELL_ID_GENERATED_START", DBCID_SPELL_ID_GENERATED_START, "", false);
+            OutputVariableToConfig("DBCID_SPELL_ID_END", DBCID_SPELL_ID_END, "");
             OutputVariableToConfig("DBCID_SPELLCASTTIME_ID_START", DBCID_SPELLCASTTIME_ID_START, "ID for spellcasttimes.dbc");
             OutputVariableToConfig("DBCID_SPELLDURATION_AURA_ID", DBCID_SPELLDURATION_AURA_ID, "ID for spellduration.dbc");
             OutputVariableToConfig("DBCID_SPELLITEMENCHANTMENT_ID_START", DBCID_SPELLITEMENCHANTMENT_ID_START, "Stand ID for spell item ennchantments");
             OutputVariableToConfig("DBCID_SPELLICON_ID_START", DBCID_SPELLICON_ID_START, "ID for spellicon.dbc");
             OutputVariableToConfig("DBCID_SPELLRADIUS_ID_START", DBCID_SPELLRADIUS_ID_START, "ID for spellradius.dbc");
             OutputVariableToConfig("DBCID_SPELLRANGE_ID_START", DBCID_SPELLRANGE_ID_START, "ID for SpellRange.dbc");
-            OutputVariableToConfig("DBCID_SPELLVISUAL_ID_START", DBCID_SPELLVISUAL_ID_START, "IDs for the SpellVisual line of DBC files");
-            OutputVariableToConfig("DBCID_SPELLVISUALKIT_ID_START", DBCID_SPELLVISUALKIT_ID_START, "IDs for the SpellVisual line of DBC files");
-            OutputVariableToConfig("DBCID_SPELLVISUALEFFECTNAME_ID_START", DBCID_SPELLVISUALEFFECTNAME_ID_START, "IDs for the SpellVisual line of DBC files");
+            OutputVariableToConfig("DBCID_SPELLVISUAL_ID_START", DBCID_SPELLVISUAL_ID_START, "IDs for the SpellVisual line of DBC files", false);
+            OutputVariableToConfig("DBCID_SPELLVISUALKIT_ID_START", DBCID_SPELLVISUALKIT_ID_START, "", false);
+            OutputVariableToConfig("DBCID_SPELLVISUALEFFECTNAME_ID_START", DBCID_SPELLVISUALEFFECTNAME_ID_START, "");
             OutputVariableToConfig("DBCID_SUMMONPROPERTIES_ID_START", DBCID_SUMMONPROPERTIES_ID_START, "IDs for SummonProperties.dbc");
             OutputVariableToConfig("DBCID_TAXIPATH_ID_START", DBCID_TAXIPATH_ID_START, "ID for TaxiPath.dbc");
             OutputVariableToConfig("DBCID_TAXIPATHNODE_ID_START", DBCID_TAXIPATHNODE_ID_START, "ID for TaxiPathNode.dbc");
             OutputVariableToConfig("DBCID_TOTEMCATEGORY_ID_START", DBCID_TOTEMCATEGORY_ID_START, "ID for TotemCategory.dbc");
             OutputVariableToConfig("DBCID_TRANSPORTANIMATION_ID_START", DBCID_TRANSPORTANIMATION_ID_START, "ID for TransportAnimation.dbc");
-            OutputVariableToConfig("DBCID_WORLDSAFELOCS_ID_START", DBCID_WORLDSAFELOCS_ID_START, "IDs for WorldSafeLocs.dbc");
-            OutputVariableToConfig("DBCID_WORLDSAFELOCS_ID_END", DBCID_WORLDSAFELOCS_ID_END, "IDs for WorldSafeLocs.dbc");
+            OutputVariableToConfig("DBCID_WORLDSAFELOCS_ID_START", DBCID_WORLDSAFELOCS_ID_START, "IDs for WorldSafeLocs.dbc", false);
+            OutputVariableToConfig("DBCID_WORLDSAFELOCS_ID_END", DBCID_WORLDSAFELOCS_ID_END, "");
             OutputVariableToConfig("DBCID_WMOAREATABLE_ID_START", DBCID_WMOAREATABLE_ID_START, "Specific rows in WMOAreaTable.dbc");
             OutputVariableToConfig("DBCID_WMOAREATABLE_WMOGROUPID_START", DBCID_WMOAREATABLE_WMOGROUPID_START, "Identifies WMO Groups.");
             OutputVariableToConfig("DBCID_ZONEMUSIC_START", DBCID_ZONEMUSIC_START, "ID for music in ZoneMusic.dbc, and how many IDs to reserve on a per-zone basis");
-            OutputBlankLineToConfig();
-            OutputVariableToConfig("SQL_BROADCASTTEXT_ID_START", SQL_BROADCASTTEXT_ID_START, "Start and end IDs for broadcast_text sql records");
-            OutputVariableToConfig("SQL_BROADCASTTEXT_ID_END", SQL_BROADCASTTEXT_ID_END, "Start and end IDs for broadcast_text sql records");
-            OutputVariableToConfig("SQL_CREATURE_GUID_LOW", SQL_CREATURE_GUID_LOW, "Record identifier for the creature sql table, need at least 31k");
-            OutputVariableToConfig("SQL_CREATURE_GUID_HIGH", SQL_CREATURE_GUID_HIGH, "Record identifier for the creature sql table, need at least 31k");
-            OutputVariableToConfig("SQL_CREATURE_GUID_DEBUG_LOW", SQL_CREATURE_GUID_DEBUG_LOW, "Record identifier for the creature sql table, need at least 31k");
-            OutputVariableToConfig("SQL_CREATURE_GUID_DEBUG_HIGH", SQL_CREATURE_GUID_DEBUG_HIGH, "Record identifier for the creature sql table, need at least 31k");
-            OutputVariableToConfig("SQL_CREATURETEMPLATE_ENTRY_LOW", SQL_CREATURETEMPLATE_ENTRY_LOW, "Record identifier for the creature template SQL table");
-            OutputVariableToConfig("SQL_CREATURETEMPLATE_ENTRY_HIGH", SQL_CREATURETEMPLATE_ENTRY_HIGH, "Record identifier for the creature template SQL table");
-            OutputVariableToConfig("SQL_CREATURETEMPLATE_GENERATED_START_ID", SQL_CREATURETEMPLATE_GENERATED_START_ID, "Record identifier for the creature template SQL table");
-            OutputVariableToConfig("SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW", SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW, "Record identifier for the creature template SQL table");
-            OutputVariableToConfig("SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH", SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH, "Record identifier for the creature template SQL table");
-            OutputVariableToConfig("SQL_GAMEOBJECT_GUID_ID_START", SQL_GAMEOBJECT_GUID_ID_START, "Start GUIDs for gameobjects");
-            OutputVariableToConfig("SQL_GAMEOBJECT_GUID_ID_END", SQL_GAMEOBJECT_GUID_ID_END, "Start GUIDs for gameobjects");
-            OutputVariableToConfig("SQL_GAME_EVENTS_ID_START", SQL_GAME_EVENTS_ID_START, "IDs for events");
-            OutputVariableToConfig("SQL_GAME_EVENTS_ID_END", SQL_GAME_EVENTS_ID_END, "IDs for events");
-            OutputVariableToConfig("SQL_GAMEOBJECTTEMPLATE_ID_START", SQL_GAMEOBJECTTEMPLATE_ID_START, "Start and end IDs for gameobject_template rows");
-            OutputVariableToConfig("SQL_GAMEOBJECTTEMPLATE_ID_END", SQL_GAMEOBJECTTEMPLATE_ID_END, "Start and end IDs for gameobject_template rows");
-            OutputVariableToConfig("SQL_GAMEOBJECTTEMPLATE_SHIP_ID_START", SQL_GAMEOBJECTTEMPLATE_SHIP_ID_START, "Start and end IDs for gameobject_template rows");
-            OutputVariableToConfig("SQL_GAMEOBJECTTEMPLATE_SHIP_ID_END", SQL_GAMEOBJECTTEMPLATE_SHIP_ID_END, "Start and end IDs for gameobject_template rows");
-            OutputVariableToConfig("SQL_GAMETELE_ROWID_START", SQL_GAMETELE_ROWID_START, "Start row for `game_tele` records. (~2000-2400)");
-            OutputVariableToConfig("SQL_GAMETELE_ROWID_END", SQL_GAMETELE_ROWID_END, "Start row for `game_tele` records. (~2000-2400)");
-            OutputVariableToConfig("SQL_GOSSIPMENU_MENUID_START", SQL_GOSSIPMENU_MENUID_START, "Start and end IDs for custom gossip menu records");
-            OutputVariableToConfig("SQL_GOSSIPMENU_MENUID_END", SQL_GOSSIPMENU_MENUID_END, "Start and end IDs for custom gossip menu records");
-            OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_START", SQL_ITEM_TEMPLATE_ENTRY_START, "Start and end ID for template entries");
-            OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_END", SQL_ITEM_TEMPLATE_ENTRY_END, "Start and end ID for template entries");
-            OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START", SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START, "Start and end ID for template entries");
-            OutputVariableToConfig("SQL_NPCTEXT_ID_START", SQL_NPCTEXT_ID_START, "Stand and end IDs for npc_text sql records");
-            OutputVariableToConfig("SQL_NPCTEXT_ID_END", SQL_NPCTEXT_ID_END, "Stand and end IDs for npc_text sql records");
+            OutputVariableToConfig("SQL_BROADCASTTEXT_ID_START", SQL_BROADCASTTEXT_ID_START, "Start and end IDs for broadcast_text sql records", false);
+            OutputVariableToConfig("SQL_BROADCASTTEXT_ID_END", SQL_BROADCASTTEXT_ID_END, "");
+            OutputVariableToConfig("SQL_CREATURE_GUID_LOW", SQL_CREATURE_GUID_LOW, "Record identifier for the creature sql table, need at least 31k", false);
+            OutputVariableToConfig("SQL_CREATURE_GUID_HIGH", SQL_CREATURE_GUID_HIGH, "", false);
+            OutputVariableToConfig("SQL_CREATURE_GUID_DEBUG_LOW", SQL_CREATURE_GUID_DEBUG_LOW, "Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE", false);
+            OutputVariableToConfig("SQL_CREATURE_GUID_DEBUG_HIGH", SQL_CREATURE_GUID_DEBUG_HIGH, "");
+            OutputVariableToConfig("SQL_CREATURETEMPLATE_ENTRY_LOW", SQL_CREATURETEMPLATE_ENTRY_LOW, "Record identifier for the creature template SQL table", false);
+            OutputVariableToConfig("SQL_CREATURETEMPLATE_ENTRY_HIGH", SQL_CREATURETEMPLATE_ENTRY_HIGH, "", false);
+            OutputVariableToConfig("SQL_CREATURETEMPLATE_GENERATED_START_ID", SQL_CREATURETEMPLATE_GENERATED_START_ID, "", false);
+            OutputVariableToConfig("SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW", SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW, "Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE", false);
+            OutputVariableToConfig("SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH", SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH, "");
+            OutputVariableToConfig("SQL_GAMEOBJECT_GUID_ID_START", SQL_GAMEOBJECT_GUID_ID_START, "Start GUIDs for gameobjects", false);
+            OutputVariableToConfig("SQL_GAMEOBJECT_GUID_ID_END", SQL_GAMEOBJECT_GUID_ID_END, "");
+            OutputVariableToConfig("SQL_GAME_EVENTS_ID_START", SQL_GAME_EVENTS_ID_START, "IDs for events", false);
+            OutputVariableToConfig("SQL_GAME_EVENTS_ID_END", SQL_GAME_EVENTS_ID_END, "");
+            OutputTextLineToConfig("# Start and end IDs for gameobject_template rows");
+            OutputTextLineToConfig("# - GameObjects.csv owns rows 270000 - 274999");
+            OutputTextLineToConfig("# - TransportLifts.csv and TransportLiftTriggers.csv own rows 279900 - 279999");
+            OutputVariableToConfig("SQL_GAMEOBJECTTEMPLATE_ID_START", SQL_GAMEOBJECTTEMPLATE_ID_START, "", false);
+            OutputVariableToConfig("SQL_GAMEOBJECTTEMPLATE_ID_END", SQL_GAMEOBJECTTEMPLATE_ID_END, "", false);
+            OutputVariableToConfig("SQL_GAMEOBJECTTEMPLATE_SHIP_ID_START", SQL_GAMEOBJECTTEMPLATE_SHIP_ID_START, "", false);
+            OutputVariableToConfig("SQL_GAMEOBJECTTEMPLATE_SHIP_ID_END", SQL_GAMEOBJECTTEMPLATE_SHIP_ID_END, "");
+            OutputVariableToConfig("SQL_GAMETELE_ROWID_START", SQL_GAMETELE_ROWID_START, "Start row for `game_tele` records. (~2000-2400)", false);
+            OutputVariableToConfig("SQL_GAMETELE_ROWID_END", SQL_GAMETELE_ROWID_END, "");
+            OutputVariableToConfig("SQL_GOSSIPMENU_MENUID_START", SQL_GOSSIPMENU_MENUID_START, "Start and end IDs for custom gossip menu records", false);
+            OutputVariableToConfig("SQL_GOSSIPMENU_MENUID_END", SQL_GOSSIPMENU_MENUID_END, "");
+            OutputTextLineToConfig("# Start and end ID for template entries, which are entered into various .csv files");
+            OutputTextLineToConfig("# - Class-Specific scroll IDs range 110500 - 112887");
+            OutputTextLineToConfig("# - Equipped Click Bag IDs range 113000 - 113932");
+            OutputTextLineToConfig("# - Equipped Click Essence IDs range 114000 - 114932");
+            OutputTextLineToConfig("# - Quest Template multi-item reward containers IDs range 116000 - 116200");
+            OutputTextLineToConfig("# - Tradeskill multi-item creation containers IDs range 117000 - 117217");
+            OutputTextLineToConfig("# - NPC-worn version of items range 120000-133783");
+            OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_START", SQL_ITEM_TEMPLATE_ENTRY_START, "", false);
+            OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_END", SQL_ITEM_TEMPLATE_ENTRY_END, "", false);
+            OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START", SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START, "");
+            OutputVariableToConfig("SQL_NPCTEXT_ID_START", SQL_NPCTEXT_ID_START, "Stand and end IDs for npc_text sql records", false);
+            OutputVariableToConfig("SQL_NPCTEXT_ID_END", SQL_NPCTEXT_ID_END, "");
             OutputVariableToConfig("SQL_PETNAMEGENERATION_ID_START", SQL_PETNAMEGENERATION_ID_START, "Start ID for pet_name_generation entries");
-            OutputVariableToConfig("SQL_POOL_TEMPLATE_ID_START", SQL_POOL_TEMPLATE_ID_START, "Start and end ID for pool_template data rows (reserve 40k records)");
-            OutputVariableToConfig("SQL_POOL_TEMPLATE_ID_END", SQL_POOL_TEMPLATE_ID_END, "Start and end ID for pool_template data rows (reserve 40k records)");
-            OutputVariableToConfig("SQL_QUEST_TEMPLATE_ID_START", SQL_QUEST_TEMPLATE_ID_START, "Start and end IDs for quest template data rows");
-            OutputVariableToConfig("SQL_QUEST_TEMPLATE_ID_END", SQL_QUEST_TEMPLATE_ID_END, "Start and end IDs for quest template data rows");
-            OutputVariableToConfig("SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT", SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT, "Start and end IDs for quest template data rows");
-            OutputVariableToConfig("SQL_SPELL_GROUP_ID_START", SQL_SPELL_GROUP_ID_START, "Start and end IDs for spell groups");
-            OutputVariableToConfig("SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START", SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START, "Start and end IDs for spell groups");
-            OutputVariableToConfig("SQL_SPELL_GROUP_ID_END", SQL_SPELL_GROUP_ID_END, "Start and end IDs for spell groups");
-            OutputVariableToConfig("SQL_TRAINER_ID_START", SQL_TRAINER_ID_START, "Start and end IDs for trainers");
-            OutputVariableToConfig("SQL_TRAINER_ID_END", SQL_TRAINER_ID_END, "Start and end IDs for trainers");
-            OutputVariableToConfig("SQL_TRANSPORTS_GUID_START", SQL_TRANSPORTS_GUID_START, "Start and end IDs for transports");
-            OutputVariableToConfig("SQL_TRANSPORTS_GUID_END", SQL_TRANSPORTS_GUID_END, "Start and end IDs for transports");
+            OutputVariableToConfig("SQL_POOL_TEMPLATE_ID_START", SQL_POOL_TEMPLATE_ID_START, "Start and end ID for pool_template data rows (reserve 40k records)", false);
+            OutputVariableToConfig("SQL_POOL_TEMPLATE_ID_END", SQL_POOL_TEMPLATE_ID_END, "");
+            OutputVariableToConfig("SQL_QUEST_TEMPLATE_ID_START", SQL_QUEST_TEMPLATE_ID_START, "Start and end IDs for quest template data rows", false);
+            OutputVariableToConfig("SQL_QUEST_TEMPLATE_ID_END", SQL_QUEST_TEMPLATE_ID_END, "", false);
+            OutputVariableToConfig("SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT", SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT, "");
+            OutputVariableToConfig("SQL_SPELL_GROUP_ID_START", SQL_SPELL_GROUP_ID_START, "Start and end IDs for spell groups", false);
+            OutputVariableToConfig("SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START", SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START, "", false);
+            OutputVariableToConfig("SQL_SPELL_GROUP_ID_END", SQL_SPELL_GROUP_ID_END, "");
+            OutputVariableToConfig("SQL_TRAINER_ID_START", SQL_TRAINER_ID_START, "Start and end IDs for trainers", false);
+            OutputVariableToConfig("SQL_TRAINER_ID_END", SQL_TRAINER_ID_END, "");
+            OutputVariableToConfig("SQL_TRANSPORTS_GUID_START", SQL_TRANSPORTS_GUID_START, "Start and end IDs for transports", false);
+            OutputVariableToConfig("SQL_TRANSPORTS_GUID_END", SQL_TRANSPORTS_GUID_END, "");
         }
 
         public static void LoadConfiguration()
