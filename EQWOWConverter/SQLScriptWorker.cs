@@ -1052,7 +1052,7 @@ namespace EQWOWConverter
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
             modEverquestItemTemplateSQL.SaveToDisk("mod_everquest_item_template", SQLFileType.World);
             modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);
-            modEverquestPlayerCreateInfoSQL.SaveToDisk("playercreateinfo", SQLFileType.World);
+            modEverquestPlayerCreateInfoSQL.SaveToDisk("mod_everquest_playercreateinfo", SQLFileType.World);
             modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
             modEverquestSystemConfigsSQL.SaveToDisk("mod_everquest_systemconfigs", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
