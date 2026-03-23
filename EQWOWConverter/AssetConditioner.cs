@@ -559,7 +559,7 @@ namespace EQWOWConverter
                 return;
             }
 
-            // Delete previously created files, if any
+            // Delete previously created files
             string[] priorCreatedMusicFiles = Directory.GetFiles(musicDirectory, "*.mp3");
             foreach (string priorCreatedMusicFile in priorCreatedMusicFiles)
                 File.Delete(priorCreatedMusicFile);
@@ -571,12 +571,6 @@ namespace EQWOWConverter
                 File.Delete(priorCreatedMusicFile);
 
             // Establish paths to tool files
-            string ssplayerFileFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ssplayer", "ssplayer.exe");
-            if (File.Exists(ssplayerFileFullPath) == false)
-            {
-                Logger.WriteError("Failed to process music files. '" + ssplayerFileFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
-                return;
-            }
             string fluidsynthFileFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "fluidsynth", "fluidsynth.exe");
             if (File.Exists(fluidsynthFileFullPath) == false)
             {
@@ -597,21 +591,21 @@ namespace EQWOWConverter
             }
 
             // Extract all of the xmi files
-            Logger.WriteInfo("Extracting mid files from xmi... (note: If this takes >2 minutes before updates, move this whole folder to a higher folder as long file paths break music extraction)");
+            Logger.WriteInfo("Extracting mid files from xmi...");
             string[] musicXMIFiles = Directory.GetFiles(musicDirectory, "*.xmi");
             foreach (string musicXMIFile in musicXMIFiles)
-            {
-                Logger.WriteDebug("Extracting XMI file at '" + musicXMIFile + "'");
-                string args = "-extractall \"" + musicXMIFile + "\"";
-                System.Diagnostics.Process process = new System.Diagnostics.Process();
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.Arguments = args;
-                process.StartInfo.FileName = ssplayerFileFullPath;
-                process.Start();
-                process.WaitForExit();
-                Logger.WriteDebug(process.StandardOutput.ReadToEnd());
-                Console.Title = "EverQuest to WoW Converter";
-            }
+                EQMusicXMI.ExtractMIDIFromXMI(musicDirectory, musicXMIFile);
+
+            //    Logger.WriteDebug("Extracting XMI file at '" + musicXMIFile + "'");
+            //    string args = "-extractall \"" + musicXMIFile + "\"";
+            //    System.Diagnostics.Process process = new System.Diagnostics.Process();
+            //    process.StartInfo.RedirectStandardOutput = true;
+            //    process.StartInfo.Arguments = args;
+            //    process.StartInfo.FileName = ssplayerFileFullPath;
+            //    process.Start();
+            //    process.WaitForExit();
+            //    Logger.WriteDebug(process.StandardOutput.ReadToEnd());
+            //    Console.Title = "EverQuest to WoW Converter";
 
             // Add mids to the queue
             string[] musicFilesToQueue = Directory.GetFiles(musicDirectory, "*.mid");
@@ -638,14 +632,14 @@ namespace EQWOWConverter
                     int iCopy = i + 1;
                     tasks[i] = Task.Factory.StartNew(() =>
                     {
-                        MusicConversionThreadWorker(iCopy, ssplayerFileFullPath, musicDirectory, fluidsynthFileFullPath, soundfontFileFullPath, ffmpegFileFullPath, validMusicNames, progressCounter);
+                        MusicConversionThreadWorker(iCopy, musicDirectory, fluidsynthFileFullPath, soundfontFileFullPath, ffmpegFileFullPath, validMusicNames, progressCounter);
                     });
                 }
                 Task.WaitAll(tasks);
             }
             else
             {
-                MusicConversionThreadWorker(1, ssplayerFileFullPath, musicDirectory, fluidsynthFileFullPath, soundfontFileFullPath, ffmpegFileFullPath, validMusicNames, progressCounter);
+                MusicConversionThreadWorker(1, musicDirectory, fluidsynthFileFullPath, soundfontFileFullPath, ffmpegFileFullPath, validMusicNames, progressCounter);
             }
 
             // Cleanup the files
@@ -653,8 +647,8 @@ namespace EQWOWConverter
                 File.Delete(midiFile);
         }
 
-        private void MusicConversionThreadWorker(int threadID, string ssplayerFileFullPath, string musicDirectory,
-            string fluidsynthFileFullPath, string soundfontFileFullPath, string ffmpegFileFullPath, HashSet<string> validMusicNames, LogCounter progressCounter)
+        private void MusicConversionThreadWorker(int threadID, string musicDirectory, string fluidsynthFileFullPath, string soundfontFileFullPath, 
+            string ffmpegFileFullPath, HashSet<string> validMusicNames, LogCounter progressCounter)
         {
             Logger.WriteInfo(string.Concat("<+> Thread [Music Conversion Subworker ", threadID.ToString(), "] Started"));
 
