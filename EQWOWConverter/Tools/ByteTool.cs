@@ -55,6 +55,22 @@ namespace EQWOWConverter
             return BitConverter.ToInt32(intBytes, 0);
         }
 
+        public static UInt32 ReadUInt32FromBytesBigEndian(List<byte> sourceBytes, ref int byteCursor, bool doAdvanceCursor = true)
+        {
+            if (byteCursor + 4 >= sourceBytes.Count)
+            {
+                Logger.WriteError("ReadUInt32FromBytes error, value would be out of bounds");
+                return 0;
+            }
+            byte[] intBytes = new byte[4];
+            for (int i = 0; i < 4; i++)
+                intBytes[i] = sourceBytes[byteCursor + i];
+            UInt32 convertedNumber = (UInt32)((intBytes[0] << 24) | (intBytes[1] << 16) | (intBytes[2] << 8) | intBytes[3]);
+            if (doAdvanceCursor == true)
+                byteCursor += 4;
+            return convertedNumber;
+        }
+
         public static float ReadFloatFromBytes(List<byte> sourceBytes, ref int byteCursor, bool doAdvanceCursor = true)
         {
             if (byteCursor + 4 >= sourceBytes.Count)
