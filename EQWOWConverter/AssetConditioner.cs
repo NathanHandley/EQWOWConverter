@@ -547,7 +547,12 @@ namespace EQWOWConverter
 
         public void ConditionMusicFiles(string musicDirectory)
         {
-            LogCounter progressCounter = new LogCounter("Converting music files...");
+            HashSet<string> validMusicNames = ZoneProperties.GetMusicNames();
+            LogCounter progressCounter;
+            if (Configuration.AUDIO_MUSIC_FORCE_GENERATE_ALL_MUSIC_TRACKS == false)
+                progressCounter = new LogCounter("Converting music files...", 0, validMusicNames.Count);
+            else
+                progressCounter = new LogCounter("Converting music files...");
             if (Path.Exists(musicDirectory) == false)
             {
                 Logger.WriteError("Failed to process music files.  The music directory at '" + musicDirectory + "' does not exist.");
@@ -598,11 +603,15 @@ namespace EQWOWConverter
             lock (MusicLock)
             {
                 foreach (string xmiFile in musicXMIFiles)
+                {
+                    if (xmiFile.EndsWith("gl.xmi")) // This file crashes things, but we don't need it
+                        continue;
                     MusicFilesToConvert.Enqueue(xmiFile);
+                }
             }
 
             progressCounter.Write(0);
-            if (Configuration.CORE_ENABLE_MULTITHREADING == true)
+            if (Configuration.CORE_ENABLE_MULTITHREADING == true && Configuration.CORE_MUSICCONVERSION_THREAD_COUNT > 1)
             {
                 int taskCount = Configuration.CORE_MUSICCONVERSION_THREAD_COUNT;
                 Task[] tasks = new Task[taskCount];
@@ -611,14 +620,14 @@ namespace EQWOWConverter
                     int iCopy = i + 1;
                     tasks[i] = Task.Factory.StartNew(() =>
                     {
-                        MusicConversionThreadWorker(iCopy, ssplayerFileFullPath, musicDirectory, fluidsynthFileFullPath, soundfontFileFullPath, ffmpegFileFullPath, progressCounter);
+                        MusicConversionThreadWorker(iCopy, ssplayerFileFullPath, musicDirectory, fluidsynthFileFullPath, soundfontFileFullPath, ffmpegFileFullPath, validMusicNames, progressCounter);
                     });
                 }
                 Task.WaitAll(tasks);
             }
             else
             {
-                MusicConversionThreadWorker(1, ssplayerFileFullPath, musicDirectory, fluidsynthFileFullPath, soundfontFileFullPath, ffmpegFileFullPath, progressCounter);
+                MusicConversionThreadWorker(1, ssplayerFileFullPath, musicDirectory, fluidsynthFileFullPath, soundfontFileFullPath, ffmpegFileFullPath, validMusicNames, progressCounter);
             }
 
             // Cleanup the files
@@ -627,7 +636,7 @@ namespace EQWOWConverter
         }
 
         private void MusicConversionThreadWorker(int threadID, string ssplayerFileFullPath, string musicDirectory,
-            string fluidsynthFileFullPath, string soundfontFileFullPath, string ffmpegFileFullPath, LogCounter progressCounter)
+            string fluidsynthFileFullPath, string soundfontFileFullPath, string ffmpegFileFullPath, HashSet<string> validMusicNames, LogCounter progressCounter)
         {
             Logger.WriteInfo(string.Concat("<+> Thread [Music Conversion Subworker ", threadID.ToString(), "] Started"));
 
@@ -665,6 +674,12 @@ namespace EQWOWConverter
                 Logger.WriteDebug("There are '" + musicMidiFiles.Count() + "' music .mid files created from '" + musicXMIFile + "'");
                 foreach (string musicMidiFile in musicMidiFiles)
                 {
+                    if (Configuration.AUDIO_MUSIC_FORCE_GENERATE_ALL_MUSIC_TRACKS == false)
+                    {
+                        if (validMusicNames.Contains(Path.GetFileNameWithoutExtension(musicMidiFile)) == false)
+                            continue;
+                    }
+
                     // Create the .wav
                     string tempWavFileName = Path.Combine(musicDirectory, Path.GetFileNameWithoutExtension(musicMidiFile) + ".wav");
                     Logger.WriteDebug("Converting .mid file at '" + musicMidiFile + "' to .wav");

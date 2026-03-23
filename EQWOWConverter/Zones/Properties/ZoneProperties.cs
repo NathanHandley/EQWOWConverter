@@ -84,7 +84,7 @@ namespace EQWOWConverter.Zones
             public float TopOrOnlyZ;
             public float BottomZ;
             public float MinDepthOrHeight;
-            public float StepSize;            
+            public float StepSize;
             public float NorthY;
             public float SouthY;
             public float WestX;
@@ -109,6 +109,8 @@ namespace EQWOWConverter.Zones
 
         private static readonly object ListReadLock = new object();
         private static Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
+        private static readonly object MusicLock = new object();
+        private static HashSet<string> MusicNames = new HashSet<string>();
 
         public int DBCMapID;
         public int DBCMapDifficultyID;
@@ -156,6 +158,20 @@ namespace EQWOWConverter.Zones
         public ZoneProperties(UInt32 wmoAreaTableDBCID)
         {
             DBCWMOID = wmoAreaTableDBCID;
+        }
+
+        public static HashSet<string> GetMusicNames()
+        {
+            lock (ListReadLock)
+            {
+                if (ZonePropertyListByShortName.Count == 0)
+                    PopulateZonePropertiesList();
+            }
+
+            lock (MusicLock)
+            {
+                return MusicNames;
+            }
         }
 
         // These areas must be made in descending priority order, as every area will isolate its own geometry
@@ -847,6 +863,16 @@ namespace EQWOWConverter.Zones
                 newConfigZoneSubArea.AmbientSoundFileNameNoExtDay = subAreaRow["AmbientSoundDay"].Trim().ToLower();
                 newConfigZoneSubArea.AmbientSoundFileNameNoExtNight = subAreaRow["AmbientSoundNight"].Trim().ToLower();
 
+                // Save the music for lookups
+                if (subAreaRow["MusicDay"].Trim().Length > 0 && MusicNames.Contains(subAreaRow["MusicDay"].Trim()) == false)
+                    MusicNames.Add(subAreaRow["MusicDay"].Trim());
+                if (subAreaRow["MusicNight"].Trim().Length > 0 && MusicNames.Contains(subAreaRow["MusicNight"].Trim()) == false)
+                    MusicNames.Add(subAreaRow["MusicNight"].Trim());
+                if (subAreaRow["MusicDayAlt"].Trim().Length > 0 && MusicNames.Contains(subAreaRow["MusicDayAlt"].Trim()) == false)
+                    MusicNames.Add(subAreaRow["MusicDayAlt"].Trim());
+                if (subAreaRow["MusicNightAlt"].Trim().Length > 0 && MusicNames.Contains(subAreaRow["MusicNightAlt"].Trim()) == false)
+                    MusicNames.Add(subAreaRow["MusicNightAlt"].Trim());
+
                 if (configSubAreasByZoneShortName.ContainsKey(newConfigZoneSubArea.ZoneShortName) == false)
                     configSubAreasByZoneShortName.Add(newConfigZoneSubArea.ZoneShortName, new List<ConfigZoneSubArea>());
                 configSubAreasByZoneShortName[newConfigZoneSubArea.ZoneShortName].Add(newConfigZoneSubArea);
@@ -1052,6 +1078,8 @@ namespace EQWOWConverter.Zones
                 zoneProperties.DefaultZoneArea.SetAmbientSound(propertiesRow["AmbienceSoundDay"].Trim(), propertiesRow["AmbienceSoundNight"].Trim());
                 if (propertiesRow["MusicIsAltTrack"].Trim() == "0" || Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
                     zoneProperties.DefaultZoneArea.SetMusic(propertiesRow["Music"].Trim(), propertiesRow["Music"].Trim(), true, Convert.ToSingle(propertiesRow["MusicVolume"]));
+                if (propertiesRow["Music"].Trim().Length > 0 && MusicNames.Contains(propertiesRow["Music"].Trim()) == false)
+                    MusicNames.Add(propertiesRow["Music"].Trim());
 
                 // Environment
                 zoneProperties.RainChanceWinter = int.Parse(propertiesRow["rain_chance_winter"]);

@@ -308,6 +308,12 @@ internal class Program
                                     Logger.WriteInfo("EQ to WoW conversion Failed.");
                             }
                             break;
+                        case "9":
+                            {
+                                string outputMusicFolderRoot = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "music");
+                                AssetConditioner conditioner = new AssetConditioner();
+                                conditioner.ConditionMusicFiles(outputMusicFolderRoot);
+                            } break;
                         default: break;
                     }
                     Logger.WriteInfo("Exiting....");

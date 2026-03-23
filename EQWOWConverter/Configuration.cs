@@ -82,8 +82,8 @@ namespace EQWOWConverter
         // If true, the conditioner & generator will run in multithreading mode
         public static bool CORE_ENABLE_MULTITHREADING = true;
         public static int CORE_ZONEGEN_THREAD_COUNT = 4;
-        public static int CORE_PNGTOBLPCONVERSION_THREAD_COUNT = 12;
-        public static int CORE_MUSICCONVERSION_THREAD_COUNT = 12;
+        public static int CORE_PNGTOBLPCONVERSION_THREAD_COUNT = 8;
+        public static int CORE_MUSICCONVERSION_THREAD_COUNT = 8;
 
         // ====================================================================
         // Logging
@@ -314,6 +314,9 @@ namespace EQWOWConverter
 
         // How much to increase the music sound when converted from EverQuest
         public static decimal AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 1;
+
+        // If true, all of the music tracks will get converted, not just the ones that appear in zones
+        public static bool AUDIO_MUSIC_FORCE_GENERATE_ALL_MUSIC_TRACKS = false;
 
         // Mod / multiplier to volumes (multiplies the volume by this value)
         // NOTE: Sound Instance volumes can be found in Sound.GetVolume
@@ -1112,6 +1115,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("LIGHT_STORM_COLOR_MOD", LIGHT_STORM_COLOR_MOD, "Storm brightness");
             OutputVariableToConfig("AUDIO_SOUNDFONT_FILE_NAME", AUDIO_SOUNDFONT_FILE_NAME, "Set which soundfont to use in the Tools/soundfont folder.  Alternate option is synthusr_samplefix.sf2");
             OutputVariableToConfig("AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT", AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT, "How much to increase the music sound when converted from EverQuest");
+            OutputVariableToConfig("AUDIO_MUSIC_FORCE_GENERATE_ALL_MUSIC_TRACKS", AUDIO_MUSIC_FORCE_GENERATE_ALL_MUSIC_TRACKS, "If true, all of the music tracks will get converted, not just the ones that appear in zones");
             OutputVariableToConfig("AUDIO_AMBIENT_SOUND_VOLUME_MOD", AUDIO_AMBIENT_SOUND_VOLUME_MOD, "Mod / multiplier to volumes (multiplies the volume by this value)", false);
             OutputVariableToConfig("AUDIO_SOUNDINSTANCE_VOLUME_MOD", AUDIO_SOUNDINSTANCE_VOLUME_MOD, "", false);
             OutputVariableToConfig("AUDIO_MUSIC_VOLUME_MOD", AUDIO_MUSIC_VOLUME_MOD, "");
@@ -1501,6 +1505,7 @@ namespace EQWOWConverter
             AUDIO_SOUNDFONT_FILE_NAME = ReadVariableFromConfigString("AUDIO_SOUNDFONT_FILE_NAME", configValuesByVariableName, AUDIO_SOUNDFONT_FILE_NAME);
             AUDIO_USE_ALTERNATE_TRACKS = ReadVariableFromConfigString("AUDIO_USE_ALTERNATE_TRACKS", configValuesByVariableName, AUDIO_USE_ALTERNATE_TRACKS);
             AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = ReadVariableFromConfigString("AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT", configValuesByVariableName, AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT);
+            AUDIO_MUSIC_FORCE_GENERATE_ALL_MUSIC_TRACKS = ReadVariableFromConfigString("AUDIO_MUSIC_FORCE_GENERATE_ALL_MUSIC_TRACKS", configValuesByVariableName, AUDIO_MUSIC_FORCE_GENERATE_ALL_MUSIC_TRACKS);
             AUDIO_AMBIENT_SOUND_VOLUME_MOD = ReadVariableFromConfigString("AUDIO_AMBIENT_SOUND_VOLUME_MOD", configValuesByVariableName, AUDIO_AMBIENT_SOUND_VOLUME_MOD);
             AUDIO_SOUNDINSTANCE_VOLUME_MOD = ReadVariableFromConfigString("AUDIO_SOUNDINSTANCE_VOLUME_MOD", configValuesByVariableName, AUDIO_SOUNDINSTANCE_VOLUME_MOD);
             AUDIO_MUSIC_VOLUME_MOD = ReadVariableFromConfigString("AUDIO_MUSIC_VOLUME_MOD", configValuesByVariableName, AUDIO_MUSIC_VOLUME_MOD);
