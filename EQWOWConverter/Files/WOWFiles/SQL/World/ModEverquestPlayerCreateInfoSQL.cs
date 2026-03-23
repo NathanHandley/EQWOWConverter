@@ -14,13 +14,27 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Text;
+
 namespace EQWOWConverter.WOWFiles
 {
-    internal class PlayerCreateInfoSQL : SQLFile
+    internal class ModEverquestPlayerCreateInfoSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM playercreateinfo WHERE `map` >= 0;";
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("DROP TABLE IF EXISTS `mod_everquest_playercreateinfo`; ");
+            stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_playercreateinfo` ( ");
+            stringBuilder.AppendLine("`race` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`class` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`map` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`zone` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`position_x` FLOAT NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`position_y` FLOAT NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`position_z` FLOAT NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`orientation` FLOAT NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("PRIMARY KEY (`race`, `class`) USING BTREE); ");
+            return stringBuilder.ToString();
         }
 
         public void AddRow(int raceID, int classID, int mapID, int areaID, float xPosition, float yPosition, float zPosition, float orientation)

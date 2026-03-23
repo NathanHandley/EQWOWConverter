@@ -74,7 +74,7 @@ namespace EQWOWConverter
         // Core
         // ====================================================================
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CORE_MOD_VERSION = 4;
+        public static int CORE_MOD_VERSION = 5;
         
         // Plays a beep sound when the generate completes if set to true
         public static bool CORE_CONSOLE_BEEP_ON_COMPLETE = true;
@@ -160,10 +160,10 @@ namespace EQWOWConverter
         //=====================================================================
         // If true, new players created will use the everquest start locations defined in PlayerClassRaceProperties
         // WARNING: This will DELETE the existing start locations in WoW zones, so be certain you want this enabled before deploying
-        public static bool PLAYER_USE_EQ_START_LOCATION = false;
+        public static bool PLAYER_USE_EQ_START_LOCATION = true;
 
         // If true, players will start with an EQ item loadout instead of a WOW item loadout
-        public static bool PLAYER_USE_EQ_START_ITEMS = false;
+        public static bool PLAYER_USE_EQ_START_ITEMS = true;
 
         // If true, this will also add a hearthstone if using EQ items
         public static bool PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS = false;

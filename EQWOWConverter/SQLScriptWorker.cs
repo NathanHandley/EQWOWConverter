@@ -70,6 +70,7 @@ namespace EQWOWConverter
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
         private ModEverquestItemTemplateSQL modEverquestItemTemplateSQL = new ModEverquestItemTemplateSQL();
         private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
+        private ModEverquestPlayerCreateInfoSQL modEverquestPlayerCreateInfoSQL = new ModEverquestPlayerCreateInfoSQL();
         private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
         private ModEverquestSystemConfigsSQL modEverquestSystemConfigsSQL = new ModEverquestSystemConfigsSQL();
         private ModEverquestTransportTriggerSQL modEverquestTransportTriggerSQL = new ModEverquestTransportTriggerSQL();
@@ -78,7 +79,6 @@ namespace EQWOWConverter
         private NPCTextSQL npcTextSQL = new NPCTextSQL();
         private NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
         private PetNameGenerationSQL petNameGenerationSQL = new PetNameGenerationSQL();
-        private PlayerCreateInfoSQL playerCreateInfoSQL = new PlayerCreateInfoSQL();
         private PlayerCreateInfoSpellCustomSQL playerCreateInfoSpellCustomSQL = new PlayerCreateInfoSpellCustomSQL();
         private PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
         private PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
@@ -514,7 +514,7 @@ namespace EQWOWConverter
                     startZoneShortName = mapIDsByShortName.First().Key;
                 }
 
-                playerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[startZoneShortName],
+                modEverquestPlayerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[startZoneShortName],
                     areaIDsByShortName[startZoneShortName], classRaceProperties.Value.StartPositionX, classRaceProperties.Value.StartPositionY,
                     classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation);
             }
@@ -1052,6 +1052,7 @@ namespace EQWOWConverter
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
             modEverquestItemTemplateSQL.SaveToDisk("mod_everquest_item_template", SQLFileType.World);
             modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);
+            modEverquestPlayerCreateInfoSQL.SaveToDisk("playercreateinfo", SQLFileType.World);
             modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
             modEverquestSystemConfigsSQL.SaveToDisk("mod_everquest_systemconfigs", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
@@ -1060,7 +1061,6 @@ namespace EQWOWConverter
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
             petNameGenerationSQL.SaveToDisk("pet_name_generation", SQLFileType.World);
-            playerCreateInfoSQL.SaveToDisk("playercreateinfo", SQLFileType.World);
             playerCreateInfoSpellCustomSQL.SaveToDisk("playercreateinfo_spell_custom", SQLFileType.World);
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
