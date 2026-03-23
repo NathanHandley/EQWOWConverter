@@ -1038,7 +1038,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("PATCH_CLIENT_DATA_LOC_ID", PATCH_CLIENT_DATA_LOC_ID, "ID to append to the localized patch file in /Data/<locale> (such as the \"5\" in patch-enUS-5.mpq). Make it uniquely new.");
             OutputVariableToConfig("PATCH_LOCALIZATION_STRING", PATCH_LOCALIZATION_STRING, "What language to generate things as");
             OutputVariableToConfig("DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY", DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY, "If true and when deploying client files, clear the cache (only relevant if you set DEPLOY_CLIENT_FILES to true, otherwise ignored)");
-            OutputVariableToConfig("CORE_MOD_VERSION", CORE_MOD_VERSION, "This is the version that the mod-everquest AzerothCore module needs to be compatible with");
             OutputVariableToConfig("CORE_CONSOLE_BEEP_ON_COMPLETE", CORE_CONSOLE_BEEP_ON_COMPLETE, "Plays a beep sound when the generate completes if set to true");
             OutputVariableToConfig("CORE_ENABLE_MULTITHREADING", CORE_ENABLE_MULTITHREADING, "If true, the conditioner & generator will run in multithreading mode", false);
             OutputVariableToConfig("CORE_ZONEGEN_THREAD_COUNT", CORE_ZONEGEN_THREAD_COUNT, "", false);
@@ -1401,7 +1400,6 @@ namespace EQWOWConverter
             DEPLOY_SQL_CONNECTION_STRING_CHARACTERS = ReadVariableFromConfigString("DEPLOY_SQL_CONNECTION_STRING_CHARACTERS", configValuesByVariableName, DEPLOY_SQL_CONNECTION_STRING_CHARACTERS);
             DEPLOY_SQL_CONNECTION_STRING_WORLD = ReadVariableFromConfigString("DEPLOY_SQL_CONNECTION_STRING_WORLD", configValuesByVariableName, DEPLOY_SQL_CONNECTION_STRING_WORLD);
 
-            CORE_MOD_VERSION = ReadVariableFromConfigString("CORE_MOD_VERSION", configValuesByVariableName, CORE_MOD_VERSION);
             CORE_CONSOLE_BEEP_ON_COMPLETE = ReadVariableFromConfigString("CORE_CONSOLE_BEEP_ON_COMPLETE", configValuesByVariableName, CORE_CONSOLE_BEEP_ON_COMPLETE);
             CORE_ENABLE_MULTITHREADING = ReadVariableFromConfigString("CORE_ENABLE_MULTITHREADING", configValuesByVariableName, CORE_ENABLE_MULTITHREADING);
             CORE_ZONEGEN_THREAD_COUNT = ReadVariableFromConfigString("CORE_ZONEGEN_THREAD_COUNT", configValuesByVariableName, CORE_ZONEGEN_THREAD_COUNT);
