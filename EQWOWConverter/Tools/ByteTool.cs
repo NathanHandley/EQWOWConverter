@@ -71,6 +71,20 @@ namespace EQWOWConverter
             return convertedNumber;
         }
 
+        public static void WriteUInt32BigEndianToBytes(List<byte> targetBytes, UInt32 value)
+        {
+            targetBytes.Add((byte)((value >> 24) & 0xFF));
+            targetBytes.Add((byte)((value >> 16) & 0xFF));
+            targetBytes.Add((byte)((value >> 8) & 0xFF));
+            targetBytes.Add((byte)(value & 0xFF));
+        }
+
+        public static void WriteUInt16BigEndianToBytes(List<byte> targetBytes, UInt16 value)
+        {
+            targetBytes.Add((byte)((value >> 8) & 0xFF));
+            targetBytes.Add((byte)(value & 0xFF));
+        }
+
         public static float ReadFloatFromBytes(List<byte> sourceBytes, ref int byteCursor, bool doAdvanceCursor = true)
         {
             if (byteCursor + 4 >= sourceBytes.Count)

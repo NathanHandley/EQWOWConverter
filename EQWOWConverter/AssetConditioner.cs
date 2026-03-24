@@ -596,17 +596,6 @@ namespace EQWOWConverter
             foreach (string musicXMIFile in musicXMIFiles)
                 EQMusicXMI.ExtractMIDIFromXMI(musicDirectory, musicXMIFile);
 
-            //    Logger.WriteDebug("Extracting XMI file at '" + musicXMIFile + "'");
-            //    string args = "-extractall \"" + musicXMIFile + "\"";
-            //    System.Diagnostics.Process process = new System.Diagnostics.Process();
-            //    process.StartInfo.RedirectStandardOutput = true;
-            //    process.StartInfo.Arguments = args;
-            //    process.StartInfo.FileName = ssplayerFileFullPath;
-            //    process.Start();
-            //    process.WaitForExit();
-            //    Logger.WriteDebug(process.StandardOutput.ReadToEnd());
-            //    Console.Title = "EverQuest to WoW Converter";
-
             // Add mids to the queue
             string[] musicFilesToQueue = Directory.GetFiles(musicDirectory, "*.mid");
             lock (MusicLock)
