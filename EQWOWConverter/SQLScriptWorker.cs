@@ -177,7 +177,7 @@ namespace EQWOWConverter
                 // Simplified logic for debug mode
                 if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                 {
-                    creatureTemplateSQL.AddRow(creatureTemplate, 1f);
+                    creatureTemplateSQL.AddRow(creatureTemplate);
                     creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, 1391, 1f);
                     int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                     string comment = string.Concat(creatureTemplate.Name, " - EQ Debug Creature");                    
@@ -204,7 +204,7 @@ namespace EQWOWConverter
 
                 // Create the records
                 float scale = creatureTemplate.Size * creatureTemplate.Race.SpawnSizeMod;
-                creatureTemplateSQL.AddRow(creatureTemplate, scale);
+                creatureTemplateSQL.AddRow(creatureTemplate);
                 creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, displayID, scale);
 
                 // If it's a vendor, add the vendor records too
@@ -1089,6 +1089,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Deploying sql to server...");
 
             // Deploy all of the scripts
+            string currentScriptFileName = string.Empty;
             try
             {
                 // Character scripts
@@ -1104,6 +1105,7 @@ namespace EQWOWConverter
                     string[] sqlFiles = Directory.GetFiles(charactersSQLScriptFolder);
                     foreach (string sqlFile in sqlFiles)
                     {
+                        currentScriptFileName = sqlFile;
                         MySqlCommand command = new MySqlCommand();
                         command.Connection = connection;
                         command.CommandTimeout = 288000;
@@ -1126,6 +1128,7 @@ namespace EQWOWConverter
                     string[] sqlFiles = Directory.GetFiles(worldSQLScriptFolder);
                     foreach (string sqlFile in sqlFiles)
                     {
+                        currentScriptFileName = sqlFile;
                         MySqlCommand command = new MySqlCommand();
                         command.Connection = connection;
                         command.CommandTimeout = 288000;
@@ -1137,7 +1140,7 @@ namespace EQWOWConverter
             }
             catch (Exception ex)
             {
-                Logger.WriteError("Error occurred when executing a script: '" + ex.Message + "'");
+                Logger.WriteError("Error occurred when executing a SQL script: '", currentScriptFileName, "' with message: " + ex.Message + "'");
                 if (ex.StackTrace != null)
                     Logger.WriteDebug(ex.StackTrace.ToString());
                 Logger.WriteError("Deploying sql to server failed.");

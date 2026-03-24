@@ -1061,7 +1061,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("GENERATE_TRANSPORTS", GENERATE_TRANSPORTS, "If true, transports (ships, ferries) will be generated");
             OutputVariableToConfig("GENERATE_QUESTS", GENERATE_QUESTS, "If true, quests are generated");
             OutputVariableToConfig("GENERATE_WORLDMAPS", GENERATE_WORLDMAPS, "If true, generate and copy maps / minimaps");
-            OutputVariableToConfig("GENERATE_ONLY_LISTED_ZONE_SHORTNAMES", string.Join(",", GENERATE_ONLY_LISTED_ZONE_SHORTNAMES), "If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones will load and work properly");
             OutputVariableToConfig("GENERATE_ADDED_BOUNDARY_AMOUNT", GENERATE_ADDED_BOUNDARY_AMOUNT, "An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.");
             OutputVariableToConfig("GENERATE_SQL_FILE_BATCH_SIZE", GENERATE_SQL_FILE_BATCH_SIZE, "How many insert rows to restrict in a SQL output file", false);
             OutputVariableToConfig("GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE", GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE, "");
@@ -1427,12 +1426,6 @@ namespace EQWOWConverter
             GENERATE_TRANSPORTS = ReadVariableFromConfigString("GENERATE_TRANSPORTS", configValuesByVariableName, GENERATE_TRANSPORTS);
             GENERATE_QUESTS = ReadVariableFromConfigString("GENERATE_QUESTS", configValuesByVariableName, GENERATE_QUESTS);
             GENERATE_WORLDMAPS = ReadVariableFromConfigString("GENERATE_WORLDMAPS", configValuesByVariableName, GENERATE_WORLDMAPS);
-
-            string zonesStr = ReadVariableFromConfigString("GENERATE_ONLY_LISTED_ZONE_SHORTNAMES", configValuesByVariableName, string.Join(",", GENERATE_ONLY_LISTED_ZONE_SHORTNAMES));
-            GENERATE_ONLY_LISTED_ZONE_SHORTNAMES = string.IsNullOrWhiteSpace(zonesStr) ? new List<string>() : zonesStr.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => s.Trim())
-                .Where(s => !string.IsNullOrEmpty(s))
-                .ToList();
 
             GENERATE_ADDED_BOUNDARY_AMOUNT = ReadVariableFromConfigString("GENERATE_ADDED_BOUNDARY_AMOUNT", configValuesByVariableName, GENERATE_ADDED_BOUNDARY_AMOUNT);
             GENERATE_SQL_FILE_BATCH_SIZE = ReadVariableFromConfigString("GENERATE_SQL_FILE_BATCH_SIZE", configValuesByVariableName, GENERATE_SQL_FILE_BATCH_SIZE);

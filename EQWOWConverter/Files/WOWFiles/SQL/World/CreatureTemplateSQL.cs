@@ -31,7 +31,7 @@ namespace EQWOWConverter.WOWFiles
             return sb.ToString();
         }
 
-        public void AddRow(CreatureTemplate creatureTemplate, float scale)
+        public void AddRow(CreatureTemplate creatureTemplate)
         {
             // Determine flags and types
             int typeFlags = 0;
@@ -113,7 +113,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("speed_swim", 1);
             newRow.AddFloat("speed_flight", 1);
             newRow.AddFloat("detection_range", creatureTemplate.DetectionRange); 
-            newRow.AddFloat("scale", scale);
             newRow.AddInt("rank", Convert.ToInt32(creatureTemplate.Rank));
             newRow.AddInt("dmgschool", 0);
             newRow.AddFloat("DamageModifier", creatureTemplate.DamageMod);
@@ -156,8 +155,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RacialLeader", 0);
 			newRow.AddInt("movementId", 0);
             newRow.AddInt("RegenHealth", 1);
-            newRow.AddInt("mechanic_immune_mask", 0);
-            newRow.AddInt("spell_school_immune_mask", 0);
+            newRow.AddInt("CreatureImmunitiesId", 0);
             newRow.AddInt("flags_extra", extraFlags);
             newRow.AddString("ScriptName", 64, string.Empty);
             newRow.AddInt("VerifiedBuild", 12340);
