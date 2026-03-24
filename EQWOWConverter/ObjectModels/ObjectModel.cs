@@ -1048,6 +1048,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Create the nameplate bone for it
             ObjectModelBone nameplateBone = new ObjectModelBone("nameplate", Convert.ToInt16(initialBoneID));
+            nameplateBone.Flags |= (int)ObjectModelBoneFlags.IgnoreParentRotation;
             ModelBones.Add(nameplateBone);
         }
 
