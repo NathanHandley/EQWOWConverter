@@ -514,15 +514,18 @@ namespace EQWOWConverter.GameObjects
                                         continue;
                                     }
 
-                                    // Only player playable races have non-0 texture variations
+                                    // Only player playable races have non-0 texture variations (and storm giants)
                                     int faceID = 0;
                                     int textureIndex = 0;
                                     int colorTint = 0;
-                                    if (modelRaceID <= 12 || modelRaceID == 128)
+                                    if (modelRaceID <= 12 || modelRaceID == 128 || modelRaceID == 189)
                                     {
-                                        faceID = 2;
                                         textureIndex = 2;
-                                        colorTint = 300002;
+                                        if (modelRaceID != 189)
+                                        {
+                                            colorTint = 300002;
+                                            faceID = 2;
+                                        }
                                     }
                                     CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, CreatureGenderType.Male,
                                         0, textureIndex, faceID, colorTint, 1f);
