@@ -507,14 +507,25 @@ namespace EQWOWConverter.GameObjects
                                 {
                                     CreatureTemplate creatureTemplate = new CreatureTemplate();
                                     int modelRaceID = gameObject.ModelRaceID;
-                                    CreatureRace? creatureRace = CreatureRace.GetRaceForRaceGenderVariant(modelRaceID, CreatureGenderType.Male, 0);
+                                    CreatureRace? creatureRace = CreatureRace.GetRaceForRaceGenderVariant(modelRaceID, CreatureGenderType.Male, 0, true);
                                     if (creatureRace == null)
                                     {
                                         Logger.WriteError("Could not load the race information for the mail carrier game object");
                                         continue;
                                     }
-                                    CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, CreatureGenderType.Male, 
-                                        0, 2, 2, 300002, 1f);
+
+                                    // Only player playable races have non-0 texture variations
+                                    int faceID = 0;
+                                    int textureIndex = 0;
+                                    int colorTint = 0;
+                                    if (modelRaceID <= 12 || modelRaceID == 128)
+                                    {
+                                        faceID = 2;
+                                        textureIndex = 2;
+                                        colorTint = 300002;
+                                    }
+                                    CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, CreatureGenderType.Male,
+                                        0, textureIndex, faceID, colorTint, 1f);
                                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                                     objectProperties.CreatureModelTemplate = creatureModelTemplate;
                                     objectProperties.ModelScalePreWorldScale = creatureRace.ModelScale;
