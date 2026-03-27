@@ -49,6 +49,7 @@ namespace EQWOWConverter.GameObjects
         public bool ModelIsSkeletal = false;
         public bool ModelIsInEquipmentFolder = false;
         public int ModelRaceID = 0;
+        public CreatureGenderType ModelGender = CreatureGenderType.Neutral;
         public int ModelTextureID = 0;
         public int ModelFaceID = 0;
         public bool HasColission = false;
@@ -206,9 +207,11 @@ namespace EQWOWConverter.GameObjects
                 // Skip invalid object types
                 GameObjectType gameObjectType = GetType(gameObjectsRow["type"]);
                 if (gameObjectType != GameObjectType.Door && gameObjectType != GameObjectType.NonInteract && gameObjectType != GameObjectType.TradeskillFocus
-                    && gameObjectType != GameObjectType.Bridge && gameObjectType != GameObjectType.Mailbox && gameObjectType != GameObjectType.Teleport)
+                    && gameObjectType != GameObjectType.Bridge && gameObjectType != GameObjectType.Mailbox && gameObjectType != GameObjectType.Teleport && gameObjectType != GameObjectType.GuildBank)
                     continue;
                 if (Configuration.OBJECT_GAMEOBJECT_ENABLE_MAILBOXES == false && gameObjectType == GameObjectType.Mailbox)
+                    continue;
+                if (Configuration.GENERATE_ENABLE_GUILD_VAULTS == false && gameObjectType == GameObjectType.GuildBank)
                     continue;
 
                 // Skip zones not being loaded
@@ -257,6 +260,13 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.ModelName = modelName;
                 newGameObject.ModelIsSkeletal = isSkeletal;
                 newGameObject.ModelRaceID = modelRaceID;
+                switch (gameObjectsRow["model_gender"].ToLower())
+                {
+                    case "0": newGameObject.ModelGender = CreatureGenderType.Male; break;
+                    case "1": newGameObject.ModelGender = CreatureGenderType.Female; break;
+                    case "2": newGameObject.ModelGender = CreatureGenderType.Neutral; break;
+                    default: Logger.WriteError("Unhandled gender value of ", gameObjectsRow["model_gender"], " for game object EQID ", newGameObject.ID.ToString()); break;
+                }
                 newGameObject.ModelTextureID = int.Parse(gameObjectsRow["model_texture_id"]);
                 newGameObject.ModelFaceID = int.Parse(gameObjectsRow["model_face_id"]);
                 newGameObject.HasColission = int.Parse(gameObjectsRow["has_collision"]) == 1 ? true : false;
@@ -399,7 +409,7 @@ namespace EQWOWConverter.GameObjects
                         string modelDataRootFolder = objectsFolderRoot;
                         if (gameObject.ModelIsInEquipmentFolder == true)
                             modelDataRootFolder = equipmentFolderRoot;
-                        if (gameObject.ObjectType == GameObjectType.Mailbox)
+                        if (gameObject.ObjectType == GameObjectType.Mailbox || gameObject.ObjectType == GameObjectType.GuildBank)
                             modelDataRootFolder = charactersFolderRoot;
 
                         // Tradeskill items have an atypically small visibility range
@@ -507,14 +517,15 @@ namespace EQWOWConverter.GameObjects
                                     curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad);
                                     curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.ModelName);
                                 } break;
+                            case GameObjectType.GuildBank:
                             case GameObjectType.Mailbox:
                                 {
                                     CreatureTemplate creatureTemplate = new CreatureTemplate();
                                     int modelRaceID = gameObject.ModelRaceID;
-                                    CreatureRace? creatureRace = CreatureRace.GetRaceForRaceGenderVariant(modelRaceID, CreatureGenderType.Male, 0, true);
+                                    CreatureRace? creatureRace = CreatureRace.GetRaceForRaceGenderVariant(modelRaceID, gameObject.ModelGender, 0);
                                     if (creatureRace == null)
                                     {
-                                        Logger.WriteError("Could not load the race information for the mail carrier game object");
+                                        Logger.WriteError("Could not load the race information for the mail carrier or guild bank game object");
                                         continue;
                                     }
 
@@ -522,7 +533,7 @@ namespace EQWOWConverter.GameObjects
                                     int colorTint = 0;
                                     if (modelRaceID <= 12 || modelRaceID == 128)
                                         colorTint = 300002;
-                                    CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, CreatureGenderType.Male,
+                                    CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, gameObject.ModelGender,
                                         0, gameObject.ModelTextureID, gameObject.ModelFaceID, colorTint, 1f);
                                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                                     objectProperties.CreatureModelTemplate = creatureModelTemplate;
@@ -655,6 +666,7 @@ namespace EQWOWConverter.GameObjects
                 case "trap": return GameObjectType.Trap;
                 case "tradeskillfocus": return GameObjectType.TradeskillFocus;
                 case "mailbox": return GameObjectType.Mailbox;
+                case "guildbank": return GameObjectType.GuildBank;
                 default:
                     {
                         Logger.WriteError("Can't determine GameObjectType due to an unmapped open type name value of " + typeNameValue);

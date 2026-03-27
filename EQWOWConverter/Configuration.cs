@@ -156,7 +156,7 @@ namespace EQWOWConverter
         public static float GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE = 5f;
 
         // If true, guild banks will now appear. In some cases this will replace an existing banker, others will add a new guild bank NPC object
-        public static bool GENERATE_ENABLE_GUILD_BANKS = true;
+        public static bool GENERATE_ENABLE_GUILD_VAULTS = true;
 
         //=====================================================================
         // Player
@@ -1017,7 +1017,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("PLAYER_USE_EQ_START_ITEMS", PLAYER_USE_EQ_START_ITEMS, "If true, players will start with an EQ item loadout instead of a WOW item loadout");
             OutputVariableToConfig("PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS", PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS, "If true, this will also add a hearthstone if using EQ items");
             OutputVariableToConfig("PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START", PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START, "If true, players start with a bind and gate spell regardless of class (with no costs)");
-            OutputVariableToConfig("GENERATE_ENABLE_GUILD_BANKS", GENERATE_ENABLE_GUILD_BANKS, "If true, guild banks will now appear. In some cases this will replace an existing banker, others will add a new guild bank NPC object");
+            OutputVariableToConfig("GENERATE_ENABLE_GUILD_VAULTS", GENERATE_ENABLE_GUILD_VAULTS, "If true, guild banks will now appear. In some cases this will replace an existing banker, others will add a new guild bank NPC object");
             OutputVariableToConfig("OBJECT_GAMEOBJECT_ENABLE_MAILBOXES", OBJECT_GAMEOBJECT_ENABLE_MAILBOXES, "If true, custom mailboxes are put into the game as 'postmen'");
             OutputVariableToConfig("AUDIO_USE_ALTERNATE_TRACKS", AUDIO_USE_ALTERNATE_TRACKS, "If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience");
             OutputVariableToConfig("SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR", SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR, "If this is true, use the level as defined in everquest for summoned pets as well as the control behavior. (Highly advisable to leave False)");
@@ -1438,7 +1438,7 @@ namespace EQWOWConverter
             GENERATE_FLOAT_EPSILON = ReadVariableFromConfigString("GENERATE_FLOAT_EPSILON", configValuesByVariableName, GENERATE_FLOAT_EPSILON);
             GENERATE_FORCE_SQL_UPDATES = ReadVariableFromConfigString("GENERATE_FORCE_SQL_UPDATES", configValuesByVariableName, GENERATE_FORCE_SQL_UPDATES);
             GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE = ReadVariableFromConfigString("GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE", configValuesByVariableName, GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
-            GENERATE_ENABLE_GUILD_BANKS = ReadVariableFromConfigString("GENERATE_ENABLE_GUILD_BANKS", configValuesByVariableName, GENERATE_ENABLE_GUILD_BANKS);
+            GENERATE_ENABLE_GUILD_VAULTS = ReadVariableFromConfigString("GENERATE_ENABLE_GUILD_VAULTS", configValuesByVariableName, GENERATE_ENABLE_GUILD_VAULTS);
 
             PLAYER_USE_EQ_START_LOCATION = ReadVariableFromConfigString("PLAYER_USE_EQ_START_LOCATION", configValuesByVariableName, PLAYER_USE_EQ_START_LOCATION);
             PLAYER_USE_EQ_START_ITEMS = ReadVariableFromConfigString("PLAYER_USE_EQ_START_ITEMS", configValuesByVariableName, PLAYER_USE_EQ_START_ITEMS);

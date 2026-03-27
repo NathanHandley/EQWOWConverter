@@ -58,6 +58,15 @@ namespace EQWOWConverter.WOWFiles
                             gameObject.Scale, aiName, string.Empty);
                     }
                     break;
+                case GameObjectType.GuildBank:
+                    {
+                        AddRow(gameObject.GameObjectTemplateEntryID,
+                            34, // Guild Bank
+                            gameObject.GameObjectDisplayInfoID,
+                            name,
+                            0, 0, 0, 0, 0, 0,
+                            gameObject.Scale, aiName, string.Empty);
+                    } break;
                 case GameObjectType.Bridge:
                     {
                         AddRow(gameObject.GameObjectTemplateEntryID,
