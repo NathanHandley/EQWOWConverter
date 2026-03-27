@@ -49,6 +49,8 @@ namespace EQWOWConverter.GameObjects
         public bool ModelIsSkeletal = false;
         public bool ModelIsInEquipmentFolder = false;
         public int ModelRaceID = 0;
+        public int ModelTextureID = 0;
+        public int ModelFaceID = 0;
         public bool HasColission = false;
         public bool RenderingEnabled = true;
         public bool SoundEnabled = true;
@@ -255,6 +257,8 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.ModelName = modelName;
                 newGameObject.ModelIsSkeletal = isSkeletal;
                 newGameObject.ModelRaceID = modelRaceID;
+                newGameObject.ModelTextureID = int.Parse(gameObjectsRow["model_texture_id"]);
+                newGameObject.ModelFaceID = int.Parse(gameObjectsRow["model_face_id"]);
                 newGameObject.HasColission = int.Parse(gameObjectsRow["has_collision"]) == 1 ? true : false;
                 newGameObject.RenderingEnabled = int.Parse(gameObjectsRow["render_enabled"]) == 1 ? true : false;
                 newGameObject.SoundEnabled = int.Parse(gameObjectsRow["sound_enabled"]) == 1 ? true : false;
@@ -514,21 +518,12 @@ namespace EQWOWConverter.GameObjects
                                         continue;
                                     }
 
-                                    // Only player playable races have non-0 texture variations (and storm giants)
-                                    int faceID = 0;
-                                    int textureIndex = 0;
+                                    // Only use color tint for player races
                                     int colorTint = 0;
-                                    if (modelRaceID <= 12 || modelRaceID == 128 || modelRaceID == 189)
-                                    {
-                                        textureIndex = 2;
-                                        if (modelRaceID != 189)
-                                        {
-                                            colorTint = 300002;
-                                            faceID = 2;
-                                        }
-                                    }
+                                    if (modelRaceID <= 12 || modelRaceID == 128)
+                                        colorTint = 300002;
                                     CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, CreatureGenderType.Male,
-                                        0, textureIndex, faceID, colorTint, 1f);
+                                        0, gameObject.ModelTextureID, gameObject.ModelFaceID, colorTint, 1f);
                                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                                     objectProperties.CreatureModelTemplate = creatureModelTemplate;
                                     objectProperties.ModelScalePreWorldScale = creatureRace.ModelScale;

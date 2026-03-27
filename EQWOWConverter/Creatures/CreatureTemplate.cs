@@ -205,6 +205,8 @@ namespace EQWOWConverter.Creatures
                     }
                     if (int.Parse(columns["enabled"]) == 0)
                         continue;
+                    if (Configuration.GENERATE_ENABLE_GUILD_BANKS == true && columns["hide_for_guild_bank"].Trim() == "1")
+                        continue;
 
                     // Load the row
                     CreatureTemplate newCreatureTemplate = new CreatureTemplate();
