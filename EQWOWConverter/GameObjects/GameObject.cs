@@ -51,6 +51,7 @@ namespace EQWOWConverter.GameObjects
         public int ModelRaceID = 0;
         public CreatureGenderType ModelGender = CreatureGenderType.Neutral;
         public int ModelTextureID = 0;
+        public int ModelHelmTextureID = 0;
         public int ModelFaceID = 0;
         public bool HasColission = false;
         public bool RenderingEnabled = true;
@@ -268,6 +269,7 @@ namespace EQWOWConverter.GameObjects
                     default: Logger.WriteError("Unhandled gender value of ", gameObjectsRow["model_gender"], " for game object EQID ", newGameObject.ID.ToString()); break;
                 }
                 newGameObject.ModelTextureID = int.Parse(gameObjectsRow["model_texture_id"]);
+                newGameObject.ModelHelmTextureID = int.Parse(gameObjectsRow["model_helm_texture_id"]);
                 newGameObject.ModelFaceID = int.Parse(gameObjectsRow["model_face_id"]);
                 newGameObject.HasColission = int.Parse(gameObjectsRow["has_collision"]) == 1 ? true : false;
                 newGameObject.RenderingEnabled = int.Parse(gameObjectsRow["render_enabled"]) == 1 ? true : false;
@@ -529,12 +531,12 @@ namespace EQWOWConverter.GameObjects
                                         continue;
                                     }
 
-                                    // Only use color tint for player races
+                                    // Only use color tint for player races that are mailboxes
                                     int colorTint = 0;
-                                    if (modelRaceID <= 12 || modelRaceID == 128)
+                                    if (gameObject.ObjectType == GameObjectType.Mailbox && (modelRaceID <= 12 || modelRaceID == 128))
                                         colorTint = 300002;
                                     CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, gameObject.ModelGender,
-                                        0, gameObject.ModelTextureID, gameObject.ModelFaceID, colorTint, 1f);
+                                        gameObject.ModelHelmTextureID, gameObject.ModelTextureID, gameObject.ModelFaceID, colorTint, 1f);
                                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                                     objectProperties.CreatureModelTemplate = creatureModelTemplate;
                                     objectProperties.ModelScalePreWorldScale = creatureRace.ModelScale;
