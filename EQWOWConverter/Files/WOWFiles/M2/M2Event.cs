@@ -38,6 +38,39 @@ namespace EQWOWConverter.WOWFiles
             Timestamps[0].AddTimestamp(0);
         }
 
+        public void PopulateAsWeaponTrailTopWTT(ObjectModel wowObjectModel)
+        {
+            Identifier = "$WTT";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("wtt"));
+
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
+            {
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+            }
+        }
+
+        public void PopulateAsWeaponTrailBottomWTB(ObjectModel wowObjectModel)
+        {
+            Identifier = "$WTB";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("wtb"));
+
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
+            {
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+            }
+        }
+
+        public void PopulateAsBoneMissleDestinationBMD(ObjectModel wowObjectModel)
+        {
+            Identifier = "$BMD";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("bmd"));
+
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
+            {
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+            }
+        }
+
         public void PopulateAsDeathThudDTH(ObjectModel wowObjectModel)
         {
             Identifier = "$DTH";

@@ -34,8 +34,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(itemDisplayInfo.GeosetGroup2); // GeosetGroup 2
             newRow.AddInt32(itemDisplayInfo.GeosetGroup3); // GeosetGroup 3
             newRow.AddInt32(0); // Flags
-            newRow.AddInt32(0); // SpellVisualID
-            newRow.AddInt32(7); // GroupSoundIndex (comes from ItemGroupSounds.dbc)
+            newRow.AddInt32(itemDisplayInfo.SpellVisualID); // SpellVisualID
+            newRow.AddInt32(itemDisplayInfo.GroupSoundIndex); // GroupSoundIndex (comes from ItemGroupSounds.dbc)
             newRow.AddInt32(0); // HelmetGeosetVis 1
             newRow.AddInt32(0); // HelmetGeosetVis 2
             newRow.AddString(itemDisplayInfo.ArmorTexture1); // Texture 1

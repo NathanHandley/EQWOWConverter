@@ -37,6 +37,8 @@ namespace EQWOWConverter.Items
         public string ModelName = string.Empty;
         public string ModelTexture1 = string.Empty;
         public string ModelTexture2 = string.Empty;
+        public int SpellVisualID = 0;
+        public int GroupSoundIndex = 7;
         public int GeosetGroup1 = 0;
         public int GeosetGroup2 = 0;
         public int GeosetGroup3 = 0;
@@ -139,6 +141,12 @@ namespace EQWOWConverter.Items
 
             // Create the item display record
             ItemDisplayInfo newItemDisplayInfo = new ItemDisplayInfo();
+            if (inventoryType == ItemWOWInventoryType.Ranged)
+            {
+                // Bows need properties for launching arrows
+                newItemDisplayInfo.GroupSoundIndex = 12;
+                newItemDisplayInfo.SpellVisualID = 5;
+            }
             newItemDisplayInfo.IconFileNameNoExt = iconFileNameNoExt;
             ItemDisplayInfos.Add(newItemDisplayInfo);
 
@@ -334,17 +342,13 @@ namespace EQWOWConverter.Items
 
                 // Fallback the name if it's not known, or it's not a held type
                 string eqAssetFileName = "it63"; // Fallback/default
-                ObjectModelType modelType = ObjectModelType.EquipmentHeld;
+                ObjectModelType modelType = ObjectModelType.EquipmentHeldNonBow;
+                if (inventoryType == ItemWOWInventoryType.Ranged)
+                    modelType = ObjectModelType.EquipmentHeldBow;
                 if (staticFileNamesByCommonName.ContainsKey(itemDisplayCommonName) == true)
-                {
                     eqAssetFileName = staticFileNamesByCommonName[itemDisplayCommonName];
-                    modelType = ObjectModelType.EquipmentHeld;
-                }
                 if (skeletalFileNamesByCommonName.ContainsKey(itemDisplayCommonName) == true)
-                {
                     eqAssetFileName = skeletalFileNamesByCommonName[itemDisplayCommonName];
-                    modelType = ObjectModelType.EquipmentHeld;
-                }
 
                 // Create a new model
                 ObjectModels.Properties.ObjectModelProperties objectModelProperties = new ObjectModels.Properties.ObjectModelProperties();

@@ -239,6 +239,21 @@ namespace EQWOWConverter.WOWFiles
 
         private void SetEvents(ObjectModel wowObjectModel)
         {
+            if (wowObjectModel.ModelType == ObjectModelType.EquipmentHeldBow)
+            {
+                M2Event eventBMD = new M2Event();
+                eventBMD.PopulateAsBoneMissleDestinationBMD(wowObjectModel);
+                Events.AddElement(eventBMD);
+
+                M2Event eventWTT = new M2Event();
+                eventWTT.PopulateAsWeaponTrailTopWTT(wowObjectModel);
+                Events.AddElement(eventWTT);
+
+                M2Event eventWTB = new M2Event();
+                eventWTB.PopulateAsWeaponTrailBottomWTB(wowObjectModel);
+                Events.AddElement(eventWTB);
+                return;
+            }
             if (wowObjectModel.SoundsByAnimationType.ContainsKey(AnimationType.Stand))
             {
                 // Idle Sound ($DSL)

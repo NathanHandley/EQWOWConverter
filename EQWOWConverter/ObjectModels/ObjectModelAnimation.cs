@@ -491,6 +491,16 @@ namespace EQWOWConverter.ObjectModels
                         returnTypes.Add(EQAnimationType.c09AttackBow);
                     }
                     break;
+                case AnimationType.BowPull:
+                    {
+                        returnTypes.Add(EQAnimationType.c09AttackBow);
+                    }
+                    break;
+                case AnimationType.BowRelease:
+                    {
+                        returnTypes.Add(EQAnimationType.c09AttackBow);
+                    }
+                    break;
                 case AnimationType.ReadyRifle:
                     {
                         returnTypes.Add(EQAnimationType.p01StandPassive);

@@ -91,7 +91,7 @@ namespace EQWOWConverter.ObjectModels
 
         private bool DoRotateModelOnZAxis()
         {
-            if (ModelType == ObjectModelType.EquipmentHeld)
+            if (ModelType == ObjectModelType.EquipmentHeldNonBow || ModelType == ObjectModelType.EquipmentHeldBow)
                 return false;
             if (IsSkeletal == false)
                 return true;
@@ -126,7 +126,8 @@ namespace EQWOWConverter.ObjectModels
             meshData.SortDataByMaterialBonesAndGenerateRenderGroups();
 
             // Perform EQ->WoW translations if this is coming from a raw EQ object
-            if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.TransportShip || ModelType == ObjectModelType.EquipmentHeld)
+            if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.TransportShip 
+                || ModelType == ObjectModelType.EquipmentHeldNonBow || ModelType == ObjectModelType.EquipmentHeldBow)
             {
                 float scaleAmount = GetScaleAmount();
 
@@ -1024,11 +1025,19 @@ namespace EQWOWConverter.ObjectModels
                 CreateEventOrAttachmentBone("hit"); // PlayWoundAnimKit
 
                 // Bones for attachments
-                if (ModelType == ObjectModelType.EquipmentHeld)
+                if (ModelType == ObjectModelType.EquipmentHeldNonBow)
                 {
                     CreateEventOrAttachmentBone("shield_mnt");
                     CreateEventOrAttachmentBone("lbw_r");
                     CreateEventOrAttachmentBone("lbw_l");
+                }
+
+                // Combat animation
+                if (ModelType == ObjectModelType.EquipmentHeldBow)
+                {
+                    CreateEventOrAttachmentBone("bmd");
+                    CreateEventOrAttachmentBone("wtt");
+                    CreateEventOrAttachmentBone("wtb");
                 }
 
                 // Set any key bones
@@ -1069,8 +1078,17 @@ namespace EQWOWConverter.ObjectModels
                 ModelAnimations[1].Flags = ObjectModelAnimationFlags.AnimationInM2;
                 FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose });
             }
+            else if (ModelType == ObjectModelType.EquipmentHeldBow)
+            {
+                FindAndSetAnimationForType(AnimationType.Stand);
+                if (IsSkeletal)
+                {
+                    FindAndSetAnimationForType(AnimationType.BowPull);
+                    FindAndSetAnimationForType(AnimationType.BowRelease);
+                }
+            }
             else
-            { 
+            {
                 FindAndSetAnimationForType(AnimationType.Stand);
 
                 if (IsSkeletal)
@@ -1257,7 +1275,7 @@ namespace EQWOWConverter.ObjectModels
             float scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_WORLD_SCALE;
             if (ModelType == ObjectModelType.Creature)
                 scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_CREATURE_SCALE;
-            else if (ModelType == ObjectModelType.EquipmentHeld)
+            else if (ModelType == ObjectModelType.EquipmentHeldNonBow || ModelType == ObjectModelType.EquipmentHeldBow)
             {
                 if (Properties.EquipUnitType == Items.ItemEquipUnitType.Player)
                     scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
@@ -1527,6 +1545,9 @@ namespace EQWOWConverter.ObjectModels
                 case "fsd":
                 case "hit":
                 case "dth":
+                case "wtb":
+                case "wtt":
+                case "bmd":
                     {
                         // For now, let's just use root
                         // TODO: Use something other than root?
@@ -2151,8 +2172,8 @@ namespace EQWOWConverter.ObjectModels
             }
             // Generate collision data if there is none and it's from an EQ object
             else if (collisionVertices.Count == 0 && Properties.DoGenerateCollisionFromMeshData == true &&
-                (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance && ModelType != ObjectModelType.EquipmentHeld
-                && ModelType != ObjectModelType.TransportShip))
+                (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance && ModelType != ObjectModelType.EquipmentHeldNonBow
+                && ModelType != ObjectModelType.EquipmentHeldBow && ModelType != ObjectModelType.TransportShip))
             {
                 // Skeletal objects need specially generated mesh data utilizing the animation positioning
                 MeshData workingMeshData;

@@ -23,7 +23,8 @@ namespace EQWOWConverter.ObjectModels
         SoundInstance,
         Creature,
         TransportShip,
-        EquipmentHeld,
+        EquipmentHeldNonBow,
+        EquipmentHeldBow,
         ParticleEmitter,
         SpellProjectile
     }
