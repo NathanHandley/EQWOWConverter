@@ -24,8 +24,8 @@ namespace EQWOWConverter.WOWFiles
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(itemDisplayInfo.ItemDisplayInfoDBCID);
-            newRow.AddString(itemDisplayInfo.ModelName); // ModelName 1
-            newRow.AddString(string.Empty); // ModelName 2
+            newRow.AddString(itemDisplayInfo.ModelName1); // ModelName 1
+            newRow.AddString(itemDisplayInfo.ModelName2); // ModelName 2
             newRow.AddString(itemDisplayInfo.ModelTexture1); // ModelTexture 1
             newRow.AddString(itemDisplayInfo.ModelTexture2); // ModelTexture 2
             newRow.AddString(itemDisplayInfo.IconFileNameNoExt); // InventoryIcon 1

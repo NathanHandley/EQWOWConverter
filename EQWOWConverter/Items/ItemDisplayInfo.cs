@@ -34,7 +34,8 @@ namespace EQWOWConverter.Items
         public int ItemDisplayInfoDBCID = 0;
         public ItemEquipUnitType itemEquipUnitType = ItemEquipUnitType.Player;
         public string IconFileNameNoExt = string.Empty;
-        public string ModelName = string.Empty;
+        public string ModelName1 = string.Empty;
+        public string ModelName2 = string.Empty;
         public string ModelTexture1 = string.Empty;
         public string ModelTexture2 = string.Empty;
         public int SpellVisualID = 0;
@@ -135,7 +136,7 @@ namespace EQWOWConverter.Items
             string modelFileName = itemDisplayNameWithEQ + ".mdx";
             foreach(ItemDisplayInfo itemDisplayInfo in ItemDisplayInfos)
             {
-                if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt && itemDisplayInfo.ModelName == modelFileName && itemDisplayInfo.itemEquipUnitType == equipUnitType)
+                if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt && itemDisplayInfo.ModelName1 == modelFileName && itemDisplayInfo.itemEquipUnitType == equipUnitType)
                     return itemDisplayInfo;
             }
 
@@ -191,11 +192,17 @@ namespace EQWOWConverter.Items
                 newItemDisplayInfo.ArmorTexture6 = "EQ_Robe_Legs_LU_" + robeIDString + "_C" + colorPacked;
                 newItemDisplayInfo.ArmorTexture7 = "EQ_Robe_Legs_LL_" + robeIDString + "_C" + colorPacked;
             }
+            // Arrows will reuse a WOW model
+            else if (inventoryType == ItemWOWInventoryType.Ammo)
+            {
+                newItemDisplayInfo.ModelName2 = Configuration.ITEM_ARROW_MODEL_NAME;
+                newItemDisplayInfo.ModelTexture2 = Configuration.ITEM_ARROW_TEXTURE_NAME;
+            }
             // Held objects have models
             else if (IsHeld(inventoryType) == true)
             {
                 ObjectModel objectModel = GetOrCreateModelForHeldItem(itemDisplayNameWithEQ, inventoryType, equipUnitType);
-                newItemDisplayInfo.ModelName = objectModel.Name + ".mdx";
+                newItemDisplayInfo.ModelName1 = objectModel.Name + ".mdx";
             }
             // Armor
             else if (IsVisableArmor(inventoryType) == true && (materialTypeID <= 4 || materialTypeID == 7 || (materialTypeID >= 17 && materialTypeID <= 23)))
@@ -289,7 +296,7 @@ namespace EQWOWConverter.Items
                     default:
                         {
                             Logger.WriteError("Unable to set DisplayInfo for equipment with name '" + itemDisplayNameWithEQ + "' due to unhandled inventory type of '" + inventoryType.ToString() + "'");
-                        } break;              
+                        } break;
                 }
             }
 

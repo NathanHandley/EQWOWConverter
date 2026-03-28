@@ -498,6 +498,10 @@ namespace EQWOWConverter
         // The ID here is the icon ID as defined by X in "INV_EQ_X.blp"
         public static int ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID = 57;
 
+        // Arrows reuse existing WOW models, and the specific model is defined here
+        public static string ITEM_ARROW_MODEL_NAME = "ArrowFlight_01.mdx";
+        public static string ITEM_ARROW_TEXTURE_NAME = "Arrow_A_01Brown";
+
         //=====================================================================
         // Quests
         //=====================================================================
@@ -1184,6 +1188,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEMS_BAG_SLOT_MULTIPLIER", ITEMS_BAG_SLOT_MULTIPLIER, "How much to multiple the slot size of a bag in EQ.  EQ allows for 2x the number bags of WOW (not including starter)");
             OutputVariableToConfig("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT, "When ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED is true, this is how much to increase bag size by");
             OutputVariableToConfig("ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID", ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID, "This is the icon ID that is used for multi-item containers that contain more than one item");
+            OutputVariableToConfig("ITEM_ARROW_MODEL_NAME", ITEM_ARROW_MODEL_NAME, "Arrows reuse existing WOW models, and the specific model is defined here", false);
+            OutputVariableToConfig("ITEM_ARROW_TEXTURE_NAME", ITEM_ARROW_TEXTURE_NAME, "");
             OutputVariableToConfig("QUESTS_TEXT_DURATION_IN_MS", QUESTS_TEXT_DURATION_IN_MS, "How many milliseconds to display a text block from an NPC on quest events");
             OutputVariableToConfig("QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID", QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID, "This is the icon ID that is used for quest rewards that contain more than one random item");
             OutputVariableToConfig("SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION", SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION, "If true, spells will balance around level 60 being the cap (EQ-like), otherwise it will be 80 like WOTLK");
@@ -1574,6 +1580,8 @@ namespace EQWOWConverter
             ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED = ReadVariableFromConfigString("ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED", configValuesByVariableName, ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED);
             ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT = ReadVariableFromConfigString("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", configValuesByVariableName, ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT);
             ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID = ReadVariableFromConfigString("ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID", configValuesByVariableName, ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID);
+            ITEM_ARROW_MODEL_NAME = ReadVariableFromConfigString("ITEM_ARROW_MODEL_NAME", configValuesByVariableName, ITEM_ARROW_MODEL_NAME);
+            ITEM_ARROW_TEXTURE_NAME = ReadVariableFromConfigString("ITEM_ARROW_TEXTURE_NAME", configValuesByVariableName, ITEM_ARROW_TEXTURE_NAME);
 
             QUESTS_TEXT_DURATION_IN_MS = ReadVariableFromConfigString("QUESTS_TEXT_DURATION_IN_MS", configValuesByVariableName, QUESTS_TEXT_DURATION_IN_MS);
             QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID = ReadVariableFromConfigString("QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID", configValuesByVariableName, QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID);
