@@ -335,6 +335,22 @@ namespace EQWOWConverter.ObjectModels
                     SetupPortraitCamera();
                 }
             }
+
+            // Non-Bow held item attach points
+            if (ModelType == ObjectModelType.EquipmentHeldNonBow)
+            {
+                CreateEventOrAttachmentBone("shield_mnt");
+                CreateEventOrAttachmentBone("lbw_r");
+                CreateEventOrAttachmentBone("lbw_l");
+            }
+
+            // Bow attach points
+            if (ModelType == ObjectModelType.EquipmentHeldBow)
+            {
+                CreateEventOrAttachmentBone("bmd");
+                CreateEventOrAttachmentBone("wtt");
+                CreateEventOrAttachmentBone("wtb");
+            }
         }
 
         private void GenerateRenderGroups(MeshData meshData, List<ObjectModelVertex> modelVertices, List<TriangleFace> modelTriangles)
@@ -1023,22 +1039,6 @@ namespace EQWOWConverter.ObjectModels
                 CreateEventOrAttachmentBone("fd2"); // PlayFidgetSound2
                 CreateEventOrAttachmentBone("fsd"); // HandleFootfallAnimEvent
                 CreateEventOrAttachmentBone("hit"); // PlayWoundAnimKit
-
-                // Bones for attachments
-                if (ModelType == ObjectModelType.EquipmentHeldNonBow)
-                {
-                    CreateEventOrAttachmentBone("shield_mnt");
-                    CreateEventOrAttachmentBone("lbw_r");
-                    CreateEventOrAttachmentBone("lbw_l");
-                }
-
-                // Combat animation
-                if (ModelType == ObjectModelType.EquipmentHeldBow)
-                {
-                    CreateEventOrAttachmentBone("bmd");
-                    CreateEventOrAttachmentBone("wtt");
-                    CreateEventOrAttachmentBone("wtb");
-                }
 
                 // Set any key bones
                 SetKeyBone(KeyBoneType.Jaw);
