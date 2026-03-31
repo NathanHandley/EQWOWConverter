@@ -27,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM gameobject WHERE `id` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `id` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
-        public void AddRow(int gameObjectGUID, int gameObjectTemplateID, int mapID, int areaID, Vector3 position, float orientation, Quaternion rotation, string comment)
+        public void AddRow(int gameObjectGUID, int gameObjectTemplateID, int mapID, int areaID, Vector3 position, float orientation, Quaternion rotation, int spawnTimeInSec, string comment)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("guid", gameObjectGUID);
@@ -45,7 +45,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("rotation1", rotation.Y);
             newRow.AddFloat("rotation2", rotation.Z);
             newRow.AddFloat("rotation3", rotation.W);
-            newRow.AddInt("spawntimesecs", 0);
+            newRow.AddInt("spawntimesecs", spawnTimeInSec);
             newRow.AddInt("animprogress", 0);
             newRow.AddInt("state", 1);
             newRow.AddString("ScriptName", 64, string.Empty);

@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
+using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.WOWFiles;
@@ -27,6 +28,7 @@ namespace EQWOWConverter.GameObjects
     {
         protected static Dictionary<string, List<GameObject>> NonDoodadGameObjectsByZoneShortname = new Dictionary<string, List<GameObject>>();
         protected static Dictionary<string, List<GameObject>> DoodadGameObjectsByZoneShortname = new Dictionary<string, List<GameObject>>();
+        protected static List<GameObject> ChestGameObjects = new List<GameObject>();
         protected static readonly object GameObjectsLock = new object();
         protected static Dictionary<(string, GameObjectOpenType), ObjectModel> NonDoodadObjectModelsByNameAndOpenType = new Dictionary<(string, GameObjectOpenType), ObjectModel>();
         protected static Dictionary<(string, GameObjectOpenType), int> GameObjectDisplayInfoIDsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), int>();
@@ -83,6 +85,16 @@ namespace EQWOWConverter.GameObjects
         public int MaxSpawnNum = 0; // Consider removing
         public int RespawnTimeInMS = 0;
         public int ContainedEQItemID = 0;
+        public ItemTemplate? ContainedItemTemplate = null;
+
+        public static List<GameObject> GetChestGameObjects()
+        {
+            lock (GameObjectsLock)
+            {
+                LoadGameObjects();
+                return ChestGameObjects;
+            }
+        }
 
         public static Dictionary<string, List<GameObject>> GetNonDoodadGameObjectsByZoneShortNames()
         {
@@ -362,11 +374,14 @@ namespace EQWOWConverter.GameObjects
                     if (NonDoodadGameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
                         NonDoodadGameObjectsByZoneShortname.Add(newGameObject.ZoneShortName, new List<GameObject>());
                     NonDoodadGameObjectsByZoneShortname[newGameObject.ZoneShortName].Add(newGameObject);
-
                 }
 
+                // Track chests
+                if (gameObjectType == GameObjectType.Chest)
+                    ChestGameObjects.Add(newGameObject);
+
                 // Save this up in the trigger chain lookup
-                if (gameObjectType == GameObjectType.Door || gameObjectType == GameObjectType.Bridge)
+                if (gameObjectType == GameObjectType.Door || gameObjectType == GameObjectType.Bridge || gameObjectType == GameObjectType.Chest)
                 {
                     interactiveGameObjectsByZoneShortNameAndDoorID.Add((newGameObject.ZoneShortName, newGameObject.DoorID), newGameObject);
                     interactiveGameObjects.Add(newGameObject);
@@ -562,6 +577,12 @@ namespace EQWOWConverter.GameObjects
                                     objectProperties.ModelScalePreWorldScale = creatureRace.ModelScale;
                                     objectProperties.ModelLiftPreWorldScale = creatureRace.Lift;
                                     curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.Creature);
+                                    curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.ModelName);
+                                } break;
+                            case GameObjectType.Chest:
+                                {
+                                    ObjectModelProperties objectProperties = new ObjectModelProperties();
+                                    curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad);
                                     curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.ModelName);
                                 } break;
                             default:

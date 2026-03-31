@@ -61,6 +61,7 @@ namespace EQWOWConverter
         private GraveyardZoneSQL graveyardZoneSQL = new GraveyardZoneSQL();
         private GameObjectSQL gameObjectSQL = new GameObjectSQL();
         private GameObjectAddonSQL gameObjectAddonSQL = new GameObjectAddonSQL();
+        private GameObjectLootTemplateSQL gameObjectLootTemplateSQL = new GameObjectLootTemplateSQL();
         private GameObjectTemplateSQL gameObjectTemplateSQL = new GameObjectTemplateSQL();
         private GameObjectTemplateAddonSQL gameObjectTemplateAddonSQL = new GameObjectTemplateAddonSQL();
         private InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
@@ -868,7 +869,7 @@ namespace EQWOWConverter
                 gameObjectTemplateSQL.AddRowForTransportLift(transportLift.GameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name, transportLift.EndTimestamp);
                 gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.GameObjectTemplateID);
                 gameObjectSQL.AddRow(transportLift.GameObjectGUID, transportLift.GameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), 
-                    transportLift.Orientation, new Quaternion(0, 0, 0, 1), name);
+                    transportLift.Orientation, new Quaternion(0, 0, 0, 1), 0, name);
             }
             foreach (TransportLiftTrigger transportLiftTrigger in TransportLiftTrigger.GetAllTransportLiftTriggers())
             {
@@ -888,7 +889,7 @@ namespace EQWOWConverter
                 gameObjectTemplateSQL.AddRowForTransportLiftTrigger(transportLiftTrigger.GameObjectTemplateID, transportLiftTrigger.GameObjectDisplayInfoID, name, transportLiftTrigger.ResetTimeInMS);
                 gameObjectTemplateAddonSQL.AddRowNoDespawn(transportLiftTrigger.GameObjectTemplateID);
                 gameObjectSQL.AddRow(transportLiftTrigger.GameObjectGUID, transportLiftTrigger.GameObjectTemplateID, mapID, areaID, new Vector3(transportLiftTrigger.SpawnX, transportLiftTrigger.SpawnY,
-                    transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation, new Quaternion(0, 0, 0, 1), name);
+                    transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation, new Quaternion(0, 0, 0, 1), 0,name);
             }
         }
 
@@ -986,12 +987,29 @@ namespace EQWOWConverter
                             Logger.WriteError("Skipping gameobject named '", gameObject.DisplayName, "' since it has no displayinfoID");
                             continue;
                         }
-                        string comment = string.Concat("EQ ", gameObject.ObjectType.ToString(), " ", gameObject.ZoneShortName, " (", gameObject.ID, ")");
                         string name = gameObject.DisplayName;
+                        string comment = string.Concat("EQ ", gameObject.ObjectType.ToString(), " ", gameObject.ZoneShortName, " (", gameObject.ID, ")");
+
+                        // Chest items
+                        if (gameObject.ObjectType == GameObjects.GameObjectType.Chest)
+                        {
+                            if (gameObject.ContainedItemTemplate == null)
+                                Logger.WriteError("Skipping loot for gameobject named '", gameObject.DisplayName, "' due to null containedItemTemplate");
+                            else
+                            {
+                                string chestComment = string.Concat("EQ ", gameObject.ZoneShortName, " (", gameObject.ID, ")", " contains ", gameObject.ContainedItemTemplate.Name);
+                                gameObjectLootTemplateSQL.AddRow(gameObject.GameObjectTemplateEntryID, gameObject.ContainedItemTemplate.WOWEntryID, chestComment);
+                                name = gameObject.ContainedItemTemplate.Name;
+                            }
+                        }
+
                         if (name.Length == 0)
                             name = comment;
                         int mapID = mapIDsByShortName[gameObjectByShortName.Key];
-                        gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, gameObject.InteractiveRotation, comment);
+                        int spawnTimeInSec = gameObject.RespawnTimeInMS / 1000;
+                        if (Configuration.OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER == true)
+                            spawnTimeInSec = Configuration.OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC;
+                        gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, gameObject.InteractiveRotation, spawnTimeInSec, comment);
                         gameObjectTemplateSQL.AddRowForGameObject(name, gameObject);
                         gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateEntryID);
                         if (gameObject.EQIncline != 0)
@@ -1038,6 +1056,7 @@ namespace EQWOWConverter
             gameGraveyardSQL.SaveToDisk("game_graveyard", SQLFileType.World);
             gameObjectSQL.SaveToDisk("gameobject", SQLFileType.World);
             gameObjectAddonSQL.SaveToDisk("gameobject_addon", SQLFileType.World);
+            gameObjectLootTemplateSQL.SaveToDisk("gameobject_loot_template", SQLFileType.World);
             gameObjectTemplateSQL.SaveToDisk("gameobject_template", SQLFileType.World);
             gameObjectTemplateAddonSQL.SaveToDisk("gameobject_template_addon", SQLFileType.World);
             gameTeleSQL.SaveToDisk("game_tele", SQLFileType.World);

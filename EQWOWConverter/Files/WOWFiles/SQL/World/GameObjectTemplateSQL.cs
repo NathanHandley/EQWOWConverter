@@ -27,17 +27,17 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRowForTransportShip(int entryID, int displayID, string name, int taxiPathID, int spawnMap, int moveSpeed)
         {
-            AddRow(entryID, 15, displayID, name, taxiPathID, moveSpeed, Configuration.TRANSPORT_ACCELERATION, spawnMap, 1, 0, 1, string.Empty, "EverQuest_TransportScript");
+            AddRow(entryID, 15, displayID, name, taxiPathID, moveSpeed, Configuration.TRANSPORT_ACCELERATION, 0, spawnMap, 1, 0, 1, string.Empty, "EverQuest_TransportScript");
         }
 
         public void AddRowForTransportLift(int entryID, int displayID, string name, int endTimestamp)
         {
-            AddRow(entryID, 11, displayID, name, endTimestamp, 0, 0, 0, 0, 0, 1, string.Empty, string.Empty);
+            AddRow(entryID, 11, displayID, name, endTimestamp, 0, 0, 0, 0, 0, 0, 1, string.Empty, string.Empty);
         }
 
         public void AddRowForTransportLiftTrigger(int entryID, int displayID, string name, int resetInMS)
         {
-            AddRow(entryID, 1, displayID, name, 0, 0, resetInMS, 0, 0, 0, 1, string.Empty, string.Empty);
+            AddRow(entryID, 1, displayID, name, 0, 0, resetInMS, 0, 0, 0, 0, 1, string.Empty, string.Empty);
         }
 
         public void AddRowForGameObject(string name, GameObject gameObject)
@@ -54,7 +54,7 @@ namespace EQWOWConverter.WOWFiles
                             19, // Mailbox
                             gameObject.GameObjectDisplayInfoID, 
                             name,
-                            0, 0, 0, 0, 0, 0, 
+                            0, 0, 0, 0, 0, 0, 0, 
                             gameObject.Scale, aiName, string.Empty);
                     }
                     break;
@@ -64,7 +64,7 @@ namespace EQWOWConverter.WOWFiles
                             34, // Guild Bank
                             gameObject.GameObjectDisplayInfoID,
                             name,
-                            0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0,
                             gameObject.Scale, aiName, string.Empty);
                     } break;
                 case GameObjectType.Bridge:
@@ -74,6 +74,7 @@ namespace EQWOWConverter.WOWFiles
                             gameObject.GameObjectDisplayInfoID, name,
                             0, // Start open
                             0, // "ID" from Lock.dbc
+                            0, // N/A
                             gameObject.CloseTimeInMS, // Autoclose time in MS
                             1, // "Area of Interest" is set to infinite (see from any distance)
                             0, 0, gameObject.Scale, aiName, string.Empty);
@@ -86,6 +87,7 @@ namespace EQWOWConverter.WOWFiles
                             gameObject.GameObjectDisplayInfoID, name, 
                             0, // Start open
                             0, // "ID" from Lock.dbc
+                            0, // N/A
                             gameObject.CloseTimeInMS, // Autoclose time in MS
                             1, // "Area of Interest" is set to infinite (see from any distance)
                             0, 0, gameObject.Scale, aiName, string.Empty);
@@ -97,6 +99,7 @@ namespace EQWOWConverter.WOWFiles
                             gameObject.GameObjectDisplayInfoID, name,
                             0, // Start clickable
                             0, // "ID" from Lock.dbc
+                            0, // N/A
                             50, // Autoclose time in MS (which is the 'make reusable time' in this case)
                             1, // "Area of Interest" is set to infinite (see from any distance)
                             0, 0, gameObject.Scale, aiName, string.Empty);
@@ -115,16 +118,27 @@ namespace EQWOWConverter.WOWFiles
                             gameObject.GameObjectDisplayInfoID, name,
                             spellFocusTypeID, // Fire vs Forge
                             Configuration.OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE,
-                            0, 0, 0, 0, gameObject.Scale, aiName, string.Empty);
+                            0, 0, 0, 0, 0, gameObject.Scale, aiName, string.Empty);
                         } break;
+                case GameObjectType.Chest:
+                    {
+                        AddRow(gameObject.GameObjectTemplateEntryID,
+                            3, // Chest
+                            gameObject.GameObjectDisplayInfoID, name,
+                            43, // Common no-lock value (LockID from Lock.dbc)
+                            gameObject.GameObjectTemplateEntryID, // gameobject_loot_template.entry
+                            0,
+                            1, // 1 makes it 'consumable' (disappear on loot)
+                            0, 0, 0, gameObject.Scale, aiName, string.Empty);
+                    } break;
                 default:
                     {
-                        AddRow(gameObject.GameObjectTemplateEntryID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, 0, 0, gameObject.Scale, aiName, string.Empty);
+                        AddRow(gameObject.GameObjectTemplateEntryID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, 0, 0, 0, gameObject.Scale, aiName, string.Empty);
                     } break;
             }
         }
 
-        public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, int data8, int data10, float scale, string aiName, string scriptName)
+        public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data3, int data6, int data8, int data10, float scale, string aiName, string scriptName)
         {
             SQLRow newRow = new SQLRow();
 			newRow.AddInt("entry", entryID);
@@ -138,7 +152,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("Data0", data0);
             newRow.AddInt("Data1", data1);
             newRow.AddInt("Data2", data2); 
-            newRow.AddInt("Data3", 0);
+            newRow.AddInt("Data3", data3);
             newRow.AddInt("Data4", 0);
             newRow.AddInt("Data5", 0); // Transport physics, 0 or 1
             newRow.AddInt("Data6", data6);

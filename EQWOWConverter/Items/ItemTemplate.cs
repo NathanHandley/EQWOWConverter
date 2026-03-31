@@ -106,6 +106,7 @@ namespace EQWOWConverter.Items
         public bool IsRewardedFromQuest = false;
         public bool IsCreatedBySpell = false;
         public bool IsFoundInGameObject = false;
+        public bool IsFromGroundSpawnChest = false;
         public int NumOfTradeskillsThatCreateIt = 0;
         public int IconID = 0;
         public int TotemDBCID = 0;
@@ -153,6 +154,8 @@ namespace EQWOWConverter.Items
             if (IsCreatedBySpell == true)
                 return true;
             if (IsFoundInGameObject == true)
+                return true;
+            if (IsFromGroundSpawnChest == true)
                 return true;
             if (ParentItemTemplate != null)
                 return ParentItemTemplate.IsPlayerObtainable();

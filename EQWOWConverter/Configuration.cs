@@ -371,6 +371,12 @@ namespace EQWOWConverter
         // If true, custom mailboxes are put into the game as 'postmen'
         public static bool OBJECT_GAMEOBJECT_ENABLE_MAILBOXES = true;
 
+        // If true, a fixed respawn timer will be used for 'ground objects', and if false then the EQ respawn timers will be used
+        public static bool OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER = true;
+
+        // If OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER is true, then this is how many seconds will elapse before the ground objects respawn
+        public static int OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC = 5;
+
         // The starting ID for any material index that should be ignored from rendering
         public static int OBJECT_IGNORE_RENDER_MATERIAL_ID_START = 10000;
 
@@ -1023,6 +1029,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START", PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START, "If true, players start with a bind and gate spell regardless of class (with no costs)");
             OutputVariableToConfig("GENERATE_ENABLE_GUILD_VAULTS", GENERATE_ENABLE_GUILD_VAULTS, "If true, guild banks will now appear. In some cases this will replace an existing banker, others will add a new guild bank NPC object");
             OutputVariableToConfig("OBJECT_GAMEOBJECT_ENABLE_MAILBOXES", OBJECT_GAMEOBJECT_ENABLE_MAILBOXES, "If true, custom mailboxes are put into the game as 'postmen'");
+            OutputVariableToConfig("OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER", OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER, "If true, a fixed respawn timer will be used for 'ground objects', and if false then the EQ respawn timers will be used");
+            OutputVariableToConfig("OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC", OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC, "If OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER is true, then this is how many seconds will elapse before the ground objects respawn");
             OutputVariableToConfig("AUDIO_USE_ALTERNATE_TRACKS", AUDIO_USE_ALTERNATE_TRACKS, "If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience");
             OutputVariableToConfig("SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR", SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR, "If this is true, use the level as defined in everquest for summoned pets as well as the control behavior. (Highly advisable to leave False)");
             OutputVariableToConfig("SPELLS_GATE_TETHER_ENABLED", SPELLS_GATE_TETHER_ENABLED, "If true, the player can return to their gate point by clicking off the buff (within 30 minutes)");
@@ -1527,6 +1535,8 @@ namespace EQWOWConverter
             OBJECT_GAMEOBJECT_OPENCLOSE_SLEEPER_FIELD_ANIMATIONTIME_INMS = ReadVariableFromConfigString("OBJECT_GAMEOBJECT_OPENCLOSE_SLEEPER_FIELD_ANIMATIONTIME_INMS", configValuesByVariableName, OBJECT_GAMEOBJECT_OPENCLOSE_SLEEPER_FIELD_ANIMATIONTIME_INMS);
             OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE = ReadVariableFromConfigString("OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE", configValuesByVariableName, OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE);
             OBJECT_GAMEOBJECT_ENABLE_MAILBOXES = ReadVariableFromConfigString("OBJECT_GAMEOBJECT_ENABLE_MAILBOXES", configValuesByVariableName, OBJECT_GAMEOBJECT_ENABLE_MAILBOXES);
+            OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER = ReadVariableFromConfigString("OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER", configValuesByVariableName, OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER);
+            OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC = ReadVariableFromConfigString("OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC", configValuesByVariableName, OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC);
             OBJECT_IGNORE_RENDER_MATERIAL_ID_START = ReadVariableFromConfigString("OBJECT_IGNORE_RENDER_MATERIAL_ID_START", configValuesByVariableName, OBJECT_IGNORE_RENDER_MATERIAL_ID_START);
 
             CREATURE_FIDGET_TIME_PERCENT = ReadVariableFromConfigString("CREATURE_FIDGET_TIME_PERCENT", configValuesByVariableName, CREATURE_FIDGET_TIME_PERCENT);

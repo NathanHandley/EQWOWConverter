@@ -148,6 +148,18 @@ namespace EQWOWConverter
                         if (itemTemplatesByWOWEntryID.ContainsKey(itemID) == true)
                             itemTemplatesByWOWEntryID[itemID].IsGivenAsStartItem = true;
 
+                // Bind gameobject data
+                foreach (GameObject chestObject in GameObject.GetChestGameObjects())
+                {
+                    if (itemTemplatesByEQDBID.ContainsKey(chestObject.ContainedEQItemID) == false)
+                    {
+                        Logger.WriteError("Chest game object with ID '", chestObject.ID.ToString(), "' has an item ID of '", chestObject.ContainedEQItemID.ToString(), "' which did not exist as an item");
+                        continue;
+                    }
+                    chestObject.ContainedItemTemplate = itemTemplatesByEQDBID[chestObject.ContainedEQItemID];
+                    itemTemplatesByEQDBID[chestObject.ContainedEQItemID].IsFromGroundSpawnChest = true;
+                }
+
                 // Spells                                        
                 GenerateSpells(out spellTemplates, itemTemplatesByEQDBID, ref creatureTemplatesByEQID); // Remove the 'ref'
 
