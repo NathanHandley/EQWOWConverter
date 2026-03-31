@@ -28,6 +28,7 @@ namespace EQWOWConverter.GameObjects
         Trap,
         TradeskillFocus,
         Mailbox,
-        GuildBank
+        GuildBank,
+        Chest
     }
 }

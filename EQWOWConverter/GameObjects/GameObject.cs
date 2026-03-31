@@ -59,6 +59,8 @@ namespace EQWOWConverter.GameObjects
         public string DisplayName = string.Empty;
         public float Scale = 1.0f;
         public Vector3 Position = new Vector3();
+        public float PositionMinX = 0;
+        public float PositionMinY = 0;
         public float Orientation;
         public float EQHeading;
         public float EQIncline;
@@ -78,6 +80,9 @@ namespace EQWOWConverter.GameObjects
         public Sound? CloseSound = null;
         public bool LoadAsZoneDoodad = false;
         public int CloseTimeInMS;
+        public int MaxSpawnNum = 0; // Consider removing
+        public int RespawnTimeInMS = 0;
+        public int ContainedEQItemID = 0;
 
         public static Dictionary<string, List<GameObject>> GetNonDoodadGameObjectsByZoneShortNames()
         {
@@ -205,10 +210,16 @@ namespace EQWOWConverter.GameObjects
                     }
                 }
 
+                // Skip invalid expansion
+                int minExpansion = int.Parse(gameObjectsRow["min_expansion"]);
+                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
+                    continue;
+
                 // Skip invalid object types
                 GameObjectType gameObjectType = GetType(gameObjectsRow["type"]);
                 if (gameObjectType != GameObjectType.Door && gameObjectType != GameObjectType.NonInteract && gameObjectType != GameObjectType.TradeskillFocus
-                    && gameObjectType != GameObjectType.Bridge && gameObjectType != GameObjectType.Mailbox && gameObjectType != GameObjectType.Teleport && gameObjectType != GameObjectType.GuildBank)
+                    && gameObjectType != GameObjectType.Bridge && gameObjectType != GameObjectType.Mailbox && gameObjectType != GameObjectType.Teleport 
+                    && gameObjectType != GameObjectType.GuildBank && gameObjectType != GameObjectType.Chest)
                     continue;
                 if (Configuration.OBJECT_GAMEOBJECT_ENABLE_MAILBOXES == false && gameObjectType == GameObjectType.Mailbox)
                     continue;
@@ -279,12 +290,16 @@ namespace EQWOWConverter.GameObjects
                 float xPosition = float.Parse(gameObjectsRow["pos_x"]);
                 float yPosition = float.Parse(gameObjectsRow["pos_y"]);
                 float zPosition = float.Parse(gameObjectsRow["pos_z"]);
+                float xPositionMin = float.Parse(gameObjectsRow["min_pos_x"]);
+                float yPositionMin = float.Parse(gameObjectsRow["min_pos_x"]);
                 if (gameObjectType != GameObjectType.NonInteract)
                 {
                     xPosition *= Configuration.GENERATE_WORLD_SCALE;
                     yPosition *= Configuration.GENERATE_WORLD_SCALE;
                     zPosition *= Configuration.GENERATE_WORLD_SCALE;
                     newGameObject.Position = new Vector3(xPosition, yPosition, zPosition);
+                    xPositionMin *= Configuration.GENERATE_WORLD_SCALE;
+                    yPositionMin *= Configuration.GENERATE_WORLD_SCALE;
                 }
                 else
                 {
@@ -292,6 +307,8 @@ namespace EQWOWConverter.GameObjects
                     // Also make sure to flip Z and Y for non-interact since doodads get changed later
                     newGameObject.Position = new Vector3(xPosition, zPosition, yPosition);
                 }
+                newGameObject.PositionMinX = xPositionMin;
+                newGameObject.PositionMinY = yPositionMin;
                 newGameObject.Scale = float.Parse(gameObjectsRow["size"]) / 100f;
                 newGameObject.GameObjectGUID = GameObjectSQL.GenerateGUID();
                 newGameObject.ModelIsInEquipmentFolder = modelIsInEquipmentFolder;
@@ -314,6 +331,9 @@ namespace EQWOWConverter.GameObjects
                     newGameObject.Orientation = orientationInRadians + MathF.PI;
                 }
                 newGameObject.EQIncline = float.Parse(gameObjectsRow["incline"]);
+                newGameObject.MaxSpawnNum = int.Parse(gameObjectsRow["max_spawn_allowed"]);
+                newGameObject.RespawnTimeInMS = int.Parse(gameObjectsRow["respawn_time"]);
+                newGameObject.ContainedEQItemID = int.Parse(gameObjectsRow["contained_item"]);
 
                 // Sound, if enabled
                 if (newGameObject.SoundEnabled)
@@ -669,6 +689,7 @@ namespace EQWOWConverter.GameObjects
                 case "tradeskillfocus": return GameObjectType.TradeskillFocus;
                 case "mailbox": return GameObjectType.Mailbox;
                 case "guildbank": return GameObjectType.GuildBank;
+                case "chest": return GameObjectType.Chest;
                 default:
                     {
                         Logger.WriteError("Can't determine GameObjectType due to an unmapped open type name value of " + typeNameValue);
