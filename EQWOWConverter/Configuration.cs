@@ -268,6 +268,9 @@ namespace EQWOWConverter
         //=====================================================================
         // Liquid
         //=====================================================================
+        // If true, liquid is enabled
+        public static bool LIQUID_ENABLED = true;
+
         // If this is true, it will show the true surface line of water and not just the material from EQ.  This should only be used
         // for debugging as it very visually unpleasant
         public static bool LIQUID_SHOW_TRUE_SURFACE = false;
@@ -375,7 +378,7 @@ namespace EQWOWConverter
         public static bool OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER = true;
 
         // If OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER is true, then this is how many seconds will elapse before the ground objects respawn
-        public static int OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC = 5;
+        public static int OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC = 120;
 
         // The starting ID for any material index that should be ignored from rendering
         public static int OBJECT_IGNORE_RENDER_MATERIAL_ID_START = 10000;
@@ -1111,6 +1114,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("EVENTS_NORMALIZED_DAY_SPAWN_LENGTH_IN_HOUR", EVENTS_NORMALIZED_DAY_SPAWN_LENGTH_IN_HOUR, "", false);
             OutputVariableToConfig("EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR", EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR, "", false);
             OutputVariableToConfig("EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR", EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR, "");
+            OutputVariableToConfig("LIQUID_ENABLED", LIQUID_ENABLED, "If true, liquid is enabled");
             OutputVariableToConfig("LIQUID_SHOW_TRUE_SURFACE", LIQUID_SHOW_TRUE_SURFACE, "If this is true, it will show the true surface line of water and not just the material from EQ.  This should only be used for debugging as it very visually unpleasant");
             OutputVariableToConfig("LIQUID_SURFACE_ADD_Z_HEIGHT", LIQUID_SURFACE_ADD_Z_HEIGHT, "How much 'height' to add to liquid surface, helps with rendering the waves");
             OutputVariableToConfig("LIQUID_QUADGEN_PLANE_OVERLAP_SIZE", LIQUID_QUADGEN_PLANE_OVERLAP_SIZE, "How much to overlap the planes when generating an irregular quad of liquid");
@@ -1493,6 +1497,7 @@ namespace EQWOWConverter
             EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR = ReadVariableFromConfigString("EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR", configValuesByVariableName, EVENTS_NORMALIZED_NIGHT_SPAWN_START_HOUR);
             EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR = ReadVariableFromConfigString("EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR", configValuesByVariableName, EVENTS_NORMALIZED_NIGHT_SPAWN_LENGTH_IN_HOUR);
 
+            LIQUID_ENABLED = ReadVariableFromConfigString("LIQUID_ENABLED", configValuesByVariableName, LIQUID_ENABLED);
             LIQUID_SHOW_TRUE_SURFACE = ReadVariableFromConfigString("LIQUID_SHOW_TRUE_SURFACE", configValuesByVariableName, LIQUID_SHOW_TRUE_SURFACE);
             LIQUID_SURFACE_ADD_Z_HEIGHT = ReadVariableFromConfigString("LIQUID_SURFACE_ADD_Z_HEIGHT", configValuesByVariableName, LIQUID_SURFACE_ADD_Z_HEIGHT);
             LIQUID_QUADGEN_PLANE_OVERLAP_SIZE = ReadVariableFromConfigString("LIQUID_QUADGEN_PLANE_OVERLAP_SIZE", configValuesByVariableName, LIQUID_QUADGEN_PLANE_OVERLAP_SIZE);

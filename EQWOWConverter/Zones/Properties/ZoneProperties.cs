@@ -933,49 +933,52 @@ namespace EQWOWConverter.Zones
 
             // Load the liquids
             Dictionary<string, List<ConfigLiquid>> configLiquidsByZoneShortName = new Dictionary<string, List<ConfigLiquid>>();
-            string liquidsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneLiquids.csv");
-            Logger.WriteDebug("Populating Liquids file '" + liquidsFile + "'");
-            List<Dictionary<string, string>> liquidRows = FileTool.ReadAllRowsFromFileWithHeader(liquidsFile, "|");
-            foreach (Dictionary<string, string> liquidRow in liquidRows)
+            if (Configuration.LIQUID_ENABLED == true)
             {
-                ConfigLiquid newLiquid = new ConfigLiquid();
-                newLiquid.ZoneShortName = liquidRow["ZoneShortName"];
-                newLiquid.ShapeType = liquidRow["ShapeType"].ToLower().Trim();
-                newLiquid.LiquidType = liquidRow["LiquidType"].ToLower().Trim();
-                newLiquid.SlantType = liquidRow["SlantType"].ToLower().Trim();
-                newLiquid.MaterialName = liquidRow["MaterialName"].Trim();
-                newLiquid.NorthX = Convert.ToSingle(liquidRow["NorthX"]);
-                newLiquid.SouthX = Convert.ToSingle(liquidRow["SouthX"]);
-                newLiquid.WestY = Convert.ToSingle(liquidRow["WestY"]);
-                newLiquid.EastY = Convert.ToSingle(liquidRow["EastY"]);
-                newLiquid.TopOrOnlyZ = Convert.ToSingle(liquidRow["TopOrOnlyZ"]);
-                newLiquid.BottomZ = Convert.ToSingle(liquidRow["BottomZ"]);
-                newLiquid.MinDepthOrHeight = Convert.ToSingle(liquidRow["MinDepthOrHeight"]);
-                newLiquid.StepSize = Convert.ToSingle(liquidRow["StepSize"]);
-                newLiquid.NorthY = Convert.ToSingle(liquidRow["NorthY"]);
-                newLiquid.SouthY = Convert.ToSingle(liquidRow["SouthY"]);
-                newLiquid.WestX = Convert.ToSingle(liquidRow["WestX"]);
-                newLiquid.EastX = Convert.ToSingle(liquidRow["EastX"]);
-                newLiquid.NorthXLimit = Convert.ToSingle(liquidRow["NorthXLimit"]);
-                newLiquid.SouthXLimit = Convert.ToSingle(liquidRow["SouthXLimit"]);
-                newLiquid.WestYLimit = Convert.ToSingle(liquidRow["WestYLimit"]);
-                newLiquid.EastYLimit = Convert.ToSingle(liquidRow["EastYLimit"]);
-                newLiquid.NorthWestY = Convert.ToSingle(liquidRow["NorthWestY"]);
-                newLiquid.NorthEastY = Convert.ToSingle(liquidRow["NorthEastY"]);
-                newLiquid.SouthWestY = Convert.ToSingle(liquidRow["SouthWestY"]);
-                newLiquid.SouthEastY = Convert.ToSingle(liquidRow["SouthEastY"]);
-                newLiquid.EastNorthX = Convert.ToSingle(liquidRow["EastNorthX"]);
-                newLiquid.EastSouthX = Convert.ToSingle(liquidRow["EastSouthX"]);
-                newLiquid.WestNorthX = Convert.ToSingle(liquidRow["WestNorthX"]);
-                newLiquid.WestSouthX = Convert.ToSingle(liquidRow["WestSouthX"]);
-                newLiquid.CylinderCenterX = Convert.ToSingle(liquidRow["CylinderCenterX"]);
-                newLiquid.CylinderCenterY = Convert.ToSingle(liquidRow["CylinderCenterY"]);
-                newLiquid.CylinderRadius = Convert.ToSingle(liquidRow["CylinderRadius"]);
-                newLiquid.ForcedAlignedAreaName = liquidRow["ForcedAlignedAreaName"];
+                string liquidsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneLiquids.csv");
+                Logger.WriteDebug("Populating Liquids file '" + liquidsFile + "'");
+                List<Dictionary<string, string>> liquidRows = FileTool.ReadAllRowsFromFileWithHeader(liquidsFile, "|");
+                foreach (Dictionary<string, string> liquidRow in liquidRows)
+                {
+                    ConfigLiquid newLiquid = new ConfigLiquid();
+                    newLiquid.ZoneShortName = liquidRow["ZoneShortName"];
+                    newLiquid.ShapeType = liquidRow["ShapeType"].ToLower().Trim();
+                    newLiquid.LiquidType = liquidRow["LiquidType"].ToLower().Trim();
+                    newLiquid.SlantType = liquidRow["SlantType"].ToLower().Trim();
+                    newLiquid.MaterialName = liquidRow["MaterialName"].Trim();
+                    newLiquid.NorthX = Convert.ToSingle(liquidRow["NorthX"]);
+                    newLiquid.SouthX = Convert.ToSingle(liquidRow["SouthX"]);
+                    newLiquid.WestY = Convert.ToSingle(liquidRow["WestY"]);
+                    newLiquid.EastY = Convert.ToSingle(liquidRow["EastY"]);
+                    newLiquid.TopOrOnlyZ = Convert.ToSingle(liquidRow["TopOrOnlyZ"]);
+                    newLiquid.BottomZ = Convert.ToSingle(liquidRow["BottomZ"]);
+                    newLiquid.MinDepthOrHeight = Convert.ToSingle(liquidRow["MinDepthOrHeight"]);
+                    newLiquid.StepSize = Convert.ToSingle(liquidRow["StepSize"]);
+                    newLiquid.NorthY = Convert.ToSingle(liquidRow["NorthY"]);
+                    newLiquid.SouthY = Convert.ToSingle(liquidRow["SouthY"]);
+                    newLiquid.WestX = Convert.ToSingle(liquidRow["WestX"]);
+                    newLiquid.EastX = Convert.ToSingle(liquidRow["EastX"]);
+                    newLiquid.NorthXLimit = Convert.ToSingle(liquidRow["NorthXLimit"]);
+                    newLiquid.SouthXLimit = Convert.ToSingle(liquidRow["SouthXLimit"]);
+                    newLiquid.WestYLimit = Convert.ToSingle(liquidRow["WestYLimit"]);
+                    newLiquid.EastYLimit = Convert.ToSingle(liquidRow["EastYLimit"]);
+                    newLiquid.NorthWestY = Convert.ToSingle(liquidRow["NorthWestY"]);
+                    newLiquid.NorthEastY = Convert.ToSingle(liquidRow["NorthEastY"]);
+                    newLiquid.SouthWestY = Convert.ToSingle(liquidRow["SouthWestY"]);
+                    newLiquid.SouthEastY = Convert.ToSingle(liquidRow["SouthEastY"]);
+                    newLiquid.EastNorthX = Convert.ToSingle(liquidRow["EastNorthX"]);
+                    newLiquid.EastSouthX = Convert.ToSingle(liquidRow["EastSouthX"]);
+                    newLiquid.WestNorthX = Convert.ToSingle(liquidRow["WestNorthX"]);
+                    newLiquid.WestSouthX = Convert.ToSingle(liquidRow["WestSouthX"]);
+                    newLiquid.CylinderCenterX = Convert.ToSingle(liquidRow["CylinderCenterX"]);
+                    newLiquid.CylinderCenterY = Convert.ToSingle(liquidRow["CylinderCenterY"]);
+                    newLiquid.CylinderRadius = Convert.ToSingle(liquidRow["CylinderRadius"]);
+                    newLiquid.ForcedAlignedAreaName = liquidRow["ForcedAlignedAreaName"];
 
-                if (configLiquidsByZoneShortName.ContainsKey(newLiquid.ZoneShortName) == false)
-                    configLiquidsByZoneShortName.Add(newLiquid.ZoneShortName, new List<ConfigLiquid>());
-                configLiquidsByZoneShortName[newLiquid.ZoneShortName].Add(newLiquid);
+                    if (configLiquidsByZoneShortName.ContainsKey(newLiquid.ZoneShortName) == false)
+                        configLiquidsByZoneShortName.Add(newLiquid.ZoneShortName, new List<ConfigLiquid>());
+                    configLiquidsByZoneShortName[newLiquid.ZoneShortName].Add(newLiquid);
+                }
             }
 
             // Load the zone properties file
