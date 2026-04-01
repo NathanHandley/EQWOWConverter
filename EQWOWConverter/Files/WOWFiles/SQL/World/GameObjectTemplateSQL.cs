@@ -74,8 +74,8 @@ namespace EQWOWConverter.WOWFiles
                             gameObject.GameObjectDisplayInfoID, name,
                             0, // Start open
                             0, // "ID" from Lock.dbc
-                            0, // N/A
                             gameObject.CloseTimeInMS, // Autoclose time in MS
+                            0, // N/A
                             1, // "Area of Interest" is set to infinite (see from any distance)
                             0, 0, gameObject.Scale, aiName, string.Empty);
                     }
@@ -87,8 +87,8 @@ namespace EQWOWConverter.WOWFiles
                             gameObject.GameObjectDisplayInfoID, name, 
                             0, // Start open
                             0, // "ID" from Lock.dbc
-                            0, // N/A
                             gameObject.CloseTimeInMS, // Autoclose time in MS
+                            0, // N/A                            
                             1, // "Area of Interest" is set to infinite (see from any distance)
                             0, 0, gameObject.Scale, aiName, string.Empty);
                     } break;
@@ -99,8 +99,8 @@ namespace EQWOWConverter.WOWFiles
                             gameObject.GameObjectDisplayInfoID, name,
                             0, // Start clickable
                             0, // "ID" from Lock.dbc
-                            0, // N/A
                             50, // Autoclose time in MS (which is the 'make reusable time' in this case)
+                            0, // N/A                            
                             1, // "Area of Interest" is set to infinite (see from any distance)
                             0, 0, gameObject.Scale, aiName, string.Empty);
                     } break;
