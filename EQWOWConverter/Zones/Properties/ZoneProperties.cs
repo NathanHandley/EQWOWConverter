@@ -142,6 +142,7 @@ namespace EQWOWConverter.Zones
         public int SnowChanceSummer = 0;
         public int SnowChanceFall = 0;
         public float CollisionMaxZ = 0;
+        public float CollisionMinZ = 0;
         public List<BoundingBox> DiscardGeometryBoxes = new List<BoundingBox>();
         public List<BoundingBox> DiscardObjectGeometryBoxesMapGenOnly = new List<BoundingBox>();
         public List<BoundingBox> DiscardGeometryBoxesObjectsOnly = new List<BoundingBox>();
@@ -1030,6 +1031,7 @@ namespace EQWOWConverter.Zones
                 zoneProperties.Continent = (ZoneContinentType)int.Parse(propertiesRow["ContinentID"]);
                 zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);
                 zoneProperties.IsRestingZoneWide = propertiesRow["RestZoneWide"].Trim() == "1" ? true : false;
+                zoneProperties.CollisionMinZ = float.Parse(propertiesRow["CollisionGeometryMinZ"]);
                 zoneProperties.CollisionMaxZ = float.Parse(propertiesRow["CollisionGeometryMaxZ"]);
                 foreach (string alwaysBrightMaterialName in propertiesRow["AlwaysBrightMaterials"].Split(","))
                     zoneProperties.AlwaysBrightMaterialsByName.Add(alwaysBrightMaterialName.Trim());

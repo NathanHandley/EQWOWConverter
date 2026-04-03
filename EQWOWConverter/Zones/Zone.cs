@@ -590,6 +590,23 @@ namespace EQWOWConverter.Zones
                 collisionMeshData.Normals[face.V3] += normal;
             }
 
+            // Constrain the minimum collision area, if set
+            if (ZoneProperties.CollisionMinZ != 0)
+            {
+                float scaledCollisionMinZ = ZoneProperties.CollisionMinZ * Configuration.GENERATE_WORLD_SCALE;
+                BoundingBox removalBoundingArea = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT);
+                removalBoundingArea.TopCorner.Z = scaledCollisionMinZ;
+                if (removalBoundingArea.TopCorner.Z < removalBoundingArea.BottomCorner.Z)
+                    Logger.WriteError(string.Concat("Error attempting to constrain min collision area for zone ", ZoneProperties.ShortName, " as the Z value was lower than the bottom"));
+                else
+                {
+                    MeshData discardedMeshData;
+                    MeshData keptMeshData;
+                    MeshData.GetSplitMeshDataWithClipping(collisionMeshData, removalBoundingArea, out discardedMeshData, out keptMeshData);
+                    collisionMeshData = keptMeshData;
+                }
+            }
+
             // Constrain the maximum collision area, if set
             if (ZoneProperties.CollisionMaxZ != 0)
             {
