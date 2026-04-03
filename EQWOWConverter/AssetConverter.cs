@@ -1236,6 +1236,22 @@ namespace EQWOWConverter
             string generatedTexturesFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
 
             // Generate the creatures
+            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+            {
+                CreatureModelTemplate creatureModelTemplate = CreatureModelTemplate.CreateCreatureModelTemplateForWaypointDebugging();
+                foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
+                {
+                    foreach (CreatureModelTemplate modelTemplate in modelTemplatesByRaceID.Value)
+                    {
+                        modelTemplate.CreateModelFiles(charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath);
+                        creatureModelTemplates.Add(modelTemplate);
+                    }
+                }
+                foreach (CreatureTemplate creatureTemplate in creatureTemplates)
+                    creatureTemplate.ModelTemplate = creatureModelTemplate;
+                return;
+            }
+
             LogCounter progressionCounter = new LogCounter("Creating creature model files...");
             CreatureModelTemplate.CreateCreatureModelTemplatesFromCreatureTemplates(creatureTemplates);
             foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
