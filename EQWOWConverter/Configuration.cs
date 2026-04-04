@@ -825,15 +825,15 @@ namespace EQWOWConverter
         // Record identifier for the creature sql table, need at least 31k
         public static int SQL_CREATURE_GUID_LOW = 310000;
         public static int SQL_CREATURE_GUID_HIGH = 399999;
-        public static int SQL_CREATURE_GUID_DEBUG_LOW = 600000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
-        public static int SQL_CREATURE_GUID_DEBUG_HIGH = 799999; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
+        public static int SQL_CREATURE_GUID_DEBUG_LOW = 200000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
+        public static int SQL_CREATURE_GUID_DEBUG_HIGH = 3460599; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
 
         // Record identifier for the creature template SQL table
         public static int SQL_CREATURETEMPLATE_ENTRY_LOW = 45000;
         public static int SQL_CREATURETEMPLATE_ENTRY_HIGH = 60000;
         public static int SQL_CREATURETEMPLATE_GENERATED_START_ID = 56000;
         public static int SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW = 300000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
-        public static int SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH = 499999; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
+        public static int SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH = 2000000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
 
         // Start GUIDs for gameobjects
         public static int SQL_GAMEOBJECT_GUID_ID_START = 310000;
@@ -1189,7 +1189,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS", CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS, "");
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD", CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD, "How much time to add the the max recast delay for combat spells so that there's a bit of variation");
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT", CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT, "At what level of life a creature should cast a heal spell, if they have one");
-            OutputVariableToConfig("CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE", CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE, "If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be done for debugging reasons, as the game will not look or feel anything like it should");
             OutputVariableToConfig("ITEMS_USE_ALTERNATE_STATS", ITEMS_USE_ALTERNATE_STATS, "If true, this uses alternate stats for items that have been tweaked for balance reasons");
             OutputVariableToConfig("ITEMS_WEAPON_DELAY_REDUCTION_AMT", ITEMS_WEAPON_DELAY_REDUCTION_AMT, "This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;");
             OutputVariableToConfig("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", ITEMS_WEAPON_EFFECT_PPM_BASE_RATE, "This is the base PPM (Procs Per Minute) used for weapon proc weapons");
@@ -1334,13 +1333,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("SQL_BROADCASTTEXT_ID_END", SQL_BROADCASTTEXT_ID_END, "");
             OutputVariableToConfig("SQL_CREATURE_GUID_LOW", SQL_CREATURE_GUID_LOW, "Record identifier for the creature sql table, need at least 31k", false);
             OutputVariableToConfig("SQL_CREATURE_GUID_HIGH", SQL_CREATURE_GUID_HIGH, "", false);
-            OutputVariableToConfig("SQL_CREATURE_GUID_DEBUG_LOW", SQL_CREATURE_GUID_DEBUG_LOW, "Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE", false);
-            OutputVariableToConfig("SQL_CREATURE_GUID_DEBUG_HIGH", SQL_CREATURE_GUID_DEBUG_HIGH, "");
             OutputVariableToConfig("SQL_CREATURETEMPLATE_ENTRY_LOW", SQL_CREATURETEMPLATE_ENTRY_LOW, "Record identifier for the creature template SQL table", false);
             OutputVariableToConfig("SQL_CREATURETEMPLATE_ENTRY_HIGH", SQL_CREATURETEMPLATE_ENTRY_HIGH, "", false);
             OutputVariableToConfig("SQL_CREATURETEMPLATE_GENERATED_START_ID", SQL_CREATURETEMPLATE_GENERATED_START_ID, "", false);
-            OutputVariableToConfig("SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW", SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW, "Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE", false);
-            OutputVariableToConfig("SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH", SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH, "");
             OutputVariableToConfig("SQL_GAMEOBJECT_GUID_ID_START", SQL_GAMEOBJECT_GUID_ID_START, "Start GUIDs for gameobjects", false);
             OutputVariableToConfig("SQL_GAMEOBJECT_GUID_ID_END", SQL_GAMEOBJECT_GUID_ID_END, "");
             OutputVariableToConfig("SQL_GAME_EVENTS_ID_START", SQL_GAME_EVENTS_ID_START, "IDs for events", false);
@@ -1582,7 +1577,6 @@ namespace EQWOWConverter
             CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS", configValuesByVariableName, CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS);
             CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD", configValuesByVariableName, CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
             CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT", configValuesByVariableName, CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT);
-            CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE = ReadVariableFromConfigString("CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE", configValuesByVariableName, CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE);
 
             ITEMS_USE_ALTERNATE_STATS = ReadVariableFromConfigString("ITEMS_USE_ALTERNATE_STATS", configValuesByVariableName, ITEMS_USE_ALTERNATE_STATS);
             ITEMS_WEAPON_DELAY_REDUCTION_AMT = ReadVariableFromConfigString("ITEMS_WEAPON_DELAY_REDUCTION_AMT", configValuesByVariableName, ITEMS_WEAPON_DELAY_REDUCTION_AMT);
@@ -1728,13 +1722,9 @@ namespace EQWOWConverter
             SQL_BROADCASTTEXT_ID_END = ReadVariableFromConfigString("SQL_BROADCASTTEXT_ID_END", configValuesByVariableName, SQL_BROADCASTTEXT_ID_END);
             SQL_CREATURE_GUID_LOW = ReadVariableFromConfigString("SQL_CREATURE_GUID_LOW", configValuesByVariableName, SQL_CREATURE_GUID_LOW);
             SQL_CREATURE_GUID_HIGH = ReadVariableFromConfigString("SQL_CREATURE_GUID_HIGH", configValuesByVariableName, SQL_CREATURE_GUID_HIGH);
-            SQL_CREATURE_GUID_DEBUG_LOW = ReadVariableFromConfigString("SQL_CREATURE_GUID_DEBUG_LOW", configValuesByVariableName, SQL_CREATURE_GUID_DEBUG_LOW);
-            SQL_CREATURE_GUID_DEBUG_HIGH = ReadVariableFromConfigString("SQL_CREATURE_GUID_DEBUG_HIGH", configValuesByVariableName, SQL_CREATURE_GUID_DEBUG_HIGH);
             SQL_CREATURETEMPLATE_ENTRY_LOW = ReadVariableFromConfigString("SQL_CREATURETEMPLATE_ENTRY_LOW", configValuesByVariableName, SQL_CREATURETEMPLATE_ENTRY_LOW);
             SQL_CREATURETEMPLATE_ENTRY_HIGH = ReadVariableFromConfigString("SQL_CREATURETEMPLATE_ENTRY_HIGH", configValuesByVariableName, SQL_CREATURETEMPLATE_ENTRY_HIGH);
             SQL_CREATURETEMPLATE_GENERATED_START_ID = ReadVariableFromConfigString("SQL_CREATURETEMPLATE_GENERATED_START_ID", configValuesByVariableName, SQL_CREATURETEMPLATE_GENERATED_START_ID);
-            SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW = ReadVariableFromConfigString("SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW", configValuesByVariableName, SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW);
-            SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH = ReadVariableFromConfigString("SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH", configValuesByVariableName, SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH);
             SQL_GAMEOBJECT_GUID_ID_START = ReadVariableFromConfigString("SQL_GAMEOBJECT_GUID_ID_START", configValuesByVariableName, SQL_GAMEOBJECT_GUID_ID_START);
             SQL_GAMEOBJECT_GUID_ID_END = ReadVariableFromConfigString("SQL_GAMEOBJECT_GUID_ID_END", configValuesByVariableName, SQL_GAMEOBJECT_GUID_ID_END);
             SQL_GAME_EVENTS_ID_START = ReadVariableFromConfigString("SQL_GAME_EVENTS_ID_START", configValuesByVariableName, SQL_GAME_EVENTS_ID_START);
