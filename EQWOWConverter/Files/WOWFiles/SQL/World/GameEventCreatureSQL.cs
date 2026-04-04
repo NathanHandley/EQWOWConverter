@@ -14,13 +14,19 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Text;
+
 namespace EQWOWConverter.WOWFiles
 {
     internal class GameEventCreatureSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
-            return string.Concat("DELETE FROM game_event_creature WHERE `guid` >= " + Configuration.SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.SQL_CREATURE_GUID_HIGH + ";");
+            StringBuilder sb = new StringBuilder();
+            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                sb.AppendLine("DELETE FROM game_event_creature WHERE `guid` >= " + Configuration.SQL_CREATURE_GUID_DEBUG_LOW.ToString() + " AND `guid` <= " + Configuration.SQL_CREATURE_GUID_DEBUG_HIGH + ";");
+            sb.Append("DELETE FROM game_event_creature WHERE `guid` >= " + Configuration.SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.SQL_CREATURE_GUID_HIGH + ";");
+            return string.Concat();
         }
 
         public void AddRow(int eventID, int creatureGUID, bool doSpawn)
