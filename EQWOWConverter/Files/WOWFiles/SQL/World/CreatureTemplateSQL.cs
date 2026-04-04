@@ -26,7 +26,8 @@ namespace EQWOWConverter.WOWFiles
         public override string DeleteRowSQL()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("DELETE FROM creature_template WHERE `entry` >= " + Configuration.SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH + ";");
+            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                sb.AppendLine("DELETE FROM creature_template WHERE `entry` >= " + Configuration.SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH + ";");
             sb.Append("DELETE FROM creature_template WHERE `entry` >= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH + ";");
             return sb.ToString();
         }

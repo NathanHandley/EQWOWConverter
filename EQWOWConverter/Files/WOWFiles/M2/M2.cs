@@ -239,6 +239,9 @@ namespace EQWOWConverter.WOWFiles
 
         private void SetEvents(ObjectModel wowObjectModel)
         {
+            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                return;
+
             if (wowObjectModel.ModelType == ObjectModelType.EquipmentHeldBow)
             {
                 M2Event eventBMD = new M2Event();
