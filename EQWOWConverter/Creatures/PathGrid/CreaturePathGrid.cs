@@ -22,8 +22,8 @@ namespace EQWOWConverter.Creatures
 
         public int GridID = 0;
         public string ZoneShortName = string.Empty;
-        public int Type = 0;
-        public int Type2 = 0;
+        public CreaturePathGridWanderType WanderType = CreaturePathGridWanderType.GridCircular;
+        public CreaturePathGridPauseType PauseType = CreaturePathGridPauseType.RandomHalf;
 
         public static List<CreaturePathGrid> GetPathGrids()
         {
@@ -45,8 +45,8 @@ namespace EQWOWConverter.Creatures
                 CreaturePathGrid newPathGrid = new CreaturePathGrid();
                 newPathGrid.GridID = int.Parse(columns["id"]);
                 newPathGrid.ZoneShortName = columns["zone_short_name"];
-                newPathGrid.Type = int.Parse(columns["Type"]);
-                newPathGrid.Type2 = int.Parse(columns["Type2"]);
+                newPathGrid.WanderType = (CreaturePathGridWanderType)int.Parse(columns["wander_type"]);
+                newPathGrid.PauseType = (CreaturePathGridPauseType)int.Parse(columns["pause_type"]);
                 PathGrids.Add(newPathGrid);
             }
         }

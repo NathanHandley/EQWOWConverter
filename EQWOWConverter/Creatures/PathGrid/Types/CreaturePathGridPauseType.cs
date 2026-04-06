@@ -1,5 +1,5 @@
 ﻿//  Author: Nathan Handley (nathanhandley@protonmail.com)
-//  Copyright (c) 2025 Nathan Handley
+//  Copyright (c) 2026 Nathan Handley
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,10 +16,10 @@
 
 namespace EQWOWConverter.Creatures
 {
-    internal enum CreatureMovementType : Int32
+    internal enum CreaturePathGridPauseType : Int32
     {
-        None = 0,
-        Random = 1,
-        Path = 2
+        RandomHalf = 0,
+        Full = 1,
+        RandomFull = 2
     }
 }
