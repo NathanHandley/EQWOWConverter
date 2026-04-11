@@ -18,23 +18,23 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreaturePathGrid
     {
-        private static List<CreaturePathGrid> PathGrids = new List<CreaturePathGrid>();
+        private static Dictionary<string, Dictionary<int, CreaturePathGrid>> PathGridByZoneNameAndGridID = new Dictionary<string, Dictionary<int, CreaturePathGrid>>();
 
         public int GridID = 0;
         public string ZoneShortName = string.Empty;
         public CreaturePathGridWanderType WanderType = CreaturePathGridWanderType.GridCircular;
         public CreaturePathGridPauseType PauseType = CreaturePathGridPauseType.RandomHalf;
 
-        public static List<CreaturePathGrid> GetPathGrids()
+        public static Dictionary<string, Dictionary<int, CreaturePathGrid>> GetAllPathGridsByZoneNameAndGridID()
         {
-            if (PathGrids.Count == 0)
+            if (PathGridByZoneNameAndGridID.Count == 0)
                 PopulatePathGrids();
-            return PathGrids;
+            return PathGridByZoneNameAndGridID;
         }
 
         private static void PopulatePathGrids()
         {
-            PathGrids.Clear();
+            PathGridByZoneNameAndGridID.Clear();
 
             string pathGridsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "PathGrids.csv");
             Logger.WriteDebug("Populating Path Grids list via file '" + pathGridsFile + "'");
@@ -47,7 +47,11 @@ namespace EQWOWConverter.Creatures
                 newPathGrid.ZoneShortName = columns["zone_short_name"];
                 newPathGrid.WanderType = (CreaturePathGridWanderType)int.Parse(columns["wander_type"]);
                 newPathGrid.PauseType = (CreaturePathGridPauseType)int.Parse(columns["pause_type"]);
-                PathGrids.Add(newPathGrid);
+
+                if (PathGridByZoneNameAndGridID.ContainsKey(newPathGrid.ZoneShortName) == false)
+                    PathGridByZoneNameAndGridID.Add(newPathGrid.ZoneShortName, new Dictionary<int, CreaturePathGrid>());
+                if (PathGridByZoneNameAndGridID[newPathGrid.ZoneShortName].ContainsKey(newPathGrid.GridID) == false)
+                    PathGridByZoneNameAndGridID[newPathGrid.ZoneShortName].Add(newPathGrid.GridID, newPathGrid);
             }
         }
     }

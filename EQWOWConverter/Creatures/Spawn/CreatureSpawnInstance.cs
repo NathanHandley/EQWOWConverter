@@ -14,8 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Events;
-
 namespace EQWOWConverter.Creatures
 {
     internal class CreatureSpawnInstance
@@ -35,6 +33,7 @@ namespace EQWOWConverter.Creatures
 
         public int MapID = 0;
         public int AreaID = 0;
+        private CreaturePathGrid PathGrid = new CreaturePathGrid();
         private List<CreaturePathGridEntry> PathGridEntries = new List<CreaturePathGridEntry>();
 
         public static Dictionary<int, CreatureSpawnInstance> GetSpawnInstanceListByID()
@@ -44,55 +43,10 @@ namespace EQWOWConverter.Creatures
             return SpawnInstanceListByID;
         }
 
-        public void SetPathGridEntries(List<CreaturePathGridEntry> pathGridEntries)
+        public void SetPathGridData(CreaturePathGrid pathGrid, List<CreaturePathGridEntry> pathGridEntries)
         {
-            if (pathGridEntries.Count == 0)
-                return;
-
-            // Sort the records first
-            pathGridEntries.Sort();
-
-            // Find the nearest grid node
-            int nearestPathGridEntryIndex = 0;
-            float nearestDistance = 5000f;
-            for (int i = 0; i < pathGridEntries.Count; i++)
-            {
-                CreaturePathGridEntry creaturePathGridEntry = pathGridEntries[i];
-                float dx = SpawnXPosition - creaturePathGridEntry.NodeX;
-                float dy = SpawnYPosition - creaturePathGridEntry.NodeY;
-                float dz = SpawnZPosition - creaturePathGridEntry.NodeZ;
-                float calcDistance = MathF.Sqrt(dx * dx + dy * dy + dz * dz);
-                if (calcDistance < nearestDistance)
-                {
-                    nearestDistance = calcDistance;
-                    nearestPathGridEntryIndex = i;
-                }
-            }
-
-            // Build a grid node list starting from the nearest
-            if (nearestPathGridEntryIndex == 0)
-            {
-                foreach (CreaturePathGridEntry creaturePathGridEntry in pathGridEntries)
-                    PathGridEntries.Add(new CreaturePathGridEntry(creaturePathGridEntry));
-            }
-            else
-            {
-                int curEntryNumber = 1;
-                for (int i = nearestPathGridEntryIndex; i < pathGridEntries.Count; ++i)
-                {
-                    CreaturePathGridEntry creaturePathGridEntry = new CreaturePathGridEntry(pathGridEntries[i]);
-                    creaturePathGridEntry.Number = curEntryNumber;
-                    curEntryNumber++;
-                    PathGridEntries.Add(creaturePathGridEntry);
-                }
-                for (int i = 0; i < pathGridEntries.Count - PathGridEntries.Count; ++i)
-                {
-                    CreaturePathGridEntry creaturePathGridEntry = new CreaturePathGridEntry(pathGridEntries[i]);
-                    creaturePathGridEntry.Number = curEntryNumber;
-                    curEntryNumber++;
-                    PathGridEntries.Add(creaturePathGridEntry);
-                }
-            }
+            PathGrid = pathGrid;
+            PathGridEntries = pathGridEntries;
         }
 
         public List<CreaturePathGridEntry> GetPathGridEntries()

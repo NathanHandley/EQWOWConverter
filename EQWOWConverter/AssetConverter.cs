@@ -1355,6 +1355,7 @@ namespace EQWOWConverter
 
             // Go through each spawn group and generate pools
             Logger.WriteInfo("Generating creature spawn pools...");
+            Dictionary<string, Dictionary<int, CreaturePathGrid>> pathGridByZoneNameAndGridID = CreaturePathGrid.GetAllPathGridsByZoneNameAndGridID();
             Dictionary<int, CreatureSpawnGroup> spawnGroupsByGroupID = CreatureSpawnGroup.GetSpawnGroupsByGroupID();
             foreach (var spawnGroup in spawnGroupsByGroupID)
             {
@@ -1471,8 +1472,19 @@ namespace EQWOWConverter
                             Logger.WriteDebug("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "' and mapID of '" + creatureSpawnInstance.MapID + "'");
                             continue;
                         }
+                        if (pathGridByZoneNameAndGridID.ContainsKey(creatureSpawnInstance.ZoneShortName) == false)
+                        {
+                            Logger.WriteDebug("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with zone short name of '" + creatureSpawnInstance.ZoneShortName + "'");
+                            continue;
+                        }
+                        if (pathGridByZoneNameAndGridID[creatureSpawnInstance.ZoneShortName].ContainsKey(creatureSpawnInstance.PathGridID) == false)
+                        {
+                            Logger.WriteDebug("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "'");
+                            continue;
+                        }
 
-                        creatureSpawnInstance.SetPathGridEntries(creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID][creatureSpawnInstance.MapID]);
+                        creatureSpawnInstance.SetPathGridData(pathGridByZoneNameAndGridID[creatureSpawnInstance.ZoneShortName][creatureSpawnInstance.PathGridID],
+                            creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID][creatureSpawnInstance.MapID]);
                     }
                 }
             }
