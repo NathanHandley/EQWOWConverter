@@ -403,16 +403,27 @@ namespace EQWOWConverter
             List<CreaturePathGridEntry> pathEntries = spawnInstance.GetPathGridEntries();
             CreatureMovementType movementType = CreatureMovementType.None;
 
-            if (pathEntries.Count > 0)
+            CreaturePathGridWanderType wanderType = spawnInstance.GetPathGrid().WanderType;
+            if (pathEntries.Count > 0 && wanderType != CreaturePathGridWanderType.None)
             {
-                int waypointGUID = guid * 1000;
-                creatureAddonSQL.AddRow(guid, waypointGUID, creatureTemplate.DefaultEmoteID);
-                for (int i = 0; i < pathEntries.Count; i++)
+                // Only about half of waypoint types are handled directly by the AzerothCore game engine
+                if (wanderType == CreaturePathGridWanderType.GridRandom10 || wanderType == CreaturePathGridWanderType.GridRandom
+                    || wanderType == CreaturePathGridWanderType.GridRand5LoS || wanderType == CreaturePathGridWanderType.GridRandomCenterPoint
+                    || wanderType == CreaturePathGridWanderType.GridRandomPath)
                 {
-                    CreaturePathGridEntry entry = pathEntries[i];
-                    waypointDataSQL.AddRow(waypointGUID, i + 1, entry.NodeX, entry.NodeY, entry.NodeZ, entry.PauseInSec * 1000);
+                    // TODO: Custom waypoint implementation
                 }
-                movementType = CreatureMovementType.Path;
+                else
+                {
+                    int waypointGUID = guid * 1000;
+                    creatureAddonSQL.AddRow(guid, waypointGUID, creatureTemplate.DefaultEmoteID);
+                    for (int i = 0; i < pathEntries.Count; i++)
+                    {
+                        CreaturePathGridEntry entry = pathEntries[i];
+                        waypointDataSQL.AddRow(waypointGUID, i + 1, entry.NodeX, entry.NodeY, entry.NodeZ, entry.PauseInSec * 1000);
+                    }
+                    movementType = CreatureMovementType.Path;
+                }
             }
             else
                 creatureAddonSQL.AddRow(guid, 0, creatureTemplate.DefaultEmoteID);

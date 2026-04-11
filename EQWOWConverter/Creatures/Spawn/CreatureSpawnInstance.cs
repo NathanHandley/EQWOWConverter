@@ -54,6 +54,11 @@ namespace EQWOWConverter.Creatures
             return PathGridEntries;
         }
 
+        public CreaturePathGrid GetPathGrid()
+        {
+            return PathGrid;
+        }
+
         private static void PopulateSpawnInstanceList()
         {
             string spawnDetailsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpawnInstances.csv");

@@ -21,6 +21,7 @@ namespace EQWOWConverter.Creatures
 {
     internal enum CreaturePathGridWanderType : Int32
     {
+        None = -1,
         GridCircular = 0, // Circle the points in order (IE 1 through 10); start back at first.
         GridRandom10 = 1, // Pick 10 random points from the grid set and cycle through.
         GridRandom = 2, // Random; every point is randomly selected from the entire grid set.
