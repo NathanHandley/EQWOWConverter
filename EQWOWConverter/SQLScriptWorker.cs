@@ -191,7 +191,7 @@ namespace EQWOWConverter
                     string comment = string.Concat(creatureTemplate.Name, " - EQ Debug Creature");                    
                     creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, creatureTemplate.SpawnWaypointDebugMapID, creatureTemplate.SpawnWaypointDebugAreaID,
                         creatureTemplate.SpawnWaypointDebugAreaID, creatureTemplate.SpawnWaypointDebugXPosition, creatureTemplate.SpawnWaypointDebugYPosition, 
-                        creatureTemplate.SpawnWaypointDebugZPosition, 0, CreatureMovementType.None, 0, comment);
+                        creatureTemplate.SpawnWaypointDebugZPosition, 0, CreatureMovementType.None,comment);
                     continue;
                 }
 
@@ -333,7 +333,7 @@ namespace EQWOWConverter
                     CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
                     int creatureSQLGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                     string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroupID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                    CreateCreatureAndRelatedSQLEntries(creatureSQLGUID, creatureTemplate, spawnInstance, spawnPool.RoamDistance, comment);
+                    CreateCreatureAndRelatedSQLEntries(creatureSQLGUID, creatureTemplate, spawnInstance, comment);
                     if (spawnPool.LinkedSpawnGameEvent != null)
                         gameEventCreatureSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, creatureSQLGUID, true);
                     if (spawnPool.LinkedDespawnGameEvent != null)
@@ -370,7 +370,7 @@ namespace EQWOWConverter
                             int guid = CreatureTemplate.GenerateCreatureSQLGUID();
                             poolCreatureSQL.AddRow(guid, poolID, chance, template.Name);
                             string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroupID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                            CreateCreatureAndRelatedSQLEntries(guid, template, spawnInstance, spawnPool.RoamDistance, comment);
+                            CreateCreatureAndRelatedSQLEntries(guid, template, spawnInstance, comment);
                         }
                     }
                     // Pooled multiple instances
@@ -390,7 +390,7 @@ namespace EQWOWConverter
                                 int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                                 poolCreatureSQL.AddRow(creatureGUID, subPoolID, chance, creatureTemplate.Name);
                                 string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroupID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                                CreateCreatureAndRelatedSQLEntries(creatureGUID, creatureTemplate, spawnInstance, spawnPool.RoamDistance, comment);
+                                CreateCreatureAndRelatedSQLEntries(creatureGUID, creatureTemplate, spawnInstance, comment);
                             }
                         }
                     }
@@ -398,13 +398,10 @@ namespace EQWOWConverter
             }
         }
 
-        private void CreateCreatureAndRelatedSQLEntries(int guid, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance,
-            float roamDistance, string comment)
+        private void CreateCreatureAndRelatedSQLEntries(int guid, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance, string comment)
         {
             List<CreaturePathGridEntry> pathEntries = spawnInstance.GetPathGridEntries();
             CreatureMovementType movementType = CreatureMovementType.None;
-            if (roamDistance > 1)
-                movementType = CreatureMovementType.Random;
 
             if (pathEntries.Count > 0)
             {
@@ -421,7 +418,7 @@ namespace EQWOWConverter
                 creatureAddonSQL.AddRow(guid, 0, creatureTemplate.DefaultEmoteID);
 
             creatureSQL.AddRow(guid, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
-                spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, roamDistance, comment);
+                spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment);
         }
 
         private void PopulateItemData(Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
@@ -961,7 +958,7 @@ namespace EQWOWConverter
                     int spiritHealerGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                     int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
                     creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID,
-                        graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 0, string.Empty);
+                        graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, string.Empty);
                 }
             }
 
