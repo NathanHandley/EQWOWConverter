@@ -23,10 +23,20 @@ namespace EQWOWConverter.Creatures
         public int ID = 0;
         public string Name = string.Empty;
         public int SpawnLimit = 0;
-        public float RoamDistance = 0;
+        public float RoamMinX = 0;
+        public float RoamMaxX = 0;
+        public float RoamMinY = 0;
+        public float RoamMaxY = 0;
         public int SpawnZoneEventID = 0;
         public int DespawnZoneEventID = 0;
         public string ZoneShortName = string.Empty;
+
+        public bool DoesRoam()
+        {
+            if (RoamMinX != 0 || RoamMaxX != 0 || RoamMinY != 0 || RoamMaxY != 0)
+                return true;
+            return false;
+        }
 
         public static Dictionary<int, CreatureSpawnGroup> GetSpawnGroupsByGroupID()
         {
@@ -52,15 +62,10 @@ namespace EQWOWConverter.Creatures
                 newSpawnGroup.DespawnZoneEventID = int.Parse(columns["despawn_zone_event_id"]);
 
                 // Calculate the wander distance
-                float maxX = float.Parse(columns["max_x"]);
-                float minX = float.Parse(columns["min_x"]);
-                float maxY = float.Parse(columns["max_y"]);
-                float minY = float.Parse(columns["min_y"]);
-                float xDistance = maxX - minX;
-                float yDistance = maxY - minY;
-                float minDistance = (MathF.Min(xDistance, yDistance) / 2) * Configuration.GENERATE_WORLD_SCALE;
-                if (minDistance > 1)
-                    newSpawnGroup.RoamDistance = minDistance;
+                newSpawnGroup.RoamMaxX = float.Parse(columns["max_x"]);
+                newSpawnGroup.RoamMinX = float.Parse(columns["min_x"]);
+                newSpawnGroup.RoamMaxY = float.Parse(columns["max_y"]);
+                newSpawnGroup.RoamMinY = float.Parse(columns["min_y"]);
 
                 SpawnGroupsByGroupID.Add(newSpawnGroup.ID, newSpawnGroup);
             }

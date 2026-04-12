@@ -40,13 +40,13 @@ namespace EQWOWConverter.WOWFiles
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int creatureGUID, CreaturePathGridWanderType wanderType, int pauseType, int mapID, int waypointID, bool doesRoam,
+        public void AddRow(int creatureGUID, CreaturePathGridWanderType wanderType, CreaturePathGridPauseType pauseType, int mapID, int waypointID, bool doesRoam,
             float roamMinX, float roamMaxX, float roamMinY, float roamMaxY)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatureGUID", creatureGUID);
             newRow.AddInt("WanderType", (int)wanderType);
-            newRow.AddInt("PauseType", pauseType);
+            newRow.AddInt("PauseType", (int)pauseType);
             newRow.AddInt("MapID", mapID);
             newRow.AddInt("WaypointID", waypointID);
             newRow.AddInt("DoesRoam", doesRoam == true ? 1 : 0);

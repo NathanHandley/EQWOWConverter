@@ -33,6 +33,7 @@ namespace EQWOWConverter.Creatures
 
         public int MapID = 0;
         public int AreaID = 0;
+        public CreatureSpawnGroup SpawnGroup = new CreatureSpawnGroup();
         private CreaturePathGrid PathGrid = new CreaturePathGrid();
         private List<CreaturePathGridEntry> PathGridEntries = new List<CreaturePathGridEntry>();
 

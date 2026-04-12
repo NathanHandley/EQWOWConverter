@@ -26,15 +26,14 @@ namespace EQWOWConverter.Creatures
         public List<CreatureSpawnInstance> CreatureSpawnInstances = new List<CreatureSpawnInstance>();
         public List<CreatureTemplate> CreatureTemplates = new List<CreatureTemplate>();
         public List<int> CreatureTemplateChances = new List<int>();
-        public float RoamDistance = 0;
         public int SpawnLimit = 0;
         public int SpawnGroupID = 0;
+        public CreatureSpawnGroup SpawnGroup = new CreatureSpawnGroup();
         public GameEvent? LinkedSpawnGameEvent = null;
         public GameEvent? LinkedDespawnGameEvent = null;
 
         public CreatureSpawnPool(CreatureSpawnGroup creatureSpawnGroup)
         {
-            RoamDistance = creatureSpawnGroup.RoamDistance;
             SpawnLimit = creatureSpawnGroup.SpawnLimit;
             SpawnGroupID = creatureSpawnGroup.ID;
         }

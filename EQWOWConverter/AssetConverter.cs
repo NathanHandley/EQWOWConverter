@@ -1434,6 +1434,7 @@ namespace EQWOWConverter
                 }
 
                 // Add it
+                curSpawnPool.SpawnGroup = spawnGroup.Value;
                 creatureSpawnPools.Add(curSpawnPool);
             }
 
@@ -1485,6 +1486,7 @@ namespace EQWOWConverter
 
                         creatureSpawnInstance.SetPathGridData(pathGridByZoneNameAndGridID[creatureSpawnInstance.ZoneShortName][creatureSpawnInstance.PathGridID],
                             creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID][creatureSpawnInstance.MapID]);
+                        creatureSpawnInstance.SpawnGroup = creatureSpawnPool.SpawnGroup;
                     }
                 }
             }

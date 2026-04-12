@@ -400,7 +400,8 @@ namespace EQWOWConverter
             }
         }
 
-        private void CreateCreatureAndRelatedSQLEntries(int guid, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance, string comment)
+        private static Dictionary<int, HashSet<int>> alreadySavedCustomWaypointGridIDsByMapID = new Dictionary<int, HashSet<int>>(); // Ensure only 1 of each waypoint set is saved
+        private void CreateCreatureAndRelatedSQLEntries(int creatureGUID, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance, string comment)
         {
             List<CreaturePathGridEntry> pathEntries = spawnInstance.GetPathGridEntries();
             CreatureMovementType movementType = CreatureMovementType.None;
@@ -413,12 +414,25 @@ namespace EQWOWConverter
                     || wanderType == CreaturePathGridWanderType.GridRand5LoS || wanderType == CreaturePathGridWanderType.GridRandomCenterPoint
                     || wanderType == CreaturePathGridWanderType.GridRandomPath)
                 {
-                    // TODO: Custom waypoint implementation
+                    creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
+                    if (alreadySavedCustomWaypointGridIDsByMapID.ContainsKey(spawnInstance.MapID) == false)
+                        alreadySavedCustomWaypointGridIDsByMapID.Add(spawnInstance.MapID, new HashSet<int>());
+                    if (alreadySavedCustomWaypointGridIDsByMapID[spawnInstance.MapID].Contains(pathEntries[0].GridID) == false)
+                    {
+                        for (int i = 0; i < pathEntries.Count; i++)
+                        {
+                            CreaturePathGridEntry entry = pathEntries[i];
+                            modEverquestCreatureWaypointSQL.AddRow(spawnInstance.MapID, entry.GridID, entry.Number, entry.NodeX, entry.NodeY, entry.NodeZ, entry.PauseInSec);
+                        }
+                        alreadySavedCustomWaypointGridIDsByMapID[spawnInstance.MapID].Add(pathEntries[0].GridID);
+                    }
+                    modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
+                        spawnInstance.SpawnGroup.DoesRoam(), spawnInstance.SpawnGroup.RoamMinX, spawnInstance.SpawnGroup.RoamMaxX, spawnInstance.SpawnGroup.RoamMinY, spawnInstance.SpawnGroup.RoamMaxY);
                 }
                 else
                 {
-                    int waypointGUID = guid * 1000;
-                    creatureAddonSQL.AddRow(guid, waypointGUID, creatureTemplate.DefaultEmoteID);
+                    int waypointGUID = creatureGUID * 1000;
+                    creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID);
                     for (int i = 0; i < pathEntries.Count; i++)
                     {
                         CreaturePathGridEntry entry = pathEntries[i];
@@ -428,9 +442,9 @@ namespace EQWOWConverter
                 }
             }
             else
-                creatureAddonSQL.AddRow(guid, 0, creatureTemplate.DefaultEmoteID);
+                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
 
-            creatureSQL.AddRow(guid, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
+            creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
                 spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment);
         }
 
