@@ -68,7 +68,9 @@ namespace EQWOWConverter
         private ItemLootTemplateSQL itemLootTemplateSQL = new ItemLootTemplateSQL();
         private ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
         private ModEverquestCreatureSQL modEverquestCreatureSQL = new ModEverquestCreatureSQL();
+        private ModEverquestCreatureInstanceSQL modEverquestCreatureInstanceSQL = new ModEverquestCreatureInstanceSQL();
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
+        private ModEverquestCreatureWaypointSQL modEverquestCreatureWaypointSQL = new ModEverquestCreatureWaypointSQL();
         private ModEverquestItemTemplateSQL modEverquestItemTemplateSQL = new ModEverquestItemTemplateSQL();
         private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
         private ModEverquestPlayerCreateInfoSQL modEverquestPlayerCreateInfoSQL = new ModEverquestPlayerCreateInfoSQL();
@@ -1076,7 +1078,9 @@ namespace EQWOWConverter
             itemLootTemplateSQL.SaveToDisk("item_loot_template", SQLFileType.World);
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
             modEverquestCreatureSQL.SaveToDisk("mod_everquest_creature", SQLFileType.World);
+            modEverquestCreatureInstanceSQL.SaveToDisk("mod_everquest_creature_instance", SQLFileType.World);
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
+            modEverquestCreatureWaypointSQL.SaveToDisk("mod_everquest_creature_waypoint", SQLFileType.World);
             modEverquestItemTemplateSQL.SaveToDisk("mod_everquest_item_template", SQLFileType.World);
             modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);
             modEverquestPlayerCreateInfoSQL.SaveToDisk("mod_everquest_playercreateinfo", SQLFileType.World);
