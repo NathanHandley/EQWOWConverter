@@ -30,7 +30,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`WanderType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`PauseType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`MapID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
-            stringBuilder.AppendLine("`PathGridID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`WaypointID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`DoesRoam` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`RoamMinX` FLOAT NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`RoamMaxX` FLOAT NOT NULL DEFAULT '0',");
@@ -40,7 +40,7 @@ namespace EQWOWConverter.WOWFiles
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int creatureGUID, CreaturePathGridWanderType wanderType, int pauseType, int mapID, int pathGridID, bool doesRoam,
+        public void AddRow(int creatureGUID, CreaturePathGridWanderType wanderType, int pauseType, int mapID, int waypointID, bool doesRoam,
             float roamMinX, float roamMaxX, float roamMinY, float roamMaxY)
         {
             SQLRow newRow = new SQLRow();
@@ -48,7 +48,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("WanderType", (int)wanderType);
             newRow.AddInt("PauseType", pauseType);
             newRow.AddInt("MapID", mapID);
-            newRow.AddInt("PathGridID", pathGridID);
+            newRow.AddInt("WaypointID", waypointID);
             newRow.AddInt("DoesRoam", doesRoam == true ? 1 : 0);
             newRow.AddFloat("RoamMinX", roamMinX);
             newRow.AddFloat("RoamMaxX", roamMaxX);

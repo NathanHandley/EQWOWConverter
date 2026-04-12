@@ -26,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
             if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                 sb.AppendLine("DELETE FROM game_event_creature WHERE `guid` >= " + Configuration.SQL_CREATURE_GUID_DEBUG_LOW.ToString() + " AND `guid` <= " + Configuration.SQL_CREATURE_GUID_DEBUG_HIGH + ";");
             sb.Append("DELETE FROM game_event_creature WHERE `guid` >= " + Configuration.SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.SQL_CREATURE_GUID_HIGH + ";");
-            return string.Concat();
+            return sb.ToString();
         }
 
         public void AddRow(int eventID, int creatureGUID, bool doSpawn)
