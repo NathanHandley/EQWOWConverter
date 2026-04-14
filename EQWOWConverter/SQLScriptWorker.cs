@@ -193,7 +193,7 @@ namespace EQWOWConverter
                     string comment = string.Concat(creatureTemplate.Name, " - EQ Debug Creature");                    
                     creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, creatureTemplate.SpawnWaypointDebugMapID, creatureTemplate.SpawnWaypointDebugAreaID,
                         creatureTemplate.SpawnWaypointDebugAreaID, creatureTemplate.SpawnWaypointDebugXPosition, creatureTemplate.SpawnWaypointDebugYPosition, 
-                        creatureTemplate.SpawnWaypointDebugZPosition, 0, CreatureMovementType.None,comment);
+                        creatureTemplate.SpawnWaypointDebugZPosition, 0, CreatureMovementType.None, comment, false);
                     continue;
                 }
 
@@ -428,6 +428,8 @@ namespace EQWOWConverter
                     }
                     modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
                         spawnInstance.SpawnGroup.DoesRoam(), spawnInstance.SpawnGroup.RoamMinX, spawnInstance.SpawnGroup.RoamMaxX, spawnInstance.SpawnGroup.RoamMinY, spawnInstance.SpawnGroup.RoamMaxY);
+                    creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
+                        spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment, true);
                 }
                 else
                 {
@@ -439,13 +441,16 @@ namespace EQWOWConverter
                         waypointDataSQL.AddRow(waypointGUID, i + 1, entry.NodeX, entry.NodeY, entry.NodeZ, entry.PauseInSec * 1000);
                     }
                     movementType = CreatureMovementType.Path;
+                    creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
+                        spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment, false);
                 }
             }
             else
+            {
+                creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
+                    spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment, false);
                 creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
-
-            creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
-                spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment);
+            }
         }
 
         private void PopulateItemData(Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
@@ -985,7 +990,7 @@ namespace EQWOWConverter
                     int spiritHealerGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                     int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
                     creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID,
-                        graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, string.Empty);
+                        graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, string.Empty, false);
                 }
             }
 

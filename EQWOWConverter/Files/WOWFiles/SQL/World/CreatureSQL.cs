@@ -31,7 +31,7 @@ namespace EQWOWConverter.WOWFiles
         }
 
         public void AddRow(int guid, int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition, 
-            float orientation, CreatureMovementType movementType, string comment)
+            float orientation, CreatureMovementType movementType, string comment, bool useModScript)
         {
             int currentWaypoint = 0;
             if (movementType == CreatureMovementType.Path)
@@ -61,7 +61,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("npcflag", 0);
             newRow.AddInt("unit_flags", 0);
             newRow.AddInt("dynamicflags", 0);
-            newRow.AddString("ScriptName", 64, string.Empty);
+            if (useModScript == true)
+                newRow.AddString("ScriptName", 64, "EverQuest_CreatureInstanceScript");
+            else
+                newRow.AddString("ScriptName", 64, string.Empty);
             newRow.AddInt("VerifiedBuild", 0);
             newRow.AddInt("CreateObject", 0);
             newRow.AddString("Comment", comment);
