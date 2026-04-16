@@ -27,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("DROP TABLE IF EXISTS `mod_everquest_creature_instance`; ");
             stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_creature_instance` ( ");
             stringBuilder.AppendLine("`CreatureGUID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
-            stringBuilder.AppendLine("`WanderType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`WanderType` INT(10) SIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`PauseType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`MapID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`WaypointID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
@@ -36,12 +36,14 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`RoamMaxX` FLOAT NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`RoamMinY` FLOAT NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`RoamMaxY` FLOAT NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`RoamMinDelayInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`RoamMaxDelayInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("PRIMARY KEY (`CreatureGUID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
         public void AddRow(int creatureGUID, CreaturePathGridWanderType wanderType, CreaturePathGridPauseType pauseType, int mapID, int waypointID, bool doesRoam,
-            float roamMinX, float roamMaxX, float roamMinY, float roamMaxY)
+            float roamMinX, float roamMaxX, float roamMinY, float roamMaxY, int roamMinDelayInMS, int roamMaxDelayInMS)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatureGUID", creatureGUID);
@@ -54,6 +56,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("RoamMaxX", roamMaxX);
             newRow.AddFloat("RoamMinY", roamMinY);
             newRow.AddFloat("RoamMaxY", roamMaxY);
+            newRow.AddInt("RoamMinDelayInMS", roamMinDelayInMS);
+            newRow.AddInt("RoamMaxDelayInMS", roamMaxDelayInMS);
             Rows.Add(newRow);
         }
     }

@@ -334,8 +334,8 @@ namespace EQWOWConverter
                     CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[0];
                     CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
                     int creatureSQLGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                    string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroupID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                    CreateCreatureAndRelatedSQLEntries(creatureSQLGUID, creatureTemplate, spawnInstance, comment);
+                    string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
+                    CreateCreatureAndRelatedSQLEntries(creatureSQLGUID, creatureTemplate, spawnInstance, spawnPool.SpawnGroup, comment);
                     if (spawnPool.LinkedSpawnGameEvent != null)
                         gameEventCreatureSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, creatureSQLGUID, true);
                     if (spawnPool.LinkedDespawnGameEvent != null)
@@ -348,7 +348,7 @@ namespace EQWOWConverter
                     foreach (CreatureTemplate template in spawnPool.CreatureTemplates)
                         if (poolNames.Contains(template.Name) == false)
                             poolNames.Add(template.Name);
-                    string poolDescription = "(" + spawnPool.SpawnGroupID + ")";
+                    string poolDescription = "(" + spawnPool.SpawnGroup.ID + ")";
                     foreach (string name in poolNames)
                         poolDescription += ", " + name;
                     int motherPoolID = CreatureSpawnPool.GetPoolTemplateSQLID();
@@ -371,8 +371,8 @@ namespace EQWOWConverter
                             int chance = spawnPool.CreatureTemplateChances[i];
                             int guid = CreatureTemplate.GenerateCreatureSQLGUID();
                             poolCreatureSQL.AddRow(guid, poolID, chance, template.Name);
-                            string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroupID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                            CreateCreatureAndRelatedSQLEntries(guid, template, spawnInstance, comment);
+                            string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
+                            CreateCreatureAndRelatedSQLEntries(guid, template, spawnInstance, spawnPool.SpawnGroup, comment);
                         }
                     }
                     // Pooled multiple instances
@@ -391,8 +391,8 @@ namespace EQWOWConverter
                                 int chance = spawnPool.CreatureTemplateChances[i];
                                 int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                                 poolCreatureSQL.AddRow(creatureGUID, subPoolID, chance, creatureTemplate.Name);
-                                string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroupID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                                CreateCreatureAndRelatedSQLEntries(creatureGUID, creatureTemplate, spawnInstance, comment);
+                                string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
+                                CreateCreatureAndRelatedSQLEntries(creatureGUID, creatureTemplate, spawnInstance, spawnPool.SpawnGroup, comment);
                             }
                         }
                     }
@@ -401,13 +401,21 @@ namespace EQWOWConverter
         }
 
         private static Dictionary<int, HashSet<int>> alreadySavedCustomWaypointGridIDsByMapID = new Dictionary<int, HashSet<int>>(); // Ensure only 1 of each waypoint set is saved
-        private void CreateCreatureAndRelatedSQLEntries(int creatureGUID, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance, string comment)
+        private void CreateCreatureAndRelatedSQLEntries(int creatureGUID, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance, CreatureSpawnGroup spawnGroup, string comment)
         {
             List<CreaturePathGridEntry> pathEntries = spawnInstance.GetPathGridEntries();
             CreatureMovementType movementType = CreatureMovementType.None;
-
             CreaturePathGridWanderType wanderType = spawnInstance.GetPathGrid().WanderType;
-            if (pathEntries.Count > 0 && wanderType != CreaturePathGridWanderType.None)
+
+            if (spawnGroup.DoesRoam() == true)
+            {
+                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
+                modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
+                    true, spawnGroup.RoamMinX, spawnGroup.RoamMaxX, spawnGroup.RoamMinY, spawnGroup.RoamMaxY, spawnGroup.RoamMinDelayInMS, spawnGroup.RoamMaxDelayInMS);
+                creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
+                    spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment, true);
+            }
+            else if (pathEntries.Count > 0 && wanderType != CreaturePathGridWanderType.None)
             {
                 // Only about half of waypoint types are handled directly by the AzerothCore game engine
                 if (wanderType == CreaturePathGridWanderType.GridRandom10 || wanderType == CreaturePathGridWanderType.GridRandom
@@ -427,7 +435,7 @@ namespace EQWOWConverter
                         alreadySavedCustomWaypointGridIDsByMapID[spawnInstance.MapID].Add(pathEntries[0].GridID);
                     }
                     modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
-                        spawnInstance.SpawnGroup.DoesRoam(), spawnInstance.SpawnGroup.RoamMinX, spawnInstance.SpawnGroup.RoamMaxX, spawnInstance.SpawnGroup.RoamMinY, spawnInstance.SpawnGroup.RoamMaxY);
+                        false, 0, 0, 0, 0, 0, 0);
                     creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
                         spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment, true);
                 }
@@ -447,9 +455,9 @@ namespace EQWOWConverter
             }
             else
             {
+                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
                     spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment, false);
-                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
             }
         }
 

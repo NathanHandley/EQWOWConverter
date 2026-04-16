@@ -1486,7 +1486,6 @@ namespace EQWOWConverter
 
                         creatureSpawnInstance.SetPathGridData(pathGridByZoneNameAndGridID[creatureSpawnInstance.ZoneShortName][creatureSpawnInstance.PathGridID],
                             creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID][creatureSpawnInstance.MapID]);
-                        creatureSpawnInstance.SpawnGroup = creatureSpawnPool.SpawnGroup;
                     }
                 }
             }

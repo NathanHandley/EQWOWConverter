@@ -27,6 +27,8 @@ namespace EQWOWConverter.Creatures
         public float RoamMaxX = 0;
         public float RoamMinY = 0;
         public float RoamMaxY = 0;
+        public int RoamMaxDelayInMS = 0;
+        public int RoamMinDelayInMS = 0;
         public int SpawnZoneEventID = 0;
         public int DespawnZoneEventID = 0;
         public string ZoneShortName = string.Empty;
@@ -61,11 +63,15 @@ namespace EQWOWConverter.Creatures
                 newSpawnGroup.SpawnZoneEventID = int.Parse(columns["spawn_zone_event_id"]);
                 newSpawnGroup.DespawnZoneEventID = int.Parse(columns["despawn_zone_event_id"]);
 
-                // Calculate the wander distance
-                newSpawnGroup.RoamMaxX = float.Parse(columns["max_x"]);
-                newSpawnGroup.RoamMinX = float.Parse(columns["min_x"]);
-                newSpawnGroup.RoamMaxY = float.Parse(columns["max_y"]);
-                newSpawnGroup.RoamMinY = float.Parse(columns["min_y"]);
+                // Roam data
+                newSpawnGroup.RoamMaxX = float.Parse(columns["max_x"]) * Configuration.GENERATE_WORLD_SCALE;
+                newSpawnGroup.RoamMinX = float.Parse(columns["min_x"]) * Configuration.GENERATE_WORLD_SCALE;
+                newSpawnGroup.RoamMaxY = float.Parse(columns["max_y"]) * Configuration.GENERATE_WORLD_SCALE;
+                newSpawnGroup.RoamMinY = float.Parse(columns["min_y"]) * Configuration.GENERATE_WORLD_SCALE;
+                newSpawnGroup.RoamMaxDelayInMS = int.Parse(columns["delay"]);
+                newSpawnGroup.RoamMinDelayInMS = int.Parse(columns["mindelay"]);
+                if (newSpawnGroup.RoamMaxDelayInMS < newSpawnGroup.RoamMinDelayInMS)
+                    newSpawnGroup.RoamMaxDelayInMS = newSpawnGroup.RoamMinDelayInMS;
 
                 SpawnGroupsByGroupID.Add(newSpawnGroup.ID, newSpawnGroup);
             }
