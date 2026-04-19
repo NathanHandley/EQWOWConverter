@@ -47,29 +47,55 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
+        public void AddRowDepopEventFromWaypoint(int creatureGUID, string comment)
+        {
+            AddRow(creatureGUID,
+                0,          // SMART_SCRIPT_TYPE_CREATURE = 0
+                109,        // SMART_EVENT_WAYPOINT_ENDED = 109
+                100,
+                0,          // PointID 0 = any
+                0,          // PathID 0 = any
+                0,
+                0,
+                0,
+                0,
+                41,         // SMART_ACTION_FORCE_DESPAWN
+                Configuration.CREATURE_WAYPOINT_DEPOP_DELAY_IN_MS,    // Time to stand at the end
+                0,
+                1,          // SMART_TARGET_SELF
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment
+            );
+        }
+
         public void AddRowForQuestCompleteTalkEvent(int creatureTemplateID, int groupID, int questID, string comment)
         {
             AddRow(creatureTemplateID,
-                   0,          // SMART_SCRIPT_TYPE_CREATURE = 0
-                   20,         // SMART_EVENT_REWARD_QUEST = 20
-                   100,
-                   questID,
-                   0,
-                   0,
-                   0,
-                   0,
-                   0,
-                   1,          // SMART_ACTION_TALK = 1
-                   groupID,
-                   0,
-                   7,          // SMART_TARGET_SELF = 1
-                   0,
-                   0,
-                   0,
-                   0,
-                   0,
-                   0,
-                   comment
+                0,          // SMART_SCRIPT_TYPE_CREATURE = 0
+                20,         // SMART_EVENT_REWARD_QUEST = 20
+                100,
+                questID,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,          // SMART_ACTION_TALK = 1
+                groupID,
+                0,
+                7,          // SMART_TARGET_ACTION_INVOKER
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment
             );
         }
 
@@ -103,26 +129,26 @@ namespace EQWOWConverter.WOWFiles
         {
             int recastDelayInMSMax = recastDelayInMS + Convert.ToInt32(Convert.ToSingle(recastDelayInMS) * Configuration.CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
             AddRow(creatureTemplateID,
-               0,          
-               0, // SMART_EVENT_UPDATE_IC
-               100,
-               1, // Initial delay in MS (minimum) - Set to 1 so it defaults after heals
-               1, // Initial delay in MS (maximum) - Set to 1 so it defaults after heals
-               recastDelayInMS, // Recast delay in MS (minimum)
-               recastDelayInMSMax, // Recast delay in MS (maximum)
-               0,
-               0,
-               11, // SMART_ACTION_CAST
-               wowSpellID,
-               96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
-               2, // SMART_TARGET_VICTIM
-               0,
-               0,
-               0,
-               0,
-               0,
-               0,
-               comment
+                0,          
+                0, // SMART_EVENT_UPDATE_IC
+                100,
+                1, // Initial delay in MS (minimum) - Set to 1 so it defaults after heals
+                1, // Initial delay in MS (maximum) - Set to 1 so it defaults after heals
+                recastDelayInMS, // Recast delay in MS (minimum)
+                recastDelayInMSMax, // Recast delay in MS (maximum)
+                0,
+                0,
+                11, // SMART_ACTION_CAST
+                wowSpellID,
+                96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
+                2, // SMART_TARGET_VICTIM
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment
             );
         }
 
@@ -131,26 +157,26 @@ namespace EQWOWConverter.WOWFiles
         {
             int recastDelayInMSMax = recastDelayInMS + Convert.ToInt32(Convert.ToSingle(recastDelayInMS) * Configuration.CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
             AddRow(creatureTemplateID,
-               0,
-               74, // SMART_EVENT_FRIENDLY_HEALTH_PCT
-               100,
-               0, // Initial delay in MS (minimum)
-               0, // Initial delay in MS (maximum)
-               recastDelayInMS,
-               recastDelayInMSMax,
-               Configuration.CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT, // HP Min %
-               range,
-               11, // SMART_ACTION_CAST
-               wowSpellID,
-               33, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_INTERRUPT_PREVIOUS (1)
-               7, // SMART_TARGET_ACTION_INVOKER
-               0,
-               0,
-               0,
-               0,
-               0,
-               0,
-               comment
+                0,
+                74, // SMART_EVENT_FRIENDLY_HEALTH_PCT
+                100,
+                0, // Initial delay in MS (minimum)
+                0, // Initial delay in MS (maximum)
+                recastDelayInMS,
+                recastDelayInMSMax,
+                Configuration.CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT, // HP Min %
+                range,
+                11, // SMART_ACTION_CAST
+                wowSpellID,
+                33, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_INTERRUPT_PREVIOUS (1)
+                7, // SMART_TARGET_ACTION_INVOKER
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment
             );
         }
 
@@ -159,52 +185,52 @@ namespace EQWOWConverter.WOWFiles
             int addedDelayRandomValue = RandomGenerator.Next(0, Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS);
 
             AddRow(creatureTemplateID,
-               0,
-               1, // SMART_EVENT_UPDATE_OOC
-               100,
-               Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS + addedDelayRandomValue, // Initial delay in MS (minimum)
-               Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS + addedDelayRandomValue, // Initial delay in MS (maximum)
-               recastDelayInMS, // Recast delay in MS (minimum)
-               recastDelayInMS, // Recast delay in MS (maximum)
-               0,
-               0,
-               11, // SMART_ACTION_CAST
-               wowSpellID,
-               96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
-               1, // SMART_TARGET_SELF
-               0,
-               0,
-               0,
-               0,
-               0,
-               0,
-               comment
+                0,
+                1, // SMART_EVENT_UPDATE_OOC
+                100,
+                Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS + addedDelayRandomValue, // Initial delay in MS (minimum)
+                Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS + addedDelayRandomValue, // Initial delay in MS (maximum)
+                recastDelayInMS, // Recast delay in MS (minimum)
+                recastDelayInMS, // Recast delay in MS (maximum)
+                0,
+                0,
+                11, // SMART_ACTION_CAST
+                wowSpellID,
+                96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
+                1, // SMART_TARGET_SELF
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment
             );
         }
 
         public void AddRowForCreatureTemplateCastOnAgro(int creatureTemplateID, int chance, int wowSpellID, string comment)
         {
             AddRow(creatureTemplateID,
-               0,
-               4, // SMART_EVENT_AGGRO
-               chance,
-               0,
-               0,
-               0,
-               0,
-               0,
-               0,
-               11, // SMART_ACTION_CAST
-               wowSpellID,
-               64, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting)
-               2, // SMART_TARGET_VICTIM
-               0,
-               0,
-               0,
-               0,
-               0,
-               0,
-               comment
+                0,
+                4, // SMART_EVENT_AGGRO
+                chance,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                11, // SMART_ACTION_CAST
+                wowSpellID,
+                64, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting)
+                2, // SMART_TARGET_VICTIM
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment
             );
         }
 
@@ -212,26 +238,26 @@ namespace EQWOWConverter.WOWFiles
         {
             // Damage event
             AddRow(creatureTemplateID,
-               0,
-               33, // SMART_EVENT_DAMAGED_TARGET
-               chance,
-               0, // Min Damage
-               1000000, // Max Damage (ensures always happens
-               0,
-               0,
-               0,
-               0,
-               11, // SMART_ACTION_CAST
-               wowSpellID,
-               64, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting)
-               2, // SMART_TARGET_VICTIM
-               0,
-               0,
-               0,
-               0,
-               0,
-               0,
-               comment
+                0,
+                33, // SMART_EVENT_DAMAGED_TARGET
+                chance,
+                0, // Min Damage
+                1000000, // Max Damage (ensures always happens
+                0,
+                0,
+                0,
+                0,
+                11, // SMART_ACTION_CAST
+                wowSpellID,
+                64, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting)
+                2, // SMART_TARGET_VICTIM
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment
             );
 
             //// Spell Visual

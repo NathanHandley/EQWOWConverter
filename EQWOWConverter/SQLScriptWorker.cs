@@ -443,10 +443,55 @@ namespace EQWOWConverter
                 {
                     int waypointGUID = creatureGUID * 1000;
                     creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID);
-                    for (int i = 0; i < pathEntries.Count; i++)
+                    switch (wanderType)
                     {
-                        CreaturePathGridEntry entry = pathEntries[i];
-                        waypointDataSQL.AddRow(waypointGUID, i + 1, entry.NodeX, entry.NodeY, entry.NodeZ, entry.PauseInSec * 1000);
+                        case CreaturePathGridWanderType.GridCircular:
+                        case CreaturePathGridWanderType.GridCenterPoint:
+                            {
+                                for (int i = 0; i < pathEntries.Count; i++)
+                                {
+                                    CreaturePathGridEntry entry = pathEntries[i];
+                                    waypointDataSQL.AddRow(waypointGUID, i + 1, entry.NodeX, entry.NodeY, entry.NodeZ, entry.PauseInSec * 1000);
+                                }
+                            } break;
+                        case CreaturePathGridWanderType.GridPatrol:
+                            {
+                                int pointID = 1;
+                                for (int i = 0; i < pathEntries.Count; i++)
+                                {
+                                    CreaturePathGridEntry entry = pathEntries[i];
+                                    int pauseInMS = entry.PauseInSec * 1000;
+                                    waypointDataSQL.AddRow(waypointGUID, pointID, entry.NodeX, entry.NodeY, entry.NodeZ, pauseInMS);
+                                    pointID++;
+                                }
+                                for (int i = pathEntries.Count - 2; i >= 0; i--)
+                                {
+                                    CreaturePathGridEntry entry = pathEntries[i];
+                                    int pauseInMS = entry.PauseInSec * 1000;
+                                    if (i == 0)
+                                        pauseInMS = 0;
+                                    waypointDataSQL.AddRow(waypointGUID, pointID, entry.NodeX, entry.NodeY, entry.NodeZ, pauseInMS);
+                                    pointID++;
+                                }
+                            } break;
+                        case CreaturePathGridWanderType.GridOneWayRepop:
+                        case CreaturePathGridWanderType.GridOneWayDepop:
+                            {
+                                for (int i = 0; i < pathEntries.Count; i++)
+                                {
+                                    CreaturePathGridEntry entry = pathEntries[i];
+                                    int pauseInMS = entry.PauseInSec * 1000;
+                                    if (i == pathEntries.Count - 1)
+                                        pauseInMS = Math.Max(pauseInMS, Configuration.CREATURE_WAYPOINT_DEPOP_DELAY_IN_MS);
+                                    waypointDataSQL.AddRow(waypointGUID, i + 1, entry.NodeX, entry.NodeY, entry.NodeZ, pauseInMS);
+                                }
+                                string scriptComment = string.Concat("EQ Waypoint Depop ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") spawn group ", spawnGroup.ID.ToString());
+                                smartScriptsSQL.AddRowDepopEventFromWaypoint(creatureGUID, scriptComment);
+                            } break;
+                        default:
+                            {
+                                Logger.WriteError("CreateCreatureAndRelatedSQLEntries error, unhandled wanderType of '", wanderType.ToString(), "' for spawn group '", spawnGroup.ID.ToString(), "'");
+                            } break;
                     }
                     movementType = CreatureMovementType.Path;
                     creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,

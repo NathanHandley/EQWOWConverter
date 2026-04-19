@@ -1483,9 +1483,31 @@ namespace EQWOWConverter
                             Logger.WriteDebug("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "'");
                             continue;
                         }
+                        CreaturePathGrid curPathGrid = pathGridByZoneNameAndGridID[creatureSpawnInstance.ZoneShortName][creatureSpawnInstance.PathGridID];
+                        creatureSpawnInstance.SetPathGridData(curPathGrid, creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID][creatureSpawnInstance.MapID]);
+                    }
+                }
+            }
 
-                        creatureSpawnInstance.SetPathGridData(pathGridByZoneNameAndGridID[creatureSpawnInstance.ZoneShortName][creatureSpawnInstance.PathGridID],
-                            creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID][creatureSpawnInstance.MapID]);
+            // Set script settings for any creatures in a smartscript bound despawn event
+            foreach (var spawnGroup in spawnGroupsByGroupID)
+            {
+                if (creatureSpawnInstancesByGroupID.ContainsKey(spawnGroup.Key) == false)
+                    continue;
+                if (creatureSpawnEntriesByGroupID.ContainsKey(spawnGroup.Key) == false)
+                    continue;
+
+                foreach (CreatureSpawnInstance spawnInstance in creatureSpawnInstancesByGroupID[spawnGroup.Key])
+                {
+                    if (spawnInstance.GetPathGrid().WanderType == CreaturePathGridWanderType.GridOneWayRepop || spawnInstance.GetPathGrid().WanderType == CreaturePathGridWanderType.GridOneWayDepop)
+                    {
+                        foreach (CreatureSpawnEntry spawnEntry in creatureSpawnEntriesByGroupID[spawnGroup.Key])
+                        {
+                            if (creatureTemplatesByEQID.ContainsKey(spawnEntry.EQCreatureTemplateID) == true)
+                            {
+                                creatureTemplatesByEQID[spawnEntry.EQCreatureTemplateID].HasSmartScript = true;
+                            }
+                        }
                     }
                 }
             }
