@@ -477,16 +477,18 @@ namespace EQWOWConverter
                         case CreaturePathGridWanderType.GridOneWayRepop:
                         case CreaturePathGridWanderType.GridOneWayDepop:
                             {
+                                int pointID = 0;
                                 for (int i = 0; i < pathEntries.Count; i++)
                                 {
                                     CreaturePathGridEntry entry = pathEntries[i];
                                     int pauseInMS = entry.PauseInSec * 1000;
                                     if (i == pathEntries.Count - 1)
                                         pauseInMS = Math.Max(pauseInMS, Configuration.CREATURE_WAYPOINT_DEPOP_DELAY_IN_MS);
+                                    pointID++;
                                     waypointDataSQL.AddRow(waypointGUID, i + 1, entry.NodeX, entry.NodeY, entry.NodeZ, pauseInMS);
                                 }
                                 string scriptComment = string.Concat("EQ Waypoint Depop ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") spawn group ", spawnGroup.ID.ToString());
-                                smartScriptsSQL.AddRowDepopEventFromWaypoint(creatureGUID, scriptComment);
+                                smartScriptsSQL.AddRowDepopEventFromWaypoint(creatureGUID, waypointGUID, pointID, scriptComment);
                             } break;
                         default:
                             {

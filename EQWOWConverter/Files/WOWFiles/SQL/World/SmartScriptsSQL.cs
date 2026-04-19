@@ -47,22 +47,22 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
-        public void AddRowDepopEventFromWaypoint(int creatureGUID, string comment)
+        public void AddRowDepopEventFromWaypoint(int creatureGUID, int pathID, int waypointNumber, string comment)
         {
-            AddRow(creatureGUID,
-                0,          // SMART_SCRIPT_TYPE_CREATURE = 0
-                109,        // SMART_EVENT_WAYPOINT_ENDED = 109
+            AddRow(creatureGUID * -1,
+                0,          // SMART_SCRIPT_TYPE_CREATURE
+                108,        // SMART_EVENT_WAYPOINT_REACHED
                 100,
-                0,          // PointID 0 = any
-                0,          // PathID 0 = any
+                waypointNumber,     // PointID
+                pathID,             // PathID
                 0,
                 0,
                 0,
                 0,
                 41,         // SMART_ACTION_FORCE_DESPAWN
-                Configuration.CREATURE_WAYPOINT_DEPOP_DELAY_IN_MS,    // Time to stand at the end
-                0,
-                1,          // SMART_TARGET_SELF
+                Configuration.CREATURE_WAYPOINT_DEPOP_DELAY_IN_MS,    // Time to stand at the end (in MS)
+                0,          // Force Respawn Timer (in seconds)
+                7,          // SMART_TARGET_ACTION_INVOKER
                 0,
                 0,
                 0,

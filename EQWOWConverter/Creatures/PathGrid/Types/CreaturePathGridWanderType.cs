@@ -28,7 +28,7 @@ namespace EQWOWConverter.Creatures
         GridPatrol = 3, // Patrol; walk way points in order (i.e. 1 through 10) and then reverse order (i.e. 10 through 1).
         GridOneWayRepop = 4, // Go to the end and depop with spawn timer; walk waypoints in order (i.e. 1 through 10), depop at final point, and repop at initial point after spawn timer.
         GridRand5LoS = 5, // Pick random closest 5 and pick one that's in line of sight.
-        GridOneWayDepop = 6, // Go the end and depop without spawn timer; walk waypoints in order (i.e. 1 through 10) and then depop.
+        GridOneWayDepop = 6, // Go the end and depop without spawn timer; walk waypoints in order (i.e. 1 through 10) and then depop. (Boats in EQ use these, but not needed here)
         GridCenterPoint = 7, // Initial point as the center, fan out to each grid point creating a "star burst" like pattern (1 - 2 - 1 - 4 - 1 - 3 - 1 - 5, etc.).
         GridRandomCenterPoint = 8, // Initial point as the center, fan out to a random grid point. Causes an NPC to alternate between a random waypoint in grid_entries and a random waypoint marked with the center point column set to true. If no waypoints are marked as a center point, this wander type will not work. There is no numbering requirement or limit for center points--you can have as many as you need.
         GridRandomPath = 9, // Randomly select a waypoint but follow path to it instead of walk directly to it ignoring walls.
