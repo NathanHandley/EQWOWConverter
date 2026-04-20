@@ -74,7 +74,7 @@ namespace EQWOWConverter
         // Core
         // ====================================================================
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CORE_MOD_VERSION = 6;
+        public static int CORE_MOD_VERSION = 7;
         
         // Plays a beep sound when the generate completes if set to true
         public static bool CORE_CONSOLE_BEEP_ON_COMPLETE = true;
@@ -463,9 +463,6 @@ namespace EQWOWConverter
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
         public static bool CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE = false;
-
-        // Minimum time that elapses when a creature on a depop waypoint path will stand at the end before disappearing
-        public static int CREATURE_WAYPOINT_DEPOP_DELAY_IN_MS = 5000;
 
         //=====================================================================
         // Items
@@ -1192,7 +1189,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS", CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS, "");
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD", CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD, "How much time to add the the max recast delay for combat spells so that there's a bit of variation");
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT", CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT, "At what level of life a creature should cast a heal spell, if they have one");
-            OutputVariableToConfig("CREATURE_WAYPOINT_DEPOP_DELAY_IN_MS", CREATURE_WAYPOINT_DEPOP_DELAY_IN_MS, "Minimum time that elapses when a creature on a depop waypoint path will stand at the end before disappearing");
             OutputVariableToConfig("ITEMS_USE_ALTERNATE_STATS", ITEMS_USE_ALTERNATE_STATS, "If true, this uses alternate stats for items that have been tweaked for balance reasons");
             OutputVariableToConfig("ITEMS_WEAPON_DELAY_REDUCTION_AMT", ITEMS_WEAPON_DELAY_REDUCTION_AMT, "This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;");
             OutputVariableToConfig("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", ITEMS_WEAPON_EFFECT_PPM_BASE_RATE, "This is the base PPM (Procs Per Minute) used for weapon proc weapons");
@@ -1581,7 +1577,6 @@ namespace EQWOWConverter
             CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS", configValuesByVariableName, CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS);
             CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD", configValuesByVariableName, CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
             CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT", configValuesByVariableName, CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT);
-            CREATURE_WAYPOINT_DEPOP_DELAY_IN_MS = ReadVariableFromConfigString("CREATURE_WAYPOINT_DEPOP_DELAY_IN_MS", configValuesByVariableName, CREATURE_WAYPOINT_DEPOP_DELAY_IN_MS);
 
             ITEMS_USE_ALTERNATE_STATS = ReadVariableFromConfigString("ITEMS_USE_ALTERNATE_STATS", configValuesByVariableName, ITEMS_USE_ALTERNATE_STATS);
             ITEMS_WEAPON_DELAY_REDUCTION_AMT = ReadVariableFromConfigString("ITEMS_WEAPON_DELAY_REDUCTION_AMT", configValuesByVariableName, ITEMS_WEAPON_DELAY_REDUCTION_AMT);

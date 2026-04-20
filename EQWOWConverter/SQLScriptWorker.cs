@@ -443,6 +443,7 @@ namespace EQWOWConverter
                 {
                     int waypointGUID = creatureGUID * 1000;
                     creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID);
+                    bool useModScript = false;
                     switch (wanderType)
                     {
                         case CreaturePathGridWanderType.GridCircular:
@@ -482,13 +483,15 @@ namespace EQWOWConverter
                                 {
                                     CreaturePathGridEntry entry = pathEntries[i];
                                     int pauseInMS = entry.PauseInSec * 1000;
-                                    if (i == pathEntries.Count - 1)
-                                        pauseInMS = Math.Max(pauseInMS, Configuration.CREATURE_WAYPOINT_DEPOP_DELAY_IN_MS);
                                     pointID++;
-                                    waypointDataSQL.AddRow(waypointGUID, i + 1, entry.NodeX, entry.NodeY, entry.NodeZ, pauseInMS);
+                                    waypointDataSQL.AddRow(waypointGUID, pointID, entry.NodeX, entry.NodeY, entry.NodeZ, pauseInMS);
                                 }
-                                string scriptComment = string.Concat("EQ Waypoint Depop ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") spawn group ", spawnGroup.ID.ToString());
-                                smartScriptsSQL.AddRowDepopEventFromWaypoint(creatureGUID, waypointGUID, pointID, scriptComment);
+                                // Duplicate last node for a despawn event
+                                CreaturePathGridEntry lastEntryCopy = pathEntries[pathEntries.Count - 1];
+                                waypointDataSQL.AddRow(waypointGUID, pointID + 1, lastEntryCopy.NodeX, lastEntryCopy.NodeY, lastEntryCopy.NodeZ, 0);
+                                modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
+                                    false, 0, 0, 0, 0, 0, 0, pointID + 1);
+                                useModScript = true;
                             } break;
                         default:
                             {
@@ -497,7 +500,7 @@ namespace EQWOWConverter
                     }
                     movementType = CreatureMovementType.Path;
                     creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
-                        spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment, false);
+                        spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment, useModScript);
                 }
             }
             else
