@@ -36,6 +36,8 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`RoamMaxX` FLOAT NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`RoamMinY` FLOAT NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`RoamMaxY` FLOAT NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`RoamMinZ` FLOAT NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`RoamMaxZ` FLOAT NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`RoamMinDelayInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`RoamMaxDelayInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`DespawnAtWaypointNum` INT(10) SIGNED NOT NULL DEFAULT '-1', ");
@@ -44,7 +46,7 @@ namespace EQWOWConverter.WOWFiles
         }
 
         public void AddRow(int creatureGUID, CreaturePathGridWanderType wanderType, CreaturePathGridPauseType pauseType, int mapID, int waypointID, bool doesRoam,
-            float roamMinX, float roamMaxX, float roamMinY, float roamMaxY, int roamMinDelayInMS, int roamMaxDelayInMS, int despawnAtWaypointID = -1)
+            float roamMinX, float roamMaxX, float roamMinY, float roamMaxY, float roamMinZ, float roamMaxZ, int roamMinDelayInMS, int roamMaxDelayInMS, int despawnAtWaypointID = -1)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatureGUID", creatureGUID);
@@ -57,6 +59,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("RoamMaxX", roamMaxX);
             newRow.AddFloat("RoamMinY", roamMinY);
             newRow.AddFloat("RoamMaxY", roamMaxY);
+            newRow.AddFloat("RoamMinZ", roamMinZ);
+            newRow.AddFloat("RoamMaxZ", roamMaxZ);
             newRow.AddInt("RoamMinDelayInMS", roamMinDelayInMS);
             newRow.AddInt("RoamMaxDelayInMS", roamMaxDelayInMS);
             newRow.AddInt("DespawnAtWaypointNum", despawnAtWaypointID);

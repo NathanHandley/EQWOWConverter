@@ -411,7 +411,8 @@ namespace EQWOWConverter
             {
                 creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
                 modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
-                    true, spawnGroup.RoamMinX, spawnGroup.RoamMaxX, spawnGroup.RoamMinY, spawnGroup.RoamMaxY, spawnGroup.RoamMinDelayInMS, spawnGroup.RoamMaxDelayInMS);
+                    true, spawnGroup.RoamMinX, spawnGroup.RoamMaxX, spawnGroup.RoamMinY, spawnGroup.RoamMaxY, spawnGroup.RoamMinZ, spawnGroup.RoamMaxZ, spawnGroup.RoamMinDelayInMS, 
+                    spawnGroup.RoamMaxDelayInMS);
                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
                     spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment, true);
             }
@@ -435,7 +436,7 @@ namespace EQWOWConverter
                         alreadySavedCustomWaypointGridIDsByMapID[spawnInstance.MapID].Add(pathEntries[0].GridID);
                     }
                     modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
-                        false, 0, 0, 0, 0, 0, 0);
+                        false, 0, 0, 0, 0, 0, 0, 0, 0);
                     creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
                         spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment, true);
                 }
@@ -490,7 +491,7 @@ namespace EQWOWConverter
                                 CreaturePathGridEntry lastEntryCopy = pathEntries[pathEntries.Count - 1];
                                 waypointDataSQL.AddRow(waypointGUID, pointID + 1, lastEntryCopy.NodeX, lastEntryCopy.NodeY, lastEntryCopy.NodeZ, 0);
                                 modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
-                                    false, 0, 0, 0, 0, 0, 0, pointID + 1);
+                                    false, 0, 0, 0, 0, 0, 0, 0, 0, pointID + 1);
                                 useModScript = true;
                             } break;
                         default:

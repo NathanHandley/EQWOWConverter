@@ -27,6 +27,8 @@ namespace EQWOWConverter.Creatures
         public float RoamMaxX = 0;
         public float RoamMinY = 0;
         public float RoamMaxY = 0;
+        public float RoamMinZ = 0;
+        public float RoamMaxZ = 0;
         public int RoamMaxDelayInMS = 0;
         public int RoamMinDelayInMS = 0;
         public int SpawnZoneEventID = 0;
@@ -68,6 +70,8 @@ namespace EQWOWConverter.Creatures
                 newSpawnGroup.RoamMinX = float.Parse(columns["min_x"]) * Configuration.GENERATE_WORLD_SCALE;
                 newSpawnGroup.RoamMaxY = float.Parse(columns["max_y"]) * Configuration.GENERATE_WORLD_SCALE;
                 newSpawnGroup.RoamMinY = float.Parse(columns["min_y"]) * Configuration.GENERATE_WORLD_SCALE;
+                newSpawnGroup.RoamMaxZ = float.Parse(columns["max_z"]) * Configuration.GENERATE_WORLD_SCALE;
+                newSpawnGroup.RoamMinZ = float.Parse(columns["min_z"]) * Configuration.GENERATE_WORLD_SCALE;
                 newSpawnGroup.RoamMaxDelayInMS = int.Parse(columns["delay"]);
                 newSpawnGroup.RoamMinDelayInMS = int.Parse(columns["mindelay"]);
                 if (newSpawnGroup.RoamMaxDelayInMS < newSpawnGroup.RoamMinDelayInMS)
