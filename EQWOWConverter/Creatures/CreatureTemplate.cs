@@ -29,6 +29,7 @@ namespace EQWOWConverter.Creatures
         private static Dictionary<(string, string), List<CreatureTemplate>> CreatureTemplatesBySpawnZonesAndName = new Dictionary<(string, string), List<CreatureTemplate>>();
         private static readonly object CreatureTemplateLock = new object();
 
+        public bool IsWaypointDebugCreature = false;
         public int EQCreatureTemplateID = 0;
         public int WOWCreatureTemplateID = 0;
         public string Name = string.Empty; // Restrict to 100 characters
@@ -79,7 +80,7 @@ namespace EQWOWConverter.Creatures
         public bool IsPet = false;
         public float ModelTemplateScale = 1.0f; // Used for form changes
 
-        private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
+        private static int CURRENT_SQL_CREATURE_GUID = -1;
         private static int CURRENT_SQL_CREATURE_TEMPLATE_GUID = Configuration.SQL_CREATURETEMPLATE_GENERATED_START_ID;
         private static int CURRENT_CREATURE_EQID = 200000;
 
@@ -113,8 +114,13 @@ namespace EQWOWConverter.Creatures
 
         public static int GenerateCreatureSQLGUID()
         {
-            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true && CURRENT_SQL_CREATURE_GUID < Configuration.SQL_CREATURE_GUID_DEBUG_LOW)
-                CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_DEBUG_LOW;
+            if (CURRENT_SQL_CREATURE_GUID == -1)
+            {
+                if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                    CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_DEBUG_LOW;
+                else
+                    CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
+            }
             int returnGUID = CURRENT_SQL_CREATURE_GUID;
             CURRENT_SQL_CREATURE_GUID++;
             return returnGUID;
@@ -164,10 +170,6 @@ namespace EQWOWConverter.Creatures
         {
             lock (CreatureTemplateLock)
             {
-                // Do nothing if in the spawn/waypoint debug mode
-                if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
-                    return;
-
                 // Grab the baselines
                 PopulateStatBaselinesByLevel();
 
@@ -661,6 +663,7 @@ namespace EQWOWConverter.Creatures
             newCreatureTemplate.SpawnZones = zoneShortName;
             newCreatureTemplate.SpawnWaypointDebugMapID = mapID;
             newCreatureTemplate.SpawnWaypointDebugAreaID = areaID;
+            newCreatureTemplate.IsWaypointDebugCreature = true;
             CreatureTemplateListByWOWID.Add(SPAWN_WAYPOINT_DEBUG_SQL_CREATURE_TEMPLATE_GUID, newCreatureTemplate);
 
             SPAWN_WAYPOINT_DEBUG_SQL_CREATURE_TEMPLATE_GUID++;

@@ -825,8 +825,8 @@ namespace EQWOWConverter
         // Record identifier for the creature sql table, need at least 31k
         public static int SQL_CREATURE_GUID_LOW = 310000;
         public static int SQL_CREATURE_GUID_HIGH = 399999;
-        public static int SQL_CREATURE_GUID_DEBUG_LOW = 200000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
-        public static int SQL_CREATURE_GUID_DEBUG_HIGH = 3460599; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
+        public static int SQL_CREATURE_GUID_DEBUG_LOW = 2000000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
+        public static int SQL_CREATURE_GUID_DEBUG_HIGH = 5060599; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
 
         // Record identifier for the creature template SQL table
         public static int SQL_CREATURETEMPLATE_ENTRY_LOW = 45000;

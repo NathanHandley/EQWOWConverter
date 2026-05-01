@@ -112,10 +112,8 @@ namespace EQWOWConverter
                 CreatureRace.GenerateAllSounds();
                 if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
                 {
-                    if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
-                        ConvertCreaturesForDebug(creatureTemplatesByEQID, ref creatureSpawnPools);
-                    else
-                        ConvertCreatures(creatureTemplatesByEQID, ref creatureSpawnPools);
+                    ConvertCreaturesForDebug(creatureTemplatesByEQID, ref creatureSpawnPools);
+                    ConvertCreatures(creatureTemplatesByEQID, ref creatureSpawnPools);
                 }
                 else
                     Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
@@ -1249,7 +1247,6 @@ namespace EQWOWConverter
                 }
                 foreach (CreatureTemplate creatureTemplate in creatureTemplates)
                     creatureTemplate.ModelTemplate = creatureModelTemplate;
-                return;
             }
 
             LogCounter progressionCounter = new LogCounter("Creating creature model files...");

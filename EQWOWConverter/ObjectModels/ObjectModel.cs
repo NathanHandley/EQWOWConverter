@@ -1312,8 +1312,7 @@ namespace EQWOWConverter.ObjectModels
 
                         // Create the base animation object
                         ObjectModelAnimation newAnimation = new ObjectModelAnimation();
-                        if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == false)
-                            newAnimation.DurationInMS = Convert.ToUInt32(animation.Value.TotalTimeInMS);
+                        newAnimation.DurationInMS = Convert.ToUInt32(animation.Value.TotalTimeInMS);
                         newAnimation.AnimationType = animationType;
                         newAnimation.EQAnimationTypeTrue = animation.Value.EQAnimationType;
                         newAnimation.EQAnimationTypePreferred = compatibleAnimationTypes[0];
@@ -2149,28 +2148,14 @@ namespace EQWOWConverter.ObjectModels
                 collisionTriangleFaces.Add(new TriangleFace(0, 7, 6, 2));
                 collisionTriangleFaces.Add(new TriangleFace(0, 1, 0, 4));
                 collisionTriangleFaces.Add(new TriangleFace(0, 4, 7, 1));
-                if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
-                {
-                    collisionVertices.Add(new Vector3(0.305556f, -0.305556f, 0.000000f));
-                    collisionVertices.Add(new Vector3(-0.305556f, -0.305556f, 0.000000f));
-                    collisionVertices.Add(new Vector3(-0.305556f, 0.305556f, 0.000000f));
-                    collisionVertices.Add(new Vector3(0.305556f, 0.305556f, 0.000000f));
-                    collisionVertices.Add(new Vector3(0.305556f, -0.305556f, 0.231278f));
-                    collisionVertices.Add(new Vector3(0.305556f, 0.305556f, 0.231278f));
-                    collisionVertices.Add(new Vector3(-0.305556f, 0.305556f, 0.231278f));
-                    collisionVertices.Add(new Vector3(-0.305556f, -0.305556f, 0.231278f));
-                }
-                else
-                {
-                    collisionVertices.Add(new Vector3(0.305556f, -0.305556f, 0.000000f));
-                    collisionVertices.Add(new Vector3(-0.305556f, -0.305556f, 0.000000f));
-                    collisionVertices.Add(new Vector3(-0.305556f, 0.305556f, 0.000000f));
-                    collisionVertices.Add(new Vector3(0.305556f, 0.305556f, 0.000000f));
-                    collisionVertices.Add(new Vector3(0.305556f, -0.305556f, 2.031278f));
-                    collisionVertices.Add(new Vector3(0.305556f, 0.305556f, 2.031278f));
-                    collisionVertices.Add(new Vector3(-0.305556f, 0.305556f, 2.031278f));
-                    collisionVertices.Add(new Vector3(-0.305556f, -0.305556f, 2.031278f));
-                }
+                collisionVertices.Add(new Vector3(0.305556f, -0.305556f, 0.000000f));
+                collisionVertices.Add(new Vector3(-0.305556f, -0.305556f, 0.000000f));
+                collisionVertices.Add(new Vector3(-0.305556f, 0.305556f, 0.000000f));
+                collisionVertices.Add(new Vector3(0.305556f, 0.305556f, 0.000000f));
+                collisionVertices.Add(new Vector3(0.305556f, -0.305556f, 2.031278f));
+                collisionVertices.Add(new Vector3(0.305556f, 0.305556f, 2.031278f));
+                collisionVertices.Add(new Vector3(-0.305556f, 0.305556f, 2.031278f));
+                collisionVertices.Add(new Vector3(-0.305556f, -0.305556f, 2.031278f));
                 CollisionFaceNormals.Add(new Vector3(-0.000000f, 0.000000f, -1.000000f));
                 CollisionFaceNormals.Add(new Vector3(0.000000f, 0.000000f, -1.000000f));                
                 CollisionFaceNormals.Add(new Vector3(-0.000000f, 0.000000f, 1.000000f));

@@ -82,12 +82,6 @@ namespace EQWOWConverter.ObjectModels
         public static List<EQAnimationType> GetPrioritizedCompatibleEQAnimationTypes(AnimationType animationType, CreatureRace? creatureRace)
         {
             List<EQAnimationType> returnTypes = new List<EQAnimationType>();
-            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
-            {
-                returnTypes.Add(EQAnimationType.posStandPose);
-                return returnTypes;
-            }
-
             switch (animationType)
             {
                 case AnimationType.ReadySpellDirected: // Fallthrough

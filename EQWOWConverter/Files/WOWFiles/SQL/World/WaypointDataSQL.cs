@@ -14,15 +14,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Text;
+
 namespace EQWOWConverter.WOWFiles
 {
     internal class WaypointDataSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
+            StringBuilder sb = new StringBuilder();
+            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+            {
+                int idLowDebug = Configuration.SQL_CREATURE_GUID_LOW * 10;
+                int idHighDebug = Configuration.SQL_CREATURE_GUID_HIGH * 10;
+                sb.AppendLine("DELETE FROM waypoint_data WHERE `id` >= " + idLowDebug.ToString() + " AND `id` <= " + idHighDebug + ";");
+            }
             int idLow = Configuration.SQL_CREATURE_GUID_LOW * 1000;
             int idHigh = Configuration.SQL_CREATURE_GUID_HIGH * 1000;
-            return "DELETE FROM waypoint_data WHERE `id` >= " + idLow.ToString() + " AND `id` <= " + idHigh + ";";
+            sb.Append("DELETE FROM waypoint_data WHERE `id` >= " + idLow.ToString() + " AND `id` <= " + idHigh + ";");
+            return sb.ToString();
         }
 
         public void AddRow(int id, int point, float positionX, float positionY, float positionZ, int delayInMS)

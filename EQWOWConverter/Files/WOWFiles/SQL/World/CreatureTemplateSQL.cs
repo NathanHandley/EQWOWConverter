@@ -107,7 +107,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("minlevel", creatureTemplate.Level);
             newRow.AddInt("maxlevel", creatureTemplate.Level);
             newRow.AddInt("exp", 0); // Which expansion to use (0 = classic)
-            newRow.AddInt("faction", creatureTemplate.WOWFactionTemplateID); // References FactionTemplate.dbc
+            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                newRow.AddInt("faction", Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL);
+            else
+                newRow.AddInt("faction", creatureTemplate.WOWFactionTemplateID); // References FactionTemplate.dbc
             newRow.AddInt("npcflag", npcFlags);
             newRow.AddFloat("speed_walk", 1); // 1 is very common, but can be other values
             newRow.AddFloat("speed_run", 1.14286f); // 1.14286 seems common
