@@ -112,7 +112,8 @@ namespace EQWOWConverter
                 CreatureRace.GenerateAllSounds();
                 if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
                 {
-                    ConvertCreaturesForDebug(creatureTemplatesByEQID, ref creatureSpawnPools);
+                    if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                        ConvertCreaturesForDebug(creatureTemplatesByEQID, ref creatureSpawnPools);
                     ConvertCreatures(creatureTemplatesByEQID, ref creatureSpawnPools);
                 }
                 else
