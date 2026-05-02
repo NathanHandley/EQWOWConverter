@@ -41,12 +41,14 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`RoamMinDelayInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`RoamMaxDelayInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`DespawnAtWaypointNum` INT(10) SIGNED NOT NULL DEFAULT '-1', ");
+            stringBuilder.AppendLine("`DisableGroundContour` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("PRIMARY KEY (`CreatureGUID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
         public void AddRow(int creatureGUID, CreaturePathGridWanderType wanderType, CreaturePathGridPauseType pauseType, int mapID, int waypointID, bool doesRoam,
-            float roamMinX, float roamMaxX, float roamMinY, float roamMaxY, float roamMinZ, float roamMaxZ, int roamMinDelayInMS, int roamMaxDelayInMS, int despawnAtWaypointID = -1)
+            float roamMinX, float roamMaxX, float roamMinY, float roamMaxY, float roamMinZ, float roamMaxZ, int roamMinDelayInMS, int roamMaxDelayInMS, int despawnAtWaypointID = -1,
+            bool disableGroundContour = false)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatureGUID", creatureGUID);
@@ -64,6 +66,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RoamMinDelayInMS", roamMinDelayInMS);
             newRow.AddInt("RoamMaxDelayInMS", roamMaxDelayInMS);
             newRow.AddInt("DespawnAtWaypointNum", despawnAtWaypointID);
+            newRow.AddInt("DisableGroundContour", disableGroundContour == true ? 1 : 0);
             Rows.Add(newRow);
         }
     }

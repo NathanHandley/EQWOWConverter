@@ -24,6 +24,7 @@ namespace EQWOWConverter.Creatures
         public string ZoneShortName = string.Empty;
         public CreaturePathGridWanderType WanderType = CreaturePathGridWanderType.None;
         public CreaturePathGridPauseType PauseType = CreaturePathGridPauseType.RandomHalf;
+        public bool DisableGroundContour = false;
 
         public static Dictionary<string, Dictionary<int, CreaturePathGrid>> GetAllPathGridsByZoneNameAndGridID()
         {
@@ -47,6 +48,7 @@ namespace EQWOWConverter.Creatures
                 newPathGrid.ZoneShortName = columns["short_name"];
                 newPathGrid.WanderType = (CreaturePathGridWanderType)int.Parse(columns["wander_type"]);
                 newPathGrid.PauseType = (CreaturePathGridPauseType)int.Parse(columns["pause_type"]);
+                newPathGrid.DisableGroundContour = columns["disable_ground_contour"].Trim() == "1" ? true : false;
 
                 if (PathGridByZoneNameAndGridID.ContainsKey(newPathGrid.ZoneShortName) == false)
                     PathGridByZoneNameAndGridID.Add(newPathGrid.ZoneShortName, new Dictionary<int, CreaturePathGrid>());
