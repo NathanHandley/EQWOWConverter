@@ -1140,7 +1140,7 @@ namespace EQWOWConverter.ObjectModels
                     FindAndSetAnimationForType(AnimationType.LootUp);
 
                     // Update the stand/fidget animation timers so that there is a fidget sometimes
-                    if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand && Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == false)
+                    if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)
                     {
                         // Update timers
                         int fidgetSliceAll = Convert.ToInt32(32767 * (Convert.ToDouble(Configuration.CREATURE_FIDGET_TIME_PERCENT) / 100));
