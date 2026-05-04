@@ -211,7 +211,7 @@ internal class Program
                 Logger.WriteInfo("- PLAYER_USE_EQ_START_ITEMS is true, so player start items will be changed");
             Logger.WriteInfo(string.Concat("- PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED is set to ", Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED));
             Logger.WriteInfo("- SPELLS_LEARNABLE_FROM_ITEMS_ENABLED is set to ", Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED.ToString());
-        }            
+        }
         Logger.WriteInfo("Are you sure Y/N? (Default: Y): ", false);
         string? enteredConfirm = Console.ReadLine();
         if (enteredConfirm != null && (enteredConfirm.Length == 0 || enteredConfirm.Trim().ToUpper()[0] == 'Y'))

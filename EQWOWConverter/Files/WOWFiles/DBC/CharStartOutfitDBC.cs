@@ -76,7 +76,8 @@ namespace EQWOWConverter.WOWFiles
         protected override void OnPostLoadDataFromDisk()
         {
             // Clear all of the old rows
-            Rows.Clear();
+            if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
+                Rows.Clear();
         }
     }
 }

@@ -119,8 +119,7 @@ namespace EQWOWConverter
             AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
             areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
             CharStartOutfitDBC charStartOutfitDBC = new CharStartOutfitDBC();
-            if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
-                charStartOutfitDBC.LoadFromDisk(dbcInputFolder, "CharStartOutfit.dbc");
+            charStartOutfitDBC.LoadFromDisk(dbcInputFolder, "CharStartOutfit.dbc");
             CreatureDisplayInfoDBC creatureDisplayInfoDBC = new CreatureDisplayInfoDBC();
             creatureDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfo.dbc");
             CreatureModelDataDBC creatureModelDataDBC = new CreatureModelDataDBC();
@@ -654,11 +653,8 @@ namespace EQWOWConverter
             areaTableDBC.SaveToDisk(dbcOutputServerFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputClientFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputServerFolder);
-            if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
-            {
-                charStartOutfitDBC.SaveToDisk(dbcOutputClientFolder);
-                charStartOutfitDBC.SaveToDisk(dbcOutputServerFolder);
-            }
+            charStartOutfitDBC.SaveToDisk(dbcOutputClientFolder);
+            charStartOutfitDBC.SaveToDisk(dbcOutputServerFolder);
             creatureDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
             creatureDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
             creatureModelDataDBC.SaveToDisk(dbcOutputClientFolder);
