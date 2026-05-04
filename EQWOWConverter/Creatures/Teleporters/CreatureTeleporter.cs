@@ -18,12 +18,24 @@ namespace EQWOWConverter.Creatures.Teleporters
 {
     internal class CreatureTeleporter
     {
-        public int RaceID;
+        public int WOWCreatureTemplateID = -1;
+        public int WOWCreatureGUID = -1;
+        public int CreatureModelDataID;
         public int MapID;
         public float XPosition;
         public float YPosition;
         public float ZPosition;
         public float Orientation;
+        public int MainHandWOWItemTemplateID;
+        public int ChestWOWItemTemplateID;
+        public int NPCSoundID;
+        public int DisplayRaceID;
+        public int DisplaySexID;
+        public int SkinID;
+        public int FaceID;
+        public int HairStyleID;
+        public int HairColorID;
+        public int FacialHairID;
 
         private static List<CreatureTeleporter> CreatureTeleporters = new List<CreatureTeleporter>();
 
@@ -48,12 +60,22 @@ namespace EQWOWConverter.Creatures.Teleporters
             foreach (Dictionary<string, string> columns in rows)
             {
                 CreatureTeleporter newTeleporter = new CreatureTeleporter();
-                newTeleporter.RaceID = int.Parse(columns["RaceID"]);
+                newTeleporter.CreatureModelDataID = int.Parse(columns["ModelDataID"]);
                 newTeleporter.MapID = int.Parse(columns["MapID"]);
                 newTeleporter.XPosition = float.Parse(columns["X"]);
                 newTeleporter.YPosition = float.Parse(columns["Y"]);
                 newTeleporter.ZPosition = float.Parse(columns["Z"]);
                 newTeleporter.Orientation = float.Parse(columns["O"]);
+                newTeleporter.NPCSoundID = int.Parse(columns["NPCSoundID"]);
+                newTeleporter.DisplayRaceID = int.Parse(columns["DisplayRaceID"]);
+                newTeleporter.DisplaySexID = int.Parse(columns["DisplaySexID"]);
+                newTeleporter.SkinID = int.Parse(columns["SkinID"]);
+                newTeleporter.FaceID = int.Parse(columns["FaceID"]);
+                newTeleporter.HairStyleID = int.Parse(columns["HairStyleID"]);
+                newTeleporter.HairColorID = int.Parse(columns["HairColorID"]);
+                newTeleporter.FacialHairID = int.Parse(columns["FacialHairID"]);
+                newTeleporter.MainHandWOWItemTemplateID = int.Parse(columns["MainHandWOWItemTemplateID"]);
+                newTeleporter.ChestWOWItemTemplateID = int.Parse(columns["ChestWOWItemTemplateID"]);
                 CreatureTeleporters.Add(newTeleporter);
             }
         }

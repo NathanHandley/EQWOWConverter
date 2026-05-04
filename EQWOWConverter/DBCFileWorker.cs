@@ -122,6 +122,8 @@ namespace EQWOWConverter
             charStartOutfitDBC.LoadFromDisk(dbcInputFolder, "CharStartOutfit.dbc");
             CreatureDisplayInfoDBC creatureDisplayInfoDBC = new CreatureDisplayInfoDBC();
             creatureDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfo.dbc");
+            CreatureDisplayInfoExtraDBC creatureDisplayInfoExtraDBC = new CreatureDisplayInfoExtraDBC();
+            creatureDisplayInfoExtraDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfoExtra.dbc");
             CreatureModelDataDBC creatureModelDataDBC = new CreatureModelDataDBC();
             creatureModelDataDBC.LoadFromDisk(dbcInputFolder, "CreatureModelData.dbc");
             CreatureSoundDataDBC creatureSoundDataDBC = new CreatureSoundDataDBC();
@@ -657,6 +659,8 @@ namespace EQWOWConverter
             charStartOutfitDBC.SaveToDisk(dbcOutputServerFolder);
             creatureDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
             creatureDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
+            creatureDisplayInfoExtraDBC.SaveToDisk(dbcOutputClientFolder);
+            creatureDisplayInfoExtraDBC.SaveToDisk(dbcOutputServerFolder);
             creatureModelDataDBC.SaveToDisk(dbcOutputClientFolder);
             creatureModelDataDBC.SaveToDisk(dbcOutputServerFolder);
             creatureSoundDataDBC.SaveToDisk(dbcOutputClientFolder);

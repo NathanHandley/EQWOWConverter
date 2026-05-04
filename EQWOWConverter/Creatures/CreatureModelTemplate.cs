@@ -35,8 +35,9 @@ namespace EQWOWConverter.Creatures
         public float ModelTemplateScale = 1.0f; // Used for form changes
 
         private static int CURRENT_DBCID_CREATUREMODELDATAID = Configuration.DBCID_CREATUREMODELDATA_ID_START;
-        private static int CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.DBCID_CREATUREDISPLAYINFO_ID_START;
+        private static int CURRENT_DBCID_CREATUREDISPLAYINFOID = -1;
         private static int CURRENT_DBCID_CREATURESOUNDDATAID = Configuration.DBCID_CREATURESOUNDDATA_ID_START;
+        private static readonly object CreatureIDLock = new object();
         public int DBCCreatureModelDataID;
         public int DBCCreatureDisplayID;
         public int DBCCreatureSoundDataID;
@@ -49,8 +50,7 @@ namespace EQWOWConverter.Creatures
             {
                 DBCCreatureModelDataID = CURRENT_DBCID_CREATUREMODELDATAID;
                 CURRENT_DBCID_CREATUREMODELDATAID++;
-                DBCCreatureDisplayID = CURRENT_DBCID_CREATUREDISPLAYINFOID;
-                CURRENT_DBCID_CREATUREDISPLAYINFOID++;
+                DBCCreatureDisplayID = GenerateDisplayInfoID();
                 DBCCreatureSoundDataID = CURRENT_DBCID_CREATURESOUNDDATAID;
                 CURRENT_DBCID_CREATURESOUNDDATAID++;
             }
@@ -75,6 +75,18 @@ namespace EQWOWConverter.Creatures
             }
 
             ModelTemplateScale = modelTemplateScale;
+        }
+
+        public static int GenerateDisplayInfoID()
+        {
+            lock (CreatureIDLock)
+            {
+                if (CURRENT_DBCID_CREATUREDISPLAYINFOID == -1)
+                    CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.DBCID_CREATUREDISPLAYINFO_ID_START;
+                int returnID = CURRENT_DBCID_CREATUREDISPLAYINFOID;
+                CURRENT_DBCID_CREATUREDISPLAYINFOID++;
+                return returnID;
+            }
         }
 
         public static CreatureModelTemplate CreateCreatureModelTemplateForWaypointDebugging()

@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
+using EQWOWConverter.Creatures.Teleporters;
 using EQWOWConverter.Events;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.Items;
@@ -397,7 +398,16 @@ namespace EQWOWConverter
 
             // Creature models
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
-                creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));           
+                creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
+            
+            // Azeroth creatures
+            if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
+            {
+                List<CreatureTeleporter> creatureTeleporters = CreatureTeleporter.GetAllCreatureTeleporters();
+
+
+
+            }
         }
 
         private static Dictionary<int, HashSet<int>> alreadySavedCustomWaypointGridIDsByMapID = new Dictionary<int, HashSet<int>>(); // Ensure only 1 of each waypoint set is saved

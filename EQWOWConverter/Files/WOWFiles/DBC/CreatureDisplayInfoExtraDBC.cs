@@ -18,21 +18,25 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class CreatureDisplayInfoExtraDBC : DBCFile
     {
-        public void AddRow(int id)
+        private static readonly object IDLock = new object();
+        private static int CurrentID = Configuration.DBCID_CREATUREDISPLAYINFOEXTRA_ID_START;
+
+        public void AddRow(int id, int displayRaceID, int displaySexID, int skinID, int faceID,
+            int hairStyleID, int hairColorID, int facialHairID, int chestDisplayID)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID
-            newRow.AddInt32(0); // DisplayRaceID
-            newRow.AddInt32(0); // DisplaySexID
-            newRow.AddInt32(0); // SkinID
-            newRow.AddInt32(0); // FaceID
-            newRow.AddInt32(0); // HairStyleID
-            newRow.AddInt32(0); // HairColorID
-            newRow.AddInt32(0); // FacialHairID
+            newRow.AddInt32(displayRaceID); // DisplayRaceID
+            newRow.AddInt32(displaySexID); // DisplaySexID
+            newRow.AddInt32(skinID); // SkinID
+            newRow.AddInt32(faceID); // FaceID
+            newRow.AddInt32(hairStyleID); // HairStyleID
+            newRow.AddInt32(hairColorID); // HairColorID
+            newRow.AddInt32(facialHairID); // FacialHairID
             newRow.AddInt32(0); // Helm ItemDisplayInfo.ID
             newRow.AddInt32(0); // Shoulder ItemDisplayInfo.ID
             newRow.AddInt32(0); // Shirt ItemDisplayInfo.ID
-            newRow.AddInt32(0); // Cuirass ItemDisplayInfo.ID
+            newRow.AddInt32(chestDisplayID); // Cuirass ItemDisplayInfo.ID
             newRow.AddInt32(0); // Belt ItemDisplayInfo.ID
             newRow.AddInt32(0); // Legs ItemDisplayInfo.ID
             newRow.AddInt32(0); // Boots ItemDisplayInfo.ID
@@ -40,9 +44,19 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // Gloves ItemDisplayInfo.ID
             newRow.AddInt32(0); // Tabard ItemDisplayInfo.ID
             newRow.AddInt32(0); // Cape ItemDisplayInfo.ID
-            newRow.AddInt32(0); // CanEquipWeapons (0 = no, 1 = yes)
-            newRow.AddString(string.Empty); // BakeName
+            newRow.AddInt32(0); // Flags (CanEquipWeapons (0 = no, 1 = yes) ?)
+            newRow.AddString("EQ" + id.ToString()); // BakeName
             Rows.Add(newRow);
+        }
+
+        public static int GenerateAndGetGetID()
+        {
+            lock (IDLock)
+            {
+                int returnID = CurrentID;
+                CurrentID++;
+                return returnID;
+            }
         }
     }
 }

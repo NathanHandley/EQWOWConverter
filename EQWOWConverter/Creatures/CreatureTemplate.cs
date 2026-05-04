@@ -80,8 +80,9 @@ namespace EQWOWConverter.Creatures
         public bool IsPet = false;
         public float ModelTemplateScale = 1.0f; // Used for form changes
 
+        private static readonly object CreatureIDsLock = new object();
         private static int CURRENT_SQL_CREATURE_GUID = -1;
-        private static int CURRENT_SQL_CREATURE_TEMPLATE_GUID = Configuration.SQL_CREATURETEMPLATE_GENERATED_START_ID;
+        private static int CURRENT_SQL_CREATURE_TEMPLATE_GUID = -1;
         private static int CURRENT_CREATURE_EQID = 200000;
 
         public static Dictionary<int, CreatureTemplate> GetCreatureTemplateListByEQID()
@@ -114,16 +115,31 @@ namespace EQWOWConverter.Creatures
 
         public static int GenerateCreatureSQLGUID()
         {
-            if (CURRENT_SQL_CREATURE_GUID == -1)
+            lock (CreatureIDsLock)
             {
-                if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
-                    CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_DEBUG_LOW;
-                else
-                    CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
+                if (CURRENT_SQL_CREATURE_GUID == -1)
+                {
+                    if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                        CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_DEBUG_LOW;
+                    else
+                        CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
+                }
+                int returnGUID = CURRENT_SQL_CREATURE_GUID;
+                CURRENT_SQL_CREATURE_GUID++;
+                return returnGUID;
             }
-            int returnGUID = CURRENT_SQL_CREATURE_GUID;
-            CURRENT_SQL_CREATURE_GUID++;
-            return returnGUID;
+        }
+
+        public static int GenerateCreatureTemplateID()
+        {
+            lock (CreatureIDsLock)
+            {
+                if (CURRENT_SQL_CREATURE_TEMPLATE_GUID == -1)
+                    CURRENT_SQL_CREATURE_TEMPLATE_GUID = Configuration.SQL_CREATURETEMPLATE_GENERATED_START_ID;
+                int returnID = CURRENT_SQL_CREATURE_TEMPLATE_GUID;
+                CURRENT_SQL_CREATURE_TEMPLATE_GUID++;
+                return returnID;
+            }
         }
 
         public static CreatureTemplate GenerateCreatureTemplate(string name, CreatureRace race, CreatureGenderType genderType, int helmTextureID, int textureIndex, int faceIndex, int colorTintID,
@@ -136,8 +152,7 @@ namespace EQWOWConverter.Creatures
                 // Generate new IDs
                 newCreatureTemplate.EQCreatureTemplateID = CURRENT_CREATURE_EQID;
                 CURRENT_CREATURE_EQID++;
-                newCreatureTemplate.WOWCreatureTemplateID = CURRENT_SQL_CREATURE_TEMPLATE_GUID;
-                CURRENT_SQL_CREATURE_TEMPLATE_GUID++;
+                newCreatureTemplate.WOWCreatureTemplateID = GenerateCreatureTemplateID();
 
                 // Assign properties
                 newCreatureTemplate.Name = name;
