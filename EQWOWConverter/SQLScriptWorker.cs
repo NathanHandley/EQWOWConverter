@@ -43,6 +43,7 @@ namespace EQWOWConverter
         private CreatureSQL creatureSQL = new CreatureSQL();
         private CreatureAddonSQL creatureAddonSQL = new CreatureAddonSQL();
         private CreatureDefaultTrainerSQL creatureDefaultTrainerSQL = new CreatureDefaultTrainerSQL();
+        private CreatureEquipTemplateSQL creatureEquipTemplateSQL = new CreatureEquipTemplateSQL();
         private CreatureLootTemplateSQL creatureLootTableSQL = new CreatureLootTemplateSQL();
         private CreatureModelInfoSQL creatureModelInfoSQL = new CreatureModelInfoSQL();
         private CreatureQuestEnderSQL creatureQuestEnderSQL = new CreatureQuestEnderSQL();
@@ -400,13 +401,21 @@ namespace EQWOWConverter
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
                 creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
             
-            // Azeroth creatures
+            // Azeroth creatures for teleports
             if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
             {
                 List<CreatureTeleporter> creatureTeleporters = CreatureTeleporter.GetAllCreatureTeleporters();
-
-
-
+                foreach (CreatureTeleporter creatureTeleporter in creatureTeleporters)
+                {
+                    creatureTemplateSQL.AddRowForAzerothTeleportCreature(creatureTeleporter, 0);
+                    string creatureComment = string.Concat("EQ Azeroth Priest of Discord");
+                    creatureSQL.AddRow(creatureTeleporter.WOWCreatureGUID, creatureTeleporter.WOWCreatureTemplateID, creatureTeleporter.MapID,
+                        creatureTeleporter.AreaID, creatureTeleporter.AreaID, creatureTeleporter.XPosition, creatureTeleporter.YPosition,
+                        creatureTeleporter.ZPosition, creatureTeleporter.Orientation, CreatureMovementType.None, creatureComment, false);
+                    creatureEquipTemplateSQL.AddRow(creatureTeleporter.WOWCreatureGUID, creatureTeleporter.MainHandWOWItemTemplateID);
+                    creatureTemplateModelSQL.AddRow(creatureTeleporter.WOWCreatureTemplateID, creatureTeleporter.CreatureDisplayInfoID, 1.0f);
+                    creatureModelInfoSQL.AddRow(creatureTeleporter.CreatureDisplayInfoID, creatureTeleporter.DisplaySexID);
+                }
             }
         }
 
@@ -1152,6 +1161,7 @@ namespace EQWOWConverter
             creatureSQL.SaveToDisk("creature", SQLFileType.World);
             creatureAddonSQL.SaveToDisk("creature_addon", SQLFileType.World);
             creatureDefaultTrainerSQL.SaveToDisk("creature_default_trainer", SQLFileType.World);
+            creatureEquipTemplateSQL.SaveToDisk("creature_equip_template", SQLFileType.World);
             creatureLootTableSQL.SaveToDisk("creature_loot_template", SQLFileType.World);
             creatureModelInfoSQL.SaveToDisk("creature_model_info", SQLFileType.World);
             creatureTemplateSQL.SaveToDisk("creature_template", SQLFileType.World);

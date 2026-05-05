@@ -29,7 +29,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(255); // Opacity (255 opaque, 0 transparent)
             newRow.AddString(textureVariation1); // Texture1 (texture for 1st geoset)
             newRow.AddString(textureVariation2); // Texture2 (texture for 2nd geoset)
-            newRow.AddString(string.Empty); // Texture2 (texture for 3rd geoset)
+            newRow.AddString(string.Empty); // Texture3 (texture for 3rd geoset)
             newRow.AddString(string.Empty); // Portrait Texture
             newRow.AddInt32(1); // Blood level (appears to reference UnitBloodLevels.dbc, but actually uses CreatureModelData)
             newRow.AddInt32(0); // Blood ID (appears to reference UnitBlood.dbc, but that doesn't exist...)
@@ -37,7 +37,50 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // ParticleColor.dbc reference, typically zero
             newRow.AddInt32(0); // CreatureGeosetData.  Example: 0x00200000 will select geoset 2 out of group 600 (602)
             newRow.AddInt32(0); // Unsure, but set for gyrocopters, catapults, rocketmounts, siegevehicles
+            
+            // Sort by ID
+            newRow.SortValue1 = id;
+
             Rows.Add(newRow);
+        }
+
+        protected override void OnPostLoadDataFromDisk()
+        {
+            // Convert any raw data rows to actual data rows (which should be all of them)
+            foreach (DBCRow row in Rows)
+            {
+                // This shouldn't be possible, but control for it just in case
+                if (row.SourceRawBytes.Count == 0)
+                {
+                    Logger.WriteError("CreatureDisplayInfoDBC had no source raw bytes when converting a row in OnPostLoadDataFromDisk");
+                    continue;
+                }
+
+                // Fill every field
+                int byteCursor = 0;
+                row.AddIntFromSourceRawBytes(ref byteCursor); // ID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // CreatureModelData.ID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // CreatureSoundData.ID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // CreatureDisplayInfoExtra.ID
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // Model Scale
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Opacity
+                row.AddStringFromSourceRawBytes(ref byteCursor, StringBlock); // Texture1
+                row.AddStringFromSourceRawBytes(ref byteCursor, StringBlock); // Texture2
+                row.AddStringFromSourceRawBytes(ref byteCursor, StringBlock); // Texture3
+                row.AddStringFromSourceRawBytes(ref byteCursor, StringBlock); // Portrait Texture
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Blood level
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Blood ID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // NPCSounds.dbc
+                row.AddIntFromSourceRawBytes(ref byteCursor); // ParticleColor.dbc
+                row.AddIntFromSourceRawBytes(ref byteCursor); // CreatureGeosetData
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Unknown
+
+                // Attach the sort rows
+                row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[0]).Value; // ID
+
+                // Purge raw data
+                row.SourceRawBytes.Clear();
+            }
         }
     }
 }

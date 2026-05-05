@@ -148,6 +148,20 @@ namespace EQWOWConverter
                         if (itemTemplatesByWOWEntryID.ContainsKey(itemID) == true)
                             itemTemplatesByWOWEntryID[itemID].IsGivenAsStartItem = true;
 
+                // Mark priest of discord items as always existing
+                if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
+                {
+                    List<CreatureTeleporter> creatureTeleporters = CreatureTeleporter.GetAllCreatureTeleporters();
+                    SortedDictionary<int, ItemTemplate> itemTemplatesByWOWID = ItemTemplate.GetItemTemplatesByWOWEntryID();
+                    foreach (CreatureTeleporter creatureTeleporter in creatureTeleporters)
+                    {
+                        if (itemTemplatesByWOWID.ContainsKey(creatureTeleporter.ChestWOWItemTemplateID) == true)
+                            itemTemplatesByWOWID[creatureTeleporter.ChestWOWItemTemplateID].IsDroppedByCreature = true;
+                        if (itemTemplatesByWOWID.ContainsKey(creatureTeleporter.MainHandWOWItemTemplateID) == true)
+                            itemTemplatesByWOWID[creatureTeleporter.MainHandWOWItemTemplateID].IsDroppedByCreature = true;
+                    }
+                }
+
                 // Bind gameobject data
                 foreach (GameObject chestObject in GameObject.GetChestGameObjects())
                 {
@@ -1512,6 +1526,7 @@ namespace EQWOWConverter
                 {
                     creatureTeleporter.WOWCreatureTemplateID = CreatureTemplate.GenerateCreatureTemplateID();
                     creatureTeleporter.WOWCreatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                    creatureTeleporter.CreatureDisplayInfoID = CreatureModelTemplate.GenerateDisplayInfoID();
                 }
             }
 

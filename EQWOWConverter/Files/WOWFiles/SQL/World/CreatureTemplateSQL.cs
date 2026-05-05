@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
+using EQWOWConverter.Creatures.Teleporters;
 using EQWOWConverter.Tradeskills;
 using System.Text;
 
@@ -32,7 +33,19 @@ namespace EQWOWConverter.WOWFiles
             return sb.ToString();
         }
 
-        public void AddRow(CreatureTemplate creatureTemplate)
+        public void AddRowForAzerothTeleportCreature(CreatureTeleporter creatureTeleporter, int gossipMenuID)
+        {
+            CreatureTemplate creatureTemplate = new CreatureTemplate();
+            creatureTemplate.WOWCreatureTemplateID = creatureTeleporter.WOWCreatureTemplateID;
+            creatureTemplate.Name = "Priest of Discord";
+            creatureTemplate.GossipMenuID = gossipMenuID;
+            creatureTemplate.Level = 50;
+            creatureTemplate.WOWFactionTemplateID = Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE;
+            creatureTemplate.Race.WOWCreatureType = 7; // Human
+            AddRow(creatureTemplate, true);
+        }
+
+        public void AddRow(CreatureTemplate creatureTemplate, bool forceHasGossip = false)
         {
             // Determine flags and types
             int typeFlags = 0;
@@ -74,7 +87,7 @@ namespace EQWOWConverter.WOWFiles
                 npcFlags |= 2;      // 0x00000002	Quest Giver
                 numOfRoles++;
             }
-            if (numOfRoles > 1)
+            if (numOfRoles > 1 || forceHasGossip == true)
                 npcFlags |= 1;     // 0x00000001 = Has Gossip Menu
             if (creatureTemplate.CanAssist == true)
                 typeFlags |= 4096;   // 0x00001000 = CREATURE_TYPE_FLAG_CAN_ASSIST

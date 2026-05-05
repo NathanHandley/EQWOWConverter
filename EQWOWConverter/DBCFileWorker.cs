@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
+using EQWOWConverter.Creatures.Teleporters;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
@@ -226,6 +227,21 @@ namespace EQWOWConverter
             foreach (var soundByName in CreatureRace.SoundsBySoundNameAndDistance)
                 foreach (var soundByDistance in soundByName.Value)
                     soundEntriesDBC.AddRow(soundByDistance.Value, soundByDistance.Value.Name, creatureSoundsDirectory);
+            SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntry = ItemTemplate.GetItemTemplatesByWOWEntryID();
+            if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
+            {
+                List<CreatureTeleporter> creatureTeleporters = CreatureTeleporter.GetAllCreatureTeleporters();
+                foreach (CreatureTeleporter creatureTeleporter in creatureTeleporters)
+                {
+                    creatureDisplayInfoDBC.AddRow(creatureTeleporter.CreatureDisplayInfoID, creatureTeleporter.CreatureModelDataID);
+                    int displayInfoExtraID = CreatureDisplayInfoExtraDBC.GenerateAndGetGetID();
+                    int chestItemDisplayID = 0;
+                    if (itemTemplatesByWOWEntry.ContainsKey(creatureTeleporter.ChestWOWItemTemplateID) == true && itemTemplatesByWOWEntry[creatureTeleporter.ChestWOWItemTemplateID].ItemDisplayInfo != null)
+                        chestItemDisplayID = itemTemplatesByWOWEntry[creatureTeleporter.ChestWOWItemTemplateID].ItemDisplayInfo.ItemDisplayInfoDBCID;
+                    creatureDisplayInfoExtraDBC.AddRow(displayInfoExtraID, creatureTeleporter.DisplayRaceID, creatureTeleporter.DisplaySexID, creatureTeleporter.SkinID,
+                        creatureTeleporter.FaceID, creatureTeleporter.HairStyleID, creatureTeleporter.HairColorID, creatureTeleporter.FacialHairID, chestItemDisplayID);
+                }
+            }
 
             // Faction
             foreach (CreatureFaction creatureFaction in CreatureFaction.GetCreatureFactionsByFactionID().Values)
@@ -408,7 +424,6 @@ namespace EQWOWConverter
 
             // Character start data
             // Must come before "Item Data"
-            SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntry = ItemTemplate.GetItemTemplatesByWOWEntryID();
             if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
             {
                 // Create the non-eq items to be used

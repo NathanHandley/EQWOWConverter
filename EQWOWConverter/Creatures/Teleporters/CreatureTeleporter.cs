@@ -20,8 +20,10 @@ namespace EQWOWConverter.Creatures.Teleporters
     {
         public int WOWCreatureTemplateID = -1;
         public int WOWCreatureGUID = -1;
+        public int CreatureDisplayInfoID = -1;
         public int CreatureModelDataID;
         public int MapID;
+        public int AreaID;
         public float XPosition;
         public float YPosition;
         public float ZPosition;
@@ -62,6 +64,7 @@ namespace EQWOWConverter.Creatures.Teleporters
                 CreatureTeleporter newTeleporter = new CreatureTeleporter();
                 newTeleporter.CreatureModelDataID = int.Parse(columns["ModelDataID"]);
                 newTeleporter.MapID = int.Parse(columns["MapID"]);
+                newTeleporter.AreaID = int.Parse(columns["AreaID"]);
                 newTeleporter.XPosition = float.Parse(columns["X"]);
                 newTeleporter.YPosition = float.Parse(columns["Y"]);
                 newTeleporter.ZPosition = float.Parse(columns["Z"]);
