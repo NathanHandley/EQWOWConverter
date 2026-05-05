@@ -33,18 +33,6 @@ namespace EQWOWConverter.WOWFiles
             return sb.ToString();
         }
 
-        public void AddRowForAzerothTeleportCreature(CreatureTeleporter creatureTeleporter, int gossipMenuID)
-        {
-            CreatureTemplate creatureTemplate = new CreatureTemplate();
-            creatureTemplate.WOWCreatureTemplateID = creatureTeleporter.WOWCreatureTemplateID;
-            creatureTemplate.Name = "Priest of Discord";
-            creatureTemplate.GossipMenuID = gossipMenuID;
-            creatureTemplate.Level = 50;
-            creatureTemplate.WOWFactionTemplateID = Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE;
-            creatureTemplate.Race.WOWCreatureType = 7; // Human
-            AddRow(creatureTemplate, true);
-        }
-
         public void AddRow(CreatureTemplate creatureTemplate, bool forceHasGossip = false)
         {
             // Determine flags and types
@@ -122,6 +110,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("exp", 0); // Which expansion to use (0 = classic)
             if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                 newRow.AddInt("faction", Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL);
+            else if (creatureTemplate.WOWCreatureTemplateID == Configuration.GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID)
+                newRow.AddInt("faction", 35); // This is a 'friendly with all' rep
             else
                 newRow.AddInt("faction", creatureTemplate.WOWFactionTemplateID); // References FactionTemplate.dbc
             newRow.AddInt("npcflag", npcFlags);

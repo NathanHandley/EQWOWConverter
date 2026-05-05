@@ -405,16 +405,21 @@ namespace EQWOWConverter
             if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
             {
                 List<CreatureTeleporter> creatureTeleporters = CreatureTeleporter.GetAllCreatureTeleporters();
-                foreach (CreatureTeleporter creatureTeleporter in creatureTeleporters)
+                Dictionary<int, CreatureTemplate> creatureTemplatesByWOWID = CreatureTemplate.GetCreatureTemplateListByWOWID();
+                if (creatureTemplatesByWOWID.ContainsKey(Configuration.GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID) == false)
                 {
-                    creatureTemplateSQL.AddRowForAzerothTeleportCreature(creatureTeleporter, 0);
-                    string creatureComment = string.Concat("EQ Azeroth Priest of Discord");
-                    creatureSQL.AddRow(creatureTeleporter.WOWCreatureGUID, creatureTeleporter.WOWCreatureTemplateID, creatureTeleporter.MapID,
-                        creatureTeleporter.AreaID, creatureTeleporter.AreaID, creatureTeleporter.XPosition, creatureTeleporter.YPosition,
-                        creatureTeleporter.ZPosition, creatureTeleporter.Orientation, CreatureMovementType.None, creatureComment, false);
-                    creatureEquipTemplateSQL.AddRow(creatureTeleporter.WOWCreatureGUID, creatureTeleporter.MainHandWOWItemTemplateID);
-                    creatureTemplateModelSQL.AddRow(creatureTeleporter.WOWCreatureTemplateID, creatureTeleporter.CreatureDisplayInfoID, 1.0f);
-                    creatureModelInfoSQL.AddRow(creatureTeleporter.CreatureDisplayInfoID, creatureTeleporter.DisplaySexID);
+                    Logger.WriteError("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION was true but no creature template with ID as defined by GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID could be found.");
+                }
+                else
+                {
+                    foreach (CreatureTeleporter creatureTeleporter in creatureTeleporters)
+                    {
+                        string creatureComment = string.Concat("EQ Azeroth Priest of Discord");
+                        int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                        creatureSQL.AddRow(creatureGUID, Configuration.GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID, creatureTeleporter.MapID,
+                            creatureTeleporter.AreaID, creatureTeleporter.AreaID, creatureTeleporter.XPosition, creatureTeleporter.YPosition,
+                            creatureTeleporter.ZPosition, creatureTeleporter.Orientation, CreatureMovementType.None, creatureComment, false);
+                    }
                 }
             }
         }

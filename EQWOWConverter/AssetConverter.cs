@@ -148,20 +148,6 @@ namespace EQWOWConverter
                         if (itemTemplatesByWOWEntryID.ContainsKey(itemID) == true)
                             itemTemplatesByWOWEntryID[itemID].IsGivenAsStartItem = true;
 
-                // Mark priest of discord items as always existing
-                if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
-                {
-                    List<CreatureTeleporter> creatureTeleporters = CreatureTeleporter.GetAllCreatureTeleporters();
-                    SortedDictionary<int, ItemTemplate> itemTemplatesByWOWID = ItemTemplate.GetItemTemplatesByWOWEntryID();
-                    foreach (CreatureTeleporter creatureTeleporter in creatureTeleporters)
-                    {
-                        if (itemTemplatesByWOWID.ContainsKey(creatureTeleporter.ChestWOWItemTemplateID) == true)
-                            itemTemplatesByWOWID[creatureTeleporter.ChestWOWItemTemplateID].IsDroppedByCreature = true;
-                        if (itemTemplatesByWOWID.ContainsKey(creatureTeleporter.MainHandWOWItemTemplateID) == true)
-                            itemTemplatesByWOWID[creatureTeleporter.MainHandWOWItemTemplateID].IsDroppedByCreature = true;
-                    }
-                }
-
                 // Bind gameobject data
                 foreach (GameObject chestObject in GameObject.GetChestGameObjects())
                 {
@@ -1515,19 +1501,6 @@ namespace EQWOWConverter
                 string targetSoundFileName = Path.Combine(exportCreatureSoundsDirectory, sound.Value.First().Value.Name);
                 if (File.Exists(targetSoundFileName) == false)
                     FileTool.CopyFile(sourceSoundFileName, targetSoundFileName);
-            }
-
-            // Add data to Creature Teleporters
-            if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
-            {
-                Logger.WriteInfo("Creating Azeroth Priest of Discord creatures...");
-                List<CreatureTeleporter> creatureTeleporters = CreatureTeleporter.GetAllCreatureTeleporters();
-                foreach (CreatureTeleporter creatureTeleporter in creatureTeleporters)
-                {
-                    creatureTeleporter.WOWCreatureTemplateID = CreatureTemplate.GenerateCreatureTemplateID();
-                    creatureTeleporter.WOWCreatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                    creatureTeleporter.CreatureDisplayInfoID = CreatureModelTemplate.GenerateDisplayInfoID();
-                }
             }
 
             Logger.WriteInfo("Creature generation complete.");
