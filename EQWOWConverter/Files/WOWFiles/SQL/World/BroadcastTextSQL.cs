@@ -18,6 +18,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class BroadcastTextSQL : SQLFile
     {
+        private static object ID_LOCK = new object();
         private static int CUR_ID = Configuration.SQL_BROADCASTTEXT_ID_START;
 
         public override string DeleteRowSQL()
@@ -47,9 +48,12 @@ namespace EQWOWConverter.WOWFiles
 
         public static int GenerateUniqueID()
         {
-            int returnVal = CUR_ID;
-            CUR_ID++;
-            return returnVal;
+            lock (ID_LOCK)
+            {
+                int returnVal = CUR_ID;
+                CUR_ID++;
+                return returnVal;
+            }
         }
     }
 }

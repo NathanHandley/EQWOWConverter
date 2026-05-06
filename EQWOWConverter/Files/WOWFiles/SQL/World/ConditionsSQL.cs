@@ -28,6 +28,30 @@ namespace EQWOWConverter.WOWFiles
             return stringBuilder.ToString();
         }
 
+        public void AddRowForMenuOptionRaceRestriction(int gossipMenuID, int gossipMenuOptionID, RaceType raceType, string comment)
+        {
+            // Race value is a powers of 2, zero index
+            int raceValue = (int)(Math.Pow(2, ((int)raceType - 1)));
+
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("SourceTypeOrReferenceId", 15); // CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION
+            newRow.AddInt("SourceGroup", gossipMenuID);
+            newRow.AddInt("SourceEntry", gossipMenuOptionID);
+            newRow.AddInt("SourceId", 0);
+            newRow.AddInt("ElseGroup", 0);
+            newRow.AddInt("ConditionTypeOrReference", 16); // CONDITION_RACE
+            newRow.AddInt("ConditionTarget", 0);
+            newRow.AddInt("ConditionValue1", raceValue);
+            newRow.AddInt("ConditionValue2", 0);
+            newRow.AddInt("ConditionValue3", 0);
+            newRow.AddInt("NegativeCondition", 0);
+            newRow.AddInt("ErrorType", 0);
+            newRow.AddInt("ErrorTextId", 0);
+            newRow.AddString("ScriptName", 64, string.Empty);
+            newRow.AddString("Comment", 255, comment);
+            Rows.Add(newRow);
+        }
+
         public void AddRowForMenuOptionClassRestriction(int gossipMenuID, int gossipMenuOptionID, ClassType classType, string comment)
         {
             // Class value is a powers of 2, zero index

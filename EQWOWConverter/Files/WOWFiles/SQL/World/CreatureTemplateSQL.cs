@@ -33,7 +33,7 @@ namespace EQWOWConverter.WOWFiles
             return sb.ToString();
         }
 
-        public void AddRow(CreatureTemplate creatureTemplate, bool forceHasGossip = false)
+        public void AddRow(CreatureTemplate creatureTemplate)
         {
             // Determine flags and types
             int typeFlags = 0;
@@ -75,7 +75,9 @@ namespace EQWOWConverter.WOWFiles
                 npcFlags |= 2;      // 0x00000002	Quest Giver
                 numOfRoles++;
             }
-            if (numOfRoles > 1 || forceHasGossip == true)
+            if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true && (creatureTemplate.IsAzerothPriestOfDiscord == true || creatureTemplate.IsNorrathPriestOfDiscord == true))
+                numOfRoles+=2;
+            if (numOfRoles > 1)
                 npcFlags |= 1;     // 0x00000001 = Has Gossip Menu
             if (creatureTemplate.CanAssist == true)
                 typeFlags |= 4096;   // 0x00001000 = CREATURE_TYPE_FLAG_CAN_ASSIST

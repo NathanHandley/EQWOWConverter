@@ -281,6 +281,32 @@ namespace EQWOWConverter.WOWFiles
                 comment);
         }
 
+        public void AddRowForMenuOptionTriggeredTeleport(int creatureEntry, int menuID, int menuOptionID, int targetMapID, float targetX, float targetY, float targetZ,
+            float targetOrientation, string comment)
+        {
+            AddRow(creatureEntry, // Negative for GUID, Positive for Entry
+                0,  // SMART_SCRIPT_TYPE_CREATURE
+                62, // SMART_EVENT_GOSSIP_SELECT
+                100,
+                menuID,
+                menuOptionID,
+                0,
+                0,
+                0,
+                0,
+                62,  // SMART_ACTION_TELEPORT,
+                targetMapID,
+                0,
+                7, // SMART_TARGET_ACTION_INVOKER
+                0,
+                0,
+                targetX,
+                targetY,
+                targetZ,
+                targetOrientation,
+                comment);
+        }
+
         public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventChance, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
             int eventParam5, int eventParam6, int actionType, int actionParam1, int actionParam2, int targetType, int targetParam1, int targetParam2,
             float targetX, float targetY, float targetZ, float targetOrientation, string comment)

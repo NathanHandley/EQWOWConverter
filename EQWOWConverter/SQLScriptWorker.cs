@@ -252,6 +252,40 @@ namespace EQWOWConverter
                 }
             }
 
+            // Priest of Discord (Norrath side) gossip menu
+            List<CreatureTeleportLocationAzeroth> azerothTeleportLocations;
+            Dictionary<RaceType, int> azerothTeleportMenuOptionIDsByRaceType = new Dictionary<RaceType, int>();
+            Dictionary<RaceType, CreatureTeleportLocationAzeroth> azerothTeleportLocationByRaceType = new Dictionary<RaceType, CreatureTeleportLocationAzeroth>();
+            int norrathPriestOfDiscordGossipMenuID = -1;
+            if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
+            {
+                azerothTeleportLocations = CreatureTeleportLocationAzeroth.GetAllTeleportLocations();
+                
+                // Base menu
+                norrathPriestOfDiscordGossipMenuID = GossipMenuSQL.GenerateUniqueMenuID();
+                gossipMenuSQL.AddRow(norrathPriestOfDiscordGossipMenuID, Configuration.CREATURE_GOSSIP_NPC_TEXT_ID);
+
+                // Options, Conditions, Text
+                int curMenuOptionID = 0;
+                foreach (CreatureTeleportLocationAzeroth teleportLocation in azerothTeleportLocations)
+                {
+                    // Broadcast
+                    int menuBroadcastID = BroadcastTextSQL.GenerateUniqueID();
+                    broadcastTextSQL.AddRow(menuBroadcastID, teleportLocation.MenuItemText, teleportLocation.MenuItemText);
+
+                    // Menu Option
+                    gossipMenuOptionSQL.AddRow(norrathPriestOfDiscordGossipMenuID, curMenuOptionID, 0, teleportLocation.MenuItemText, menuBroadcastID, 1, 1, 0);
+                    azerothTeleportMenuOptionIDsByRaceType.Add(teleportLocation.Race, curMenuOptionID);
+
+                    // Condition
+                    string conditionsComment = string.Concat("EQ Restrict menu option for race ", teleportLocation.Race.ToString());
+                    conditionsSQL.AddRowForMenuOptionRaceRestriction(norrathPriestOfDiscordGossipMenuID, curMenuOptionID, teleportLocation.Race, conditionsComment);
+
+                    azerothTeleportLocationByRaceType.Add(teleportLocation.Race, teleportLocation);
+                    curMenuOptionID++;
+                }
+            }
+
             // Creature Templates
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
@@ -274,6 +308,21 @@ namespace EQWOWConverter
                         creatureTemplate.SpawnWaypointDebugAreaID, creatureTemplate.SpawnWaypointDebugXPosition, creatureTemplate.SpawnWaypointDebugYPosition,
                         creatureTemplate.SpawnWaypointDebugZPosition, 0, CreatureMovementType.None, comment, false);
                     continue;
+                }
+
+                // If there are any azeroth teleports
+                if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true && creatureTemplate.IsNorrathPriestOfDiscord == true)
+                {
+                    creatureTemplate.GossipMenuID = norrathPriestOfDiscordGossipMenuID;
+                    creatureTemplate.WOWFactionTemplateID = Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE;
+                    foreach (var menuOptionByRace in azerothTeleportMenuOptionIDsByRaceType)
+                    {
+                        CreatureTeleportLocationAzeroth curTeleportLocation = azerothTeleportLocationByRaceType[menuOptionByRace.Key];
+                        string comment = string.Concat("EQ teleport player to Azeroth ('", curTeleportLocation.MenuItemText, "')");
+                        smartScriptsSQL.AddRowForMenuOptionTriggeredTeleport(creatureTemplate.WOWCreatureTemplateID, norrathPriestOfDiscordGossipMenuID, menuOptionByRace.Value,
+                            curTeleportLocation.MapID, curTeleportLocation.XPosition, curTeleportLocation.YPosition, curTeleportLocation.ZPosition,
+                            curTeleportLocation.Orientation, comment);
+                    }
                 }
 
                 // All creature data
@@ -404,6 +453,7 @@ namespace EQWOWConverter
             // Azeroth creatures for teleports
             if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
             {
+                // Creatures themselves
                 List<CreatureTeleporter> creatureTeleporters = CreatureTeleporter.GetAllCreatureTeleporters();
                 Dictionary<int, CreatureTemplate> creatureTemplatesByWOWID = CreatureTemplate.GetCreatureTemplateListByWOWID();
                 if (creatureTemplatesByWOWID.ContainsKey(Configuration.GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID) == false)

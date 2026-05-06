@@ -63,6 +63,8 @@ namespace EQWOWConverter.Creatures
         public bool CanAssist = false;
         public bool IsBanker = false;
         public bool IsRidingTrainer = false;
+        public bool IsNorrathPriestOfDiscord = false;
+        public bool IsAzerothPriestOfDiscord = false;
         public ClassType ClassTrainerType = ClassType.None;
         public TradeskillType TradeskillTrainerType = TradeskillType.None;
         public int GossipMenuID = 0;
@@ -498,6 +500,16 @@ namespace EQWOWConverter.Creatures
                 case 40: // Banker
                     {
                         creatureTemplate.IsBanker = true;
+                    } break;
+                case 100: // Priest of Discord (in Norrath)
+                    {
+                        creatureTemplate.IsNorrathPriestOfDiscord = true;
+                        creatureTemplate.SubName = "Azeroth Gatemaster";
+                    } break;
+                case 101: // Priest of Discord (in Azeroth)
+                    {
+                        creatureTemplate.IsAzerothPriestOfDiscord = true;
+                        creatureTemplate.SubName = "Norrath Gatemaster";
                     } break;
                 default:
                     {
