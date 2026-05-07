@@ -257,18 +257,40 @@ namespace EQWOWConverter
             List<CreatureTeleportLocationNorrath> norrathTeleportLocations;
             int norrathPriestOfDiscordGossipMenuID = -1;
             int azerothPriestOfDiscordGossipMenuID = -1;
+            int priestOfDiscordCooldownGossipMenuID = -1;
+            int priestOfDiscordCooldownMenuNPCTextID = -1;
             SortedDictionary<int, CreatureTeleportLocationAzeroth> azerothTeleportLocationsByGossipMenuOptionID = new SortedDictionary<int, CreatureTeleportLocationAzeroth>();
             SortedDictionary<int, CreatureTeleportLocationNorrath> norrathTeleportLocationsByGossipMenuOptionID = new SortedDictionary<int, CreatureTeleportLocationNorrath>();
             if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
             {
+                // Cooldown menu
+                priestOfDiscordCooldownGossipMenuID = GossipMenuSQL.GenerateUniqueMenuID();
+                int menuBroadcastTextID = BroadcastTextSQL.GenerateUniqueID();
+                broadcastTextSQL.AddRow(menuBroadcastTextID, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT);
+                int menuNPCTextID = NPCTextSQL.GenerateUniqueID();
+                priestOfDiscordCooldownMenuNPCTextID = menuNPCTextID;
+                npcTextSQL.AddRow(menuNPCTextID, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT, menuBroadcastTextID);
+                gossipMenuSQL.AddRow(priestOfDiscordCooldownGossipMenuID, menuNPCTextID);
+                if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                {
+                    string menuConditionComment = string.Concat("Show Priest of Discord menu if player has spell aura ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
+                    conditionsSQL.AddRowForMenuOptionRestrictionIfAura(priestOfDiscordCooldownGossipMenuID, menuNPCTextID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, menuConditionComment, false);
+                }
+
                 // Teleporting to Azeroth
                 azerothTeleportLocations = CreatureTeleportLocationAzeroth.GetAllTeleportLocations();
                 norrathPriestOfDiscordGossipMenuID = GossipMenuSQL.GenerateUniqueMenuID();
-                int menuBroadcastTextID = BroadcastTextSQL.GenerateUniqueID();
+                menuBroadcastTextID = BroadcastTextSQL.GenerateUniqueID();
                 broadcastTextSQL.AddRow(menuBroadcastTextID, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT);
-                int menuNPCTextID = NPCTextSQL.GenerateUniqueID();
+                menuNPCTextID = NPCTextSQL.GenerateUniqueID();
                 npcTextSQL.AddRow(menuNPCTextID, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT, menuBroadcastTextID);
                 gossipMenuSQL.AddRow(norrathPriestOfDiscordGossipMenuID, menuNPCTextID);
+                if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                {
+                    string menuConditionComment = string.Concat("Show Priest of Discord menu if player does not have spell aura ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
+                    conditionsSQL.AddRowForMenuOptionRestrictionIfAura(norrathPriestOfDiscordGossipMenuID, menuNPCTextID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, menuConditionComment, true);
+                }
+
                 int curMenuOptionID = 0;
                 foreach (CreatureTeleportLocationAzeroth teleportLocation in azerothTeleportLocations)
                 {
@@ -280,11 +302,11 @@ namespace EQWOWConverter
                     gossipMenuOptionSQL.AddRow(norrathPriestOfDiscordGossipMenuID, curMenuOptionID, 0, teleportLocation.MenuItemText, menuBroadcastID, 1, 1, 0);
 
                     // Condition
-                    string conditionsComment = string.Concat("EQ Restrict menu option for race ", teleportLocation.Race.ToString());
+                    string conditionsComment = string.Concat("Restrict menu option for race ", teleportLocation.Race.ToString());
                     conditionsSQL.AddRowForMenuOptionRaceRestriction(norrathPriestOfDiscordGossipMenuID, curMenuOptionID, new List<RaceType>() { teleportLocation.Race }, conditionsComment);
                     if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
                     {
-                        conditionsComment = string.Concat("EQ Restrict menu option for spell ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
+                        conditionsComment = string.Concat("Restrict menu option for spell ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
                         conditionsSQL.AddRowForMenuOptionAuraExistsRestriction(norrathPriestOfDiscordGossipMenuID, curMenuOptionID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, conditionsComment);
                     }
 
@@ -300,6 +322,12 @@ namespace EQWOWConverter
                 menuNPCTextID = NPCTextSQL.GenerateUniqueID();
                 npcTextSQL.AddRow(menuNPCTextID, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT, menuBroadcastTextID);
                 gossipMenuSQL.AddRow(azerothPriestOfDiscordGossipMenuID, menuNPCTextID);
+                if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                {
+                    string menuConditionComment = string.Concat("Show Priest of Discord menu if player does not have spell aura ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
+                    conditionsSQL.AddRowForMenuOptionRestrictionIfAura(azerothPriestOfDiscordGossipMenuID, menuNPCTextID,Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, menuConditionComment, true);
+                }
+
                 curMenuOptionID = 0;
                 foreach (CreatureTeleportLocationNorrath teleportLocation in norrathTeleportLocations)
                 {
@@ -412,6 +440,9 @@ namespace EQWOWConverter
                             curTeleportLocation.MapID, curTeleportLocation.XPosition, curTeleportLocation.YPosition, curTeleportLocation.ZPosition,
                             curTeleportLocation.Orientation, comment);
                     }
+                    string altMenuComment = "EQ Show Priest of Discord cooldown gossip menu";
+                    smartScriptsSQL.AddRowForShowGossipMenuOption(creatureTemplate.WOWCreatureTemplateID, priestOfDiscordCooldownGossipMenuID,
+                        priestOfDiscordCooldownMenuNPCTextID, altMenuComment);
                 }
 
                 // If there are any Norrath teleports
@@ -435,6 +466,9 @@ namespace EQWOWConverter
                         smartScriptsSQL.AddRowForMenuOptionTriggeredTeleport(creatureTemplate.WOWCreatureTemplateID, azerothPriestOfDiscordGossipMenuID, norrathTeleportLocationByGossipMenuOptionID.Key,
                             mapID, curTeleportLocation.XPosition, curTeleportLocation.YPosition, curTeleportLocation.ZPosition, curTeleportLocation.Orientation, comment);
                     }
+                    string altMenuComment = "EQ Show Priest of Discord cooldown gossip menu";
+                    smartScriptsSQL.AddRowForShowGossipMenuOption(creatureTemplate.WOWCreatureTemplateID, priestOfDiscordCooldownGossipMenuID,
+                        priestOfDiscordCooldownMenuNPCTextID, altMenuComment);
                 }
 
                 // All creature data

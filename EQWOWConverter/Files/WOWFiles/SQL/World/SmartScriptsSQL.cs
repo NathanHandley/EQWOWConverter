@@ -332,6 +332,31 @@ namespace EQWOWConverter.WOWFiles
                 comment);
         }
 
+        public void AddRowForShowGossipMenuOption(int creatureEntry, int menuID, int npcTextID, string comment)
+        {
+            AddRow(creatureEntry, // Negative for GUID, Positive for Entry
+                0,  // SMART_SCRIPT_TYPE_CREATURE
+                64, // SMART_EVENT_GOSSIP_HELLO
+                100,
+                menuID,
+                0,
+                0,
+                0,
+                0,
+                0,
+                98,  // SMART_ACTION_SEND_GOSSIP_MENU
+                menuID,
+                npcTextID,
+                7, // SMART_TARGET_ACTION_INVOKER
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment);
+        }
+
         public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventChance, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
             int eventParam5, int eventParam6, int actionType, int actionParam1, int actionParam2, int targetType, int targetParam1, int targetParam2,
             float targetX, float targetY, float targetZ, float targetOrientation, string comment)

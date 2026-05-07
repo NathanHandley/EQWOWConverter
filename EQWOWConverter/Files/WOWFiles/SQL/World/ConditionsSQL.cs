@@ -24,7 +24,7 @@ namespace EQWOWConverter.WOWFiles
         public override string DeleteRowSQL()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM `conditions` WHERE `SourceTypeOrReferenceID` = 15 AND `SourceGroup` >= " + Configuration.SQL_GOSSIPMENU_MENUID_START.ToString() + " AND `SourceGroup` <= " + Configuration.SQL_GOSSIPMENU_MENUID_END.ToString() + ";");
+            stringBuilder.AppendLine("DELETE FROM `conditions` WHERE COMMENT like 'EQ %';");
             return stringBuilder.ToString();
         }
 
@@ -50,7 +50,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("ErrorType", 0);
             newRow.AddInt("ErrorTextId", 0);
             newRow.AddString("ScriptName", 64, string.Empty);
-            newRow.AddString("Comment", 255, comment);
+            newRow.AddString("Comment", 255, "EQ " + comment);
             Rows.Add(newRow);
         }
 
@@ -76,7 +76,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("ErrorType", 0);
             newRow.AddInt("ErrorTextId", 0);
             newRow.AddString("ScriptName", 64, string.Empty);
-            newRow.AddString("Comment", 255, comment);
+            newRow.AddString("Comment", 255, "EQ " + comment);
             Rows.Add(newRow);
         }
 
@@ -97,28 +97,28 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("ErrorType", 0);
             newRow.AddInt("ErrorTextId", 0);
             newRow.AddString("ScriptName", 64, string.Empty);
-            newRow.AddString("Comment", 255, comment);
+            newRow.AddString("Comment", 255, "EQ " + comment);
             Rows.Add(newRow);
         }
 
-        public void AddRowForShowMenuWhenAuraExists(int gossipMenuID, int auraSpellTemplateID, string comment)
+        public void AddRowForMenuOptionRestrictionIfAura(int gossipMenuID, int npcTextID, int auraSpellID, string comment, bool negativeCondition = false)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("SourceTypeOrReferenceId", 15); // CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION
+            newRow.AddInt("SourceTypeOrReferenceId", 14); // CONDITION_SOURCE_TYPE_GOSSIP_MENU
             newRow.AddInt("SourceGroup", gossipMenuID);
-            newRow.AddInt("SourceEntry", gossipMenuOptionID);
+            newRow.AddInt("SourceEntry", npcTextID);
             newRow.AddInt("SourceId", 0);
             newRow.AddInt("ElseGroup", 0);
             newRow.AddInt("ConditionTypeOrReference", 1); // CONDITION_AURA
             newRow.AddInt("ConditionTarget", 0);
-            newRow.AddInt("ConditionValue1", auraSpellTemplateID);
+            newRow.AddInt("ConditionValue1", auraSpellID);
             newRow.AddInt("ConditionValue2", 0);
             newRow.AddInt("ConditionValue3", 0);
-            newRow.AddInt("NegativeCondition", 1); // Setting to "1" means this will fire when the player does NOT have this aura
+            newRow.AddInt("NegativeCondition", negativeCondition == true ? 1 : 0);
             newRow.AddInt("ErrorType", 0);
             newRow.AddInt("ErrorTextId", 0);
             newRow.AddString("ScriptName", 64, string.Empty);
-            newRow.AddString("Comment", 255, comment);
+            newRow.AddString("Comment", 255, "EQ " + comment);
             Rows.Add(newRow);
         }
     }
