@@ -80,14 +80,14 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        public void AddRowForMenuOptionAuraExistsRestriction(int gossipMenuID, int gossipMenuOptionID, int auraSpellTemplateID, string comment)
+        public void AddRowForMenuOptionAuraExistsRestriction(int gossipMenuID, int gossipMenuOptionID, int auraSpellTemplateID, string comment, int elseGroupID = 0)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("SourceTypeOrReferenceId", 15); // CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION
             newRow.AddInt("SourceGroup", gossipMenuID);
             newRow.AddInt("SourceEntry", gossipMenuOptionID);
             newRow.AddInt("SourceId", 0);
-            newRow.AddInt("ElseGroup", 0);
+            newRow.AddInt("ElseGroup", elseGroupID);
             newRow.AddInt("ConditionTypeOrReference", 1); // CONDITION_AURA
             newRow.AddInt("ConditionTarget", 0);
             newRow.AddInt("ConditionValue1", auraSpellTemplateID);
@@ -101,7 +101,7 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        public void AddRowForMenuOptionRestrictionIfAura(int gossipMenuID, int npcTextID, int auraSpellID, string comment, bool negativeCondition = false)
+        public void AddRowForMenuRestrictionIfAura(int gossipMenuID, int npcTextID, int auraSpellID, string comment, bool negativeCondition = false)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("SourceTypeOrReferenceId", 14); // CONDITION_SOURCE_TYPE_GOSSIP_MENU

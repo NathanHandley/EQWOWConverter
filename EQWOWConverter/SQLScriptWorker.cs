@@ -271,11 +271,11 @@ namespace EQWOWConverter
                 priestOfDiscordCooldownMenuNPCTextID = menuNPCTextID;
                 npcTextSQL.AddRow(menuNPCTextID, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT, menuBroadcastTextID);
                 gossipMenuSQL.AddRow(priestOfDiscordCooldownGossipMenuID, menuNPCTextID);
-                if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
-                {
-                    string menuConditionComment = string.Concat("Show Priest of Discord menu if player has spell aura ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
-                    conditionsSQL.AddRowForMenuOptionRestrictionIfAura(priestOfDiscordCooldownGossipMenuID, menuNPCTextID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, menuConditionComment, false);
-                }
+                //if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                //{
+                //    string menuConditionComment = string.Concat("Show Priest of Discord menu if player has spell aura ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
+                //    conditionsSQL.AddRowForMenuRestrictionIfAura(priestOfDiscordCooldownGossipMenuID, menuNPCTextID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, menuConditionComment, false);
+                //}
 
                 // Teleporting to Azeroth
                 azerothTeleportLocations = CreatureTeleportLocationAzeroth.GetAllTeleportLocations();
@@ -288,7 +288,7 @@ namespace EQWOWConverter
                 if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
                 {
                     string menuConditionComment = string.Concat("Show Priest of Discord menu if player does not have spell aura ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
-                    conditionsSQL.AddRowForMenuOptionRestrictionIfAura(norrathPriestOfDiscordGossipMenuID, menuNPCTextID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, menuConditionComment, true);
+                    conditionsSQL.AddRowForMenuRestrictionIfAura(norrathPriestOfDiscordGossipMenuID, menuNPCTextID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, menuConditionComment, true);
                 }
 
                 int curMenuOptionID = 0;
@@ -325,7 +325,7 @@ namespace EQWOWConverter
                 if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
                 {
                     string menuConditionComment = string.Concat("Show Priest of Discord menu if player does not have spell aura ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
-                    conditionsSQL.AddRowForMenuOptionRestrictionIfAura(azerothPriestOfDiscordGossipMenuID, menuNPCTextID,Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, menuConditionComment, true);
+                    conditionsSQL.AddRowForMenuRestrictionIfAura(azerothPriestOfDiscordGossipMenuID, menuNPCTextID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, menuConditionComment, true);
                 }
 
                 curMenuOptionID = 0;
@@ -347,14 +347,23 @@ namespace EQWOWConverter
                         // Class is Good
                         conditionsSQL.AddRowForMenuOptionClassRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetGoodClasses(),
                             "Good alignment (Class Good)", curElseGroup);
+                        if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                        {
+                            string conditionsComment = string.Concat("Restrict menu option for spell ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
+                            conditionsSQL.AddRowForMenuOptionAuraExistsRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, conditionsComment, curElseGroup);
+                        }
                         curElseGroup++;
 
                         // Class NOT Evil AND Race is Good
-                        int subGroup = curElseGroup;
                         conditionsSQL.AddRowForMenuOptionClassRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetEvilClasses(),
-                            "Good alignment (Class NOT Evil)", subGroup, true);
+                            "Good alignment (Class NOT Evil)", curElseGroup, true);
                         conditionsSQL.AddRowForMenuOptionRaceRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetGoodRaces(),
-                            "Good alignment (Race Good)", subGroup);
+                            "Good alignment (Race Good)", curElseGroup);
+                        if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                        {
+                            string conditionsComment = string.Concat("Restrict menu option for spell ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
+                            conditionsSQL.AddRowForMenuOptionAuraExistsRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, conditionsComment, curElseGroup);
+                        }
                         curElseGroup++;
                     }
 
@@ -364,14 +373,23 @@ namespace EQWOWConverter
                         // Class is Evil
                         conditionsSQL.AddRowForMenuOptionClassRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetEvilClasses(),
                             "Evil alignment (Class Evil)", curElseGroup);
+                        if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                        {
+                            string conditionsComment = string.Concat("Restrict menu option for spell ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
+                            conditionsSQL.AddRowForMenuOptionAuraExistsRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, conditionsComment, curElseGroup);
+                        }
                         curElseGroup++;
 
                         // Class NOT Good AND Race is Evil
-                        int subGroup = curElseGroup;
                         conditionsSQL.AddRowForMenuOptionClassRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetGoodClasses(),
-                            "Evil alignment (Class NOT Good)", subGroup, true);
+                            "Evil alignment (Class NOT Good)", curElseGroup, true);
                         conditionsSQL.AddRowForMenuOptionRaceRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetEvilRaces(),
-                            "Evil alignment (Race Evil)", subGroup);
+                            "Evil alignment (Race Evil)", curElseGroup);
+                        if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                        {
+                            string conditionsComment = string.Concat("Restrict menu option for spell ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
+                            conditionsSQL.AddRowForMenuOptionAuraExistsRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, conditionsComment, curElseGroup);
+                        }
                         curElseGroup++;
                     }
 
@@ -383,12 +401,11 @@ namespace EQWOWConverter
                             "Neutral alignment (Class Neutral)", curElseGroup);
                         conditionsSQL.AddRowForMenuOptionRaceRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID,
                             CreatureTeleportLocationNorrath.GetNeutralRaces(), "Neutral alignment (Race Neutral)", curElseGroup);
-                    }
-
-                    if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
-                    {
-                        string conditionsComment = string.Concat("EQ Restrict menu option for spell ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
-                        conditionsSQL.AddRowForMenuOptionAuraExistsRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, conditionsComment);
+                        if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                        {
+                            string conditionsComment = string.Concat("Restrict menu option for spell ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
+                            conditionsSQL.AddRowForMenuOptionAuraExistsRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, conditionsComment, curElseGroup);
+                        }
                     }
 
                     norrathTeleportLocationsByGossipMenuOptionID.Add(curMenuOptionID, teleportLocation);
@@ -440,9 +457,9 @@ namespace EQWOWConverter
                             curTeleportLocation.MapID, curTeleportLocation.XPosition, curTeleportLocation.YPosition, curTeleportLocation.ZPosition,
                             curTeleportLocation.Orientation, comment);
                     }
-                    string altMenuComment = "EQ Show Priest of Discord cooldown gossip menu";
-                    smartScriptsSQL.AddRowForShowGossipMenuOption(creatureTemplate.WOWCreatureTemplateID, priestOfDiscordCooldownGossipMenuID,
-                        priestOfDiscordCooldownMenuNPCTextID, altMenuComment);
+                    //string altMenuComment = "EQ Show Priest of Discord cooldown gossip menu";
+                    //smartScriptsSQL.AddRowForShowGossipMenuOption(creatureTemplate.WOWCreatureTemplateID, priestOfDiscordCooldownGossipMenuID,
+                    //    priestOfDiscordCooldownMenuNPCTextID, altMenuComment);
                 }
 
                 // If there are any Norrath teleports
@@ -455,7 +472,7 @@ namespace EQWOWConverter
                         if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
                         {
                             string spellComment = string.Concat("EQ Apply Azeroth-Norrath Teleport Cooldown Aura");
-                            smartScriptsSQL.AddRowForMenuOptionTriggeredAura(creatureTemplate.WOWCreatureTemplateID, norrathPriestOfDiscordGossipMenuID, norrathTeleportLocationByGossipMenuOptionID.Key,
+                            smartScriptsSQL.AddRowForMenuOptionTriggeredAura(creatureTemplate.WOWCreatureTemplateID, azerothPriestOfDiscordGossipMenuID, norrathTeleportLocationByGossipMenuOptionID.Key,
                                 Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, spellComment);
                         }
                         CreatureTeleportLocationNorrath curTeleportLocation = norrathTeleportLocationByGossipMenuOptionID.Value;
@@ -466,9 +483,9 @@ namespace EQWOWConverter
                         smartScriptsSQL.AddRowForMenuOptionTriggeredTeleport(creatureTemplate.WOWCreatureTemplateID, azerothPriestOfDiscordGossipMenuID, norrathTeleportLocationByGossipMenuOptionID.Key,
                             mapID, curTeleportLocation.XPosition, curTeleportLocation.YPosition, curTeleportLocation.ZPosition, curTeleportLocation.Orientation, comment);
                     }
-                    string altMenuComment = "EQ Show Priest of Discord cooldown gossip menu";
-                    smartScriptsSQL.AddRowForShowGossipMenuOption(creatureTemplate.WOWCreatureTemplateID, priestOfDiscordCooldownGossipMenuID,
-                        priestOfDiscordCooldownMenuNPCTextID, altMenuComment);
+                    //string altMenuComment = "EQ Show Priest of Discord cooldown gossip menu";
+                    //smartScriptsSQL.AddRowForShowGossipMenuOption(creatureTemplate.WOWCreatureTemplateID, priestOfDiscordCooldownGossipMenuID,
+                    //    priestOfDiscordCooldownMenuNPCTextID, altMenuComment);
                 }
 
                 // All creature data
