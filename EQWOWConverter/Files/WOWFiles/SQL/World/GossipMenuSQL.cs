@@ -25,11 +25,11 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM `gossip_menu` WHERE `MenuID` >= " + Configuration.SQL_GOSSIPMENU_MENUID_START.ToString() + " AND `MenuID` <= " + Configuration.SQL_GOSSIPMENU_MENUID_END + ";";
         }
 
-        public void AddRow(int menuID, int textID)
+        public void AddRow(int menuID, int npcTextID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("MenuID", menuID);
-            newRow.AddInt("TextID", textID);
+            newRow.AddInt("TextID", npcTextID);
             Rows.Add(newRow);
         }
 

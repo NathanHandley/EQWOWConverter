@@ -28,10 +28,12 @@ namespace EQWOWConverter.WOWFiles
             return stringBuilder.ToString();
         }
 
-        public void AddRowForMenuOptionRaceRestriction(int gossipMenuID, int gossipMenuOptionID, RaceType raceType, string comment)
+        public void AddRowForMenuOptionRaceRestriction(int gossipMenuID, int gossipMenuOptionID, List<RaceType> raceTypes, string comment)
         {
             // Race value is a powers of 2, zero index
-            int raceValue = (int)(Math.Pow(2, ((int)raceType - 1)));
+            int raceMask = 0;
+            foreach (RaceType raceType in raceTypes)
+                raceMask += (int)(Math.Pow(2, ((int)raceType - 1)));
 
             SQLRow newRow = new SQLRow();
             newRow.AddInt("SourceTypeOrReferenceId", 15); // CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION
@@ -41,7 +43,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("ElseGroup", 0);
             newRow.AddInt("ConditionTypeOrReference", 16); // CONDITION_RACE
             newRow.AddInt("ConditionTarget", 0);
-            newRow.AddInt("ConditionValue1", raceValue);
+            newRow.AddInt("ConditionValue1", raceMask);
             newRow.AddInt("ConditionValue2", 0);
             newRow.AddInt("ConditionValue3", 0);
             newRow.AddInt("NegativeCondition", 0);
@@ -52,10 +54,12 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        public void AddRowForMenuOptionClassRestriction(int gossipMenuID, int gossipMenuOptionID, ClassType classType, string comment)
+        public void AddRowForMenuOptionClassRestriction(int gossipMenuID, int gossipMenuOptionID, List<ClassType> classTypes, string comment)
         {
             // Class value is a powers of 2, zero index
-            int classValue = (int)(Math.Pow(2, ((int)classType - 1)));
+            int classMask = 0;
+            foreach (ClassType classType in classTypes)
+                classMask += (int)(Math.Pow(2, ((int)classType - 1)));
 
             SQLRow newRow = new SQLRow();
             newRow.AddInt("SourceTypeOrReferenceId", 15); // CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION
@@ -65,7 +69,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("ElseGroup", 0);
             newRow.AddInt("ConditionTypeOrReference", 15); // CONDITION_CLASS
             newRow.AddInt("ConditionTarget", 0);
-            newRow.AddInt("ConditionValue1", classValue);
+            newRow.AddInt("ConditionValue1", classMask);
             newRow.AddInt("ConditionValue2", 0);
             newRow.AddInt("ConditionValue3", 0);
             newRow.AddInt("NegativeCondition", 0);
