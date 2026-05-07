@@ -294,7 +294,7 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 0,
                 0,
-                62,  // SMART_ACTION_TELEPORT,
+                62,  // SMART_ACTION_TELEPORT
                 targetMapID,
                 0,
                 7, // SMART_TARGET_ACTION_INVOKER
@@ -304,6 +304,31 @@ namespace EQWOWConverter.WOWFiles
                 targetY,
                 targetZ,
                 targetOrientation,
+                comment);
+        }
+
+        public void AddRowForMenuOptionTriggeredAura(int creatureEntry, int menuID, int menuOptionID, int spellTemplateID, string comment)
+        {
+            AddRow(creatureEntry, // Negative for GUID, Positive for Entry
+                0,  // SMART_SCRIPT_TYPE_CREATURE
+                62, // SMART_EVENT_GOSSIP_SELECT
+                100,
+                menuID,
+                menuOptionID,
+                0,
+                0,
+                0,
+                0,
+                11,  // SMART_ACTION_CAST
+                spellTemplateID,
+                0,
+                7, // SMART_TARGET_ACTION_INVOKER
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
                 comment);
         }
 

@@ -473,6 +473,7 @@ namespace EQWOWConverter
         // that displays when you talk to a Priest of Discord
         public static string CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT = "Ah, child of Azeroth. The Priests of Discord have torn the rift wide so that your wars and ours may bleed together. Where shall I send you to spread the Discord?";
         public static string CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT = "Hail, traveler of Norrath. I can only send you back through the rift to the land in Azeroth that calls calls to your blood. Let your arrival there spread confusion and chaos among your kin. Where does your heritage demand I deliver you?";
+        public static string CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT = "Greetings. As much as I wish to help you sow Discord, you carry with you the recent echo of one of our portals. See me again once that echo fades, and I shall aid you.";
 
         //=====================================================================
         // Items
@@ -655,6 +656,10 @@ namespace EQWOWConverter
         // Default time that a shrink/grow spell will last for
         public static int SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS = 1800000;
 
+        // Values for the cooldown spells applied by Priests of Discord when you switch worlds, setting cooldown duration to 0 will disable it
+        public static int SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID = 86902;
+        public static int SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN = 30;
+
         //=====================================================================
         // Tradeskills
         //=====================================================================
@@ -768,7 +773,7 @@ namespace EQWOWConverter
         public static int DBCID_SOUNDAMBIENCE_ID_START = 600;
 
         // ID for spells found in Spell.dbc
-        // - Manually created spells reserve IDs from 86900 to 86999.  See "Spells"
+        // - Manually created spells reserve IDs from 86900 to 86999 and all are defined in the config
         // - Recipes reserve IDs 87000 to 91221
         // - Converted spells IDs start at 92000 and base spells range to 95826, with IDs after 96200 used for 'generated spell IDs'
         // - SpellIDs 96000 - 96049 reserved for 'worn' effects (effects that always take effect when worn)
@@ -1209,6 +1214,7 @@ namespace EQWOWConverter
             OutputTextLineToConfig("# If \"GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION\" is true, this is the text");
             OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT, "that displays when you talk to a Priest of Discord", false);
             OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT, "");
+            OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT, "");
             OutputVariableToConfig("ITEMS_USE_ALTERNATE_STATS", ITEMS_USE_ALTERNATE_STATS, "If true, this uses alternate stats for items that have been tweaked for balance reasons");
             OutputVariableToConfig("ITEMS_WEAPON_DELAY_REDUCTION_AMT", ITEMS_WEAPON_DELAY_REDUCTION_AMT, "This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;");
             OutputVariableToConfig("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", ITEMS_WEAPON_EFFECT_PPM_BASE_RATE, "This is the base PPM (Procs Per Minute) used for weapon proc weapons");
@@ -1269,6 +1275,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_EFFECT_USE_DYNAMIC_AURA_DURATIONS", SPELL_EFFECT_USE_DYNAMIC_AURA_DURATIONS, "");
             OutputVariableToConfig("SPELL_EFFECT_REVIVE_EXPPCT_TO_HPMP_MULTIPLIER", SPELL_EFFECT_REVIVE_EXPPCT_TO_HPMP_MULTIPLIER, "Revive will give HP/MP instead of EXP on revive, so this is the multiplier to use for that");
             OutputVariableToConfig("SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS", SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS, "Default time that a shrink/grow spell will last for");
+            OutputVariableToConfig("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID", SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, "Values for the cooldown spells applied by Priests of Discord when you switch worlds, setting cooldown duration to 0 will disable it", false);
+            OutputVariableToConfig("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN, "");
             OutputVariableToConfig("TRADESKILLS_CONVERSION_MOD", TRADESKILLS_CONVERSION_MOD, "How much to multiply EQ skill requirements by to reach the same for WoW on conversion");
             OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_LOW", TRADESKILLS_SKILL_TIER_DISTANCE_LOW, "Max distance between Grey -> Green -> Yellow -> Red steps", false);
             OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_HIGH", TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, "");
@@ -1603,6 +1611,7 @@ namespace EQWOWConverter
             CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT", configValuesByVariableName, CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT);
             CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT);
             CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT);
+            CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT);
 
             ITEMS_USE_ALTERNATE_STATS = ReadVariableFromConfigString("ITEMS_USE_ALTERNATE_STATS", configValuesByVariableName, ITEMS_USE_ALTERNATE_STATS);
             ITEMS_WEAPON_DELAY_REDUCTION_AMT = ReadVariableFromConfigString("ITEMS_WEAPON_DELAY_REDUCTION_AMT", configValuesByVariableName, ITEMS_WEAPON_DELAY_REDUCTION_AMT);
@@ -1671,6 +1680,8 @@ namespace EQWOWConverter
             SPELL_EFFECT_USE_DYNAMIC_AURA_DURATIONS = ReadVariableFromConfigString("SPELL_EFFECT_USE_DYNAMIC_AURA_DURATIONS", configValuesByVariableName, SPELL_EFFECT_USE_DYNAMIC_AURA_DURATIONS);
             SPELL_EFFECT_REVIVE_EXPPCT_TO_HPMP_MULTIPLIER = ReadVariableFromConfigString("SPELL_EFFECT_REVIVE_EXPPCT_TO_HPMP_MULTIPLIER", configValuesByVariableName, SPELL_EFFECT_REVIVE_EXPPCT_TO_HPMP_MULTIPLIER);
             SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS = ReadVariableFromConfigString("SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS", configValuesByVariableName, SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS);
+            SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID = ReadVariableFromConfigString("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID", configValuesByVariableName, SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID);
+            SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN = ReadVariableFromConfigString("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", configValuesByVariableName, SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN);
 
             TRADESKILLS_CONVERSION_MOD = ReadVariableFromConfigString("TRADESKILLS_CONVERSION_MOD", configValuesByVariableName, TRADESKILLS_CONVERSION_MOD);
             TRADESKILLS_SKILL_TIER_DISTANCE_LOW = ReadVariableFromConfigString("TRADESKILLS_SKILL_TIER_DISTANCE_LOW", configValuesByVariableName, TRADESKILLS_SKILL_TIER_DISTANCE_LOW);

@@ -1976,6 +1976,29 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             spellTemplates.Add(bindAffinitySelfSpellTemplate);
 
+            // Teleport "Sickness" spells 
+            if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
+            {
+                if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                {
+                    SpellTemplate priestOfDiscordPortalCooldownTemplate = new SpellTemplate();
+                    priestOfDiscordPortalCooldownTemplate.Name = "Discord's Portal Echo";
+                    priestOfDiscordPortalCooldownTemplate.WOWSpellID = Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID;
+                    priestOfDiscordPortalCooldownTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                    priestOfDiscordPortalCooldownTemplate.Description = "The magic that brought you across the world barrior between Azeroth and Norrath cannot be used again for a time.";
+                    priestOfDiscordPortalCooldownTemplate.AuraDescription = "The magic that brought you across the world barrior between Azeroth and Norrath cannot be used again for a time.";
+                    priestOfDiscordPortalCooldownTemplate.AuraDuration.SetFixedDuration(Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN * 60 * 1000);
+                    priestOfDiscordPortalCooldownTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
+                    priestOfDiscordPortalCooldownTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitTargetAny;
+                    priestOfDiscordPortalCooldownTemplate.PreventAuraClickOff = true;
+                    priestOfDiscordPortalCooldownTemplate.AlwaysPersist = true;
+                    priestOfDiscordPortalCooldownTemplate.SpellRange = 1000;
+                    priestOfDiscordPortalCooldownTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
+                    priestOfDiscordPortalCooldownTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
+                    spellTemplates.Add(priestOfDiscordPortalCooldownTemplate);
+                }
+            }
+
             Logger.WriteDebug("Generating custom spells completed.");
         }
 

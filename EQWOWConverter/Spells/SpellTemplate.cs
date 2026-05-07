@@ -178,6 +178,7 @@ namespace EQWOWConverter.Spells
         public bool InterruptOnCast = true;
         public bool InterruptOnDamageTaken = false;
         public bool PreventAuraClickOff = false;
+        public bool AlwaysPersist = false;
         public SpellFocusBoostType FocusBoostType = SpellFocusBoostType.None;
         public bool IsFocusBoostableEffect = false;
         public bool IsToggleAura = false;

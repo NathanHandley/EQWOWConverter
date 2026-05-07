@@ -79,5 +79,47 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("Comment", 255, comment);
             Rows.Add(newRow);
         }
+
+        public void AddRowForMenuOptionAuraExistsRestriction(int gossipMenuID, int gossipMenuOptionID, int auraSpellTemplateID, string comment)
+        {
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("SourceTypeOrReferenceId", 15); // CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION
+            newRow.AddInt("SourceGroup", gossipMenuID);
+            newRow.AddInt("SourceEntry", gossipMenuOptionID);
+            newRow.AddInt("SourceId", 0);
+            newRow.AddInt("ElseGroup", 0);
+            newRow.AddInt("ConditionTypeOrReference", 1); // CONDITION_AURA
+            newRow.AddInt("ConditionTarget", 0);
+            newRow.AddInt("ConditionValue1", auraSpellTemplateID);
+            newRow.AddInt("ConditionValue2", 0);
+            newRow.AddInt("ConditionValue3", 0);
+            newRow.AddInt("NegativeCondition", 1); // Setting to "1" means this will fire when the player does NOT have this aura
+            newRow.AddInt("ErrorType", 0);
+            newRow.AddInt("ErrorTextId", 0);
+            newRow.AddString("ScriptName", 64, string.Empty);
+            newRow.AddString("Comment", 255, comment);
+            Rows.Add(newRow);
+        }
+
+        public void AddRowForShowMenuWhenAuraExists(int gossipMenuID, int auraSpellTemplateID, string comment)
+        {
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("SourceTypeOrReferenceId", 15); // CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION
+            newRow.AddInt("SourceGroup", gossipMenuID);
+            newRow.AddInt("SourceEntry", gossipMenuOptionID);
+            newRow.AddInt("SourceId", 0);
+            newRow.AddInt("ElseGroup", 0);
+            newRow.AddInt("ConditionTypeOrReference", 1); // CONDITION_AURA
+            newRow.AddInt("ConditionTarget", 0);
+            newRow.AddInt("ConditionValue1", auraSpellTemplateID);
+            newRow.AddInt("ConditionValue2", 0);
+            newRow.AddInt("ConditionValue3", 0);
+            newRow.AddInt("NegativeCondition", 1); // Setting to "1" means this will fire when the player does NOT have this aura
+            newRow.AddInt("ErrorType", 0);
+            newRow.AddInt("ErrorTextId", 0);
+            newRow.AddString("ScriptName", 64, string.Empty);
+            newRow.AddString("Comment", 255, comment);
+            Rows.Add(newRow);
+        }
     }
 }

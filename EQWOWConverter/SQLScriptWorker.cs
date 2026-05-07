@@ -282,6 +282,11 @@ namespace EQWOWConverter
                     // Condition
                     string conditionsComment = string.Concat("EQ Restrict menu option for race ", teleportLocation.Race.ToString());
                     conditionsSQL.AddRowForMenuOptionRaceRestriction(norrathPriestOfDiscordGossipMenuID, curMenuOptionID, new List<RaceType>() { teleportLocation.Race }, conditionsComment);
+                    if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                    {
+                        conditionsComment = string.Concat("EQ Restrict menu option for spell ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
+                        conditionsSQL.AddRowForMenuOptionAuraExistsRestriction(norrathPriestOfDiscordGossipMenuID, curMenuOptionID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, conditionsComment);
+                    }
 
                     azerothTeleportLocationsByGossipMenuOptionID.Add(curMenuOptionID, teleportLocation);
                     curMenuOptionID++;
@@ -352,6 +357,12 @@ namespace EQWOWConverter
                             CreatureTeleportLocationNorrath.GetNeutralRaces(), "Neutral alignment (Race Neutral)", curElseGroup);
                     }
 
+                    if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                    {
+                        string conditionsComment = string.Concat("EQ Restrict menu option for spell ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
+                        conditionsSQL.AddRowForMenuOptionAuraExistsRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, conditionsComment);
+                    }
+
                     norrathTeleportLocationsByGossipMenuOptionID.Add(curMenuOptionID, teleportLocation);
                     curMenuOptionID++;
                 }
@@ -384,10 +395,17 @@ namespace EQWOWConverter
                 // If there are any Azeroth teleports
                 if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true && creatureTemplate.IsNorrathPriestOfDiscord == true)
                 {
+                    creatureTemplate.HasSmartScript = true;
                     creatureTemplate.GossipMenuID = norrathPriestOfDiscordGossipMenuID;
                     creatureTemplate.WOWFactionTemplateID = Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE;
                     foreach (var azerothTeleportLocationByGossipMenuOptionID in azerothTeleportLocationsByGossipMenuOptionID)
                     {
+                        if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                        {
+                            string spellComment = string.Concat("EQ Apply Azeroth-Norrath Teleport Cooldown Aura");
+                            smartScriptsSQL.AddRowForMenuOptionTriggeredAura(creatureTemplate.WOWCreatureTemplateID, norrathPriestOfDiscordGossipMenuID, azerothTeleportLocationByGossipMenuOptionID.Key,
+                                Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, spellComment);
+                        }
                         CreatureTeleportLocationAzeroth curTeleportLocation = azerothTeleportLocationByGossipMenuOptionID.Value;
                         string comment = string.Concat("EQ teleport player to Azeroth ('", curTeleportLocation.MenuItemText, "')");
                         smartScriptsSQL.AddRowForMenuOptionTriggeredTeleport(creatureTemplate.WOWCreatureTemplateID, norrathPriestOfDiscordGossipMenuID, azerothTeleportLocationByGossipMenuOptionID.Key,
@@ -399,9 +417,16 @@ namespace EQWOWConverter
                 // If there are any Norrath teleports
                 if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true && creatureTemplate.IsAzerothPriestOfDiscord == true)
                 {
+                    creatureTemplate.HasSmartScript = true;
                     creatureTemplate.GossipMenuID = azerothPriestOfDiscordGossipMenuID;
                     foreach (var norrathTeleportLocationByGossipMenuOptionID in norrathTeleportLocationsByGossipMenuOptionID)
                     {
+                        if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
+                        {
+                            string spellComment = string.Concat("EQ Apply Azeroth-Norrath Teleport Cooldown Aura");
+                            smartScriptsSQL.AddRowForMenuOptionTriggeredAura(creatureTemplate.WOWCreatureTemplateID, norrathPriestOfDiscordGossipMenuID, norrathTeleportLocationByGossipMenuOptionID.Key,
+                                Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, spellComment);
+                        }
                         CreatureTeleportLocationNorrath curTeleportLocation = norrathTeleportLocationByGossipMenuOptionID.Value;
                         if (mapIDsByShortName.ContainsKey(curTeleportLocation.ZoneShortName) == false)
                             continue;

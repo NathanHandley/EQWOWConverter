@@ -227,7 +227,7 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 32; // SPELL_ATTR0_IS_TRADESKILL (0x00000020)
             }
             attributeFlags |= 65536; // SPELL_ATTR0_NOT_SHAPESHIFTED (0x00010000)
-            if (preventClickOff == true)
+            if (preventClickOff == true || spellTemplate.AlwaysPersist == true)
                 attributeFlags |= 2147483648; // SPELL_ATTR0_NO_AURA_CANCEL (0x80000000)
             if (spellTemplate.ForceAsDebuff == true)
                 attributeFlags |= 67108864; // SPELL_ATTR0_AURA_IS_DEBUFF (0x04000000)
@@ -253,7 +253,7 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 67108864; // SPELL_ATTR1_REQUIRE_ALL_TARGETS
             }
             if (spellTemplate.GenerateNoThreat == true)
-                attributeFlags |= 1024; // SPELL_ATTR1_NO_THREAT (	0x00000400)
+                attributeFlags |= 1024; // SPELL_ATTR1_NO_THREAT (0x00000400)
                 
             return attributeFlags;
         }
@@ -275,11 +275,13 @@ namespace EQWOWConverter.WOWFiles
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 1048576;
             UInt32 attributeFlags = 0;
-            if (spellTemplate.IsFarSight)
+            if (spellTemplate.IsFarSight == true)
             {
                 attributeFlags |= 65536; // SPELL_ATTR3_SUPPRESS_CASTER_PROCS
                 attributeFlags |= 131072; // SPELL_ATTR3_SUPPRESS_TARGET_PROCS
             }
+            if (spellTemplate.AlwaysPersist == true)
+                attributeFlags |= 1048576; // SPELL_ATTR3_ALLOW_AURA_WHILE_DEAD
             return attributeFlags;
         }
 
@@ -295,7 +297,7 @@ namespace EQWOWConverter.WOWFiles
             }
             if (spellTemplate.HideCaster == true)
                 attributeFlags |= 1; // SPELL_ATTR4_NO_CAST_LOG
-            if (isToggleAura == true)
+            if (isToggleAura == true || spellTemplate.AlwaysPersist == true)
                 attributeFlags |= 1048576; // SPELL_ATTR4_AURA_NEVER_BOUNCES
             return attributeFlags;
         }
