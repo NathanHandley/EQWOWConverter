@@ -305,18 +305,52 @@ namespace EQWOWConverter
                     // Menu Option
                     gossipMenuOptionSQL.AddRow(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, 0, teleportLocation.MenuItemText, menuBroadcastID, 1, 1, 0);
 
-                    // Conditions
-                    List<ClassType> eligibleClasses = CreatureTeleportLocationNorrath.GetClassTypes(teleportLocation.AllowGood, teleportLocation.AllowNeutral, teleportLocation.AllowEvil);
-                    string classesConditionsComment = "EQ Restrict menu option for classes:";
-                    foreach (ClassType classType in eligibleClasses)
-                        classesConditionsComment += " " + classType.ToString();
-                    conditionsSQL.AddRowForMenuOptionClassRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, eligibleClasses, classesConditionsComment);
+                    // Option conditionals, which is based on alignment                   
+                    int curElseGroup = 0;
 
-                    List<RaceType> eligibleRaces = CreatureTeleportLocationNorrath.GetRaceTypes(teleportLocation.AllowGood, teleportLocation.AllowNeutral, teleportLocation.AllowEvil);
-                    string racesConditionsComment = "EQ Restrict menu option for races:";
-                    foreach (RaceType raceType in eligibleRaces)
-                        racesConditionsComment += " " + raceType.ToString();
-                    conditionsSQL.AddRowForMenuOptionRaceRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, eligibleRaces, racesConditionsComment);
+                    // Good
+                    if (teleportLocation.AllowGood)
+                    {
+                        // Class is Good
+                        conditionsSQL.AddRowForMenuOptionClassRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetGoodClasses(),
+                            "Good alignment (Class Good)", curElseGroup);
+                        curElseGroup++;
+
+                        // Class NOT Evil AND Race is Good
+                        int subGroup = curElseGroup;
+                        conditionsSQL.AddRowForMenuOptionClassRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetEvilClasses(),
+                            "Good alignment (Class NOT Evil)", subGroup, true);
+                        conditionsSQL.AddRowForMenuOptionRaceRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetGoodRaces(),
+                            "Good alignment (Race Good)", subGroup);
+                        curElseGroup++;
+                    }
+
+                    // Evil
+                    if (teleportLocation.AllowEvil)
+                    {
+                        // Class is Evil
+                        conditionsSQL.AddRowForMenuOptionClassRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetEvilClasses(),
+                            "Evil alignment (Class Evil)", curElseGroup);
+                        curElseGroup++;
+
+                        // Class NOT Good AND Race is Evil
+                        int subGroup = curElseGroup;
+                        conditionsSQL.AddRowForMenuOptionClassRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetGoodClasses(),
+                            "Evil alignment (Class NOT Good)", subGroup, true);
+                        conditionsSQL.AddRowForMenuOptionRaceRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetEvilRaces(),
+                            "Evil alignment (Race Evil)", subGroup);
+                        curElseGroup++;
+                    }
+
+                    // Neutral
+                    if (teleportLocation.AllowNeutral)
+                    {
+                        // Class Neutral AND Race Neutral
+                        conditionsSQL.AddRowForMenuOptionClassRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetNeutralClasses(),
+                            "Neutral alignment (Class Neutral)", curElseGroup);
+                        conditionsSQL.AddRowForMenuOptionRaceRestriction(azerothPriestOfDiscordGossipMenuID, curMenuOptionID,
+                            CreatureTeleportLocationNorrath.GetNeutralRaces(), "Neutral alignment (Race Neutral)", curElseGroup);
+                    }
 
                     norrathTeleportLocationsByGossipMenuOptionID.Add(curMenuOptionID, teleportLocation);
                     curMenuOptionID++;

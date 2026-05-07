@@ -51,39 +51,99 @@ namespace EQWOWConverter.Creatures.Teleporters
             }
         }
 
-        public static List<ClassType> GetClassTypes(bool includeGood, bool includeNeutral, bool includeEvil)
+        public static List<ClassType> GetGoodClasses()
         {
             lock (AlignmentLock)
             {
                 if (GoodClasses.Count == 0 && NeutralClasses.Count == 0 && EvilClasses.Count == 0)
                     LoadAlignmentInformation();
-                HashSet<ClassType> returnClasses = new HashSet<ClassType>();
-                if (includeGood == true)
-                    returnClasses.UnionWith(GoodClasses);
-                if (includeNeutral == true)
-                    returnClasses.UnionWith(NeutralClasses);
-                if (includeEvil == true)
-                    returnClasses.UnionWith(EvilClasses);
-                return returnClasses.ToList();
+                return GoodClasses.ToList();
             }
         }
 
-        public static List<RaceType> GetRaceTypes(bool includeGood, bool includeNeutral, bool includeEvil)
+        public static List<ClassType> GetNeutralClasses()
+        {
+            lock (AlignmentLock)
+            {
+                if (GoodClasses.Count == 0 && NeutralClasses.Count == 0 && EvilClasses.Count == 0)
+                    LoadAlignmentInformation();
+                return NeutralClasses.ToList();
+            }
+        }
+
+        public static List<ClassType> GetEvilClasses()
+        {
+            lock (AlignmentLock)
+            {
+                if (GoodClasses.Count == 0 && NeutralClasses.Count == 0 && EvilClasses.Count == 0)
+                    LoadAlignmentInformation();
+                return EvilClasses.ToList();
+            }
+        }
+
+        public static List<RaceType> GetGoodRaces()
         {
             lock (AlignmentLock)
             {
                 if (GoodRaces.Count == 0 && NeutralRaces.Count == 0 && EvilRaces.Count == 0)
                     LoadAlignmentInformation();
-                HashSet<RaceType> returnRaces = new HashSet<RaceType>();
-                if (includeGood == true)
-                    returnRaces.UnionWith(GoodRaces);
-                if (includeNeutral == true)
-                    returnRaces.UnionWith(NeutralRaces);
-                if (includeEvil == true)
-                    returnRaces.UnionWith(EvilRaces);
-                return returnRaces.ToList();
+                return GoodRaces.ToList();
             }
         }
+
+        public static List<RaceType> GetNeutralRaces()
+        {
+            lock (AlignmentLock)
+            {
+                if (GoodRaces.Count == 0 && NeutralRaces.Count == 0 && EvilRaces.Count == 0)
+                    LoadAlignmentInformation();
+                return NeutralRaces.ToList();
+            }
+        }
+
+        public static List<RaceType> GetEvilRaces()
+        {
+            lock (AlignmentLock)
+            {
+                if (GoodRaces.Count == 0 && NeutralRaces.Count == 0 && EvilRaces.Count == 0)
+                    LoadAlignmentInformation();
+                return EvilRaces.ToList();
+            }
+        }
+
+        //public static List<ClassType> GetClassTypes(bool includeGood, bool includeNeutral, bool includeEvil)
+        //{
+        //    lock (AlignmentLock)
+        //    {
+        //        if (GoodClasses.Count == 0 && NeutralClasses.Count == 0 && EvilClasses.Count == 0)
+        //            LoadAlignmentInformation();
+        //        HashSet<ClassType> returnClasses = new HashSet<ClassType>();
+        //        if (includeGood == true)
+        //            returnClasses.UnionWith(GoodClasses);
+        //        if (includeNeutral == true)
+        //            returnClasses.UnionWith(NeutralClasses);
+        //        if (includeEvil == true)
+        //            returnClasses.UnionWith(EvilClasses);
+        //        return returnClasses.ToList();
+        //    }
+        //}
+
+        //public static List<RaceType> GetRaceTypes(bool includeGood, bool includeNeutral, bool includeEvil)
+        //{
+        //    lock (AlignmentLock)
+        //    {
+        //        if (GoodRaces.Count == 0 && NeutralRaces.Count == 0 && EvilRaces.Count == 0)
+        //            LoadAlignmentInformation();
+        //        HashSet<RaceType> returnRaces = new HashSet<RaceType>();
+        //        if (includeGood == true)
+        //            returnRaces.UnionWith(GoodRaces);
+        //        if (includeNeutral == true)
+        //            returnRaces.UnionWith(NeutralRaces);
+        //        if (includeEvil == true)
+        //            returnRaces.UnionWith(EvilRaces);
+        //        return returnRaces.ToList();
+        //    }
+        //}
 
         private static void LoadAlignmentInformation()
         {

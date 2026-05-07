@@ -28,7 +28,7 @@ namespace EQWOWConverter.WOWFiles
             return stringBuilder.ToString();
         }
 
-        public void AddRowForMenuOptionRaceRestriction(int gossipMenuID, int gossipMenuOptionID, List<RaceType> raceTypes, string comment)
+        public void AddRowForMenuOptionRaceRestriction(int gossipMenuID, int gossipMenuOptionID, List<RaceType> raceTypes, string comment, int elseGroupID = 0)
         {
             // Race value is a powers of 2, zero index
             int raceMask = 0;
@@ -40,7 +40,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("SourceGroup", gossipMenuID);
             newRow.AddInt("SourceEntry", gossipMenuOptionID);
             newRow.AddInt("SourceId", 0);
-            newRow.AddInt("ElseGroup", 0);
+            newRow.AddInt("ElseGroup", elseGroupID);
             newRow.AddInt("ConditionTypeOrReference", 16); // CONDITION_RACE
             newRow.AddInt("ConditionTarget", 0);
             newRow.AddInt("ConditionValue1", raceMask);
@@ -54,7 +54,7 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        public void AddRowForMenuOptionClassRestriction(int gossipMenuID, int gossipMenuOptionID, List<ClassType> classTypes, string comment)
+        public void AddRowForMenuOptionClassRestriction(int gossipMenuID, int gossipMenuOptionID, List<ClassType> classTypes, string comment, int elseGroupID = 0, bool negativeCondition = false)
         {
             // Class value is a powers of 2, zero index
             int classMask = 0;
@@ -66,13 +66,13 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("SourceGroup", gossipMenuID);
             newRow.AddInt("SourceEntry", gossipMenuOptionID);
             newRow.AddInt("SourceId", 0);
-            newRow.AddInt("ElseGroup", 0);
+            newRow.AddInt("ElseGroup", elseGroupID);
             newRow.AddInt("ConditionTypeOrReference", 15); // CONDITION_CLASS
             newRow.AddInt("ConditionTarget", 0);
             newRow.AddInt("ConditionValue1", classMask);
             newRow.AddInt("ConditionValue2", 0);
             newRow.AddInt("ConditionValue3", 0);
-            newRow.AddInt("NegativeCondition", 0);
+            newRow.AddInt("NegativeCondition", negativeCondition == true ? 1 : 0);
             newRow.AddInt("ErrorType", 0);
             newRow.AddInt("ErrorTextId", 0);
             newRow.AddString("ScriptName", 64, string.Empty);
