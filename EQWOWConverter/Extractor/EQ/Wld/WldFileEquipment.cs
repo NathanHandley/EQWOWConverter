@@ -30,9 +30,28 @@ namespace LanternExtractor.EQ.Wld
         {
             var particles = GetFragmentsOfType<ParticleCloud>();
 
+            // Build a reverse map from each ParticleCloud to the bone it is attached to
+            // so the export records which weapon/armor anchor point emits the effect
+            // (e.g. blade tip of Fiery Defender).
+            var attachments = new System.Collections.Generic.Dictionary<ParticleCloud, (string ModelBase, string Bone)>();
+            foreach (var skeleton in GetFragmentsOfType<SkeletonHierarchy>())
+            {
+                foreach (var bone in skeleton.Skeleton)
+                {
+                    if (bone.ParticleCloud != null && !attachments.ContainsKey(bone.ParticleCloud))
+                    {
+                        attachments[bone.ParticleCloud] = (skeleton.ModelBase, bone.CleanedName ?? bone.Name);
+                    }
+                }
+            }
+
             foreach (var particle in particles)
             {
                 var writer = new ParticleSystemWriter();
+                if (attachments.TryGetValue(particle, out var attachment))
+                {
+                    writer.SetBoneAttachment(attachment.ModelBase, attachment.Bone);
+                }
                 writer.AddFragmentData(particle);
                 writer.WriteAssetToFile(GetRootExportFolder() + "/Particles/" + FragmentNameCleaner.CleanName(particle) + ".txt");
             }
