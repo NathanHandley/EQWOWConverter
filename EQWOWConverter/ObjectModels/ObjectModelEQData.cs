@@ -27,6 +27,8 @@ namespace EQWOWConverter.ObjectModels
         private static readonly object MeshLock = new object();
         private static Dictionary<string, EQSkeleton> CachedSkeletonDataByFileName = new Dictionary<string, EQSkeleton>();
         private static readonly object SkeletonLock = new object();
+        private static Dictionary<string, EQParticleCloud> CachedParticleCloudDataByFileName = new Dictionary<string, EQParticleCloud>();
+        private static readonly object ParticleCloudLock = new object();
 
         public MeshData MeshData = new MeshData();
         public List<Material> Materials = new List<Material>();
@@ -35,6 +37,7 @@ namespace EQWOWConverter.ObjectModels
         public List<TriangleFace> CollisionTriangleFaces = new List<TriangleFace>();
         private string MaterialListFileName = string.Empty;
         public EQSkeleton SkeletonData = new EQSkeleton();
+        public Dictionary<string, EQParticleCloud> ParticleCloudsByName = new Dictionary<string, EQParticleCloud>();
 
         public void LoadObjectDataFromDisk(string name, ObjectModelProperties objectProperties, string eqInputObjectFileName, string inputObjectFolder, CreatureModelTemplate? creatureModelTemplate = null)
         {
@@ -240,6 +243,13 @@ namespace EQWOWConverter.ObjectModels
                 // Load collision
                 LoadCollisionMeshData(name, meshBoneIndexByName.Keys.ToList(), inputObjectFolder);
             }
+
+            // Load any particle clouds
+            HashSet<string> particleCloudNames = new HashSet<string>();
+            foreach (EQSkeleton.EQSkeletonBone bone in SkeletonData.BoneStructures)
+                if (bone.ParticleCloudName.Length > 0)
+                    particleCloudNames.Add(bone.ParticleCloudName);
+            LoadParticleCloudData(name, particleCloudNames.ToList(), inputObjectFolder);
         }
 
         private void LoadRenderMeshData(string inputObjectName, Dictionary<string, byte> meshNamesByBoneIndex, string inputObjectFolder)
@@ -363,6 +373,33 @@ namespace EQWOWConverter.ObjectModels
                         return;
                     }
                     CachedSkeletonDataByFileName.Add(skeletonFileName, new EQSkeleton(SkeletonData));
+                }
+            }
+        }
+
+        public void LoadParticleCloudData(string inputObjectName, List<string> particleCloudNames, string inputObjectFolder)
+        {
+            Logger.WriteDebug("- [" + inputObjectName + "]: Reading particle cloud data...");
+            lock (ParticleCloudLock)
+            {
+                foreach (string particleCloudName in particleCloudNames)
+                {
+                    string particleCloudFileName = Path.Combine(inputObjectFolder, "Particles", particleCloudName + ".txt");
+                    if (ParticleCloudsByName.ContainsKey(particleCloudName) == true)
+                        continue;
+                    if (CachedParticleCloudDataByFileName.ContainsKey(particleCloudFileName) == true)
+                        ParticleCloudsByName.Add(particleCloudFileName, CachedParticleCloudDataByFileName[particleCloudFileName]);
+                    else
+                    {
+                        EQParticleCloud newParticleCloud = new EQParticleCloud();
+                        if (newParticleCloud.LoadFromDisk(particleCloudFileName) == false)
+                        {
+                            Logger.WriteError("- [" + inputObjectName + "]: Issue loading particle cloud data that should be at '" + particleCloudFileName + "'");
+                            return;
+                        }
+                        ParticleCloudsByName.Add(particleCloudName, newParticleCloud);
+                        CachedParticleCloudDataByFileName.Add(particleCloudFileName, new EQParticleCloud(newParticleCloud));
+                    }
                 }
             }
         }
