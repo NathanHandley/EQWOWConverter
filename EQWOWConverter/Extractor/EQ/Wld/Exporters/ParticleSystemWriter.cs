@@ -80,10 +80,12 @@ namespace LanternExtractor.EQ.Wld.Exporters
 
                     if (bitmapInfo.BitmapNames != null)
                     {
+                        Export.Append("texture_frames,");
+                        Export.Append(bitmapInfo.BitmapNames.Count.ToString());
                         for (int i = 0; i < bitmapInfo.BitmapNames.Count; i++)
                         {
                             BitmapName bitmap = bitmapInfo.BitmapNames[i];
-                            Export.AppendLine("texture_frame_" + i + "," + bitmap.GetFilenameWithoutExtension());
+                            Export.Append("," + bitmap.GetFilenameWithoutExtension());
                         }
                     }
                 }
