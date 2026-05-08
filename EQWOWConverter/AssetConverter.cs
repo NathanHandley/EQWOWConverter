@@ -1986,7 +1986,7 @@ namespace EQWOWConverter
                     priestOfDiscordPortalCooldownTemplate.WOWSpellID = Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID;
                     priestOfDiscordPortalCooldownTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
                     priestOfDiscordPortalCooldownTemplate.Description = "The magic that moved you between Azeroth and Norrath cannot be used again for a time.";
-                    priestOfDiscordPortalCooldownTemplate.AuraDescription = "The magic that move you between Azeroth and Norrath cannot be used again for a time.";
+                    priestOfDiscordPortalCooldownTemplate.AuraDescription = "The magic that moved you between Azeroth and Norrath cannot be used again for a time.";
                     priestOfDiscordPortalCooldownTemplate.AuraDuration.SetFixedDuration(Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN * 60 * 1000);
                     priestOfDiscordPortalCooldownTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
                     priestOfDiscordPortalCooldownTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitTargetAny;
