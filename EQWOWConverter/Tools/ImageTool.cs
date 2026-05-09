@@ -378,7 +378,7 @@ namespace EQWOWConverter
         {
             Creature,
             Clothing,
-            SpellParticle,
+            Particle,
             InGameMap,
             StaticObject
         }

@@ -373,22 +373,34 @@ namespace EQWOWConverter
                     string spriteSheetColoredOutputFileNameNoExt = string.Concat(colorTintListBySpriteName.Key, colorString, "Sheet");
                     string spriteSheetInputFileNameNoExt = string.Concat(colorTintListBySpriteName.Key, "Sheet");
                     ImageTool.GenerateColoredTintedTexture(outputSpriteSheetFolder, spriteSheetInputFileNameNoExt, outputSpriteSheetFolder, spriteSheetColoredOutputFileNameNoExt, colorTint,
-                        ImageTool.ImageAssociationType.SpellParticle, false);
+                        ImageTool.ImageAssociationType.Particle, false);
                 }
             }
 
             // Create equipment sprite sheets
-            //string sourceEquipmentParticlesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Particles");
-            //foreach (string particleFileName in Directory.GetFiles(sourceEquipmentParticlesFolder))
-            //{
-            //    // 1, 4, 5, 
-
-
-
-
-
-            //}
-
+            string sourceEquipmentParticlesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Particles");
+            foreach (string particleFileName in Directory.GetFiles(sourceEquipmentParticlesFolder))
+            {
+                EQParticleCloud particleCloud = new EQParticleCloud();
+                bool loadResult = particleCloud.LoadFromDisk(particleFileName);
+                if (loadResult == false)
+                {
+                    Logger.WriteError("Failed to generate sprite sheet for particle cloud file ", particleFileName);
+                    continue;
+                }
+                string fileNameOnly = Path.GetFileNameWithoutExtension(particleFileName);
+                string spriteChainOutputFileWithExt = string.Concat("pc_", fileNameOnly, "Sheet.png");
+                ImageTool.GenerateSpriteSheetForSpriteChain(particleCloud.TextureFrameNames, sourceTextureFolder, outputSpriteSheetFolder, spriteChainOutputFileWithExt, 4);
+                if (particleCloud.TintColor.R != 255 && particleCloud.TintColor.G != 255 && particleCloud.TintColor.B != 255)
+                {
+                    string colorString = string.Concat("_c_", particleCloud.TintColor.R.ToString(), "_", particleCloud.TintColor.G.ToString(), "_", particleCloud.TintColor.B.ToString(), "_");
+                    string spriteSheetColoredOutputFileNameNoExt = string.Concat("pc_", fileNameOnly, colorString, "Sheet");
+                    string spriteSheetInputFileNameNoExt = string.Concat("pc_", fileNameOnly, "Sheet");
+                    ImageTool.GenerateColoredTintedTexture(outputSpriteSheetFolder, spriteSheetInputFileNameNoExt, outputSpriteSheetFolder, spriteSheetColoredOutputFileNameNoExt, particleCloud.TintColor,
+                        ImageTool.ImageAssociationType.Particle, false);
+                }
+            }
+            
             Logger.WriteInfo("Generating sprite sheets complete.");
         }
 
