@@ -311,14 +311,14 @@ namespace EQWOWConverter.Spells
             {
                 ObjectModel? existingModel = spellVisual.GetObjectModelInStageAtAttachLocation(stageType, emitter.SpellEmissionLocation);
                 if (existingModel != null)
-                    existingModel.Properties.SingleSpriteSpellParticleEmitters.Add(emitter);
+                    existingModel.Properties.ParticleEmitters.Add(emitter);
                 else
                 {
                     // Make new
                     string objectName = string.Concat("eqemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString(), "_", emitter.SpellEmissionLocation.ToString());
                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                     objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
-                    objectProperties.SingleSpriteSpellParticleEmitters.Add(emitter);
+                    objectProperties.ParticleEmitters.Add(emitter);
                     objectProperties.SpellVisualEffectStageType = stageType;
                     objectProperties.SpellVisualType = spellVisualType;
                     if (emitter.SpellEmissionPattern == SpellVisualEmitterSpawnPatternType.FromHands)

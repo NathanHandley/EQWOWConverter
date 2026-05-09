@@ -86,7 +86,11 @@ namespace EQWOWConverter.ObjectModels
                 IsSkeletal = true;
 
             // Load it
-            Load(EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces);
+            Dictionary<string, EQParticleCloud>? particleCloudsByName = null;
+            if (EQObjectModelData.ParticleCloudsByName.Count > 0)
+                particleCloudsByName = EQObjectModelData.ParticleCloudsByName;
+            Load(EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces,
+                null, particleCloudsByName);
         }
 
         private bool DoRotateModelOnZAxis()
@@ -103,7 +107,7 @@ namespace EQWOWConverter.ObjectModels
 
         // TODO: Vertex Colors
         public void Load(List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces,
-            List<EQSpellsEFF.EFFSpellSpriteListEffect>? spriteListEffects = null)
+            List<EQSpellsEFF.EFFSpellSpriteListEffect>? spriteListEffects = null, Dictionary<string, EQParticleCloud>? particleCloudsByName = null)
         {
             if (IsLoaded == true)
             {
@@ -180,8 +184,32 @@ namespace EQWOWConverter.ObjectModels
             // Generate the render groups
             GenerateRenderGroups(MeshData, ModelVertices, ModelTriangles);
 
+            // Add any particle clouds (but only once per properties)
+            if (particleCloudsByName != null && Properties.ParticleEmitters.Count == 0)
+                AddParticleEmitters(Properties, particleCloudsByName);
+
             // Mark as loaded
             IsLoaded = true;
+        }
+
+        private void AddParticleEmitters(ObjectModelProperties properties, Dictionary<string, EQParticleCloud> particleCloudsByName)
+        {
+            // They attach by bone
+            for (UInt16 i = 0; i < (UInt16)ModelBones.Count; i++)
+            {
+                ObjectModelBone bone = ModelBones[i];
+                if (bone.ParticleCloudName.Length > 0)
+                {
+                    if (particleCloudsByName.ContainsKey(bone.ParticleCloudName) == false)
+                    {
+                        Logger.WriteError("For object named '", Name, "' a particle cloud named '", bone.ParticleCloudName, "' could not be found");
+                        continue;
+                    }
+                    EQParticleCloud curCloud = new EQParticleCloud(particleCloudsByName[bone.ParticleCloudName]);
+                    ObjectModelParticleEmitter newParticleEmitter = new ObjectModelParticleEmitter();
+                    newParticleEmitter.LoadFromParticleCloud(curCloud, i);
+                }
+            }
         }
 
         private void CalculateInteractionBoundingBoxes()
@@ -989,6 +1017,7 @@ namespace EQWOWConverter.ObjectModels
                     curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                 }
                 curBone.KeyBoneID = -1;
+                curBone.ParticleCloudName = eqBone.ParticleCloudName;
                 ModelBones.Add(curBone);
             }
 

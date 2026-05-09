@@ -388,7 +388,7 @@ namespace EQWOWConverter.ObjectModels
                     if (ParticleCloudsByName.ContainsKey(particleCloudName) == true)
                         continue;
                     if (CachedParticleCloudDataByFileName.ContainsKey(particleCloudFileName) == true)
-                        ParticleCloudsByName.Add(particleCloudFileName, CachedParticleCloudDataByFileName[particleCloudFileName]);
+                        ParticleCloudsByName.Add(particleCloudName, CachedParticleCloudDataByFileName[particleCloudFileName]);
                     else
                     {
                         EQParticleCloud newParticleCloud = new EQParticleCloud();

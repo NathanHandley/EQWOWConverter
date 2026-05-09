@@ -195,7 +195,7 @@ namespace EQWOWConverter.WOWFiles
             // none for now
 
             // Particle Emitters
-            foreach (ObjectModelParticleEmitter emitter in wowObjectModel.Properties.SingleSpriteSpellParticleEmitters)
+            foreach (ObjectModelParticleEmitter emitter in wowObjectModel.Properties.ParticleEmitters)
                 ParticleEmitters.AddElement(new M2ParticleEmitter(emitter));
 
             // Second Texture Material Override (Combos)

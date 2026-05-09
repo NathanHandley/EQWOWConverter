@@ -188,6 +188,8 @@ namespace EQWOWConverter.WOWFiles
                         PopulateAsSphere(objectModelParticleEmitter);
                     } break;
             }
+
+            ParentBoneID = objectModelParticleEmitter.ParentBoneID;
         }
 
         private void PopulateAsHandSpray(ObjectModelParticleEmitter objectModelParticleEmitter)

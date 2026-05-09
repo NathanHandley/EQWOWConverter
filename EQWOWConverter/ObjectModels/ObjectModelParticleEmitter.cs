@@ -33,6 +33,7 @@ namespace EQWOWConverter.ObjectModels
         public string SpriteSheetFileNameNoExt = string.Empty;
         public int SpriteFrameColumns = 0;
         public int SpriteFrameRows = 0;
+        public UInt16 ParentBoneID = 0;
 
         public SpellEmitterModelAttachLocationType SpellEmissionLocation = SpellEmitterModelAttachLocationType.Chest;
         public SpellVisualEmitterSpawnPatternType SpellEmissionPattern = SpellVisualEmitterSpawnPatternType.None;
@@ -80,9 +81,12 @@ namespace EQWOWConverter.ObjectModels
             SpawnRate = CalculateSpawnRate(effEmitter.SpawnRate, SpellEmissionPattern);
         }
 
-        public void LoadFromParticleCloud()
+        public void LoadFromParticleCloud(EQParticleCloud particleCloud, UInt16 parentBoneID)
         {
-           // TODO
+            SourceType = ObjectModelParticleEmitterSourceType.ParticleCloud;
+
+
+            ParentBoneID = parentBoneID;
         }
 
         private string GetSpriteSheetName(string eqSpellsEFFSpriteName, ColorRGBA colorRGBA)

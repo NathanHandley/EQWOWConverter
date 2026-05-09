@@ -42,6 +42,7 @@ namespace EQWOWConverter.ObjectModels
         public UInt16 Flags = Convert.ToUInt16(ObjectModelBoneFlags.Transformed);
         public Int16 ParentBone = -1; // Why is this Int16 instead of Int32?
         public UInt16 SubMeshID = 0;
+        public string ParticleCloudName = string.Empty;
         public ObjectModelTrackSequences<Vector3> TranslationTrack = new ObjectModelTrackSequences<Vector3>();
         public ObjectModelTrackSequences<QuaternionShort> RotationTrack = new ObjectModelTrackSequences<QuaternionShort>();
         public ObjectModelTrackSequences<Vector3> ScaleTrack = new ObjectModelTrackSequences<Vector3>();

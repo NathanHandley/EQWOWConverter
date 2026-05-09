@@ -544,7 +544,7 @@ namespace EQWOWConverter
             }
             foreach (ObjectModel objectModel in SpellVisual.GetAllEmitterObjectModels())
             {
-                if (objectModel.Properties.SingleSpriteSpellParticleEmitters.Count > 0)
+                if (objectModel.Properties.ParticleEmitters.Count > 0)
                 {
                     string relativeMPQPath = Path.Combine("SPELLS", "Everquest", objectModel.Name, string.Concat(objectModel.Name, ".mdx"));
                     spellVisualEffectNameDBC.AddRow(objectModel.Properties.SpellVisualEffectNameDBCID, objectModel.Name, relativeMPQPath);

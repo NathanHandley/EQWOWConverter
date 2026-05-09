@@ -37,7 +37,7 @@ namespace EQWOWConverter.ObjectModels.Properties
         public float ActiveDoodadAnimSlideValue = 0; 
         public int ActiveDoodadAnimTimeInMS = 0;
         public bool DoGenerateCollisionFromMeshData = true;
-        public List<ObjectModelParticleEmitter> SingleSpriteSpellParticleEmitters = new List<ObjectModelParticleEmitter>();
+        public List<ObjectModelParticleEmitter> ParticleEmitters = new List<ObjectModelParticleEmitter>();
         public int SpellVisualEffectNameDBCID;
         public SpellVisualStageType SpellVisualEffectStageType = SpellVisualStageType.None;
         public SpellVisualType SpellVisualType = SpellVisualType.Beneficial;
@@ -65,7 +65,7 @@ namespace EQWOWConverter.ObjectModels.Properties
             ActiveDoodadAnimSlideValue = other.ActiveDoodadAnimSlideValue;
             ActiveDoodadAnimTimeInMS = other.ActiveDoodadAnimTimeInMS;
             DoGenerateCollisionFromMeshData = other.DoGenerateCollisionFromMeshData;
-            SingleSpriteSpellParticleEmitters.AddRange(other.SingleSpriteSpellParticleEmitters);
+            ParticleEmitters.AddRange(other.ParticleEmitters);
             SpellVisualEffectNameDBCID = other.SpellVisualEffectNameDBCID;
             SpellVisualEffectStageType = other.SpellVisualEffectStageType;
             SpellVisualType = other.SpellVisualType;
