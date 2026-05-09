@@ -85,10 +85,9 @@ namespace EQWOWConverter.WOWFiles
             Flags |= (UInt32)M2ParticleEmitterFlags.TravelAbsoluteUp;
             Flags |= (UInt32)M2ParticleEmitterFlags.MoveParticlesAwayFromOrigin;
 
-            // All spell textures are pre-conditioned into 8x8 sprite sheets
             TextureID = Convert.ToUInt16(objectModelParticleEmitter.TextureID);
-            TextureDimensionsRows = 8;
-            TextureDimensionColumns = 8;
+            TextureDimensionsRows = (UInt16)objectModelParticleEmitter.SpriteFrameRows;
+            TextureDimensionColumns = (UInt16)objectModelParticleEmitter.SpriteFrameColumns;
 
             GeometryModel.Add(new Fixed16(0));
 
@@ -153,7 +152,7 @@ namespace EQWOWConverter.WOWFiles
             Gravity.TrackSequences.AddSequence();
             Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
 
-            switch (objectModelParticleEmitter.EmissionPattern)
+            switch (objectModelParticleEmitter.SpellEmissionPattern)
             {
                 case SpellVisualEmitterSpawnPatternType.FromHands:
                     {

@@ -1912,7 +1912,7 @@ namespace EQWOWConverter
 
             // Output the objects & textures
             List<string> sourceTextureFolders = new List<string>();
-            sourceTextureFolders.Add(Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellspritesheets"));
+            sourceTextureFolders.Add(Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spritesheets"));
             sourceTextureFolders.Add(Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures"));
             string outputObjectFolder = Path.Combine(exportMPQRootFolder, "SPELLS", "Everquest");
             if (Directory.Exists(outputObjectFolder) == true)

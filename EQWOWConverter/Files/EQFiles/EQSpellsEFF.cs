@@ -26,6 +26,8 @@ namespace EQWOWConverter.EQFiles
             public EQSpellEffectTargetType TargetType;
             public int VisualEffectIndex;
             public string SpriteName = string.Empty;
+            public int NumOfSpritesInChain = 0;
+            public int SpriteSidePixelCount = 0;
             public int LocationID;
             public int EmissionTypeID;
             public ColorRGBA Color = new ColorRGBA();
@@ -40,12 +42,15 @@ namespace EQWOWConverter.EQFiles
             public int SpawnRate;
             public float Scale;
 
-            public EFFSpellEmitter(EQSpellEffectTargetType targetType, int visualEffectIndex, string spriteName, int locationID, int emissionTypeID, ColorRGBA color, float gravity, float spawnX, 
-                float spawnY, float spawnZ, float radius, float angle, int particleLifespan, float velocity, int spawnRate, float scale)
+            public EFFSpellEmitter(EQSpellEffectTargetType targetType, int visualEffectIndex, string spriteName, int numofSpritesInChain, int spriteSidePixelCount,
+                int locationID, int emissionTypeID, ColorRGBA color, float gravity, float spawnX, float spawnY, float spawnZ, float radius, float angle, int particleLifespan, 
+                float velocity, int spawnRate, float scale)
             {
                 TargetType = targetType;
                 VisualEffectIndex = visualEffectIndex;
                 SpriteName = spriteName;
+                NumOfSpritesInChain = numofSpritesInChain;
+                SpriteSidePixelCount = spriteSidePixelCount;
                 LocationID = locationID;
                 EmissionTypeID = emissionTypeID;
                 Color = color;
@@ -257,7 +262,8 @@ namespace EQWOWConverter.EQFiles
                 }
             }
 
-            // Create a list of sprite chains
+            // Create a list of sprite chains (and note that all spell sprites are square)
+            Dictionary<string, int> spriteSideSizesByRootName = new Dictionary<string, int>();
             foreach (string rootSpriteName in UniqueSpriteNames)
             {
                 // Skip if this file doesn't exist, since there wouldn't be subsequent anyway
@@ -269,10 +275,12 @@ namespace EQWOWConverter.EQFiles
                 string rootTextName = rootSpriteName.Substring(0, rootSpriteName.Length - 2);
                 string rootNumberPartString = rootSpriteName.Substring(rootSpriteName.Length - 2);
                 int rootNumber = int.Parse(rootNumberPartString);
+                var(spriteWidth, spriteHeight) = ImageTool.GetWidthAndHeightOfImage(spriteFileNameFullPath);
 
                 // Start a chain of sprites by going through in sequence until a sprite isn't found
                 SpriteChainsBySpriteRoot.Add(rootSpriteName, new List<string>());
                 SpriteChainsBySpriteRoot[rootSpriteName].Add(rootSpriteName);
+                spriteSideSizesByRootName.Add(rootSpriteName, spriteWidth); // These are always square
                 bool spriteFound = true;
                 while (spriteFound)
                 {
@@ -434,11 +442,23 @@ namespace EQWOWConverter.EQFiles
                         else if (sectionDataIter == 2) // TODO: Confirm if we need to check for "Target" in the TypeID
                             targetType = EQSpellEffectTargetType.Target;
 
+                        // Grab sprite metrics
+                        string spriteFileNameFullPath = Path.Combine(sourceTextureFolder, string.Concat(sectionData.SpriteNames[emitterIter], ".png"));
+                        if (File.Exists(spriteFileNameFullPath) == false)
+                        {
+                            Logger.WriteError("Error in EQSpellsEFF, could not find sprite at ", spriteFileNameFullPath);
+                            continue;
+                        }
+                        int numOfSpritesInChain = SpriteChainsBySpriteRoot[sectionData.SpriteNames[emitterIter]].Count;
+                        var (spriteWidth, spriteHeight) = ImageTool.GetWidthAndHeightOfImage(spriteFileNameFullPath);
+                        int spriteSideDimension = spriteWidth;
+
                         // Create the emitter
-                        EFFSpellEmitter newEmitter = new EFFSpellEmitter(targetType, spellEffect.VisualEffectIndex, sectionData.SpriteNames[emitterIter], sectionData.LocationIDs[emitterIter],
-                            sectionData.EmissionTypeIDs[emitterIter], sectionData.EmitterColors[emitterIter], sectionData.EmitterGravities[emitterIter], sectionData.EmitterSpawnXs[emitterIter],
-                            sectionData.EmitterSpawnYs[emitterIter], sectionData.EmitterSpawnZs[emitterIter], sectionData.EmitterSpawnRadii[emitterIter], sectionData.EmitterSpawnAngles[emitterIter],
-                            sectionData.EmitterSpawnLifespans[emitterIter], sectionData.EmitterSpawnVelocities[emitterIter], sectionData.EmitterSpawnRates[emitterIter], sectionData.EmitterSpawnScale[emitterIter]);
+                        EFFSpellEmitter newEmitter = new EFFSpellEmitter(targetType, spellEffect.VisualEffectIndex, sectionData.SpriteNames[emitterIter], numOfSpritesInChain, spriteSideDimension,
+                            sectionData.LocationIDs[emitterIter], sectionData.EmissionTypeIDs[emitterIter], sectionData.EmitterColors[emitterIter], sectionData.EmitterGravities[emitterIter], 
+                            sectionData.EmitterSpawnXs[emitterIter], sectionData.EmitterSpawnYs[emitterIter], sectionData.EmitterSpawnZs[emitterIter], sectionData.EmitterSpawnRadii[emitterIter], 
+                            sectionData.EmitterSpawnAngles[emitterIter], sectionData.EmitterSpawnLifespans[emitterIter], sectionData.EmitterSpawnVelocities[emitterIter], 
+                            sectionData.EmitterSpawnRates[emitterIter], sectionData.EmitterSpawnScale[emitterIter]);
                         spellEffect.Emitters.Add(newEmitter);
                     }
                 }

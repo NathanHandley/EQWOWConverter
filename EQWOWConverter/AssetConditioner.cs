@@ -322,8 +322,8 @@ namespace EQWOWConverter
             // Create icons
             CreateIndividualIconFiles();
 
-            // Create particle sprite sheets
-            GenerateSpellParticleSpriteSheets();
+            // Create sprite sheets
+            GenerateSpriteSheets();
 
             // Condition the maps
             GenerateMaps();
@@ -340,11 +340,17 @@ namespace EQWOWConverter
             return true;
         }
 
-        public void GenerateSpellParticleSpriteSheets()
+        public void GenerateSpriteSheets()
         {
-            Logger.WriteInfo("Generating spell particle sprite sheets...");
+            Logger.WriteInfo("Generating sprite sheets...");
 
-            // Load in the known unique sprite names out of spells.eff
+            // Clear the previous folder for the sprite sheet if it exists
+            string outputSpriteSheetFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spritesheets");
+            if (Directory.Exists(outputSpriteSheetFolder) == true)
+                Directory.Delete(outputSpriteSheetFolder, true);
+            Directory.CreateDirectory(outputSpriteSheetFolder);
+
+            // Create spell sprite sheets
             string spellsEFFFileFullPath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "clientdata", "spells.eff");
             if (Path.Exists(spellsEFFFileFullPath) == false)
             {
@@ -354,22 +360,11 @@ namespace EQWOWConverter
             string sourceTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
             EQSpellsEFF eqSpellsEFF = new EQSpellsEFF();
             eqSpellsEFF.LoadFromDisk(spellsEFFFileFullPath, sourceTextureFolder);
-
-            // Clear the previous folder for the sprite sheet if it exists
-            string outputSpriteSheetFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellspritesheets");
-            if (Directory.Exists(outputSpriteSheetFolder) == true)
-                Directory.Delete(outputSpriteSheetFolder, true);
-            Directory.CreateDirectory(outputSpriteSheetFolder);
-
-            // Turn the sprite chains into sprite sheets if there is more than one sprite
-            // There will always be 1, 2, or 8 in a chain
             foreach (var spriteChain in eqSpellsEFF.SpriteChainsBySpriteRoot)
             {
                 string spriteChainOutputFileWithExt = string.Concat(spriteChain.Key, "Sheet.png");
-                ImageTool.GenerateSpriteSheetForSpriteChain(spriteChain.Value, sourceTextureFolder, outputSpriteSheetFolder, spriteChainOutputFileWithExt);
+                ImageTool.GenerateSpriteSheetForSpriteChain(spriteChain.Value, sourceTextureFolder, outputSpriteSheetFolder, spriteChainOutputFileWithExt, 4);
             }
-
-            // Create any colorized versions
             foreach (var colorTintListBySpriteName in eqSpellsEFF.ColorTintsBySpriteNames)
             {
                 foreach (ColorRGBA colorTint in colorTintListBySpriteName.Value)
@@ -382,7 +377,19 @@ namespace EQWOWConverter
                 }
             }
 
-            Logger.WriteInfo("Generating spell particle sprite sheets complete.");
+            // Create equipment sprite sheets
+            //string sourceEquipmentParticlesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Particles");
+            //foreach (string particleFileName in Directory.GetFiles(sourceEquipmentParticlesFolder))
+            //{
+            //    // 1, 4, 5, 
+
+
+
+
+
+            //}
+
+            Logger.WriteInfo("Generating sprite sheets complete.");
         }
 
         public void GenerateMaps()
@@ -847,7 +854,7 @@ namespace EQWOWConverter
                 return false;
             }
             textureFoldersToProcess.Add(spellIconFolder);
-            string spellSpriteSheetsFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellspritesheets");
+            string spellSpriteSheetsFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spritesheets");
             if (Directory.Exists(spellSpriteSheetsFolder) == false)
             {
                 Logger.WriteError("Failed to convert png files to blp, as the spell sprites folder did not exist at '" + spellSpriteSheetsFolder + "'");

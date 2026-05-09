@@ -229,50 +229,93 @@ namespace EQWOWConverter
             Logger.WriteDebug("Generating item icons from '" + inputImageToCutUp + "' completed.");
         }
 
-        public static void GenerateSpriteSheetForSpriteChain(List<string> inputSpriteChain, string inputFolderName, string outputFolderName, string outputFileNameWithExt)
+        public static (int spriteWidth, int spriteHeight) GetWidthAndHeightOfImage(string imageFullPath)
+        {
+            using (Bitmap image = new Bitmap(imageFullPath))
+            {
+                int frameWidth = image.Width;
+                int frameHeight = image.Height;
+                return (frameWidth, frameHeight);
+            }
+        }
+
+        public static (int sideLength, int columns, int rows) CalculateSpriteSheetLayout(int spriteWidth, int spriteHeight, int numFrames, int minSize, int frameRepeat)
+        {
+            if (frameRepeat < 1) frameRepeat = 1;
+
+            int effectiveFrames = numFrames * frameRepeat;
+
+            int side = minSize;
+            while (true)
+            {
+                int cols = side / spriteWidth;
+                int rows = side / spriteHeight;
+
+                if (cols > 0 && rows > 0)
+                {
+                    long totalCells = (long)cols * rows;
+                    if (totalCells >= effectiveFrames)
+                        return (side, cols, rows);
+                }
+
+                side *= 2;
+
+                // I don't think sprites can be larger than this for WoW
+                if (side > 2048)
+                {
+                    Logger.WriteError("Failed to calculate sprite sheet layout for spriteWidth ", spriteWidth.ToString(), ", spriteHeight ", spriteHeight.ToString(), ", numFrames ", numFrames.ToString());
+                    return (0, 0, 0);
+                }
+            }
+        }
+
+        public static void GenerateSpriteSheetForSpriteChain(List<string> inputSpriteChain, string inputFolderName, string outputFolderName, string outputFileNameWithExt, int frameRepeat )
         {
             Logger.WriteDebug("Generating sprite sheet named '", outputFileNameWithExt, "'");
 
-            // The first file will give the base dimensions to use
+            // Get dimensions from first image
             string imageFullPath = Path.Combine(inputFolderName, inputSpriteChain[0] + ".png");
-            Bitmap image = new Bitmap(imageFullPath);
-            int inputImageHeight = image.Height;
-            int inputImageWidth = image.Width;
-            image.Dispose();
+            var (frameWidth, frameHeight) = GetWidthAndHeightOfImage(imageFullPath);
 
-            // Create the output image, reading in the images in chain and making copies wherever neccessary
-            // There will always be 1, 2 or 8 in a chain, which we need to bring up to 64 (8x8)
-            using (Bitmap outputImage = new Bitmap(inputImageHeight * 8, inputImageWidth * 8))
+            int numFrames = inputSpriteChain.Count;
+
+            if (frameRepeat < 1) frameRepeat = 1;
+
+            // Calculate layout (ensure min size to be 256)
+            var (side, cols, rows) = CalculateSpriteSheetLayout(frameWidth, frameHeight, numFrames, 256, frameRepeat);
+
+            // Create the output sprite sheet (always square)
+            using (Bitmap outputImage = new Bitmap(side, side))
             {
                 int curInputImageIndex = 0;
-                int remainingInputImageCopies = 4; // And to slow down the animation speed to be more EQ-like, each frame is quadrupled
-                for (int yFrame = 0; yFrame < 8; yFrame++)
+                int repeatCounter = 0;
+
+                for (int yFrame = 0; yFrame < rows; yFrame++)
                 {
-                    for (int xFrame = 0; xFrame < 8; xFrame++)
+                    for (int xFrame = 0; xFrame < cols; xFrame++)
                     {
-                        // Open the next image and copy in the pixels
                         string inputImageFileName = Path.Combine(inputFolderName, inputSpriteChain[curInputImageIndex] + ".png");
+
                         using (Bitmap inputImage = new Bitmap(inputImageFileName))
                         {
-                            for (int inputYPos = 0; inputYPos < inputImageHeight; inputYPos++)
+                            for (int inputYPos = 0; inputYPos < frameHeight; inputYPos++)
                             {
-                                int yOutputPosition = (yFrame * inputImageHeight) + inputYPos;
-                                for (int inputXPos = 0; inputXPos < inputImageWidth; inputXPos++)
+                                int yOutputPosition = (yFrame * frameHeight) + inputYPos;
+                                for (int inputXPos = 0; inputXPos < frameWidth; inputXPos++)
                                 {
-                                    int xOutputPosition = (xFrame * inputImageWidth) + inputXPos;
+                                    int xOutputPosition = (xFrame * frameWidth) + inputXPos;
                                     outputImage.SetPixel(xOutputPosition, yOutputPosition, inputImage.GetPixel(inputXPos, inputYPos));
                                 }
                             }
                         }
-                        remainingInputImageCopies--;
-                        if (remainingInputImageCopies == 0)
-                        {
-                            remainingInputImageCopies = 4;
-                            curInputImageIndex++;
 
-                            // When the number of frames has cycled, just start over
-                            if (curInputImageIndex >= inputSpriteChain.Count)
-                                curInputImageIndex = 0;
+                        // Handle frame repeating
+                        repeatCounter++;
+                        if (repeatCounter >= frameRepeat)
+                        {
+                            // Cycle through the input frames
+                            repeatCounter = 0;
+                            curInputImageIndex = (curInputImageIndex + 1) % numFrames;
                         }
                     }
                 }

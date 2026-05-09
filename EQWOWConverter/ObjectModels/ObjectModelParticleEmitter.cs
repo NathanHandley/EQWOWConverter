@@ -22,12 +22,7 @@ namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelParticleEmitter
     {
-        public string SpriteSheetFileNameNoExt = string.Empty;
-        public SpellEmitterModelAttachLocationType EmissionLocation = SpellEmitterModelAttachLocationType.Chest;
-        public SpellVisualEmitterSpawnPatternType EmissionPattern = SpellVisualEmitterSpawnPatternType.None;
-        public SpellVisualStageType SpellVisualEffectStageType = SpellVisualStageType.None;
-        public SpellVisualType SpellVisualType = SpellVisualType.Beneficial;
-        public int VisualEffectIndex = 0;
+        public ObjectModelParticleEmitterSourceType SourceType = ObjectModelParticleEmitterSourceType.None;
         public float Gravity = 0;
         public int LifespanInMS = 0;
         public float Scale = 0;
@@ -35,41 +30,59 @@ namespace EQWOWConverter.ObjectModels
         public int SpawnRate = 0;
         public float Radius = 0;
         public int TextureID = 0;
+        public string SpriteSheetFileNameNoExt = string.Empty;
+        public int SpriteFrameColumns = 0;
+        public int SpriteFrameRows = 0;
 
-        public void Load(EQSpellsEFF.EFFSpellEmitter effEmitter, SpellVisualStageType spellVisualEffectStageType,
+        public SpellEmitterModelAttachLocationType SpellEmissionLocation = SpellEmitterModelAttachLocationType.Chest;
+        public SpellVisualEmitterSpawnPatternType SpellEmissionPattern = SpellVisualEmitterSpawnPatternType.None;
+        public SpellVisualStageType SpellVisualEffectStageType = SpellVisualStageType.None;
+        public SpellVisualType SpellVisualType = SpellVisualType.Beneficial;
+        public int SpellVisualEffectIndex = 0;
+
+        public void LoadFromSpellEffect(EQSpellsEFF.EFFSpellEmitter effEmitter, SpellVisualStageType spellVisualEffectStageType,
             SpellVisualType spellVisualType, SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
         {
-            VisualEffectIndex = effEmitter.VisualEffectIndex;
+            SourceType = ObjectModelParticleEmitterSourceType.SpellEffect;
+            SpellVisualEffectIndex = effEmitter.VisualEffectIndex;
             SpellVisualEffectStageType = spellVisualEffectStageType;
             SpellVisualType = spellVisualType;
 
             // Calculate the location and pattern first since those are used in further calculations.
             if (emitterPatternOverride == SpellVisualEmitterSpawnPatternType.None)
-                EmissionPattern = GetEmissionSpawnPattern(effEmitter.EmissionTypeID, effEmitter.SpawnZ);
+                SpellEmissionPattern = GetEmissionSpawnPattern(effEmitter.EmissionTypeID, effEmitter.SpawnZ);
             else
-                EmissionPattern = emitterPatternOverride;
-            EmissionLocation = GetEmissionAttachLocation(effEmitter.LocationID, EmissionPattern);
+                SpellEmissionPattern = emitterPatternOverride;
+            SpellEmissionLocation = GetEmissionAttachLocation(effEmitter.LocationID, SpellEmissionPattern);
 
             // Velocity
-            Velocity = CalculateVelocity(effEmitter.Velocity, EmissionPattern);
+            Velocity = CalculateVelocity(effEmitter.Velocity, SpellEmissionPattern);
 
             // Lifespan
             LifespanInMS = CalculateLifespanInMS(effEmitter.ParticleLifespan);
 
             // Radius
-            Radius = CalculateRadius(effEmitter.Radius, EmissionPattern);
+            Radius = CalculateRadius(effEmitter.Radius, SpellEmissionPattern);
 
-            // Sprite sheet name
+            // Sprite sheet
             SpriteSheetFileNameNoExt = GetSpriteSheetName(effEmitter.SpriteName, effEmitter.Color);
+            var (sideLength, columns, rows) = ImageTool.CalculateSpriteSheetLayout(effEmitter.SpriteSidePixelCount, effEmitter.SpriteSidePixelCount, effEmitter.NumOfSpritesInChain, 256, 4);
+            SpriteFrameColumns = columns;
+            SpriteFrameRows = rows;
 
             // Gravity
-            Gravity = CalculateGravity(effEmitter.Gravity, effEmitter.ParticleLifespan, EmissionPattern);
+            Gravity = CalculateGravity(effEmitter.Gravity, effEmitter.ParticleLifespan, SpellEmissionPattern);
 
             // Scale
             Scale = CalculateScale(effEmitter.Scale);
 
             // Spawn rate
-            SpawnRate = CalculateSpawnRate(effEmitter.SpawnRate, EmissionPattern);
+            SpawnRate = CalculateSpawnRate(effEmitter.SpawnRate, SpellEmissionPattern);
+        }
+
+        public void LoadFromParticleCloud()
+        {
+           // TODO
         }
 
         private string GetSpriteSheetName(string eqSpellsEFFSpriteName, ColorRGBA colorRGBA)

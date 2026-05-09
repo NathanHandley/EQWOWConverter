@@ -282,11 +282,24 @@ internal class Program
                                 AssetConditioner conditioner = new AssetConditioner();
                                 bool condenseResult = conditioner.ConditionEQOutput();
                                 if (condenseResult == false)
-                                    Logger.WriteInfo("Extracted EQ Data Conditioning Failed.");
+                                    Logger.WriteInfo("Extracted EQ Data Conditioning Failed (base conditioning)");
                                 else
-                                    Logger.WriteInfo("Extracted EQ Data Conditioning Succeeded.");
-                            }
-                            break;
+                                {
+                                    condenseResult = conditioner.ConvertPNGFilesToBLP();
+                                    if (condenseResult == false)
+                                        Logger.WriteInfo("Extracted EQ Data Conditioning Failed (blp conversions)");
+                                    else
+                                    {
+                                        condenseResult = conditioner.ConditionWorldMapFilesOnly();
+                                        if (condenseResult == false)
+                                        {
+                                            Logger.WriteInfo("Extracted EQ Data Conditioning Failed (maps)");
+                                            return;
+                                        }
+                                        Logger.WriteInfo("Extracted EQ Data Conditioning Succeeded.");
+                                    }                                    
+                                }
+                            } break;
                         //case "4":
                         //    {
                         //        AssetConditioner conditioner = new AssetConditioner();
@@ -310,9 +323,10 @@ internal class Program
                             break;
                         case "9":
                             {
-                                string outputMusicFolderRoot = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "music");
+                                //string outputMusicFolderRoot = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "music");
                                 AssetConditioner conditioner = new AssetConditioner();
-                                conditioner.ConditionMusicFiles(outputMusicFolderRoot);
+                                //conditioner.ConditionMusicFiles(outputMusicFolderRoot);
+                                conditioner.GenerateSpriteSheets();
                             } break;
                         default: break;
                     }

@@ -289,7 +289,7 @@ namespace EQWOWConverter.Spells
                     continue;
 
                 ObjectModelParticleEmitter particleEmitter = new ObjectModelParticleEmitter();
-                particleEmitter.Load(emitter, stageType, spellVisualType);
+                particleEmitter.LoadFromSpellEffect(emitter, stageType, spellVisualType);
                 modelParticleEmitters.Add(particleEmitter);
 
                 // It seems that emitters with type 5 (disc at player center) ALSO create emitters on hands and on the ground
@@ -301,7 +301,7 @@ namespace EQWOWConverter.Spells
                     //emitters.Add(particleEmitterHands);
 
                     ObjectModelParticleEmitter particleEmitterGround = new ObjectModelParticleEmitter();
-                    particleEmitterGround.Load(emitter, stageType, spellVisualType, SpellVisualEmitterSpawnPatternType.DiscOnGround);
+                    particleEmitterGround.LoadFromSpellEffect(emitter, stageType, spellVisualType, SpellVisualEmitterSpawnPatternType.DiscOnGround);
                     modelParticleEmitters.Add(particleEmitterGround);
                 }
             }
@@ -309,23 +309,23 @@ namespace EQWOWConverter.Spells
             // Add the emitters to new or existing emitters
             foreach (ObjectModelParticleEmitter emitter in modelParticleEmitters)
             {
-                ObjectModel? existingModel = spellVisual.GetObjectModelInStageAtAttachLocation(stageType, emitter.EmissionLocation);
+                ObjectModel? existingModel = spellVisual.GetObjectModelInStageAtAttachLocation(stageType, emitter.SpellEmissionLocation);
                 if (existingModel != null)
                     existingModel.Properties.SingleSpriteSpellParticleEmitters.Add(emitter);
                 else
                 {
                     // Make new
-                    string objectName = string.Concat("eqemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString(), "_", emitter.EmissionLocation.ToString());
+                    string objectName = string.Concat("eqemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString(), "_", emitter.SpellEmissionLocation.ToString());
                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                     objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
                     objectProperties.SingleSpriteSpellParticleEmitters.Add(emitter);
                     objectProperties.SpellVisualEffectStageType = stageType;
                     objectProperties.SpellVisualType = spellVisualType;
-                    if (emitter.EmissionPattern == SpellVisualEmitterSpawnPatternType.FromHands)
+                    if (emitter.SpellEmissionPattern == SpellVisualEmitterSpawnPatternType.FromHands)
                         objectProperties.SpellEmitterSpraysFromHands = true;
                     ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.ParticleEmitter);
                     objectModel.Load(new List<Material>(), new MeshData(), new List<Vector3>(), new List<TriangleFace>());
-                    spellVisual.AddObjectToStageAtAttachLocation(stageType, emitter.EmissionLocation, objectModel);
+                    spellVisual.AddObjectToStageAtAttachLocation(stageType, emitter.SpellEmissionLocation, objectModel);
                     AllEmitterObjectModels.Add(objectModel);
                     existingModel = objectModel;
                 }
