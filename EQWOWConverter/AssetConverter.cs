@@ -16,7 +16,6 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
-using EQWOWConverter.Creatures.Teleporters;
 using EQWOWConverter.Events;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.Items;

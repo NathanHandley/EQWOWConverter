@@ -66,7 +66,7 @@ namespace EQWOWConverter.ObjectModels
             Radius = CalculateRadius(effEmitter.Radius, SpellEmissionPattern);
 
             // Sprite sheet
-            SpriteSheetFileNameNoExt = GetSpriteSheetName(effEmitter.SpriteName, effEmitter.Color);
+            SpriteSheetFileNameNoExt = GetSpriteSheetName(effEmitter.SpriteName, effEmitter.Color, string.Empty);
             var (sideLength, columns, rows) = ImageTool.CalculateSpriteSheetLayout(effEmitter.SpriteSidePixelCount, effEmitter.SpriteSidePixelCount, effEmitter.NumOfSpritesInChain, 256, 4);
             SpriteFrameColumns = columns;
             SpriteFrameRows = rows;
@@ -85,11 +85,22 @@ namespace EQWOWConverter.ObjectModels
         {
             SourceType = ObjectModelParticleEmitterSourceType.ParticleCloud;
 
+            // Temp values
+            LifespanInMS = 1000;
+            SpriteSheetFileNameNoExt = GetSpriteSheetName(particleCloud.Name, particleCloud.TintColor, "pc_");
+            string fullSpriteFirstImagePath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "textures", particleCloud.TextureFrameNames[0] + ".png");
+            var (spriteWidth, spriteHeight) = ImageTool.GetWidthAndHeightOfImage(fullSpriteFirstImagePath);
+            var (sideLength, columns, rows) = ImageTool.CalculateSpriteSheetLayout(spriteWidth, spriteHeight, particleCloud.TextureFrameNames.Count, 256, 4);
+            SpriteFrameColumns = columns;
+            SpriteFrameRows = rows;
+            Scale = 1.0f;
+            Radius = 1.0f;
+            SpawnRate = Configuration.SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_DEFAULT;
 
             ParentBoneID = parentBoneID;
         }
 
-        private string GetSpriteSheetName(string eqSpellsEFFSpriteName, ColorRGBA colorRGBA)
+        private string GetSpriteSheetName(string eqSpellsEFFSpriteName, ColorRGBA colorRGBA, string prefix)
         {
             if (eqSpellsEFFSpriteName.Length == 0)
                 return string.Empty;
@@ -100,7 +111,7 @@ namespace EQWOWConverter.ObjectModels
                 string colorString = string.Concat("_c_", colorRGBA.R.ToString(), "_", colorRGBA.G.ToString(), "_", colorRGBA.B.ToString(), "_");
                 spriteSheetFileNameNoExt = string.Concat(spriteSheetFileNameNoExt, colorString);
             }
-            spriteSheetFileNameNoExt = string.Concat(spriteSheetFileNameNoExt, "Sheet");
+            spriteSheetFileNameNoExt = string.Concat(prefix, spriteSheetFileNameNoExt, "Sheet");
             return spriteSheetFileNameNoExt;
         }
 

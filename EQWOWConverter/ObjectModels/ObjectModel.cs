@@ -192,26 +192,6 @@ namespace EQWOWConverter.ObjectModels
             IsLoaded = true;
         }
 
-        private void AddParticleEmitters(ObjectModelProperties properties, Dictionary<string, EQParticleCloud> particleCloudsByName)
-        {
-            // They attach by bone
-            for (UInt16 i = 0; i < (UInt16)ModelBones.Count; i++)
-            {
-                ObjectModelBone bone = ModelBones[i];
-                if (bone.ParticleCloudName.Length > 0)
-                {
-                    if (particleCloudsByName.ContainsKey(bone.ParticleCloudName) == false)
-                    {
-                        Logger.WriteError("For object named '", Name, "' a particle cloud named '", bone.ParticleCloudName, "' could not be found");
-                        continue;
-                    }
-                    EQParticleCloud curCloud = new EQParticleCloud(particleCloudsByName[bone.ParticleCloudName]);
-                    ObjectModelParticleEmitter newParticleEmitter = new ObjectModelParticleEmitter();
-                    newParticleEmitter.LoadFromParticleCloud(curCloud, i);
-                }
-            }
-        }
-
         private void CalculateInteractionBoundingBoxes()
         {
             MeshData poseMesh = GetMeshDataByPose(true, EQAnimationType.posStandPose, EQAnimationType.drfStandPose, EQAnimationType.p01StandPassive, EQAnimationType.o01StandIdle, EQAnimationType.l01Walk);
@@ -439,6 +419,28 @@ namespace EQWOWConverter.ObjectModels
 
                 // Store it
                 ModelRenderGroups.Add(curRenderGroup);
+            }
+        }
+
+        private void AddParticleEmitters(ObjectModelProperties properties, Dictionary<string, EQParticleCloud> particleCloudsByName)
+        {
+            // They attach by bone
+            for (UInt16 i = 0; i < (UInt16)ModelBones.Count; i++)
+            {
+                ObjectModelBone bone = ModelBones[i];
+                if (bone.ParticleCloudName.Length > 0)
+                {
+                    if (particleCloudsByName.ContainsKey(bone.ParticleCloudName) == false)
+                    {
+                        Logger.WriteError("For object named '", Name, "' a particle cloud named '", bone.ParticleCloudName, "' could not be found");
+                        continue;
+                    }
+                    EQParticleCloud curCloud = new EQParticleCloud(particleCloudsByName[bone.ParticleCloudName]);
+                    ObjectModelParticleEmitter newParticleEmitter = new ObjectModelParticleEmitter();
+                    newParticleEmitter.LoadFromParticleCloud(curCloud, i);
+                    newParticleEmitter.TextureID = AddTextureAndReturnID(newParticleEmitter.SpriteSheetFileNameNoExt);
+                    properties.ParticleEmitters.Add(newParticleEmitter);
+                }
             }
         }
 
@@ -2477,6 +2479,27 @@ namespace EQWOWConverter.ObjectModels
             }
 
             return posedMeshData;
+        }
+
+        public int AddTextureAndReturnID(string textureFileNameNoExt)
+        {
+            int modelTextureID = -1;
+            for (int i = 0; i < ModelTextures.Count; i++)
+            {
+                if (ModelTextures[i].TextureName == textureFileNameNoExt)
+                {
+                    modelTextureID = i;
+                    break;
+                }
+            }
+            if (modelTextureID == -1)
+            {
+                ObjectModelTexture newModelTexture = new ObjectModelTexture();
+                newModelTexture.TextureName = textureFileNameNoExt;
+                ModelTextures.Add(newModelTexture);
+                modelTextureID = ModelTextures.Count - 1;
+            }
+            return modelTextureID;
         }
     }
 }

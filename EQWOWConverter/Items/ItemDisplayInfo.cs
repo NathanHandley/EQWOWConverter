@@ -376,14 +376,24 @@ namespace EQWOWConverter.Items
                 objectM2.WriteToDisk(outputName, fullOutputFolderName);
 
                 // Copy the textures
+                string spriteSheetTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spritesheets");
                 foreach (ObjectModelTexture texture in equipmentModel.ModelTextures)
                 {
                     string inputTextureName = Path.Combine(equipmentSourceBasePath, "Textures", texture.TextureName + ".blp");
                     string outputTextureName = Path.Combine(fullOutputFolderName, texture.TextureName + ".blp");
-                    if (Path.Exists(inputTextureName) == false)
-                        Logger.WriteError("Error copying texture '" + inputTextureName + "' for '" + itemDisplayCommonName + "', as it could not be found. Did you do the 'convert png to blp' step?");
+                    bool textureFound = false;
+                    if (Path.Exists(inputTextureName) == true)
+                        textureFound = true;
                     else
+                    {
+                        inputTextureName = Path.Combine(spriteSheetTextureFolder, texture.TextureName + ".blp");
+                        if (Path.Exists(inputTextureName) == true)
+                            textureFound = true;
+                    }
+                    if (textureFound == true)
                         FileTool.CopyFile(inputTextureName, outputTextureName);
+                    else
+                        Logger.WriteError("Error copying item texture '" + inputTextureName + "' for '" + itemDisplayCommonName + "', as it could not be found. Did you do the 'convert png to blp' step?");                       
                 }
 
                 // Save it on the list and return it

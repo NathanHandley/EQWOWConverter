@@ -332,32 +332,8 @@ namespace EQWOWConverter.Spells
 
                 // Also add the textures, manually (if needed)
                 if (existingModel != null)
-                    emitter.TextureID = AddTextureToModelAndReturnID(existingModel, emitter.SpriteSheetFileNameNoExt);
+                    emitter.TextureID = existingModel.AddTextureAndReturnID(emitter.SpriteSheetFileNameNoExt);
             }
-        }
-
-        private static int AddTextureToModelAndReturnID(ObjectModel? existingModel, string spriteSheetFileNameNoExt)
-        {
-            if (existingModel == null)
-                return -1;
-
-            int modelTextureID = -1;
-            for (int i = 0; i < existingModel.ModelTextures.Count; i++)
-            {
-                if (existingModel.ModelTextures[i].TextureName == spriteSheetFileNameNoExt)
-                {
-                    modelTextureID = i;
-                    break;
-                }
-            }
-            if (modelTextureID == -1)
-            {
-                ObjectModelTexture newModelTexture = new ObjectModelTexture();
-                newModelTexture.TextureName = spriteSheetFileNameNoExt;
-                existingModel.ModelTextures.Add(newModelTexture);
-                modelTextureID = existingModel.ModelTextures.Count - 1;
-            }
-            return modelTextureID;
         }
 
         private static string GetSoundFileNameNoExtFromSoundID(int soundID)
