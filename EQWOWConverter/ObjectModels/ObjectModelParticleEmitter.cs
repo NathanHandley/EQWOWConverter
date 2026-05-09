@@ -24,7 +24,7 @@ namespace EQWOWConverter.ObjectModels
     {
         public ObjectModelParticleEmitterSourceType SourceType = ObjectModelParticleEmitterSourceType.None;
         public float Gravity = 0;
-        public int LifespanInMS = 0;
+        public Int64 LifespanInMS = 0;
         public float Scale = 0;
         public float Velocity = 0;
         public int SpawnRate = 0;
@@ -86,16 +86,19 @@ namespace EQWOWConverter.ObjectModels
             SourceType = ObjectModelParticleEmitterSourceType.ParticleCloud;
 
             // Temp values
-            LifespanInMS = 1000;
+            LifespanInMS = particleCloud.SpawnLifespanInMS; // How do I make this infinite?
             SpriteSheetFileNameNoExt = GetSpriteSheetName(particleCloud.Name, particleCloud.TintColor, "pc_");
             string fullSpriteFirstImagePath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "textures", particleCloud.TextureFrameNames[0] + ".png");
             var (spriteWidth, spriteHeight) = ImageTool.GetWidthAndHeightOfImage(fullSpriteFirstImagePath);
             var (sideLength, columns, rows) = ImageTool.CalculateSpriteSheetLayout(spriteWidth, spriteHeight, particleCloud.TextureFrameNames.Count, 256, 4);
             SpriteFrameColumns = columns;
             SpriteFrameRows = rows;
-            Scale = 1.0f;
-            Radius = 1.0f;
-            SpawnRate = Configuration.SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_DEFAULT;
+            Scale = particleCloud.SpawnScale;
+            Radius = particleCloud.SpawnRadius;
+            if (particleCloud.NumSimultaneousParticles == 1)
+                SpawnRate = 2;
+            else
+                SpawnRate = particleCloud.SpawnRateInMS;
 
             ParentBoneID = parentBoneID;
         }
@@ -225,11 +228,11 @@ namespace EQWOWConverter.ObjectModels
             return eqVelocity * Configuration.SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD;
         }
 
-        private int CalculateLifespanInMS(int eqLifespanInMS)
+        private Int64 CalculateLifespanInMS(int eqLifespanInMS)
         {
             // Default to a second if no lifespan
             if (eqLifespanInMS == 0)
-                return Convert.ToInt32(1000f * Configuration.SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD);
+                return Convert.ToInt64(1000f * Configuration.SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD);
 
             return Convert.ToInt32(Convert.ToSingle(eqLifespanInMS) * Configuration.SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD);
         }
