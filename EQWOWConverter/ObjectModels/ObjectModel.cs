@@ -512,7 +512,8 @@ namespace EQWOWConverter.ObjectModels
                         rotationQShort.Y = 0.7071f;
 
                     // Works for Blade of Strategy
-
+                    if (curCloud.SpawnNormalZ > 0)
+                        rotationQShort.Y = 0.7071f;
 
 
 
@@ -532,7 +533,6 @@ namespace EQWOWConverter.ObjectModels
                     }
                     if (curCloud.SpawnNormalZ > 0)
                     {
-                        //rotationQShort.Y = -0.7071f; // Blade of Strategy - Backwards
                         rotationQShort.Y = 0.7071f;
                     }
 

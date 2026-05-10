@@ -81,11 +81,13 @@ namespace EQWOWConverter.WOWFiles
 
         public M2ParticleEmitter(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
-            Flags |= (UInt32)M2ParticleEmitterFlags.MoveParticlesAwayFromOrigin;
-            if (objectModelParticleEmitter.SourceType == ObjectModelParticleEmitterSourceType.SpellEffect)
+            Flags |= (UInt32)M2ParticleEmitterFlags.ParticlesAreHeadParticles;
+            Flags |= (UInt32)M2ParticleEmitterFlags.Unshaded;
+            Flags |= (UInt32)M2ParticleEmitterFlags.SortParticlesOnDepth;
+            if (objectModelParticleEmitter.SourceType == ObjectModelParticleEmitterSourceType.ParticleCloud)
             {
-                Flags |= (UInt32)M2ParticleEmitterFlags.UnknownSeemsRequired; // Not Required
-                Flags |= (UInt32)M2ParticleEmitterFlags.TravelAbsoluteUp; // Not Required
+                //Flags |= (UInt32)M2ParticleEmitterFlags.LitByLight;
+                Flags |= (UInt32)M2ParticleEmitterFlags.InWorldSpace;
             }
 
             TextureID = Convert.ToUInt16(objectModelParticleEmitter.TextureID);
