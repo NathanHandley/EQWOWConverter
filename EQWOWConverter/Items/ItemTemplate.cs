@@ -107,6 +107,7 @@ namespace EQWOWConverter.Items
         public bool IsCreatedBySpell = false;
         public bool IsFoundInGameObject = false;
         public bool IsFromGroundSpawnChest = false;
+        public bool IsAlwaysGenerated = false;
         public int NumOfTradeskillsThatCreateIt = 0;
         public int IconID = 0;
         public int TotemDBCID = 0;
@@ -156,6 +157,8 @@ namespace EQWOWConverter.Items
             if (IsFoundInGameObject == true)
                 return true;
             if (IsFromGroundSpawnChest == true)
+                return true;
+            if (IsAlwaysGenerated == true)
                 return true;
             if (ParentItemTemplate != null)
                 return ParentItemTemplate.IsPlayerObtainable();
@@ -1397,6 +1400,7 @@ namespace EQWOWConverter.Items
                 newItemTemplate.EQItemID = int.Parse(columns["id"]);
                 newItemTemplate.WOWEntryID = int.Parse(columns["wowid"]);
                 newItemTemplate.Name = columns["Name"];
+                newItemTemplate.IsAlwaysGenerated = columns["always_gen"] == "1" ? true : false;
 
                 // Load stats depending on normal vs alt
                 int damage = int.Parse(columns["damage"]);
