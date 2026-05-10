@@ -130,7 +130,7 @@ namespace EQWOWConverter.ObjectModels
             meshData.SortDataByMaterialBonesAndGenerateRenderGroups();
 
             // Perform EQ->WoW translations if this is coming from a raw EQ object
-            if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.TransportShip 
+            if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.TransportShip
                 || ModelType == ObjectModelType.EquipmentHeldNonBow || ModelType == ObjectModelType.EquipmentHeldBow)
             {
                 float scaleAmount = GetScaleAmount();
@@ -217,7 +217,7 @@ namespace EQWOWConverter.ObjectModels
                 {
                     InteractionBoundingBox.TopCorner.Z += lift;
                     InteractionBoundingBox.BottomCorner.Z += lift;
-                }   
+                }
             }
 
             // Update animations
@@ -289,7 +289,7 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Skeletal
-            else 
+            else
             {
                 // Build the skeleton
                 if (BuildSkeletonBonesAndLookups() == false)
@@ -475,7 +475,7 @@ namespace EQWOWConverter.ObjectModels
                     UInt32 curMaterialID = Convert.ToUInt32(initialMaterials.Count);
                     UInt32 animationDelay = Convert.ToUInt32((textureNamesChainByRootTexture.Value.Count == 1) ? 0 : Configuration.SPELL_EFFECT_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS);
                     materialIDBySpriteListRootName.Add(textureNamesChainByRootTexture.Key, Convert.ToInt32(curMaterialID));
-                    Material newMaterial = new Material(textureNamesChainByRootTexture.Key, textureNamesChainByRootTexture.Key, curMaterialID, MaterialType.TransparentAdditive, 
+                    Material newMaterial = new Material(textureNamesChainByRootTexture.Key, textureNamesChainByRootTexture.Key, curMaterialID, MaterialType.TransparentAdditive,
                         textureNamesChainByRootTexture.Value, animationDelay, 64, 64, true);
                     newMaterial.IsParticleEffect = true;
                     initialMaterials.Add(newMaterial);
@@ -605,7 +605,7 @@ namespace EQWOWConverter.ObjectModels
                                         case 3: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0, -1f)); break;
                                         case 4: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, -0.7071f)); break;
                                         case 5: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 1, 0)); break;
-                                        case 6: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, 0.7071f)); break;                                        
+                                        case 6: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, 0.7071f)); break;
                                         case 7: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0, 1)); break;
                                         default: break;
                                     }
@@ -615,7 +615,7 @@ namespace EQWOWConverter.ObjectModels
                                     curQuarterStepIndex = 0;
                             }
                         }
-                    }                    
+                    }
                     curQuadBoneIndex++;
 
                     // Billboard Bone
@@ -973,7 +973,7 @@ namespace EQWOWConverter.ObjectModels
                     {
                     } break; // Do Nothing
             }
-            ModelAnimations.Add(animationClosed);    
+            ModelAnimations.Add(animationClosed);
         }
 
         private bool BuildSkeletonBonesAndLookups()
@@ -1298,7 +1298,7 @@ namespace EQWOWConverter.ObjectModels
             {
                 PortraitCameraPosition += Properties.CreatureModelTemplate.Race.CameraPositionMod;
                 PortraitCameraTargetPosition += Properties.CreatureModelTemplate.Race.CameraTargetPositionMod;
-            }            
+            }
         }
 
         private float GetScaleAmount()
@@ -1334,7 +1334,7 @@ namespace EQWOWConverter.ObjectModels
             foreach (EQAnimationType compatibleAnimationType in compatibleAnimationTypes)
             {
                 // Look for a match, and process it if found
-                foreach(var animation in EQObjectModelData.Animations)
+                foreach (var animation in EQObjectModelData.Animations)
                 {
                     if (animation.Value.EQAnimationType == compatibleAnimationType)
                     {
@@ -1369,7 +1369,7 @@ namespace EQWOWConverter.ObjectModels
                                 Logger.WriteDebug(string.Concat("For object '", Name, "' skipping bone with name '", animationFrame.GetBoneName(), "' when mapping animation since it couldn't be found"));
                                 continue;
                             }
-                            
+
                             ObjectModelBone curBone = GetBoneWithName(animationFrame.GetBoneName());
 
                             // Root always just has one frame
@@ -1642,7 +1642,7 @@ namespace EQWOWConverter.ObjectModels
             if (boneIndex != -1)
                 ModelBones[boneIndex].KeyBoneID = Convert.ToInt32(keyBoneType);
         }
-              
+
         private ObjectModelBone GetBoneWithName(string name)
         {
             foreach (ObjectModelBone bone in ModelBones)
@@ -1708,7 +1708,7 @@ namespace EQWOWConverter.ObjectModels
                     curTexturedMaterialID++;
                 }
             }
-            meshData.RemapMaterialIDs(oldToNewMaterialMap);  
+            meshData.RemapMaterialIDs(oldToNewMaterialMap);
 
             // Remove the non-rendered materials
             List<Material> renderedMaterials = new List<Material>();
@@ -1842,7 +1842,7 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Generate model textures
-            foreach(ObjectModelMaterial modelMaterial in ModelMaterials)
+            foreach (ObjectModelMaterial modelMaterial in ModelMaterials)
             {
                 ObjectModelTexture newModelTexture = new ObjectModelTexture();
                 newModelTexture.TextureName = modelMaterial.Material.TextureNames[0];
@@ -1883,7 +1883,7 @@ namespace EQWOWConverter.ObjectModels
                 {
                     string newTextureName = objectModelMaterial.Material.TextureNames[0] + "_c" + colorID;
                     string inputTexturePath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures");
-                    ImageTool.GenerateColoredTintedTexture(inputTextureFolder, objectModelMaterial.Material.TextureNames[0], 
+                    ImageTool.GenerateColoredTintedTexture(inputTextureFolder, objectModelMaterial.Material.TextureNames[0],
                         workingTextureFolder, newTextureName, color, ImageTool.ImageAssociationType.Creature, true);
                     objectModelMaterial.Material.TextureNames[0] = newTextureName;
                     if (GeneratedTextureNames.Contains(newTextureName) == false)
@@ -2007,16 +2007,16 @@ namespace EQWOWConverter.ObjectModels
                     {
                         // Determine the boundary box
                         BoundingBox workingBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionVertices, 0.01f);
-                        
+
                         // Ladders climb up on the 'wider' side
                         float xDist = workingBoundingBox.GetXDistance();
                         float yDist = workingBoundingBox.GetYDistance();
                         bool swapXY = xDist > yDist;
-                      
+
                         // Purge the existing collision data
                         collisionVertices.Clear();
                         collisionTriangleFaces.Clear();
-                        
+
                         // Determine the low/mid/high of the ladder and edges
                         float extendDistance = Configuration.OBJECT_STATIC_LADDER_EXTEND_DISTANCE;
                         float stepAcrossHigh = swapXY ? workingBoundingBox.TopCorner.Y + extendDistance : workingBoundingBox.TopCorner.X + extendDistance;
@@ -2053,7 +2053,7 @@ namespace EQWOWConverter.ObjectModels
                             collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert, stepStartVert + 3));
                             collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert + 3, stepStartVert + 2));
                         }
-                        
+
                         // Add collision walls on the sides
                         float highX = workingBoundingBox.TopCorner.X;
                         float lowX = workingBoundingBox.BottomCorner.X;
@@ -2061,7 +2061,7 @@ namespace EQWOWConverter.ObjectModels
                         float lowY = workingBoundingBox.BottomCorner.Y;
                         float highZ = workingBoundingBox.TopCorner.Z;
                         float lowZ = workingBoundingBox.BottomCorner.Z;
-                        
+
                         // Shrink the short side
                         if (swapXY)
                         {
@@ -2072,12 +2072,12 @@ namespace EQWOWConverter.ObjectModels
                         {
                             highX -= xDist * 0.2f;
                             lowX += xDist * 0.2f;
-                        } 
+                        }
                         float wallAcrossHigh = swapXY ? highY : highX;
                         float wallAcrossLow = swapXY ? lowY : lowX;
                         float wallAlongHigh = swapXY ? highX : highY;
                         float wallAlongLow = swapXY ? lowX : lowY;
-                        
+
                         // Side 1 (side)
                         int wallStartVert = collisionVertices.Count;
                         collisionVertices.Add(MakeOrientedVector(wallAcrossHigh, wallAlongLow, highZ));
@@ -2104,7 +2104,7 @@ namespace EQWOWConverter.ObjectModels
                         collisionVertices.Add(MakeOrientedVector(wallAcrossHigh, wallAlongLow, highZ));
                         collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert, wallStartVert + 3));
                         collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
-                        
+
                         // Side 4
                         wallStartVert = collisionVertices.Count;
                         collisionVertices.Add(MakeOrientedVector(wallAcrossLow, wallAlongHigh, highZ));
@@ -2188,7 +2188,7 @@ namespace EQWOWConverter.ObjectModels
                 collisionVertices.Add(new Vector3(-0.305556f, 0.305556f, 2.031278f));
                 collisionVertices.Add(new Vector3(-0.305556f, -0.305556f, 2.031278f));
                 CollisionFaceNormals.Add(new Vector3(-0.000000f, 0.000000f, -1.000000f));
-                CollisionFaceNormals.Add(new Vector3(0.000000f, 0.000000f, -1.000000f));                
+                CollisionFaceNormals.Add(new Vector3(0.000000f, 0.000000f, -1.000000f));
                 CollisionFaceNormals.Add(new Vector3(-0.000000f, 0.000000f, 1.000000f));
                 CollisionFaceNormals.Add(new Vector3(-0.000000f, 0.000000f, 1.000000f));
                 CollisionFaceNormals.Add(new Vector3(1.000000f, 0.000000f, 0.000000f));
@@ -2418,7 +2418,7 @@ namespace EQWOWConverter.ObjectModels
                 }
 
                 // Scale track
-                ObjectModelTrackSequences < Vector3 > scaleTrack = bone.ScaleTrack;
+                ObjectModelTrackSequences<Vector3> scaleTrack = bone.ScaleTrack;
                 if (useAnimIndex < scaleTrack.Values.Count && scaleTrack.Values[useAnimIndex].Values.Count > 0)
                 {
                     if (ignoreMultiframeBoneVertices == false || scaleTrack.Values[useAnimIndex].Values.Count == 1)

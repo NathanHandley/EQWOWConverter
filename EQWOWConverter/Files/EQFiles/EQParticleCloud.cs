@@ -131,8 +131,8 @@ namespace EQWOWConverter.EQFiles
                     case "spawn_lifespan_ms": SpawnLifespanInMS = int.Parse(blocks[1].Trim()); break;
                     case "spawn_velocity": SpawnVelocity = float.Parse(blocks[1].Trim()); break;
                     case "spawn_normal_x": SpawnNormalX = float.Parse(blocks[1].Trim()); break;
-                    case "spawn_normal_y": SpawnNormalY = float.Parse(blocks[1].Trim()); break;
-                    case "spawn_normal_z": SpawnNormalZ = float.Parse(blocks[1].Trim()); break;
+                    case "spawn_normal_y": SpawnNormalZ = float.Parse(blocks[1].Trim()); break; // Swap Y and Z
+                    case "spawn_normal_z": SpawnNormalY = float.Parse(blocks[1].Trim()); break; // Swap Y and Z
                     case "spawn_rate_ms": SpawnRateInMS = int.Parse(blocks[1].Trim()); break;
                     case "spawn_scale": SpawnScale = float.Parse(blocks[1].Trim()); break;
                     case "tint_r": TintColor.R = byte.Parse(blocks[1].Trim()); break;

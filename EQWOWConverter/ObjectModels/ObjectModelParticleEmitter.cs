@@ -34,6 +34,8 @@ namespace EQWOWConverter.ObjectModels
         public int SpriteFrameColumns = 0;
         public int SpriteFrameRows = 0;
         public UInt16 ParentBoneID = 0;
+        public Vector3 RelativePosition = new Vector3();
+        public ParticleCloudMovementType ParticleCloudMovementType = ParticleCloudMovementType.None;
 
         public SpellEmitterModelAttachLocationType SpellEmissionLocation = SpellEmitterModelAttachLocationType.Chest;
         public SpellVisualEmitterSpawnPatternType SpellEmissionPattern = SpellVisualEmitterSpawnPatternType.None;
@@ -86,19 +88,24 @@ namespace EQWOWConverter.ObjectModels
             SourceType = ObjectModelParticleEmitterSourceType.ParticleCloud;
 
             // Temp values
-            LifespanInMS = particleCloud.SpawnLifespanInMS; // How do I make this infinite?
             SpriteSheetFileNameNoExt = GetSpriteSheetName(particleCloud.Name, particleCloud.TintColor, "pc_");
             string fullSpriteFirstImagePath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "textures", particleCloud.TextureFrameNames[0] + ".png");
             var (spriteWidth, spriteHeight) = ImageTool.GetWidthAndHeightOfImage(fullSpriteFirstImagePath);
             var (sideLength, columns, rows) = ImageTool.CalculateSpriteSheetLayout(spriteWidth, spriteHeight, particleCloud.TextureFrameNames.Count, 256, 4);
             SpriteFrameColumns = columns;
             SpriteFrameRows = rows;
-            Scale = particleCloud.SpawnScale;
+            Scale = particleCloud.SpawnScale * Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
             Radius = particleCloud.SpawnRadius;
-            if (particleCloud.NumSimultaneousParticles == 1)
+            if (particleCloud.NumSimultaneousParticles == 1 /*|| particleCloud.SpawnRateInMS < 50*/)
                 SpawnRate = 2;
             else
                 SpawnRate = particleCloud.SpawnRateInMS;
+
+            LifespanInMS = particleCloud.SpawnLifespanInMS; // How do I make this infinite?
+            //LifespanInMS = 1000;
+
+            ParticleCloudMovementType = particleCloud.ParticleMovementType;
+            Velocity = particleCloud.SpawnVelocity * Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
 
             ParentBoneID = parentBoneID;
         }
@@ -251,7 +258,7 @@ namespace EQWOWConverter.ObjectModels
                         else
                             return SpellVisualEmitterSpawnPatternType.DiscOnGround;
                     }
-                case 4: 
+                case 4:
                     {
                         if (eqZPosition < 0)
                             return SpellVisualEmitterSpawnPatternType.ColumnFromAbove;

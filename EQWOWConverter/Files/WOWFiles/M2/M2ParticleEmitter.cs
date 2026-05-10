@@ -81,13 +81,18 @@ namespace EQWOWConverter.WOWFiles
 
         public M2ParticleEmitter(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
-            Flags |= (UInt32)M2ParticleEmitterFlags.UnknownSeemsRequired;
-            Flags |= (UInt32)M2ParticleEmitterFlags.TravelAbsoluteUp;
             Flags |= (UInt32)M2ParticleEmitterFlags.MoveParticlesAwayFromOrigin;
+            if (objectModelParticleEmitter.SourceType == ObjectModelParticleEmitterSourceType.SpellEffect)
+            {
+                Flags |= (UInt32)M2ParticleEmitterFlags.UnknownSeemsRequired; // Not Required
+                Flags |= (UInt32)M2ParticleEmitterFlags.TravelAbsoluteUp; // Not Required
+            }
 
             TextureID = Convert.ToUInt16(objectModelParticleEmitter.TextureID);
             TextureDimensionsRows = (UInt16)objectModelParticleEmitter.SpriteFrameRows;
             TextureDimensionColumns = (UInt16)objectModelParticleEmitter.SpriteFrameColumns;
+
+            RelativePosition = new Vector3(objectModelParticleEmitter.RelativePosition);
 
             GeometryModel.Add(new Fixed16(0));
 
@@ -152,44 +157,74 @@ namespace EQWOWConverter.WOWFiles
             Gravity.TrackSequences.AddSequence();
             Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
 
-            switch (objectModelParticleEmitter.SpellEmissionPattern)
+            if (objectModelParticleEmitter.SourceType == ObjectModelParticleEmitterSourceType.SpellEffect)
             {
-                case SpellVisualEmitterSpawnPatternType.FromHands:
-                    {
-                        PopulateAsHandSpray(objectModelParticleEmitter);
-                    } break;
-                case SpellVisualEmitterSpawnPatternType.SphereAwayFromPlayer: // Fallthrough
-                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit:
-                    {
-                        PopulateAsSphere(objectModelParticleEmitter);
-                    } break;
-                case SpellVisualEmitterSpawnPatternType.DiscOnGround:
-                    {
-                        PopulateAsDiscFromGround(objectModelParticleEmitter);
-                    } break;
-                case SpellVisualEmitterSpawnPatternType.ColumnFromGround:
-                    {
-                        PopulateAsColumnFromGround(objectModelParticleEmitter);
-                    } break;
-                case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter:
-                    {
-                        PopulateAsDiscFromUnitCenter(objectModelParticleEmitter);
-                    } break;
-                case SpellVisualEmitterSpawnPatternType.DiscAboveUnit:
-                    {
-                        PopulateAsDiscAboveUnit(objectModelParticleEmitter);
-                    } break;
-                case SpellVisualEmitterSpawnPatternType.ColumnFromAbove:
-                    {
-                        PopulateAsColumnFromAbove(objectModelParticleEmitter);
-                    } break;
-                default:
-                    {
-                        PopulateAsSphere(objectModelParticleEmitter);
-                    } break;
+                switch (objectModelParticleEmitter.SpellEmissionPattern)
+                {
+                    case SpellVisualEmitterSpawnPatternType.FromHands:
+                        {
+                            PopulateAsHandSpray(objectModelParticleEmitter);
+                        } break;
+                    case SpellVisualEmitterSpawnPatternType.SphereAwayFromPlayer: // Fallthrough
+                    case SpellVisualEmitterSpawnPatternType.SphereAroundUnit:
+                        {
+                            PopulateAsSphere(objectModelParticleEmitter);
+                        } break;
+                    case SpellVisualEmitterSpawnPatternType.DiscOnGround:
+                        {
+                            PopulateAsDiscFromGround(objectModelParticleEmitter);
+                        } break;
+                    case SpellVisualEmitterSpawnPatternType.ColumnFromGround:
+                        {
+                            PopulateAsColumnFromGround(objectModelParticleEmitter);
+                        } break;
+                    case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter:
+                        {
+                            PopulateAsDiscFromUnitCenter(objectModelParticleEmitter);
+                        } break;
+                    case SpellVisualEmitterSpawnPatternType.DiscAboveUnit:
+                        {
+                            PopulateAsDiscAboveUnit(objectModelParticleEmitter);
+                        } break;
+                    case SpellVisualEmitterSpawnPatternType.ColumnFromAbove:
+                        {
+                            PopulateAsColumnFromAbove(objectModelParticleEmitter);
+                        } break;
+                    default:
+                        {
+                            PopulateAsSphere(objectModelParticleEmitter);
+                        } break;
+                }
+            }
+            else if (objectModelParticleEmitter.SourceType == ObjectModelParticleEmitterSourceType.ParticleCloud)
+            {
+                //Flags |= (UInt32)M2ParticleEmitterFlags.NoLighting; // Might be "InheritBoneScale" (nope, makes it dissappear)
+                switch (objectModelParticleEmitter.ParticleCloudMovementType)
+                {
+                    case ParticleCloudMovementType.Stream: PopulateAsStream(objectModelParticleEmitter); break;
+                    default: PopulateAsSphere(objectModelParticleEmitter); break;
+                }
             }
 
             ParentBoneID = objectModelParticleEmitter.ParentBoneID;
+        }
+
+        private void PopulateAsStream(ObjectModelParticleEmitter objectModelParticleEmitter)
+        {
+            EmitterType = ObjectModelParticleM2EmitterType.Plane;
+
+            //float radius = objectModelParticleEmitter.Radius;
+            EmissionAreaLength.TrackSequences.AddSequence();
+            EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+            EmissionAreaWidth.TrackSequences.AddSequence();
+            EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+
         }
 
         private void PopulateAsHandSpray(ObjectModelParticleEmitter objectModelParticleEmitter)
