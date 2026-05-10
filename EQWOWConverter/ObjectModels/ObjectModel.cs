@@ -427,17 +427,135 @@ namespace EQWOWConverter.ObjectModels
             // They attach by bone
             for (UInt16 i = 0; i < (UInt16)ModelBones.Count; i++)
             {
-                ObjectModelBone bone = ModelBones[i];
-                if (bone.ParticleCloudName.Length > 0)
+                ObjectModelBone baseAttachBone = ModelBones[i];
+                if (baseAttachBone.ParticleCloudName.Length > 0)
                 {
-                    if (particleCloudsByName.ContainsKey(bone.ParticleCloudName) == false)
+                    if (particleCloudsByName.ContainsKey(baseAttachBone.ParticleCloudName) == false)
                     {
-                        Logger.WriteError("For object named '", Name, "' a particle cloud named '", bone.ParticleCloudName, "' could not be found");
+                        Logger.WriteError("For object named '", Name, "' a particle cloud named '", baseAttachBone.ParticleCloudName, "' could not be found");
                         continue;
                     }
-                    EQParticleCloud curCloud = new EQParticleCloud(particleCloudsByName[bone.ParticleCloudName]);
+
+                    EQParticleCloud curCloud = new EQParticleCloud(particleCloudsByName[baseAttachBone.ParticleCloudName]);
+
+                    /* Backup of 'clean'
+                    // Build a rotation direction
+                    float rotateYaw = curCloud.SpawnNormalX;
+                    float rotatePitch = curCloud.SpawnNormalZ;
+                    float rotateRoll = curCloud.SpawnNormalY;
+                    System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotateYaw, rotatePitch, rotateRoll);
+                    QuaternionShort rotationQShort = new QuaternionShort();
+                    rotationQShort.X = rotationQ.X;
+                    rotationQShort.Y = rotationQ.Y;
+                    rotationQShort.Z = rotationQ.Z;
+                    rotationQShort.W = -rotationQ.W; // Flip the sign for handedness
+                    */
+
+                    /* Not much better
+                    // Build a rotation direction
+                    // Note: This is not the formula to calculate it, just the values
+                    // because there were only a few observed source values
+                    float rotX = 0;
+                    float rotY = 0;
+                    float rotZ = 0;
+                    if (curCloud.SpawnNormalX < 0) // See: Fiery Avenger
+                    {
+                        rotX = 0.7071f;
+                        rotZ = 0.7071f;
+                    }
+                    System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotX, rotY, rotZ);
+                    QuaternionShort rotationQShort = new QuaternionShort();
+                    rotationQShort.X = rotationQ.X;
+                    rotationQShort.Y = rotationQ.Y;
+                    rotationQShort.Z = rotationQ.Z;
+                    //rotationQShort.W = -rotationQ.W; // Flip the sign for handedness
+                    */
+
+                    /* Fiery Avenger, out the side towards camera, off angle
+                    QuaternionShort rotationQShort = new QuaternionShort();
+                    if (curCloud.SpawnNormalX < 0) // See: Fiery Avenger
+                    {
+                        rotationQShort.X = 0.7071f;
+                        rotationQShort.Z = 0.7071f;
+                    }
+
+                    // Away from camera instead, but same as above
+                    QuaternionShort rotationQShort = new QuaternionShort();
+                    if (curCloud.SpawnNormalX < 0) // See: Fiery Avenger
+                    {
+                        rotationQShort.Y = 0.7071f;
+                        rotationQShort.Z = 0.7071f;
+                    }
+
+                    // Down right
+                    QuaternionShort rotationQShort = new QuaternionShort();
+                    if (curCloud.SpawnNormalX < 0) // See: Fiery Avenger
+                    {
+                        rotationQShort.X = 0.7071f;
+                        rotationQShort.Y = 0.7071f;
+                    }
+
+                    // Facing forward, goes straight up
+                    (nothing)
+
+                    // Facing forward, goes down right
+                    rotationQShort.X = 1f;
+
+                    // Still straight up (??) Maybe more in hand
+                    rotationQShort.Z = 1f;
+
+                    // Forward, overshot
+                    rotationQShort.Y = 1f;
+
+                    // Works for Fiery Avenger
+                    if (curCloud.SpawnNormalX < 0)
+                        rotationQShort.Y = 0.7071f;
+
+                    // Works for Blade of Strategy
+
+
+
+
+                    // Blade of Strategy
+                    // Default, goes up
+
+
+                    */
+
+                    // Build a rotation direction
+                    // Note: This is not the formula to calculate it, just the values
+                    // because there were only a few observed source values
+                    QuaternionShort rotationQShort = new QuaternionShort();
+                    if (curCloud.SpawnNormalX < 0) // See: Fiery Avenger
+                    {
+                        rotationQShort.Y = 0.7071f;
+                    }
+                    if (curCloud.SpawnNormalZ > 0)
+                    {
+                        //rotationQShort.Y = -0.7071f; // Blade of Strategy - Backwards
+                        rotationQShort.Y = 0.7071f;
+                    }
+
+                    // Create a new bone just for this particle emitter in order to control the direction
+                    ObjectModelBone newParticleBone = new ObjectModelBone();
+                    newParticleBone.BoneNameEQ = baseAttachBone.ParticleCloudName;
+                    newParticleBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                    newParticleBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                    newParticleBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                    for (int frameID = 0; frameID < baseAttachBone.RotationTrack.Timestamps.Count; frameID++)
+                    {
+                        newParticleBone.ScaleTrack.AddSequence();
+                        newParticleBone.ScaleTrack.AddValueToLastSequence(0, new Vector3(1, 1, 1));
+                        newParticleBone.RotationTrack.AddSequence();
+                        newParticleBone.RotationTrack.AddValueToLastSequence(0, rotationQShort);
+                        newParticleBone.TranslationTrack.AddSequence();
+                        newParticleBone.TranslationTrack.AddValueToLastSequence(0, new Vector3(0, 0, 0));
+                    }
+                    ModelBones.Add(newParticleBone);
+
+                    // Add the particle
                     ObjectModelParticleEmitter newParticleEmitter = new ObjectModelParticleEmitter();
-                    newParticleEmitter.LoadFromParticleCloud(curCloud, i);
+                    newParticleEmitter.LoadFromParticleCloud(curCloud, (UInt16)(ModelBones.Count-1));
                     newParticleEmitter.TextureID = AddTextureAndReturnID(newParticleEmitter.SpriteSheetFileNameNoExt);
                     properties.ParticleEmitters.Add(newParticleEmitter);
                 }

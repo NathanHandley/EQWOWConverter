@@ -34,7 +34,6 @@ namespace EQWOWConverter.ObjectModels
         public int SpriteFrameColumns = 0;
         public int SpriteFrameRows = 0;
         public UInt16 ParentBoneID = 0;
-        public Vector3 RelativePosition = new Vector3();
         public ParticleCloudMovementType ParticleCloudMovementType = ParticleCloudMovementType.None;
 
         public SpellEmitterModelAttachLocationType SpellEmissionLocation = SpellEmitterModelAttachLocationType.Chest;

@@ -92,8 +92,6 @@ namespace EQWOWConverter.WOWFiles
             TextureDimensionsRows = (UInt16)objectModelParticleEmitter.SpriteFrameRows;
             TextureDimensionColumns = (UInt16)objectModelParticleEmitter.SpriteFrameColumns;
 
-            RelativePosition = new Vector3(objectModelParticleEmitter.RelativePosition);
-
             GeometryModel.Add(new Fixed16(0));
 
             RecursionModel.Add(new Fixed16(0));
