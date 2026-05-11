@@ -106,7 +106,14 @@ namespace EQWOWConverter.WOWFiles
             Lifespan.TrackSequences.AddValueToLastSequence(0, new M2Float(lifespan));
 
             EmissionRate.TrackSequences.AddSequence();
-            EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.SpawnRate));
+            if (objectModelParticleEmitter.IsStaticParticle == false)
+                EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.SpawnRate));
+            else
+            {
+                EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(1f));
+                EmissionRate.TrackSequences.AddValueToLastSequence(10, new M2Float(0));
+                //EmissionRate.TrackSequences.GlobalSequenceID = 1;
+            }
             if (objectModelParticleEmitter.SpellVisualEffectStageType == SpellVisualStageType.Impact)
             {
                 if (objectModelParticleEmitter.SpellVisualType == SpellVisualType.BardTick)

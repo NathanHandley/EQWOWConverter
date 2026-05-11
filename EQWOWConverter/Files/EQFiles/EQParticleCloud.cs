@@ -30,6 +30,7 @@ namespace EQWOWConverter.EQFiles
         public int NumSimultaneousParticles = 1;
         public float SpawnRadius = 0;
         public float SpawnAngle = 0;
+        public bool IsStaticParticle = false;
         public int SpawnLifespanInMS = 0;
         public float SpawnVelocity = 1;
         public float SpawnNormalX = 0;
@@ -60,6 +61,7 @@ namespace EQWOWConverter.EQFiles
             NumSimultaneousParticles = other.NumSimultaneousParticles;
             SpawnRadius = other.SpawnRadius;
             SpawnAngle = other.SpawnAngle;
+            IsStaticParticle = other.IsStaticParticle;
             SpawnLifespanInMS = other.SpawnLifespanInMS;
             SpawnVelocity = other.SpawnVelocity;
             SpawnNormalX = other.SpawnNormalX;
@@ -166,6 +168,9 @@ namespace EQWOWConverter.EQFiles
                     default: Logger.WriteError("Unknown row with key '", blocks[0], "' in Particle Cloud file '", fileFullPath, "'"); break;
                 }
             }
+
+            if (SpawnLifespanInMS >= 10000)
+                IsStaticParticle = true;
 
             Logger.WriteDebug(" - Done reading EQ Particle Cloud Data from '" + fileFullPath + "'");
             return true;

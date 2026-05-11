@@ -24,9 +24,10 @@ namespace EQWOWConverter.ObjectModels
     {
         public ObjectModelParticleEmitterSourceType SourceType = ObjectModelParticleEmitterSourceType.None;
         public float Gravity = 0;
-        public Int64 LifespanInMS = 0;
+        public int LifespanInMS = 0;
         public float Scale = 0;
         public float Velocity = 0;
+        public bool IsStaticParticle = false;
         public int SpawnRate = 0;
         public float Radius = 0;
         public int TextureID = 0;
@@ -82,7 +83,7 @@ namespace EQWOWConverter.ObjectModels
             SpawnRate = CalculateSpawnRate(effEmitter.SpawnRate, SpellEmissionPattern);
         }
 
-        public void LoadFromParticleCloud(EQParticleCloud particleCloud, UInt16 parentBoneID)
+        public void LoadFromParticleCloud(EQParticleCloud particleCloud, UInt16 parentBoneID, ObjectModel parentObjectModel)
         {
             SourceType = ObjectModelParticleEmitterSourceType.ParticleCloud;
 
@@ -95,16 +96,27 @@ namespace EQWOWConverter.ObjectModels
             SpriteFrameRows = rows;
             Scale = particleCloud.SpawnScale * Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
             Radius = particleCloud.SpawnRadius;
-            if (particleCloud.NumSimultaneousParticles == 1 /*|| particleCloud.SpawnRateInMS < 50*/)
-                SpawnRate = 2;
+            IsStaticParticle = particleCloud.IsStaticParticle;
+
+            // Non-expiring static particles
+            if (particleCloud.IsStaticParticle == true)
+            {
+                ParticleCloudMovementType = ParticleCloudMovementType.None;
+                LifespanInMS = 600000000;
+            }
+
+            // Expiring particles
             else
-                SpawnRate = particleCloud.SpawnRateInMS;
-
-            LifespanInMS = particleCloud.SpawnLifespanInMS; // How do I make this infinite?
-            //LifespanInMS = 1000;
-
-            ParticleCloudMovementType = particleCloud.ParticleMovementType;
-            Velocity = particleCloud.SpawnVelocity * Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
+            {
+                ParticleCloudMovementType = particleCloud.ParticleMovementType;
+                LifespanInMS = particleCloud.SpawnLifespanInMS;
+                int maxPossibleParticlesInLifespan = particleCloud.SpawnLifespanInMS / particleCloud.SpawnRateInMS;
+                if (maxPossibleParticlesInLifespan > particleCloud.NumSimultaneousParticles)
+                    SpawnRate = particleCloud.SpawnLifespanInMS / particleCloud.NumSimultaneousParticles;
+                else
+                    SpawnRate = particleCloud.SpawnRateInMS;
+                Velocity = particleCloud.SpawnVelocity * Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
+            }
 
             ParentBoneID = parentBoneID;
         }
@@ -234,11 +246,11 @@ namespace EQWOWConverter.ObjectModels
             return eqVelocity * Configuration.SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD;
         }
 
-        private Int64 CalculateLifespanInMS(int eqLifespanInMS)
+        private int CalculateLifespanInMS(int eqLifespanInMS)
         {
             // Default to a second if no lifespan
             if (eqLifespanInMS == 0)
-                return Convert.ToInt64(1000f * Configuration.SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD);
+                return Convert.ToInt32(1000f * Configuration.SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD);
 
             return Convert.ToInt32(Convert.ToSingle(eqLifespanInMS) * Configuration.SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD);
         }

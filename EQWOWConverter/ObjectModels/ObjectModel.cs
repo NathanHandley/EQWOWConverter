@@ -425,6 +425,7 @@ namespace EQWOWConverter.ObjectModels
         private void AddParticleEmitters(ObjectModelProperties properties, Dictionary<string, EQParticleCloud> particleCloudsByName)
         {
             // They attach by bone
+            bool createdSequence = false;
             for (UInt16 i = 0; i < (UInt16)ModelBones.Count; i++)
             {
                 ObjectModelBone baseAttachBone = ModelBones[i];
@@ -437,6 +438,8 @@ namespace EQWOWConverter.ObjectModels
                     }
 
                     EQParticleCloud curCloud = new EQParticleCloud(particleCloudsByName[baseAttachBone.ParticleCloudName]);
+                    //if (curCloud.IsStaticParticle == true && createdSequence == false)
+                    //    GlobalLoopSequenceLimits.Add(100000);
 
                     /* Backup of 'clean'
                     // Build a rotation direction
@@ -555,7 +558,7 @@ namespace EQWOWConverter.ObjectModels
 
                     // Add the particle
                     ObjectModelParticleEmitter newParticleEmitter = new ObjectModelParticleEmitter();
-                    newParticleEmitter.LoadFromParticleCloud(curCloud, (UInt16)(ModelBones.Count-1));
+                    newParticleEmitter.LoadFromParticleCloud(curCloud, (UInt16)(ModelBones.Count-1), this);
                     newParticleEmitter.TextureID = AddTextureAndReturnID(newParticleEmitter.SpriteSheetFileNameNoExt);
                     properties.ParticleEmitters.Add(newParticleEmitter);
                 }
