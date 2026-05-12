@@ -98,16 +98,16 @@ namespace EQWOWConverter.ObjectModels
             Radius = particleCloud.SpawnRadius;
             IsStaticParticle = particleCloud.IsStaticParticle;
 
-            // Non-expiring static particles
-            if (particleCloud.IsStaticParticle == true)
-            {
-                ParticleCloudMovementType = ParticleCloudMovementType.None;
-                LifespanInMS = 600000000;
-            }
+            //// Non-expiring static particles
+            //if (particleCloud.IsStaticParticle == true)
+            //{
+            //    ParticleCloudMovementType = ParticleCloudMovementType.None;
+            //    LifespanInMS = 600000000;
+            //}
 
-            // Expiring particles
-            else
-            {
+            //// Expiring particles
+            //else
+            //{
                 ParticleCloudMovementType = particleCloud.ParticleMovementType;
                 LifespanInMS = particleCloud.SpawnLifespanInMS;
                 int maxPossibleParticlesInLifespan = particleCloud.SpawnLifespanInMS / particleCloud.SpawnRateInMS;
@@ -116,7 +116,7 @@ namespace EQWOWConverter.ObjectModels
                 else
                     SpawnRate = particleCloud.SpawnRateInMS;
                 Velocity = particleCloud.SpawnVelocity * Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
-            }
+            //}
 
             ParentBoneID = parentBoneID;
         }
