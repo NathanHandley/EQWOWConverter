@@ -28,6 +28,7 @@ namespace EQWOWConverter.Common
         public int TextureHeight = 0;
         public bool AlwaysBrightOverride = false;
         public bool IsParticleEffect = false;
+        public bool IsTwoSided = false;
 
         public Material() { }
 
@@ -43,10 +44,11 @@ namespace EQWOWConverter.Common
             TextureWidth = material.TextureWidth;
             TextureHeight = material.TextureHeight;
             AlwaysBrightOverride = material.AlwaysBrightOverride;
+            IsTwoSided = material.IsTwoSided;
         }
 
         public Material(string name, string originalName, UInt32 index, MaterialType materialType, List<string> textureNames, 
-            UInt32 animationDelayMS, int sourceTextureWidth, int sourceTextureHeight, bool alwaysBrightOverride)
+            UInt32 animationDelayMS, int sourceTextureWidth, int sourceTextureHeight, bool alwaysBrightOverride, bool isTwoSided)
         {
             UniqueName = name;
             Name = originalName;
@@ -57,6 +59,7 @@ namespace EQWOWConverter.Common
             TextureWidth = sourceTextureWidth;
             TextureHeight = sourceTextureHeight;
             AlwaysBrightOverride = alwaysBrightOverride;
+            IsTwoSided = isTwoSided;
         }
 
         public bool IsAnimated()

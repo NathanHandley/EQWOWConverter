@@ -588,7 +588,7 @@ namespace EQWOWConverter.ObjectModels
                 string firstTextureFullPath = Path.Combine(sourceEquipmentTexturesFolder, particleCloud.TextureFrameNames[0] + ".png");
                 var (frameWidth, frameHeight) = ImageTool.GetWidthAndHeightOfImage(firstTextureFullPath);
                 Material newMaterial = new Material(particleCloudByName.Key, particleCloudByName.Key, curMaterialID, particleCloud.MaterialType, particleCloud.TextureFrameNames,
-                    animationDelay, frameWidth, frameHeight, true);
+                    animationDelay, frameWidth, frameHeight, true, true);
                 initialMaterials.Add(newMaterial);
 
                 // Create geometry for the related bone
@@ -610,12 +610,12 @@ namespace EQWOWConverter.ObjectModels
                         newBone.AlternateMeshName = bone.AlternateMeshName;
                         newBone.ParticleCloudName = bone.ParticleCloudName;
                         newBone.IsGeneratedBoneForParticleCloud = true;
+                        skeletonData.BoneStructures[boneIndex].Children.Add(skeletonData.BoneStructures.Count);
+                        skeletonData.BoneStructures.Add(newBone);
 
                         // Add them
-                        curQuadMeshData.GenerateAsQuad((Int32)curMaterialID, bottomRight, topLeft, Convert.ToByte(skeletonData.BoneStructures.Count));
-                        bone.Children.Add(skeletonData.BoneStructures.Count);
+                        curQuadMeshData.GenerateAsQuad((Int32)curMaterialID, topLeft, bottomRight, Convert.ToByte(skeletonData.BoneStructures.Count-1));
                         meshData.AddMeshData(curQuadMeshData);
-                        skeletonData.BoneStructures.Add(newBone);
                     }
                 }
             }
@@ -653,7 +653,7 @@ namespace EQWOWConverter.ObjectModels
                     UInt32 animationDelay = Convert.ToUInt32((textureNamesChainByRootTexture.Value.Count == 1) ? 0 : Configuration.SPELL_EFFECT_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS);
                     materialIDBySpriteListRootName.Add(textureNamesChainByRootTexture.Key, Convert.ToInt32(curMaterialID));
                     Material newMaterial = new Material(textureNamesChainByRootTexture.Key, textureNamesChainByRootTexture.Key, curMaterialID, MaterialType.TransparentAdditive,
-                        textureNamesChainByRootTexture.Value, animationDelay, 64, 64, true);
+                        textureNamesChainByRootTexture.Value, animationDelay, 64, 64, true, true);
                     newMaterial.IsParticleEffect = true;
                     initialMaterials.Add(newMaterial);
                 }
@@ -1197,8 +1197,8 @@ namespace EQWOWConverter.ObjectModels
                 }
                 curBone.KeyBoneID = -1;
                 curBone.ParticleCloudName = eqBone.ParticleCloudName;
-                //if (eqBone.IsGeneratedBoneForParticleCloud == true)
-                //    curBone.Flags |= Convert.ToUInt16(ObjectModelBoneFlags.SphericalBillboard);
+                if (eqBone.IsGeneratedBoneForParticleCloud == true)
+                    curBone.Flags |= Convert.ToUInt16(ObjectModelBoneFlags.SphericalBillboard);
                 ModelBones.Add(curBone);
             }
 
@@ -2506,7 +2506,8 @@ namespace EQWOWConverter.ObjectModels
                     UInt32 newMaterialIndex = GetUniqueMaterialIDFromMaterials(expandedMaterials);
                     List<string> newMaterialTextureName = new List<string>() { initialMaterial.TextureNames[textureIter] };
                     Material newAnimationMaterial = new Material(curMaterialName, initialMaterial.UniqueName, newMaterialIndex, initialMaterial.MaterialType,
-                        newMaterialTextureName, initialMaterial.AnimationDelayMs, initialMaterial.TextureWidth, initialMaterial.TextureHeight, initialMaterial.AlwaysBrightOverride);
+                        newMaterialTextureName, initialMaterial.AnimationDelayMs, initialMaterial.TextureWidth, initialMaterial.TextureHeight, 
+                        initialMaterial.AlwaysBrightOverride, initialMaterial.IsTwoSided);
                     curMaterial = newAnimationMaterial;
                     expandedMaterials.Add(curMaterial);
                     curMaterialIndex = Convert.ToInt32(newMaterialIndex);

@@ -1187,7 +1187,7 @@ namespace EQWOWConverter.Zones
 
             // Generate a model to represent it for emitting
             string objectModelName = soundInstance.GenerateModelName(ShortName, SoundInstances.Count);
-            Material material = new Material("default", "default", 0, MaterialType.Diffuse, new List<string> { Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME }, 0, 64, 64, true);
+            Material material = new Material("default", "default", 0, MaterialType.Diffuse, new List<string> { Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME }, 0, 64, 64, true, false);
             MeshData objectModelMesh = new MeshData();
             if (Configuration.AUDIO_SOUNDINSTANCE_DRAW_AS_BOX == true)
             {

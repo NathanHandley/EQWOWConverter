@@ -60,7 +60,7 @@ namespace EQWOWConverter.Common
             }
         }
 
-        public void GenerateAsBox(BoundingBox boundingBox, int materialIndex, MeshBoxRenderType renderType)
+        public void GenerateAsBox(BoundingBox boundingBox, int materialIndex, MeshBoxRenderType renderType, byte boneID = 0)
         {
             // Clear prior data
             Vertices.Clear();
@@ -205,12 +205,12 @@ namespace EQWOWConverter.Common
                 TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 2, quadFaceStartVert + 3, quadFaceStartVert + 1));
             }
 
-            // Fill in the blanks
+            // Fill in the other values
             for(int i = 0; i < Vertices.Count; i++)
             {
                 Normals.Add(new Vector3(0, 0, 0));
                 VertexColors.Add(new ColorRGBA(0, 0, 0));
-                BoneIDs.Add(0);
+                BoneIDs.Add(boneID);
             }
         }
 

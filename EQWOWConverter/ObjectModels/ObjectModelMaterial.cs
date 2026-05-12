@@ -33,6 +33,8 @@ namespace EQWOWConverter.ObjectModels
                 Flags |= ObjectModelMaterialFlag.Unlit;
             if (blendType == ObjectModelMaterialBlendType.Add || material.GetTransparencyValue(-1) != Int16.MaxValue)
                 Flags |= ObjectModelMaterialFlag.DepthWrite;
+            if (material.IsTwoSided == true)
+                Flags |= ObjectModelMaterialFlag.TwoSided;
         }
 
         public UInt32 GetBytesSize()
