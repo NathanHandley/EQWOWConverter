@@ -599,8 +599,8 @@ namespace EQWOWConverter.ObjectModels
                     if (bone.ParticleCloudName == particleCloud.Name)
                     {
                         // Build the quad
-                        Vector3 topLeft = new Vector3(0, 0.5f, 0.5f);
-                        Vector3 bottomRight = new Vector3(0, -0.5f, -0.5f);
+                        Vector3 topLeft = new Vector3(0, -0.5f, -0.5f);
+                        Vector3 bottomRight = new Vector3(0, 0.5f, 0.5f);
                         MeshData curQuadMeshData = new MeshData();
 
                         // Build the new bone
@@ -615,9 +615,19 @@ namespace EQWOWConverter.ObjectModels
 
                         // Add them
                         curQuadMeshData.GenerateAsQuad((Int32)curMaterialID, topLeft, bottomRight, Convert.ToByte(skeletonData.BoneStructures.Count-1));
+                        //curQuadMeshData.GenerateAsBox(new BoundingBox(new Vector3(), 1f), (Int16)curMaterialID, MeshBoxRenderType.Both, Convert.ToByte(skeletonData.BoneStructures.Count - 1));
+                        //curQuadMeshData.GenerateAsBox(new BoundingBox(new Vector3(), 120f), (Int16)curMaterialID, MeshBoxRenderType.Both, Convert.ToByte(skeletonData.BoneStructures.Count - 1));
                         meshData.AddMeshData(curQuadMeshData);
                     }
                 }
+
+                //for (int i = 0; i < meshData.TriangleFaces.Count; i++)
+                //{
+                //    TriangleFace curFace = meshData.TriangleFaces[i];
+                //    curFace.MaterialIndex = (UInt16)curMaterialID;
+                //    meshData.TriangleFaces[i] = curFace;
+                //}
+                
             }
         }
 
@@ -1197,6 +1207,11 @@ namespace EQWOWConverter.ObjectModels
                 }
                 curBone.KeyBoneID = -1;
                 curBone.ParticleCloudName = eqBone.ParticleCloudName;
+                if (particleCloudsByName != null && particleCloudsByName.ContainsKey(curBone.ParticleCloudName) == true)
+                {
+                    curBone.Flags |= Convert.ToUInt16(ObjectModelBoneFlags.IgnoreParentScale);
+                    curBone.Flags |= Convert.ToUInt16(ObjectModelBoneFlags.IgnoreParentRotation);
+                }
                 if (eqBone.IsGeneratedBoneForParticleCloud == true)
                     curBone.Flags |= Convert.ToUInt16(ObjectModelBoneFlags.SphericalBillboard);
                 ModelBones.Add(curBone);
