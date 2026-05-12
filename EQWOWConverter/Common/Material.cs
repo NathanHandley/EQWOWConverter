@@ -28,7 +28,6 @@ namespace EQWOWConverter.Common
         public int TextureHeight = 0;
         public bool AlwaysBrightOverride = false;
         public bool IsParticleEffect = false;
-        public bool AlwaysConsiderValid = false;
 
         public Material() { }
 
@@ -44,7 +43,6 @@ namespace EQWOWConverter.Common
             TextureWidth = material.TextureWidth;
             TextureHeight = material.TextureHeight;
             AlwaysBrightOverride = material.AlwaysBrightOverride;
-            AlwaysConsiderValid = material.AlwaysConsiderValid;
         }
 
         public Material(string name, string originalName, UInt32 index, MaterialType materialType, List<string> textureNames, 

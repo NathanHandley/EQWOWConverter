@@ -374,12 +374,6 @@ namespace EQWOWConverter.Common
             newMaterialList = new List<Material>();
             for (int i = 0; i <  startingMaterialList.Count; i++)
             {
-                if (startingMaterialList[i].AlwaysConsiderValid == true)
-                {
-                    Material materialCopy = new Material(startingMaterialList[i]);
-                    newMaterialList.Add(materialCopy);
-                    continue;
-                }
                 for (int j = 0; j < TriangleFaces.Count; j++)
                 {
                     if (TriangleFaces[j].MaterialIndex == startingMaterialList[i].Index)

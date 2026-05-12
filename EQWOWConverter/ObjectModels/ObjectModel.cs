@@ -19,6 +19,7 @@ using EQWOWConverter.Creatures;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Spells;
+using EQWOWConverter.WOWFiles;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -128,7 +129,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Static Particle Clouds (one single sprite that always persists) should convert to model geometry
             if (particleCloudsByName != null)
-                GenerateParticleMaterialsAndGeometry(ref initialMaterials, particleCloudsByName, ref meshData, EQObjectModelData.SkeletonData);
+                GenerateParticleMaterialsAndGeometry(ref initialMaterials, particleCloudsByName, ref meshData, ref EQObjectModelData.SkeletonData);
 
             // Sort the geometry
             meshData.SortDataByMaterialBonesAndGenerateRenderGroups();
@@ -232,7 +233,7 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private void ProcessBonesAndAnimation(List<EQSpellsEFF.EFFSpellSpriteListEffect>? spriteListEffects, Dictionary<string, EQParticleCloud>? particleCloudsByName = null)
+        private void ProcessBonesAndAnimation(List<EQSpellsEFF.EFFSpellSpriteListEffect>? spriteListEffects, Dictionary<string, EQParticleCloud>? particleCloudsByName)
         {
             // Emitters / Spell Effects
             if (ModelType == ObjectModelType.ParticleEmitter || ModelType == ObjectModelType.SpellProjectile)
@@ -569,8 +570,10 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private void GenerateParticleMaterialsAndGeometry(ref List<Material> initialMaterials, Dictionary<string, EQParticleCloud> particleCloudsByName, ref MeshData meshData, EQSkeleton skeletonData)
+        private void GenerateParticleMaterialsAndGeometry(ref List<Material> initialMaterials, Dictionary<string, EQParticleCloud>? particleCloudsByName, ref MeshData meshData, ref EQSkeleton skeletonData)
         {
+            if (particleCloudsByName == null)
+                return;
             string sourceEquipmentTexturesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
             foreach (var particleCloudByName in particleCloudsByName)
             {
@@ -586,21 +589,33 @@ namespace EQWOWConverter.ObjectModels
                 var (frameWidth, frameHeight) = ImageTool.GetWidthAndHeightOfImage(firstTextureFullPath);
                 Material newMaterial = new Material(particleCloudByName.Key, particleCloudByName.Key, curMaterialID, particleCloud.MaterialType, particleCloud.TextureFrameNames,
                     animationDelay, frameWidth, frameHeight, true);
-                newMaterial.AlwaysConsiderValid = true;
                 initialMaterials.Add(newMaterial);
 
                 // Create geometry for the related bone
-                for (int boneIndex = 0; boneIndex < skeletonData.BoneStructures.Count; boneIndex++)
+                int originalBoneCount = skeletonData.BoneStructures.Count;
+                for (int boneIndex = 0; boneIndex < originalBoneCount; boneIndex++)
                 {
                     EQSkeleton.EQSkeletonBone bone = skeletonData.BoneStructures[boneIndex];
-                    if (bone.BoneName == particleCloud.AttachedBoneName)
+                    if (bone.ParticleCloudName == particleCloud.Name)
                     {
                         // Build the quad
                         Vector3 topLeft = new Vector3(0, 0.5f, 0.5f);
                         Vector3 bottomRight = new Vector3(0, -0.5f, -0.5f);
                         MeshData curQuadMeshData = new MeshData();
-                        curQuadMeshData.GenerateAsQuad((Int32)curMaterialID, topLeft, bottomRight, Convert.ToByte(boneIndex));
+
+                        // Build the new bone
+                        EQSkeleton.EQSkeletonBone newBone = new EQSkeleton.EQSkeletonBone();
+                        newBone.BoneName = bone.BoneName + "Particle";
+                        newBone.MeshName = bone.MeshName;
+                        newBone.AlternateMeshName = bone.AlternateMeshName;
+                        newBone.ParticleCloudName = bone.ParticleCloudName;
+                        newBone.IsGeneratedBoneForParticleCloud = true;
+
+                        // Add them
+                        curQuadMeshData.GenerateAsQuad((Int32)curMaterialID, bottomRight, topLeft, Convert.ToByte(skeletonData.BoneStructures.Count));
+                        bone.Children.Add(skeletonData.BoneStructures.Count);
                         meshData.AddMeshData(curQuadMeshData);
+                        skeletonData.BoneStructures.Add(newBone);
                     }
                 }
             }
@@ -1138,21 +1153,12 @@ namespace EQWOWConverter.ObjectModels
             ModelAnimations.Add(animationClosed);
         }
 
-        private bool BuildSkeletonBonesAndLookups(Dictionary<string, EQParticleCloud>? particleCloudsByName = null)
+        private bool BuildSkeletonBonesAndLookups(Dictionary<string, EQParticleCloud>? particleCloudsByName)
         {
             if (EQObjectModelData.SkeletonData.BoneStructures.Count == 0)
             {
                 Logger.WriteError("Could not build skeleton information for object '" + Name + "' due to no EQ bone structures found");
                 return false;
-            }
-
-            // Identify any bones that attach to particle clouds
-            HashSet<string> staticParticleBoneNames = new HashSet<string>();
-            if (particleCloudsByName != null)
-            {
-                foreach (var particleCloudByName in particleCloudsByName)
-                    if (particleCloudByName.Value.IsStaticParticle == true)
-                        staticParticleBoneNames.Add(particleCloudByName.Key);
             }
 
             // Build out bones
@@ -1191,7 +1197,7 @@ namespace EQWOWConverter.ObjectModels
                 }
                 curBone.KeyBoneID = -1;
                 curBone.ParticleCloudName = eqBone.ParticleCloudName;
-                if (staticParticleBoneNames.Contains(curBone.ParticleCloudName) == true)
+                //if (eqBone.IsGeneratedBoneForParticleCloud == true)
                 //    curBone.Flags |= Convert.ToUInt16(ObjectModelBoneFlags.SphericalBillboard);
                 ModelBones.Add(curBone);
             }

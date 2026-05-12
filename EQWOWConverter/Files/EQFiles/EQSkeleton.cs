@@ -27,6 +27,7 @@ namespace EQWOWConverter.EQFiles
             public string MeshName = string.Empty;
             public string AlternateMeshName = string.Empty;
             public string ParticleCloudName = string.Empty;
+            public bool IsGeneratedBoneForParticleCloud = false;
 
             public EQSkeletonBone() { }
         }
