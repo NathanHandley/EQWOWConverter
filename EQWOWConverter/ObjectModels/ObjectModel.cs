@@ -1507,6 +1507,18 @@ namespace EQWOWConverter.ObjectModels
                 else if (Properties.EquipUnitType == Items.ItemEquipUnitType.Creature)
                     scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
             }
+
+            // Custom scaling for specific weapons
+            // TODO: Move it to a config?
+            if (Name.Contains("eq_it151") == true) // Orb of Mastery
+                scaleAmount *= 0.12f;
+            else if (Name.Contains("eq_it145") == true) // Innoruuk's Curse
+                scaleAmount *= 0.30f;
+            else if (Name.Contains("eq_it140") == true) // Ragebringer
+                scaleAmount *= 0.13f;
+            else if (Name.Contains("eq_it155") == true) // Staff of the Four
+                scaleAmount *= 0.13f;
+
             return scaleAmount;
         }
 
