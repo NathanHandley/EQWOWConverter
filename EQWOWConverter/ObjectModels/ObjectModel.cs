@@ -18,7 +18,7 @@ using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.Spells;
-using EQWOWConverter.WOWFiles;
+using EQWOWConverter.Items;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -307,7 +307,7 @@ namespace EQWOWConverter.ObjectModels
                     return;
                 }
 
-                if (CreateAndSetAnimations() == false)
+                if (CreateAndSetAnimations(particleCloudsByName) == false)
                 {
                     Logger.WriteError("Could not create and set animations for object '" + Name + "'");
 
@@ -564,7 +564,13 @@ namespace EQWOWConverter.ObjectModels
                     newParticleBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
                     newParticleBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
                     newParticleBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
-                    Vector3 particleTranslation = new Vector3(particleCloudProperties.EmitterAddX, particleCloudProperties.EmitterAddY, particleCloudProperties.EmitterAddZ);
+
+                    float equipUnitTypeScale = Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
+                    if (Properties.EquipUnitType == ItemEquipUnitType.Creature)
+                        equipUnitTypeScale = Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
+                    Vector3 particleTranslation = new Vector3(particleCloudProperties.EmitterAddX * equipUnitTypeScale, 
+                        particleCloudProperties.EmitterAddY * equipUnitTypeScale, 
+                        particleCloudProperties.EmitterAddZ * equipUnitTypeScale);
                     for (int frameID = 0; frameID < baseAttachBone.RotationTrack.Timestamps.Count; frameID++)
                     {
                         newParticleBone.ScaleTrack.AddSequence();
@@ -590,6 +596,9 @@ namespace EQWOWConverter.ObjectModels
             if (particleCloudsByName == null)
                 return;
             string sourceEquipmentTexturesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
+            //float equipUnitTypeScale = Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
+            //if (Properties.EquipUnitType == ItemEquipUnitType.Creature)
+            //    equipUnitTypeScale = Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
             foreach (var particleCloudByName in particleCloudsByName)
             {
                 // Only static particles have permanent geometery and need materials
@@ -606,18 +615,20 @@ namespace EQWOWConverter.ObjectModels
                     animationDelay, frameWidth, frameHeight, true, true);
                 initialMaterials.Add(newMaterial);
 
+                // Load particle-specific properties
+                ObjectModelParticleCloudProperties particleCloudProperties = ObjectModelParticleCloudProperties.GetPropertiesForObjectCloud(Name, particleCloud.Name);
+
                 // Create geometry for the related bone
                 int originalBoneCount = skeletonData.BoneStructures.Count;
+                float particleQuadHalfSize = (1f * particleCloudProperties.ScaleMod) * 0.5f;
                 for (int boneIndex = 0; boneIndex < originalBoneCount; boneIndex++)
                 {
                     EQSkeleton.EQSkeletonBone bone = skeletonData.BoneStructures[boneIndex];
                     if (bone.ParticleCloudName == particleCloud.Name)
                     {
                         // Build the quad
-                        //Vector3 topLeft = new Vector3(0, -0.5f, -0.5f);
-                        //Vector3 bottomRight = new Vector3(0, 0.5f, 0.5f);
-                        Vector3 topLeft = new Vector3(0, -0.28f, -0.28f); // Fiery Avenger
-                        Vector3 bottomRight = new Vector3(0, 0.28f, 0.28f);
+                        Vector3 topLeft = new Vector3(0, -1 * particleQuadHalfSize, -1 * particleQuadHalfSize);
+                        Vector3 bottomRight = new Vector3(0, particleQuadHalfSize, particleQuadHalfSize);
                         MeshData curQuadMeshData = new MeshData();
 
                         // Build the new bone
@@ -636,15 +647,7 @@ namespace EQWOWConverter.ObjectModels
                         //curQuadMeshData.GenerateAsBox(new BoundingBox(new Vector3(), 120f), (Int16)curMaterialID, MeshBoxRenderType.Both, Convert.ToByte(skeletonData.BoneStructures.Count - 1));
                         meshData.AddMeshData(curQuadMeshData);
                     }
-                }
-
-                //for (int i = 0; i < meshData.TriangleFaces.Count; i++)
-                //{
-                //    TriangleFace curFace = meshData.TriangleFaces[i];
-                //    curFace.MaterialIndex = (UInt16)curMaterialID;
-                //    meshData.TriangleFaces[i] = curFace;
-                //}
-                
+                }                
             }
         }
 
@@ -1303,7 +1306,7 @@ namespace EQWOWConverter.ObjectModels
             ModelBones.Add(nameplateBone);
         }
 
-        public bool CreateAndSetAnimations()
+        public bool CreateAndSetAnimations(Dictionary<string, EQParticleCloud>? particleCloudsByName)
         {
             // Pre-fill animation lookups
             AnimationLookups.Clear();
@@ -1318,7 +1321,7 @@ namespace EQWOWConverter.ObjectModels
                 ModelAnimations[0].Flags = ObjectModelAnimationFlags.AnimationInM2;
                 ModelAnimations[0].NextAnimation = 1;
                 ModelAnimations[1].Flags = ObjectModelAnimationFlags.AnimationInM2;
-                FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose });
+                FindAndSetAnimationForType(AnimationType.Stand, null, new List<EQAnimationType>() { EQAnimationType.p01StandPassive, EQAnimationType.l01Walk, EQAnimationType.posStandPose });
             }
             else if (ModelType == ObjectModelType.EquipmentHeldBow)
             {
@@ -1329,6 +1332,12 @@ namespace EQWOWConverter.ObjectModels
                     FindAndSetAnimationForType(AnimationType.BowRelease);
                 }
             }
+            else if (ModelType == ObjectModelType.EquipmentHeldNonBow)
+            {
+                FindAndSetAnimationForType(AnimationType.Stand, particleCloudsByName);
+                FindAndSetAnimationForType(AnimationType.Stand, particleCloudsByName, new List<EQAnimationType>() { EQAnimationType.o01StandIdle, EQAnimationType.o02StandArmsToSide, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 1 / Fidget            
+                FindAndSetAnimationForType(AnimationType.Stand, particleCloudsByName, new List<EQAnimationType>() { EQAnimationType.o02StandArmsToSide, EQAnimationType.o01StandIdle, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 2 / Fidget
+            }
             else
             {
                 FindAndSetAnimationForType(AnimationType.Stand);
@@ -1336,8 +1345,8 @@ namespace EQWOWConverter.ObjectModels
                 if (IsSkeletal)
                 {
                     FindAndSetAnimationForType(AnimationType.Stand); // Stand mid-idle
-                    FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.o01StandIdle, EQAnimationType.o02StandArmsToSide, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 1 / Fidget            
-                    FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.o02StandArmsToSide, EQAnimationType.o01StandIdle, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 2 / Fidget
+                    FindAndSetAnimationForType(AnimationType.Stand, null, new List<EQAnimationType>() { EQAnimationType.o01StandIdle, EQAnimationType.o02StandArmsToSide, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 1 / Fidget            
+                    FindAndSetAnimationForType(AnimationType.Stand, null, new List<EQAnimationType>() { EQAnimationType.o02StandArmsToSide, EQAnimationType.o01StandIdle, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 2 / Fidget
                     FindAndSetAnimationForType(AnimationType.Death);
                     FindAndSetAnimationForType(AnimationType.AttackUnarmed);
                     FindAndSetAnimationForType(AnimationType.Attack1H);
@@ -1445,9 +1454,6 @@ namespace EQWOWConverter.ObjectModels
             if (ModelAnimations.Count == 0)
                 Logger.WriteError("Zero animations for skeletal model object '" + Name + "', so it will crash if you try to load it");
 
-            // Set the animation lookups
-            SetAllAnimationLookups();
-
             return true;
         }
 
@@ -1528,7 +1534,7 @@ namespace EQWOWConverter.ObjectModels
             return scaleAmount;
         }
 
-        public void FindAndSetAnimationForType(AnimationType animationType, List<EQAnimationType>? overrideEQAnimationTypes = null)
+        public void FindAndSetAnimationForType(AnimationType animationType, Dictionary<string, EQParticleCloud>? particleCloudsByName = null, List<EQAnimationType>? overrideEQAnimationTypes = null)
         {
             CreatureRace? creatureRace = null;
             if (Properties.CreatureModelTemplate != null)
@@ -1595,14 +1601,24 @@ namespace EQWOWConverter.ObjectModels
                             else
                             {
                                 // Format and transform the animation frame values from EQ to WoW
-                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * worldScaleAmount,
-                                                                       animationFrame.YPosition * worldScaleAmount,
-                                                                       animationFrame.ZPosition * worldScaleAmount);
                                 Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
                                 QuaternionShort frameRotation = new QuaternionShort(-animationFrame.XRotation,
                                                                                     -animationFrame.YRotation,
                                                                                     -animationFrame.ZRotation,
                                                                                     animationFrame.WRotation);
+
+                                // Particle bones may have additional transformation
+                                float xTranslation = animationFrame.XPosition * worldScaleAmount;
+                                float yTranslation = animationFrame.YPosition * worldScaleAmount;
+                                float zTranslation = animationFrame.ZPosition * worldScaleAmount;
+                                if (particleCloudsByName != null && particleCloudsByName.ContainsKey(curBone.ParticleCloudName) == true)
+                                {
+                                    ObjectModelParticleCloudProperties cloudProperties = ObjectModelParticleCloudProperties.GetPropertiesForObjectCloud(Name, curBone.ParticleCloudName);
+                                    xTranslation += cloudProperties.EmitterAddX * worldScaleAmount;
+                                    yTranslation += cloudProperties.EmitterAddY * worldScaleAmount;
+                                    zTranslation += cloudProperties.EmitterAddZ * worldScaleAmount;
+                                }
+                                Vector3 frameTranslation = new Vector3(xTranslation, yTranslation, zTranslation);
 
                                 // Rotate on Z, if needed
                                 if (DoRotateModelOnZAxis())
@@ -1827,10 +1843,6 @@ namespace EQWOWConverter.ObjectModels
                         Logger.WriteError("Error creating event or attachment bone with name '" + newBoneName + "' as it is unhandled");
                     }break;
             }            
-        }
-
-        private void SetAllAnimationLookups()
-        {
         }
 
         private int GetFirstAnimationIndexForEQAnimationTypes(params EQAnimationType[] eqAnimationTypes)
