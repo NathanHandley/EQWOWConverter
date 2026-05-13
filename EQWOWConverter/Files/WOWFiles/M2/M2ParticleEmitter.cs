@@ -85,10 +85,7 @@ namespace EQWOWConverter.WOWFiles
             Flags |= (UInt32)M2ParticleEmitterFlags.Unshaded;
             Flags |= (UInt32)M2ParticleEmitterFlags.SortParticlesOnDepth;
             if (objectModelParticleEmitter.SourceType == ObjectModelParticleEmitterSourceType.ParticleCloud)
-            {
-                //Flags |= (UInt32)M2ParticleEmitterFlags.LitByLight;
                 Flags |= (UInt32)M2ParticleEmitterFlags.InWorldSpace;
-            }
 
             TextureID = Convert.ToUInt16(objectModelParticleEmitter.TextureID);
             TextureDimensionsRows = (UInt16)objectModelParticleEmitter.SpriteFrameRows;
@@ -211,20 +208,18 @@ namespace EQWOWConverter.WOWFiles
 
         private void PopulateAsStream(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
-            EmitterType = ObjectModelParticleM2EmitterType.Plane;
+            EmitterType = ObjectModelParticleM2EmitterType.Sphere;
 
-            //float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();
             EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
             EmissionAreaWidth.TrackSequences.AddSequence();
             EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
 
+            float coneRadius = objectModelParticleEmitter.Radius;
             VerticalRange.TrackSequences.AddSequence();
-            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
-
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(coneRadius));
             HorizontalRange.TrackSequences.AddSequence();
-            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
-
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(coneRadius));
         }
 
         private void PopulateAsHandSpray(ObjectModelParticleEmitter objectModelParticleEmitter)

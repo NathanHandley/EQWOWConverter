@@ -27,7 +27,6 @@ namespace EQWOWConverter.ObjectModels
         public int LifespanInMS = 0;
         public float Scale = 0;
         public float Velocity = 0;
-        public bool IsStaticParticle = false;
         public int SpawnRate = 0;
         public float Radius = 0;
         public int TextureID = 0;
@@ -83,40 +82,31 @@ namespace EQWOWConverter.ObjectModels
             SpawnRate = CalculateSpawnRate(effEmitter.SpawnRate, SpellEmissionPattern);
         }
 
-        public void LoadFromParticleCloud(EQParticleCloud particleCloud, UInt16 parentBoneID, ObjectModel parentObjectModel)
+        public void LoadFromParticleCloud(EQParticleCloud particleCloud, ObjectModelParticleCloudProperties particleCloudProperties, UInt16 parentBoneID, ObjectModel parentObjectModel)
         {
             SourceType = ObjectModelParticleEmitterSourceType.ParticleCloud;
-
-            // Temp values
             SpriteSheetFileNameNoExt = GetSpriteSheetName(particleCloud.Name, particleCloud.TintColor, "pc_");
             string fullSpriteFirstImagePath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "textures", particleCloud.TextureFrameNames[0] + ".png");
             var (spriteWidth, spriteHeight) = ImageTool.GetWidthAndHeightOfImage(fullSpriteFirstImagePath);
             var (sideLength, columns, rows) = ImageTool.CalculateSpriteSheetLayout(spriteWidth, spriteHeight, particleCloud.TextureFrameNames.Count, 256, 4);
             SpriteFrameColumns = columns;
             SpriteFrameRows = rows;
-            Scale = particleCloud.SpawnScale * Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
+
+            // Scale
+            float equipTypeScale = Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
+            if (parentObjectModel.Properties.EquipUnitType == Items.ItemEquipUnitType.Creature)
+                equipTypeScale = Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
+            Scale = (particleCloud.SpawnScale * equipTypeScale) * particleCloudProperties.ScaleMod;
+
             Radius = particleCloud.SpawnRadius;
-            IsStaticParticle = particleCloud.IsStaticParticle;
-
-            //// Non-expiring static particles
-            //if (particleCloud.IsStaticParticle == true)
-            //{
-            //    ParticleCloudMovementType = ParticleCloudMovementType.None;
-            //    LifespanInMS = 600000000;
-            //}
-
-            //// Expiring particles
-            //else
-            //{
-                ParticleCloudMovementType = particleCloud.ParticleMovementType;
-                LifespanInMS = particleCloud.SpawnLifespanInMS;
-                int maxPossibleParticlesInLifespan = particleCloud.SpawnLifespanInMS / particleCloud.SpawnRateInMS;
-                if (maxPossibleParticlesInLifespan > particleCloud.NumSimultaneousParticles)
-                    SpawnRate = particleCloud.SpawnLifespanInMS / particleCloud.NumSimultaneousParticles;
-                else
-                    SpawnRate = particleCloud.SpawnRateInMS;
-                Velocity = particleCloud.SpawnVelocity * Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
-            //}
+            ParticleCloudMovementType = particleCloud.ParticleMovementType;
+            LifespanInMS = particleCloud.SpawnLifespanInMS;
+            int maxPossibleParticlesInLifespan = particleCloud.SpawnLifespanInMS / particleCloud.SpawnRateInMS;
+            if (maxPossibleParticlesInLifespan > particleCloud.NumSimultaneousParticles)
+                SpawnRate = particleCloud.SpawnLifespanInMS / particleCloud.NumSimultaneousParticles;
+            else
+                SpawnRate = particleCloud.SpawnRateInMS;
+            Velocity = particleCloud.SpawnVelocity * equipTypeScale * particleCloudProperties.VelocityMod;
 
             ParentBoneID = parentBoneID;
         }

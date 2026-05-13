@@ -23,8 +23,8 @@ namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelProperties
     {
-        private static Dictionary<string, ObjectModelProperties> ObjectPropertiesByByName = new Dictionary<string, ObjectModelProperties>();
-        private static readonly object ObjectModelsLock = new object();
+        private static Dictionary<string, ObjectModelProperties> ObjectPropertiesByName = new Dictionary<string, ObjectModelProperties>();
+        private static readonly object PropertiesLock = new object();
 
         public string Name = string.Empty;
         public ObjectModelCustomCollisionType CustomCollisionType = ObjectModelCustomCollisionType.None;
@@ -109,22 +109,22 @@ namespace EQWOWConverter.ObjectModels
 
         public static ObjectModelProperties GetObjectPropertiesForObject(string objectName)
         {
-            lock (ObjectModelsLock)
+            lock (PropertiesLock)
             {
-                if (ObjectPropertiesByByName.Count == 0)
+                if (ObjectPropertiesByName.Count == 0)
                     PopulateObjectPropertiesList();
-                if (ObjectPropertiesByByName.ContainsKey(objectName) == false)
+                if (ObjectPropertiesByName.ContainsKey(objectName) == false)
                     return new ObjectModelProperties(objectName);
                 else
-                    return ObjectPropertiesByByName[objectName];
+                    return ObjectPropertiesByName[objectName];
             }            
         }
 
         private static void PopulateObjectPropertiesList()
         {
-            lock (ObjectModelsLock)
+            lock (PropertiesLock)
             {
-                ObjectPropertiesByByName.Clear();
+                ObjectPropertiesByName.Clear();
 
                 string objectModelPropertiesFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ObjectModelProperties.csv");
                 Logger.WriteDebug("Populating Object Model Properties list via file '" + objectModelPropertiesFileName + "'");
@@ -159,7 +159,7 @@ namespace EQWOWConverter.ObjectModels
                     }
                     newObjectModelProperties.ApplyCollisionIfTransparent = columns["ApplyCollisionIfTransparent"] == "1" ? true : false;
                     newObjectModelProperties.MaterialTransparencyPercentOverride = Convert.ToInt32(columns["MaterialTransparencyPercentOverride"]);
-                    ObjectPropertiesByByName.Add(newObjectModelProperties.Name, newObjectModelProperties);
+                    ObjectPropertiesByName.Add(newObjectModelProperties.Name, newObjectModelProperties);
                 }
             }
         }

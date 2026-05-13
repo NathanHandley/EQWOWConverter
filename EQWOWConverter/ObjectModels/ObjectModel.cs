@@ -440,6 +440,7 @@ namespace EQWOWConverter.ObjectModels
                         continue;
                     }
 
+                    // Static particles are added as geometry, so can skip them
                     EQParticleCloud curCloud = new EQParticleCloud(particleCloudsByName[baseAttachBone.ParticleCloudName]);
                     if (curCloud.IsStaticParticle == true)
                         continue;
@@ -530,25 +531,40 @@ namespace EQWOWConverter.ObjectModels
 
                     */
 
+                    //float projectionDistanceScale = 1f; // Adjust how far it shoots out
+                    //float particleSizeScaleMod = 1f;
+                    //if (Name == "eq_it62" || Name == "eq_it62_npc") // Fiery Avenger / Soulfire
+                    //{
+                    //    particleTranslation.X = 0.3f;
+                    //    particleSizeScaleMod = 0.60f;
+                    //    projectionDistanceScale = 0.7f; 
+                    //}
+
                     // Build a rotation direction
                     // Note: This is not the formula to calculate it, just the values
                     // because there were only a few observed source values
                     QuaternionShort rotationQShort = new QuaternionShort();
-                    if (curCloud.SpawnNormalX < 0) // See: Fiery Avenger
+                    if (curCloud.SpawnNormalX < 0) // Fiery Avenger
                     {
-                        rotationQShort.Y = 0.7071f;
+                        //rotationQShort.X = 0.7071f; // Left
+                        //rotationQShort.Z = 0.7071f; // Backwards
+                        rotationQShort.Z = -0.7071f;
                     }
-                    if (curCloud.SpawnNormalZ > 0) // See: Blade of Strategy
+                    if (curCloud.SpawnNormalZ > 0) // Blade of Strategy
                     {
                         rotationQShort.Y = 0.7071f;
                     }
 
-                    // Create a new bone just for this particle emitter in order to control the direction
+                    // Load particle-specific properties
+                    ObjectModelParticleCloudProperties particleCloudProperties = ObjectModelParticleCloudProperties.GetPropertiesForObjectCloud(Name, curCloud.Name);
+
+                    // Create a new bone just for this particle emitter in order to control the direction and translation
                     ObjectModelBone newParticleBone = new ObjectModelBone();
                     newParticleBone.BoneNameEQ = baseAttachBone.ParticleCloudName;
                     newParticleBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
                     newParticleBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
                     newParticleBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                    Vector3 particleTranslation = new Vector3(particleCloudProperties.EmitterAddX, particleCloudProperties.EmitterAddY, particleCloudProperties.EmitterAddZ);
                     for (int frameID = 0; frameID < baseAttachBone.RotationTrack.Timestamps.Count; frameID++)
                     {
                         newParticleBone.ScaleTrack.AddSequence();
@@ -556,13 +572,13 @@ namespace EQWOWConverter.ObjectModels
                         newParticleBone.RotationTrack.AddSequence();
                         newParticleBone.RotationTrack.AddValueToLastSequence(0, rotationQShort);
                         newParticleBone.TranslationTrack.AddSequence();
-                        newParticleBone.TranslationTrack.AddValueToLastSequence(0, new Vector3(0, 0, 0));
+                        newParticleBone.TranslationTrack.AddValueToLastSequence(0, particleTranslation);
                     }
                     ModelBones.Add(newParticleBone);
 
                     // Add the particle
                     ObjectModelParticleEmitter newParticleEmitter = new ObjectModelParticleEmitter();
-                    newParticleEmitter.LoadFromParticleCloud(curCloud, (UInt16)(ModelBones.Count-1), this);
+                    newParticleEmitter.LoadFromParticleCloud(curCloud, particleCloudProperties, (UInt16)(ModelBones.Count-1), this);
                     newParticleEmitter.TextureID = AddTextureAndReturnID(newParticleEmitter.SpriteSheetFileNameNoExt);
                     properties.ParticleEmitters.Add(newParticleEmitter);
                 }
@@ -598,8 +614,10 @@ namespace EQWOWConverter.ObjectModels
                     if (bone.ParticleCloudName == particleCloud.Name)
                     {
                         // Build the quad
-                        Vector3 topLeft = new Vector3(0, -0.5f, -0.5f);
-                        Vector3 bottomRight = new Vector3(0, 0.5f, 0.5f);
+                        //Vector3 topLeft = new Vector3(0, -0.5f, -0.5f);
+                        //Vector3 bottomRight = new Vector3(0, 0.5f, 0.5f);
+                        Vector3 topLeft = new Vector3(0, -0.28f, -0.28f); // Fiery Avenger
+                        Vector3 bottomRight = new Vector3(0, 0.28f, 0.28f);
                         MeshData curQuadMeshData = new MeshData();
 
                         // Build the new bone
