@@ -19,7 +19,7 @@ using EQWOWConverter.Creatures;
 using EQWOWConverter.Items;
 using EQWOWConverter.Spells;
 
-namespace EQWOWConverter.ObjectModels.Properties
+namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelProperties
     {
@@ -29,6 +29,7 @@ namespace EQWOWConverter.ObjectModels.Properties
         public string Name = string.Empty;
         public ObjectModelCustomCollisionType CustomCollisionType = ObjectModelCustomCollisionType.None;
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
+        public float AdditionalScaleMultiplier = 1.0f;
         public HashSet<string> AlphaBlendMaterialsByName = new HashSet<string>();
         public float ModelScalePreWorldScale = 1f;
         public float ModelLiftPreWorldScale = 0f;
@@ -58,6 +59,7 @@ namespace EQWOWConverter.ObjectModels.Properties
             CustomCollisionType = other.CustomCollisionType;
             AlwaysBrightMaterialsByName = new HashSet<string>(other.AlwaysBrightMaterialsByName);
             AlphaBlendMaterialsByName = new HashSet<string>(other.AlphaBlendMaterialsByName);
+            AdditionalScaleMultiplier = other.AdditionalScaleMultiplier;
             ModelScalePreWorldScale = other.ModelScalePreWorldScale;
             ModelLiftPreWorldScale = other.ModelLiftPreWorldScale;
             CreatureModelTemplate = other.CreatureModelTemplate;
@@ -144,6 +146,7 @@ namespace EQWOWConverter.ObjectModels.Properties
                         foreach (string materialName in materialNames)
                             newObjectModelProperties.AddAlwaysBrightMaterial(materialName);
                     }
+                    newObjectModelProperties.AdditionalScaleMultiplier = float.Parse(columns["AdditionalScaleMultiplier"]);
                     newObjectModelProperties.AlternateModelSwapName = columns["AlternateModelSwap"].Trim();
                     newObjectModelProperties.CustomMaterialListLine = columns["CustomMaterialListLine"].Trim();
                     newObjectModelProperties.IncludeInMinimapGeneration = columns["IncludeInMinimap"] == "1" ? true : false;

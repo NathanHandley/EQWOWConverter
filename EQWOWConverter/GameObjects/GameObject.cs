@@ -18,7 +18,6 @@ using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
-using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 

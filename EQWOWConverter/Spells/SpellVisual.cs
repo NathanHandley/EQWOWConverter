@@ -17,7 +17,6 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels;
-using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.WOWFiles;
 
 namespace EQWOWConverter.Spells

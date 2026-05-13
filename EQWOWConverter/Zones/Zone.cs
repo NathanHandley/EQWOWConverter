@@ -18,7 +18,6 @@ using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.ObjectModels;
-using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Transports;
 using System.Text.RegularExpressions;
 

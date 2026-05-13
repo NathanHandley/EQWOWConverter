@@ -358,7 +358,7 @@ namespace EQWOWConverter.Items
                     eqAssetFileName = skeletalFileNamesByCommonName[itemDisplayCommonName];
 
                 // Create a new model
-                ObjectModels.Properties.ObjectModelProperties objectModelProperties = new ObjectModels.Properties.ObjectModelProperties();
+                ObjectModelProperties objectModelProperties = ObjectModelProperties.GetObjectPropertiesForObject(outputName);
                 objectModelProperties.EquipUnitType = equipUnitType;
                 ObjectModel equipmentModel = new ObjectModel(outputName, objectModelProperties, modelType);
                 equipmentModel.LoadEQObjectFromFile(equipmentSourceBasePath, eqAssetFileName);

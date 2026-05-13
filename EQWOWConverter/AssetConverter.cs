@@ -20,7 +20,6 @@ using EQWOWConverter.Events;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
-using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Player;
 using EQWOWConverter.Quests;
 using EQWOWConverter.Spells;
