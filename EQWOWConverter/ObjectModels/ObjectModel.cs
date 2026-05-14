@@ -545,10 +545,9 @@ namespace EQWOWConverter.ObjectModels
 
                         // Build the new bone
                         EQSkeleton.EQSkeletonBone newBone = new EQSkeleton.EQSkeletonBone();
-                        newBone.BoneName = bone.BoneName + "Particle";
+                        newBone.BoneName = bone.ParticleCloudName + "Particle";
                         newBone.MeshName = bone.MeshName;
                         newBone.AlternateMeshName = bone.AlternateMeshName;
-                        newBone.ParticleCloudName = bone.ParticleCloudName;
                         newBone.IsGeneratedBoneForParticleCloud = true;
                         skeletonData.BoneStructures[boneIndex].Children.Add(skeletonData.BoneStructures.Count);
                         skeletonData.BoneStructures.Add(newBone);
@@ -1523,7 +1522,7 @@ namespace EQWOWConverter.ObjectModels
                                 float xTranslation = animationFrame.XPosition * worldScaleAmount;
                                 float yTranslation = animationFrame.YPosition * worldScaleAmount;
                                 float zTranslation = animationFrame.ZPosition * worldScaleAmount;
-                                if (particleCloudsByName != null && particleCloudsByName.ContainsKey(curBone.ParticleCloudName) == true)
+                                if (particleCloudsByName != null && particleCloudsByName.ContainsKey(curBone.ParticleCloudName) == true && particleCloudsByName[curBone.ParticleCloudName].IsStaticParticle == true)
                                 {
                                     ObjectModelParticleCloudProperties cloudProperties = ObjectModelParticleCloudProperties.GetPropertiesForObjectCloud(Name, curBone.ParticleCloudName);
                                     xTranslation += cloudProperties.EmitterAddX * worldScaleAmount;
