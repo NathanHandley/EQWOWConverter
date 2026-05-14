@@ -46,7 +46,7 @@ namespace EQWOWConverter.WOWFiles
         private M2TrackSequences<M2Float> Gravity = new M2TrackSequences<M2Float>(); // Sometimes a float, sometimes a compressed vector as defined by the Flags
         private M2TrackSequences<M2Float> Lifespan = new M2TrackSequences<M2Float>(); // Number of seconds a particle exists after creation
         private float LifespanVariation = 0; // LifespanVaration * random(-1, 1) is added to Lifespan
-        private M2TrackSequences<M2Float> EmissionRate = new M2TrackSequences<M2Float>(); // What is this exactly?
+        private M2TrackSequences<M2Float> EmissionRate = new M2TrackSequences<M2Float>(); // Particles per second, caps at 20 (~0.05s)
         private float EmissionRateVariation = 0; // EmissionRateVariation * random(-1, 1) is added to EmissionRate
         private M2TrackSequences<M2Float> EmissionAreaLength = new M2TrackSequences<M2Float>(); // For plane this is width of the plane in x-axis, for Sphere it's the minimum radius
         private M2TrackSequences<M2Float> EmissionAreaWidth = new M2TrackSequences<M2Float>(); // For plane this is width of the plane in y-axis, for Sphere it's the maximum radius
@@ -199,7 +199,7 @@ namespace EQWOWConverter.WOWFiles
                 switch (objectModelParticleEmitter.ParticleCloudMovementType)
                 {
                     case ParticleCloudMovementType.Stream: PopulateAsStream(objectModelParticleEmitter); break;
-                    default: PopulateAsSphere(objectModelParticleEmitter); break;
+                    default: PopulateAsParticleCloudSphere(objectModelParticleEmitter); break;
                 }
             }
 
@@ -220,6 +220,23 @@ namespace EQWOWConverter.WOWFiles
             VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(coneRadius));
             HorizontalRange.TrackSequences.AddSequence();
             HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(coneRadius));
+        }
+
+        private void PopulateAsParticleCloudSphere(ObjectModelParticleEmitter objectModelParticleEmitter)
+        {
+            EmitterType = ObjectModelParticleM2EmitterType.Sphere;
+
+            float radius = objectModelParticleEmitter.Radius;
+            EmissionAreaLength.TrackSequences.AddSequence();
+            EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+            EmissionAreaWidth.TrackSequences.AddSequence();
+            EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
+
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
+
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
         }
 
         private void PopulateAsHandSpray(ObjectModelParticleEmitter objectModelParticleEmitter)

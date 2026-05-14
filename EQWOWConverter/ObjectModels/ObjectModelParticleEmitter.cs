@@ -27,7 +27,7 @@ namespace EQWOWConverter.ObjectModels
         public int LifespanInMS = 0;
         public float Scale = 0;
         public float Velocity = 0;
-        public int SpawnRate = 0;
+        public float SpawnRate = 0;
         public float Radius = 0;
         public int TextureID = 0;
         public string SpriteSheetFileNameNoExt = string.Empty;
@@ -101,12 +101,10 @@ namespace EQWOWConverter.ObjectModels
             Radius = particleCloud.SpawnRadius;
             ParticleCloudMovementType = particleCloud.ParticleMovementType;
             LifespanInMS = particleCloud.SpawnLifespanInMS;
+
             int spawnRateInMS = (int)(particleCloud.SpawnRateInMS * particleCloudProperties.SpawnRateMod);
-            int maxPossibleParticlesInLifespan = particleCloud.SpawnLifespanInMS / spawnRateInMS;
-            if (maxPossibleParticlesInLifespan > particleCloud.NumSimultaneousParticles)
-                SpawnRate = particleCloud.SpawnLifespanInMS / particleCloud.NumSimultaneousParticles;
-            else
-                SpawnRate = spawnRateInMS;
+            SpawnRate = 1 / ((float)(spawnRateInMS) / 1000);
+
             Velocity = particleCloud.SpawnVelocity * equipTypeScale * particleCloudProperties.VelocityMod;
 
             ParentBoneID = parentBoneID;
