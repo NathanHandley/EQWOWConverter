@@ -448,26 +448,44 @@ namespace EQWOWConverter.ObjectModels
                     // Load particle-specific properties
                     ObjectModelParticleCloudProperties particleCloudProperties = ObjectModelParticleCloudProperties.GetPropertiesForObjectCloud(Name, curCloud.Name);
 
-                    // Create a new bone just for this particle emitter in order to control the direction and translation
+                    // Create a translation bone
                     ObjectModelBone newParticleBone = new ObjectModelBone();
                     newParticleBone.BoneNameEQ = baseAttachBone.ParticleCloudName;
                     newParticleBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
                     newParticleBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
                     newParticleBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
-
-                    // Translation
+                    newParticleBone.ParentBone = (Int16)i;
+                    newParticleBone.ParentBoneNameEQ = baseAttachBone.BoneNameEQ;
                     float equipUnitTypeScale = Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
                     if (Properties.EquipUnitType == ItemEquipUnitType.Creature)
                         equipUnitTypeScale = Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
-                    Vector3 particleTranslation = new Vector3(particleCloudProperties.EmitterAddX * equipUnitTypeScale, 
-                        particleCloudProperties.EmitterAddY * equipUnitTypeScale, 
+                    Vector3 particleTranslation = new Vector3(particleCloudProperties.EmitterAddX * equipUnitTypeScale,
+                        particleCloudProperties.EmitterAddY * equipUnitTypeScale,
                         particleCloudProperties.EmitterAddZ * equipUnitTypeScale);
+                    for (int frameID = 0; frameID < baseAttachBone.RotationTrack.Timestamps.Count; frameID++)
+                    {
+                        newParticleBone.ScaleTrack.AddSequence();
+                        newParticleBone.ScaleTrack.AddValueToLastSequence(0, new Vector3(1, 1, 1));
+                        newParticleBone.RotationTrack.AddSequence();
+                        newParticleBone.RotationTrack.AddValueToLastSequence(0, new QuaternionShort());
+                        newParticleBone.TranslationTrack.AddSequence();
+                        newParticleBone.TranslationTrack.AddValueToLastSequence(0, particleTranslation);
+                    }
+                    ModelBones.Add(newParticleBone);
 
-                    // Rotation
+                    // Create a rotation bone
+                    newParticleBone = new ObjectModelBone();
+                    newParticleBone.BoneNameEQ = baseAttachBone.ParticleCloudName;
+                    newParticleBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                    newParticleBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                    newParticleBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                    newParticleBone.ParentBone = (Int16)(ModelBones.Count - 1);
+                    newParticleBone.ParentBoneNameEQ = baseAttachBone.BoneNameEQ;
                     QuaternionShort rotationQShort = new QuaternionShort();
                     rotationQShort.X = particleCloudProperties.RotateX;
                     rotationQShort.Y = particleCloudProperties.RotateY;
                     rotationQShort.Z = particleCloudProperties.RotateZ;
+                    rotationQShort.W = particleCloudProperties.RotateW;
                     for (int frameID = 0; frameID < baseAttachBone.RotationTrack.Timestamps.Count; frameID++)
                     {
                         newParticleBone.ScaleTrack.AddSequence();
@@ -475,7 +493,7 @@ namespace EQWOWConverter.ObjectModels
                         newParticleBone.RotationTrack.AddSequence();
                         newParticleBone.RotationTrack.AddValueToLastSequence(0, rotationQShort);
                         newParticleBone.TranslationTrack.AddSequence();
-                        newParticleBone.TranslationTrack.AddValueToLastSequence(0, particleTranslation);
+                        newParticleBone.TranslationTrack.AddValueToLastSequence(0, new Vector3());
                     }
                     ModelBones.Add(newParticleBone);
 

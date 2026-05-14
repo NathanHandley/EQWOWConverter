@@ -109,6 +109,7 @@ namespace EQWOWConverter.ObjectModels
 
         public static ObjectModelProperties GetObjectPropertiesForObject(string objectName)
         {
+            objectName = objectName.Replace("_npc", "");
             lock (PropertiesLock)
             {
                 if (ObjectPropertiesByName.Count == 0)
