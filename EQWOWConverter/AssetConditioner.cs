@@ -388,6 +388,8 @@ namespace EQWOWConverter
                     Logger.WriteError("Failed to generate sprite sheet for particle cloud file ", particleFileName);
                     continue;
                 }
+                if (particleCloud.IsStaticParticle == true)
+                    continue;
                 string fileNameOnly = Path.GetFileNameWithoutExtension(particleFileName);
                 string spriteChainOutputFileWithExt = string.Concat("pc_", fileNameOnly, "Sheet.png");
                 ImageTool.GenerateSpriteSheetForSpriteChain(particleCloud.TextureFrameNames, sourceTextureFolder, outputSpriteSheetFolder, spriteChainOutputFileWithExt, 4);
@@ -805,6 +807,51 @@ namespace EQWOWConverter
             Logger.WriteInfo("Object texture color changes for BLPs complete.");
         }
 
+        public void ApplyParticleCloudStaticTextureColorChangesToBLPs()
+        {
+            Logger.WriteInfo("Applying particle cloud static texture color changes to BLPs...");
+
+            // Make the working folder
+            string workingFolderName = Path.Combine(Configuration.PATH_WORKING_FOLDER, "WorkingTextureColorChanges");
+            if (Directory.Exists(workingFolderName) == true)
+                Directory.Delete(workingFolderName, true);
+            Directory.CreateDirectory(workingFolderName);
+
+            // Make the texture changes
+            string objectTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "textures");
+            string sourceEquipmentParticlesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Particles");
+            foreach (string particleFileName in Directory.GetFiles(sourceEquipmentParticlesFolder))
+            {
+                EQParticleCloud particleCloud = new EQParticleCloud();
+                bool loadResult = particleCloud.LoadFromDisk(particleFileName);
+                if (loadResult == false)
+                {
+                    Logger.WriteError("Failed to load particle cloud file ", particleFileName);
+                    continue;
+                }
+                if (particleCloud.IsStaticParticle == false)
+                    continue;
+                if (particleCloud.TintColor.R != 255 && particleCloud.TintColor.G != 255 && particleCloud.TintColor.B != 255)
+                {
+                    foreach (string textureNameNoExt in particleCloud.TextureFrameNames)
+                    {
+                        // Generate the texture
+                        ImageTool.GenerateColoredTintedTexture(objectTextureFolder, textureNameNoExt, workingFolderName, textureNameNoExt, particleCloud.TintColor,
+                            ImageTool.ImageAssociationType.StaticObject, true);
+
+                        // Replace the conditioned version
+                        string fullColoredTextureFileName = Path.Combine(workingFolderName, textureNameNoExt + ".blp");
+                        string targetTextureFullFileName = Path.Combine(objectTextureFolder, textureNameNoExt + ".blp");
+                        File.Copy(fullColoredTextureFileName, targetTextureFullFileName, true);
+                    }
+                }
+            }
+
+            // Clean up the working folder
+            Directory.Delete(workingFolderName, true);
+            Logger.WriteInfo("Particle cloud static texture color changes for BLPs complete.");
+        }
+
         public bool ConvertPNGFilesToBLP()
         {
             // Make sure the tool is there
@@ -934,6 +981,7 @@ namespace EQWOWConverter
 
             // Apply any texture color changes
             ApplyObjectTextureColorChangesToBLPs();
+            ApplyParticleCloudStaticTextureColorChangesToBLPs();
 
             return true;
         }
