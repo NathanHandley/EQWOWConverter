@@ -1,6 +1,7 @@
 .vs/
 obj/
 bin/
+launchSettings.json
+PublishProfiles
 texturecomponents/
-Properties/
 *.csproj.user

@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
+using EQWOWConverter.EQFiles;
 using EQWOWConverter.Items;
 using EQWOWConverter.Spells;
 
@@ -30,6 +31,7 @@ namespace EQWOWConverter.ObjectModels
         public ObjectModelCustomCollisionType CustomCollisionType = ObjectModelCustomCollisionType.None;
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
         public float AdditionalScaleMultiplier = 1.0f;
+        public EQAnimationType StandAnimEQAnimOverride = EQAnimationType.Unknown;
         public HashSet<string> AlphaBlendMaterialsByName = new HashSet<string>();
         public float ModelScalePreWorldScale = 1f;
         public float ModelLiftPreWorldScale = 0f;
@@ -60,6 +62,7 @@ namespace EQWOWConverter.ObjectModels
             AlwaysBrightMaterialsByName = new HashSet<string>(other.AlwaysBrightMaterialsByName);
             AlphaBlendMaterialsByName = new HashSet<string>(other.AlphaBlendMaterialsByName);
             AdditionalScaleMultiplier = other.AdditionalScaleMultiplier;
+            StandAnimEQAnimOverride = other.StandAnimEQAnimOverride;
             ModelScalePreWorldScale = other.ModelScalePreWorldScale;
             ModelLiftPreWorldScale = other.ModelLiftPreWorldScale;
             CreatureModelTemplate = other.CreatureModelTemplate;
@@ -148,6 +151,19 @@ namespace EQWOWConverter.ObjectModels
                             newObjectModelProperties.AddAlwaysBrightMaterial(materialName);
                     }
                     newObjectModelProperties.AdditionalScaleMultiplier = float.Parse(columns["AdditionalScaleMultiplier"]);
+                    string standAnimEQAnimOverrideString = columns["StandAnimEQAnimOverride"].Trim().ToLower();
+                    if (standAnimEQAnimOverrideString.Length > 0)
+                    {
+                        switch (standAnimEQAnimOverrideString)
+                        {
+                            case "o01standidle": newObjectModelProperties.StandAnimEQAnimOverride = EQAnimationType.o01StandIdle; break;
+                            case "posstandpose": newObjectModelProperties.StandAnimEQAnimOverride = EQAnimationType.posStandPose; break;
+                            default:
+                                {
+                                    Logger.WriteError("Error determining StandAnimEQAnimOverride for ", newObjectModelProperties.Name, " as it is unhandled");
+                                } break;
+                        }
+                    }
                     newObjectModelProperties.AlternateModelSwapName = columns["AlternateModelSwap"].Trim();
                     newObjectModelProperties.CustomMaterialListLine = columns["CustomMaterialListLine"].Trim();
                     newObjectModelProperties.IncludeInMinimapGeneration = columns["IncludeInMinimap"] == "1" ? true : false;

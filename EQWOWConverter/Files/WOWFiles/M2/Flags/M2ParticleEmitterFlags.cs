@@ -24,7 +24,7 @@ namespace EQWOWConverter.WOWFiles
         SortParticlesOnDepth = 0x2,
         BillboardAlignWithVelocityVector = 0x4,
         Unshaded = 0x8, // According to wowdev.wiki - "Clears lit flag on CParticleMat"
-        InWorldSpace = 0x10, // Skips bone matrix transform
+        AlignToCreatureEmitterMatrix = 0x10, // Skips bone matrix transform
         InheritBoneScale = 0x20,
         InheritVelocity = 0x40,
         ImplosionFilter = 0x80, // wowdev.wiki - "Particles going away from the center are killed"

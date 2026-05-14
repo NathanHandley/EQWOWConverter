@@ -1224,6 +1224,13 @@ namespace EQWOWConverter.ObjectModels
             for (Int16 i = 0; i <= 281; i++)
                 AnimationLookups.Add(-1);
 
+            List<EQAnimationType>? standOverrideEQAnimationTypes = null;
+            if (Properties.StandAnimEQAnimOverride != EQAnimationType.Unknown)
+            {
+                standOverrideEQAnimationTypes = new List<EQAnimationType>();
+                standOverrideEQAnimationTypes.Add(Properties.StandAnimEQAnimOverride);
+            }
+
             // Set the various animations (note: Do not change the order of the first 4)
             if (ModelType == ObjectModelType.TransportShip)
             {
@@ -1236,7 +1243,7 @@ namespace EQWOWConverter.ObjectModels
             }
             else if (ModelType == ObjectModelType.EquipmentHeldBow)
             {
-                FindAndSetAnimationForType(AnimationType.Stand);
+                FindAndSetAnimationForType(AnimationType.Stand, null, standOverrideEQAnimationTypes);
                 if (IsSkeletal)
                 {
                     FindAndSetAnimationForType(AnimationType.BowPull);
@@ -1245,9 +1252,18 @@ namespace EQWOWConverter.ObjectModels
             }
             else if (ModelType == ObjectModelType.EquipmentHeldNonBow)
             {
-                FindAndSetAnimationForType(AnimationType.Stand, particleCloudsByName);
-                FindAndSetAnimationForType(AnimationType.Stand, particleCloudsByName, new List<EQAnimationType>() { EQAnimationType.o01StandIdle, EQAnimationType.o02StandArmsToSide, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 1 / Fidget            
-                FindAndSetAnimationForType(AnimationType.Stand, particleCloudsByName, new List<EQAnimationType>() { EQAnimationType.o02StandArmsToSide, EQAnimationType.o01StandIdle, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 2 / Fidget
+                if (standOverrideEQAnimationTypes != null)
+                {
+                    FindAndSetAnimationForType(AnimationType.Stand, particleCloudsByName, standOverrideEQAnimationTypes);
+                    FindAndSetAnimationForType(AnimationType.Stand, particleCloudsByName, standOverrideEQAnimationTypes);
+                    FindAndSetAnimationForType(AnimationType.Stand, particleCloudsByName, standOverrideEQAnimationTypes);
+                }
+                else
+                {
+                    FindAndSetAnimationForType(AnimationType.Stand, particleCloudsByName);
+                    FindAndSetAnimationForType(AnimationType.Stand, particleCloudsByName, new List<EQAnimationType>() { EQAnimationType.o01StandIdle, EQAnimationType.o02StandArmsToSide, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 1 / Fidget            
+                    FindAndSetAnimationForType(AnimationType.Stand, particleCloudsByName, new List<EQAnimationType>() { EQAnimationType.o02StandArmsToSide, EQAnimationType.o01StandIdle, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 2 / Fidget
+                }
             }
             else
             {
@@ -1255,7 +1271,7 @@ namespace EQWOWConverter.ObjectModels
 
                 if (IsSkeletal)
                 {
-                    FindAndSetAnimationForType(AnimationType.Stand); // Stand mid-idle
+                    FindAndSetAnimationForType(AnimationType.Stand, null, standOverrideEQAnimationTypes); // Stand mid-idle
                     FindAndSetAnimationForType(AnimationType.Stand, null, new List<EQAnimationType>() { EQAnimationType.o01StandIdle, EQAnimationType.o02StandArmsToSide, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 1 / Fidget            
                     FindAndSetAnimationForType(AnimationType.Stand, null, new List<EQAnimationType>() { EQAnimationType.o02StandArmsToSide, EQAnimationType.o01StandIdle, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 2 / Fidget
                     FindAndSetAnimationForType(AnimationType.Death);

@@ -34,6 +34,7 @@ namespace EQWOWConverter.ObjectModels
         public int SpriteFrameColumns = 0;
         public int SpriteFrameRows = 0;
         public UInt16 ParentBoneID = 0;
+        public bool PersistInWorldSpace = false;
         public ParticleCloudMovementType ParticleCloudMovementType = ParticleCloudMovementType.None;
 
         public SpellEmitterModelAttachLocationType SpellEmissionLocation = SpellEmitterModelAttachLocationType.Chest;
@@ -49,6 +50,7 @@ namespace EQWOWConverter.ObjectModels
             SpellVisualEffectIndex = effEmitter.VisualEffectIndex;
             SpellVisualEffectStageType = spellVisualEffectStageType;
             SpellVisualType = spellVisualType;
+            PersistInWorldSpace = true;
 
             // Calculate the location and pattern first since those are used in further calculations.
             if (emitterPatternOverride == SpellVisualEmitterSpawnPatternType.None)
@@ -91,6 +93,7 @@ namespace EQWOWConverter.ObjectModels
             var (sideLength, columns, rows) = ImageTool.CalculateSpriteSheetLayout(spriteWidth, spriteHeight, particleCloud.TextureFrameNames.Count, 256, 4);
             SpriteFrameColumns = columns;
             SpriteFrameRows = rows;
+            PersistInWorldSpace = particleCloudProperties.PersistInWorldSpace;
 
             // Scale
             float equipTypeScale = Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;

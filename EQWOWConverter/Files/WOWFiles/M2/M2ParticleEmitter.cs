@@ -84,8 +84,8 @@ namespace EQWOWConverter.WOWFiles
             Flags |= (UInt32)M2ParticleEmitterFlags.ParticlesAreHeadParticles;
             Flags |= (UInt32)M2ParticleEmitterFlags.Unshaded;
             Flags |= (UInt32)M2ParticleEmitterFlags.SortParticlesOnDepth;
-            if (objectModelParticleEmitter.SourceType == ObjectModelParticleEmitterSourceType.ParticleCloud)
-                Flags |= (UInt32)M2ParticleEmitterFlags.InWorldSpace;
+            if (objectModelParticleEmitter.PersistInWorldSpace == false)
+                Flags |= (UInt32)M2ParticleEmitterFlags.AlignToCreatureEmitterMatrix;
 
             TextureID = Convert.ToUInt16(objectModelParticleEmitter.TextureID);
             TextureDimensionsRows = (UInt16)objectModelParticleEmitter.SpriteFrameRows;
