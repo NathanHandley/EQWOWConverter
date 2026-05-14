@@ -596,9 +596,6 @@ namespace EQWOWConverter.ObjectModels
             if (particleCloudsByName == null)
                 return;
             string sourceEquipmentTexturesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
-            //float equipUnitTypeScale = Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
-            //if (Properties.EquipUnitType == ItemEquipUnitType.Creature)
-            //    equipUnitTypeScale = Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
             foreach (var particleCloudByName in particleCloudsByName)
             {
                 // Only static particles have permanent geometery and need materials
@@ -606,17 +603,17 @@ namespace EQWOWConverter.ObjectModels
                 if (particleCloud.IsStaticParticle == false)
                     continue;
 
+                // Load particle-specific properties
+                ObjectModelParticleCloudProperties particleCloudProperties = ObjectModelParticleCloudProperties.GetPropertiesForObjectCloud(Name, particleCloud.Name);
+
                 // Create a material for this particle
                 UInt32 curMaterialID = Convert.ToUInt32(initialMaterials.Count);
                 UInt32 animationDelay = (UInt32)particleCloud.TextureAnimationDelayInMS;
                 string firstTextureFullPath = Path.Combine(sourceEquipmentTexturesFolder, particleCloud.TextureFrameNames[0] + ".png");
                 var (frameWidth, frameHeight) = ImageTool.GetWidthAndHeightOfImage(firstTextureFullPath);
                 Material newMaterial = new Material(particleCloudByName.Key, particleCloudByName.Key, curMaterialID, particleCloud.MaterialType, particleCloud.TextureFrameNames,
-                    animationDelay, frameWidth, frameHeight, true, true);
+                    animationDelay, frameWidth, frameHeight, true, true, particleCloudProperties.TransparencyPercentOverride);
                 initialMaterials.Add(newMaterial);
-
-                // Load particle-specific properties
-                ObjectModelParticleCloudProperties particleCloudProperties = ObjectModelParticleCloudProperties.GetPropertiesForObjectCloud(Name, particleCloud.Name);
 
                 // Create geometry for the related bone
                 int originalBoneCount = skeletonData.BoneStructures.Count;
@@ -683,7 +680,7 @@ namespace EQWOWConverter.ObjectModels
                     UInt32 animationDelay = Convert.ToUInt32((textureNamesChainByRootTexture.Value.Count == 1) ? 0 : Configuration.SPELL_EFFECT_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS);
                     materialIDBySpriteListRootName.Add(textureNamesChainByRootTexture.Key, Convert.ToInt32(curMaterialID));
                     Material newMaterial = new Material(textureNamesChainByRootTexture.Key, textureNamesChainByRootTexture.Key, curMaterialID, MaterialType.TransparentAdditive,
-                        textureNamesChainByRootTexture.Value, animationDelay, 64, 64, true, true);
+                        textureNamesChainByRootTexture.Value, animationDelay, 64, 64, true, true, -1);
                     newMaterial.IsParticleEffect = true;
                     initialMaterials.Add(newMaterial);
                 }
@@ -1912,6 +1909,14 @@ namespace EQWOWConverter.ObjectModels
                 initialMaterials = updatedMaterialList;
             }
 
+            // Capture object-level transparency override
+            if (Properties.MaterialTransparencyPercentOverride > -1)
+            {
+                foreach (Material material in initialMaterials)
+                    if (material.TransparencyPercentOverride == -1)
+                        material.TransparencyPercentOverride = Properties.MaterialTransparencyPercentOverride;
+            }
+
             // Normalize the material IDs as they stand (so they start with index 0)
             // Any non-texture ones will start at a high value to get them out of the way
             Dictionary<UInt32, UInt32> oldToNewMaterialMap = new Dictionary<UInt32, UInt32>();
@@ -1934,7 +1939,7 @@ namespace EQWOWConverter.ObjectModels
             }
             meshData.RemapMaterialIDs(oldToNewMaterialMap);
 
-            // Remove the non-rendered materials
+            // Remove the non-rendered materials and assign overrides
             List<Material> renderedMaterials = new List<Material>();
             foreach (Material initialMaterial in initialMaterials)
                 if (initialMaterial.TextureNames.Count != 0)
@@ -1975,7 +1980,7 @@ namespace EQWOWConverter.ObjectModels
                     // Make a 'blank' animation for this material/texture, since it's static
                     ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)] = new ObjectModelTrackSequences<Fixed16>();
                     ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)].AddSequence();
-                    ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)].AddValueToSequence(0, 0, new Fixed16(material.GetTransparencyValue(Properties.MaterialTransparencyPercentOverride)));
+                    ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)].AddValueToSequence(0, 0, new Fixed16(material.GetTransparencyValue()));
                     ModelTextureTransparencyLookups.Add(Convert.ToUInt16(ModelTextureTransparencyLookups.Count));
                 }
             }
@@ -2552,7 +2557,7 @@ namespace EQWOWConverter.ObjectModels
                     List<string> newMaterialTextureName = new List<string>() { initialMaterial.TextureNames[textureIter] };
                     Material newAnimationMaterial = new Material(curMaterialName, initialMaterial.UniqueName, newMaterialIndex, initialMaterial.MaterialType,
                         newMaterialTextureName, initialMaterial.AnimationDelayMs, initialMaterial.TextureWidth, initialMaterial.TextureHeight, 
-                        initialMaterial.AlwaysBrightOverride, initialMaterial.IsTwoSided);
+                        initialMaterial.AlwaysBrightOverride, initialMaterial.IsTwoSided, initialMaterial.TransparencyPercentOverride);
                     curMaterial = newAnimationMaterial;
                     expandedMaterials.Add(curMaterial);
                     curMaterialIndex = Convert.ToInt32(newMaterialIndex);
@@ -2572,7 +2577,7 @@ namespace EQWOWConverter.ObjectModels
                 }
 
                 // Add this shown (non-transparent) frame
-                newAnimation.AddValueToSequence(0, curAnimationTimestamp, new Fixed16(curMaterial.GetTransparencyValue(Properties.MaterialTransparencyPercentOverride)));
+                newAnimation.AddValueToSequence(0, curAnimationTimestamp, new Fixed16(curMaterial.GetTransparencyValue()));
 
                 // Add this animation and the texture lookup, which should match current count
                 ModelTextureTransparencySequenceSetByMaterialIndex[curMaterialIndex] = newAnimation;

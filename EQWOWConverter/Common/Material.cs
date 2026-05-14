@@ -29,6 +29,7 @@ namespace EQWOWConverter.Common
         public bool AlwaysBrightOverride = false;
         public bool IsParticleEffect = false;
         public bool IsTwoSided = false;
+        public int TransparencyPercentOverride = -1;
 
         public Material() { }
 
@@ -45,10 +46,12 @@ namespace EQWOWConverter.Common
             TextureHeight = material.TextureHeight;
             AlwaysBrightOverride = material.AlwaysBrightOverride;
             IsTwoSided = material.IsTwoSided;
+            TransparencyPercentOverride = material.TransparencyPercentOverride;
         }
 
         public Material(string name, string originalName, UInt32 index, MaterialType materialType, List<string> textureNames, 
-            UInt32 animationDelayMS, int sourceTextureWidth, int sourceTextureHeight, bool alwaysBrightOverride, bool isTwoSided)
+            UInt32 animationDelayMS, int sourceTextureWidth, int sourceTextureHeight, bool alwaysBrightOverride, bool isTwoSided,
+            int transparencyPercentOverride = -1)
         {
             UniqueName = name;
             Name = originalName;
@@ -60,6 +63,7 @@ namespace EQWOWConverter.Common
             TextureHeight = sourceTextureHeight;
             AlwaysBrightOverride = alwaysBrightOverride;
             IsTwoSided = isTwoSided;
+            TransparencyPercentOverride = transparencyPercentOverride;
         }
 
         public bool IsAnimated()
@@ -174,9 +178,12 @@ namespace EQWOWConverter.Common
             return correctedCoordinates;
         }
 
-        public short GetTransparencyValue(int overrideTransparencyPercent)
+        public short GetTransparencyValue()
         {
             // Calculated by 32767 / (percent)
+            if (TransparencyPercentOverride > -1)
+                return (Int16)((double)Int16.MaxValue * ((double)(100 - TransparencyPercentOverride) / 100));
+
             short transparencyValue = Int16.MaxValue;
             switch (MaterialType)
             {
@@ -185,9 +192,6 @@ namespace EQWOWConverter.Common
                 case MaterialType.Transparent75Percent: transparencyValue = 24575; break;
                 default: return Int16.MaxValue;
             }
-
-            if (overrideTransparencyPercent > -1)
-                return (Int16)((double)Int16.MaxValue * ((double)(100 - overrideTransparencyPercent) / 100));
 
             return transparencyValue;
         }
