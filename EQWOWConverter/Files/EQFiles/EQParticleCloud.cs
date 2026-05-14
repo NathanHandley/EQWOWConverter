@@ -15,12 +15,15 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using Org.BouncyCastle.Asn1.X509;
+using EQWOWConverter.ObjectModels;
 
 namespace EQWOWConverter.EQFiles
 {
     internal class EQParticleCloud
     {
+        private static Dictionary<string, ColorRGBA> TintOverridesbyName = new Dictionary<string, ColorRGBA>();
+        private static object TentOverrideLock = new object();
+
         public string Name = string.Empty;
         public string AttachedSkeletonName = string.Empty;
         public string AttachedBoneName = string.Empty;
@@ -75,6 +78,36 @@ namespace EQWOWConverter.EQFiles
             IsTextureAnimated = other.IsTextureAnimated;
             TextureAnimationDelayInMS = other.TextureAnimationDelayInMS;
             TextureFrameNames = other.TextureFrameNames;
+        }
+
+        private static void LoadTintOverrides()
+        {
+            TintOverridesbyName.Clear();
+            string overridesFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ParticleCloudTintOverrides.csv");
+            Logger.WriteDebug("Populating Particle Cloud Tent Overrides via file '" + overridesFileName + "'");
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(overridesFileName, "|");
+            foreach (Dictionary<string, string> columns in rows)
+            {
+                ColorRGBA tint = new ColorRGBA();
+                string name = columns["Name"];
+                tint.R = Convert.ToByte(columns["Red"]);
+                tint.G = Convert.ToByte(columns["Green"]);
+                tint.B = Convert.ToByte(columns["Blue"]);
+                TintOverridesbyName.Add(name, tint);
+            }
+        }
+
+        private static ColorRGBA? GetTintOverride(string name)
+        {
+            lock (TentOverrideLock)
+            {
+                if (TintOverridesbyName.Count == 0)
+                    LoadTintOverrides();
+                if (TintOverridesbyName.ContainsKey(name) == true)
+                    return TintOverridesbyName[name];
+                else
+                    return null;
+            }
         }
 
         public bool LoadFromDisk(string fileFullPath)
@@ -169,6 +202,12 @@ namespace EQWOWConverter.EQFiles
                 }
             }
 
+            // Apply any overrides
+            ColorRGBA? tintOverride = GetTintOverride(Name);
+            if (tintOverride != null)
+                TintColor = tintOverride ?? TintColor;
+
+            // Mark any as static
             if (SpawnLifespanInMS >= 10000)
                 IsStaticParticle = true;
 

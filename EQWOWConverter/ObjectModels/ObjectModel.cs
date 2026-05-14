@@ -444,116 +444,6 @@ namespace EQWOWConverter.ObjectModels
                     EQParticleCloud curCloud = new EQParticleCloud(particleCloudsByName[baseAttachBone.ParticleCloudName]);
                     if (curCloud.IsStaticParticle == true)
                         continue;
-                    //    GlobalLoopSequenceLimits.Add(100000);
-
-                    /* Backup of 'clean'
-                    // Build a rotation direction
-                    float rotateYaw = curCloud.SpawnNormalX;
-                    float rotatePitch = curCloud.SpawnNormalZ;
-                    float rotateRoll = curCloud.SpawnNormalY;
-                    System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotateYaw, rotatePitch, rotateRoll);
-                    QuaternionShort rotationQShort = new QuaternionShort();
-                    rotationQShort.X = rotationQ.X;
-                    rotationQShort.Y = rotationQ.Y;
-                    rotationQShort.Z = rotationQ.Z;
-                    rotationQShort.W = -rotationQ.W; // Flip the sign for handedness
-                    */
-
-                    /* Not much better
-                    // Build a rotation direction
-                    // Note: This is not the formula to calculate it, just the values
-                    // because there were only a few observed source values
-                    float rotX = 0;
-                    float rotY = 0;
-                    float rotZ = 0;
-                    if (curCloud.SpawnNormalX < 0) // See: Fiery Avenger
-                    {
-                        rotX = 0.7071f;
-                        rotZ = 0.7071f;
-                    }
-                    System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotX, rotY, rotZ);
-                    QuaternionShort rotationQShort = new QuaternionShort();
-                    rotationQShort.X = rotationQ.X;
-                    rotationQShort.Y = rotationQ.Y;
-                    rotationQShort.Z = rotationQ.Z;
-                    //rotationQShort.W = -rotationQ.W; // Flip the sign for handedness
-                    */
-
-                    /* Fiery Avenger, out the side towards camera, off angle
-                    QuaternionShort rotationQShort = new QuaternionShort();
-                    if (curCloud.SpawnNormalX < 0) // See: Fiery Avenger
-                    {
-                        rotationQShort.X = 0.7071f;
-                        rotationQShort.Z = 0.7071f;
-                    }
-
-                    // Away from camera instead, but same as above
-                    QuaternionShort rotationQShort = new QuaternionShort();
-                    if (curCloud.SpawnNormalX < 0) // See: Fiery Avenger
-                    {
-                        rotationQShort.Y = 0.7071f;
-                        rotationQShort.Z = 0.7071f;
-                    }
-
-                    // Down right
-                    QuaternionShort rotationQShort = new QuaternionShort();
-                    if (curCloud.SpawnNormalX < 0) // See: Fiery Avenger
-                    {
-                        rotationQShort.X = 0.7071f;
-                        rotationQShort.Y = 0.7071f;
-                    }
-
-                    // Facing forward, goes straight up
-                    (nothing)
-
-                    // Facing forward, goes down right
-                    rotationQShort.X = 1f;
-
-                    // Still straight up (??) Maybe more in hand
-                    rotationQShort.Z = 1f;
-
-                    // Forward, overshot
-                    rotationQShort.Y = 1f;
-
-                    // Works for Fiery Avenger
-                    if (curCloud.SpawnNormalX < 0)
-                        rotationQShort.Y = 0.7071f;
-
-                    // Works for Blade of Strategy
-                    if (curCloud.SpawnNormalZ > 0)
-                        rotationQShort.Y = 0.7071f;
-
-
-
-                    // Blade of Strategy
-                    // Default, goes up
-
-
-                    */
-
-                    //float projectionDistanceScale = 1f; // Adjust how far it shoots out
-                    //float particleSizeScaleMod = 1f;
-                    //if (Name == "eq_it62" || Name == "eq_it62_npc") // Fiery Avenger / Soulfire
-                    //{
-                    //    particleTranslation.X = 0.3f;
-                    //    particleSizeScaleMod = 0.60f;
-                    //    projectionDistanceScale = 0.7f; 
-                    //}
-
-                    // Build a rotation direction
-                    // Note: This is not the formula to calculate it, just the values
-                    // because there were only a few observed source values
-                    QuaternionShort rotationQShort = new QuaternionShort();
-                    if (curCloud.SpawnNormalX < 0) // Fiery Avenger
-                    {
-                        //rotationQShort.X = 0.7071f; // Left
-                        //rotationQShort.Z = 0.7071f; // Backwards
-                        rotationQShort.Z = -0.7071f;
-                    }
-                    if (curCloud.SpawnNormalZ > 0) // Blade of Strategy
-                    {
-                        rotationQShort.Y = 0.7071f;
-                    }
 
                     // Load particle-specific properties
                     ObjectModelParticleCloudProperties particleCloudProperties = ObjectModelParticleCloudProperties.GetPropertiesForObjectCloud(Name, curCloud.Name);
@@ -565,12 +455,19 @@ namespace EQWOWConverter.ObjectModels
                     newParticleBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
                     newParticleBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
 
+                    // Translation
                     float equipUnitTypeScale = Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
                     if (Properties.EquipUnitType == ItemEquipUnitType.Creature)
                         equipUnitTypeScale = Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
                     Vector3 particleTranslation = new Vector3(particleCloudProperties.EmitterAddX * equipUnitTypeScale, 
                         particleCloudProperties.EmitterAddY * equipUnitTypeScale, 
                         particleCloudProperties.EmitterAddZ * equipUnitTypeScale);
+
+                    // Rotation
+                    QuaternionShort rotationQShort = new QuaternionShort();
+                    rotationQShort.X = particleCloudProperties.RotateX;
+                    rotationQShort.Y = particleCloudProperties.RotateY;
+                    rotationQShort.Z = particleCloudProperties.RotateZ;
                     for (int frameID = 0; frameID < baseAttachBone.RotationTrack.Timestamps.Count; frameID++)
                     {
                         newParticleBone.ScaleTrack.AddSequence();

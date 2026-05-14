@@ -101,11 +101,12 @@ namespace EQWOWConverter.ObjectModels
             Radius = particleCloud.SpawnRadius;
             ParticleCloudMovementType = particleCloud.ParticleMovementType;
             LifespanInMS = particleCloud.SpawnLifespanInMS;
-            int maxPossibleParticlesInLifespan = particleCloud.SpawnLifespanInMS / particleCloud.SpawnRateInMS;
+            int spawnRateInMS = (int)(particleCloud.SpawnRateInMS * particleCloudProperties.SpawnRateMod);
+            int maxPossibleParticlesInLifespan = particleCloud.SpawnLifespanInMS / spawnRateInMS;
             if (maxPossibleParticlesInLifespan > particleCloud.NumSimultaneousParticles)
                 SpawnRate = particleCloud.SpawnLifespanInMS / particleCloud.NumSimultaneousParticles;
             else
-                SpawnRate = particleCloud.SpawnRateInMS;
+                SpawnRate = spawnRateInMS;
             Velocity = particleCloud.SpawnVelocity * equipTypeScale * particleCloudProperties.VelocityMod;
 
             ParentBoneID = parentBoneID;
