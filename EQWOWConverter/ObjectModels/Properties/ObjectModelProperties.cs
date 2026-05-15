@@ -157,6 +157,8 @@ namespace EQWOWConverter.ObjectModels
                         switch (standAnimEQAnimOverrideString)
                         {
                             case "o01standidle": newObjectModelProperties.StandAnimEQAnimOverride = EQAnimationType.o01StandIdle; break;
+                            case "o02standarmstoside": newObjectModelProperties.StandAnimEQAnimOverride = EQAnimationType.o02StandArmsToSide; break;
+                            case "p01standpassive": newObjectModelProperties.StandAnimEQAnimOverride = EQAnimationType.p01StandPassive; break;
                             case "posstandpose": newObjectModelProperties.StandAnimEQAnimOverride = EQAnimationType.posStandPose; break;
                             default:
                                 {

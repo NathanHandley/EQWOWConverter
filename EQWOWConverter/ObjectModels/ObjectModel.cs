@@ -462,12 +462,10 @@ namespace EQWOWConverter.ObjectModels
 
                     // Static particles are added as geometry, so can skip them
                     EQParticleCloud curCloud = new EQParticleCloud(particleCloudsByName[baseAttachBone.ParticleCloudName]);
-                    if (curCloud.IsStaticParticle == true)
-                        continue;
-
-                    // Load particle-specific properties
                     ObjectModelParticleCloudProperties particleCloudProperties = ObjectModelParticleCloudProperties.GetPropertiesForObjectCloud(Name, curCloud.Name);
-
+                    if (curCloud.IsStaticParticle == true || particleCloudProperties.ForceStatic == true)
+                        continue;
+                    
                     // Create a translation bone
                     ObjectModelBone newParticleBone = new ObjectModelBone();
                     newParticleBone.BoneNameEQ = baseAttachBone.ParticleCloudName;
@@ -547,11 +545,9 @@ namespace EQWOWConverter.ObjectModels
             {
                 // Only static particles have permanent geometery and need materials
                 EQParticleCloud particleCloud = particleCloudByName.Value;
-                if (particleCloud.IsStaticParticle == false)
-                    continue;
-
-                // Load particle-specific properties
                 ObjectModelParticleCloudProperties particleCloudProperties = ObjectModelParticleCloudProperties.GetPropertiesForObjectCloud(Name, particleCloud.Name);
+                if (particleCloud.IsStaticParticle == false && particleCloudProperties.ForceStatic == false)
+                    continue;                
 
                 // Create a material for this particle
                 UInt32 curMaterialID = Convert.ToUInt32(initialMaterials.Count);
@@ -1570,12 +1566,15 @@ namespace EQWOWConverter.ObjectModels
                                 float xTranslation = animationFrame.XPosition * worldScaleAmount;
                                 float yTranslation = animationFrame.YPosition * worldScaleAmount;
                                 float zTranslation = animationFrame.ZPosition * worldScaleAmount;
-                                if (particleCloudsByName != null && particleCloudsByName.ContainsKey(curBone.ParticleCloudName) == true && particleCloudsByName[curBone.ParticleCloudName].IsStaticParticle == true)
+                                if (particleCloudsByName != null && particleCloudsByName.ContainsKey(curBone.ParticleCloudName) == true)
                                 {
                                     ObjectModelParticleCloudProperties cloudProperties = ObjectModelParticleCloudProperties.GetPropertiesForObjectCloud(Name, curBone.ParticleCloudName);
-                                    xTranslation += cloudProperties.EmitterAddX * worldScaleAmount;
-                                    yTranslation += cloudProperties.EmitterAddY * worldScaleAmount;
-                                    zTranslation += cloudProperties.EmitterAddZ * worldScaleAmount;
+                                    if (particleCloudsByName[curBone.ParticleCloudName].IsStaticParticle == true || cloudProperties.ForceStatic == true)
+                                    {
+                                        xTranslation += cloudProperties.EmitterAddX * worldScaleAmount;
+                                        yTranslation += cloudProperties.EmitterAddY * worldScaleAmount;
+                                        zTranslation += cloudProperties.EmitterAddZ * worldScaleAmount;
+                                    }
                                 }
                                 Vector3 frameTranslation = new Vector3(xTranslation, yTranslation, zTranslation);
 
@@ -1613,6 +1612,25 @@ namespace EQWOWConverter.ObjectModels
 
                                 // Increment the frame start for next
                                 curTimestampsByBoneName[animationFrame.GetBoneName()] += animationFrame.FramesMS;
+                            }
+                        }
+
+                        // Rogue epic has additional frames that hides the particle
+                        if (Name.Contains("it140"))
+                        {
+                            ModelAnimations[ModelAnimations.Count - 1].DurationInMS = 2000;
+                            foreach (ObjectModelBone curBone in ModelBones)
+                            {
+                                if (curBone.BoneNameEQ == "_p1_point")
+                                {
+                                    Vector3 lastFramePosition = curBone.TranslationTrack.Values[0].Values[5];
+                                    curBone.TranslationTrack.AddValueToLastSequence(231, new Vector3(lastFramePosition.X, 0, 0));
+                                    curBone.ScaleTrack.AddValueToLastSequence(231, new Vector3(0, 0, 0));
+                                    curBone.RotationTrack.AddValueToLastSequence(231, new QuaternionShort(0, 0, 0, 1));
+                                    curBone.TranslationTrack.AddValueToLastSequence(1999, new Vector3(0, 0, 0));
+                                    curBone.ScaleTrack.AddValueToLastSequence(1999, new Vector3(0, 0, 0));
+                                    curBone.RotationTrack.AddValueToLastSequence(1999, new QuaternionShort(0, 0, 0, 1));                                    
+                                }                                
                             }
                         }
 
@@ -2574,7 +2592,7 @@ namespace EQWOWConverter.ObjectModels
             int useAnimIndex = GetFirstAnimationIndexForEQAnimationTypes(eqAnimationTypes);
             if (useAnimIndex == -1)
             {
-                Logger.WriteError("Could not find suitable animation for object named ", Name);
+                Logger.WriteDebug("Could not find suitable animation for object named ", Name);
                 return new MeshData(MeshData);
             }
 

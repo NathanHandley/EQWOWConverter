@@ -40,6 +40,7 @@ namespace EQWOWConverter.ObjectModels
         public float LifespanMod = 1f;
         public int BurstAmount = 1;
         public int BurstDelayInMS = 0;
+        public bool ForceStatic = false;
 
         public ObjectModelParticleCloudProperties() { }
 
@@ -88,6 +89,7 @@ namespace EQWOWConverter.ObjectModels
                     newProperties.LifespanMod = float.Parse(columns["LifespanMod"]);
                     newProperties.BurstAmount = int.Parse(columns["BurstAmount"]);
                     newProperties.BurstDelayInMS = int.Parse(columns["BurstDelayMS"]);
+                    newProperties.ForceStatic = columns["ForceStatic"].Trim() == "1" ? true : false;
                     PropertiesByObjectAndCloudName.Add((newProperties.ObjectName, newProperties.ParticleCloudName), newProperties);
                 }
             }
