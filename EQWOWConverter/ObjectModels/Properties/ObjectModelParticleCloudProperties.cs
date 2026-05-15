@@ -29,6 +29,7 @@ namespace EQWOWConverter.ObjectModels
         public float EmitterAddY = 0f;
         public float EmitterAddZ = 0f;
         public int TransparencyPercentOverride = -1;
+        public bool DoFadeOut = true;
         public float RotateW = 0f;
         public float RotateX = 0f;
         public float RotateY = 0f;
@@ -37,26 +38,10 @@ namespace EQWOWConverter.ObjectModels
         public bool PersistInWorldSpace = false;
         public float RadiusMod = 1f;
         public float LifespanMod = 1f;
+        public int BurstAmount = 1;
+        public int BurstDelayInMS = 0;
 
         public ObjectModelParticleCloudProperties() { }
-        public ObjectModelParticleCloudProperties(ObjectModelParticleCloudProperties other)
-        {
-            ObjectName = other.ObjectName;
-            ParticleCloudName = other.ParticleCloudName;
-            VelocityMod = other.VelocityMod;
-            ScaleMod = other.ScaleMod;
-            EmitterAddX = other.EmitterAddX;
-            EmitterAddY = other.EmitterAddY;
-            EmitterAddZ = other.EmitterAddZ;
-            TransparencyPercentOverride = other.TransparencyPercentOverride;
-            RotateW = other.RotateW;
-            RotateX = other.RotateX;
-            RotateY = other.RotateY;
-            RotateZ = other.RotateZ;
-            SpawnRateMod = other.SpawnRateMod;
-            RadiusMod = other.RadiusMod;
-            LifespanMod = other.LifespanMod;
-        }
 
         public static ObjectModelParticleCloudProperties GetPropertiesForObjectCloud(string objectName, string particleCloudName)
         {
@@ -92,6 +77,7 @@ namespace EQWOWConverter.ObjectModels
                     newProperties.EmitterAddY = float.Parse(columns["EmitterAddY"]);
                     newProperties.EmitterAddZ = float.Parse(columns["EmitterAddZ"]);
                     newProperties.TransparencyPercentOverride = int.Parse(columns["TransparencyPercentOverride"]);
+                    newProperties.DoFadeOut = columns["FadeOut"].Trim() == "1" ? true : false;
                     newProperties.RotateW = float.Parse(columns["RotateW"]);
                     newProperties.RotateX = float.Parse(columns["RotateX"]);
                     newProperties.RotateY = float.Parse(columns["RotateY"]);
@@ -100,6 +86,8 @@ namespace EQWOWConverter.ObjectModels
                     newProperties.PersistInWorldSpace = columns["PersistInWorldSpace"].Trim() == "1" ? true : false;
                     newProperties.RadiusMod = float.Parse(columns["RadiusMod"]);
                     newProperties.LifespanMod = float.Parse(columns["LifespanMod"]);
+                    newProperties.BurstAmount = int.Parse(columns["BurstAmount"]);
+                    newProperties.BurstDelayInMS = int.Parse(columns["BurstDelayMS"]);
                     PropertiesByObjectAndCloudName.Add((newProperties.ObjectName, newProperties.ParticleCloudName), newProperties);
                 }
             }

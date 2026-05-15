@@ -35,6 +35,12 @@ namespace EQWOWConverter.ObjectModels
         public int SpriteFrameRows = 0;
         public UInt16 ParentBoneID = 0;
         public bool PersistInWorldSpace = false;
+        public int BurstAmount = 1;
+        public int BurstDelayInMS = 0;
+        public int BurstStartOffsetMS = 0;
+        public bool DoFadeOutParticles = true;
+        public int TransparencyOverride = -1;
+        public int GlobalSequenceID = 65535;
         public ParticleCloudMovementType ParticleCloudMovementType = ParticleCloudMovementType.None;
 
         public SpellEmitterModelAttachLocationType SpellEmissionLocation = SpellEmitterModelAttachLocationType.Chest;
@@ -84,7 +90,8 @@ namespace EQWOWConverter.ObjectModels
             SpawnRate = CalculateSpawnRate(effEmitter.SpawnRate, SpellEmissionPattern);
         }
 
-        public void LoadFromParticleCloud(EQParticleCloud particleCloud, ObjectModelParticleCloudProperties particleCloudProperties, UInt16 parentBoneID, ObjectModel parentObjectModel)
+        public void LoadFromParticleCloud(EQParticleCloud particleCloud, ObjectModelParticleCloudProperties particleCloudProperties, UInt16 parentBoneID, ObjectModel parentObjectModel,
+            int? globalSequenceID, int burstStartOffsetMS)
         {
             SourceType = ObjectModelParticleEmitterSourceType.ParticleCloud;
             SpriteSheetFileNameNoExt = GetSpriteSheetName(particleCloud.Name, particleCloud.TintColor, "pc_");
@@ -94,6 +101,12 @@ namespace EQWOWConverter.ObjectModels
             SpriteFrameColumns = columns;
             SpriteFrameRows = rows;
             PersistInWorldSpace = particleCloudProperties.PersistInWorldSpace;
+            BurstAmount = particleCloudProperties.BurstAmount;
+            BurstDelayInMS = particleCloudProperties.BurstDelayInMS;
+            BurstStartOffsetMS = burstStartOffsetMS;
+            GlobalSequenceID = globalSequenceID ?? 65535;
+            DoFadeOutParticles = particleCloudProperties.DoFadeOut;
+            TransparencyOverride = particleCloudProperties.TransparencyPercentOverride;
 
             // Scale
             float equipTypeScale = Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
@@ -104,6 +117,8 @@ namespace EQWOWConverter.ObjectModels
             Radius = particleCloud.SpawnRadius * particleCloudProperties.RadiusMod;
             ParticleCloudMovementType = particleCloud.ParticleMovementType;
             LifespanInMS = (Int32)(particleCloud.SpawnLifespanInMS * particleCloudProperties.LifespanMod);
+            if (GlobalSequenceID != 65535)
+                LifespanInMS = Math.Min(LifespanInMS, BurstDelayInMS - 1); // Lifespan can't be greater than the squirt
 
             int spawnRateInMS = (Int32)(particleCloud.SpawnRateInMS * particleCloudProperties.SpawnRateMod);
             SpawnRate = 1 / ((float)(spawnRateInMS) / 1000);

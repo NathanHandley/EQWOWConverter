@@ -103,19 +103,31 @@ namespace EQWOWConverter.WOWFiles
             Lifespan.TrackSequences.AddValueToLastSequence(0, new M2Float(lifespan));
 
             EmissionRate.TrackSequences.AddSequence();
-            EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.SpawnRate));
-            if (objectModelParticleEmitter.SpellVisualEffectStageType == SpellVisualStageType.Impact)
+            if (objectModelParticleEmitter.BurstAmount > 1 && objectModelParticleEmitter.BurstDelayInMS > 0)
             {
-                if (objectModelParticleEmitter.SpellVisualType == SpellVisualType.BardTick)
-                {
-                    UInt32 duration = Convert.ToUInt32(Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW * 1000) * Configuration.SPELL_EFFECT_BARD_TICK_VISUAL_DURATION_MOD_FROM_TICK);
-                    EmissionRate.TrackSequences.AddValueToLastSequence(duration, new M2Float(0));
-                }
-                else
-                    EmissionRate.TrackSequences.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS), new M2Float(0));
+                Flags |= (UInt32)M2ParticleEmitterFlags.SquirtBehavior;
+                if (objectModelParticleEmitter.BurstStartOffsetMS != 0)
+                    EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+                EmissionRate.TrackSequences.AddValueToLastSequence((UInt32)objectModelParticleEmitter.BurstStartOffsetMS, new M2Float(objectModelParticleEmitter.BurstAmount));
+                EmissionRate.TrackSequences.AddValueToLastSequence((UInt32)(objectModelParticleEmitter.BurstDelayInMS-1), new M2Float(0));
+                EmissionRate.TrackSequences.GlobalSequenceID = (UInt16)objectModelParticleEmitter.GlobalSequenceID;
             }
             else
-                EmissionRate.TrackSequences.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS), new M2Float(0));
+            {
+                EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.SpawnRate));
+                if (objectModelParticleEmitter.SpellVisualEffectStageType == SpellVisualStageType.Impact)
+                {
+                    if (objectModelParticleEmitter.SpellVisualType == SpellVisualType.BardTick)
+                    {
+                        UInt32 duration = Convert.ToUInt32(Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW * 1000) * Configuration.SPELL_EFFECT_BARD_TICK_VISUAL_DURATION_MOD_FROM_TICK);
+                        EmissionRate.TrackSequences.AddValueToLastSequence(duration, new M2Float(0));
+                    }
+                    else
+                        EmissionRate.TrackSequences.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS), new M2Float(0));
+                }
+                else
+                    EmissionRate.TrackSequences.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS), new M2Float(0));
+            }
 
             ZSource.TrackSequences.AddSequence();
             ZSource.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
@@ -128,9 +140,15 @@ namespace EQWOWConverter.WOWFiles
             ColorTrack.AddTimeStep(16384, new Vector3(255, 255, 255));
             ColorTrack.AddTimeStep(32767, new Vector3(255, 255, 255));
 
-            AlphaTrack.AddTimeStep(0, new M2UInt16(32767));
-            AlphaTrack.AddTimeStep(16384, new M2UInt16(12336));
-            AlphaTrack.AddTimeStep(32767, new M2UInt16(0));
+            UInt16 alphaStart = 32767;
+            if (objectModelParticleEmitter.TransparencyOverride != -1)
+                alphaStart = (UInt16)(32767.0 * ((double)(100 - objectModelParticleEmitter.TransparencyOverride)/100.0));
+            AlphaTrack.AddTimeStep(0, new M2UInt16(alphaStart));
+            if (objectModelParticleEmitter.DoFadeOutParticles == true)
+            {
+                AlphaTrack.AddTimeStep(16384, new M2UInt16((UInt16)(alphaStart / 2)));
+                AlphaTrack.AddTimeStep(32767, new M2UInt16(0));
+            }
 
             float scale = objectModelParticleEmitter.Scale;
             ScaleTrack.AddTimeStep(0, new Vector2(scale, scale));

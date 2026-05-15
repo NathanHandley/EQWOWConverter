@@ -428,7 +428,27 @@ namespace EQWOWConverter.ObjectModels
 
         private void AddParticleEmitters(ObjectModelProperties properties, Dictionary<string, EQParticleCloud> particleCloudsByName)
         {
+            // Pre-count any squirt particles
+            // Note: Didn't like this as much as the drip-in.  Delete if no other models need this.
+            //int totalNumOfSquirt = 0;
+            //foreach (EQParticleCloud cloud in particleCloudsByName.Values)
+            //{
+            //    if (cloud.IsStaticParticle == true)
+            //        continue;
+            //    ObjectModelParticleCloudProperties particleCloudProperties = ObjectModelParticleCloudProperties.GetPropertiesForObjectCloud(Name, cloud.Name);
+            //    if (particleCloudProperties.BurstDelayInMS > 1)
+            //    {
+            //        for (UInt16 i = 0; i < (UInt16)ModelBones.Count; i++)
+            //        {
+            //            ObjectModelBone baseAttachBone = ModelBones[i];
+            //            if (baseAttachBone.ParticleCloudName == cloud.Name)
+            //                totalNumOfSquirt++;
+            //        }
+            //    }
+            //}
+
             // They attach by bone
+            int addedNumOfSquirt = 0;
             for (UInt16 i = 0; i < (UInt16)ModelBones.Count; i++)
             {
                 ObjectModelBone baseAttachBone = ModelBones[i];
@@ -497,9 +517,21 @@ namespace EQWOWConverter.ObjectModels
                     }
                     ModelBones.Add(newParticleBone);
 
+                    // Burst animation specific logic
+                    int globalSequenceID = 65535;
+                    int burstStartOffsetMS = 0;
+                    if (particleCloudProperties.BurstDelayInMS > 1)
+                    {
+                        GlobalLoopSequenceLimits.Add((UInt32)particleCloudProperties.BurstDelayInMS);
+                        globalSequenceID = GlobalLoopSequenceLimits.Count - 1;
+                        //burstStartOffsetMS = (particleCloudProperties.BurstDelayInMS / totalNumOfSquirt) * addedNumOfSquirt;
+                        burstStartOffsetMS = curCloud.SpawnRateInMS * addedNumOfSquirt;
+                        addedNumOfSquirt++;
+                    }
+
                     // Add the particle
                     ObjectModelParticleEmitter newParticleEmitter = new ObjectModelParticleEmitter();
-                    newParticleEmitter.LoadFromParticleCloud(curCloud, particleCloudProperties, (UInt16)(ModelBones.Count-1), this);
+                    newParticleEmitter.LoadFromParticleCloud(curCloud, particleCloudProperties, (UInt16)(ModelBones.Count-1), this, globalSequenceID, burstStartOffsetMS);
                     newParticleEmitter.TextureID = AddTextureAndReturnID(newParticleEmitter.SpriteSheetFileNameNoExt);
                     properties.ParticleEmitters.Add(newParticleEmitter);
                 }
