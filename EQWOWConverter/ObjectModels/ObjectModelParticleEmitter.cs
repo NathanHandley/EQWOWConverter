@@ -101,11 +101,11 @@ namespace EQWOWConverter.ObjectModels
                 equipTypeScale = Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
             Scale = (particleCloud.SpawnScale * equipTypeScale) * particleCloudProperties.ScaleMod;
 
-            Radius = particleCloud.SpawnRadius;
+            Radius = particleCloud.SpawnRadius * particleCloudProperties.RadiusMod;
             ParticleCloudMovementType = particleCloud.ParticleMovementType;
-            LifespanInMS = particleCloud.SpawnLifespanInMS;
+            LifespanInMS = (Int32)(particleCloud.SpawnLifespanInMS * particleCloudProperties.LifespanMod);
 
-            int spawnRateInMS = (int)(particleCloud.SpawnRateInMS * particleCloudProperties.SpawnRateMod);
+            int spawnRateInMS = (Int32)(particleCloud.SpawnRateInMS * particleCloudProperties.SpawnRateMod);
             SpawnRate = 1 / ((float)(spawnRateInMS) / 1000);
 
             Velocity = particleCloud.SpawnVelocity * equipTypeScale * particleCloudProperties.VelocityMod;

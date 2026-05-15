@@ -35,6 +35,8 @@ namespace EQWOWConverter.ObjectModels
         public float RotateZ = 0f;
         public float SpawnRateMod = 1f;
         public bool PersistInWorldSpace = false;
+        public float RadiusMod = 1f;
+        public float LifespanMod = 1f;
 
         public ObjectModelParticleCloudProperties() { }
         public ObjectModelParticleCloudProperties(ObjectModelParticleCloudProperties other)
@@ -52,6 +54,8 @@ namespace EQWOWConverter.ObjectModels
             RotateY = other.RotateY;
             RotateZ = other.RotateZ;
             SpawnRateMod = other.SpawnRateMod;
+            RadiusMod = other.RadiusMod;
+            LifespanMod = other.LifespanMod;
         }
 
         public static ObjectModelParticleCloudProperties GetPropertiesForObjectCloud(string objectName, string particleCloudName)
@@ -94,6 +98,8 @@ namespace EQWOWConverter.ObjectModels
                     newProperties.RotateZ = float.Parse(columns["RotateZ"]);
                     newProperties.SpawnRateMod = float.Parse(columns["SpawnRateMod"]);
                     newProperties.PersistInWorldSpace = columns["PersistInWorldSpace"].Trim() == "1" ? true : false;
+                    newProperties.RadiusMod = float.Parse(columns["RadiusMod"]);
+                    newProperties.LifespanMod = float.Parse(columns["LifespanMod"]);
                     PropertiesByObjectAndCloudName.Add((newProperties.ObjectName, newProperties.ParticleCloudName), newProperties);
                 }
             }
