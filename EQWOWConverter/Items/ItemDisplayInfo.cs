@@ -481,7 +481,7 @@ namespace EQWOWConverter.Items
             // Fallback if it's not held
             if (inventoryType != ItemWOWInventoryType.OneHand && inventoryType != ItemWOWInventoryType.Ranged && inventoryType != ItemWOWInventoryType.Shield &&
                 inventoryType != ItemWOWInventoryType.TwoHand && inventoryType != ItemWOWInventoryType.HeldInOffHand && inventoryType != ItemWOWInventoryType.RangedRight &&
-                inventoryType != ItemWOWInventoryType.Thrown && inventoryType != ItemWOWInventoryType.MainHand)
+                inventoryType != ItemWOWInventoryType.Thrown && inventoryType != ItemWOWInventoryType.MainHand && inventoryType != ItemWOWInventoryType.OffHandWeapon)
             {
                 return false;
             }

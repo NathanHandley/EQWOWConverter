@@ -173,7 +173,7 @@ namespace EQWOWConverter.Items
         {
             if (InventoryType == ItemWOWInventoryType.OneHand || InventoryType == ItemWOWInventoryType.HeldInOffHand ||
                 InventoryType == ItemWOWInventoryType.Shield || InventoryType == ItemWOWInventoryType.Shield ||
-                InventoryType == ItemWOWInventoryType.TwoHand || InventoryType == ItemWOWInventoryType.OffHand2)
+                InventoryType == ItemWOWInventoryType.TwoHand || InventoryType == ItemWOWInventoryType.OffHandWeapon)
                 return true;
             return false;
         }
@@ -919,10 +919,15 @@ namespace EQWOWConverter.Items
                                 // 1 Hand Slash => 1h Sword or Axe
                                 itemTemplate.ClassID = 2;
                                 itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
-                                if (allowBothHands)
+                                if (allowBothHands == true)
                                     itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
                                 else
-                                    itemTemplate.InventoryType = ItemWOWInventoryType.MainHand;
+                                {
+                                    if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Secondary, slotMask) == true)
+                                        itemTemplate.InventoryType = ItemWOWInventoryType.OffHandWeapon;
+                                    else
+                                        itemTemplate.InventoryType = ItemWOWInventoryType.MainHand;
+                                }   
                             }
 
                             // No damage, check if it has an equippable slot.  If so, it's armor or a held item
@@ -1329,7 +1334,7 @@ namespace EQWOWConverter.Items
             {
                 itemTemplate.SheatheType = 3; // On the left-hand side of the waist
             }
-            else if (itemTemplate.InventoryType == ItemWOWInventoryType.HeldInOffHand)
+            else if (itemTemplate.InventoryType == ItemWOWInventoryType.HeldInOffHand || itemTemplate.InventoryType == ItemWOWInventoryType.OffHandWeapon)
             {
                 itemTemplate.SheatheType = 3; // While AzerothCore says to make it 6, the client handles left/right hand fine with 3
             }

@@ -40,7 +40,7 @@ namespace EQWOWConverter.Items
         Tabard = 19,
         Robe = 20, // Works the same as chest, 5
         MainHand = 21, // One-Hand, but only in main
-        OffHand2 = 22, // Same as 13?
+        OffHandWeapon = 22,
         HeldInOffHand = 23,
         Ammo = 24,
         Thrown = 25,
