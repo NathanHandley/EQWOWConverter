@@ -25,12 +25,21 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRow(SpellVisual spellVisual)
         {
+            AddRow(spellVisual.SpellVisualDBCID,
+                    spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Precast],
+                    spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Cast],
+                    spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Impact],
+                    0);
+        }
+
+        public void AddRow(int id, int precastKitID, int castKitID, int impactKitID, int stateKitID)
+        {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt32(spellVisual.SpellVisualDBCID); // ID
-            newRow.AddInt32(spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Precast]); // PrecastKit (SpellVisualKit.ID for the casting)
-            newRow.AddInt32(spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Cast]); // CastKit" (SpellVisualKit.ID when the spell lets loose)
-            newRow.AddInt32(spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Impact]); // ImpactKit (SpellVisualKit.ID on the target)
-            newRow.AddInt32(0); // StateKit (SpellVisualKit.ID shown when a buff/debuff is on the target)
+            newRow.AddInt32(id); // ID
+            newRow.AddInt32(precastKitID); // PrecastKit (SpellVisualKit.ID for the casting)
+            newRow.AddInt32(castKitID); // CastKit" (SpellVisualKit.ID when the spell lets loose)
+            newRow.AddInt32(impactKitID); // ImpactKit (SpellVisualKit.ID on the target)
+            newRow.AddInt32(stateKitID); // StateKit (SpellVisualKit.ID shown when a buff/debuff is on the target)
             newRow.AddInt32(0); // StateDoneKit (SpellVisualKit.ID)
             newRow.AddInt32(0); // ChannelKit (SpellVisualKit.ID for channeling a spell)
             newRow.AddInt32(0); // HasMissile (1 = true, 0 = false)

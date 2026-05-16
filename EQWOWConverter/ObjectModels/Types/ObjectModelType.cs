@@ -25,7 +25,8 @@ namespace EQWOWConverter.ObjectModels
         TransportShip,
         EquipmentHeldNonBow,
         EquipmentHeldBow,
-        ParticleEmitter,
-        SpellProjectile
+        IT159ParticleEmitter,
+        SpellParticleEmitter,
+        SpellProjectile,        
     }
 }

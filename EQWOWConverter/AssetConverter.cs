@@ -2638,6 +2638,11 @@ namespace EQWOWConverter
             string fullItemsPath = Path.Combine(mpqReadyFolder, relativeItemsPath);
             mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullItemsPath + "\" \"" + relativeItemsPath + "\" /r");
 
+            // Particles
+            string relativeParticlesPath = Path.Combine("Particles");
+            string fullParticlesPath = Path.Combine(mpqReadyFolder, relativeParticlesPath);
+            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullParticlesPath + "\" \"" + relativeParticlesPath + "\" /r");
+
             // Icons
             string relativeIconsPath = Path.Combine("Interface", "ICONS");
             string fullIconsPath = Path.Combine(mpqReadyFolder, relativeIconsPath);

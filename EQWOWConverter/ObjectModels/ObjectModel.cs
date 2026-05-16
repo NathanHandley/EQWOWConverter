@@ -77,6 +77,15 @@ namespace EQWOWConverter.ObjectModels
                 return;
             }
 
+            // Special logic for it159 (monk epic).  It has some model data for some reason, so I need to clear it.
+            if (eqInputObjectFileName == "it159")
+            {
+                ObjectModelEQData discardModelData = new ObjectModelEQData();
+                discardModelData.LoadObjectDataFromDisk(Name, Properties, eqInputObjectFileName, inputRootFolder, Properties.CreatureModelTemplate);
+                Load(new List<Material>(), new MeshData(), new List<Vector3>(), new List<TriangleFace>(), null, discardModelData.ParticleCloudsByName);
+                return;
+            }
+
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
             EQObjectModelData.LoadObjectDataFromDisk(Name, Properties, eqInputObjectFileName, inputRootFolder, Properties.CreatureModelTemplate);
@@ -182,7 +191,7 @@ namespace EQWOWConverter.ObjectModels
             CalculateInteractionBoundingBoxes();
 
             // Create a global sequence if there is none and it's not an emitter or projectile
-            if (GlobalLoopSequenceLimits.Count == 0 && (ModelType != ObjectModelType.ParticleEmitter && ModelType != ObjectModelType.SpellProjectile && ModelType != ObjectModelType.TransportShip))
+            if (GlobalLoopSequenceLimits.Count == 0 && (ModelType != ObjectModelType.SpellParticleEmitter && ModelType != ObjectModelType.SpellProjectile && ModelType != ObjectModelType.TransportShip && ModelType != ObjectModelType.IT159ParticleEmitter))
                 GlobalLoopSequenceLimits.Add(0);
 
             // Generate the render groups
@@ -234,8 +243,38 @@ namespace EQWOWConverter.ObjectModels
 
         private void ProcessBonesAndAnimation(List<EQSpellsEFF.EFFSpellSpriteListEffect>? spriteListEffects, Dictionary<string, EQParticleCloud>? particleCloudsByName)
         {
-            // Emitters / Spell Effects
-            if (ModelType == ObjectModelType.ParticleEmitter || ModelType == ObjectModelType.SpellProjectile)
+            // IT159 Emitter (Monk Epic)
+            if (ModelType == ObjectModelType.IT159ParticleEmitter)
+            {
+                ModelBoneKeyLookups.Add(-1);
+
+                // Create a base bone
+                ModelBones.Add(new ObjectModelBone());
+                ModelBones[0].BoneNameEQ = "root";
+
+                // Create the particle bone
+                ModelBones.Add(new ObjectModelBone());
+                ModelBones[1].BoneNameEQ = "_pl";
+                ModelBones[1].ParentBoneNameEQ = "root";
+                ModelBones[1].ParticleCloudName = "yin";
+                ModelBones[1].ParentBone = 0;
+
+                // Make one animation ('standing')
+                ModelAnimations.Add(new ObjectModelAnimation());
+                ModelAnimations[0].DurationInMS = 1000;
+                foreach (ObjectModelBone bone in ModelBones)
+                {
+                    bone.TranslationTrack.AddSequence();
+                    bone.TranslationTrack.AddValueToLastSequence(0, new Vector3());
+                    bone.RotationTrack.AddSequence();
+                    bone.RotationTrack.AddValueToLastSequence(0, new QuaternionShort());
+                    bone.ScaleTrack.AddSequence();
+                    bone.ScaleTrack.AddValueToLastSequence(0, new Vector3(1, 1, 1));
+                }
+            }
+
+            // Spell Emitters
+            else if (ModelType == ObjectModelType.SpellParticleEmitter || ModelType == ObjectModelType.SpellProjectile)
             {
                 ModelBoneKeyLookups.Add(-1);
 
@@ -428,25 +467,6 @@ namespace EQWOWConverter.ObjectModels
 
         private void AddParticleEmitters(ObjectModelProperties properties, Dictionary<string, EQParticleCloud> particleCloudsByName)
         {
-            // Pre-count any squirt particles
-            // Note: Didn't like this as much as the drip-in.  Delete if no other models need this.
-            //int totalNumOfSquirt = 0;
-            //foreach (EQParticleCloud cloud in particleCloudsByName.Values)
-            //{
-            //    if (cloud.IsStaticParticle == true)
-            //        continue;
-            //    ObjectModelParticleCloudProperties particleCloudProperties = ObjectModelParticleCloudProperties.GetPropertiesForObjectCloud(Name, cloud.Name);
-            //    if (particleCloudProperties.BurstDelayInMS > 1)
-            //    {
-            //        for (UInt16 i = 0; i < (UInt16)ModelBones.Count; i++)
-            //        {
-            //            ObjectModelBone baseAttachBone = ModelBones[i];
-            //            if (baseAttachBone.ParticleCloudName == cloud.Name)
-            //                totalNumOfSquirt++;
-            //        }
-            //    }
-            //}
-
             // They attach by bone
             int addedNumOfSquirt = 0;
             for (UInt16 i = 0; i < (UInt16)ModelBones.Count; i++)
@@ -2367,7 +2387,7 @@ namespace EQWOWConverter.ObjectModels
         private void ProcessCollisionData(List<Material> materials, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
         {
             // Skip collision for particles and projectiles
-            if (ModelType == ObjectModelType.ParticleEmitter || ModelType == ObjectModelType.SpellProjectile)
+            if (ModelType == ObjectModelType.SpellParticleEmitter || ModelType == ObjectModelType.SpellProjectile || ModelType == ObjectModelType.IT159ParticleEmitter)
                 return;
 
             // Create collision data for creatures as boxes

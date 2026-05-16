@@ -475,7 +475,11 @@ namespace EQWOWConverter
             }
             foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
                 itemDisplayInfoDBC.AddRow(itemDisplayInfo);
-
+            // This is hard coded for IT159 (Celestial Fists / Monk Epic)
+            spellVisualDBC.AddRow(ItemDisplayInfo.IT159SpellVisualID, 0, 0, 0, ItemDisplayInfo.IT159SpellVisualStateKitID);
+            spellVisualKitDBC.AddRow(ItemDisplayInfo.IT159SpellVisualStateKitID, -1, 0, 0, 0, 0, ItemDisplayInfo.IT159SpellVisualEffectNameID);
+            spellVisualEffectNameDBC.AddRow(ItemDisplayInfo.IT159SpellVisualEffectNameID, "EQ Celestial Fists", ItemDisplayInfo.IT159RelativeFileName);
+            
             // SkillLine
             //skillLineDBC.AddRow(Configuration.DBCID_SKILLLINE_ALTERATION_ID, "Alteration");            
 

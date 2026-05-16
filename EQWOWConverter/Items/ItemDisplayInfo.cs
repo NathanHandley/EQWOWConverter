@@ -53,6 +53,12 @@ namespace EQWOWConverter.Items
         public string ArmorTexture8 = string.Empty;
         public ObjectModel? EquipmentModel = null;
 
+        // IT159 (Celestial Fists / Monk Epic)
+        public static int IT159SpellVisualEffectNameID = -1;
+        public static string IT159RelativeFileName = string.Empty;
+        public static int IT159SpellVisualID = -1;
+        public static int IT159SpellVisualStateKitID = -1;
+
         public ItemDisplayInfo()
         {
             ItemDisplayInfoDBCID = CURRENT_DBCID_ITEMDISPLAYINFO;
@@ -150,6 +156,17 @@ namespace EQWOWConverter.Items
             }
             newItemDisplayInfo.IconFileNameNoExt = iconFileNameNoExt;
             ItemDisplayInfos.Add(newItemDisplayInfo);
+
+            // IT159 (Celestial Fists / Monk Epic)
+            // Monk epic weapon is gloves, and it has a spell effect. Make a spell visual similar to both spells and held equipment
+            if (itemDisplayCommonName == "it159" && IT159SpellVisualID == -1)
+            {
+                IT159SpellVisualID = SpellVisualDBC.GenerateID();
+                newItemDisplayInfo.SpellVisualID = IT159SpellVisualID;
+                IT159SpellVisualStateKitID = SpellVisualKitDBC.GenerateID();
+                IT159SpellVisualEffectNameID = SpellVisualEffectNameDBC.GenerateID();
+                CreateIT159VisualEffect();
+            }
 
             // Test for a texture file.  If none, the graphics will be blank
             if (DoTexturesExist() == false)
@@ -301,6 +318,51 @@ namespace EQWOWConverter.Items
             }
 
             return newItemDisplayInfo;
+        }
+
+        private static void CreateIT159VisualEffect()
+        {
+            string simpleName = "it159";
+            ObjectModelProperties objectModelProperties = ObjectModelProperties.GetObjectPropertiesForObject(simpleName);
+            ObjectModel visualModel = new ObjectModel(simpleName, objectModelProperties, ObjectModelType.IT159ParticleEmitter);
+            string outputName = "eq_it159_effect";
+
+            // Load Object
+            string equipmentSourceBasePath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment");
+            visualModel.LoadEQObjectFromFile(equipmentSourceBasePath, "it159");
+
+            // Create directory
+            string relativeOutputFolder = Path.Combine("PARTICLES", "EverQuest");
+            string fullOutputFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", relativeOutputFolder);
+            if (Directory.Exists(fullOutputFolder))
+                Directory.Delete(fullOutputFolder);
+            Directory.CreateDirectory(fullOutputFolder);
+
+            // Output object and texture
+            M2 objectM2 = new M2(visualModel, relativeOutputFolder);
+            objectM2.WriteToDisk(outputName, fullOutputFolder);
+
+            // Copy the textures
+            string spriteSheetTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spritesheets");
+            foreach (ObjectModelTexture texture in visualModel.ModelTextures)
+            {
+                string inputTextureName = Path.Combine(equipmentSourceBasePath, "Textures", texture.TextureName + ".blp");
+                string outputTextureName = Path.Combine(fullOutputFolder, texture.TextureName + ".blp");
+                bool textureFound = false;
+                if (Path.Exists(inputTextureName) == true)
+                    textureFound = true;
+                else
+                {
+                    inputTextureName = Path.Combine(spriteSheetTextureFolder, texture.TextureName + ".blp");
+                    if (Path.Exists(inputTextureName) == true)
+                        textureFound = true;
+                }
+                if (textureFound == true)
+                    FileTool.CopyFile(inputTextureName, outputTextureName);
+                else
+                    Logger.WriteError("Error copying item texture '" + inputTextureName + "' for IT159 visual effect, as it could not be found. Did you do the 'convert png to blp' step?");
+            }
+            IT159RelativeFileName = String.Concat("Particles\\EverQuest\\", outputName, ".mdx");
         }
 
         private static ObjectModel GetOrCreateModelForHeldItem(string itemDisplayCommonName, ItemWOWInventoryType inventoryType, ItemEquipUnitType equipUnitType)

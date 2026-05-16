@@ -25,10 +25,21 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRow(SpellVisual spellVisual, SpellVisualStageType visualStageType, int headEffectDBCID, int chestEffectDBCID, int baseEffectDBCID, int handEffectDBCID)
         {
+            AddRow(spellVisual.SpellVisualKitDBCIDsInStage[(int)visualStageType],
+                (int)spellVisual.AnimationTypeInStage[(int)visualStageType],
+                spellVisual.SoundEntryDBCIDInStage[(int)visualStageType],
+                headEffectDBCID,
+                chestEffectDBCID,
+                baseEffectDBCID,
+                handEffectDBCID);
+        }
+
+        public void AddRow(int id, int animID, int soundID, int headEffectDBCID, int chestEffectDBCID, int baseEffectDBCID, int handEffectDBCID)
+        {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt32(spellVisual.SpellVisualKitDBCIDsInStage[(int)visualStageType]); // ID
+            newRow.AddInt32(id); // ID
             newRow.AddInt32(-1); // StartAnimID (AnimationData.ID, almost always -1)
-            newRow.AddInt32((int)spellVisual.AnimationTypeInStage[(int)visualStageType]); // AnimID (AnimationData.ID for the caster)
+            newRow.AddInt32(animID); // AnimID (AnimationData.ID for the caster)
             newRow.AddInt32(headEffectDBCID); // HeadEffect (SpellVisualEffectName.ID, over the head)
             newRow.AddInt32(chestEffectDBCID); // ChestEffect (SpellVisualEffectName.ID, at the chest)
             newRow.AddInt32(baseEffectDBCID); // BaseEffect (SpellVisualEffectName.ID, at the ground (base))
@@ -41,7 +52,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // SpecialEffect (SpellVisualEffectName.ID)
             newRow.AddInt32(0); // SpecialEffect (SpellVisualEffectName.ID)
             newRow.AddInt32(0); // WorldEffect (SpellVisualEffectName.ID)
-            newRow.AddInt32(spellVisual.SoundEntryDBCIDInStage[(int)visualStageType]); // SoundID (SoundEntries.ID)
+            newRow.AddInt32(soundID); // SoundID (SoundEntries.ID)
             newRow.AddInt32(0); // ShakeID (SpellEffectCameraShakes.ID)
             newRow.AddInt32(-1); // CharProc
             newRow.AddInt32(-1); // CharProc

@@ -271,7 +271,7 @@ namespace EQWOWConverter.Spells
                 ObjectModelProperties objectProperties = new ObjectModelProperties();
                 objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
                 objectProperties.SpellVisualType = spellVisualType;
-                ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.ParticleEmitter);
+                ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.SpellParticleEmitter);
                 objectModel.Load(new List<Material>(), new MeshData(), new List<Vector3>(), new List<TriangleFace>(), spriteListEffects);
                 spellVisual.AddObjectToStageAtAttachLocation(stageType, SpellEmitterModelAttachLocationType.Chest, objectModel);
                 AllEmitterObjectModels.Add(objectModel);
@@ -322,7 +322,7 @@ namespace EQWOWConverter.Spells
                     objectProperties.SpellVisualType = spellVisualType;
                     if (emitter.SpellEmissionPattern == SpellVisualEmitterSpawnPatternType.FromHands)
                         objectProperties.SpellEmitterSpraysFromHands = true;
-                    ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.ParticleEmitter);
+                    ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.SpellParticleEmitter);
                     objectModel.Load(new List<Material>(), new MeshData(), new List<Vector3>(), new List<TriangleFace>());
                     spellVisual.AddObjectToStageAtAttachLocation(stageType, emitter.SpellEmissionLocation, objectModel);
                     AllEmitterObjectModels.Add(objectModel);
