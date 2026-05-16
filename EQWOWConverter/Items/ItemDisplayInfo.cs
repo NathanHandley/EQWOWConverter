@@ -56,8 +56,21 @@ namespace EQWOWConverter.Items
         // IT159 (Celestial Fists / Monk Epic)
         public static int IT159SpellVisualEffectNameID = -1;
         public static string IT159RelativeFileName = string.Empty;
-        public static int IT159SpellVisualID = -1;
         public static int IT159SpellVisualStateKitID = -1;
+        protected static object IT159SpellVisualIDLock = new object();
+        private static int _IT159SpellVisualID = -1;
+        public static int IT159SpellVisualID
+        {
+            get
+            {
+                lock (IT159SpellVisualIDLock)
+                {
+                    if (_IT159SpellVisualID == -1)
+                        _IT159SpellVisualID = SpellVisualDBC.GenerateID();
+                    return _IT159SpellVisualID;
+                }
+            }
+        }
 
         public ItemDisplayInfo()
         {
@@ -159,9 +172,8 @@ namespace EQWOWConverter.Items
 
             // IT159 (Celestial Fists / Monk Epic)
             // Monk epic weapon is gloves, and it has a spell effect. Make a spell visual similar to both spells and held equipment
-            if (itemDisplayCommonName == "it159" && IT159SpellVisualID == -1)
+            if (itemDisplayCommonName == "it159" && IT159SpellVisualStateKitID == -1)
             {
-                IT159SpellVisualID = SpellVisualDBC.GenerateID();
                 newItemDisplayInfo.SpellVisualID = IT159SpellVisualID;
                 IT159SpellVisualStateKitID = SpellVisualKitDBC.GenerateID();
                 IT159SpellVisualEffectNameID = SpellVisualEffectNameDBC.GenerateID();

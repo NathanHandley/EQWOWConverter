@@ -121,6 +121,13 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("spellcooldown_2", -1);
                 newRow.AddInt("spellcategory_2", 0);
                 newRow.AddInt("spellcategorycooldown_2", -1);
+                newRow.AddInt("spellid_3", itemTemplate.WOWSpellID2);
+                newRow.AddInt("spelltrigger_3", itemTemplate.WOWSpellTrigger2);
+                newRow.AddInt("spellcharges_3", itemTemplate.WOWSpellCharges2);
+                newRow.AddFloat("spellppmRate_3", itemTemplate.WOWSpellPPMRate2);
+                newRow.AddInt("spellcooldown_3", -1);
+                newRow.AddInt("spellcategory_3", 0);
+                newRow.AddInt("spellcategorycooldown_3", -1);
             }
             else
             {
@@ -131,21 +138,21 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("spellcooldown_1", itemTemplate.WOWSpellCooldown1);
                 newRow.AddInt("spellcategory_1", itemTemplate.WOWSpellCategory1);
                 newRow.AddInt("spellcategorycooldown_1", itemTemplate.WOWSpellCategoryCooldown1);
-                newRow.AddInt("spellid_2", 0);
-                newRow.AddInt("spelltrigger_2", 0);
-                newRow.AddInt("spellcharges_2", 0);
-                newRow.AddFloat("spellppmRate_2", 0);
+                newRow.AddInt("spellid_2", itemTemplate.WOWSpellID2);
+                newRow.AddInt("spelltrigger_2", itemTemplate.WOWSpellTrigger2);
+                newRow.AddInt("spellcharges_2", itemTemplate.WOWSpellCharges2);
+                newRow.AddFloat("spellppmRate_2", itemTemplate.WOWSpellPPMRate2);
                 newRow.AddInt("spellcooldown_2", -1);
                 newRow.AddInt("spellcategory_2", 0);
                 newRow.AddInt("spellcategorycooldown_2", -1);
+                newRow.AddInt("spellid_3", 0);
+                newRow.AddInt("spelltrigger_3", 0);
+                newRow.AddInt("spellcharges_3", 0);
+                newRow.AddFloat("spellppmRate_3", 0);
+                newRow.AddInt("spellcooldown_3", -1);
+                newRow.AddInt("spellcategory_3", 0);
+                newRow.AddInt("spellcategorycooldown_3", -1);
             }
-            newRow.AddInt("spellid_3", 0);
-            newRow.AddInt("spelltrigger_3", 0);
-            newRow.AddInt("spellcharges_3", 0);
-            newRow.AddFloat("spellppmRate_3", 0);
-            newRow.AddInt("spellcooldown_3", -1);
-            newRow.AddInt("spellcategory_3", 0);
-            newRow.AddInt("spellcategorycooldown_3", -1);
             newRow.AddInt("spellid_4", 0);
             newRow.AddInt("spelltrigger_4", 0);
             newRow.AddInt("spellcharges_4", 0);

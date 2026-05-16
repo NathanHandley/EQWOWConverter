@@ -215,7 +215,7 @@ namespace EQWOWConverter.WOWFiles
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 2843738496;
             UInt32 attributeFlags = 0;
-            if (doHideFromDisplay == true)
+            if (doHideFromDisplay == true || spellTemplate.ForceHiddenFromDisplay == true)
                 attributeFlags |= 128; // SPELL_ATTR0_DO_NOT_DISPLAY_SPELLBOOK_AURA_ICON_COMBAT_LOG
             if (spellTemplate.AllowCastInCombat == false)
                 attributeFlags |= 268435456; // SPELL_ATTR0_NOT_IN_COMBAT_ONLY_PEACEFUL (0x10000000)

@@ -80,6 +80,10 @@ namespace EQWOWConverter.Items
         public int WOWSpellTrigger1 = 0;
         public int WOWSpellCharges1 = 0;
         public float WOWSpellPPMRate1 = 0;
+        public int WOWSpellID2 = 0;
+        public int WOWSpellTrigger2 = 0;
+        public int WOWSpellCharges2 = 0;
+        public float WOWSpellPPMRate2 = 0;
         public int EQScrollSpellID = 0;
         public int EQWornEffectSpellID = 0;
         public int EQWornEffectMinLevel = 0;

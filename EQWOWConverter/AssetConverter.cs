@@ -1997,6 +1997,23 @@ namespace EQWOWConverter
                 }
             }
 
+            // Monk Epic Visual Effect (for item it159)
+            SpellTemplate monkEpicSpellTemplate = new SpellTemplate();
+            monkEpicSpellTemplate.Name = "Monk Epic Graphic";
+            monkEpicSpellTemplate.Category = 0;
+            monkEpicSpellTemplate.WOWSpellID = Configuration.ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID;
+            monkEpicSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            monkEpicSpellTemplate.Description = "Shows how cool monks are";
+            monkEpicSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(21);
+            monkEpicSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
+            monkEpicSpellTemplate.AuraDuration.IsInfinite = true;
+            monkEpicSpellTemplate.SchoolMask = 1;
+            monkEpicSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
+            monkEpicSpellTemplate.SpellVisualID1 = (UInt32)ItemDisplayInfo.IT159SpellVisualID;
+            monkEpicSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            //monkEpicSpellTemplate.ForceHiddenFromDisplay = true;
+            spellTemplates.Add(monkEpicSpellTemplate);
+
             Logger.WriteDebug("Generating custom spells completed.");
         }
 
@@ -2611,7 +2628,7 @@ namespace EQWOWConverter
 
             // Objects
             if (Configuration.GENERATE_OBJECTS == true)
-            {                
+            {
                 string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
                 string fullStaticDoodadsPath = Path.Combine(mpqReadyFolder, relativeStaticDoodadsPath);
                 mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullStaticDoodadsPath + "\" \"" + relativeStaticDoodadsPath + "\" /r");
@@ -2623,7 +2640,7 @@ namespace EQWOWConverter
 
             // Creatures
             if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
-            {   
+            {
                 string relativeCreaturePath = Path.Combine("Creature", "Everquest");
                 string fullCreaturePath = Path.Combine(mpqReadyFolder, relativeCreaturePath);
                 mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullCreaturePath + "\" \"" + relativeCreaturePath + "\" /r");
@@ -2925,6 +2942,15 @@ namespace EQWOWConverter
                             itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
                         }
                     }
+                }
+
+                // Worn (Epic Monk Visual / it159)
+                else if (itemTemplate.EQItemDisplayFileName.ToUpper().Contains("IT159") == true)
+                {
+                    itemTemplate.WOWSpellID2 = Configuration.ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID;
+                    itemTemplate.WOWSpellTrigger2 = 1; // On Equip
+                    itemTemplate.WOWSpellPPMRate2 = 0;
+                    itemTemplate.WOWSpellCharges2 = 0; // Unlimited
                 }
 
                 // Proc

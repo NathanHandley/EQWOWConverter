@@ -186,6 +186,7 @@ namespace EQWOWConverter.Spells
         public int PeriodicAuraSpellRadius = 0;
         public bool ShowFocusBoostInDescriptionIfExists = false;
         public bool IsllusionSpellParent = false;
+        public bool ForceHiddenFromDisplay = false;
         public SpellTemplate? IllusionSpellParent = null;
         public int MaleFormSpellTemplateID = 0;
         public int FemaleFormSpellTemplateID = 0;
