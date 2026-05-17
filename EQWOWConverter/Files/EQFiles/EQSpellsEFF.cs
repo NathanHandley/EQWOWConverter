@@ -140,6 +140,10 @@ namespace EQWOWConverter.EQFiles
                     SpriteNames[i] = ByteTool.ReadStringFromBytes(bytes, ref byteCursor, 32);
                     SpriteNames[i] = SpriteNames[i].Replace("GENE00", "GENE01"); // Fix invalid texture association
                     SpriteNames[i] = SpriteNames[i].Replace("_SPRITE", ""); // Remove "_SPRITE" that appears sometimes
+                    SpriteNames[i] = SpriteNames[i].Replace("I_SNOWFLAKESPRITE", "SNOWFLAKE");
+                    SpriteNames[i] = SpriteNames[i].Replace("I_TSMOKE_SPB", "TSMOKE");
+                    SpriteNames[i] = SpriteNames[i].Replace("I_TFIRE_SPB", "FIRE1");
+                    SpriteNames[i] = SpriteNames[i].Replace("GEN_Z_SPB", "GENZ01");
                 }
                 TypeString = ByteTool.ReadStringFromBytes(bytes, ref byteCursor, 32);
                 for (int i = 0; i < 3; i++)
@@ -224,9 +228,9 @@ namespace EQWOWConverter.EQFiles
             // Load in all the data
             List<byte> fileBytes = FileTool.GetFileBytes(fileFullPath);
 
-            //  There are 255 spell effects in the file, but looks like only 52 (0-51) are populated with anything
+            //  There are 255 spell effects in the file
             int byteCursor = 0;
-            for (int i = 0; i < 52; i++)
+            for (int i = 0; i < 255; i++)
             {
                 EQSpellEffect curEffect = new EQSpellEffect();
                 curEffect.Field01 = ByteTool.ReadInt32FromBytes(fileBytes, ref byteCursor);
@@ -266,6 +270,45 @@ namespace EQWOWConverter.EQFiles
             Dictionary<string, int> spriteSideSizesByRootName = new Dictionary<string, int>();
             foreach (string rootSpriteName in UniqueSpriteNames)
             {
+                // Custom logic for certain sprites (weather and environmental)
+                switch (rootSpriteName)
+                {
+                    case "SNOWFLAKE":
+                        {
+                            SpriteChainsBySpriteRoot.Add(rootSpriteName, new List<string>());
+                            SpriteChainsBySpriteRoot[rootSpriteName].Add("SNOWFLAKE");
+                            continue;
+                        }
+                    case "TSMOKE":
+                        {
+                            SpriteChainsBySpriteRoot.Add(rootSpriteName, new List<string>());
+                            SpriteChainsBySpriteRoot[rootSpriteName].Add("TSMOKE");
+                            continue;
+                        }
+                    case "FIRE1":
+                        {
+                            SpriteChainsBySpriteRoot.Add(rootSpriteName, new List<string>());
+                            SpriteChainsBySpriteRoot[rootSpriteName].Add("FIRE1");
+                            SpriteChainsBySpriteRoot[rootSpriteName].Add("FIRE2");
+                            SpriteChainsBySpriteRoot[rootSpriteName].Add("FIRE3");
+                            SpriteChainsBySpriteRoot[rootSpriteName].Add("FIRE4");
+                            continue;
+                        }
+                    case "GENZ00":
+                        {
+                            SpriteChainsBySpriteRoot.Add(rootSpriteName, new List<string>());
+                            SpriteChainsBySpriteRoot[rootSpriteName].Add("GENZ00");
+                            continue;
+                        }
+                    case "GENZ01":
+                        {
+                            SpriteChainsBySpriteRoot.Add(rootSpriteName, new List<string>());
+                            SpriteChainsBySpriteRoot[rootSpriteName].Add("GENZ01");
+                            continue;
+                        }
+                    default: break; // do nothing
+                }
+
                 // Skip if this file doesn't exist, since there wouldn't be subsequent anyway
                 string spriteFileNameFullPath = Path.Combine(sourceTextureFolder, string.Concat(rootSpriteName, ".png"));
                 if (File.Exists(spriteFileNameFullPath) == false)
@@ -319,6 +362,8 @@ namespace EQWOWConverter.EQFiles
                         bool colorExistsForTexture = false;
                         foreach (var colorTintListBySpriteName in ColorTintsBySpriteNames)
                         {
+                            if (colorTintListBySpriteName.Key != sectionData.SpriteNames[i].Trim())
+                                continue;
                             foreach (ColorRGBA colorTint in colorTintListBySpriteName.Value)
                             {
                                 if (colorTint == sectionData.EmitterColors[i])
@@ -442,7 +487,7 @@ namespace EQWOWConverter.EQFiles
                         else if (sectionDataIter == 2) // TODO: Confirm if we need to check for "Target" in the TypeID
                             targetType = EQSpellEffectTargetType.Target;
 
-                        // Grab sprite metrics
+                        // Grab sprite metrics, knowing that some have special names
                         string spriteFileNameFullPath = Path.Combine(sourceTextureFolder, string.Concat(sectionData.SpriteNames[emitterIter], ".png"));
                         if (File.Exists(spriteFileNameFullPath) == false)
                         {
