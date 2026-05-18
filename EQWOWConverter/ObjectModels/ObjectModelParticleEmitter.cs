@@ -50,7 +50,8 @@ namespace EQWOWConverter.ObjectModels
         public int SpellVisualEffectIndex = 0;
 
         public void LoadFromSpellEffect(EQSpellsEFF.EFFSpellEmitter effEmitter, SpellVisualStageType spellVisualEffectStageType,
-            SpellVisualType spellVisualType, SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
+            SpellVisualType spellVisualType, float distanceScaleMod, float lifespanMod, float scaleMin, float scaleMax,
+            SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
         {
             SourceType = ObjectModelParticleEmitterSourceType.SpellEffect;
             SpellVisualEffectIndex = effEmitter.VisualEffectIndex;
@@ -66,13 +67,13 @@ namespace EQWOWConverter.ObjectModels
             SpellEmissionLocation = GetEmissionAttachLocation(effEmitter.LocationID, SpellEmissionPattern);
 
             // Velocity
-            Velocity = CalculateVelocity(effEmitter.Velocity, SpellEmissionPattern);
+            Velocity = CalculateVelocity(effEmitter.Velocity, SpellEmissionPattern, distanceScaleMod);
 
             // Lifespan
-            LifespanInMS = CalculateLifespanInMS(effEmitter.ParticleLifespan);
+            LifespanInMS = CalculateLifespanInMS(effEmitter.ParticleLifespan, lifespanMod);
 
             // Radius
-            Radius = CalculateRadius(effEmitter.Radius, SpellEmissionPattern);
+            Radius = CalculateRadius(effEmitter.Radius, SpellEmissionPattern, distanceScaleMod);
 
             // Sprite sheet
             SpriteSheetFileNameNoExt = GetSpriteSheetName(effEmitter.SpriteName, effEmitter.Color, string.Empty);
@@ -81,10 +82,10 @@ namespace EQWOWConverter.ObjectModels
             SpriteFrameRows = rows;
 
             // Gravity
-            Gravity = CalculateGravity(effEmitter.Gravity, effEmitter.ParticleLifespan, SpellEmissionPattern);
+            Gravity = CalculateGravity(effEmitter.Gravity, effEmitter.ParticleLifespan, SpellEmissionPattern, distanceScaleMod);
 
             // Scale
-            Scale = CalculateScale(effEmitter.Scale);
+            Scale = CalculateScale(effEmitter.Scale, scaleMin, scaleMax);
 
             // Spawn rate
             SpawnRate = CalculateSpawnRate(effEmitter.SpawnRate, SpellEmissionPattern);
@@ -143,15 +144,14 @@ namespace EQWOWConverter.ObjectModels
             return spriteSheetFileNameNoExt;
         }
 
-        private float CalculateScale(float eqSpawnScale)
+        private float CalculateScale(float eqSpawnScale, float scaleMin, float scaleMax)
         {
-            // EQ values are 0 - 6
-            float scale = Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN + (Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX -
-                Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN) * (eqSpawnScale / 6f);
+            // EQ values are typically 0 - 6, but can be larger if environmental
+            float scale = scaleMin + (scaleMax - scaleMin) * (eqSpawnScale / 6f);
             return scale;
         }
 
-        private float CalculateRadius(float eqRadius, SpellVisualEmitterSpawnPatternType emissionPattern)
+        private float CalculateRadius(float eqRadius, SpellVisualEmitterSpawnPatternType emissionPattern, float distanceScaleMod)
         {
             // Enforce any defaults
             if (eqRadius == 0)
@@ -169,10 +169,10 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Scale against the world
-            return eqRadius * Configuration.SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD;
+            return eqRadius * distanceScaleMod;
         }
 
-        private float CalculateGravity(float eqGravity, int particleLifespanInMS, SpellVisualEmitterSpawnPatternType emissionPattern)
+        private float CalculateGravity(float eqGravity, int particleLifespanInMS, SpellVisualEmitterSpawnPatternType emissionPattern, float distanceScaleMod)
         {
             // Defaults
             if (eqGravity == 0)
@@ -195,7 +195,7 @@ namespace EQWOWConverter.ObjectModels
                 return calcGravity;
             }
 
-            return eqGravity * Configuration.SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD;
+            return eqGravity * distanceScaleMod;
         }
 
         private int CalculateSpawnRate(int eqSpawnRate, SpellVisualEmitterSpawnPatternType emissionPattern)
@@ -232,7 +232,7 @@ namespace EQWOWConverter.ObjectModels
             return Convert.ToInt32(Convert.ToSingle(eqSpawnRate) * spawnRateMod);
         }
 
-        private float CalculateVelocity(float eqVelocity, SpellVisualEmitterSpawnPatternType spawnPattern)
+        private float CalculateVelocity(float eqVelocity, SpellVisualEmitterSpawnPatternType spawnPattern, float distanceScaleMod)
         {
             if (eqVelocity == 0)
             {
@@ -250,16 +250,16 @@ namespace EQWOWConverter.ObjectModels
             if (spawnPattern == SpellVisualEmitterSpawnPatternType.SphereAwayFromPlayer)
                 eqVelocity *= -1;
 
-            return eqVelocity * Configuration.SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD;
+            return eqVelocity * distanceScaleMod;
         }
 
-        private int CalculateLifespanInMS(int eqLifespanInMS)
+        private int CalculateLifespanInMS(int eqLifespanInMS, float lifespanMod)
         {
             // Default to a second if no lifespan
             if (eqLifespanInMS == 0)
-                return Convert.ToInt32(1000f * Configuration.SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD);
+                return Convert.ToInt32(1000f * lifespanMod);
 
-            return Convert.ToInt32(Convert.ToSingle(eqLifespanInMS) * Configuration.SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD);
+            return Convert.ToInt32(Convert.ToSingle(eqLifespanInMS) * lifespanMod);
         }
 
         private SpellVisualEmitterSpawnPatternType GetEmissionSpawnPattern(int eqEmissionTypeID, float eqZPosition)

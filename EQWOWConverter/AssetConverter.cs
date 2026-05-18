@@ -711,6 +711,8 @@ namespace EQWOWConverter
                         {
                             SpellVisual spellVisual = SpellVisual.GetSpellVisual(nonInteractiveGameObject.DoorParam, SpellVisualType.Detrimental);
                             curObjectModel = spellVisual.ImpactEmitterObjectModelByAttachLocation[SpellEmitterModelAttachLocationType.Chest];
+                            // This is needed to improve visibility
+                            curObjectModel.InteractionBoundingBox = new BoundingBox(new Vector3(), 100f);
                         } break;
                     case GameObjectOpenType.TYPE105:
                     case GameObjectOpenType.TYPE106:

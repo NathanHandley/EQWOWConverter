@@ -281,14 +281,27 @@ namespace EQWOWConverter.Spells
             List<ObjectModelParticleEmitter> modelParticleEmitters = new List<ObjectModelParticleEmitter>();
             foreach (var emitter in spellEffect.Emitters)
             {
+                // Mods are based on type of emitter, with emitters >= 60 being environmental
+                float distanceScaleMod = Configuration.SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD_SPELL;
+                float lifespanMod = Configuration.SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD_SPELL;
+                float scaleMin = Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN_SPELL;
+                float scaleMax = Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX_SPELL;
+                if (emitter.VisualEffectIndex >= 60)
+                {
+                    distanceScaleMod = Configuration.SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD_ENVIRONMENT;
+                    lifespanMod = Configuration.SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD_ENVIRONMENT;
+                    scaleMin = Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN_ENVIRONMENT;
+                    scaleMax = Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX_ENVIRONMENT;
+                }
+
                 // Only process stage-aligned unit emitter targets
                 if (stageType == SpellVisualStageType.Precast && emitter.TargetType != EQSpellEffectTargetType.Caster)
-                    continue;
+                continue;
                 if (stageType == SpellVisualStageType.Impact && emitter.TargetType != EQSpellEffectTargetType.Target)
                     continue;
 
                 ObjectModelParticleEmitter particleEmitter = new ObjectModelParticleEmitter();
-                particleEmitter.LoadFromSpellEffect(emitter, stageType, spellVisualType);
+                particleEmitter.LoadFromSpellEffect(emitter, stageType, spellVisualType, distanceScaleMod, lifespanMod, scaleMin, scaleMax);
                 modelParticleEmitters.Add(particleEmitter);
 
                 // It seems that emitters with type 5 (disc at player center) ALSO create emitters on hands and on the ground
@@ -300,7 +313,8 @@ namespace EQWOWConverter.Spells
                     //emitters.Add(particleEmitterHands);
 
                     ObjectModelParticleEmitter particleEmitterGround = new ObjectModelParticleEmitter();
-                    particleEmitterGround.LoadFromSpellEffect(emitter, stageType, spellVisualType, SpellVisualEmitterSpawnPatternType.DiscOnGround);
+                    particleEmitterGround.LoadFromSpellEffect(emitter, stageType, spellVisualType, distanceScaleMod, lifespanMod, 
+                        scaleMin, scaleMax, SpellVisualEmitterSpawnPatternType.DiscOnGround);
                     modelParticleEmitters.Add(particleEmitterGround);
                 }
             }
