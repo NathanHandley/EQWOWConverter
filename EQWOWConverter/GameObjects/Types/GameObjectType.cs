@@ -29,6 +29,7 @@ namespace EQWOWConverter.GameObjects
         TradeskillFocus,
         Mailbox,
         GuildBank,
-        Chest
+        Chest,
+        Emitter
     }
 }

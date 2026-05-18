@@ -71,6 +71,7 @@ namespace EQWOWConverter.GameObjects
         public Vector3 DestinationPosition = new Vector3();
         public float DestinationEQHeading;
         public float DestinationOrientation;
+        public int DoorParam;
         public ObjectModel? ObjectModel = null;
         public int GameObjectGUID;
         public int GameObjectTemplateEntryID;
@@ -230,7 +231,7 @@ namespace EQWOWConverter.GameObjects
                 GameObjectType gameObjectType = GetType(gameObjectsRow["type"]);
                 if (gameObjectType != GameObjectType.Door && gameObjectType != GameObjectType.NonInteract && gameObjectType != GameObjectType.TradeskillFocus
                     && gameObjectType != GameObjectType.Bridge && gameObjectType != GameObjectType.Mailbox && gameObjectType != GameObjectType.Teleport 
-                    && gameObjectType != GameObjectType.GuildBank && gameObjectType != GameObjectType.Chest)
+                    && gameObjectType != GameObjectType.GuildBank && gameObjectType != GameObjectType.Chest && gameObjectType != GameObjectType.Emitter)
                     continue;
                 if (Configuration.OBJECT_GAMEOBJECT_ENABLE_MAILBOXES == false && gameObjectType == GameObjectType.Mailbox)
                     continue;
@@ -275,6 +276,7 @@ namespace EQWOWConverter.GameObjects
                 }
                 newGameObject.GameObjectTemplateEntryID = int.Parse(gameObjectsRow["gotemplate_id"]);
                 newGameObject.DoorID = int.Parse(gameObjectsRow["doorid"]);
+                newGameObject.DoorParam = int.Parse(gameObjectsRow["door_param"]);
                 newGameObject.TriggerDoorID = int.Parse(gameObjectsRow["triggerdoor"]);
                 newGameObject.ObjectType = gameObjectType;
                 newGameObject.OpenType = GetOpenType(int.Parse(gameObjectsRow["opentype"]));
@@ -303,7 +305,7 @@ namespace EQWOWConverter.GameObjects
                 float zPosition = float.Parse(gameObjectsRow["pos_z"]);
                 float xPositionMin = float.Parse(gameObjectsRow["min_pos_x"]);
                 float yPositionMin = float.Parse(gameObjectsRow["min_pos_x"]);
-                if (gameObjectType != GameObjectType.NonInteract)
+                if (gameObjectType != GameObjectType.NonInteract && gameObjectType != GameObjectType.Emitter)
                 {
                     xPosition *= Configuration.GENERATE_WORLD_SCALE;
                     yPosition *= Configuration.GENERATE_WORLD_SCALE;
@@ -359,7 +361,7 @@ namespace EQWOWConverter.GameObjects
                 }
 
                 // Add to either doodad or nondoodad lists
-                if (gameObjectType == GameObjectType.NonInteract)
+                if (gameObjectType == GameObjectType.NonInteract || gameObjectType == GameObjectType.Emitter)
                 {
                     // Add it as a doodad item
                     newGameObject.LoadAsZoneDoodad = true;
@@ -430,7 +432,7 @@ namespace EQWOWConverter.GameObjects
                     }
 
                     // Skip non-interactive
-                    if (gameObject.ObjectType == GameObjectType.NonInteract)
+                    if (gameObject.ObjectType == GameObjectType.NonInteract || gameObject.ObjectType == GameObjectType.Emitter)
                         continue;
 
                     // Reuse an assigned, otherwise load
@@ -710,6 +712,7 @@ namespace EQWOWConverter.GameObjects
                 case "mailbox": return GameObjectType.Mailbox;
                 case "guildbank": return GameObjectType.GuildBank;
                 case "chest": return GameObjectType.Chest;
+                case "emitter": return GameObjectType.Emitter;
                 default:
                     {
                         Logger.WriteError("Can't determine GameObjectType due to an unmapped open type name value of " + typeNameValue);
@@ -803,6 +806,7 @@ namespace EQWOWConverter.GameObjects
                         openSound = GetSound("spearup.wav");
                         closeSound = GetSound("spearup.wav");
                     } break;
+                case GameObjectOpenType.TYPE53: // Emitters
                 case GameObjectOpenType.TYPE130: // PENDULUM
                     {
                         openSound = GetSound("null1.wav");

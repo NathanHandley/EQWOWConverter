@@ -642,9 +642,8 @@ namespace EQWOWConverter
                     skeletalObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
                 foreach (GameObject curObject in nonInteractiveGameObjectsInZone.Value)
                 {
-                    if (curObject.ModelIsInEquipmentFolder == true)
+                    if (curObject.ModelIsInEquipmentFolder == true || curObject.ObjectType == GameObjects.GameObjectType.Emitter)
                     {
-                        // Never need to remap equipment-based models
                         curObject.ModelName = curObject.OriginalModelName;
                     }
                     else if (curObject.ModelIsSkeletal == true)
@@ -696,6 +695,7 @@ namespace EQWOWConverter
                 switch (nonInteractiveGameObject.OpenType)
                 {
                     case GameObjectOpenType.TYPE0:
+                    case GameObjectOpenType.TYPE53:
                     case GameObjectOpenType.TYPE55:
                     case GameObjectOpenType.TYPE56:
                     case GameObjectOpenType.TYPE57:
