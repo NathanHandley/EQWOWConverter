@@ -836,7 +836,10 @@ namespace EQWOWConverter.GameObjects
 
         public string GenerateModelFileNameNoExt()
         {
-            return string.Concat("go_", ModelName, "_", OpenType.ToString()).ToLower();
+            if (ObjectType == GameObjectType.Emitter)
+                return string.Concat("go_", ModelName, "_", OpenType.ToString(), "_", DoorParam).ToLower();
+            else
+                return string.Concat("go_", ModelName, "_", OpenType.ToString()).ToLower();
         }
     }
 }

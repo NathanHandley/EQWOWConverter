@@ -686,7 +686,7 @@ namespace EQWOWConverter
 
                 // Determine folder to load from
                 string modelDataRootFolder = conditionedObjectFolderRoot;
-                if (nonInteractiveGameObject.ModelIsInEquipmentFolder == true)
+                if (nonInteractiveGameObject.ModelIsInEquipmentFolder == true || nonInteractiveGameObject.ObjectType == GameObjects.GameObjectType.Emitter)
                     modelDataRootFolder = conditionedEquipmentFolderRoot;
 
                 // Load the object
@@ -695,19 +695,22 @@ namespace EQWOWConverter
                 switch (nonInteractiveGameObject.OpenType)
                 {
                     case GameObjectOpenType.TYPE0:
-                    case GameObjectOpenType.TYPE53:
                     case GameObjectOpenType.TYPE55:
                     case GameObjectOpenType.TYPE56:
                     case GameObjectOpenType.TYPE57:
                     case GameObjectOpenType.TYPE58:
                     case GameObjectOpenType.TYPE59:
                     case GameObjectOpenType.TYPE145:
-                    {
+                        {
                             ObjectModelProperties objectProperties = new ObjectModelProperties();
-                            objectProperties.DoGenerateCollisionFromMeshData = nonInteractiveGameObject.HasColission;
                             objectProperties.RenderingEnabled = nonInteractiveGameObject.RenderingEnabled;
                             curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad);
                             curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, nonInteractiveGameObject.ModelName);
+                        } break;
+                    case GameObjectOpenType.TYPE53:
+                        {
+                            SpellVisual spellVisual = SpellVisual.GetSpellVisual(nonInteractiveGameObject.DoorParam, SpellVisualType.Detrimental);
+                            curObjectModel = spellVisual.ImpactEmitterObjectModelByAttachLocation[SpellEmitterModelAttachLocationType.Chest];
                         } break;
                     case GameObjectOpenType.TYPE105:
                     case GameObjectOpenType.TYPE106:
@@ -739,6 +742,8 @@ namespace EQWOWConverter
 
                 // Place the related textures
                 string inputTextureFolder = Path.Combine(modelDataRootFolder, "textures");
+                if (nonInteractiveGameObject.ObjectType == GameObjects.GameObjectType.Emitter)
+                    inputTextureFolder = Path.Combine(eqExportsConditionedPath, "spritesheets");
                 foreach (ObjectModelTexture texture in curObjectModel.ModelTextures)
                 {
                     string inputTextureName = Path.Combine(inputTextureFolder, texture.TextureName + ".blp");
@@ -753,8 +758,11 @@ namespace EQWOWConverter
                 }
 
                 // Save it for use elsewhere
-                ObjectModel.StaticObjectModelsByName.Add(curObjectModel.Name, curObjectModel);
-                loadedNonInteractiveGameObjectNames.Add(curObjectModel.Name);
+                if (ObjectModel.StaticObjectModelsByName.ContainsKey(modelFileName) == false)
+                {
+                    ObjectModel.StaticObjectModelsByName.Add(modelFileName, curObjectModel);
+                    loadedNonInteractiveGameObjectNames.Add(modelFileName);
+                }
                 gameObjectProgressCounter.Write();
             }
 
