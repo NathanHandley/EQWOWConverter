@@ -27,6 +27,61 @@ namespace EQWOWConverter.Player
         private static HashSet<ClassWOWType> WOWClassesWhichShouldHaveArchery = new HashSet<ClassWOWType>();
         private static readonly object ClassesLock = new object();
 
+        public static ItemWOWArmorSubclassType GetArmorClassForItemWearableByEQClasses(List<ClassEQType> eqClasses)
+        {
+            lock (ClassesLock)
+            {
+                if (WOWClassesByEQClass.Count == 0)
+                    PopulateClassMap();
+
+                // Determine the lowest armor class type, which can differ base on config
+                int lowestItemWOWArmorSubClassType = (int)ItemWOWArmorSubclassType.Plate;
+                if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
+                {
+                    foreach (ClassEQType eqClass in eqClasses)
+                    {
+                        if (WOWMaxArmorClassTypeByEQClass.ContainsKey(eqClass) == true)
+                        {
+                            if ((int)WOWMaxArmorClassTypeByEQClass[eqClass] < lowestItemWOWArmorSubClassType)
+                                lowestItemWOWArmorSubClassType = (int)WOWMaxArmorClassTypeByEQClass[eqClass];
+                        }
+                    }
+                }
+                else
+                {
+                    // Get a list of all WOW classes
+                    HashSet<ClassWOWType> wowClasses = new HashSet<ClassWOWType>();
+                    foreach (ClassEQType eqClass in eqClasses)
+                    {
+                        if (WOWClassesByEQClass.ContainsKey(eqClass) == true)
+                            wowClasses.UnionWith(WOWClassesByEQClass[eqClass]);
+                    }
+
+                    // Find the lowest
+                    foreach (ClassWOWType wowClass in wowClasses)
+                    {
+                        int curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Cloth;
+                        switch (wowClass)
+                        {
+                            case ClassWOWType.DeathKnight: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Plate; break;
+                            case ClassWOWType.Druid: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Leather; break;
+                            case ClassWOWType.Hunter: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Mail; break;
+                            case ClassWOWType.Mage: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Cloth; break;
+                            case ClassWOWType.Paladin: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Plate; break;
+                            case ClassWOWType.Priest: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Cloth; break;
+                            case ClassWOWType.Rogue: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Leather; break;
+                            case ClassWOWType.Shaman: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Mail; break;
+                            case ClassWOWType.Warlock: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Cloth; break;
+                            case ClassWOWType.Warrior: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Plate; break;
+                            default: Logger.WriteError("Unhandled class type '", wowClass.ToString(), "' in GetArmorClassForItemWearableByEQClasses"); break;
+                        }
+                        lowestItemWOWArmorSubClassType = Math.Min(curClassMaxArmorSubClassType, lowestItemWOWArmorSubClassType);
+                    }
+                }
+                return (ItemWOWArmorSubclassType)lowestItemWOWArmorSubClassType;
+            }
+        }
+
         public static HashSet<ClassWOWType> GetWOWClassesEligibleForArmor(ItemWOWArmorSubclassType armorType)
         {
             lock (ClassesLock)

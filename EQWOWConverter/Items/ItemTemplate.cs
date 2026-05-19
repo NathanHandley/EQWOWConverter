@@ -719,45 +719,37 @@ namespace EQWOWConverter.Items
                 return ItemWOWArmorSubclassType.Misc;
             if (classMask >= 32767)
                 return ItemWOWArmorSubclassType.Cloth;
+
+            List<ClassEQType> eqClasses = new List<ClassEQType>();
             if (IsPackedClassMask(ClassEQType.Necromancer, classMask))
-                return ItemWOWArmorSubclassType.Cloth;
+                eqClasses.Add(ClassEQType.Necromancer);
             if (IsPackedClassMask(ClassEQType.Wizard, classMask))
-                return ItemWOWArmorSubclassType.Cloth;
+                eqClasses.Add(ClassEQType.Wizard);
             if (IsPackedClassMask(ClassEQType.Magician, classMask))
-                return ItemWOWArmorSubclassType.Cloth;
+                eqClasses.Add(ClassEQType.Magician);
             if (IsPackedClassMask(ClassEQType.Enchanter, classMask))
-                return ItemWOWArmorSubclassType.Cloth;
-            // Clerics can wear plate in EQ, but only make cleric gear cloth if it's cleric-only
-            if (IsPackedClassMask(ClassEQType.Cleric, classMask) &&
-                IsPackedClassMask(ClassEQType.Warrior, classMask) == false &&
-                IsPackedClassMask(ClassEQType.Paladin, classMask) == false &&
-                IsPackedClassMask(ClassEQType.ShadowKnight, classMask) == false)
-                return ItemWOWArmorSubclassType.Cloth;
+                eqClasses.Add(ClassEQType.Enchanter);
             if (IsPackedClassMask(ClassEQType.Druid, classMask))
-                return ItemWOWArmorSubclassType.Leather;
+                eqClasses.Add(ClassEQType.Druid);
             if (IsPackedClassMask(ClassEQType.Monk, classMask))
-                return ItemWOWArmorSubclassType.Leather;
-            if (IsPackedClassMask(ClassEQType.Beastlord, classMask))
-                return ItemWOWArmorSubclassType.Leather;
+                eqClasses.Add(ClassEQType.Monk);
             if (IsPackedClassMask(ClassEQType.Ranger, classMask))
-                return ItemWOWArmorSubclassType.Mail;
+                eqClasses.Add(ClassEQType.Ranger);
             if (IsPackedClassMask(ClassEQType.Shaman, classMask))
-                return ItemWOWArmorSubclassType.Mail;
-            // Note: EQ rogues can wear mail/chain, so this will be an issue in some cases
+                eqClasses.Add(ClassEQType.Shaman);
             if (IsPackedClassMask(ClassEQType.Rogue, classMask))
-                return ItemWOWArmorSubclassType.Leather;
+                eqClasses.Add(ClassEQType.Rogue);
             if (IsPackedClassMask(ClassEQType.Warrior, classMask))
-                return ItemWOWArmorSubclassType.Plate;
+                eqClasses.Add(ClassEQType.Warrior);
             if (IsPackedClassMask(ClassEQType.Paladin, classMask))
-                return ItemWOWArmorSubclassType.Plate;
+                eqClasses.Add(ClassEQType.Paladin);
             if (IsPackedClassMask(ClassEQType.ShadowKnight, classMask))
-                return ItemWOWArmorSubclassType.Plate;
+                eqClasses.Add(ClassEQType.ShadowKnight);
             if (IsPackedClassMask(ClassEQType.Bard, classMask))
-                return ItemWOWArmorSubclassType.Plate;
-            // Clerics can wear plate in EQ
+                eqClasses.Add(ClassEQType.Bard);
             if (IsPackedClassMask(ClassEQType.Cleric, classMask))
-                return ItemWOWArmorSubclassType.Plate;
-            return ItemWOWArmorSubclassType.Misc;
+                eqClasses.Add(ClassEQType.Cleric);
+            return PlayerClassMapping.GetArmorClassForItemWearableByEQClasses(eqClasses);
         }
 
         private static List<ClassWOWType> GetClassTypesFromClassMask(int classMask, int classID, int subClassID)
@@ -1482,12 +1474,6 @@ namespace EQWOWConverter.Items
                         newItemTemplate.BagSlots = newItemTemplate.BagSlots + additionalBagSlots;
                     }
                 }
-
-                if (newItemTemplate.WOWEntryID == 86723)
-                {
-                    int x = 5;
-                }
-
 
                 // Other
                 newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);
