@@ -790,7 +790,13 @@ namespace EQWOWConverter.Items
             // If all of the eligible classes are the ones that can use it, also return as all
             if (classID == 2) // Weapons
             {
-
+                HashSet<ClassWOWType> eligibleClassesForWeaponType = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass((ItemWOWWeaponSubclassType)subClassID);
+                if (eligibleClassesForWeaponType.SetEquals(classTypes) == true)
+                {
+                    classTypes.Clear();
+                    classTypes.Add(ClassWOWType.All);
+                    return classTypes.ToList();
+                }
             }
             else if (classID == 4) // Armor
             {

@@ -27,6 +27,193 @@ namespace EQWOWConverter.Player
         private static HashSet<ClassWOWType> WOWClassesWhichShouldHaveArchery = new HashSet<ClassWOWType>();
         private static readonly object ClassesLock = new object();
 
+        public static HashSet<ClassWOWType> GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType weaponSubClassType)
+        {
+            lock (ClassesLock)
+            {
+                if (WOWClassesByEQClass.Count == 0)
+                    PopulateClassMap();
+
+                HashSet<ClassWOWType> eligibleClasses = new HashSet<ClassWOWType>();
+                if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == false)
+                {
+                    switch (weaponSubClassType)
+                    {
+                        case ItemWOWWeaponSubclassType.AxeOneHand:
+                            {
+                                eligibleClasses.Add(ClassWOWType.Warrior);
+                                eligibleClasses.Add(ClassWOWType.Paladin);
+                                eligibleClasses.Add(ClassWOWType.Hunter);
+                                eligibleClasses.Add(ClassWOWType.Rogue);
+                                eligibleClasses.Add(ClassWOWType.Shaman);
+                                eligibleClasses.Add(ClassWOWType.DeathKnight);
+                            } break;
+                        case ItemWOWWeaponSubclassType.AxeTwoHand:
+                            {
+                                eligibleClasses.Add(ClassWOWType.Warrior);
+                                eligibleClasses.Add(ClassWOWType.Paladin);
+                                eligibleClasses.Add(ClassWOWType.Hunter);
+                                eligibleClasses.Add(ClassWOWType.Shaman);
+                                eligibleClasses.Add(ClassWOWType.DeathKnight);
+                            } break;
+                        case ItemWOWWeaponSubclassType.MaceOneHand:
+                            {
+                                eligibleClasses.Add(ClassWOWType.Warrior);
+                                eligibleClasses.Add(ClassWOWType.Paladin);
+                                eligibleClasses.Add(ClassWOWType.Rogue);
+                                eligibleClasses.Add(ClassWOWType.Priest);
+                                eligibleClasses.Add(ClassWOWType.Shaman);
+                                eligibleClasses.Add(ClassWOWType.Druid);
+                                eligibleClasses.Add(ClassWOWType.DeathKnight);
+                            } break;
+                        case ItemWOWWeaponSubclassType.MaceTwoHand:
+                            {
+                                eligibleClasses.Add(ClassWOWType.Warrior);
+                                eligibleClasses.Add(ClassWOWType.Paladin);
+                                eligibleClasses.Add(ClassWOWType.Shaman);
+                                eligibleClasses.Add(ClassWOWType.Druid);
+                                eligibleClasses.Add(ClassWOWType.DeathKnight);
+                            } break;
+                        case ItemWOWWeaponSubclassType.Polearm:
+                            {
+                                eligibleClasses.Add(ClassWOWType.Warrior);
+                                eligibleClasses.Add(ClassWOWType.Paladin);
+                                eligibleClasses.Add(ClassWOWType.Hunter);
+                                eligibleClasses.Add(ClassWOWType.Druid);
+                                eligibleClasses.Add(ClassWOWType.DeathKnight);
+                            } break;
+                        case ItemWOWWeaponSubclassType.SwordOneHand:
+                            {
+                                eligibleClasses.Add(ClassWOWType.Warrior);
+                                eligibleClasses.Add(ClassWOWType.Paladin);
+                                eligibleClasses.Add(ClassWOWType.Rogue);
+                                eligibleClasses.Add(ClassWOWType.Mage);
+                                eligibleClasses.Add(ClassWOWType.Warlock);
+                                eligibleClasses.Add(ClassWOWType.DeathKnight);
+                            } break;
+                        case ItemWOWWeaponSubclassType.SwordTwoHand:
+                            {
+                                eligibleClasses.Add(ClassWOWType.Warrior);
+                                eligibleClasses.Add(ClassWOWType.Paladin);
+                                eligibleClasses.Add(ClassWOWType.DeathKnight);
+                            } break;
+                        case ItemWOWWeaponSubclassType.Staff:
+                            {
+                                eligibleClasses.Add(ClassWOWType.Warrior);
+                                eligibleClasses.Add(ClassWOWType.Hunter);
+                                eligibleClasses.Add(ClassWOWType.Priest);
+                                eligibleClasses.Add(ClassWOWType.Shaman);
+                                eligibleClasses.Add(ClassWOWType.Mage);
+                                eligibleClasses.Add(ClassWOWType.Warlock);
+                                eligibleClasses.Add(ClassWOWType.Druid);
+                            } break;
+                        case ItemWOWWeaponSubclassType.FistWeapon:
+                            {
+                                eligibleClasses.Add(ClassWOWType.Warrior);
+                                eligibleClasses.Add(ClassWOWType.Hunter);
+                                eligibleClasses.Add(ClassWOWType.Rogue);
+                                eligibleClasses.Add(ClassWOWType.Shaman);
+                                eligibleClasses.Add(ClassWOWType.Druid);
+                            } break;
+                        case ItemWOWWeaponSubclassType.Dagger:
+                            {
+                                eligibleClasses.Add(ClassWOWType.Warrior);
+                                eligibleClasses.Add(ClassWOWType.Hunter);
+                                eligibleClasses.Add(ClassWOWType.Rogue);
+                                eligibleClasses.Add(ClassWOWType.Priest);
+                                eligibleClasses.Add(ClassWOWType.Shaman);
+                                eligibleClasses.Add(ClassWOWType.Mage);
+                                eligibleClasses.Add(ClassWOWType.Warlock);
+                                eligibleClasses.Add(ClassWOWType.Druid);
+                            } break;
+                        default: break;
+                    }
+                }
+                else
+                {
+                    switch (weaponSubClassType)
+                    {
+                        case ItemWOWWeaponSubclassType.SwordOneHand: // 1H Slash
+                        case ItemWOWWeaponSubclassType.AxeOneHand:
+                            {
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Rogue]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Bard]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Druid]);
+                            } break;
+                        case ItemWOWWeaponSubclassType.SwordTwoHand: // 2H Slash
+                        case ItemWOWWeaponSubclassType.AxeTwoHand:
+                            {
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
+                            } break;
+                        case ItemWOWWeaponSubclassType.FistWeapon: // 1H Blunt
+                        case ItemWOWWeaponSubclassType.MaceOneHand:
+                            {
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Monk]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Bard]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Shaman]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Cleric]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Druid]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Enchanter]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Magician]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Necromancer]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Wizard]);
+                            } break;
+                        case ItemWOWWeaponSubclassType.MaceTwoHand: // 2H Blunt
+                        case ItemWOWWeaponSubclassType.Staff:
+                            {
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Monk]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Shaman]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Cleric]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Druid]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Enchanter]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Magician]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Necromancer]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Wizard]);
+                            } break;
+                        case ItemWOWWeaponSubclassType.Dagger: // Pierce
+                            {
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Bard]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Enchanter]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Magician]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Necromancer]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Rogue]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Shaman]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Wizard]);
+                            } break;
+                        case ItemWOWWeaponSubclassType.Polearm: // Pierce (2h, special)
+                            {
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Shaman]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
+                            } break;
+                        default: break;
+                    }
+                }
+                return eligibleClasses;
+            }
+        }
+
         public static ItemWOWArmorSubclassType GetArmorClassForItemWearableByEQClasses(List<ClassEQType> eqClasses)
         {
             lock (ClassesLock)
@@ -190,19 +377,6 @@ namespace EQWOWConverter.Player
                 return WOWClassesByEQClass[eqClass];
             }
         }
-
-        //public static ItemWOWArmorSubclassType GetMaxArmorTypeForEQClass(ClassEQType eqClass)
-        //{
-        //    lock (ClassesLock)
-        //    {
-        //        if (WOWClassesByEQClass.Count == 0)
-        //            PopulateClassMap();
-        //        if (WOWMaxArmorClassTypeByEQClass.ContainsKey(eqClass) == false)
-        //            return ItemWOWArmorSubclassType.Cloth;
-        //        else
-        //            return WOWMaxArmorClassTypeByEQClass[eqClass];
-        //    }
-        //}
 
         public static Dictionary<ClassEQType, List<ClassWOWType>> GetAllWOWClassesByEQClass()
         {

@@ -187,7 +187,7 @@ namespace EQWOWConverter
         // If true, all wow classes will gain access to the related skills from level 1, per class alignments in PlayerClassMappings.csv
         public static bool PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES = true;
         public static bool PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES = true;
-        public static bool PLAYER_SKILL_ENABLE_ALL_EQ_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES = true;
+        public static bool PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES = true;
         public static bool PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES = true;
 
         //=====================================================================
@@ -1058,7 +1058,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START", PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START, "If true, players start with a bind and gate spell regardless of class (with no costs)");
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES, "If true, all wow classes will gain access to the related skills from level 1, per class alignments in PlayerClassMappings.csv", false);
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES, "", false);
-            OutputVariableToConfig("PLAYER_SKILL_ENABLE_ALL_EQ_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_ALL_EQ_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES, "", false);
+            OutputVariableToConfig("PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES, "", false);
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES, "");
             OutputTextLineToConfig("# If true, Priests of Discord (in Norrath) will teleport players to Azeroth, and Azeroth will have Priests of Discord to send players back to Norrath");
             OutputVariableToConfig("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION, "Note that CreatureFactionClassAlignment.csv and CreatureFactionRaceAlignment.csv factor into Norrath destinations", false);
@@ -1508,7 +1508,7 @@ namespace EQWOWConverter
             PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX = ReadVariableFromConfigString("PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX", configValuesByVariableName, PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX);
             PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES);
             PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES);
-            PLAYER_SKILL_ENABLE_ALL_EQ_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_ALL_EQ_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_ALL_EQ_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES);
+            PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES);
             PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES);
 
             ZONE_SHOW_STATIC_GEOMETRY = ReadVariableFromConfigString("ZONE_SHOW_STATIC_GEOMETRY", configValuesByVariableName, ZONE_SHOW_STATIC_GEOMETRY);
