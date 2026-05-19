@@ -787,6 +787,30 @@ namespace EQWOWConverter.Items
                         classTypes.Add(wowClass);
                 }
             }
+
+            // If all classes are represented, just make it all
+            if (classTypes.Count >= 10)
+            {
+                classTypes.Add(ClassWOWType.All);
+                return classTypes.ToList();
+            }
+
+            // If all of the eligible classes are the ones that can use it, also return as all
+            if (classID == 2) // Weapons
+            {
+
+            }
+            else if (classID == 4) // Armor
+            {
+                HashSet<ClassWOWType> eligibleClassesForArmorType = PlayerClassMapping.GetWOWClassesEligibleForArmor((ItemWOWArmorSubclassType)subClassID);
+                if (eligibleClassesForArmorType.SetEquals(classTypes) == true)
+                {
+                    classTypes.Clear();
+                    classTypes.Add(ClassWOWType.All);
+                    return classTypes.ToList();
+                }
+            }
+
             return classTypes.ToList();
         }
 
@@ -1458,6 +1482,12 @@ namespace EQWOWConverter.Items
                         newItemTemplate.BagSlots = newItemTemplate.BagSlots + additionalBagSlots;
                     }
                 }
+
+                if (newItemTemplate.WOWEntryID == 86723)
+                {
+                    int x = 5;
+                }
+
 
                 // Other
                 newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);

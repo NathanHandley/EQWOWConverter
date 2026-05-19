@@ -27,13 +27,100 @@ namespace EQWOWConverter.Player
         private static HashSet<ClassWOWType> WOWClassesWhichShouldHaveArchery = new HashSet<ClassWOWType>();
         private static readonly object ClassesLock = new object();
 
-        public static HashSet<ClassWOWType> GetWhichWOWClassesHaveArchery()
+        public static HashSet<ClassWOWType> GetWOWClassesEligibleForArmor(ItemWOWArmorSubclassType armorType)
         {
             lock (ClassesLock)
             {
                 if (WOWClassesByEQClass.Count == 0)
                     PopulateClassMap();
-                return WOWClassesWhichShouldHaveArchery;
+                HashSet<ClassWOWType> wowClasses = new HashSet<ClassWOWType>();
+                
+                // If armor is aligned, then use the EQ class list
+                if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
+                {
+                    switch (armorType)
+                    {
+                        case ItemWOWArmorSubclassType.Misc:
+                        case ItemWOWArmorSubclassType.Cloth:
+                            {
+                                foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
+                                    wowClasses.Add(wowClassType);
+                            } break;
+                        default:
+                            {
+                                foreach (var wowMaxArmorClassTypeByEQClass in WOWMaxArmorClassTypeByEQClass)
+                                {
+                                    if ((int)wowMaxArmorClassTypeByEQClass.Value >= (int)armorType)
+                                    {
+                                        foreach (ClassWOWType wowClass in WOWClassesByEQClass[wowMaxArmorClassTypeByEQClass.Key])
+                                            wowClasses.Add(wowClass);
+                                    }
+                                }
+                            } break;
+                    }
+                }
+                // Otherwise use the base WOW class alignments
+                else
+                {
+                    switch (armorType)
+                    {
+                        case ItemWOWArmorSubclassType.Misc:
+                        case ItemWOWArmorSubclassType.Cloth:
+                            {
+                                foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
+                                    wowClasses.Add(wowClassType);
+                            } break;
+                        case ItemWOWArmorSubclassType.Leather:
+                            {
+                                wowClasses.Add(ClassWOWType.Warrior);
+                                wowClasses.Add(ClassWOWType.Paladin);
+                                wowClasses.Add(ClassWOWType.Hunter);
+                                wowClasses.Add(ClassWOWType.Rogue);
+                                wowClasses.Add(ClassWOWType.DeathKnight);
+                                wowClasses.Add(ClassWOWType.Shaman);
+                                wowClasses.Add(ClassWOWType.Druid);
+                            } break;
+                        case ItemWOWArmorSubclassType.Mail:
+                            {
+                                wowClasses.Add(ClassWOWType.Warrior);
+                                wowClasses.Add(ClassWOWType.Paladin);
+                                wowClasses.Add(ClassWOWType.Hunter);
+                                wowClasses.Add(ClassWOWType.DeathKnight);
+                                wowClasses.Add(ClassWOWType.Shaman);
+                            } break;
+                        case ItemWOWArmorSubclassType.Plate:
+                            {
+                                wowClasses.Add(ClassWOWType.Warrior);
+                                wowClasses.Add(ClassWOWType.Paladin);
+                                wowClasses.Add(ClassWOWType.DeathKnight);
+                            } break;
+                        case ItemWOWArmorSubclassType.Shield:
+                            {
+                                wowClasses.Add(ClassWOWType.Warrior);
+                                wowClasses.Add(ClassWOWType.Paladin);
+                                wowClasses.Add(ClassWOWType.Shaman);
+                                if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
+                                {
+                                    wowClasses.Clear();
+                                    foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
+                                        wowClasses.Add(wowClassType);
+                                }
+                            } break;
+                        default: break; // Nothing
+                    }
+                }
+
+                return wowClasses;
+            }
+        }
+
+        public static List<ClassWOWType> GetWOWClassesThatHaveArchery()
+        {
+            lock (ClassesLock)
+            {
+                if (WOWClassesByEQClass.Count == 0)
+                    PopulateClassMap();
+                return WOWClassesWhichShouldHaveArchery.ToList();
             }
         }
 
@@ -49,18 +136,18 @@ namespace EQWOWConverter.Player
             }
         }
 
-        public static ItemWOWArmorSubclassType GetMaxArmorTypeForEQClass(ClassEQType eqClass)
-        {
-            lock (ClassesLock)
-            {
-                if (WOWClassesByEQClass.Count == 0)
-                    PopulateClassMap();
-                if (WOWMaxArmorClassTypeByEQClass.ContainsKey(eqClass) == false)
-                    return ItemWOWArmorSubclassType.Cloth;
-                else
-                    return WOWMaxArmorClassTypeByEQClass[eqClass];
-            }
-        }
+        //public static ItemWOWArmorSubclassType GetMaxArmorTypeForEQClass(ClassEQType eqClass)
+        //{
+        //    lock (ClassesLock)
+        //    {
+        //        if (WOWClassesByEQClass.Count == 0)
+        //            PopulateClassMap();
+        //        if (WOWMaxArmorClassTypeByEQClass.ContainsKey(eqClass) == false)
+        //            return ItemWOWArmorSubclassType.Cloth;
+        //        else
+        //            return WOWMaxArmorClassTypeByEQClass[eqClass];
+        //    }
+        //}
 
         public static Dictionary<ClassEQType, List<ClassWOWType>> GetAllWOWClassesByEQClass()
         {
