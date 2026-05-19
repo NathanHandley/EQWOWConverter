@@ -31,9 +31,9 @@ namespace EQWOWConverter.Creatures.Teleporters
         public string MenuItemText = string.Empty;
 
         private static List<CreatureTeleportLocationNorrath> TeleportLocations = new List<CreatureTeleportLocationNorrath>();
-        private static HashSet<ClassType> GoodClasses = new HashSet<ClassType>();
-        private static HashSet<ClassType> NeutralClasses = new HashSet<ClassType>();
-        private static HashSet<ClassType> EvilClasses = new HashSet<ClassType>();
+        private static HashSet<ClassWOWType> GoodClasses = new HashSet<ClassWOWType>();
+        private static HashSet<ClassWOWType> NeutralClasses = new HashSet<ClassWOWType>();
+        private static HashSet<ClassWOWType> EvilClasses = new HashSet<ClassWOWType>();
         private static HashSet<RaceType> GoodRaces = new HashSet<RaceType>();
         private static HashSet<RaceType> NeutralRaces = new HashSet<RaceType>();
         private static HashSet<RaceType> EvilRaces = new HashSet<RaceType>();
@@ -51,7 +51,7 @@ namespace EQWOWConverter.Creatures.Teleporters
             }
         }
 
-        public static List<ClassType> GetGoodClasses()
+        public static List<ClassWOWType> GetGoodClasses()
         {
             lock (AlignmentLock)
             {
@@ -61,7 +61,7 @@ namespace EQWOWConverter.Creatures.Teleporters
             }
         }
 
-        public static List<ClassType> GetNeutralClasses()
+        public static List<ClassWOWType> GetNeutralClasses()
         {
             lock (AlignmentLock)
             {
@@ -71,7 +71,7 @@ namespace EQWOWConverter.Creatures.Teleporters
             }
         }
 
-        public static List<ClassType> GetEvilClasses()
+        public static List<ClassWOWType> GetEvilClasses()
         {
             lock (AlignmentLock)
             {
@@ -161,7 +161,7 @@ namespace EQWOWConverter.Creatures.Teleporters
             List<Dictionary<string, string>> classAlignmentRows = FileTool.ReadAllRowsFromFileWithHeader(factionClassAlignmentFile, "|");
             foreach (Dictionary<string, string> columns in classAlignmentRows)
             {
-                ClassType classType = (ClassType)int.Parse(columns["ClassID"]);
+                ClassWOWType classType = (ClassWOWType)int.Parse(columns["ClassID"]);
                 string alignmentString = columns["Alignment"].Trim().ToLower();
                 switch (alignmentString)
                 {

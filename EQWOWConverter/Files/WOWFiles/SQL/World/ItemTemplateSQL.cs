@@ -27,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM `item_template` WHERE `entry` >= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_START + " AND `entry` <= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_END + ";";
         }
 
-        public void AddRow(ItemTemplate itemTemplate, int entryID, string name, string description, int requiredLevel, List<ClassType> allowedClassTypes, ItemDisplayInfo? itemDisplayInfo)
+        public void AddRow(ItemTemplate itemTemplate, int entryID, string name, string description, int requiredLevel, List<ClassWOWType> allowedClassTypes, ItemDisplayInfo? itemDisplayInfo)
         {
             // Prevent double-add
             if (insertedItemTemplateEntryIDs.Contains(entryID))
@@ -208,12 +208,12 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        private int CalculateAllowableClasses(List<ClassType> allowedClassTypes)
+        private int CalculateAllowableClasses(List<ClassWOWType> allowedClassTypes)
         {
             int allowableClass = 0;
-            foreach (ClassType classType in allowedClassTypes)
+            foreach (ClassWOWType classType in allowedClassTypes)
             {
-                if (classType == ClassType.All)
+                if (classType == ClassWOWType.All)
                     return -1;
                 allowableClass += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(classType) - 1));
             }

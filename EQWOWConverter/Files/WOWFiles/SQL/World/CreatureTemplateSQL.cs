@@ -50,14 +50,14 @@ namespace EQWOWConverter.WOWFiles
                 npcFlags |= 131072; // 0x00020000 = Banker Flag
                 numOfRoles++;
             }
-            if (creatureTemplate.ClassTrainerType != ClassType.None && creatureTemplate.ClassTrainerType != ClassType.All)
+            if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.All)
             {
                 npcFlags |= 16;    // 0x00000010 = Is a trainer
                 npcFlags |= 32;    // 0x00000020 = Is Class Trainer
                 iconName = "Trainer";
                 numOfRoles+=2;
             }
-            else if (creatureTemplate.ClassTrainerType == ClassType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
+            else if (creatureTemplate.ClassTrainerType == ClassWOWType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
             {
                 npcFlags |= 16;    // 0x00000010 = Is a trainer
                 npcFlags |= 64;    // 0x00000040 = Is Profession Trainer

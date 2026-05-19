@@ -138,7 +138,7 @@ namespace EQWOWConverter.Spells
         public bool CanTargetBothFriendlyAndEnemy = false;
         public UInt32 TargetCreatureType = 0; // No specific creature type
         public bool CastOnCorpse = false;
-        public Dictionary<ClassType, SpellLearnScrollProperties> LearnScrollPropertiesByClassType = new Dictionary<ClassType, SpellLearnScrollProperties>();
+        public Dictionary<ClassWOWType, SpellLearnScrollProperties> LearnScrollPropertiesByClassType = new Dictionary<ClassWOWType, SpellLearnScrollProperties>();
         public int HighestDirectHealAmountInSpellEffect = 0; // Used in spell priority calculations
         private string TargetDescriptionTextFragment = string.Empty;
         public bool BreakEffectOnNonAutoDirectDamage = false;
@@ -517,16 +517,16 @@ namespace EQWOWConverter.Spells
         private static void PopulateAllClassLearnScrollProperties(ref SpellTemplate spellTemplate, Dictionary<string, string> rowColumns)
         {
             // In EQ, a scroll can be learned by multiple classes at different levels
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Warrior, "warrior", "bard");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Paladin, "paladin");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Hunter, "ranger", "beastlord");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Rogue, "monk", "rogue");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Priest, "cleric", "enchanter");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.DeathKnight, "shadowknight");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Shaman, "shaman");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Mage, "magician", "wizard");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Warlock, "necromancer");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Druid, "druid");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Warrior, "warrior", "bard");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Paladin, "paladin");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Hunter, "ranger", "beastlord");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Rogue, "monk", "rogue");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Priest, "cleric", "enchanter");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.DeathKnight, "shadowknight");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Shaman, "shaman");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Mage, "magician", "wizard");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Warlock, "necromancer");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Druid, "druid");
         }
 
         private static UInt32 GetSchoolMaskForResistType(int eqResistType)
@@ -560,7 +560,7 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        private static void PopulateClassLearnScrollProperties(ref SpellTemplate spellTemplate, Dictionary<string, string> rowColumns, ClassType wowClassType, params string[] eqClassNames)
+        private static void PopulateClassLearnScrollProperties(ref SpellTemplate spellTemplate, Dictionary<string, string> rowColumns, ClassWOWType wowClassType, params string[] eqClassNames)
         {
             SpellLearnScrollProperties spellLearnScrollProperties = new SpellLearnScrollProperties();
             

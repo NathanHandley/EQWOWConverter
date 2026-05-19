@@ -21,12 +21,12 @@ namespace EQWOWConverter.Spells
 {
     internal class SpellTrainerAbility
     {
-        private static Dictionary<ClassType, List<SpellTrainerAbility>> ClassTrainerAbilitiesByClassType = new Dictionary<ClassType, List<SpellTrainerAbility>>();
+        private static Dictionary<ClassWOWType, List<SpellTrainerAbility>> ClassTrainerAbilitiesByClassType = new Dictionary<ClassWOWType, List<SpellTrainerAbility>>();
         private static Dictionary<TradeskillType, List<SpellTrainerAbility>> TradeskillTrainerAbilitiesByTradeskillType = new Dictionary<TradeskillType, List<SpellTrainerAbility>>();
         private static readonly object SpellTrainerReadLock = new object();
         private static readonly object SpellTrainerWriteLock = new object();
 
-        public ClassType ClassType = ClassType.None;
+        public ClassWOWType ClassType = ClassWOWType.None;
         public TradeskillType TradeskillType = TradeskillType.None;
         public TradeskillRecipe? TradeskillRecipe = null;
         public int SpellID = 0;
@@ -62,7 +62,7 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        public static List<SpellTrainerAbility> GetTrainerSpellsForClass(ClassType classType)
+        public static List<SpellTrainerAbility> GetTrainerSpellsForClass(ClassWOWType classType)
         {
             lock (SpellTrainerReadLock)
             {
@@ -110,7 +110,7 @@ namespace EQWOWConverter.Spells
                 foreach (Dictionary<string, string> columns in rows)
                 {
                     SpellTrainerAbility curTrainerClassAbility = new SpellTrainerAbility();
-                    curTrainerClassAbility.ClassType = (ClassType)int.Parse(columns["ClassID"]);
+                    curTrainerClassAbility.ClassType = (ClassWOWType)int.Parse(columns["ClassID"]);
                     curTrainerClassAbility.SpellID = int.Parse(columns["SpellID"]);
                     curTrainerClassAbility.MoneyCost = int.Parse(columns["MoneyCost"]);
                     curTrainerClassAbility.ReqSkillLine = int.Parse(columns["ReqSkillLine"]);

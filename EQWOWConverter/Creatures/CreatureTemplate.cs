@@ -65,7 +65,7 @@ namespace EQWOWConverter.Creatures
         public bool IsRidingTrainer = false;
         public bool IsNorrathPriestOfDiscord = false;
         public bool IsAzerothPriestOfDiscord = false;
-        public ClassType ClassTrainerType = ClassType.None;
+        public ClassWOWType ClassTrainerType = ClassWOWType.None;
         public TradeskillType TradeskillTrainerType = TradeskillType.None;
         public int GossipMenuID = 0;
         public bool IsNonNPC = false;
@@ -424,67 +424,67 @@ namespace EQWOWConverter.Creatures
             {
                 case 20: // Warrior GM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.Warrior;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.Warrior;
                         creatureTemplate.SubName = "Warrior Trainer";
                     } break;
                 case 21: // Cleric GM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.Priest;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.Priest;
                         creatureTemplate.SubName = "Priest Trainer";
                     } break;
                 case 22: // Paladin GM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.Paladin;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.Paladin;
                         creatureTemplate.SubName = "Paladin Trainer";
                     } break;
                 case 23: // RangerGM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.Hunter;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.Hunter;
                         creatureTemplate.SubName = "Hunter Trainer";
                     } break;
                 case 24: // ShadowKnight GM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.DeathKnight;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.DeathKnight;
                         creatureTemplate.SubName = "Death Knight Trainer";
                     } break;
                 case 25: // Druid GM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.Druid;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.Druid;
                         creatureTemplate.SubName = "Druid Trainer";
                     } break;
                 case 26: // Monk GM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.Rogue;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.Rogue;
                         creatureTemplate.SubName = "Rogue Trainer";
                     } break;
                 case 27: // Bard GM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.Warrior;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.Warrior;
                         creatureTemplate.SubName = "Warrior Trainer";
                     } break;
                 case 28: // Rogue GM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.Rogue;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.Rogue;
                         creatureTemplate.SubName = "Rogue Trainer";
                     } break;
                 case 29: // Shaman GM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.Shaman;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.Shaman;
                         creatureTemplate.SubName = "Shaman Trainer";
                     } break;
                 case 30: // Necromancer GM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.Warlock;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.Warlock;
                         creatureTemplate.SubName = "Warlock Trainer";
                     } break;
                 case 31: // Wizard GM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.Mage;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.Mage;
                         creatureTemplate.SubName = "Mage Trainer";
                     } break;
                 case 32: // Mage GM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.Mage;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.Mage;
                         creatureTemplate.SubName = "Mage Trainer";
                     } break;
                 //case 33: // Enchanter GM (switching it to an enchanter)
@@ -494,7 +494,7 @@ namespace EQWOWConverter.Creatures
                 //    } break;
                 case 34: // Beastlord GM
                     {
-                        creatureTemplate.ClassTrainerType = ClassType.Hunter;
+                        creatureTemplate.ClassTrainerType = ClassWOWType.Hunter;
                         creatureTemplate.SubName = "Hunter Trainer";
                     } break;
                 case 40: // Banker

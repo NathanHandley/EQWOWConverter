@@ -174,11 +174,11 @@ namespace EQWOWConverter.Creatures
             string factionClassAlignmentFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionClassAlignment.csv");
             Logger.WriteDebug("Populating creature faction class alignments via file '" + factionClassAlignmentFile + "'");
             List<Dictionary<string, string>> classAlignmentRows = FileTool.ReadAllRowsFromFileWithHeader(factionClassAlignmentFile, "|");
-            HashSet<ClassType> evilClasses = new HashSet<ClassType>();
-            HashSet<ClassType> goodClasses = new HashSet<ClassType>();
+            HashSet<ClassWOWType> evilClasses = new HashSet<ClassWOWType>();
+            HashSet<ClassWOWType> goodClasses = new HashSet<ClassWOWType>();
             foreach (Dictionary<string, string> columns in classAlignmentRows)
             {
-                ClassType classType = (ClassType)int.Parse(columns["ClassID"]);
+                ClassWOWType classType = (ClassWOWType)int.Parse(columns["ClassID"]);
                 string alignmentString = columns["Alignment"].Trim().ToLower();
                 switch (alignmentString)
                 {
@@ -194,9 +194,9 @@ namespace EQWOWConverter.Creatures
             }
 
             // Generate the class bitmasks
-            foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
+            foreach (ClassWOWType classType in Enum.GetValues(typeof(ClassWOWType)))
             {
-                if (classType == ClassType.All || classType == ClassType.None)
+                if (classType == ClassWOWType.All || classType == ClassWOWType.None)
                     continue;
                 if (evilClasses.Contains(classType) == true)
                     EvilClassesMask += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(classType) - 1));

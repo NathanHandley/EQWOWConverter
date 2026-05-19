@@ -792,7 +792,7 @@ namespace EQWOWConverter
                             if (spellTemplate.LearnScrollPropertiesByClassType.Count != 1)
                                 scrollName = string.Concat(itemTemplate.Name, " (", scrollPropertiesByClassType.Key.ToString(), ")");
                             itemTemplateSQL.AddRow(itemTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollName,
-                                itemTemplate.Description, scrollPropertiesByClassType.Value.LearnLevel, new List<ClassType>() { scrollPropertiesByClassType.Key }, itemTemplate.ItemDisplayInfo);
+                                itemTemplate.Description, scrollPropertiesByClassType.Value.LearnLevel, new List<ClassWOWType>() { scrollPropertiesByClassType.Key }, itemTemplate.ItemDisplayInfo);
                         }
                     }
                 }
@@ -1050,10 +1050,10 @@ namespace EQWOWConverter
         private void PopulateTrainerData(List<CreatureTemplate> creatureTemplates)
         {
             // Trainer Abilities - Class
-            Dictionary<ClassType, int> trainerIDsByClass = new Dictionary<ClassType, int>();
-            foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
+            Dictionary<ClassWOWType, int> trainerIDsByClass = new Dictionary<ClassWOWType, int>();
+            foreach (ClassWOWType classType in Enum.GetValues(typeof(ClassWOWType)))
             {
-                if (classType == ClassType.All || classType == ClassType.None)
+                if (classType == ClassWOWType.All || classType == ClassWOWType.None)
                     continue;
                 trainerIDsByClass.Add(classType, TrainerSQL.GenerateUniqueTrainerID());
                 trainerSQL.AddRow(trainerIDsByClass[classType], 0, (int)classType, "What would you like to learn?");
@@ -1081,10 +1081,10 @@ namespace EQWOWConverter
             trainerSpellSQL.AddRiderSkills(trainerIDForRidingTrainer);
 
             // Pre-generate class trainer menus
-            Dictionary<ClassType, int> classTrainerMenuIDs = new Dictionary<ClassType, int>();
-            foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
+            Dictionary<ClassWOWType, int> classTrainerMenuIDs = new Dictionary<ClassWOWType, int>();
+            foreach (ClassWOWType classType in Enum.GetValues(typeof(ClassWOWType)))
             {
-                if (classType == ClassType.All || classType == ClassType.None)
+                if (classType == ClassWOWType.All || classType == ClassWOWType.None)
                     continue;
 
                 // Base menu
@@ -1102,9 +1102,9 @@ namespace EQWOWConverter
 
                 // Restrictions to menu options
                 string conditionsComment = string.Concat("Restrict menu option for class ", classType.ToString());
-                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, 0, new List<ClassType>() { classType }, conditionsComment);
-                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, 1, new List<ClassType>() { classType }, conditionsComment);
-                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, 2, new List<ClassType>() { classType }, conditionsComment);
+                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, 0, new List<ClassWOWType>() { classType }, conditionsComment);
+                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, 1, new List<ClassWOWType>() { classType }, conditionsComment);
+                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, 2, new List<ClassWOWType>() { classType }, conditionsComment);
             }
 
             // Pre-generate profession/rider trainer menus
@@ -1122,7 +1122,7 @@ namespace EQWOWConverter
             // Associate creature templates to trainer lists
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
-                if (creatureTemplate.ClassTrainerType != ClassType.All && creatureTemplate.ClassTrainerType != ClassType.None)
+                if (creatureTemplate.ClassTrainerType != ClassWOWType.All && creatureTemplate.ClassTrainerType != ClassWOWType.None)
                 {
                     creatureDefaultTrainerSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, trainerIDsByClass[creatureTemplate.ClassTrainerType]);
                     creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];

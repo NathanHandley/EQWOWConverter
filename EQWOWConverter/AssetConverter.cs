@@ -1000,7 +1000,7 @@ namespace EQWOWConverter
             {
                 if (creatureTemplate.WOWFactionTemplateID != Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL)
                     continue;
-                if (creatureTemplate.IsBanker || creatureTemplate.IsQuestGiver || creatureTemplate.MerchantID != 0 || creatureTemplate.ClassTrainerType != ClassType.None)
+                if (creatureTemplate.IsBanker || creatureTemplate.IsQuestGiver || creatureTemplate.MerchantID != 0 || creatureTemplate.ClassTrainerType != ClassWOWType.None)
                 {
                     creatureTemplate.WOWFactionTemplateID = Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE;
                 }
@@ -1727,7 +1727,7 @@ namespace EQWOWConverter
                                 float stepChance = remainderChance / curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count;
                                 for (int j = 0; j < curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count; j++)
                                 {
-                                    ClassType curClassType = curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.ToList()[j].Key;
+                                    ClassWOWType curClassType = curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.ToList()[j].Key;
                                     int itemTemplateEntryID = curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.ToList()[j].Value;
 
                                     ItemLootTemplate newItemLootTemplate = new ItemLootTemplate();

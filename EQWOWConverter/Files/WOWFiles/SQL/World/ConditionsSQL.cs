@@ -54,11 +54,11 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        public void AddRowForMenuOptionClassRestriction(int gossipMenuID, int gossipMenuOptionID, List<ClassType> classTypes, string comment, int elseGroupID = 0, bool negativeCondition = false)
+        public void AddRowForMenuOptionClassRestriction(int gossipMenuID, int gossipMenuOptionID, List<ClassWOWType> classTypes, string comment, int elseGroupID = 0, bool negativeCondition = false)
         {
             // Class value is a powers of 2, zero index
             int classMask = 0;
-            foreach (ClassType classType in classTypes)
+            foreach (ClassWOWType classType in classTypes)
                 classMask += (int)(Math.Pow(2, ((int)classType - 1)));
 
             SQLRow newRow = new SQLRow();

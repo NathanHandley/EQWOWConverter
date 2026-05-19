@@ -62,7 +62,7 @@ namespace EQWOWConverter.Items
         public int WeaponDelay = 0;
         public int EQClassMask = 32767;
         public int EQSlotMask = 0;
-        public List<ClassType> AllowedClassTypes = new List<ClassType>();
+        public List<ClassWOWType> AllowedClassTypes = new List<ClassWOWType>();
         public List<(ItemWOWStatType, int)> StatValues = new List<(ItemWOWStatType, int)>();
         public int Armor = 0;
         public int ArcaneResist = 0;
@@ -121,7 +121,7 @@ namespace EQWOWConverter.Items
         public ItemTemplate? ParentItemTemplate = null;
         public ItemFocusType FocusType = ItemFocusType.None;
         public int FocusValue = 0;
-        public Dictionary<ClassType, int> ClassSpecificItemVersionsByWOWItemTemplateID = new Dictionary<ClassType, int>(); // Used for quests
+        public Dictionary<ClassWOWType, int> ClassSpecificItemVersionsByWOWItemTemplateID = new Dictionary<ClassWOWType, int>(); // Used for quests
 
         public ItemTemplate()
         {
@@ -135,7 +135,7 @@ namespace EQWOWConverter.Items
             return curID;
         }
 
-        public void PopulateClassSpecificVersionsForSpellScrolls(Dictionary<ClassType, SpellTemplate.SpellLearnScrollProperties> spellScrollPropertiesByClassType)
+        public void PopulateClassSpecificVersionsForSpellScrolls(Dictionary<ClassWOWType, SpellTemplate.SpellLearnScrollProperties> spellScrollPropertiesByClassType)
         {
             ClassSpecificItemVersionsByWOWItemTemplateID.Clear();
             foreach (var spellScrollProperties in spellScrollPropertiesByClassType)
@@ -404,14 +404,14 @@ namespace EQWOWConverter.Items
             // Spell Power
             // Note: Only applies to equipment usable by caster classes
             if (classMask >= 32767 ||
-                IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask) ||
-                IsPackedClassMask(ItemEQClassBitmaskType.Paladin, classMask) ||
-                IsPackedClassMask(ItemEQClassBitmaskType.Druid, classMask) ||
-                IsPackedClassMask(ItemEQClassBitmaskType.Shaman, classMask) ||
-                IsPackedClassMask(ItemEQClassBitmaskType.Wizard, classMask) ||
-                IsPackedClassMask(ItemEQClassBitmaskType.Magician, classMask) ||
-                IsPackedClassMask(ItemEQClassBitmaskType.Necromancer, classMask) ||
-                IsPackedClassMask(ItemEQClassBitmaskType.Enchanter, classMask))
+                IsPackedClassMask(ClassEQType.Cleric, classMask) ||
+                IsPackedClassMask(ClassEQType.Paladin, classMask) ||
+                IsPackedClassMask(ClassEQType.Druid, classMask) ||
+                IsPackedClassMask(ClassEQType.Shaman, classMask) ||
+                IsPackedClassMask(ClassEQType.Wizard, classMask) ||
+                IsPackedClassMask(ClassEQType.Magician, classMask) ||
+                IsPackedClassMask(ClassEQType.Necromancer, classMask) ||
+                IsPackedClassMask(ClassEQType.Enchanter, classMask))
             {
                 ItemWOWWeaponSubclassType subClass = (ItemWOWWeaponSubclassType)subClassID;
 
@@ -718,77 +718,77 @@ namespace EQWOWConverter.Items
                 return ItemWOWArmorSubclassType.Misc;
             if (classMask >= 32767)
                 return ItemWOWArmorSubclassType.Cloth;
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Necromancer, classMask))
+            if (IsPackedClassMask(ClassEQType.Necromancer, classMask))
                 return ItemWOWArmorSubclassType.Cloth;
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Wizard, classMask))
+            if (IsPackedClassMask(ClassEQType.Wizard, classMask))
                 return ItemWOWArmorSubclassType.Cloth;
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Magician, classMask))
+            if (IsPackedClassMask(ClassEQType.Magician, classMask))
                 return ItemWOWArmorSubclassType.Cloth;
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Enchanter, classMask))
+            if (IsPackedClassMask(ClassEQType.Enchanter, classMask))
                 return ItemWOWArmorSubclassType.Cloth;
             // Clerics can wear plate in EQ, but only make cleric gear cloth if it's cleric-only
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask) &&
-                IsPackedClassMask(ItemEQClassBitmaskType.Warrior, classMask) == false &&
-                IsPackedClassMask(ItemEQClassBitmaskType.Paladin, classMask) == false &&
-                IsPackedClassMask(ItemEQClassBitmaskType.ShadowKnight, classMask) == false)
+            if (IsPackedClassMask(ClassEQType.Cleric, classMask) &&
+                IsPackedClassMask(ClassEQType.Warrior, classMask) == false &&
+                IsPackedClassMask(ClassEQType.Paladin, classMask) == false &&
+                IsPackedClassMask(ClassEQType.ShadowKnight, classMask) == false)
                 return ItemWOWArmorSubclassType.Cloth;
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Druid, classMask))
+            if (IsPackedClassMask(ClassEQType.Druid, classMask))
                 return ItemWOWArmorSubclassType.Leather;
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Monk, classMask))
+            if (IsPackedClassMask(ClassEQType.Monk, classMask))
                 return ItemWOWArmorSubclassType.Leather;
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Beastlord, classMask))
+            if (IsPackedClassMask(ClassEQType.Beastlord, classMask))
                 return ItemWOWArmorSubclassType.Leather;
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Ranger, classMask))
+            if (IsPackedClassMask(ClassEQType.Ranger, classMask))
                 return ItemWOWArmorSubclassType.Mail;
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Shaman, classMask))
+            if (IsPackedClassMask(ClassEQType.Shaman, classMask))
                 return ItemWOWArmorSubclassType.Mail;
             // Note: EQ rogues can wear mail/chain, so this will be an issue in some cases
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Rogue, classMask))
+            if (IsPackedClassMask(ClassEQType.Rogue, classMask))
                 return ItemWOWArmorSubclassType.Leather;
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Warrior, classMask))
+            if (IsPackedClassMask(ClassEQType.Warrior, classMask))
                 return ItemWOWArmorSubclassType.Plate;
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Paladin, classMask))
+            if (IsPackedClassMask(ClassEQType.Paladin, classMask))
                 return ItemWOWArmorSubclassType.Plate;
-            if (IsPackedClassMask(ItemEQClassBitmaskType.ShadowKnight, classMask))
+            if (IsPackedClassMask(ClassEQType.ShadowKnight, classMask))
                 return ItemWOWArmorSubclassType.Plate;
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Bard, classMask))
+            if (IsPackedClassMask(ClassEQType.Bard, classMask))
                 return ItemWOWArmorSubclassType.Plate;
             // Clerics can wear plate in EQ
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask))
+            if (IsPackedClassMask(ClassEQType.Cleric, classMask))
                 return ItemWOWArmorSubclassType.Plate;
             return ItemWOWArmorSubclassType.Misc;
         }
 
-        private static List<ClassType> GetClassTypesFromClassMask(int classMask, int classID, int subClassID)
+        private static List<ClassWOWType> GetClassTypesFromClassMask(int classMask, int classID, int subClassID)
         {
-            List<ClassType> classTypes = new List<ClassType>();
+            List<ClassWOWType> classTypes = new List<ClassWOWType>();
 
             if (classMask <= 0 || classMask >= 32767)
             {
-                classTypes.Add(ClassType.All);
+                classTypes.Add(ClassWOWType.All);
                 return classTypes;
             }
 
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Necromancer, classMask))
-                classTypes.Add(ClassType.Warlock);
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Wizard, classMask) || IsPackedClassMask(ItemEQClassBitmaskType.Magician, classMask))
-                classTypes.Add(ClassType.Mage);
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Beastlord, classMask) || IsPackedClassMask(ItemEQClassBitmaskType.Ranger, classMask))
-                classTypes.Add(ClassType.Hunter);
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Monk, classMask) || IsPackedClassMask(ItemEQClassBitmaskType.Rogue, classMask))
-                classTypes.Add(ClassType.Rogue);
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Bard, classMask) || IsPackedClassMask(ItemEQClassBitmaskType.Warrior, classMask))
-                classTypes.Add(ClassType.Warrior);
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Shaman, classMask))
-                classTypes.Add(ClassType.Shaman);
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Druid, classMask))
-                classTypes.Add(ClassType.Druid);
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Paladin, classMask))
-                classTypes.Add(ClassType.Paladin);
-            if (IsPackedClassMask(ItemEQClassBitmaskType.ShadowKnight, classMask))
-                classTypes.Add(ClassType.DeathKnight);
-            if (IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask) || IsPackedClassMask(ItemEQClassBitmaskType.Enchanter, classMask))
-                classTypes.Add(ClassType.Priest);
+            if (IsPackedClassMask(ClassEQType.Necromancer, classMask))
+                classTypes.Add(ClassWOWType.Warlock);
+            if (IsPackedClassMask(ClassEQType.Wizard, classMask) || IsPackedClassMask(ClassEQType.Magician, classMask))
+                classTypes.Add(ClassWOWType.Mage);
+            if (IsPackedClassMask(ClassEQType.Beastlord, classMask) || IsPackedClassMask(ClassEQType.Ranger, classMask))
+                classTypes.Add(ClassWOWType.Hunter);
+            if (IsPackedClassMask(ClassEQType.Monk, classMask) || IsPackedClassMask(ClassEQType.Rogue, classMask))
+                classTypes.Add(ClassWOWType.Rogue);
+            if (IsPackedClassMask(ClassEQType.Bard, classMask) || IsPackedClassMask(ClassEQType.Warrior, classMask))
+                classTypes.Add(ClassWOWType.Warrior);
+            if (IsPackedClassMask(ClassEQType.Shaman, classMask))
+                classTypes.Add(ClassWOWType.Shaman);
+            if (IsPackedClassMask(ClassEQType.Druid, classMask))
+                classTypes.Add(ClassWOWType.Druid);
+            if (IsPackedClassMask(ClassEQType.Paladin, classMask))
+                classTypes.Add(ClassWOWType.Paladin);
+            if (IsPackedClassMask(ClassEQType.ShadowKnight, classMask))
+                classTypes.Add(ClassWOWType.DeathKnight);
+            if (IsPackedClassMask(ClassEQType.Cleric, classMask) || IsPackedClassMask(ClassEQType.Enchanter, classMask))
+                classTypes.Add(ClassWOWType.Priest);
 
             // If set, collapse common armors and weapons
             if (Configuration.ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP == true)
@@ -799,7 +799,7 @@ namespace EQWOWConverter.Items
                     if (classTypes.Count >= 3)
                     {
                         classTypes.Clear();
-                        classTypes.Add(ClassType.All);
+                        classTypes.Add(ClassWOWType.All);
                     }
                 }
 
@@ -810,7 +810,7 @@ namespace EQWOWConverter.Items
                     if (subClassID >= 2 && classTypes.Count >= 4)
                     {
                         classTypes.Clear();
-                        classTypes.Add(ClassType.All);
+                        classTypes.Add(ClassWOWType.All);
                     }
                 }
             }
@@ -819,13 +819,13 @@ namespace EQWOWConverter.Items
             if (classID == 6 && subClassID == 2 && classTypes.Count != 1)
             {
                 classTypes.Clear();
-                classTypes.Add(ClassType.All);
+                classTypes.Add(ClassWOWType.All);
             }
 
             return classTypes;
         }
 
-        private static bool IsPackedClassMask(ItemEQClassBitmaskType itemClassBitmaskType, int classMask)
+        private static bool IsPackedClassMask(ClassEQType itemClassBitmaskType, int classMask)
         {
             if ((classMask & Convert.ToInt32(itemClassBitmaskType)) == Convert.ToInt32(itemClassBitmaskType))
                 return true;
@@ -1498,7 +1498,7 @@ namespace EQWOWConverter.Items
                 newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);
                 if (newItemTemplate.IsRogueOnlyPoison == true)
                 {
-                    newItemTemplate.AllowedClassTypes = new List<ClassType>() { ClassType.Rogue };
+                    newItemTemplate.AllowedClassTypes = new List<ClassWOWType>() { ClassWOWType.Rogue };
                     newItemTemplate.StackSize = 20;
                 }
                 else
