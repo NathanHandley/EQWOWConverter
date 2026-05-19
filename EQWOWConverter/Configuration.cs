@@ -51,20 +51,20 @@ namespace EQWOWConverter
         // Deployment Rules
         // ====================================================================
         // If true, deploy the client file (patch mpq) after building it
-        public static bool DEPLOY_CLIENT_FILES = false;
+        public static bool DEPLOY_CLIENT_FILES = true;
 
         // If true and when deploying client files, clear the cache (only relevant if you set DEPLOY_CLIENT_FILES to true, otherwise ignored)
         public static bool DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY = true;
 
         // If true, deploy to the server files/data after building
-        public static bool DEPLOY_SERVER_FILES = false;
+        public static bool DEPLOY_SERVER_FILES = true;
 
         // Location of where the server DBC files would be deployed to (only relevant if you set DEPLOY_SERVER_FILES to true, otherwise ignored)
         public static string DEPLOY_SERVER_DBC_FOLDER_LOCATION = "C:\\";
 
         // If true, deploy to the SQL to the server
         // Note: May not work on remote servers (not tested)
-        public static bool DEPLOY_SERVER_SQL = false;
+        public static bool DEPLOY_SERVER_SQL = true;
 
         // If deploying to SQL, you need to set these to something real that points to your databases (only relevant if you set DEPLOY_SERVER_SQL to true, otherwise ignored)
         public static string DEPLOY_SQL_CONNECTION_STRING_CHARACTERS = "Server=127.0.0.1;Database=acore_characters;Uid=root;Pwd=rootpass;";
@@ -167,14 +167,13 @@ namespace EQWOWConverter
         // Player
         //=====================================================================
         // If true, new players created will use the everquest start locations defined in PlayerClassRaceProperties
-        // WARNING: This will DELETE the existing start locations in WoW zones, so be certain you want this enabled before deploying
-        public static bool PLAYER_USE_EQ_START_LOCATION = true;
+        public static bool PLAYER_USE_EQ_START_LOCATION = false;
 
         // If true, players will start with an EQ item loadout instead of a WOW item loadout
-        public static bool PLAYER_USE_EQ_START_ITEMS = true;
+        public static bool PLAYER_USE_EQ_START_ITEMS = false;
 
         // If true, this will also add a hearthstone if using EQ items
-        public static bool PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS = false;
+        public static bool PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS = true;
 
         // If true, players start with a bind and gate spell regardless of class (with no costs)
         public static bool PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START = true;
