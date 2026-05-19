@@ -17,6 +17,7 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.Items;
+using EQWOWConverter.Player;
 using EQWOWConverter.Tradeskills;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
@@ -517,16 +518,17 @@ namespace EQWOWConverter.Spells
         private static void PopulateAllClassLearnScrollProperties(ref SpellTemplate spellTemplate, Dictionary<string, string> rowColumns)
         {
             // In EQ, a scroll can be learned by multiple classes at different levels
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Warrior, "warrior", "bard");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Paladin, "paladin");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Hunter, "ranger", "beastlord");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Rogue, "monk", "rogue");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Priest, "cleric", "enchanter");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.DeathKnight, "shadowknight");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Shaman, "shaman");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Mage, "magician", "wizard");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Warlock, "necromancer");
-            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Druid, "druid");
+            Dictionary<ClassWOWType, List<ClassEQType>> eqClassesByWOWClass = PlayerClassMapping.GetAllEQClassesByWOWClass();
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Warrior, eqClassesByWOWClass[ClassWOWType.Warrior]);
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Paladin, eqClassesByWOWClass[ClassWOWType.Paladin]);
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Hunter, eqClassesByWOWClass[ClassWOWType.Hunter]);
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Rogue, eqClassesByWOWClass[ClassWOWType.Rogue]);
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Priest, eqClassesByWOWClass[ClassWOWType.Priest]);
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.DeathKnight, eqClassesByWOWClass[ClassWOWType.DeathKnight]);
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Shaman, eqClassesByWOWClass[ClassWOWType.Shaman]);
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Mage, eqClassesByWOWClass[ClassWOWType.Mage]);
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Warlock, eqClassesByWOWClass[ClassWOWType.Warlock]);
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassWOWType.Druid, eqClassesByWOWClass[ClassWOWType.Druid]);
         }
 
         private static UInt32 GetSchoolMaskForResistType(int eqResistType)
@@ -560,13 +562,14 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        private static void PopulateClassLearnScrollProperties(ref SpellTemplate spellTemplate, Dictionary<string, string> rowColumns, ClassWOWType wowClassType, params string[] eqClassNames)
+        private static void PopulateClassLearnScrollProperties(ref SpellTemplate spellTemplate, Dictionary<string, string> rowColumns, ClassWOWType wowClassType, List<ClassEQType> eqClassTypes)
         {
             SpellLearnScrollProperties spellLearnScrollProperties = new SpellLearnScrollProperties();
             
             // Use the lowest learn level id properties
-            foreach(string className in eqClassNames)
+            foreach(ClassEQType eqClass in eqClassTypes)
             {
+                string className = eqClass.ToString().ToLower();
                 int curClassLearnlevel = int.Parse(rowColumns[string.Concat(className, "_learn_level")]);
                 if (curClassLearnlevel != -1 && curClassLearnlevel <= 100 && (curClassLearnlevel < spellLearnScrollProperties.LearnLevel || spellLearnScrollProperties.LearnLevel == -1))
                 {
