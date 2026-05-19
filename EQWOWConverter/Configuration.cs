@@ -184,6 +184,12 @@ namespace EQWOWConverter
         // Default value here is max that allows all but Halfling doors to be entered by all, which seems to be just above Night Elf Female
         public static float PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX = 2.275f;
 
+        // If true, all wow classes will gain access to the related skills from level 1, per class alignments in PlayerClassMappings.csv
+        public static bool PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES = true;
+        public static bool PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES = true;
+        public static bool PLAYER_SKILL_ENABLE_ALL_EQ_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES = true;
+        public static bool PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES = true;
+
         //=====================================================================
         // Zone General
         //=====================================================================
@@ -494,11 +500,6 @@ namespace EQWOWConverter
         // that can be clicked from inventory.  WOW doesn't let you click equipable spell items
         // from inventory
         public static bool ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS = true;
-
-        // If this is true, then weapons and armor that allow all normally-aligned classes to be
-        //  classified as 'all'.  For example: Bronze Breastplate allows all plate classes, so
-        //  it will have the classes allowed list set to 'any'
-        public static bool ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP = true;
 
         // This is how much 'weight' the lower stat has when converting EQ to WoW stats, with 
         //  values closer to 1 leaning towards the lower stat, and further from 1 leaning towards
@@ -1055,6 +1056,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("PLAYER_USE_EQ_START_ITEMS", PLAYER_USE_EQ_START_ITEMS, "If true, players will start with an EQ item loadout instead of a WOW item loadout");
             OutputVariableToConfig("PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS", PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS, "If true, this will also add a hearthstone if using EQ items");
             OutputVariableToConfig("PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START", PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START, "If true, players start with a bind and gate spell regardless of class (with no costs)");
+            OutputVariableToConfig("PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES, "If true, all wow classes will gain access to the related skills from level 1, per class alignments in PlayerClassMappings.csv", false);
+            OutputVariableToConfig("PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES, "", false);
+            OutputVariableToConfig("PLAYER_SKILL_ENABLE_ALL_EQ_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_ALL_EQ_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES, "", false);
+            OutputVariableToConfig("PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES, "");
             OutputTextLineToConfig("# If true, Priests of Discord (in Norrath) will teleport players to Azeroth, and Azeroth will have Priests of Discord to send players back to Norrath");
             OutputVariableToConfig("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION, "Note that CreatureFactionClassAlignment.csv and CreatureFactionRaceAlignment.csv factor into Norrath destinations", false);
             OutputVariableToConfig("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID, "");
@@ -1226,7 +1231,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", ITEMS_WEAPON_EFFECT_PPM_BASE_RATE, "This is the base PPM (Procs Per Minute) used for weapon proc weapons");
             OutputVariableToConfig("ITEMS_SHOW_WORN_EFFECT_AURA_ICON", ITEMS_SHOW_WORN_EFFECT_AURA_ICON, "If true, gear that has a worn effect will show as a buff on the character");
             OutputVariableToConfig("ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS", ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS, "If true, any item that is clickable item that also has a spell will be replaced with a container item that contains both the equippable item as well as a non-equipable version that can be clicked from inventory.");
-            OutputVariableToConfig("ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP", ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP, "If this is true, then weapons and armor that allow all normally-aligned classes to be classified as 'all'.");
             OutputVariableToConfig("ITEMS_STATS_LOW_BIAS_WEIGHT", ITEMS_STATS_LOW_BIAS_WEIGHT, "This is how much 'weight' the lower stat has when converting EQ to WoW stats, with values closer to 1 leaning towards the lower stat, and further from 1 leaning towards the higher stat.");
             OutputVariableToConfig("ITEMS_BAG_SLOT_MULTIPLIER", ITEMS_BAG_SLOT_MULTIPLIER, "How much to multiple the slot size of a bag in EQ.  EQ allows for 2x the number bags of WOW (not including starter)");
             OutputVariableToConfig("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT, "When ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED is true, this is how much to increase bag size by");
@@ -1502,6 +1506,10 @@ namespace EQWOWConverter
             PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START = ReadVariableFromConfigString("PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START", configValuesByVariableName, PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START);
             PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED = ReadVariableFromConfigString("PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED", configValuesByVariableName, PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED);
             PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX = ReadVariableFromConfigString("PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX", configValuesByVariableName, PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX);
+            PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES);
+            PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES);
+            PLAYER_SKILL_ENABLE_ALL_EQ_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_ALL_EQ_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_ALL_EQ_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES);
+            PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES);
 
             ZONE_SHOW_STATIC_GEOMETRY = ReadVariableFromConfigString("ZONE_SHOW_STATIC_GEOMETRY", configValuesByVariableName, ZONE_SHOW_STATIC_GEOMETRY);
             ZONE_MAX_FACES_PER_WMOGROUP = ReadVariableFromConfigString("ZONE_MAX_FACES_PER_WMOGROUP", configValuesByVariableName, ZONE_MAX_FACES_PER_WMOGROUP);
@@ -1629,7 +1637,6 @@ namespace EQWOWConverter
             ITEMS_WEAPON_EFFECT_PPM_BASE_RATE = ReadVariableFromConfigString("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", configValuesByVariableName, ITEMS_WEAPON_EFFECT_PPM_BASE_RATE);
             ITEMS_SHOW_WORN_EFFECT_AURA_ICON = ReadVariableFromConfigString("ITEMS_SHOW_WORN_EFFECT_AURA_ICON", configValuesByVariableName, ITEMS_SHOW_WORN_EFFECT_AURA_ICON);
             ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS = ReadVariableFromConfigString("ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS", configValuesByVariableName, ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS);
-            ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP = ReadVariableFromConfigString("ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP", configValuesByVariableName, ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP);
             ITEMS_STATS_LOW_BIAS_WEIGHT = ReadVariableFromConfigString("ITEMS_STATS_LOW_BIAS_WEIGHT", configValuesByVariableName, ITEMS_STATS_LOW_BIAS_WEIGHT);
             ITEMS_BAG_SLOT_MULTIPLIER = ReadVariableFromConfigString("ITEMS_BAG_SLOT_MULTIPLIER", configValuesByVariableName, ITEMS_BAG_SLOT_MULTIPLIER);
             ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED = ReadVariableFromConfigString("ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED", configValuesByVariableName, ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED);

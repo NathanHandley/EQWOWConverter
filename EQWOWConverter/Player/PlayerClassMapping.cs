@@ -15,14 +15,27 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Items;
 
 namespace EQWOWConverter.Player
 {
     internal class PlayerClassMapping
     {
+        private static Dictionary<ClassEQType, ItemWOWArmorSubclassType> WOWMaxArmorClassTypeByEQClass = new Dictionary<ClassEQType, ItemWOWArmorSubclassType>();
         private static Dictionary<ClassEQType, List<ClassWOWType>> WOWClassesByEQClass = new Dictionary<ClassEQType, List<ClassWOWType>>();
         private static Dictionary<ClassWOWType, List<ClassEQType>> EQClassesByWOWClass = new Dictionary<ClassWOWType, List<ClassEQType>>();
+        private static HashSet<ClassWOWType> WOWClassesWhichShouldHaveArchery = new HashSet<ClassWOWType>();
         private static readonly object ClassesLock = new object();
+
+        public static HashSet<ClassWOWType> GetWhichWOWClassesHaveArchery()
+        {
+            lock (ClassesLock)
+            {
+                if (WOWClassesByEQClass.Count == 0)
+                    PopulateClassMap();
+                return WOWClassesWhichShouldHaveArchery;
+            }
+        }
 
         public static List<ClassWOWType> GetWOWClassesForEQClass(ClassEQType eqClass)
         {
@@ -33,6 +46,19 @@ namespace EQWOWConverter.Player
                 if (WOWClassesByEQClass.ContainsKey(eqClass) == false)
                     return new List<ClassWOWType>();
                 return WOWClassesByEQClass[eqClass];
+            }
+        }
+
+        public static ItemWOWArmorSubclassType GetMaxArmorTypeForEQClass(ClassEQType eqClass)
+        {
+            lock (ClassesLock)
+            {
+                if (WOWClassesByEQClass.Count == 0)
+                    PopulateClassMap();
+                if (WOWMaxArmorClassTypeByEQClass.ContainsKey(eqClass) == false)
+                    return ItemWOWArmorSubclassType.Cloth;
+                else
+                    return WOWMaxArmorClassTypeByEQClass[eqClass];
             }
         }
 
@@ -50,7 +76,7 @@ namespace EQWOWConverter.Player
         {
             lock (ClassesLock)
             {
-                if (EQClassesByWOWClass.Count == 0)
+                if (WOWClassesByEQClass.Count == 0)
                     PopulateClassMap();
                 return EQClassesByWOWClass;
             }
@@ -59,11 +85,16 @@ namespace EQWOWConverter.Player
         private static void PopulateClassMap()
         {
             EQClassesByWOWClass.Clear();
+            WOWClassesWhichShouldHaveArchery.Clear();
             foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
                 EQClassesByWOWClass.Add(wowClassType, new List<ClassEQType>());
+            WOWMaxArmorClassTypeByEQClass.Clear();
             WOWClassesByEQClass.Clear();
             foreach (ClassEQType eqClassType in Enum.GetValues(typeof(ClassEQType)))
+            {
+                WOWMaxArmorClassTypeByEQClass.Add(eqClassType, ItemWOWArmorSubclassType.Cloth);
                 WOWClassesByEQClass.Add(eqClassType, new List<ClassWOWType>());
+            }
 
             string classMapFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "PlayerClassMapping.csv");
             Logger.WriteDebug(string.Concat("Populating player class map via file '", classMapFile, "'"));
@@ -115,8 +146,29 @@ namespace EQWOWConverter.Player
                             continue;
                         }
                 }
-                WOWClassesByEQClass[eqClass].Add(wowClass);
-                EQClassesByWOWClass[wowClass].Add(eqClass);
+                if (WOWClassesByEQClass[eqClass].Contains(wowClass) == false)
+                    WOWClassesByEQClass[eqClass].Add(wowClass);
+                if (EQClassesByWOWClass[wowClass].Contains(eqClass) == false)
+                    EQClassesByWOWClass[wowClass].Add(eqClass);
+
+                // Armor type
+                ItemWOWArmorSubclassType itemWOWArmorSubclassType = ItemWOWArmorSubclassType.Cloth;
+                switch (columns["Max_Armor_Class"].ToLower().Trim())
+                {
+                    case "plate": itemWOWArmorSubclassType = ItemWOWArmorSubclassType.Plate; break;
+                    case "mail": itemWOWArmorSubclassType = ItemWOWArmorSubclassType.Mail;  break;
+                    case "leather": itemWOWArmorSubclassType = ItemWOWArmorSubclassType.Leather;  break;
+                    case "cloth": itemWOWArmorSubclassType = ItemWOWArmorSubclassType.Cloth; break;
+                    default:
+                        {
+                            Logger.WriteError("Unable to convert Max_Armor_Class from PlayerClassMapping from ", columns["WOW_Class"], "', so setting to Cloth");
+                        } break;
+                }
+                WOWMaxArmorClassTypeByEQClass[eqClass] = itemWOWArmorSubclassType;
+
+                // Archery / Bows
+                if (columns["Has_Archery"].Trim() == "1")
+                    WOWClassesWhichShouldHaveArchery.Add(wowClass);
             }
         }
     }

@@ -18,6 +18,7 @@ using EQWOWConverter.Common;
 using EQWOWConverter.Spells;
 using EQWOWConverter.Quests;
 using System.Text;
+using EQWOWConverter.Player;
 
 namespace EQWOWConverter.Items
 {
@@ -761,68 +762,32 @@ namespace EQWOWConverter.Items
 
         private static List<ClassWOWType> GetClassTypesFromClassMask(int classMask, int classID, int subClassID)
         {
-            List<ClassWOWType> classTypes = new List<ClassWOWType>();
+            HashSet<ClassWOWType> classTypes = new HashSet<ClassWOWType>();
 
+            // "all" items
             if (classMask <= 0 || classMask >= 32767)
             {
                 classTypes.Add(ClassWOWType.All);
-                return classTypes;
+                return classTypes.ToList();
             }
-
-            if (IsPackedClassMask(ClassEQType.Necromancer, classMask))
-                classTypes.Add(ClassWOWType.Warlock);
-            if (IsPackedClassMask(ClassEQType.Wizard, classMask) || IsPackedClassMask(ClassEQType.Magician, classMask))
-                classTypes.Add(ClassWOWType.Mage);
-            if (IsPackedClassMask(ClassEQType.Beastlord, classMask) || IsPackedClassMask(ClassEQType.Ranger, classMask))
-                classTypes.Add(ClassWOWType.Hunter);
-            if (IsPackedClassMask(ClassEQType.Monk, classMask) || IsPackedClassMask(ClassEQType.Rogue, classMask))
-                classTypes.Add(ClassWOWType.Rogue);
-            if (IsPackedClassMask(ClassEQType.Bard, classMask) || IsPackedClassMask(ClassEQType.Warrior, classMask))
-                classTypes.Add(ClassWOWType.Warrior);
-            if (IsPackedClassMask(ClassEQType.Shaman, classMask))
-                classTypes.Add(ClassWOWType.Shaman);
-            if (IsPackedClassMask(ClassEQType.Druid, classMask))
-                classTypes.Add(ClassWOWType.Druid);
-            if (IsPackedClassMask(ClassEQType.Paladin, classMask))
-                classTypes.Add(ClassWOWType.Paladin);
-            if (IsPackedClassMask(ClassEQType.ShadowKnight, classMask))
-                classTypes.Add(ClassWOWType.DeathKnight);
-            if (IsPackedClassMask(ClassEQType.Cleric, classMask) || IsPackedClassMask(ClassEQType.Enchanter, classMask))
-                classTypes.Add(ClassWOWType.Priest);
-
-            // If set, collapse common armors and weapons
-            if (Configuration.ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP == true)
-            {
-                // Weapon
-                if (classID == 2)
-                {
-                    if (classTypes.Count >= 3)
-                    {
-                        classTypes.Clear();
-                        classTypes.Add(ClassWOWType.All);
-                    }
-                }
-
-                // Armor
-                else if (classID == 4)
-                {
-                    // Leather and higher
-                    if (subClassID >= 2 && classTypes.Count >= 4)
-                    {
-                        classTypes.Clear();
-                        classTypes.Add(ClassWOWType.All);
-                    }
-                }
-            }
-
             // Arrows should be usable by all unless only a specific class is allowed
             if (classID == 6 && subClassID == 2 && classTypes.Count != 1)
             {
-                classTypes.Clear();
                 classTypes.Add(ClassWOWType.All);
+                return classTypes.ToList();
             }
 
-            return classTypes;
+            // Class-specific
+            foreach (ClassEQType eqClassType in Enum.GetValues(typeof(ClassEQType)))
+            {
+                if (IsPackedClassMask(eqClassType, classMask) == true)
+                {
+                    List<ClassWOWType> wowClasses = PlayerClassMapping.GetWOWClassesForEQClass(eqClassType);
+                    foreach (ClassWOWType wowClass in wowClasses)
+                        classTypes.Add(wowClass);
+                }
+            }
+            return classTypes.ToList();
         }
 
         private static bool IsPackedClassMask(ClassEQType itemClassBitmaskType, int classMask)
