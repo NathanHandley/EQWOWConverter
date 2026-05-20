@@ -800,7 +800,7 @@ namespace EQWOWConverter.Items
             }
             else if (classID == 4) // Armor
             {
-                HashSet<ClassWOWType> eligibleClassesForArmorType = PlayerClassMapping.GetWOWClassesEligibleForArmor((ItemWOWArmorSubclassType)subClassID);
+                HashSet<ClassWOWType> eligibleClassesForArmorType = PlayerClassMapping.GetWOWClassesEligibleForArmorType((ItemWOWArmorSubclassType)subClassID);
                 if (eligibleClassesForArmorType.SetEquals(classTypes) == true)
                 {
                     classTypes.Clear();

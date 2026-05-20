@@ -269,7 +269,7 @@ namespace EQWOWConverter.Player
             }
         }
 
-        public static HashSet<ClassWOWType> GetWOWClassesEligibleForArmor(ItemWOWArmorSubclassType armorType)
+        public static HashSet<ClassWOWType> GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType armorType)
         {
             lock (ClassesLock)
             {
