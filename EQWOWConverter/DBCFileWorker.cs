@@ -524,6 +524,11 @@ namespace EQWOWConverter
                 List<ClassWOWType> daggerClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Dagger).ToList();
                 skillRaceClassInfoDBC.AddRow(173, daggerClasses);
             }
+            if (Configuration.PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES == true)
+            {
+                List<ClassWOWType> bowClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Bow).ToList();
+                skillRaceClassInfoDBC.AddRow(45, bowClasses);
+            }
 
             // Spells
             for (int i = 0; i < 23; i++)

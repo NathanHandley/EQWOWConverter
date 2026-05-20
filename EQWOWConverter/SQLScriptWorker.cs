@@ -76,7 +76,8 @@ namespace EQWOWConverter
         private ModEverquestItemTemplateSQL modEverquestItemTemplateSQL = new ModEverquestItemTemplateSQL();
         private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
         private ModEverquestPlayerCreateInfoSQL modEverquestPlayerCreateInfoSQL = new ModEverquestPlayerCreateInfoSQL();
-        private ModEverquestPlayerAutoLearnSkills modEverquestPlayerAutoLearnSkillsSQL = new ModEverquestPlayerAutoLearnSkills();
+        private ModEverquestPlayerAutoLearnSkillsSQL modEverquestPlayerAutoLearnSkillsSQL = new ModEverquestPlayerAutoLearnSkillsSQL();
+        private ModEverquestPlayerAutoLearnSpellsSQL modEverquestPlayerAutoLearnSpellsSQL = new ModEverquestPlayerAutoLearnSpellsSQL();
         private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
         private ModEverquestSystemConfigsSQL modEverquestSystemConfigsSQL = new ModEverquestSystemConfigsSQL();
         private ModEverquestTransportTriggerSQL modEverquestTransportTriggerSQL = new ModEverquestTransportTriggerSQL();
@@ -850,18 +851,27 @@ namespace EQWOWConverter
                 }
             }
 
-            // Autolearn Skills
+            // Autolearn Skills / Spells
             if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
             {
                 List<ClassWOWType> leatherClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Leather).ToList();
                 foreach (ClassWOWType wowClassType in leatherClasses)
+                {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 414);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 9077);
+                }
                 List<ClassWOWType> mailClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Mail).ToList();
                 foreach (ClassWOWType wowClassType in mailClasses)
+                {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 413);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 8737);
+                }
                 List<ClassWOWType> plateClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Plate).ToList();
                 foreach (ClassWOWType wowClassType in plateClasses)
+                {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 293);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 750);
+                }
 
             }
             if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
@@ -869,41 +879,84 @@ namespace EQWOWConverter
                 foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
                 {
                     if (wowClassType != ClassWOWType.All && wowClassType != ClassWOWType.None)
+                    {
                         modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 433);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 9116);
+                    }
+                }
+            }
+            if (Configuration.PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES == true)
+            {
+                List<ClassWOWType> bowClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Bow).ToList();
+                foreach (ClassWOWType wowClassType in bowClasses)
+                {
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 45);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 264);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 3018); // Shoot
                 }
             }
             if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == true)
             {
                 List<ClassWOWType> axeOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeOneHand).ToList();
                 foreach (ClassWOWType wowClassType in axeOneHandClasses)
+                {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 44);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 196);
+                }
                 List<ClassWOWType> axeTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeTwoHand).ToList();
                 foreach (ClassWOWType wowClassType in axeTwoHandClasses)
+                {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 172);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 197);
+                }
                 List<ClassWOWType> maceOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceOneHand).ToList();
                 foreach (ClassWOWType wowClassType in maceOneHandClasses)
+                {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 54);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 198);
+                }
                 List<ClassWOWType> maceTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceTwoHand).ToList();
                 foreach (ClassWOWType wowClassType in maceTwoHandClasses)
+                {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 160);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 199);
+                }
                 List<ClassWOWType> polearmClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Polearm).ToList();
                 foreach (ClassWOWType wowClassType in polearmClasses)
+                {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 229);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 200);
+                }
                 List<ClassWOWType> swordOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordOneHand).ToList();
                 foreach (ClassWOWType wowClassType in swordOneHandClasses)
+                {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 43);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 201);
+                }
                 List<ClassWOWType> swordTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordTwoHand).ToList();
                 foreach (ClassWOWType wowClassType in swordTwoHandClasses)
+                {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 55);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 202);
+                }
                 List<ClassWOWType> staffClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Staff).ToList();
                 foreach (ClassWOWType wowClassType in staffClasses)
+                {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 136);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 227);
+                }
                 List<ClassWOWType> fistWeaponClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.FistWeapon).ToList();
                 foreach (ClassWOWType wowClassType in fistWeaponClasses)
+                {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 473);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 15590);
+                }
                 List<ClassWOWType> daggerClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Dagger).ToList();
                 foreach (ClassWOWType wowClassType in daggerClasses)
+                {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 173);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 1180);
+                }
             }
         }
 
@@ -1462,6 +1515,7 @@ namespace EQWOWConverter
             modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);
             modEverquestPlayerCreateInfoSQL.SaveToDisk("mod_everquest_playercreateinfo", SQLFileType.World);
             modEverquestPlayerAutoLearnSkillsSQL.SaveToDisk("mod_everquest_playerautolearnskills", SQLFileType.World);
+            modEverquestPlayerAutoLearnSpellsSQL.SaveToDisk("mod_everquest_playerautolearnspells", SQLFileType.World);
             modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
             modEverquestSystemConfigsSQL.SaveToDisk("mod_everquest_systemconfigs", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);

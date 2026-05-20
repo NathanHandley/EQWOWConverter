@@ -18,24 +18,24 @@ using System.Text;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class ModEverquestPlayerAutoLearnSkills : SQLFile
+    internal class ModEverquestPlayerAutoLearnSpellsSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DROP TABLE IF EXISTS `mod_everquest_playerautolearnskills`; ");
-            stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_playerautolearnskills` ( ");
+            stringBuilder.AppendLine("DROP TABLE IF EXISTS `mod_everquest_playerautolearnspells`; ");
+            stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_playerautolearnspells` ( ");
             stringBuilder.AppendLine("`class` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
-            stringBuilder.AppendLine("`skill` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
-            stringBuilder.AppendLine("PRIMARY KEY (`class`, `skill`) USING BTREE); ");
+            stringBuilder.AppendLine("`spell` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("PRIMARY KEY (`class`, `spell`) USING BTREE); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int classID, int skillID)
+        public void AddRow(int classID, int spellID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("class", classID);
-            newRow.AddInt("skill", skillID);
+            newRow.AddInt("spell", spellID);
             Rows.Add(newRow);
         }
     }

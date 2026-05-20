@@ -126,6 +126,12 @@ namespace EQWOWConverter.Player
                                 eligibleClasses.Add(ClassWOWType.Warlock);
                                 eligibleClasses.Add(ClassWOWType.Druid);
                             } break;
+                        case ItemWOWWeaponSubclassType.Bow:
+                            {
+                                eligibleClasses.Add(ClassWOWType.Warrior);
+                                eligibleClasses.Add(ClassWOWType.Hunter);
+                                eligibleClasses.Add(ClassWOWType.Rogue);
+                            } break;
                         default: break;
                     }
                 }
@@ -207,6 +213,15 @@ namespace EQWOWConverter.Player
                                 eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Shaman]);
                                 eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
                             } break;
+                        case ItemWOWWeaponSubclassType.Bow: // Archery
+                            {
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Rogue]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
+                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
+                            }
+                            break;
                         default: break;
                     }
                 }
