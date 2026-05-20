@@ -76,6 +76,7 @@ namespace EQWOWConverter
         private ModEverquestItemTemplateSQL modEverquestItemTemplateSQL = new ModEverquestItemTemplateSQL();
         private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
         private ModEverquestPlayerCreateInfoSQL modEverquestPlayerCreateInfoSQL = new ModEverquestPlayerCreateInfoSQL();
+        private ModEverquestPlayerAutoLearnSkills modEverquestPlayerAutoLearnSkillsSQL = new ModEverquestPlayerAutoLearnSkills();
         private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
         private ModEverquestSystemConfigsSQL modEverquestSystemConfigsSQL = new ModEverquestSystemConfigsSQL();
         private ModEverquestTransportTriggerSQL modEverquestTransportTriggerSQL = new ModEverquestTransportTriggerSQL();
@@ -135,8 +136,7 @@ namespace EQWOWConverter
             PopulateItemData(itemLootTemplatesByCreatureTemplateID, spellTemplatesByEQID);
 
             // Player start properties
-            if (Configuration.PLAYER_USE_EQ_START_LOCATION == true && zonePropertiesByShortName.Count > 0)
-                PopulatePlayerStartData(zones, mapIDsByShortName);
+            PopulatePlayerLoadData(zones, mapIDsByShortName);
 
             // Quests
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
@@ -825,26 +825,85 @@ namespace EQWOWConverter
                     creatureLootTableSQL.AddRow(itemLootTemplate);
         }
 
-        private void PopulatePlayerStartData(List<Zone> zones, Dictionary<string, int> mapIDsByShortName)
+        private void PopulatePlayerLoadData(List<Zone> zones, Dictionary<string, int> mapIDsByShortName)
         {
-            // Restrict to loaded zones
-            Dictionary<string, int> areaIDsByShortName = new Dictionary<string, int>();
-            foreach (Zone zone in zones)
+            // Player Start Data
+            if (Configuration.PLAYER_USE_EQ_START_LOCATION == true && zones.Count > 0)
             {
-                areaIDsByShortName.Add(zone.ShortName.ToLower().Trim(), Convert.ToInt32(zone.DefaultArea.DBCAreaTableID));
-            }
-            foreach (var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
-            {
-                string startZoneShortName = classRaceProperties.Value.StartZoneShortName;
-                if (mapIDsByShortName.ContainsKey(classRaceProperties.Value.StartZoneShortName) == false)
+                Dictionary<string, int> areaIDsByShortName = new Dictionary<string, int>();
+                foreach (Zone zone in zones)
                 {
-                    Logger.WriteDebug(string.Concat("Could not map player location for zone short name '", classRaceProperties.Value.StartZoneShortName, "' since no zone was loaded with that shortname.  Using a fallback"));
-                    startZoneShortName = mapIDsByShortName.First().Key;
+                    areaIDsByShortName.Add(zone.ShortName.ToLower().Trim(), Convert.ToInt32(zone.DefaultArea.DBCAreaTableID));
                 }
+                foreach (var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
+                {
+                    string startZoneShortName = classRaceProperties.Value.StartZoneShortName;
+                    if (mapIDsByShortName.ContainsKey(classRaceProperties.Value.StartZoneShortName) == false)
+                    {
+                        Logger.WriteDebug(string.Concat("Could not map player location for zone short name '", classRaceProperties.Value.StartZoneShortName, "' since no zone was loaded with that shortname.  Using a fallback"));
+                        startZoneShortName = mapIDsByShortName.First().Key;
+                    }
 
-                modEverquestPlayerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[startZoneShortName],
-                    areaIDsByShortName[startZoneShortName], classRaceProperties.Value.StartPositionX, classRaceProperties.Value.StartPositionY,
-                    classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation);
+                    modEverquestPlayerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[startZoneShortName],
+                        areaIDsByShortName[startZoneShortName], classRaceProperties.Value.StartPositionX, classRaceProperties.Value.StartPositionY,
+                        classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation);
+                }
+            }
+
+            // Autolearn Skills
+            if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
+            {
+                List<ClassWOWType> leatherClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Leather).ToList();
+                foreach (ClassWOWType wowClassType in leatherClasses)
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 414);
+                List<ClassWOWType> mailClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Mail).ToList();
+                foreach (ClassWOWType wowClassType in mailClasses)
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 413);
+                List<ClassWOWType> plateClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Plate).ToList();
+                foreach (ClassWOWType wowClassType in plateClasses)
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 293);
+
+            }
+            if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
+            {
+                foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
+                {
+                    if (wowClassType != ClassWOWType.All && wowClassType != ClassWOWType.None)
+                        modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 433);
+                }
+            }
+            if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == true)
+            {
+                List<ClassWOWType> axeOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeOneHand).ToList();
+                foreach (ClassWOWType wowClassType in axeOneHandClasses)
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 44);
+                List<ClassWOWType> axeTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeTwoHand).ToList();
+                foreach (ClassWOWType wowClassType in axeTwoHandClasses)
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 172);
+                List<ClassWOWType> maceOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceOneHand).ToList();
+                foreach (ClassWOWType wowClassType in maceOneHandClasses)
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 54);
+                List<ClassWOWType> maceTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceTwoHand).ToList();
+                foreach (ClassWOWType wowClassType in maceTwoHandClasses)
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 160);
+                List<ClassWOWType> polearmClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Polearm).ToList();
+                foreach (ClassWOWType wowClassType in polearmClasses)
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 229);
+                List<ClassWOWType> swordOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordOneHand).ToList();
+                foreach (ClassWOWType wowClassType in swordOneHandClasses)
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 43);
+                List<ClassWOWType> swordTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordTwoHand).ToList();
+                foreach (ClassWOWType wowClassType in swordTwoHandClasses)
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 55);
+                List<ClassWOWType> staffClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Staff).ToList();
+                foreach (ClassWOWType wowClassType in staffClasses)
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 136);
+                List<ClassWOWType> fistWeaponClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.FistWeapon).ToList();
+                foreach (ClassWOWType wowClassType in fistWeaponClasses)
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 473);
+                List<ClassWOWType> daggerClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Dagger).ToList();
+                foreach (ClassWOWType wowClassType in daggerClasses)
+                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 173);
             }
         }
 
@@ -1402,6 +1461,7 @@ namespace EQWOWConverter
             modEverquestItemTemplateSQL.SaveToDisk("mod_everquest_item_template", SQLFileType.World);
             modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);
             modEverquestPlayerCreateInfoSQL.SaveToDisk("mod_everquest_playercreateinfo", SQLFileType.World);
+            modEverquestPlayerAutoLearnSkillsSQL.SaveToDisk("mod_everquest_playerautolearnskills", SQLFileType.World);
             modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
             modEverquestSystemConfigsSQL.SaveToDisk("mod_everquest_systemconfigs", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);

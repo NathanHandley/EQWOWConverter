@@ -16,7 +16,6 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
-using EQWOWConverter.Creatures.Teleporters;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
@@ -27,6 +26,7 @@ using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using System.Text;
+using static EQWOWConverter.WOWFiles.DBCFile;
 
 namespace EQWOWConverter
 {
@@ -161,6 +161,8 @@ namespace EQWOWConverter
             //skillLineDBC.LoadFromDisk(dbcInputFolder, "SkillLine.dbc");
             SkillLineAbilityDBC skillLineAbilityDBC = new SkillLineAbilityDBC();
             skillLineAbilityDBC.LoadFromDisk(dbcInputFolder, "SkillLineAbility.dbc");
+            SkillRaceClassInfoDBC skillRaceClassInfoDBC = new SkillRaceClassInfoDBC();
+            skillRaceClassInfoDBC.LoadFromDisk(dbcInputFolder, "SkillRaceClassInfo.dbc");
             SoundAmbienceDBC soundAmbienceDBC = new SoundAmbienceDBC();
             soundAmbienceDBC.LoadFromDisk(dbcInputFolder, "SoundAmbience.dbc");
             SoundEntriesDBC soundEntriesDBC = new SoundEntriesDBC();
@@ -479,9 +481,49 @@ namespace EQWOWConverter
             spellVisualDBC.AddRow(ItemDisplayInfo.IT159SpellVisualID, 0, 0, 0, ItemDisplayInfo.IT159SpellVisualStateKitID);
             spellVisualKitDBC.AddRow(ItemDisplayInfo.IT159SpellVisualStateKitID, -1, 0, 0, 0, 0, ItemDisplayInfo.IT159SpellVisualEffectNameID);
             spellVisualEffectNameDBC.AddRow(ItemDisplayInfo.IT159SpellVisualEffectNameID, "EQ Celestial Fists", ItemDisplayInfo.IT159RelativeFileName);
-            
+
             // SkillLine
-            //skillLineDBC.AddRow(Configuration.DBCID_SKILLLINE_ALTERATION_ID, "Alteration");            
+            //skillLineDBC.AddRow(Configuration.DBCID_SKILLLINE_ALTERATION_ID, "Alteration");
+
+            // Skills
+            if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
+            {
+                List<ClassWOWType> wowClassTypes = new List<ClassWOWType>();
+                wowClassTypes.Add(ClassWOWType.All);
+                skillRaceClassInfoDBC.AddRow(433, wowClassTypes);
+            }
+            if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
+            {
+                List<ClassWOWType> leatherClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Leather).ToList();
+                skillRaceClassInfoDBC.AddRow(414, leatherClasses);
+                List<ClassWOWType> mailClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Mail).ToList();
+                skillRaceClassInfoDBC.AddRow(413, mailClasses);
+                List<ClassWOWType> plateClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Plate).ToList();
+                skillRaceClassInfoDBC.AddRow(293, plateClasses);
+            }
+            if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == true)
+            {
+                List<ClassWOWType> axeOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeOneHand).ToList();
+                skillRaceClassInfoDBC.AddRow(44, axeOneHandClasses);
+                List<ClassWOWType> axeTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeTwoHand).ToList();
+                skillRaceClassInfoDBC.AddRow(172, axeTwoHandClasses);
+                List<ClassWOWType> maceOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceOneHand).ToList();
+                skillRaceClassInfoDBC.AddRow(54, maceOneHandClasses);
+                List<ClassWOWType> maceTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceTwoHand).ToList();
+                skillRaceClassInfoDBC.AddRow(160, maceTwoHandClasses);
+                List<ClassWOWType> polearmClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Polearm).ToList();
+                skillRaceClassInfoDBC.AddRow(229, polearmClasses);
+                List<ClassWOWType> swordOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordOneHand).ToList();
+                skillRaceClassInfoDBC.AddRow(42, swordOneHandClasses);
+                List<ClassWOWType> swordTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordTwoHand).ToList();
+                skillRaceClassInfoDBC.AddRow(55, swordTwoHandClasses);
+                List<ClassWOWType> staffClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Staff).ToList();
+                skillRaceClassInfoDBC.AddRow(136, staffClasses);
+                List<ClassWOWType> fistWeaponClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.FistWeapon).ToList();
+                skillRaceClassInfoDBC.AddRow(473, fistWeaponClasses);
+                List<ClassWOWType> daggerClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Dagger).ToList();
+                skillRaceClassInfoDBC.AddRow(173, daggerClasses);
+            }
 
             // Spells
             for (int i = 0; i < 23; i++)
@@ -702,6 +744,8 @@ namespace EQWOWConverter
             //skillLineDBC.SaveToDisk(dbcOutputServerFolder);
             skillLineAbilityDBC.SaveToDisk(dbcOutputClientFolder);
             skillLineAbilityDBC.SaveToDisk(dbcOutputServerFolder);
+            skillRaceClassInfoDBC.SaveToDisk(dbcOutputClientFolder);
+            skillRaceClassInfoDBC.SaveToDisk(dbcOutputServerFolder);
             soundAmbienceDBC.SaveToDisk(dbcOutputClientFolder);
             soundAmbienceDBC.SaveToDisk(dbcOutputServerFolder);
             soundEntriesDBC.SaveToDisk(dbcOutputClientFolder);

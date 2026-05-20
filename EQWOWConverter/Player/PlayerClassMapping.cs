@@ -286,7 +286,10 @@ namespace EQWOWConverter.Player
                         case ItemWOWArmorSubclassType.Cloth:
                             {
                                 foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
-                                    wowClasses.Add(wowClassType);
+                                {
+                                    if (wowClassType != ClassWOWType.All && wowClassType != ClassWOWType.None)
+                                        wowClasses.Add(wowClassType);
+                                }
                             } break;
                         default:
                             {
@@ -310,7 +313,10 @@ namespace EQWOWConverter.Player
                         case ItemWOWArmorSubclassType.Cloth:
                             {
                                 foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
-                                    wowClasses.Add(wowClassType);
+                                {
+                                    if (wowClassType != ClassWOWType.All && wowClassType != ClassWOWType.None)
+                                        wowClasses.Add(wowClassType);
+                                }
                             } break;
                         case ItemWOWArmorSubclassType.Leather:
                             {
@@ -345,7 +351,10 @@ namespace EQWOWConverter.Player
                                 {
                                     wowClasses.Clear();
                                     foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
-                                        wowClasses.Add(wowClassType);
+                                    {
+                                        if (wowClassType != ClassWOWType.All && wowClassType != ClassWOWType.None)
+                                            wowClasses.Add(wowClassType);
+                                    }
                                 }
                             } break;
                         default: break; // Nothing
@@ -403,7 +412,10 @@ namespace EQWOWConverter.Player
             EQClassesByWOWClass.Clear();
             WOWClassesWhichShouldHaveArchery.Clear();
             foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
-                EQClassesByWOWClass.Add(wowClassType, new List<ClassEQType>());
+            {
+                if (wowClassType != ClassWOWType.All && wowClassType != ClassWOWType.None)
+                    EQClassesByWOWClass.Add(wowClassType, new List<ClassEQType>());
+            }
             WOWMaxArmorClassTypeByEQClass.Clear();
             WOWClassesByEQClass.Clear();
             foreach (ClassEQType eqClassType in Enum.GetValues(typeof(ClassEQType)))

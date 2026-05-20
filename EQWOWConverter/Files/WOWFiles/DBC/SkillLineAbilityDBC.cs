@@ -23,7 +23,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SkillLineAbilityDBC : DBCFile
     {
-        private static int CUR_SPELL_DBCID = Configuration.DBCID_SKILLLINEABILITY_ID_START;
+        private static int CUR_SKILLLINEABILITY_DBCID = Configuration.DBCID_SKILLLINEABILITY_ID_START;
 
         public void AddRow(int id, SpellTemplate spellTemplate)
         {
@@ -62,8 +62,8 @@ namespace EQWOWConverter.WOWFiles
 
         public static int GenerateID()
         {
-            int spellID = CUR_SPELL_DBCID;
-            CUR_SPELL_DBCID++;
+            int spellID = CUR_SKILLLINEABILITY_DBCID;
+            CUR_SKILLLINEABILITY_DBCID++;
             return spellID;
         }
 
@@ -105,7 +105,7 @@ namespace EQWOWConverter.WOWFiles
             }
 
             // Update any skill references
-            if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == true)
+            if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
             {
                 List<ClassWOWType> leatherClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Leather).ToList();
                 List<ClassWOWType> mailClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Mail).ToList();

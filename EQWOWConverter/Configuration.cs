@@ -74,7 +74,7 @@ namespace EQWOWConverter
         // Core
         // ====================================================================
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CORE_MOD_VERSION = 8;
+        public static int CORE_MOD_VERSION = 9;
         
         // Plays a beep sound when the generate completes if set to true
         public static bool CORE_CONSOLE_BEEP_ON_COMPLETE = true;
@@ -772,6 +772,9 @@ namespace EQWOWConverter
 
         // ID for skill line abilities found in SkillLineAbility.dbc
         public static int DBCID_SKILLLINEABILITY_ID_START = 25000;
+
+        // ID for SkillRaceClassInfo.dbc
+        public static int DBCID_SKILLRACECLASSINFO_ID_START = 1010;
 
         // ID for sounds found in SoundEntries.dbc
         public static int DBCID_SOUNDENTRIES_ID_START = 22000;
