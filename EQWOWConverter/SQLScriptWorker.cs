@@ -736,10 +736,12 @@ namespace EQWOWConverter
 
                     if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true && pathEntries.Count > 0)
                         creatureTemplate.SubName = spawnInstance.ID + " WP " + pathEntries[0].GridID;
-
+                    Vector3 spawnPosition = new Vector3(spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition);
+                    if (Configuration.CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH == true)
+                        spawnPosition = new Vector3(pathEntries[0].NodeX, pathEntries[0].NodeY, pathEntries[0].NodeZ);
                     movementType = CreatureMovementType.Path;
-                    creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
-                        spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment, useModScript);
+                    creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnPosition.X,
+                        spawnPosition.Y, spawnPosition.Z, spawnInstance.Orientation, movementType, comment, useModScript);
                 }
             }
             else
