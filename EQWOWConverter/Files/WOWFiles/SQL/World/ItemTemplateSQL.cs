@@ -169,7 +169,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("spellcategorycooldown_5", -1);
             newRow.AddInt("bonding", itemTemplate.IsNoDrop == true ? 1 : 0);
             newRow.AddString("description", 255, description);
-            newRow.AddInt("PageText", 0);
+            if (itemTemplate.BookTextReference != null)
+                newRow.AddInt("PageText", itemTemplate.BookTextReference.PageTextID);
+            else
+                newRow.AddInt("PageText", 0);
             newRow.AddInt("LanguageID", 0);
             newRow.AddInt("PageMaterial", 0);
             newRow.AddInt("startquest", 0);

@@ -902,9 +902,13 @@ namespace EQWOWConverter
         public static int SQL_ITEM_TEMPLATE_ENTRY_END = 134000;
         public static int SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START = 120000;
 
-        // Stand and end IDs for npc_text sql records
+        // Start and end IDs for npc_text sql records
         public static int SQL_NPCTEXT_ID_START = 80000;
         public static int SQL_NPCTEXT_ID_END = 99999;
+
+        // Start and end IDs for page_text SQL records
+        public static int SQL_PAGETEXT_ID_START = 3800;
+        public static int SQL_PAGETEXT_ID_END = 4800;
 
         // Start ID for pet_name_generation entries
         public static int SQL_PETNAMEGENERATION_ID_START = 400;
@@ -1413,8 +1417,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_START", SQL_ITEM_TEMPLATE_ENTRY_START, "", false);
             OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_END", SQL_ITEM_TEMPLATE_ENTRY_END, "", false);
             OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START", SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START, "");
-            OutputVariableToConfig("SQL_NPCTEXT_ID_START", SQL_NPCTEXT_ID_START, "Stand and end IDs for npc_text sql records", false);
+            OutputVariableToConfig("SQL_NPCTEXT_ID_START", SQL_NPCTEXT_ID_START, "Start and end IDs for npc_text sql records", false);
             OutputVariableToConfig("SQL_NPCTEXT_ID_END", SQL_NPCTEXT_ID_END, "");
+            OutputVariableToConfig("SQL_PAGETEXT_ID_START", SQL_PAGETEXT_ID_START, "Start and end IDs for page_text SQL records", false);
+            OutputVariableToConfig("SQL_PAGETEXT_ID_END", SQL_PAGETEXT_ID_END, "");
             OutputVariableToConfig("SQL_PETNAMEGENERATION_ID_START", SQL_PETNAMEGENERATION_ID_START, "Start ID for pet_name_generation entries");
             OutputVariableToConfig("SQL_POOL_TEMPLATE_ID_START", SQL_POOL_TEMPLATE_ID_START, "Start and end ID for pool_template data rows (reserve 40k records)", false);
             OutputVariableToConfig("SQL_POOL_TEMPLATE_ID_END", SQL_POOL_TEMPLATE_ID_END, "");
@@ -1812,6 +1818,8 @@ namespace EQWOWConverter
             SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START = ReadVariableFromConfigString("SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START", configValuesByVariableName, SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START);
             SQL_NPCTEXT_ID_START = ReadVariableFromConfigString("SQL_NPCTEXT_ID_START", configValuesByVariableName, SQL_NPCTEXT_ID_START);
             SQL_NPCTEXT_ID_END = ReadVariableFromConfigString("SQL_NPCTEXT_ID_END", configValuesByVariableName, SQL_NPCTEXT_ID_END);
+            SQL_PAGETEXT_ID_START = ReadVariableFromConfigString("SQL_PAGETEXT_ID_START", configValuesByVariableName, SQL_PAGETEXT_ID_START);
+            SQL_PAGETEXT_ID_END = ReadVariableFromConfigString("SQL_PAGETEXT_ID_END", configValuesByVariableName, SQL_PAGETEXT_ID_END);
             SQL_PETNAMEGENERATION_ID_START = ReadVariableFromConfigString("SQL_PETNAMEGENERATION_ID_START", configValuesByVariableName, SQL_PETNAMEGENERATION_ID_START);
             SQL_POOL_TEMPLATE_ID_START = ReadVariableFromConfigString("SQL_POOL_TEMPLATE_ID_START", configValuesByVariableName, SQL_POOL_TEMPLATE_ID_START);
             SQL_POOL_TEMPLATE_ID_END = ReadVariableFromConfigString("SQL_POOL_TEMPLATE_ID_END", configValuesByVariableName, SQL_POOL_TEMPLATE_ID_END);

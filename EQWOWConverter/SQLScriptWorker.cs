@@ -85,6 +85,7 @@ namespace EQWOWConverter
         private ModEverquestQuestReactionSQL modEverquestQuestReactionSQL = new ModEverquestQuestReactionSQL();
         private NPCTextSQL npcTextSQL = new NPCTextSQL();
         private NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
+        private PageTextSQL pageTextSQL = new PageTextSQL();
         private PetNameGenerationSQL petNameGenerationSQL = new PetNameGenerationSQL();
         private PlayerCreateInfoSpellCustomSQL playerCreateInfoSpellCustomSQL = new PlayerCreateInfoSpellCustomSQL();
         private PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
@@ -826,6 +827,10 @@ namespace EQWOWConverter
             foreach (var itemLootTemplateByCreatureTemplateID in itemLootTemplatesByCreatureTemplateID.Values)
                 foreach (ItemLootTemplate itemLootTemplate in itemLootTemplateByCreatureTemplateID)
                     creatureLootTableSQL.AddRow(itemLootTemplate);
+
+            // Page text (for books)
+            foreach (ItemTemplate.BookText bookText in ItemTemplate.GetAllBookTexts())
+                pageTextSQL.AddRow(bookText.PageTextID, bookText.Text);
         }
 
         private void PopulatePlayerLoadData(List<Zone> zones, Dictionary<string, int> mapIDsByShortName)
@@ -1525,6 +1530,7 @@ namespace EQWOWConverter
             modEverquestQuestReactionSQL.SaveToDisk("mod_everquest_quest_reaction", SQLFileType.World);
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
+            pageTextSQL.SaveToDisk("page_text", SQLFileType.World);
             petNameGenerationSQL.SaveToDisk("pet_name_generation", SQLFileType.World);
             playerCreateInfoSpellCustomSQL.SaveToDisk("playercreateinfo_spell_custom", SQLFileType.World);
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);

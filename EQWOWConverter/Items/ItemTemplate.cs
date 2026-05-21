@@ -17,8 +17,9 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.Spells;
 using EQWOWConverter.Quests;
-using System.Text;
 using EQWOWConverter.Player;
+using EQWOWConverter.WOWFiles;
+using System.Text;
 
 namespace EQWOWConverter.Items
 {
@@ -33,12 +34,21 @@ namespace EQWOWConverter.Items
             public int group;
         }
 
+        internal class BookText
+        {
+            public string Name = string.Empty;
+            public string Text = string.Empty;
+            public int PageTextID = 0;
+        }
+
+        private static Dictionary<string, BookText> BookTextsByName = new Dictionary<string, BookText>();
         private static Dictionary<string, Dictionary<string, float>> StatBaselinesBySlotAndStat = new Dictionary<string, Dictionary<string, float>>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByWOWEntryID = new SortedDictionary<int, ItemTemplate>();
         private static int CUR_ITEM_GENERATED_EQID = 50000;
         private static int CUR_ITEM_TEMPLATE_CREATURE_WOWID = Configuration.SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START;
-
+        private static readonly object ItemLock = new object();
+        
         public int EQItemID = 0;
         public int WOWEntryID = 0;
         public int WOWEntryIDForCreatureEquip = 0;
@@ -122,6 +132,7 @@ namespace EQWOWConverter.Items
         public ItemTemplate? ParentItemTemplate = null;
         public ItemFocusType FocusType = ItemFocusType.None;
         public int FocusValue = 0;
+        public BookText? BookTextReference = null;
         public Dictionary<ClassWOWType, int> ClassSpecificItemVersionsByWOWItemTemplateID = new Dictionary<ClassWOWType, int>(); // Used for quests
 
         public ItemTemplate()
@@ -141,6 +152,16 @@ namespace EQWOWConverter.Items
             ClassSpecificItemVersionsByWOWItemTemplateID.Clear();
             foreach (var spellScrollProperties in spellScrollPropertiesByClassType)
                 ClassSpecificItemVersionsByWOWItemTemplateID.Add(spellScrollProperties.Key, spellScrollProperties.Value.WOWItemTemplateID);
+        }
+
+        public static List<BookText> GetAllBookTexts()
+        {
+            lock (ItemLock)
+            {
+                if (BookTextsByName.Count == 0)
+                    PopulateBookTextFromDisk();
+                return BookTextsByName.Values.ToList();
+            }
         }
 
         public bool IsPlayerObtainable()
@@ -188,14 +209,26 @@ namespace EQWOWConverter.Items
         public static SortedDictionary<int, ItemTemplate> GetItemTemplatesByEQDBIDs()
         {
             if (ItemTemplatesByEQDBID.Count == 0)
-                PopulateItemTemplateListFromDisk();
+            {
+                lock (ItemLock)
+                {
+                    PopulateBookTextFromDisk();
+                    PopulateItemTemplateListFromDisk();
+                }
+            }
             return ItemTemplatesByEQDBID;
         }
 
         public static SortedDictionary<int, ItemTemplate> GetItemTemplatesByWOWEntryID()
         {
             if (ItemTemplatesByWOWEntryID.Count == 0)
-                PopulateItemTemplateListFromDisk();
+            {
+                lock (ItemLock)
+                {
+                    PopulateBookTextFromDisk();
+                    PopulateItemTemplateListFromDisk();
+                }
+            }
             return ItemTemplatesByWOWEntryID;
         }
 
@@ -820,7 +853,7 @@ namespace EQWOWConverter.Items
         }
 
         private static void PopulateItemClassSpecificProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask, 
-            int iconID, int damage, int castTime)
+            int iconID, int damage, int castTime, BookText? bookText)
         {
             bool allowBothHands = false;
             if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) &&
@@ -917,6 +950,13 @@ namespace EQWOWConverter.Items
                                 }   
                             }
 
+                            // No damage but book text means it's a book
+                            else if (bookText != null)
+                            {
+                                itemTemplate.ClassID = 0; // Misc
+                                itemTemplate.SubClassID = 0;
+                            }
+
                             // No damage, check if it has an equippable slot.  If so, it's armor or a held item
                             else
                             {
@@ -948,7 +988,7 @@ namespace EQWOWConverter.Items
                                 // Otherwise, store it as "other"
                                 else
                                 {
-                                    itemTemplate.ClassID = 15; 
+                                    itemTemplate.ClassID = 15;
                                     itemTemplate.SubClassID = 4;
                                 }
                             }                           
@@ -1353,7 +1393,22 @@ namespace EQWOWConverter.Items
             }
         }
 
-        public static void PopulateItemTemplateListFromDisk()
+        private static void PopulateBookTextFromDisk()
+        {
+            string bookTextFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemBookText.csv");
+            Logger.WriteDebug(string.Concat("Populating book textvia file '", bookTextFile, "'"));
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(bookTextFile, "|");
+            foreach (Dictionary<string, string> columns in rows)
+            {
+                BookText bookText = new BookText();
+                bookText.Name = columns["name"].Trim();
+                bookText.Text = columns["text"].Replace("^", "|").Replace("'", "\\'").Replace("`", "\\`").Replace("\"", "\\\"");
+                bookText.PageTextID = PageTextSQL.GenerateUniqueID();
+                BookTextsByName.Add(bookText.Name, bookText);
+            }
+        }
+
+        private static void PopulateItemTemplateListFromDisk()
         {
             // Clear out the working texture folder for character clothes
             string wornEquipmentTexturesWorkingFullPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures");
@@ -1408,6 +1463,7 @@ namespace EQWOWConverter.Items
                 }
 
                 // Spell associations
+                string bookTextName = columns["booktextname"].Trim();
                 newItemTemplate.EQScrollSpellID = int.Parse(columns["scrolleffect"]);
                 newItemTemplate.DoesTeachSpell = columns["scrolltype"] == "7" ? true : false;
                 if (int.Parse(columns["worntype"]) == 2)
@@ -1415,7 +1471,7 @@ namespace EQWOWConverter.Items
                     newItemTemplate.EQWornEffectSpellID = int.Parse(columns["worneffect"]);
                     newItemTemplate.EQWornEffectMinLevel = int.Parse(columns["wornlevel"]);
                 }
-                else
+                else if (bookTextName.Length == 0) // Many books have a proc effect that should be skipped to avoid issues
                 {
                     newItemTemplate.EQCombatProcSpellEffectID = int.Parse(columns["proceffect"]);
                     newItemTemplate.EQCombatProcSpellEffectMinLevel = int.Parse(columns["proclevel"]);
@@ -1440,6 +1496,19 @@ namespace EQWOWConverter.Items
                 newItemTemplate.IsNoDrop = int.Parse(columns["nodrop"]) == 0 ? true : false;
                 newItemTemplate.DoesVanishOnLogout = int.Parse(columns["norent"]) == 0 ? true : false;
 
+                // Book info
+                if (bookTextName.Length > 0)
+                {
+                    // Many books have a proc effect.  Clear that, if needed.
+                    if (BookTextsByName.ContainsKey(bookTextName) == false)
+                    {
+                        Logger.WriteWarning("For item with wowid of '", newItemTemplate.WOWEntryID.ToString(), "'Could not find book text with name '", bookTextName, "'");
+                        newItemTemplate.BookTextReference = BookTextsByName[""];
+                    }
+                    else
+                        newItemTemplate.BookTextReference = BookTextsByName[bookTextName];
+                }
+
                 // Equippable Properties
                 int itemType = int.Parse(columns["itemtype"]);
                 int bagType = int.Parse(columns["bagtype"]);
@@ -1447,7 +1516,7 @@ namespace EQWOWConverter.Items
                 newItemTemplate.EQSlotMask = int.Parse(columns["slots"]);
                 newItemTemplate.CastTime = int.Parse(columns["casttime"]);
                 PopulateItemClassSpecificProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID,
-                    damage, newItemTemplate.CastTime);
+                    damage, newItemTemplate.CastTime, newItemTemplate.BookTextReference);
                 int overrideItemClassID = int.Parse(columns["override_item_class_id"]);
                 if (overrideItemClassID >= 0)
                     newItemTemplate.ClassID = overrideItemClassID;
