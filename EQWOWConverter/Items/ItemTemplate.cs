@@ -1402,7 +1402,8 @@ namespace EQWOWConverter.Items
             {
                 BookText bookText = new BookText();
                 bookText.Name = columns["name"].Trim();
-                bookText.Text = columns["text"].Replace("^", "|").Replace("'", "\\'").Replace("`", "\\`").Replace("\"", "\\\"");
+                // ` = new line in EQ
+                bookText.Text = columns["text"].Replace("^", "|").Replace("'", "\\'").Replace("`", "$b").Replace("\"", "\\\"");
                 bookText.PageTextID = PageTextSQL.GenerateUniqueID();
                 BookTextsByName.Add(bookText.Name, bookText);
             }
