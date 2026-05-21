@@ -1027,7 +1027,7 @@ namespace EQWOWConverter.Items
                 case 11: // Misc
                     {
                         // If it can be equipped in hands, make it holdable
-                        if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) &&
+                        if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) ||
                            IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Secondary, slotMask))
                         {
                             itemTemplate.ClassID = 2;

@@ -5,11 +5,6 @@ Converts the EverQuest assets from the original game into World of Warcraft 3.3.
 
 To see video references, go here: [YouTube Playlist](https://youtube.com/playlist?list=PLB5LJGQjmSQTqbmGEf3WAZc_VvI_ogf3g&si=B7HPIb46PemFglAB)
 
-**Note: The creator of this converter (Nathan) has no affiliation with any server provider/hoster, and provides no client files for either EverQuest or World of Warcraft. This project is for education and preservation purposes only.** 
-
-# Current State
-It is currently in an Alpha state, but all content types (tradeskills, spells, quests, etc) are working to some degree.  Classic, Kunark, and Velious are all enabled and playable by default.  Non-spell particles (weapon and environment particles) are still TBD, and many things need balancing and bug fixing.
-
 # Requirements
 - Windows build environment
 - AzerothCore based WoW 3.3.5 server (last through this changeset: https://github.com/azerothcore/azerothcore-wotlk/commit/cfeb6d85517aba1492d7ddacdfc73b9fa770b4af)
