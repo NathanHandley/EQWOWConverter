@@ -78,15 +78,15 @@ namespace EQWOWConverter.Zones
                     lightArea.FogRed = byte.Parse(columns["FogRed"]);
                     lightArea.FogGreen = byte.Parse(columns["FogGreen"]);
                     lightArea.FogBlue = byte.Parse(columns["FogBlue"]);
-                    lightArea.CenterPosition.X = float.Parse(columns["CenterX"]);
-                    lightArea.CenterPosition.Y = float.Parse(columns["CenterY"]);
-                    lightArea.CenterPosition.Z = float.Parse(columns["CenterZ"]);
-                    lightArea.OuterEdgePosition.X = float.Parse(columns["OuterEdgeX"]);
-                    lightArea.OuterEdgePosition.Y = float.Parse(columns["OuterEdgeY"]);
-                    lightArea.OuterEdgePosition.Z = float.Parse(columns["OuterEdgeZ"]);
-                    lightArea.InnerEdgePosition.X = float.Parse(columns["InnerEdgeX"]);
-                    lightArea.InnerEdgePosition.Y = float.Parse(columns["InnerEdgeY"]);
-                    lightArea.InnerEdgePosition.Z = float.Parse(columns["InnerEdgeZ"]);
+                    lightArea.CenterPosition.X = float.Parse(columns["CenterX"]) * Configuration.GENERATE_WORLD_SCALE;
+                    lightArea.CenterPosition.Y = float.Parse(columns["CenterY"]) * Configuration.GENERATE_WORLD_SCALE;
+                    lightArea.CenterPosition.Z = float.Parse(columns["CenterZ"]) * Configuration.GENERATE_WORLD_SCALE;
+                    lightArea.OuterEdgePosition.X = float.Parse(columns["OuterEdgeX"]) * Configuration.GENERATE_WORLD_SCALE;
+                    lightArea.OuterEdgePosition.Y = float.Parse(columns["OuterEdgeY"]) * Configuration.GENERATE_WORLD_SCALE;
+                    lightArea.OuterEdgePosition.Z = float.Parse(columns["OuterEdgeZ"]) * Configuration.GENERATE_WORLD_SCALE;
+                    lightArea.InnerEdgePosition.X = float.Parse(columns["InnerEdgeX"]) * Configuration.GENERATE_WORLD_SCALE;
+                    lightArea.InnerEdgePosition.Y = float.Parse(columns["InnerEdgeY"]) * Configuration.GENERATE_WORLD_SCALE;
+                    lightArea.InnerEdgePosition.Z = float.Parse(columns["InnerEdgeZ"]) * Configuration.GENERATE_WORLD_SCALE;
                     if (LightAreasByZoneShortName.ContainsKey(lightArea.ZoneShortName) == false)
                         LightAreasByZoneShortName.Add(lightArea.ZoneShortName, new List<ZonePropertiesLightArea>());
                     LightAreasByZoneShortName[lightArea.ZoneShortName].Add(lightArea);

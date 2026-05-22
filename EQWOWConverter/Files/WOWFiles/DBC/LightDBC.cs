@@ -32,11 +32,25 @@ namespace EQWOWConverter.WOWFiles
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(lightID);
             newRow.AddInt32(mapId); // "ContinentID" (map ID)
-            newRow.AddFloat(zoneEnvironmentSettings.PositionX);
-            newRow.AddFloat(zoneEnvironmentSettings.PositionY);
-            newRow.AddFloat(zoneEnvironmentSettings.PositionZ);
-            newRow.AddFloat(zoneEnvironmentSettings.FalloffStart);
-            newRow.AddFloat(zoneEnvironmentSettings.FalloffEnd);
+            if (zoneEnvironmentSettings.PositionX == 0 && zoneEnvironmentSettings.PositionY == 0)
+            {
+                // Zonewide
+                newRow.AddFloat(0); // PositionX
+                newRow.AddFloat(0); // PositionY
+                newRow.AddFloat(0); // PositionZ
+                newRow.AddFloat(0); // FalloffStart
+                newRow.AddFloat(0); // FalloffEnd
+            }
+            else
+            {
+                // Caculations are neccessary to achieve proper world location since it's in a different
+                // coordinates space, and also note that all the values are in inches (which is why it's * 36)
+                newRow.AddFloat((17066.666f - zoneEnvironmentSettings.PositionY) * 36.0f);
+                newRow.AddFloat(zoneEnvironmentSettings.PositionZ * 36.0f);
+                newRow.AddFloat((17066.666f - zoneEnvironmentSettings.PositionX) * 36.0f);
+                newRow.AddFloat(zoneEnvironmentSettings.FalloffStartInYards * 36);
+                newRow.AddFloat(zoneEnvironmentSettings.FalloffEndInYards * 36);
+            }
             newRow.AddInt32(zoneEnvironmentSettings.ParamatersClearWeather.DBCLightParamsID);
             newRow.AddInt32(zoneEnvironmentSettings.ParamatersClearWeatherUnderwater.DBCLightParamsID);
             newRow.AddInt32(zoneEnvironmentSettings.ParamatersStormyWeather.DBCLightParamsID);

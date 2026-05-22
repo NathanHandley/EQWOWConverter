@@ -127,6 +127,7 @@ namespace EQWOWConverter.Zones
         public List<ZoneLiquidGroup> LiquidGroups = new List<ZoneLiquidGroup>();
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
         public ZoneEnvironmentSettings ZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
+        public List<ZoneEnvironmentSettings> AreaLightZoneEnvironmentProperties = new List<ZoneEnvironmentSettings>();
         public double VertexColorIntensity = 0.2f;
         public ZoneArea DefaultZoneArea = new ZoneArea(string.Empty, string.Empty, 0);
         public List<ZoneArea> SubZoneAreas = new List<ZoneArea>();
@@ -1126,6 +1127,22 @@ namespace EQWOWConverter.Zones
                         zoneProperties.ZonewideEnvironmentProperties.SetAsIndoorsWithSky(fogRed, fogGreen, fogBlue, fogType, insideAmbientRed, insideAmbientGreen, insideAmbientBlue, cloudDensity);
                     else
                         zoneProperties.ZonewideEnvironmentProperties.SetAsIndoors(fogRed, fogGreen, fogBlue, fogType, insideAmbientRed, insideAmbientGreen, insideAmbientBlue);
+                }
+
+                List<ZonePropertiesLightArea> lightAreas = ZonePropertiesLightArea.GetLightAreasForZone(shortName);
+                foreach (ZonePropertiesLightArea lightArea in lightAreas)
+                {
+                    ZoneEnvironmentSettings lightAreaProperties = new ZoneEnvironmentSettings();
+                    if (lightArea.IsSkyVisible == true)
+                        lightAreaProperties.SetAsIndoorsWithSky(lightArea.FogRed, lightArea.FogGreen, lightArea.FogBlue, lightArea.FogType, lightArea.AmbientRed, lightArea.AmbientGreen, lightArea.AmbientBlue, cloudDensity);
+                    else
+                        lightAreaProperties.SetAsIndoors(lightArea.FogRed, lightArea.FogGreen, lightArea.FogBlue, lightArea.FogType, lightArea.AmbientRed, lightArea.AmbientGreen, lightArea.AmbientBlue);
+                    lightAreaProperties.PositionX = lightArea.CenterPosition.X;
+                    lightAreaProperties.PositionY = lightArea.CenterPosition.Y;
+                    lightAreaProperties.PositionZ = lightArea.CenterPosition.Z;
+                    lightAreaProperties.FalloffStartInYards = lightArea.CenterPosition.GetDistance(lightArea.InnerEdgePosition);
+                    lightAreaProperties.FalloffEndInYards = lightArea.CenterPosition.GetDistance(lightArea.OuterEdgePosition);
+                    zoneProperties.AreaLightZoneEnvironmentProperties.Add(lightAreaProperties);
                 }
 
                 // Areas

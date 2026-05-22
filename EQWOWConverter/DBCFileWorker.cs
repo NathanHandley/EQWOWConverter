@@ -26,12 +26,56 @@ using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using System.Text;
-using static EQWOWConverter.WOWFiles.DBCFile;
 
 namespace EQWOWConverter
 {
     internal class DBCFileWorker
     {
+        private AreaTableDBC areaTableDBC = new AreaTableDBC();
+        private AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
+        private CharStartOutfitDBC charStartOutfitDBC = new CharStartOutfitDBC();
+        private CreatureDisplayInfoDBC creatureDisplayInfoDBC = new CreatureDisplayInfoDBC();
+        private CreatureDisplayInfoExtraDBC creatureDisplayInfoExtraDBC = new CreatureDisplayInfoExtraDBC();
+        private CreatureModelDataDBC creatureModelDataDBC = new CreatureModelDataDBC();
+        private CreatureSoundDataDBC creatureSoundDataDBC = new CreatureSoundDataDBC();
+        private FactionDBC factionDBC = new FactionDBC();
+        private FactionTemplateDBC factionTemplateDBC = new FactionTemplateDBC();
+        private FootstepTerrainLookupDBC footstepTerrainLookupDBC = new FootstepTerrainLookupDBC();
+        private GameObjectDisplayInfoDBC gameObjectDisplayInfoDBC = new GameObjectDisplayInfoDBC();
+        private ItemDBC itemDBC = new ItemDBC();
+        private ItemDisplayInfoDBC itemDisplayInfoDBC = new ItemDisplayInfoDBC();
+        private LightDBC lightDBC = new LightDBC();
+        private LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
+        private LightIntBandDBC lightIntBandDBC = new LightIntBandDBC();
+        private LightParamsDBC lightParamsDBC = new LightParamsDBC();
+        private LiquidTypeDBC liquidTypeDBC = new LiquidTypeDBC();
+        private LoadingScreensDBC loadingScreensDBC = new LoadingScreensDBC();
+        private MapDBC mapDBC = new MapDBC();
+        private MapDifficultyDBC mapDifficultyDBC = new MapDifficultyDBC();
+        private SkillLineAbilityDBC skillLineAbilityDBC = new SkillLineAbilityDBC();
+        private SkillRaceClassInfoDBC skillRaceClassInfoDBC = new SkillRaceClassInfoDBC();
+        private SoundAmbienceDBC soundAmbienceDBC = new SoundAmbienceDBC();
+        private SoundEntriesDBC soundEntriesDBC = new SoundEntriesDBC();
+        private SpellDBC spellDBC = new SpellDBC();
+        private SpellCastTimesDBC spellCastTimesDBC = new SpellCastTimesDBC();
+        private SpellDurationDBC spellDurationDBC = new SpellDurationDBC();
+        private SpellIconDBC spellIconDBC = new SpellIconDBC();
+        private SpellItemEnchantmentDBC spellItemEnchantmentDBC = new SpellItemEnchantmentDBC();
+        private SpellRadiusDBC spellRadiusDBC = new SpellRadiusDBC();
+        private SpellRangeDBC spellRangeDBC = new SpellRangeDBC();
+        private SpellVisualDBC spellVisualDBC = new SpellVisualDBC();
+        private SpellVisualEffectNameDBC spellVisualEffectNameDBC = new SpellVisualEffectNameDBC();
+        private SpellVisualKitDBC spellVisualKitDBC = new SpellVisualKitDBC();
+        private SummonPropertiesDBC summonPropertiesDBC = new SummonPropertiesDBC();
+        private TaxiPathDBC taxiPathDBC = new TaxiPathDBC();
+        private TaxiPathNodeDBC taxiPathNodeDBC = new TaxiPathNodeDBC();
+        private TotemCategoryDBC totemCategoryDBC = new TotemCategoryDBC();
+        private TransportAnimationDBC transportAnimationDBC = new TransportAnimationDBC();
+        private WorldMapAreaDBC worldMapAreaDBC = new WorldMapAreaDBC();
+        private WorldSafeLocsDBC worldSafeLocsDBC = new WorldSafeLocsDBC();
+        private WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
+        private ZoneMusicDBC zoneMusicDBC = new ZoneMusicDBC();
+
         public void ExtractClientDBCFiles()
         {
             string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
@@ -115,95 +159,49 @@ namespace EQWOWConverter
             Directory.CreateDirectory(dbcOutputServerFolder);
 
             // Load the files
-            AreaTableDBC areaTableDBC = new AreaTableDBC();
             areaTableDBC.LoadFromDisk(dbcInputFolder, "AreaTable.dbc");
-            AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
             areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
-            CharStartOutfitDBC charStartOutfitDBC = new CharStartOutfitDBC();
             charStartOutfitDBC.LoadFromDisk(dbcInputFolder, "CharStartOutfit.dbc");
-            CreatureDisplayInfoDBC creatureDisplayInfoDBC = new CreatureDisplayInfoDBC();
             creatureDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfo.dbc");
-            CreatureDisplayInfoExtraDBC creatureDisplayInfoExtraDBC = new CreatureDisplayInfoExtraDBC();
             creatureDisplayInfoExtraDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfoExtra.dbc");
-            CreatureModelDataDBC creatureModelDataDBC = new CreatureModelDataDBC();
             creatureModelDataDBC.LoadFromDisk(dbcInputFolder, "CreatureModelData.dbc");
-            CreatureSoundDataDBC creatureSoundDataDBC = new CreatureSoundDataDBC();
             creatureSoundDataDBC.LoadFromDisk(dbcInputFolder, "CreatureSoundData.dbc");
-            FactionDBC factionDBC = new FactionDBC();
             factionDBC.LoadFromDisk(dbcInputFolder, "Faction.dbc");
-            FactionTemplateDBC factionTemplateDBC = new FactionTemplateDBC();
             factionTemplateDBC.LoadFromDisk(dbcInputFolder, "FactionTemplate.dbc");
-            FootstepTerrainLookupDBC footstepTerrainLookupDBC = new FootstepTerrainLookupDBC();
             footstepTerrainLookupDBC.LoadFromDisk(dbcInputFolder, "FootstepTerrainLookup.dbc");
-            GameObjectDisplayInfoDBC gameObjectDisplayInfoDBC = new GameObjectDisplayInfoDBC();
             gameObjectDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "GameObjectDisplayInfo.dbc");
-            ItemDBC itemDBC = new ItemDBC();
             itemDBC.LoadFromDisk(dbcInputFolder, "Item.dbc");
-            ItemDisplayInfoDBC itemDisplayInfoDBC = new ItemDisplayInfoDBC();
             itemDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "ItemDisplayInfo.dbc");
-            LightDBC lightDBC = new LightDBC();
             lightDBC.LoadFromDisk(dbcInputFolder, "Light.dbc");
-            LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
             lightFloatBandDBC.LoadFromDisk(dbcInputFolder, "LightFloatBand.dbc");
-            LightIntBandDBC lightIntBandDBC = new LightIntBandDBC();
             lightIntBandDBC.LoadFromDisk(dbcInputFolder, "LightIntBand.dbc");
-            LightParamsDBC lightParamsDBC = new LightParamsDBC();
             lightParamsDBC.LoadFromDisk(dbcInputFolder, "LightParams.dbc");
-            LiquidTypeDBC liquidTypeDBC = new LiquidTypeDBC();
             liquidTypeDBC.LoadFromDisk(dbcInputFolder, "LiquidType.dbc");
-            LoadingScreensDBC loadingScreensDBC = new LoadingScreensDBC();
             loadingScreensDBC.LoadFromDisk(dbcInputFolder, "LoadingScreens.dbc");
-            MapDBC mapDBC = new MapDBC();
             mapDBC.LoadFromDisk(dbcInputFolder, "Map.dbc");
-            MapDifficultyDBC mapDifficultyDBC = new MapDifficultyDBC();
             mapDifficultyDBC.LoadFromDisk(dbcInputFolder, "MapDifficulty.dbc");
-            //SkillLineDBC skillLineDBC = new SkillLineDBC();
-            //skillLineDBC.LoadFromDisk(dbcInputFolder, "SkillLine.dbc");
-            SkillLineAbilityDBC skillLineAbilityDBC = new SkillLineAbilityDBC();
             skillLineAbilityDBC.LoadFromDisk(dbcInputFolder, "SkillLineAbility.dbc");
-            SkillRaceClassInfoDBC skillRaceClassInfoDBC = new SkillRaceClassInfoDBC();
             skillRaceClassInfoDBC.LoadFromDisk(dbcInputFolder, "SkillRaceClassInfo.dbc");
-            SoundAmbienceDBC soundAmbienceDBC = new SoundAmbienceDBC();
             soundAmbienceDBC.LoadFromDisk(dbcInputFolder, "SoundAmbience.dbc");
-            SoundEntriesDBC soundEntriesDBC = new SoundEntriesDBC();
             soundEntriesDBC.LoadFromDisk(dbcInputFolder, "SoundEntries.dbc");
-            SpellDBC spellDBC = new SpellDBC();
             spellDBC.LoadFromDisk(dbcInputFolder, "Spell.dbc");
-            SpellCastTimesDBC spellCastTimesDBC = new SpellCastTimesDBC();
             spellCastTimesDBC.LoadFromDisk(dbcInputFolder, "SpellCastTimes.dbc");
-            SpellDurationDBC spellDurationDBC = new SpellDurationDBC();
             spellDurationDBC.LoadFromDisk(dbcInputFolder, "SpellDuration.dbc");
-            SpellIconDBC spellIconDBC = new SpellIconDBC();
             spellIconDBC.LoadFromDisk(dbcInputFolder, "SpellIcon.dbc");
-            SpellItemEnchantmentDBC spellItemEnchantmentDBC = new SpellItemEnchantmentDBC();
             spellItemEnchantmentDBC.LoadFromDisk(dbcInputFolder, "SpellItemEnchantment.dbc");
-            SpellRadiusDBC spellRadiusDBC = new SpellRadiusDBC();
             spellRadiusDBC.LoadFromDisk(dbcInputFolder, "SpellRadius.dbc");
-            SpellRangeDBC spellRangeDBC = new SpellRangeDBC();
             spellRangeDBC.LoadFromDisk(dbcInputFolder, "SpellRange.dbc");
-            SpellVisualDBC spellVisualDBC = new SpellVisualDBC();
             spellVisualDBC.LoadFromDisk(dbcInputFolder, "SpellVisual.dbc");
-            SpellVisualEffectNameDBC spellVisualEffectNameDBC = new SpellVisualEffectNameDBC();
             spellVisualEffectNameDBC.LoadFromDisk(dbcInputFolder, "SpellVisualEffectName.dbc");
-            SpellVisualKitDBC spellVisualKitDBC = new SpellVisualKitDBC();
             spellVisualKitDBC.LoadFromDisk(dbcInputFolder, "SpellVisualKit.dbc");
-            SummonPropertiesDBC summonPropertiesDBC = new SummonPropertiesDBC();
             summonPropertiesDBC.LoadFromDisk(dbcInputFolder, "SummonProperties.dbc");
-            TaxiPathDBC taxiPathDBC = new TaxiPathDBC();
             taxiPathDBC.LoadFromDisk(dbcInputFolder, "TaxiPath.dbc");
-            TaxiPathNodeDBC taxiPathNodeDBC = new TaxiPathNodeDBC();
             taxiPathNodeDBC.LoadFromDisk(dbcInputFolder, "TaxiPathNode.dbc");
-            TotemCategoryDBC totemCategoryDBC = new TotemCategoryDBC();
             totemCategoryDBC.LoadFromDisk(dbcInputFolder, "TotemCategory.dbc");
-            TransportAnimationDBC transportAnimationDBC = new TransportAnimationDBC();
             transportAnimationDBC.LoadFromDisk(dbcInputFolder, "TransportAnimation.dbc");
-            WorldMapAreaDBC worldMapAreaDBC = new WorldMapAreaDBC();
             worldMapAreaDBC.LoadFromDisk(dbcInputFolder, "WorldMapArea.dbc");            
-            WorldSafeLocsDBC worldSafeLocsDBC = new WorldSafeLocsDBC();
             worldSafeLocsDBC.LoadFromDisk(dbcInputFolder, "WorldSafeLocs.dbc");
-            WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
             wmoAreaTableDBC.LoadFromDisk(dbcInputFolder, "WMOAreaTable.dbc");
-            ZoneMusicDBC zoneMusicDBC = new ZoneMusicDBC();
             zoneMusicDBC.LoadFromDisk(dbcInputFolder, "ZoneMusic.dbc");
 
             // Liquid is common
@@ -271,24 +269,9 @@ namespace EQWOWConverter
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
 
                 // Light Tables
-                ZoneEnvironmentSettings curZoneEnvironmentSettings = zoneProperties.ZonewideEnvironmentProperties;
-
-                lightDBC.AddRow(zoneProperties.DBCMapID, curZoneEnvironmentSettings);
-
-                lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeather);
-                lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
-                lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeather);
-                lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
-
-                lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeather);
-                lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
-                lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeather);
-                lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
-
-                lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersClearWeather);
-                lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
-                lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersStormyWeather);
-                lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
+                AddLightData(zoneProperties.DBCMapID, zoneProperties.ZonewideEnvironmentProperties);
+                foreach (ZoneEnvironmentSettings areaLightSettings in zoneProperties.AreaLightZoneEnvironmentProperties)
+                    AddLightData(zoneProperties.DBCMapID, areaLightSettings);
 
                 // Map
                 mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.LoadingScreenID);
@@ -795,6 +778,26 @@ namespace EQWOWConverter
             zoneMusicDBC.SaveToDisk(dbcOutputServerFolder);
 
             Logger.WriteDebug("Creating DBC Files complete");
+        }
+
+        private void AddLightData(int mapID, ZoneEnvironmentSettings zoneEnvironmentSettings)
+        {
+            lightDBC.AddRow(mapID, zoneEnvironmentSettings);
+
+            lightFloatBandDBC.AddRows(zoneEnvironmentSettings.ParamatersClearWeather);
+            lightFloatBandDBC.AddRows(zoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
+            lightFloatBandDBC.AddRows(zoneEnvironmentSettings.ParamatersStormyWeather);
+            lightFloatBandDBC.AddRows(zoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
+
+            lightIntBandDBC.AddRows(zoneEnvironmentSettings.ParamatersClearWeather);
+            lightIntBandDBC.AddRows(zoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
+            lightIntBandDBC.AddRows(zoneEnvironmentSettings.ParamatersStormyWeather);
+            lightIntBandDBC.AddRows(zoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
+
+            lightParamsDBC.AddRow(zoneEnvironmentSettings.ParamatersClearWeather);
+            lightParamsDBC.AddRow(zoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
+            lightParamsDBC.AddRow(zoneEnvironmentSettings.ParamatersStormyWeather);
+            lightParamsDBC.AddRow(zoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
         }
     }
 }

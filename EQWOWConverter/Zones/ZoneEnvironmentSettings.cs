@@ -124,8 +124,8 @@ namespace EQWOWConverter.Zones
         public float PositionX = 0;
         public float PositionY = 0;
         public float PositionZ = 0;
-        public float FalloffStart = 0;
-        public float FalloffEnd = 0;
+        public float FalloffStartInYards = 0;
+        public float FalloffEndInYards = 0;
         public ZoneEnvironmentParameters ParamatersClearWeather = new ZoneEnvironmentParameters();
         public ZoneEnvironmentParameters ParamatersClearWeatherUnderwater = new ZoneEnvironmentParameters();
         public ZoneEnvironmentParameters ParamatersStormyWeather = new ZoneEnvironmentParameters();
