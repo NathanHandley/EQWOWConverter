@@ -17,6 +17,7 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.Events;
+using EQWOWConverter.Forage;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
@@ -197,6 +198,9 @@ namespace EQWOWConverter
             // Loot
             Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID;
             ConvertLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID);
+
+            // Forage
+            ConvertForage(ref itemTemplatesByEQDBID);
 
             // Update vendor references for future culling
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
@@ -1772,6 +1776,31 @@ namespace EQWOWConverter
             }
 
             Logger.WriteInfo("Item and loot conversion complete.");
+        }
+
+        private void ConvertForage(ref SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
+        {
+            Logger.WriteInfo("Creating forage items started");
+
+            Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
+            foreach (ForageZoneItem forageZoneItem in ForageZoneItem.GetAllZoneItems())
+            {
+                if (itemTemplatesByEQDBID.ContainsKey(forageZoneItem.EQItemID) == false)
+                {
+                    Logger.WriteDebug("Forage item in '", forageZoneItem.ZoneShortName, "' with eq item id '", forageZoneItem.EQItemID.ToString(), "', but that item did not exist. Skipping.");
+                    continue;
+                }
+                if (zonePropertiesByShortName.ContainsKey(forageZoneItem.ZoneShortName) == false)
+                {
+                    Logger.WriteDebug("Forage item in '", forageZoneItem.ZoneShortName, "' with eq item id '", forageZoneItem.EQItemID.ToString(), "', but that zone does not exist. Skipping.");
+                    continue;
+                }
+                forageZoneItem.WOWItemTemplateID = itemTemplatesByEQDBID[forageZoneItem.EQItemID].WOWEntryID;
+                forageZoneItem.WOWMapID = zonePropertiesByShortName[forageZoneItem.ZoneShortName].DBCMapID;
+                itemTemplatesByEQDBID[forageZoneItem.EQItemID].IsForaged = true;
+            }
+
+            Logger.WriteInfo("Creating forage item ended");
         }
 
         private void CreateItemGraphics(ref SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)

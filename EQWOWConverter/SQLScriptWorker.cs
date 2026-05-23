@@ -18,6 +18,7 @@ using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.Creatures.Teleporters;
 using EQWOWConverter.Events;
+using EQWOWConverter.Forage;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.Items;
 using EQWOWConverter.Player;
@@ -73,6 +74,7 @@ namespace EQWOWConverter
         private ModEverquestCreatureInstanceSQL modEverquestCreatureInstanceSQL = new ModEverquestCreatureInstanceSQL();
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
         private ModEverquestCreatureWaypointSQL modEverquestCreatureWaypointSQL = new ModEverquestCreatureWaypointSQL();
+        private ModEverquestForageZoneItemsSQL modEverquestForageZoneItemsSQL = new ModEverquestForageZoneItemsSQL();
         private ModEverquestItemTemplateSQL modEverquestItemTemplateSQL = new ModEverquestItemTemplateSQL();
         private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
         private ModEverquestPlayerCreateInfoSQL modEverquestPlayerCreateInfoSQL = new ModEverquestPlayerCreateInfoSQL();
@@ -136,6 +138,9 @@ namespace EQWOWConverter
 
             // Items
             PopulateItemData(itemLootTemplatesByCreatureTemplateID, spellTemplatesByEQID);
+
+            // Forage
+            PopulateForageData();
 
             // Player start properties
             PopulatePlayerLoadData(zones, mapIDsByShortName);
@@ -833,6 +838,16 @@ namespace EQWOWConverter
                 pageTextSQL.AddRow(bookText.PageTextID, bookText.Text);
         }
 
+        private void PopulateForageData()
+        {
+            foreach (ForageZoneItem forageZoneItem in ForageZoneItem.GetAllZoneItems())
+            {
+                if (forageZoneItem.WOWMapID == -1 || forageZoneItem.WOWItemTemplateID == -1)
+                    continue;
+                modEverquestForageZoneItemsSQL.AddRow(forageZoneItem.WOWMapID, forageZoneItem.WOWItemTemplateID, forageZoneItem.Chance);
+            }
+        }
+
         private void PopulatePlayerLoadData(List<Zone> zones, Dictionary<string, int> mapIDsByShortName)
         {
             // Player Start Data
@@ -1518,6 +1533,7 @@ namespace EQWOWConverter
             modEverquestCreatureInstanceSQL.SaveToDisk("mod_everquest_creature_instance", SQLFileType.World);
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
             modEverquestCreatureWaypointSQL.SaveToDisk("mod_everquest_creature_waypoint", SQLFileType.World);
+            modEverquestForageZoneItemsSQL.SaveToDisk("mod_everquest_forage_zone_items", SQLFileType.World);
             modEverquestItemTemplateSQL.SaveToDisk("mod_everquest_item_template", SQLFileType.World);
             modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);
             modEverquestPlayerCreateInfoSQL.SaveToDisk("mod_everquest_playercreateinfo", SQLFileType.World);

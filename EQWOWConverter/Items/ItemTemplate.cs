@@ -123,6 +123,7 @@ namespace EQWOWConverter.Items
         public bool IsFoundInGameObject = false;
         public bool IsFromGroundSpawnChest = false;
         public bool IsAlwaysGenerated = false;
+        public bool IsForaged = false;
         public int NumOfTradeskillsThatCreateIt = 0;
         public int IconID = 0;
         public int TotemDBCID = 0;
@@ -185,6 +186,8 @@ namespace EQWOWConverter.Items
             if (IsFromGroundSpawnChest == true)
                 return true;
             if (IsAlwaysGenerated == true)
+                return true;
+            if (IsForaged == true)
                 return true;
             if (ParentItemTemplate != null)
                 return ParentItemTemplate.IsPlayerObtainable();
