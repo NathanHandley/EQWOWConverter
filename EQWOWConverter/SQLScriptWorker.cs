@@ -1186,13 +1186,6 @@ namespace EQWOWConverter
             }
             foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)
                 spellGroupStackRulesSQL.AddRow(spellGroupStackRuleByGroup.Key, spellGroupStackRuleByGroup.Value);
-
-            // Custom gate and bind
-            if (Configuration.PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START == true)
-            {
-                playerCreateInfoSpellCustomSQL.AddRow(Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID, "Gate");
-                playerCreateInfoSpellCustomSQL.AddRow(Configuration.SPELLS_BINDCUSTOM_SPELLDBC_ID, "Bind");
-            }
         }
 
         private void PopulateTrainerData(List<CreatureTemplate> creatureTemplates)
