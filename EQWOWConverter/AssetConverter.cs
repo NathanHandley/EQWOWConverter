@@ -2053,6 +2053,26 @@ namespace EQWOWConverter
             //monkEpicSpellTemplate.ForceHiddenFromDisplay = true;
             spellTemplates.Add(monkEpicSpellTemplate);
 
+            // Forage skill
+            int forageSpellIconID = Configuration.FORAGE_SPELL_ICON_EQ_ID;
+            if (Configuration.FORAGE_SPELL_ICON_EQ_ID < 0 || Configuration.FORAGE_SPELL_ICON_EQ_ID > 22)
+            {
+                Logger.WriteError("Invalid Configuration.FORAGE_SPELL_ICON_EQ_ID, value must be 0-22. Setting to 16");
+                forageSpellIconID = 16;
+            }
+            SpellTemplate forageSpellTemplate = new SpellTemplate();
+            forageSpellTemplate.Name = "Forage";
+            forageSpellTemplate.WOWSpellID = Configuration.FORAGE_SPELL_TEMPLATE_ID;
+            forageSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            forageSpellTemplate.Description = "Scrounge around and look for food or water";
+            forageSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(forageSpellIconID);
+            forageSpellTemplate.CastTimeInMS = 0;
+            forageSpellTemplate.RecoveryTimeInMS = 100000; // 100 seconds
+            forageSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
+            forageSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, (int)SpellDummyType.Forage, 0));
+            forageSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            spellTemplates.Add(forageSpellTemplate);
+
             Logger.WriteDebug("Generating custom spells completed.");
         }
 

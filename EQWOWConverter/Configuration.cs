@@ -671,6 +671,15 @@ namespace EQWOWConverter
         public static int SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN = 30;
 
         //=====================================================================
+        // Forage
+        //=====================================================================
+        // Which eq spell icon to use for the Forage skill. Can be a value between 0-22
+        public static int FORAGE_SPELL_ICON_EQ_ID = 16;
+
+        // Spell id for the forage spell
+        public static int FORAGE_SPELL_TEMPLATE_ID = 86904;
+
+        //=====================================================================
         // Tradeskills
         //=====================================================================
         // How much to multiply EQ skill requirements by to reach the same for WoW on conversion
@@ -1303,6 +1312,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS", SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS, "Default time that a shrink/grow spell will last for");
             OutputVariableToConfig("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID", SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, "Values for the cooldown spells applied by Priests of Discord when you switch worlds, setting cooldown duration to 0 will disable it", false);
             OutputVariableToConfig("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN, "");
+            OutputVariableToConfig("FORAGE_SPELL_ICON_EQ_ID", FORAGE_SPELL_ICON_EQ_ID, "Which eq spell icon to use for the Forage skill. Can be a value between 0-22");
+            OutputVariableToConfig("FORAGE_SPELL_TEMPLATE_ID", FORAGE_SPELL_TEMPLATE_ID, "Spell id for the forage spell");
             OutputVariableToConfig("TRADESKILLS_CONVERSION_MOD", TRADESKILLS_CONVERSION_MOD, "How much to multiply EQ skill requirements by to reach the same for WoW on conversion");
             OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_LOW", TRADESKILLS_SKILL_TIER_DISTANCE_LOW, "Max distance between Grey -> Green -> Yellow -> Red steps", false);
             OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_HIGH", TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, "");
@@ -1719,7 +1730,8 @@ namespace EQWOWConverter
             SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS = ReadVariableFromConfigString("SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS", configValuesByVariableName, SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS);
             SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID = ReadVariableFromConfigString("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID", configValuesByVariableName, SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID);
             SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN = ReadVariableFromConfigString("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", configValuesByVariableName, SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN);
-
+            FORAGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("FORAGE_SPELL_ICON_EQ_ID", configValuesByVariableName, FORAGE_SPELL_ICON_EQ_ID);
+            FORAGE_SPELL_TEMPLATE_ID = ReadVariableFromConfigString("FORAGE_SPELL_TEMPLATE_ID", configValuesByVariableName, FORAGE_SPELL_TEMPLATE_ID);
             TRADESKILLS_CONVERSION_MOD = ReadVariableFromConfigString("TRADESKILLS_CONVERSION_MOD", configValuesByVariableName, TRADESKILLS_CONVERSION_MOD);
             TRADESKILLS_SKILL_TIER_DISTANCE_LOW = ReadVariableFromConfigString("TRADESKILLS_SKILL_TIER_DISTANCE_LOW", configValuesByVariableName, TRADESKILLS_SKILL_TIER_DISTANCE_LOW);
             TRADESKILLS_SKILL_TIER_DISTANCE_HIGH = ReadVariableFromConfigString("TRADESKILLS_SKILL_TIER_DISTANCE_HIGH", configValuesByVariableName, TRADESKILLS_SKILL_TIER_DISTANCE_HIGH);
