@@ -877,7 +877,17 @@ namespace EQWOWConverter
             // Autolearn Skills / Spells
             foreach (ClassWOWType wowClassType in PlayerClassMapping.GetWOWClassesThatShouldHaveForage())
                 modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, Configuration.FORAGE_SPELL_TEMPLATE_ID, true);
+            if (Configuration.PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START == true)
+            {
+                foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
+                {
+                    if (wowClassType == ClassWOWType.All || wowClassType == ClassWOWType.None)
+                        continue;
 
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, Configuration.SPELLS_BINDCUSTOM_SPELLDBC_ID, true);
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID, true);                    
+                }
+            }
             if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
             {
                 List<ClassWOWType> leatherClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Leather).ToList();
