@@ -844,7 +844,8 @@ namespace EQWOWConverter
             {
                 if (forageZoneItem.WOWMapID == -1 || forageZoneItem.WOWItemTemplateID == -1)
                     continue;
-                modEverquestForageZoneItemsSQL.AddRow(forageZoneItem.WOWMapID, forageZoneItem.WOWItemTemplateID, forageZoneItem.Chance);
+                modEverquestForageZoneItemsSQL.AddRow(forageZoneItem.WOWMapID, forageZoneItem.WOWItemTemplateID, forageZoneItem.Chance,
+                    forageZoneItem.ForageType);
             }
         }
 

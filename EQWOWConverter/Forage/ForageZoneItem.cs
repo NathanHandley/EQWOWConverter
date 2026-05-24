@@ -22,6 +22,7 @@ namespace EQWOWConverter.Forage
         private static readonly object ForageLock = new object();
 
         public string ZoneShortName = string.Empty;
+        public ForageZoneItemType ForageType = ForageZoneItemType.Other;
         public int WOWMapID = -1;
         public int EQItemID = 0;
         public int WOWItemTemplateID = -1;

@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Forage;
 using System.Text;
 
 namespace EQWOWConverter.WOWFiles
@@ -28,16 +29,18 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`MapID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`ItemTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`Chance` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`ForageType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`MapID`, `ItemTemplateID`) USING BTREE); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int mapID, int itemTemplateID, int chance)
+        public void AddRow(int mapID, int itemTemplateID, int chance, ForageZoneItemType forageType)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("MapID", mapID);
             newRow.AddInt("ItemTemplateID", itemTemplateID);
             newRow.AddInt("Chance", chance);
+            newRow.AddInt("ForageType", (int)forageType);
             Rows.Add(newRow);
         }
     }

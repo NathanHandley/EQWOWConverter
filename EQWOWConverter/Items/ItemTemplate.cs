@@ -112,6 +112,7 @@ namespace EQWOWConverter.Items
         public int WOWSpellCategoryCooldown1 = -1;
         public int CastTime = 0;
         public int FoodType = 0; // For pets: 1 - Meat, 2 - Fish, 3 - Cheese, 4 - Bread, 5 - Fungus, 6 - fruit, 7 - Raw Meat, 8 - Raw Fish
+        public bool IsDrink = false;
         public List<ContainedItem> ContainedItems = new List<ContainedItem>();
         public bool CanBeOpened = false;
         public bool IsExistingItemAlready = false;
@@ -1129,6 +1130,7 @@ namespace EQWOWConverter.Items
                     } break;
                 case 15: // Drink => Food and Drink
                     {
+                        itemTemplate.IsDrink = true;
                         itemTemplate.ClassID = 0;
                         itemTemplate.SubClassID = 5;
                         itemTemplate.WOWSpellCategory1 = 59; // Water/alcohol

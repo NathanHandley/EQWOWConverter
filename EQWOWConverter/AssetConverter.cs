@@ -1795,8 +1795,15 @@ namespace EQWOWConverter
                     Logger.WriteDebug("Forage item in '", forageZoneItem.ZoneShortName, "' with eq item id '", forageZoneItem.EQItemID.ToString(), "', but that zone does not exist. Skipping.");
                     continue;
                 }
-                forageZoneItem.WOWItemTemplateID = itemTemplatesByEQDBID[forageZoneItem.EQItemID].WOWEntryID;
+                ItemTemplate itemTemplate = itemTemplatesByEQDBID[forageZoneItem.EQItemID];
+                forageZoneItem.WOWItemTemplateID = itemTemplate.WOWEntryID;
                 forageZoneItem.WOWMapID = zonePropertiesByShortName[forageZoneItem.ZoneShortName].DBCMapID;
+                if (itemTemplate.IsDrink == true)
+                    forageZoneItem.ForageType = ForageZoneItemType.Drink;
+                else if (itemTemplate.WOWSpellCategory1 == 11) // Food
+                    forageZoneItem.ForageType = ForageZoneItemType.Food;
+                else
+                    forageZoneItem.ForageType = ForageZoneItemType.Other;
                 itemTemplatesByEQDBID[forageZoneItem.EQItemID].IsForaged = true;
             }
 
@@ -2064,7 +2071,7 @@ namespace EQWOWConverter
             forageSpellTemplate.Name = "Forage";
             forageSpellTemplate.WOWSpellID = Configuration.FORAGE_SPELL_TEMPLATE_ID;
             forageSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
-            forageSpellTemplate.Description = "Scrounge around and look for food or water";
+            forageSpellTemplate.Description = "Search around and look for something to eat. Only works in Norrath.";
             forageSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(forageSpellIconID);
             forageSpellTemplate.CastTimeInMS = 0;
             forageSpellTemplate.RecoveryTimeInMS = 100000; // 100 seconds
