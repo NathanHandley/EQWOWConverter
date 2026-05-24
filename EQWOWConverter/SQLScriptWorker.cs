@@ -875,6 +875,9 @@ namespace EQWOWConverter
             }
 
             // Autolearn Skills / Spells
+            foreach (ClassWOWType wowClassType in PlayerClassMapping.GetWOWClassesThatShouldHaveForage())
+                modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, Configuration.FORAGE_SPELL_TEMPLATE_ID, true);
+
             if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
             {
                 List<ClassWOWType> leatherClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Leather).ToList();
@@ -915,7 +918,7 @@ namespace EQWOWConverter
                 {
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 45);
                     modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 264);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 3018); // Shoot
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 3018, true); // Shoot
                 }
             }
             if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == true)

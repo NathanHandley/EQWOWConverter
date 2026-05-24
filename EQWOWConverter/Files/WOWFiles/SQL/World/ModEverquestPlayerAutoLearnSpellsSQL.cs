@@ -27,15 +27,17 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_playerautolearnspells` ( ");
             stringBuilder.AppendLine("`class` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`spell` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`addtobar` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("PRIMARY KEY (`class`, `spell`) USING BTREE); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int classID, int spellID)
+        public void AddRow(int classID, int spellID, bool addToBar = false)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("class", classID);
             newRow.AddInt("spell", spellID);
+            newRow.AddInt("addtobar", addToBar == true ? 1 : 0);
             Rows.Add(newRow);
         }
     }

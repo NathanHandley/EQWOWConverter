@@ -24,8 +24,19 @@ namespace EQWOWConverter.Player
         private static Dictionary<ClassEQType, ItemWOWArmorSubclassType> WOWMaxArmorClassTypeByEQClass = new Dictionary<ClassEQType, ItemWOWArmorSubclassType>();
         private static Dictionary<ClassEQType, List<ClassWOWType>> WOWClassesByEQClass = new Dictionary<ClassEQType, List<ClassWOWType>>();
         private static Dictionary<ClassWOWType, List<ClassEQType>> EQClassesByWOWClass = new Dictionary<ClassWOWType, List<ClassEQType>>();
-        private static HashSet<ClassWOWType> WOWClassesWhichShouldHaveArchery = new HashSet<ClassWOWType>();
+        private static HashSet<ClassWOWType> WOWClassesWhichShouldHaveForage = new HashSet<ClassWOWType>();
         private static readonly object ClassesLock = new object();
+
+        public static HashSet<ClassWOWType> GetWOWClassesThatShouldHaveForage()
+        {
+            lock (ClassesLock)
+            {
+                if (WOWClassesByEQClass.Count == 0)
+                    PopulateClassMap();
+                return WOWClassesWhichShouldHaveForage;
+            }
+        }
+
 
         public static HashSet<ClassWOWType> GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType weaponSubClassType)
         {
@@ -380,16 +391,6 @@ namespace EQWOWConverter.Player
             }
         }
 
-        public static List<ClassWOWType> GetWOWClassesThatHaveArchery()
-        {
-            lock (ClassesLock)
-            {
-                if (WOWClassesByEQClass.Count == 0)
-                    PopulateClassMap();
-                return WOWClassesWhichShouldHaveArchery.ToList();
-            }
-        }
-
         public static List<ClassWOWType> GetWOWClassesForEQClass(ClassEQType eqClass)
         {
             lock (ClassesLock)
@@ -425,7 +426,7 @@ namespace EQWOWConverter.Player
         private static void PopulateClassMap()
         {
             EQClassesByWOWClass.Clear();
-            WOWClassesWhichShouldHaveArchery.Clear();
+            WOWClassesWhichShouldHaveForage.Clear();
             foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
             {
                 if (wowClassType != ClassWOWType.All && wowClassType != ClassWOWType.None)
@@ -446,7 +447,7 @@ namespace EQWOWConverter.Player
             {
                 // EQ Class
                 ClassEQType eqClass = ClassEQType.Warrior;
-                switch(columns["EQ_Class"].ToLower().Trim())
+                switch (columns["EQ_Class"].ToLower().Trim())
                 {
                     case "bard": eqClass = ClassEQType.Bard; break;
                     case "cleric": eqClass = ClassEQType.Cleric; break;
@@ -499,8 +500,8 @@ namespace EQWOWConverter.Player
                 switch (columns["Max_Armor_Class"].ToLower().Trim())
                 {
                     case "plate": itemWOWArmorSubclassType = ItemWOWArmorSubclassType.Plate; break;
-                    case "mail": itemWOWArmorSubclassType = ItemWOWArmorSubclassType.Mail;  break;
-                    case "leather": itemWOWArmorSubclassType = ItemWOWArmorSubclassType.Leather;  break;
+                    case "mail": itemWOWArmorSubclassType = ItemWOWArmorSubclassType.Mail; break;
+                    case "leather": itemWOWArmorSubclassType = ItemWOWArmorSubclassType.Leather; break;
                     case "cloth": itemWOWArmorSubclassType = ItemWOWArmorSubclassType.Cloth; break;
                     default:
                         {
@@ -509,9 +510,9 @@ namespace EQWOWConverter.Player
                 }
                 WOWMaxArmorClassTypeByEQClass[eqClass] = itemWOWArmorSubclassType;
 
-                // Archery / Bows
-                if (columns["Has_Archery"].Trim() == "1")
-                    WOWClassesWhichShouldHaveArchery.Add(wowClass);
+                // Forage
+                if (columns["Has_Forage"].Trim() == "1")
+                    WOWClassesWhichShouldHaveForage.Add(wowClass);
             }
         }
     }
