@@ -113,6 +113,7 @@ namespace EQWOWConverter.Items
         public int CastTime = 0;
         public int FoodType = 0; // For pets: 1 - Meat, 2 - Fish, 3 - Cheese, 4 - Bread, 5 - Fungus, 6 - fruit, 7 - Raw Meat, 8 - Raw Fish
         public bool IsDrink = false;
+        public bool IsFishingBait = false;
         public List<ContainedItem> ContainedItems = new List<ContainedItem>();
         public bool CanBeOpened = false;
         public bool IsExistingItemAlready = false;
@@ -1277,6 +1278,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 7;
                         itemTemplate.SubClassID = 3;
+                        itemTemplate.IsFishingBait = true;
                     } break;
                 case 38: // Alcohol => Food and Drink
                     {

@@ -1802,6 +1802,8 @@ namespace EQWOWConverter
                     forageZoneItem.ForageType = ForageZoneItemType.Drink;
                 else if (itemTemplate.WOWSpellCategory1 == 11) // Food
                     forageZoneItem.ForageType = ForageZoneItemType.Food;
+                else if (itemTemplate.IsFishingBait == true)
+                    forageZoneItem.ForageType = ForageZoneItemType.Bait;
                 else
                     forageZoneItem.ForageType = ForageZoneItemType.Other;
                 itemTemplatesByEQDBID[forageZoneItem.EQItemID].IsForaged = true;

@@ -20,6 +20,7 @@ namespace EQWOWConverter.Forage
     {
         Food = 0,
         Drink = 1,
-        Other = 2
+        Bait = 2,
+        Other = 3
     }
 }
