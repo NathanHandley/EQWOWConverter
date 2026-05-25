@@ -97,6 +97,7 @@ namespace EQWOWConverter
         private PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
         private QuestTemplateSQL questTemplateSQL = new QuestTemplateSQL();
         private QuestTemplateAddonSQL questTemplateAddonSQL = new QuestTemplateAddonSQL();
+        private ReferenceLootTemplateSQL referenceLootTemplateSQL = new ReferenceLootTemplateSQL();
         private SkillFishingBaseLevelSQL skillFishingBaseLevelSQL = new SkillFishingBaseLevelSQL();
         private SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
         private SpellGroupSQL spellGroupSQL = new SpellGroupSQL();
@@ -858,6 +859,16 @@ namespace EQWOWConverter
         private void PopulateFishingData(Dictionary<string, ZoneProperties> zonePropertiesByShortName)
         {
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWID = ItemTemplate.GetItemTemplatesByWOWEntryID();
+
+            // Junk fishing reference
+            int junkReferenceID = ReferenceLootTemplateSQL.GenerateID();
+            foreach (FishingZoneItem junkFishingZoneItem in FishingZoneItem.GetJunkFishingItems())
+            {
+                ItemTemplate curItemTemplate = itemTemplatesByWOWID[junkFishingZoneItem.WOWItemTemplateID];
+                string comment = string.Concat("EQ Junk ", curItemTemplate.Name);
+                referenceLootTemplateSQL.AddRow(junkReferenceID, junkFishingZoneItem.WOWItemTemplateID, junkFishingZoneItem.ChanceAbsolute, true, comment);
+            }
+
             Dictionary<string, List<FishingZoneItem>> fishingZoneItemsByZoneShortName = FishingZoneItem.GetFishingZoneItemsByZoneShortName();
             Dictionary<string, int> wowFishingLevelByZoneShortName = FishingZoneItem.GetWOWFishingLevelByZoneShortName();
             foreach (var fishingZoneItemsInZoneByShortName in fishingZoneItemsByZoneShortName)
@@ -887,8 +898,11 @@ namespace EQWOWConverter
                         }
                         ItemTemplate curItemTemplate = itemTemplatesByWOWID[fishingZoneItem.WOWItemTemplateID];
                         string comment = string.Concat("EQ ", curItemTemplate.Name, " (", zoneProperties.ShortName, ")");
-                        fishingLootTemplateSQL.AddRow(areaTableID, fishingZoneItem.WOWItemTemplateID, fishingZoneItem.ChanceAbsolute, comment);
+                        fishingLootTemplateSQL.AddRow(areaTableID, 0, fishingZoneItem.WOWItemTemplateID, fishingZoneItem.ChanceAbsolute, false, comment);
                     }
+
+                    // Also add the junk items
+                    fishingLootTemplateSQL.AddRow(areaTableID, junkReferenceID, junkReferenceID, 100, true, "(ReferenceTable)");
                 }
             }
         }
@@ -1608,6 +1622,7 @@ namespace EQWOWConverter
             poolTemplateSQL.SaveToDisk("pool_template", SQLFileType.World);
             questTemplateSQL.SaveToDisk("quest_template", SQLFileType.World);
             questTemplateAddonSQL.SaveToDisk("quest_template_addon", SQLFileType.World);
+            referenceLootTemplateSQL.SaveToDisk("reference_loot_template", SQLFileType.World);
             skillFishingBaseLevelSQL.SaveToDisk("skill_fishing_base_level", SQLFileType.World);
             smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
             spellGroupSQL.SaveToDisk("spell_group", SQLFileType.World);

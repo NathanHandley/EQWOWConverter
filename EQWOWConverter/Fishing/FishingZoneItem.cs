@@ -22,6 +22,7 @@ namespace EQWOWConverter.Fishing
     internal class FishingZoneItem
     {
         private static Dictionary<string, List<FishingZoneItem>> FishingZoneItemsByZoneShortName = new Dictionary<string, List<FishingZoneItem>>();
+        private static List<FishingZoneItem> JunkFishingItems = new List<FishingZoneItem>();
         private static Dictionary<string, int> FishingWOWSkillLevelByZoneShortName = new Dictionary<string, int>();
         private static readonly object FishingLock = new object();
 
@@ -53,10 +54,21 @@ namespace EQWOWConverter.Fishing
             }
         }
 
+        public static List<FishingZoneItem> GetJunkFishingItems()
+        {
+            lock (FishingLock)
+            {
+                if (FishingWOWSkillLevelByZoneShortName.Count == 0)
+                    PopulateZoneItemList();
+                return JunkFishingItems;
+            }
+        }
+
         private static void PopulateZoneItemList()
         {
             FishingZoneItemsByZoneShortName.Clear();
             FishingWOWSkillLevelByZoneShortName.Clear();
+            JunkFishingItems.Clear();
 
             // Used to skip any bad items
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
@@ -157,6 +169,40 @@ namespace EQWOWConverter.Fishing
                         fishingZoneItems[i].ChanceAbsolute = float.Round(remainingAbsoluteMod, 2);
                 }
             }
+
+            // Build a junk list (need to have chance add up to 100)
+            // Fish Scales
+            FishingZoneItem fishScalesJunkFishingZoneItem = new FishingZoneItem();
+            fishScalesJunkFishingZoneItem.EQItemID = 13076;
+            fishScalesJunkFishingZoneItem.WOWItemTemplateID = itemTemplatesByEQDBID[fishScalesJunkFishingZoneItem.EQItemID].WOWEntryID;
+            fishScalesJunkFishingZoneItem.SkillLevelEQ = 0;
+            fishScalesJunkFishingZoneItem.SkillLevelWOW = 0;
+            fishScalesJunkFishingZoneItem.ChanceRelative = 25;
+            fishScalesJunkFishingZoneItem.ChanceAbsolute = 25;
+            JunkFishingItems.Add(fishScalesJunkFishingZoneItem);
+            itemTemplatesByEQDBID[fishScalesJunkFishingZoneItem.EQItemID].IsFished = true;
+
+            // Tattered Cloth Sandal
+            FishingZoneItem tatteredClothSandalFishingZoneItem = new FishingZoneItem();
+            tatteredClothSandalFishingZoneItem.EQItemID = 1038;
+            tatteredClothSandalFishingZoneItem.WOWItemTemplateID = itemTemplatesByEQDBID[tatteredClothSandalFishingZoneItem.EQItemID].WOWEntryID;
+            tatteredClothSandalFishingZoneItem.SkillLevelEQ = 0;
+            tatteredClothSandalFishingZoneItem.SkillLevelWOW = 0;
+            tatteredClothSandalFishingZoneItem.ChanceRelative = 25;
+            tatteredClothSandalFishingZoneItem.ChanceAbsolute = 25;
+            JunkFishingItems.Add(tatteredClothSandalFishingZoneItem);
+            itemTemplatesByEQDBID[tatteredClothSandalFishingZoneItem.EQItemID].IsFished = true;
+
+            // Rusty Dagger
+            FishingZoneItem rustyDaggerFishingZoneItem = new FishingZoneItem();
+            rustyDaggerFishingZoneItem.EQItemID = 7007;
+            rustyDaggerFishingZoneItem.WOWItemTemplateID = itemTemplatesByEQDBID[rustyDaggerFishingZoneItem.EQItemID].WOWEntryID;
+            rustyDaggerFishingZoneItem.SkillLevelEQ = 0;
+            rustyDaggerFishingZoneItem.SkillLevelWOW = 0;
+            rustyDaggerFishingZoneItem.ChanceRelative = 50;
+            rustyDaggerFishingZoneItem.ChanceAbsolute = 50;
+            JunkFishingItems.Add(rustyDaggerFishingZoneItem);
+            itemTemplatesByEQDBID[rustyDaggerFishingZoneItem.EQItemID].IsFished = true;
         }
     }
 }

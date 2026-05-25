@@ -938,6 +938,10 @@ namespace EQWOWConverter
         public static int SQL_QUEST_TEMPLATE_ID_END = 40000;
         public static int SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT = 5000;
 
+        // Stard and end IDs for reference_loot_template.entry
+        public static int SQL_REFERENCE_LOOT_TEMPLATE_ID_START = 60000;
+        public static int SQL_REFERENCE_LOOT_TEMPLATE_ID_END = 60999;
+
         // Start and end IDs for spell groups
         public static int SQL_SPELL_GROUP_ID_START = 1500;
         public static int SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START = 1750;
@@ -1445,6 +1449,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SQL_QUEST_TEMPLATE_ID_START", SQL_QUEST_TEMPLATE_ID_START, "Start and end IDs for quest template data rows", false);
             OutputVariableToConfig("SQL_QUEST_TEMPLATE_ID_END", SQL_QUEST_TEMPLATE_ID_END, "", false);
             OutputVariableToConfig("SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT", SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT, "");
+            OutputVariableToConfig("SQL_REFERENCE_LOOT_TEMPLATE_ID_START", SQL_REFERENCE_LOOT_TEMPLATE_ID_START, "Stard and end IDs for reference_loot_template.entry", false);
+            OutputVariableToConfig("SQL_REFERENCE_LOOT_TEMPLATE_ID_END", SQL_REFERENCE_LOOT_TEMPLATE_ID_END, "");
             OutputVariableToConfig("SQL_SPELL_GROUP_ID_START", SQL_SPELL_GROUP_ID_START, "Start and end IDs for spell groups", false);
             OutputVariableToConfig("SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START", SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START, "", false);
             OutputVariableToConfig("SQL_SPELL_GROUP_ID_END", SQL_SPELL_GROUP_ID_END, "");
@@ -1846,6 +1852,8 @@ namespace EQWOWConverter
             SQL_QUEST_TEMPLATE_ID_START = ReadVariableFromConfigString("SQL_QUEST_TEMPLATE_ID_START", configValuesByVariableName, SQL_QUEST_TEMPLATE_ID_START);
             SQL_QUEST_TEMPLATE_ID_END = ReadVariableFromConfigString("SQL_QUEST_TEMPLATE_ID_END", configValuesByVariableName, SQL_QUEST_TEMPLATE_ID_END);
             SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT = ReadVariableFromConfigString("SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT", configValuesByVariableName, SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT);
+            SQL_REFERENCE_LOOT_TEMPLATE_ID_START = ReadVariableFromConfigString("SQL_REFERENCE_LOOT_TEMPLATE_ID_START", configValuesByVariableName, SQL_REFERENCE_LOOT_TEMPLATE_ID_START);
+            SQL_REFERENCE_LOOT_TEMPLATE_ID_END = ReadVariableFromConfigString("SQL_REFERENCE_LOOT_TEMPLATE_ID_END", configValuesByVariableName, SQL_REFERENCE_LOOT_TEMPLATE_ID_END);
             SQL_SPELL_GROUP_ID_START = ReadVariableFromConfigString("SQL_SPELL_GROUP_ID_START", configValuesByVariableName, SQL_SPELL_GROUP_ID_START);
             SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START = ReadVariableFromConfigString("SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START", configValuesByVariableName, SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START);
             SQL_SPELL_GROUP_ID_END = ReadVariableFromConfigString("SQL_SPELL_GROUP_ID_END", configValuesByVariableName, SQL_SPELL_GROUP_ID_END);
