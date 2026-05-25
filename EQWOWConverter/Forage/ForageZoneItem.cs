@@ -43,7 +43,7 @@ namespace EQWOWConverter.Forage
             ForageZoneItems.Clear();
 
             string zoneItemsListFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ForageZoneItems.csv");
-            Logger.WriteDebug("Populating Zone Items List via file '" + zoneItemsListFile + "'");
+            Logger.WriteDebug("Populating Forage Zone Items List via file '" + zoneItemsListFile + "'");
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(zoneItemsListFile, "|");
             foreach (Dictionary<string, string> columns in rows)
             {

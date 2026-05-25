@@ -18,6 +18,7 @@ using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.Creatures.Teleporters;
 using EQWOWConverter.Events;
+using EQWOWConverter.Fishing;
 using EQWOWConverter.Forage;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.Items;
@@ -53,6 +54,7 @@ namespace EQWOWConverter
         private CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
         private CreatureTemplateSpellSQL creatureTemplateSpellSQL = new CreatureTemplateSpellSQL();
         private CreatureTextSQL creatureTextSQL = new CreatureTextSQL();
+        private FishingLootTemplateSQL fishingLootTemplateSQL = new FishingLootTemplateSQL();
         private GameEventSQL gameEventSQL = new GameEventSQL();
         private GameEventCreatureSQL gameEventCreatureSQL = new GameEventCreatureSQL();
         private GameEventPoolSQL gameEventPoolSQL = new GameEventPoolSQL();
@@ -95,6 +97,7 @@ namespace EQWOWConverter
         private PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
         private QuestTemplateSQL questTemplateSQL = new QuestTemplateSQL();
         private QuestTemplateAddonSQL questTemplateAddonSQL = new QuestTemplateAddonSQL();
+        private SkillFishingBaseLevelSQL skillFishingBaseLevelSQL = new SkillFishingBaseLevelSQL();
         private SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
         private SpellGroupSQL spellGroupSQL = new SpellGroupSQL();
         private SpellGroupStackRulesSQL spellGroupStackRulesSQL = new SpellGroupStackRulesSQL();
@@ -141,6 +144,9 @@ namespace EQWOWConverter
 
             // Forage
             PopulateForageData();
+
+            // Fishing
+            PopulateFishingData(zonePropertiesByShortName);
 
             // Player start properties
             PopulatePlayerLoadData(zones, mapIDsByShortName);
@@ -849,6 +855,44 @@ namespace EQWOWConverter
             }
         }
 
+        private void PopulateFishingData(Dictionary<string, ZoneProperties> zonePropertiesByShortName)
+        {
+            SortedDictionary<int, ItemTemplate> itemTemplatesByWOWID = ItemTemplate.GetItemTemplatesByWOWEntryID();
+            Dictionary<string, List<FishingZoneItem>> fishingZoneItemsByZoneShortName = FishingZoneItem.GetFishingZoneItemsByZoneShortName();
+            Dictionary<string, int> wowFishingLevelByZoneShortName = FishingZoneItem.GetWOWFishingLevelByZoneShortName();
+            foreach (var fishingZoneItemsInZoneByShortName in fishingZoneItemsByZoneShortName)
+            {
+                if (zonePropertiesByShortName.ContainsKey(fishingZoneItemsInZoneByShortName.Key) == false)
+                {
+                    Logger.WriteError("PopulateFishingData skipped a row because zone with short name '", fishingZoneItemsInZoneByShortName.Key, "' was not found");
+                    continue;
+                }
+                ZoneProperties zoneProperties = zonePropertiesByShortName[fishingZoneItemsInZoneByShortName.Key];
+                HashSet<int> areaTableIDs = new HashSet<int>();
+                areaTableIDs.Add((int)zoneProperties.DefaultZoneArea.DBCAreaTableID);
+                foreach (ZoneArea subArea in zoneProperties.SubZoneAreas)
+                    areaTableIDs.Add((int)subArea.DBCAreaTableID);
+                foreach (int areaTableID in areaTableIDs)
+                {
+                    // Zone fishing properties
+                    skillFishingBaseLevelSQL.AddRow(areaTableID, wowFishingLevelByZoneShortName[fishingZoneItemsInZoneByShortName.Key]);
+
+                    // Fishing Loot Rows
+                    foreach (FishingZoneItem fishingZoneItem in fishingZoneItemsInZoneByShortName.Value)
+                    {
+                        if (itemTemplatesByWOWID.ContainsKey(fishingZoneItem.WOWItemTemplateID) == false)
+                        {
+                            Logger.WriteError("PopulateFishingData skipped a row because no item template could be found with wowid '", fishingZoneItem.WOWItemTemplateID.ToString(), "'");
+                            continue;
+                        }
+                        ItemTemplate curItemTemplate = itemTemplatesByWOWID[fishingZoneItem.WOWItemTemplateID];
+                        string comment = string.Concat("EQ ", curItemTemplate.Name, " (", zoneProperties.ShortName, ")");
+                        fishingLootTemplateSQL.AddRow(areaTableID, fishingZoneItem.WOWItemTemplateID, fishingZoneItem.ChanceAbsolute, comment);
+                    }
+                }
+            }
+        }
+
         private void PopulatePlayerLoadData(List<Zone> zones, Dictionary<string, int> mapIDsByShortName)
         {
             // Player Start Data
@@ -1515,10 +1559,13 @@ namespace EQWOWConverter
             creatureEquipTemplateSQL.SaveToDisk("creature_equip_template", SQLFileType.World);
             creatureLootTableSQL.SaveToDisk("creature_loot_template", SQLFileType.World);
             creatureModelInfoSQL.SaveToDisk("creature_model_info", SQLFileType.World);
+            creatureQuestEnderSQL.SaveToDisk("creature_questender", SQLFileType.World);
+            creatureQuestStarterSQL.SaveToDisk("creature_queststarter", SQLFileType.World);
             creatureTemplateSQL.SaveToDisk("creature_template", SQLFileType.World);
             creatureTemplateModelSQL.SaveToDisk("creature_template_model", SQLFileType.World);
             creatureTemplateSpellSQL.SaveToDisk("creature_template_spell", SQLFileType.World);
             creatureTextSQL.SaveToDisk("creature_text", SQLFileType.World);
+            fishingLootTemplateSQL.SaveToDisk("fishing_loot_template", SQLFileType.World);
             gameEventSQL.SaveToDisk("game_event", SQLFileType.World);
             gameEventCreatureSQL.SaveToDisk("game_event_creature", SQLFileType.World);
             gameEventPoolSQL.SaveToDisk("game_event_pool", SQLFileType.World);
@@ -1559,6 +1606,9 @@ namespace EQWOWConverter
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
             poolTemplateSQL.SaveToDisk("pool_template", SQLFileType.World);
+            questTemplateSQL.SaveToDisk("quest_template", SQLFileType.World);
+            questTemplateAddonSQL.SaveToDisk("quest_template_addon", SQLFileType.World);
+            skillFishingBaseLevelSQL.SaveToDisk("skill_fishing_base_level", SQLFileType.World);
             smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
             spellGroupSQL.SaveToDisk("spell_group", SQLFileType.World);
             spellGroupStackRulesSQL.SaveToDisk("spell_group_stack_rules", SQLFileType.World);
@@ -1569,13 +1619,6 @@ namespace EQWOWConverter
             trainerSpellSQL.SaveToDisk("trainer_spell", SQLFileType.World);
             transportsSQL.SaveToDisk("transports", SQLFileType.World);
             waypointDataSQL.SaveToDisk("waypoint_data", SQLFileType.World);
-            if (Configuration.GENERATE_QUESTS == true)
-            {
-                creatureQuestEnderSQL.SaveToDisk("creature_questender", SQLFileType.World);
-                creatureQuestStarterSQL.SaveToDisk("creature_queststarter", SQLFileType.World);
-                questTemplateSQL.SaveToDisk("quest_template", SQLFileType.World);
-                questTemplateAddonSQL.SaveToDisk("quest_template_addon", SQLFileType.World);
-            }
         }
 
         public void DeployServerSQL()

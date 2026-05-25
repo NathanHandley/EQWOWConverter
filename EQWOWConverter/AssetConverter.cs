@@ -17,6 +17,7 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.Events;
+using EQWOWConverter.Fishing;
 using EQWOWConverter.Forage;
 using EQWOWConverter.GameObjects;
 using EQWOWConverter.Items;
@@ -218,6 +219,9 @@ namespace EQWOWConverter
 
             // If there are any neutral creatures that should be interactive, remap
             RemapDefaultFactionsForInteractiveCreatures(ref creatureTemplates);
+
+            // Force load of the fishing data before clearing invalid, so that fishing items don't get culled
+            FishingZoneItem.GetWOWFishingLevelByZoneShortName();
 
             // If there are any non player obtainable things (spells, items), clear them out
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();

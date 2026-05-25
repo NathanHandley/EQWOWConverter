@@ -671,6 +671,12 @@ namespace EQWOWConverter
         public static int SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN = 30;
 
         //=====================================================================
+        // Fishing
+        //=====================================================================
+        // How much to multiply the EQ fish catching skill requirement for WOW
+        public static float FISHING_SKILL_CONVERSION_MOD = 1.3432f;
+
+        //=====================================================================
         // Forage
         //=====================================================================
         // Which eq spell icon to use for the Forage skill. Can be a value between 0-22
@@ -1312,6 +1318,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS", SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS, "Default time that a shrink/grow spell will last for");
             OutputVariableToConfig("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID", SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, "Values for the cooldown spells applied by Priests of Discord when you switch worlds, setting cooldown duration to 0 will disable it", false);
             OutputVariableToConfig("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN, "");
+            OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD", FISHING_SKILL_CONVERSION_MOD, "How much to multiply the EQ fish catching skill requirement for WOW");
             OutputVariableToConfig("FORAGE_SPELL_ICON_EQ_ID", FORAGE_SPELL_ICON_EQ_ID, "Which eq spell icon to use for the Forage skill. Can be a value between 0-22");
             OutputVariableToConfig("FORAGE_SPELL_TEMPLATE_ID", FORAGE_SPELL_TEMPLATE_ID, "Spell id for the forage spell");
             OutputVariableToConfig("TRADESKILLS_CONVERSION_MOD", TRADESKILLS_CONVERSION_MOD, "How much to multiply EQ skill requirements by to reach the same for WoW on conversion");
@@ -1730,6 +1737,7 @@ namespace EQWOWConverter
             SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS = ReadVariableFromConfigString("SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS", configValuesByVariableName, SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS);
             SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID = ReadVariableFromConfigString("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID", configValuesByVariableName, SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID);
             SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN = ReadVariableFromConfigString("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", configValuesByVariableName, SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN);
+            FISHING_SKILL_CONVERSION_MOD = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD);
             FORAGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("FORAGE_SPELL_ICON_EQ_ID", configValuesByVariableName, FORAGE_SPELL_ICON_EQ_ID);
             FORAGE_SPELL_TEMPLATE_ID = ReadVariableFromConfigString("FORAGE_SPELL_TEMPLATE_ID", configValuesByVariableName, FORAGE_SPELL_TEMPLATE_ID);
             TRADESKILLS_CONVERSION_MOD = ReadVariableFromConfigString("TRADESKILLS_CONVERSION_MOD", configValuesByVariableName, TRADESKILLS_CONVERSION_MOD);
