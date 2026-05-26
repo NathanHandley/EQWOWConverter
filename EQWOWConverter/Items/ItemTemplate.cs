@@ -1688,7 +1688,7 @@ namespace EQWOWConverter.Items
                     foreach(string block in rowBlocks)
                     {
                         string lowerText = block.Trim().ToLower();
-                        if (lowerText == "slot")
+                        if (lowerText == "slot" || lowerText == "levelcap")
                             continue;
                         stats.Add(lowerText);
                     }
@@ -1697,11 +1697,20 @@ namespace EQWOWConverter.Items
                     continue;
                 }
 
+                // Skip rows used for the other level balancing
+                if (rowBlocks.Length > 2)
+                {
+                    if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == true && rowBlocks[1].Trim() == "60")
+                        continue;
+                    else if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == false && rowBlocks[1].Trim() == "80")
+                        continue;
+                }
+
                 // Otherwise, load the stats
                 string slot = rowBlocks[0].Trim().ToLower();
                 StatBaselinesBySlotAndStat.Add(slot, new Dictionary<string, float>());
-                for (int i = 1; i < rowBlocks.Count(); i++)
-                    StatBaselinesBySlotAndStat[slot].Add(stats[i - 1], float.Parse(rowBlocks[i]));
+                for (int i = 2; i < rowBlocks.Count(); i++)
+                    StatBaselinesBySlotAndStat[slot].Add(stats[i - 2], float.Parse(rowBlocks[i]));
             }
         }
 

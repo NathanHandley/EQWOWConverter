@@ -1069,8 +1069,16 @@ namespace EQWOWConverter.Zones
                 zoneProperties.DisplayMapMainRight = float.Parse(propertiesRow["DisplayMapMainRight"]);
                 zoneProperties.DisplayMapMainTop = float.Parse(propertiesRow["DisplayMapMainTop"]);
                 zoneProperties.DisplayMapMainBottom = float.Parse(propertiesRow["DisplayMapMainBottom"]);
-                zoneProperties.SuggestedMinLevel = int.Parse(propertiesRow["SugLevelMin"]);
-                zoneProperties.SuggestedMaxLevel = int.Parse(propertiesRow["SugLevelMax"]);
+                if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == true)
+                {
+                    zoneProperties.SuggestedMinLevel = int.Parse(propertiesRow["SugLevelMin80"]);
+                    zoneProperties.SuggestedMaxLevel = int.Parse(propertiesRow["SugLevelMax80"]);
+                }
+                else
+                {
+                    zoneProperties.SuggestedMinLevel = int.Parse(propertiesRow["SugLevelMin60"]);
+                    zoneProperties.SuggestedMaxLevel = int.Parse(propertiesRow["SugLevelMax60"]);
+                }
                 zoneProperties.AlwaysZoomOutMapToNorrathMap = propertiesRow["AlwaysZoomOutToNorrathMap"].Trim() == "1" ? true : false;
                 zoneProperties.DisableObjectsInMapGenMode = propertiesRow["DisableObjectsInMapGenMode"].Trim() == "1" ? true : false;
 

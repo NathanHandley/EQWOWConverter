@@ -299,7 +299,7 @@ namespace EQWOWConverter.Spells
             float valueEqHigh = valuesForEffectType["eqhigh"];
             float valueWowLow = valuesForEffectType["wowlow"];
             float valueWoWHigh = valuesForEffectType["wowhigh60"];
-            if (Configuration.SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION == false)
+            if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == true)
                 valueWoWHigh = valuesForEffectType["wowhigh80"];
 
             // Perform no calculation if any are 0

@@ -163,6 +163,10 @@ namespace EQWOWConverter
         public static bool GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION = true;
         public static int GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID = 55813;
 
+        // If false, equipment is balanced to max level 60 and original levels are used. If true, use adjusted levels and zones/equip is balanced to 80
+        // with Classic through 60, Kunark through 70, and Velious through 80. Zones will also have a smoother level curve if set to true.
+        public static bool GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 = false;
+
         //=====================================================================
         // Player
         //=====================================================================
@@ -547,14 +551,8 @@ namespace EQWOWConverter
         // NOTE: Not currently working right, so leave false.  Lots of work left before this is good.
         public static bool SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR = false;
 
-        // If true, spells will balance around level 60 being the cap (EQ-like),
-        // otherwise it will be 80 like WOTLK
-        public static bool SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION = true;
-
         // This is how high (WOW side) stats will be be scaled to.  This should almost always be
-        // set to the server max level configuration.  This is different than the property
-        // SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION which balances values to level 60
-        // WOW content, in that this just lets a trickle-up of stats
+        // set to the server max level configuration as it just handles 'trickle up' stats
         public static int SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL = 80;
 
         // If true, the player can return to their gate point by clicking off the buff (within 30 minutes)
@@ -1081,6 +1079,8 @@ namespace EQWOWConverter
             OutputTextLineToConfig("# | 3. Enhancements / Customizations (Settings that alter the world from EQ)  |");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputBlankLineToConfig();
+            OutputTextLineToConfig("# If false, equipment is balanced to max level 60 and original levels are used. If true, use adjusted levels and zones/equip is balanced to 80");
+            OutputVariableToConfig("GENERATE_REBALANCE_CONTENT_TO_LEVEL_80", GENERATE_REBALANCE_CONTENT_TO_LEVEL_80, "with Classic through 60, Kunark through 70, and Velious through 80. Zones will also have a smoother level curve if set to true.");
             OutputVariableToConfig("PLAYER_USE_EQ_START_LOCATION", PLAYER_USE_EQ_START_LOCATION, "If true, new players created will use the everquest start locations defined in PlayerClassRaceProperties");
             OutputVariableToConfig("PLAYER_USE_EQ_START_ITEMS", PLAYER_USE_EQ_START_ITEMS, "If true, players will start with an EQ item loadout instead of a WOW item loadout");
             OutputVariableToConfig("PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS", PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS, "If true, this will also add a hearthstone if using EQ items");
@@ -1270,7 +1270,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("QUESTS_TEXT_DURATION_IN_MS", QUESTS_TEXT_DURATION_IN_MS, "How many milliseconds to display a text block from an NPC on quest events");
             OutputVariableToConfig("ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID", ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID, "Spell ID for the visual effect from Monk's epic weapon (Celestial Fists)");
             OutputVariableToConfig("QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID", QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID, "This is the icon ID that is used for quest rewards that contain more than one random item");
-            OutputVariableToConfig("SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION", SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION, "If true, spells will balance around level 60 being the cap (EQ-like), otherwise it will be 80 like WOTLK");
             OutputVariableToConfig("SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL", SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL, "This is how high (WOW side) stats will be be scaled to.  This should almost always be set to the server max level configuration.");
             OutputVariableToConfig("SPELLS_GATECUSTOM_SPELLDBC_ID", SPELLS_GATECUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest");
             OutputVariableToConfig("SPELLS_BINDCUSTOM_SPELLDBC_ID", SPELLS_BINDCUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest");
@@ -1536,6 +1535,7 @@ namespace EQWOWConverter
             GENERATE_ENABLE_GUILD_VAULTS = ReadVariableFromConfigString("GENERATE_ENABLE_GUILD_VAULTS", configValuesByVariableName, GENERATE_ENABLE_GUILD_VAULTS);
             GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION = ReadVariableFromConfigString("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", configValuesByVariableName, GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION);
             GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID = ReadVariableFromConfigString("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", configValuesByVariableName, GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID);
+            GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 = ReadVariableFromConfigString("GENERATE_REBALANCE_CONTENT_TO_LEVEL_80", configValuesByVariableName, GENERATE_REBALANCE_CONTENT_TO_LEVEL_80);
 
             PLAYER_USE_EQ_START_LOCATION = ReadVariableFromConfigString("PLAYER_USE_EQ_START_LOCATION", configValuesByVariableName, PLAYER_USE_EQ_START_LOCATION);
             PLAYER_USE_EQ_START_ITEMS = ReadVariableFromConfigString("PLAYER_USE_EQ_START_ITEMS", configValuesByVariableName, PLAYER_USE_EQ_START_ITEMS);
@@ -1688,7 +1688,6 @@ namespace EQWOWConverter
             QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID = ReadVariableFromConfigString("QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID", configValuesByVariableName, QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID);
 
             SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR = ReadVariableFromConfigString("SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR", configValuesByVariableName, SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR);
-            SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION = ReadVariableFromConfigString("SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION", configValuesByVariableName, SPELL_EFFECT_BALANCE_LEVEL_USE_60_VERSION);
             SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL = ReadVariableFromConfigString("SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL", configValuesByVariableName, SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL);
             SPELLS_GATE_TETHER_ENABLED = ReadVariableFromConfigString("SPELLS_GATE_TETHER_ENABLED", configValuesByVariableName, SPELLS_GATE_TETHER_ENABLED);
             SPELLS_GATECUSTOM_SPELLDBC_ID = ReadVariableFromConfigString("SPELLS_GATECUSTOM_SPELLDBC_ID", configValuesByVariableName, SPELLS_GATECUSTOM_SPELLDBC_ID);
