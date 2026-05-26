@@ -1166,7 +1166,6 @@ namespace EQWOWConverter.Items
                         // If it has any other equippable armor slot, it's armor
                         if (slotMask != 0)
                         {
-                            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) &&
                             if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) ||
                                 IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Secondary, slotMask))
                             {
