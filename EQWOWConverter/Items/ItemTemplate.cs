@@ -1167,6 +1167,7 @@ namespace EQWOWConverter.Items
                         if (slotMask != 0)
                         {
                             if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) &&
+                            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) ||
                                 IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Secondary, slotMask))
                             {
                                 itemTemplate.ClassID = 2;
