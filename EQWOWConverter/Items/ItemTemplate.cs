@@ -814,11 +814,7 @@ namespace EQWOWConverter.Items
             foreach (ClassEQType eqClassType in Enum.GetValues(typeof(ClassEQType)))
             {
                 if (IsPackedClassMask(eqClassType, classMask) == true)
-                {
-                    List<ClassWOWType> wowClasses = PlayerClassMapping.GetWOWClassesForEQClass(eqClassType);
-                    foreach (ClassWOWType wowClass in wowClasses)
-                        classTypes.Add(wowClass);
-                }
+                    classTypes.Add(PlayerClassMapping.GetWOWClassForEQClass(eqClassType));
             }
 
             // If all classes are represented, just make it all

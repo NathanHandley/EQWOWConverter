@@ -22,7 +22,7 @@ namespace EQWOWConverter.Player
     internal class PlayerClassMapping
     {
         private static Dictionary<ClassEQType, ItemWOWArmorSubclassType> WOWMaxArmorClassTypeByEQClass = new Dictionary<ClassEQType, ItemWOWArmorSubclassType>();
-        private static Dictionary<ClassEQType, List<ClassWOWType>> WOWClassesByEQClass = new Dictionary<ClassEQType, List<ClassWOWType>>();
+        private static Dictionary<ClassEQType, ClassWOWType> WOWClassByEQClass = new Dictionary<ClassEQType, ClassWOWType>();
         private static Dictionary<ClassWOWType, List<ClassEQType>> EQClassesByWOWClass = new Dictionary<ClassWOWType, List<ClassEQType>>();
         private static HashSet<ClassWOWType> WOWClassesWhichShouldHaveForage = new HashSet<ClassWOWType>();
         private static readonly object ClassesLock = new object();
@@ -31,7 +31,7 @@ namespace EQWOWConverter.Player
         {
             lock (ClassesLock)
             {
-                if (WOWClassesByEQClass.Count == 0)
+                if (WOWClassByEQClass.Count == 0)
                     PopulateClassMap();
                 return WOWClassesWhichShouldHaveForage;
             }
@@ -42,7 +42,7 @@ namespace EQWOWConverter.Player
         {
             lock (ClassesLock)
             {
-                if (WOWClassesByEQClass.Count == 0)
+                if (WOWClassByEQClass.Count == 0)
                     PopulateClassMap();
 
                 HashSet<ClassWOWType> eligibleClasses = new HashSet<ClassWOWType>();
@@ -153,84 +153,84 @@ namespace EQWOWConverter.Player
                         case ItemWOWWeaponSubclassType.SwordOneHand: // 1H Slash
                         case ItemWOWWeaponSubclassType.AxeOneHand:
                             {
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Rogue]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Bard]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Druid]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Rogue]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Ranger]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Paladin]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.ShadowKnight]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Bard]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Druid]);
                             } break;
                         case ItemWOWWeaponSubclassType.SwordTwoHand: // 2H Slash
                         case ItemWOWWeaponSubclassType.AxeTwoHand:
                             {
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Ranger]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Paladin]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.ShadowKnight]);
                             } break;
                         case ItemWOWWeaponSubclassType.FistWeapon: // 1H Blunt
                         case ItemWOWWeaponSubclassType.MaceOneHand:
                             {
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Monk]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Bard]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Shaman]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Cleric]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Druid]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Enchanter]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Magician]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Necromancer]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Wizard]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Monk]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Ranger]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Paladin]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.ShadowKnight]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Bard]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Shaman]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Cleric]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Druid]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Enchanter]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Magician]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Necromancer]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Wizard]);
                             } break;
                         case ItemWOWWeaponSubclassType.MaceTwoHand: // 2H Blunt
                         case ItemWOWWeaponSubclassType.Staff:
                             {
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Monk]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Shaman]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Cleric]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Druid]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Enchanter]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Magician]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Necromancer]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Wizard]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Monk]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Ranger]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Paladin]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.ShadowKnight]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Shaman]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Cleric]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Druid]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Enchanter]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Magician]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Necromancer]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Wizard]);
                             } break;
                         case ItemWOWWeaponSubclassType.Dagger: // Pierce
                             {
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Bard]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Enchanter]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Magician]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Necromancer]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Rogue]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Shaman]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Wizard]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Bard]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Enchanter]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Magician]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Necromancer]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Paladin]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Ranger]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Rogue]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.ShadowKnight]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Shaman]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Wizard]);
                             } break;
                         case ItemWOWWeaponSubclassType.Polearm: // Pierce (2h, special)
                             {
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Shaman]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Paladin]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.ShadowKnight]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Shaman]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Ranger]);
                             } break;
                         case ItemWOWWeaponSubclassType.Bow: // Archery
                             {
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Ranger]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Warrior]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Rogue]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.ShadowKnight]);
-                                eligibleClasses.UnionWith(WOWClassesByEQClass[ClassEQType.Paladin]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Ranger]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Warrior]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Rogue]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.ShadowKnight]);
+                                eligibleClasses.Add(WOWClassByEQClass[ClassEQType.Paladin]);
                             }
                             break;
                         default: break;
@@ -244,7 +244,7 @@ namespace EQWOWConverter.Player
         {
             lock (ClassesLock)
             {
-                if (WOWClassesByEQClass.Count == 0)
+                if (WOWClassByEQClass.Count == 0)
                     PopulateClassMap();
 
                 // Determine the lowest armor class type, which can differ base on config
@@ -266,8 +266,8 @@ namespace EQWOWConverter.Player
                     HashSet<ClassWOWType> wowClasses = new HashSet<ClassWOWType>();
                     foreach (ClassEQType eqClass in eqClasses)
                     {
-                        if (WOWClassesByEQClass.ContainsKey(eqClass) == true)
-                            wowClasses.UnionWith(WOWClassesByEQClass[eqClass]);
+                        if (WOWClassByEQClass.ContainsKey(eqClass) == true)
+                            wowClasses.Add(WOWClassByEQClass[eqClass]);
                     }
 
                     // Find the lowest
@@ -299,7 +299,7 @@ namespace EQWOWConverter.Player
         {
             lock (ClassesLock)
             {
-                if (WOWClassesByEQClass.Count == 0)
+                if (WOWClassByEQClass.Count == 0)
                     PopulateClassMap();
                 HashSet<ClassWOWType> wowClasses = new HashSet<ClassWOWType>();
                 
@@ -322,10 +322,7 @@ namespace EQWOWConverter.Player
                                 foreach (var wowMaxArmorClassTypeByEQClass in WOWMaxArmorClassTypeByEQClass)
                                 {
                                     if ((int)wowMaxArmorClassTypeByEQClass.Value >= (int)armorType)
-                                    {
-                                        foreach (ClassWOWType wowClass in WOWClassesByEQClass[wowMaxArmorClassTypeByEQClass.Key])
-                                            wowClasses.Add(wowClass);
-                                    }
+                                        wowClasses.Add(WOWClassByEQClass[wowMaxArmorClassTypeByEQClass.Key]);
                                 }
                             } break;
                     }
@@ -391,25 +388,15 @@ namespace EQWOWConverter.Player
             }
         }
 
-        public static List<ClassWOWType> GetWOWClassesForEQClass(ClassEQType eqClass)
+        public static ClassWOWType GetWOWClassForEQClass(ClassEQType eqClass)
         {
             lock (ClassesLock)
             {
-                if (WOWClassesByEQClass.Count == 0)
+                if (WOWClassByEQClass.Count == 0)
                     PopulateClassMap();
-                if (WOWClassesByEQClass.ContainsKey(eqClass) == false)
-                    return new List<ClassWOWType>();
-                return WOWClassesByEQClass[eqClass];
-            }
-        }
-
-        public static Dictionary<ClassEQType, List<ClassWOWType>> GetAllWOWClassesByEQClass()
-        {
-            lock (ClassesLock)
-            {
-                if (WOWClassesByEQClass.Count == 0)
-                    PopulateClassMap();
-                return WOWClassesByEQClass;
+                if (WOWClassByEQClass.ContainsKey(eqClass) == false)
+                    return ClassWOWType.None;
+                return WOWClassByEQClass[eqClass];
             }
         }
 
@@ -417,9 +404,30 @@ namespace EQWOWConverter.Player
         {
             lock (ClassesLock)
             {
-                if (WOWClassesByEQClass.Count == 0)
+                if (WOWClassByEQClass.Count == 0)
                     PopulateClassMap();
                 return EQClassesByWOWClass;
+            }
+        }
+
+        public static string GetWOWClassStringFromEQClass(ClassEQType classEQType)
+        {
+            ClassWOWType wowClass = GetWOWClassForEQClass(classEQType);
+            switch (wowClass)
+            {
+                case ClassWOWType.All: return "All";
+                case ClassWOWType.None: return "None";
+                case ClassWOWType.Warrior: return "Warrior";
+                case ClassWOWType.Paladin: return "Paladin";
+                case ClassWOWType.Hunter: return "Hunter";
+                case ClassWOWType.Rogue: return "Rogue";
+                case ClassWOWType.Priest: return "Priest";
+                case ClassWOWType.DeathKnight: return "Death Knight";
+                case ClassWOWType.Shaman: return "Shaman";
+                case ClassWOWType.Mage: return "Mage";
+                case ClassWOWType.Warlock: return "Warlock";
+                case ClassWOWType.Druid: return "Druid";
+                default: return "Unknown";
             }
         }
 
@@ -433,11 +441,11 @@ namespace EQWOWConverter.Player
                     EQClassesByWOWClass.Add(wowClassType, new List<ClassEQType>());
             }
             WOWMaxArmorClassTypeByEQClass.Clear();
-            WOWClassesByEQClass.Clear();
+            WOWClassByEQClass.Clear();
             foreach (ClassEQType eqClassType in Enum.GetValues(typeof(ClassEQType)))
             {
                 WOWMaxArmorClassTypeByEQClass.Add(eqClassType, ItemWOWArmorSubclassType.Cloth);
-                WOWClassesByEQClass.Add(eqClassType, new List<ClassWOWType>());
+                //WOWClassByEQClass.Add(eqClassType, new List<ClassWOWType>());
             }
 
             string classMapFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "PlayerClassMapping.csv");
@@ -490,8 +498,8 @@ namespace EQWOWConverter.Player
                             continue;
                         }
                 }
-                if (WOWClassesByEQClass[eqClass].Contains(wowClass) == false)
-                    WOWClassesByEQClass[eqClass].Add(wowClass);
+                if (WOWClassByEQClass.ContainsKey(eqClass) == false)
+                    WOWClassByEQClass.Add(eqClass, wowClass);
                 if (EQClassesByWOWClass[wowClass].Contains(eqClass) == false)
                     EQClassesByWOWClass[wowClass].Add(eqClass);
 
