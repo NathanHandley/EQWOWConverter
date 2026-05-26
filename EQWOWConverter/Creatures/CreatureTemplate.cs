@@ -488,7 +488,7 @@ namespace EQWOWConverter.Creatures
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForEQClass(ClassEQType.Magician);
                         creatureTemplate.SubName = string.Concat(PlayerClassMapping.GetWOWClassStringFromEQClass(ClassEQType.Magician), " Trainer");
                     } break;
-                case 33: // Enchanter GM (switching it to an enchanter)
+                case 33: // Enchanter GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForEQClass(ClassEQType.Enchanter);
                         creatureTemplate.SubName = string.Concat(PlayerClassMapping.GetWOWClassStringFromEQClass(ClassEQType.Enchanter), " Trainer");
