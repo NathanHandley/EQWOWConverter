@@ -24,7 +24,8 @@ namespace EQWOWConverter.Items
     {
         public static List<ItemDisplayInfo> ItemDisplayInfos = new List<ItemDisplayInfo>();
         private static int CURRENT_DBCID_ITEMDISPLAYINFO = Configuration.DBCID_ITEMDISPLAYINFO_START;
-        private static Dictionary<string, ObjectModel> ObjectModelsByEQItemOutputName = new Dictionary<string, ObjectModel>();
+        private static Dictionary<string, ObjectModel> ShieldObjectModelsByEQItemOutputName = new Dictionary<string, ObjectModel>();
+        private static Dictionary<string, ObjectModel> WeaponObjectModelsByEQItemOutputName = new Dictionary<string, ObjectModel>();
         private static Dictionary<string, string> staticFileNamesByCommonName = new Dictionary<string, string>();
         private static Dictionary<string, string> skeletalFileNamesByCommonName = new Dictionary<string, string>();
         private static bool IsFirstCreate = true;
@@ -51,6 +52,7 @@ namespace EQWOWConverter.Items
         public string ArmorTexture6 = string.Empty;
         public string ArmorTexture7 = string.Empty;
         public string ArmorTexture8 = string.Empty;
+        public bool IsShield = false;
         public ObjectModel? EquipmentModel = null;
 
         // IT159 (Celestial Fists / Monk Epic)
@@ -148,6 +150,9 @@ namespace EQWOWConverter.Items
                 default: break;
             }
 
+            // Catch if it's a shield
+            bool isShield = (inventoryType == ItemWOWInventoryType.Shield);
+
             // Make it EQ specific
             string itemDisplayNameWithEQ = String.Concat("eq_", itemDisplayCommonName.ToLower());
 
@@ -155,7 +160,7 @@ namespace EQWOWConverter.Items
             string modelFileName = itemDisplayNameWithEQ + ".mdx";
             foreach(ItemDisplayInfo itemDisplayInfo in ItemDisplayInfos)
             {
-                if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt && itemDisplayInfo.ModelName1 == modelFileName && itemDisplayInfo.itemEquipUnitType == equipUnitType)
+                if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt && itemDisplayInfo.ModelName1 == modelFileName && itemDisplayInfo.itemEquipUnitType == equipUnitType && itemDisplayInfo.IsShield == isShield)
                     return itemDisplayInfo;
             }
 
@@ -167,6 +172,8 @@ namespace EQWOWConverter.Items
                 newItemDisplayInfo.GroupSoundIndex = 12;
                 newItemDisplayInfo.SpellVisualID = 5;
             }
+            else
+                newItemDisplayInfo.IsShield = isShield;
             newItemDisplayInfo.IconFileNameNoExt = iconFileNameNoExt;
             ItemDisplayInfos.Add(newItemDisplayInfo);
 
@@ -415,8 +422,10 @@ namespace EQWOWConverter.Items
                 outputName = string.Concat(itemDisplayCommonName, "_npc");
 
             // Get or load the model
-            if (ObjectModelsByEQItemOutputName.ContainsKey(outputName) == true)
-                return ObjectModelsByEQItemOutputName[outputName];
+            if (inventoryType == ItemWOWInventoryType.Shield && ShieldObjectModelsByEQItemOutputName.ContainsKey(outputName) == true)
+                return ShieldObjectModelsByEQItemOutputName[outputName];
+            else if (inventoryType != ItemWOWInventoryType.Shield && WeaponObjectModelsByEQItemOutputName.ContainsKey(outputName) == true)
+                return WeaponObjectModelsByEQItemOutputName[outputName];
             else
             {
                 Logger.WriteDebug("Creating equipment model object for '" + itemDisplayCommonName + "'...");
@@ -467,11 +476,14 @@ namespace EQWOWConverter.Items
                     if (textureFound == true)
                         FileTool.CopyFile(inputTextureName, outputTextureName);
                     else
-                        Logger.WriteError("Error copying item texture '" + inputTextureName + "' for '" + itemDisplayCommonName + "', as it could not be found. Did you do the 'convert png to blp' step?");                       
+                        Logger.WriteError("Error copying item texture '" + inputTextureName + "' for '" + itemDisplayCommonName + "', as it could not be found. Did you do the 'convert png to blp' step?");
                 }
 
                 // Save it on the list and return it
-                ObjectModelsByEQItemOutputName.Add(outputName, equipmentModel);
+                if (inventoryType == ItemWOWInventoryType.Shield)
+                    ShieldObjectModelsByEQItemOutputName.Add(outputName, equipmentModel);
+                else
+                    WeaponObjectModelsByEQItemOutputName.Add(outputName, equipmentModel);
                 return equipmentModel;
             }
         }
