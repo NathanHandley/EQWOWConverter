@@ -82,6 +82,7 @@ namespace EQWOWConverter.Creatures
         public List<(int, int)> AttackEQSpellIDAndProcChance = new List<(int, int)>();
         public bool IsPet = false;
         public float ModelTemplateScale = 1.0f; // Used for form changes
+        public bool IsStableMaster = false;
 
         private static readonly object CreatureIDsLock = new object();
         private static int CURRENT_SQL_CREATURE_GUID = -1;
@@ -501,6 +502,8 @@ namespace EQWOWConverter.Creatures
                     {
                         creatureTemplate.IsBanker = true;
                     } break;
+                //case 41: // Lots of merchants have these, such what many Stablemasters had
+                // All 100+ are not actually from EQ and were created new for these purposes
                 case 100: // Priest of Discord (in Norrath)
                     {
                         creatureTemplate.IsNorrathPriestOfDiscord = true;
@@ -511,8 +514,13 @@ namespace EQWOWConverter.Creatures
                         creatureTemplate.IsAzerothPriestOfDiscord = true;
                         creatureTemplate.SubName = "Norrath Gatemaster";
                     } break;
-                default:
+                case 102: // Stablemaster
                     {
+                        creatureTemplate.IsStableMaster = true;
+                        creatureTemplate.SubName = "Stable Master";
+                    } break;
+                default:
+                    {   
                         // Do nothing
                     } break;
             }                

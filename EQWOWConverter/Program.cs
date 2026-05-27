@@ -193,23 +193,21 @@ internal class Program
         {
             //if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true && Configuration.CREATURE_ADD_DEBUG_VALUES_TO_NAME == true)
             //    Logger.WriteInfo("- CREATURE_ADD_DEBUG_VALUES_TO_NAME is true, so creature names will be in debug mode");
+            Logger.WriteInfo("- GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 is set to ", Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80.ToString());
             Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_GENERAL is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL.ToString());
-            Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_ZONES is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_ZONES.ToString());
-            Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_TRANSPORTS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_TRANSPORTS.ToString());
-            Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_TRADESKILLS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_TRADESKILLS.ToString());
-            Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS.ToString());
             if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
                 Logger.WriteInfo("- GENERATE_PLAYER_ARMOR_GRAPHICS is false, so no player armor will be generated");
             if (Configuration.GENERATE_OBJECTS == false)
                 Logger.WriteInfo("- GENERATE_OBJECTS is set to false");
-            Logger.WriteInfo(string.Concat("- GENERATE_RIDING_TRAINERS_ENABLED is set to ", Configuration.CREATURE_RIDING_TRAINERS_ENABLED));
+            Logger.WriteInfo("- GENERATE_RIDING_TRAINERS_ENABLED is set to ", Configuration.CREATURE_RIDING_TRAINERS_ENABLED.ToString());
             if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == true)
-                Logger.WriteInfo(string.Concat(" - CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY is set to ", Configuration.CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY));
+                Logger.WriteInfo(" - CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY is set to ", Configuration.CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY.ToString());
             if (Configuration.PLAYER_USE_EQ_START_LOCATION == true)
                 Logger.WriteInfo("- PLAYER_USE_EQ_START_LOCATION is true, so player start locations will be changed");
             if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
                 Logger.WriteInfo("- PLAYER_USE_EQ_START_ITEMS is true, so player start items will be changed");
-            Logger.WriteInfo(string.Concat("- PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED is set to ", Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED));
+            Logger.WriteInfo("- GENERATE_NON_PLAYER_OBTAINABLE_ITEMS is set to ", Configuration.GENERATE_NON_PLAYER_OBTAINABLE_ITEMS);
+            Logger.WriteInfo("- PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED is set to ", Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED.ToString());
             Logger.WriteInfo("- SPELLS_LEARNABLE_FROM_ITEMS_ENABLED is set to ", Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED.ToString());
         }
         Logger.WriteInfo("Are you sure Y/N? (Default: Y): ", false);

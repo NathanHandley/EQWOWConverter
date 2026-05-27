@@ -50,6 +50,11 @@ namespace EQWOWConverter.WOWFiles
                 npcFlags |= 131072; // 0x00020000 = Banker Flag
                 numOfRoles++;
             }
+            if (creatureTemplate.IsStableMaster == true)
+            {
+                npcFlags |= 4194304; // 0x00400000 = Is a stable master
+                numOfRoles++;
+            }
             if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.All)
             {
                 npcFlags |= 16;    // 0x00000010 = Is a trainer

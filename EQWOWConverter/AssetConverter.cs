@@ -225,7 +225,8 @@ namespace EQWOWConverter
 
             // If there are any non player obtainable things (spells, items), clear them out
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
-            ClearNonPlayerObtainableItemsAndRecipes(ref tradeskillRecipes, ref itemTemplatesByWOWEntryID);
+            if (Configuration.GENERATE_NON_PLAYER_OBTAINABLE_ITEMS == false)
+                ClearNonPlayerObtainableItemsAndRecipes(ref tradeskillRecipes, ref itemTemplatesByWOWEntryID);
 
             // Assign item spell effects
             AssignItemSpellEffects(ref itemTemplatesByWOWEntryID);

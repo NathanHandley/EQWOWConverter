@@ -167,6 +167,9 @@ namespace EQWOWConverter
         // with Classic through 60, Kunark through 70, and Velious through 80. Zones will also have a smoother level curve if set to true.
         public static bool GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 = false;
 
+        // If false, unobtainable items will not output to the database
+        public static bool GENERATE_NON_PLAYER_OBTAINABLE_ITEMS = false;
+
         //=====================================================================
         // Player
         //=====================================================================
@@ -1149,6 +1152,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("GENERATE_FLOAT_EPSILON", GENERATE_FLOAT_EPSILON, "What edge buffer to add when doing floating point month");
             OutputVariableToConfig("GENERATE_FORCE_SQL_UPDATES", GENERATE_FORCE_SQL_UPDATES, "If true, SQL files will be generated in a way where they will have a unique ID to force an update if ran by azerothcore, regardless of changes");
             OutputVariableToConfig("GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE", GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE, "The minimum size that boundary boxes should be for any object models when output");
+            OutputVariableToConfig("GENERATE_NON_PLAYER_OBTAINABLE_ITEMS", GENERATE_NON_PLAYER_OBTAINABLE_ITEMS, "If false, unobtainable items will not output to the database");
             OutputVariableToConfig("ZONE_SHOW_STATIC_GEOMETRY", ZONE_SHOW_STATIC_GEOMETRY, "If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging");
             OutputVariableToConfig("ZONE_MAX_FACES_PER_WMOGROUP", ZONE_MAX_FACES_PER_WMOGROUP, "Maximum number of faces that fit into a render WMO group before it subdivides (max is due to various variable limits)");
             OutputVariableToConfig("ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE", ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE, "Maximum size of any zone-to-material-object creation along the X and Y axis");
@@ -1536,6 +1540,7 @@ namespace EQWOWConverter
             GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION = ReadVariableFromConfigString("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", configValuesByVariableName, GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION);
             GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID = ReadVariableFromConfigString("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", configValuesByVariableName, GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID);
             GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 = ReadVariableFromConfigString("GENERATE_REBALANCE_CONTENT_TO_LEVEL_80", configValuesByVariableName, GENERATE_REBALANCE_CONTENT_TO_LEVEL_80);
+            GENERATE_NON_PLAYER_OBTAINABLE_ITEMS = ReadVariableFromConfigString("GENERATE_NON_PLAYER_OBTAINABLE_ITEMS", configValuesByVariableName, GENERATE_NON_PLAYER_OBTAINABLE_ITEMS);
 
             PLAYER_USE_EQ_START_LOCATION = ReadVariableFromConfigString("PLAYER_USE_EQ_START_LOCATION", configValuesByVariableName, PLAYER_USE_EQ_START_LOCATION);
             PLAYER_USE_EQ_START_ITEMS = ReadVariableFromConfigString("PLAYER_USE_EQ_START_ITEMS", configValuesByVariableName, PLAYER_USE_EQ_START_ITEMS);
