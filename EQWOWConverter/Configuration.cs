@@ -678,7 +678,8 @@ namespace EQWOWConverter
         // Fishing
         //=====================================================================
         // How much to multiply the EQ fish catching skill requirement for WOW
-        public static float FISHING_SKILL_CONVERSION_MOD = 1.3432f;
+        public static float FISHING_SKILL_CONVERSION_MOD_60 = 0.8772f;
+        public static float FISHING_SKILL_CONVERSION_MOD_80 = 1.3432f;
 
         //=====================================================================
         // Forage
@@ -693,7 +694,8 @@ namespace EQWOWConverter
         // Tradeskills
         //=====================================================================
         // How much to multiply EQ skill requirements by to reach the same for WoW on conversion
-        public static float TRADESKILLS_CONVERSION_MOD = 1.3432f;
+        public static float TRADESKILLS_CONVERSION_MOD_60 = 0.8772f;
+        public static float TRADESKILLS_CONVERSION_MOD_80 = 1.3432f;
 
         // Max distance between Grey -> Green -> Yellow -> Red steps
         public static int TRADESKILLS_SKILL_TIER_DISTANCE_LOW = 10;
@@ -1330,10 +1332,12 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS", SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS, "Default time that a shrink/grow spell will last for");
             OutputVariableToConfig("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID", SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, "Values for the cooldown spells applied by Priests of Discord when you switch worlds, setting cooldown duration to 0 will disable it", false);
             OutputVariableToConfig("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN, "");
-            OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD", FISHING_SKILL_CONVERSION_MOD, "How much to multiply the EQ fish catching skill requirement for WOW");
+            OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_60", FISHING_SKILL_CONVERSION_MOD_60, "How much to multiply the EQ fish catching skill requirement for WOW", false);
+            OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_80", FISHING_SKILL_CONVERSION_MOD_80, "");
             OutputVariableToConfig("FORAGE_SPELL_ICON_EQ_ID", FORAGE_SPELL_ICON_EQ_ID, "Which eq spell icon to use for the Forage skill. Can be a value between 0-22");
             OutputVariableToConfig("FORAGE_SPELL_TEMPLATE_ID", FORAGE_SPELL_TEMPLATE_ID, "Spell id for the forage spell");
-            OutputVariableToConfig("TRADESKILLS_CONVERSION_MOD", TRADESKILLS_CONVERSION_MOD, "How much to multiply EQ skill requirements by to reach the same for WoW on conversion");
+            OutputVariableToConfig("TRADESKILLS_CONVERSION_MOD_60", TRADESKILLS_CONVERSION_MOD_60, "How much to multiply EQ skill requirements by to reach the same for WoW on conversion", false);
+            OutputVariableToConfig("TRADESKILLS_CONVERSION_MOD_80", TRADESKILLS_CONVERSION_MOD_80, "");
             OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_LOW", TRADESKILLS_SKILL_TIER_DISTANCE_LOW, "Max distance between Grey -> Green -> Yellow -> Red steps", false);
             OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_HIGH", TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, "");
             OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_1", TRADESKILL_LEARN_COST_AT_1, "The skill level of a tradeskill will be priced closest to the value for that WOW skill level", false);
@@ -1753,10 +1757,12 @@ namespace EQWOWConverter
             SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS = ReadVariableFromConfigString("SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS", configValuesByVariableName, SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS);
             SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID = ReadVariableFromConfigString("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID", configValuesByVariableName, SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID);
             SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN = ReadVariableFromConfigString("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", configValuesByVariableName, SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN);
-            FISHING_SKILL_CONVERSION_MOD = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD);
+            FISHING_SKILL_CONVERSION_MOD_60 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_60", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_60);
+            FISHING_SKILL_CONVERSION_MOD_80 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_80", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_80);
             FORAGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("FORAGE_SPELL_ICON_EQ_ID", configValuesByVariableName, FORAGE_SPELL_ICON_EQ_ID);
             FORAGE_SPELL_TEMPLATE_ID = ReadVariableFromConfigString("FORAGE_SPELL_TEMPLATE_ID", configValuesByVariableName, FORAGE_SPELL_TEMPLATE_ID);
-            TRADESKILLS_CONVERSION_MOD = ReadVariableFromConfigString("TRADESKILLS_CONVERSION_MOD", configValuesByVariableName, TRADESKILLS_CONVERSION_MOD);
+            TRADESKILLS_CONVERSION_MOD_60 = ReadVariableFromConfigString("TRADESKILLS_CONVERSION_MOD_60", configValuesByVariableName, TRADESKILLS_CONVERSION_MOD_60);
+            TRADESKILLS_CONVERSION_MOD_80 = ReadVariableFromConfigString("TRADESKILLS_CONVERSION_MOD_80", configValuesByVariableName, TRADESKILLS_CONVERSION_MOD_80);
             TRADESKILLS_SKILL_TIER_DISTANCE_LOW = ReadVariableFromConfigString("TRADESKILLS_SKILL_TIER_DISTANCE_LOW", configValuesByVariableName, TRADESKILLS_SKILL_TIER_DISTANCE_LOW);
             TRADESKILLS_SKILL_TIER_DISTANCE_HIGH = ReadVariableFromConfigString("TRADESKILLS_SKILL_TIER_DISTANCE_HIGH", configValuesByVariableName, TRADESKILLS_SKILL_TIER_DISTANCE_HIGH);
             TRADESKILL_LEARN_COST_AT_1 = ReadVariableFromConfigString("TRADESKILL_LEARN_COST_AT_1", configValuesByVariableName, TRADESKILL_LEARN_COST_AT_1);

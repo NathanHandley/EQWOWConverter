@@ -315,8 +315,16 @@ namespace EQWOWConverter.Tradeskills
 
         private static void PopulateWOWSkillLevelsAndLine(TradeskillRecipe tradeskillRecipe)
         {
+            int maxSkillLevel = 450;
+            float conversionMod = Configuration.TRADESKILLS_CONVERSION_MOD_80;
+            if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == false)
+            {
+                maxSkillLevel = 300;
+                conversionMod = Configuration.TRADESKILLS_CONVERSION_MOD_60;
+            }
+
             // Skill Line
-            switch(tradeskillRecipe.Type)
+            switch (tradeskillRecipe.Type)
             {
                 case TradeskillType.Alchemy:        tradeskillRecipe.SkillLineWOW = 171; break;
                 case TradeskillType.Blacksmithing:  tradeskillRecipe.SkillLineWOW = 164; break;
@@ -335,15 +343,15 @@ namespace EQWOWConverter.Tradeskills
             // Skill Level
             if (tradeskillRecipe.SkillNeededEQ > 1)
             {
-                tradeskillRecipe.SkillRankNeededWOW = Math.Min(Math.Max(Convert.ToInt32(tradeskillRecipe.SkillNeededEQ * Configuration.TRADESKILLS_CONVERSION_MOD), 1), 450);
-                tradeskillRecipe.TrivialLowWOW = Math.Min(tradeskillRecipe.SkillRankNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_LOW, 450);
-                tradeskillRecipe.TrivialHighWOW = Math.Min(tradeskillRecipe.SkillRankNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, 450);
+                tradeskillRecipe.SkillRankNeededWOW = Math.Min(Math.Max(Convert.ToInt32(tradeskillRecipe.SkillNeededEQ * conversionMod), 1), maxSkillLevel);
+                tradeskillRecipe.TrivialLowWOW = Math.Min(tradeskillRecipe.SkillRankNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_LOW, maxSkillLevel);
+                tradeskillRecipe.TrivialHighWOW = Math.Min(tradeskillRecipe.SkillRankNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, maxSkillLevel);
             }
             else
             {
-                tradeskillRecipe.TrivialHighWOW = Math.Min(Math.Max(Convert.ToInt32(tradeskillRecipe.TrivialEQ * Configuration.TRADESKILLS_CONVERSION_MOD), 1), 450);
-                tradeskillRecipe.TrivialLowWOW = Math.Min(Math.Max(tradeskillRecipe.TrivialHighWOW - Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_LOW, 1), 450);
-                tradeskillRecipe.SkillRankNeededWOW = Math.Min(Math.Max(tradeskillRecipe.TrivialLowWOW - Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, 1), 450);
+                tradeskillRecipe.TrivialHighWOW = Math.Min(Math.Max(Convert.ToInt32(tradeskillRecipe.TrivialEQ * conversionMod), 1), maxSkillLevel);
+                tradeskillRecipe.TrivialLowWOW = Math.Min(Math.Max(tradeskillRecipe.TrivialHighWOW - Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_LOW, 1), maxSkillLevel);
+                tradeskillRecipe.SkillRankNeededWOW = Math.Min(Math.Max(tradeskillRecipe.TrivialLowWOW - Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, 1), maxSkillLevel);
             }
         }
 

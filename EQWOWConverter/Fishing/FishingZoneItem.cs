@@ -76,6 +76,14 @@ namespace EQWOWConverter.Fishing
             // Used to skip any unloaded zones
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
 
+            int maxSkillLevel = 450;
+            float conversionMod = Configuration.FISHING_SKILL_CONVERSION_MOD_80;
+            if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == false)
+            {
+                maxSkillLevel = 300;
+                conversionMod = Configuration.FISHING_SKILL_CONVERSION_MOD_60;
+            }
+
             // Load the list
             string zoneItemsListFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "FishingZoneItems.csv");
             Logger.WriteDebug("Populating Fishing Zone Items List via file '" + zoneItemsListFile + "'");
@@ -103,7 +111,7 @@ namespace EQWOWConverter.Fishing
                 itemTemplatesByEQDBID[zoneItem.EQItemID].IsFished = true;
                 zoneItem.WOWItemTemplateID = itemTemplatesByEQDBID[zoneItem.EQItemID].WOWEntryID;
                 zoneItem.SkillLevelEQ = int.Parse(columns["skill_level"]);
-                zoneItem.SkillLevelWOW = Math.Min(Math.Max(Convert.ToInt32((float)zoneItem.SkillLevelEQ * Configuration.FISHING_SKILL_CONVERSION_MOD), 1), 450);
+                zoneItem.SkillLevelWOW = Math.Min(Math.Max(Convert.ToInt32((float)zoneItem.SkillLevelEQ * conversionMod), 1), maxSkillLevel);
                 zoneItem.ChanceRelative = int.Parse(columns["chance"]);
                 if (FishingZoneItemsByZoneShortName.ContainsKey(zoneItem.ZoneShortName) == false)
                 {
@@ -120,7 +128,7 @@ namespace EQWOWConverter.Fishing
                 if (FishingZoneItemsByZoneShortName.ContainsKey(zoneShortName) == false)
                 {
                     FishingZoneItemsByZoneShortName.Add(zoneShortName, new List<FishingZoneItem>());
-                    FishingWOWSkillLevelByZoneShortName.Add(zoneShortName, Convert.ToInt32(40f * Configuration.FISHING_SKILL_CONVERSION_MOD));
+                    FishingWOWSkillLevelByZoneShortName.Add(zoneShortName, Convert.ToInt32(40f * conversionMod));
                 }
             }
 
