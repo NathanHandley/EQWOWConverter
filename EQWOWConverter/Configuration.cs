@@ -534,6 +534,10 @@ namespace EQWOWConverter
         // Spell ID for the visual effect from Monk's epic weapon (Celestial Fists)
         public static int ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID = 86903;
 
+        // Spell IDs for the +fishing effect of bait
+        public static int ITEMS_FISHING_BAIT_POTENCY_TIER_1_SPELL_ID = 8087;
+        public static int ITEMS_FISHING_BAIT_POTENCY_TIER_2_SPELL_ID = 8088;
+
         //=====================================================================
         // Quests
         //=====================================================================
@@ -1269,6 +1273,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID", ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID, "This is the icon ID that is used for multi-item containers that contain more than one item");
             OutputVariableToConfig("ITEM_ARROW_MODEL_NAME", ITEM_ARROW_MODEL_NAME, "Arrows reuse existing WOW models, and the specific model is defined here", false);
             OutputVariableToConfig("ITEM_ARROW_TEXTURE_NAME", ITEM_ARROW_TEXTURE_NAME, "");
+            OutputVariableToConfig("ITEMS_FISHING_BAIT_POTENCY_TIER_1_SPELL_ID", ITEMS_FISHING_BAIT_POTENCY_TIER_1_SPELL_ID, "Spell IDs for the +fishing effect of bait", false);
+            OutputVariableToConfig("ITEMS_FISHING_BAIT_POTENCY_TIER_2_SPELL_ID", ITEMS_FISHING_BAIT_POTENCY_TIER_2_SPELL_ID, "");
+
             OutputVariableToConfig("QUESTS_TEXT_DURATION_IN_MS", QUESTS_TEXT_DURATION_IN_MS, "How many milliseconds to display a text block from an NPC on quest events");
             OutputVariableToConfig("ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID", ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID, "Spell ID for the visual effect from Monk's epic weapon (Celestial Fists)");
             OutputVariableToConfig("QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID", QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID, "This is the icon ID that is used for quest rewards that contain more than one random item");
@@ -1685,6 +1692,8 @@ namespace EQWOWConverter
             ITEM_ARROW_MODEL_NAME = ReadVariableFromConfigString("ITEM_ARROW_MODEL_NAME", configValuesByVariableName, ITEM_ARROW_MODEL_NAME);
             ITEM_ARROW_TEXTURE_NAME = ReadVariableFromConfigString("ITEM_ARROW_TEXTURE_NAME", configValuesByVariableName, ITEM_ARROW_TEXTURE_NAME);
             ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID = ReadVariableFromConfigString("ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID", configValuesByVariableName, ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID);
+            ITEMS_FISHING_BAIT_POTENCY_TIER_1_SPELL_ID = ReadVariableFromConfigString("ITEMS_FISHING_BAIT_POTENCY_TIER_1_SPELL_ID", configValuesByVariableName, ITEMS_FISHING_BAIT_POTENCY_TIER_1_SPELL_ID);
+            ITEMS_FISHING_BAIT_POTENCY_TIER_2_SPELL_ID = ReadVariableFromConfigString("ITEMS_FISHING_BAIT_POTENCY_TIER_2_SPELL_ID", configValuesByVariableName, ITEMS_FISHING_BAIT_POTENCY_TIER_2_SPELL_ID);
 
             QUESTS_TEXT_DURATION_IN_MS = ReadVariableFromConfigString("QUESTS_TEXT_DURATION_IN_MS", configValuesByVariableName, QUESTS_TEXT_DURATION_IN_MS);
             QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID = ReadVariableFromConfigString("QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID", configValuesByVariableName, QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID);

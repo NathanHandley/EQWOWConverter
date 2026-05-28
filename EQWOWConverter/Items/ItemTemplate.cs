@@ -112,6 +112,7 @@ namespace EQWOWConverter.Items
         public int WOWSpellCategoryCooldown1 = -1;
         public int CastTime = 0;
         public int FoodType = 0; // For pets: 1 - Meat, 2 - Fish, 3 - Cheese, 4 - Bread, 5 - Fungus, 6 - fruit, 7 - Raw Meat, 8 - Raw Fish
+        public int FishingBaitPotency = 0; // 0 = not bait
         public bool IsDrink = false;
         public bool IsFishingBait = false;
         public List<ContainedItem> ContainedItems = new List<ContainedItem>();
@@ -857,7 +858,7 @@ namespace EQWOWConverter.Items
         }
 
         private static void PopulateItemClassSpecificProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask, 
-            int iconID, int damage, int castTime, BookText? bookText)
+            int iconID, int damage, int castTime, BookText? bookText, int baitPotency)
         {
             bool allowBothHands = false;
             if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) &&
@@ -1278,6 +1279,12 @@ namespace EQWOWConverter.Items
                         itemTemplate.ClassID = 7;
                         itemTemplate.SubClassID = 3;
                         itemTemplate.IsFishingBait = true;
+                        switch (baitPotency)
+                        {
+                            case 1: itemTemplate.WOWSpellID1 = Configuration.ITEMS_FISHING_BAIT_POTENCY_TIER_1_SPELL_ID; break;
+                            case 2: itemTemplate.WOWSpellID1 = Configuration.ITEMS_FISHING_BAIT_POTENCY_TIER_2_SPELL_ID; break;
+                            default: Logger.WriteError("ItemTemplate with eqItemType 37 had a baitPotency of ", baitPotency.ToString(), " which is unhandled."); break;
+                        }
                     } break;
                 case 38: // Alcohol => Food and Drink
                     {
@@ -1519,11 +1526,12 @@ namespace EQWOWConverter.Items
                 // Equippable Properties
                 int itemType = int.Parse(columns["itemtype"]);
                 int bagType = int.Parse(columns["bagtype"]);
+                newItemTemplate.FishingBaitPotency = int.Parse(columns["bait_potency"]);
                 newItemTemplate.EQClassMask = int.Parse(columns["classes"]);
                 newItemTemplate.EQSlotMask = int.Parse(columns["slots"]);
                 newItemTemplate.CastTime = int.Parse(columns["casttime"]);
                 PopulateItemClassSpecificProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID,
-                    damage, newItemTemplate.CastTime, newItemTemplate.BookTextReference);
+                    damage, newItemTemplate.CastTime, newItemTemplate.BookTextReference, newItemTemplate.FishingBaitPotency);
                 int overrideItemClassID = int.Parse(columns["override_item_class_id"]);
                 if (overrideItemClassID >= 0)
                     newItemTemplate.ClassID = overrideItemClassID;
