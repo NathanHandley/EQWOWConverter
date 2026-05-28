@@ -84,8 +84,7 @@ namespace EQWOWConverter.WOWFiles
                         AddRow(trainerID, 11612, 50000, 171, 200, 35, 0);
                         AddRow(trainerID, 28597, 100000, 171, 275, 50, 0);
                         AddRow(trainerID, 51303, 350000, 171, 350, 65, 0);
-                    }
-                    break;
+                    } break;
                 case TradeskillType.Blacksmithing:
                     {
                         AddRow(trainerID, 2020, 10, 0, 0, 5, 0);
@@ -94,8 +93,7 @@ namespace EQWOWConverter.WOWFiles
                         AddRow(trainerID, 9786, 50000, 164, 200, 35, 0);
                         AddRow(trainerID, 29845, 100000, 164, 275, 50, 0);
                         AddRow(trainerID, 51298, 350000, 164, 350, 65, 0);
-                    }
-                    break;
+                    } break;
                 case TradeskillType.Cooking:
                     {
                         AddRow(trainerID, 2551, 100, 0, 0, 5, 0);
@@ -104,8 +102,7 @@ namespace EQWOWConverter.WOWFiles
                         AddRow(trainerID, 54257, 1000, 185, 125, 20, 0);
                         AddRow(trainerID, 54256, 100000, 185, 275, 50, 0);
                         AddRow(trainerID, 51295, 350000, 185, 350, 65, 0);
-                    }
-                    break;
+                    } break;
                 case TradeskillType.Engineering:
                     {
                         AddRow(trainerID, 4039, 10, 0, 0, 5, 0);
@@ -114,8 +111,7 @@ namespace EQWOWConverter.WOWFiles
                         AddRow(trainerID, 12657, 50000, 202, 200, 35, 0);
                         AddRow(trainerID, 30351, 100000, 202, 275, 50, 0);
                         AddRow(trainerID, 61464, 350000, 202, 350, 65, 0);
-                    }
-                    break;
+                    } break;
                 case TradeskillType.Jewelcrafting:
                     {
                         AddRow(trainerID, 25245, 10, 0, 0, 5, 0);
@@ -124,8 +120,7 @@ namespace EQWOWConverter.WOWFiles
                         AddRow(trainerID, 28899, 50000, 755, 200, 35, 0);
                         AddRow(trainerID, 28901, 100000, 755, 275, 50, 0);
                         AddRow(trainerID, 51310, 350000, 755, 350, 65, 0);
-                    }
-                    break;
+                    } break;
                 case TradeskillType.Inscription:
                     {
                         AddRow(trainerID, 45375, 10, 0, 0, 5, 0);
@@ -134,8 +129,7 @@ namespace EQWOWConverter.WOWFiles
                         AddRow(trainerID, 45378, 47500, 773, 200, 35, 0);
                         AddRow(trainerID, 45379, 100000, 773, 275, 50, 0);
                         AddRow(trainerID, 45380, 350000, 773, 350, 65, 0);
-                    }
-                    break;
+                    } break;
                 case TradeskillType.Tailoring:
                     { 
                         AddRow(trainerID, 3911, 10, 0, 0, 5, 0);
@@ -144,8 +138,7 @@ namespace EQWOWConverter.WOWFiles
                         AddRow(trainerID, 12181, 50000, 197, 200, 35, 0);
                         AddRow(trainerID, 26791, 100000, 197, 275, 50, 0);
                         AddRow(trainerID, 51308, 350000, 197, 350, 65, 0);
-                    }
-                    break;
+                    } break;
                 case TradeskillType.Enchanting:
                     {
                         AddRow(trainerID, 7414, 10, 0, 0, 5, 0);
@@ -154,13 +147,20 @@ namespace EQWOWConverter.WOWFiles
                         AddRow(trainerID, 13921, 50000, 333, 200, 35, 0);
                         AddRow(trainerID, 28030, 100000, 333, 275, 50, 0);
                         AddRow(trainerID, 51312, 350000, 333, 350, 65, 0);
-                    }
-                    break;
+                    } break;
+                case TradeskillType.Fishing:
+                    {
+                        AddRow(trainerID, 7733, 100, 0, 0, 5, 0);
+                        AddRow(trainerID, 7734, 500, 356, 50, 10, 0);
+                        AddRow(trainerID, 54083, 10000, 356, 125, 10, 0);
+                        AddRow(trainerID, 18249, 25000, 356, 200, 10, 0);
+                        AddRow(trainerID, 54084, 100000, 356, 275, 10, 0);
+                        AddRow(trainerID, 51293, 350000, 356, 350, 10, 0);
+                    } break;
                 default:
                     {
                         Logger.WriteError("AddDevelopmentSkillsForTradeskill called for unhandled tradeskill type");
-                    }
-                    break;
+                    } break;
             }
         }
     }

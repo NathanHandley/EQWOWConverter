@@ -298,7 +298,7 @@ namespace EQWOWConverter.Creatures
                     ProcessProfessionTrainerType(ref newCreatureTemplate, skillTrainerType);
                     newCreatureTemplate.MerchantID = int.Parse(columns["merchant_id"]);
                     // Clear vendor lists for riding trainers if riding trainers are disabled
-                    if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == false && skillTrainerType == 9)
+                    if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == false && skillTrainerType == 10)
                         newCreatureTemplate.MerchantID = 0;
                     newCreatureTemplate.ColorTintID = int.Parse(columns["armortint_id"]);
                     newCreatureTemplate.HasMana = (int.Parse(columns["mana"]) > 0);
@@ -433,7 +433,13 @@ namespace EQWOWConverter.Creatures
                         creatureTemplate.TradeskillTrainerType = TradeskillType.Enchanting;
                         creatureTemplate.SubName = "Enchanting Trainer";
                     } break;
-                case 9: // Riding
+                case 9: // Fishing
+                    {
+                        creatureTemplate.TradeskillTrainerType = TradeskillType.Fishing;
+                        creatureTemplate.SubName = "Fishing Trainer";
+                    }
+                    break;
+                case 10: // Riding
                     {
                         if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == true)
                         {

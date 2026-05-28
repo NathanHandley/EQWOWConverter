@@ -58,7 +58,10 @@ namespace EQWOWConverter.Spells
             {
                 if (ClassTrainerAbilitiesByClassType.Count == 0)
                     PopulateClassTrainerAbilities();
-                return TradeskillTrainerAbilitiesByTradeskillType[tradeskillType];
+                if (TradeskillTrainerAbilitiesByTradeskillType.ContainsKey(tradeskillType))
+                    return TradeskillTrainerAbilitiesByTradeskillType[tradeskillType];
+                else
+                    return new List<SpellTrainerAbility>();
             }
         }
 

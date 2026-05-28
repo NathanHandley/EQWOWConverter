@@ -42,6 +42,8 @@ namespace EQWOWConverter.Tradeskills
         Jewelcrafting = 5,
         Inscription = 6,
         Tailoring = 7,
-        Enchanting = 8
+        Enchanting = 8,
+        Fishing = 9,
+        // 10 = Riding
     }
 }
