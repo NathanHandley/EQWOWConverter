@@ -982,10 +982,6 @@ namespace EQWOWConverter
                     creatureTemplate.IsQuestGiver = true;
                     if (questTemplate.HasMinimumFactionRequirement == true)
                         questTemplate.QuestgiverWOWFactionID = CreatureFaction.GetWOWFactionIDForEQFactionID(creatureTemplate.EQFactionID);
-
-                    // If this quest giver is aligned to an otherwise otherwise only-attackable reputation, realign to "Norrath Settlers)
-                    if (creatureTemplate.WOWFactionTemplateID == 2300 || creatureTemplate.WOWFactionTemplateID == 2301 || creatureTemplate.WOWFactionTemplateID == 2302 || creatureTemplate.WOWFactionTemplateID == 2337)
-                        creatureTemplate.WOWFactionTemplateID = 2313;
                 }
 
                 // Add the default area id for quest sorting
@@ -1005,14 +1001,13 @@ namespace EQWOWConverter
         public void RemapDefaultFactionsForInteractiveCreatures(ref List<CreatureTemplate> creatureTemplates)
         {
             Logger.WriteDebug("Remapping interactive neutral creature templates's faction template started");
-            foreach(CreatureTemplate creatureTemplate in creatureTemplates)
+            HashSet<int> factionTemplateIDsToRelalign = CreatureFaction.GetFactionTemplateIDsToRealignToInteractive();
+            foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
-                if (creatureTemplate.WOWFactionTemplateID != Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL)
-                    continue;
-                if (creatureTemplate.IsBanker || creatureTemplate.IsQuestGiver || creatureTemplate.MerchantID != 0 || creatureTemplate.ClassTrainerType != ClassWOWType.None)
-                {
+                if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                     creatureTemplate.WOWFactionTemplateID = Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE;
-                }
+                else if (factionTemplateIDsToRelalign.Contains(creatureTemplate.WOWFactionTemplateID) == true && creatureTemplate.IsInteractive() == true)
+                    creatureTemplate.WOWFactionTemplateID = Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE;
             }
             Logger.WriteDebug("Remapping interactive neutral creature templates's faction template done");
         }

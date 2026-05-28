@@ -431,8 +431,7 @@ namespace EQWOWConverter
         public static int CREATURE_FACTION_TEMPLATE_DEFAULT = 2302;
         public static int CREATURE_FACTION_DEFAULT = 1200;
 
-        // For any quest or merchant NPCs that aren't aligned to a raisable or lowerable faction, they will be mapped to this.  Default is Norrath Settlers.
-        public static int CREATURE_FACTION_TEMPLATE_NEUTRAL = 2302;
+        // Faction template used for remapping otherwise non-interactable NPCs that should be interactive. Ensure alignment to CreatureFactions.csv
         public static int CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE = 2313;
 
         // If set to true, all factions will show up for EverQuest in the faction list immediately
@@ -1236,8 +1235,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_FACTION_ROOT_NAME", CREATURE_FACTION_ROOT_NAME, "The value to name the everquest parent reputation item as");
             OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_DEFAULT", CREATURE_FACTION_TEMPLATE_DEFAULT, "The default faction values to use if none can be mapped.  Using the 'neutral' record for now.", false);
             OutputVariableToConfig("CREATURE_FACTION_DEFAULT", CREATURE_FACTION_DEFAULT, "");
-            OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_NEUTRAL", CREATURE_FACTION_TEMPLATE_NEUTRAL, "For any quest or merchant NPCs that aren't aligned to a raisable or lowerable faction, they will be mapped to this.  Default is Norrath Settlers.", false);
-            OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE", CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE, "");
+            OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE", CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE, "Faction template used for remapping otherwise non-interactable NPCs that should be interactive. Ensure alignment to CreatureFactions.csv", false);
             OutputVariableToConfig("CREATURE_FACTION_SHOW_ALL", CREATURE_FACTION_SHOW_ALL, "If set to true, all factions will show up for EverQuest in the faction list immediately");
             OutputVariableToConfig("CREATURE_REP_REWARD_MULTIPLIER", CREATURE_REP_REWARD_MULTIPLIER, "What to multiple the EverQuest reputation rewards by.  WOW is approx 20-30x that of EQ in band.");
             OutputVariableToConfig("CREATURE_DEFAULT_DETECTION_RANGE", CREATURE_DEFAULT_DETECTION_RANGE, "Values for creatures without a default detection/agro range (note: This is NOT scaled by WORLD_SCALE)");
@@ -1650,7 +1648,6 @@ namespace EQWOWConverter
             CREATURE_FACTION_ROOT_NAME = ReadVariableFromConfigString("CREATURE_FACTION_ROOT_NAME", configValuesByVariableName, CREATURE_FACTION_ROOT_NAME);
             CREATURE_FACTION_TEMPLATE_DEFAULT = ReadVariableFromConfigString("CREATURE_FACTION_TEMPLATE_DEFAULT", configValuesByVariableName, CREATURE_FACTION_TEMPLATE_DEFAULT);
             CREATURE_FACTION_DEFAULT = ReadVariableFromConfigString("CREATURE_FACTION_DEFAULT", configValuesByVariableName, CREATURE_FACTION_DEFAULT);
-            CREATURE_FACTION_TEMPLATE_NEUTRAL = ReadVariableFromConfigString("CREATURE_FACTION_TEMPLATE_NEUTRAL", configValuesByVariableName, CREATURE_FACTION_TEMPLATE_NEUTRAL);
             CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE = ReadVariableFromConfigString("CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE", configValuesByVariableName, CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE);
             CREATURE_FACTION_SHOW_ALL = ReadVariableFromConfigString("CREATURE_FACTION_SHOW_ALL", configValuesByVariableName, CREATURE_FACTION_SHOW_ALL);
             CREATURE_REP_REWARD_MULTIPLIER = ReadVariableFromConfigString("CREATURE_REP_REWARD_MULTIPLIER", configValuesByVariableName, CREATURE_REP_REWARD_MULTIPLIER);
