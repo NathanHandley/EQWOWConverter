@@ -42,7 +42,13 @@ namespace EQWOWConverter.WOWFiles
             string iconName = string.Empty;
             if (creatureTemplate.MerchantID != 0)
             {
-                npcFlags |= 128;    // 0x00000080 = Vendor flag.  TODO: Add Vendor Ammo/Food/Poison/Reagent flags
+                npcFlags |= 128;    // 0x00000080 = Vendor flag
+                npcFlags |= 4096;   // 0x00001000 = Repairer
+                numOfRoles++;
+            }
+            if (creatureTemplate.IsReagentVendor == true)
+            {
+                npcFlags |= 2048;   // 0x00001000 = Reagent Vendor
                 numOfRoles++;
             }
             if (creatureTemplate.IsBanker == true)

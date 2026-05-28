@@ -427,6 +427,7 @@ namespace EQWOWConverter
 
             // Creature Templates
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
+            List<CreatureVendorItem> reagentVendorItems = CreatureVendorItem.GetCreatureReagentItems();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
                 // Skip invalid creatures
@@ -508,40 +509,53 @@ namespace EQWOWConverter
                 creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, displayID, scale);
 
                 // If it's a vendor, add the vendor records too
-                if (creatureTemplate.MerchantID != 0 && vendorItems.ContainsKey(creatureTemplate.MerchantID))
+                if ((creatureTemplate.MerchantID != 0 && vendorItems.ContainsKey(creatureTemplate.MerchantID)) || creatureTemplate.IsReagentVendor == true)
                 {
                     int curSlotNum = 0;
-                    foreach (CreatureVendorItem vendorItem in vendorItems[creatureTemplate.MerchantID])
+                    // General vendors
+                    if (creatureTemplate.MerchantID != 0 && vendorItems.ContainsKey(creatureTemplate.MerchantID))
                     {
-                        if (vendorItem.WOWItemID != -1)
+                        foreach (CreatureVendorItem vendorItem in vendorItems[creatureTemplate.MerchantID])
                         {
-                            npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, vendorItem.WOWItemID, curSlotNum);
-                            curSlotNum++;
-                        }
-                        else
-                        {
-                            if (ItemTemplate.GetItemTemplatesByEQDBIDs().ContainsKey(vendorItem.EQItemID) == false)
+                            if (vendorItem.WOWItemID != -1)
                             {
-                                Logger.WriteError("Attempted to add a merchant item with EQItemID '" + vendorItem.EQItemID + "' to merchant '" + creatureTemplate.MerchantID + "', but the EQItemID did not exist");
-                                continue;
-                            }
-                            ItemTemplate itemTemplate = ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID];
-
-                            // Some vendor items are spell scrolls, and if so then there will be a vendor item row for each one
-                            if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQScrollSpellID) == false)
-                            {
-                                npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, itemTemplate.WOWEntryID, curSlotNum);
+                                npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, vendorItem.WOWItemID, curSlotNum);
                                 curSlotNum++;
                             }
                             else
                             {
-                                SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQScrollSpellID];
-                                foreach (var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByClassType)
+                                if (ItemTemplate.GetItemTemplatesByEQDBIDs().ContainsKey(vendorItem.EQItemID) == false)
                                 {
-                                    npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, scrollPropertiesByClassType.Value.WOWItemTemplateID, curSlotNum);
+                                    Logger.WriteError("Attempted to add a merchant item with EQItemID '" + vendorItem.EQItemID + "' to merchant '" + creatureTemplate.MerchantID + "', but the EQItemID did not exist");
+                                    continue;
+                                }
+                                ItemTemplate itemTemplate = ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID];
+
+                                // Some vendor items are spell scrolls, and if so then there will be a vendor item row for each one
+                                if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQScrollSpellID) == false)
+                                {
+                                    npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, itemTemplate.WOWEntryID, curSlotNum);
                                     curSlotNum++;
                                 }
+                                else
+                                {
+                                    SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQScrollSpellID];
+                                    foreach (var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByClassType)
+                                    {
+                                        npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, scrollPropertiesByClassType.Value.WOWItemTemplateID, curSlotNum);
+                                        curSlotNum++;
+                                    }
+                                }
                             }
+                        }
+                    }
+                    // Reagent vendors
+                    if (creatureTemplate.EQClass == 103)
+                    {
+                        foreach (CreatureVendorItem vendorItem in reagentVendorItems)
+                        {
+                            npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, vendorItem.WOWItemID, curSlotNum);
+                            curSlotNum++;
                         }
                     }
                 }

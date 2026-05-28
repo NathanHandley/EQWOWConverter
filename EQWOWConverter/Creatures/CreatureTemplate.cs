@@ -541,6 +541,11 @@ namespace EQWOWConverter.Creatures
                         creatureTemplate.IsStableMaster = true;
                         creatureTemplate.SubName = "Stable Master";
                     } break;
+                case 103: // Reagent Vendor
+                    {
+                        creatureTemplate.IsReagentVendor = true;
+                        creatureTemplate.SubName = "Reagent Merchant";
+                    } break;
                 default:
                     {   
                         // Do nothing

@@ -19,6 +19,8 @@ namespace EQWOWConverter.Creatures
     internal class CreatureVendorItem
     {
         private static Dictionary<int, List<CreatureVendorItem>> CreatureVendorItemsByMerchantID = new Dictionary<int, List<CreatureVendorItem>>();
+        private static List<CreatureVendorItem> CreatureReagentItems = new List<CreatureVendorItem>();
+        private static object VendorItemsLock = new object();
 
         public int MerchantID = 0;
         public int EQItemID = 0;
@@ -29,13 +31,30 @@ namespace EQWOWConverter.Creatures
 
         public static Dictionary<int, List<CreatureVendorItem>> GetCreatureVendorItemsByMerchantIDs()
         {
-            if (CreatureVendorItemsByMerchantID.Count == 0)
-                PopulateCreatureVendorItems();
-            return CreatureVendorItemsByMerchantID;
+            lock (VendorItemsLock)
+            {
+                if (CreatureVendorItemsByMerchantID.Count == 0)
+                    PopulateCreatureVendorItems();
+                return CreatureVendorItemsByMerchantID;
+            }
+        }
+
+        public static List<CreatureVendorItem> GetCreatureReagentItems()
+        {
+            lock (VendorItemsLock)
+            {
+                if (CreatureVendorItemsByMerchantID.Count == 0)
+                    PopulateCreatureVendorItems();
+                return CreatureReagentItems;
+            }
         }
 
         private static void PopulateCreatureVendorItems()
         {
+            CreatureVendorItemsByMerchantID.Clear();
+            CreatureReagentItems.Clear();
+
+            // Core vendor items
             string creatureVendorItemsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "VendorItems.csv");
             Logger.WriteDebug("Populating Creature Vendor Items list via file '" + creatureVendorItemsFile + "'");
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(creatureVendorItemsFile, "|");
@@ -72,6 +91,18 @@ namespace EQWOWConverter.Creatures
                 if (CreatureVendorItemsByMerchantID.ContainsKey(newVendorItem.MerchantID) == false)
                     CreatureVendorItemsByMerchantID.Add(newVendorItem.MerchantID, new List<CreatureVendorItem>());
                 CreatureVendorItemsByMerchantID[newVendorItem.MerchantID].Add(newVendorItem);
+            }
+
+            // Reagent items
+            string reagentVendorItemsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "VendorItemsReagents.csv");
+            Logger.WriteDebug("Populating Creature Vendor Reagent Items list via file '" + reagentVendorItemsFile + "'");
+            List<Dictionary<string, string>> reagentRows = FileTool.ReadAllRowsFromFileWithHeader(reagentVendorItemsFile, "|");
+            foreach (Dictionary<string, string> columns in reagentRows)
+            {
+                // Add the row
+                CreatureVendorItem newVendorItem = new CreatureVendorItem();
+                newVendorItem.WOWItemID = int.Parse(columns["wow_itemid"]);
+                CreatureReagentItems.Add(newVendorItem);
             }
         }
     }
