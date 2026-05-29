@@ -651,27 +651,18 @@ namespace EQWOWConverter
                     skeletalObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
                 foreach (GameObject curObject in nonInteractiveGameObjectsInZone.Value)
                 {
+                    // Remap model names as needed
                     if (curObject.ModelIsInEquipmentFolder == true || curObject.ObjectType == GameObjects.GameObjectType.Emitter)
-                    {
                         curObject.ModelName = curObject.OriginalModelName;
-                    }
                     else if (curObject.ModelIsSkeletal == true)
                     {
-                        if (skeletalObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
-                        {
-                            Logger.WriteError(string.Concat("Unable to find non-interactive original skeletal model name ", curObject.OriginalModelName, " in zone ", nonInteractiveGameObjectsInZone.Key));
-                            continue;
-                        }
-                        curObject.ModelName = skeletalObjectNameMap[curObject.OriginalModelName];
+                        if (skeletalObjectNameMap.ContainsKey(curObject.OriginalModelName) == true)
+                            curObject.ModelName = skeletalObjectNameMap[curObject.OriginalModelName];
                     }
                     else
                     {
-                        if (staticObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
-                        {
-                            Logger.WriteError(string.Concat("Unable to find non-interactive original static model name ", curObject.OriginalModelName, " in zone ", nonInteractiveGameObjectsInZone.Key));
-                            continue;
-                        }
-                        curObject.ModelName = staticObjectNameMap[curObject.OriginalModelName];
+                        if (staticObjectNameMap.ContainsKey(curObject.OriginalModelName) == true)
+                            curObject.ModelName = staticObjectNameMap[curObject.OriginalModelName];
                     }
                 }
             }
