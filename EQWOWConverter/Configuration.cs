@@ -74,7 +74,7 @@ namespace EQWOWConverter
         // Core
         // ====================================================================
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CORE_MOD_VERSION = 11;
+        public static int CORE_MOD_VERSION = 12;
         
         // Plays a beep sound when the generate completes if set to true
         public static bool CORE_CONSOLE_BEEP_ON_COMPLETE = true;
@@ -196,6 +196,10 @@ namespace EQWOWConverter
         public static bool PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES = true;
         public static bool PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES = true;
         public static bool PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES = true;
+
+        // If true, DeathKnights will start at level 1 and not be locked to the starter area (and comes with runeforging)
+        // Warning: This should only be done if you plan to use EQ start locations, otherwise you'll just be 'stuck' as a level 1 in a hard area
+        public static bool PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES = false;
 
         //=====================================================================
         // Zone General
@@ -1093,6 +1097,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("PLAYER_USE_EQ_START_ITEMS", PLAYER_USE_EQ_START_ITEMS, "If true, players will start with an EQ item loadout instead of a WOW item loadout");
             OutputVariableToConfig("PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS", PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS, "If true, this will also add a hearthstone if using EQ items");
             OutputVariableToConfig("PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START", PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START, "If true, players start with a bind and gate spell regardless of class (with no costs)");
+            OutputTextLineToConfig("# If true, DeathKnights will start at level 1 and not be locked to the starter area (and comes with runeforging)");
+            OutputVariableToConfig("PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES", PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES, "Warning: This should only be done if you plan to use EQ start locations, otherwise you'll just be 'stuck' as a level 1 in a hard area");
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES, "If true, all wow classes will gain access to the related skills from level 1, per class alignments in PlayerClassMappings.csv", false);
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES, "", false);
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES, "", false);
@@ -1561,6 +1567,7 @@ namespace EQWOWConverter
             PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES);
             PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES);
             PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES);
+            PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES = ReadVariableFromConfigString("PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES", configValuesByVariableName, PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES);
 
             ZONE_SHOW_STATIC_GEOMETRY = ReadVariableFromConfigString("ZONE_SHOW_STATIC_GEOMETRY", configValuesByVariableName, ZONE_SHOW_STATIC_GEOMETRY);
             ZONE_MAX_FACES_PER_WMOGROUP = ReadVariableFromConfigString("ZONE_MAX_FACES_PER_WMOGROUP", configValuesByVariableName, ZONE_MAX_FACES_PER_WMOGROUP);

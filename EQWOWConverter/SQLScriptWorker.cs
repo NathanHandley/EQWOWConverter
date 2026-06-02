@@ -91,6 +91,7 @@ namespace EQWOWConverter
         private NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
         private PageTextSQL pageTextSQL = new PageTextSQL();
         private PetNameGenerationSQL petNameGenerationSQL = new PetNameGenerationSQL();
+        private PlayerClassStatsSQL playerClassStatsSQL = new PlayerClassStatsSQL();
         private PlayerCreateInfoSpellCustomSQL playerCreateInfoSpellCustomSQL = new PlayerCreateInfoSpellCustomSQL();
         private PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
         private PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
@@ -149,8 +150,8 @@ namespace EQWOWConverter
             // Fishing
             PopulateFishingData(zonePropertiesByShortName);
 
-            // Player start properties
-            PopulatePlayerLoadData(zones, mapIDsByShortName);
+            // Player properties
+            PopulatePlayerData(zones, mapIDsByShortName);
 
             // Quests
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
@@ -173,6 +174,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("BardMaxConcurrentSongs", Configuration.SPELL_MAX_CONCURRENT_BARD_SONGS.ToString());
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMin", Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString());
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMax", Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH.ToString());
+            modEverquestSystemConfigsSQL.AddRow("DeathKnightsStartLikeOtherClasses", Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true ? "1" : "0");
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMin", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMax", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMin", Configuration.DBCID_MAP_ID_START.ToString());
@@ -921,7 +923,7 @@ namespace EQWOWConverter
             }
         }
 
-        private void PopulatePlayerLoadData(List<Zone> zones, Dictionary<string, int> mapIDsByShortName)
+        private void PopulatePlayerData(List<Zone> zones, Dictionary<string, int> mapIDsByShortName)
         {
             // Player Start Data
             if (Configuration.PLAYER_USE_EQ_START_LOCATION == true && zones.Count > 0)
@@ -1065,6 +1067,20 @@ namespace EQWOWConverter
                     modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 173);
                     modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 1180);
                 }
+            }
+
+            // DK pre-55 stuff
+            if (Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true)
+            {
+                // Stats
+                foreach (PlayerClassLevelStats dkLevelStats in PlayerClassLevelStats.GetPre55DKLevelStats())
+                    playerClassStatsSQL.AddRow(ClassWOWType.DeathKnight, dkLevelStats.Level, dkLevelStats.BaseHP,
+                        dkLevelStats.BaseMana, dkLevelStats.Strength, dkLevelStats.Agility, dkLevelStats.Stamina,
+                        dkLevelStats.Intellect, dkLevelStats.Spirit);
+
+                // Runeforging
+                modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)ClassWOWType.DeathKnight, 776);
+                modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)ClassWOWType.DeathKnight, 53428);
             }
         }
 
@@ -1630,6 +1646,7 @@ namespace EQWOWConverter
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
             pageTextSQL.SaveToDisk("page_text", SQLFileType.World);
             petNameGenerationSQL.SaveToDisk("pet_name_generation", SQLFileType.World);
+            playerClassStatsSQL.SaveToDisk("player_class_stats", SQLFileType.World);
             playerCreateInfoSpellCustomSQL.SaveToDisk("playercreateinfo_spell_custom", SQLFileType.World);
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
