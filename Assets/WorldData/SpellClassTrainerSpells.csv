@@ -856,6 +856,17 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|53023|Mind Sear|Rank 2|100000|0|0|80|0
 5|64843|Divine Hymn|Rank 1|180000|0|0|80|0
 5|64901|Hymn of Hope||65000|0|0|80|0
+6|49576|Death Grip||5500|0|0|55|0
+6|45477|Icy Touch|Rank 1|5500|0|0|55|0
+6|45462|Plague Strike|Rank 1|5500|0|0|55|0
+6|45902|Blood Strike|Rank 1|5500|0|0|55|0
+6|47541|Death Coil|Rank 1|5500|0|0|55|0
+6|49410|Forceful Deflection||5500|0|0|55|0
+6|48266|Blood Presence||5500|0|0|55|0
+6|56816|Rune Strike||5500|0|0|55|0
+6|59921|Frost Fever||5500|0|0|55|0
+6|61455|Runic Focus||5500|0|0|55|0
+6|59879|Blood Plague||5500|0|0|55|0
 6|46584|Raise Dead||5600|0|0|56|0
 6|49998|Death Strike|Rank 1|5600|0|0|56|0
 6|50842|Pestilence||5600|0|0|56|0

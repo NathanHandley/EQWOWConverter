@@ -104,6 +104,23 @@ namespace EQWOWConverter.WOWFiles
                 row.SourceRawBytes.Clear();
             }
 
+            // Update default learned DK abilities, as needed
+            if (Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true)
+            {
+                foreach (DBCRow row in Rows)
+                {
+                    DBCRow.DBCFieldInt32 skillLineField = (DBCRow.DBCFieldInt32)row.AddedFields[1];
+                    DBCRow.DBCFieldInt32 acquireMethodField = (DBCRow.DBCFieldInt32)row.AddedFields[9];
+                    switch (skillLineField.Value)
+                    {
+                        case 770: acquireMethodField.Value = 0; break; // Blood
+                        case 771: acquireMethodField.Value = 0; break; // Frost
+                        case 772: acquireMethodField.Value = 0; break; // Unholy
+                        default: break;
+                    }
+                }
+            }
+
             // Update any skill references
             if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
             {
