@@ -132,6 +132,7 @@ namespace EQWOWConverter.Spells
         public bool AllowCastInCombat = true;
         public List<Reagent> Reagents = new List<Reagent>();
         public int SkillLine = 0;
+        public SpellEQSkillCategory EQSkillCategory = SpellEQSkillCategory.Unknown;
         public List<SpellEffectEQ> EQSpellEffects = new List<SpellEffectEQ>();
         public List<SpellEffectWOW> WOWSpellEffects = new List<SpellEffectWOW>();
         public UInt32 ManaCost = 0;
@@ -277,13 +278,15 @@ namespace EQWOWConverter.Spells
                     newSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(newSpellTemplate.MinimumPlayerLearnLevel, newSpellTemplate.EQBuffDurationFormula,
                         newSpellTemplate.EQBuffDurationInTicks, newSpellTemplate.IsModelSizeChangeSpell);
 
-                // Focus and Bard properties
+                // Focus / Bard / skill properties
                 int skillID = int.Parse(columns["skill"]);
                 newSpellTemplate.FocusBoostType = GetFocusBoostType(skillID);
                 if ((skillID == 12 || skillID == 41 || skillID == 49 || skillID == 54 || skillID == 70) && newSpellTemplate.RecoveryTimeInMS == 0 && newSpellTemplate.EQBuffDurationInTicks != 0)
                     newSpellTemplate.IsBardSongAura = true;
                 if (newSpellTemplate.FocusBoostType != SpellFocusBoostType.None && newSpellTemplate.IsBardSongAura == false)
                     newSpellTemplate.IsFocusBoostableEffect = true;
+                if (Enum.IsDefined(typeof(SpellEQSkillCategory), skillID) == true)
+                    newSpellTemplate.EQSkillCategory = (SpellEQSkillCategory)skillID;
 
                 // Icon
                 int spellIconID = int.Parse(columns["icon"]);
