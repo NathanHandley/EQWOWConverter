@@ -307,6 +307,26 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
                 newSpellTemplate.DispelType = GetDispelTypeForResistType(resistType, isDetrimental, newSpellTemplate.AuraDuration.MaxDurationInMS > 0);
 
+                // Reagents (Components)
+                int component1EQID = int.Parse(columns["components1"]);
+                int component1Count = int.Parse(columns["component_counts1"]);
+                if (component1EQID > 0 && component1Count > 0)
+                {
+                    if (itemTemplatesByEQDBID.ContainsKey(component1EQID) == false)
+                        Logger.WriteError("For Spell WOWID ", newSpellTemplate.WOWSpellID.ToString(), " a reagent could not be found with EQID ", component1EQID.ToString());
+                    else
+                        newSpellTemplate.Reagents.Add(new Reagent(itemTemplatesByEQDBID[component1EQID].WOWEntryID, component1Count));
+                }
+                int component2EQID = int.Parse(columns["components2"]);
+                int component2Count = int.Parse(columns["component_counts2"]);
+                if (component2EQID > 0 && component2Count > 0)
+                {
+                    if (itemTemplatesByEQDBID.ContainsKey(component2EQID) == false)
+                        Logger.WriteError("For Spell WOWID ", newSpellTemplate.WOWSpellID.ToString(), " a reagent could not be found with EQID ", component2EQID.ToString());
+                    else
+                        newSpellTemplate.Reagents.Add(new Reagent(itemTemplatesByEQDBID[component2EQID].WOWEntryID, component2Count));
+                }
+
                 // Set defensive properties
                 newSpellTemplate.DefenseType = 1; // Magic
                 newSpellTemplate.PreventionType = 1; // Silence
