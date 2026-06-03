@@ -793,10 +793,8 @@ namespace EQWOWConverter
         public static int DBCID_MAP_ID_START = 750;
         public static int DBCID_MAP_ID_END = 899;
 
-        // ID for general/shared skill line holding EverQuest alteration abilities like
-        //  gate found in SkillLine and SkillLineAbility.
-        // NOTE BUG: Class trainers filter out most skill lines, so using "Defense" which should work for all
-        public static int DBCID_SKILLLINE_ALTERATION_ID = 95;
+        // ID for SkillLine.dbc
+        public static int DBCID_SKILLLINE_ID_START = 810;
 
         // ID for skill line abilities found in SkillLineAbility.dbc
         public static int DBCID_SKILLLINEABILITY_ID_START = 25000;
@@ -1393,7 +1391,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("DBCID_LOADINGSCREEN_ID_START", DBCID_LOADINGSCREEN_ID_START, "IDs for the loading screen");
             OutputVariableToConfig("DBCID_MAP_ID_START", DBCID_MAP_ID_START, "Identifies Maps in Map.dbc and MapDifficulty.dbc. This value is hard coded in /WorldData/ZoneProperties.csv, TransportShips.csv, and ZoneDisplayMapContinents.csv, so you cannot change only this value", false);
             OutputVariableToConfig("DBCID_MAP_ID_END", DBCID_MAP_ID_END, "");
-            OutputVariableToConfig("DBCID_SKILLLINE_ALTERATION_ID", DBCID_SKILLLINE_ALTERATION_ID, "ID for general/shared skill line holding EverQuest alteration abilities like gate found in SkillLine and SkillLineAbility.");
+            OutputVariableToConfig("DBCID_SKILLLINE_ID_START", DBCID_SKILLLINE_ID_START, "ID for SkillLine.dbc");
             OutputVariableToConfig("DBCID_SKILLLINEABILITY_ID_START", DBCID_SKILLLINEABILITY_ID_START, "ID for skill line abilities found in SkillLineAbility.dbc");
             OutputVariableToConfig("DBCID_SOUNDENTRIES_ID_START", DBCID_SOUNDENTRIES_ID_START, "ID for sounds found in SoundEntries.dbc");
             OutputVariableToConfig("DBCID_SOUNDAMBIENCE_ID_START", DBCID_SOUNDAMBIENCE_ID_START, "ID for sounds found in SoundAmbience.dbc");
@@ -1816,7 +1814,7 @@ namespace EQWOWConverter
             DBCID_LOADINGSCREEN_ID_START = ReadVariableFromConfigString("DBCID_LOADINGSCREEN_ID_START", configValuesByVariableName, DBCID_LOADINGSCREEN_ID_START);
             DBCID_MAP_ID_START = ReadVariableFromConfigString("DBCID_MAP_ID_START", configValuesByVariableName, DBCID_MAP_ID_START);
             DBCID_MAP_ID_END = ReadVariableFromConfigString("DBCID_MAP_ID_END", configValuesByVariableName, DBCID_MAP_ID_END);
-            DBCID_SKILLLINE_ALTERATION_ID = ReadVariableFromConfigString("DBCID_SKILLLINE_ALTERATION_ID", configValuesByVariableName, DBCID_SKILLLINE_ALTERATION_ID);
+            DBCID_SKILLLINE_ID_START = ReadVariableFromConfigString("DBCID_SKILLLINE_ID_START", configValuesByVariableName, DBCID_SKILLLINE_ID_START);
             DBCID_SKILLLINEABILITY_ID_START = ReadVariableFromConfigString("DBCID_SKILLLINEABILITY_ID_START", configValuesByVariableName, DBCID_SKILLLINEABILITY_ID_START);
             DBCID_SOUNDENTRIES_ID_START = ReadVariableFromConfigString("DBCID_SOUNDENTRIES_ID_START", configValuesByVariableName, DBCID_SOUNDENTRIES_ID_START);
             DBCID_SOUNDAMBIENCE_ID_START = ReadVariableFromConfigString("DBCID_SOUNDAMBIENCE_ID_START", configValuesByVariableName, DBCID_SOUNDAMBIENCE_ID_START);

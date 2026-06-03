@@ -14,11 +14,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Spells;
+
 namespace EQWOWConverter.WOWFiles
 {
     internal class SkillLineDBC : DBCFile
     {
-        public void AddRow(int id, string name)
+        private static int CUR_ID = Configuration.DBCID_SKILLLINE_ID_START;
+        private static Dictionary<SpellEQSkillCategory, int> SkillLineIDBySkillCategory = new Dictionary<SpellEQSkillCategory, int>();
+        private static readonly object ID_LOCK = new object();
+
+        public void AddRow(int id, string name, int spellIconID)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID
@@ -26,10 +32,35 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // SkillCostsID
             newRow.AddStringLang(name); // DisplayName
             newRow.AddStringLang(""); // Description
-            newRow.AddInt32(1); // SpellIconID
+            newRow.AddInt32(spellIconID); // SpellIconID
             newRow.AddStringLang(""); // AlternateVerb
             newRow.AddInt32(0); // CanLink
             Rows.Add(newRow);
+        }
+
+        public static int GetIDForSkillCatagory(SpellEQSkillCategory skillCategory)
+        {
+            return GetAllSkillLineIDsBySkillCategory()[skillCategory];
+        }
+
+        public static Dictionary<SpellEQSkillCategory, int> GetAllSkillLineIDsBySkillCategory()
+        {
+            if (SkillLineIDBySkillCategory.Count == 0)
+            {
+                foreach (SpellEQSkillCategory category in Enum.GetValues<SpellEQSkillCategory>())
+                {
+                    if (category != SpellEQSkillCategory.Unknown)
+                        SkillLineIDBySkillCategory.Add(category, GenerateID());
+                }
+            }
+            return SkillLineIDBySkillCategory;
+        }
+
+        private static int GenerateID()
+        {
+            int newID = CUR_ID;
+            CUR_ID++;
+            return CUR_ID;
         }
     }
 }

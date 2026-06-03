@@ -285,7 +285,10 @@ namespace EQWOWConverter.Spells
                     newSpellTemplate.IsBardSongAura = true;
                 if (newSpellTemplate.FocusBoostType != SpellFocusBoostType.None && newSpellTemplate.IsBardSongAura == false)
                     newSpellTemplate.IsFocusBoostableEffect = true;
-                if (Enum.IsDefined(typeof(SpellEQSkillCategory), skillID) == true)
+                
+                if (skillID == 15 || skillID == 33 || skillID == 52)
+                    newSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
+                else if (Enum.IsDefined(typeof(SpellEQSkillCategory), skillID) == true && skillID > 0)
                     newSpellTemplate.EQSkillCategory = (SpellEQSkillCategory)skillID;
 
                 // Icon

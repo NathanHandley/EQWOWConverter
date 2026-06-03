@@ -52,6 +52,7 @@ namespace EQWOWConverter
         private LoadingScreensDBC loadingScreensDBC = new LoadingScreensDBC();
         private MapDBC mapDBC = new MapDBC();
         private MapDifficultyDBC mapDifficultyDBC = new MapDifficultyDBC();
+        private SkillLineDBC skillLineDBC = new SkillLineDBC();
         private SkillLineAbilityDBC skillLineAbilityDBC = new SkillLineAbilityDBC();
         private SkillRaceClassInfoDBC skillRaceClassInfoDBC = new SkillRaceClassInfoDBC();
         private SoundAmbienceDBC soundAmbienceDBC = new SoundAmbienceDBC();
@@ -180,6 +181,7 @@ namespace EQWOWConverter
             loadingScreensDBC.LoadFromDisk(dbcInputFolder, "LoadingScreens.dbc");
             mapDBC.LoadFromDisk(dbcInputFolder, "Map.dbc");
             mapDifficultyDBC.LoadFromDisk(dbcInputFolder, "MapDifficulty.dbc");
+            skillLineDBC.LoadFromDisk(dbcInputFolder, "SkillLine.dbc");
             skillLineAbilityDBC.LoadFromDisk(dbcInputFolder, "SkillLineAbility.dbc");
             skillRaceClassInfoDBC.LoadFromDisk(dbcInputFolder, "SkillRaceClassInfo.dbc");
             soundAmbienceDBC.LoadFromDisk(dbcInputFolder, "SoundAmbience.dbc");
@@ -466,7 +468,12 @@ namespace EQWOWConverter
             spellVisualEffectNameDBC.AddRow(ItemDisplayInfo.IT159SpellVisualEffectNameID, "EQ Celestial Fists", ItemDisplayInfo.IT159RelativeFileName);
 
             // SkillLine
-            //skillLineDBC.AddRow(Configuration.DBCID_SKILLLINE_ALTERATION_ID, "Alteration");
+            Dictionary<SpellEQSkillCategory, int> skillLineIDsBySkillCategory = SkillLineDBC.GetAllSkillLineIDsBySkillCategory();
+            foreach (var skillLineIDBySkillCategory in skillLineIDsBySkillCategory)
+            {
+                string name = skillLineIDBySkillCategory.Key.ToString();
+                skillLineDBC.AddRow(skillLineIDBySkillCategory.Value, name, 1);
+            }
 
             // Skills
             if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
@@ -728,8 +735,8 @@ namespace EQWOWConverter
             mapDBC.SaveToDisk(dbcOutputServerFolder);
             mapDifficultyDBC.SaveToDisk(dbcOutputClientFolder);
             mapDifficultyDBC.SaveToDisk(dbcOutputServerFolder);
-            //skillLineDBC.SaveToDisk(dbcOutputClientFolder);
-            //skillLineDBC.SaveToDisk(dbcOutputServerFolder);
+            skillLineDBC.SaveToDisk(dbcOutputClientFolder);
+            skillLineDBC.SaveToDisk(dbcOutputServerFolder);
             skillLineAbilityDBC.SaveToDisk(dbcOutputClientFolder);
             skillLineAbilityDBC.SaveToDisk(dbcOutputServerFolder);
             skillRaceClassInfoDBC.SaveToDisk(dbcOutputClientFolder);

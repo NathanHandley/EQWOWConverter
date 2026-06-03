@@ -23,14 +23,15 @@ namespace EQWOWConverter.Spells
         Alteration = 5,
         Brass = 12,
         Conjuration = 14,
-        Defense = 15,
+        //Defense = 15,
         Divination = 18,
         Evocation = 24,
-        Offense = 33,
+        //Offense = 33,
         Singing = 41,
         Stringed = 49,
-        TigerClaw = 52, // Seriously?
+        //TigerClaw = 52,
         Wind = 54,
-        Percussion = 70
+        Percussion = 70,
+        Combat = 100 // Custom ID that aggregates Defense / Offense / TigerClaw
     }
 }

@@ -1993,7 +1993,7 @@ namespace EQWOWConverter
             gateSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(9, SpellVisualType.Beneficial).SpellVisualDBCID); // Gate
             gateSpellTemplate.PlayerLearnableByClassTrainer = true;
             gateSpellTemplate.AllowCastInCombat = false;
-            gateSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
+            gateSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
             spellTemplates.Add(gateSpellTemplate);
 
             // Custom Bind Affinity (Self)
@@ -2008,7 +2008,7 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(14, SpellVisualType.Beneficial).SpellVisualDBCID); // Bind
             bindAffinitySelfSpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySelfSpellTemplate.AllowCastInCombat = false;
-            bindAffinitySelfSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
+            bindAffinitySelfSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
             bindAffinitySelfSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, (int)SpellDummyType.BindSelf, 0));
             bindAffinitySelfSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             spellTemplates.Add(bindAffinitySelfSpellTemplate);
@@ -2031,7 +2031,7 @@ namespace EQWOWConverter
                     priestOfDiscordPortalCooldownTemplate.AlwaysPersist = true;
                     priestOfDiscordPortalCooldownTemplate.SpellRange = 1000;
                     priestOfDiscordPortalCooldownTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
-                    priestOfDiscordPortalCooldownTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
+                    priestOfDiscordPortalCooldownTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
                     spellTemplates.Add(priestOfDiscordPortalCooldownTemplate);
                 }
             }
@@ -2047,7 +2047,7 @@ namespace EQWOWConverter
             monkEpicSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
             monkEpicSpellTemplate.AuraDuration.IsInfinite = true;
             monkEpicSpellTemplate.SchoolMask = 1;
-            monkEpicSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
+            monkEpicSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
             monkEpicSpellTemplate.SpellVisualID1 = (UInt32)ItemDisplayInfo.IT159SpellVisualID;
             monkEpicSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             //monkEpicSpellTemplate.ForceHiddenFromDisplay = true;
@@ -2068,7 +2068,7 @@ namespace EQWOWConverter
             forageSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(forageSpellIconID);
             forageSpellTemplate.CastTimeInMS = 0;
             forageSpellTemplate.RecoveryTimeInMS = 100000; // 100 seconds
-            forageSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
+            forageSpellTemplate.SkillLine = 0; // Nothing for now
             forageSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, (int)SpellDummyType.Forage, 0));
             forageSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             spellTemplates.Add(forageSpellTemplate);
