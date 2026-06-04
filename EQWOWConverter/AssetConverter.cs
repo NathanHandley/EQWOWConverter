@@ -161,7 +161,7 @@ namespace EQWOWConverter
                 }
 
                 // Spells                                        
-                GenerateSpells(out spellTemplates, itemTemplatesByEQDBID, ref creatureTemplatesByEQID); // Remove the 'ref'
+                GenerateSpells(out spellTemplates, itemTemplatesByEQDBID, ref creatureTemplatesByEQID); // TODO: Remove the 'ref'
 
                 // Update class-specific references from spell scrolls
                 if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == true)
@@ -1965,6 +1965,9 @@ namespace EQWOWConverter
                 // Output the textures
                 ExportTexturesForObject(objectModel, sourceTextureFolders, outputFolder);
             }
+
+            // Write the interface map
+            EQSpellsLUA.Generate(spellTemplates);
 
             Logger.WriteDebug("Generating spells complete.");
         }
