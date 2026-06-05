@@ -43,10 +43,7 @@ namespace EQWOWConverter.Creatures
         private static Dictionary<int, CreatureFaction> CreatureFactionsByWOWFactionID = new Dictionary<int, CreatureFaction>();
         private static Dictionary<int, int> CreatureWOWFactionTemplateIDByEQFactionID = new Dictionary<int, int>();
         private static Dictionary<int, int> CreatureWOWFactionIDByEQFactionID = new Dictionary<int, int>();
-        private static HashSet<int> FactionTemplateIDsToRealignToInteractive = new HashSet<int>();
         private static Dictionary<int, List<CreatureFactionKillReward>> CreatureFactionKillRewardsByEQNPCFactionID = new Dictionary<int, List<CreatureFactionKillReward>>();
-        private static object FactionLock = new object();
-
         private static int GoodClassesMask = 0;
         private static int GoodRacesMask = 0;
         private static int EvilClassesMask = 0;
@@ -74,129 +71,101 @@ namespace EQWOWConverter.Creatures
 
         public static int GetRootFactionParentWOWFactionID()
         {
-            lock (FactionLock)
+            if (CreatureFactionsByWOWFactionID.Count == 0)
+                PopulateFactionData();
+
+            foreach (CreatureFaction creatureFaction in CreatureFactionsByWOWFactionID.Values)
             {
-                if (CreatureFactionsByWOWFactionID.Count == 0)
-                    PopulateFactionData();
-
-                foreach (CreatureFaction creatureFaction in CreatureFactionsByWOWFactionID.Values)
-                {
-                    if (creatureFaction.Name == Configuration.CREATURE_FACTION_ROOT_NAME)
-                        return creatureFaction.FactionID;
-                }
-
-                Logger.WriteError("CreatureFaction - could not find faction with name 'Everquest'");
-                return 0;
+                if (creatureFaction.Name == Configuration.CREATURE_FACTION_ROOT_NAME)
+                    return creatureFaction.FactionID;
             }
+
+            Logger.WriteError("CreatureFaction - could not find faction with name 'Everquest'");
+            return 0;
         }
 
         public static int GetWOWFactionIDForEQFactionID(int eqFactionID)
         {
-            lock (FactionLock)
+            if (CreatureWOWFactionIDByEQFactionID.Count == 0)
+                PopulateFactionData();
+            if (CreatureWOWFactionIDByEQFactionID.ContainsKey(eqFactionID) == true)
+                return CreatureWOWFactionIDByEQFactionID[eqFactionID];
+            else
             {
-                if (CreatureWOWFactionIDByEQFactionID.Count == 0)
-                    PopulateFactionData();
-                if (CreatureWOWFactionIDByEQFactionID.ContainsKey(eqFactionID) == true)
-                    return CreatureWOWFactionIDByEQFactionID[eqFactionID];
-                else
-                {
-                    Logger.WriteDebug("Creature Faction - No wow faction ID mapped to eq faction ID '" + eqFactionID.ToString() + "' so using default");
-                    return Configuration.CREATURE_FACTION_DEFAULT;
-                }
+                Logger.WriteDebug("Creature Faction - No wow faction ID mapped to eq faction ID '" + eqFactionID.ToString() + "' so using default");
+                return Configuration.CREATURE_FACTION_DEFAULT;
             }
         }
 
         public static int GetWOWFactionTemplateIDForEQFactionID(int eqFactionID)
         {
-            lock (FactionLock)
+            if (CreatureWOWFactionTemplateIDByEQFactionID.Count == 0)
+                PopulateFactionData();
+            if (CreatureWOWFactionTemplateIDByEQFactionID.ContainsKey(eqFactionID) == true)
+                return CreatureWOWFactionTemplateIDByEQFactionID[eqFactionID];
+            else
             {
-                if (CreatureWOWFactionTemplateIDByEQFactionID.Count == 0)
-                    PopulateFactionData();
-                if (CreatureWOWFactionTemplateIDByEQFactionID.ContainsKey(eqFactionID) == true)
-                    return CreatureWOWFactionTemplateIDByEQFactionID[eqFactionID];
-                else
-                {
-                    Logger.WriteDebug("Creature Faction - No wow faction template ID mapped to eq faction ID '" + eqFactionID.ToString() + "' so using default");
-                    return Configuration.CREATURE_FACTION_TEMPLATE_DEFAULT;
-                }
+                Logger.WriteDebug("Creature Faction - No wow faction template ID mapped to eq faction ID '" + eqFactionID.ToString() + "' so using default");
+                return Configuration.CREATURE_FACTION_TEMPLATE_DEFAULT;
             }
         }
 
         public static bool CanFactionAssistPlayer(int eqFactionID)
         {
-            lock (FactionLock)
+            if (CreatureWOWFactionTemplateIDByEQFactionID.Count == 0)
+                PopulateFactionData();
+            if (CreatureWOWFactionIDByEQFactionID.ContainsKey(eqFactionID) == true)
             {
-                if (CreatureWOWFactionTemplateIDByEQFactionID.Count == 0)
-                    PopulateFactionData();
-                if (CreatureWOWFactionIDByEQFactionID.ContainsKey(eqFactionID) == true)
+                int wowFactionID = CreatureWOWFactionIDByEQFactionID[eqFactionID];
+                if (CreatureFactionsByWOWFactionID.ContainsKey(wowFactionID) == true)
                 {
-                    int wowFactionID = CreatureWOWFactionIDByEQFactionID[eqFactionID];
-                    if (CreatureFactionsByWOWFactionID.ContainsKey(wowFactionID) == true)
-                    {
-                        if (CreatureFactionsByWOWFactionID[wowFactionID].ReputationIndex > -1)
-                            return true;
-                    }
-                }
-                return false;
+                    if (CreatureFactionsByWOWFactionID[wowFactionID].ReputationIndex > -1)
+                        return true;
+                }                
             }
+            return false;
         }
 
         public static Dictionary<int, CreatureFaction> GetCreatureFactionsByFactionID()
         {
-            lock (FactionLock)
-            {
-                if (CreatureFactionsByWOWFactionID.Count == 0)
-                    PopulateFactionData();
-                return CreatureFactionsByWOWFactionID;
-            }
+            if (CreatureFactionsByWOWFactionID.Count == 0)
+                PopulateFactionData();
+            return CreatureFactionsByWOWFactionID;
         }
 
         public static List<CreatureFactionKillReward> GetCreatureFactionKillRewards(int eqNPCFactionID)
         {
-            lock (FactionLock)
+            if (CreatureFactionKillRewardsByEQNPCFactionID.Count == 0)
+                PopulateFactionData();
+            if (CreatureFactionKillRewardsByEQNPCFactionID.ContainsKey(eqNPCFactionID) == false)
+                return new List<CreatureFactionKillReward>();
+            else
             {
-                if (CreatureFactionKillRewardsByEQNPCFactionID.Count == 0)
-                    PopulateFactionData();
-                if (CreatureFactionKillRewardsByEQNPCFactionID.ContainsKey(eqNPCFactionID) == false)
-                    return new List<CreatureFactionKillReward>();
-                else
+                // Condense the list so that there are no duplicates
+                List<CreatureFactionKillReward> returnRewards = new List<CreatureFactionKillReward>();
+                foreach(CreatureFactionKillReward killRewardCandidate in CreatureFactionKillRewardsByEQNPCFactionID[eqNPCFactionID])
                 {
-                    // Condense the list so that there are no duplicates
-                    List<CreatureFactionKillReward> returnRewards = new List<CreatureFactionKillReward>();
-                    foreach (CreatureFactionKillReward killRewardCandidate in CreatureFactionKillRewardsByEQNPCFactionID[eqNPCFactionID])
+                    bool killRewardFound = false;
+                    for (int i = returnRewards.Count - 1; i >= 0; i--)
                     {
-                        bool killRewardFound = false;
-                        for (int i = returnRewards.Count - 1; i >= 0; i--)
+                        // Take the highest or lowest faction reward
+                        CreatureFactionKillReward killRewardStage = returnRewards[i];
+                        if (killRewardStage.WOWFactionID == killRewardCandidate.WOWFactionID)
                         {
-                            // Take the highest or lowest faction reward
-                            CreatureFactionKillReward killRewardStage = returnRewards[i];
-                            if (killRewardStage.WOWFactionID == killRewardCandidate.WOWFactionID)
+                            if (Math.Abs(killRewardCandidate.KillRewardValue) > Math.Abs(killRewardStage.KillRewardValue))
+                                returnRewards.RemoveAt(i);
+                            else
                             {
-                                if (Math.Abs(killRewardCandidate.KillRewardValue) > Math.Abs(killRewardStage.KillRewardValue))
-                                    returnRewards.RemoveAt(i);
-                                else
-                                {
-                                    killRewardFound = true;
-                                    continue;
-                                }
+                                killRewardFound = true;
+                                continue;
                             }
                         }
-                        if (killRewardFound == false)
-                            returnRewards.Add(killRewardCandidate);
                     }
-                    return returnRewards;
+                    if (killRewardFound == false)
+                        returnRewards.Add(killRewardCandidate);
                 }
-            }
-        }
-
-        public static HashSet<int> GetFactionTemplateIDsToRealignToInteractive()
-        {
-            lock (FactionLock)
-            {
-                if (CreatureWOWFactionTemplateIDByEQFactionID.Count == 0)
-                    PopulateFactionData();
-                return FactionTemplateIDsToRealignToInteractive;
-            }
+                return returnRewards;
+            }   
         }
 
         private static void PopulateFactionData()
@@ -302,9 +271,6 @@ namespace EQWOWConverter.Creatures
                 newCreatureFaction.EnemyFaction3 = int.Parse(columns["EnemyFaction3"]);
                 newCreatureFaction.EnemyFaction4 = int.Parse(columns["EnemyFaction4"]);
                 CreatureFactionsByWOWFactionID.Add(newCreatureFaction.FactionID, newCreatureFaction);
-                bool alignInteractive = columns["AlignInteractive"].Trim() == "1" ? true : false;
-                if (alignInteractive == true)
-                    FactionTemplateIDsToRealignToInteractive.Add(newCreatureFaction.FactionTemplateID);
             }
 
             // Update the parents for these factions

@@ -83,33 +83,11 @@ namespace EQWOWConverter.Creatures
         public bool IsPet = false;
         public float ModelTemplateScale = 1.0f; // Used for form changes
         public bool IsStableMaster = false;
-        public bool IsReagentVendor = false;
 
         private static readonly object CreatureIDsLock = new object();
         private static int CURRENT_SQL_CREATURE_GUID = -1;
         private static int CURRENT_SQL_CREATURE_TEMPLATE_GUID = -1;
         private static int CURRENT_CREATURE_EQID = 200000;
-
-        public bool IsInteractive()
-        {
-            if (IsQuestGiver == true)
-                return true;
-            if (IsBanker == true)
-                return true;
-            if (MerchantID != 0)
-                return true;
-            if (IsStableMaster == true)
-                return true;
-            if (IsReagentVendor == true)
-                return true;
-            if (ClassTrainerType != ClassWOWType.None)
-                return true;
-            if (TradeskillTrainerType != TradeskillType.None && TradeskillTrainerType != TradeskillType.Unknown)
-                return true;
-            if (IsRidingTrainer == true)
-                return true;
-            return false;
-        }
 
         public static Dictionary<int, CreatureTemplate> GetCreatureTemplateListByEQID()
         {
