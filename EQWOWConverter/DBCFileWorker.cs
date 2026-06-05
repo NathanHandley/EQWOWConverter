@@ -473,6 +473,7 @@ namespace EQWOWConverter
             {
                 string name = skillLineIDBySkillCategory.Key.ToString();
                 skillLineDBC.AddRow(skillLineIDBySkillCategory.Value, name, 1);
+                skillRaceClassInfoDBC.AddRow(skillLineIDBySkillCategory.Value, new List<ClassWOWType>() { ClassWOWType.All });
             }
 
             // Skills
