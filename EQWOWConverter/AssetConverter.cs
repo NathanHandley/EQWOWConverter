@@ -1996,6 +1996,7 @@ namespace EQWOWConverter
             gateSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(9, SpellVisualType.Beneficial).SpellVisualDBCID); // Gate
             gateSpellTemplate.PlayerLearnableByClassTrainer = true;
             gateSpellTemplate.AllowCastInCombat = false;
+            gateSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
             gateSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
             spellTemplates.Add(gateSpellTemplate);
 
@@ -2011,6 +2012,7 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(14, SpellVisualType.Beneficial).SpellVisualDBCID); // Bind
             bindAffinitySelfSpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySelfSpellTemplate.AllowCastInCombat = false;
+            bindAffinitySelfSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
             bindAffinitySelfSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
             bindAffinitySelfSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, (int)SpellDummyType.BindSelf, 0));
             bindAffinitySelfSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
@@ -2050,6 +2052,7 @@ namespace EQWOWConverter
             monkEpicSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
             monkEpicSpellTemplate.AuraDuration.IsInfinite = true;
             monkEpicSpellTemplate.SchoolMask = 1;
+            monkEpicSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
             monkEpicSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
             monkEpicSpellTemplate.SpellVisualID1 = (UInt32)ItemDisplayInfo.IT159SpellVisualID;
             monkEpicSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
@@ -3357,6 +3360,10 @@ namespace EQWOWConverter
                 string outputIconFile = Path.Combine(iconOutputFolder, Path.GetFileName(inputIconFile));
                 FileTool.CopyFile(inputIconFile, outputIconFile);
             }
+
+            // Spellbook categories
+            // TODO
+
         }
     }
 }

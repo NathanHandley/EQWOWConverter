@@ -291,6 +291,9 @@ namespace EQWOWConverter.Spells
                 else if (Enum.IsDefined(typeof(SpellEQSkillCategory), skillID) == true && skillID > 0)
                     newSpellTemplate.EQSkillCategory = (SpellEQSkillCategory)skillID;
 
+                if (newSpellTemplate.EQSkillCategory != SpellEQSkillCategory.Unknown)
+                    newSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(newSpellTemplate.EQSkillCategory);
+
                 // Icon
                 int spellIconID = int.Parse(columns["icon"]);
                 if (spellIconID >= 2500)
