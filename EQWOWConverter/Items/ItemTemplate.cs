@@ -1900,8 +1900,8 @@ namespace EQWOWConverter.Items
             createdBagItemTemplate.Description = string.Concat("Contains the item and the essence of the item '", originalItemTemplate.Name, "'.");
             createdBagItemTemplate.IconID = Configuration.ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID;
             createdBagItemTemplate.Quality = originalItemTemplate.Quality;
-            createdBagItemTemplate.BuyPriceInCopper = 0;
-            createdBagItemTemplate.SellPriceInCopper = 0;
+            createdBagItemTemplate.BuyPriceInCopper = originalItemTemplate.BuyPriceInCopper;
+            createdBagItemTemplate.SellPriceInCopper = originalItemTemplate.SellPriceInCopper;
             createdBagItemTemplate.CanBeOpened = true;
 
             // Create the essence
