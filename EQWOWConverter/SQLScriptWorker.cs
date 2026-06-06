@@ -94,7 +94,7 @@ namespace EQWOWConverter
         private PlayerClassStatsSQL playerClassStatsSQL = new PlayerClassStatsSQL();
         private PlayerCreateInfoSpellCustomSQL playerCreateInfoSpellCustomSQL = new PlayerCreateInfoSpellCustomSQL();
         private PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
-        private PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
+        private PoolPoolSQL poolPoolSQL = new PoolPoolSQL(); // Consider delete
         private PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
         private QuestTemplateSQL questTemplateSQL = new QuestTemplateSQL();
         private QuestTemplateAddonSQL questTemplateAddonSQL = new QuestTemplateAddonSQL();
@@ -222,37 +222,47 @@ namespace EQWOWConverter
                     foreach (string name in poolNames)
                         poolDescription += ", " + name;
 
-                    // Identify which spawn pools need a mother pool in order to limit spawns
+                    // Identify which spawn pools need a real cap
                     bool hasRealSpawnCap = spawnPool.SpawnLimit > 0 && spawnPool.SpawnLimit < spawnPool.CreatureSpawnInstances.Count;
 
                     if (hasRealSpawnCap == true)
                     {
-                        int motherPoolID = CreatureSpawnPool.GetPoolTemplateSQLID();
-                        poolTemplateSQL.AddRow(motherPoolID, poolDescription + " - Mother Pool", spawnPool.GetMaxSpawnCount());
+                        int poolID = CreatureSpawnPool.GetPoolTemplateSQLID();
+                        poolTemplateSQL.AddRow(poolID, poolDescription, spawnPool.SpawnLimit);
                         if (spawnPool.LinkedSpawnGameEvent != null)
-                            gameEventPoolSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, motherPoolID, true);
+                            gameEventPoolSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, poolID, true);
                         if (spawnPool.LinkedDespawnGameEvent != null)
-                            gameEventPoolSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, motherPoolID, false);
+                            gameEventPoolSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, poolID, false);
 
+                        // Trick the chance system to enforce a cap
+                        List<CreatureTemplate> pointTemplates = DistributeCandidatesAcrossSpawnPoints(
+                            spawnPool.CreatureTemplates, spawnPool.CreatureTemplateChances, spawnPool.CreatureSpawnInstances.Count);
                         for (int spawnInstanceIndex = 0; spawnInstanceIndex < spawnPool.CreatureSpawnInstances.Count; spawnInstanceIndex++)
                         {
                             CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[spawnInstanceIndex];
-                            int subPoolID = CreatureSpawnPool.GetPoolTemplateSQLID();
-                            string subPoolDescription = String.Concat(poolDescription, " - ", spawnInstanceIndex.ToString());
-                            poolTemplateSQL.AddRow(subPoolID, subPoolDescription, 1);
-                            poolPoolSQL.AddRow(subPoolID, motherPoolID, 0, subPoolDescription);
-                            for (int i = 0; i < spawnPool.CreatureTemplates.Count; i++)
-                            {
-                                CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[i];
-                                int chance = spawnPool.CreatureTemplateChances[i];
-                                int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                                poolCreatureSQL.AddRow(creatureGUID, subPoolID, chance, creatureTemplate.Name);
-                                string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                                CreateCreatureAndRelatedSQLEntries(creatureGUID, creatureTemplate, spawnInstance, spawnPool.SpawnGroup, comment);
-                            }
+                            CreatureTemplate creatureTemplate = pointTemplates[spawnInstanceIndex];
+                            int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                            poolCreatureSQL.AddRow(creatureGUID, poolID, 0, creatureTemplate.Name);
+                            string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
+                            CreateCreatureAndRelatedSQLEntries(creatureGUID, creatureTemplate, spawnInstance, spawnPool.SpawnGroup, comment);
                         }
                     }
                     // If there is no cap, have one weighted pool per spawn point
+                    else if (isSingleCreatureTemplate == true)
+                    {
+                        CreatureTemplate template = spawnPool.CreatureTemplates[0];
+                        foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
+                        {
+                            int creatureSQLGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                            string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
+                            CreateCreatureAndRelatedSQLEntries(creatureSQLGUID, template, spawnInstance, spawnPool.SpawnGroup, comment);
+                            if (spawnPool.LinkedSpawnGameEvent != null)
+                                gameEventCreatureSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, creatureSQLGUID, true);
+                            if (spawnPool.LinkedDespawnGameEvent != null)
+                                gameEventCreatureSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, creatureSQLGUID, false);
+                        }
+                    }
+                    // Multiple candidate creatures per spawn point, so use one pool per spawn with full weighted list
                     else
                     {
                         foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
@@ -666,6 +676,59 @@ namespace EQWOWConverter
                     }
                 }
             }
+        }
+
+        // Aligns one creature candidate to each spawn pont, and spreading them out proportionate to their spawn chance in a way that comes out to exactly one point count
+        private static List<CreatureTemplate> DistributeCandidatesAcrossSpawnPoints(List<CreatureTemplate> templates, List<int> chances, int pointCount)
+        {
+            List<CreatureTemplate> assigned = new List<CreatureTemplate>();
+            if (templates.Count <= 1)
+            {
+                for (int p = 0; p < pointCount; p++)
+                    assigned.Add(templates[0]);
+                return assigned;
+            }
+
+            int totalChance = 0;
+            foreach (int chance in chances)
+                totalChance += chance;
+            if (totalChance <= 0)
+                totalChance = templates.Count;
+
+            double[] exact = new double[templates.Count];
+            int[] counts = new int[templates.Count];
+            int placed = 0;
+            for (int i = 0; i < templates.Count; i++)
+            {
+                exact[i] = (double)chances[i] / totalChance * pointCount;
+                counts[i] = (int)Math.Floor(exact[i]);
+                placed += counts[i];
+            }
+
+            // Total up remainder
+            int remaining = pointCount - placed;
+            while (remaining > 0)
+            {
+                int bestIndex = 0;
+                double bestRemainder = -1.0;
+                for (int i = 0; i < templates.Count; i++)
+                {
+                    double remainder = exact[i] - Math.Floor(exact[i]);
+                    if (remainder > bestRemainder)
+                    {
+                        bestRemainder = remainder;
+                        bestIndex = i;
+                    }
+                }
+                counts[bestIndex]++;
+                exact[bestIndex] = Math.Floor(exact[bestIndex]);
+                remaining--;
+            }
+
+            for (int i = 0; i < templates.Count; i++)
+                for (int k = 0; k < counts[i]; k++)
+                    assigned.Add(templates[i]);
+            return assigned;
         }
 
         private static Dictionary<int, HashSet<int>> alreadySavedCustomWaypointGridIDsByMapID = new Dictionary<int, HashSet<int>>(); // Ensure only 1 of each waypoint set is saved
