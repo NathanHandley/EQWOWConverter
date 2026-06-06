@@ -921,11 +921,11 @@ namespace EQWOWConverter
                         }
                         ItemTemplate curItemTemplate = itemTemplatesByWOWID[fishingZoneItem.WOWItemTemplateID];
                         string comment = string.Concat("EQ ", curItemTemplate.Name, " (", zoneProperties.ShortName, ")");
-                        fishingLootTemplateSQL.AddRow(areaTableID, 0, fishingZoneItem.WOWItemTemplateID, fishingZoneItem.ChanceAbsolute, false, comment);
+                        fishingLootTemplateSQL.AddRow(areaTableID, 0, fishingZoneItem.WOWItemTemplateID, fishingZoneItem.ChanceAbsolute, false, 1, comment);
                     }
 
                     // Also add the junk items
-                    fishingLootTemplateSQL.AddRow(areaTableID, junkReferenceID, junkReferenceID, 100, true, "(ReferenceTable)");
+                    fishingLootTemplateSQL.AddRow(areaTableID, junkReferenceID, junkReferenceID, 100, true, 0, "(ReferenceTable)");
                 }
             }
         }

@@ -23,7 +23,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM fishing_loot_template WHERE `Entry` >= " + Configuration.DBCID_AREATABLE_ID_START.ToString() + " AND `Entry` <= " + Configuration.DBCID_AREATABLE_ID_END + ";";
         }
 
-        public void AddRow(int areaID, int referenceID, int itemTemplateID, float chance, bool isJunk, string comment)
+        public void AddRow(int areaID, int referenceID, int itemTemplateID, float chance, bool isJunk, int groupID, string comment)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("Entry", areaID);
@@ -35,7 +35,7 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("LootMode", 1); // LOOT_MODE_DEFAULT = 0x01
             else
                 newRow.AddInt("LootMode", 32768); // LOOT_MODE_JUNK_FISH = 0x8000
-            newRow.AddInt("GroupId", 1);
+            newRow.AddInt("GroupId", groupID);
             newRow.AddInt("MinCount", 1);
             newRow.AddInt("MaxCount", 1);
             newRow.AddString("Comment", 255, comment);
