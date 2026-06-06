@@ -505,7 +505,7 @@ namespace EQWOWConverter
                 List<ClassWOWType> polearmClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Polearm).ToList();
                 skillRaceClassInfoDBC.AddRow(229, polearmClasses);
                 List<ClassWOWType> swordOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordOneHand).ToList();
-                skillRaceClassInfoDBC.AddRow(42, swordOneHandClasses);
+                skillRaceClassInfoDBC.AddRow(43, swordOneHandClasses);
                 List<ClassWOWType> swordTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordTwoHand).ToList();
                 skillRaceClassInfoDBC.AddRow(55, swordTwoHandClasses);
                 List<ClassWOWType> staffClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Staff).ToList();

@@ -133,9 +133,9 @@ namespace EQWOWConverter.WOWFiles
                     DBCRow.DBCFieldInt32 classMaskField = (DBCRow.DBCFieldInt32)row.AddedFields[4];
                     switch (skillLineField.Value)
                     {
-                        case 414: classMaskField = CalculateClassMask(leatherClasses); break; // Leather
-                        case 413: classMaskField = CalculateClassMask(mailClasses); break; // Mail
-                        case 293: classMaskField = CalculateClassMask(plateClasses); break; // Plate
+                        case 414: classMaskField.Value = CalculateClassMask(leatherClasses); break; // Leather
+                        case 413: classMaskField.Value = CalculateClassMask(mailClasses); break; // Mail
+                        case 293: classMaskField.Value = CalculateClassMask(plateClasses); break; // Plate
                         default: break;
                     }
                 }
@@ -146,7 +146,10 @@ namespace EQWOWConverter.WOWFiles
                 {
                     DBCRow.DBCFieldInt32 skillLineField = (DBCRow.DBCFieldInt32)row.AddedFields[1];
                     if (skillLineField.Value == 433)
-                        row.AddedFields[4] = new DBCRow.DBCFieldInt32(-1); // Set class mask to "all"
+                    {
+                        DBCRow.DBCFieldInt32 classMaskField = (DBCRow.DBCFieldInt32)row.AddedFields[4];
+                        classMaskField.Value = -1;
+                    }
                 }
             }
             if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == true)
@@ -167,34 +170,34 @@ namespace EQWOWConverter.WOWFiles
                     DBCRow.DBCFieldInt32 classMaskField = (DBCRow.DBCFieldInt32)row.AddedFields[4];
                     switch (skillLineField.Value)
                     {
-                        case 44: classMaskField = CalculateClassMask(axeOneHandClasses); break; // Axes
-                        case 172: classMaskField = CalculateClassMask(axeTwoHandClasses); break; // Two-Handed Axes
-                        case 54: classMaskField = CalculateClassMask(maceOneHandClasses); break; // Maces
-                        case 160: classMaskField = CalculateClassMask(maceTwoHandClasses); break; // Two-Handed Maces
-                        case 229: classMaskField = CalculateClassMask(polearmClasses); break; // Polearms
-                        case 43: classMaskField = CalculateClassMask(swordOneHandClasses); break; // Swords
-                        case 55: classMaskField = CalculateClassMask(swordTwoHandClasses); break; // Two-Handed Swords
-                        case 136: classMaskField = CalculateClassMask(staffClasses); break; // Staves
-                        case 473: classMaskField = CalculateClassMask(fistWeaponClasses); break; // Fist Weapons
-                        case 173: classMaskField = CalculateClassMask(daggerClasses); break; // Daggers
+                        case 44: classMaskField.Value = CalculateClassMask(axeOneHandClasses); break; // Axes
+                        case 172: classMaskField.Value = CalculateClassMask(axeTwoHandClasses); break; // Two-Handed Axes
+                        case 54: classMaskField.Value = CalculateClassMask(maceOneHandClasses); break; // Maces
+                        case 160: classMaskField.Value = CalculateClassMask(maceTwoHandClasses); break; // Two-Handed Maces
+                        case 229: classMaskField.Value = CalculateClassMask(polearmClasses); break; // Polearms
+                        case 43: classMaskField.Value = CalculateClassMask(swordOneHandClasses); break; // Swords
+                        case 55: classMaskField.Value = CalculateClassMask(swordTwoHandClasses); break; // Two-Handed Swords
+                        case 136: classMaskField.Value = CalculateClassMask(staffClasses); break; // Staves
+                        case 473: classMaskField.Value = CalculateClassMask(fistWeaponClasses); break; // Fist Weapons
+                        case 173: classMaskField.Value = CalculateClassMask(daggerClasses); break; // Daggers
                         default: break;
                     }
                 }
             }
         }
 
-        private DBCRow.DBCFieldInt32 CalculateClassMask(List<ClassWOWType> allowedClassTypes)
+        private int CalculateClassMask(List<ClassWOWType> allowedClassTypes)
         {
             int allowableClass = 0;
             foreach (ClassWOWType classType in allowedClassTypes)
             {
                 if (classType == ClassWOWType.All)
-                    return new DBCRow.DBCFieldInt32(-1);
+                    return -1;
                 allowableClass += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(classType) - 1));
             }
             if (allowableClass == 0)
                 allowableClass = -1;
-            return new DBCRow.DBCFieldInt32(allowableClass);
+            return allowableClass;
         }
     }
 }
