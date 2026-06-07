@@ -1260,10 +1260,9 @@ namespace EQWOWConverter
                 // Stack rules
                 if (spellTemplate.SpellGroupStackingID > 0)
                     spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.WOWSpellID);
-                
+
                 // Additional spell data
                 modEverquestSpellSQL.AddRow(spellTemplate, spellTemplate.WOWSpellID);
-                spellBonusDataSQL.AddRow(spellTemplate.WOWSpellID, string.Concat("EQ ", spellTemplate.Name));
 
                 // Grab effects in blocks of three
                 List<SpellEffectBlock> groupedBaseSpellEffectBlocksForOutput = spellTemplate.GroupedBaseSpellEffectBlocksForOutput;
@@ -1277,6 +1276,18 @@ namespace EQWOWConverter
                         spellTargetPositionSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[0].WOWSpellID, i, curEffect.TeleMapID, curEffect.TelePosition, curEffect.TeleOrientation);
                     }
                 }
+
+                // For now, give spell bonus data to all potential spell IDs. Do something more elegant later
+                for (int i = 0; i < spellTemplate.GroupedBaseSpellEffectBlocksForOutput.Count; i++)
+                {
+                    SpellEffectBlock curEffectBlock = spellTemplate.GroupedBaseSpellEffectBlocksForOutput[i];
+                    spellBonusDataSQL.AddRow(curEffectBlock.WOWSpellID, string.Concat("EQ Spell ", spellTemplate.Name, " Block ", i));
+                    if (spellTemplate.WOWSpellIDWorn > 0)
+                    {
+                        SpellEffectBlock curWornEffectBlock = spellTemplate.GroupedWornSpellEffectBlocksForOutput[i];
+                        spellBonusDataSQL.AddRow(curWornEffectBlock.WOWSpellID, string.Concat("EQ Spell ", spellTemplate.Name, " (Worn) Block ", i));
+                    }
+                }   
 
                 // Chains for spells with > 3 effects
                 for (int i = 1; i < groupedBaseSpellEffectBlocksForOutput.Count; i++)

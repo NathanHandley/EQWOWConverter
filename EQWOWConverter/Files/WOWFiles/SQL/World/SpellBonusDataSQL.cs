@@ -29,8 +29,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("entry", spellTemplateID);
             newRow.AddFloat("direct_bonus", Configuration.SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT);
             newRow.AddFloat("dot_bonus", Configuration.SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT);
-            newRow.AddFloat("ap_bonus", Configuration.SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT);
-            newRow.AddFloat("ap_dot_bonus", Configuration.SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT);
+            newRow.AddFloat("ap_bonus", 0);
+            newRow.AddFloat("ap_dot_bonus", 0);
             newRow.AddString("comments", comment);
             Rows.Add(newRow);
         }
