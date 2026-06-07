@@ -1548,7 +1548,7 @@ namespace EQWOWConverter.Items
                 newItemTemplate.BuyPriceInCopper = int.Parse(columns["price"]);
                 if (newItemTemplate.BuyPriceInCopper <= 0)
                     newItemTemplate.BuyPriceInCopper = 1;
-                newItemTemplate.SellPriceInCopper = int.Max(Convert.ToInt32(Convert.ToDouble(newItemTemplate.BuyPriceInCopper) * 0.25), 1);
+                newItemTemplate.SellPriceInCopper = int.Max(Convert.ToInt32(Convert.ToDouble(newItemTemplate.BuyPriceInCopper) * 0.25), 0);
 
                 // Bag properties
                 newItemTemplate.BagSlots = int.Parse(columns["bagslots"]) * Configuration.ITEMS_BAG_SLOT_MULTIPLIER;
