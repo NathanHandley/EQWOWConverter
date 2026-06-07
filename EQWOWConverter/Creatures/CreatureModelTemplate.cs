@@ -93,7 +93,7 @@ namespace EQWOWConverter.Creatures
             lock (CreatureLock)
             {
                 // Otherwise create a new one
-                CreatureRace debugRace = new CreatureRace(1, CreatureGenderType.Male, 0, "Debug Male", "HUM", "ELM", 3, 1, 6, 0.2f, 1.96078f, 0, 7);
+                CreatureRace debugRace = new CreatureRace(1, CreatureGenderType.Male, 0, "Debug Male", "HUM", "ELM", 3, 1, 6, 0.2f, 1.96078f, 0, 7, false);
                 CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(debugRace, 0, 0, 0, 0, 0, 1);
                 AllTemplatesByRaceID.Add(1, new List<CreatureModelTemplate>());
                 AllTemplatesByRaceID[1].Add(newModelTemplate);

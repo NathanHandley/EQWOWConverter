@@ -61,6 +61,7 @@ namespace EQWOWConverter.Creatures
         public float NameplateAddedHeight = 0;
         public int WOWCreatureFamily = 0;
         public int WOWCreatureType = 0;
+        public bool IsExoticTame = false;
 
         public static Dictionary<string, Dictionary<int, Sound>> SoundsBySoundNameAndDistance = new Dictionary<string, Dictionary<int, Sound>>();
         public static Dictionary<string, int> FootstepIDBySoundName = new Dictionary<string, int>();
@@ -73,7 +74,7 @@ namespace EQWOWConverter.Creatures
         }
 
         public CreatureRace(int raceID, CreatureGenderType gender, int variantID, string name, string skeletonName, string skeleton2Name, float lift, 
-            float modelScale, float height, float spawnSizeMod, float geoboxInradius, int wowCreatureFamily, int wowCreatureType)
+            float modelScale, float height, float spawnSizeMod, float geoboxInradius, int wowCreatureFamily, int wowCreatureType, bool isExoticTame)
         {
             ID = raceID;
             Gender = gender;
@@ -88,6 +89,7 @@ namespace EQWOWConverter.Creatures
             GeoboxInradius = geoboxInradius;
             WOWCreatureFamily = wowCreatureFamily;
             WOWCreatureType = wowCreatureType;
+            IsExoticTame = IsExoticTame;
         }
 
         public static void GenerateAllSounds()
@@ -255,6 +257,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.NameplateAddedHeight = float.Parse(columns["NamePlateHeightAdd"]) * Configuration.GENERATE_CREATURE_SCALE;
                 newCreatureRace.WOWCreatureFamily = int.Parse(columns["WOWFamily"]);
                 newCreatureRace.WOWCreatureType = int.Parse(columns["WOWType"]);
+                newCreatureRace.IsExoticTame = columns["ExoticTame"].Trim() == "1" ? true : false;
                 CreatureRaces.Add(newCreatureRace);
             }
         }

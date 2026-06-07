@@ -84,6 +84,10 @@ namespace EQWOWConverter.WOWFiles
             {
                 typeFlags |= 1;     // 0x00000001 CREATURE_TYPE_FLAG_TAMEABLE
             }
+            if (creatureTemplate.IsExoticTameable() == true)
+            {
+                typeFlags |= 65536;     // 0x00010000 CREATURE_TYPE_FLAG_TAMEABLE_EXOTIC
+            }
             if (creatureTemplate.IsQuestGiver == true)
             {
                 npcFlags |= 2;      // 0x00000002	Quest Giver

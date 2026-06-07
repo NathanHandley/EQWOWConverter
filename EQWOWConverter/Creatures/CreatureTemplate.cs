@@ -119,6 +119,11 @@ namespace EQWOWConverter.Creatures
                 return false;
         }
 
+        public bool IsExoticTameable()
+        {
+            return Race.IsExoticTame;
+        }
+
         public static Dictionary<int, CreatureTemplate> GetCreatureTemplateListByEQID()
         {
             if (CreatureTemplateListByEQID.Count == 0)
