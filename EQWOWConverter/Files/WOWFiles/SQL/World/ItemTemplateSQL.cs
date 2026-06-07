@@ -50,7 +50,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("FlagsExtra", 0);
             newRow.AddInt("BuyCount", itemTemplate.BuyCount);
             newRow.AddInt("BuyPrice", itemTemplate.BuyPriceInCopper);
-            newRow.AddInt("SellPrice", itemTemplate.SellPriceInCopper);
+            if (itemTemplate.DoesVanishOnLogout == true)
+                newRow.AddInt("SellPrice", 0);
+            else
+                newRow.AddInt("SellPrice", itemTemplate.SellPriceInCopper);
             newRow.AddInt("InventoryType", Convert.ToInt32(itemTemplate.InventoryType));
             newRow.AddInt("AllowableClass", CalculateAllowableClasses(allowedClassTypes));
             newRow.AddInt("AllowableRace", -1);
