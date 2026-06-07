@@ -41,7 +41,12 @@ namespace EQWOWConverter.WOWFiles
                 if (itemTemplates.Count <= i)
                     newRow.AddInt32(-1);
                 else
-                    newRow.AddInt32(itemTemplates[i].WOWEntryID);
+                {
+                    if (itemTemplates[i].StarterVersionItemTemplateID > -1)
+                        newRow.AddInt32(itemTemplates[i].StarterVersionItemTemplateID);
+                    else
+                        newRow.AddInt32(itemTemplates[i].WOWEntryID);
+                }
             }
             for (int i = 0; i < 24; i++) // DisplayItemID x 24
             {

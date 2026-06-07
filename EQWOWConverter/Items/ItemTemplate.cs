@@ -46,7 +46,7 @@ namespace EQWOWConverter.Items
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByWOWEntryID = new SortedDictionary<int, ItemTemplate>();
         private static int CUR_ITEM_GENERATED_EQID = 50000;
-        private static int CUR_ITEM_TEMPLATE_CREATURE_WOWID = Configuration.SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START;
+        private static int CUR_ITEM_TEMPLATE_CREATURE_WOWID = Configuration.SQL_ITEM_TEMPLATE_ENTRY_GENERATED_START;
         private static readonly object ItemLock = new object();
         
         public int EQItemID = 0;
@@ -139,6 +139,7 @@ namespace EQWOWConverter.Items
         public int FocusValue = 0;
         public BookText? BookTextReference = null;
         public Dictionary<ClassWOWType, int> ClassSpecificItemVersionsByWOWItemTemplateID = new Dictionary<ClassWOWType, int>(); // Used for quests
+        public int StarterVersionItemTemplateID = -1;
 
         public ItemTemplate()
         {
@@ -1466,6 +1467,7 @@ namespace EQWOWConverter.Items
                 newItemTemplate.WOWEntryID = int.Parse(columns["wowid"]);
                 newItemTemplate.Name = columns["Name"];
                 newItemTemplate.IsAlwaysGenerated = columns["always_gen"] == "1" ? true : false;
+                newItemTemplate.StarterVersionItemTemplateID = int.Parse(columns["starterwowid"]);
 
                 // Load stats depending on normal vs alt
                 int damage = int.Parse(columns["damage"]);

@@ -901,12 +901,19 @@ namespace EQWOWConverter
                 }
                 else
                 {
-                    // Factor for creature-wearable versions
+                    // Factor for creature-wearable versions and starter versions
                     itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfo);
                     if (itemTemplate.ItemDisplayInfoForCreatureEquip != null)
                     {
                         itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryIDForCreatureEquip, string.Concat(itemTemplate.Name, " (npc)"), itemTemplate.Description,
                             itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfoForCreatureEquip);
+                    }
+                    if (itemTemplate.StarterVersionItemTemplateID > 0)
+                    {
+                        string startVersionName = itemTemplate.Name;
+                        if (startVersionName.Contains("*") == false)
+                            startVersionName = String.Concat(startVersionName, "*");
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.StarterVersionItemTemplateID, startVersionName, itemTemplate.Description, itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfo);
                     }
                     for (int i = 0; i < itemTemplate.ContainedItems.Count; i++)
                     {

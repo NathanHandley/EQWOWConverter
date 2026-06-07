@@ -1460,7 +1460,7 @@ namespace EQWOWConverter
             OutputTextLineToConfig("# - NPC-worn version of items range 120000-133783");
             OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_START", SQL_ITEM_TEMPLATE_ENTRY_START, "", false);
             OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_END", SQL_ITEM_TEMPLATE_ENTRY_END, "", false);
-            OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START", SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START, "");
+            OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START", SQL_ITEM_TEMPLATE_ENTRY_GENERATED_START, "");
             OutputVariableToConfig("SQL_NPCTEXT_ID_START", SQL_NPCTEXT_ID_START, "Start and end IDs for npc_text sql records", false);
             OutputVariableToConfig("SQL_NPCTEXT_ID_END", SQL_NPCTEXT_ID_END, "");
             OutputVariableToConfig("SQL_PAGETEXT_ID_START", SQL_PAGETEXT_ID_START, "Start and end IDs for page_text SQL records", false);
@@ -1870,7 +1870,7 @@ namespace EQWOWConverter
             SQL_GOSSIPMENU_MENUID_END = ReadVariableFromConfigString("SQL_GOSSIPMENU_MENUID_END", configValuesByVariableName, SQL_GOSSIPMENU_MENUID_END);
             SQL_ITEM_TEMPLATE_ENTRY_START = ReadVariableFromConfigString("SQL_ITEM_TEMPLATE_ENTRY_START", configValuesByVariableName, SQL_ITEM_TEMPLATE_ENTRY_START);
             SQL_ITEM_TEMPLATE_ENTRY_END = ReadVariableFromConfigString("SQL_ITEM_TEMPLATE_ENTRY_END", configValuesByVariableName, SQL_ITEM_TEMPLATE_ENTRY_END);
-            SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START = ReadVariableFromConfigString("SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START", configValuesByVariableName, SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START);
+            SQL_ITEM_TEMPLATE_ENTRY_GENERATED_START = ReadVariableFromConfigString("SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START", configValuesByVariableName, SQL_ITEM_TEMPLATE_ENTRY_GENERATED_START);
             SQL_NPCTEXT_ID_START = ReadVariableFromConfigString("SQL_NPCTEXT_ID_START", configValuesByVariableName, SQL_NPCTEXT_ID_START);
             SQL_NPCTEXT_ID_END = ReadVariableFromConfigString("SQL_NPCTEXT_ID_END", configValuesByVariableName, SQL_NPCTEXT_ID_END);
             SQL_PAGETEXT_ID_START = ReadVariableFromConfigString("SQL_PAGETEXT_ID_START", configValuesByVariableName, SQL_PAGETEXT_ID_START);

@@ -458,6 +458,10 @@ namespace EQWOWConverter
                     itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.ItemDisplayInfo);
                     if (itemTemplate.ItemDisplayInfoForCreatureEquip != null)
                         itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryIDForCreatureEquip, itemTemplate.ItemDisplayInfoForCreatureEquip);
+
+                    // Sometimes a third if it's a starter item
+                    if (itemTemplate.StarterVersionItemTemplateID != -1)
+                        itemDBC.AddRow(itemTemplate, itemTemplate.StarterVersionItemTemplateID, itemTemplate.ItemDisplayInfo);
                 }
             }
             foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)

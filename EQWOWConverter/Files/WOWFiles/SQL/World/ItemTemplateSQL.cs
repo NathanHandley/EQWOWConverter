@@ -52,6 +52,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("BuyPrice", itemTemplate.BuyPriceInCopper);
             if (itemTemplate.DoesVanishOnLogout == true)
                 newRow.AddInt("SellPrice", 0);
+            else if (itemTemplate.StarterVersionItemTemplateID > 0 && entryID == itemTemplate.StarterVersionItemTemplateID)
+                newRow.AddInt("SellPrice", 0);
             else
                 newRow.AddInt("SellPrice", itemTemplate.SellPriceInCopper);
             newRow.AddInt("InventoryType", Convert.ToInt32(itemTemplate.InventoryType));
