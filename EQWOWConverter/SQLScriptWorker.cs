@@ -101,6 +101,7 @@ namespace EQWOWConverter
         private ReferenceLootTemplateSQL referenceLootTemplateSQL = new ReferenceLootTemplateSQL();
         private SkillFishingBaseLevelSQL skillFishingBaseLevelSQL = new SkillFishingBaseLevelSQL();
         private SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
+        private SpellBonusDataSQL spellBonusDataSQL = new SpellBonusDataSQL();
         private SpellGroupSQL spellGroupSQL = new SpellGroupSQL();
         private SpellGroupStackRulesSQL spellGroupStackRulesSQL = new SpellGroupStackRulesSQL();
         private SpellLinkedSpellSQL spellLinkedSpellSQL = new SpellLinkedSpellSQL();
@@ -1262,6 +1263,7 @@ namespace EQWOWConverter
                 
                 // Additional spell data
                 modEverquestSpellSQL.AddRow(spellTemplate, spellTemplate.WOWSpellID);
+                spellBonusDataSQL.AddRow(spellTemplate.WOWSpellID, string.Concat("EQ ", spellTemplate.Name));
 
                 // Grab effects in blocks of three
                 List<SpellEffectBlock> groupedBaseSpellEffectBlocksForOutput = spellTemplate.GroupedBaseSpellEffectBlocksForOutput;
@@ -1726,6 +1728,7 @@ namespace EQWOWConverter
             referenceLootTemplateSQL.SaveToDisk("reference_loot_template", SQLFileType.World);
             skillFishingBaseLevelSQL.SaveToDisk("skill_fishing_base_level", SQLFileType.World);
             smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
+            spellBonusDataSQL.SaveToDisk("spell_bonus_data", SQLFileType.World);
             spellGroupSQL.SaveToDisk("spell_group", SQLFileType.World);
             spellGroupStackRulesSQL.SaveToDisk("spell_group_stack_rules", SQLFileType.World);
             spellLinkedSpellSQL.SaveToDisk("spell_linked_spell", SQLFileType.World);
