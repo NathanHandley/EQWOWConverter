@@ -80,6 +80,10 @@ namespace EQWOWConverter.WOWFiles
                 iconName = "Trainer";
                 numOfRoles += 1;
             }
+            if (creatureTemplate.IsTameable() == true)
+            {
+                typeFlags |= 1;     // 0x00000001 CREATURE_TYPE_FLAG_TAMEABLE
+            }
             if (creatureTemplate.IsQuestGiver == true)
             {
                 npcFlags |= 2;      // 0x00000002	Quest Giver

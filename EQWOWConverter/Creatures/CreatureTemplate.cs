@@ -111,6 +111,14 @@ namespace EQWOWConverter.Creatures
             return false;
         }
 
+        public bool IsTameable()
+        {
+            if (Race.WOWCreatureType == 1) // beast
+                return true;
+            else
+                return false;
+        }
+
         public static Dictionary<int, CreatureTemplate> GetCreatureTemplateListByEQID()
         {
             if (CreatureTemplateListByEQID.Count == 0)
