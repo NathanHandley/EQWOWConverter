@@ -60,6 +60,22 @@ namespace EQWOWConverter.Spells
 
         public int WOWSpellID = 0;
         public int WOWSpellIDWorn = -1;
+        public int WOWSpellIDProcAndGoodEffect = -1;
+        public int WOWSpellIDClickCastTime = -1;
+        protected int _SpellCastTimeForClickDBCID = 1; // First row, instant cast
+        public int SpellCastTimeForClickDBCID { get { return _SpellCastTimeForClickDBCID; } }
+        protected int _CastTimeInMSForClick = 0;
+        public int CastTimeInMSForClick
+        {
+            get { return _CastTimeInMSForClick; }
+            set
+            {
+                if (SpellCastTimeDBCIDsByCastTime.ContainsKey(value) == false)
+                    SpellCastTimeDBCIDsByCastTime.Add(value, SpellCastTimesDBC.GenerateDBCID());
+                _SpellCastTimeForClickDBCID = SpellCastTimeDBCIDsByCastTime[value];
+                _CastTimeInMSForClick = value;
+            }
+        }
         public int EQSpellID = -1;
         public string Name = string.Empty;
         public string Description = string.Empty;
@@ -124,6 +140,7 @@ namespace EQWOWConverter.Spells
         public int MinimumPlayerLearnLevel = -1;
         public bool HasEffectBaseFormulaUsingSpellLevel = false;
         public int RequiredAreaIDs = -1;
+        public bool IsGoodEffect = false;
         public UInt32 SchoolMask = 1;
         public UInt32 DispelType = 0;
         public UInt32 RequiredTotemID1 = 0;
@@ -171,7 +188,6 @@ namespace EQWOWConverter.Spells
         public SpellPet? SummonSpellPet = null;
         public int SummonPropertiesDBCID = 0;
         public int SummonCreatureTemplateID = 0;
-        private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public bool IsBardSongAura = false;
         public bool HasAdditionalTickOnApply = false;
         public bool InterruptOnMovement = true;
@@ -193,6 +209,7 @@ namespace EQWOWConverter.Spells
         public int MaleFormSpellTemplateID = 0;
         public int FemaleFormSpellTemplateID = 0;
 
+        private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
         {
             get
@@ -210,6 +227,16 @@ namespace EQWOWConverter.Spells
                 if (_GroupedWornSpellEffectBlocksForOutput.Count == 0)
                     GenerateOutputEffectBlocks();
                 return _GroupedWornSpellEffectBlocksForOutput;
+            }
+        }
+        private List<SpellEffectBlock> _GroupedGoodProcSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
+        public List<SpellEffectBlock> GroupedGoodProcSpellEffectBlocksForOutput
+        {
+            get
+            {
+                if (_GroupedGoodProcSpellEffectBlocksForOutput.Count == 0)
+                    GenerateOutputEffectBlocks();
+                return _GroupedGoodProcSpellEffectBlocksForOutput;
             }
         }
 
@@ -269,7 +296,8 @@ namespace EQWOWConverter.Spells
                 // Generic properties
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
-                bool isDetrimental = int.Parse(columns["goodEffect"]) == 0 ? true : false; // "2" should be non-detrimental group only (not caster).  Ignoring that for now.
+                newSpellTemplate.IsGoodEffect = int.Parse(columns["goodEffect"]) == 1 ? true : false ;// "2" should be non-detrimental group only (not caster).  Ignoring that for now.
+                bool isDetrimental = !newSpellTemplate.IsGoodEffect; 
 
                 // Buff duration (if any)
                 newSpellTemplate.EQBuffDurationInTicks = Convert.ToInt32(columns["buffduration"]);
@@ -2889,11 +2917,30 @@ namespace EQWOWConverter.Spells
                         wornEffectBlock.SpellName = string.Concat(baseEffectBlock.SpellName, " (from gear)");
                         _GroupedWornSpellEffectBlocksForOutput.Add(wornEffectBlock);
                     }
+
+                    // Good proc versions also get a copy
+                    if (WOWSpellIDProcAndGoodEffect > -1)
+                    {
+                        SpellEffectBlock goodProcEffectBlock = new SpellEffectBlock();
+                        if (_GroupedGoodProcSpellEffectBlocksForOutput.Count == 0)
+                            goodProcEffectBlock.WOWSpellID = WOWSpellIDProcAndGoodEffect;
+                        else
+                            goodProcEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
+                        foreach (SpellEffectWOW spellEffect in baseEffectBlock.SpellEffects)
+                        {
+                            // Override the implicit target since the user is the only one it can be used on
+                            SpellEffectWOW effectClone = spellEffect.Clone();
+                            effectClone.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                            goodProcEffectBlock.SpellEffects.Add(effectClone);
+                        }
+                        goodProcEffectBlock.SpellName = string.Concat(baseEffectBlock.SpellName, " (proc)");
+                        _GroupedGoodProcSpellEffectBlocksForOutput.Add(goodProcEffectBlock);
+                    }
                 }
             }
         }
     
-        private static int GenerateUniqueWOWSpellID()
+        public static int GenerateUniqueWOWSpellID()
         {
             int returnID = CUR_GENERATED_WOW_SPELL_ID;
             CUR_GENERATED_WOW_SPELL_ID++;

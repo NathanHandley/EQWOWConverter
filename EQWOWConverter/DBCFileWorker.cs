@@ -538,7 +538,7 @@ namespace EQWOWConverter
                     SpellEffectBlock curEffectBlock = spellTemplate.GroupedBaseSpellEffectBlocksForOutput[i];
                     spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff, curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura);
 
-                    // Worn effects get their own copy too
+                    // Worn effects get their own copy
                     if (spellTemplate.WOWSpellIDWorn > 0)
                     {
                         SpellEffectBlock curWornEffectBlock = spellTemplate.GroupedWornSpellEffectBlocksForOutput[i];
@@ -546,6 +546,13 @@ namespace EQWOWConverter
                             spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, i != 0, true, true, curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura);
                         else
                             spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, true, true, true, curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura);
+                    }
+
+                    // Good proc effects get their own copy
+                    if (spellTemplate.WOWSpellIDProcAndGoodEffect != -1)
+                    {
+                        SpellEffectBlock curGoodProcEffectBlock = spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput[i];
+                        spellDBC.AddRow(curGoodProcEffectBlock, spellTemplate.AuraDescription, spellTemplate, i != 0, true, true, curGoodProcEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura);
                     }
                 }
 

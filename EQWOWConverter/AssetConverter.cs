@@ -3031,7 +3031,6 @@ namespace EQWOWConverter
                     else
                     {
                         // Remap any special type
-
                         itemTemplate.WOWSpellID1 = spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellID;
                         itemTemplate.WOWSpellTrigger1 = 2; // Chance on Hit
                         itemTemplate.WOWSpellPPMRate1 = Configuration.ITEMS_WEAPON_EFFECT_PPM_BASE_RATE; // TODO: Make this varied?
@@ -3039,6 +3038,22 @@ namespace EQWOWConverter
                         itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
                         itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
                         itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
+
+                        // If it's a good effect and targets ally, then it needs a special spellID so it only targets self
+                        if (spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].IsGoodEffect)
+                        {
+                            foreach (SpellEffectWOW spellEffect in spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellEffects)
+                            {
+                                if (spellEffect.ImplicitTargetA == SpellWOWTargetType.UnitTargetAlly)
+                                {
+                                    Logger.WriteError("Created SpellID for spell ", itemTemplate.EQCombatProcSpellEffectID.ToString(), " on item proc item ", itemTemplate.WOWEntryID.ToString(), " since it will need map from targetally to self");
+                                    if (spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect == -1)
+                                        spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect = SpellTemplate.GenerateUniqueWOWSpellID();
+                                    itemTemplate.WOWSpellID1 = spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
 
