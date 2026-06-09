@@ -1655,7 +1655,6 @@ namespace EQWOWConverter.Items
                     itemsToAdd.Add(newEssenceItemTemplate);
                 }
 
-
                 // NPC equipment is different than player for scaling reasons, so generate an ID if needed
                 if (newItemTemplate.IsHeldInHandsNonRanged() == true)
                     newItemTemplate.WOWEntryIDForCreatureEquip = GenerateAndGetCreatureItemTemplateID();
@@ -1924,6 +1923,7 @@ namespace EQWOWConverter.Items
             createdEssenceItem.EQClickType = originalItemTemplate.EQClickType;
             createdEssenceItem.MaxCharges = originalItemTemplate.MaxCharges;
             createdEssenceItem.ParentItemTemplate = createdBagItemTemplate;
+            createdEssenceItem.CastTime = originalItemTemplate.CastTime;
 
             // Remap the original item template
             originalItemTemplate.WOWEntryID = newItemWOWItemEntryID;
