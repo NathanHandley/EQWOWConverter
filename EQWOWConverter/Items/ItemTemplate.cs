@@ -1215,8 +1215,8 @@ namespace EQWOWConverter.Items
                 case 25: // Brass Instrument => Held
                 case 26: // Drum Instrument => Held
                     {
-                        itemTemplate.ClassID = 2;
-                        itemTemplate.SubClassID = 14;
+                        itemTemplate.ClassID = 4;
+                        itemTemplate.SubClassID = 0;
                         if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) == false)
                             itemTemplate.InventoryType = ItemWOWInventoryType.HeldInOffHand;
                         else
