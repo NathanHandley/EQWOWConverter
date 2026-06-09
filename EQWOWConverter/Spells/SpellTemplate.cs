@@ -1161,7 +1161,7 @@ namespace EQWOWConverter.Spells
                         eqEffect.EQBaseValue *= -1;
                 }
 
-                if (spellTemplate.IsTransferEffectType)
+                if (spellTemplate.IsTransferEffectType == true)
                 {
                     SpellWOWTargetType? otherTarget = null;
                     switch (eqEffect.EQEffectType)
@@ -2671,7 +2671,10 @@ namespace EQWOWConverter.Spells
                     spellEffect.ImplicitTargetB = targets[1];
 
                 spellEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
-                spellTemplate.WOWSpellEffects.Add(spellEffect);
+
+                // Don't need to add leach transfer effects because they already were
+                if (spellTemplate.IsTransferEffectType == false)
+                    spellTemplate.WOWSpellEffects.Add(spellEffect);
             }
 
             // Sort them so the aura effects are last
