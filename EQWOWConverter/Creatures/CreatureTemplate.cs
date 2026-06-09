@@ -318,10 +318,7 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.HPMod = GetStatMod("hp", newCreatureTemplate.Level, newCreatureTemplate.Rank, float.Parse(columns["hp"]));
                     newCreatureTemplate.DamageMod = GetStatMod("avgdmg", newCreatureTemplate.Level, newCreatureTemplate.Rank, float.Parse(columns["avgdmg"]));
                     float detectionRange = float.Parse(columns["aggroradius"]);
-                    if (detectionRange > 0)
-                        newCreatureTemplate.DetectionRange = detectionRange * Configuration.GENERATE_WORLD_SCALE;
-                    else
-                        newCreatureTemplate.DetectionRange = Configuration.CREATURE_DEFAULT_DETECTION_RANGE;
+                    newCreatureTemplate.DetectionRange = detectionRange * Configuration.GENERATE_WORLD_SCALE;
                     newCreatureTemplate.EQClass = int.Parse(columns["class"]);
                     ProcessEQClass(ref newCreatureTemplate, newCreatureTemplate.EQClass);
                     if (newCreatureTemplate.IsRidingTrainer == true && Configuration.CREATURE_RIDING_TRAINERS_ENABLED == false)

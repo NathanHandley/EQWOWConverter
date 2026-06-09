@@ -445,9 +445,6 @@ namespace EQWOWConverter
         // What to multiple the EverQuest reputation rewards by.  WOW is approx 20-30x that of EQ in band.
         public static int CREATURE_REP_REWARD_MULTIPLIER = 20;
 
-        // Values for creatures without a default detection/agro range (note: This is NOT scaled by WORLD_SCALE)
-        public static float CREATURE_DEFAULT_DETECTION_RANGE = 20f;
-
         // ID for the menu text (328 exists already and is just "Greetings, $n")
         public static int CREATURE_GOSSIP_NPC_TEXT_ID = 328;
 
@@ -1254,7 +1251,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE", CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE, "");
             OutputVariableToConfig("CREATURE_FACTION_SHOW_ALL", CREATURE_FACTION_SHOW_ALL, "If set to true, all factions will show up for EverQuest in the faction list immediately");
             OutputVariableToConfig("CREATURE_REP_REWARD_MULTIPLIER", CREATURE_REP_REWARD_MULTIPLIER, "What to multiple the EverQuest reputation rewards by.  WOW is approx 20-30x that of EQ in band.");
-            OutputVariableToConfig("CREATURE_DEFAULT_DETECTION_RANGE", CREATURE_DEFAULT_DETECTION_RANGE, "Values for creatures without a default detection/agro range (note: This is NOT scaled by WORLD_SCALE)");
             OutputVariableToConfig("CREATURE_GOSSIP_NPC_TEXT_ID", CREATURE_GOSSIP_NPC_TEXT_ID, "ID for the menu text (328 exists already and is just \"Greetings, $n\")");
             OutputTextLineToConfig("# ID for the menu broadcast texts");
             OutputVariableToConfig("CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID", CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID, "Pre-exists, \"I would like to train.\"", false);
@@ -1675,7 +1671,6 @@ namespace EQWOWConverter
             CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE = ReadVariableFromConfigString("CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE", configValuesByVariableName, CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE);
             CREATURE_FACTION_SHOW_ALL = ReadVariableFromConfigString("CREATURE_FACTION_SHOW_ALL", configValuesByVariableName, CREATURE_FACTION_SHOW_ALL);
             CREATURE_REP_REWARD_MULTIPLIER = ReadVariableFromConfigString("CREATURE_REP_REWARD_MULTIPLIER", configValuesByVariableName, CREATURE_REP_REWARD_MULTIPLIER);
-            CREATURE_DEFAULT_DETECTION_RANGE = ReadVariableFromConfigString("CREATURE_DEFAULT_DETECTION_RANGE", configValuesByVariableName, CREATURE_DEFAULT_DETECTION_RANGE);
             CREATURE_GOSSIP_NPC_TEXT_ID = ReadVariableFromConfigString("CREATURE_GOSSIP_NPC_TEXT_ID", configValuesByVariableName, CREATURE_GOSSIP_NPC_TEXT_ID);
             CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID = ReadVariableFromConfigString("CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID", configValuesByVariableName, CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID);
             CREATURE_GOSSIP_UNLEARN_BROADCAST_TEXT_ID = ReadVariableFromConfigString("CREATURE_GOSSIP_UNLEARN_BROADCAST_TEXT_ID", configValuesByVariableName, CREATURE_GOSSIP_UNLEARN_BROADCAST_TEXT_ID);
