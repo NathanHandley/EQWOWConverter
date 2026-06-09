@@ -82,6 +82,10 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 0,
                 0,
+                0,
+                0,
+                0,
+                0,
                 comment
             );
         }
@@ -99,6 +103,10 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 0,
                 9,  // SMART_ACTION_ACTIVATE_GOBJECT,
+                0,
+                0,
+                0,
+                0,
                 0,
                 0,
                 14, // SMART_TARGET_GAMEOBJECT_GUID
@@ -128,6 +136,10 @@ namespace EQWOWConverter.WOWFiles
                 11, // SMART_ACTION_CAST
                 wowSpellID,
                 96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
+                0,
+                0,
+                0,
+                0,
                 2, // SMART_TARGET_VICTIM
                 0,
                 0,
@@ -156,6 +168,10 @@ namespace EQWOWConverter.WOWFiles
                 11, // SMART_ACTION_CAST
                 wowSpellID,
                 33, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_INTERRUPT_PREVIOUS (1)
+                0,
+                0,
+                0,
+                0,
                 7, // SMART_TARGET_ACTION_INVOKER
                 0,
                 0,
@@ -184,6 +200,10 @@ namespace EQWOWConverter.WOWFiles
                 11, // SMART_ACTION_CAST
                 wowSpellID,
                 96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
+                0,
+                0,
+                0,
+                0,
                 1, // SMART_TARGET_SELF
                 0,
                 0,
@@ -210,6 +230,10 @@ namespace EQWOWConverter.WOWFiles
                 11, // SMART_ACTION_CAST
                 wowSpellID,
                 64, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting)
+                0,
+                0,
+                0,
+                0,
                 2, // SMART_TARGET_VICTIM
                 0,
                 0,
@@ -237,6 +261,10 @@ namespace EQWOWConverter.WOWFiles
                 28, // SMART_ACTION_REMOVEAURASFROMSPELL
                 wowSpellID,
                 0,
+                0,
+                0,
+                0,
+                0,
                 1, // SMART_TARGET_SELF
                 0,
                 0,
@@ -248,10 +276,10 @@ namespace EQWOWConverter.WOWFiles
             );
         }
 
-        public void AddRowForCreatureTemplateCastOnSummoned(int minionCreatureTemplateID, int wowSpellID, string comment)
+        public void AddRowForCreatureTemplateCastOnSummoned(int creatureID, int wowSpellID, string comment)
         {
             // Damage event
-            AddRow(minionCreatureTemplateID,
+            AddRow(creatureID,
                 0,
                 17, // SMART_EVENT_SUMMONED_UNIT
                 100,
@@ -264,6 +292,10 @@ namespace EQWOWConverter.WOWFiles
                 11, // SMART_ACTION_ADD_AURA
                 wowSpellID,
                 0,
+                0,
+                0,
+                0,
+                0,
                 1, // SMART_TARGET_SELF
                 0,
                 0,
@@ -272,6 +304,80 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 0,
                 comment
+            );
+        }
+
+        public void AddRowsForCreatureTimedActionListOfOutOfCombatSpells(int creatureTemplateID, List<int> spellTemplateIDs, string comment)
+        {
+            if (spellTemplateIDs.Count > 6)
+            {
+                Logger.WriteWarning("For AddRowsForCreatureTimedActionListOfOutOfCombatSpells added for creature with ID ", creatureTemplateID.ToString(), " there were > 6 spellIDs, so from 7 on will be skipped");
+            }
+
+            // Create rows for the spells
+            List<int> generatedEntryOrGUIDIDs = new List<int>();
+            for (int i = 0; i < 6; i++)
+            {
+                // Generate the IDs
+                if (i >= spellTemplateIDs.Count)
+                {
+                    generatedEntryOrGUIDIDs.Add(0);
+                    continue;
+                }
+                int curGeneratedID = (creatureTemplateID * 100) + i;
+                generatedEntryOrGUIDIDs.Add(curGeneratedID);
+
+                // Add the OOC row
+                AddRow(curGeneratedID,
+                    9,
+                    1, // SMART_EVENT_UPDATE_OOC
+                    100,
+                    0, // Initial delay in MS (minimum)
+                    0, // Initial delay in MS (maximum)
+                    0, // Recast delay in MS (minimum)
+                    0, // Recast delay in MS (maximum)
+                    0, 0,
+                    11, // SMART_ACTION_CAST
+                    spellTemplateIDs[i],
+                    96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
+                    0,
+                    0,
+                    0,
+                    0,
+                    1, // SMART_TARGET_SELF
+                    0, 0, 0, 0, 0, 0,
+                    string.Concat(comment, " Spell Random ", i),
+                    0
+                );
+            }
+
+            // Add the trigger
+            int addedDelayRandomValue = RandomGenerator.Next(0, Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS);
+            AddRow(creatureTemplateID,
+                0,
+                1, // SMART_EVENT_UPDATE_OOC
+                100,
+                Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS + addedDelayRandomValue, // Initial delay in MS (minimum)
+                Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS + addedDelayRandomValue, // Initial delay in MS (maximum)
+                0, // Recast delay in MS (minimum)
+                0, // Recast delay in MS (maximum)
+                0,
+                0,
+                87, // SMART_ACTION_CALL_RANDOM_TIMED_ACTIONLIST
+                generatedEntryOrGUIDIDs[0],
+                generatedEntryOrGUIDIDs[1],
+                generatedEntryOrGUIDIDs[2],
+                generatedEntryOrGUIDIDs[3],
+                generatedEntryOrGUIDIDs[4],
+                generatedEntryOrGUIDIDs[5],
+                1, // SMART_TARGET_SELF
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                string.Concat(comment, " Trigger Controller")
             );
         }
 
@@ -291,6 +397,10 @@ namespace EQWOWConverter.WOWFiles
                 11, // SMART_ACTION_CAST
                 wowSpellID,
                 64, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting)
+                0,
+                0,
+                0,
+                0,
                 2, // SMART_TARGET_VICTIM
                 0,
                 0,
@@ -338,6 +448,10 @@ namespace EQWOWConverter.WOWFiles
                 62,  // SMART_ACTION_TELEPORT,
                 targetMapID,
                 0,
+                0,
+                0,
+                0,
+                0,
                 7, // SMART_TARGET_ACTION_INVOKER
                 0,
                 0,
@@ -364,6 +478,10 @@ namespace EQWOWConverter.WOWFiles
                 62,  // SMART_ACTION_TELEPORT
                 targetMapID,
                 0,
+                0,
+                0,
+                0,
+                0,
                 7, // SMART_TARGET_ACTION_INVOKER
                 0,
                 0,
@@ -389,6 +507,10 @@ namespace EQWOWConverter.WOWFiles
                 11,  // SMART_ACTION_CAST
                 spellTemplateID,
                 0,
+                0,
+                0,
+                0,
+                0,
                 7, // SMART_TARGET_ACTION_INVOKER
                 0,
                 0,
@@ -400,13 +522,16 @@ namespace EQWOWConverter.WOWFiles
         }
 
         public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventChance, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
-            int eventParam5, int eventParam6, int actionType, int actionParam1, int actionParam2, int targetType, int targetParam1, int targetParam2,
-            float targetX, float targetY, float targetZ, float targetOrientation, string comment)
+            int eventParam5, int eventParam6, int actionType, int actionParam1, int actionParam2, int actionParam3, int actionParam4, int actionParam5, int actionParam6, 
+            int targetType, int targetParam1, int targetParam2, float targetX, float targetY, float targetZ, float targetOrientation, string comment, int idOverride = -1)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entryorguid", entryOrGUIDID);
             newRow.AddInt("source_type", sourceType); // 0 = Creature, 1 = GameObject, 2 = AreaTrigger, 9 = TimedActionList
-            newRow.AddInt("id", GetUniqueID(entryOrGUIDID, sourceType));
+            if (idOverride == -1)
+                newRow.AddInt("id", GetUniqueID(entryOrGUIDID, sourceType));
+            else
+                newRow.AddInt("id", idOverride);
             newRow.AddInt("link", 0);
             newRow.AddInt("event_type", eventType); 
             newRow.AddInt("event_phase_mask", 0);
@@ -421,10 +546,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("action_type", actionType);
             newRow.AddInt("action_param1", actionParam1);
             newRow.AddInt("action_param2", actionParam2);
-            newRow.AddInt("action_param3", 0);
-            newRow.AddInt("action_param4", 0);
-            newRow.AddInt("action_param5", 0);
-            newRow.AddInt("action_param6", 0);
+            newRow.AddInt("action_param3", actionParam3);
+            newRow.AddInt("action_param4", actionParam4);
+            newRow.AddInt("action_param5", actionParam5);
+            newRow.AddInt("action_param6", actionParam6);
             newRow.AddInt("target_type", targetType);
             newRow.AddInt("target_param1", targetParam1);
             newRow.AddInt("target_param2", targetParam2);

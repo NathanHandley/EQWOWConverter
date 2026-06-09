@@ -1611,12 +1611,16 @@ namespace EQWOWConverter
                     SpellTemplate curSpellTemplate = spellTemplatesByEQID[spellEntry.EQSpellID];
 
                     bool addedToList = false;
-                    if (((spellEntry.TypeFlags & 8) == 8) || curSpellTemplate.SummonCreatureTemplateID > 0) // 8 = Buff, also catch summons
+                    if (curSpellTemplate.SummonCreatureTemplateID > 0) // Summons
+                    {
+                        creatureTemplate.CreatureSpellEntriesOutOfCombatSummons.Add(spellEntry);
+                        creatureTemplate.DoesSummonPets = true;
+                        addedToList = true;
+                    }
+                    if ((spellEntry.TypeFlags & 8) == 8) // Buff
                     {
                         creatureTemplate.CreatureSpellEntriesOutOfCombatBuff.Add(spellEntry);
                         addedToList = true;
-                        if (curSpellTemplate.SummonCreatureTemplateID > 0)
-                            creatureTemplate.DoesSummonPets = true;
                     }
                     else if ((spellEntry.TypeFlags & 2) == 2) // Heal
                     {

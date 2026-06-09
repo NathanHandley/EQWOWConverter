@@ -607,6 +607,22 @@ namespace EQWOWConverter
                             creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment);
                     }
 
+                    // Add spell events for every summon
+                    if (creatureTemplate.CreatureSpellEntriesOutOfCombatSummons.Count > 0)
+                    {
+                        // Group spells and put them in a timed list
+                        List<int> spellTemplateIDs = new List<int>();
+                        foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesOutOfCombatSummons)
+                        {
+                            SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
+                            spellTemplateIDs.Add(curSpellTemplate.WOWSpellID);
+                        }
+                        string timedActionListComment = string.Concat("EQ Out of Combat Summon ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") casting one of ", spellTemplateIDs.Count, " summon spells");
+                        smartScriptsSQL.AddRowsForCreatureTimedActionListOfOutOfCombatSpells(creatureTemplate.WOWCreatureTemplateID, spellTemplateIDs, timedActionListComment);
+                        conditionsSQL.AddSmartScriptRestrictionIfAura(creatureTemplate.WOWCreatureTemplateID, smartScriptsSQL.GetLastUniqueID(creatureTemplate.WOWCreatureTemplateID, 0) + 1,
+                            0, Configuration.SPELL_SUMMON_CASTER_AURA_SPELL_ID, string.Concat("Restrict Summon of spells if a summon is active for ", creatureTemplate.Name), true);                       
+                    }
+
                     // Add spell events for every buff entry
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesOutOfCombatBuff)
                     {
@@ -614,11 +630,6 @@ namespace EQWOWConverter
                         string comment = string.Concat("EQ Out of Combat Buffs ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
                         smartScriptsSQL.AddRowForCreatureTemplateOutOfCombatBuffCastSelf(creatureTemplate.WOWCreatureTemplateID,
                             creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment);
-                        if (curSpellTemplate.SummonCreatureTemplateID > 0) // Must come immediately after smartScriptsSQL
-                        {
-                            conditionsSQL.AddSmartScriptRestrictionIfAura(creatureTemplate.WOWCreatureTemplateID, smartScriptsSQL.GetLastUniqueID(creatureTemplate.WOWCreatureTemplateID, 0) + 1,
-                                0, Configuration.SPELL_SUMMON_CASTER_AURA_SPELL_ID, string.Concat("Restrict Summon of spell ", curSpellTemplate.WOWSpellID, " if a summon is active"), true);
-                        }
                         if (curSpellTemplate.RemoveAuraWhenCasterCreatureInitsAgro == true)
                         {
                             string removeAuraComment = string.Concat("EQ Out of Combat Buffs ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") remove aura ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ") when agro on the player");
