@@ -78,7 +78,8 @@ namespace EQWOWConverter.Creatures
         public int CreatureSpellListID = 0;
         public List<CreatureSpellEntry> CreatureSpellEntriesCombat = new List<CreatureSpellEntry>();
         public List<CreatureSpellEntry> CreatureSpellEntriesHeal = new List<CreatureSpellEntry>();
-        public List<CreatureSpellEntry> CreatureSpellEntriesOutOfCombatBuff = new List<CreatureSpellEntry>();        
+        public List<CreatureSpellEntry> CreatureSpellEntriesOutOfCombatBuff = new List<CreatureSpellEntry>();
+        public bool DoesSummonPets = false;
         public List<(int, int)> AttackEQSpellIDAndProcChance = new List<(int, int)>();
         public bool IsPet = false;
         public float ModelTemplateScale = 1.0f; // Used for form changes

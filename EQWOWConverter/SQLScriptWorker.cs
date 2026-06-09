@@ -614,6 +614,11 @@ namespace EQWOWConverter
                         string comment = string.Concat("EQ Out of Combat Buffs ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
                         smartScriptsSQL.AddRowForCreatureTemplateOutOfCombatBuffCastSelf(creatureTemplate.WOWCreatureTemplateID,
                             creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment);
+                        if (curSpellTemplate.SummonCreatureTemplateID > 0) // Must come immediately after smartScriptsSQL
+                        {
+                            conditionsSQL.AddSmartScriptRestrictionIfAura(creatureTemplate.WOWCreatureTemplateID, smartScriptsSQL.GetLastUniqueID(creatureTemplate.WOWCreatureTemplateID, 0) + 1,
+                                0, Configuration.SPELL_SUMMON_CASTER_AURA_SPELL_ID, string.Concat("Restrict Summon of spell ", curSpellTemplate.WOWSpellID, " if a summon is active"), true);
+                        }
                         if (curSpellTemplate.RemoveAuraWhenCasterCreatureInitsAgro == true)
                         {
                             string removeAuraComment = string.Concat("EQ Out of Combat Buffs ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") remove aura ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ") when agro on the player");
@@ -628,6 +633,13 @@ namespace EQWOWConverter
                         string comment = string.Concat("EQ Attack Proc ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
                         smartScriptsSQL.AddRowForCreatureTemplateApplySpellOnDamageDone(creatureTemplate.WOWCreatureTemplateID, eqSpellIDAndProcChance.Item2,
                             curSpellTemplate.WOWSpellID, comment);
+                    }
+
+                    // Summons need to add an aura to the caster
+                    if (creatureTemplate.DoesSummonPets == true)
+                    {
+                        smartScriptsSQL.AddRowForCreatureTemplateCastOnSummoned(creatureTemplate.WOWCreatureTemplateID, Configuration.SPELL_SUMMON_CASTER_AURA_SPELL_ID,
+                            "EQ Summon Pet Add Summoner Aura to Caster");
                     }
                 }
 

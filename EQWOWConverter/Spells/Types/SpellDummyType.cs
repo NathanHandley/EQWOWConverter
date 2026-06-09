@@ -36,5 +36,6 @@ namespace EQWOWConverter.Spells
         BardSongAnySingle = 14,
         IllusionParent = 15,
         Forage = 16,
+        SummonActive = 17,
     }
 }

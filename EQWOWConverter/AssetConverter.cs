@@ -1608,11 +1608,15 @@ namespace EQWOWConverter
                     if (spellEntry.MinLevel > creatureTemplate.Level || spellEntry.MaxLevel < creatureTemplate.Level)
                         continue;
 
+                    SpellTemplate curSpellTemplate = spellTemplatesByEQID[spellEntry.EQSpellID];
+
                     bool addedToList = false;
-                    if ((spellEntry.TypeFlags & 8) == 8) // Buff
+                    if (((spellEntry.TypeFlags & 8) == 8) || curSpellTemplate.SummonCreatureTemplateID > 0) // 8 = Buff, also catch summons
                     {
                         creatureTemplate.CreatureSpellEntriesOutOfCombatBuff.Add(spellEntry);
                         addedToList = true;
+                        if (curSpellTemplate.SummonCreatureTemplateID > 0)
+                            creatureTemplate.DoesSummonPets = true;
                     }
                     else if ((spellEntry.TypeFlags & 2) == 2) // Heal
                     {
@@ -1622,7 +1626,7 @@ namespace EQWOWConverter
                         else
                         {
                             int mappedHealAmount = spellTemplatesByEQID[creatureTemplate.CreatureSpellEntriesHeal[0].EQSpellID].HighestDirectHealAmountInSpellEffect;
-                            int candidateHealAmount = spellTemplatesByEQID[spellEntry.EQSpellID].HighestDirectHealAmountInSpellEffect;
+                            int candidateHealAmount = curSpellTemplate.HighestDirectHealAmountInSpellEffect;
                             if (candidateHealAmount > mappedHealAmount)
                                 creatureTemplate.CreatureSpellEntriesHeal[0] = spellEntry;
                         }
@@ -2080,6 +2084,24 @@ namespace EQWOWConverter
             forageSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, (int)SpellDummyType.Forage, 0));
             forageSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             spellTemplates.Add(forageSpellTemplate);
+
+            // Summon Active Aura
+            SpellTemplate summonActiveSpellTemplate = new SpellTemplate();
+            summonActiveSpellTemplate.Name = "Summon Active";
+            summonActiveSpellTemplate.WOWSpellID = Configuration.SPELL_SUMMON_CASTER_AURA_SPELL_ID;
+            summonActiveSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            summonActiveSpellTemplate.Description = "Identifies that a summon is active.";
+            summonActiveSpellTemplate.AuraDescription = "Identifies that a summon is active.";
+            summonActiveSpellTemplate.AuraDuration = new SpellDuration();
+            summonActiveSpellTemplate.AuraDuration.IsInfinite = true;
+            summonActiveSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, (int)SpellDummyType.SummonActive, 0));
+            summonActiveSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitTargetAny;
+            summonActiveSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
+            summonActiveSpellTemplate.CastTimeInMS = 0;
+            summonActiveSpellTemplate.RecoveryTimeInMS = 0;
+            summonActiveSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+            summonActiveSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Conjuration);
+            spellTemplates.Add(summonActiveSpellTemplate);
 
             Logger.WriteDebug("Generating custom spells completed.");
         }

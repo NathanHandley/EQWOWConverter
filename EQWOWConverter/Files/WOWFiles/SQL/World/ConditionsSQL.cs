@@ -121,5 +121,26 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("Comment", 255, "EQ " + comment);
             Rows.Add(newRow);
         }
+
+        public void AddSmartScriptRestrictionIfAura(int smartScriptEntryOrGUID, int smartScriptID, int smartScriptSourceType, int auraSpellID, string comment, bool negativeCondition = false)
+        {
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("SourceTypeOrReferenceId", 22); // CONDITION_SOURCE_TYPE_SMART_EVENT
+            newRow.AddInt("SourceGroup", smartScriptID);
+            newRow.AddInt("SourceEntry", smartScriptEntryOrGUID);
+            newRow.AddInt("SourceId", smartScriptSourceType);
+            newRow.AddInt("ElseGroup", 0);
+            newRow.AddInt("ConditionTypeOrReference", 1); // CONDITION_AURA
+            newRow.AddInt("ConditionTarget", 1);
+            newRow.AddInt("ConditionValue1", auraSpellID);
+            newRow.AddInt("ConditionValue2", 0);
+            newRow.AddInt("ConditionValue3", 0);
+            newRow.AddInt("NegativeCondition", negativeCondition == true ? 1 : 0);
+            newRow.AddInt("ErrorType", 0);
+            newRow.AddInt("ErrorTextId", 0);
+            newRow.AddString("ScriptName", 64, string.Empty);
+            newRow.AddString("Comment", 255, "EQ " + comment);
+            Rows.Add(newRow);
+        }
     }
 }

@@ -47,6 +47,19 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
+        public int GetLastUniqueID(int entryOrGUID, int sourceType)
+        {
+            lock (IDLock)
+            {
+                if (IDByEntryOrGUIDBySourceType.ContainsKey(sourceType) == false)
+                    IDByEntryOrGUIDBySourceType.Add(sourceType, new Dictionary<int, int>());
+                if (IDByEntryOrGUIDBySourceType[sourceType].ContainsKey(entryOrGUID) == false)
+                    return -1;
+                else
+                    return IDByEntryOrGUIDBySourceType[sourceType][entryOrGUID];
+            }
+        }
+
         public void AddRowForQuestCompleteTalkEvent(int creatureTemplateID, int groupID, int questID, string comment)
         {
             AddRow(creatureTemplateID,
@@ -222,6 +235,33 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 0,
                 28, // SMART_ACTION_REMOVEAURASFROMSPELL
+                wowSpellID,
+                0,
+                1, // SMART_TARGET_SELF
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment
+            );
+        }
+
+        public void AddRowForCreatureTemplateCastOnSummoned(int minionCreatureTemplateID, int wowSpellID, string comment)
+        {
+            // Damage event
+            AddRow(minionCreatureTemplateID,
+                0,
+                17, // SMART_EVENT_SUMMONED_UNIT
+                100,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                11, // SMART_ACTION_ADD_AURA
                 wowSpellID,
                 0,
                 1, // SMART_TARGET_SELF
