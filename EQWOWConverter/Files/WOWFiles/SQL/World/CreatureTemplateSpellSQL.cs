@@ -25,6 +25,12 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRow(int creatureID, int index, int spellID)
         {
+            if (index > 7)
+            {
+                Logger.WriteDebug("Spell ID ", spellID.ToString(), " skipped in adding to pet bar for creatureID ", creatureID.ToString(), " due to the index being > 7");
+                return;
+            }
+
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatureID", creatureID);
             newRow.AddInt("Index", index);
