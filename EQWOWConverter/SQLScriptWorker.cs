@@ -650,7 +650,7 @@ namespace EQWOWConverter
                     if (creatureTemplate.DoesSummonPets == true)
                     {
                         smartScriptsSQL.AddRowForCreatureTemplateCastOnSummoned(creatureTemplate.WOWCreatureTemplateID, Configuration.SPELL_SUMMON_CASTER_AURA_SPELL_ID,
-                            "EQ Summon Pet Add Summoner Aura to Caster");
+                            string.Concat("EQ Summon Pet Add Summoner Aura to Caster ", creatureTemplate.Name, "(", creatureTemplate.WOWCreatureTemplateID, ")"));
                     }
                 }
 

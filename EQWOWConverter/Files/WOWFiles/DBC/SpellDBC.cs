@@ -29,6 +29,10 @@ namespace EQWOWConverter.WOWFiles
                 return;
             }
 
+            // Don't show the summon aura
+            if (spellTemplate.WOWSpellID == Configuration.SPELL_SUMMON_CASTER_AURA_SPELL_ID)
+                doHideFromDisplay = true;
+
             DBCRow newRow = new DBCRow();            
             newRow.AddInt32(effectBlock.WOWSpellID); // ID
             newRow.AddUInt32(spellTemplate.Category); // Category (SpellCategory.ID)

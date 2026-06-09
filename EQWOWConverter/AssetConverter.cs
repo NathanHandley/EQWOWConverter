@@ -2105,6 +2105,7 @@ namespace EQWOWConverter
             summonActiveSpellTemplate.RecoveryTimeInMS = 0;
             summonActiveSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
             summonActiveSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Conjuration);
+            summonActiveSpellTemplate.AlwaysPersist = true;
             spellTemplates.Add(summonActiveSpellTemplate);
 
             Logger.WriteDebug("Generating custom spells completed.");
