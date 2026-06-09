@@ -21,7 +21,7 @@ namespace EQWOWConverter.WOWFiles
     internal class SpellDBC : DBCFile
     {
         public void AddRow(SpellEffectBlock effectBlock, string spellDescription, SpellTemplate spellTemplate, bool doHideFromDisplay, bool overrideDurationToInfinite, 
-            bool preventClickOff, int maximumSpellLevel, bool isToggleAura)
+            bool preventClickOff, int maximumSpellLevel, bool isToggleAura, int castTimeDBCID)
         {
             if (effectBlock.SpellEffects.Count != 3)
             {
@@ -61,7 +61,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // TargetAuraSpell
             newRow.AddUInt32(0); // ExcludeCasterAuraSpell
             newRow.AddUInt32(0); // ExcludeTargetAuraSpell
-            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellCastTimeDBCID)); // CastingTimeIndex   
+            newRow.AddUInt32(Convert.ToUInt32(castTimeDBCID)); // CastingTimeIndex   
             if (spellTemplate.RecoveryTimeInMS < Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS)
                 newRow.AddUInt32(0); // RecoveryTime
             else

@@ -33,6 +33,26 @@ namespace EQWOWConverter.Spells
             public int WOWItemTemplateID = -1;
         }
 
+        internal class ClickySpellParameters
+        {
+            public int WOWSpellID = -1;
+            public bool IsForcedSelfOnly = false;
+            protected int _SpellCastTimeDBCID = 1; // First row, instant cast
+            public int SpellCastTimeDBCID { get { return _SpellCastTimeDBCID; } }
+            protected int _CastTimeInMS = 0;
+            public int CastTimeInMS
+            {
+                get { return _CastTimeInMS; }
+                set
+                {
+                    if (SpellCastTimeDBCIDsByCastTime.ContainsKey(value) == false)
+                        SpellCastTimeDBCIDsByCastTime.Add(value, SpellCastTimesDBC.GenerateDBCID());
+                    _SpellCastTimeDBCID = SpellCastTimeDBCIDsByCastTime[value];
+                    _CastTimeInMS = value;
+                }
+            }
+        }
+
         public static Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellRangeDBCIDsBySpellRange = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellRadiusDBCIDsBySpellRadius = new Dictionary<int, int>();
@@ -61,21 +81,7 @@ namespace EQWOWConverter.Spells
         public int WOWSpellID = 0;
         public int WOWSpellIDWorn = -1;
         public int WOWSpellIDProcAndGoodEffect = -1;
-        public int WOWSpellIDClickCastTime = -1;
-        protected int _SpellCastTimeForClickDBCID = 1; // First row, instant cast
-        public int SpellCastTimeForClickDBCID { get { return _SpellCastTimeForClickDBCID; } }
-        protected int _CastTimeInMSForClick = 0;
-        public int CastTimeInMSForClick
-        {
-            get { return _CastTimeInMSForClick; }
-            set
-            {
-                if (SpellCastTimeDBCIDsByCastTime.ContainsKey(value) == false)
-                    SpellCastTimeDBCIDsByCastTime.Add(value, SpellCastTimesDBC.GenerateDBCID());
-                _SpellCastTimeForClickDBCID = SpellCastTimeDBCIDsByCastTime[value];
-                _CastTimeInMSForClick = value;
-            }
-        }
+        public List<ClickySpellParameters> ClickySpellParatemers = new List<ClickySpellParameters>();
         public int EQSpellID = -1;
         public string Name = string.Empty;
         public string Description = string.Empty;
@@ -239,6 +245,16 @@ namespace EQWOWConverter.Spells
                 return _GroupedGoodProcSpellEffectBlocksForOutput;
             }
         }
+        private List<List<SpellEffectBlock>> _GroupedClickySpellEffectBlocksForOutputBySpellParameters = new List<List<SpellEffectBlock>>();
+        public List<List<SpellEffectBlock>> GroupedClickySpellEffectBlocksForOutputBySpellParameters
+        {
+            get
+            {
+                if (_GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count == 0)
+                    GenerateOutputEffectBlocks();
+                return _GroupedClickySpellEffectBlocksForOutputBySpellParameters;
+            }
+        }
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
@@ -251,6 +267,22 @@ namespace EQWOWConverter.Spells
                 }
                 return SpellTemplatesByEQID;
             }
+        }
+
+        public ClickySpellParameters GetClickySpellParameters(int castTimeInMS, bool isForcedSelfOnly)
+        {
+            // Only make unique
+            foreach (ClickySpellParameters clickySpell in this.ClickySpellParatemers)
+            {
+                if (clickySpell.CastTimeInMS == castTimeInMS && clickySpell.IsForcedSelfOnly == isForcedSelfOnly)
+                    return clickySpell;
+            }
+            ClickySpellParameters newClickySpell = new ClickySpellParameters();
+            newClickySpell.WOWSpellID = GenerateUniqueWOWSpellID();
+            newClickySpell.IsForcedSelfOnly = isForcedSelfOnly;
+            newClickySpell.CastTimeInMS = castTimeInMS;
+            this.ClickySpellParatemers.Add(newClickySpell);
+            return newClickySpell;
         }
 
         public static void LoadSpellTemplates(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, Dictionary<string, ZoneProperties> zonePropertiesByShortName,
@@ -2933,8 +2965,32 @@ namespace EQWOWConverter.Spells
                             effectClone.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
                             goodProcEffectBlock.SpellEffects.Add(effectClone);
                         }
-                        goodProcEffectBlock.SpellName = string.Concat(baseEffectBlock.SpellName, " (proc)");
+                        goodProcEffectBlock.SpellName = baseEffectBlock.SpellName;
                         _GroupedGoodProcSpellEffectBlocksForOutput.Add(goodProcEffectBlock);
+                    }
+
+                    // Clicky spells each need these blocks
+                    int clickyIndex = 0;
+                    foreach (ClickySpellParameters clickySpellParameters in this.ClickySpellParatemers)
+                    {
+                        SpellEffectBlock clickEffectBlock = new SpellEffectBlock();
+                        if (_GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count == clickyIndex)
+                        {
+                            _GroupedClickySpellEffectBlocksForOutputBySpellParameters.Add(new List<SpellEffectBlock>());
+                            clickEffectBlock.WOWSpellID = clickySpellParameters.WOWSpellID;
+                        }
+                        else
+                            clickEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
+                        foreach (SpellEffectWOW spellEffect in baseEffectBlock.SpellEffects)
+                        {
+                            SpellEffectWOW effectClone = spellEffect.Clone();
+                            if (ClickySpellParatemers[clickyIndex].IsForcedSelfOnly == true)
+                                effectClone.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                            clickEffectBlock.SpellEffects.Add(effectClone);
+                        }
+                        clickEffectBlock.SpellName = string.Concat(baseEffectBlock.SpellName);
+                        _GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyIndex].Add(clickEffectBlock);
+                        clickyIndex++;
                     }
                 }
             }

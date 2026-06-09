@@ -3046,7 +3046,7 @@ namespace EQWOWConverter
                             {
                                 if (spellEffect.ImplicitTargetA == SpellWOWTargetType.UnitTargetAlly)
                                 {
-                                    Logger.WriteError("Created SpellID for spell ", itemTemplate.EQCombatProcSpellEffectID.ToString(), " on item proc item ", itemTemplate.WOWEntryID.ToString(), " since it will need map from targetally to self");
+                                    Logger.WriteDebug("Created SpellID for spell ", itemTemplate.EQCombatProcSpellEffectID.ToString(), " on item proc item ", itemTemplate.WOWEntryID.ToString(), " since it will need map from targetally to self");
                                     if (spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect == -1)
                                         spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect = SpellTemplate.GenerateUniqueWOWSpellID();
                                     itemTemplate.WOWSpellID1 = spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect;
@@ -3064,7 +3064,6 @@ namespace EQWOWConverter
                         Logger.WriteDebug("Could not map spell with eqid ", itemTemplate.EQClickSpellEffectID.ToString(), " to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as the spell didn't exist");
                     else
                     {
-                        itemTemplate.WOWSpellID1 = spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID].WOWSpellID;
                         itemTemplate.WOWSpellTrigger1 = 0; // Use (click)
                         switch (itemTemplate.EQClickType)
                         {
@@ -3088,16 +3087,15 @@ namespace EQWOWConverter
                         itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
                         itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
                         itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
+
+                        // Create any unique spell information for it. Consumable and inventory clickable items can't be used on others if it's a good effect
+                        bool forceSelfOnly = false;
+                        if (spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID].IsGoodEffect == true && (itemTemplate.EQClickType == 1 || itemTemplate.EQClickType == 3 || itemTemplate.EQClickType == 5))
+                            forceSelfOnly = true;
+                        SpellTemplate.ClickySpellParameters clickySpellParameters = spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID].GetClickySpellParameters(itemTemplate.CastTime, forceSelfOnly);
+                        itemTemplate.WOWSpellID1 = clickySpellParameters.WOWSpellID;
                     }
                 }
-
-                // Remap gate
-                if (itemTemplate.WOWSpellID1 == 36)
-                    itemTemplate.WOWSpellID1 = Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID;
-
-                // Remap bind
-                if (itemTemplate.WOWSpellID1 == 35)
-                    itemTemplate.WOWSpellID1 = Configuration.SPELLS_BINDCUSTOM_SPELLDBC_ID;
             }
         }
 

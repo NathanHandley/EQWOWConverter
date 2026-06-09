@@ -26,6 +26,7 @@ using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using System.Text;
+using static EQWOWConverter.Spells.SpellTemplate;
 
 namespace EQWOWConverter
 {
@@ -536,23 +537,35 @@ namespace EQWOWConverter
                 for (int i = 0; i < spellTemplate.GroupedBaseSpellEffectBlocksForOutput.Count; i++)
                 {
                     SpellEffectBlock curEffectBlock = spellTemplate.GroupedBaseSpellEffectBlocksForOutput[i];
-                    spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff, curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura);
+                    spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff, 
+                        curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, spellTemplate.SpellCastTimeDBCID);
 
-                    // Worn effects get their own copy
+                    // Worn effects version
                     if (spellTemplate.WOWSpellIDWorn > 0)
                     {
                         SpellEffectBlock curWornEffectBlock = spellTemplate.GroupedWornSpellEffectBlocksForOutput[i];
                         if (Configuration.ITEMS_SHOW_WORN_EFFECT_AURA_ICON == true)
-                            spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, i != 0, true, true, curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura);
+                            spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, i != 0, true, true, 
+                                curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, spellTemplate.SpellCastTimeDBCID);
                         else
-                            spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, true, true, true, curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura);
+                            spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, true, true, true, 
+                                curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, spellTemplate.SpellCastTimeDBCID);
                     }
 
-                    // Good proc effects get their own copy
+                    // Good proc effect version
                     if (spellTemplate.WOWSpellIDProcAndGoodEffect != -1)
                     {
                         SpellEffectBlock curGoodProcEffectBlock = spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput[i];
-                        spellDBC.AddRow(curGoodProcEffectBlock, spellTemplate.AuraDescription, spellTemplate, i != 0, true, true, curGoodProcEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura);
+                        spellDBC.AddRow(curGoodProcEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
+                            curGoodProcEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, spellTemplate.SpellCastTimeDBCID);
+                    }
+
+                    // Clicky versions
+                    for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
+                    {
+                        SpellEffectBlock clickieEffectBlock = spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyIndex][i];
+                        spellDBC.AddRow(clickieEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff, 
+                            clickieEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, spellTemplate.ClickySpellParatemers[clickyIndex].SpellCastTimeDBCID);
                     }
                 }
 
