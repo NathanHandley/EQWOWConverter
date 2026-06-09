@@ -35,7 +35,40 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(spellIconID); // SpellIconID
             newRow.AddStringLang(""); // AlternateVerb
             newRow.AddInt32(0); // CanLink
+
+            newRow.SortValue1 = id;
+
             Rows.Add(newRow);
+        }
+
+        protected override void OnPostLoadDataFromDisk()
+        {
+            // Convert any raw data rows to actual data rows
+            foreach (DBCRow row in Rows)
+            {
+                // This shouldn't be possible, but control for it just in case
+                if (row.SourceRawBytes.Count == 0)
+                {
+                    Logger.WriteError("SkillLineDBC had no source raw bytes when converting a row in OnPostLoadDataFromDisk");
+                    continue;
+                }
+
+                // Fill every field
+                int byteCursor = 0;
+                row.AddIntFromSourceRawBytes(ref byteCursor); // ID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // CategoryID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // SkillCostsID
+                row.AddStringLangFromSourceRawBytes(ref byteCursor, StringBlock); // DisplayName
+                row.AddStringLangFromSourceRawBytes(ref byteCursor, StringBlock); // Description
+                row.AddIntFromSourceRawBytes(ref byteCursor); // SpellIconID
+                row.AddStringLangFromSourceRawBytes(ref byteCursor, StringBlock); // AlternateVerb
+                row.AddIntFromSourceRawBytes(ref byteCursor); // CanLink
+
+                row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[0]).Value; // ID
+
+                // Purge raw data
+                row.SourceRawBytes.Clear();
+            }
         }
 
         public static int GetIDForSkillCatagory(SpellEQSkillCategory skillCategory)

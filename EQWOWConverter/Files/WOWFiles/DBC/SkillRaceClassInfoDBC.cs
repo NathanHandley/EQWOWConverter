@@ -43,6 +43,37 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
+        protected override void OnPostLoadDataFromDisk()
+        {
+            // Convert any raw data rows to actual data rows
+            foreach (DBCRow row in Rows)
+            {
+                // This shouldn't be possible, but control for it just in case
+                if (row.SourceRawBytes.Count == 0)
+                {
+                    Logger.WriteError("SkillRaceClassInfoDBC had no source raw bytes when converting a row in OnPostLoadDataFromDisk");
+                    continue;
+                }
+
+                // Fill every field
+                int byteCursor = 0;
+                row.AddIntFromSourceRawBytes(ref byteCursor); // ID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // SkillID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // RaceMask
+                row.AddIntFromSourceRawBytes(ref byteCursor); // ClassMask
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Flags
+                row.AddIntFromSourceRawBytes(ref byteCursor); // MinLevel
+                row.AddIntFromSourceRawBytes(ref byteCursor); // SkillTierID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // SkillCostIndex
+
+                row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[1]).Value; // SkillID
+                row.SortValue2 = ((DBCRow.DBCFieldInt32)row.AddedFields[0]).Value; // ID
+
+                // Purge raw data
+                row.SourceRawBytes.Clear();
+            }
+        }
+
         public static int GenerateID()
         {
             int newID = CUR_SKILLRACECLASSINFO_DBCID;
