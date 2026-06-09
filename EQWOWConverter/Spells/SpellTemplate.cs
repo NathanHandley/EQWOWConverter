@@ -603,6 +603,7 @@ namespace EQWOWConverter.Spells
                 focusSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(itemIconID);
                 focusSpellTemplate.SpellVisualID1 = 0; // No visual
                 focusSpellTemplate.PreventAuraClickOff = true;
+                focusSpellTemplate.AlwaysPersist = true;
                 focusSpellTemplate.AuraDuration = new SpellDuration();
                 focusSpellTemplate.AuraDuration.IsInfinite = true;
                 SpellTemplatesByFocusTypeAndValue.Add((focusType, focusValue), focusSpellTemplate);
