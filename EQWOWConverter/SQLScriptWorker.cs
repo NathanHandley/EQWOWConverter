@@ -614,6 +614,11 @@ namespace EQWOWConverter
                         string comment = string.Concat("EQ Out of Combat Buffs ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
                         smartScriptsSQL.AddRowForCreatureTemplateOutOfCombatBuffCastSelf(creatureTemplate.WOWCreatureTemplateID,
                             creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment);
+                        if (curSpellTemplate.RemoveAuraWhenCasterCreatureInitsAgro == true)
+                        {
+                            string removeAuraComment = string.Concat("EQ Out of Combat Buffs ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") remove aura ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ") when agro on the player");
+                            smartScriptsSQL.AddRowForCreatureTemplateRemoveSpellAuraOnAgro(creatureTemplate.WOWCreatureTemplateID, curSpellTemplate.WOWSpellID, removeAuraComment);
+                        }
                     }
 
                     // Spell on Attack

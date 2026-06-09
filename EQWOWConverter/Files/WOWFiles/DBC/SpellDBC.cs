@@ -68,10 +68,7 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddUInt32(spellTemplate.RecoveryTimeInMS); // RecoveryTime
             newRow.AddUInt32(0); // CategoryRecoveryTime
             newRow.AddUInt32(GetInterruptFlags(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType));
-            if (spellTemplate.BreakEffectOnAllDamage == true)
-                newRow.AddUInt32(2); // AuraInterruptFlags
-            else
-                newRow.AddUInt32(0); // AuraInterruptFlags
+            newRow.AddUInt32(GetAuraInterruptFlags(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AuraInterruptFlags
             newRow.AddUInt32(spellTemplate.ChannelInterruptFlags); // ChannelInterruptFlags
             newRow.AddUInt32(GetProcFlags(spellTemplate)); // ProcTypeMask
             newRow.AddUInt32(spellTemplate.ProcChance); // ProcChance
@@ -363,6 +360,25 @@ namespace EQWOWConverter.WOWFiles
                 interruptFlags |= 8;
             if (spellTemplate.InterruptOnDamageTaken == true)
                 interruptFlags |= 16;
+            return interruptFlags;
+        }
+
+        public UInt32 GetAuraInterruptFlags(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
+        {
+            if (auraType == SpellWOWAuraType.Phase)
+                return 0;
+
+            UInt32 interruptFlags = 0;
+            if (spellTemplate.InterruptAuraOnTakeDamage == true)
+                interruptFlags |= 2;
+            if (spellTemplate.InterruptAuraOnCast == true)
+                interruptFlags |= 4;
+            if (spellTemplate.InterruptAuraOnMeleeAttack == true)
+                interruptFlags |= 4096;
+            if (spellTemplate.InterruptAuraOnSpellAttack == true)
+                interruptFlags |= 8192;
+            if (spellTemplate.InterruptAuraOnMount == true)
+                interruptFlags |= 131072;
             return interruptFlags;
         }
     }

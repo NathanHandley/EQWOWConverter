@@ -208,6 +208,33 @@ namespace EQWOWConverter.WOWFiles
             );
         }
 
+        public void AddRowForCreatureTemplateRemoveSpellAuraOnAgro(int creatureTemplateID, int wowSpellID, string comment)
+        {
+            // Damage event
+            AddRow(creatureTemplateID,
+                0,
+                4, // SMART_EVENT_AGGRO
+                100,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                28, // SMART_ACTION_REMOVEAURASFROMSPELL
+                wowSpellID,
+                0,
+                1, // SMART_TARGET_SELF
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment
+            );
+        }
+
         public void AddRowForCreatureTemplateApplySpellOnDamageDone(int creatureTemplateID, int chance, int wowSpellID, /* int spellVisualImpactKitID, */string comment)
         {
             // Damage event

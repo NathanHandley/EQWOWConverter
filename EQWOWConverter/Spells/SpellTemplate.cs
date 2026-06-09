@@ -167,7 +167,6 @@ namespace EQWOWConverter.Spells
         public int HighestDirectHealAmountInSpellEffect = 0; // Used in spell priority calculations
         private string TargetDescriptionTextFragment = string.Empty;
         public bool BreakEffectOnNonAutoDirectDamage = false;
-        public bool BreakEffectOnAllDamage = false;
         public bool NoPartialImmunity = false;
         public UInt32 DefenseType = 0; // 0 None, 1 Magic, 2 Melee, 3 Ranged
         public UInt32 PreventionType = 0; // 0 None, 1 Silence, 2 Pacify, 4 No Actions
@@ -201,6 +200,12 @@ namespace EQWOWConverter.Spells
         public bool InterruptOnPushback = true;
         public bool InterruptOnCast = true;
         public bool InterruptOnDamageTaken = false;
+        public bool InterruptAuraOnMeleeAttack = false;
+        public bool InterruptAuraOnSpellAttack = false;
+        public bool InterruptAuraOnMount = false;
+        public bool InterruptAuraOnCast = false;
+        public bool InterruptAuraOnTakeDamage = false;
+        public bool RemoveAuraWhenCasterCreatureInitsAgro = false;
         public bool PreventAuraClickOff = false;
         public bool AlwaysPersist = false;
         public SpellFocusBoostType FocusBoostType = SpellFocusBoostType.None;
@@ -1808,6 +1813,12 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModInvisibility;
                                 newSpellEffectWOW.ActionDescription = string.Concat("grants invisibility");
                                 newSpellEffectWOW.AuraDescription = string.Concat("shrouded by invisibility");
+                                spellTemplate.InterruptAuraOnCast = true;
+                                spellTemplate.InterruptAuraOnMeleeAttack = true;
+                                spellTemplate.InterruptAuraOnMount = true;
+                                spellTemplate.InterruptAuraOnTakeDamage = true;
+                                spellTemplate.InterruptAuraOnSpellAttack = true;
+                                spellTemplate.RemoveAuraWhenCasterCreatureInitsAgro = true;
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         case SpellEQEffectType.SeeInvisibility:
@@ -2371,7 +2382,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("mesmerises the target which stops all actions until damage is taken");
                                 newSpellEffectWOW.AuraDescription = string.Concat("mesmerized");
                                 newSpellEffectWOW.EffectMechanic = SpellMechanicType.Incapacitated;
-                                spellTemplate.BreakEffectOnAllDamage = true;
+                                spellTemplate.InterruptAuraOnTakeDamage = true;
                                 spellTemplate.NoPartialImmunity = true;
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;

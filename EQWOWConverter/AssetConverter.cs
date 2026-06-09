@@ -1611,11 +1611,8 @@ namespace EQWOWConverter
                     bool addedToList = false;
                     if ((spellEntry.TypeFlags & 8) == 8) // Buff
                     {
-                        if (spellEntry.BuffDurationInMS >= Configuration.CREATURE_SPELL_OOC_BUFF_MIN_DURATION_IN_MS)
-                        {
-                            creatureTemplate.CreatureSpellEntriesOutOfCombatBuff.Add(spellEntry);
-                            addedToList = true;
-                        }
+                        creatureTemplate.CreatureSpellEntriesOutOfCombatBuff.Add(spellEntry);
+                        addedToList = true;
                     }
                     else if ((spellEntry.TypeFlags & 2) == 2) // Heal
                     {
