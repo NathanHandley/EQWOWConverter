@@ -428,6 +428,9 @@ namespace EQWOWConverter
         public static float CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE = 10f;
         public static float CREATURE_STAT_MOD_AVGDMG_SET_BOSS = 18f;
 
+        // If true, creature pets will have the same scaling as set above
+        public static bool CREATURE_PET_ALLOW_STAT_MOD_SCALING = false;
+
         // The value to name the everquest parent reputation item as
         public static string CREATURE_FACTION_ROOT_NAME = "EverQuest";
 
@@ -814,7 +817,7 @@ namespace EQWOWConverter
 
         // ID for spells found in Spell.dbc
         // - Manually created spells reserve IDs from 86900 to 86999 and all are defined in the config
-        // - Recipes reserve IDs 87000 to 91221
+        // - Recipes reserve IDs 87000 to 91357
         // - Converted spells IDs start at 92000 and base spells range to 95826, with IDs after 96200 used for 'generated spell IDs'
         // - SpellIDs 96000 - 96049 reserved for 'worn' effects (effects that always take effect when worn)
         // - SpellIDs 96100 - 96199 reserved for 'coat' effects that come from rogue poisons, triggering another spell
@@ -1247,6 +1250,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_SET_ELITE", CREATURE_STAT_MOD_AVGDMG_SET_ELITE, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE", CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_SET_BOSS", CREATURE_STAT_MOD_AVGDMG_SET_BOSS, "");
+            OutputVariableToConfig("CREATURE_PET_ALLOW_STAT_MOD_SCALING", CREATURE_PET_ALLOW_STAT_MOD_SCALING, "If true, creature pets will have the same scaling as set above");
             OutputVariableToConfig("CREATURE_FACTION_ROOT_NAME", CREATURE_FACTION_ROOT_NAME, "The value to name the everquest parent reputation item as");
             OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_DEFAULT", CREATURE_FACTION_TEMPLATE_DEFAULT, "The default faction values to use if none can be mapped.  Using the 'neutral' record for now.", false);
             OutputVariableToConfig("CREATURE_FACTION_DEFAULT", CREATURE_FACTION_DEFAULT, "");
@@ -1668,6 +1672,7 @@ namespace EQWOWConverter
             CREATURE_STAT_MOD_AVGDMG_SET_ELITE = ReadVariableFromConfigString("CREATURE_STAT_MOD_AVGDMG_SET_ELITE", configValuesByVariableName, CREATURE_STAT_MOD_AVGDMG_SET_ELITE);
             CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE = ReadVariableFromConfigString("CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE", configValuesByVariableName, CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE);
             CREATURE_STAT_MOD_AVGDMG_SET_BOSS = ReadVariableFromConfigString("CREATURE_STAT_MOD_AVGDMG_SET_BOSS", configValuesByVariableName, CREATURE_STAT_MOD_AVGDMG_SET_BOSS);
+            CREATURE_PET_ALLOW_STAT_MOD_SCALING = ReadVariableFromConfigString("CREATURE_PET_ALLOW_STAT_MOD_SCALING", configValuesByVariableName, CREATURE_PET_ALLOW_STAT_MOD_SCALING);
             CREATURE_FACTION_ROOT_NAME = ReadVariableFromConfigString("CREATURE_FACTION_ROOT_NAME", configValuesByVariableName, CREATURE_FACTION_ROOT_NAME);
             CREATURE_FACTION_TEMPLATE_DEFAULT = ReadVariableFromConfigString("CREATURE_FACTION_TEMPLATE_DEFAULT", configValuesByVariableName, CREATURE_FACTION_TEMPLATE_DEFAULT);
             CREATURE_FACTION_DEFAULT = ReadVariableFromConfigString("CREATURE_FACTION_DEFAULT", configValuesByVariableName, CREATURE_FACTION_DEFAULT);

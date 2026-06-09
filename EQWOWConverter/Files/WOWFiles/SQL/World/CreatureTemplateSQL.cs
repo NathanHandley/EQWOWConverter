@@ -142,7 +142,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("detection_range", creatureTemplate.DetectionRange); 
             newRow.AddInt("rank", Convert.ToInt32(creatureTemplate.Rank));
             newRow.AddInt("dmgschool", 0);
-            newRow.AddFloat("DamageModifier", creatureTemplate.DamageMod);
+            if (Configuration.CREATURE_PET_ALLOW_STAT_MOD_SCALING == true || creatureTemplate.IsPet == false)
+                newRow.AddFloat("DamageModifier", creatureTemplate.DamageMod);
+            else
+                newRow.AddFloat("DamageModifier", 1);
             newRow.AddInt("BaseAttackTime", 2000); // 2,000 very common, but can be lower like 1,500
             newRow.AddInt("RangeAttackTime", 2000);
             newRow.AddFloat("BaseVariance", 1);
@@ -175,7 +178,10 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddString("AIName", 64, string.Empty);
             newRow.AddInt("MovementType", 0); // 0 = Stay in Place, 1 = Random Move within wander_distance, 2 = Waypoint Movement
             newRow.AddFloat("HoverHeight", 1);
-            newRow.AddFloat("HealthModifier", creatureTemplate.HPMod);
+            if (Configuration.CREATURE_PET_ALLOW_STAT_MOD_SCALING == true || creatureTemplate.IsPet == false)
+                newRow.AddFloat("HealthModifier", creatureTemplate.HPMod);
+            else
+                newRow.AddFloat("HealthModifier", 1);
             newRow.AddFloat("ManaModifier", 1);
             newRow.AddFloat("ArmorModifier", 1);
             newRow.AddFloat("ExperienceModifier", 1);
