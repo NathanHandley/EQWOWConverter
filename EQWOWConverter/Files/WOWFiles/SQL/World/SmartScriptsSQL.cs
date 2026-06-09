@@ -75,11 +75,11 @@ namespace EQWOWConverter.WOWFiles
                 1,          // SMART_ACTION_TALK = 1
                 groupID,
                 0,
+                0,
+                0,
+                0,
+                0,
                 7,          // SMART_TARGET_ACTION_INVOKER
-                0,
-                0,
-                0,
-                0,
                 0,
                 0,
                 0,
