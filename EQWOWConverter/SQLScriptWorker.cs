@@ -1309,6 +1309,12 @@ namespace EQWOWConverter
                     {
                         SpellEffectWOW curEffect = groupedBaseSpellEffectBlocksForOutput[0].SpellEffects[i];
                         spellTargetPositionSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[0].WOWSpellID, i, curEffect.TeleMapID, curEffect.TelePosition, curEffect.TeleOrientation);
+
+                        // Clicky can have teleports too
+                        for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
+                        {
+                            spellTargetPositionSQL.AddRow(spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyIndex][0].WOWSpellID, i, curEffect.TeleMapID, curEffect.TelePosition, curEffect.TeleOrientation);
+                        }
                     }
                 }
 
