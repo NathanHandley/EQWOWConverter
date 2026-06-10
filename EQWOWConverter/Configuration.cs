@@ -164,7 +164,7 @@ namespace EQWOWConverter
         public static int GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID = 55813;
 
         // If false, equipment is balanced to max level 60 and original levels are used. If true, use adjusted levels and zones/equip is balanced to 80
-        // with Classic through 60, Kunark through 70, and Velious through 80. Zones will also have a smoother level curve if set to true.
+        // with Classic through 60, Kunark through 70, and Velious through 80. Zones will also have a smoother level curve if set to true (NYI)
         public static bool GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 = false;
 
         // If false, unobtainable items will not output to the database

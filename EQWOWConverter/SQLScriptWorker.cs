@@ -1286,114 +1286,112 @@ namespace EQWOWConverter
             }
         }
 
+        private void AddSpellChain(SpellTemplate baseSpellTemplate, int parentSpellTemplateID, SpellTemplate chainedSpellTemplate)
+        {
+            List<SpellEffectBlock> chainedGroupedBaseSpellEffectBlocksForOutput = chainedSpellTemplate.GroupedBaseSpellEffectBlocksForOutput;
+            int chainedSpellID = chainedGroupedBaseSpellEffectBlocksForOutput[0].WOWSpellID;
+            string chainedSpellName = chainedGroupedBaseSpellEffectBlocksForOutput[0].SpellName;
+            if (baseSpellTemplate.AuraDuration.MaxDurationInMS > 0)
+                spellLinkedSpellSQL.AddRowForAuraTrigger(parentSpellTemplateID, chainedSpellID, chainedSpellName);
+            else
+                spellLinkedSpellSQL.AddRowForHitTrigger(parentSpellTemplateID, chainedSpellID, chainedSpellName);
+        }
+
+        private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, string commentFragment)
+        {
+            if (spellEffectBlocks.Count == 0)
+                return;
+
+            for (int i = 0; i < spellEffectBlocks.Count; i++)
+            {
+                SpellEffectBlock curEffectBlock = spellEffectBlocks[i];
+
+                // Mod data
+                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID);
+
+                // Spell bonus (TODO: do something more tailored)
+                spellBonusDataSQL.AddRow(curEffectBlock.WOWSpellID, string.Concat("EQ Spell ", spellTemplate.Name, commentFragment, " Block ", i));
+            }
+
+            // Scripts
+            if (spellTemplate.IsFocusBoostableEffect == true)
+            {
+                if (spellEffectBlocks[0].SpellEffects[0].IsAuraType() == true)
+                    spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_FocusBoostAuraScript");
+                else
+                    spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_FocusBoostNonAuraScript");
+            }
+            if (spellTemplate.IsBardSongAura == true)
+                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_BardSongAuraScript");
+            if (spellTemplate.IsllusionSpellParent == true)
+                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_IllusionSpellScript");
+
+            // Pet
+            if (spellTemplate.SummonSpellPet != null)
+            {
+                modEverquestPetSQL.AddRow(spellEffectBlocks[0].WOWSpellID, spellTemplate.SummonSpellPet.NamingType, spellTemplate.SummonCreatureTemplateID,
+                    spellTemplate.SummonPropertiesDBCID, spellTemplate.SummonSpellPet.MainhandItemIDWOW, spellTemplate.SummonSpellPet.OffhandItemIDWOW);
+
+                if (spellTemplate.SummonSpellPet.NamingType == SpellPetNamingType.Random)
+                {
+                    foreach (string prefix in SpellPet.GetRandomPetNamePrefixes())
+                        petNameGenerationSQL.AddRow(spellTemplate.SummonCreatureTemplateID, prefix, true);
+                    foreach (string suffix in SpellPet.GetRandomPetNameSuffixes())
+                        petNameGenerationSQL.AddRow(spellTemplate.SummonCreatureTemplateID, suffix, false);
+                }
+            }
+        }
+
         private void PopulateSpellAndTradeskillData(List<SpellTemplate> spellTemplates, List<TradeskillRecipe> tradeskillRecipes,
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
         {
             // Spell split data
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
+                // Core Spell Data
+                AddSpellDataBlock(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput, "");
+                AddSpellDataBlock(spellTemplate, spellTemplate.GroupedWornSpellEffectBlocksForOutput, " (Worn)");
+                AddSpellDataBlock(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput, " (Proc)");
+                for (int i = 0; i < spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count; i++)
+                    AddSpellDataBlock(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[i], " (Clicky)");
+
                 // Stack rules
                 if (spellTemplate.SpellGroupStackingID > 0)
-                    spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.WOWSpellID);
-
-                // Additional spell data
-                modEverquestSpellSQL.AddRow(spellTemplate, spellTemplate.WOWSpellID);
-
-                // Grab effects in blocks of three
-                List<SpellEffectBlock> groupedBaseSpellEffectBlocksForOutput = spellTemplate.GroupedBaseSpellEffectBlocksForOutput;
-
-                // Teleports are only on the main 3-block
-                for (int i = 0; i < groupedBaseSpellEffectBlocksForOutput[0].SpellEffects.Count; i++)
                 {
-                    if (groupedBaseSpellEffectBlocksForOutput[0].SpellEffects[i].EffectType == SpellWOWEffectType.TeleportUnits)
+                    spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.WOWSpellID);
+                    if (spellTemplate.WOWSpellIDWorn > 0)
+                        spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.WOWSpellIDWorn);
+                    if (spellTemplate.WOWSpellIDProcAndGoodEffect != -1)
+                        spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.WOWSpellIDProcAndGoodEffect);
+                    for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
+                        spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.ClickySpellParatemers[clickyIndex].WOWSpellID);
+                }
+
+                // Teleports
+                for (int i = 0; i < spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0].SpellEffects.Count; i++)
+                {
+                    if (spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0].SpellEffects[i].EffectType == SpellWOWEffectType.TeleportUnits)
                     {
+                        List<SpellEffectBlock> groupedBaseSpellEffectBlocksForOutput = spellTemplate.GroupedBaseSpellEffectBlocksForOutput;
                         SpellEffectWOW curEffect = groupedBaseSpellEffectBlocksForOutput[0].SpellEffects[i];
                         spellTargetPositionSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[0].WOWSpellID, i, curEffect.TeleMapID, curEffect.TelePosition, curEffect.TeleOrientation);
-
-                        // Clicky can have teleports too
+                        // Skip worm
+                        // Skip good proc
                         for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
-                        {
                             spellTargetPositionSQL.AddRow(spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyIndex][0].WOWSpellID, i, curEffect.TeleMapID, curEffect.TelePosition, curEffect.TeleOrientation);
-                        }
                     }
                 }
 
-                // For now, give spell bonus data to all potential spell IDs. Do something more elegant later
-                for (int i = 0; i < spellTemplate.GroupedBaseSpellEffectBlocksForOutput.Count; i++)
+                // Chains
+                foreach (SpellTemplate chainedSpellTemplate in spellTemplate.ChainedSpellTemplates)
                 {
-                    SpellEffectBlock curEffectBlock = spellTemplate.GroupedBaseSpellEffectBlocksForOutput[i];
-                    spellBonusDataSQL.AddRow(curEffectBlock.WOWSpellID, string.Concat("EQ Spell ", spellTemplate.Name, " Block ", i));
+                    AddSpellChain(spellTemplate, spellTemplate.WOWSpellID, chainedSpellTemplate);
                     if (spellTemplate.WOWSpellIDWorn > 0)
-                    {
-                        SpellEffectBlock curWornEffectBlock = spellTemplate.GroupedWornSpellEffectBlocksForOutput[i];
-                        spellBonusDataSQL.AddRow(curWornEffectBlock.WOWSpellID, string.Concat("EQ Spell ", spellTemplate.Name, " (Worn) Block ", i));
-                    }
-                }   
-
-                // Chains for spells with > 3 effects
-                for (int i = 1; i < groupedBaseSpellEffectBlocksForOutput.Count; i++)
-                {
-                    SpellEffectBlock curEffectBlock = spellTemplate.GroupedBaseSpellEffectBlocksForOutput[i];
-
-                    // TODO: Check if there are mixtures of aura and non-aura spells first, this may have a bug
-                    if (spellTemplate.AuraDuration.MaxDurationInMS > 0)
-                        spellLinkedSpellSQL.AddRowForAuraTrigger(spellTemplate.WOWSpellID, curEffectBlock.WOWSpellID, curEffectBlock.SpellName);
-                    else
-                        spellLinkedSpellSQL.AddRowForHitTrigger(spellTemplate.WOWSpellID, curEffectBlock.WOWSpellID, curEffectBlock.SpellName);
-                    
-                    // Additional spell data
-                    modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID);
-
-                    // Worn effects get their own copy too
-                    if (spellTemplate.WOWSpellIDWorn > 0)
-                    {
-                        // Additional spell data
-                        SpellEffectBlock curWornEffectBlock = spellTemplate.GroupedWornSpellEffectBlocksForOutput[i];
-                        modEverquestSpellSQL.AddRow(spellTemplate, curWornEffectBlock.WOWSpellID);
-                    }
-                }
-
-                // Additional changed spells (caused by chain effects directly)
-                foreach(SpellTemplate chainedSpellTemplate in spellTemplate.ChainedSpellTemplates)
-                {
-                    List<SpellEffectBlock> chainedGroupedBaseSpellEffectBlocksForOutput = chainedSpellTemplate.GroupedBaseSpellEffectBlocksForOutput;
-                    int chainedSpellID = chainedGroupedBaseSpellEffectBlocksForOutput[0].WOWSpellID;
-                    string chainedSpellName = chainedGroupedBaseSpellEffectBlocksForOutput[0].SpellName;
-                    if (spellTemplate.AuraDuration.MaxDurationInMS > 0)
-                        spellLinkedSpellSQL.AddRowForAuraTrigger(spellTemplate.WOWSpellID, chainedSpellID, chainedSpellName);
-                    else
-                        spellLinkedSpellSQL.AddRowForHitTrigger(spellTemplate.WOWSpellID, chainedSpellID, chainedSpellName);
-                }
-
-                // Focus boostable spells use all blocks
-                if (spellTemplate.IsFocusBoostableEffect)
-                    for (int i = 0; i < groupedBaseSpellEffectBlocksForOutput.Count; i++)
-                    {
-                        if (groupedBaseSpellEffectBlocksForOutput[i].SpellEffects[0].IsAuraType())
-                            spellScriptNamesSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[i].WOWSpellID, "EverQuest_FocusBoostAuraScript");
-                        else
-                            spellScriptNamesSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[i].WOWSpellID, "EverQuest_FocusBoostNonAuraScript");
-                    }
-
-                // Attach scripts to certain spell types
-                if (spellTemplate.IsBardSongAura == true)
-                    spellScriptNamesSQL.AddRow(spellTemplate.WOWSpellID, "EverQuest_BardSongAuraScript");
-                if (spellTemplate.IsllusionSpellParent == true)
-                    spellScriptNamesSQL.AddRow(spellTemplate.WOWSpellID, "EverQuest_IllusionSpellScript");
-
-                // Save any pet details
-                if (spellTemplate.SummonSpellPet != null)
-                {
-                    modEverquestPetSQL.AddRow(spellTemplate.WOWSpellID, spellTemplate.SummonSpellPet.NamingType, spellTemplate.SummonCreatureTemplateID, 
-                        spellTemplate.SummonPropertiesDBCID, spellTemplate.SummonSpellPet.MainhandItemIDWOW, spellTemplate.SummonSpellPet.OffhandItemIDWOW);
-
-                    if (spellTemplate.SummonSpellPet.NamingType == SpellPetNamingType.Random)
-                    {
-                        foreach (string prefix in SpellPet.GetRandomPetNamePrefixes())
-                            petNameGenerationSQL.AddRow(spellTemplate.SummonCreatureTemplateID, prefix, true);
-                        foreach (string suffix in SpellPet.GetRandomPetNameSuffixes())
-                            petNameGenerationSQL.AddRow(spellTemplate.SummonCreatureTemplateID, suffix, false);
-                    }
+                        AddSpellChain(spellTemplate, spellTemplate.WOWSpellIDWorn, chainedSpellTemplate);
+                    if (spellTemplate.WOWSpellIDProcAndGoodEffect != -1)
+                        AddSpellChain(spellTemplate, spellTemplate.WOWSpellIDProcAndGoodEffect, chainedSpellTemplate);
+                    for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
+                        AddSpellChain(spellTemplate, spellTemplate.ClickySpellParatemers[clickyIndex].WOWSpellID, chainedSpellTemplate);
                 }
             }
             foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)
