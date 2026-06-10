@@ -1294,6 +1294,7 @@ namespace EQWOWConverter
                 spellLinkedSpellSQL.AddRowForHitTrigger(parentSpellTemplateID, chainedSpellID, chainedSpellName);
         }
 
+        HashSet<int> PetSpellIDsAdded = new HashSet<int>();
         private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, string commentFragment)
         {
             if (spellEffectBlocks.Count == 0 ||  spellEffectBlocks[0].WOWSpellID <= 0)
@@ -1327,8 +1328,8 @@ namespace EQWOWConverter
             if (spellTemplate.IsllusionSpellParent == true)
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_IllusionSpellScript");
 
-            // Pet
-            if (spellTemplate.SummonSpellPet != null)
+            // Pet (but avoid duplicates)
+            if (spellTemplate.SummonSpellPet != null && PetSpellIDsAdded.Contains(spellEffectBlocks[0].WOWSpellID) == false)
             {
                 modEverquestPetSQL.AddRow(spellEffectBlocks[0].WOWSpellID, spellTemplate.SummonSpellPet.NamingType, spellTemplate.SummonCreatureTemplateID,
                     spellTemplate.SummonPropertiesDBCID, spellTemplate.SummonSpellPet.MainhandItemIDWOW, spellTemplate.SummonSpellPet.OffhandItemIDWOW);
@@ -1340,6 +1341,7 @@ namespace EQWOWConverter
                     foreach (string suffix in SpellPet.GetRandomPetNameSuffixes())
                         petNameGenerationSQL.AddRow(spellTemplate.SummonCreatureTemplateID, suffix, false);
                 }
+                PetSpellIDsAdded.Add(spellEffectBlocks[0].WOWSpellID);
             }
         }
 

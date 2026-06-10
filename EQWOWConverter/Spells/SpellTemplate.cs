@@ -274,7 +274,7 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        public ClickySpellParameters GetClickySpellParameters(int castTimeInMS, bool isForcedSelfOnly)
+        public ClickySpellParameters SetClickySpellParameters(int wowSpellID, int castTimeInMS, bool isForcedSelfOnly)
         {
             // Only make unique
             foreach (ClickySpellParameters clickySpell in this.ClickySpellParatemers)
@@ -283,7 +283,7 @@ namespace EQWOWConverter.Spells
                     return clickySpell;
             }
             ClickySpellParameters newClickySpell = new ClickySpellParameters();
-            newClickySpell.WOWSpellID = GenerateUniqueWOWSpellID();
+            newClickySpell.WOWSpellID = wowSpellID;
             newClickySpell.IsForcedSelfOnly = isForcedSelfOnly;
             newClickySpell.CastTimeInMS = castTimeInMS;
             this.ClickySpellParatemers.Add(newClickySpell);
@@ -2952,7 +2952,7 @@ namespace EQWOWConverter.Spells
                     _GroupedBaseSpellEffectBlocksForOutput.Add(baseEffectBlock);
 
                     // Worn versions also get their own copy
-                    if (WOWSpellIDWorn != 0)
+                    if (WOWSpellIDWorn > 0)
                     {
                         SpellEffectBlock wornEffectBlock = new SpellEffectBlock();
                         if (_GroupedWornSpellEffectBlocksForOutput.Count == 0)
@@ -2966,7 +2966,7 @@ namespace EQWOWConverter.Spells
                     }
 
                     // Good proc versions also get a copy
-                    if (WOWSpellIDProcAndGoodEffect > -1)
+                    if (WOWSpellIDProcAndGoodEffect > 0)
                     {
                         SpellEffectBlock goodProcEffectBlock = new SpellEffectBlock();
                         if (_GroupedGoodProcSpellEffectBlocksForOutput.Count == 0)

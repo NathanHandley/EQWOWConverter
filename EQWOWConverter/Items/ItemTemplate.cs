@@ -99,6 +99,7 @@ namespace EQWOWConverter.Items
         public int EQWornEffectSpellID = 0;
         public int EQWornEffectMinLevel = 0;
         public int EQClickSpellEffectID = 0;
+        public int WOWClickSpellEffectID = 0;
         public int EQClickType = 0;
         public int WOWClickEquipItemTemplateWOWID = 0;
         public int WOWClickEssenceItemTemplateWOWID = 0;
@@ -1494,6 +1495,7 @@ namespace EQWOWConverter.Items
                     //newItemTemplate.EQProcRate = int.Parse(columns["procrate"]); // TODO: Consider this?
                 }
                 newItemTemplate.EQClickSpellEffectID = int.Parse(columns["clickeffect"]);
+                newItemTemplate.WOWClickSpellEffectID = int.Parse(columns["clickeffect_wow"]);
                 newItemTemplate.EQClickType = int.Parse(columns["clicktype"]);
                 newItemTemplate.WOWClickEquipItemTemplateWOWID = int.Parse(columns["clickequipwowid"]);
                 newItemTemplate.WOWClickEssenceItemTemplateWOWID = int.Parse(columns["clickessencewowid"]);
@@ -1924,6 +1926,7 @@ namespace EQWOWConverter.Items
             createdEssenceItem.MaxCharges = originalItemTemplate.MaxCharges;
             createdEssenceItem.ParentItemTemplate = createdBagItemTemplate;
             createdEssenceItem.CastTime = originalItemTemplate.CastTime;
+            createdEssenceItem.WOWClickSpellEffectID = originalItemTemplate.WOWClickSpellEffectID;
 
             // Remap the original item template
             originalItemTemplate.WOWEntryID = newItemWOWItemEntryID;

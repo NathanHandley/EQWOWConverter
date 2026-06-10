@@ -3070,7 +3070,7 @@ namespace EQWOWConverter
                             {
                                 if (spellEffect.ImplicitTargetA == SpellWOWTargetType.UnitTargetAlly)
                                 {
-                                    Logger.WriteDebug("Created SpellID for spell ", itemTemplate.EQCombatProcSpellEffectID.ToString(), " on item proc item ", itemTemplate.WOWEntryID.ToString(), " since it will need map from targetally to self");
+                                    Logger.WriteError("Created SpellID for spell ", itemTemplate.EQCombatProcSpellEffectID.ToString(), " on item proc item ", itemTemplate.WOWEntryID.ToString(), " since it will need map from targetally to self");
                                     if (spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect == -1)
                                         spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect = SpellTemplate.GenerateUniqueWOWSpellID();
                                     itemTemplate.WOWSpellID1 = spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect;
@@ -3116,7 +3116,8 @@ namespace EQWOWConverter
                         bool forceSelfOnly = false;
                         if (spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID].IsGoodEffect == true && (itemTemplate.EQClickType == 1 || itemTemplate.EQClickType == 3 || itemTemplate.EQClickType == 5))
                             forceSelfOnly = true;
-                        SpellTemplate.ClickySpellParameters clickySpellParameters = spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID].GetClickySpellParameters(itemTemplate.CastTime, forceSelfOnly);
+                        SpellTemplate.ClickySpellParameters clickySpellParameters = spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID].SetClickySpellParameters(itemTemplate.WOWClickSpellEffectID,
+                            itemTemplate.CastTime, forceSelfOnly);
                         itemTemplate.WOWSpellID1 = clickySpellParameters.WOWSpellID;
                     }
                 }
