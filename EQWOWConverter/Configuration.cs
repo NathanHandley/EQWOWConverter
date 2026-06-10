@@ -822,6 +822,7 @@ namespace EQWOWConverter
         // - SpellIDs 96000 - 96049 reserved for 'worn' effects (effects that always take effect when worn)
         // - SpellIDs 96100 - 96199 reserved for 'coat' effects that come from rogue poisons, triggering another spell
         // - SpellIDs 96200 - 97656 reserved for 'clicky' effects (defined in ItemTemplates.csv under clickeffect_wow)
+        // - SpellIDs 97700 - 97713 reserved for 'good clicky' effects (defined in SpellTemplate.csv under wow_good_proc_id)
         // - SpellIDs 98000+ (or as defined below) used for 'generated spell IDs'
         public static int DBCID_SPELL_ID_START = 86900;
         public static int DBCID_SPELL_ID_GENERATED_START = 98000;
@@ -1415,6 +1416,7 @@ namespace EQWOWConverter
             OutputTextLineToConfig("# - SpellIDs 96000 - 96049 reserved for 'worn' effects (effects that always take effect when worn)");
             OutputTextLineToConfig("# - SpellIDs 96100 - 96199 reserved for 'coat' effects that come from rogue poisons, triggering another spell");
             OutputTextLineToConfig("# - SpellIDs 96200 - 97656 reserved for 'clicky' effects (defined in ItemTemplates.csv under clickeffect_wow)");
+            OutputTextLineToConfig("# - SpellIDs 97700 - 97713 reserved for 'good clicky' effects (defined in SpellTemplate.csv under wow_good_proc_id)");
             OutputTextLineToConfig("# - SpellIDs 98000+ (or as defined below) used for 'generated spell IDs'");
             OutputVariableToConfig("DBCID_SPELL_ID_START", DBCID_SPELL_ID_START, "", false);
             OutputVariableToConfig("DBCID_SPELL_ID_GENERATED_START", DBCID_SPELL_ID_GENERATED_START, "", false);

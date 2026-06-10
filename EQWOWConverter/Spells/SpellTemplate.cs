@@ -308,6 +308,7 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.EQSpellID = int.Parse(columns["eq_id"]);
                 newSpellTemplate.WOWSpellID = int.Parse(columns["wow_id"]);
                 newSpellTemplate.WOWSpellIDWorn = int.Parse(columns["wow_worn_id"]);
+                newSpellTemplate.WOWSpellIDProcAndGoodEffect = int.Parse(columns["wow_good_proc_id"]);
                 newSpellTemplate.Name = columns["name"];
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.EQAOERange = int.Parse(columns["aoerange"]);

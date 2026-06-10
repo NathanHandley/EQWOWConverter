@@ -3070,9 +3070,11 @@ namespace EQWOWConverter
                             {
                                 if (spellEffect.ImplicitTargetA == SpellWOWTargetType.UnitTargetAlly)
                                 {
-                                    Logger.WriteError("Created SpellID for spell ", itemTemplate.EQCombatProcSpellEffectID.ToString(), " on item proc item ", itemTemplate.WOWEntryID.ToString(), " since it will need map from targetally to self");
                                     if (spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect == -1)
+                                    {
                                         spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect = SpellTemplate.GenerateUniqueWOWSpellID();
+                                        Logger.WriteError("Created SpellID for spell ", itemTemplate.EQCombatProcSpellEffectID.ToString(), " on item proc item ", itemTemplate.WOWEntryID.ToString(), " since it will need map from targetally to self");
+                                    }
                                     itemTemplate.WOWSpellID1 = spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect;
                                     break;
                                 }
