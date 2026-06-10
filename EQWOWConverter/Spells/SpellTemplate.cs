@@ -235,7 +235,7 @@ namespace EQWOWConverter.Spells
         {
             get
             {
-                if (_GroupedWornSpellEffectBlocksForOutput.Count == 0)
+                if (_GroupedBaseSpellEffectBlocksForOutput.Count == 0)
                     GenerateOutputEffectBlocks();
                 return _GroupedWornSpellEffectBlocksForOutput;
             }
@@ -245,7 +245,7 @@ namespace EQWOWConverter.Spells
         {
             get
             {
-                if (_GroupedGoodProcSpellEffectBlocksForOutput.Count == 0)
+                if (_GroupedBaseSpellEffectBlocksForOutput.Count == 0)
                     GenerateOutputEffectBlocks();
                 return _GroupedGoodProcSpellEffectBlocksForOutput;
             }
@@ -255,7 +255,7 @@ namespace EQWOWConverter.Spells
         {
             get
             {
-                if (_GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count == 0)
+                if (_GroupedBaseSpellEffectBlocksForOutput.Count == 0)
                     GenerateOutputEffectBlocks();
                 return _GroupedClickySpellEffectBlocksForOutputBySpellParameters;
             }

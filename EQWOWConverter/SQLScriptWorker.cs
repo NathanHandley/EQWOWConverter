@@ -1299,7 +1299,7 @@ namespace EQWOWConverter
 
         private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, string commentFragment)
         {
-            if (spellEffectBlocks.Count == 0)
+            if (spellEffectBlocks.Count == 0 ||  spellEffectBlocks[0].WOWSpellID <= 0)
                 return;
 
             for (int i = 0; i < spellEffectBlocks.Count; i++)

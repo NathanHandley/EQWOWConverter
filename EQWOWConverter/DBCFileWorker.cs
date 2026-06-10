@@ -26,7 +26,6 @@ using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using System.Text;
-using static EQWOWConverter.Spells.SpellTemplate;
 
 namespace EQWOWConverter
 {
@@ -134,6 +133,35 @@ namespace EQWOWConverter
             process.WaitForExit();
 
             Logger.WriteDebug("Extracting client DBC files complete");
+        }
+
+        private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, int castTimeDBCID, bool isWorn)
+        {
+            if (spellEffectBlocks.Count == 0 || spellEffectBlocks[0].WOWSpellID <= 0)
+                return;
+
+            for (int i = 0; i < spellEffectBlocks.Count; i++)
+            {
+                SpellEffectBlock curEffectBlock = spellEffectBlocks[i];
+                if (isWorn == false)
+                {
+                    spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
+                        curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID);
+                }
+                else
+                {
+                    if (Configuration.ITEMS_SHOW_WORN_EFFECT_AURA_ICON == true)
+                        spellDBC.AddRow(curEffectBlock, spellTemplate.AuraDescription, spellTemplate, i != 0, true, true,
+                            curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID);
+                    else
+                        spellDBC.AddRow(curEffectBlock, spellTemplate.AuraDescription, spellTemplate, true, true, true,
+                            curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID);
+                }
+            }
+
+            // Skill-bound spells
+            if (spellTemplate.SkillLine != 0)
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate, spellEffectBlocks[0].WOWSpellID);
         }
 
         public void CreateDBCFiles(List<Zone> zones, List<CreatureModelTemplate> creatureModelTemplates, List<SpellTemplate> spellTemplates)
@@ -533,41 +561,12 @@ namespace EQWOWConverter
                 spellIconDBC.AddItemIconRow(i);
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
-                // Effects max at three, so need to loop for them
-                for (int i = 0; i < spellTemplate.GroupedBaseSpellEffectBlocksForOutput.Count; i++)
-                {
-                    SpellEffectBlock curEffectBlock = spellTemplate.GroupedBaseSpellEffectBlocksForOutput[i];
-                    spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff, 
-                        curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, spellTemplate.SpellCastTimeDBCID);
-
-                    // Worn effects version
-                    if (spellTemplate.WOWSpellIDWorn > 0)
-                    {
-                        SpellEffectBlock curWornEffectBlock = spellTemplate.GroupedWornSpellEffectBlocksForOutput[i];
-                        if (Configuration.ITEMS_SHOW_WORN_EFFECT_AURA_ICON == true)
-                            spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, i != 0, true, true, 
-                                curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, spellTemplate.SpellCastTimeDBCID);
-                        else
-                            spellDBC.AddRow(curWornEffectBlock, spellTemplate.AuraDescription, spellTemplate, true, true, true, 
-                                curWornEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, spellTemplate.SpellCastTimeDBCID);
-                    }
-
-                    // Good proc effect version
-                    if (spellTemplate.WOWSpellIDProcAndGoodEffect != -1)
-                    {
-                        SpellEffectBlock curGoodProcEffectBlock = spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput[i];
-                        spellDBC.AddRow(curGoodProcEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
-                            curGoodProcEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, spellTemplate.SpellCastTimeDBCID);
-                    }
-
-                    // Clicky versions
-                    for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
-                    {
-                        SpellEffectBlock clickieEffectBlock = spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyIndex][i];
-                        spellDBC.AddRow(clickieEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff, 
-                            clickieEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, spellTemplate.ClickySpellParatemers[clickyIndex].SpellCastTimeDBCID);
-                    }
-                }
+                // Block-specific data
+                AddSpellDataBlock(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput, spellTemplate.SpellCastTimeDBCID, false);
+                AddSpellDataBlock(spellTemplate, spellTemplate.GroupedWornSpellEffectBlocksForOutput, 1, true);
+                AddSpellDataBlock(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput, 1, false);
+                for (int i = 0; i < spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count; i++)
+                    AddSpellDataBlock(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[i], spellTemplate.ClickySpellParatemers[i].SpellCastTimeDBCID, false);
 
                 // Add the enchantment, if there is one
                 if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
@@ -575,10 +574,6 @@ namespace EQWOWConverter
                     spellItemEnchantmentDBC.AddRowForRogueWeaponProc(spellTemplate.WeaponSpellItemEnchantmentDBCID, spellTemplate.WeaponItemEnchantProcSpellID,
                         Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE, spellTemplate.WeaponItemEnchantSpellName);
                 }
-
-                // Skill-bound spells
-                if (spellTemplate.SkillLine != 0)
-                    skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate);
 
                 // Pets
                 if (Configuration.SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR == true)

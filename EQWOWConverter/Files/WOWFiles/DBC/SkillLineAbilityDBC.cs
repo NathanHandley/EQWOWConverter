@@ -25,12 +25,12 @@ namespace EQWOWConverter.WOWFiles
     {
         private static int CUR_SKILLLINEABILITY_DBCID = Configuration.DBCID_SKILLLINEABILITY_ID_START;
 
-        public void AddRow(int id, SpellTemplate spellTemplate)
+        public void AddRow(int id, SpellTemplate spellTemplate, int spellTemplateID)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID
             newRow.AddInt32(spellTemplate.SkillLine); // SkillLine
-            newRow.AddInt32(spellTemplate.WOWSpellID); // Spell
+            newRow.AddInt32(spellTemplateID); // Spell
             newRow.AddInt32(0); // RaceMask
             newRow.AddInt32(0); // ClassMask
             newRow.AddInt32(0); // ExcludeRace
