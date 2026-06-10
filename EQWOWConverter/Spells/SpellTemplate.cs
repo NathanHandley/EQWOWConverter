@@ -2699,7 +2699,11 @@ namespace EQWOWConverter.Spells
                 eqSpellCategory == 131 || // Damage over time (poison)
                 eqSpellCategory == 132) // Damage over time (disease)
             {
-                spellTemplate.SpellGroupStackingRule = 2; // SPELL_GROUP_STACK_RULE_EXCLUSIVE_FROM_SAME_CASTER
+                spellTemplate.SpellGroupStackingRule = 2; // SPELL_GROUP_STACK_FLAG_NOT_SAME_CASTER
+            }
+            else
+            {
+                spellTemplate.SpellGroupStackingRule = 1; // SPELL_GROUP_STACK_RULE_EXCLUSIVE
             }
 
             // Calculate the category
