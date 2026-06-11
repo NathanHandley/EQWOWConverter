@@ -1359,15 +1359,15 @@ namespace EQWOWConverter
                     AddSpellDataBlock(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[i], " (Clicky)");
 
                 // Stack rules
-                if (spellTemplate.SpellGroupStackingID > 0)
+                foreach (int spellGroupStackingID in spellTemplate.SpellGroupStackingIDs)
                 {
-                    spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.WOWSpellID);
+                    spellGroupSQL.AddRow(spellGroupStackingID, spellTemplate.WOWSpellID);
                     if (spellTemplate.WOWSpellIDWorn > 0)
-                        spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.WOWSpellIDWorn);
+                        spellGroupSQL.AddRow(spellGroupStackingID, spellTemplate.WOWSpellIDWorn);
                     if (spellTemplate.WOWSpellIDProcAndGoodEffect != -1)
-                        spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.WOWSpellIDProcAndGoodEffect);
+                        spellGroupSQL.AddRow(spellGroupStackingID, spellTemplate.WOWSpellIDProcAndGoodEffect);
                     for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
-                        spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.ClickySpellParatemers[clickyIndex].WOWSpellID);
+                        spellGroupSQL.AddRow(spellGroupStackingID, spellTemplate.ClickySpellParatemers[clickyIndex].WOWSpellID);
                 }
 
                 // Teleports

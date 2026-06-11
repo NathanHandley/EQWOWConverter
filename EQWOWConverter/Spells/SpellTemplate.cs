@@ -57,6 +57,8 @@ namespace EQWOWConverter.Spells
         public static Dictionary<int, int> SpellRangeDBCIDsBySpellRange = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellRadiusDBCIDsBySpellRadius = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellGroupStackRuleByGroup = new Dictionary<int, int>();
+        private static Dictionary<int, int> SpellGroupIDByEffectStackKey = new Dictionary<int, int>();
+        private static int CUR_GENERATED_SPELL_GROUP_ID = Configuration.SQL_SPELL_GROUP_ID_START;
 
         private static Dictionary<int, SpellTemplate> SpellTemplatesByEQID = new Dictionary<int, SpellTemplate>();
         private static Dictionary<(ItemFocusType, int), SpellTemplate> SpellTemplatesByFocusTypeAndValue = new Dictionary<(ItemFocusType, int), SpellTemplate>();
@@ -136,8 +138,7 @@ namespace EQWOWConverter.Spells
         public int EQBuffDurationInTicks = 0;
         public int EQBuffDurationFormula = 0;
         public SpellDuration AuraDuration = new SpellDuration();
-        public int SpellGroupStackingID = -1;
-        public int SpellGroupStackingRule = 0;
+        public List<int> SpellGroupStackingIDs = new List<int>();
         public UInt32 RecoveryTimeInMS = 0; // Note that this may be zero for a player but not a creature.  See Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS
         public int EQSpellVisualEffectIndex = 0;
         public UInt32 SpellVisualID1 = 0;
@@ -980,6 +981,7 @@ namespace EQWOWConverter.Spells
             // Fill in the effect details
             SpellEffectEQ curEffect = new SpellEffectEQ();
             curEffect.EQEffectType = (SpellEQEffectType)effectIDRaw;
+            curEffect.EQEffectSlot = slotID;
             if (slotID < 12)
             {
                 int formulaRaw = int.Parse(rowColumns[string.Concat("formula", slotID)]);
@@ -2684,37 +2686,104 @@ namespace EQWOWConverter.Spells
 
         private static void SetAuraStackRule(ref SpellTemplate spellTemplate, int eqSpellCategory, bool isBardSongAura)
         {
-            // This is exactly how EQ does spell stacking, but it seems like an appropriate approximation that works well for wow
             if (eqSpellCategory < 0) // NPC = -99, AA Procs = -1
                 return;
             if (eqSpellCategory > 250) // AA Abilities = 999
                 return;
 
-            // Damage detrimental effects should stack from multiple sources / spells, but not exact same ones from the same player
-            if (eqSpellCategory == 7 || // Damage over time (magic)
-                eqSpellCategory == 8 || // Damage over time (undead)
-                eqSpellCategory == 9 || // Damage over time (life taps)
-                eqSpellCategory == 129 || // Damage over time (fire)
-                eqSpellCategory == 130 || // Damage over time (ice)
-                eqSpellCategory == 131 || // Damage over time (poison)
-                eqSpellCategory == 132) // Damage over time (disease)
-            {
-                spellTemplate.SpellGroupStackingRule = 2; // SPELL_GROUP_STACK_FLAG_NOT_SAME_CASTER
-            }
-            else
-            {
-                spellTemplate.SpellGroupStackingRule = 1; // SPELL_GROUP_STACK_RULE_EXCLUSIVE
-            }
+            // Stacking only matters for spells that leave a lasting aura on the target
+            if (spellTemplate.AuraDuration.MaxDurationInMS <= 0 && spellTemplate.AuraDuration.IsInfinite == false)
+                return;
 
-            // Calculate the category
-            int groupStackingID;
-            if (isBardSongAura == true)
-                groupStackingID = Configuration.SQL_SPELL_GROUP_ID_FOR_BARD_AURA_START + eqSpellCategory;
-            else
-                groupStackingID = Configuration.SQL_SPELL_GROUP_ID_START + eqSpellCategory;
-            if (SpellGroupStackRuleByGroup.ContainsKey(groupStackingID) == false)
-                SpellGroupStackRuleByGroup[groupStackingID] = spellTemplate.SpellGroupStackingRule;
-            spellTemplate.SpellGroupStackingID = groupStackingID;
+            // Collect the stacking-relevant effect keys this spell carries
+            HashSet<int> effectStackKeys = new HashSet<int>();
+            foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
+                AddStackingEffectKeys(eqEffect, effectStackKeys);
+            if (effectStackKeys.Count == 0)
+                return;
+
+            // EQ compares spell effects slot by slot (in the effects list) which is why those
+            // CHA spacers are in there.  Azerothcore does allow a spell be a multiple groups.
+            foreach (int effectStackKey in effectStackKeys)
+            {
+                // Consider bard songs differently since they only conflict with each other
+                int compositeKey = (effectStackKey * 2) + (isBardSongAura ? 1 : 0);
+                if (SpellGroupIDByEffectStackKey.TryGetValue(compositeKey, out int groupStackingID) == false)
+                {
+                    groupStackingID = CUR_GENERATED_SPELL_GROUP_ID;
+                    CUR_GENERATED_SPELL_GROUP_ID++;
+                    if (groupStackingID > Configuration.SQL_SPELL_GROUP_ID_END)
+                        Logger.WriteError("Generated an ID higher than SQL_SPELL_GROUP_ID_END (", Configuration.SQL_SPELL_GROUP_ID_END.ToString(), ")");
+                    SpellGroupIDByEffectStackKey[compositeKey] = groupStackingID;
+                    SpellGroupStackRuleByGroup[groupStackingID] = 4; // SPELL_GROUP_STACK_RULE_EXCLUSIVE_HIGHEST (not sure this is working...)
+                }
+                spellTemplate.SpellGroupStackingIDs.Add(groupStackingID);
+            }
+        }
+
+        // Combine similar EQ effect type with a raw slot for slot calculations, to factor for spacers (CHA placeholders)
+        private static int MakeEffectStackKey(SpellEQEffectType effectType, int slot)
+        {
+            return ((int)effectType * 16) + slot; // slot is 1-12
+        }
+
+        // Only add stack effect keys for an effect if it's something we want stack control on
+        private static void AddStackingEffectKeys(SpellEffectEQ eqEffect, HashSet<int> effectStackKeys)
+        {
+            int slot = eqEffect.EQEffectSlot;
+            switch (eqEffect.EQEffectType)
+            {
+                // Non-Binary Buffs/Debuffs. Zero values are spacers for slot comparisons
+                case SpellEQEffectType.ArmorClass:
+                case SpellEQEffectType.Attack:
+                case SpellEQEffectType.MovementSpeed:    // Run speed + / - compete
+                case SpellEQEffectType.Strength:
+                case SpellEQEffectType.Dexterity:
+                case SpellEQEffectType.Agility:
+                case SpellEQEffectType.Stamina:
+                case SpellEQEffectType.Intelligence:
+                case SpellEQEffectType.Wisdom:
+                case SpellEQEffectType.Charisma:
+                case SpellEQEffectType.AttackSpeed:      // Haste vs slow compete
+                case SpellEQEffectType.AttackSpeed2:     // This actually stacks with AttackSpeed 1
+                case SpellEQEffectType.ResistFire:
+                case SpellEQEffectType.ResistCold:
+                case SpellEQEffectType.ResistPoison:
+                case SpellEQEffectType.ResistDisease:
+                case SpellEQEffectType.ResistMagic:
+                case SpellEQEffectType.Rune:
+                case SpellEQEffectType.DamageShield:
+                case SpellEQEffectType.TotalHP:
+                case SpellEQEffectType.TotalMana:
+                case SpellEQEffectType.HealOverTime:
+                    if (eqEffect.EQBaseValue != 0)
+                        effectStackKeys.Add(MakeEffectStackKey(eqEffect.EQEffectType, slot));
+                    break;
+                // Binary effects
+                case SpellEQEffectType.InvisibilityUnstable:
+                case SpellEQEffectType.SeeInvisibility:
+                case SpellEQEffectType.WaterBreathing:
+                case SpellEQEffectType.Invisibility:
+                case SpellEQEffectType.Levitate:
+                case SpellEQEffectType.Illusion:
+                case SpellEQEffectType.ModelSize:
+                    effectStackKeys.Add(MakeEffectStackKey(eqEffect.EQEffectType, slot));
+                    break;
+                // Resist All overwrites specific resists
+                case SpellEQEffectType.ResistAll:
+                    if (eqEffect.EQBaseValue != 0)
+                    {
+                        effectStackKeys.Add(MakeEffectStackKey(SpellEQEffectType.ResistFire, slot));
+                        effectStackKeys.Add(MakeEffectStackKey(SpellEQEffectType.ResistCold, slot));
+                        effectStackKeys.Add(MakeEffectStackKey(SpellEQEffectType.ResistPoison, slot));
+                        effectStackKeys.Add(MakeEffectStackKey(SpellEQEffectType.ResistDisease, slot));
+                        effectStackKeys.Add(MakeEffectStackKey(SpellEQEffectType.ResistMagic, slot));
+                    }
+                    break;
+                // All else are things should probably be skipped.  Nukes, pets, blah blah
+                default:
+                    break;
+            }
         }
 
         private static void SetActionAndAuraDescriptions(ref SpellTemplate spellTemplate, SpellTemplate? recourseSpellTemplate, SpellTemplate? procLinkSpellTemplate)

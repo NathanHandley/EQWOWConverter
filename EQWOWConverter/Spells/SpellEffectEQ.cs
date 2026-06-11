@@ -21,6 +21,7 @@ namespace EQWOWConverter.Spells
     internal class SpellEffectEQ
     {
         public SpellEQEffectType EQEffectType = SpellEQEffectType.None;
+        public int EQEffectSlot = 0;
         public SpellEQBaseValueFormulaType EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseValue;
         public int EQFormulaTypeValue = 0;
         public int EQBaseValue = 0;
