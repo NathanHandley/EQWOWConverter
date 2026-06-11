@@ -1549,7 +1549,7 @@ namespace EQWOWConverter.Items
                 newItemTemplate.EQItemDisplayFileName = columns["item_display_file"].Trim().ToLower();
 
                 // Price
-                newItemTemplate.BuyPriceInCopper = int.Parse(columns["price"]);
+                newItemTemplate.BuyPriceInCopper = Convert.ToInt32(float.Parse(columns["price"]) * float.Parse(columns["sellrate"]));
                 if (newItemTemplate.BuyPriceInCopper <= 0)
                     newItemTemplate.BuyPriceInCopper = 1;
                 newItemTemplate.SellPriceInCopper = int.Max(Convert.ToInt32(Convert.ToDouble(newItemTemplate.BuyPriceInCopper) * 0.25), 0);
