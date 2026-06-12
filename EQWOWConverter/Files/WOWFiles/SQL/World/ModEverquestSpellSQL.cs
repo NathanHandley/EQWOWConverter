@@ -44,16 +44,28 @@ namespace EQWOWConverter.WOWFiles
             return stringBuilder.ToString();
         }
 
-        public void AddRow(SpellTemplate spellTemplate, int spellID)
+        public void AddRow(SpellTemplate spellTemplate, int spellID, bool isWorn)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("SpellID", spellID);
             newRow.AddString("SpellName", 255, spellTemplate.Name);
-            newRow.AddInt("AuraDurationBaseInMS", spellTemplate.AuraDuration.BaseDurationInMS);
-            newRow.AddInt("AuraDurationAddPerLevelInMS", spellTemplate.AuraDuration.DurationInMSPerLevel);
-            newRow.AddInt("AuraDurationMaxInMS", spellTemplate.AuraDuration.MaxDurationInMS);
-            newRow.AddInt("AuraDurationCalcMinLevel", spellTemplate.AuraDuration.MinLevel);
-            newRow.AddInt("AuraDurationCalcMaxLevel", spellTemplate.AuraDuration.MaxLevel);
+            if (isWorn == true)
+            {
+                newRow.AddInt("AuraDurationBaseInMS", 0);
+                newRow.AddInt("AuraDurationAddPerLevelInMS", 0);
+                newRow.AddInt("AuraDurationMaxInMS", 0);
+                newRow.AddInt("AuraDurationCalcMinLevel", 0);
+                newRow.AddInt("AuraDurationCalcMaxLevel", 0);
+            }
+            else
+            {
+                newRow.AddInt("AuraDurationBaseInMS", spellTemplate.AuraDuration.BaseDurationInMS);
+                newRow.AddInt("AuraDurationAddPerLevelInMS", spellTemplate.AuraDuration.DurationInMSPerLevel);
+                newRow.AddInt("AuraDurationMaxInMS", spellTemplate.AuraDuration.MaxDurationInMS);
+                newRow.AddInt("AuraDurationCalcMinLevel", spellTemplate.AuraDuration.MinLevel);
+                newRow.AddInt("AuraDurationCalcMaxLevel", spellTemplate.AuraDuration.MaxLevel);
+            }
+
             if (spellTemplate.RecourseLinkSpellTemplate != null)
                 newRow.AddInt("RecourseSpellID", spellTemplate.RecourseLinkSpellTemplate.WOWSpellID);
             else

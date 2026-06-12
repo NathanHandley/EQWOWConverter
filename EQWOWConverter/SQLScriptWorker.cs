@@ -1309,7 +1309,7 @@ namespace EQWOWConverter
                 SpellEffectBlock curEffectBlock = spellEffectBlocks[i];
 
                 // Mod data
-                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID);
+                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)");
 
                 // Spell bonus (TODO: do something more tailored)
                 spellBonusDataSQL.AddRow(curEffectBlock.WOWSpellID, string.Concat("EQ Spell ", spellTemplate.Name, commentFragment, " Block ", i));
