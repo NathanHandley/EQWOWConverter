@@ -518,7 +518,7 @@ namespace EQWOWConverter
         // This is how much 'weight' the lower stat has when converting EQ to WoW stats, with 
         //  values closer to 1 leaning towards the lower stat, and further from 1 leaning towards
         //  the higher stat.  Don't make it less than 1.  
-        public static float ITEMS_STATS_LOW_BIAS_WEIGHT = 2.5f;
+        public static float ITEMS_STATS_LOW_BIAS_WEIGHT = 1f;
 
         // How much to multiple the slot size of a bag in EQ.  EQ allows for 2x the number bags of WOW (not including starter)
         public static int ITEMS_BAG_SLOT_MULTIPLIER = 2;
@@ -663,7 +663,7 @@ namespace EQWOWConverter
         // This is how much 'weight' the lower effect value has when converting EQ to WoW spell effects,
         //  with values closer to 1 leaning towards the lower effect, and further from 1 leaning towards
         //  the higher effect.  Don't make it less than 1.  
-        public static float SPELL_EFFECT_VALUE_LOW_BIAS_WEIGHT = 2.5f;
+        public static float SPELL_EFFECT_VALUE_LOW_BIAS_WEIGHT = 1.7f;
 
         // If true, the damage formula will honor spell level based values, otherwise it'll use maximum
         public static bool SPELL_EFFECT_USE_DYNAMIC_EFFECT_VALUES = true;
@@ -822,7 +822,7 @@ namespace EQWOWConverter
         // - SpellIDs 96000 - 96049 reserved for 'worn' effects (effects that always take effect when worn)
         // - SpellIDs 96100 - 96199 reserved for 'coat' effects that come from rogue poisons, triggering another spell
         // - SpellIDs 96200 - 97656 reserved for 'clicky' effects (defined in ItemTemplates.csv under clickeffect_wow)
-        // - SpellIDs 97700 - 97713 reserved for 'good clicky' effects (defined in SpellTemplate.csv under wow_good_proc_id)
+        // - SpellIDs 97700 - 97715 reserved for 'good clicky' effects (defined in SpellTemplate.csv under wow_good_proc_id)
         // - SpellIDs 98000+ (or as defined below) used for 'generated spell IDs'
         public static int DBCID_SPELL_ID_START = 86900;
         public static int DBCID_SPELL_ID_GENERATED_START = 98000;
@@ -1416,7 +1416,7 @@ namespace EQWOWConverter
             OutputTextLineToConfig("# - SpellIDs 96000 - 96049 reserved for 'worn' effects (effects that always take effect when worn)");
             OutputTextLineToConfig("# - SpellIDs 96100 - 96199 reserved for 'coat' effects that come from rogue poisons, triggering another spell");
             OutputTextLineToConfig("# - SpellIDs 96200 - 97656 reserved for 'clicky' effects (defined in ItemTemplates.csv under clickeffect_wow)");
-            OutputTextLineToConfig("# - SpellIDs 97700 - 97713 reserved for 'good clicky' effects (defined in SpellTemplate.csv under wow_good_proc_id)");
+            OutputTextLineToConfig("# - SpellIDs 97700 - 97715 reserved for 'good clicky' effects (defined in SpellTemplate.csv under wow_good_proc_id)");
             OutputTextLineToConfig("# - SpellIDs 98000+ (or as defined below) used for 'generated spell IDs'");
             OutputVariableToConfig("DBCID_SPELL_ID_START", DBCID_SPELL_ID_START, "", false);
             OutputVariableToConfig("DBCID_SPELL_ID_GENERATED_START", DBCID_SPELL_ID_GENERATED_START, "", false);
