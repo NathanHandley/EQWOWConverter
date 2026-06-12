@@ -1410,14 +1410,7 @@ namespace EQWOWConverter
                     foreach (CreatureSpawnEntry spawnEntry in creatureSpawnEntriesByGroupID[spawnGroup.Key])
                     {
                         if (creatureTemplatesByEQID.ContainsKey(spawnEntry.EQCreatureTemplateID))
-                        {
                             curSpawnPool.AddCreatureTemplate(creatureTemplatesByEQID[spawnEntry.EQCreatureTemplateID], spawnEntry.Chance);
-
-                            // If  this is a limited spawn, limit the group
-                            // TODO: This should be handled differently, as only specific creature templates should be limited
-                            if (creatureTemplatesByEQID[spawnEntry.EQCreatureTemplateID].LimitOneInSpawnPool == true)
-                                spawnGroup.Value.SpawnLimit = 1;
-                        }
                     }
                 }
 
@@ -1431,6 +1424,23 @@ namespace EQWOWConverter
                 {
                     Logger.WriteDebug("Invalid creature spawn pool with groupID '" + spawnGroup.Key + "', as there are no valid creature templates. Skipping.");
                     continue;
+                }
+
+                // Enforce a spawn limit for certain creatures
+                bool allCandidatesAreSameCreature = true;
+                foreach (CreatureTemplate creatureTemplate in curSpawnPool.CreatureTemplates)
+                {
+                    if (creatureTemplate.WOWCreatureTemplateID != curSpawnPool.CreatureTemplates[0].WOWCreatureTemplateID)
+                    {
+                        allCandidatesAreSameCreature = false;
+                        break;
+                    }
+                }
+                if (allCandidatesAreSameCreature == true)
+                {
+                    int templateSpawnLimit = curSpawnPool.CreatureTemplates[0].SpawnLimit;
+                    if (templateSpawnLimit > 0 && (curSpawnPool.SpawnLimit == 0 || templateSpawnLimit < curSpawnPool.SpawnLimit))
+                        curSpawnPool.SpawnLimit = templateSpawnLimit;
                 }
 
                 // Validate the chances

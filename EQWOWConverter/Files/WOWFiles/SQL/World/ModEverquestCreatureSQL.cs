@@ -28,16 +28,18 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`CreatureTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`CanShowHeldLootItems` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`CanShowHeldLootShields` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`SpawnLimit` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`CreatureTemplateID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int creatureTemplateID, bool canShowHeldLootItems, bool canShowHeldLootShields)
+        public void AddRow(int creatureTemplateID, bool canShowHeldLootItems, bool canShowHeldLootShields, int spawnLimit)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatureTemplateID", creatureTemplateID);
             newRow.AddInt("CanShowHeldLootItems", canShowHeldLootItems == true ? 1 : 0);
             newRow.AddInt("CanShowHeldLootShields", canShowHeldLootShields == true ? 1 : 0);
+            newRow.AddInt("SpawnLimit", spawnLimit);
             Rows.Add(newRow);
         }
     }

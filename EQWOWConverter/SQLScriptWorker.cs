@@ -75,6 +75,7 @@ namespace EQWOWConverter
         private ModEverquestCreatureSQL modEverquestCreatureSQL = new ModEverquestCreatureSQL();
         private ModEverquestCreatureInstanceSQL modEverquestCreatureInstanceSQL = new ModEverquestCreatureInstanceSQL();
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
+        private ModEverquestCreatureSpawnPointSQL modEverquestCreatureSpawnPointSQL = new ModEverquestCreatureSpawnPointSQL();
         private ModEverquestCreatureWaypointSQL modEverquestCreatureWaypointSQL = new ModEverquestCreatureWaypointSQL();
         private ModEverquestForageZoneItemsSQL modEverquestForageZoneItemsSQL = new ModEverquestForageZoneItemsSQL();
         private ModEverquestItemTemplateSQL modEverquestItemTemplateSQL = new ModEverquestItemTemplateSQL();
@@ -244,6 +245,7 @@ namespace EQWOWConverter
                             CreatureTemplate creatureTemplate = pointTemplates[spawnInstanceIndex];
                             int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                             poolCreatureSQL.AddRow(creatureGUID, poolID, 0, creatureTemplate.Name);
+                            modEverquestCreatureSpawnPointSQL.AddRow(creatureGUID, spawnInstance.MapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, spawnPool.SpawnLimit);
                             string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
                             CreateCreatureAndRelatedSQLEntries(creatureGUID, creatureTemplate, spawnInstance, spawnPool.SpawnGroup, comment);
                         }
@@ -280,6 +282,7 @@ namespace EQWOWConverter
                                 int chance = spawnPool.CreatureTemplateChances[i];
                                 int guid = CreatureTemplate.GenerateCreatureSQLGUID();
                                 poolCreatureSQL.AddRow(guid, poolID, chance, template.Name);
+                                modEverquestCreatureSpawnPointSQL.AddRow(guid, spawnInstance.MapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, 0);
                                 string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
                                 CreateCreatureAndRelatedSQLEntries(guid, template, spawnInstance, spawnPool.SpawnGroup, comment);
                             }
@@ -518,7 +521,8 @@ namespace EQWOWConverter
                 }
 
                 // All creature data
-                modEverquestCreatureSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.Race.CanHoldVisualItems, creatureTemplate.Race.CanHoldVisualShields);
+                modEverquestCreatureSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.Race.CanHoldVisualItems, creatureTemplate.Race.CanHoldVisualShields,
+                    creatureTemplate.SpawnLimit);
 
                 // Determine the display id
                 int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;
@@ -1758,6 +1762,7 @@ namespace EQWOWConverter
             modEverquestCreatureSQL.SaveToDisk("mod_everquest_creature", SQLFileType.World);
             modEverquestCreatureInstanceSQL.SaveToDisk("mod_everquest_creature_instance", SQLFileType.World);
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
+            modEverquestCreatureSpawnPointSQL.SaveToDisk("mod_everquest_creature_spawn_point", SQLFileType.World);
             modEverquestCreatureWaypointSQL.SaveToDisk("mod_everquest_creature_waypoint", SQLFileType.World);
             modEverquestForageZoneItemsSQL.SaveToDisk("mod_everquest_forage_zone_items", SQLFileType.World);
             modEverquestItemTemplateSQL.SaveToDisk("mod_everquest_item_template", SQLFileType.World);

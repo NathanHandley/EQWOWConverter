@@ -220,6 +220,7 @@ namespace EQWOWConverter.Spells
         public SpellTemplate? IllusionSpellParent = null;
         public int MaleFormSpellTemplateID = 0;
         public int FemaleFormSpellTemplateID = 0;
+        public bool AllowSpellPowerToInfluence = false;
 
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
