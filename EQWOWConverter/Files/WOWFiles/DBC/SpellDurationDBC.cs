@@ -25,7 +25,36 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(durationInMS); // Duration
             newRow.AddInt32(0); // DurationPerLevel
             newRow.AddInt32(durationInMS); // Max duration
+
+            newRow.SortValue1 = dbcID;
+
             Rows.Add(newRow);
+        }
+
+        protected override void OnPostLoadDataFromDisk()
+        {
+            // Convert any raw data rows to actual data rows
+            foreach (DBCRow row in Rows)
+            {
+                // This shouldn't be possible, but control for it just in case
+                if (row.SourceRawBytes.Count == 0)
+                {
+                    Logger.WriteError("SkillLineDBC had no source raw bytes when converting a row in SpellDurationDBC");
+                    continue;
+                }
+
+                // Fill every field
+                int byteCursor = 0;
+                row.AddIntFromSourceRawBytes(ref byteCursor); // ID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Duration
+                row.AddIntFromSourceRawBytes(ref byteCursor); // DurationPerLevel
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Max duration
+
+                row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[0]).Value; // ID
+
+                // Purge raw data
+                row.SourceRawBytes.Clear();
+            }
         }
     }
 }
