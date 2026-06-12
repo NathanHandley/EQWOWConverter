@@ -431,11 +431,11 @@ namespace EQWOWConverter.Spells
                     continue;
 
                 // Stacking rules
-                SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]), newSpellTemplate.IsBardSongAura);
+                SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]), newSpellTemplate.IsBardSongAura, isDetrimental);
                 for (int i = 0; i < effectGeneratedSpellTemplates.Count; i++)
                 {
                     SpellTemplate effectGeneratedSpellTemplate = effectGeneratedSpellTemplates[i];
-                    SetAuraStackRule(ref effectGeneratedSpellTemplate, int.Parse(columns["spell_category"]), effectGeneratedSpellTemplate.IsBardSongAura);
+                    SetAuraStackRule(ref effectGeneratedSpellTemplate, int.Parse(columns["spell_category"]), effectGeneratedSpellTemplate.IsBardSongAura, isDetrimental);
                 }
 
                 // Add it, and any effect generated ones
@@ -2685,7 +2685,7 @@ namespace EQWOWConverter.Spells
             spellTemplate.WOWSpellEffects.Sort();
         }
 
-        private static void SetAuraStackRule(ref SpellTemplate spellTemplate, int eqSpellCategory, bool isBardSongAura)
+        private static void SetAuraStackRule(ref SpellTemplate spellTemplate, int eqSpellCategory, bool isBardSongAura, bool isDetrimental)
         {
             if (eqSpellCategory < 0) // NPC = -99, AA Procs = -1
                 return;
@@ -2707,8 +2707,9 @@ namespace EQWOWConverter.Spells
             // CHA spacers are in there.  Azerothcore does allow a spell be a multiple groups.
             foreach (int effectStackKey in effectStackKeys)
             {
-                // Consider bard songs differently since they only conflict with each other
-                int compositeKey = (effectStackKey * 2) + (isBardSongAura ? 1 : 0);
+                // Consider bard songs differently since they only conflict with each other, and split detrimental from
+                // beneficial since buffs and debuffs of the same effect
+                int compositeKey = (effectStackKey * 4) + (isBardSongAura ? 2 : 0) + (isDetrimental ? 1 : 0);
                 if (SpellGroupIDByEffectStackKey.TryGetValue(compositeKey, out int groupStackingID) == false)
                 {
                     groupStackingID = CUR_GENERATED_SPELL_GROUP_ID;
