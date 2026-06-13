@@ -32,5 +32,33 @@ namespace EQWOWConverter.WOWFiles
 
             Rows.Add(newRow);
         }
+
+        protected override void OnPostLoadDataFromDisk()
+        {
+            // Convert any raw data rows to actual data rows (which should be all of them)
+            foreach (DBCRow row in Rows)
+            {
+                // This shouldn't be possible, but control for it just in case
+                if (row.SourceRawBytes.Count == 0)
+                {
+                    Logger.WriteError("LFGDungeonGroupDBC had no source raw bytes when converting a row in OnPostLoadDataFromDisk");
+                    continue;
+                }
+
+                // Fill every field
+                int byteCursor = 0;
+                row.AddIntFromSourceRawBytes(ref byteCursor); // ID
+                row.AddStringLangFromSourceRawBytes(ref byteCursor, StringBlock); // Name
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Order_Index
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Parent_Group_Id
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Typeid
+
+                // Sort by ID
+                row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[0]).Value;
+
+                // Purge raw data
+                row.SourceRawBytes.Clear();
+            }
+        }
     }
 }

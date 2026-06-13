@@ -47,5 +47,45 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
             CUR_ID++;
         }
+
+        protected override void OnPostLoadDataFromDisk()
+        {
+            // Convert any raw data rows to actual data rows (which should be all of them)
+            foreach (DBCRow row in Rows)
+            {
+                // This shouldn't be possible, but control for it just in case
+                if (row.SourceRawBytes.Count == 0)
+                {
+                    Logger.WriteError("LFGDungeonGroupDBC had no source raw bytes when converting a row in OnPostLoadDataFromDisk");
+                    continue;
+                }
+
+                // Fill every field
+                int byteCursor = 0;
+                row.AddIntFromSourceRawBytes(ref byteCursor); // ID
+                row.AddStringLangFromSourceRawBytes(ref byteCursor, StringBlock); // Name
+                row.AddIntFromSourceRawBytes(ref byteCursor); // MinLevel
+                row.AddIntFromSourceRawBytes(ref byteCursor); // MaxLevel
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Target_Level
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Target_Level_Min
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Target_Level_Max
+                row.AddIntFromSourceRawBytes(ref byteCursor); // MapID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Difficulty
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Flags (I think 3 is cross realm?)
+                row.AddIntFromSourceRawBytes(ref byteCursor); // TypeID  (2 = raid, 1 = dungeon)
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Faction
+                row.AddStringFromSourceRawBytes(ref byteCursor, StringBlock); //TextureFilename
+                row.AddIntFromSourceRawBytes(ref byteCursor); // ExpansionLevel
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Order_Index
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Group_Id
+                row.AddStringLangFromSourceRawBytes(ref byteCursor, StringBlock); // Description_Lang
+
+                // Sort by ID
+                row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[0]).Value;
+
+                // Purge raw data
+                row.SourceRawBytes.Clear();
+            }
+        }
     }
 }
