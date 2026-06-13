@@ -895,8 +895,8 @@ namespace EQWOWConverter
                     continue;
 
                 // Save any additional metadata
-                if (itemTemplate.WOWEntryIDForCreatureEquip != 0)
-                    modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryIDForCreatureEquip);
+                if (itemTemplate.WOWEntryIDForNPCEquip > 0)
+                    modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryIDForNPCEquip);
                 else
                     modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryID);
 
@@ -937,7 +937,7 @@ namespace EQWOWConverter
                     itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfo);
                     if (itemTemplate.ItemDisplayInfoForCreatureEquip != null)
                     {
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryIDForCreatureEquip, string.Concat(itemTemplate.Name, " (npc)"), itemTemplate.Description,
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryIDForNPCEquip, string.Concat(itemTemplate.Name, " (npc)"), itemTemplate.Description,
                             itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfoForCreatureEquip);
                     }
                     if (itemTemplate.StarterVersionItemTemplateID > 0)

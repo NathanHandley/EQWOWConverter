@@ -486,7 +486,7 @@ namespace EQWOWConverter
                     // Regular items (2 versions, one for creatures and one for players)
                     itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.ItemDisplayInfo);
                     if (itemTemplate.ItemDisplayInfoForCreatureEquip != null)
-                        itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryIDForCreatureEquip, itemTemplate.ItemDisplayInfoForCreatureEquip);
+                        itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryIDForNPCEquip, itemTemplate.ItemDisplayInfoForCreatureEquip);
 
                     // Sometimes a third if it's a starter item
                     if (itemTemplate.StarterVersionItemTemplateID != -1)

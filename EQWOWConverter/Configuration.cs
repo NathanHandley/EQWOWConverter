@@ -932,10 +932,9 @@ namespace EQWOWConverter
         // - Equipped Click Essence IDs range 114000 - 114932
         // - Quest Template multi-item reward containers IDs range 116000 - 116200
         // - Tradeskill multi-item creation containers IDs range 117000 - 117217
-        // - Generated version of items range 120000-133783 (TODO Review: May be much less)
+        // - NPC-worn items have IDs 120000 - 145000
         public static int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;
-        public static int SQL_ITEM_TEMPLATE_ENTRY_END = 134000;
-        public static int SQL_ITEM_TEMPLATE_ENTRY_GENERATED_START = 120000;
+        public static int SQL_ITEM_TEMPLATE_ENTRY_END = 145000;
 
         // Start and end IDs for npc_text sql records
         public static int SQL_NPCTEXT_ID_START = 80000;
@@ -1470,10 +1469,9 @@ namespace EQWOWConverter
             OutputTextLineToConfig("# - Equipped Click Essence IDs range 114000 - 114932");
             OutputTextLineToConfig("# - Quest Template multi-item reward containers IDs range 116000 - 116200");
             OutputTextLineToConfig("# - Tradeskill multi-item creation containers IDs range 117000 - 117217");
-            OutputTextLineToConfig("# - NPC-worn version of items range 120000-133783");
+            OutputTextLineToConfig("# - NPC-worn items have IDs 120000 - 145000");
             OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_START", SQL_ITEM_TEMPLATE_ENTRY_START, "", false);
             OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_END", SQL_ITEM_TEMPLATE_ENTRY_END, "", false);
-            OutputVariableToConfig("SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START", SQL_ITEM_TEMPLATE_ENTRY_GENERATED_START, "");
             OutputVariableToConfig("SQL_NPCTEXT_ID_START", SQL_NPCTEXT_ID_START, "Start and end IDs for npc_text sql records", false);
             OutputVariableToConfig("SQL_NPCTEXT_ID_END", SQL_NPCTEXT_ID_END, "");
             OutputVariableToConfig("SQL_PAGETEXT_ID_START", SQL_PAGETEXT_ID_START, "Start and end IDs for page_text SQL records", false);
@@ -1885,7 +1883,6 @@ namespace EQWOWConverter
             SQL_GOSSIPMENU_MENUID_END = ReadVariableFromConfigString("SQL_GOSSIPMENU_MENUID_END", configValuesByVariableName, SQL_GOSSIPMENU_MENUID_END);
             SQL_ITEM_TEMPLATE_ENTRY_START = ReadVariableFromConfigString("SQL_ITEM_TEMPLATE_ENTRY_START", configValuesByVariableName, SQL_ITEM_TEMPLATE_ENTRY_START);
             SQL_ITEM_TEMPLATE_ENTRY_END = ReadVariableFromConfigString("SQL_ITEM_TEMPLATE_ENTRY_END", configValuesByVariableName, SQL_ITEM_TEMPLATE_ENTRY_END);
-            SQL_ITEM_TEMPLATE_ENTRY_GENERATED_START = ReadVariableFromConfigString("SQL_ITEM_TEMPLATE_ENTRY_GENERATED_CREATURE_START", configValuesByVariableName, SQL_ITEM_TEMPLATE_ENTRY_GENERATED_START);
             SQL_NPCTEXT_ID_START = ReadVariableFromConfigString("SQL_NPCTEXT_ID_START", configValuesByVariableName, SQL_NPCTEXT_ID_START);
             SQL_NPCTEXT_ID_END = ReadVariableFromConfigString("SQL_NPCTEXT_ID_END", configValuesByVariableName, SQL_NPCTEXT_ID_END);
             SQL_PAGETEXT_ID_START = ReadVariableFromConfigString("SQL_PAGETEXT_ID_START", configValuesByVariableName, SQL_PAGETEXT_ID_START);
