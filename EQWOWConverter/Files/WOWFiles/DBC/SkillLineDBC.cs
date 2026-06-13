@@ -93,7 +93,7 @@ namespace EQWOWConverter.WOWFiles
         {
             int newID = CUR_ID;
             CUR_ID++;
-            return CUR_ID;
+            return newID;
         }
     }
 }

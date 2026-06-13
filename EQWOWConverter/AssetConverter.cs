@@ -979,6 +979,10 @@ namespace EQWOWConverter
                         creatureTemplate.WOWFactionTemplateID = 2313;
                 }
 
+                // To avoid exploits in broken quests, clear exp if there are no components to hand-in
+                if (questTemplate.RewardExperience > 0 && (questTemplate.RequiredItems.Count == 0))
+                    questTemplate.RewardExperience = 0;
+
                 // Add the default area id for quest sorting
                 questTemplate.AreaID = Convert.ToInt32(zonePropertiesByShortName[questTemplate.ZoneShortName.ToLower()].DefaultZoneArea.DBCAreaTableID);
 
