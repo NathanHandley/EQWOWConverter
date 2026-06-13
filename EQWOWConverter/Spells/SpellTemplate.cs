@@ -2401,6 +2401,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.AuraDescription = string.Concat("charmed");
                                 newSpellEffectWOW.EffectMechanic = SpellMechanicType.Charmed;
                                 spellTemplate.NoPartialImmunity = true;
+                                spellTemplate.GenerateNoThreat = true; // This avoids being stuck in combat
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         case SpellEQEffectType.Rune:
