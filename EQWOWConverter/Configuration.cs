@@ -256,6 +256,12 @@ namespace EQWOWConverter
         public static bool ZONE_FLYING_ALLOWED = true;
 
         //=====================================================================
+        // Dungeons
+        //=====================================================================
+        // If true, dungeon finder can be used for special versions of EQ dungeons
+        public static bool DUNGEON_FINDER_ENABLED = true;
+
+        //=====================================================================
         // World Maps (and Minimaps)
         //=====================================================================
         // When true, many various proprties are changed to support generation of minimaps, such as 'baking' in animated textures
@@ -793,6 +799,9 @@ namespace EQWOWConverter
         public static int DBCID_LFGDUNGEONGROUP_RAIDS_ID = 15;
         public static int DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID = 22;
 
+        // Start ID for LFGDungeons.dbc
+        public static int DBCID_LFGDUNGEONS_ID_START = 300;
+
         // Identifies the Light.DBC row, used for environmental properties
         public static int DBCID_LIGHT_ID_START = 3500;
 
@@ -804,8 +813,9 @@ namespace EQWOWConverter
 
         // Identifies Maps in Map.dbc and MapDifficulty.dbc
         // Note: This value is hard coded in /WorldData/ZoneProperties.csv, TransportShips.csv, and ZoneDisplayMapContinents.csv, so you cannot change only this value
+        // Values from 901+ are dungeon finder
         public static int DBCID_MAP_ID_START = 750;
-        public static int DBCID_MAP_ID_END = 899;
+        public static int DBCID_MAP_ID_END = 975;
 
         // ID for SkillLine.dbc
         public static int DBCID_SKILLLINE_ID_START = 810;
@@ -1299,7 +1309,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEM_ARROW_TEXTURE_NAME", ITEM_ARROW_TEXTURE_NAME, "");
             OutputVariableToConfig("ITEMS_FISHING_BAIT_POTENCY_TIER_1_SPELL_ID", ITEMS_FISHING_BAIT_POTENCY_TIER_1_SPELL_ID, "Spell IDs for the +fishing effect of bait", false);
             OutputVariableToConfig("ITEMS_FISHING_BAIT_POTENCY_TIER_2_SPELL_ID", ITEMS_FISHING_BAIT_POTENCY_TIER_2_SPELL_ID, "");
-
             OutputVariableToConfig("QUESTS_TEXT_DURATION_IN_MS", QUESTS_TEXT_DURATION_IN_MS, "How many milliseconds to display a text block from an NPC on quest events");
             OutputVariableToConfig("ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID", ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID, "Spell ID for the visual effect from Monk's epic weapon (Celestial Fists)");
             OutputVariableToConfig("QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID", QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID, "This is the icon ID that is used for quest rewards that contain more than one random item");
@@ -1414,7 +1423,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("DBCID_LIGHT_ID_START", DBCID_LIGHT_ID_START, "Identifies the Light.DBC row, used for environmental properties");
             OutputVariableToConfig("DBCID_LIGHTPARAMS_ID_START", DBCID_LIGHTPARAMS_ID_START, "Identifies the LightParams.dbc, used for detailed values related to a Light.DBC row");
             OutputVariableToConfig("DBCID_LOADINGSCREEN_ID_START", DBCID_LOADINGSCREEN_ID_START, "IDs for the loading screen");
-            OutputVariableToConfig("DBCID_MAP_ID_START", DBCID_MAP_ID_START, "Identifies Maps in Map.dbc and MapDifficulty.dbc. This value is hard coded in /WorldData/ZoneProperties.csv, TransportShips.csv, and ZoneDisplayMapContinents.csv, so you cannot change only this value", false);
+            OutputTextLineToConfig("# Identifies Maps in Map.dbc and MapDifficulty.dbc. This value is hard coded in /WorldData/ZoneProperties.csv, TransportShips.csv, and ZoneDisplayMapContinents.csv, so you cannot change only this value. ");
+            OutputVariableToConfig("DBCID_MAP_ID_START", DBCID_MAP_ID_START, "Values from 901+ are dungeon finder", false);
             OutputVariableToConfig("DBCID_MAP_ID_END", DBCID_MAP_ID_END, "");
             OutputVariableToConfig("DBCID_SKILLLINE_ID_START", DBCID_SKILLLINE_ID_START, "ID for SkillLine.dbc");
             OutputVariableToConfig("DBCID_SKILLLINEABILITY_ID_START", DBCID_SKILLLINEABILITY_ID_START, "ID for skill line abilities found in SkillLineAbility.dbc");
@@ -1611,6 +1621,8 @@ namespace EQWOWConverter
             ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID = ReadVariableFromConfigString("ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID", configValuesByVariableName, ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID);
             ZONE_WEATHER_ENABLED = ReadVariableFromConfigString("ZONE_WEATHER_ENABLED", configValuesByVariableName, ZONE_WEATHER_ENABLED);
             ZONE_FLYING_ALLOWED = ReadVariableFromConfigString("ZONE_FLYING_ALLOWED", configValuesByVariableName, ZONE_FLYING_ALLOWED);
+
+            DUNGEON_FINDER_ENABLED = ReadVariableFromConfigString("DUNGEON_FINDER_ENABLED", configValuesByVariableName, DUNGEON_FINDER_ENABLED);
 
             WORLDMAP_DEBUG_GENERATION_MODE_ENABLED = ReadVariableFromConfigString("WORLDMAP_DEBUG_GENERATION_MODE_ENABLED", configValuesByVariableName, WORLDMAP_DEBUG_GENERATION_MODE_ENABLED);
             WORLDMAP_LEFT_BORDER_PIXEL_SIZE = ReadVariableFromConfigString("WORLDMAP_LEFT_BORDER_PIXEL_SIZE", configValuesByVariableName, WORLDMAP_LEFT_BORDER_PIXEL_SIZE);

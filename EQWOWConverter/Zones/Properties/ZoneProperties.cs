@@ -113,6 +113,8 @@ namespace EQWOWConverter.Zones
         private static HashSet<string> MusicNames = new HashSet<string>();
 
         public int DBCMapID;
+        public int DBCMapIDDungeon;
+        public int DBCMapIDRaid;
         public int DBCMapDifficultyID;
         public int DBCWorldMapAreaID;
         public UInt32 DBCWMOID; // TODO: Move to config
@@ -154,6 +156,9 @@ namespace EQWOWConverter.Zones
         public List<ZonePropertiesDisplayMapLinkBox> DisplayMapLinkBoxes = new List<ZonePropertiesDisplayMapLinkBox>();
         public int SuggestedMinLevel = 0;
         public int SuggestedMaxLevel = 0;
+        public int RaidLevel = 0;
+        public int RaidPlayerSize = 0;
+        public int RaidDurationInSeconds = 0;
         public bool AlwaysZoomOutMapToNorrathMap = false;
         public bool DisableObjectsInMapGenMode = false;
 
@@ -1022,6 +1027,8 @@ namespace EQWOWConverter.Zones
 
                 zoneProperties.ShortName = shortName;
                 zoneProperties.DBCMapID = int.Parse(propertiesRow["WOWMapID"]);
+                zoneProperties.DBCMapIDDungeon = int.Parse(propertiesRow["WOWMapIDDungeon"]);
+                zoneProperties.DBCMapIDRaid = int.Parse(propertiesRow["WOWMapIDRaid"]);
                 zoneProperties.DBCMapDifficultyID = int.Parse(propertiesRow["WOWMapDifficultyID"]);
                 zoneProperties.DBCWorldMapAreaID = int.Parse(propertiesRow["WorldMapAreaID"]);
                 zoneProperties.DescriptiveName = propertiesRow["DescriptiveName"];
@@ -1073,11 +1080,15 @@ namespace EQWOWConverter.Zones
                 {
                     zoneProperties.SuggestedMinLevel = int.Parse(propertiesRow["SugLevelMin80"]);
                     zoneProperties.SuggestedMaxLevel = int.Parse(propertiesRow["SugLevelMax80"]);
+                    Logger.WriteError("Unimplemented level 80 logic for raids");
                 }
                 else
                 {
                     zoneProperties.SuggestedMinLevel = int.Parse(propertiesRow["SugLevelMin60"]);
                     zoneProperties.SuggestedMaxLevel = int.Parse(propertiesRow["SugLevelMax60"]);
+                    zoneProperties.RaidLevel = int.Parse(propertiesRow["RaidLevel60"]);
+                    zoneProperties.RaidPlayerSize = int.Parse(propertiesRow["RaidPlayerSize60"]);
+                    zoneProperties.RaidDurationInSeconds = int.Parse(propertiesRow["RaidDurInSec60"]);
                 }
                 zoneProperties.AlwaysZoomOutMapToNorrathMap = propertiesRow["AlwaysZoomOutToNorrathMap"].Trim() == "1" ? true : false;
                 zoneProperties.DisableObjectsInMapGenMode = propertiesRow["DisableObjectsInMapGenMode"].Trim() == "1" ? true : false;

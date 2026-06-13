@@ -205,6 +205,7 @@ namespace EQWOWConverter
             gameObjectDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "GameObjectDisplayInfo.dbc");
             itemDBC.LoadFromDisk(dbcInputFolder, "Item.dbc");
             itemDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "ItemDisplayInfo.dbc");
+            lfgDungeonGroupDBC.LoadFromDisk(dbcInputFolder, "LFGDungeonGroup.dbc");
             lightDBC.LoadFromDisk(dbcInputFolder, "Light.dbc");
             lightFloatBandDBC.LoadFromDisk(dbcInputFolder, "LightFloatBand.dbc");
             lightIntBandDBC.LoadFromDisk(dbcInputFolder, "LightIntBand.dbc");
@@ -275,8 +276,11 @@ namespace EQWOWConverter
                 footstepTerrainLookupDBC.AddRow(footstepIDBySoundID.Value, footstepIDBySoundID.Key);
 
             // Dungeon Finder Specific
-            lfgDungeonGroupDBC.AddRow(Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_ID, "EverQuest", Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID, false);
-            lfgDungeonGroupDBC.AddRow(Configuration.DBCID_LFGDUNGEONGROUP_RAIDS_ID, "EverQuest Raid", Configuration.DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID, false);
+            if (Configuration.DUNGEON_FINDER_ENABLED == true)
+            {
+                lfgDungeonGroupDBC.AddRow(Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_ID, "EverQuest", Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID, false);
+                lfgDungeonGroupDBC.AddRow(Configuration.DBCID_LFGDUNGEONGROUP_RAIDS_ID, "EverQuest Raid", Configuration.DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID, true);
+            }
 
             // Zone-specific records
             List<ZoneContinent> zoneContinents = ZoneContinent.GetZoneContinents();

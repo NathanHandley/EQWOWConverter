@@ -212,7 +212,7 @@ internal class Program
                 if (Configuration.PLAYER_USE_EQ_START_LOCATION == false)
                     Logger.WriteWarning("- Having PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES = true and PLAYER_USE_EQ_START_LOCATION = false will cause DKs to get 'stuck' at creation");
             }
-
+            Logger.WriteInfo("- DUNGEON_FINDER_ENABLED is set to ", Configuration.DUNGEON_FINDER_ENABLED.ToString());
             Logger.WriteInfo("- GENERATE_NON_PLAYER_OBTAINABLE_ITEMS is set to ", Configuration.GENERATE_NON_PLAYER_OBTAINABLE_ITEMS.ToString());
             Logger.WriteInfo("- PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED is set to ", Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED.ToString());
             Logger.WriteInfo("- SPELLS_LEARNABLE_FROM_ITEMS_ENABLED is set to ", Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED.ToString());
