@@ -1893,17 +1893,12 @@ namespace EQWOWConverter.Spells
                                 effectGeneratedSpellTemplate.AuraDuration = new SpellDuration();
                                 effectGeneratedSpellTemplate.AuraDuration.SetFixedDuration(eqEffect.EQBaseValue);
                                 effectGeneratedSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
-
-                                // Make the stun effect
                                 SpellEffectWOW stunSpellEffectWOW = new SpellEffectWOW();
                                 stunSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 stunSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStun;
                                 stunSpellEffectWOW.ActionDescription = string.Concat("stuns");
                                 stunSpellEffectWOW.AuraDescription = string.Concat("stunned");
-                                stunSpellEffectWOW.ImplicitTargetA = targets[0];
-                                if (targets.Count == 2)
-                                    stunSpellEffectWOW.ImplicitTargetB = targets[1];
-                                stunSpellEffectWOW.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
+                                stunSpellEffectWOW.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
                                 effectGeneratedSpellTemplate.WOWSpellEffects.Add(stunSpellEffectWOW);
 
                                 // Chain it
@@ -2978,6 +2973,14 @@ namespace EQWOWConverter.Spells
             return timeSB.ToString();
         }
 
+        private static bool BlockHasAura(SpellEffectBlock effectBlock)
+        {
+            foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
+                if (spellEffect.IsAuraType() == true)
+                    return true;
+            return false;
+        }
+
         private void GenerateOutputEffectBlocks()
         {
             if (_GroupedBaseSpellEffectBlocksForOutput.Count != 0)
@@ -3029,7 +3032,14 @@ namespace EQWOWConverter.Spells
                     }
                     else
                     {
-                        baseEffectBlock.SpellName = string.Concat(Name, " Split ", _GroupedBaseSpellEffectBlocksForOutput.Count.ToString());
+                        // When a primary block has no aura (like a damage spell), the split has the aura so we need to display the icon
+                        if (BlockHasAura(_GroupedBaseSpellEffectBlocksForOutput[0]) == false && BlockHasAura(baseEffectBlock) == true)
+                        {
+                            baseEffectBlock.SpellName = Name;
+                            baseEffectBlock.ForceVisibleSplitAura = true;
+                        }
+                        else
+                            baseEffectBlock.SpellName = string.Concat(Name, " Split ", _GroupedBaseSpellEffectBlocksForOutput.Count.ToString());
                         baseEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
                     }
                     _GroupedBaseSpellEffectBlocksForOutput.Add(baseEffectBlock);

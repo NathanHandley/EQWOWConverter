@@ -21,5 +21,6 @@ namespace EQWOWConverter.Spells
         public string SpellName = string.Empty;
         public int WOWSpellID = 0;
         public List<SpellEffectWOW> SpellEffects = new List<SpellEffectWOW>(); // Guarenteed to be 3 elements
+        public bool ForceVisibleSplitAura = false; // Sometimes auras can sit behind non-aura base spells
     }
 }

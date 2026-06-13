@@ -145,7 +145,9 @@ namespace EQWOWConverter
                 SpellEffectBlock curEffectBlock = spellEffectBlocks[i];
                 if (isWorn == false)
                 {
-                    spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, i != 0, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
+                    // Don't hide the chain spells if there's an aura under the non-aura
+                    bool hideFromDisplay = (i != 0) && (curEffectBlock.ForceVisibleSplitAura == false);
+                    spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, hideFromDisplay, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
                         curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID);
                 }
                 else
