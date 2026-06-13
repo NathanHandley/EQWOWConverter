@@ -44,6 +44,7 @@ namespace EQWOWConverter
         private GameObjectDisplayInfoDBC gameObjectDisplayInfoDBC = new GameObjectDisplayInfoDBC();
         private ItemDBC itemDBC = new ItemDBC();
         private ItemDisplayInfoDBC itemDisplayInfoDBC = new ItemDisplayInfoDBC();
+        private LFGDungeonGroupDBC lfgDungeonGroupDBC = new LFGDungeonGroupDBC();
         private LightDBC lightDBC = new LightDBC();
         private LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
         private LightIntBandDBC lightIntBandDBC = new LightIntBandDBC();
@@ -272,6 +273,10 @@ namespace EQWOWConverter
             // Footstep Terrain Lookup (for creatures)
             foreach (var footstepIDBySoundID in CreatureRace.FootstepIDBySoundID)
                 footstepTerrainLookupDBC.AddRow(footstepIDBySoundID.Value, footstepIDBySoundID.Key);
+
+            // Dungeon Finder Specific
+            lfgDungeonGroupDBC.AddRow(Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_ID, "EverQuest", Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID, false);
+            lfgDungeonGroupDBC.AddRow(Configuration.DBCID_LFGDUNGEONGROUP_RAIDS_ID, "EverQuest Raid", Configuration.DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID, false);
 
             // Zone-specific records
             List<ZoneContinent> zoneContinents = ZoneContinent.GetZoneContinents();
@@ -739,6 +744,8 @@ namespace EQWOWConverter
             gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
             itemDBC.SaveToDisk(dbcOutputClientFolder);
             itemDBC.SaveToDisk(dbcOutputServerFolder);
+            lfgDungeonGroupDBC.SaveToDisk(dbcOutputClientFolder);
+            lfgDungeonGroupDBC.SaveToDisk(dbcOutputServerFolder);
             itemDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
             itemDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
             lightDBC.SaveToDisk(dbcOutputClientFolder);

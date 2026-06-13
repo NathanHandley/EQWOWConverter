@@ -787,6 +787,12 @@ namespace EQWOWConverter
         // Start ID for item display info
         public static int DBCID_ITEMDISPLAYINFO_START = 86000;
 
+        // IDs for LFGDungeonGroup.dbc
+        public static int DBCID_LFGDUNGEONGROUP_DUNGEONS_ID = 15;
+        public static int DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID = 6;
+        public static int DBCID_LFGDUNGEONGROUP_RAIDS_ID = 15;
+        public static int DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID = 22;
+
         // Identifies the Light.DBC row, used for environmental properties
         public static int DBCID_LIGHT_ID_START = 3500;
 
@@ -1400,6 +1406,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("DBCID_FOOTSTEPTERRAINLOOKUP_ID_START", DBCID_FOOTSTEPTERRAINLOOKUP_ID_START, "IDs for FootstepTerrainLookup.dbc", false);
             OutputVariableToConfig("DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START", DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START, "");
             OutputVariableToConfig("DBCID_GAMEOBJECTDISPLAYINFO_ID_START", DBCID_GAMEOBJECTDISPLAYINFO_ID_START, "IDs for rows inside GameObjectDisplayInfo.dbc");
+            OutputVariableToConfig("DBCID_LFGDUNGEONGROUP_DUNGEONS_ID", DBCID_LFGDUNGEONGROUP_DUNGEONS_ID, "IDs for LFGDungeonGroup.dbc", false);
+            OutputVariableToConfig("DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID", DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID, "", false);
+            OutputVariableToConfig("DBCID_LFGDUNGEONGROUP_RAIDS_ID", DBCID_LFGDUNGEONGROUP_RAIDS_ID, "", false);
+            OutputVariableToConfig("DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID", DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID, "");
             OutputVariableToConfig("DBCID_ITEMDISPLAYINFO_START", DBCID_ITEMDISPLAYINFO_START, "Start ID for item display info");
             OutputVariableToConfig("DBCID_LIGHT_ID_START", DBCID_LIGHT_ID_START, "Identifies the Light.DBC row, used for environmental properties");
             OutputVariableToConfig("DBCID_LIGHTPARAMS_ID_START", DBCID_LIGHTPARAMS_ID_START, "Identifies the LightParams.dbc, used for detailed values related to a Light.DBC row");
@@ -1829,6 +1839,10 @@ namespace EQWOWConverter
             DBCID_FOOTSTEPTERRAINLOOKUP_ID_START = ReadVariableFromConfigString("DBCID_FOOTSTEPTERRAINLOOKUP_ID_START", configValuesByVariableName, DBCID_FOOTSTEPTERRAINLOOKUP_ID_START);
             DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START = ReadVariableFromConfigString("DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START", configValuesByVariableName, DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START);
             DBCID_GAMEOBJECTDISPLAYINFO_ID_START = ReadVariableFromConfigString("DBCID_GAMEOBJECTDISPLAYINFO_ID_START", configValuesByVariableName, DBCID_GAMEOBJECTDISPLAYINFO_ID_START);
+            DBCID_LFGDUNGEONGROUP_DUNGEONS_ID = ReadVariableFromConfigString("DBCID_LFGDUNGEONGROUP_DUNGEONS_ID", configValuesByVariableName, DBCID_LFGDUNGEONGROUP_DUNGEONS_ID);
+            DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID = ReadVariableFromConfigString("DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID", configValuesByVariableName, DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID);
+            DBCID_LFGDUNGEONGROUP_RAIDS_ID = ReadVariableFromConfigString("DBCID_LFGDUNGEONGROUP_RAIDS_ID", configValuesByVariableName, DBCID_LFGDUNGEONGROUP_RAIDS_ID);
+            DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID = ReadVariableFromConfigString("DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID", configValuesByVariableName, DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID);
             DBCID_ITEMDISPLAYINFO_START = ReadVariableFromConfigString("DBCID_ITEMDISPLAYINFO_START", configValuesByVariableName, DBCID_ITEMDISPLAYINFO_START);
             DBCID_LIGHT_ID_START = ReadVariableFromConfigString("DBCID_LIGHT_ID_START", configValuesByVariableName, DBCID_LIGHT_ID_START);
             DBCID_LIGHTPARAMS_ID_START = ReadVariableFromConfigString("DBCID_LIGHTPARAMS_ID_START", configValuesByVariableName, DBCID_LIGHTPARAMS_ID_START);
