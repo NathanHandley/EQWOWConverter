@@ -53,6 +53,7 @@ namespace EQWOWConverter.Zones
                 float boxBottomSoutheastX = Convert.ToSingle(columns["SourceBoxBottomSE_X"]);
                 float boxBottomSoutheastY = Convert.ToSingle(columns["SourceBoxBottomSE_Y"]);
                 float boxBottomSoutheastZ = Convert.ToSingle(columns["SourceBoxBottomSE_Z"]);
+                int areaTriggerDBCID = Convert.ToInt32(columns["AreaTriggerDBCID"]);
                 ZoneLineOrientationType targetZoneOrientation = ZoneLineOrientationType.North;
                 switch (columns["TargetPosOrientation"].ToLower().Trim())
                 {
@@ -68,7 +69,7 @@ namespace EQWOWConverter.Zones
                 }
                 ZonePropertiesZoneLineBox zoneLineBox = new ZonePropertiesZoneLineBox(targetZoneShortName, targetZonePositionX,
                     targetZonePositionY, targetZonePositionZ, targetZoneOrientation, boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ,
-                    boxBottomSoutheastX, boxBottomSoutheastY, boxBottomSoutheastZ);
+                    boxBottomSoutheastX, boxBottomSoutheastY, boxBottomSoutheastZ, areaTriggerDBCID);
                 if (ZoneLineBoxesBySourceZoneShortName.ContainsKey(sourceZoneShortName) == false)
                     ZoneLineBoxesBySourceZoneShortName.Add(sourceZoneShortName, new List<ZonePropertiesZoneLineBox>());
                 ZoneLineBoxesBySourceZoneShortName[sourceZoneShortName].Add(zoneLineBox);
@@ -90,9 +91,10 @@ namespace EQWOWConverter.Zones
 
         public ZonePropertiesZoneLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY,
             float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY,
-            float boxTopNorthwestZ, float boxBottomSoutheastX, float boxBottomSoutheastY, float boxBottomSoutheastZ)
+            float boxTopNorthwestZ, float boxBottomSoutheastX, float boxBottomSoutheastY, float boxBottomSoutheastZ,
+            int areaTriggerID)
         {
-            AreaTriggerID = AreaTriggerDBC.GetGeneratedAreaTriggerID();
+            AreaTriggerID = areaTriggerID;
 
             // Scale input values
             targetZonePositionX *= Configuration.GENERATE_WORLD_SCALE;

@@ -20,7 +20,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM areatrigger WHERE `entry` >= " + Configuration.DBCID_AREATRIGGER_ID_START.ToString() + " AND `entry` <= " + AreaTriggerDBC.CURRENT_AREATRIGGER_ID + ";";
+            return "DELETE FROM areatrigger WHERE `entry` >= " + Configuration.DBCID_AREATRIGGER_ID_START.ToString() + " AND `entry` <= " + Configuration.DBCID_AREATRIGGER_ID_END + ";";
         }
 
         public void AddRow(int areaTriggerID, int mapID, float positionX, float positionY, float positionZ,

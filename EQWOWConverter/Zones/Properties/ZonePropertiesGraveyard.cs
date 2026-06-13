@@ -20,7 +20,6 @@ namespace EQWOWConverter.Zones
     {
         private static Dictionary<int, ZonePropertiesGraveyard> GraveyardsByID = new Dictionary<int, ZonePropertiesGraveyard>();
 
-        private static int CUR_WORLDSAFELOCS_ID = Configuration.DBCID_WORLDSAFELOCS_ID_START;
         private static readonly object GraveyardLock = new object();
 
         public int ID = 0;
@@ -83,10 +82,8 @@ namespace EQWOWConverter.Zones
                     if (comments.Length > 0)
                         areaNameDescription += ", " + comments;
                     graveyard.Description = areaNameDescription;
-                    graveyard.WorldSafeLocsDBCID = CUR_WORLDSAFELOCS_ID;
+                    graveyard.WorldSafeLocsDBCID = int.Parse(columns["WorldSafeLocsDBCID"]);
                     GraveyardsByID.Add(graveyard.ID, graveyard);
-
-                    CUR_WORLDSAFELOCS_ID++;
 
                     // Map self
                     graveyard.GhostZoneShortNames.Add(graveyard.LocationShortName);

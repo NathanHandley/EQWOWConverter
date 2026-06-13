@@ -18,19 +18,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class AreaTriggerDBC : DBCFile
     {
-        public static int CURRENT_AREATRIGGER_ID = Configuration.DBCID_AREATRIGGER_ID_START;
-        private static readonly object AreaTriggerLock = new object();
-        public static int GetGeneratedAreaTriggerID()
-        {
-            int generatedID;
-            lock (AreaTriggerLock)
-            {
-                generatedID = CURRENT_AREATRIGGER_ID;
-                CURRENT_AREATRIGGER_ID++;
-            }
-            return generatedID;
-        }
-
         public void AddRow(int areaTriggerID, int mapID, float positionX, float positionY, float positionZ,
             float boxLength, float boxWidth, float boxHeight, float boxOrientation)
         {

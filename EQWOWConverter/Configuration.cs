@@ -758,8 +758,9 @@ namespace EQWOWConverter
         public static UInt32 DBCID_AREATABLE_ID_END = 6000;
 
         // IDs for AreaTrigger.DBC. These will be generated in ascending order by MapID, and referenced in SQL scripts
-        // for teleports as well any other area-based triggers
+        // for teleports as well any other area-based triggers. Defined in ZoneLineBoxes.csv
         public static int DBCID_AREATRIGGER_ID_START = 6500;
+        public static int DBCID_AREATRIGGER_ID_END = 8500;
 
         // IDs for CreatureDisplayInfo.dbc
         public static int DBCID_CREATUREDISPLAYINFO_ID_START = 34000;
@@ -867,7 +868,7 @@ namespace EQWOWConverter
         // ID for TransportAnimation.dbc
         public static int DBCID_TRANSPORTANIMATION_ID_START = 180000;
 
-        // IDs for WorldSafeLocs.dbc
+        // IDs for WorldSafeLocs.dbc, defined in ZoneGraveyards.csv
         public static int DBCID_WORLDSAFELOCS_ID_START = 1800;
         public static int DBCID_WORLDSAFELOCS_ID_END = 2000;
 
@@ -1388,7 +1389,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("DBCID_AREATABLE_AREABIT_BLOCK_3_END", DBCID_AREATABLE_AREABIT_BLOCK_3_END, "");
             OutputVariableToConfig("DBCID_AREATABLE_ID_START", DBCID_AREATABLE_ID_START, "Identifies Area rows in AreaTable.dbc. Note these are hardcoded in ZoneSubAreas.csv and ZoneProperties.csv", false);
             OutputVariableToConfig("DBCID_AREATABLE_ID_END", DBCID_AREATABLE_ID_END, "");
-            OutputVariableToConfig("DBCID_AREATRIGGER_ID_START", DBCID_AREATRIGGER_ID_START, "IDs for AreaTrigger.DBC.");
+            OutputVariableToConfig("DBCID_AREATRIGGER_ID_START", DBCID_AREATRIGGER_ID_START, "IDs for AreaTrigger.DBC. Defined in ZoneLineBoxes.csv", false);
+            OutputVariableToConfig("DBCID_AREATRIGGER_ID_END", DBCID_AREATRIGGER_ID_END, "");
             OutputVariableToConfig("DBCID_CREATUREDISPLAYINFO_ID_START", DBCID_CREATUREDISPLAYINFO_ID_START, "IDs for CreatureDisplayInfo.dbc", false);
             OutputVariableToConfig("DBCID_CREATUREDISPLAYINFO_ID_END", DBCID_CREATUREDISPLAYINFO_ID_END, "");
             OutputVariableToConfig("DBCID_CREATUREDISPLAYINFOEXTRA_ID_START", DBCID_CREATUREDISPLAYINFOEXTRA_ID_START, "IDs for CreatureDisplayInfoExtra.dbc", false);
@@ -1435,7 +1437,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("DBCID_TAXIPATHNODE_ID_START", DBCID_TAXIPATHNODE_ID_START, "ID for TaxiPathNode.dbc");
             OutputVariableToConfig("DBCID_TOTEMCATEGORY_ID_START", DBCID_TOTEMCATEGORY_ID_START, "ID for TotemCategory.dbc");
             OutputVariableToConfig("DBCID_TRANSPORTANIMATION_ID_START", DBCID_TRANSPORTANIMATION_ID_START, "ID for TransportAnimation.dbc");
-            OutputVariableToConfig("DBCID_WORLDSAFELOCS_ID_START", DBCID_WORLDSAFELOCS_ID_START, "IDs for WorldSafeLocs.dbc", false);
+            OutputVariableToConfig("DBCID_WORLDSAFELOCS_ID_START", DBCID_WORLDSAFELOCS_ID_START, "IDs for WorldSafeLocs.dbc, defined in ZoneGraveyards.csv", false);
             OutputVariableToConfig("DBCID_WORLDSAFELOCS_ID_END", DBCID_WORLDSAFELOCS_ID_END, "");
             OutputVariableToConfig("DBCID_WMOAREATABLE_ID_START", DBCID_WMOAREATABLE_ID_START, "Specific rows in WMOAreaTable.dbc");
             OutputVariableToConfig("DBCID_WMOAREATABLE_WMOGROUPID_START", DBCID_WMOAREATABLE_WMOGROUPID_START, "Identifies WMO Groups.");
@@ -1818,6 +1820,7 @@ namespace EQWOWConverter
             DBCID_AREATABLE_ID_START = ReadVariableFromConfigString("DBCID_AREATABLE_ID_START", configValuesByVariableName, DBCID_AREATABLE_ID_START);
             DBCID_AREATABLE_ID_END = ReadVariableFromConfigString("DBCID_AREATABLE_ID_END", configValuesByVariableName, DBCID_AREATABLE_ID_END);
             DBCID_AREATRIGGER_ID_START = ReadVariableFromConfigString("DBCID_AREATRIGGER_ID_START", configValuesByVariableName, DBCID_AREATRIGGER_ID_START);
+            DBCID_AREATRIGGER_ID_END = ReadVariableFromConfigString("DBCID_AREATRIGGER_ID_END", configValuesByVariableName, DBCID_AREATRIGGER_ID_END);
             DBCID_CREATUREDISPLAYINFO_ID_START = ReadVariableFromConfigString("DBCID_CREATUREDISPLAYINFO_ID_START", configValuesByVariableName, DBCID_CREATUREDISPLAYINFO_ID_START);
             DBCID_CREATUREDISPLAYINFO_ID_END = ReadVariableFromConfigString("DBCID_CREATUREDISPLAYINFO_ID_END", configValuesByVariableName, DBCID_CREATUREDISPLAYINFO_ID_END);
             DBCID_CREATUREDISPLAYINFOEXTRA_ID_START = ReadVariableFromConfigString("DBCID_CREATUREDISPLAYINFOEXTRA_ID_START", configValuesByVariableName, DBCID_CREATUREDISPLAYINFOEXTRA_ID_START);
