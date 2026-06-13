@@ -1311,8 +1311,9 @@ namespace EQWOWConverter
                 // Mod data
                 modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)");
 
-                // Spell bonus (TODO: do something more tailored)
-                spellBonusDataSQL.AddRow(curEffectBlock.WOWSpellID, string.Concat("EQ Spell ", spellTemplate.Name, commentFragment, " Block ", i));
+                // Spell power
+                if (spellTemplate.InfluencedBySpellPower == true && commentFragment != " (Worn)")
+                    spellBonusDataSQL.AddRow(curEffectBlock.WOWSpellID, string.Concat("EQ Spell ", spellTemplate.Name, commentFragment, " Block ", i));
 
                 // Additional effects beyond the first
                 if (i > 0)

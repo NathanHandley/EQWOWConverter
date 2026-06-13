@@ -221,6 +221,7 @@ namespace EQWOWConverter.Spells
         public int MaleFormSpellTemplateID = 0;
         public int FemaleFormSpellTemplateID = 0;
         public bool AllowSpellPowerToInfluence = false;
+        public bool InfluencedBySpellPower = false;
 
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
@@ -1196,6 +1197,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectMiscValueA = 0; // Power Type = Mana
                                 newSpellEffectWOW.EffectMultipleValue = 1;
                                 newSpellEffectWOW.ActionDescription = string.Concat("drain ", newSpellEffectWOW.GetFormattedEffectActionString(false), " mana from the target and add it to your own");
+                                spellTemplate.InfluencedBySpellPower = true;
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         case SpellEQEffectType.CurrentHitPoints:
@@ -1274,6 +1276,7 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectMultipleValue = 1;
                                     newSpellEffects.Add(newSpellEffectWOW);
                                 }
+                                spellTemplate.InfluencedBySpellPower = true;
                             } break;
                         case SpellEQEffectType.Strength:
                             {
@@ -1410,6 +1413,7 @@ namespace EQWOWConverter.Spells
                                         else
                                             newSpellEffectWOW.ActionDescription = string.Concat("strike for ", newSpellEffectWOW.GetFormattedEffectActionString(false), " damage");
                                     }
+                                    spellTemplate.InfluencedBySpellPower = true;
                                     newSpellEffects.Add(newSpellEffectWOW);
                                 }
                                 else
@@ -1417,6 +1421,7 @@ namespace EQWOWConverter.Spells
                                     SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                     newSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
+                                    spellTemplate.InfluencedBySpellPower = true;
                                     if (eqEffect.EQBaseValue > 0)
                                     {
                                         newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealOverTimeHPS", SpellEffectWOWConversionScaleType.Periodic);
@@ -1448,6 +1453,7 @@ namespace EQWOWConverter.Spells
                             {
                                 if (eqEffect.EQBaseValue == 0)
                                     continue;
+                                spellTemplate.InfluencedBySpellPower = true;
 
                                 int preFormulaEffectAmount = Math.Abs(eqEffect.EQBaseValue);
                                 if (hasSpellDuration == false || eqEffect.EQEffectType == SpellEQEffectType.CurrentManaOnce)
@@ -2406,6 +2412,7 @@ namespace EQWOWConverter.Spells
                             {
                                 if (eqEffect.EQBaseValue == 0)
                                     continue;
+                                spellTemplate.InfluencedBySpellPower = true;
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.SchoolAbsorb;
