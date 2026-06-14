@@ -1870,7 +1870,45 @@ namespace EQWOWConverter.Items
             return itemTemplate;
         }
 
-        public static void ConvertItemToClickyVersionWithBagAndEssence(ref ItemTemplate originalItemTemplate, int newItemWOWItemEntryID, int essenceWOWItemEntryID, out ItemTemplate createdBagItemTemplate, 
+        public static ItemTemplate CreateSpellScrollClassVersionContainer(ItemTemplate baseScrollItem, Dictionary<ClassWOWType, int> classVersionWOWItemIDsByClass, int wowContainerItemTemplateID)
+        {
+            ItemTemplate itemTemplate = new ItemTemplate();
+
+            int curGroupID = 0;
+            foreach (var classVersion in classVersionWOWItemIDsByClass)
+            {
+                ContainedItem containedItem = new ContainedItem();
+                containedItem.itemTemplateIDWOW = classVersion.Value;
+                containedItem.parentItemTemplateIDWOW = baseScrollItem.WOWEntryID;
+                containedItem.chance = 100;
+                containedItem.count = 1;
+                containedItem.group = curGroupID;
+                itemTemplate.ContainedItems.Add(containedItem);
+                curGroupID++;
+            }
+
+            itemTemplate.NumOfTradeskillsThatCreateIt = 1;
+            itemTemplate.WOWEntryID = wowContainerItemTemplateID;
+            wowContainerItemTemplateID++;
+            itemTemplate.EQItemID = CUR_ITEM_GENERATED_EQID;
+            itemTemplate.ClassID = 0;
+            itemTemplate.SubClassID = 4; // Scroll
+            itemTemplate.Name = string.Concat(baseScrollItem.Name, " Container");
+            itemTemplate.IconID = Configuration.ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID;
+            itemTemplate.Quality = ItemWOWQuality.Common;
+            itemTemplate.BuyPriceInCopper = 0;
+            itemTemplate.SellPriceInCopper = 0;
+            itemTemplate.CanBeOpened = true;
+            itemTemplate.IsNoDrop = true;
+            itemTemplate.Description = string.Concat("Contains all of the class-specific versions of '", baseScrollItem.Name, "'.");
+            ItemTemplatesByEQDBID.Add(itemTemplate.EQItemID, itemTemplate);
+            ItemTemplatesByWOWEntryID.Add(itemTemplate.WOWEntryID, itemTemplate);
+
+            CUR_ITEM_GENERATED_EQID++;
+            return itemTemplate;
+        }
+
+        public static void ConvertItemToClickyVersionWithBagAndEssence(ref ItemTemplate originalItemTemplate, int newItemWOWItemEntryID, int essenceWOWItemEntryID, out ItemTemplate createdBagItemTemplate,
             out ItemTemplate createdEssenceItem)
         {
             // Create the bag

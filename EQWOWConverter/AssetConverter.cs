@@ -2179,6 +2179,7 @@ namespace EQWOWConverter
 
                 // Create the produced item
                 ItemTemplate? resultItemTemplate = null;
+                int resultWOWItemID = 0; // The item id the craft spell actually creates (may differ from resultItemTemplate for split scrolls)
                 Int32 effectDieSides = 0;
                 Int32 effectBasePoints = 0;
                 if (recipe.ProducedItemCountsByWOWItemID.Count == 0)
@@ -2196,12 +2197,35 @@ namespace EQWOWConverter
                     string containerName = string.Concat(recipe.Name, " Items");
                     resultItemTemplate = ItemTemplate.CreateMultiItemTradeskillContainer(containerName, recipe.ProducedItemCountsByWOWItemID, recipe.ProducedMultiContainerWOWID);
                     recipe.ProducedFilledContainer = resultItemTemplate;
+                    resultWOWItemID = resultItemTemplate.WOWEntryID;
                 }
                 else
                 {
-                    resultItemTemplate = itemTemplatesByWOWEntryID[recipe.ProducedItemCountsByWOWItemID.Keys.First()];
+                    ItemTemplate singleProducedItem = itemTemplatesByWOWEntryID[recipe.ProducedItemCountsByWOWItemID.Keys.First()];
+                    int singleProducedCount = recipe.ProducedItemCountsByWOWItemID.Values.First();
+                    resultItemTemplate = singleProducedItem;
                     effectDieSides = 1;
-                    effectBasePoints = recipe.ProducedItemCountsByWOWItemID.Values.First() - 1;
+                    effectBasePoints = singleProducedCount - 1;
+
+                    // Handle spell scrolls that split out into multiple class-specific versions
+                    if (singleProducedItem.ClassSpecificItemVersionsByWOWItemTemplateID.Count == 1)
+                    {
+                        resultWOWItemID = singleProducedItem.ClassSpecificItemVersionsByWOWItemTemplateID.First().Value;
+                    }
+                    else if (singleProducedItem.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 1)
+                    {
+                        if (recipe.ProducedMultiContainerWOWID <= 0)
+                            Logger.WriteError("Missing ProducedMultiContainerWOWID for recipe ID ", recipe.EQID.ToString());
+                        resultItemTemplate = ItemTemplate.CreateSpellScrollClassVersionContainer(singleProducedItem, singleProducedItem.ClassSpecificItemVersionsByWOWItemTemplateID, recipe.ProducedMultiContainerWOWID);
+                        recipe.ProducedFilledContainer = resultItemTemplate;
+                        resultWOWItemID = resultItemTemplate.WOWEntryID;
+                        effectDieSides = 0;
+                        effectBasePoints = 0;
+                    }
+                    else
+                    {
+                        resultWOWItemID = singleProducedItem.WOWEntryID;
+                    }
                 }
                 if (resultItemTemplate == null)
                 {
@@ -2255,7 +2279,7 @@ namespace EQWOWConverter
                 }
                 else
                     recipeNameCounts.Add(curSpellTemplate.Name, 1);
-                curSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.CreateItem, SpellWOWAuraType.None, 0, Convert.ToUInt32(resultItemTemplate.WOWEntryID), effectDieSides, effectBasePoints, 0, 0));
+                curSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.CreateItem, SpellWOWAuraType.None, 0, Convert.ToUInt32(resultWOWItemID), effectDieSides, effectBasePoints, 0, 0));
                 curSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(resultItemTemplate.IconID);
                 curSpellTemplate.SchoolMask = 1; // "Normal"
                 curSpellTemplate.TradeskillRecipe = recipe;

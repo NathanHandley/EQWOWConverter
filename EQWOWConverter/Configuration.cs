@@ -947,7 +947,7 @@ namespace EQWOWConverter
         // - Equipped Click Bag IDs range 113000 - 113932
         // - Equipped Click Essence IDs range 114000 - 114932
         // - Quest Template multi-item reward containers IDs range 116000 - 116200
-        // - Tradeskill multi-item creation containers IDs range 117000 - 117217
+        // - Tradeskill multi-item creation containers IDs range 117000 - 117349
         // - NPC-worn items have IDs 120000 - 145000
         public static int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;
         public static int SQL_ITEM_TEMPLATE_ENTRY_END = 145000;
