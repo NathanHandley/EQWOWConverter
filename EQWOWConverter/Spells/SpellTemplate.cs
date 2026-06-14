@@ -337,7 +337,7 @@ namespace EQWOWConverter.Spells
                 // Generic properties
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
-                newSpellTemplate.IsGoodEffect = int.Parse(columns["goodEffect"]) == 1 ? true : false ;// "2" should be non-detrimental group only (not caster).  Ignoring that for now.
+                newSpellTemplate.IsGoodEffect = int.Parse(columns["goodEffect"]) != 0 ? true : false ;// 0 = detrimental, 1 = beneficial, 2 = beneficial group only.  Both 1 and 2 are non-detrimental.
                 bool isDetrimental = !newSpellTemplate.IsGoodEffect; 
 
                 // Buff duration (if any)
