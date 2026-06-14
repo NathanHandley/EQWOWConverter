@@ -124,10 +124,6 @@ namespace EQWOWConverter.Items
                 else
                     ItemLootDropsByEQID[curLootDropEntry.LootDropID].ItemLootDropEntries.Add(curLootDropEntry);
             }
-
-            // Normalize the loot drop chances
-            foreach (var itemLootDropsByEQID in ItemLootDropsByEQID)
-                itemLootDropsByEQID.Value.ReduceChanceIfOver100();
         }
     }
 }

@@ -74,6 +74,7 @@ namespace EQWOWConverter
         private ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
         private ModEverquestCreatureSQL modEverquestCreatureSQL = new ModEverquestCreatureSQL();
         private ModEverquestCreatureInstanceSQL modEverquestCreatureInstanceSQL = new ModEverquestCreatureInstanceSQL();
+        private ModEverquestCreatureLootSQL modEverquestCreatureLootSQL = new ModEverquestCreatureLootSQL();
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
         private ModEverquestCreatureSpawnPointSQL modEverquestCreatureSpawnPointSQL = new ModEverquestCreatureSpawnPointSQL();
         private ModEverquestCreatureWaypointSQL modEverquestCreatureWaypointSQL = new ModEverquestCreatureWaypointSQL();
@@ -114,7 +115,8 @@ namespace EQWOWConverter
         private WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
 
         public void CreateSQLScripts(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
-            List<CreatureSpawnPool> creatureSpawnPools, Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, List<QuestTemplate> questTemplates,
+            List<CreatureSpawnPool> creatureSpawnPools, Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID,
+            Dictionary<int, List<CreatureLootEntry>> creatureLootEntriesByCreatureTemplateID, List<QuestTemplate> questTemplates,
             List<TradeskillRecipe> tradeskillRecipes, List<SpellTemplate> spellTemplates, List<GameEvent> gameEvents)
         {
             Logger.WriteInfo("Creating SQL Scripts...");
@@ -144,7 +146,7 @@ namespace EQWOWConverter
                 gameEventSQL.AddRow(gameEvent);
 
             // Items
-            PopulateItemData(itemLootTemplatesByCreatureTemplateID, spellTemplatesByEQID);
+            PopulateItemData(itemLootTemplatesByCreatureTemplateID, creatureLootEntriesByCreatureTemplateID, spellTemplatesByEQID);
 
             // Forage
             PopulateForageData();
@@ -886,7 +888,8 @@ namespace EQWOWConverter
             }
         }
 
-        private void PopulateItemData(Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
+        private void PopulateItemData(Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID,
+            Dictionary<int, List<CreatureLootEntry>> creatureLootEntriesByCreatureTemplateID, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
         {
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWID = ItemTemplate.GetItemTemplatesByWOWEntryID();
             foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
@@ -965,6 +968,10 @@ namespace EQWOWConverter
             foreach (var itemLootTemplateByCreatureTemplateID in itemLootTemplatesByCreatureTemplateID.Values)
                 foreach (ItemLootTemplate itemLootTemplate in itemLootTemplateByCreatureTemplateID)
                     creatureLootTableSQL.AddRow(itemLootTemplate);
+
+            foreach (var creatureLootEntriesForCreature in creatureLootEntriesByCreatureTemplateID.Values)
+                foreach (CreatureLootEntry creatureLootEntry in creatureLootEntriesForCreature)
+                    modEverquestCreatureLootSQL.AddRow(creatureLootEntry);
 
             // Page text (for books)
             foreach (ItemTemplate.BookText bookText in ItemTemplate.GetAllBookTexts())
@@ -1772,6 +1779,7 @@ namespace EQWOWConverter
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
             modEverquestCreatureSQL.SaveToDisk("mod_everquest_creature", SQLFileType.World);
             modEverquestCreatureInstanceSQL.SaveToDisk("mod_everquest_creature_instance", SQLFileType.World);
+            modEverquestCreatureLootSQL.SaveToDisk("mod_everquest_creature_loot", SQLFileType.World);
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
             modEverquestCreatureSpawnPointSQL.SaveToDisk("mod_everquest_creature_spawn_point", SQLFileType.World);
             modEverquestCreatureWaypointSQL.SaveToDisk("mod_everquest_creature_waypoint", SQLFileType.World);

@@ -198,7 +198,8 @@ namespace EQWOWConverter
 
             // Loot
             Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID;
-            ConvertLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID);
+            Dictionary<int, List<CreatureLootEntry>> creatureLootEntriesByCreatureTemplateID;
+            ConvertLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID, out creatureLootEntriesByCreatureTemplateID);
 
             // Forage
             ConvertForage(ref itemTemplatesByEQDBID);
@@ -298,8 +299,8 @@ namespace EQWOWConverter
 
                 // Create the SQL Scripts (note: this must always be after DBC files)
                 SQLScriptWorker sqlWorker = new SQLScriptWorker();
-                sqlWorker.CreateSQLScripts(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, 
-                    itemLootTemplatesByCreatureTemplateID, questTemplates, tradeskillRecipes, spellTemplates,
+                sqlWorker.CreateSQLScripts(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools,
+                    itemLootTemplatesByCreatureTemplateID, creatureLootEntriesByCreatureTemplateID, questTemplates, tradeskillRecipes, spellTemplates,
                     gameEvents);
 
                 if (Configuration.DEPLOY_SERVER_FILES == true)
@@ -1669,15 +1670,17 @@ namespace EQWOWConverter
             Logger.WriteDebug("Converting Creature Spell AI complete.");
         }
 
-        public void ConvertLoot(List<CreatureTemplate> creatureTemplates, out Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID)
+        public void ConvertLoot(List<CreatureTemplate> creatureTemplates, out Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID,
+            out Dictionary<int, List<CreatureLootEntry>> creatureLootEntriesByCreatureTemplateID)
         {
             Logger.WriteInfo("Converting loot tables...");
 
             // Generate item templates
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
 
-            // Build item loot templates
+            // EQ uses a different way to calculate drop/roll results and the nuance is handled by the mod-everquest code
             itemLootTemplatesByCreatureTemplateID = new Dictionary<int, List<ItemLootTemplate>>();
+            creatureLootEntriesByCreatureTemplateID = new Dictionary<int, List<CreatureLootEntry>>();
             Dictionary<int, ItemLootDrop> itemLootDropsByEQID = ItemLootDrop.GetItemLootDropsByEQID();
             Dictionary<int, ItemLootTable> itemLootTablesByEQID = ItemLootTable.GetItemLootTablesByEQID();
             foreach(CreatureTemplate creatureTemplate in creatureTemplates)
@@ -1698,9 +1701,10 @@ namespace EQWOWConverter
                 creatureTemplate.MoneyMaxInCopper = curItemLootTable.MaxMoney;
 
                 // Create the item loot template records
-                List<ItemLootTemplate> itemLootTemplates = new List<ItemLootTemplate>();
-                int itemGroupID = 1;
-                List<ItemTemplate> heldMeleeItemTemplatesThatAlwaysDrop = new List<ItemTemplate>();
+                List<CreatureLootEntry> lootEntries = new List<CreatureLootEntry>();
+                Dictionary<int, float> catalogChanceByItemID = new Dictionary<int, float>();
+                Dictionary<int, string> catalogCommentByItemID = new Dictionary<int, string>();
+                int lootGroupID = 1;
                 foreach (ItemLootTableEntry lootTableEntry in curItemLootTable.ItemLootTableEntries)
                 {
                     // Skip invalid rows
@@ -1711,81 +1715,86 @@ namespace EQWOWConverter
                         continue;
                     }
 
-                    // Calculate the minimum number of times this entry should show up
-                    int numOfDropCopies = 1;
-                    if (lootTableEntry.Multiplier > 1)
-                    {
-                        int calcMultiplier = (lootTableEntry.Multiplier * lootTableEntry.Probability) / 100;
-                        numOfDropCopies = int.Max(calcMultiplier, lootTableEntry.MultiplierMin);
-                        numOfDropCopies = int.Max(numOfDropCopies, 1);
-                    }
-
-                    // Output loot table entries for each copy determined above
+                    // Each loottable entry is one lootdrop reference and becomes one loot group.  The loottable-level multiplier/probability/droplimit/mindrop are provided to the server mod
                     ItemLootDrop curItemLootDrop = itemLootDropsByEQID[lootTableEntry.LootDropID];
-                    for (int i = 0; i < numOfDropCopies; i++)
+                    bool groupHadAnyEntries = false;
+                    foreach (ItemLootDropEntry itemDropEntry in curItemLootDrop.ItemLootDropEntries)
                     {
-                        foreach (ItemLootDropEntry itemDropEntry in curItemLootDrop.ItemLootDropEntries)
+                        if (itemTemplatesByEQDBID.ContainsKey(itemDropEntry.ItemIDEQ) == false)
                         {
-                            if (itemTemplatesByEQDBID.ContainsKey(itemDropEntry.ItemIDEQ) == false)
-                            {
-                                // In review, these errors have to do with items in future expansions
-                                Logger.WriteDebug("ItemDropEntry with ID '" + itemDropEntry.LootDropID + "' references ItemID of '" + itemDropEntry.ItemIDEQ + "', but it did not exist");
-                                continue;
-                            }
-                            ItemTemplate curItemTemplate = itemTemplatesByEQDBID[itemDropEntry.ItemIDEQ];
-                            curItemTemplate.IsDroppedByCreature = true;
-                            if (itemDropEntry.Chance == 100 && curItemTemplate.IsHeldInHandsNonRanged() == true && creatureTemplate.Race.CanHoldVisualItems == true)
-                                heldMeleeItemTemplatesThatAlwaysDrop.Add(curItemTemplate);
+                            // In review, these errors have to do with items in future expansions
+                            Logger.WriteDebug("ItemDropEntry with ID '" + itemDropEntry.LootDropID + "' references ItemID of '" + itemDropEntry.ItemIDEQ + "', but it did not exist");
+                            continue;
+                        }
+                        ItemTemplate curItemTemplate = itemTemplatesByEQDBID[itemDropEntry.ItemIDEQ];
+                        curItemTemplate.IsDroppedByCreature = true;
 
-                            // Items that have class specific copies need to be added for each copy, otherwise just one
-                            if (curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
+                        // Items that have class specific copies need to be added for each copy, otherwise just one
+                        List<(int wowItemID, float chance, string nameSuffix)> resolvedItems = new List<(int, float, string)>();
+                        if (curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
+                        {
+                            var classVersions = curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.ToList();
+                            float remainderChance = itemDropEntry.Chance;
+                            float stepChance = remainderChance / classVersions.Count;
+                            for (int j = 0; j < classVersions.Count; j++)
                             {
-                                // To ensure drop rates add up to 100% for the group, the drop rate has to be reduced across
-                                // the class-specific copies
-                                float remainderChance = itemDropEntry.Chance;
-                                float stepChance = remainderChance / curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count;
-                                for (int j = 0; j < curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count; j++)
-                                {
-                                    ClassWOWType curClassType = curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.ToList()[j].Key;
-                                    int itemTemplateEntryID = curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.ToList()[j].Value;
-
-                                    ItemLootTemplate newItemLootTemplate = new ItemLootTemplate();
-                                    newItemLootTemplate.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
-                                    newItemLootTemplate.ItemTemplateEntryID = itemTemplateEntryID;
-                                    newItemLootTemplate.Comment = string.Concat(creatureTemplate.Name, " - ", curItemTemplate.Name, " (", curClassType.ToString(), ")");
-                                    newItemLootTemplate.GroupID = itemGroupID;
-                                    newItemLootTemplate.MinCount = Math.Max(lootTableEntry.MinDrop, 1);
-                                    newItemLootTemplate.MaxCount = Math.Max(lootTableEntry.MinDrop, 1);
-                                    if (j < curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count - 1)
-                                    {
-                                        newItemLootTemplate.Chance = stepChance;
-                                        remainderChance -= stepChance;
-                                    }
-                                    else
-                                        newItemLootTemplate.Chance = remainderChance;
-                                    itemLootTemplates.Add(newItemLootTemplate);
-                                }
-                            }
-                            else
-                            {                                
-                                ItemLootTemplate newItemLootTemplate = new ItemLootTemplate();
-                                newItemLootTemplate.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
-                                newItemLootTemplate.ItemTemplateEntryID = curItemTemplate.WOWEntryID;
-                                newItemLootTemplate.Chance = itemDropEntry.Chance;
-                                newItemLootTemplate.Comment = creatureTemplate.Name + " - " + curItemTemplate.Name;
-                                newItemLootTemplate.GroupID = itemGroupID;
-                                newItemLootTemplate.MinCount = Math.Max(lootTableEntry.MinDrop, 1);
-                                newItemLootTemplate.MaxCount = Math.Max(lootTableEntry.MinDrop, 1);
-                                itemLootTemplates.Add(newItemLootTemplate);
+                                float versionChance = (j < classVersions.Count - 1) ? stepChance : remainderChance;
+                                remainderChance -= stepChance;
+                                resolvedItems.Add((classVersions[j].Value, versionChance, string.Concat(" (", classVersions[j].Key.ToString(), ")")));
                             }
                         }
-                        itemGroupID++;
+                        else
+                        {
+                            resolvedItems.Add((curItemTemplate.WOWEntryID, itemDropEntry.Chance, string.Empty));
+                        }
+
+                        foreach (var resolvedItem in resolvedItems)
+                        {
+                            CreatureLootEntry lootEntry = new CreatureLootEntry();
+                            lootEntry.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
+                            lootEntry.LootGroupID = lootGroupID;
+                            lootEntry.GroupMultiplier = Math.Max(lootTableEntry.Multiplier, 1);
+                            lootEntry.GroupProbability = lootTableEntry.Probability;
+                            lootEntry.DropLimit = lootTableEntry.DropLimit;
+                            lootEntry.MinDrop = lootTableEntry.MinDrop;
+                            lootEntry.ItemTemplateEntryID = resolvedItem.wowItemID;
+                            lootEntry.Chance = resolvedItem.chance;
+                            lootEntry.ItemMultiplier = Math.Max(itemDropEntry.Multiplier, 1);
+                            lootEntry.ItemCharges = Math.Max(itemDropEntry.ItemCharges, 1);
+                            lootEntries.Add(lootEntry);
+                            groupHadAnyEntries = true;
+
+                            // Track for the creature_loot_template catalog (keep the highest chance seen)
+                            if (catalogChanceByItemID.TryGetValue(resolvedItem.wowItemID, out float existingChance) == false || resolvedItem.chance > existingChance)
+                                catalogChanceByItemID[resolvedItem.wowItemID] = resolvedItem.chance;
+                            if (catalogCommentByItemID.ContainsKey(resolvedItem.wowItemID) == false)
+                                catalogCommentByItemID[resolvedItem.wowItemID] = string.Concat(creatureTemplate.Name, " - ", curItemTemplate.Name, resolvedItem.nameSuffix);
+                        }
                     }
+
+                    if (groupHadAnyEntries == true)
+                        lootGroupID++;
                 }
 
-                if (itemLootTemplates.Count > 0)
+                if (lootEntries.Count > 0)
                 {
+                    // One creature_loot_template row per distinct item, all in GroupId 0 (so they are independent)
+                    List<ItemLootTemplate> itemLootTemplates = new List<ItemLootTemplate>();
+                    foreach (var catalogItem in catalogChanceByItemID)
+                    {
+                        ItemLootTemplate newItemLootTemplate = new ItemLootTemplate();
+                        newItemLootTemplate.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
+                        newItemLootTemplate.ItemTemplateEntryID = catalogItem.Key;
+                        newItemLootTemplate.Chance = catalogItem.Value; // cosmetic; mod overrides via OnItemRoll
+                        newItemLootTemplate.GroupID = 0;
+                        newItemLootTemplate.MinCount = 1; // cosmetic; mod overrides via OnBeforeDropAddItem
+                        newItemLootTemplate.MaxCount = 1;
+                        newItemLootTemplate.Comment = catalogCommentByItemID[catalogItem.Key];
+                        itemLootTemplates.Add(newItemLootTemplate);
+                    }
+
                     itemLootTemplatesByCreatureTemplateID.Add(creatureTemplate.WOWCreatureTemplateID, itemLootTemplates);
+                    creatureLootEntriesByCreatureTemplateID.Add(creatureTemplate.WOWCreatureTemplateID, lootEntries);
                     creatureTemplate.WOWLootID = creatureTemplate.WOWCreatureTemplateID;
                 }
             }
