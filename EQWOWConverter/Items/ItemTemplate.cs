@@ -1177,10 +1177,22 @@ namespace EQWOWConverter.Items
                             itemTemplate.SubClassID = 4;
                         }   
                     } break;
-                case 17: // Stackable => Misc
+                case 17: // Stackable => Misc or Parts
                     {
-                        itemTemplate.ClassID = 14;
-                        itemTemplate.SubClassID = 4;
+                        switch (iconID)
+                        {
+                            case 467: // Runes
+                            case 369: // Words
+                                {
+                                    itemTemplate.ClassID = 7; // Trade
+                                    itemTemplate.SubClassID = 1; // Parts
+                                } break;
+                            default: // Misc
+                                {
+                                    itemTemplate.ClassID = 14;
+                                    itemTemplate.SubClassID = 4;
+                                } break;
+                        }
                     } break;
                 case 18: // Bandage
                     {
