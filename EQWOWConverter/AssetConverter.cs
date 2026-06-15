@@ -2131,6 +2131,32 @@ namespace EQWOWConverter
             summonActiveSpellTemplate.AlwaysPersist = true;
             spellTemplates.Add(summonActiveSpellTemplate);
 
+            // Reduced Creature Mana Regeneration (hidden passive aura applied to casting creatures)
+            if (Configuration.CREATURE_MANA_REGEN_PERCENT < 100)
+            {
+                int manaRegenPercent = Math.Clamp(Configuration.CREATURE_MANA_REGEN_PERCENT, 0, 100);
+                SpellTemplate reducedManaRegenSpellTemplate = new SpellTemplate();
+                reducedManaRegenSpellTemplate.Name = "Reduced Mana Regeneration";
+                reducedManaRegenSpellTemplate.WOWSpellID = Configuration.SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID;
+                reducedManaRegenSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                reducedManaRegenSpellTemplate.Description = "Reduces the rate of mana regeneration.";
+                reducedManaRegenSpellTemplate.AuraDescription = "Mana regeneration is reduced.";
+                reducedManaRegenSpellTemplate.AuraDuration = new SpellDuration();
+                reducedManaRegenSpellTemplate.AuraDuration.IsInfinite = true;
+                // EffectMiscValueA 0 = POWER_MANA, base points = percent - 100
+                reducedManaRegenSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModPowerRegenPercent, 0, 0, 0, manaRegenPercent - 100, 0, 0));
+                reducedManaRegenSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                reducedManaRegenSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
+                reducedManaRegenSpellTemplate.CastTimeInMS = 0;
+                reducedManaRegenSpellTemplate.RecoveryTimeInMS = 0;
+                reducedManaRegenSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+                reducedManaRegenSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
+                reducedManaRegenSpellTemplate.AlwaysPersist = true;
+                reducedManaRegenSpellTemplate.TriggersGlobalCooldown = false;
+                reducedManaRegenSpellTemplate.ForceHiddenFromDisplay = true;
+                spellTemplates.Add(reducedManaRegenSpellTemplate);
+            }
+
             Logger.WriteDebug("Generating custom spells completed.");
         }
 

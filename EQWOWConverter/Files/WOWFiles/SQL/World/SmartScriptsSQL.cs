@@ -276,6 +276,36 @@ namespace EQWOWConverter.WOWFiles
             );
         }
 
+        public void AddRowForCreatureTemplateApplyAuraOnSpawn(int creatureTemplateID, int wowSpellID, string comment)
+        {
+            AddRow(creatureTemplateID,
+                0,
+                63, // SMART_EVENT_JUST_CREATED
+                100,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                75, // SMART_ACTION_ADD_AURA
+                wowSpellID,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1, // SMART_TARGET_SELF
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment
+            );
+        }
+
         public void AddRowForCreatureTemplateCastOnSummoned(int creatureID, int wowSpellID, string comment)
         {
             // Damage event

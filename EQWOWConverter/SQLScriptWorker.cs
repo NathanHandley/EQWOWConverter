@@ -595,6 +595,14 @@ namespace EQWOWConverter
                 // Spell scripts
                 if (creatureTemplate.CreatureSpellListID > 0)
                 {
+                    // Reduce mana regeneration on spell-casting creatures, if configured
+                    if (Configuration.CREATURE_MANA_REGEN_PERCENT < 100)
+                    {
+                        string manaRegenComment = string.Concat("EQ Reduce Mana Regen ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ")");
+                        smartScriptsSQL.AddRowForCreatureTemplateApplyAuraOnSpawn(creatureTemplate.WOWCreatureTemplateID,
+                            Configuration.SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID, manaRegenComment);
+                    }
+
                     // Add spell events for every heal entry
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesHeal)
                     {
