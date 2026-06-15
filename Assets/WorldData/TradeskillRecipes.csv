@@ -7223,9 +7223,9 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 13455|91102|0||Small Black Fine Steel Breastplate||63|63|0|36|0|0|0|-1|-1|23302|Small Black Fine Steel Breastplate|1||||||||||22118|Black Dye|1|22133|Jar of Acid|1|22101|Jar of Lacquer|1|21016|Small Fine Steel Breastplate|1||||||||||||||||||||||||||
 13456|91103|1|1|Evocation Binding||58|58|0|153|0|0|0|-1|-1|15952|Evocation Binding|1||||||||||6404|Staff of Writhing|1|||||||||||||||||||||||||||||||||||
 13457|91104|1|1|Abjuration Binding||58|58|0|153|0|0|0|-1|-1|15954|Abjuration Binding|1||||||||||5360|Polished Granite Tomahawk|1|||||||||||||||||||||||||||||||||||
-13458|91352|1|1|Spell: Strong Poison||58|58|0|153|0|0|0|-1|117330|15955|Spell: Strong Poison|1||||||||||5499|Kicsh Der Pavz|1|||||||||||||||||||||||||||||||||||
-13459|91353|1|1|Spell: Ykesha||58|58|0|153|0|0|0|-1|117349|15951|Spell: Ykesha|1||||||||||5500|Short Sword of the Ykesha|1|||||||||||||||||||||||||||||||||||
-13460|91354|1|1|Spell: Screaming Mace||58|58|0|153|0|0|0|-1|117324|15953|Spell: Screaming Mace|1||||||||||6305|Screaming Mace|1|||||||||||||||||||||||||||||||||||
+13458|91352|0|1|Spell: Strong Poison||58|58|0|153|0|0|0|-1|117330|15955|Spell: Strong Poison|1||||||||||5499|Kicsh Der Pavz|1|||||||||||||||||||||||||||||||||||
+13459|-1|0|1|Spell: Ykesha||58|58|0|153|0|0|0|-1|117349|15951|Spell: Ykesha|1||||||||||5500|Short Sword of the Ykesha|1|||||||||||||||||||||||||||||||||||
+13460|91354|0|1|Spell: Screaming Mace||58|58|0|153|0|0|0|-1|117324|15953|Spell: Screaming Mace|1||||||||||6305|Screaming Mace|1|||||||||||||||||||||||||||||||||||
 13461|91105|1|1|Aqi Note||58|58|0|153|0|0|0|-1|-1|15956|Aqi Note|1||||||||||15624|Spell: Lesser Conjuration: Earth|1|30407|Spell: Wandering Mind|1|30420|Spell: Invisibility to Undead|1|30412|Spell: Chilling Embrace|1||||||||||||||||||||||||||
 13462|91106|1|1|Bep Note||58|58|0|153|0|0|0|-1|-1|15942|Bep Note|1||||||||||30421|Spell: Enticement of Flame|1|30474|Spell: Boon of the Garou|1|30403|Spell: Elemental Maelstrom|1|30413|Spell: Corporeal Empathy|1||||||||||||||||||||||||||
 13463|91107|1|1|Cjo Note||58|58|0|153|0|0|0|-1|-1|15943|Cjo Note|1||||||||||15184|Spell: Allure|1|15456|Spell: Bond of Death|1|15634|Spell: Greater Conjuration: Fire|1|15731|Spell: Wrath of Al'Kabor|1||||||||||||||||||||||||||
