@@ -195,6 +195,7 @@ namespace EQWOWConverter.Spells
         public int SummonPropertiesDBCID = 0;
         public int SummonCreatureTemplateID = 0;
         public bool IsBardSongAura = false;
+        public bool IsCharmSpell = false;
         public bool HasAdditionalTickOnApply = false;
         public bool InterruptOnMovement = true;
         public bool InterruptOnSchoolLockdown = true;
@@ -2402,6 +2403,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectMechanic = SpellMechanicType.Charmed;
                                 spellTemplate.NoPartialImmunity = true;
                                 spellTemplate.GenerateNoThreat = true; // This avoids being stuck in combat
+                                spellTemplate.IsCharmSpell = true; // This too
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         case SpellEQEffectType.Rune:

@@ -1347,6 +1347,8 @@ namespace EQWOWConverter
             }
             if (spellTemplate.IsBardSongAura == true)
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_BardSongAuraScript");
+            if (spellTemplate.IsCharmSpell == true)
+                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_CharmAuraScript");
             if (spellTemplate.IsllusionSpellParent == true)
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_IllusionSpellScript");
 
