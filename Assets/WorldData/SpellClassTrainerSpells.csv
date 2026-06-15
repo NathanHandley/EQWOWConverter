@@ -66,7 +66,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 1|11566|Heroic Strike|Rank 7|40000|0|0|48|0
 1|11580|Thunder Clap|Rank 5|40000|0|0|48|0
 1|20661|Execute|Rank 4|40000|0|0|48|0
-1|21551|Mortal Strike|Rank 2|2000|0|0|48|0
+1|21551|Mortal Strike|Rank 2|2000|0|0|48|12294
 1|23923|Shield Slam|Rank 2|40000|0|0|48|0
 1|1719|Recklessness||42000|0|0|50|0
 1|11573|Rend|Rank 6|42000|0|0|50|0
@@ -75,25 +75,25 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 1|11556|Demoralizing Shout|Rank 5|56000|0|0|54|0
 1|11601|Revenge|Rank 5|56000|0|0|54|0
 1|11605|Slam|Rank 4|56000|0|0|54|0
-1|21552|Mortal Strike|Rank 3|2800|0|0|54|0
+1|21552|Mortal Strike|Rank 3|2800|0|0|54|21551
 1|23924|Shield Slam|Rank 3|56000|0|0|54|0
 1|11567|Heroic Strike|Rank 8|58000|0|0|56|0
 1|20662|Execute|Rank 5|58000|0|0|56|0
 1|11581|Thunder Clap|Rank 6|60000|0|0|58|0
 1|11574|Rend|Rank 7|62000|0|0|60|0
 1|20569|Cleave|Rank 5|62000|0|0|60|0
-1|21553|Mortal Strike|Rank 4|3100|0|0|60|0
+1|21553|Mortal Strike|Rank 4|3100|0|0|60|21552
 1|23925|Shield Slam|Rank 4|62000|0|0|60|0
 1|25286|Heroic Strike|Rank 9|60000|0|0|60|0
 1|25288|Revenge|Rank 6|60000|0|0|60|0
 1|25289|Battle Shout|Rank 7|65000|0|0|60|0
-1|30016|Devastate|Rank 2|3100|0|0|60|0
+1|30016|Devastate|Rank 2|3100|0|0|60|20243
 1|25241|Slam|Rank 5|65000|0|0|61|0
 1|25202|Demoralizing Shout|Rank 6|65000|0|0|62|0
 1|25269|Revenge|Rank 7|65000|0|0|63|0
 1|23920|Spell Reflection||65000|0|0|64|0
 1|25234|Execute|Rank 6|65000|0|0|65|0
-1|25248|Mortal Strike|Rank 5|3250|0|0|66|0
+1|25248|Mortal Strike|Rank 5|3250|0|0|66|21553
 1|25258|Shield Slam|Rank 5|65000|0|0|66|0
 1|29707|Heroic Strike|Rank 10|65000|0|0|66|0
 1|25264|Thunder Clap|Rank 7|65000|0|0|67|0
@@ -105,9 +105,9 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 1|3411|Intervene||65000|0|0|70|0
 1|25203|Demoralizing Shout|Rank 7|71000|0|0|70|0
 1|25236|Execute|Rank 7|71000|0|0|70|0
-1|30022|Devastate|Rank 3|3250|0|0|70|0
+1|30022|Devastate|Rank 3|3250|0|0|70|30016
 1|30324|Heroic Strike|Rank 11|100000|0|0|70|0
-1|30330|Mortal Strike|Rank 6|3500|0|0|70|0
+1|30330|Mortal Strike|Rank 6|3500|0|0|70|25248
 1|30356|Shield Slam|Rank 6|71000|0|0|70|0
 1|30357|Revenge|Rank 8|260000|0|0|70|0
 1|46845|Rend|Rank 9|260000|0|0|71|0
@@ -118,9 +118,9 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 1|47501|Thunder Clap|Rank 8|260000|0|0|73|0
 1|47439|Commanding Shout|Rank 2|100000|0|0|74|0
 1|47474|Slam|Rank 7|260000|0|0|74|0
-1|47485|Mortal Strike|Rank 7|13000|0|0|75|0
+1|47485|Mortal Strike|Rank 7|13000|0|0|75|30330
 1|47487|Shield Slam|Rank 7|260000|0|0|75|0
-1|47497|Devastate|Rank 4|5000|0|0|75|0
+1|47497|Devastate|Rank 4|5000|0|0|75|30022
 1|55694|Enraged Regeneration||100000|0|0|75|0
 1|47450|Heroic Strike|Rank 13|260000|0|0|76|0
 1|47465|Rend|Rank 10|260000|0|0|76|0
@@ -131,9 +131,9 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 1|47475|Slam|Rank 8|260000|0|0|79|0
 1|47440|Commanding Shout|Rank 3|260000|0|0|80|0
 1|47471|Execute|Rank 9|260000|0|0|80|0
-1|47486|Mortal Strike|Rank 8|13000|0|0|80|0
+1|47486|Mortal Strike|Rank 8|13000|0|0|80|47485
 1|47488|Shield Slam|Rank 8|260000|0|0|80|0
-1|47498|Devastate|Rank 5|5000|0|0|80|0
+1|47498|Devastate|Rank 5|5000|0|0|80|47497
 1|57755|Heroic Throw||100000|0|0|80|0
 1|57823|Revenge|Rank 9|260000|0|0|80|0
 2|465|Devotion Aura|Rank 1|10|0|0|1|0
@@ -217,13 +217,13 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 2|10328|Holy Light|Rank 7|24000|0|0|46|0
 2|19899|Fire Resistance Aura|Rank 2|26000|0|0|48|0
 2|20772|Redemption|Rank 4|26000|0|0|48|0
-2|20929|Holy Shock|Rank 2|1300|0|0|48|0
+2|20929|Holy Shock|Rank 2|1300|0|0|48|20473
 2|2812|Holy Wrath|Rank 1|28000|0|0|50|0
 2|10292|Devotion Aura|Rank 6|28000|0|0|50|0
 2|10310|Lay on Hands|Rank 3|28000|0|0|50|0
 2|19942|Flash of Light|Rank 5|28000|0|0|50|0
 2|20923|Consecration|Rank 4|28000|0|0|50|0
-2|20927|Holy Shield|Rank 2|1400|0|0|50|0
+2|20927|Holy Shield|Rank 2|1400|0|0|50|20925
 2|10313|Exorcism|Rank 5|34000|0|0|52|0
 2|19838|Blessing of Might|Rank 6|34000|0|0|52|0
 2|19896|Shadow Resistance Aura|Rank 3|34000|0|0|52|0
@@ -235,7 +235,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 2|25894|Greater Blessing of Wisdom|Rank 1|46000|0|0|54|0
 2|10301|Retribution Aura|Rank 5|42000|0|0|56|0
 2|19898|Frost Resistance Aura|Rank 3|42000|0|0|56|0
-2|20930|Holy Shock|Rank 3|2100|0|0|56|0
+2|20930|Holy Shock|Rank 3|2100|0|0|56|20929
 2|19943|Flash of Light|Rank 6|44000|0|0|58|0
 2|10293|Devotion Aura|Rank 7|46000|0|0|60|0
 2|10314|Exorcism|Rank 6|46000|0|0|60|0
@@ -243,7 +243,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 2|19900|Fire Resistance Aura|Rank 3|46000|0|0|60|0
 2|20773|Redemption|Rank 5|46000|0|0|60|0
 2|20924|Consecration|Rank 5|46000|0|0|60|0
-2|20928|Holy Shield|Rank 3|2300|0|0|60|0
+2|20928|Holy Shield|Rank 3|2300|0|0|60|20927
 2|24239|Hammer of Wrath|Rank 3|46000|0|0|60|0
 2|25290|Blessing of Wisdom|Rank 6|50000|0|0|60|0
 2|25291|Blessing of Might|Rank 7|50000|0|0|60|0
@@ -252,11 +252,11 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 2|25899|Greater Blessing of Sanctuary||2300|0|0|60|0
 2|25916|Greater Blessing of Might|Rank 2|46000|0|0|60|0
 2|25918|Greater Blessing of Wisdom|Rank 2|46000|0|0|60|0
-2|32699|Avenger's Shield|Rank 2|2300|0|0|60|0
+2|32699|Avenger's Shield|Rank 2|2300|0|0|60|31935
 2|27135|Holy Light|Rank 10|55000|0|0|62|0
 2|32223|Crusader Aura||55000|0|0|62|0
 2|27151|Shadow Resistance Aura|Rank 4|61000|0|0|63|0
-2|27174|Holy Shock|Rank 4|3348|0|0|64|0
+2|27174|Holy Shock|Rank 4|3348|0|0|64|20930
 2|31801|Seal of Vengeance||67000|0|0|64|0
 2|27142|Blessing of Wisdom|Rank 7|75000|0|0|65|0
 2|27143|Greater Blessing of Wisdom|Rank 3|75000|0|0|65|0
@@ -274,10 +274,10 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 2|27149|Devotion Aura|Rank 8|130000|0|0|70|0
 2|27153|Fire Resistance Aura|Rank 4|130000|0|0|70|0
 2|27173|Consecration|Rank 6|130000|0|0|70|0
-2|27179|Holy Shield|Rank 4|6500|0|0|70|0
+2|27179|Holy Shield|Rank 4|6500|0|0|70|20928
 2|31884|Avenging Wrath||130000|0|0|70|0
-2|32700|Avenger's Shield|Rank 3|5000|0|0|70|0
-2|33072|Holy Shock|Rank 5|6500|0|0|70|0
+2|32700|Avenger's Shield|Rank 3|5000|0|0|70|32699
+2|33072|Holy Shock|Rank 5|6500|0|0|70|27174
 2|48935|Blessing of Wisdom|Rank 8|200000|0|0|71|0
 2|48937|Greater Blessing of Wisdom|Rank 4|200000|0|0|71|0
 2|54428|Divine Plea||100000|0|0|71|0
@@ -291,9 +291,9 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 2|48941|Devotion Aura|Rank 9|200000|0|0|74|0
 2|48781|Holy Light|Rank 12|200000|0|0|75|0
 2|48818|Consecration|Rank 7|200000|0|0|75|0
-2|48824|Holy Shock|Rank 6|10000|0|0|75|0
-2|48826|Avenger's Shield|Rank 4|10000|0|0|75|0
-2|48951|Holy Shield|Rank 5|10000|0|0|75|0
+2|48824|Holy Shock|Rank 6|10000|0|0|75|33072
+2|48826|Avenger's Shield|Rank 4|10000|0|0|75|32700
+2|48951|Holy Shield|Rank 5|10000|0|0|75|27179
 2|53600|Shield of Righteousness|Rank 1|200000|0|0|75|0
 2|48943|Shadow Resistance Aura|Rank 5|200000|0|0|76|0
 2|54043|Retribution Aura|Rank 7|200000|0|0|76|0
@@ -312,9 +312,9 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 2|48782|Holy Light|Rank 13|200000|0|0|80|0
 2|48806|Hammer of Wrath|Rank 6|200000|0|0|80|0
 2|48819|Consecration|Rank 8|200000|0|0|80|0
-2|48825|Holy Shock|Rank 7|10000|0|0|80|0
-2|48827|Avenger's Shield|Rank 5|10000|0|0|80|0
-2|48952|Holy Shield|Rank 6|10000|0|0|80|0
+2|48825|Holy Shock|Rank 7|10000|0|0|80|48824
+2|48827|Avenger's Shield|Rank 5|10000|0|0|80|48826
+2|48952|Holy Shield|Rank 6|10000|0|0|80|48951
 2|53601|Sacred Shield|Rank 1|100000|0|0|80|0
 2|61411|Shield of Righteousness|Rank 2|200000|0|0|80|0
 3|1494|Track Beasts||10|0|0|2|0
@@ -367,7 +367,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 3|13809|Frost Trap||8000|0|0|28|0
 3|14283|Arcane Shot|Rank 4|8000|0|0|28|0
 3|14319|Aspect of the Hawk|Rank 3|8000|0|0|28|0
-3|20900|Aimed Shot|Rank 2|400|0|0|28|0
+3|20900|Aimed Shot|Rank 2|400|0|0|28|19434
 3|5384|Feign Death||8000|0|0|30|0
 3|13161|Aspect of the Beast||8000|0|0|30|0
 3|14269|Mongoose Bite|Rank 2|8000|0|0|30|0
@@ -382,7 +382,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 3|3662|Mend Pet|Rank 4|14000|0|0|36|0
 3|14284|Arcane Shot|Rank 5|14000|0|0|36|0
 3|14303|Immolation Trap|Rank 3|14000|0|0|36|0
-3|20901|Aimed Shot|Rank 3|700|0|0|36|0
+3|20901|Aimed Shot|Rank 3|700|0|0|36|20900
 3|14320|Aspect of the Hawk|Rank 4|16000|0|0|38|0
 3|1510|Volley|Rank 1|18000|0|0|40|0
 3|8737|Mail||18000|0|0|40|0
@@ -393,12 +393,12 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 3|19882|Track Giants||18000|0|0|40|0
 3|13553|Serpent Sting|Rank 6|24000|0|0|42|0
 3|14289|Multi-Shot|Rank 3|24000|0|0|42|0
-3|20909|Counterattack|Rank 2|1200|0|0|42|0
+3|20909|Counterattack|Rank 2|1200|0|0|42|19306
 3|13542|Mend Pet|Rank 5|26000|0|0|44|0
 3|14270|Mongoose Bite|Rank 3|26000|0|0|44|0
 3|14285|Arcane Shot|Rank 6|26000|0|0|44|0
 3|14316|Explosive Trap|Rank 2|26000|0|0|44|0
-3|20902|Aimed Shot|Rank 4|1300|0|0|44|0
+3|20902|Aimed Shot|Rank 4|1300|0|0|44|20901
 3|14304|Immolation Trap|Rank 4|28000|0|0|46|0
 3|14327|Scare Beast|Rank 3|28000|0|0|46|0
 3|20043|Aspect of the Wild|Rank 1|28000|0|0|46|0
@@ -407,18 +407,18 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 3|13554|Serpent Sting|Rank 7|36000|0|0|50|0
 3|14294|Volley|Rank 2|36000|0|0|50|0
 3|19879|Track Dragonkin||36000|0|0|50|0
-3|24132|Wyvern Sting|Rank 2|1800|0|0|50|0
+3|24132|Wyvern Sting|Rank 2|1800|0|0|50|19386
 3|56641|Steady Shot|Rank 1|36000|0|0|50|0
 3|13543|Mend Pet|Rank 6|40000|0|0|52|0
 3|14286|Arcane Shot|Rank 7|40000|0|0|52|0
-3|20903|Aimed Shot|Rank 5|2000|0|0|52|0
+3|20903|Aimed Shot|Rank 5|2000|0|0|52|20902
 3|14290|Multi-Shot|Rank 4|42000|0|0|54|0
 3|14317|Explosive Trap|Rank 3|42000|0|0|54|0
-3|20910|Counterattack|Rank 3|2100|0|0|54|0
+3|20910|Counterattack|Rank 3|2100|0|0|54|20909
 3|14266|Raptor Strike|Rank 8|46000|0|0|56|0
 3|14305|Immolation Trap|Rank 5|46000|0|0|56|0
 3|20190|Aspect of the Wild|Rank 2|46000|0|0|56|0
-3|63668|Black Arrow|Rank 2|1800|0|0|57|0
+3|63668|Black Arrow|Rank 2|1800|0|0|57|3674
 3|13555|Serpent Sting|Rank 8|48000|0|0|58|0
 3|14271|Mongoose Bite|Rank 4|48000|0|0|58|0
 3|14295|Volley|Rank 3|48000|0|0|58|0
@@ -429,17 +429,17 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 3|14311|Freezing Trap|Rank 3|50000|0|0|60|0
 3|19263|Deterrence||2200|0|0|60|0
 3|19801|Tranquilizing Shot||50000|0|0|60|0
-3|20904|Aimed Shot|Rank 6|2500|0|0|60|0
-3|24133|Wyvern Sting|Rank 3|2500|0|0|60|0
+3|20904|Aimed Shot|Rank 6|2500|0|0|60|20903
+3|24133|Wyvern Sting|Rank 3|2500|0|0|60|24132
 3|25294|Multi-Shot|Rank 5|50000|0|0|60|0
 3|25295|Serpent Sting|Rank 9|50000|0|0|60|0
 3|25296|Aspect of the Hawk|Rank 7|50000|0|0|60|0
 3|27025|Explosive Trap|Rank 4|68000|0|0|61|0
 3|34120|Steady Shot|Rank 2|70000|0|0|62|0
 3|27014|Raptor Strike|Rank 9|87000|0|0|63|0
-3|63669|Black Arrow|Rank 3|7000|0|0|63|0
+3|63669|Black Arrow|Rank 3|7000|0|0|63|63668
 3|27023|Immolation Trap|Rank 6|110000|0|0|65|0
-3|27067|Counterattack|Rank 4|2500|0|0|66|0
+3|27067|Counterattack|Rank 4|2500|0|0|66|20910
 3|34026|Kill Command||120000|0|0|66|0
 3|27016|Serpent Sting|Rank 10|140000|0|0|67|0
 3|27021|Multi-Shot|Rank 6|140000|0|0|67|0
@@ -449,17 +449,17 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 3|27046|Mend Pet|Rank 8|150000|0|0|68|0
 3|34600|Snake Trap||150000|0|0|68|0
 3|27019|Arcane Shot|Rank 9|170000|0|0|69|0
-3|63670|Black Arrow|Rank 4|10000|0|0|69|0
-3|27065|Aimed Shot|Rank 7|10000|0|0|70|0
-3|27068|Wyvern Sting|Rank 4|5000|0|0|70|0
+3|63670|Black Arrow|Rank 4|10000|0|0|69|63669
+3|27065|Aimed Shot|Rank 7|10000|0|0|70|20904
+3|27068|Wyvern Sting|Rank 4|5000|0|0|70|24133
 3|34477|Misdirection||190000|0|0|70|0
 3|36916|Mongoose Bite|Rank 5|300000|0|0|70|0
-3|60051|Explosive Shot|Rank 2|400|0|0|70|0
+3|60051|Explosive Shot|Rank 2|400|0|0|70|53301
 3|48995|Raptor Strike|Rank 10|300000|0|0|71|0
 3|49051|Steady Shot|Rank 3|300000|0|0|71|0
 3|49066|Explosive Trap|Rank 5|300000|0|0|71|0
 3|53351|Kill Shot|Rank 1|300000|0|0|71|0
-3|48998|Counterattack|Rank 5|15000|0|0|72|0
+3|48998|Counterattack|Rank 5|15000|0|0|72|27067
 3|49055|Immolation Trap|Rank 7|300000|0|0|72|0
 3|49000|Serpent Sting|Rank 11|300000|0|0|73|0
 3|49044|Arcane Shot|Rank 10|300000|0|0|73|0
@@ -467,33 +467,33 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 3|49047|Multi-Shot|Rank 7|300000|0|0|74|0
 3|58431|Volley|Rank 5|300000|0|0|74|0
 3|61846|Aspect of the Dragonhawk|Rank 1|300000|0|0|74|0
-3|49011|Wyvern Sting|Rank 5|100000|0|0|75|0
-3|49049|Aimed Shot|Rank 8|10000|0|0|75|0
+3|49011|Wyvern Sting|Rank 5|100000|0|0|75|27068
+3|49049|Aimed Shot|Rank 8|10000|0|0|75|27065
 3|53271|Master's Call||10000|0|0|75|0
-3|60052|Explosive Shot|Rank 3|400|0|0|75|0
+3|60052|Explosive Shot|Rank 3|400|0|0|75|60051
 3|61005|Kill Shot|Rank 2|300000|0|0|75|0
-3|63671|Black Arrow|Rank 5|10000|0|0|75|0
+3|63671|Black Arrow|Rank 5|10000|0|0|75|63670
 3|49071|Aspect of the Wild|Rank 4|300000|0|0|76|0
 3|53338|Hunter's Mark|Rank 5|10000|0|0|76|0
 3|48996|Raptor Strike|Rank 11|300000|0|0|77|0
 3|49052|Steady Shot|Rank 4|300000|0|0|77|0
 3|49067|Explosive Trap|Rank 6|300000|0|0|77|0
-3|48999|Counterattack|Rank 6|15000|0|0|78|0
+3|48999|Counterattack|Rank 6|15000|0|0|78|48998
 3|49056|Immolation Trap|Rank 8|300000|0|0|78|0
 3|49001|Serpent Sting|Rank 12|300000|0|0|79|0
 3|49045|Arcane Shot|Rank 11|300000|0|0|79|0
 3|48990|Mend Pet|Rank 10|300000|0|0|80|0
-3|49012|Wyvern Sting|Rank 6|100000|0|0|80|0
+3|49012|Wyvern Sting|Rank 6|100000|0|0|80|49011
 3|49048|Multi-Shot|Rank 8|300000|0|0|80|0
-3|49050|Aimed Shot|Rank 9|10000|0|0|80|0
+3|49050|Aimed Shot|Rank 9|10000|0|0|80|49049
 3|53339|Mongoose Bite|Rank 6|300000|0|0|80|0
 3|58434|Volley|Rank 6|300000|0|0|80|0
-3|60053|Explosive Shot|Rank 4|100000|0|0|80|0
+3|60053|Explosive Shot|Rank 4|100000|0|0|80|60052
 3|60192|Freezing Arrow|Rank 1|100000|0|0|80|0
 3|61006|Kill Shot|Rank 3|300000|0|0|80|0
 3|61847|Aspect of the Dragonhawk|Rank 2|300000|0|0|80|0
 3|62757|Call Stabled Pet||300000|0|0|80|0
-3|63672|Black Arrow|Rank 6|10000|0|0|80|0
+3|63672|Black Arrow|Rank 6|10000|0|0|80|63671
 4|1784|Stealth||10|0|0|1|0
 4|53|Backstab|Rank 1|100|0|0|4|0
 4|921|Pick Pocket||100|0|0|4|0
@@ -552,13 +552,13 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 4|11279|Backstab|Rank 6|29000|0|0|44|0
 4|11289|Garrote|Rank 5|31000|0|0|46|0
 4|11293|Sinister Strike|Rank 7|31000|0|0|46|0
-4|17347|Hemorrhage|Rank 2|384|0|0|46|0
+4|17347|Hemorrhage|Rank 2|384|0|0|46|16511
 4|11297|Sap|Rank 3|33000|0|0|48|0
 4|11299|Eviscerate|Rank 7|33000|0|0|48|0
 4|8643|Kidney Shot|Rank 2|35000|0|0|50|0
 4|11268|Ambush|Rank 5|35000|0|0|50|0
 4|26669|Evasion|Rank 2|35000|0|0|50|0
-4|34411|Mutilate|Rank 2|5500|0|0|50|0
+4|34411|Mutilate|Rank 2|5500|0|0|50|1329
 4|11274|Rupture|Rank 5|46000|0|0|52|0
 4|11280|Backstab|Rank 7|46000|0|0|52|0
 4|11303|Feint|Rank 4|46000|0|0|52|0
@@ -567,55 +567,53 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 4|11300|Eviscerate|Rank 8|50000|0|0|56|0
 4|11269|Ambush|Rank 6|52000|0|0|58|0
 4|11305|Sprint|Rank 3|52000|0|0|58|0
-4|17348|Hemorrhage|Rank 3|650|0|0|58|0
+4|17348|Hemorrhage|Rank 3|650|0|0|58|17347
 4|11275|Rupture|Rank 6|54000|0|0|60|0
 4|11281|Backstab|Rank 8|54000|0|0|60|0
 4|25300|Backstab|Rank 9|72000|0|0|60|0
 4|25302|Feint|Rank 5|50000|0|0|60|0
 4|31016|Eviscerate|Rank 9|65000|0|0|60|0
-4|34412|Mutilate|Rank 3|6500|0|0|60|0
+4|34412|Mutilate|Rank 3|6500|0|0|60|34411
 4|26839|Garrote|Rank 7|50000|0|0|61|0
 4|26861|Sinister Strike|Rank 9|50000|0|0|62|0
 4|26889|Vanish|Rank 3|59000|0|0|62|0
-4|32645|Envenom|Rank 1|59000|0|0|62|0
-4|26679|Deadly Throw|Rank 1|72000|0|0|64|0
 4|26865|Eviscerate|Rank 10|140000|0|0|64|0
 4|27448|Feint|Rank 6|72000|0|0|64|0
 4|27441|Ambush|Rank 7|80000|0|0|66|0
 4|31224|Cloak of Shadows||89000|0|0|66|0
 4|26863|Backstab|Rank 10|110000|0|0|68|0
 4|26867|Rupture|Rank 7|120000|0|0|68|0
-4|32684|Envenom|Rank 2|100000|0|0|69|0
+4|32684|Envenom|Rank 2|100000|0|0|69|32645
 4|5938|Shiv||100000|0|0|70|0
 4|26862|Sinister Strike|Rank 10|100000|0|0|70|0
-4|26864|Hemorrhage|Rank 4|2700|0|0|70|0
+4|26864|Hemorrhage|Rank 4|2700|0|0|70|17348
 4|26884|Garrote|Rank 8|100000|0|0|70|0
-4|34413|Mutilate|Rank 4|7500|0|0|70|0
-4|48673|Deadly Throw|Rank 2|100000|0|0|70|0
+4|34413|Mutilate|Rank 4|7500|0|0|70|34412
+4|48673|Deadly Throw|Rank 2|100000|0|0|70|26679
 4|48689|Ambush|Rank 8|140000|0|0|70|0
 4|51724|Sap|Rank 4|300000|0|0|71|0
 4|48658|Feint|Rank 7|300000|0|0|72|0
 4|48667|Eviscerate|Rank 11|300000|0|0|73|0
 4|48656|Backstab|Rank 11|300000|0|0|74|0
 4|48671|Rupture|Rank 8|300000|0|0|74|0
-4|57992|Envenom|Rank 3|300000|0|0|74|0
-4|48663|Mutilate|Rank 5|15000|0|0|75|0
+4|57992|Envenom|Rank 3|300000|0|0|74|32684
+4|48663|Mutilate|Rank 5|15000|0|0|75|34413
 4|48675|Garrote|Rank 9|300000|0|0|75|0
 4|48690|Ambush|Rank 9|300000|0|0|75|0
 4|57934|Tricks of the Trade||300000|0|0|75|0
 4|48637|Sinister Strike|Rank 11|300000|0|0|76|0
-4|48674|Deadly Throw|Rank 3|300000|0|0|76|0
+4|48674|Deadly Throw|Rank 3|300000|0|0|76|48673
 4|48659|Feint|Rank 8|300000|0|0|78|0
 4|48668|Eviscerate|Rank 12|300000|0|0|79|0
 4|48672|Rupture|Rank 9|300000|0|0|79|0
 4|48638|Sinister Strike|Rank 12|300000|0|0|80|0
 4|48657|Backstab|Rank 12|300000|0|0|80|0
-4|48660|Hemorrhage|Rank 5|15000|0|0|80|0
-4|48666|Mutilate|Rank 6|15000|0|0|80|0
+4|48660|Hemorrhage|Rank 5|15000|0|0|80|26864
+4|48666|Mutilate|Rank 6|15000|0|0|80|48663
 4|48676|Garrote|Rank 10|300000|0|0|80|0
 4|48691|Ambush|Rank 10|300000|0|0|80|0
 4|51723|Fan of Knives||300000|0|0|80|0
-4|57993|Envenom|Rank 4|300000|0|0|80|0
+4|57993|Envenom|Rank 4|300000|0|0|80|57992
 5|1243|Power Word: Fortitude|Rank 1|10|0|0|1|0
 5|589|Shadow Word: Pain|Rank 1|100|0|0|4|0
 5|2052|Lesser Heal|Rank 2|100|0|0|4|0
@@ -660,12 +658,12 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|992|Shadow Word: Pain|Rank 4|6000|0|0|26|0
 5|6076|Renew|Rank 4|6000|0|0|26|0
 5|9472|Flash Heal|Rank 2|6000|0|0|26|0
-5|19238|Desperate Prayer|Rank 2|60|0|0|26|0
+5|19238|Desperate Prayer|Rank 2|60|0|0|26|19236
 5|6063|Heal|Rank 3|8000|0|0|28|0
 5|8104|Mind Blast|Rank 4|8000|0|0|28|0
 5|8124|Psychic Scream|Rank 2|8000|0|0|28|0
 5|15430|Holy Nova|Rank 2|8000|0|0|28|0
-5|17311|Mind Flay|Rank 2|400|0|0|28|0
+5|17311|Mind Flay|Rank 2|400|0|0|28|15407
 5|19276|Devouring Plague|Rank 2|8000|0|0|28|0
 5|596|Prayer of Healing|Rank 1|10000|0|0|30|0
 5|602|Inner Fire|Rank 3|10000|0|0|30|0
@@ -673,7 +671,6 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|976|Shadow Protection|Rank 1|10000|0|0|30|0
 5|1004|Smite|Rank 5|10000|0|0|30|0
 5|6065|Power Word: Shield|Rank 5|10000|0|0|30|0
-5|14752|Divine Spirit|Rank 1|600|0|0|30|0
 5|15263|Holy Fire|Rank 3|10000|0|0|30|0
 5|552|Abolish Disease||11000|0|0|32|0
 5|6077|Renew|Rank 5|11000|0|0|32|0
@@ -683,13 +680,13 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|6064|Heal|Rank 4|12000|0|0|34|0
 5|8105|Mind Blast|Rank 5|12000|0|0|34|0
 5|10880|Resurrection|Rank 3|12000|0|0|34|0
-5|19240|Desperate Prayer|Rank 3|300|0|0|34|0
+5|19240|Desperate Prayer|Rank 3|300|0|0|34|19238
 5|988|Dispel Magic|Rank 2|14000|0|0|36|0
 5|2791|Power Word: Fortitude|Rank 4|14000|0|0|36|0
 5|6066|Power Word: Shield|Rank 6|14000|0|0|36|0
 5|15264|Holy Fire|Rank 4|14000|0|0|36|0
 5|15431|Holy Nova|Rank 3|14000|0|0|36|0
-5|17312|Mind Flay|Rank 3|700|0|0|36|0
+5|17312|Mind Flay|Rank 3|700|0|0|36|17311
 5|19277|Devouring Plague|Rank 3|14000|0|0|36|0
 5|6060|Smite|Rank 6|16000|0|0|38|0
 5|6078|Renew|Rank 6|16000|0|0|38|0
@@ -699,17 +696,17 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|2060|Greater Heal|Rank 1|18000|0|0|40|0
 5|8106|Mind Blast|Rank 6|18000|0|0|40|0
 5|9485|Shackle Undead|Rank 2|18000|0|0|40|0
-5|14818|Divine Spirit|Rank 2|900|0|0|40|0
+5|14818|Divine Spirit|Rank 2|900|0|0|40|14752
 5|10888|Psychic Scream|Rank 3|22000|0|0|42|0
 5|10892|Shadow Word: Pain|Rank 6|22000|0|0|42|0
 5|10898|Power Word: Shield|Rank 7|22000|0|0|42|0
 5|10957|Shadow Protection|Rank 2|22000|0|0|42|0
 5|15265|Holy Fire|Rank 5|22000|0|0|42|0
-5|19241|Desperate Prayer|Rank 4|600|0|0|42|0
+5|19241|Desperate Prayer|Rank 4|600|0|0|42|19240
 5|10909|Mind Vision|Rank 2|24000|0|0|44|0
 5|10915|Flash Heal|Rank 5|24000|0|0|44|0
 5|10927|Renew|Rank 7|24000|0|0|44|0
-5|17313|Mind Flay|Rank 4|1200|0|0|44|0
+5|17313|Mind Flay|Rank 4|1200|0|0|44|17312
 5|19278|Devouring Plague|Rank 4|24000|0|0|44|0
 5|27799|Holy Nova|Rank 4|24000|0|0|44|0
 5|10881|Resurrection|Rank 4|26000|0|0|46|0
@@ -725,12 +722,12 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|10928|Renew|Rank 8|30000|0|0|50|0
 5|10951|Inner Fire|Rank 5|30000|0|0|50|0
 5|10960|Prayer of Healing|Rank 3|30000|0|0|50|0
-5|14819|Divine Spirit|Rank 3|1500|0|0|50|0
-5|19242|Desperate Prayer|Rank 5|1100|0|0|50|0
-5|27870|Lightwell|Rank 2|1200|0|0|50|0
+5|14819|Divine Spirit|Rank 3|1500|0|0|50|14818
+5|19242|Desperate Prayer|Rank 5|1100|0|0|50|19241
+5|27870|Lightwell|Rank 2|1200|0|0|50|724
 5|10946|Mind Blast|Rank 8|38000|0|0|52|0
 5|10964|Greater Heal|Rank 3|38000|0|0|52|0
-5|17314|Mind Flay|Rank 5|1900|0|0|52|0
+5|17314|Mind Flay|Rank 5|1900|0|0|52|17313
 5|19279|Devouring Plague|Rank 5|38000|0|0|52|0
 5|27800|Holy Nova|Rank 5|38000|0|0|52|0
 5|10900|Power Word: Shield|Rank 9|40000|0|0|54|0
@@ -741,11 +738,11 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|10929|Renew|Rank 9|42000|0|0|56|0
 5|10958|Shadow Protection|Rank 3|42000|0|0|56|0
 5|27683|Prayer of Shadow Protection|Rank 1|42000|0|0|56|0
-5|34863|Circle of Healing|Rank 2|2100|0|0|56|0
+5|34863|Circle of Healing|Rank 2|2100|0|0|56|34861
 5|10894|Shadow Word: Pain|Rank 8|44000|0|0|58|0
 5|10947|Mind Blast|Rank 9|44000|0|0|58|0
 5|10965|Greater Heal|Rank 4|44000|0|0|58|0
-5|19243|Desperate Prayer|Rank 6|1500|0|0|58|0
+5|19243|Desperate Prayer|Rank 6|1500|0|0|58|19242
 5|20770|Resurrection|Rank 5|44000|0|0|58|0
 5|10901|Power Word: Shield|Rank 10|46000|0|0|60|0
 5|10938|Power Word: Fortitude|Rank 6|46000|0|0|60|0
@@ -753,7 +750,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|10955|Shackle Undead|Rank 3|46000|0|0|60|0
 5|10961|Prayer of Healing|Rank 4|46000|0|0|60|0
 5|15261|Holy Fire|Rank 8|46000|0|0|60|0
-5|18807|Mind Flay|Rank 6|2300|0|0|60|0
+5|18807|Mind Flay|Rank 6|2300|0|0|60|17314
 5|19280|Devouring Plague|Rank 6|46000|0|0|60|0
 5|21564|Prayer of Fortitude|Rank 2|46000|0|0|60|0
 5|25314|Greater Heal|Rank 5|65000|0|0|60|0
@@ -761,10 +758,10 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|25316|Prayer of Healing|Rank 5|6500|0|0|60|0
 5|27681|Prayer of Spirit|Rank 1|2300|0|0|60|0
 5|27801|Holy Nova|Rank 6|46000|0|0|60|0
-5|27841|Divine Spirit|Rank 4|2300|0|0|60|0
-5|27871|Lightwell|Rank 3|1500|0|0|60|0
-5|34864|Circle of Healing|Rank 3|2300|0|0|60|0
-5|34916|Vampiric Touch|Rank 2|2300|0|0|60|0
+5|27841|Divine Spirit|Rank 4|2300|0|0|60|14819
+5|27871|Lightwell|Rank 3|1500|0|0|60|27870
+5|34864|Circle of Healing|Rank 3|2300|0|0|60|34863
+5|34916|Vampiric Touch|Rank 2|2300|0|0|60|34914
 5|25233|Flash Heal|Rank 8|53000|0|0|61|0
 5|25363|Smite|Rank 9|53000|0|0|61|0
 5|32379|Shadow Word: Death|Rank 1|59000|0|0|62|0
@@ -774,15 +771,15 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|25217|Power Word: Shield|Rank 11|80000|0|0|65|0
 5|25221|Renew|Rank 11|80000|0|0|65|0
 5|25367|Shadow Word: Pain|Rank 9|80000|0|0|65|0
-5|34865|Circle of Healing|Rank 4|4000|0|0|65|0
+5|34865|Circle of Healing|Rank 4|4000|0|0|65|34864
 5|25384|Holy Fire|Rank 9|65000|0|0|66|0
-5|25437|Desperate Prayer|Rank 7|2200|0|0|66|0
+5|25437|Desperate Prayer|Rank 7|2200|0|0|66|19243
 5|34433|Shadowfiend||89000|0|0|66|0
 5|25235|Flash Heal|Rank 9|99000|0|0|67|0
 5|25213|Greater Heal|Rank 7|110000|0|0|68|0
 5|25308|Prayer of Healing|Rank 6|110000|0|0|68|0
 5|25331|Holy Nova|Rank 7|110000|0|0|68|0
-5|25387|Mind Flay|Rank 7|6500|0|0|68|0
+5|25387|Mind Flay|Rank 7|6500|0|0|68|18807
 5|25433|Shadow Protection|Rank 4|110000|0|0|68|0
 5|25435|Resurrection|Rank 6|110000|0|0|68|0
 5|25467|Devouring Plague|Rank 7|110000|0|0|68|0
@@ -792,39 +789,39 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|25431|Inner Fire|Rank 7|65000|0|0|69|0
 5|25218|Power Word: Shield|Rank 12|140000|0|0|70|0
 5|25222|Renew|Rank 12|140000|0|0|70|0
-5|25312|Divine Spirit|Rank 5|2300|0|0|70|0
+5|25312|Divine Spirit|Rank 5|2300|0|0|70|27841
 5|25368|Shadow Word: Pain|Rank 10|140000|0|0|70|0
 5|25389|Power Word: Fortitude|Rank 7|65000|0|0|70|0
 5|25392|Prayer of Fortitude|Rank 3|100000|0|0|70|0
-5|28275|Lightwell|Rank 4|1500|0|0|70|0
+5|28275|Lightwell|Rank 4|1500|0|0|70|27871
 5|32375|Mass Dispel||110000|0|0|70|0
 5|32996|Shadow Word: Death|Rank 2|110000|0|0|70|0
 5|32999|Prayer of Spirit|Rank 2|3400|0|0|70|0
-5|34866|Circle of Healing|Rank 5|7000|0|0|70|0
-5|34917|Vampiric Touch|Rank 3|2300|0|0|70|0
+5|34866|Circle of Healing|Rank 5|7000|0|0|70|34865
+5|34917|Vampiric Touch|Rank 3|2300|0|0|70|34916
 5|39374|Prayer of Shadow Protection|Rank 2|100000|0|0|70|0
-5|53005|Penance|Rank 2|5000|0|0|70|0
+5|53005|Penance|Rank 2|5000|0|0|70|47540
 5|48040|Inner Fire|Rank 8|180000|0|0|71|0
 5|48119|Binding Heal|Rank 2|180000|0|0|72|0
 5|48134|Holy Fire|Rank 10|180000|0|0|72|0
 5|48062|Greater Heal|Rank 8|180000|0|0|73|0
 5|48070|Flash Heal|Rank 10|180000|0|0|73|0
-5|48172|Desperate Prayer|Rank 8|3250|0|0|73|0
+5|48172|Desperate Prayer|Rank 8|3250|0|0|73|25437
 5|48299|Devouring Plague|Rank 8|180000|0|0|73|0
 5|48112|Prayer of Mending|Rank 2|100000|0|0|74|0
 5|48122|Smite|Rank 11|180000|0|0|74|0
 5|48126|Mind Blast|Rank 12|180000|0|0|74|0
-5|48155|Mind Flay|Rank 8|9000|0|0|74|0
+5|48155|Mind Flay|Rank 8|9000|0|0|74|25387
 5|48045|Mind Sear|Rank 1|10000|0|0|75|0
 5|48065|Power Word: Shield|Rank 13|180000|0|0|75|0
 5|48067|Renew|Rank 13|180000|0|0|75|0
 5|48077|Holy Nova|Rank 8|180000|0|0|75|0
-5|48086|Lightwell|Rank 5|9000|0|0|75|0
-5|48088|Circle of Healing|Rank 6|9000|0|0|75|0
+5|48086|Lightwell|Rank 5|9000|0|0|75|28275
+5|48088|Circle of Healing|Rank 6|9000|0|0|75|34866
 5|48124|Shadow Word: Pain|Rank 11|180000|0|0|75|0
 5|48157|Shadow Word: Death|Rank 3|180000|0|0|75|0
-5|48159|Vampiric Touch|Rank 4|9000|0|0|75|0
-5|53006|Penance|Rank 3|9000|0|0|75|0
+5|48159|Vampiric Touch|Rank 4|9000|0|0|75|34917
+5|53006|Penance|Rank 3|9000|0|0|75|53005
 5|48072|Prayer of Healing|Rank 7|180000|0|0|76|0
 5|48169|Shadow Protection|Rank 5|180000|0|0|76|0
 5|48168|Inner Fire|Rank 9|180000|0|0|77|0
@@ -840,19 +837,19 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|48300|Devouring Plague|Rank 9|180000|0|0|79|0
 5|48066|Power Word: Shield|Rank 14|180000|0|0|80|0
 5|48068|Renew|Rank 14|180000|0|0|80|0
-5|48073|Divine Spirit|Rank 6|9000|0|0|80|0
+5|48073|Divine Spirit|Rank 6|9000|0|0|80|25312
 5|48074|Prayer of Spirit|Rank 3|9000|0|0|80|0
 5|48078|Holy Nova|Rank 9|180000|0|0|80|0
-5|48087|Lightwell|Rank 6|9000|0|0|80|0
-5|48089|Circle of Healing|Rank 7|9000|0|0|80|0
+5|48087|Lightwell|Rank 6|9000|0|0|80|48086
+5|48089|Circle of Healing|Rank 7|9000|0|0|80|48088
 5|48125|Shadow Word: Pain|Rank 12|180000|0|0|80|0
-5|48156|Mind Flay|Rank 9|9000|0|0|80|0
+5|48156|Mind Flay|Rank 9|9000|0|0|80|48155
 5|48158|Shadow Word: Death|Rank 4|180000|0|0|80|0
-5|48160|Vampiric Touch|Rank 5|9000|0|0|80|0
+5|48160|Vampiric Touch|Rank 5|9000|0|0|80|48159
 5|48161|Power Word: Fortitude|Rank 8|180000|0|0|80|0
 5|48162|Prayer of Fortitude|Rank 4|180000|0|0|80|0
-5|48173|Desperate Prayer|Rank 9|9000|0|0|80|0
-5|53007|Penance|Rank 4|9000|0|0|80|0
+5|48173|Desperate Prayer|Rank 9|9000|0|0|80|48172
+5|53007|Penance|Rank 4|9000|0|0|80|53006
 5|53023|Mind Sear|Rank 2|100000|0|0|80|0
 5|64843|Divine Hymn|Rank 1|180000|0|0|80|0
 5|64901|Hymn of Hope||65000|0|0|80|0
@@ -878,7 +875,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 6|48721|Blood Boil|Rank 1|5800|0|0|58|0
 6|47476|Strangulate||5900|0|0|59|0
 6|49926|Blood Strike|Rank 2|5900|0|0|59|0
-6|55258|Heart Strike|Rank 2|5900|0|0|59|0
+6|55258|Heart Strike|Rank 2|5900|0|0|59|55050
 6|43265|Death and Decay|Rank 1|6000|0|0|60|0
 6|49917|Plague Strike|Rank 2|5800|0|0|60|0
 6|51325|Corpse Explosion|Rank 2|300|0|0|60|0
@@ -894,7 +891,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 6|54446|Rune of Swordbreaking||68000|0|0|63|0
 6|45529|Blood Tap||64000|0|0|64|0
 6|49927|Blood Strike|Rank 3|64000|0|0|64|0
-6|55259|Heart Strike|Rank 3|3200|0|0|64|0
+6|55259|Heart Strike|Rank 3|3200|0|0|64|55258
 6|49918|Plague Strike|Rank 3|65000|0|0|65|0
 6|51417|Frost Strike|Rank 3|3250|0|0|65|0
 6|56222|Dark Command||65000|0|0|65|0
@@ -904,17 +901,17 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 6|49903|Icy Touch|Rank 3|67000|0|0|67|0
 6|49936|Death and Decay|Rank 2|68000|0|0|67|0
 6|51423|Obliterate|Rank 2|67000|0|0|67|0
-6|55265|Scourge Strike|Rank 2|18000|0|0|67|0
+6|55265|Scourge Strike|Rank 2|18000|0|0|67|55090
 6|56815|Rune Strike||67000|0|0|67|0
 6|48707|Anti-Magic Shell||68000|0|0|68|0
 6|49893|Death Coil|Rank 3|68000|0|0|68|0
 6|49928|Blood Strike|Rank 4|69000|0|0|69|0
-6|55260|Heart Strike|Rank 4|3450|0|0|69|0
+6|55260|Heart Strike|Rank 4|3450|0|0|69|55259
 6|45463|Death Strike|Rank 3|63000|0|0|70|0
 6|48265|Unholy Presence||360000|0|0|70|0
 6|49919|Plague Strike|Rank 4|360000|0|0|70|0
 6|51326|Corpse Explosion|Rank 3|18000|0|0|70|0
-6|51409|Howling Blast|Rank 2|6500|0|0|70|0
+6|51409|Howling Blast|Rank 2|6500|0|0|70|49184
 6|51418|Frost Strike|Rank 4|18000|0|0|70|0
 6|53344|Rune of the Fallen Crusader||360000|0|0|70|0
 6|49940|Blood Boil|Rank 3|360000|0|0|72|0
@@ -924,21 +921,21 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 6|49904|Icy Touch|Rank 4|360000|0|0|73|0
 6|49937|Death and Decay|Rank 3|360000|0|0|73|0
 6|51424|Obliterate|Rank 3|360000|0|0|73|0
-6|55270|Scourge Strike|Rank 3|18000|0|0|73|0
+6|55270|Scourge Strike|Rank 3|18000|0|0|73|55265
 6|49929|Blood Strike|Rank 5|360000|0|0|74|0
-6|55261|Heart Strike|Rank 5|18000|0|0|74|0
+6|55261|Heart Strike|Rank 5|18000|0|0|74|55260
 6|47568|Empower Rune Weapon||360000|0|0|75|0
 6|49920|Plague Strike|Rank 5|360000|0|0|75|0
 6|49923|Death Strike|Rank 4|360000|0|0|75|0
 6|51327|Corpse Explosion|Rank 4|18000|0|0|75|0
-6|51410|Howling Blast|Rank 3|10000|0|0|75|0
+6|51410|Howling Blast|Rank 3|10000|0|0|75|51409
 6|51419|Frost Strike|Rank 5|18000|0|0|75|0
 6|57623|Horn of Winter|Rank 2|360000|0|0|75|0
 6|49894|Death Coil|Rank 4|360000|0|0|76|0
 6|49909|Icy Touch|Rank 5|360000|0|0|78|0
 6|49941|Blood Boil|Rank 4|360000|0|0|78|0
 6|51425|Obliterate|Rank 4|360000|0|0|79|0
-6|55271|Scourge Strike|Rank 4|18000|0|0|79|0
+6|55271|Scourge Strike|Rank 4|18000|0|0|79|55270
 6|42650|Army of the Dead||360000|0|0|80|0
 6|49895|Death Coil|Rank 5|360000|0|0|80|0
 6|49921|Plague Strike|Rank 6|360000|0|0|80|0
@@ -946,8 +943,8 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 6|49930|Blood Strike|Rank 6|360000|0|0|80|0
 6|49938|Death and Decay|Rank 4|360000|0|0|80|0
 6|51328|Corpse Explosion|Rank 5|18000|0|0|80|0
-6|51411|Howling Blast|Rank 4|10000|0|0|80|0
-6|55262|Heart Strike|Rank 6|18000|0|0|80|0
+6|51411|Howling Blast|Rank 4|10000|0|0|80|51410
+6|55262|Heart Strike|Rank 6|18000|0|0|80|55261
 6|55268|Frost Strike|Rank 6|18000|0|0|80|0
 7|8017|Rockbiter Weapon|Rank 1|10|0|0|1|0
 7|8042|Earth Shock|Rank 1|100|0|0|4|0
@@ -1017,7 +1014,6 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|10595|Nature Resistance Totem|Rank 1|7000|0|0|30|0
 7|20608|Reincarnation|Passive|7000|0|0|30|0
 7|36936|Totemic Recall||7000|0|0|30|0
-7|51730|Earthliving Weapon|Rank 1|7000|0|0|30|0
 7|66842|Call of the Elements||700|0|0|30|0
 7|421|Chain Lightning|Rank 1|8000|0|0|32|0
 7|945|Lightning Shield|Rank 4|8000|0|0|32|0
@@ -1052,7 +1048,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|8235|Windfury Weapon|Rank 2|12000|0|0|40|0
 7|8737|Mail||12000|0|0|40|0
 7|10447|Flame Shock|Rank 4|12000|0|0|40|0
-7|51988|Earthliving Weapon|Rank 2|12000|0|0|40|0
+7|51988|Earthliving Weapon|Rank 2|12000|0|0|40|51730
 7|66843|Call of the Ancestors||700|0|0|40|0
 7|52134|Water Shield|Rank 4|12000|0|0|41|0
 7|10537|Fire Resistance Totem|Rank 2|16000|0|0|42|0
@@ -1079,7 +1075,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|10462|Healing Stream Totem|Rank 4|24000|0|0|50|0
 7|10486|Windfury Weapon|Rank 3|24000|0|0|50|0
 7|15207|Lightning Bolt|Rank 9|24000|0|0|50|0
-7|51991|Earthliving Weapon|Rank 3|24000|0|0|50|0
+7|51991|Earthliving Weapon|Rank 3|24000|0|0|50|51988
 7|66844|Call of the Spirits||700|0|0|50|0
 7|10442|Strength of Earth Totem|Rank 4|27000|0|0|52|0
 7|10448|Flame Shock|Rank 5|27000|0|0|52|0
@@ -1111,9 +1107,9 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|25357|Healing Wave|Rank 10|6500|0|0|60|0
 7|25361|Strength of Earth Totem|Rank 5|34000|0|0|60|0
 7|29228|Flame Shock|Rank 6|65000|0|0|60|0
-7|32593|Earth Shield|Rank 2|1700|0|0|60|0
-7|51992|Earthliving Weapon|Rank 4|34000|0|0|60|0
-7|57720|Totem of Wrath|Rank 2|3400|0|0|60|0
+7|32593|Earth Shield|Rank 2|1700|0|0|60|974
+7|51992|Earthliving Weapon|Rank 4|34000|0|0|60|51991
+7|57720|Totem of Wrath|Rank 2|3400|0|0|60|30706
 7|25422|Chain Heal|Rank 4|34000|0|0|61|0
 7|25546|Fire Nova|Rank 6|34000|0|0|61|0
 7|24398|Water Shield|Rank 7|38000|0|0|62|0
@@ -1153,11 +1149,11 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|25509|Stoneskin Totem|Rank 8|88000|0|0|70|0
 7|25547|Fire Nova|Rank 7|88000|0|0|70|0
 7|32182|Heroism||88000|0|0|70|0
-7|32594|Earth Shield|Rank 3|5000|0|0|70|0
-7|51993|Earthliving Weapon|Rank 5|71000|0|0|70|0
-7|57721|Totem of Wrath|Rank 3|5200|0|0|70|0
-7|59156|Thunderstorm|Rank 2|88000|0|0|70|0
-7|61299|Riptide|Rank 2|9000|0|0|70|0
+7|32594|Earth Shield|Rank 3|5000|0|0|70|32593
+7|51993|Earthliving Weapon|Rank 5|71000|0|0|70|51992
+7|57721|Totem of Wrath|Rank 3|5200|0|0|70|57720
+7|59156|Thunderstorm|Rank 2|88000|0|0|70|51490
+7|61299|Riptide|Rank 2|9000|0|0|70|61295
 7|58580|Stoneclaw Totem|Rank 8|180000|0|0|71|0
 7|58649|Flametongue Totem|Rank 6|180000|0|0|71|0
 7|58699|Searing Totem|Rank 8|180000|0|0|71|0
@@ -1177,8 +1173,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|49232|Flame Shock|Rank 8|180000|0|0|75|0
 7|49272|Healing Wave|Rank 13|180000|0|0|75|0
 7|49280|Lightning Shield|Rank 10|180000|0|0|75|0
-7|49283|Earth Shield|Rank 4|9000|0|0|75|0
-7|51505|Lava Burst|Rank 1|180000|0|0|75|0
+7|49283|Earth Shield|Rank 4|9000|0|0|75|32594
 7|57622|Strength of Earth Totem|Rank 7|180000|0|0|75|0
 7|58581|Stoneclaw Totem|Rank 9|180000|0|0|75|0
 7|58652|Flametongue Totem|Rank 7|180000|0|0|75|0
@@ -1186,8 +1181,8 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|58737|Fire Resistance Totem|Rank 5|180000|0|0|75|0
 7|58741|Frost Resistance Totem|Rank 5|180000|0|0|75|0
 7|58746|Nature Resistance Totem|Rank 5|180000|0|0|75|0
-7|59158|Thunderstorm|Rank 3|180000|0|0|75|0
-7|61300|Riptide|Rank 3|9000|0|0|75|0
+7|59158|Thunderstorm|Rank 3|180000|0|0|75|59156
+7|61300|Riptide|Rank 3|9000|0|0|75|61299
 7|61649|Fire Nova|Rank 8|180000|0|0|75|0
 7|57960|Water Shield|Rank 9|180000|0|0|76|0
 7|58756|Healing Stream Totem|Rank 8|180000|0|0|76|0
@@ -1207,11 +1202,11 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|49273|Healing Wave|Rank 14|180000|0|0|80|0
 7|49277|Ancestral Spirit|Rank 7|180000|0|0|80|0
 7|49281|Lightning Shield|Rank 11|180000|0|0|80|0
-7|49284|Earth Shield|Rank 5|9000|0|0|80|0
+7|49284|Earth Shield|Rank 5|9000|0|0|80|49283
 7|51514|Hex||180000|0|0|80|0
-7|51994|Earthliving Weapon|Rank 6|180000|0|0|80|0
+7|51994|Earthliving Weapon|Rank 6|180000|0|0|80|51993
 7|55459|Chain Heal|Rank 7|180000|0|0|80|0
-7|57722|Totem of Wrath|Rank 4|10000|0|0|80|0
+7|57722|Totem of Wrath|Rank 4|10000|0|0|80|57721
 7|58643|Strength of Earth Totem|Rank 8|180000|0|0|80|0
 7|58656|Flametongue Totem|Rank 8|180000|0|0|80|0
 7|58704|Searing Totem|Rank 10|180000|0|0|80|0
@@ -1223,9 +1218,9 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|58790|Flametongue Weapon|Rank 10|180000|0|0|80|0
 7|58796|Frostbrand Weapon|Rank 9|180000|0|0|80|0
 7|58804|Windfury Weapon|Rank 8|180000|0|0|80|0
-7|59159|Thunderstorm|Rank 4|180000|0|0|80|0
-7|60043|Lava Burst|Rank 2|180000|0|0|80|0
-7|61301|Riptide|Rank 4|9000|0|0|80|0
+7|59159|Thunderstorm|Rank 4|180000|0|0|80|59158
+7|60043|Lava Burst|Rank 2|180000|0|0|80|51505
+7|61301|Riptide|Rank 4|9000|0|0|80|61300
 7|61657|Fire Nova|Rank 9|180000|0|0|80|0
 8|1459|Arcane Intellect|Rank 1|10|0|0|1|0
 8|116|Frostbolt|Rank 1|100|0|0|4|0
@@ -1271,7 +1266,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 8|5145|Arcane Missiles|Rank 3|4000|0|0|24|0
 8|8400|Fireball|Rank 5|4000|0|0|24|0
 8|8450|Dampen Magic|Rank 2|4000|0|0|24|0
-8|12505|Pyroblast|Rank 2|100|0|0|24|0
+8|12505|Pyroblast|Rank 2|100|0|0|24|11366
 8|120|Cone of Cold|Rank 1|5000|0|0|26|0
 8|865|Frost Nova|Rank 2|5000|0|0|26|0
 8|8406|Frostbolt|Rank 5|5000|0|0|26|0
@@ -1287,7 +1282,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 8|8438|Arcane Explosion|Rank 3|8000|0|0|30|0
 8|8455|Amplify Magic|Rank 2|8000|0|0|30|0
 8|8457|Fire Ward|Rank 2|8000|0|0|30|0
-8|12522|Pyroblast|Rank 3|400|0|0|30|0
+8|12522|Pyroblast|Rank 3|400|0|0|30|12505
 8|45438|Ice Block||8000|0|0|30|0
 8|6129|Conjure Food|Rank 4|10000|0|0|32|0
 8|8407|Frostbolt|Rank 6|10000|0|0|32|0
@@ -1301,8 +1296,8 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 8|8427|Blizzard|Rank 3|13000|0|0|36|0
 8|8451|Dampen Magic|Rank 3|13000|0|0|36|0
 8|8495|Mana Shield|Rank 3|13000|0|0|36|0
-8|12523|Pyroblast|Rank 4|650|0|0|36|0
-8|13018|Blast Wave|Rank 2|400|0|0|36|0
+8|12523|Pyroblast|Rank 4|650|0|0|36|12522
+8|13018|Blast Wave|Rank 2|400|0|0|36|11113
 8|3552|Conjure Mana Gem|Rank 2|14000|0|0|38|0
 8|8408|Frostbolt|Rank 7|14000|0|0|38|0
 8|8413|Fire Blast|Rank 5|14000|0|0|38|0
@@ -1321,22 +1316,22 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 8|10156|Arcane Intellect|Rank 4|18000|0|0|42|0
 8|10159|Cone of Cold|Rank 3|18000|0|0|42|0
 8|10169|Amplify Magic|Rank 3|18000|0|0|42|0
-8|12524|Pyroblast|Rank 5|900|0|0|42|0
+8|12524|Pyroblast|Rank 5|900|0|0|42|12523
 8|10179|Frostbolt|Rank 8|23000|0|0|44|0
 8|10185|Blizzard|Rank 4|23000|0|0|44|0
 8|10191|Mana Shield|Rank 4|23000|0|0|44|0
-8|13019|Blast Wave|Rank 3|1148|0|0|44|0
+8|13019|Blast Wave|Rank 3|1148|0|0|44|13018
 8|10197|Fire Blast|Rank 6|26000|0|0|46|0
 8|10201|Arcane Explosion|Rank 5|26000|0|0|46|0
 8|10205|Scorch|Rank 5|26000|0|0|46|0
-8|13031|Ice Barrier|Rank 2|1700|0|0|46|0
+8|13031|Ice Barrier|Rank 2|1700|0|0|46|11426
 8|22782|Mage Armor|Rank 2|1400|0|0|46|0
 8|10053|Conjure Mana Gem|Rank 3|28000|0|0|48|0
 8|10149|Fireball|Rank 9|28000|0|0|48|0
 8|10173|Dampen Magic|Rank 4|28000|0|0|48|0
 8|10211|Arcane Missiles|Rank 6|28000|0|0|48|0
 8|10215|Flamestrike|Rank 5|28000|0|0|48|0
-8|12525|Pyroblast|Rank 6|1400|0|0|48|0
+8|12525|Pyroblast|Rank 6|1400|0|0|48|12524
 8|10139|Conjure Water|Rank 6|32000|0|0|50|0
 8|10160|Cone of Cold|Rank 4|32000|0|0|50|0
 8|10180|Frostbolt|Rank 9|32000|0|0|50|0
@@ -1347,24 +1342,24 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 8|10186|Blizzard|Rank 5|35000|0|0|52|0
 8|10192|Mana Shield|Rank 5|35000|0|0|52|0
 8|10206|Scorch|Rank 6|35000|0|0|52|0
-8|13020|Blast Wave|Rank 4|1748|0|0|52|0
-8|13032|Ice Barrier|Rank 3|1748|0|0|52|0
+8|13020|Blast Wave|Rank 4|1748|0|0|52|13019
+8|13032|Ice Barrier|Rank 3|1748|0|0|52|13031
 8|10150|Fireball|Rank 10|36000|0|0|54|0
 8|10170|Amplify Magic|Rank 4|36000|0|0|54|0
 8|10199|Fire Blast|Rank 7|36000|0|0|54|0
 8|10202|Arcane Explosion|Rank 6|36000|0|0|54|0
 8|10230|Frost Nova|Rank 4|36000|0|0|54|0
-8|12526|Pyroblast|Rank 7|1800|0|0|54|0
+8|12526|Pyroblast|Rank 7|1800|0|0|54|12525
 8|10157|Arcane Intellect|Rank 5|38000|0|0|56|0
 8|10181|Frostbolt|Rank 10|38000|0|0|56|0
 8|10212|Arcane Missiles|Rank 7|38000|0|0|56|0
 8|10216|Flamestrike|Rank 6|38000|0|0|56|0
 8|23028|Arcane Brilliance|Rank 1|38000|0|0|56|0
-8|33041|Dragon's Breath|Rank 2|1900|0|0|56|0
+8|33041|Dragon's Breath|Rank 2|1900|0|0|56|31661
 8|10054|Conjure Mana Gem|Rank 4|40000|0|0|58|0
 8|10161|Cone of Cold|Rank 5|40000|0|0|58|0
 8|10207|Scorch|Rank 7|40000|0|0|58|0
-8|13033|Ice Barrier|Rank 4|2000|0|0|58|0
+8|13033|Ice Barrier|Rank 4|2000|0|0|58|13032
 8|22783|Mage Armor|Rank 3|40000|0|0|58|0
 8|10140|Conjure Water|Rank 7|42000|0|0|60|0
 8|10151|Fireball|Rank 11|42000|0|0|60|0
@@ -1374,8 +1369,8 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 8|10220|Ice Armor|Rank 4|42000|0|0|60|0
 8|10225|Fire Ward|Rank 5|42000|0|0|60|0
 8|12826|Polymorph|Rank 4|42000|0|0|60|0
-8|13021|Blast Wave|Rank 5|2100|0|0|60|0
-8|18809|Pyroblast|Rank 8|2100|0|0|60|0
+8|13021|Blast Wave|Rank 5|2100|0|0|60|13020
+8|18809|Pyroblast|Rank 8|2100|0|0|60|12526
 8|25304|Frostbolt|Rank 11|42000|0|0|60|0
 8|25345|Arcane Missiles|Rank 8|42000|0|0|60|0
 8|28609|Frost Ward|Rank 5|42000|0|0|60|0
@@ -1388,15 +1383,15 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 8|27075|Arcane Missiles|Rank 9|57000|0|0|63|0
 8|27130|Amplify Magic|Rank 5|57000|0|0|63|0
 8|27086|Flamestrike|Rank 7|63000|0|0|64|0
-8|27134|Ice Barrier|Rank 5|2500|0|0|64|0
+8|27134|Ice Barrier|Rank 5|2500|0|0|64|13033
 8|30451|Arcane Blast|Rank 1|63000|0|0|64|0
-8|33042|Dragon's Breath|Rank 3|2200|0|0|64|0
+8|33042|Dragon's Breath|Rank 3|2200|0|0|64|33041
 8|27073|Scorch|Rank 8|70000|0|0|65|0
 8|27087|Cone of Cold|Rank 6|70000|0|0|65|0
-8|27133|Blast Wave|Rank 6|3500|0|0|65|0
+8|27133|Blast Wave|Rank 6|3500|0|0|65|13021
 8|37420|Conjure Water|Rank 8|70000|0|0|65|0
 8|27070|Fireball|Rank 13|78000|0|0|66|0
-8|27132|Pyroblast|Rank 9|3900|0|0|66|0
+8|27132|Pyroblast|Rank 9|3900|0|0|66|18809
 8|30455|Ice Lance|Rank 1|78000|0|0|66|0
 8|27088|Frost Nova|Rank 5|87000|0|0|67|0
 8|33944|Dampen Magic|Rank 6|100000|0|0|67|0
@@ -1418,17 +1413,17 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 8|27127|Arcane Brilliance|Rank 2|100000|0|0|70|0
 8|30449|Spellsteal||120000|0|0|70|0
 8|32796|Frost Ward|Rank 6|120000|0|0|70|0
-8|33043|Dragon's Breath|Rank 4|2500|0|0|70|0
-8|33405|Ice Barrier|Rank 6|6000|0|0|70|0
+8|33043|Dragon's Breath|Rank 4|2500|0|0|70|33042
+8|33405|Ice Barrier|Rank 6|6000|0|0|70|27134
 8|33717|Conjure Food|Rank 8|150000|0|0|70|0
-8|33933|Blast Wave|Rank 7|6000|0|0|70|0
-8|33938|Pyroblast|Rank 10|7500|0|0|70|0
+8|33933|Blast Wave|Rank 7|6000|0|0|70|27133
+8|33938|Pyroblast|Rank 10|7500|0|0|70|27132
 8|38692|Fireball|Rank 14|150000|0|0|70|0
 8|38697|Frostbolt|Rank 14|150000|0|0|70|0
 8|38704|Arcane Missiles|Rank 11|100000|0|0|70|0
 8|43987|Ritual of Refreshment|Rank 1|120000|0|0|70|0
-8|44780|Arcane Barrage|Rank 2|10000|0|0|70|0
-8|55359|Living Bomb|Rank 2|5000|0|0|70|0
+8|44780|Arcane Barrage|Rank 2|10000|0|0|70|44425
+8|55359|Living Bomb|Rank 2|5000|0|0|70|44457
 8|42894|Arcane Blast|Rank 2|150000|0|0|71|0
 8|43023|Mage Armor|Rank 5|150000|0|0|71|0
 8|43045|Molten Armor|Rank 2|150000|0|0|71|0
@@ -1436,7 +1431,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 8|42925|Flamestrike|Rank 8|150000|0|0|72|0
 8|42930|Cone of Cold|Rank 7|150000|0|0|72|0
 8|42858|Scorch|Rank 10|150000|0|0|73|0
-8|42890|Pyroblast|Rank 11|7500|0|0|73|0
+8|42890|Pyroblast|Rank 11|7500|0|0|73|33938
 8|43019|Mana Shield|Rank 8|150000|0|0|73|0
 8|42832|Fireball|Rank 15|150000|0|0|74|0
 8|42872|Fire Blast|Rank 10|150000|0|0|74|0
@@ -1444,15 +1439,15 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 8|42841|Frostbolt|Rank 15|150000|0|0|75|0
 8|42843|Arcane Missiles|Rank 12|150000|0|0|75|0
 8|42917|Frost Nova|Rank 6|150000|0|0|75|0
-8|42944|Blast Wave|Rank 8|7500|0|0|75|0
-8|42949|Dragon's Breath|Rank 5|7500|0|0|75|0
+8|42944|Blast Wave|Rank 8|7500|0|0|75|33933
+8|42949|Dragon's Breath|Rank 5|7500|0|0|75|33043
 8|42955|Conjure Refreshment|Rank 1|150000|0|0|75|0
-8|43038|Ice Barrier|Rank 7|7500|0|0|75|0
+8|43038|Ice Barrier|Rank 7|7500|0|0|75|33405
 8|44614|Frostfire Bolt|Rank 1|150000|0|0|75|0
 8|42896|Arcane Blast|Rank 3|150000|0|0|76|0
 8|42920|Arcane Explosion|Rank 9|150000|0|0|76|0
 8|43015|Dampen Magic|Rank 7|150000|0|0|76|0
-8|42891|Pyroblast|Rank 12|7500|0|0|77|0
+8|42891|Pyroblast|Rank 12|7500|0|0|77|42890
 8|42985|Conjure Mana Gem|Rank 6|150000|0|0|77|0
 8|43017|Amplify Magic|Rank 7|150000|0|0|77|0
 8|42833|Fireball|Rank 16|150000|0|0|78|0
@@ -1472,16 +1467,16 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 8|42897|Arcane Blast|Rank 4|150000|0|0|80|0
 8|42921|Arcane Explosion|Rank 10|150000|0|0|80|0
 8|42940|Blizzard|Rank 9|150000|0|0|80|0
-8|42945|Blast Wave|Rank 9|7500|0|0|80|0
-8|42950|Dragon's Breath|Rank 6|7500|0|0|80|0
+8|42945|Blast Wave|Rank 9|7500|0|0|80|42944
+8|42950|Dragon's Breath|Rank 6|7500|0|0|80|42949
 8|42956|Conjure Refreshment|Rank 2|150000|0|0|80|0
 8|42995|Arcane Intellect|Rank 7|150000|0|0|80|0
 8|43002|Arcane Brilliance|Rank 3|150000|0|0|80|0
-8|43039|Ice Barrier|Rank 8|7500|0|0|80|0
-8|44781|Arcane Barrage|Rank 3|15000|0|0|80|0
+8|43039|Ice Barrier|Rank 8|7500|0|0|80|43038
+8|44781|Arcane Barrage|Rank 3|15000|0|0|80|44780
 8|47610|Frostfire Bolt|Rank 2|150000|0|0|80|0
 8|55342|Mirror Image||150000|0|0|80|0
-8|55360|Living Bomb|Rank 3|7500|0|0|80|0
+8|55360|Living Bomb|Rank 3|7500|0|0|80|55359
 8|58659|Ritual of Refreshment|Rank 2|150000|0|0|80|0
 9|688|Summon Imp|Summon|100|0|0|1|0
 9|348|Immolate|Rank 1|10|0|0|3|0
@@ -1522,7 +1517,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 9|5500|Sense Demons||3000|0|0|24|0
 9|6223|Corruption|Rank 3|3000|0|0|24|0
 9|8288|Drain Soul|Rank 2|3000|0|0|24|0
-9|18867|Shadowburn|Rank 2|148|0|0|24|0
+9|18867|Shadowburn|Rank 2|148|0|0|24|17877
 9|132|Detect Invisibility||4000|0|0|26|0
 9|1456|Life Tap|Rank 3|3600|0|0|26|0
 9|1714|Curse of Tongues|Rank 1|4000|0|0|26|0
@@ -1543,7 +1538,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 9|6213|Fear|Rank 2|7000|0|0|32|0
 9|6229|Shadow Ward|Rank 1|7000|0|0|32|0
 9|7646|Curse of Weakness|Rank 4|7000|0|0|32|0
-9|18868|Shadowburn|Rank 3|348|0|0|32|0
+9|18868|Shadowburn|Rank 3|348|0|0|32|18867
 9|5699|Create Healthstone|Rank 3|8000|0|0|34|0
 9|6219|Rain of Fire|Rank 2|8000|0|0|34|0
 9|7648|Corruption|Rank 4|8000|0|0|34|0
@@ -1559,7 +1554,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 9|5484|Howl of Terror|Rank 1|11000|0|0|40|0
 9|11665|Immolate|Rank 5|11000|0|0|40|0
 9|11733|Demon Armor|Rank 3|11000|0|0|40|0
-9|18869|Shadowburn|Rank 4|548|0|0|40|0
+9|18869|Shadowburn|Rank 4|548|0|0|40|18868
 9|20755|Create Soulstone|Rank 3|11000|0|0|40|0
 9|23161|Dreadsteed|Summon|100000|0|0|40|0
 9|6789|Death Coil|Rank 1|11000|0|0|42|0
@@ -1581,13 +1576,13 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 9|11712|Curse of Agony|Rank 5|14000|0|0|48|0
 9|17727|Create Spellstone|Rank 2|14000|0|0|48|0
 9|18647|Banish|Rank 2|14000|0|0|48|0
-9|18870|Shadowburn|Rank 5|700|0|0|48|0
+9|18870|Shadowburn|Rank 5|700|0|0|48|18869
 9|11667|Immolate|Rank 6|15000|0|0|50|0
 9|11719|Curse of Tongues|Rank 2|15000|0|0|50|0
 9|11734|Demon Armor|Rank 4|15000|0|0|50|0
 9|17922|Searing Pain|Rank 5|15000|0|0|50|0
 9|17925|Death Coil|Rank 2|15000|0|0|50|0
-9|18937|Dark Pact|Rank 2|748|0|0|50|0
+9|18937|Dark Pact|Rank 2|748|0|0|50|18220
 9|20756|Create Soulstone|Rank 4|15000|0|0|50|0
 9|11660|Shadow Bolt|Rank 8|18000|0|0|52|0
 9|11675|Drain Soul|Rank 4|18000|0|0|52|0
@@ -1602,7 +1597,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 9|11689|Life Tap|Rank 6|19800|0|0|56|0
 9|17924|Soul Fire|Rank 2|22000|0|0|56|0
 9|17953|Create Firestone|Rank 4|22000|0|0|56|0
-9|18871|Shadowburn|Rank 6|1100|0|0|56|0
+9|18871|Shadowburn|Rank 6|1100|0|0|56|18870
 9|11678|Rain of Fire|Rank 4|24000|0|0|58|0
 9|11713|Curse of Agony|Rank 6|24000|0|0|58|0
 9|11726|Enslave Demon|Rank 3|24000|0|0|58|0
@@ -1617,18 +1612,18 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 9|11722|Curse of the Elements|Rank 3|26000|0|0|60|0
 9|11735|Demon Armor|Rank 5|26000|0|0|60|0
 9|17728|Create Spellstone|Rank 3|26000|0|0|60|0
-9|18938|Dark Pact|Rank 3|1300|0|0|60|0
+9|18938|Dark Pact|Rank 3|1300|0|0|60|18937
 9|20757|Create Soulstone|Rank 5|26000|0|0|60|0
 9|25309|Immolate|Rank 8|26000|0|0|60|0
 9|25311|Corruption|Rank 7|26000|0|0|60|0
 9|28610|Shadow Ward|Rank 4|34000|0|0|60|0
-9|30404|Unstable Affliction|Rank 2|2500|0|0|60|0
-9|30413|Shadowfury|Rank 2|2500|0|0|60|0
+9|30404|Unstable Affliction|Rank 2|2500|0|0|60|30108
+9|30413|Shadowfury|Rank 2|2500|0|0|60|30283
 9|27224|Curse of Weakness|Rank 7|30000|0|0|61|0
 9|25307|Shadow Bolt|Rank 10|26000|0|0|62|0
 9|27219|Drain Life|Rank 7|30000|0|0|62|0
 9|28176|Fel Armor|Rank 1|34000|0|0|62|0
-9|27263|Shadowburn|Rank 7|1300|0|0|63|0
+9|27263|Shadowburn|Rank 7|1300|0|0|63|18871
 9|27211|Soul Fire|Rank 3|42000|0|0|64|0
 9|29722|Incinerate|Rank 1|42000|0|0|64|0
 9|27210|Searing Pain|Rank 7|46000|0|0|65|0
@@ -1654,16 +1649,16 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 9|27238|Create Soulstone|Rank 6|78000|0|0|70|0
 9|27243|Seed of Corruption|Rank 1|78000|0|0|70|0
 9|27260|Demon Armor|Rank 6|78000|0|0|70|0
-9|27265|Dark Pact|Rank 4|1300|0|0|70|0
-9|30405|Unstable Affliction|Rank 3|2500|0|0|70|0
-9|30414|Shadowfury|Rank 3|2500|0|0|70|0
+9|27265|Dark Pact|Rank 4|1300|0|0|70|18938
+9|30405|Unstable Affliction|Rank 3|2500|0|0|70|30404
+9|30414|Shadowfury|Rank 3|2500|0|0|70|30413
 9|30459|Searing Pain|Rank 8|78000|0|0|70|0
 9|30545|Soul Fire|Rank 4|78000|0|0|70|0
-9|30546|Shadowburn|Rank 8|3900|0|0|70|0
+9|30546|Shadowburn|Rank 8|3900|0|0|70|27263
 9|30910|Curse of Doom|Rank 2|78000|0|0|70|0
 9|32231|Incinerate|Rank 2|78000|0|0|70|0
-9|59161|Haunt|Rank 2|2500|0|0|70|0
-9|59170|Chaos Bolt|Rank 2|2500|0|0|70|0
+9|59161|Haunt|Rank 2|2500|0|0|70|48181
+9|59170|Chaos Bolt|Rank 2|2500|0|0|70|50796
 9|47812|Corruption|Rank 9|160000|0|0|71|0
 9|50511|Curse of Weakness|Rank 9|160000|0|0|71|0
 9|47819|Rain of Fire|Rank 6|160000|0|0|72|0
@@ -1680,13 +1675,13 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 9|60219|Create Firestone|Rank 6|160000|0|0|74|0
 9|47810|Immolate|Rank 10|160000|0|0|75|0
 9|47824|Soul Fire|Rank 5|160000|0|0|75|0
-9|47826|Shadowburn|Rank 9|8000|0|0|75|0
+9|47826|Shadowburn|Rank 9|8000|0|0|75|30546
 9|47835|Seed of Corruption|Rank 2|160000|0|0|75|0
-9|47841|Unstable Affliction|Rank 4|8000|0|0|75|0
-9|47846|Shadowfury|Rank 4|8000|0|0|75|0
+9|47841|Unstable Affliction|Rank 4|8000|0|0|75|30405
+9|47846|Shadowfury|Rank 4|8000|0|0|75|30414
 9|47897|Shadowflame|Rank 1|10000|0|0|75|0
-9|59163|Haunt|Rank 3|8000|0|0|75|0
-9|59171|Chaos Bolt|Rank 3|8000|0|0|75|0
+9|59163|Haunt|Rank 3|8000|0|0|75|59161
+9|59171|Chaos Bolt|Rank 3|8000|0|0|75|59170
 9|47793|Demon Armor|Rank 7|160000|0|0|76|0
 9|47856|Health Funnel|Rank 9|160000|0|0|76|0
 9|47884|Create Soulstone|Rank 7|160000|0|0|76|0
@@ -1706,20 +1701,20 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 9|47893|Fel Armor|Rank 4|160000|0|0|79|0
 9|47811|Immolate|Rank 11|160000|0|0|80|0
 9|47825|Soul Fire|Rank 6|160000|0|0|80|0
-9|47827|Shadowburn|Rank 10|8000|0|0|80|0
+9|47827|Shadowburn|Rank 10|8000|0|0|80|47826
 9|47836|Seed of Corruption|Rank 3|160000|0|0|80|0
 9|47838|Incinerate|Rank 4|100000|0|0|80|0
-9|47843|Unstable Affliction|Rank 5|8000|0|0|80|0
-9|47847|Shadowfury|Rank 5|8000|0|0|80|0
+9|47843|Unstable Affliction|Rank 5|8000|0|0|80|47841
+9|47847|Shadowfury|Rank 5|8000|0|0|80|47846
 9|47867|Curse of Doom|Rank 3|160000|0|0|80|0
 9|47889|Demon Armor|Rank 8|160000|0|0|80|0
 9|48018|Demonic Circle: Summon||160000|0|0|80|0
 9|48020|Demonic Circle: Teleport||160000|0|0|80|0
 9|57946|Life Tap|Rank 8|160000|0|0|80|0
 9|58887|Ritual of Souls|Rank 2|160000|0|0|80|0
-9|59092|Dark Pact|Rank 5|160000|0|0|80|0
-9|59164|Haunt|Rank 4|8000|0|0|80|0
-9|59172|Chaos Bolt|Rank 4|8000|0|0|80|0
+9|59092|Dark Pact|Rank 5|160000|0|0|80|27265
+9|59164|Haunt|Rank 4|8000|0|0|80|59163
+9|59172|Chaos Bolt|Rank 4|8000|0|0|80|59171
 9|60220|Create Firestone|Rank 7|160000|0|0|80|0
 9|61290|Shadowflame|Rank 2|10000|0|0|80|0
 11|1126|Mark of the Wild|Rank 1|10|0|0|1|0
@@ -1798,7 +1793,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 11|6800|Shred|Rank 2|6000|0|0|30|0
 11|8940|Regrowth|Rank 4|6000|0|0|30|0
 11|20739|Rebirth|Rank 2|6000|0|0|30|0
-11|24974|Insect Swarm|Rank 2|6000|0|0|30|0
+11|24974|Insect Swarm|Rank 2|6000|0|0|30|5570
 11|5225|Track Humanoids||8000|0|0|32|0
 11|6778|Healing Touch|Rank 6|8000|0|0|32|0
 11|6785|Ravage|Rank 1|8000|0|0|32|0
@@ -1835,7 +1830,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 11|20719|Feline Grace|Passive|14000|0|0|40|0
 11|20742|Rebirth|Rank 3|14000|0|0|40|0
 11|22827|Ferocious Bite|Rank 2|14000|0|0|40|0
-11|24975|Insect Swarm|Rank 3|14000|0|0|40|0
+11|24975|Insect Swarm|Rank 3|14000|0|0|40|24974
 11|29166|Innervate||14000|0|0|40|0
 11|62600|Savage Defense|Passive|4500|0|0|40|0
 11|6787|Ravage|Rank 2|16000|0|0|42|0
@@ -1872,7 +1867,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 11|17401|Hurricane|Rank 2|23000|0|0|50|0
 11|20747|Rebirth|Rank 4|23000|0|0|50|0
 11|21849|Gift of the Wild|Rank 1|23000|0|0|50|0
-11|24976|Insect Swarm|Rank 4|12000|0|0|50|0
+11|24976|Insect Swarm|Rank 4|12000|0|0|50|24975
 11|9834|Moonfire|Rank 9|26000|0|0|52|0
 11|9840|Rejuvenation|Rank 9|26000|0|0|52|0
 11|9892|Cower|Rank 3|26000|0|0|52|0
@@ -1897,8 +1892,8 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 11|9881|Maul|Rank 7|32000|0|0|58|0
 11|17329|Nature's Grasp|Rank 6|32000|0|0|58|0
 11|18658|Hibernate|Rank 3|32000|0|0|58|0
-11|33982|Mangle (Cat)|Rank 2|1700|0|0|58|0
-11|33986|Mangle (Bear)|Rank 2|1700|0|0|58|0
+11|33982|Mangle (Cat)|Rank 2|1700|0|0|58|33876
+11|33986|Mangle (Bear)|Rank 2|1700|0|0|58|33878
 11|9846|Tiger's Fury|Rank 4|34000|0|0|60|0
 11|9858|Regrowth|Rank 9|34000|0|0|60|0
 11|9863|Tranquility|Rank 4|34000|0|0|60|0
@@ -1907,7 +1902,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 11|17402|Hurricane|Rank 3|34000|0|0|60|0
 11|20748|Rebirth|Rank 5|34000|0|0|60|0
 11|21850|Gift of the Wild|Rank 2|34000|0|0|60|0
-11|24977|Insect Swarm|Rank 5|34000|0|0|60|0
+11|24977|Insect Swarm|Rank 5|34000|0|0|60|24976
 11|25297|Healing Touch|Rank 11|34000|0|0|60|0
 11|25298|Starfire|Rank 7|34000|0|0|60|0
 11|25299|Rejuvenation|Rank 11|34000|0|0|60|0
@@ -1915,7 +1910,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 11|31709|Cower|Rank 4|34000|0|0|60|0
 11|33950|Flight Form|Shapeshift|34000|0|0|60|0
 11|50765|Revive|Rank 5|34000|0|0|60|0
-11|53223|Typhoon|Rank 2|600|0|0|60|0
+11|53223|Typhoon|Rank 2|600|0|0|60|50516
 11|26984|Wrath|Rank 9|39000|0|0|61|0
 11|27001|Shred|Rank 6|39000|0|0|61|0
 11|22570|Maim|Rank 1|43000|0|0|62|0
@@ -1939,8 +1934,8 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 11|27008|Rip|Rank 7|73000|0|0|67|0
 11|26989|Entangling Roots|Rank 7|81000|0|0|68|0
 11|27009|Nature's Grasp|Rank 7|81000|0|0|68|0
-11|33983|Mangle (Cat)|Rank 3|1700|0|0|68|0
-11|33987|Mangle (Bear)|Rank 3|1900|0|0|68|0
+11|33983|Mangle (Cat)|Rank 3|1700|0|0|68|33982
+11|33987|Mangle (Bear)|Rank 3|1900|0|0|68|33986
 11|26979|Healing Touch|Rank 13|90000|0|0|69|0
 11|26982|Rejuvenation|Rank 13|90000|0|0|69|0
 11|26985|Wrath|Rank 10|90000|0|0|69|0
@@ -1954,11 +1949,11 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 11|26995|Soothe Animal|Rank 4|100000|0|0|70|0
 11|27002|Shred|Rank 7|100000|0|0|70|0
 11|27012|Hurricane|Rank 4|100000|0|0|70|0
-11|27013|Insect Swarm|Rank 6|200000|0|0|70|0
+11|27013|Insect Swarm|Rank 6|200000|0|0|70|24977
 11|33786|Cyclone||100000|0|0|70|0
-11|53199|Starfall|Rank 2|10000|0|0|70|0
-11|53225|Typhoon|Rank 3|1700|0|0|70|0
-11|53248|Wild Growth|Rank 2|1700|0|0|70|0
+11|53199|Starfall|Rank 2|10000|0|0|70|48505
+11|53225|Typhoon|Rank 3|1700|0|0|70|53223
+11|53248|Wild Growth|Rank 2|1700|0|0|70|48438
 11|40120|Swift Flight Form|Shapeshift|200000|762|300|71|0
 11|48442|Regrowth|Rank 11|200000|0|0|71|0
 11|48559|Demoralizing Roar|Rank 7|200000|0|0|71|0
@@ -1981,13 +1976,12 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 11|48440|Rejuvenation|Rank 14|200000|0|0|75|0
 11|48446|Tranquility|Rank 6|200000|0|0|75|0
 11|48462|Moonfire|Rank 13|200000|0|0|75|0
-11|48563|Mangle (Bear)|Rank 4|10000|0|0|75|0
-11|48565|Mangle (Cat)|Rank 4|10000|0|0|75|0
+11|48563|Mangle (Bear)|Rank 4|10000|0|0|75|33987
+11|48565|Mangle (Cat)|Rank 4|10000|0|0|75|33983
 11|48571|Shred|Rank 8|200000|0|0|75|0
-11|52610|Savage Roar|Rank 1|200000|0|0|75|0
-11|53200|Starfall|Rank 3|10000|0|0|75|0
-11|53226|Typhoon|Rank 4|10000|0|0|75|0
-11|53249|Wild Growth|Rank 3|10000|0|0|75|0
+11|53200|Starfall|Rank 3|10000|0|0|75|53199
+11|53226|Typhoon|Rank 4|10000|0|0|75|53225
+11|53249|Wild Growth|Rank 3|10000|0|0|75|53248
 11|48575|Cower|Rank 6|200000|0|0|76|0
 11|48443|Regrowth|Rank 12|200000|0|0|77|0
 11|48560|Demoralizing Roar|Rank 8|200000|0|0|77|0
@@ -2010,16 +2004,16 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 11|48451|Lifebloom|Rank 3|200000|0|0|80|0
 11|48463|Moonfire|Rank 14|200000|0|0|80|0
 11|48467|Hurricane|Rank 5|200000|0|0|80|0
-11|48468|Insect Swarm|Rank 7|200000|0|0|80|0
+11|48468|Insect Swarm|Rank 7|200000|0|0|80|27013
 11|48469|Mark of the Wild|Rank 9|200000|0|0|80|0
 11|48470|Gift of the Wild|Rank 4|200000|0|0|80|0
-11|48564|Mangle (Bear)|Rank 5|10000|0|0|80|0
-11|48566|Mangle (Cat)|Rank 5|10000|0|0|80|0
+11|48564|Mangle (Bear)|Rank 5|10000|0|0|80|48563
+11|48566|Mangle (Cat)|Rank 5|10000|0|0|80|48565
 11|48568|Lacerate|Rank 3|200000|0|0|80|0
 11|48572|Shred|Rank 9|200000|0|0|80|0
 11|49800|Rip|Rank 9|200000|0|0|80|0
 11|50464|Nourish|Rank 1|200000|0|0|80|0
 11|50763|Revive|Rank 7|200000|0|0|80|0
-11|53201|Starfall|Rank 4|10000|0|0|80|0
-11|53251|Wild Growth|Rank 4|10000|0|0|80|0
-11|61384|Typhoon|Rank 5|10000|0|0|80|0
+11|53201|Starfall|Rank 4|10000|0|0|80|53200
+11|53251|Wild Growth|Rank 4|10000|0|0|80|53249
+11|61384|Typhoon|Rank 5|10000|0|0|80|53226
