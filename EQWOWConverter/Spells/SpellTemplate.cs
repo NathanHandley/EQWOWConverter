@@ -466,21 +466,33 @@ namespace EQWOWConverter.Spells
                     }
                 }
 
-                // Copy any form effects to the child illusion effect spells
+                // Replicate form effects to child illusion effects and they must inherit the prarent's learn level so effec
+                // values are right.  If this doesn't happen, things like wolf form multiplies the bonus
                 if (spellTemplate.IllusionSpellParent != null)
                 {
+                    spellTemplate.MinimumPlayerLearnLevel = spellTemplate.IllusionSpellParent.MinimumPlayerLearnLevel;
                     foreach (SpellEffectWOW spellEffect in spellTemplate.IllusionSpellParent.WOWSpellEffects)
                     {
                         // Dummy is used for the form change trigger, so skip that
                         if (spellEffect.EffectType == SpellWOWEffectType.Dummy)
                             continue;
-                        spellTemplate.WOWSpellEffects.Add(spellEffect);
+                        spellTemplate.WOWSpellEffects.Add(spellEffect.Clone());
                     }
                 }
 
                 // Set the spell and aura descriptions
                 SetActionAndAuraDescriptions(ref spellTemplate, recourseSpellTemplate, procLinkSpellTemplate);
             }
+
+            // Pull out all but the dummy to avoid too many icons showing for illusions
+            foreach (SpellTemplate spellTemplate in SpellTemplatesByEQID.Values)
+                if (spellTemplate.IsllusionSpellParent == true)
+                    spellTemplate.WOWSpellEffects.RemoveAll(IsNonDummySpellEffect);
+        }
+
+        private static bool IsNonDummySpellEffect(SpellEffectWOW spellEffect)
+        {
+            return spellEffect.EffectType != SpellWOWEffectType.Dummy;
         }
 
         public static void GenerateItemEnchantSpellIfNotCreated(string itemName, int procSpellEQID, int enchantSpellWOWID, out SpellTemplate? enchantSpellTemplate)
