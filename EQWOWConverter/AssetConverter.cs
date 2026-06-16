@@ -2195,6 +2195,41 @@ namespace EQWOWConverter
                 bashStunEffect.ActionDescription = "stuns";
                 bashStunEffect.AuraDescription = "stunned";
                 bashSpellTemplate.WOWSpellEffects.Add(bashStunEffect);
+
+                if (Configuration.COMBATSKILL_BASH_FORBEARANCE_ENABLED == true)
+                {
+                    int bashForbearanceIconID = Configuration.COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID;
+                    if (bashForbearanceIconID < 0 || bashForbearanceIconID > 22)
+                    {
+                        Logger.WriteError("COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID value must be 0-22. Setting to 11");
+                        bashForbearanceIconID = 11;
+                    }
+                    SpellTemplate bashForbearanceSpellTemplate = new SpellTemplate();
+                    bashForbearanceSpellTemplate.Name = "Bash Forbearance";
+                    bashForbearanceSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_BASH_FORBEARANCE_SPELL_ID;
+                    bashForbearanceSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                    bashForbearanceSpellTemplate.Description = "Reeling from a recent bash, and cannot be bashed again until it fades.";
+                    bashForbearanceSpellTemplate.AuraDescription = "Cannot be bashed.";
+                    bashForbearanceSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(bashForbearanceIconID);
+                    bashForbearanceSpellTemplate.CastTimeInMS = 0;
+                    bashForbearanceSpellTemplate.RecoveryTimeInMS = 0;
+                    bashForbearanceSpellTemplate.TriggersGlobalCooldown = false;
+                    bashForbearanceSpellTemplate.SchoolMask = 1; // Physical
+                    bashForbearanceSpellTemplate.ForceAsDebuff = true;
+                    bashForbearanceSpellTemplate.PreventAuraClickOff = true;
+                    bashForbearanceSpellTemplate.AuraDuration = new SpellDuration();
+                    bashForbearanceSpellTemplate.AuraDuration.SetFixedDuration(Configuration.COMBATSKILL_BASH_FORBEARANCE_DURATION_IN_MS);
+                    bashForbearanceSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+                    bashForbearanceSpellTemplate.SkillLine = 0;
+                    bashForbearanceSpellTemplate.ChainAppliesViaHitTrigger = true;
+                    SpellEffectWOW bashForbearanceEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0);
+                    bashForbearanceEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+                    bashForbearanceSpellTemplate.WOWSpellEffects.Add(bashForbearanceEffect);
+                    spellTemplates.Add(bashForbearanceSpellTemplate);
+                    bashSpellTemplate.ChainedSpellTemplates.Add(bashForbearanceSpellTemplate);
+                    bashSpellTemplate.ExcludeTargetAuraSpellID = Configuration.COMBATSKILL_BASH_FORBEARANCE_SPELL_ID;
+                }
+
                 spellTemplates.Add(bashSpellTemplate);
             }
 

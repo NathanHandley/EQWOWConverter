@@ -179,8 +179,10 @@ namespace EQWOWConverter.Spells
         public int RecourseLinkEQSpellID = 0;
         public SpellTemplate? RecourseLinkSpellTemplate = null;
         public List<SpellTemplate> ChainedSpellTemplates = new List<SpellTemplate>();
+        public bool ChainAppliesViaHitTrigger = false; // If a chained spell and this is 'true', it won't wear off when the initial spell aura fades
         public int ProcLinkEQSpellID = 0;
         public int WOWSpellIDCastOnMeleeAttacker = 0;
+        public int ExcludeTargetAuraSpellID = 0; // If the target has this aura, the spell refuses to apply
         public bool HideCaster = false;
         public bool TriggersGlobalCooldown = true;
         public bool DoNotInterruptAutoActionsAndSwingTimers = false;

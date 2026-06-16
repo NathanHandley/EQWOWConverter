@@ -1387,7 +1387,7 @@ namespace EQWOWConverter
             }
         }
 
-        private void AddSpellChain(SpellTemplate baseSpellTemplate, SpellEffectBlock triggerBlock, int chainedSpellID, string chainedSpellName)
+        private void AddSpellChain(SpellTemplate baseSpellTemplate, SpellEffectBlock triggerBlock, int chainedSpellID, string chainedSpellName, bool forceHitTrigger = false)
         {
             bool triggerBlockHasAura = false;
             foreach (SpellEffectWOW triggerEffect in triggerBlock.SpellEffects)
@@ -1399,7 +1399,7 @@ namespace EQWOWConverter
                 }
             }
 
-            if (baseSpellTemplate.AuraDuration.MaxDurationInMS > 0 && triggerBlockHasAura == true)
+            if (forceHitTrigger == false && baseSpellTemplate.AuraDuration.MaxDurationInMS > 0 && triggerBlockHasAura == true)
                 spellLinkedSpellSQL.AddRowForAuraTrigger(triggerBlock.WOWSpellID, chainedSpellID, chainedSpellName);
             else
                 spellLinkedSpellSQL.AddRowForHitTrigger(triggerBlock.WOWSpellID, chainedSpellID, chainedSpellName);
@@ -1505,13 +1505,14 @@ namespace EQWOWConverter
                     List<SpellEffectBlock> chainedGroupedBaseSpellEffectBlocksForOutput = chainedSpellTemplate.GroupedBaseSpellEffectBlocksForOutput;
                     int chainedSpellID = chainedGroupedBaseSpellEffectBlocksForOutput[0].WOWSpellID;
                     string chainedSpellName = chainedGroupedBaseSpellEffectBlocksForOutput[0].SpellName;
-                    AddSpellChain(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0], chainedSpellID, chainedSpellName);
+                    bool forceHitTrigger = chainedSpellTemplate.ChainAppliesViaHitTrigger;
+                    AddSpellChain(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0], chainedSpellID, chainedSpellName, forceHitTrigger);
                     if (spellTemplate.WOWSpellIDWorn > 0)
-                        AddSpellChain(spellTemplate, spellTemplate.GroupedWornSpellEffectBlocksForOutput[0], chainedSpellID, chainedSpellName);
+                        AddSpellChain(spellTemplate, spellTemplate.GroupedWornSpellEffectBlocksForOutput[0], chainedSpellID, chainedSpellName, forceHitTrigger);
                     if (spellTemplate.WOWSpellIDProcAndGoodEffect > 0)
-                        AddSpellChain(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput[0], chainedSpellID, chainedSpellName);
+                        AddSpellChain(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput[0], chainedSpellID, chainedSpellName, forceHitTrigger);
                     for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
-                        AddSpellChain(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyIndex][0], chainedSpellID, chainedSpellName);
+                        AddSpellChain(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyIndex][0], chainedSpellID, chainedSpellName, forceHitTrigger);
                 }
             }
             foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)

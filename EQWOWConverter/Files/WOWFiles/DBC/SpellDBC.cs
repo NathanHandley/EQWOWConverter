@@ -71,7 +71,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // CasterAuraSpell
             newRow.AddUInt32(0); // TargetAuraSpell
             newRow.AddUInt32(0); // ExcludeCasterAuraSpell
-            newRow.AddUInt32(0); // ExcludeTargetAuraSpell
+            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.ExcludeTargetAuraSpellID)); // ExcludeTargetAuraSpell
             newRow.AddUInt32(Convert.ToUInt32(castTimeDBCID)); // CastingTimeIndex   
             if (spellTemplate.RecoveryTimeInMS < Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS)
                 newRow.AddUInt32(0); // RecoveryTime
