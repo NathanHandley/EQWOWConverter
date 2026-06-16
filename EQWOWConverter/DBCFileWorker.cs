@@ -697,31 +697,39 @@ namespace EQWOWConverter
             }
 
             // Tradeskills
-            int curTradeskillTotemCategoryID = Configuration.TRADESKILL_TOTEM_CATEGORY_START;
-            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_TOOLBOX), "Toolbox", curTradeskillTotemCategoryID, 1);
-            curTradeskillTotemCategoryID++;
-            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING), "Sewing Kit", curTradeskillTotemCategoryID, 1);
-            curTradeskillTotemCategoryID++;
-            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_JEWELCRAFTING), "Jeweler's Kit", curTradeskillTotemCategoryID, 1);
-            curTradeskillTotemCategoryID++;
-            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY), "Medicine Bag", curTradeskillTotemCategoryID, 1);
-            curTradeskillTotemCategoryID++;
-            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_FLETCHING), "Fletching Kit", curTradeskillTotemCategoryID, 1);
+            int curTotemCategoryID = Configuration.TRADESKILL_TOTEM_CATEGORY_START;
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_TOOLBOX), "Toolbox", curTotemCategoryID, 1);
+            curTotemCategoryID++;
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING), "Sewing Kit", curTotemCategoryID, 1);
+            curTotemCategoryID++;
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_JEWELCRAFTING), "Jeweler's Kit", curTotemCategoryID, 1);
+            curTotemCategoryID++;
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY), "Medicine Bag", curTotemCategoryID, 1);
+            curTotemCategoryID++;
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_FLETCHING), "Fletching Kit", curTotemCategoryID, 1);
             Dictionary<string, UInt32> tradeskillTotems = TradeskillRecipe.GetTotemIDsByItemName();
             int curTradeskillTotemCategoryMaskValue = 1;
             int curTradeskillTotemCategoryMaskCount = 0;
             foreach (var tradeskillTotemData in tradeskillTotems)
             {
-                totemCategoryDBC.AddRow(tradeskillTotemData.Value, tradeskillTotemData.Key, curTradeskillTotemCategoryID, curTradeskillTotemCategoryMaskValue);
+                totemCategoryDBC.AddRow(tradeskillTotemData.Value, tradeskillTotemData.Key, curTotemCategoryID, curTradeskillTotemCategoryMaskValue);
                 curTradeskillTotemCategoryMaskValue *= 2;
                 curTradeskillTotemCategoryMaskCount++;
                 if (curTradeskillTotemCategoryMaskCount > 10)
                 {
                     curTradeskillTotemCategoryMaskValue = 1;
                     curTradeskillTotemCategoryMaskCount = 0;
-                    curTradeskillTotemCategoryID++;
+                    curTotemCategoryID++;
                 }
             }
+
+            // Bard instrument totems
+            curTotemCategoryID++;
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_WIND), "Wind Instrument", curTotemCategoryID, 0x1);
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_STRING), "String Instrument", curTotemCategoryID, 0x2);
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_BRASS), "Brass Instrument", curTotemCategoryID, 0x4);
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_PERCUSSION), "Percussion Instrument", curTotemCategoryID, 0x8);
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_ALL), "All Instruments", curTotemCategoryID, 0xF);
 
             // Save the files
             areaTableDBC.SaveToDisk(dbcOutputClientFolder);

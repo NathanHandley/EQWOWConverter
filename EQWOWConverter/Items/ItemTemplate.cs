@@ -1407,7 +1407,19 @@ namespace EQWOWConverter.Items
                     default: break; 
                 }
                 if (itemTemplate.FocusType != ItemFocusType.None)
+                {
                     itemTemplate.FocusValue = bardFocusValue;
+                    // Categorize the instrument into its totem group so songs can require (but not consume) it
+                    switch (itemTemplate.FocusType)
+                    {
+                        case ItemFocusType.BardWindInstruments: itemTemplate.TotemDBCID = Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_WIND; break;
+                        case ItemFocusType.BardStringedInstruments: itemTemplate.TotemDBCID = Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_STRING; break;
+                        case ItemFocusType.BardBrassInstruments: itemTemplate.TotemDBCID = Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_BRASS; break;
+                        case ItemFocusType.BardPercussionInstruments: itemTemplate.TotemDBCID = Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_PERCUSSION; break;
+                        case ItemFocusType.BardAll: itemTemplate.TotemDBCID = Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_ALL; break;
+                        default: break;
+                    }
+                }
                 return;
             }
         }

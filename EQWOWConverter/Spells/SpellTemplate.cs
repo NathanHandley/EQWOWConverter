@@ -386,25 +386,10 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
                 newSpellTemplate.DispelType = GetDispelTypeForResistType(resistType, isDetrimental, newSpellTemplate.AuraDuration.MaxDurationInMS > 0);
 
-                // Reagents (Components)
-                int component1EQID = int.Parse(columns["components1"]);
-                int component1Count = int.Parse(columns["component_counts1"]);
-                if (component1EQID > 0 && component1Count > 0)
-                {
-                    if (itemTemplatesByEQDBID.ContainsKey(component1EQID) == false)
-                        Logger.WriteError("For Spell WOWID ", newSpellTemplate.WOWSpellID.ToString(), " a reagent could not be found with EQID ", component1EQID.ToString());
-                    else
-                        newSpellTemplate.Reagents.Add(new Reagent(itemTemplatesByEQDBID[component1EQID].WOWEntryID, component1Count));
-                }
-                int component2EQID = int.Parse(columns["components2"]);
-                int component2Count = int.Parse(columns["component_counts2"]);
-                if (component2EQID > 0 && component2Count > 0)
-                {
-                    if (itemTemplatesByEQDBID.ContainsKey(component2EQID) == false)
-                        Logger.WriteError("For Spell WOWID ", newSpellTemplate.WOWSpellID.ToString(), " a reagent could not be found with EQID ", component2EQID.ToString());
-                    else
-                        newSpellTemplate.Reagents.Add(new Reagent(itemTemplatesByEQDBID[component2EQID].WOWEntryID, component2Count));
-                }
+                // Reagents (Components).  Bard instruments are required to play a song but not consumed, so they map to a
+                // totem category requirement instead of a consumed reagent.  Everything else is a normal reagent.
+                AddComponentAsReagentOrInstrumentRequirement(ref newSpellTemplate, int.Parse(columns["components1"]), int.Parse(columns["component_counts1"]), itemTemplatesByEQDBID);
+                AddComponentAsReagentOrInstrumentRequirement(ref newSpellTemplate, int.Parse(columns["components2"]), int.Parse(columns["component_counts2"]), itemTemplatesByEQDBID);
 
                 // Set defensive properties
                 newSpellTemplate.DefenseType = 1; // Magic
@@ -967,6 +952,44 @@ namespace EQWOWConverter.Spells
                 default: break;
             }
             return SpellFocusBoostType.None;
+        }
+
+        private static void AddComponentAsReagentOrInstrumentRequirement(ref SpellTemplate spellTemplate, int componentEQID, int componentCount,
+            SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
+        {
+            if (componentEQID <= 0 || componentCount <= 0)
+                return;
+            if (itemTemplatesByEQDBID.ContainsKey(componentEQID) == false)
+            {
+                Logger.WriteError("For Spell WOWID ", spellTemplate.WOWSpellID.ToString(), " a reagent could not be found with EQID ", componentEQID.ToString());
+                return;
+            }
+
+            ItemTemplate componentItem = itemTemplatesByEQDBID[componentEQID];
+            UInt32 instrumentTotemID = GetInstrumentRequiredTotemID(componentItem.FocusType);
+            if (instrumentTotemID != 0)
+            {
+                // Required (not consumed) - any instrument of the matching totem category satisfies it
+                if (spellTemplate.RequiredTotemID1 == 0)
+                    spellTemplate.RequiredTotemID1 = instrumentTotemID;
+                else if (spellTemplate.RequiredTotemID2 == 0)
+                    spellTemplate.RequiredTotemID2 = instrumentTotemID;
+                return;
+            }
+
+            spellTemplate.Reagents.Add(new Reagent(componentItem.WOWEntryID, componentCount));
+        }
+
+        private static UInt32 GetInstrumentRequiredTotemID(ItemFocusType focusType)
+        {
+            switch (focusType)
+            {
+                case ItemFocusType.BardWindInstruments: return Convert.ToUInt32(Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_WIND);
+                case ItemFocusType.BardStringedInstruments: return Convert.ToUInt32(Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_STRING);
+                case ItemFocusType.BardBrassInstruments: return Convert.ToUInt32(Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_BRASS);
+                case ItemFocusType.BardPercussionInstruments: return Convert.ToUInt32(Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_PERCUSSION);
+                default: return 0;
+            }
         }
 
         private static void PopulateEQSpellEffect(ref SpellTemplate spellTemplate, int slotID, Dictionary<string, string> rowColumns)
