@@ -203,6 +203,21 @@ namespace EQWOWConverter.Items
             return false;
         }
 
+        public int GetCreatureGrantableWornEffectSpellID(Dictionary<int, SpellTemplate> spellTemplatesByEQID)
+        {
+            // Only true "worn" effects qualify (focus/bard-instrument items use FocusType, so exclude them)
+            if (EQWornEffectSpellID <= 0)
+                return 0;
+            if (FocusType != ItemFocusType.None)
+                return 0;
+            if (spellTemplatesByEQID.ContainsKey(EQWornEffectSpellID) == false)
+                return 0;
+            int wornEffectSpellID = spellTemplatesByEQID[EQWornEffectSpellID].WOWSpellIDWorn;
+            if (wornEffectSpellID <= 0)
+                return 0;
+            return wornEffectSpellID;
+        }
+
         public ItemTemplate(int wowEntryID, ItemWOWInventoryType inventoryType)
         {
             WOWEntryID = wowEntryID;

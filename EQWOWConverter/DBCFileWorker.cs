@@ -149,16 +149,16 @@ namespace EQWOWConverter
                     // Don't hide the chain spells if there's an aura under the non-aura
                     bool hideFromDisplay = (i != 0) && (curEffectBlock.ForceVisibleSplitAura == false);
                     spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, hideFromDisplay, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
-                        curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID);
+                        curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, false);
                 }
                 else
                 {
                     if (Configuration.ITEMS_SHOW_WORN_EFFECT_AURA_ICON == true)
                         spellDBC.AddRow(curEffectBlock, spellTemplate.AuraDescription, spellTemplate, i != 0, true, true,
-                            curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID);
+                            curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, true);
                     else
                         spellDBC.AddRow(curEffectBlock, spellTemplate.AuraDescription, spellTemplate, true, true, true,
-                            curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID);
+                            curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, true);
                 }
             }
 

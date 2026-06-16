@@ -20,8 +20,8 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellDBC : DBCFile
     {
-        public void AddRow(SpellEffectBlock effectBlock, string spellDescription, SpellTemplate spellTemplate, bool doHideFromDisplay, bool overrideDurationToInfinite, 
-            bool preventClickOff, int maximumSpellLevel, bool isToggleAura, int castTimeDBCID)
+        public void AddRow(SpellEffectBlock effectBlock, string spellDescription, SpellTemplate spellTemplate, bool doHideFromDisplay, bool overrideDurationToInfinite,
+            bool preventClickOff, int maximumSpellLevel, bool isToggleAura, int castTimeDBCID, bool isWornEquipEffect)
         {
             if (effectBlock.SpellEffects.Count != 3)
             {
@@ -36,13 +36,20 @@ namespace EQWOWConverter.WOWFiles
             DBCRow newRow = new DBCRow();            
             newRow.AddInt32(effectBlock.WOWSpellID); // ID
             newRow.AddUInt32(spellTemplate.Category); // Category (SpellCategory.ID)
-            newRow.AddUInt32(spellTemplate.DispelType); // DispelType
+            // Worn/equip effect auras shouldn't be dispellable
+            if (isWornEquipEffect == true)
+                newRow.AddUInt32(0); // DispelType
+            else
+                newRow.AddUInt32(spellTemplate.DispelType); // DispelType
             newRow.AddUInt32(0); // Mechanic
             newRow.AddUInt32(GetAttributes(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, doHideFromDisplay, preventClickOff)); // Attributes
             newRow.AddUInt32(GetAttributesEx(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesEx
             newRow.AddUInt32(GetAttributesExB(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExB
             newRow.AddUInt32(GetAttributesExC(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExC
-            newRow.AddUInt32(GetAttributesExD(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, isToggleAura)); // AttributesExD
+            UInt32 attributesExD = GetAttributesExD(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, isToggleAura);
+            if (isWornEquipEffect == true)
+                attributesExD |= 64; // SPELL_ATTR4_CANNOT_BE_STOLEN (0x00000040)
+            newRow.AddUInt32(attributesExD); // AttributesExD
             newRow.AddUInt32(GetAttributesExE(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExE
             newRow.AddUInt32(GetAttributesExF(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExF
             newRow.AddUInt32(0); // AttributesExG

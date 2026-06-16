@@ -27,15 +27,17 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_item_template` ( ");
             stringBuilder.AppendLine("`ItemTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`NPCEquipItemTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`WornEffectSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`ItemTemplateID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int itemTemplateID, int npcEquipItemTemplateID)
+        public void AddRow(int itemTemplateID, int npcEquipItemTemplateID, int wornEffectSpellID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ItemTemplateID", itemTemplateID);
             newRow.AddInt("NPCEquipItemTemplateID", npcEquipItemTemplateID);
+            newRow.AddInt("WornEffectSpellID", wornEffectSpellID);
             Rows.Add(newRow);
         }
     }
