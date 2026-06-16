@@ -668,6 +668,13 @@ namespace EQWOWConverter
                     }
                 }
 
+                // Assign bash
+                if (creatureTemplate.UsesBash == true)
+                {
+                    string comment = string.Concat("EQ Bash ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast Bash (", Configuration.COMBATSKILL_BASH_SPELL_ID, ")");
+                    smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID, Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS, Configuration.COMBATSKILL_BASH_SPELL_ID, comment);
+                }
+
                 // Creature spell associations for pet creatures
                 if (creatureTemplate.IsPet == true)
                 {

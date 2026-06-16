@@ -82,6 +82,7 @@ namespace EQWOWConverter.Creatures
         public List<CreatureSpellEntry> CreatureSpellEntriesOutOfCombatSummons = new List<CreatureSpellEntry>();
         public bool DoesSummonPets = false;
         public List<(int, int)> AttackEQSpellIDAndProcChance = new List<(int, int)>();
+        public bool UsesBash = false;
         public bool IsPet = false;
         public float ModelTemplateScale = 1.0f; // Used for form changes
         public bool IsStableMaster = false;
@@ -326,6 +327,12 @@ namespace EQWOWConverter.Creatures
                         continue;
                     newCreatureTemplate.CreatureSpellListID = int.Parse(columns["creaturespelllistid"]);
 
+                    // Determine if the creature should do any special abilities
+                    string specialAbilitiesRaw = columns.ContainsKey("special_abilities") ? columns["special_abilities"] : string.Empty;
+                    newCreatureTemplate.UsesBash = DetermineCreatureUsesBash(newCreatureTemplate.EQClass, newCreatureTemplate.Level, specialAbilitiesRaw);
+                    if (newCreatureTemplate.UsesBash == true)
+                        newCreatureTemplate.HasSmartScript = true;
+
                     // Special logic for a few variations of kobolds, which look wrong if not adjusted
                     int raceID = int.Parse(columns["race"]);
                     if (raceID == 0)
@@ -398,6 +405,55 @@ namespace EQWOWConverter.Creatures
                     CreatureTemplatesBySpawnZonesAndName[(newCreatureTemplate.SpawnZones, newCreatureTemplate.NameNoFormat)].Add(newCreatureTemplate);
                 }
             }
+        }
+
+        private static bool DetermineCreatureUsesBash(int eqClass, int level, string specialAbilitiesRaw)
+        {
+            if (Configuration.COMBATSKILL_BASH_ENABLED == false)
+                return false;
+            if (level < Configuration.COMBATSKILL_BASH_CREATURE_MIN_LEVEL)
+                return false;
+            // EQ-like classes are warrior, cleric, paladin, shadowknight (and GM versions)
+            switch (eqClass)
+            {
+                case 1:  // Warrior
+                case 2:  // Cleric
+                case 3:  // Paladin
+                case 5:  // ShadowKnight
+                case 20: // Warrior (GM)
+                case 21: // Cleric (GM)
+                case 22: // Paladin (GM)
+                case 24: // ShadowKnight (GM)
+                    return true;
+            }
+
+            // The "Use Warrior Skills" special ability (EQ id 44) grants warrior skills (including bash) to any class
+            if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 44) == true)
+                return true;
+
+            return false;
+        }
+
+        private static bool HasSpecialAbilityEnabled(string specialAbilitiesRaw, int abilityID)
+        {
+            if (string.IsNullOrWhiteSpace(specialAbilitiesRaw))
+                return false;
+
+            // This field is separated by a carrot (^), note that I changed it because the source database had a pipe (|) but that messed up the .csv format
+            string[] abilityGroups = specialAbilitiesRaw.Split('^');
+            foreach (string abilityGroup in abilityGroups)
+            {
+                if (abilityGroup.Trim().Length == 0)
+                    continue;
+                string[] parts = abilityGroup.Split(',');
+                if (parts.Length < 2)
+                    continue;
+                if (int.TryParse(parts[0].Trim(), out int curID) == false || curID != abilityID)
+                    continue;
+                if (int.TryParse(parts[1].Trim(), out int value) == true && value > 0)
+                    return true;
+            }
+            return false;
         }
 
         private static void ProcessProfessionTrainerType(ref CreatureTemplate creatureTemplate, int tradeskillTrainerType)

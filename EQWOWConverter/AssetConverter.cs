@@ -2157,6 +2157,47 @@ namespace EQWOWConverter
                 spellTemplates.Add(reducedManaRegenSpellTemplate);
             }
 
+            // Bash
+            if (Configuration.COMBATSKILL_BASH_ENABLED == true)
+            {
+                int bashSpellIconID = Configuration.COMBATSKILL_BASH_SPELL_ICON_EQ_ID;
+                if (bashSpellIconID < 0 || bashSpellIconID > 22)
+                {
+                    Logger.WriteError("CREATURE_BASH_SPELL_ICON_EQ_ID value must be 0-22. Setting to 11");
+                    bashSpellIconID = 11;
+                }
+                SpellTemplate bashSpellTemplate = new SpellTemplate();
+                bashSpellTemplate.Name = "Bash";
+                bashSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_BASH_SPELL_ID;
+                bashSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                bashSpellTemplate.Description = "Slams the target with a shield or body, dealing physical damage and stunning them briefly.";
+                bashSpellTemplate.AuraDescription = "Stunned.";
+                bashSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(bashSpellIconID);
+                bashSpellTemplate.CastTimeInMS = 0;
+                bashSpellTemplate.RecoveryTimeInMS = 0; // Cooldown is handled by smart script
+                bashSpellTemplate.SpellRange = Configuration.COMBATSKILL_BASH_RANGE;
+                bashSpellTemplate.SchoolMask = 1; // Physical
+                bashSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)
+                bashSpellTemplate.TriggersGlobalCooldown = false;
+                bashSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                bashSpellTemplate.AuraDuration = new SpellDuration();
+                bashSpellTemplate.AuraDuration.SetFixedDuration(Configuration.COMBATSKILL_BASH_STUN_DURATION_IN_MS);
+                bashSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+                bashSpellTemplate.SkillLine = 0;
+                SpellEffectWOW bashDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_BASH_BASE_DAMAGE, 0, 0);
+                bashDamageEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_BASH_DAMAGE_PER_LEVEL;
+                bashDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+                bashDamageEffect.ActionDescription = "bashes";
+                bashSpellTemplate.WOWSpellEffects.Add(bashDamageEffect);
+                SpellEffectWOW bashStunEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModStun, 0, 0, 0, 0, 0, 0);
+                bashStunEffect.EffectMechanic = SpellMechanicType.Stunned;
+                bashStunEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+                bashStunEffect.ActionDescription = "stuns";
+                bashStunEffect.AuraDescription = "stunned";
+                bashSpellTemplate.WOWSpellEffects.Add(bashStunEffect);
+                spellTemplates.Add(bashSpellTemplate);
+            }
+
             Logger.WriteDebug("Generating custom spells completed.");
         }
 

@@ -698,6 +698,20 @@ namespace EQWOWConverter
         public static int SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID = 86907;
 
         //=====================================================================
+        // Combat Skills (adjacent to spells)
+        //=====================================================================
+        // Bash skills in EQ are either from warrior/cleric/paladin/shadowknight or those that use warrior skills
+        public static bool COMBATSKILL_BASH_ENABLED = true;
+        public static int COMBATSKILL_BASH_SPELL_ID = 86908;
+        public static int COMBATSKILL_BASH_SPELL_ICON_EQ_ID = 11;
+        public static int COMBATSKILL_BASH_CREATURE_MIN_LEVEL = 6;
+        public static int COMBATSKILL_BASH_COOLDOWN_IN_MS = 8000;
+        public static int COMBATSKILL_BASH_STUN_DURATION_IN_MS = 2000;
+        public static int COMBATSKILL_BASH_BASE_DAMAGE = 4;
+        public static float COMBATSKILL_BASH_DAMAGE_PER_LEVEL = 1.5f;
+        public static int COMBATSKILL_BASH_RANGE = 5;
+
+        //=====================================================================
         // Fishing
         //=====================================================================
         // How much to multiply the EQ fish catching skill requirement for WOW
@@ -1373,6 +1387,16 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN, "");
             OutputVariableToConfig("SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT", SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT, "This is the default amount influence spell strength by spell power (when not overriden)");
             OutputVariableToConfig("SPELL_SUMMON_CASTER_AURA_SPELL_ID", SPELL_SUMMON_CASTER_AURA_SPELL_ID, "Summoner dummy spell ID used to prevent creatures from summoning more creatures");
+            OutputVariableToConfig("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID, "Hidden passive aura used to reduce creature mana regeneration (see CREATURE_MANA_REGEN_PERCENT)");
+            OutputVariableToConfig("COMBATSKILL_BASH_ENABLED", COMBATSKILL_BASH_ENABLED, "Bash skills in EQ are either from warrior/cleric/paladin/shadowknight or those that use warrior skills", false);
+            OutputVariableToConfig("COMBATSKILL_BASH_SPELL_ID", COMBATSKILL_BASH_SPELL_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_BASH_SPELL_ICON_EQ_ID", COMBATSKILL_BASH_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_BASH_CREATURE_MIN_LEVEL", COMBATSKILL_BASH_CREATURE_MIN_LEVEL, "", false);
+            OutputVariableToConfig("COMBATSKILL_BASH_COOLDOWN_IN_MS", COMBATSKILL_BASH_COOLDOWN_IN_MS, "", false);
+            OutputVariableToConfig("COMBATSKILL_BASH_STUN_DURATION_IN_MS", COMBATSKILL_BASH_STUN_DURATION_IN_MS, "", false);
+            OutputVariableToConfig("COMBATSKILL_BASH_BASE_DAMAGE", COMBATSKILL_BASH_BASE_DAMAGE, "", false);
+            OutputVariableToConfig("COMBATSKILL_BASH_DAMAGE_PER_LEVEL", COMBATSKILL_BASH_DAMAGE_PER_LEVEL, "", false);
+            OutputVariableToConfig("COMBATSKILL_BASH_RANGE", COMBATSKILL_BASH_RANGE, "");
             OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_60", FISHING_SKILL_CONVERSION_MOD_60, "How much to multiply the EQ fish catching skill requirement for WOW", false);
             OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_80", FISHING_SKILL_CONVERSION_MOD_80, "");
             OutputVariableToConfig("FORAGE_SPELL_ICON_EQ_ID", FORAGE_SPELL_ICON_EQ_ID, "Which eq spell icon to use for the Forage skill. Can be a value between 0-22");
@@ -1813,6 +1837,16 @@ namespace EQWOWConverter
             SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN = ReadVariableFromConfigString("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", configValuesByVariableName, SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN);
             SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT = ReadVariableFromConfigString("SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT", configValuesByVariableName, SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT);
             SPELL_SUMMON_CASTER_AURA_SPELL_ID = ReadVariableFromConfigString("SPELL_SUMMON_CASTER_AURA_SPELL_ID", configValuesByVariableName, SPELL_SUMMON_CASTER_AURA_SPELL_ID);
+            SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID);
+            COMBATSKILL_BASH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_BASH_ENABLED", configValuesByVariableName, COMBATSKILL_BASH_ENABLED);
+            COMBATSKILL_BASH_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_SPELL_ID", configValuesByVariableName, COMBATSKILL_BASH_SPELL_ID);
+            COMBATSKILL_BASH_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_BASH_SPELL_ICON_EQ_ID);
+            COMBATSKILL_BASH_CREATURE_MIN_LEVEL = ReadVariableFromConfigString("COMBATSKILL_BASH_CREATURE_MIN_LEVEL", configValuesByVariableName, COMBATSKILL_BASH_CREATURE_MIN_LEVEL);
+            COMBATSKILL_BASH_COOLDOWN_IN_MS = ReadVariableFromConfigString("COMBATSKILL_BASH_COOLDOWN_IN_MS", configValuesByVariableName, COMBATSKILL_BASH_COOLDOWN_IN_MS);
+            COMBATSKILL_BASH_STUN_DURATION_IN_MS = ReadVariableFromConfigString("COMBATSKILL_BASH_STUN_DURATION_IN_MS", configValuesByVariableName, COMBATSKILL_BASH_STUN_DURATION_IN_MS);
+            COMBATSKILL_BASH_BASE_DAMAGE = ReadVariableFromConfigString("COMBATSKILL_BASH_BASE_DAMAGE", configValuesByVariableName, COMBATSKILL_BASH_BASE_DAMAGE);
+            COMBATSKILL_BASH_DAMAGE_PER_LEVEL = ReadVariableFromConfigString("COMBATSKILL_BASH_DAMAGE_PER_LEVEL", configValuesByVariableName, COMBATSKILL_BASH_DAMAGE_PER_LEVEL);
+            COMBATSKILL_BASH_RANGE = ReadVariableFromConfigString("COMBATSKILL_BASH_RANGE", configValuesByVariableName, COMBATSKILL_BASH_RANGE);            
             FISHING_SKILL_CONVERSION_MOD_60 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_60", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_60);
             FISHING_SKILL_CONVERSION_MOD_80 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_80", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_80);
             FORAGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("FORAGE_SPELL_ICON_EQ_ID", configValuesByVariableName, FORAGE_SPELL_ICON_EQ_ID);
