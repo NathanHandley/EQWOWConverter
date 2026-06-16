@@ -697,6 +697,9 @@ namespace EQWOWConverter
         // Hidden passive aura used to reduce creature mana regeneration (see CREATURE_MANA_REGEN_PERCENT)
         public static int SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID = 86907;
 
+        // This is the ID used to detect invis and stealth, and already exists in AzerothCore
+        public static int SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID = 18950;
+
         //=====================================================================
         // Combat Skills (adjacent to spells)
         //=====================================================================
@@ -951,6 +954,10 @@ namespace EQWOWConverter
         public static int SQL_CREATURE_GUID_HIGH = 399999;
         public static int SQL_CREATURE_GUID_DEBUG_LOW = 2000000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
         public static int SQL_CREATURE_GUID_DEBUG_HIGH = 5060599; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
+
+        // Record identifier for for creature_immunities
+        public static int SQL_CREATUREIMMUNITIES_ID_START = 4000;
+        public static int SQL_CREATUREIMMUNITIES_ID_END = 4100;
 
         // Record identifier for the creature template SQL table
         public static int SQL_CREATURETEMPLATE_ENTRY_LOW = 45000;
@@ -1410,6 +1417,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT", SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT, "This is the default amount influence spell strength by spell power (when not overriden)");
             OutputVariableToConfig("SPELL_SUMMON_CASTER_AURA_SPELL_ID", SPELL_SUMMON_CASTER_AURA_SPELL_ID, "Summoner dummy spell ID used to prevent creatures from summoning more creatures");
             OutputVariableToConfig("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID, "Hidden passive aura used to reduce creature mana regeneration (see CREATURE_MANA_REGEN_PERCENT)");
+            OutputVariableToConfig("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID, "This is the ID used to detect invis and stealth, and already exists in AzerothCore");
             OutputVariableToConfig("COMBATSKILL_BASH_ENABLED", COMBATSKILL_BASH_ENABLED, "Bash skills in EQ are either from warrior/cleric/paladin/shadowknight or those that use warrior skills", false);
             OutputVariableToConfig("COMBATSKILL_BASH_SPELL_ID", COMBATSKILL_BASH_SPELL_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_SPELL_ICON_EQ_ID", COMBATSKILL_BASH_SPELL_ICON_EQ_ID, "", false);
@@ -1536,7 +1544,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("SQL_BROADCASTTEXT_ID_START", SQL_BROADCASTTEXT_ID_START, "Start and end IDs for broadcast_text sql records", false);
             OutputVariableToConfig("SQL_BROADCASTTEXT_ID_END", SQL_BROADCASTTEXT_ID_END, "");
             OutputVariableToConfig("SQL_CREATURE_GUID_LOW", SQL_CREATURE_GUID_LOW, "Record identifier for the creature sql table, need at least 31k", false);
-            OutputVariableToConfig("SQL_CREATURE_GUID_HIGH", SQL_CREATURE_GUID_HIGH, "", false);
+            OutputVariableToConfig("SQL_CREATURE_GUID_HIGH", SQL_CREATURE_GUID_HIGH, "");
+            OutputVariableToConfig("SQL_CREATURE_IMMUNITIES_ID_START", SQL_CREATUREIMMUNITIES_ID_START, "Record identifier for for creature_immunities", false);
+            OutputVariableToConfig("SQL_CREATURE_IMMUNITIES_ID_END", SQL_CREATUREIMMUNITIES_ID_END, "");
             OutputVariableToConfig("SQL_CREATURETEMPLATE_ENTRY_LOW", SQL_CREATURETEMPLATE_ENTRY_LOW, "Record identifier for the creature template SQL table", false);
             OutputVariableToConfig("SQL_CREATURETEMPLATE_ENTRY_HIGH", SQL_CREATURETEMPLATE_ENTRY_HIGH, "", false);
             OutputVariableToConfig("SQL_CREATURETEMPLATE_GENERATED_START_ID", SQL_CREATURETEMPLATE_GENERATED_START_ID, "", false);
@@ -1878,6 +1888,7 @@ namespace EQWOWConverter
             SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT = ReadVariableFromConfigString("SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT", configValuesByVariableName, SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT);
             SPELL_SUMMON_CASTER_AURA_SPELL_ID = ReadVariableFromConfigString("SPELL_SUMMON_CASTER_AURA_SPELL_ID", configValuesByVariableName, SPELL_SUMMON_CASTER_AURA_SPELL_ID);
             SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID);
+            SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID);
             COMBATSKILL_BASH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_BASH_ENABLED", configValuesByVariableName, COMBATSKILL_BASH_ENABLED);
             COMBATSKILL_BASH_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_SPELL_ID", configValuesByVariableName, COMBATSKILL_BASH_SPELL_ID);
             COMBATSKILL_BASH_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_BASH_SPELL_ICON_EQ_ID);
@@ -1993,6 +2004,8 @@ namespace EQWOWConverter
             SQL_BROADCASTTEXT_ID_END = ReadVariableFromConfigString("SQL_BROADCASTTEXT_ID_END", configValuesByVariableName, SQL_BROADCASTTEXT_ID_END);
             SQL_CREATURE_GUID_LOW = ReadVariableFromConfigString("SQL_CREATURE_GUID_LOW", configValuesByVariableName, SQL_CREATURE_GUID_LOW);
             SQL_CREATURE_GUID_HIGH = ReadVariableFromConfigString("SQL_CREATURE_GUID_HIGH", configValuesByVariableName, SQL_CREATURE_GUID_HIGH);
+            SQL_CREATUREIMMUNITIES_ID_START = ReadVariableFromConfigString("SQL_CREATURE_IMMUNITIES_ID_START", configValuesByVariableName, SQL_CREATUREIMMUNITIES_ID_START);
+            SQL_CREATUREIMMUNITIES_ID_END = ReadVariableFromConfigString("SQL_CREATURE_IMMUNITIES_ID_END", configValuesByVariableName, SQL_CREATUREIMMUNITIES_ID_END);
             SQL_CREATURETEMPLATE_ENTRY_LOW = ReadVariableFromConfigString("SQL_CREATURETEMPLATE_ENTRY_LOW", configValuesByVariableName, SQL_CREATURETEMPLATE_ENTRY_LOW);
             SQL_CREATURETEMPLATE_ENTRY_HIGH = ReadVariableFromConfigString("SQL_CREATURETEMPLATE_ENTRY_HIGH", configValuesByVariableName, SQL_CREATURETEMPLATE_ENTRY_HIGH);
             SQL_CREATURETEMPLATE_GENERATED_START_ID = ReadVariableFromConfigString("SQL_CREATURETEMPLATE_GENERATED_START_ID", configValuesByVariableName, SQL_CREATURETEMPLATE_GENERATED_START_ID);

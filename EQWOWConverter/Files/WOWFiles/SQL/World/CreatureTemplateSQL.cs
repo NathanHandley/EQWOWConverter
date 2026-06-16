@@ -188,7 +188,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RacialLeader", 0);
 			newRow.AddInt("movementId", 0);
             newRow.AddInt("RegenHealth", 1);
-            newRow.AddInt("CreatureImmunitiesId", 0);
+            newRow.AddInt("CreatureImmunitiesId", creatureTemplate.CreatureImmunitiesId);
             newRow.AddInt("flags_extra", extraFlags);
             newRow.AddString("ScriptName", 64, string.Empty);
             newRow.AddInt("VerifiedBuild", 12340);

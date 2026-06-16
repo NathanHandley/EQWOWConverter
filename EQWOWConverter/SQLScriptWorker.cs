@@ -46,6 +46,7 @@ namespace EQWOWConverter
         private CreatureAddonSQL creatureAddonSQL = new CreatureAddonSQL();
         private CreatureDefaultTrainerSQL creatureDefaultTrainerSQL = new CreatureDefaultTrainerSQL();
         private CreatureEquipTemplateSQL creatureEquipTemplateSQL = new CreatureEquipTemplateSQL();
+        private CreatureImmunitiesSQL creatureImmunitiesSQL = new CreatureImmunitiesSQL();
         private CreatureLootTemplateSQL creatureLootTableSQL = new CreatureLootTemplateSQL();
         private CreatureModelInfoSQL creatureModelInfoSQL = new CreatureModelInfoSQL();
         private CreatureQuestEnderSQL creatureQuestEnderSQL = new CreatureQuestEnderSQL();
@@ -455,6 +456,9 @@ namespace EQWOWConverter
             // Creature Templates
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
             List<CreatureVendorItem> reagentVendorItems = CreatureVendorItem.GetCreatureReagentItems();
+            // Distinct crowd-control immunity masks get a shared creature_immunities row so the table stays tiny
+            Dictionary<long, int> creatureImmunitiesIdByMask = new Dictionary<long, int>();
+            int nextCreatureImmunitiesId = Configuration.SQL_CREATUREIMMUNITIES_ID_START;
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
                 // Skip invalid creatures
@@ -530,6 +534,28 @@ namespace EQWOWConverter
                 int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;
                 if (creatureTemplate.IsNonNPC == true)
                     displayID = 11686; // Dranei totem
+
+                // Crowd control immunities
+                if (creatureTemplate.MechanicImmuneMask != 0)
+                {
+                    if (creatureImmunitiesIdByMask.TryGetValue(creatureTemplate.MechanicImmuneMask, out int existingImmunitiesId) == true)
+                        creatureTemplate.CreatureImmunitiesId = existingImmunitiesId;
+                    else
+                    {
+                        creatureTemplate.CreatureImmunitiesId = nextCreatureImmunitiesId;
+                        creatureImmunitiesIdByMask.Add(creatureTemplate.MechanicImmuneMask, nextCreatureImmunitiesId);
+                        creatureImmunitiesSQL.AddRow(nextCreatureImmunitiesId, creatureTemplate.MechanicImmuneMask);
+                        nextCreatureImmunitiesId++;
+                    }
+                }
+
+                // See invis/stealth
+                if (creatureTemplate.SeesInvisible == true || creatureTemplate.SeesStealth == true)
+                {
+                    string seeComment = string.Concat("EQ See Invisibility/Stealth ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ")");
+                    smartScriptsSQL.AddRowForCreatureTemplateApplyAuraOnSpawn(creatureTemplate.WOWCreatureTemplateID,
+                        Configuration.SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID, seeComment);
+                }
 
                 // Create the records
                 float scale = creatureTemplate.Size * creatureTemplate.Race.SpawnSizeMod;
@@ -1816,6 +1842,7 @@ namespace EQWOWConverter
             creatureAddonSQL.SaveToDisk("creature_addon", SQLFileType.World);
             creatureDefaultTrainerSQL.SaveToDisk("creature_default_trainer", SQLFileType.World);
             creatureEquipTemplateSQL.SaveToDisk("creature_equip_template", SQLFileType.World);
+            creatureImmunitiesSQL.SaveToDisk("creature_immunities", SQLFileType.World);
             creatureLootTableSQL.SaveToDisk("creature_loot_template", SQLFileType.World);
             creatureModelInfoSQL.SaveToDisk("creature_model_info", SQLFileType.World);
             creatureQuestEnderSQL.SaveToDisk("creature_questender", SQLFileType.World);

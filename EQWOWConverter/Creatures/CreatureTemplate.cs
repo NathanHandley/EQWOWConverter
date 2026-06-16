@@ -85,6 +85,10 @@ namespace EQWOWConverter.Creatures
         public bool UsesBash = false;
         public bool UsesHarmTouch = false;
         public bool UsesLayOnHands = false;
+        public long MechanicImmuneMask = 0;
+        public int CreatureImmunitiesId = 0;
+        public bool SeesInvisible = false;
+        public bool SeesStealth = false;
         public bool IsPet = false;
         public float ModelTemplateScale = 1.0f; // Used for form changes
         public bool IsStableMaster = false;
@@ -337,6 +341,24 @@ namespace EQWOWConverter.Creatures
                     if (newCreatureTemplate.UsesBash == true || newCreatureTemplate.UsesHarmTouch == true || newCreatureTemplate.UsesLayOnHands == true)
                         newCreatureTemplate.HasSmartScript = true;
 
+                    // Crowd-control immunities from EQ special abilities
+                    newCreatureTemplate.MechanicImmuneMask = DetermineCreatureMechanicImmuneMask(specialAbilitiesRaw);
+
+                    // See invisibility
+                    if (columns.ContainsKey("see_invis") && int.TryParse(columns["see_invis"], out int seeInvisValue) && seeInvisValue > 0)
+                    {
+                        newCreatureTemplate.SeesInvisible = true;
+                        newCreatureTemplate.HasSmartScript = true;
+                    }
+
+                    // See stealth
+                    if ((columns.ContainsKey("see_sneak") && int.TryParse(columns["see_sneak"], out int seeSneakValue) && seeSneakValue > 0) ||
+                        (columns.ContainsKey("see_improved_hide") && int.TryParse(columns["see_improved_hide"], out int seeImprovedHideValue) && seeImprovedHideValue > 0))
+                    {
+                        newCreatureTemplate.SeesStealth = true;
+                        newCreatureTemplate.HasSmartScript = true;
+                    }
+
                     // Special logic for a few variations of kobolds, which look wrong if not adjusted
                     int raceID = int.Parse(columns["race"]);
                     if (raceID == 0)
@@ -468,6 +490,25 @@ namespace EQWOWConverter.Creatures
                     return true;
             }
             return false;
+        }
+
+        private static long DetermineCreatureMechanicImmuneMask(string specialAbilitiesRaw)
+        {
+            // creature_immunities.MechanicsMask uses (1 << SpellMechanicType) per immunity
+            long mask = 0;
+            if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 12) == true) // SlowImmunity
+                mask |= 1L << (int)SpellMechanicType.Slowed;
+            if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 13) == true) // MesmerizeImmunity
+                mask |= 1L << (int)SpellMechanicType.Incapacitated;
+            if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 14) == true) // CharmImmunity
+                mask |= 1L << (int)SpellMechanicType.Charmed;
+            if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 15) == true) // StunImmunity
+                mask |= 1L << (int)SpellMechanicType.Stunned;
+            if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 16) == true) // SnareImmunity (EQ blocks both snare and root)
+                mask |= (1L << (int)SpellMechanicType.Snared) | (1L << (int)SpellMechanicType.Rooted);
+            if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 17) == true) // FearImmunity
+                mask |= 1L << (int)SpellMechanicType.Fleeing;
+            return mask;
         }
 
         private static bool HasSpecialAbilityEnabled(string specialAbilitiesRaw, int abilityID)
