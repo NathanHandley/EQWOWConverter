@@ -2174,7 +2174,7 @@ namespace EQWOWConverter
                 bashSpellTemplate.AuraDescription = "Stunned.";
                 bashSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(bashSpellIconID);
                 bashSpellTemplate.CastTimeInMS = 0;
-                bashSpellTemplate.RecoveryTimeInMS = 0; // Cooldown is handled by smart script
+                bashSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS);
                 bashSpellTemplate.SpellRange = Configuration.COMBATSKILL_BASH_RANGE;
                 bashSpellTemplate.SchoolMask = 1; // Physical
                 bashSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)

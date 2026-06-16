@@ -668,8 +668,8 @@ namespace EQWOWConverter
                     }
                 }
 
-                // Assign bash
-                if (creatureTemplate.UsesBash == true)
+                // Assign bash to creatures
+                if (creatureTemplate.UsesBash == true && creatureTemplate.IsPet == false)
                 {
                     string comment = string.Concat("EQ Bash ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast Bash (", Configuration.COMBATSKILL_BASH_SPELL_ID, ")");
                     smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID, Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS, Configuration.COMBATSKILL_BASH_SPELL_ID, comment);
@@ -695,6 +695,13 @@ namespace EQWOWConverter
                     {
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
                         creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, curSpellTemplate.WOWSpellID);
+                        curIndex++;
+                    }
+
+                    // Assign bash to pets
+                    if (creatureTemplate.UsesBash == true)
+                    {
+                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, Configuration.COMBATSKILL_BASH_SPELL_ID);
                         curIndex++;
                     }
                 }
