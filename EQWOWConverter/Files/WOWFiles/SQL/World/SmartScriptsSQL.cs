@@ -151,6 +151,70 @@ namespace EQWOWConverter.WOWFiles
             );
         }
 
+        public void AddRowForCreatureTemplateAttackSpellCastOnVictimNoResetOnLeaveCombat(int creatureTemplateID, int initialDelayInMS, int recastDelayInMS, int wowSpellID, string comment)
+        {
+            AddRow(creatureTemplateID,
+                0,
+                0, // SMART_EVENT_UPDATE_IC
+                100,
+                initialDelayInMS, // Initial delay in MS (minimum)
+                initialDelayInMS, // Initial delay in MS (maximum)
+                recastDelayInMS,  // Recast delay in MS (minimum)
+                recastDelayInMS,  // Recast delay in MS (maximum)
+                0,
+                0,
+                11, // SMART_ACTION_CAST
+                wowSpellID,
+                64, // SMARTCAST_COMBAT_MOVE (move into range if needed)
+                0,
+                0,
+                0,
+                0,
+                2, // SMART_TARGET_VICTIM
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment,
+                idOverride: -1,
+                eventFlags: 256 // SMART_EVENT_FLAG_DONT_RESET
+            );
+        }
+
+        public void AddRowForCreatureTemplateLowHealthSelfCastNoResetOnLeaveCombat(int creatureTemplateID, int healthTriggerPct, int recastDelayInMS, int wowSpellID, string comment)
+        {
+            AddRow(creatureTemplateID,
+                0,
+                2, // SMART_EVENT_HEALTH_PCT
+                100,
+                0,                // HP min %
+                healthTriggerPct, // HP max %
+                recastDelayInMS,  // Repeat min in MS
+                recastDelayInMS,  // Repeat max in MS
+                0,
+                0,
+                11, // SMART_ACTION_CAST
+                wowSpellID,
+                0,  // Cast flags (self cast, no combat move needed)
+                0,
+                0,
+                0,
+                0,
+                1, // SMART_TARGET_SELF
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment,
+                idOverride: -1,
+                eventFlags: 256 // SMART_EVENT_FLAG_DONT_RESET
+            );
+        }
+
         public void AddRowForCreatureTemplateInCombatHealCast(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
             int range, string comment)
         {
@@ -553,7 +617,8 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventChance, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
             int eventParam5, int eventParam6, int actionType, int actionParam1, int actionParam2, int actionParam3, int actionParam4, int actionParam5, int actionParam6, 
-            int targetType, int targetParam1, int targetParam2, float targetX, float targetY, float targetZ, float targetOrientation, string comment, int idOverride = -1)
+            int targetType, int targetParam1, int targetParam2, float targetX, float targetY, float targetZ, float targetOrientation, string comment, int idOverride = -1,
+            int eventFlags = 0)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entryorguid", entryOrGUIDID);
@@ -566,7 +631,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("event_type", eventType); 
             newRow.AddInt("event_phase_mask", 0);
             newRow.AddInt("event_chance", eventChance);
-            newRow.AddInt("event_flags", 0);
+            newRow.AddInt("event_flags", eventFlags);
             newRow.AddInt("event_param1", eventParam1);
             newRow.AddInt("event_param2", eventParam2);
             newRow.AddInt("event_param3", eventParam3);

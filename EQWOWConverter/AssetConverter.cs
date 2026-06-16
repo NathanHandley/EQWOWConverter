@@ -2198,6 +2198,72 @@ namespace EQWOWConverter
                 spellTemplates.Add(bashSpellTemplate);
             }
 
+            // Harm Touch
+            if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true)
+            {
+                int harmTouchIconID = Configuration.COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID;
+                if (harmTouchIconID < 0 || harmTouchIconID > 22)
+                {
+                    Logger.WriteError("COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID value must be 0-22. Setting to 3");
+                    harmTouchIconID = 3;
+                }
+                SpellTemplate harmTouchSpellTemplate = new SpellTemplate();
+                harmTouchSpellTemplate.Name = "Harm Touch";
+                harmTouchSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID;
+                harmTouchSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                harmTouchSpellTemplate.Description = "Touches the target with deathly energy, inflicting heavy shadow damage. Can only be used rarely.";
+                harmTouchSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(harmTouchIconID);
+                harmTouchSpellTemplate.CastTimeInMS = 0;
+                harmTouchSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS);
+                harmTouchSpellTemplate.SpellRange = Configuration.COMBATSKILL_HARMTOUCH_RANGE;
+                harmTouchSpellTemplate.SchoolMask = 32; // Shadow
+                harmTouchSpellTemplate.DefenseType = 1; // Magic
+                harmTouchSpellTemplate.EQSpellVisualEffectIndex = 8;
+                harmTouchSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(harmTouchSpellTemplate.EQSpellVisualEffectIndex, SpellVisualType.Detrimental).SpellVisualDBCID);
+                harmTouchSpellTemplate.TriggersGlobalCooldown = false;
+                harmTouchSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+                harmTouchSpellTemplate.SkillLine = 0;
+                SpellEffectWOW harmTouchDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_HARMTOUCH_BASE_DAMAGE, 0, 0);
+                harmTouchDamageEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL;
+                harmTouchDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+                harmTouchDamageEffect.ActionDescription = "strikes";
+                harmTouchSpellTemplate.WOWSpellEffects.Add(harmTouchDamageEffect);
+                spellTemplates.Add(harmTouchSpellTemplate);
+            }
+
+            // Lay on Hands
+            if (Configuration.COMBATSKILL_LAYONHANDS_ENABLED == true)
+            {
+                int layOnHandsIconID = Configuration.COMBATSKILL_LAYONHANDS_SPELL_ICON_EQ_ID;
+                if (layOnHandsIconID < 0 || layOnHandsIconID > 22)
+                {
+                    Logger.WriteError("COMBATSKILL_LAYONHANDS_SPELL_ICON_EQ_ID value must be 0-22. Setting to 10");
+                    layOnHandsIconID = 10;
+                }
+                SpellTemplate layOnHandsSpellTemplate = new SpellTemplate();
+                layOnHandsSpellTemplate.Name = "Lay on Hands";
+                layOnHandsSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_LAYONHANDS_SPELL_ID;
+                layOnHandsSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                layOnHandsSpellTemplate.Description = "Channels holy power to heal grievous wounds. Can only be used rarely.";
+                layOnHandsSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(layOnHandsIconID);
+                layOnHandsSpellTemplate.CastTimeInMS = 0;
+                layOnHandsSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_LAYONHANDS_COOLDOWN_IN_MS);
+                layOnHandsSpellTemplate.SchoolMask = 2; // Holy
+                layOnHandsSpellTemplate.IsGoodEffect = true;
+                layOnHandsSpellTemplate.EQSpellVisualEffectIndex = 1;
+                layOnHandsSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(layOnHandsSpellTemplate.EQSpellVisualEffectIndex, SpellVisualType.Beneficial).SpellVisualDBCID);
+                layOnHandsSpellTemplate.TriggersGlobalCooldown = false;
+                layOnHandsSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+                layOnHandsSpellTemplate.SkillLine = 0;
+                SpellEffectWOW layOnHandsHealEffect = new SpellEffectWOW(SpellWOWEffectType.Heal, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_LAYONHANDS_BASE_HEAL, 0, 0);
+                layOnHandsHealEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL;
+                layOnHandsHealEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                layOnHandsHealEffect.ActionDescription = "heals";
+                layOnHandsSpellTemplate.WOWSpellEffects.Add(layOnHandsHealEffect);
+                layOnHandsSpellTemplate.HighestDirectHealAmountInSpellEffect = Configuration.COMBATSKILL_LAYONHANDS_BASE_HEAL;
+                spellTemplates.Add(layOnHandsSpellTemplate);
+            }
+
             Logger.WriteDebug("Generating custom spells completed.");
         }
 

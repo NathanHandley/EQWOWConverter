@@ -675,6 +675,22 @@ namespace EQWOWConverter
                     smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID, Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS, Configuration.COMBATSKILL_BASH_SPELL_ID, comment);
                 }
 
+                // Assign Harm Touch to creatures
+                if (creatureTemplate.UsesHarmTouch == true && creatureTemplate.IsPet == false)
+                {
+                    string comment = string.Concat("EQ Harm Touch ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast Harm Touch (", Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID, ")");
+                    smartScriptsSQL.AddRowForCreatureTemplateAttackSpellCastOnVictimNoResetOnLeaveCombat(creatureTemplate.WOWCreatureTemplateID,
+                        Configuration.COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS, Configuration.COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS, Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID, comment);
+                }
+
+                // Assign Lay on Hands to creatures
+                if (creatureTemplate.UsesLayOnHands == true && creatureTemplate.IsPet == false)
+                {
+                    string comment = string.Concat("EQ Lay on Hands ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast Lay on Hands (", Configuration.COMBATSKILL_LAYONHANDS_SPELL_ID, ")");
+                    smartScriptsSQL.AddRowForCreatureTemplateLowHealthSelfCastNoResetOnLeaveCombat(creatureTemplate.WOWCreatureTemplateID,
+                        Configuration.COMBATSKILL_LAYONHANDS_HEALTH_TRIGGER_PCT, Configuration.COMBATSKILL_LAYONHANDS_COOLDOWN_IN_MS, Configuration.COMBATSKILL_LAYONHANDS_SPELL_ID, comment);
+                }
+
                 // Creature spell associations for pet creatures
                 if (creatureTemplate.IsPet == true)
                 {
@@ -702,6 +718,20 @@ namespace EQWOWConverter
                     if (creatureTemplate.UsesBash == true)
                     {
                         creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, Configuration.COMBATSKILL_BASH_SPELL_ID);
+                        curIndex++;
+                    }
+
+                    // Assign Harm Touch to pets (are there any?)
+                    if (creatureTemplate.UsesHarmTouch == true)
+                    {
+                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID);
+                        curIndex++;
+                    }
+
+                    // Assign Lay on Hands to pets (are there any?)
+                    if (creatureTemplate.UsesLayOnHands == true)
+                    {
+                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, Configuration.COMBATSKILL_LAYONHANDS_SPELL_ID);
                         curIndex++;
                     }
                 }
@@ -1090,6 +1120,17 @@ namespace EQWOWConverter
             // Autolearn Skills / Spells
             foreach (ClassWOWType wowClassType in PlayerClassMapping.GetWOWClassesThatShouldHaveForage())
                 modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, Configuration.FORAGE_SPELL_TEMPLATE_ID, true);
+
+            // Harm Touch for Death Knight aligned player classes (EQ ShadowKnight)
+            if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true && Configuration.COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE == true)
+            {
+                foreach (var eqClassesByWowClass in PlayerClassMapping.GetAllEQClassesByWOWClass())
+                {
+                    if (eqClassesByWowClass.Value.Contains(ClassEQType.ShadowKnight) == false)
+                        continue;
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)eqClassesByWowClass.Key, Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID, true);
+                }
+            }
             if (Configuration.PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START == true)
             {
                 foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))

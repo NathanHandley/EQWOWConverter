@@ -83,6 +83,8 @@ namespace EQWOWConverter.Creatures
         public bool DoesSummonPets = false;
         public List<(int, int)> AttackEQSpellIDAndProcChance = new List<(int, int)>();
         public bool UsesBash = false;
+        public bool UsesHarmTouch = false;
+        public bool UsesLayOnHands = false;
         public bool IsPet = false;
         public float ModelTemplateScale = 1.0f; // Used for form changes
         public bool IsStableMaster = false;
@@ -330,7 +332,9 @@ namespace EQWOWConverter.Creatures
                     // Determine if the creature should do any special abilities
                     string specialAbilitiesRaw = columns.ContainsKey("special_abilities") ? columns["special_abilities"] : string.Empty;
                     newCreatureTemplate.UsesBash = DetermineCreatureUsesBash(newCreatureTemplate.EQClass, newCreatureTemplate.Level, specialAbilitiesRaw);
-                    if (newCreatureTemplate.UsesBash == true)
+                    newCreatureTemplate.UsesHarmTouch = DetermineCreatureUsesHarmTouch(newCreatureTemplate.EQClass, newCreatureTemplate.Level);
+                    newCreatureTemplate.UsesLayOnHands = DetermineCreatureUsesLayOnHands(newCreatureTemplate.EQClass, newCreatureTemplate.Level);
+                    if (newCreatureTemplate.UsesBash == true || newCreatureTemplate.UsesHarmTouch == true || newCreatureTemplate.UsesLayOnHands == true)
                         newCreatureTemplate.HasSmartScript = true;
 
                     // Special logic for a few variations of kobolds, which look wrong if not adjusted
@@ -431,6 +435,38 @@ namespace EQWOWConverter.Creatures
             if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 44) == true)
                 return true;
 
+            return false;
+        }
+
+        private static bool DetermineCreatureUsesHarmTouch(int eqClass, int level)
+        {
+            if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == false)
+                return false;
+            if (level < Configuration.COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL)
+                return false;
+            // Harm Touch is a shadowknight ability (EQ class 5, GM 24)
+            switch (eqClass)
+            {
+                case 5:  // ShadowKnight
+                case 24: // ShadowKnight (GM)
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool DetermineCreatureUsesLayOnHands(int eqClass, int level)
+        {
+            if (Configuration.COMBATSKILL_LAYONHANDS_ENABLED == false)
+                return false;
+            if (level < Configuration.COMBATSKILL_LAYONHANDS_CREATURE_MIN_LEVEL)
+                return false;
+            // Lay on Hands is a paladin ability (EQ class 3, GM 22)
+            switch (eqClass)
+            {
+                case 3:  // Paladin
+                case 22: // Paladin (GM)
+                    return true;
+            }
             return false;
         }
 

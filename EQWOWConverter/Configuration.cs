@@ -711,6 +711,28 @@ namespace EQWOWConverter
         public static float COMBATSKILL_BASH_DAMAGE_PER_LEVEL = 1.5f;
         public static int COMBATSKILL_BASH_RANGE = 5;
 
+        // Harm Touch is a shadowknight ability (a long-cooldown direct damage "touch"). Also granted to player Death Knights. HP is ~2.5x higher in WoW
+        public static bool COMBATSKILL_HARMTOUCH_ENABLED = true;
+        public static bool COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE = true;
+        public static int COMBATSKILL_HARMTOUCH_SPELL_ID = 86909;
+        public static int COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID = 3;
+        public static int COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL = 1;
+        public static int COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS = 2400000;
+        public static int COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS = 1000;
+        public static int COMBATSKILL_HARMTOUCH_BASE_DAMAGE = 50; // 20 is EQ normal, but HP is 2.5x higher in WoW (generally)
+        public static float COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL = 20.0f; // 8 is EQ normal, but HP is 2.5x higher in WoW (generally)
+        public static int COMBATSKILL_HARMTOUCH_RANGE = 30;
+
+        // Lay on Hands is a paladin ability (a long-cooldown large self heal used when badly hurt). HP is ~2.5x higher in WoW
+        public static bool COMBATSKILL_LAYONHANDS_ENABLED = true;
+        public static int COMBATSKILL_LAYONHANDS_SPELL_ID = 86910;
+        public static int COMBATSKILL_LAYONHANDS_SPELL_ICON_EQ_ID = 10;
+        public static int COMBATSKILL_LAYONHANDS_CREATURE_MIN_LEVEL = 1;
+        public static int COMBATSKILL_LAYONHANDS_COOLDOWN_IN_MS = 2400000;
+        public static int COMBATSKILL_LAYONHANDS_HEALTH_TRIGGER_PCT = 20;
+        public static int COMBATSKILL_LAYONHANDS_BASE_HEAL = 125; // 50  is EQ normal, but HP is 2.5x higher in WoW (generally)
+        public static float COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL = 75.0f; // 30 is EQ normal, but HP is 2.5x higher in WoW (generally)
+
         //=====================================================================
         // Fishing
         //=====================================================================
@@ -1397,6 +1419,24 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_BASH_BASE_DAMAGE", COMBATSKILL_BASH_BASE_DAMAGE, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_DAMAGE_PER_LEVEL", COMBATSKILL_BASH_DAMAGE_PER_LEVEL, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_RANGE", COMBATSKILL_BASH_RANGE, "");
+            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_ENABLED", COMBATSKILL_HARMTOUCH_ENABLED, "Harm Touch is a shadowknight ability (a long-cooldown direct damage \"touch\"). Also granted to player Death Knights. HP is ~2.5x higher in WoW", false);
+            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE", COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE, "", false);
+            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_SPELL_ID", COMBATSKILL_HARMTOUCH_SPELL_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID", COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL", COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL, "", false);
+            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS", COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS, "", false);
+            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS", COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS, "", false);
+            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_BASE_DAMAGE", COMBATSKILL_HARMTOUCH_BASE_DAMAGE, "", false);
+            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL", COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL, "", false);
+            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_RANGE", COMBATSKILL_HARMTOUCH_RANGE, "");
+            OutputVariableToConfig("COMBATSKILL_LAYONHANDS_ENABLED", COMBATSKILL_LAYONHANDS_ENABLED, "Lay on Hands is a paladin ability (a long-cooldown large self heal used when badly hurt). HP is ~2.5x higher in WoW", false);
+            OutputVariableToConfig("COMBATSKILL_LAYONHANDS_SPELL_ID", COMBATSKILL_LAYONHANDS_SPELL_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_LAYONHANDS_SPELL_ICON_EQ_ID", COMBATSKILL_LAYONHANDS_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_LAYONHANDS_CREATURE_MIN_LEVEL", COMBATSKILL_LAYONHANDS_CREATURE_MIN_LEVEL, "", false);
+            OutputVariableToConfig("COMBATSKILL_LAYONHANDS_COOLDOWN_IN_MS", COMBATSKILL_LAYONHANDS_COOLDOWN_IN_MS, "", false);
+            OutputVariableToConfig("COMBATSKILL_LAYONHANDS_HEALTH_TRIGGER_PCT", COMBATSKILL_LAYONHANDS_HEALTH_TRIGGER_PCT, "", false);
+            OutputVariableToConfig("COMBATSKILL_LAYONHANDS_BASE_HEAL", COMBATSKILL_LAYONHANDS_BASE_HEAL, "", false);
+            OutputVariableToConfig("COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL", COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL, "");
             OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_60", FISHING_SKILL_CONVERSION_MOD_60, "How much to multiply the EQ fish catching skill requirement for WOW", false);
             OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_80", FISHING_SKILL_CONVERSION_MOD_80, "");
             OutputVariableToConfig("FORAGE_SPELL_ICON_EQ_ID", FORAGE_SPELL_ICON_EQ_ID, "Which eq spell icon to use for the Forage skill. Can be a value between 0-22");
@@ -1846,7 +1886,25 @@ namespace EQWOWConverter
             COMBATSKILL_BASH_STUN_DURATION_IN_MS = ReadVariableFromConfigString("COMBATSKILL_BASH_STUN_DURATION_IN_MS", configValuesByVariableName, COMBATSKILL_BASH_STUN_DURATION_IN_MS);
             COMBATSKILL_BASH_BASE_DAMAGE = ReadVariableFromConfigString("COMBATSKILL_BASH_BASE_DAMAGE", configValuesByVariableName, COMBATSKILL_BASH_BASE_DAMAGE);
             COMBATSKILL_BASH_DAMAGE_PER_LEVEL = ReadVariableFromConfigString("COMBATSKILL_BASH_DAMAGE_PER_LEVEL", configValuesByVariableName, COMBATSKILL_BASH_DAMAGE_PER_LEVEL);
-            COMBATSKILL_BASH_RANGE = ReadVariableFromConfigString("COMBATSKILL_BASH_RANGE", configValuesByVariableName, COMBATSKILL_BASH_RANGE);            
+            COMBATSKILL_BASH_RANGE = ReadVariableFromConfigString("COMBATSKILL_BASH_RANGE", configValuesByVariableName, COMBATSKILL_BASH_RANGE);
+            COMBATSKILL_HARMTOUCH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_ENABLED", configValuesByVariableName, COMBATSKILL_HARMTOUCH_ENABLED);
+            COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE);
+            COMBATSKILL_HARMTOUCH_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_SPELL_ID", configValuesByVariableName, COMBATSKILL_HARMTOUCH_SPELL_ID);
+            COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID);
+            COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL", configValuesByVariableName, COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL);
+            COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS", configValuesByVariableName, COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS);
+            COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS", configValuesByVariableName, COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS);
+            COMBATSKILL_HARMTOUCH_BASE_DAMAGE = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_BASE_DAMAGE", configValuesByVariableName, COMBATSKILL_HARMTOUCH_BASE_DAMAGE);
+            COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL", configValuesByVariableName, COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL);
+            COMBATSKILL_HARMTOUCH_RANGE = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_RANGE", configValuesByVariableName, COMBATSKILL_HARMTOUCH_RANGE);
+            COMBATSKILL_LAYONHANDS_ENABLED = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_ENABLED", configValuesByVariableName, COMBATSKILL_LAYONHANDS_ENABLED);
+            COMBATSKILL_LAYONHANDS_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_SPELL_ID", configValuesByVariableName, COMBATSKILL_LAYONHANDS_SPELL_ID);
+            COMBATSKILL_LAYONHANDS_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_LAYONHANDS_SPELL_ICON_EQ_ID);
+            COMBATSKILL_LAYONHANDS_CREATURE_MIN_LEVEL = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_CREATURE_MIN_LEVEL", configValuesByVariableName, COMBATSKILL_LAYONHANDS_CREATURE_MIN_LEVEL);
+            COMBATSKILL_LAYONHANDS_COOLDOWN_IN_MS = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_COOLDOWN_IN_MS", configValuesByVariableName, COMBATSKILL_LAYONHANDS_COOLDOWN_IN_MS);
+            COMBATSKILL_LAYONHANDS_HEALTH_TRIGGER_PCT = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_HEALTH_TRIGGER_PCT", configValuesByVariableName, COMBATSKILL_LAYONHANDS_HEALTH_TRIGGER_PCT);
+            COMBATSKILL_LAYONHANDS_BASE_HEAL = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_BASE_HEAL", configValuesByVariableName, COMBATSKILL_LAYONHANDS_BASE_HEAL);
+            COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL", configValuesByVariableName, COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL);            
             FISHING_SKILL_CONVERSION_MOD_60 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_60", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_60);
             FISHING_SKILL_CONVERSION_MOD_80 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_80", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_80);
             FORAGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("FORAGE_SPELL_ICON_EQ_ID", configValuesByVariableName, FORAGE_SPELL_ICON_EQ_ID);
