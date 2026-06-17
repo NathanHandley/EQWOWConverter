@@ -2108,6 +2108,7 @@ namespace EQWOWConverter
             forageSpellTemplate.CastTimeInMS = 0;
             forageSpellTemplate.RecoveryTimeInMS = 100000; // 100 seconds
             forageSpellTemplate.SkillLine = 0; // Nothing for now
+            forageSpellTemplate.TriggersGlobalCooldown = false;
             forageSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, (int)SpellDummyType.Forage, 0));
             forageSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             spellTemplates.Add(forageSpellTemplate);
@@ -2171,7 +2172,7 @@ namespace EQWOWConverter
                 bashSpellTemplate.Name = "Bash";
                 bashSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_BASH_SPELL_ID;
                 bashSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
-                bashSpellTemplate.Description = "Slams the target with a shield or body, dealing physical damage and stunning them briefly.";
+                bashSpellTemplate.Description = "Slams the target with a shield, dealing physical damage and stunning them briefly.";
                 bashSpellTemplate.AuraDescription = "Stunned.";
                 bashSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(bashSpellIconID);
                 bashSpellTemplate.CastTimeInMS = 0;
@@ -2266,7 +2267,7 @@ namespace EQWOWConverter
                 slamSpellTemplate.AuraDuration = new SpellDuration();
                 slamSpellTemplate.AuraDuration.SetFixedDuration(Configuration.COMBATSKILL_SLAM_STUN_DURATION_IN_MS);
                 slamSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
-                slamSpellTemplate.SkillLine = 0;
+                slamSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
                 SpellEffectWOW slamDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_SLAM_BASE_DAMAGE, 0, 0);
                 slamDamageEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_SLAM_DAMAGE_PER_LEVEL;
                 slamDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
