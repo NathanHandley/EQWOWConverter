@@ -2186,8 +2186,8 @@ namespace EQWOWConverter
                 bashSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
                 bashSpellTemplate.AuraDuration = new SpellDuration();
                 bashSpellTemplate.AuraDuration.SetFixedDuration(Configuration.COMBATSKILL_BASH_STUN_DURATION_IN_MS);
-                bashSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
-                bashSpellTemplate.SkillLine = 0;
+                bashSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
+                bashSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
                 bashSpellTemplate.EquippedItemClass = 4; // ITEM_CLASS_ARMOR
                 bashSpellTemplate.EquippedItemSubClassMask = 1 << 6; // ITEM_SUBCLASS_ARMOR_SHIELD (to require shields) - Look into making this work for Fiery Defender/Avenger
                 SpellEffectWOW bashDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_BASH_BASE_DAMAGE, 0, 0);
@@ -2266,7 +2266,7 @@ namespace EQWOWConverter
                 slamSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
                 slamSpellTemplate.AuraDuration = new SpellDuration();
                 slamSpellTemplate.AuraDuration.SetFixedDuration(Configuration.COMBATSKILL_SLAM_STUN_DURATION_IN_MS);
-                slamSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+                slamSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
                 slamSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
                 SpellEffectWOW slamDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_SLAM_BASE_DAMAGE, 0, 0);
                 slamDamageEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_SLAM_DAMAGE_PER_LEVEL;
