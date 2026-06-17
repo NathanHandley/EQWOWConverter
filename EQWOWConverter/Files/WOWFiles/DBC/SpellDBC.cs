@@ -77,7 +77,7 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddUInt32(0); // RecoveryTime
             else
                 newRow.AddUInt32(spellTemplate.RecoveryTimeInMS); // RecoveryTime
-            newRow.AddUInt32(0); // CategoryRecoveryTime
+            newRow.AddUInt32(spellTemplate.CategoryRecoveryTimeInMS); // CategoryRecoveryTime
             newRow.AddUInt32(GetInterruptFlags(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType));
             newRow.AddUInt32(GetAuraInterruptFlags(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AuraInterruptFlags
             newRow.AddUInt32(spellTemplate.ChannelInterruptFlags); // ChannelInterruptFlags

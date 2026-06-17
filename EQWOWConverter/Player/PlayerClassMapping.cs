@@ -25,6 +25,7 @@ namespace EQWOWConverter.Player
         private static Dictionary<ClassEQType, ClassWOWType> WOWClassByEQClass = new Dictionary<ClassEQType, ClassWOWType>();
         private static Dictionary<ClassWOWType, List<ClassEQType>> EQClassesByWOWClass = new Dictionary<ClassWOWType, List<ClassEQType>>();
         private static HashSet<ClassWOWType> WOWClassesWhichShouldHaveForage = new HashSet<ClassWOWType>();
+        private static HashSet<ClassWOWType> WOWClassesWhichShouldHaveBash = new HashSet<ClassWOWType>();
         private static readonly object ClassesLock = new object();
 
         public static HashSet<ClassWOWType> GetWOWClassesThatShouldHaveForage()
@@ -37,6 +38,15 @@ namespace EQWOWConverter.Player
             }
         }
 
+        public static HashSet<ClassWOWType> GetWOWClassesThatShouldHaveBash()
+        {
+            lock (ClassesLock)
+            {
+                if (WOWClassByEQClass.Count == 0)
+                    PopulateClassMap();
+                return WOWClassesWhichShouldHaveBash;
+            }
+        }
 
         public static HashSet<ClassWOWType> GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType weaponSubClassType)
         {
@@ -320,10 +330,8 @@ namespace EQWOWConverter.Player
                         default:
                             {
                                 foreach (var wowMaxArmorClassTypeByEQClass in WOWMaxArmorClassTypeByEQClass)
-                                {
                                     if ((int)wowMaxArmorClassTypeByEQClass.Value >= (int)armorType)
                                         wowClasses.Add(WOWClassByEQClass[wowMaxArmorClassTypeByEQClass.Key]);
-                                }
                             } break;
                     }
                 }
@@ -521,6 +529,10 @@ namespace EQWOWConverter.Player
                 // Forage
                 if (columns["Has_Forage"].Trim() == "1")
                     WOWClassesWhichShouldHaveForage.Add(wowClass);
+
+                // Bash
+                if (columns["Has_Bash"].Trim() == "1")
+                    WOWClassesWhichShouldHaveBash.Add(wowClass);
             }
         }
     }

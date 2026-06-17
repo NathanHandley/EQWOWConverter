@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Data;
 using System.Text;
 
 namespace EQWOWConverter
@@ -74,7 +75,7 @@ namespace EQWOWConverter
         // Core
         // ====================================================================
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CORE_MOD_VERSION = 15;
+        public static int CORE_MOD_VERSION = 16;
         
         // Plays a beep sound when the generate completes if set to true
         public static bool CORE_CONSOLE_BEEP_ON_COMPLETE = true;
@@ -712,6 +713,7 @@ namespace EQWOWConverter
         //=====================================================================
         // Bash skills in EQ are either from warrior/cleric/paladin/shadowknight or those that use warrior skills
         public static bool COMBATSKILL_BASH_ENABLED = true;
+        public static bool COMBATSKILL_BASH_PLAYER_LEARNABLE = true;
         public static int COMBATSKILL_BASH_SPELL_ID = 86908;
         public static int COMBATSKILL_BASH_SPELL_ICON_EQ_ID = 11;
         public static int COMBATSKILL_BASH_CREATURE_MIN_LEVEL = 6;
@@ -725,6 +727,17 @@ namespace EQWOWConverter
         public static int COMBATSKILL_BASH_FORBEARANCE_SPELL_ID = 86906;
         public static int COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID = 18;
         public static int COMBATSKILL_BASH_FORBEARANCE_DURATION_IN_MS = 5000;
+
+        // Slam is an Ogre/Troll/Barb racial in EQ (a Bash-equivalent that needs no shield). It shares a cooldown with Bash.
+        // Granted to players by race (PlayerClassRaceProperties.HasSlam), available from level 1.
+        public static bool COMBATSKILL_SLAM_ENABLED = true;
+        public static bool COMBATSKILL_SLAM_PLAYER_LEARNABLE = true;
+        public static int COMBATSKILL_SLAM_SPELL_ID = 86911;
+        public static int COMBATSKILL_SLAM_SPELL_ICON_EQ_ID = 9;
+        public static int COMBATSKILL_SLAM_STUN_DURATION_IN_MS = 2000;
+        public static int COMBATSKILL_SLAM_BASE_DAMAGE = 4;
+        public static float COMBATSKILL_SLAM_DAMAGE_PER_LEVEL = 1.5f;
+        public static int COMBATSKILL_SLAM_RANGE = 5;
 
         // Harm Touch is a shadowknight ability (a long-cooldown direct damage "touch"). Also granted to player Death Knights. HP is ~2.5x higher in WoW
         public static bool COMBATSKILL_HARMTOUCH_ENABLED = true;
@@ -904,6 +917,9 @@ namespace EQWOWConverter
 
         // ID for spellcasttimes.dbc
         public static int DBCID_SPELLCASTTIME_ID_START = 215;
+
+        // ID for spellcategory.dbc
+        public static int DBCID_SPELLCATEGORY_ID_START = 1300;
 
         // ID for spellduration.dbc
         public static int DBCID_SPELLDURATION_AURA_ID = 610;
@@ -1436,6 +1452,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID, "Hidden passive aura used to reduce creature mana regeneration (see CREATURE_MANA_REGEN_PERCENT)");
             OutputVariableToConfig("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID, "This is the ID used to detect invis and stealth, and already exists in AzerothCore");
             OutputVariableToConfig("COMBATSKILL_BASH_ENABLED", COMBATSKILL_BASH_ENABLED, "Bash skills in EQ are either from warrior/cleric/paladin/shadowknight or those that use warrior skills", false);
+            OutputVariableToConfig("COMBATSKILL_BASH_PLAYER_LEARNABLE", COMBATSKILL_BASH_PLAYER_LEARNABLE, "Whether classes that have Bash learn it as players (from level 1)", false);
             OutputVariableToConfig("COMBATSKILL_BASH_SPELL_ID", COMBATSKILL_BASH_SPELL_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_SPELL_ICON_EQ_ID", COMBATSKILL_BASH_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_CREATURE_MIN_LEVEL", COMBATSKILL_BASH_CREATURE_MIN_LEVEL, "", false);
@@ -1448,6 +1465,15 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_BASH_FORBEARANCE_SPELL_ID", COMBATSKILL_BASH_FORBEARANCE_SPELL_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID", COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_FORBEARANCE_DURATION_IN_MS", COMBATSKILL_BASH_FORBEARANCE_DURATION_IN_MS, "");
+            OutputTextLineToConfig("# Slam is an Ogre/Troll/Barb racial in EQ (a Bash-equivalent that needs no shield). It shares a cooldown with Bash.");
+            OutputVariableToConfig("COMBATSKILL_SLAM_ENABLED", COMBATSKILL_SLAM_ENABLED, "Granted to players by race (PlayerClassRaceProperties.HasSlam), available from level 1.", false);
+            OutputVariableToConfig("COMBATSKILL_SLAM_PLAYER_LEARNABLE", COMBATSKILL_SLAM_PLAYER_LEARNABLE, "Whether races that have Slam learn it as players (from level 1)", false);
+            OutputVariableToConfig("COMBATSKILL_SLAM_SPELL_ID", COMBATSKILL_SLAM_SPELL_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_SLAM_SPELL_ICON_EQ_ID", COMBATSKILL_SLAM_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_SLAM_STUN_DURATION_IN_MS", COMBATSKILL_SLAM_STUN_DURATION_IN_MS, "", false);
+            OutputVariableToConfig("COMBATSKILL_SLAM_BASE_DAMAGE", COMBATSKILL_SLAM_BASE_DAMAGE, "", false);
+            OutputVariableToConfig("COMBATSKILL_SLAM_DAMAGE_PER_LEVEL", COMBATSKILL_SLAM_DAMAGE_PER_LEVEL, "", false);
+            OutputVariableToConfig("COMBATSKILL_SLAM_RANGE", COMBATSKILL_SLAM_RANGE, "", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_ENABLED", COMBATSKILL_HARMTOUCH_ENABLED, "Harm Touch is a shadowknight ability (a long-cooldown direct damage \"touch\"). Also granted to player Death Knights. HP is ~2.5x higher in WoW", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE", COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE, "", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_SPELL_ID", COMBATSKILL_HARMTOUCH_SPELL_ID, "", false);
@@ -1544,6 +1570,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("DBCID_SPELL_ID_GENERATED_START", DBCID_SPELL_ID_GENERATED_START, "", false);
             OutputVariableToConfig("DBCID_SPELL_ID_END", DBCID_SPELL_ID_END, "");
             OutputVariableToConfig("DBCID_SPELLCASTTIME_ID_START", DBCID_SPELLCASTTIME_ID_START, "ID for spellcasttimes.dbc");
+            OutputVariableToConfig("DBCID_SPELLCATEGORY_ID_START", DBCID_SPELLCATEGORY_ID_START, "ID for spellcategory.dbc");
             OutputVariableToConfig("DBCID_SPELLDURATION_AURA_ID", DBCID_SPELLDURATION_AURA_ID, "ID for spellduration.dbc");
             OutputVariableToConfig("DBCID_SPELLITEMENCHANTMENT_ID_START", DBCID_SPELLITEMENCHANTMENT_ID_START, "Stand ID for spell item ennchantments");
             OutputVariableToConfig("DBCID_SPELLICON_ID_START", DBCID_SPELLICON_ID_START, "ID for spellicon.dbc");
@@ -1916,6 +1943,7 @@ namespace EQWOWConverter
             SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID);
             SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID);
             COMBATSKILL_BASH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_BASH_ENABLED", configValuesByVariableName, COMBATSKILL_BASH_ENABLED);
+            COMBATSKILL_BASH_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_BASH_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_BASH_PLAYER_LEARNABLE);
             COMBATSKILL_BASH_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_SPELL_ID", configValuesByVariableName, COMBATSKILL_BASH_SPELL_ID);
             COMBATSKILL_BASH_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_BASH_SPELL_ICON_EQ_ID);
             COMBATSKILL_BASH_CREATURE_MIN_LEVEL = ReadVariableFromConfigString("COMBATSKILL_BASH_CREATURE_MIN_LEVEL", configValuesByVariableName, COMBATSKILL_BASH_CREATURE_MIN_LEVEL);
@@ -1928,6 +1956,14 @@ namespace EQWOWConverter
             COMBATSKILL_BASH_FORBEARANCE_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_FORBEARANCE_SPELL_ID", configValuesByVariableName, COMBATSKILL_BASH_FORBEARANCE_SPELL_ID);
             COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID);
             COMBATSKILL_BASH_FORBEARANCE_DURATION_IN_MS = ReadVariableFromConfigString("COMBATSKILL_BASH_FORBEARANCE_DURATION_IN_MS", configValuesByVariableName, COMBATSKILL_BASH_FORBEARANCE_DURATION_IN_MS);
+            COMBATSKILL_SLAM_ENABLED = ReadVariableFromConfigString("COMBATSKILL_SLAM_ENABLED", configValuesByVariableName, COMBATSKILL_SLAM_ENABLED);
+            COMBATSKILL_SLAM_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_SLAM_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_SLAM_PLAYER_LEARNABLE);
+            COMBATSKILL_SLAM_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_SLAM_SPELL_ID", configValuesByVariableName, COMBATSKILL_SLAM_SPELL_ID);
+            COMBATSKILL_SLAM_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_SLAM_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_SLAM_SPELL_ICON_EQ_ID);
+            COMBATSKILL_SLAM_STUN_DURATION_IN_MS = ReadVariableFromConfigString("COMBATSKILL_SLAM_STUN_DURATION_IN_MS", configValuesByVariableName, COMBATSKILL_SLAM_STUN_DURATION_IN_MS);
+            COMBATSKILL_SLAM_BASE_DAMAGE = ReadVariableFromConfigString("COMBATSKILL_SLAM_BASE_DAMAGE", configValuesByVariableName, COMBATSKILL_SLAM_BASE_DAMAGE);
+            COMBATSKILL_SLAM_DAMAGE_PER_LEVEL = ReadVariableFromConfigString("COMBATSKILL_SLAM_DAMAGE_PER_LEVEL", configValuesByVariableName, COMBATSKILL_SLAM_DAMAGE_PER_LEVEL);
+            COMBATSKILL_SLAM_RANGE = ReadVariableFromConfigString("COMBATSKILL_SLAM_RANGE", configValuesByVariableName, COMBATSKILL_SLAM_RANGE);
             COMBATSKILL_HARMTOUCH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_ENABLED", configValuesByVariableName, COMBATSKILL_HARMTOUCH_ENABLED);
             COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE);
             COMBATSKILL_HARMTOUCH_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_SPELL_ID", configValuesByVariableName, COMBATSKILL_HARMTOUCH_SPELL_ID);
@@ -2011,6 +2047,7 @@ namespace EQWOWConverter
             DBCID_SPELL_ID_GENERATED_START = ReadVariableFromConfigString("DBCID_SPELL_ID_GENERATED_START", configValuesByVariableName, DBCID_SPELL_ID_GENERATED_START);
             DBCID_SPELL_ID_END = ReadVariableFromConfigString("DBCID_SPELL_ID_END", configValuesByVariableName, DBCID_SPELL_ID_END);
             DBCID_SPELLCASTTIME_ID_START = ReadVariableFromConfigString("DBCID_SPELLCASTTIME_ID_START", configValuesByVariableName, DBCID_SPELLCASTTIME_ID_START);
+            DBCID_SPELLCATEGORY_ID_START = ReadVariableFromConfigString("DBCID_SPELLCATEGORY_ID_START", configValuesByVariableName, DBCID_SPELLCATEGORY_ID_START);
             DBCID_SPELLDURATION_AURA_ID = ReadVariableFromConfigString("DBCID_SPELLDURATION_AURA_ID", configValuesByVariableName, DBCID_SPELLDURATION_AURA_ID);
             DBCID_SPELLITEMENCHANTMENT_ID_START = ReadVariableFromConfigString("DBCID_SPELLITEMENCHANTMENT_ID_START", configValuesByVariableName, DBCID_SPELLITEMENCHANTMENT_ID_START);
             DBCID_SPELLICON_ID_START = ReadVariableFromConfigString("DBCID_SPELLICON_ID_START", configValuesByVariableName, DBCID_SPELLICON_ID_START);

@@ -89,6 +89,7 @@ namespace EQWOWConverter.Spells
         public string Description = string.Empty;
         public string AuraDescription = string.Empty;
         public UInt32 Category = 1;
+        public UInt32 CategoryRecoveryTimeInMS = 0; // When non-zero (with a shared Category), spells in the same category share a cooldown
         public UInt32 ChannelInterruptFlags = 0;
         public int SpellIconID = 0;
         public TradeskillRecipe? TradeskillRecipe = null;

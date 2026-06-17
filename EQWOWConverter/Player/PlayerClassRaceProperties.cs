@@ -27,6 +27,7 @@ namespace EQWOWConverter.Player
         public float StartPositionY;
         public float StartPositionZ;
         public float StartOrientation;
+        public bool HasSlam;
         public List<int> StartItemIDs = new List<int>();
 
         public static Dictionary<(int, int), PlayerClassRaceProperties> GetClassRacePropertiesByRaceAndClassID()
@@ -73,6 +74,7 @@ namespace EQWOWConverter.Player
                 int startItemID6 = int.Parse(columns["StartItemID6"]);
                 if (startItemID6 > -1)
                     curProperties.StartItemIDs.Add(startItemID6);
+                curProperties.HasSlam = columns["HasSlam"].Trim() == "1" ? true : false;
 
                 // Add if unique
                 if (PlayerClassRacePropertiesByRaceAndClassIDs.ContainsKey((curProperties.RaceID, curProperties.ClassID)) == true)

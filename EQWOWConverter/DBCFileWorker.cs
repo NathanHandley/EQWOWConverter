@@ -60,6 +60,7 @@ namespace EQWOWConverter
         private SoundEntriesDBC soundEntriesDBC = new SoundEntriesDBC();
         private SpellDBC spellDBC = new SpellDBC();
         private SpellCastTimesDBC spellCastTimesDBC = new SpellCastTimesDBC();
+        private SpellCategoryDBC spellCategoryDBC = new SpellCategoryDBC();
         private SpellDurationDBC spellDurationDBC = new SpellDurationDBC();
         private SpellIconDBC spellIconDBC = new SpellIconDBC();
         private SpellItemEnchantmentDBC spellItemEnchantmentDBC = new SpellItemEnchantmentDBC();
@@ -221,6 +222,7 @@ namespace EQWOWConverter
             soundEntriesDBC.LoadFromDisk(dbcInputFolder, "SoundEntries.dbc");
             spellDBC.LoadFromDisk(dbcInputFolder, "Spell.dbc");
             spellCastTimesDBC.LoadFromDisk(dbcInputFolder, "SpellCastTimes.dbc");
+            spellCategoryDBC.LoadFromDisk(dbcInputFolder, "SpellCategory.dbc");
             spellDurationDBC.LoadFromDisk(dbcInputFolder, "SpellDuration.dbc");
             spellIconDBC.LoadFromDisk(dbcInputFolder, "SpellIcon.dbc");
             spellItemEnchantmentDBC.LoadFromDisk(dbcInputFolder, "SpellItemEnchantment.dbc");
@@ -593,6 +595,8 @@ namespace EQWOWConverter
             }
             foreach (var spellCastTimeDBCIDByCastTime in SpellTemplate.SpellCastTimeDBCIDsByCastTime)
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
+            foreach (int spellCategoryDBCID in SpellCategoryDBC.GetAllGeneratedDBCIDs())
+                spellCategoryDBC.AddRow(spellCategoryDBCID);
             foreach (var spellRangeDBCIDByRange in SpellTemplate.SpellRangeDBCIDsBySpellRange)
                 spellRangeDBC.AddRow(spellRangeDBCIDByRange.Value, spellRangeDBCIDByRange.Key);
             foreach (var spellRadiusDBCIDByRadius in SpellTemplate.SpellRadiusDBCIDsBySpellRadius)
@@ -790,6 +794,8 @@ namespace EQWOWConverter
             spellDBC.SaveToDisk(dbcOutputServerFolder);
             spellCastTimesDBC.SaveToDisk(dbcOutputClientFolder);
             spellCastTimesDBC.SaveToDisk(dbcOutputServerFolder);
+            spellCategoryDBC.SaveToDisk(dbcOutputClientFolder);
+            spellCategoryDBC.SaveToDisk(dbcOutputServerFolder);
             spellDurationDBC.SaveToDisk(dbcOutputClientFolder);
             spellDurationDBC.SaveToDisk(dbcOutputServerFolder);
             spellIconDBC.SaveToDisk(dbcOutputClientFolder);

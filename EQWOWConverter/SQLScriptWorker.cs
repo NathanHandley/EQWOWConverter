@@ -1158,6 +1158,24 @@ namespace EQWOWConverter
                     modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)eqClassesByWowClass.Key, Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID, true);
                 }
             }
+
+            // Bash for classes that have it (granted to players from level 1, regardless of race)
+            if (Configuration.COMBATSKILL_BASH_ENABLED == true && Configuration.COMBATSKILL_BASH_PLAYER_LEARNABLE == true)
+            {
+                foreach (ClassWOWType wowClassType in PlayerClassMapping.GetWOWClassesThatShouldHaveBash())
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, Configuration.COMBATSKILL_BASH_SPELL_ID, true);
+            }
+
+            // Slam for races that have it (granted to players from level 1 and shares a cooldown with Bash)
+            if (Configuration.COMBATSKILL_SLAM_ENABLED == true && Configuration.COMBATSKILL_SLAM_PLAYER_LEARNABLE == true)
+            {
+                foreach (var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
+                {
+                    if (classRaceProperties.Value.HasSlam == false)
+                        continue;
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow(classRaceProperties.Value.ClassID, Configuration.COMBATSKILL_SLAM_SPELL_ID, true, classRaceProperties.Value.RaceID);
+                }
+            }
             if (Configuration.PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START == true)
             {
                 foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))

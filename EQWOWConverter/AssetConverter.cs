@@ -2158,6 +2158,7 @@ namespace EQWOWConverter
             }
 
             // Bash
+            int bashAndSlamSpellCategoryID = SpellCategoryDBC.GenerateUniqueID(); // Used for linking cooldown between bash and slam
             if (Configuration.COMBATSKILL_BASH_ENABLED == true)
             {
                 int bashSpellIconID = Configuration.COMBATSKILL_BASH_SPELL_ICON_EQ_ID;
@@ -2175,6 +2176,8 @@ namespace EQWOWConverter
                 bashSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(bashSpellIconID);
                 bashSpellTemplate.CastTimeInMS = 0;
                 bashSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS);
+                bashSpellTemplate.Category = Convert.ToUInt32(bashAndSlamSpellCategoryID);
+                bashSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS); // Shared cooldown with Slam
                 bashSpellTemplate.SpellRange = Configuration.COMBATSKILL_BASH_RANGE;
                 bashSpellTemplate.SchoolMask = 1; // Physical
                 bashSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)
@@ -2231,6 +2234,49 @@ namespace EQWOWConverter
                 }
 
                 spellTemplates.Add(bashSpellTemplate);
+            }
+
+            // Slam
+            if (Configuration.COMBATSKILL_SLAM_ENABLED == true)
+            {
+                int slamSpellIconID = Configuration.COMBATSKILL_SLAM_SPELL_ICON_EQ_ID;
+                if (slamSpellIconID < 0 || slamSpellIconID > 22)
+                {
+                    Logger.WriteError("COMBATSKILL_SLAM_SPELL_ICON_EQ_ID value must be 0-22. Setting to 18");
+                    slamSpellIconID = 18;
+                }
+                SpellTemplate slamSpellTemplate = new SpellTemplate();
+                slamSpellTemplate.Name = "Slam";
+                slamSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_SLAM_SPELL_ID;
+                slamSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                slamSpellTemplate.Description = "Slams into the target with the body, dealing physical damage and stunning them briefly.";
+                slamSpellTemplate.AuraDescription = "Stunned.";
+                slamSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(slamSpellIconID);
+                slamSpellTemplate.CastTimeInMS = 0;
+                slamSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS);
+                slamSpellTemplate.Category = Convert.ToUInt32(bashAndSlamSpellCategoryID);
+                slamSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS);
+                slamSpellTemplate.SpellRange = Configuration.COMBATSKILL_SLAM_RANGE;
+                slamSpellTemplate.SchoolMask = 1; // Physical
+                slamSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)
+                slamSpellTemplate.TriggersGlobalCooldown = false;
+                slamSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                slamSpellTemplate.AuraDuration = new SpellDuration();
+                slamSpellTemplate.AuraDuration.SetFixedDuration(Configuration.COMBATSKILL_SLAM_STUN_DURATION_IN_MS);
+                slamSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+                slamSpellTemplate.SkillLine = 0;
+                SpellEffectWOW slamDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_SLAM_BASE_DAMAGE, 0, 0);
+                slamDamageEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_SLAM_DAMAGE_PER_LEVEL;
+                slamDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+                slamDamageEffect.ActionDescription = "slams";
+                slamSpellTemplate.WOWSpellEffects.Add(slamDamageEffect);
+                SpellEffectWOW slamStunEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModStun, 0, 0, 0, 0, 0, 0);
+                slamStunEffect.EffectMechanic = SpellMechanicType.Stunned;
+                slamStunEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+                slamStunEffect.ActionDescription = "stuns";
+                slamStunEffect.AuraDescription = "stunned";
+                slamSpellTemplate.WOWSpellEffects.Add(slamStunEffect);
+                spellTemplates.Add(slamSpellTemplate);
             }
 
             // Harm Touch
