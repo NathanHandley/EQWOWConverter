@@ -226,6 +226,9 @@ namespace EQWOWConverter.Spells
         public int FemaleFormSpellTemplateID = 0;
         public bool AllowSpellPowerToInfluence = false;
         public bool InfluencedBySpellPower = false;
+        public int EquippedItemClass = -1;
+        public int EquippedItemSubClassMask = 0;
+        public int EquippedItemInventoryTypeMask = 0;
 
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput

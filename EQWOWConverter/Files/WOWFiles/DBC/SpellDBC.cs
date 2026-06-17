@@ -118,9 +118,9 @@ namespace EQWOWConverter.WOWFiles
                 else
                     newRow.AddInt32(0); // ReagentCountX
             }
-            newRow.AddInt32(-1); // EquippedItemClass
-            newRow.AddInt32(0); // EquippedItemSubclass
-            newRow.AddInt32(0); // EquippedItemInvTypes
+            newRow.AddInt32(spellTemplate.EquippedItemClass); // EquippedItemClass
+            newRow.AddInt32(spellTemplate.EquippedItemSubClassMask); // EquippedItemSubclass
+            newRow.AddInt32(spellTemplate.EquippedItemInventoryTypeMask); // EquippedItemInvTypes
             foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects) 
                 newRow.AddInt32(Convert.ToInt32(spellEffect.EffectType)); // Effect1, Effect2, Effect3
             foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
