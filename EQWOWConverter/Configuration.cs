@@ -427,10 +427,10 @@ namespace EQWOWConverter
         public static float CREATURE_STAT_MOD_HP_SET_ELITE = 20f;
         public static float CREATURE_STAT_MOD_HP_SET_ELITERARE = 80f;
         public static float CREATURE_STAT_MOD_HP_SET_BOSS = 200f;
-        public static float CREATURE_STAT_MOD_AVGDMG_ADD = 0.6f;
+        public static float CREATURE_STAT_MOD_AVGDMG_ADD = 0.3f;
         public static float CREATURE_STAT_MOD_AVGDMG_MIN = 1f;
-        public static float CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL = 2.5f;
-        public static float CREATURE_STAT_MOD_AVGDMG_MAX_RARE = 2.5f;
+        public static float CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL = 1.8f;
+        public static float CREATURE_STAT_MOD_AVGDMG_MAX_RARE = 1.8f;
         public static float CREATURE_STAT_MOD_AVGDMG_SET_ELITE = 8f;
         public static float CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE = 10f;
         public static float CREATURE_STAT_MOD_AVGDMG_SET_BOSS = 18f;
