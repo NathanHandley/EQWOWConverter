@@ -1938,6 +1938,7 @@ namespace EQWOWConverter.Spells
                                 SpellEffectWOW stunSpellEffectWOW = new SpellEffectWOW();
                                 stunSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 stunSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStun;
+                                stunSpellEffectWOW.EffectMechanic = SpellMechanicType.Stunned;
                                 stunSpellEffectWOW.ActionDescription = string.Concat("stuns");
                                 stunSpellEffectWOW.AuraDescription = string.Concat("stunned");
                                 stunSpellEffectWOW.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
