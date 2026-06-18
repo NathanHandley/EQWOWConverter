@@ -2713,6 +2713,8 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.AuraDuration.IsInfinite = true;
                                 spellTemplate.EffectFailChancePercent = Configuration.SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT;
                                 spellTemplate.FailableType = SpellFailableType.FeignDeath;
+                                spellTemplate.InterruptAuraOnCast = true;
+                                spellTemplate.InterruptAuraOnMeleeAttack = true;
                             } break;
                         default:
                             {
