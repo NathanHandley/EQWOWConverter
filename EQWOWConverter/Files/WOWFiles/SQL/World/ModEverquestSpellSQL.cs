@@ -41,6 +41,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`MaleFormSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`FemaleFormSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`EffectFailChancePercent` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`EffectFailableType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -78,6 +79,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("MaleFormSpellID", spellTemplate.MaleFormSpellTemplateID);
             newRow.AddInt("FemaleFormSpellID", spellTemplate.FemaleFormSpellTemplateID);
             newRow.AddInt("EffectFailChancePercent", spellTemplate.EffectFailChancePercent);
+            newRow.AddInt("EffectFailableType", (int)spellTemplate.FailableType);
             Rows.Add(newRow);
         }
     }
