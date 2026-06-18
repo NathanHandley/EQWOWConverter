@@ -2693,8 +2693,23 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
                                 newSpellEffects.Add(newSpellEffectWOW);
                                 spellTemplate.IsllusionSpellParent = true;
-                            }
-                            break;
+                            } break;
+                        case SpellEQEffectType.FeignDeath:
+                            {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.FeignDeath;
+                                newSpellEffectWOW.ActionDescription = string.Concat("feigns death, removing you from combat and dropping aggro");
+                                newSpellEffectWOW.AuraDescription = string.Concat("feigning death");
+                                newSpellEffects.Add(newSpellEffectWOW);
+
+                                // Needs to have a root effect and no wear-off
+                                SpellEffectWOW rootSpellEffectWOW = new SpellEffectWOW();
+                                rootSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                rootSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModRoot;
+                                newSpellEffects.Add(rootSpellEffectWOW);
+                                spellTemplate.AuraDuration.IsInfinite = true;
+                            } break;
                         default:
                             {
                                 Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
