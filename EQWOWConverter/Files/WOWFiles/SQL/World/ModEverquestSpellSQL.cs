@@ -40,7 +40,8 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`PeriodicAuraSpellRadius` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`MaleFormSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`FemaleFormSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
-            stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");            
+            stringBuilder.AppendLine("`EffectFailChancePercent` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
@@ -76,6 +77,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("PeriodicAuraSpellRadius", spellTemplate.PeriodicAuraSpellRadius);
             newRow.AddInt("MaleFormSpellID", spellTemplate.MaleFormSpellTemplateID);
             newRow.AddInt("FemaleFormSpellID", spellTemplate.FemaleFormSpellTemplateID);
+            newRow.AddInt("EffectFailChancePercent", spellTemplate.EffectFailChancePercent);
             Rows.Add(newRow);
         }
     }

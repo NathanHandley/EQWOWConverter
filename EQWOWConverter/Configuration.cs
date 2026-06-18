@@ -75,7 +75,7 @@ namespace EQWOWConverter
         // Core
         // ====================================================================
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CORE_MOD_VERSION = 16;
+        public static int CORE_MOD_VERSION = 17;
         
         // Plays a beep sound when the generate completes if set to true
         public static bool CORE_CONSOLE_BEEP_ON_COMPLETE = true;
@@ -618,6 +618,9 @@ namespace EQWOWConverter
         // and only subjected to the global cooldown of 1.5 seconds.  This is only enforced on the raw spell
         // records and not the SpellTemplate, to ensure cast repeats are correct for creatures
         public static int SPELL_RECOVERY_TIME_MINIMUM_IN_MS = 3501;
+
+        // The percent chance that a feign death spell cast fails
+        public static int SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT = 5;
 
         // If true, you can learn spells from items
         public static bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
@@ -1404,6 +1407,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", SPELL_PERIODIC_SECONDS_PER_TICK_WOW, "Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier");
             OutputVariableToConfig("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS, "This is 'added time' in the periodic tick that comes from bard casters.");
             OutputVariableToConfig("SPELL_RECOVERY_TIME_MINIMUM_IN_MS", SPELL_RECOVERY_TIME_MINIMUM_IN_MS, "This is the minimum allowable recovery time any spell can have, which any smaller will become zero");
+            OutputVariableToConfig("SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT ", SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT, "The percent chance that a feign death spell cast fails");
             OutputVariableToConfig("SPELLS_LEARNABLE_FROM_ITEMS_ENABLED", SPELLS_LEARNABLE_FROM_ITEMS_ENABLED, "If true, you can learn spells from items");
             OutputVariableToConfig("SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS", SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS, "All spell properties");
             OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE", SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE, "How often weapon procs occur", false);
@@ -1895,6 +1899,7 @@ namespace EQWOWConverter
             SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS = ReadVariableFromConfigString("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", configValuesByVariableName, SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS);
             SPELL_MAX_CONCURRENT_BARD_SONGS = ReadVariableFromConfigString("SPELL_MAX_CONCURRENT_BARD_SONGS", configValuesByVariableName, SPELL_MAX_CONCURRENT_BARD_SONGS);
             SPELL_RECOVERY_TIME_MINIMUM_IN_MS = ReadVariableFromConfigString("SPELL_RECOVERY_TIME_MINIMUM_IN_MS", configValuesByVariableName, SPELL_RECOVERY_TIME_MINIMUM_IN_MS);
+            SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT = ReadVariableFromConfigString("SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT", configValuesByVariableName, SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT);
             SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = ReadVariableFromConfigString("SPELLS_LEARNABLE_FROM_ITEMS_ENABLED", configValuesByVariableName, SPELLS_LEARNABLE_FROM_ITEMS_ENABLED);
             SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = ReadVariableFromConfigString("SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS", configValuesByVariableName, SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS);
             SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE = ReadVariableFromConfigString("SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE", configValuesByVariableName, SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE);

@@ -218,6 +218,7 @@ namespace EQWOWConverter.Spells
         public bool IsToggleAura = false;
         public int PeriodicAuraWOWSpellID = 0;
         public int PeriodicAuraSpellRadius = 0;
+        public int EffectFailChancePercent = 0;
         public bool ShowFocusBoostInDescriptionIfExists = false;
         public bool IsllusionSpellParent = false;
         public bool ForceHiddenFromDisplay = false;
@@ -2709,6 +2710,7 @@ namespace EQWOWConverter.Spells
                                 rootSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModRoot;
                                 newSpellEffects.Add(rootSpellEffectWOW);
                                 spellTemplate.AuraDuration.IsInfinite = true;
+                                spellTemplate.EffectFailChancePercent = Configuration.SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT;
                             } break;
                         default:
                             {
