@@ -47,7 +47,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(GetAttributesExB(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExB
             newRow.AddUInt32(GetAttributesExC(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExC
             UInt32 attributesExD = GetAttributesExD(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, isToggleAura);
-            if (isWornEquipEffect == true)
+            if (isWornEquipEffect == true || spellTemplate.CannotBeStolen == true)
                 attributesExD |= 64; // SPELL_ATTR4_CANNOT_BE_STOLEN (0x00000040)
             newRow.AddUInt32(attributesExD); // AttributesExD
             newRow.AddUInt32(GetAttributesExE(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExE

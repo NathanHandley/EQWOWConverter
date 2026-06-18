@@ -116,6 +116,8 @@ namespace EQWOWConverter.Zones
         public int DBCMapIDDungeon;
         public int DBCMapIDRaid;
         public int DBCMapDifficultyID;
+        public int DBCMapDifficultyDungeonID;
+        public int DBCMapDifficultyRaidID;
         public int DBCWorldMapAreaID;
         public UInt32 DBCWMOID; // TODO: Move to config
         public string ShortName = string.Empty;
@@ -1030,6 +1032,8 @@ namespace EQWOWConverter.Zones
                 zoneProperties.DBCMapIDDungeon = int.Parse(propertiesRow["WOWMapIDDungeon"]);
                 zoneProperties.DBCMapIDRaid = int.Parse(propertiesRow["WOWMapIDRaid"]);
                 zoneProperties.DBCMapDifficultyID = int.Parse(propertiesRow["WOWMapDifficultyID"]);
+                zoneProperties.DBCMapDifficultyDungeonID = int.Parse(propertiesRow["WOWMapDifficultyDungeonID"]);
+                zoneProperties.DBCMapDifficultyRaidID = int.Parse(propertiesRow["WOWMapDifficultyRaidID"]);
                 zoneProperties.DBCWorldMapAreaID = int.Parse(propertiesRow["WorldMapAreaID"]);
                 zoneProperties.DescriptiveName = propertiesRow["DescriptiveName"];
                 zoneProperties.TelePosition.X = float.Parse(propertiesRow["TeleX"]) * Configuration.GENERATE_WORLD_SCALE;

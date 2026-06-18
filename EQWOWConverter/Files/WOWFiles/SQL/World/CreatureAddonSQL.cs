@@ -29,7 +29,7 @@ namespace EQWOWConverter.WOWFiles
             return sb.ToString();
         }
 
-        public void AddRow(int guid, int pathID, int emoteID)
+        public void AddRow(int guid, int pathID, int emoteID, string auras = "")
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("guid", guid);
@@ -39,7 +39,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("bytes2", 0);
             newRow.AddInt("emote", emoteID);
             newRow.AddInt("visibilityDistanceType", 0);
-            newRow.AddString("auras", null);
+            if (auras.Length > 0)
+                newRow.AddString("auras", auras);
+            else
+                newRow.AddString("auras", null);
             Rows.Add(newRow);
         }
     }

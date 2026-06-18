@@ -48,6 +48,7 @@ namespace EQWOWConverter.Spells
         BindAffinity = 25,
         Gate = 26,
         CancelMagic = 27,
+        InvisVsUndead = 28,
         //....
         Mez = 31,
         SummonItems = 32,
@@ -123,6 +124,7 @@ namespace EQWOWConverter.Spells
         //DispelBeneficial = 209, -- Not used
         //....
         Invisibility = 314,
+        InvisVsUndead2 = 315,
         //....
         CurrentManaOnce = 358,
         //....

@@ -88,6 +88,7 @@ namespace EQWOWConverter.Creatures
         public long MechanicImmuneMask = 0;
         public int CreatureImmunitiesId = 0;
         public bool SeesInvisible = false;
+        public bool SeesInvisibleUndead = false;
         public bool SeesStealth = false;
         public bool IsPet = false;
         public float ModelTemplateScale = 1.0f; // Used for form changes
@@ -131,6 +132,16 @@ namespace EQWOWConverter.Creatures
         public bool IsExoticTameable()
         {
             return Race.IsExoticTame;
+        }
+
+        public bool IsUndeadBodyTypeForInvisVsUndead()
+        {
+            return EQBodyType == 3 || EQBodyType == 8 || EQBodyType == 12;
+        }
+
+        public bool CanSeeThroughInvisVsUndead()
+        {
+            return IsUndeadBodyTypeForInvisVsUndead() == false || SeesInvisibleUndead == true;
         }
 
         public static Dictionary<int, CreatureTemplate> GetCreatureTemplateListByEQID()
@@ -350,6 +361,10 @@ namespace EQWOWConverter.Creatures
                         newCreatureTemplate.SeesInvisible = true;
                         newCreatureTemplate.HasSmartScript = true;
                     }
+
+                    // See invisibility versus undead
+                    if (columns.ContainsKey("see_invis_undead") && int.TryParse(columns["see_invis_undead"], out int seeInvisUndeadValue) && seeInvisUndeadValue > 0)
+                        newCreatureTemplate.SeesInvisibleUndead = true;
 
                     // See stealth
                     if ((columns.ContainsKey("see_sneak") && int.TryParse(columns["see_sneak"], out int seeSneakValue) && seeSneakValue > 0) ||

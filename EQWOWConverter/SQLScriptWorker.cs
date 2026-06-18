@@ -182,6 +182,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("DeathKnightsStartLikeOtherClasses", Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true ? "1" : "0");
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMin", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMax", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END.ToString());
+            modEverquestSystemConfigsSQL.AddRow("InvisVsUndeadDetectSpellID", Configuration.SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMin", Configuration.DBCID_MAP_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMax", Configuration.DBCID_MAP_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("ShipEntryTemplateIDMin", Configuration.SQL_GAMEOBJECTTEMPLATE_SHIP_ID_START.ToString());
@@ -851,11 +852,13 @@ namespace EQWOWConverter
             CreatureMovementType movementType = CreatureMovementType.None;
             CreaturePathGridWanderType wanderType = spawnInstance.GetPathGrid().WanderType;
 
+            // Grant the "invis vs undead" detect aura on spawn to anything that should see through it (non-undead + see_invis_undead)
+            string creatureAddonAuras = creatureTemplate.CanSeeThroughInvisVsUndead() == true ? Configuration.SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID.ToString() : "";
             if (spawnGroup.DoesRoam() == true)
             {
                 if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                     creatureTemplate.SubName = spawnInstance.ID + " Roams";
-                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
+                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, creatureAddonAuras);
                 modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
                     true, spawnGroup.RoamMinX, spawnGroup.RoamMaxX, spawnGroup.RoamMinY, spawnGroup.RoamMaxY, spawnGroup.RoamMinZ, spawnGroup.RoamMaxZ, spawnGroup.RoamMinDelayInMS, 
                     spawnGroup.RoamMaxDelayInMS);
@@ -869,7 +872,7 @@ namespace EQWOWConverter
                     || wanderType == CreaturePathGridWanderType.GridRand5LoS || wanderType == CreaturePathGridWanderType.GridRandomCenterPoint
                     || wanderType == CreaturePathGridWanderType.GridRandomPath)
                 {
-                    creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
+                    creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, creatureAddonAuras);
                     if (alreadySavedCustomWaypointGridIDsByMapID.ContainsKey(spawnInstance.MapID) == false)
                         alreadySavedCustomWaypointGridIDsByMapID.Add(spawnInstance.MapID, new HashSet<int>());
                     if (alreadySavedCustomWaypointGridIDsByMapID[spawnInstance.MapID].Contains(pathEntries[0].GridID) == false)
@@ -891,7 +894,7 @@ namespace EQWOWConverter
                     int waypointGUID = creatureGUID * 1000;
                     if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                         waypointGUID = creatureGUID * 10;
-                    creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID);
+                    creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID, creatureAddonAuras);
                     bool useModScript = false;
                     switch (wanderType)
                     {
@@ -960,7 +963,7 @@ namespace EQWOWConverter
             {
                 if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                     creatureTemplate.SubName = spawnInstance.ID + " Immobile";
-                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
+                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, creatureAddonAuras);
                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
                     spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment, false);
             }

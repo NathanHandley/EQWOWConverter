@@ -2158,6 +2158,29 @@ namespace EQWOWConverter
                 spellTemplates.Add(reducedManaRegenSpellTemplate);
             }
 
+            // Detect Invis vs Undead
+            // Note: To make "Invisibility vs Undead" work, this aura is applied to anything that can see through it
+            SpellTemplate invisVsUndeadDetectSpellTemplate = new SpellTemplate();
+            invisVsUndeadDetectSpellTemplate.Name = "Detect Invisibility vs Undead";
+            invisVsUndeadDetectSpellTemplate.WOWSpellID = Configuration.SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID;
+            invisVsUndeadDetectSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            invisVsUndeadDetectSpellTemplate.Description = "Grants the ability to see those who are invisible to undead.";
+            invisVsUndeadDetectSpellTemplate.AuraDescription = "Able to see through invisibility to undead.";
+            invisVsUndeadDetectSpellTemplate.AuraDuration = new SpellDuration();
+            invisVsUndeadDetectSpellTemplate.AuraDuration.IsInfinite = true;
+            // EffectMiscValueA = invisibility group, base points = detect strength (mirrors stock detect aura 18950's 99999)
+            invisVsUndeadDetectSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModInvisibilityDetect, 0, 0, 0, 99999, Configuration.SPELL_INVIS_VS_UNDEAD_INVIS_TYPE, 0));
+            invisVsUndeadDetectSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            invisVsUndeadDetectSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(2);
+            invisVsUndeadDetectSpellTemplate.CastTimeInMS = 0;
+            invisVsUndeadDetectSpellTemplate.RecoveryTimeInMS = 0;
+            invisVsUndeadDetectSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+            invisVsUndeadDetectSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
+            invisVsUndeadDetectSpellTemplate.AlwaysPersist = true;
+            invisVsUndeadDetectSpellTemplate.TriggersGlobalCooldown = false;
+            invisVsUndeadDetectSpellTemplate.ForceHiddenFromDisplay = true;
+            spellTemplates.Add(invisVsUndeadDetectSpellTemplate);
+
             // Bash
             int bashAndSlamSpellCategoryID = SpellCategoryDBC.GenerateUniqueID(); // Used for linking cooldown between bash and slam
             if (Configuration.COMBATSKILL_BASH_ENABLED == true)

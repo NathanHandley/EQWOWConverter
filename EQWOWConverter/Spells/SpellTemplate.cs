@@ -223,6 +223,7 @@ namespace EQWOWConverter.Spells
         public bool ShowFocusBoostInDescriptionIfExists = false;
         public bool IsllusionSpellParent = false;
         public bool ForceHiddenFromDisplay = false;
+        public bool CannotBeStolen = false;
         public SpellTemplate? IllusionSpellParent = null;
         public int MaleFormSpellTemplateID = 0;
         public int FemaleFormSpellTemplateID = 0;
@@ -1876,6 +1877,25 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.RemoveAuraWhenCasterCreatureInitsAgro = true;
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
+                        case SpellEQEffectType.InvisVsUndead:
+                        case SpellEQEffectType.InvisVsUndead2:
+                            {
+                                // Invis vs Undead in done through a unique wow invis group. All non-undead creatures (and players)
+                                // get an aura that lets them see through it
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModInvisibility;
+                                newSpellEffectWOW.EffectMiscValueA = Configuration.SPELL_INVIS_VS_UNDEAD_INVIS_TYPE;
+                                newSpellEffectWOW.ActionDescription = string.Concat("grants invisibility to undead");
+                                newSpellEffectWOW.AuraDescription = string.Concat("shrouded by invisibility to undead");
+                                spellTemplate.InterruptAuraOnCast = true;
+                                spellTemplate.InterruptAuraOnMeleeAttack = true;
+                                spellTemplate.InterruptAuraOnMount = true;
+                                spellTemplate.InterruptAuraOnTakeDamage = true;
+                                spellTemplate.InterruptAuraOnSpellAttack = true;
+                                spellTemplate.RemoveAuraWhenCasterCreatureInitsAgro = true;
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
                         case SpellEQEffectType.SeeInvisibility:
                             {
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
@@ -2834,6 +2854,8 @@ namespace EQWOWConverter.Spells
                 case SpellEQEffectType.SeeInvisibility:
                 case SpellEQEffectType.WaterBreathing:
                 case SpellEQEffectType.Invisibility:
+                case SpellEQEffectType.InvisVsUndead:
+                case SpellEQEffectType.InvisVsUndead2:
                 case SpellEQEffectType.Levitate:
                 case SpellEQEffectType.Illusion:
                 case SpellEQEffectType.ModelSize:
