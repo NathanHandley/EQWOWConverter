@@ -156,8 +156,10 @@ namespace EQWOWConverter.Items
             // Make it EQ specific
             string itemDisplayNameWithEQ = String.Concat("eq_", itemDisplayCommonName.ToLower());
 
-            // Pull if it already exists
-            string modelFileName = itemDisplayNameWithEQ + ".mdx";
+            // Right now only held items should have a model (to avoid bad helms)
+            string modelFileName = string.Empty;
+            if (IsHeld(inventoryType) == true)
+                modelFileName = itemDisplayNameWithEQ + ".mdx";
             foreach(ItemDisplayInfo itemDisplayInfo in ItemDisplayInfos)
             {
                 if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt && itemDisplayInfo.ModelName1 == modelFileName && itemDisplayInfo.itemEquipUnitType == equipUnitType && itemDisplayInfo.IsShield == isShield)
