@@ -2348,6 +2348,48 @@ namespace EQWOWConverter
                 spellTemplates.Add(layOnHandsSpellTemplate);
             }
 
+            // Feign Death (skill version)
+            if (Configuration.COMBATSKILL_FEIGNDEATH_ENABLED == true)
+            {
+                int feignDeathIconID = Configuration.COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID;
+                if (feignDeathIconID < 0 || feignDeathIconID > 22)
+                {
+                    Logger.WriteError("COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID value must be 0-22. Setting to 7");
+                    feignDeathIconID = 7;
+                }
+                SpellTemplate feignDeathSpellTemplate = new SpellTemplate();
+                feignDeathSpellTemplate.Name = "Feign Death";
+                feignDeathSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_FEIGNDEATH_SPELL_ID;
+                feignDeathSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                feignDeathSpellTemplate.Description = "Feigns death, dropping aggro and removing you from combat. Has a chance to fail, and is broken by any action.";
+                feignDeathSpellTemplate.AuraDescription = "Feigning death.";
+                feignDeathSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(feignDeathIconID);
+                feignDeathSpellTemplate.CastTimeInMS = 0; // Instant, matching the TAKP monk skill
+                feignDeathSpellTemplate.SchoolMask = 1; // Physical
+                feignDeathSpellTemplate.TriggersGlobalCooldown = false;
+                feignDeathSpellTemplate.Category = Convert.ToUInt32(SpellCategoryDBC.GenerateUniqueID());
+                feignDeathSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS);
+                feignDeathSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                feignDeathSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
+                feignDeathSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
+                feignDeathSpellTemplate.AuraDuration = new SpellDuration();
+                feignDeathSpellTemplate.AuraDuration.IsInfinite = true;
+                feignDeathSpellTemplate.IsToggleAura = true;
+                SpellEffectWOW feignDeathEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.FeignDeath, 0, 0, 0, 0, 0, 0);
+                feignDeathEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                feignDeathEffect.ActionDescription = "feigns death";
+                feignDeathEffect.AuraDescription = "feigning death";
+                feignDeathSpellTemplate.WOWSpellEffects.Add(feignDeathEffect);
+                SpellEffectWOW feignDeathRootEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModRoot, 0, 0, 0, 0, 0, 0);
+                feignDeathRootEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                feignDeathSpellTemplate.WOWSpellEffects.Add(feignDeathRootEffect);
+                feignDeathSpellTemplate.EffectFailChancePercent = Configuration.COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT;
+                feignDeathSpellTemplate.FailableType = SpellFailableType.FeignDeath;
+                feignDeathSpellTemplate.InterruptAuraOnCast = true;
+                feignDeathSpellTemplate.InterruptAuraOnMeleeAttack = true;
+                spellTemplates.Add(feignDeathSpellTemplate);
+            }
+
             Logger.WriteDebug("Generating custom spells completed.");
         }
 

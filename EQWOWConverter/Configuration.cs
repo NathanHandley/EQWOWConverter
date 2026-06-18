@@ -764,6 +764,14 @@ namespace EQWOWConverter
         public static int COMBATSKILL_LAYONHANDS_BASE_HEAL = 125; // 50  is EQ normal, but HP is 2.5x higher in WoW (generally)
         public static float COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL = 75.0f; // 30 is EQ normal, but HP is 2.5x higher in WoW (generally)
 
+        // Feign Death is a monk ability (a self ability that drops aggro by playing dead, instant like in TAKP)
+        public static bool COMBATSKILL_FEIGNDEATH_ENABLED = true;
+        public static bool COMBATSKILL_FEIGNDEATH_PLAYER_LEARNABLE = true;
+        public static int COMBATSKILL_FEIGNDEATH_SPELL_ID = 86912;
+        public static int COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID = 7;
+        public static int COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT = 5;
+        public static int COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS = 1500;
+
         //=====================================================================
         // Fishing
         //=====================================================================
@@ -1496,6 +1504,12 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_LAYONHANDS_HEALTH_TRIGGER_PCT", COMBATSKILL_LAYONHANDS_HEALTH_TRIGGER_PCT, "", false);
             OutputVariableToConfig("COMBATSKILL_LAYONHANDS_BASE_HEAL", COMBATSKILL_LAYONHANDS_BASE_HEAL, "", false);
             OutputVariableToConfig("COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL", COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL, "");
+            OutputVariableToConfig("COMBATSKILL_FEIGNDEATH_ENABLED", COMBATSKILL_FEIGNDEATH_ENABLED, "Feign Death is a monk ability (a self ability that drops aggro by playing dead, instant like in TAKP)", false);
+            OutputVariableToConfig("COMBATSKILL_FEIGNDEATH_PLAYER_LEARNABLE", COMBATSKILL_FEIGNDEATH_PLAYER_LEARNABLE, "Whether classes that have Feign Death learn it as players (from level 1)", false);
+            OutputVariableToConfig("COMBATSKILL_FEIGNDEATH_SPELL_ID", COMBATSKILL_FEIGNDEATH_SPELL_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID", COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT", COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT, "", false);
+            OutputVariableToConfig("COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS", COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS, "");
             OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_60", FISHING_SKILL_CONVERSION_MOD_60, "How much to multiply the EQ fish catching skill requirement for WOW", false);
             OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_80", FISHING_SKILL_CONVERSION_MOD_80, "");
             OutputVariableToConfig("FORAGE_SPELL_ICON_EQ_ID", FORAGE_SPELL_ICON_EQ_ID, "Which eq spell icon to use for the Forage skill. Can be a value between 0-22");
@@ -1986,7 +2000,13 @@ namespace EQWOWConverter
             COMBATSKILL_LAYONHANDS_COOLDOWN_IN_MS = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_COOLDOWN_IN_MS", configValuesByVariableName, COMBATSKILL_LAYONHANDS_COOLDOWN_IN_MS);
             COMBATSKILL_LAYONHANDS_HEALTH_TRIGGER_PCT = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_HEALTH_TRIGGER_PCT", configValuesByVariableName, COMBATSKILL_LAYONHANDS_HEALTH_TRIGGER_PCT);
             COMBATSKILL_LAYONHANDS_BASE_HEAL = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_BASE_HEAL", configValuesByVariableName, COMBATSKILL_LAYONHANDS_BASE_HEAL);
-            COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL", configValuesByVariableName, COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL);            
+            COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL", configValuesByVariableName, COMBATSKILL_LAYONHANDS_HEAL_PER_LEVEL);
+            COMBATSKILL_FEIGNDEATH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_FEIGNDEATH_ENABLED", configValuesByVariableName, COMBATSKILL_FEIGNDEATH_ENABLED);
+            COMBATSKILL_FEIGNDEATH_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_FEIGNDEATH_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_FEIGNDEATH_PLAYER_LEARNABLE);
+            COMBATSKILL_FEIGNDEATH_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_FEIGNDEATH_SPELL_ID", configValuesByVariableName, COMBATSKILL_FEIGNDEATH_SPELL_ID);
+            COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID);
+            COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT = ReadVariableFromConfigString("COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT", configValuesByVariableName, COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT);
+            COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS = ReadVariableFromConfigString("COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS", configValuesByVariableName, COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS);
             FISHING_SKILL_CONVERSION_MOD_60 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_60", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_60);
             FISHING_SKILL_CONVERSION_MOD_80 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_80", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_80);
             FORAGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("FORAGE_SPELL_ICON_EQ_ID", configValuesByVariableName, FORAGE_SPELL_ICON_EQ_ID);

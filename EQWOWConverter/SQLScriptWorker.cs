@@ -1176,6 +1176,17 @@ namespace EQWOWConverter
                     modEverquestPlayerAutoLearnSpellsSQL.AddRow(classRaceProperties.Value.ClassID, Configuration.COMBATSKILL_SLAM_SPELL_ID, true, classRaceProperties.Value.RaceID);
                 }
             }
+
+            // Feign Death for classes that map from EQ Monk (granted to players from level 1)
+            if (Configuration.COMBATSKILL_FEIGNDEATH_ENABLED == true && Configuration.COMBATSKILL_FEIGNDEATH_PLAYER_LEARNABLE == true)
+            {
+                foreach (var eqClassesByWowClass in PlayerClassMapping.GetAllEQClassesByWOWClass())
+                {
+                    if (eqClassesByWowClass.Value.Contains(ClassEQType.Monk) == false)
+                        continue;
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)eqClassesByWowClass.Key, Configuration.COMBATSKILL_FEIGNDEATH_SPELL_ID, true);
+                }
+            }
             if (Configuration.PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START == true)
             {
                 foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
