@@ -1374,32 +1374,6 @@ namespace EQWOWConverter.ObjectModels
                     FindAndSetAnimationForType(AnimationType.LootUp);
                     FindAndSetAnimationForType(AnimationType.Fall);
                     FindAndSetAnimationForType(AnimationType.ReadyUnarmed); // Fixed levitation + wolf form + in combat
-                    //FindAndSetAnimationForType(AnimationType.MountSelfFall);
-                    //FindAndSetAnimationForType(AnimationType.Land);
-                    //FindAndSetAnimationForType(AnimationType.JumpLandRun);
-                    //FindAndSetAnimationForType(AnimationType.Stop);
-                    //FindAndSetAnimationForType(AnimationType.StandWound);
-                    //FindAndSetAnimationForType(AnimationType.CombatWound);
-                    //FindAndSetAnimationForType(AnimationType.CombatCritical);
-                    //FindAndSetAnimationForType(AnimationType.Stun);
-                    //FindAndSetAnimationForType(AnimationType.ParryUnarmed);
-                    //FindAndSetAnimationForType(AnimationType.Parry1H);
-                    //FindAndSetAnimationForType(AnimationType.Parry2H);
-                    //FindAndSetAnimationForType(AnimationType.Parry2HL);
-                    //FindAndSetAnimationForType(AnimationType.ShieldBlock);
-
-                    //FindAndSetAnimationForType(AnimationType.Ready1H);
-                    //FindAndSetAnimationForType(AnimationType.Ready2H);
-                    //FindAndSetAnimationForType(AnimationType.Ready2HL);
-                    // 123512341234
-
-
-                    // Fill out all remaining fly-based animations to 'something', as lots of weirdness will happen if they aren't mapped an the creature is flying/hovering
-                    //for (Int16 i = FLY_ANIMATION_TYPE_OFFSET; i <= HIGHEST_GROUND_ANIMATION_TYPE + FLY_ANIMATION_TYPE_OFFSET; i++)
-                    //{
-                    //    if (AnimationLookups[i] == -1)
-                    //        AnimationLookups[i] = 0;
-                    //}
 
                     // Update the stand/fidget animation timers so that there is a fidget sometimes
                     if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)
