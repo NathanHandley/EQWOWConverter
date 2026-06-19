@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 19;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 20;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -724,6 +724,9 @@ namespace EQWOWConverter
 
         // Custom detect aura granted to everything that should see through "invis vs undead" (non-undead + see_invis_undead undead)
         public static int SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID = 86913;
+
+        // EQ has no "daze" snare when a creature melee-hits a player from behind so this can disable it (in EQ zones only)
+        public static bool COMBAT_DAZE_IN_EQ_ZONES_ENABLED = false;
 
         //=====================================================================
         // Combat Skills (adjacent to spells)
@@ -1475,6 +1478,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID, "This is the ID used to detect invis and stealth, and already exists in AzerothCore");
             OutputVariableToConfig("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", SPELL_INVIS_VS_UNDEAD_INVIS_TYPE, "WoW invisibility group (InvisibilityType) reserved for EQ 'invis vs undead' (0 = general invis, 1 should be unused)");
             OutputVariableToConfig("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID, "Custom detect aura granted to everything that should see through 'invis vs undead' (non-undead + see_invis_undead undead)");
+            OutputVariableToConfig("COMBAT_DAZE_IN_EQ_ZONES_ENABLED", COMBAT_DAZE_IN_EQ_ZONES_ENABLED, "EQ has no \"daze\" snare when a creature melee-hits a player from behind so this can disable it (in EQ zones only)");
             OutputVariableToConfig("COMBATSKILL_BASH_ENABLED", COMBATSKILL_BASH_ENABLED, "Bash skills in EQ are either from warrior/cleric/paladin/shadowknight or those that use warrior skills", false);
             OutputVariableToConfig("COMBATSKILL_BASH_PLAYER_LEARNABLE", COMBATSKILL_BASH_PLAYER_LEARNABLE, "Whether classes that have Bash learn it as players (from level 1)", false);
             OutputVariableToConfig("COMBATSKILL_BASH_SPELL_ID", COMBATSKILL_BASH_SPELL_ID, "", false);
@@ -1977,6 +1981,7 @@ namespace EQWOWConverter
             SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID);
             SPELL_INVIS_VS_UNDEAD_INVIS_TYPE = ReadVariableFromConfigString("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", configValuesByVariableName, SPELL_INVIS_VS_UNDEAD_INVIS_TYPE);
             SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID);
+            COMBAT_DAZE_IN_EQ_ZONES_ENABLED = ReadVariableFromConfigString("COMBAT_DAZE_IN_EQ_ZONES_ENABLED", configValuesByVariableName, COMBAT_DAZE_IN_EQ_ZONES_ENABLED);
             COMBATSKILL_BASH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_BASH_ENABLED", configValuesByVariableName, COMBATSKILL_BASH_ENABLED);
             COMBATSKILL_BASH_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_BASH_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_BASH_PLAYER_LEARNABLE);
             COMBATSKILL_BASH_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_SPELL_ID", configValuesByVariableName, COMBATSKILL_BASH_SPELL_ID);
