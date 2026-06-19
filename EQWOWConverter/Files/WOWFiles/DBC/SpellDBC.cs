@@ -42,7 +42,7 @@ namespace EQWOWConverter.WOWFiles
             else
                 newRow.AddUInt32(spellTemplate.DispelType); // DispelType
             newRow.AddUInt32(0); // Mechanic
-            newRow.AddUInt32(GetAttributes(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, doHideFromDisplay, preventClickOff)); // Attributes
+            newRow.AddUInt32(GetAttributes(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, doHideFromDisplay, preventClickOff, isWornEquipEffect)); // Attributes
             newRow.AddUInt32(GetAttributesEx(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesEx
             newRow.AddUInt32(GetAttributesExB(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExB
             newRow.AddUInt32(GetAttributesExC(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExC
@@ -221,7 +221,7 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
         
-        private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool doHideFromDisplay, bool preventClickOff)
+        private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool doHideFromDisplay, bool preventClickOff, bool isWornEquipEffect)
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 2843738496;
@@ -237,7 +237,11 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 16; // SPELL_ATTR0_IS_ABILITY (0x00000010)
                 attributeFlags |= 32; // SPELL_ATTR0_IS_TRADESKILL (0x00000020)
             }
-            attributeFlags |= 65536; // SPELL_ATTR0_NOT_SHAPESHIFTED (0x00010000)
+            // Worn/equip effect auras must persist through shapeshift forms (e.g. druid bear/cat). The core's
+            // Player::UpdateEquipSpellsAtFormChange -> SpellInfo::CheckShapeshift removes any equip aura carrying
+            // SPELL_ATTR0_NOT_SHAPESHIFTED when entering a "stance" form, so don't set it on worn equip effects.
+            if (isWornEquipEffect == false)
+                attributeFlags |= 65536; // SPELL_ATTR0_NOT_SHAPESHIFTED (0x00010000)
             if (preventClickOff == true || spellTemplate.AlwaysPersist == true)
                 attributeFlags |= 2147483648; // SPELL_ATTR0_NO_AURA_CANCEL (0x80000000)
             if (spellTemplate.ForceAsDebuff == true)
