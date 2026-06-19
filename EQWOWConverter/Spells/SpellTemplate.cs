@@ -220,6 +220,7 @@ namespace EQWOWConverter.Spells
         public int PeriodicAuraSpellRadius = 0;
         public SpellFailableType FailableType = SpellFailableType.None;
         public int EffectFailChancePercent = 0;
+        public bool StunUsesBashKickChance = false;
         public bool ShowFocusBoostInDescriptionIfExists = false;
         public bool IsllusionSpellParent = false;
         public bool ForceHiddenFromDisplay = false;

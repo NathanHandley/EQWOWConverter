@@ -2224,6 +2224,7 @@ namespace EQWOWConverter
                 bashStunEffect.ActionDescription = "stuns";
                 bashStunEffect.AuraDescription = "stunned";
                 bashSpellTemplate.WOWSpellEffects.Add(bashStunEffect);
+                bashSpellTemplate.StunUsesBashKickChance = true;
 
                 if (Configuration.COMBATSKILL_BASH_FORBEARANCE_ENABLED == true)
                 {
@@ -2303,6 +2304,7 @@ namespace EQWOWConverter
                 slamStunEffect.ActionDescription = "stuns";
                 slamStunEffect.AuraDescription = "stunned";
                 slamSpellTemplate.WOWSpellEffects.Add(slamStunEffect);
+                slamSpellTemplate.StunUsesBashKickChance = true;
                 spellTemplates.Add(slamSpellTemplate);
             }
 
