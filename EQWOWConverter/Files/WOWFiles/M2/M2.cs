@@ -239,7 +239,7 @@ namespace EQWOWConverter.WOWFiles
 
         private void SetEvents(ObjectModel wowObjectModel)
         {
-            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+            if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                 return;
 
             if (wowObjectModel.ModelType == ObjectModelType.EquipmentHeldBow)

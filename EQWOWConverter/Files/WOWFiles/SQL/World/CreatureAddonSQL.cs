@@ -23,8 +23,8 @@ namespace EQWOWConverter.WOWFiles
         public override string DeleteRowSQL()
         {
             StringBuilder sb = new StringBuilder();
-            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
-                sb.AppendLine("DELETE FROM creature_addon WHERE `guid` >= " + Configuration.SQL_CREATURE_GUID_DEBUG_LOW.ToString() + " AND `guid` <= " + Configuration.SQL_CREATURE_GUID_DEBUG_HIGH + ";");
+            if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                sb.AppendLine("DELETE FROM creature_addon WHERE `guid` >= " + Configuration.CONFIGONLY_SQL_CREATURE_GUID_DEBUG_LOW.ToString() + " AND `guid` <= " + Configuration.CONFIGONLY_SQL_CREATURE_GUID_DEBUG_HIGH + ";");
             sb.Append("DELETE FROM creature_addon WHERE `guid` >= " + Configuration.SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.SQL_CREATURE_GUID_HIGH + ";");
             return sb.ToString();
         }

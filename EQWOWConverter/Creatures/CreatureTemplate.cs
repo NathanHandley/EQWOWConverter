@@ -178,8 +178,8 @@ namespace EQWOWConverter.Creatures
             {
                 if (CURRENT_SQL_CREATURE_GUID == -1)
                 {
-                    if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
-                        CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_DEBUG_LOW;
+                    if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                        CURRENT_SQL_CREATURE_GUID = Configuration.CONFIGONLY_SQL_CREATURE_GUID_DEBUG_LOW;
                     else
                         CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
                 }
@@ -871,7 +871,7 @@ namespace EQWOWConverter.Creatures
         public float SpawnWaypointDebugZPosition;
         public int SpawnWaypointDebugMapID;
         public int SpawnWaypointDebugAreaID;
-        private static int SPAWN_WAYPOINT_DEBUG_SQL_CREATURE_TEMPLATE_GUID = Configuration.SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW;
+        private static int SPAWN_WAYPOINT_DEBUG_SQL_CREATURE_TEMPLATE_GUID = Configuration.CONFIGONLY_SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW;
 
         public static void SpawnWaypointDebugCreateCreatureTemplate(int spawnInstanceID, int gridID, int gridNumber, float xPosition, float yPosition, float zPosition,
             string zoneShortName, int mapID, int areaID)

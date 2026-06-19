@@ -26,8 +26,8 @@ namespace EQWOWConverter.WOWFiles
         public override string DeleteRowSQL()
         {
             StringBuilder sb = new StringBuilder();
-            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
-                sb.AppendLine("DELETE FROM creature_template WHERE `entry` >= " + Configuration.SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH + ";");
+            if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                sb.AppendLine("DELETE FROM creature_template WHERE `entry` >= " + Configuration.CONFIGONLY_SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.CONFIGONLY_SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH + ";");
             sb.Append("DELETE FROM creature_template WHERE `entry` >= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH + ";");
             return sb.ToString();
         }
@@ -128,7 +128,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("minlevel", creatureTemplate.Level);
             newRow.AddInt("maxlevel", creatureTemplate.Level);
             newRow.AddInt("exp", 0); // Which expansion to use (0 = classic)
-            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+            if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                 newRow.AddInt("faction", Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL);
             else if (creatureTemplate.WOWCreatureTemplateID == Configuration.GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID)
                 newRow.AddInt("faction", 35); // This is a 'friendly with all' rep

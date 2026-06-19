@@ -1004,10 +1004,10 @@ namespace EQWOWConverter.Zones
                 // Only include intended zones
                 string shortName = propertiesRow["ShortName"];
                 zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);
-                if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count != 0)
+                if (Configuration.CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES.Count != 0)
                 {
                     bool foundShortname = false;
-                    foreach (string generateShortName in Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES)
+                    foreach (string generateShortName in Configuration.CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES)
                     {
                         if (generateShortName.Trim().ToLower() == shortName.ToLower())
                         {

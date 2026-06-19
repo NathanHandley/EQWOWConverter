@@ -14,13 +14,33 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Data;
 using System.Text;
 
 namespace EQWOWConverter
 {
     internal class Configuration
     {
+        // ====================================================================
+        // Not Loaded From Configuration File
+        // ====================================================================
+        public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
+
+        // This is the version that the mod-everquest AzerothCore module needs to be compatible with
+        public static int CONFIGONLY_CORE_MOD_VERSION = 18;
+
+        // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
+        // done for debugging reasons, as the game will not look or feel anything like it should
+        public static bool CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE = false;
+        public static int CONFIGONLY_SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW = 300000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
+        public static int CONFIGONLY_SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH = 2000000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
+        public static int CONFIGONLY_SQL_CREATURE_GUID_DEBUG_LOW = 2000000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
+        public static int CONFIGONLY_SQL_CREATURE_GUID_DEBUG_HIGH = 5060599; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
+
+        // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
+        // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones
+        // will load and work properly
+        public static List<string> CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { };
+
         // ====================================================================
         // Paths and Files
         // ====================================================================
@@ -73,10 +93,7 @@ namespace EQWOWConverter
 
         // ====================================================================
         // Core
-        // ====================================================================
-        // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CORE_MOD_VERSION = 18;
-        
+        // ====================================================================       
         // Plays a beep sound when the generate completes if set to true
         public static bool CORE_CONSOLE_BEEP_ON_COMPLETE = true;
 
@@ -131,11 +148,6 @@ namespace EQWOWConverter
 
         // If true, generate and copy maps / minimaps
         public static bool GENERATE_WORLDMAPS = true;
-
-        // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
-        // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones
-        // will load and work properly
-        public static List<string> GENERATE_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { };
 
         // An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.
         public static float GENERATE_ADDED_BOUNDARY_AMOUNT = 0.01f;
@@ -490,10 +502,6 @@ namespace EQWOWConverter
 
         // Percent (0-100) of the normal mana regeneration rate that spell-casting creatures should have, with approximately 10% being more EQ like
         public static int CREATURE_MANA_REGEN_PERCENT = 10;
-
-        // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
-        // done for debugging reasons, as the game will not look or feel anything like it should
-        public static bool CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE = false;
 
         // If "GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION" is true, this is the text
         // that displays when you talk to a Priest of Discord
@@ -997,8 +1005,6 @@ namespace EQWOWConverter
         // Record identifier for the creature sql table, need at least 31k
         public static int SQL_CREATURE_GUID_LOW = 310000;
         public static int SQL_CREATURE_GUID_HIGH = 399999;
-        public static int SQL_CREATURE_GUID_DEBUG_LOW = 2000000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
-        public static int SQL_CREATURE_GUID_DEBUG_HIGH = 5060599; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
 
         // Record identifier for for creature_immunities
         public static int SQL_CREATUREIMMUNITIES_ID_START = 4000;
@@ -1008,8 +1014,6 @@ namespace EQWOWConverter
         public static int SQL_CREATURETEMPLATE_ENTRY_LOW = 45000;
         public static int SQL_CREATURETEMPLATE_ENTRY_HIGH = 60000;
         public static int SQL_CREATURETEMPLATE_GENERATED_START_ID = 56000;
-        public static int SQL_CREATURETEMPLATE_DEBUG_ENTRY_LOW = 300000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
-        public static int SQL_CREATURETEMPLATE_DEBUG_ENTRY_HIGH = 2000000; // Used for CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE
 
         // Start GUIDs for gameobjects
         public static int SQL_GAMEOBJECT_GUID_ID_START = 310000;
@@ -1158,12 +1162,12 @@ namespace EQWOWConverter
 
         public static void OutputTextLineToConfig(string textLine)
         {
-            File.AppendAllText("configuration.txt", String.Concat(textLine, Environment.NewLine));
+            File.AppendAllText(CONFIGONLY_CONFIGURATION_FILE_NAME, String.Concat(textLine, Environment.NewLine));
         }
 
         public static void OutputBlankLineToConfig()
         {
-            File.AppendAllText("configuration.txt", Environment.NewLine);
+            File.AppendAllText(CONFIGONLY_CONFIGURATION_FILE_NAME, Environment.NewLine);
         }
 
         public static void OutputVariableToConfig<T>(string configVariableName, T value, string comment, bool addBlankLineAfter = true)
@@ -1182,13 +1186,13 @@ namespace EQWOWConverter
             outputContentSB.AppendLine(string.Empty);
             if (addBlankLineAfter == true)
                 outputContentSB.AppendLine(string.Empty);
-            File.AppendAllText("configuration.txt", outputContentSB.ToString());
+            File.AppendAllText(CONFIGONLY_CONFIGURATION_FILE_NAME, outputContentSB.ToString());
         }
 
         public static void SaveConfiguration()
         {
-            if (File.Exists("configuration.txt") == true)
-                File.Delete("configuration.txt");
+            if (File.Exists(CONFIGONLY_CONFIGURATION_FILE_NAME) == true)
+                File.Delete(CONFIGONLY_CONFIGURATION_FILE_NAME);
 
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputTextLineToConfig("# | 1. Manditory Path Settings (Set these before it will work)                |");
@@ -1572,6 +1576,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID", DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID, "", false);
             OutputVariableToConfig("DBCID_LFGDUNGEONGROUP_RAIDS_ID", DBCID_LFGDUNGEONGROUP_RAIDS_ID, "", false);
             OutputVariableToConfig("DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID", DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID, "");
+            OutputVariableToConfig("DBCID_LFGDUNGEONS_ID_START", DBCID_LFGDUNGEONS_ID_START, "Start ID for LFGDungeons.dbc") ;
             OutputVariableToConfig("DBCID_ITEMDISPLAYINFO_START", DBCID_ITEMDISPLAYINFO_START, "Start ID for item display info");
             OutputVariableToConfig("DBCID_LIGHT_ID_START", DBCID_LIGHT_ID_START, "Identifies the Light.DBC row, used for environmental properties");
             OutputVariableToConfig("DBCID_LIGHTPARAMS_ID_START", DBCID_LIGHTPARAMS_ID_START, "Identifies the LightParams.dbc, used for detailed values related to a Light.DBC row");
@@ -1581,6 +1586,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("DBCID_MAP_ID_END", DBCID_MAP_ID_END, "");
             OutputVariableToConfig("DBCID_SKILLLINE_ID_START", DBCID_SKILLLINE_ID_START, "ID for SkillLine.dbc");
             OutputVariableToConfig("DBCID_SKILLLINEABILITY_ID_START", DBCID_SKILLLINEABILITY_ID_START, "ID for skill line abilities found in SkillLineAbility.dbc");
+            OutputVariableToConfig("DBCID_SKILLRACECLASSINFO_ID_START", DBCID_SKILLRACECLASSINFO_ID_START, "ID for SkillRaceClassInfo.dbc");
             OutputVariableToConfig("DBCID_SOUNDENTRIES_ID_START", DBCID_SOUNDENTRIES_ID_START, "ID for sounds found in SoundEntries.dbc");
             OutputVariableToConfig("DBCID_SOUNDAMBIENCE_ID_START", DBCID_SOUNDAMBIENCE_ID_START, "ID for sounds found in SoundAmbience.dbc");
             OutputTextLineToConfig("# ID for spells found in Spell.dbc");
@@ -1619,8 +1625,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SQL_BROADCASTTEXT_ID_END", SQL_BROADCASTTEXT_ID_END, "");
             OutputVariableToConfig("SQL_CREATURE_GUID_LOW", SQL_CREATURE_GUID_LOW, "Record identifier for the creature sql table, need at least 31k", false);
             OutputVariableToConfig("SQL_CREATURE_GUID_HIGH", SQL_CREATURE_GUID_HIGH, "");
-            OutputVariableToConfig("SQL_CREATURE_IMMUNITIES_ID_START", SQL_CREATUREIMMUNITIES_ID_START, "Record identifier for for creature_immunities", false);
-            OutputVariableToConfig("SQL_CREATURE_IMMUNITIES_ID_END", SQL_CREATUREIMMUNITIES_ID_END, "");
+            OutputVariableToConfig("SQL_CREATUREIMMUNITIES_ID_START", SQL_CREATUREIMMUNITIES_ID_START, "Record identifier for for creature_immunities", false);
+            OutputVariableToConfig("SQL_CREATUREIMMUNITIES_ID_END", SQL_CREATUREIMMUNITIES_ID_END, "");
             OutputVariableToConfig("SQL_CREATURETEMPLATE_ENTRY_LOW", SQL_CREATURETEMPLATE_ENTRY_LOW, "Record identifier for the creature template SQL table", false);
             OutputVariableToConfig("SQL_CREATURETEMPLATE_ENTRY_HIGH", SQL_CREATURETEMPLATE_ENTRY_HIGH, "", false);
             OutputVariableToConfig("SQL_CREATURETEMPLATE_GENERATED_START_ID", SQL_CREATURETEMPLATE_GENERATED_START_ID, "", false);
@@ -1673,7 +1679,7 @@ namespace EQWOWConverter
         {
             // Pull the configs off disk
             Dictionary<string, string> configValuesByVariableName = new Dictionary<string, string>();
-            List<string> configRows = FileTool.ReadAllStringLinesFromFile("configuration.txt", false, true);
+            List<string> configRows = FileTool.ReadAllStringLinesFromFile(CONFIGONLY_CONFIGURATION_FILE_NAME, false, true);
             for (int i = 0; i < configRows.Count; i++)
             {
                 // Ignore anything past a # and blank rows
@@ -2068,6 +2074,7 @@ namespace EQWOWConverter
             DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID = ReadVariableFromConfigString("DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID", configValuesByVariableName, DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID);
             DBCID_LFGDUNGEONGROUP_RAIDS_ID = ReadVariableFromConfigString("DBCID_LFGDUNGEONGROUP_RAIDS_ID", configValuesByVariableName, DBCID_LFGDUNGEONGROUP_RAIDS_ID);
             DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID = ReadVariableFromConfigString("DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID", configValuesByVariableName, DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID);
+            DBCID_LFGDUNGEONS_ID_START = ReadVariableFromConfigString("DBCID_LFGDUNGEONS_ID_START", configValuesByVariableName, DBCID_LFGDUNGEONS_ID_START);
             DBCID_ITEMDISPLAYINFO_START = ReadVariableFromConfigString("DBCID_ITEMDISPLAYINFO_START", configValuesByVariableName, DBCID_ITEMDISPLAYINFO_START);
             DBCID_LIGHT_ID_START = ReadVariableFromConfigString("DBCID_LIGHT_ID_START", configValuesByVariableName, DBCID_LIGHT_ID_START);
             DBCID_LIGHTPARAMS_ID_START = ReadVariableFromConfigString("DBCID_LIGHTPARAMS_ID_START", configValuesByVariableName, DBCID_LIGHTPARAMS_ID_START);
@@ -2076,6 +2083,7 @@ namespace EQWOWConverter
             DBCID_MAP_ID_END = ReadVariableFromConfigString("DBCID_MAP_ID_END", configValuesByVariableName, DBCID_MAP_ID_END);
             DBCID_SKILLLINE_ID_START = ReadVariableFromConfigString("DBCID_SKILLLINE_ID_START", configValuesByVariableName, DBCID_SKILLLINE_ID_START);
             DBCID_SKILLLINEABILITY_ID_START = ReadVariableFromConfigString("DBCID_SKILLLINEABILITY_ID_START", configValuesByVariableName, DBCID_SKILLLINEABILITY_ID_START);
+            DBCID_SKILLRACECLASSINFO_ID_START = ReadVariableFromConfigString("DBCID_SKILLRACECLASSINFO_ID_START", configValuesByVariableName, DBCID_SKILLRACECLASSINFO_ID_START);
             DBCID_SOUNDENTRIES_ID_START = ReadVariableFromConfigString("DBCID_SOUNDENTRIES_ID_START", configValuesByVariableName, DBCID_SOUNDENTRIES_ID_START);
             DBCID_SOUNDAMBIENCE_ID_START = ReadVariableFromConfigString("DBCID_SOUNDAMBIENCE_ID_START", configValuesByVariableName, DBCID_SOUNDAMBIENCE_ID_START);
             DBCID_SPELL_ID_START = ReadVariableFromConfigString("DBCID_SPELL_ID_START", configValuesByVariableName, DBCID_SPELL_ID_START);

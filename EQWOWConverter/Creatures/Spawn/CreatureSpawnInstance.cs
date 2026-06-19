@@ -67,7 +67,7 @@ namespace EQWOWConverter.Creatures
             foreach (Dictionary<string, string> columns in rows)
             {
                 // Skip any invalid expansion rows
-                if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == false)
+                if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == false)
                 {
                     int minExpansion = int.Parse(columns["min_expansion"]);
                     int maxExpansion = int.Parse(columns["max_expansion"]);

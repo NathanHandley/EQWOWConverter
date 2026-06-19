@@ -113,7 +113,7 @@ namespace EQWOWConverter
                 CreatureRace.GenerateAllSounds();
                 if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
                 {
-                    if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                    if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                         ConvertCreaturesForDebug(creatureTemplatesByEQID, ref creatureSpawnPools);
                     ConvertCreatures(creatureTemplatesByEQID, ref creatureSpawnPools);
                 }
@@ -270,7 +270,7 @@ namespace EQWOWConverter
 
                 // Create or update the MPQs
                 string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ"));
-                if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
+                if (Configuration.CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
                     CreateMainPatchMPQ();
                 else
                     UpdateMainPatchMPQ();
@@ -1054,10 +1054,10 @@ namespace EQWOWConverter
             LogCounter progressCounter = new LogCounter("Converting EQ zones to WOW zones...", 0, ZoneShortNamesToProcess.Count);
             progressCounter.Write(0);
 
-            if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count > 0)
+            if (Configuration.CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES.Count > 0)
             {
-                Logger.WriteInfo("- Note: GENERATE_ONLY_LISTED_ZONE_SHORTNAMES has values: ", false);
-                foreach (string zoneShortName in Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES)
+                Logger.WriteInfo("- Note: CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES has values: ", false);
+                foreach (string zoneShortName in Configuration.CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES)
                     Logger.WriteInfo(zoneShortName + " ", false, false);
                 Logger.WriteInfo(string.Empty, true, false);
             }
@@ -1249,7 +1249,7 @@ namespace EQWOWConverter
             string generatedTexturesFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
 
             // Generate the creatures
-            if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+            if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
             {
                 CreatureModelTemplate creatureModelTemplate = CreatureModelTemplate.CreateCreatureModelTemplateForWaypointDebugging();
                 foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
@@ -2985,7 +2985,7 @@ namespace EQWOWConverter
             StringBuilder mpqUpdateScriptText = new StringBuilder();
             
             // Zones
-            foreach(string zoneName in Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES)
+            foreach(string zoneName in Configuration.CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES)
             {
                 // Add zone-specific folders
                 // ZoneObjects

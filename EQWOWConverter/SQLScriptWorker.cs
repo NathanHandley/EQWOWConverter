@@ -175,7 +175,7 @@ namespace EQWOWConverter
 
         private void PopulateSystemConfigs()
         {
-            modEverquestSystemConfigsSQL.AddRow("ModVersion", Configuration.CORE_MOD_VERSION.ToString());
+            modEverquestSystemConfigsSQL.AddRow("ModVersion", Configuration.CONFIGONLY_CORE_MOD_VERSION.ToString());
             modEverquestSystemConfigsSQL.AddRow("BardMaxConcurrentSongs", Configuration.SPELL_MAX_CONCURRENT_BARD_SONGS.ToString());
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMin", Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString());
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMax", Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH.ToString());
@@ -470,7 +470,7 @@ namespace EQWOWConverter
                 }
 
                 // Simplified logic for debug mode
-                if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true && creatureTemplate.IsWaypointDebugCreature == true)
+                if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true && creatureTemplate.IsWaypointDebugCreature == true)
                 {
                     creatureTemplateSQL.AddRow(creatureTemplate);
                     creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, 1f);
@@ -856,7 +856,7 @@ namespace EQWOWConverter
             string creatureAddonAuras = creatureTemplate.CanSeeThroughInvisVsUndead() == true ? Configuration.SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID.ToString() : "";
             if (spawnGroup.DoesRoam() == true)
             {
-                if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                     creatureTemplate.SubName = spawnInstance.ID + " Roams";
                 creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, creatureAddonAuras);
                 modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
@@ -892,7 +892,7 @@ namespace EQWOWConverter
                 else
                 {
                     int waypointGUID = creatureGUID * 1000;
-                    if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                    if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                         waypointGUID = creatureGUID * 10;
                     creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID, creatureAddonAuras);
                     bool useModScript = false;
@@ -951,7 +951,7 @@ namespace EQWOWConverter
                             } break;
                     }
 
-                    if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true && pathEntries.Count > 0)
+                    if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true && pathEntries.Count > 0)
                         creatureTemplate.SubName = spawnInstance.ID + " WP " + pathEntries[0].GridID;
 
                     movementType = CreatureMovementType.Path;
@@ -961,7 +961,7 @@ namespace EQWOWConverter
             }
             else
             {
-                if (Configuration.CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
+                if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                     creatureTemplate.SubName = spawnInstance.ID + " Immobile";
                 creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, creatureAddonAuras);
                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
