@@ -37,6 +37,7 @@ namespace EQWOWConverter.Events
         public DateTime? StartTime = null;
         public DateTime? EndTime = null;
         public int Occurrance = 1440; // This default means daily
+        public bool ForceAlwaysOn = false; // Should only be used temp, like for fear plane
 
         public GameEvent()
         {
@@ -58,6 +59,7 @@ namespace EQWOWConverter.Events
             StartTime = other.StartTime;
             EndTime = other.EndTime;
             Occurrance = other.Occurrance;
+            ForceAlwaysOn = other.ForceAlwaysOn;
         }
 
         public static int GenerateEventSQLID()
@@ -147,6 +149,7 @@ namespace EQWOWConverter.Events
                 spawnEvent.Name = columns["name"];
                 spawnEvent.IsScheduled = columns["is_scheduled"] == "1" ? true : false;
                 spawnEvent.Description = string.Concat("EQ ", spawnEvent.ZoneShortNames[0], " ", spawnEvent.Name);
+                spawnEvent.ForceAlwaysOn = columns["force_always_on"] == "1" ? true : false;
                 switch (columns["normalize_type"].ToLower().Trim())
                 {
                     case "day": spawnEvent.NormalizeType = GameEventNormalizeType.Day; break;
@@ -220,16 +223,27 @@ namespace EQWOWConverter.Events
                 }
 
                 // Set remaining derived elements
-                gameEvent.StartTime = new DateTime(2000, 10, 29, gameEvent.TriggerHour, 0, 0);
-                if (gameEvent.IsScheduled == false)
+                if (gameEvent.ForceAlwaysOn == true)
                 {
-                    gameEvent.DurationInMinutes = 2592000;
-                    gameEvent.EndTime = new DateTime(2000, 10, 29, gameEvent.TriggerHour, 0, 0);
+                    gameEvent.StartTime = new DateTime(2000, 10, 29, gameEvent.TriggerHour, 0, 0);
+                    gameEvent.EndTime = new DateTime(Configuration.EVENTS_MAX_DATETIME_YEAR, 12, 30, 23, 0, 0);
+                    gameEvent.Occurrance = 5184000;
+                    gameEvent.DurationInMinutes = 5184000;
+                    gameEvent.DurationInHours = 86400;
                 }
                 else
                 {
-                    gameEvent.DurationInMinutes = gameEvent.DurationInHours * 60;
-                    gameEvent.EndTime = new DateTime(Configuration.EVENTS_MAX_DATETIME_YEAR, 12, 30, 23, 0, 0);
+                    gameEvent.StartTime = new DateTime(2000, 10, 29, gameEvent.TriggerHour, 0, 0);
+                    if (gameEvent.IsScheduled == false)
+                    {
+                        gameEvent.DurationInMinutes = 2592000;
+                        gameEvent.EndTime = new DateTime(2000, 10, 29, gameEvent.TriggerHour, 0, 0);
+                    }
+                    else
+                    {
+                        gameEvent.DurationInMinutes = gameEvent.DurationInHours * 60;
+                        gameEvent.EndTime = new DateTime(Configuration.EVENTS_MAX_DATETIME_YEAR, 12, 30, 23, 0, 0);
+                    }
                 }
             }
         }
