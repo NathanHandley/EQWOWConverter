@@ -53,7 +53,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(GetAttributesExE(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExE
             newRow.AddUInt32(GetAttributesExF(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExF
             newRow.AddUInt32(0); // AttributesExG
-            newRow.AddUInt64(0); // ShapeshiftMask
+            if (spellTemplate.AllowInShapeshift == true)
+                newRow.AddUInt64(0xFFFFFFFFFFFFFFFF); // ShapeshiftMask (all forms when allowed in shapeshift)
+            else
+                newRow.AddUInt64(0); // ShapeshiftMask (no forms when allowed in shapeshift)
             newRow.AddUInt64(0); // ShapeshiftExclude
             if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
                 newRow.AddUInt32(16); // Targets (Item Enchantment)
@@ -275,6 +278,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 8192; // 	SPELL_ATTR2_ENCHANT_OWN_ITEM_ONLY (0x00002000)
             if (spellTemplate.DoNotInterruptAutoActionsAndSwingTimers == true)
                 attributeFlags |= 131072; // SPELL_ATTR2_DO_NOT_RESET_COMBAT_TIMERS (0x00020000)
+            if (spellTemplate.AllowInShapeshift == true)
+                attributeFlags |= 524288; // SPELL_ATTR2_ALLOW_WHILE_NOT_SHAPESHIFTED (0x00080000)
             return attributeFlags;
         }
 

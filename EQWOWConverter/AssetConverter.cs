@@ -2285,6 +2285,7 @@ namespace EQWOWConverter
                 slamSpellTemplate.SpellRange = Configuration.COMBATSKILL_SLAM_RANGE;
                 slamSpellTemplate.SchoolMask = 1; // Physical
                 slamSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)
+                slamSpellTemplate.AllowInShapeshift = true;
                 slamSpellTemplate.TriggersGlobalCooldown = false;
                 slamSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
                 slamSpellTemplate.AuraDuration = new SpellDuration();
