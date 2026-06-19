@@ -221,6 +221,7 @@ namespace EQWOWConverter.Spells
         public SpellFailableType FailableType = SpellFailableType.None;
         public int EffectFailChancePercent = 0;
         public bool StunUsesBashKickChance = false;
+        public int SpellIDCastOnTargetWhenStunLands = 0;
         public bool ShowFocusBoostInDescriptionIfExists = false;
         public bool IsllusionSpellParent = false;
         public bool ForceHiddenFromDisplay = false;
