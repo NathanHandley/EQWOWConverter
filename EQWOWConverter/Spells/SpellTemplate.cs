@@ -364,6 +364,8 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.FocusBoostType = GetFocusBoostType(skillID);
                 if ((skillID == 12 || skillID == 41 || skillID == 49 || skillID == 54 || skillID == 70) && newSpellTemplate.RecoveryTimeInMS == 0 && newSpellTemplate.EQBuffDurationInTicks != 0)
                     newSpellTemplate.IsBardSongAura = true;
+                if (newSpellTemplate.IsBardSongAura == true)
+                    newSpellTemplate.InterruptOnMovement = false; // Bards can play music while moving in EQ
                 if (newSpellTemplate.FocusBoostType != SpellFocusBoostType.None && newSpellTemplate.IsBardSongAura == false)
                     newSpellTemplate.IsFocusBoostableEffect = true;
                 
