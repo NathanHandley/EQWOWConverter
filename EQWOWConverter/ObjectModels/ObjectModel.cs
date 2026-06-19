@@ -24,6 +24,10 @@ namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModel
     {
+        // These were added to fix an issue where floating creatures locked up the client when casting spells
+        private const int FLY_ANIMATION_TYPE_OFFSET = 229; // This offset add gets the 'fly' version of regular animations
+        private const int HIGHEST_GROUND_ANIMATION_TYPE = 228; // GrabThrown is the highest, used for limit checks above
+
         public string Name = string.Empty;
         public ObjectModelType ModelType;
         public ObjectModelEQData EQObjectModelData = new ObjectModelEQData();
@@ -1269,7 +1273,7 @@ namespace EQWOWConverter.ObjectModels
         {
             // Pre-fill animation lookups
             AnimationLookups.Clear();
-            for (Int16 i = 0; i <= 281; i++)
+            for (Int16 i = 0; i <= HIGHEST_GROUND_ANIMATION_TYPE + FLY_ANIMATION_TYPE_OFFSET; i++)
                 AnimationLookups.Add(-1);
 
             List<EQAnimationType>? standOverrideEQAnimationTypes = null;
@@ -1346,6 +1350,8 @@ namespace EQWOWConverter.ObjectModels
                     FindAndSetAnimationForType(AnimationType.SwimRight);
                     FindAndSetAnimationForType(AnimationType.CombatWound);
                     FindAndSetAnimationForType(AnimationType.CombatCritical);
+                    FindAndSetAnimationForType(AnimationType.ReadySpellDirected);
+                    FindAndSetAnimationForType(AnimationType.ReadySpellOmni);
                     FindAndSetAnimationForType(AnimationType.SpellCastOmni);
                     FindAndSetAnimationForType(AnimationType.SpellCastDirected);
                     FindAndSetAnimationForType(AnimationType.Hover);
@@ -1360,10 +1366,40 @@ namespace EQWOWConverter.ObjectModels
                     //FindAndSetAnimationForType(AnimationType.StealthStand);
                     FindAndSetAnimationForType(AnimationType.StealthWalk);
                     FindAndSetAnimationForType(AnimationType.JumpStart);
+                    FindAndSetAnimationForType(AnimationType.JumpEnd);
+                    FindAndSetAnimationForType(AnimationType.JumpLandRun);
                     FindAndSetAnimationForType(AnimationType.KneelStart);
                     FindAndSetAnimationForType(AnimationType.KneelEnd);
                     FindAndSetAnimationForType(AnimationType.Loot);
                     FindAndSetAnimationForType(AnimationType.LootUp);
+                    FindAndSetAnimationForType(AnimationType.Fall);
+                    FindAndSetAnimationForType(AnimationType.ReadyUnarmed); // Fixed levitation + wolf form + in combat
+                    //FindAndSetAnimationForType(AnimationType.MountSelfFall);
+                    //FindAndSetAnimationForType(AnimationType.Land);
+                    //FindAndSetAnimationForType(AnimationType.JumpLandRun);
+                    //FindAndSetAnimationForType(AnimationType.Stop);
+                    //FindAndSetAnimationForType(AnimationType.StandWound);
+                    //FindAndSetAnimationForType(AnimationType.CombatWound);
+                    //FindAndSetAnimationForType(AnimationType.CombatCritical);
+                    //FindAndSetAnimationForType(AnimationType.Stun);
+                    //FindAndSetAnimationForType(AnimationType.ParryUnarmed);
+                    //FindAndSetAnimationForType(AnimationType.Parry1H);
+                    //FindAndSetAnimationForType(AnimationType.Parry2H);
+                    //FindAndSetAnimationForType(AnimationType.Parry2HL);
+                    //FindAndSetAnimationForType(AnimationType.ShieldBlock);
+
+                    //FindAndSetAnimationForType(AnimationType.Ready1H);
+                    //FindAndSetAnimationForType(AnimationType.Ready2H);
+                    //FindAndSetAnimationForType(AnimationType.Ready2HL);
+                    // 123512341234
+
+
+                    // Fill out all remaining fly-based animations to 'something', as lots of weirdness will happen if they aren't mapped an the creature is flying/hovering
+                    //for (Int16 i = FLY_ANIMATION_TYPE_OFFSET; i <= HIGHEST_GROUND_ANIMATION_TYPE + FLY_ANIMATION_TYPE_OFFSET; i++)
+                    //{
+                    //    if (AnimationLookups[i] == -1)
+                    //        AnimationLookups[i] = 0;
+                    //}
 
                     // Update the stand/fidget animation timers so that there is a fidget sometimes
                     if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)
@@ -1654,8 +1690,8 @@ namespace EQWOWConverter.ObjectModels
                             }
                         }
 
-                        // Assign a lookup for it and exit
-                        AnimationLookups[Convert.ToInt32(animationType)] = Convert.ToInt16(ModelAnimations.Count - 1);
+                        // Assign a lookup for it
+                        SetAnimationLookup(animationType, Convert.ToInt16(ModelAnimations.Count - 1));
 
                         return;
                     }
@@ -1663,6 +1699,20 @@ namespace EQWOWConverter.ObjectModels
             }
 
             Logger.WriteDebug(String.Concat("No animation candidate was found for object '", Name, "'"));
+        }
+
+        private void SetAnimationLookup(AnimationType animationType, Int16 modelAnimationIndex)
+        {
+            int groundLookupIndex = Convert.ToInt32(animationType);
+            AnimationLookups[groundLookupIndex] = modelAnimationIndex;
+
+            // If flying animations are not set, EQ creatures who levitate will freeze when they cast spells
+            if (groundLookupIndex <= HIGHEST_GROUND_ANIMATION_TYPE)
+            {
+                int flyLookupIndex = groundLookupIndex + FLY_ANIMATION_TYPE_OFFSET;
+                if (flyLookupIndex < AnimationLookups.Count)
+                    AnimationLookups[flyLookupIndex] = modelAnimationIndex;
+            }
         }
 
         public int GetFirstBoneIndexForEQBoneNames(params string[] eqBoneNames)

@@ -534,7 +534,14 @@ namespace EQWOWConverter.ObjectModels
                         returnTypes.Add(EQAnimationType.posStandPose);
                     }
                     break;
-                default: break;
+                default:
+                    {
+                        returnTypes.Add(EQAnimationType.p01StandPassive);
+                        returnTypes.Add(EQAnimationType.o02StandArmsToSide);
+                        returnTypes.Add(EQAnimationType.o01StandIdle);
+                        returnTypes.Add(EQAnimationType.l09SwimIdle);
+                        returnTypes.Add(EQAnimationType.posStandPose);
+                    } break;
             }
 
             // Return the types
