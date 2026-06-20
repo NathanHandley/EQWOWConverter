@@ -726,7 +726,7 @@ namespace EQWOWConverter
         public static int SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID = 86913;
 
         // EQ has no "daze" snare when a creature melee-hits a player from behind so this can disable it (in EQ zones only)
-        public static bool COMBAT_DAZE_IN_EQ_ZONES_ENABLED = false;
+        public static bool COMBAT_DAZE_IN_EQ_ZONES_ENABLED = true;
 
         //=====================================================================
         // Combat Skills (adjacent to spells)

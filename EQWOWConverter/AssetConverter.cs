@@ -2195,7 +2195,7 @@ namespace EQWOWConverter
                 bashSpellTemplate.Name = "Bash";
                 bashSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_BASH_SPELL_ID;
                 bashSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
-                bashSpellTemplate.Description = "Slams the target with a shield, dealing physical damage and stunning them briefly.";
+                bashSpellTemplate.Description = "Slams the target with a shield, dealing physical damage and sometimes stunning them briefly.";
                 bashSpellTemplate.AuraDescription = "Stunned.";
                 bashSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(bashSpellIconID);
                 bashSpellTemplate.CastTimeInMS = 0;
@@ -2275,7 +2275,7 @@ namespace EQWOWConverter
                 slamSpellTemplate.Name = "Slam";
                 slamSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_SLAM_SPELL_ID;
                 slamSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
-                slamSpellTemplate.Description = "Slams into the target with the body, dealing physical damage and stunning them briefly.";
+                slamSpellTemplate.Description = "Slams into the target with the body, dealing physical damage and sometimes stunning them briefly.";
                 slamSpellTemplate.AuraDescription = "Stunned.";
                 slamSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(slamSpellIconID);
                 slamSpellTemplate.CastTimeInMS = 0;
