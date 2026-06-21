@@ -1,0 +1,15 @@
+﻿EQ_Class|Max_Armor_Class|Forage|Bash|1H_Axe|2H_Axe|1H_Mace|2H_Mace|Polearm|1H_Slash|2H_Slash|Staff|Fist|Dagger|Bow
+Bard|Plate|1|0|1|0|1|0|0|1|0|0|1|1|0
+Cleric|Plate|0|0|0|0|1|1|0|0|0|1|1|0|0
+Druid|Leather|1|0|1|0|1|1|0|1|0|1|1|0|0
+Enchanter|Cloth|0|0|0|0|1|1|0|0|0|1|1|1|0
+Magician|Cloth|0|0|0|0|1|1|0|0|0|1|1|1|0
+Monk|Leather|0|0|0|0|1|1|0|0|0|1|1|0|0
+Necromancer|Cloth|0|0|0|0|1|1|0|0|0|1|1|1|0
+Paladin|Plate|0|1|1|0|1|1|1|1|1|1|1|1|1
+Ranger|Mail|1|0|1|0|1|1|1|1|1|1|1|0|1
+Rogue|Mail|0|0|1|0|0|0|0|1|0|0|0|1|1
+ShadowKnight|Plate|0|1|1|0|1|1|1|1|1|1|1|1|1
+Shaman|Mail|0|0|0|0|1|1|1|0|0|1|1|1|0
+Warrior|Plate|0|1|1|0|1|1|1|1|1|1|1|1|1
+Wizard|Cloth|0|0|0|0|1|1|0|0|0|1|1|1|0
