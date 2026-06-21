@@ -2069,7 +2069,6 @@ namespace EQWOWConverter.Items
                         case ClassEQType.Magician: allowedClassStringBuilder.Append("MAG "); break;
                         case ClassEQType.Enchanter: allowedClassStringBuilder.Append("ENC "); break;
                         case ClassEQType.All: allowedClassStringBuilder.Append("ALL "); break;
-                        case ClassEQType.Beastlord: break; //  Do nothing
                         default: break; // Do Nothing
                     }
                 }
