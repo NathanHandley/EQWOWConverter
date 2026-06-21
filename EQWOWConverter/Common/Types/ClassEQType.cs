@@ -33,6 +33,7 @@ namespace EQWOWConverter.Common
 		Wizard = 2048,
 		Magician = 4096,
 		Enchanter = 8192,
-		Beastlord = 16384
+		Beastlord = 16384,
+		All = 16383 // Added all up except beastlord
     }
 }

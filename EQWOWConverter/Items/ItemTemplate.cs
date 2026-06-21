@@ -72,7 +72,8 @@ namespace EQWOWConverter.Items
         public int WeaponDelay = 0;
         public int EQClassMask = 32767;
         public int EQSlotMask = 0;
-        public List<ClassWOWType> AllowedClassTypes = new List<ClassWOWType>();
+        public List<ClassWOWType> AllowedClassTypesWOW = new List<ClassWOWType>();
+        public List<ClassEQType> AllowedClassTypesEQ = new List<ClassEQType>();
         public List<(ItemWOWStatType, int)> StatValues = new List<(ItemWOWStatType, int)>();
         public int Armor = 0;
         public int ArcaneResist = 0;
@@ -803,7 +804,7 @@ namespace EQWOWConverter.Items
             return PlayerClassMapping.GetArmorClassForItemWearableByEQClasses(eqClasses);
         }
 
-        private static List<ClassWOWType> GetClassTypesFromClassMask(int classMask, int classID, int subClassID)
+        private static List<ClassWOWType> GetWOWClassTypesFromClassMask(int classMask, int classID, int subClassID)
         {
             HashSet<ClassWOWType> classTypes = new HashSet<ClassWOWType>();
 
@@ -828,8 +829,9 @@ namespace EQWOWConverter.Items
             }
 
             // If all classes are represented, just make it all
-            if (classTypes.Count >= 10)
+            if (classTypes.Count >= 14)
             {
+                classTypes.Clear();
                 classTypes.Add(ClassWOWType.All);
                 return classTypes.ToList();
             }
@@ -854,6 +856,35 @@ namespace EQWOWConverter.Items
                     classTypes.Add(ClassWOWType.All);
                     return classTypes.ToList();
                 }
+            }
+
+            return classTypes.ToList();
+        }
+
+        private static List<ClassEQType> GetEQClassTypesFromClassMask(int classMask, int classID, int subClassID)
+        {
+            HashSet<ClassEQType> classTypes = new HashSet<ClassEQType>();
+
+            // "all" items
+            if (classMask <= 0 || classMask >= 32767)
+            {
+                classTypes.Add(ClassEQType.All);
+                return classTypes.ToList();
+            }
+
+            // Class-specific
+            foreach (ClassEQType eqClassType in Enum.GetValues(typeof(ClassEQType)))
+            {
+                if (IsPackedClassMask(eqClassType, classMask) == true)
+                    classTypes.Add(eqClassType);
+            }
+
+            // If all classes are represented, just make it all
+            if (classTypes.Count >= 14)
+            {
+                classTypes.Clear();
+                classTypes.Add(ClassEQType.All);
+                return classTypes.ToList();
             }
 
             return classTypes.ToList();
@@ -1605,11 +1636,14 @@ namespace EQWOWConverter.Items
                 newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);
                 if (newItemTemplate.IsRogueOnlyPoison == true)
                 {
-                    newItemTemplate.AllowedClassTypes = new List<ClassWOWType>() { ClassWOWType.Rogue };
+                    newItemTemplate.AllowedClassTypesWOW = new List<ClassWOWType>() { ClassWOWType.Rogue };
                     newItemTemplate.StackSize = 20;
                 }
                 else
-                    newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
+                {
+                    newItemTemplate.AllowedClassTypesWOW = GetWOWClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
+                    newItemTemplate.AllowedClassTypesEQ = GetEQClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
+                }
                 newItemTemplate.FoodType = int.Parse(columns["foodtype"]);
 
                 // Adjust stack size and price for arrows
@@ -2005,6 +2039,53 @@ namespace EQWOWConverter.Items
             originalItemTemplate.EQItemID = CUR_ITEM_GENERATED_EQID;
             originalItemTemplate.ParentItemTemplate = createdBagItemTemplate;
             CUR_ITEM_GENERATED_EQID++;
+        }
+
+        public string GetDescriptionStringWithAddedAllowedClasses()
+        {
+            // Build the class string
+            StringBuilder allowedClassStringBuilder = new StringBuilder();
+            allowedClassStringBuilder.Append("|cFFFFFFFFEQ Classes: ");
+            if (AllowedClassTypesEQ.Count == 0)
+                allowedClassStringBuilder.Append("NONE");
+            else
+            {
+                foreach (ClassEQType allowedClassType in AllowedClassTypesEQ)
+                {
+                    switch (allowedClassType)
+                    {
+                        case ClassEQType.Warrior: allowedClassStringBuilder.Append("WAR "); break;
+                        case ClassEQType.Cleric: allowedClassStringBuilder.Append("CLR "); break;
+                        case ClassEQType.Paladin: allowedClassStringBuilder.Append("PAL "); break;
+                        case ClassEQType.Ranger: allowedClassStringBuilder.Append("RNG "); break;
+                        case ClassEQType.ShadowKnight: allowedClassStringBuilder.Append("SHD "); break;
+                        case ClassEQType.Druid: allowedClassStringBuilder.Append("DRU "); break;
+                        case ClassEQType.Monk: allowedClassStringBuilder.Append("MMK "); break;
+                        case ClassEQType.Bard: allowedClassStringBuilder.Append("BRD "); break;
+                        case ClassEQType.Rogue: allowedClassStringBuilder.Append("ROG "); break;
+                        case ClassEQType.Shaman: allowedClassStringBuilder.Append("SHM "); break;
+                        case ClassEQType.Necromancer: allowedClassStringBuilder.Append("NEC "); break;
+                        case ClassEQType.Wizard: allowedClassStringBuilder.Append("WIZ "); break;
+                        case ClassEQType.Magician: allowedClassStringBuilder.Append("MAG "); break;
+                        case ClassEQType.Enchanter: allowedClassStringBuilder.Append("ENC "); break;
+                        case ClassEQType.All: allowedClassStringBuilder.Append("ALL "); break;
+                        case ClassEQType.Beastlord: break; //  Do nothing
+                        default: break; // Do Nothing
+                    }
+                }
+            }
+
+            // Build the full string
+            StringBuilder fullDescription = new StringBuilder();
+            if (allowedClassStringBuilder.Length > 0)
+            {
+                fullDescription.Append(allowedClassStringBuilder.ToString().TrimEnd());
+                fullDescription.Append("|r"); // End coloration
+                if (Description.Length > 0)
+                    fullDescription.Append("|n"); // Newline
+            }
+            fullDescription.Append(Description);
+            return fullDescription.ToString();
         }
     }
 }

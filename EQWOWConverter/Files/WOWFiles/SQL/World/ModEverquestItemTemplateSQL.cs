@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using System.Text;
 
 namespace EQWOWConverter.WOWFiles
@@ -28,16 +29,21 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`ItemTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`NPCEquipItemTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`WornEffectSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`AllowedEQClassMask` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`ItemTemplateID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int itemTemplateID, int npcEquipItemTemplateID, int wornEffectSpellID)
+        public void AddRow(int itemTemplateID, int npcEquipItemTemplateID, int wornEffectSpellID, List<ClassEQType> allowedEQClassTypes)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ItemTemplateID", itemTemplateID);
             newRow.AddInt("NPCEquipItemTemplateID", npcEquipItemTemplateID);
             newRow.AddInt("WornEffectSpellID", wornEffectSpellID);
+            int classMask = 0;
+            foreach (ClassEQType classType in allowedEQClassTypes)
+                classMask += (int)classType;
+            newRow.AddInt("AllowedEQClassMask", classMask);
             Rows.Add(newRow);
         }
     }

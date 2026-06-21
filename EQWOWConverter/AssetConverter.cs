@@ -931,7 +931,7 @@ namespace EQWOWConverter
                             bool matchFound = false;
                             foreach (var classSpecificItem in requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID)
                             {
-                                if (firstRewardItemTemplate.AllowedClassTypes.Contains(classSpecificItem.Key) == true)
+                                if (firstRewardItemTemplate.AllowedClassTypesWOW.Contains(classSpecificItem.Key) == true)
                                 {
                                     itemReference.itemIDWOW = classSpecificItem.Value;
                                     matchFound = true;
@@ -2541,7 +2541,7 @@ namespace EQWOWConverter
                         int parentItemID = wowItemID;
                         foreach (var classSpecificItem in curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID)
                         {
-                            if (firstProducedItemTemplate.AllowedClassTypes.Contains(classSpecificItem.Key) == true)
+                            if (firstProducedItemTemplate.AllowedClassTypesWOW.Contains(classSpecificItem.Key) == true)
                             {
                                 wowItemID = classSpecificItem.Value;
                                 matchFound = true;

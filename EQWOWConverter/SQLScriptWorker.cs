@@ -982,9 +982,9 @@ namespace EQWOWConverter
                 // Save any additional metadata
                 int creatureWornEffectSpellID = itemTemplate.GetCreatureGrantableWornEffectSpellID(spellTemplatesByEQID);
                 if (itemTemplate.WOWEntryIDForNPCEquip > 0)
-                    modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryIDForNPCEquip, creatureWornEffectSpellID);
+                    modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryIDForNPCEquip, creatureWornEffectSpellID, itemTemplate.AllowedClassTypesEQ);
                 else
-                    modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryID, creatureWornEffectSpellID);
+                    modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryID, creatureWornEffectSpellID, itemTemplate.AllowedClassTypesEQ);
 
                 // Associate spells if it's a learnable item
                 if (itemTemplate.DoesTeachSpell == true && itemTemplate.EQScrollSpellID != 0)
@@ -996,8 +996,8 @@ namespace EQWOWConverter
                         itemTemplate.DoesTeachSpell = false;
                         itemTemplate.Quality = ItemWOWQuality.Poor;
                         itemTemplate.Description = "The magic in this scroll has faded to time";
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel,
-                            itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfo);
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), itemTemplate.RequiredLevel,
+                            itemTemplate.AllowedClassTypesWOW, itemTemplate.ItemDisplayInfo);
                     }
                     else
                     {
@@ -1013,25 +1013,25 @@ namespace EQWOWConverter
                             if (spellTemplate.LearnScrollPropertiesByClassType.Count != 1)
                                 scrollName = string.Concat(itemTemplate.Name, " (", scrollPropertiesByClassType.Key.ToString(), ")");
                             itemTemplateSQL.AddRow(itemTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollName,
-                                itemTemplate.Description, scrollPropertiesByClassType.Value.LearnLevel, new List<ClassWOWType>() { scrollPropertiesByClassType.Key }, itemTemplate.ItemDisplayInfo);
+                                itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), scrollPropertiesByClassType.Value.LearnLevel, new List<ClassWOWType>() { scrollPropertiesByClassType.Key }, itemTemplate.ItemDisplayInfo);
                         }
                     }
                 }
                 else
                 {
                     // Factor for creature-wearable versions and starter versions
-                    itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfo);
+                    itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypesWOW, itemTemplate.ItemDisplayInfo);
                     if (itemTemplate.ItemDisplayInfoForCreatureEquip != null)
                     {
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryIDForNPCEquip, string.Concat(itemTemplate.Name, " (npc)"), itemTemplate.Description,
-                            itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfoForCreatureEquip);
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryIDForNPCEquip, string.Concat(itemTemplate.Name, " (npc)"), itemTemplate.GetDescriptionStringWithAddedAllowedClasses(),
+                            itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypesWOW, itemTemplate.ItemDisplayInfoForCreatureEquip);
                     }
                     if (itemTemplate.StarterVersionItemTemplateID > 0)
                     {
                         string startVersionName = itemTemplate.Name;
                         if (startVersionName.Contains("*") == false)
                             startVersionName = String.Concat(startVersionName, "*");
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.StarterVersionItemTemplateID, startVersionName, itemTemplate.Description, itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes, itemTemplate.ItemDisplayInfo);
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.StarterVersionItemTemplateID, startVersionName, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypesWOW, itemTemplate.ItemDisplayInfo);
                     }
                     for (int i = 0; i < itemTemplate.ContainedItems.Count; i++)
                     {
