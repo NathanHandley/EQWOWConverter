@@ -1,11 +1,11 @@
 ﻿WOW_Class|EQ_Class_Base|EQ_Class_Default_Second|Bard|Cleric|Druid|Enchanter|Magician|Monk|Necromancer|Paladin|Ranger|Rogue|ShadowKnight|Shaman|Warrior|Wizard
-DeathKnight|ShadowKnight|Warrior|0|0|0|0|1|0|1|0|0|1|1|0|1|0
+DeathKnight|ShadowKnight|Warrior|0|0|0|0|0|0|1|0|0|1|1|0|1|1
 Druid|Druid|Monk|0|0|1|0|0|1|0|0|1|1|0|1|0|0
 Hunter|Ranger|Rogue|1|0|1|0|0|0|0|0|1|1|0|0|1|0
 Mage|Magician|Wizard|0|1|0|1|1|0|1|0|0|0|0|0|0|1
 Paladin|Paladin|Warrior|1|1|0|0|0|1|0|1|0|0|0|0|1|0
 Priest|Cleric|Enchanter|0|1|0|1|0|1|1|1|0|0|0|0|0|0
 Rogue|Rogue|Monk|1|0|0|0|0|1|0|0|0|1|1|0|1|0
-Shaman|Shaman|Monk|0|0|1|1|0|1|0|0|0|0|0|1|0|1
+Shaman|Shaman|Monk|0|0|1|1|1|1|0|0|0|0|0|1|0|0
 Warlock|Necromancer|Magician|0|0|0|1|1|0|1|0|0|0|1|0|0|1
 Warrior|Warrior|Bard|1|0|0|0|0|0|0|1|1|0|1|0|1|0

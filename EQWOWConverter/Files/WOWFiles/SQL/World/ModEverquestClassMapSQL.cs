@@ -19,27 +19,26 @@ using System.Text;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class ModEverquestPlayerAutoLearnSpellsSQL : SQLFile
+    internal class ModEverquestClassMapSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DROP TABLE IF EXISTS `mod_everquest_playerautolearnspells`; ");
-            stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_playerautolearnspells` ( ");
-            stringBuilder.AppendLine("`eqclass` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
-            stringBuilder.AppendLine("`race` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
-            stringBuilder.AppendLine("`spell` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
-            stringBuilder.AppendLine("PRIMARY KEY (`class`, `race`, `spell`) USING BTREE); ");
+            stringBuilder.AppendLine("DROP TABLE IF EXISTS `mod_everquest_classmap`; ");
+            stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_classmap` ( ");
+            stringBuilder.AppendLine("`wowclass` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`eqclass_base` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`eqclass_defaultsecond` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("PRIMARY KEY (`wowclass`) USING BTREE); ");
             return stringBuilder.ToString();
         }
 
-        // raceID of 0 means the spell is learned by the class regardless of race
-        public void AddRow(ClassEQType eqClassType, int spellID, int raceID = 0)
+        public void AddRow(ClassWOWType wowClassType, ClassEQType eqBaseClassType, ClassEQType eqDefaultSecondCLassType)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("eqclass", (int)eqClassType);
-            newRow.AddInt("race", raceID);
-            newRow.AddInt("spell", spellID);
+            newRow.AddInt("wowclass", (int)wowClassType);
+            newRow.AddInt("eqclass_base", (int)eqBaseClassType);
+            newRow.AddInt("eqclass_defaultsecond", (int)eqDefaultSecondCLassType);
             Rows.Add(newRow);
         }
     }
