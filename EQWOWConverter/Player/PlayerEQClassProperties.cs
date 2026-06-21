@@ -40,7 +40,7 @@ namespace EQWOWConverter.Player
         public bool HasDagger = false;
         public bool HasBow = false;
 
-        public Dictionary<ClassEQType, PlayerEQClassProperties> GetAllEQClassPropertiesByEQClass()
+        public static Dictionary<ClassEQType, PlayerEQClassProperties> GetAllEQClassPropertiesByEQClass()
         {
             lock (READ_LOCK)
             {
