@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Player;
 
 namespace EQWOWConverter.Creatures.Teleporters
 {
@@ -173,19 +174,14 @@ namespace EQWOWConverter.Creatures.Teleporters
             }
 
             // Load in the race alignments
-            string factionRaceAlignmentFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionRaceAlignment.csv");
-            Logger.WriteDebug("Populating creature faction race alignments via file '" + factionRaceAlignmentFile + "'");
-            List<Dictionary<string, string>> raceAlignmentRows = FileTool.ReadAllRowsFromFileWithHeader(factionRaceAlignmentFile, "|");
-            foreach (Dictionary<string, string> columns in raceAlignmentRows)
+            Dictionary<RaceType, PlayerWOWRaceProperties> wowRacePropertiesByRaceType = PlayerWOWRaceProperties.GetAllWOWRacePropertiesByRaceType();
+            foreach (PlayerWOWRaceProperties raceProperties in wowRacePropertiesByRaceType.Values)
             {
-                RaceType raceType = (RaceType)int.Parse(columns["RaceID"]);
-                string alignmentString = columns["Alignment"].Trim().ToLower();
-                switch (alignmentString)
+                switch (raceProperties.Alignment)
                 {
-                    case "evil": EvilRaces.Add(raceType); break;
-                    case "good": GoodRaces.Add(raceType); break;
-                    case "neutral": NeutralRaces.Add(raceType); break;
-                    default: Logger.WriteError("In CreatureTeleportLocationNorrath, race alignment error, as the alignment string '" + alignmentString + "' has no mapping"); break;
+                    case CreatureFactionAlignmentType.Good: GoodRaces.Add(raceProperties.WOWRaceType); break;
+                    case CreatureFactionAlignmentType.Evil: EvilRaces.Add(raceProperties.WOWRaceType); break;
+                    default: break; // Do nothing
                 }
             }
         }

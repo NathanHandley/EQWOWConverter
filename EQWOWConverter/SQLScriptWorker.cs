@@ -73,6 +73,7 @@ namespace EQWOWConverter
         private InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
         private ItemLootTemplateSQL itemLootTemplateSQL = new ItemLootTemplateSQL();
         private ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
+        private ModEverquestClassMapSQL modEverquestClassMapSQL = new ModEverquestClassMapSQL();
         private ModEverquestCreatureSQL modEverquestCreatureSQL = new ModEverquestCreatureSQL();
         private ModEverquestCreatureInstanceSQL modEverquestCreatureInstanceSQL = new ModEverquestCreatureInstanceSQL();
         private ModEverquestCreatureLootSQL modEverquestCreatureLootSQL = new ModEverquestCreatureLootSQL();
@@ -997,7 +998,7 @@ namespace EQWOWConverter
                         itemTemplate.Quality = ItemWOWQuality.Poor;
                         itemTemplate.Description = "The magic in this scroll has faded to time";
                         itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), itemTemplate.RequiredLevel,
-                            itemTemplate.AllowedClassTypesWOW, itemTemplate.ItemDisplayInfo);
+                            itemTemplate.ItemDisplayInfo);
                     }
                     else
                     {
@@ -1013,25 +1014,25 @@ namespace EQWOWConverter
                             if (spellTemplate.LearnScrollPropertiesByClassType.Count != 1)
                                 scrollName = string.Concat(itemTemplate.Name, " (", scrollPropertiesByClassType.Key.ToString(), ")");
                             itemTemplateSQL.AddRow(itemTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollName,
-                                itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), scrollPropertiesByClassType.Value.LearnLevel, new List<ClassWOWType>() { scrollPropertiesByClassType.Key }, itemTemplate.ItemDisplayInfo);
+                                itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), scrollPropertiesByClassType.Value.LearnLevel, itemTemplate.ItemDisplayInfo);
                         }
                     }
                 }
                 else
                 {
                     // Factor for creature-wearable versions and starter versions
-                    itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypesWOW, itemTemplate.ItemDisplayInfo);
+                    itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), itemTemplate.RequiredLevel, itemTemplate.ItemDisplayInfo);
                     if (itemTemplate.ItemDisplayInfoForCreatureEquip != null)
                     {
                         itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryIDForNPCEquip, string.Concat(itemTemplate.Name, " (npc)"), itemTemplate.GetDescriptionStringWithAddedAllowedClasses(),
-                            itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypesWOW, itemTemplate.ItemDisplayInfoForCreatureEquip);
+                            itemTemplate.RequiredLevel, itemTemplate.ItemDisplayInfoForCreatureEquip);
                     }
                     if (itemTemplate.StarterVersionItemTemplateID > 0)
                     {
                         string startVersionName = itemTemplate.Name;
                         if (startVersionName.Contains("*") == false)
                             startVersionName = String.Concat(startVersionName, "*");
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.StarterVersionItemTemplateID, startVersionName, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypesWOW, itemTemplate.ItemDisplayInfo);
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.StarterVersionItemTemplateID, startVersionName, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), itemTemplate.RequiredLevel, itemTemplate.ItemDisplayInfo);
                     }
                     for (int i = 0; i < itemTemplate.ContainedItems.Count; i++)
                     {
@@ -1148,179 +1149,157 @@ namespace EQWOWConverter
                 }
             }
 
-            // Autolearn Skills / Spells
-            foreach (ClassWOWType wowClassType in PlayerClassMapping.GetWOWClassesThatShouldHaveForage())
-                modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, Configuration.FORAGE_SPELL_TEMPLATE_ID, true);
+            // Class map
+            foreach (PlayerClassMapping classMapping in PlayerClassMapping.GetClassMappingsByWOWClass().Values)
+                modEverquestClassMapSQL.AddRow(classMapping.WOWClass, classMapping.BaseEQClass, classMapping.DefaultSecondEQClass);
 
-            // Harm Touch for Death Knight aligned player classes (EQ ShadowKnight)
-            if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true && Configuration.COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE == true)
+            // Spell and Skill Learns - By EQ Class
+            Dictionary<ClassEQType, PlayerEQClassProperties> eqClassPropertiesByEQClass = PlayerEQClassProperties.GetAllEQClassPropertiesByEQClass();
+            foreach (PlayerEQClassProperties eqClassProperties in eqClassPropertiesByEQClass.Values)
             {
-                foreach (var eqClassesByWowClass in PlayerClassMapping.GetAllEQClassesByWOWClass())
+                foreach (RaceType raceType in Enum.GetValues(typeof(RaceType)))
                 {
-                    if (eqClassesByWowClass.Value.Contains(ClassEQType.ShadowKnight) == false)
-                        continue;
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)eqClassesByWowClass.Key, Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID, true);
-                }
-            }
-
-            // Bash for classes that have it (granted to players from level 1, regardless of race)
-            if (Configuration.COMBATSKILL_BASH_ENABLED == true && Configuration.COMBATSKILL_BASH_PLAYER_LEARNABLE == true)
-            {
-                foreach (ClassWOWType wowClassType in PlayerClassMapping.GetWOWClassesThatShouldHaveBash())
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, Configuration.COMBATSKILL_BASH_SPELL_ID, true);
-            }
-
-            // Slam for races that have it (granted to players from level 1 and shares a cooldown with Bash)
-            if (Configuration.COMBATSKILL_SLAM_ENABLED == true && Configuration.COMBATSKILL_SLAM_PLAYER_LEARNABLE == true)
-            {
-                foreach (var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
-                {
-                    if (classRaceProperties.Value.HasSlam == false)
-                        continue;
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow(classRaceProperties.Value.ClassID, Configuration.COMBATSKILL_SLAM_SPELL_ID, true, classRaceProperties.Value.RaceID);
-                }
-            }
-
-            // Feign Death for classes that map from EQ Monk (granted to players from level 1)
-            if (Configuration.COMBATSKILL_FEIGNDEATH_ENABLED == true && Configuration.COMBATSKILL_FEIGNDEATH_PLAYER_LEARNABLE == true)
-            {
-                foreach (var eqClassesByWowClass in PlayerClassMapping.GetAllEQClassesByWOWClass())
-                {
-                    if (eqClassesByWowClass.Value.Contains(ClassEQType.Monk) == false)
-                        continue;
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)eqClassesByWowClass.Key, Configuration.COMBATSKILL_FEIGNDEATH_SPELL_ID, true);
-                }
-            }
-            if (Configuration.PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START == true)
-            {
-                foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
-                {
-                    if (wowClassType == ClassWOWType.All || wowClassType == ClassWOWType.None)
+                    if (raceType == RaceType.All)
                         continue;
 
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, Configuration.SPELLS_BINDCUSTOM_SPELLDBC_ID, true);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID, true);                    
-                }
-            }
-            if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
-            {
-                List<ClassWOWType> leatherClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Leather).ToList();
-                foreach (ClassWOWType wowClassType in leatherClasses)
-                {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 414);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 9077);
-                }
-                List<ClassWOWType> mailClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Mail).ToList();
-                foreach (ClassWOWType wowClassType in mailClasses)
-                {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 413);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 8737);
-                }
-                List<ClassWOWType> plateClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Plate).ToList();
-                foreach (ClassWOWType wowClassType in plateClasses)
-                {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 293);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 750);
-                }
-
-            }
-            if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
-            {
-                foreach (ClassWOWType wowClassType in Enum.GetValues(typeof(ClassWOWType)))
-                {
-                    if (wowClassType != ClassWOWType.All && wowClassType != ClassWOWType.None)
+                    // Bind/Gate
+                    if (Configuration.PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START == true)
                     {
-                        modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 433);
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 9116);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.SPELLS_BINDCUSTOM_SPELLDBC_ID);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID);
+                    }
+
+                    // Forage
+                    if (eqClassProperties.HasForage == true)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.FORAGE_SPELL_TEMPLATE_ID);
+
+                    // Bash
+                    if (Configuration.COMBATSKILL_BASH_ENABLED == true && Configuration.COMBATSKILL_BASH_PLAYER_LEARNABLE == true && eqClassProperties.HasBash == true)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_BASH_SPELL_ID);
+
+                    // Feign Death
+                    if (Configuration.COMBATSKILL_FEIGNDEATH_ENABLED == true && Configuration.COMBATSKILL_FEIGNDEATH_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.Monk)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_FEIGNDEATH_SPELL_ID);
+
+                    // Harm Touch
+                    if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true && Configuration.COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.ShadowKnight)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID);
+
+                    // Shield
+                    if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
+                    {
+                        modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 433);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 9116);
+                    }
+
+                    // Bow
+                    if (Configuration.PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES == true && eqClassProperties.HasBow == true)
+                    {
+                        modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 45);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 264);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 3018); // Shoot
+                    }
+
+                    // Melee weapon skills
+                    if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == true)
+                    {
+                        if (eqClassProperties.Has1HAxe == true)
+                        {
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 44);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 196);
+                        }
+                        if (eqClassProperties.Has2HAxe == true)
+                        {
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 172);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 197);
+                        }
+                        if (eqClassProperties.Has1HMace == true)
+                        {
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 54);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 198);
+                        }
+                        if (eqClassProperties.Has2HMace == true)
+                        {
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 160);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 199);
+                        }
+                        if (eqClassProperties.HasPolearm == true)
+                        {
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 229);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 200);
+                        }
+                        if (eqClassProperties.Has1HSword == true)
+                        {
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 43);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 201);
+                        }
+                        if (eqClassProperties.Has2HSword == true)
+                        {
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 55);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 202);
+                        }
+                        if (eqClassProperties.HasStaff == true)
+                        {
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 136);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 227);
+                        }
+                        if (eqClassProperties.HasFistWeapon == true)
+                        {
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 473);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 15590);
+                        }
+                        if (eqClassProperties.HasDagger == true)
+                        {
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 173);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1180);
+                        }
+                    }
+
+                    // Armor skills
+                    if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
+                    {
+                        ItemWOWArmorSubclassType armorSubClassByClass = PlayerEQClassProperties.GetArmorClassForItemWearableByEQClasses(new List<ClassEQType>() { eqClassProperties.EQClass });
+                        if (armorSubClassByClass >= ItemWOWArmorSubclassType.Leather)
+                        { 
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 414);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 9077);
+                        }
+                        if (armorSubClassByClass >= ItemWOWArmorSubclassType.Mail)
+                        {
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 413);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 8737);
+                        }
+                        if (armorSubClassByClass >= ItemWOWArmorSubclassType.Plate)
+                        {
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 293);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 750);
+                        }
+
                     }
                 }
             }
-            if (Configuration.PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES == true)
+            // Spell and Skill Learns - By WOW Race
+            Dictionary<RaceType, PlayerWOWRaceProperties> wowRacePropertiesByRaceType = PlayerWOWRaceProperties.GetAllWOWRacePropertiesByRaceType();
+            foreach (PlayerWOWRaceProperties wowRaceProperties in wowRacePropertiesByRaceType.Values)
             {
-                List<ClassWOWType> bowClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Bow).ToList();
-                foreach (ClassWOWType wowClassType in bowClasses)
+                foreach (ClassEQType eqClassType in Enum.GetValues(typeof(ClassEQType)))
                 {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 45);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 264);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 3018, true); // Shoot
-                }
-            }
-            if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == true)
-            {
-                List<ClassWOWType> axeOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeOneHand).ToList();
-                foreach (ClassWOWType wowClassType in axeOneHandClasses)
-                {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 44);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 196);
-                }
-                List<ClassWOWType> axeTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeTwoHand).ToList();
-                foreach (ClassWOWType wowClassType in axeTwoHandClasses)
-                {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 172);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 197);
-                }
-                List<ClassWOWType> maceOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceOneHand).ToList();
-                foreach (ClassWOWType wowClassType in maceOneHandClasses)
-                {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 54);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 198);
-                }
-                List<ClassWOWType> maceTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceTwoHand).ToList();
-                foreach (ClassWOWType wowClassType in maceTwoHandClasses)
-                {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 160);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 199);
-                }
-                List<ClassWOWType> polearmClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Polearm).ToList();
-                foreach (ClassWOWType wowClassType in polearmClasses)
-                {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 229);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 200);
-                }
-                List<ClassWOWType> swordOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordOneHand).ToList();
-                foreach (ClassWOWType wowClassType in swordOneHandClasses)
-                {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 43);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 201);
-                }
-                List<ClassWOWType> swordTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordTwoHand).ToList();
-                foreach (ClassWOWType wowClassType in swordTwoHandClasses)
-                {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 55);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 202);
-                }
-                List<ClassWOWType> staffClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Staff).ToList();
-                foreach (ClassWOWType wowClassType in staffClasses)
-                {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 136);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 227);
-                }
-                List<ClassWOWType> fistWeaponClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.FistWeapon).ToList();
-                foreach (ClassWOWType wowClassType in fistWeaponClasses)
-                {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 473);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 15590);
-                }
-                List<ClassWOWType> daggerClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Dagger).ToList();
-                foreach (ClassWOWType wowClassType in daggerClasses)
-                {
-                    modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)wowClassType, 173);
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)wowClassType, 1180);
+                    if (Configuration.COMBATSKILL_SLAM_ENABLED == true && Configuration.COMBATSKILL_SLAM_PLAYER_LEARNABLE == true)
+                    {
+                        // Slam
+                        if (wowRaceProperties.HasSlam == true)
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassType, wowRaceProperties.WOWRaceType, Configuration.COMBATSKILL_SLAM_SPELL_ID);
+                    }
                 }
             }
 
-            // DK pre-55 stuff
+            // DK pre-55 stats
             if (Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true)
             {
-                // Stats
                 foreach (PlayerClassLevelStats dkLevelStats in PlayerClassLevelStats.GetPre55DKLevelStats())
                     playerClassStatsSQL.AddRow(ClassWOWType.DeathKnight, dkLevelStats.Level, dkLevelStats.BaseHP,
                         dkLevelStats.BaseMana, dkLevelStats.Strength, dkLevelStats.Agility, dkLevelStats.Stamina,
                         dkLevelStats.Intellect, dkLevelStats.Spirit);
-
-                // Runeforging
-                modEverquestPlayerAutoLearnSkillsSQL.AddRow((int)ClassWOWType.DeathKnight, 776);
-                modEverquestPlayerAutoLearnSpellsSQL.AddRow((int)ClassWOWType.DeathKnight, 53428);
             }
         }
 
@@ -1904,6 +1883,7 @@ namespace EQWOWConverter
             instanceTemplateSQL.SaveToDisk("instance_template", SQLFileType.World);
             itemLootTemplateSQL.SaveToDisk("item_loot_template", SQLFileType.World);
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
+            modEverquestClassMapSQL.SaveToDisk("mod_everquest_classmap", SQLFileType.World);
             modEverquestCreatureSQL.SaveToDisk("mod_everquest_creature", SQLFileType.World);
             modEverquestCreatureInstanceSQL.SaveToDisk("mod_everquest_creature_instance", SQLFileType.World);
             modEverquestCreatureLootSQL.SaveToDisk("mod_everquest_creature_loot", SQLFileType.World);

@@ -34,11 +34,11 @@ namespace EQWOWConverter.WOWFiles
         }
 
         // raceID of 0 means the spell is learned by the class regardless of race
-        public void AddRow(ClassEQType eqClassType, int spellID, int raceID = 0)
+        public void AddRow(ClassEQType eqClassType, RaceType raceType, int spellID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("eqclass", (int)eqClassType);
-            newRow.AddInt("race", raceID);
+            newRow.AddInt("race", (int)raceType);
             newRow.AddInt("spell", spellID);
             Rows.Add(newRow);
         }

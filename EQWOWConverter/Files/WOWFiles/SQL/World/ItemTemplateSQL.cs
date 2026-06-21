@@ -28,7 +28,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM `item_template` WHERE `entry` >= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_START + " AND `entry` <= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_END + ";";
         }
 
-        public void AddRow(ItemTemplate itemTemplate, int entryID, string name, string description, int requiredLevel, List<ClassWOWType> allowedClassTypes, ItemDisplayInfo? itemDisplayInfo)
+        public void AddRow(ItemTemplate itemTemplate, int entryID, string name, string description, int requiredLevel, ItemDisplayInfo? itemDisplayInfo)
         {
             // Prevent double-add
             if (insertedItemTemplateEntryIDs.Contains(entryID))
@@ -57,7 +57,7 @@ namespace EQWOWConverter.WOWFiles
             else
                 newRow.AddInt("SellPrice", itemTemplate.SellPriceInCopper);
             newRow.AddInt("InventoryType", Convert.ToInt32(itemTemplate.InventoryType));
-            newRow.AddInt("AllowableClass", CalculateAllowableClasses(allowedClassTypes));
+            newRow.AddInt("AllowableClass", -1);
             newRow.AddInt("AllowableRace", -1);
             newRow.AddInt("ItemLevel", 500);
             newRow.AddInt("RequiredLevel", requiredLevel);
@@ -215,20 +215,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("flagsCustom", 0);
             newRow.AddInt("VerifiedBuild", 12340);
             Rows.Add(newRow);
-        }
-
-        private int CalculateAllowableClasses(List<ClassWOWType> allowedClassTypes)
-        {
-            int allowableClass = 0;
-            foreach (ClassWOWType classType in allowedClassTypes)
-            {
-                if (classType == ClassWOWType.All)
-                    return -1;
-                allowableClass += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(classType) - 1));
-            }
-            if (allowableClass == 0)
-                allowableClass = -1;
-            return allowableClass;
         }
 
         private int GetFlags(ItemTemplate itemTemplate)

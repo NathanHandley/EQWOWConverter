@@ -172,7 +172,7 @@ namespace EQWOWConverter
         public static bool GENERATE_ENABLE_GUILD_VAULTS = true;
 
         // If true, Priests of Discord (in Norrath) will teleport players to Azeroth, and Azeroth will have Priests of Discord to send players back to Norrath
-        // Note that CreatureFactionClassAlignment.csv and CreatureFactionRaceAlignment.csv factor into Norrath destinations
+        // Note that CreatureFactionClassAlignment.csv and PlayerWOWRaceProperties.csv factor into Norrath destinations
         public static bool GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION = true;
         public static int GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID = 55813;
 
@@ -1231,7 +1231,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES, "");
             OutputVariableToConfig("DUNGEON_FINDER_ENABLED", DUNGEON_FINDER_ENABLED, "If true, dungeon finder can be used for special versions of EQ dungeons");
             OutputTextLineToConfig("# If true, Priests of Discord (in Norrath) will teleport players to Azeroth, and Azeroth will have Priests of Discord to send players back to Norrath");
-            OutputVariableToConfig("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION, "Note that CreatureFactionClassAlignment.csv and CreatureFactionRaceAlignment.csv factor into Norrath destinations", false);
+            OutputVariableToConfig("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION, "Note that CreatureFactionClassAlignment.csv and PlayerWOWRaceProperties.csv factor into Norrath destinations", false);
             OutputVariableToConfig("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID, "");
             OutputVariableToConfig("GENERATE_ENABLE_GUILD_VAULTS", GENERATE_ENABLE_GUILD_VAULTS, "If true, guild banks will now appear. In some cases this will replace an existing banker, others will add a new guild bank NPC object");
             OutputVariableToConfig("OBJECT_GAMEOBJECT_ENABLE_MAILBOXES", OBJECT_GAMEOBJECT_ENABLE_MAILBOXES, "If true, custom mailboxes are put into the game as 'postmen'");

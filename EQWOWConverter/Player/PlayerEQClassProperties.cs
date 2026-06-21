@@ -119,5 +119,66 @@ namespace EQWOWConverter.Player
                     EQClassPropertiesByEQClass.Add(eqClass, classProperties);
             }
         }
+
+        public static ItemWOWArmorSubclassType GetArmorClassForItemWearableByEQClasses(List<ClassEQType> eqClasses)
+        {
+            lock (READ_LOCK)
+            {
+                if (EQClassPropertiesByEQClass.Count == 0)
+                    PopulateClassProperties();
+
+                // Determine the lowest armor class type, which can differ base on config
+                int lowestItemWOWArmorSubClassType = (int)ItemWOWArmorSubclassType.Plate;
+                if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
+                {
+                    foreach (ClassEQType eqClass in eqClasses)
+                    {
+                        if (EQClassPropertiesByEQClass.ContainsKey(eqClass) == true)
+                        {
+                            PlayerEQClassProperties classProperties = EQClassPropertiesByEQClass[eqClass];
+                            if ((int)classProperties.MaxArmorType < lowestItemWOWArmorSubClassType)
+                                lowestItemWOWArmorSubClassType = (int)classProperties.MaxArmorType;
+                        }
+                    }
+                }
+                else
+                {
+                    // Not changing player skills for eq skills, so use wow classes
+                    // Get a list of all WOW classes
+                    Dictionary<ClassWOWType, PlayerClassMapping> classMappingsByWOWClass = PlayerClassMapping.GetClassMappingsByWOWClass();
+                    HashSet<ClassWOWType> wowClasses = new HashSet<ClassWOWType>();
+                    foreach (ClassEQType eqClass in eqClasses)
+                    {
+                        foreach (PlayerClassMapping classMapping in classMappingsByWOWClass.Values)
+                        {
+                            if (classMapping.BaseEQClass == eqClass)
+                                wowClasses.Add(classMapping.WOWClass);
+                        }
+                    }
+
+                    // Find the lowest
+                    foreach (ClassWOWType wowClass in wowClasses)
+                    {
+                        int curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Cloth;
+                        switch (wowClass)
+                        {
+                            case ClassWOWType.DeathKnight: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Plate; break;
+                            case ClassWOWType.Druid: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Leather; break;
+                            case ClassWOWType.Hunter: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Mail; break;
+                            case ClassWOWType.Mage: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Cloth; break;
+                            case ClassWOWType.Paladin: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Plate; break;
+                            case ClassWOWType.Priest: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Cloth; break;
+                            case ClassWOWType.Rogue: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Leather; break;
+                            case ClassWOWType.Shaman: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Mail; break;
+                            case ClassWOWType.Warlock: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Cloth; break;
+                            case ClassWOWType.Warrior: curClassMaxArmorSubClassType = (int)ItemWOWArmorSubclassType.Plate; break;
+                            default: Logger.WriteError("Unhandled class type '", wowClass.ToString(), "' in GetArmorClassForItemWearableByEQClasses"); break;
+                        }
+                        lowestItemWOWArmorSubClassType = Math.Min(curClassMaxArmorSubClassType, lowestItemWOWArmorSubClassType);
+                    }
+                }
+                return (ItemWOWArmorSubclassType)lowestItemWOWArmorSubClassType;
+            }
+        }
     }
 }

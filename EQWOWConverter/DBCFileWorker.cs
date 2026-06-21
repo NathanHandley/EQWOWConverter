@@ -165,7 +165,7 @@ namespace EQWOWConverter
 
             // Skill-bound spells
             if (spellTemplate.SkillLine != 0)
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate, spellEffectBlocks[0].WOWSpellID);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate, spellEffectBlocks[0].WOWSpellID, 0);
         }
 
         public void CreateDBCFiles(List<Zone> zones, List<CreatureModelTemplate> creatureModelTemplates, List<SpellTemplate> spellTemplates)
@@ -523,48 +523,50 @@ namespace EQWOWConverter
             }
 
             // Skills
+            List<ClassWOWType> wowClassTypes = new List<ClassWOWType>();
+            wowClassTypes.Add(ClassWOWType.All);
             if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
             {
-                List<ClassWOWType> wowClassTypes = new List<ClassWOWType>();
-                wowClassTypes.Add(ClassWOWType.All);
                 skillRaceClassInfoDBC.AddRow(433, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 433, 9116, 2);
             }
             if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
             {
-                List<ClassWOWType> leatherClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Leather).ToList();
-                skillRaceClassInfoDBC.AddRow(414, leatherClasses);
-                List<ClassWOWType> mailClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Mail).ToList();
-                skillRaceClassInfoDBC.AddRow(413, mailClasses);
-                List<ClassWOWType> plateClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Plate).ToList();
-                skillRaceClassInfoDBC.AddRow(293, plateClasses);
+                skillRaceClassInfoDBC.AddRow(414, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 414, 9077, 2);
+                skillRaceClassInfoDBC.AddRow(413, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 413, 8737, 2);
+                skillRaceClassInfoDBC.AddRow(293, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 293, 750, 2);
             }
             if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == true)
             {
-                List<ClassWOWType> axeOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeOneHand).ToList();
-                skillRaceClassInfoDBC.AddRow(44, axeOneHandClasses);
-                List<ClassWOWType> axeTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeTwoHand).ToList();
-                skillRaceClassInfoDBC.AddRow(172, axeTwoHandClasses);
-                List<ClassWOWType> maceOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceOneHand).ToList();
-                skillRaceClassInfoDBC.AddRow(54, maceOneHandClasses);
-                List<ClassWOWType> maceTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceTwoHand).ToList();
-                skillRaceClassInfoDBC.AddRow(160, maceTwoHandClasses);
-                List<ClassWOWType> polearmClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Polearm).ToList();
-                skillRaceClassInfoDBC.AddRow(229, polearmClasses);
-                List<ClassWOWType> swordOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordOneHand).ToList();
-                skillRaceClassInfoDBC.AddRow(43, swordOneHandClasses);
-                List<ClassWOWType> swordTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordTwoHand).ToList();
-                skillRaceClassInfoDBC.AddRow(55, swordTwoHandClasses);
-                List<ClassWOWType> staffClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Staff).ToList();
-                skillRaceClassInfoDBC.AddRow(136, staffClasses);
-                List<ClassWOWType> fistWeaponClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.FistWeapon).ToList();
-                skillRaceClassInfoDBC.AddRow(473, fistWeaponClasses);
-                List<ClassWOWType> daggerClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Dagger).ToList();
-                skillRaceClassInfoDBC.AddRow(173, daggerClasses);
+                skillRaceClassInfoDBC.AddRow(44, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 44, 196, 2);
+                skillRaceClassInfoDBC.AddRow(172, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 172, 197, 2);
+                skillRaceClassInfoDBC.AddRow(54, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 54, 198, 2);
+                skillRaceClassInfoDBC.AddRow(160, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 160, 199, 2);
+                skillRaceClassInfoDBC.AddRow(229, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 229, 200, 2);
+                skillRaceClassInfoDBC.AddRow(43, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 43, 201, 2);
+                skillRaceClassInfoDBC.AddRow(55, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 55, 202, 2);
+                skillRaceClassInfoDBC.AddRow(136, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 136, 227, 2);
+                skillRaceClassInfoDBC.AddRow(473, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 473, 15590, 2);
+                skillRaceClassInfoDBC.AddRow(173, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 173, 1180, 2);
             }
             if (Configuration.PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES == true)
             {
-                List<ClassWOWType> bowClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Bow).ToList();
-                skillRaceClassInfoDBC.AddRow(45, bowClasses);
+                skillRaceClassInfoDBC.AddRow(45, wowClassTypes);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 45, 264, 2);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 45, 3018, 2);
             }
 
             // Spells

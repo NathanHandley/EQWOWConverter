@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Player;
 
 namespace EQWOWConverter.Creatures
 {
@@ -207,25 +208,16 @@ namespace EQWOWConverter.Creatures
             }
 
             // Load in the race alignments
-            string factionRaceAlignmentFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionRaceAlignment.csv");
-            Logger.WriteDebug("Populating creature faction race alignments via file '" + factionRaceAlignmentFile + "'");
-            List<Dictionary<string, string>> raceAlignmentRows = FileTool.ReadAllRowsFromFileWithHeader(factionRaceAlignmentFile, "|");
+            Dictionary<RaceType, PlayerWOWRaceProperties> wowRacePropertiesByRaceType = PlayerWOWRaceProperties.GetAllWOWRacePropertiesByRaceType();
             HashSet<RaceType> evilRaces = new HashSet<RaceType>();
             HashSet<RaceType> goodRaces = new HashSet<RaceType>();
-            foreach (Dictionary<string, string> columns in raceAlignmentRows)
+            foreach (PlayerWOWRaceProperties raceProperties in wowRacePropertiesByRaceType.Values)
             {
-                RaceType raceType = (RaceType)int.Parse(columns["RaceID"]);
-                string alignmentString = columns["Alignment"].Trim().ToLower();
-                switch (alignmentString)
+                switch (raceProperties.Alignment)
                 {
-                    case "evil": evilRaces.Add(raceType); break;
-                    case "good": goodRaces.Add(raceType); break;
-                    case "neutral": break; // do nothing for neutral
-                    default:
-                        {
-                            Logger.WriteError("Race alignment error, as the alignment string '" + alignmentString + "' has no mapping");
-                        }
-                        break;
+                    case CreatureFactionAlignmentType.Good: goodRaces.Add(raceProperties.WOWRaceType); break;
+                    case CreatureFactionAlignmentType.Evil: evilRaces.Add(raceProperties.WOWRaceType); break;
+                    default: break; // Do nothing
                 }
             }
 

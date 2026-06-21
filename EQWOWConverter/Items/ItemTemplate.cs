@@ -72,7 +72,6 @@ namespace EQWOWConverter.Items
         public int WeaponDelay = 0;
         public int EQClassMask = 32767;
         public int EQSlotMask = 0;
-        public List<ClassWOWType> AllowedClassTypesWOW = new List<ClassWOWType>();
         public List<ClassEQType> AllowedClassTypesEQ = new List<ClassEQType>();
         public List<(ItemWOWStatType, int)> StatValues = new List<(ItemWOWStatType, int)>();
         public int Armor = 0;
@@ -801,64 +800,7 @@ namespace EQWOWConverter.Items
                 eqClasses.Add(ClassEQType.Bard);
             if (IsPackedClassMask(ClassEQType.Cleric, classMask))
                 eqClasses.Add(ClassEQType.Cleric);
-            return PlayerClassMapping.GetArmorClassForItemWearableByEQClasses(eqClasses);
-        }
-
-        private static List<ClassWOWType> GetWOWClassTypesFromClassMask(int classMask, int classID, int subClassID)
-        {
-            HashSet<ClassWOWType> classTypes = new HashSet<ClassWOWType>();
-
-            // "all" items
-            if (classMask <= 0 || classMask >= 32767)
-            {
-                classTypes.Add(ClassWOWType.All);
-                return classTypes.ToList();
-            }
-            // Arrows should be usable by all unless only a specific class is allowed
-            if (classID == 6 && subClassID == 2 && classTypes.Count != 1)
-            {
-                classTypes.Add(ClassWOWType.All);
-                return classTypes.ToList();
-            }
-
-            // Class-specific
-            foreach (ClassEQType eqClassType in Enum.GetValues(typeof(ClassEQType)))
-            {
-                if (IsPackedClassMask(eqClassType, classMask) == true)
-                    classTypes.Add(PlayerClassMapping.GetWOWClassForEQClass(eqClassType));
-            }
-
-            // If all classes are represented, just make it all
-            if (classTypes.Count >= 14)
-            {
-                classTypes.Clear();
-                classTypes.Add(ClassWOWType.All);
-                return classTypes.ToList();
-            }
-
-            // If all of the eligible classes are the ones that can use it, also return as all
-            if (classID == 2) // Weapons
-            {
-                HashSet<ClassWOWType> eligibleClassesForWeaponType = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass((ItemWOWWeaponSubclassType)subClassID);
-                if (eligibleClassesForWeaponType.SetEquals(classTypes) == true)
-                {
-                    classTypes.Clear();
-                    classTypes.Add(ClassWOWType.All);
-                    return classTypes.ToList();
-                }
-            }
-            else if (classID == 4) // Armor
-            {
-                HashSet<ClassWOWType> eligibleClassesForArmorType = PlayerClassMapping.GetWOWClassesEligibleForArmorType((ItemWOWArmorSubclassType)subClassID);
-                if (eligibleClassesForArmorType.SetEquals(classTypes) == true)
-                {
-                    classTypes.Clear();
-                    classTypes.Add(ClassWOWType.All);
-                    return classTypes.ToList();
-                }
-            }
-
-            return classTypes.ToList();
+            return PlayerEQClassProperties.GetArmorClassForItemWearableByEQClasses(eqClasses);
         }
 
         private static List<ClassEQType> GetEQClassTypesFromClassMask(int classMask, int classID, int subClassID)
@@ -1636,12 +1578,11 @@ namespace EQWOWConverter.Items
                 newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);
                 if (newItemTemplate.IsRogueOnlyPoison == true)
                 {
-                    newItemTemplate.AllowedClassTypesWOW = new List<ClassWOWType>() { ClassWOWType.Rogue };
+                    newItemTemplate.AllowedClassTypesEQ = new List<ClassEQType>() { ClassEQType.Rogue };
                     newItemTemplate.StackSize = 20;
                 }
                 else
                 {
-                    newItemTemplate.AllowedClassTypesWOW = GetWOWClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
                     newItemTemplate.AllowedClassTypesEQ = GetEQClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
                 }
                 newItemTemplate.FoodType = int.Parse(columns["foodtype"]);

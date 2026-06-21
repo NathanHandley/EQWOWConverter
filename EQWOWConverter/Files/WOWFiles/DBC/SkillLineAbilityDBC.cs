@@ -25,7 +25,31 @@ namespace EQWOWConverter.WOWFiles
     {
         private static int CUR_SKILLLINEABILITY_DBCID = Configuration.DBCID_SKILLLINEABILITY_ID_START;
 
-        public void AddRow(int id, SpellTemplate spellTemplate, int spellTemplateID)
+        public void AddRow(int id, int skillLineID, int spellTemplateID, int acquireMethodID)
+        {
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt32(id); // ID
+            newRow.AddInt32(skillLineID); // SkillLine
+            newRow.AddInt32(spellTemplateID); // Spell
+            newRow.AddInt32(0); // RaceMask
+            newRow.AddInt32(0); // ClassMask
+            newRow.AddInt32(0); // ExcludeRace
+            newRow.AddInt32(0); // ExcludeClass
+            newRow.AddInt32(1); // MinSkillLineRank
+            newRow.AddInt32(0); // SupercededBySpell
+            newRow.AddInt32(acquireMethodID); // AcquireMethod (0 = learn by trainer, 1 = learned on skill value, 2 = learned on skill learn)
+            newRow.AddInt32(0); // TrivialSkillLineRankHigh
+            newRow.AddInt32(0); // TrivialSkillLineRankLow
+            newRow.AddInt32(0); // CharacterPoints1
+            newRow.AddInt32(0); // CharacterPoints2
+
+            newRow.SortValue1 = skillLineID;
+            newRow.SortValue2 = id;
+
+            Rows.Add(newRow);
+        }
+
+        public void AddRow(int id, SpellTemplate spellTemplate, int spellTemplateID, int acquireMethodID)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID
@@ -39,7 +63,7 @@ namespace EQWOWConverter.WOWFiles
             {
                 newRow.AddInt32(1); // MinSkillLineRank
                 newRow.AddInt32(0); // SupercededBySpell
-                newRow.AddInt32(0); // AcquireMethod (0 = learn by trainer)
+                newRow.AddInt32(acquireMethodID); // AcquireMethod (0 = learn by trainer, 1 = learned on skill value, 2 = learned on skill learn)
                 newRow.AddInt32(0); // TrivialSkillLineRankHigh
                 newRow.AddInt32(0); // TrivialSkillLineRankLow
             }
@@ -47,7 +71,7 @@ namespace EQWOWConverter.WOWFiles
             {
                 newRow.AddInt32(spellTemplate.TradeskillRecipe.SkillRankNeededWOW); // MinSkillLineRank
                 newRow.AddInt32(0); // SupercededBySpell
-                newRow.AddInt32(0); // AcquireMethod (0 = learn by trainer)
+                newRow.AddInt32(acquireMethodID); // AcquireMethod (0 = learn by trainer, 1 = learned on skill value, 2 = learned on skill learn)
                 newRow.AddInt32(spellTemplate.TradeskillRecipe.TrivialHighWOW); // TrivialSkillLineRankHigh
                 newRow.AddInt32(spellTemplate.TradeskillRecipe.TrivialLowWOW); // TrivialSkillLineRankLow
             }
