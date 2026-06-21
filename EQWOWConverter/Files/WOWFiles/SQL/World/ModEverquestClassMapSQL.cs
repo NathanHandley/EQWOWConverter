@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Player;
 using System.Text;
 
 namespace EQWOWConverter.WOWFiles
@@ -37,8 +38,8 @@ namespace EQWOWConverter.WOWFiles
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("wowclass", (int)wowClassType);
-            newRow.AddInt("eqclass_base", (int)eqBaseClassType);
-            newRow.AddInt("eqclass_defaultsecond", (int)eqDefaultSecondCLassType);
+            newRow.AddInt("eqclass_base", PlayerEQClassProperties.GetServerEQClassIDFromEQClassType(eqBaseClassType));
+            newRow.AddInt("eqclass_defaultsecond", PlayerEQClassProperties.GetServerEQClassIDFromEQClassType(eqDefaultSecondCLassType));
             Rows.Add(newRow);
         }
     }

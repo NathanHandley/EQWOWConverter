@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Player;
 using System.Text;
 
 namespace EQWOWConverter.WOWFiles
@@ -28,14 +29,14 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_playerautolearnskills` ( ");
             stringBuilder.AppendLine("`eqclass` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`skill` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
-            stringBuilder.AppendLine("PRIMARY KEY (`class`, `skill`) USING BTREE); ");
+            stringBuilder.AppendLine("PRIMARY KEY (`eqclass`, `skill`) USING BTREE); ");
             return stringBuilder.ToString();
         }
 
         public void AddRow(ClassEQType eqClassType, int skillID)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("eqclass", (int)eqClassType);
+            newRow.AddInt("eqclass", PlayerEQClassProperties.GetServerEQClassIDFromEQClassType(eqClassType));
             newRow.AddInt("skill", skillID);
             Rows.Add(newRow);
         }

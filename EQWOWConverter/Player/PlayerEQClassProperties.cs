@@ -180,5 +180,27 @@ namespace EQWOWConverter.Player
                 return (ItemWOWArmorSubclassType)lowestItemWOWArmorSubClassType;
             }
         }
+
+        public static int GetServerEQClassIDFromEQClassType(ClassEQType eqClassType)
+        {
+            switch (eqClassType)
+            {
+                case ClassEQType.Warrior: return 1;
+                case ClassEQType.Cleric: return 2;
+                case ClassEQType.Paladin: return 3;
+                case ClassEQType.Ranger: return 4;
+                case ClassEQType.ShadowKnight: return 5;
+                case ClassEQType.Druid: return 6;
+                case ClassEQType.Monk: return 7;
+                case ClassEQType.Bard: return 8;
+                case ClassEQType.Rogue: return 9;
+                case ClassEQType.Shaman: return 10;
+                case ClassEQType.Necromancer: return 11;
+                case ClassEQType.Wizard: return 12;
+                case ClassEQType.Magician: return 13;
+                case ClassEQType.Enchanter: return 14;
+                default: return 0;
+            }
+        }
     }
 }

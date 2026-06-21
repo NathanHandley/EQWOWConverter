@@ -138,7 +138,7 @@ namespace EQWOWConverter.Items
         public ItemFocusType FocusType = ItemFocusType.None;
         public int FocusValue = 0;
         public BookText? BookTextReference = null;
-        public Dictionary<ClassWOWType, int> ClassSpecificItemVersionsByWOWItemTemplateID = new Dictionary<ClassWOWType, int>(); // Used for quests
+        public Dictionary<ClassEQType, int> ClassSpecificItemVersionsByEQClassID = new Dictionary<ClassEQType, int>(); // Used for quests
         public int StarterVersionItemTemplateID = -1;
 
         public ItemTemplate()
@@ -146,11 +146,11 @@ namespace EQWOWConverter.Items
 
         }
 
-        public void PopulateClassSpecificVersionsForSpellScrolls(Dictionary<ClassWOWType, SpellTemplate.SpellLearnScrollProperties> spellScrollPropertiesByClassType)
+        public void PopulateClassSpecificVersionsForSpellScrolls(Dictionary<ClassEQType, SpellTemplate.SpellLearnScrollProperties> spellScrollPropertiesByClassType)
         {
-            ClassSpecificItemVersionsByWOWItemTemplateID.Clear();
+            ClassSpecificItemVersionsByEQClassID.Clear();
             foreach (var spellScrollProperties in spellScrollPropertiesByClassType)
-                ClassSpecificItemVersionsByWOWItemTemplateID.Add(spellScrollProperties.Key, spellScrollProperties.Value.WOWItemTemplateID);
+                ClassSpecificItemVersionsByEQClassID.Add(spellScrollProperties.Key, spellScrollProperties.Value.WOWItemTemplateID);
         }
 
         public static List<BookText> GetAllBookTexts()
@@ -1884,12 +1884,12 @@ namespace EQWOWConverter.Items
             return itemTemplate;
         }
 
-        public static ItemTemplate CreateSpellScrollClassVersionContainer(ItemTemplate baseScrollItem, Dictionary<ClassWOWType, int> classVersionWOWItemIDsByClass, int wowContainerItemTemplateID)
+        public static ItemTemplate CreateSpellScrollClassVersionContainer(ItemTemplate baseScrollItem, Dictionary<ClassEQType, int> classVersionWOWItemIDsByEQClass, int wowContainerItemTemplateID)
         {
             ItemTemplate itemTemplate = new ItemTemplate();
 
             int curGroupID = 0;
-            foreach (var classVersion in classVersionWOWItemIDsByClass)
+            foreach (var classVersion in classVersionWOWItemIDsByEQClass)
             {
                 ContainedItem containedItem = new ContainedItem();
                 containedItem.itemTemplateIDWOW = classVersion.Value;

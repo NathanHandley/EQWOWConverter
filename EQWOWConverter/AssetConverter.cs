@@ -170,7 +170,7 @@ namespace EQWOWConverter
                     foreach (var itemTemplateByWOWEntryID in itemTemplatesByWOWEntryID)
                     {
                         if (itemTemplateByWOWEntryID.Value.EQScrollSpellID > 0 && spellTemplatesByEQID.ContainsKey(itemTemplateByWOWEntryID.Value.EQScrollSpellID) == true)
-                            itemTemplateByWOWEntryID.Value.PopulateClassSpecificVersionsForSpellScrolls(spellTemplatesByEQID[itemTemplateByWOWEntryID.Value.EQScrollSpellID].LearnScrollPropertiesByClassType);
+                            itemTemplateByWOWEntryID.Value.PopulateClassSpecificVersionsForSpellScrolls(spellTemplatesByEQID[itemTemplateByWOWEntryID.Value.EQScrollSpellID].LearnScrollPropertiesByEQClassType);
                     }
                 }                
 
@@ -859,9 +859,9 @@ namespace EQWOWConverter
                         break;
                     }
                     ItemTemplate questRewardItem = itemTemplatesByWOWEntryID[questRewardItemReference.itemIDWOW];
-                    if (questRewardItem.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
+                    if (questRewardItem.ClassSpecificItemVersionsByEQClassID.Count > 0)
                     {
-                        foreach (int classSpecificItemIDWOW in questRewardItem.ClassSpecificItemVersionsByWOWItemTemplateID.Values)
+                        foreach (int classSpecificItemIDWOW in questRewardItem.ClassSpecificItemVersionsByEQClassID.Values)
                         {
                             QuestTemplate.QuestItemReference classSpecificReference = new QuestTemplate.QuestItemReference();
                             classSpecificReference.itemIDParentWOW = questRewardItem.WOWEntryID;
@@ -871,7 +871,7 @@ namespace EQWOWConverter
                             if (questRewardItemReference.itemChance == 100)
                                 classSpecificReference.itemChance = 100;
                             else
-                                classSpecificReference.itemChance = questRewardItemReference.itemChance / questRewardItem.ClassSpecificItemVersionsByWOWItemTemplateID.Values.Count;
+                                classSpecificReference.itemChance = questRewardItemReference.itemChance / questRewardItem.ClassSpecificItemVersionsByEQClassID.Values.Count;
                             expandedQuestRewardItems.Add(classSpecificReference);
                         }
                     }
@@ -922,16 +922,16 @@ namespace EQWOWConverter
                         continue;
                     }
                     ItemTemplate requiredItemTemplate = itemTemplatesByWOWEntryID[itemReference.itemIDWOW];
-                    if (requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
+                    if (requiredItemTemplate.ClassSpecificItemVersionsByEQClassID.Count > 0)
                     {
                         if (questTemplate.RewardItems.Count > 0)
                         {
                             // If the first reward is class specific, use that as the class reference.
                             ItemTemplate firstRewardItemTemplate = itemTemplatesByWOWEntryID[questTemplate.RewardItems[0].itemIDWOW];
                             bool matchFound = false;
-                            foreach (var classSpecificItem in requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID)
+                            foreach (var classSpecificItem in requiredItemTemplate.ClassSpecificItemVersionsByEQClassID)
                             {
-                                if (firstRewardItemTemplate.AllowedClassTypesWOW.Contains(classSpecificItem.Key) == true)
+                                if (firstRewardItemTemplate.AllowedClassTypesEQ.Contains(classSpecificItem.Key) == true)
                                 {
                                     itemReference.itemIDWOW = classSpecificItem.Value;
                                     matchFound = true;
@@ -939,13 +939,13 @@ namespace EQWOWConverter
                                 }
                             }
                             if (matchFound == false)
-                                itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.First().Value;
+                                itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByEQClassID.First().Value;
                             else
                                 itemReference.itemIDParentWOW = requiredItemTemplate.WOWEntryID;
                         }
                         else
                         {
-                            itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.First().Value;
+                            itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByEQClassID.First().Value;
                         }
                     }
                     else
@@ -1731,9 +1731,9 @@ namespace EQWOWConverter
 
                         // Items that have class specific copies need to be added for each copy, otherwise just one
                         List<(int wowItemID, float chance, string nameSuffix)> resolvedItems = new List<(int, float, string)>();
-                        if (curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
+                        if (curItemTemplate.ClassSpecificItemVersionsByEQClassID.Count > 0)
                         {
-                            var classVersions = curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.ToList();
+                            var classVersions = curItemTemplate.ClassSpecificItemVersionsByEQClassID.ToList();
                             float remainderChance = itemDropEntry.Chance;
                             float stepChance = remainderChance / classVersions.Count;
                             for (int j = 0; j < classVersions.Count; j++)
@@ -2501,15 +2501,15 @@ namespace EQWOWConverter
                     effectBasePoints = singleProducedCount - 1;
 
                     // Handle spell scrolls that split out into multiple class-specific versions
-                    if (singleProducedItem.ClassSpecificItemVersionsByWOWItemTemplateID.Count == 1)
+                    if (singleProducedItem.ClassSpecificItemVersionsByEQClassID.Count == 1)
                     {
-                        resultWOWItemID = singleProducedItem.ClassSpecificItemVersionsByWOWItemTemplateID.First().Value;
+                        resultWOWItemID = singleProducedItem.ClassSpecificItemVersionsByEQClassID.First().Value;
                     }
-                    else if (singleProducedItem.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 1)
+                    else if (singleProducedItem.ClassSpecificItemVersionsByEQClassID.Count > 1)
                     {
                         if (recipe.ProducedMultiContainerWOWID <= 0)
                             Logger.WriteError("Missing ProducedMultiContainerWOWID for recipe ID ", recipe.EQID.ToString());
-                        resultItemTemplate = ItemTemplate.CreateSpellScrollClassVersionContainer(singleProducedItem, singleProducedItem.ClassSpecificItemVersionsByWOWItemTemplateID, recipe.ProducedMultiContainerWOWID);
+                        resultItemTemplate = ItemTemplate.CreateSpellScrollClassVersionContainer(singleProducedItem, singleProducedItem.ClassSpecificItemVersionsByEQClassID, recipe.ProducedMultiContainerWOWID);
                         recipe.ProducedFilledContainer = resultItemTemplate;
                         resultWOWItemID = resultItemTemplate.WOWEntryID;
                         effectDieSides = 0;
@@ -2534,14 +2534,14 @@ namespace EQWOWConverter
 
                     // For class-specific item variations, replace the added reagent with one that is aligned to the output, or the first
                     ItemTemplate curItemTemplate = itemTemplatesByWOWEntryID[wowItemID];
-                    if (curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.Count > 0)
+                    if (curItemTemplate.ClassSpecificItemVersionsByEQClassID.Count > 0)
                     {
                         ItemTemplate firstProducedItemTemplate = itemTemplatesByWOWEntryID[recipe.ProducedItemCountsByWOWItemID.Keys.First()];
                         bool matchFound = false;
                         int parentItemID = wowItemID;
-                        foreach (var classSpecificItem in curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID)
+                        foreach (var classSpecificItem in curItemTemplate.ClassSpecificItemVersionsByEQClassID)
                         {
-                            if (firstProducedItemTemplate.AllowedClassTypesWOW.Contains(classSpecificItem.Key) == true)
+                            if (firstProducedItemTemplate.AllowedClassTypesEQ.Contains(classSpecificItem.Key) == true)
                             {
                                 wowItemID = classSpecificItem.Value;
                                 matchFound = true;
@@ -2549,7 +2549,7 @@ namespace EQWOWConverter
                             }
                         }
                         if (matchFound == false)
-                            wowItemID = curItemTemplate.ClassSpecificItemVersionsByWOWItemTemplateID.First().Value;
+                            wowItemID = curItemTemplate.ClassSpecificItemVersionsByEQClassID.First().Value;
                         SpellTemplate.Reagent newReagent = new SpellTemplate.Reagent(wowItemID, count);
                         newReagent.ParentWOWItemTemplateEntryID = parentItemID;
                         curSpellTemplate.Reagents.Add(newReagent);

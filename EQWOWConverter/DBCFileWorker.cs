@@ -490,7 +490,7 @@ namespace EQWOWConverter
                         SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQScrollSpellID];
                         itemTemplate.ClassID = 9;
                         itemTemplate.SubClassID = 0;
-                        foreach (var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByClassType)
+                        foreach (var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByEQClassType)
                             itemDBC.AddRow(itemTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID, itemTemplate.ItemDisplayInfo);
                     }
                 }

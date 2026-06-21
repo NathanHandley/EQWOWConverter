@@ -38,11 +38,31 @@ namespace EQWOWConverter.Player
             }
         }
 
+        public static ClassWOWType GetWOWClassForBaseEQClass(ClassEQType baseEQClass)
+        {
+            lock (READ_LOCK)
+            {
+                if (ClassMappingByWOWClass.Count == 0)
+                    PopulateClassMapping();
+                ClassWOWType foundClassType = ClassWOWType.None;
+                foreach (PlayerClassMapping playerClassMapping in ClassMappingByWOWClass.Values)
+                {
+                    if (playerClassMapping.BaseEQClass == baseEQClass)
+                    {
+                        if (foundClassType != ClassWOWType.None)
+                            Logger.WriteError("Found more than one wow class for a baseEQClass of '", baseEQClass.ToString(), "'");
+                        foundClassType = playerClassMapping.WOWClass;
+                    }
+                }
+                return foundClassType;
+            }
+        }
+
         private static void PopulateClassMapping()
         {
             ClassMappingByWOWClass.Clear();
-            string classMappingFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "PlayerEQClassProperties.csv");
-            Logger.WriteDebug(string.Concat("Populating EQ Class Mapping via file '", classMappingFile, "'"));
+            string classMappingFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "PlayerClassMapping.csv");
+            Logger.WriteDebug(string.Concat("Populating Class Mapping via file '", classMappingFile, "'"));
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(classMappingFile, "|");
             foreach (Dictionary<string, string> columns in rows)
             {

@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Player;
 using EQWOWConverter.Common;
 using System.Text;
 
@@ -29,7 +30,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`eqclass` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`race` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`spell` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
-            stringBuilder.AppendLine("PRIMARY KEY (`class`, `race`, `spell`) USING BTREE); ");
+            stringBuilder.AppendLine("PRIMARY KEY (`eqclass`, `race`, `spell`) USING BTREE); ");
             return stringBuilder.ToString();
         }
 
@@ -37,7 +38,7 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(ClassEQType eqClassType, RaceType raceType, int spellID)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("eqclass", (int)eqClassType);
+            newRow.AddInt("eqclass", PlayerEQClassProperties.GetServerEQClassIDFromEQClassType(eqClassType));
             newRow.AddInt("race", (int)raceType);
             newRow.AddInt("spell", spellID);
             Rows.Add(newRow);

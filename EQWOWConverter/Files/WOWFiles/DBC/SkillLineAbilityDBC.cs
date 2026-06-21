@@ -146,82 +146,82 @@ namespace EQWOWConverter.WOWFiles
             }
 
             // Update any skill references
-            if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
-            {
-                List<ClassWOWType> leatherClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Leather).ToList();
-                List<ClassWOWType> mailClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Mail).ToList();
-                List<ClassWOWType> plateClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Plate).ToList();
-                foreach (DBCRow row in Rows)
-                {
-                    DBCRow.DBCFieldInt32 skillLineField = (DBCRow.DBCFieldInt32)row.AddedFields[1];
-                    DBCRow.DBCFieldInt32 classMaskField = (DBCRow.DBCFieldInt32)row.AddedFields[4];
-                    switch (skillLineField.Value)
-                    {
-                        case 414: classMaskField.Value = CalculateClassMask(leatherClasses); break; // Leather
-                        case 413: classMaskField.Value = CalculateClassMask(mailClasses); break; // Mail
-                        case 293: classMaskField.Value = CalculateClassMask(plateClasses); break; // Plate
-                        default: break;
-                    }
-                }
-            }
-            if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
-            {
-                foreach (DBCRow row in Rows)
-                {
-                    DBCRow.DBCFieldInt32 skillLineField = (DBCRow.DBCFieldInt32)row.AddedFields[1];
-                    if (skillLineField.Value == 433)
-                    {
-                        DBCRow.DBCFieldInt32 classMaskField = (DBCRow.DBCFieldInt32)row.AddedFields[4];
-                        classMaskField.Value = -1;
-                    }
-                }
-            }
-            if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == true)
-            {
-                List<ClassWOWType> axeOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeOneHand).ToList();
-                List<ClassWOWType> axeTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeTwoHand).ToList();
-                List<ClassWOWType> maceOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceOneHand).ToList();
-                List<ClassWOWType> maceTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceTwoHand).ToList();
-                List<ClassWOWType> polearmClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Polearm).ToList();
-                List<ClassWOWType> swordOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordOneHand).ToList();
-                List<ClassWOWType> swordTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordTwoHand).ToList();
-                List<ClassWOWType> staffClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Staff).ToList();
-                List<ClassWOWType> fistWeaponClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.FistWeapon).ToList();
-                List<ClassWOWType> daggerClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Dagger).ToList();
-                foreach (DBCRow row in Rows)
-                {
-                    DBCRow.DBCFieldInt32 skillLineField = (DBCRow.DBCFieldInt32)row.AddedFields[1];
-                    DBCRow.DBCFieldInt32 classMaskField = (DBCRow.DBCFieldInt32)row.AddedFields[4];
-                    switch (skillLineField.Value)
-                    {
-                        case 44: classMaskField.Value = CalculateClassMask(axeOneHandClasses); break; // Axes
-                        case 172: classMaskField.Value = CalculateClassMask(axeTwoHandClasses); break; // Two-Handed Axes
-                        case 54: classMaskField.Value = CalculateClassMask(maceOneHandClasses); break; // Maces
-                        case 160: classMaskField.Value = CalculateClassMask(maceTwoHandClasses); break; // Two-Handed Maces
-                        case 229: classMaskField.Value = CalculateClassMask(polearmClasses); break; // Polearms
-                        case 43: classMaskField.Value = CalculateClassMask(swordOneHandClasses); break; // Swords
-                        case 55: classMaskField.Value = CalculateClassMask(swordTwoHandClasses); break; // Two-Handed Swords
-                        case 136: classMaskField.Value = CalculateClassMask(staffClasses); break; // Staves
-                        case 473: classMaskField.Value = CalculateClassMask(fistWeaponClasses); break; // Fist Weapons
-                        case 173: classMaskField.Value = CalculateClassMask(daggerClasses); break; // Daggers
-                        default: break;
-                    }
-                }
-            }
+            //if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
+            //{
+            //    List<ClassWOWType> leatherClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Leather).ToList();
+            //    List<ClassWOWType> mailClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Mail).ToList();
+            //    List<ClassWOWType> plateClasses = PlayerClassMapping.GetWOWClassesEligibleForArmorType(ItemWOWArmorSubclassType.Plate).ToList();
+            //    foreach (DBCRow row in Rows)
+            //    {
+            //        DBCRow.DBCFieldInt32 skillLineField = (DBCRow.DBCFieldInt32)row.AddedFields[1];
+            //        DBCRow.DBCFieldInt32 classMaskField = (DBCRow.DBCFieldInt32)row.AddedFields[4];
+            //        switch (skillLineField.Value)
+            //        {
+            //            case 414: classMaskField.Value = CalculateClassMask(leatherClasses); break; // Leather
+            //            case 413: classMaskField.Value = CalculateClassMask(mailClasses); break; // Mail
+            //            case 293: classMaskField.Value = CalculateClassMask(plateClasses); break; // Plate
+            //            default: break;
+            //        }
+            //    }
+            //}
+            //if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
+            //{
+            //    foreach (DBCRow row in Rows)
+            //    {
+            //        DBCRow.DBCFieldInt32 skillLineField = (DBCRow.DBCFieldInt32)row.AddedFields[1];
+            //        if (skillLineField.Value == 433)
+            //        {
+            //            DBCRow.DBCFieldInt32 classMaskField = (DBCRow.DBCFieldInt32)row.AddedFields[4];
+            //            classMaskField.Value = -1;
+            //        }
+            //    }
+            //}
+            //if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == true)
+            //{
+            //    List<ClassWOWType> axeOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeOneHand).ToList();
+            //    List<ClassWOWType> axeTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.AxeTwoHand).ToList();
+            //    List<ClassWOWType> maceOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceOneHand).ToList();
+            //    List<ClassWOWType> maceTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.MaceTwoHand).ToList();
+            //    List<ClassWOWType> polearmClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Polearm).ToList();
+            //    List<ClassWOWType> swordOneHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordOneHand).ToList();
+            //    List<ClassWOWType> swordTwoHandClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.SwordTwoHand).ToList();
+            //    List<ClassWOWType> staffClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Staff).ToList();
+            //    List<ClassWOWType> fistWeaponClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.FistWeapon).ToList();
+            //    List<ClassWOWType> daggerClasses = PlayerClassMapping.GetWOWClassesEligibleForWeaponSubClass(ItemWOWWeaponSubclassType.Dagger).ToList();
+            //    foreach (DBCRow row in Rows)
+            //    {
+            //        DBCRow.DBCFieldInt32 skillLineField = (DBCRow.DBCFieldInt32)row.AddedFields[1];
+            //        DBCRow.DBCFieldInt32 classMaskField = (DBCRow.DBCFieldInt32)row.AddedFields[4];
+            //        switch (skillLineField.Value)
+            //        {
+            //            case 44: classMaskField.Value = CalculateClassMask(axeOneHandClasses); break; // Axes
+            //            case 172: classMaskField.Value = CalculateClassMask(axeTwoHandClasses); break; // Two-Handed Axes
+            //            case 54: classMaskField.Value = CalculateClassMask(maceOneHandClasses); break; // Maces
+            //            case 160: classMaskField.Value = CalculateClassMask(maceTwoHandClasses); break; // Two-Handed Maces
+            //            case 229: classMaskField.Value = CalculateClassMask(polearmClasses); break; // Polearms
+            //            case 43: classMaskField.Value = CalculateClassMask(swordOneHandClasses); break; // Swords
+            //            case 55: classMaskField.Value = CalculateClassMask(swordTwoHandClasses); break; // Two-Handed Swords
+            //            case 136: classMaskField.Value = CalculateClassMask(staffClasses); break; // Staves
+            //            case 473: classMaskField.Value = CalculateClassMask(fistWeaponClasses); break; // Fist Weapons
+            //            case 173: classMaskField.Value = CalculateClassMask(daggerClasses); break; // Daggers
+            //            default: break;
+            //        }
+            //    }
+            //}
         }
 
-        private int CalculateClassMask(List<ClassWOWType> allowedClassTypes)
-        {
-            int allowableClass = 0;
-            foreach (ClassWOWType classType in allowedClassTypes)
-            {
-                if (classType == ClassWOWType.All)
-                    return -1;
-                allowableClass += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(classType) - 1));
-            }
-            if (allowableClass == 0)
-                allowableClass = -1;
-            return allowableClass;
-        }
+        //private int CalculateClassMask(List<ClassWOWType> allowedClassTypes)
+        //{
+        //    int allowableClass = 0;
+        //    foreach (ClassWOWType classType in allowedClassTypes)
+        //    {
+        //        if (classType == ClassWOWType.All)
+        //            return -1;
+        //        allowableClass += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(classType) - 1));
+        //    }
+        //    if (allowableClass == 0)
+        //        allowableClass = -1;
+        //    return allowableClass;
+        //}
     }
 }
