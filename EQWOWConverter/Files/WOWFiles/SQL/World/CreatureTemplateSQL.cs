@@ -60,14 +60,14 @@ namespace EQWOWConverter.WOWFiles
                 npcFlags |= 4194304; // 0x00400000 = Is a stable master
                 numOfRoles++;
             }
-            if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.All)
+            if (creatureTemplate.WOWClassTrainerType != ClassWOWType.None && creatureTemplate.WOWClassTrainerType != ClassWOWType.All)
             {
                 npcFlags |= 16;    // 0x00000010 = Is a trainer
                 npcFlags |= 32;    // 0x00000020 = Is Class Trainer
                 iconName = "Trainer";
                 numOfRoles+=2;
             }
-            else if (creatureTemplate.ClassTrainerType == ClassWOWType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
+            else if (creatureTemplate.WOWClassTrainerType == ClassWOWType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
             {
                 npcFlags |= 16;    // 0x00000010 = Is a trainer
                 npcFlags |= 64;    // 0x00000040 = Is Profession Trainer

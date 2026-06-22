@@ -531,7 +531,7 @@ namespace EQWOWConverter
 
                 // All creature data
                 modEverquestCreatureSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.Race.CanHoldVisualItems, creatureTemplate.Race.CanHoldVisualShields,
-                    creatureTemplate.SpawnLimit);
+                    creatureTemplate.SpawnLimit, creatureTemplate.EQClassTrainerType);
 
                 // Determine the display id
                 int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;
@@ -1624,10 +1624,10 @@ namespace EQWOWConverter
             // Associate creature templates to trainer lists
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
-                if (creatureTemplate.ClassTrainerType != ClassWOWType.All && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                if (creatureTemplate.WOWClassTrainerType != ClassWOWType.All && creatureTemplate.WOWClassTrainerType != ClassWOWType.None)
                 {
-                    creatureDefaultTrainerSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, trainerIDsByClass[creatureTemplate.ClassTrainerType]);
-                    creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];
+                    creatureDefaultTrainerSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, trainerIDsByClass[creatureTemplate.WOWClassTrainerType]);
+                    creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.WOWClassTrainerType];
                 }
                 else if (creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
                 {
