@@ -1551,16 +1551,32 @@ namespace EQWOWConverter
 
         private void PopulateTrainerData(List<CreatureTemplate> creatureTemplates)
         {
-            // Trainer Abilities - Class
-            Dictionary<ClassWOWType, int> trainerIDsByClass = new Dictionary<ClassWOWType, int>();
-            foreach (ClassWOWType classType in Enum.GetValues(typeof(ClassWOWType)))
+            // Since multiclass is supported, trainer menus are a composition of all possible classes and filtered on the mod-everquest level
+            Dictionary<ClassWOWType, PlayerClassMapping> classMappingsByWOWClass = PlayerClassMapping.GetClassMappingsByWOWClass();
+            Dictionary<ClassEQType, int> multiclassTrainerIDByEQClass = new Dictionary<ClassEQType, int>();
+            foreach (ClassEQType eqClassType in Enum.GetValues(typeof(ClassEQType)))
             {
-                if (classType == ClassWOWType.All || classType == ClassWOWType.None)
+                if (eqClassType == ClassEQType.All)
                     continue;
-                trainerIDsByClass.Add(classType, TrainerSQL.GenerateUniqueTrainerID());
-                trainerSQL.AddRow(trainerIDsByClass[classType], 0, (int)classType, "What would you like to learn?");
-                foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForClass(classType))
-                    trainerSpellSQL.AddRow(trainerIDsByClass[classType], trainerAbility);
+
+                // Collect every WoW class that can train at a guild master of this EQ class (base or secondary)
+                List<ClassWOWType> trainableWOWClasses = new List<ClassWOWType>();
+                foreach (KeyValuePair<ClassWOWType, PlayerClassMapping> classMapping in classMappingsByWOWClass)
+                {
+                    if (classMapping.Value.BaseEQClass == eqClassType || classMapping.Value.AllowedSecondEQClasses.Contains(eqClassType))
+                        trainableWOWClasses.Add(classMapping.Key);
+                }
+                if (trainableWOWClasses.Count == 0)
+                    continue;
+
+                int multiclassTrainerID = TrainerSQL.GenerateUniqueTrainerID();
+                multiclassTrainerIDByEQClass.Add(eqClassType, multiclassTrainerID);
+                trainerSQL.AddRow(multiclassTrainerID, 0, 0, "What would you like to learn?");
+                HashSet<int> addedSpellIDs = new HashSet<int>();
+                foreach (ClassWOWType trainableWOWClass in trainableWOWClasses)
+                    foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForClass(trainableWOWClass))
+                        if (addedSpellIDs.Add(trainerAbility.SpellID))
+                            trainerSpellSQL.AddRow(multiclassTrainerID, trainerAbility);
             }
 
             // Trainer Abilities - Tradeskills
@@ -1624,10 +1640,13 @@ namespace EQWOWConverter
             // Associate creature templates to trainer lists
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
-                if (creatureTemplate.WOWClassTrainerType != ClassWOWType.All && creatureTemplate.WOWClassTrainerType != ClassWOWType.None)
+                if (creatureTemplate.EQClassTrainerType != ClassEQType.All
+                    && multiclassTrainerIDByEQClass.ContainsKey(creatureTemplate.EQClassTrainerType))
                 {
-                    creatureDefaultTrainerSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, trainerIDsByClass[creatureTemplate.WOWClassTrainerType]);
-                    creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.WOWClassTrainerType];
+                    creatureDefaultTrainerSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, multiclassTrainerIDByEQClass[creatureTemplate.EQClassTrainerType]);
+                    // Only put the static train option on base class trainers
+                    if (creatureTemplate.WOWClassTrainerType != ClassWOWType.All && creatureTemplate.WOWClassTrainerType != ClassWOWType.None)
+                        creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.WOWClassTrainerType];
                 }
                 else if (creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
                 {
