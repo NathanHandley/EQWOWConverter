@@ -1151,7 +1151,7 @@ namespace EQWOWConverter
 
             // Class map
             foreach (PlayerClassMapping classMapping in PlayerClassMapping.GetClassMappingsByWOWClass().Values)
-                modEverquestClassMapSQL.AddRow(classMapping.WOWClass, classMapping.BaseEQClass, classMapping.DefaultSecondEQClass);
+                modEverquestClassMapSQL.AddRow(classMapping.WOWClass, classMapping.BaseEQClass, classMapping.DefaultSecondEQClass, classMapping.AllowedSecondEQClasses);
 
             // Spell and Skill Learns - By EQ Class
             Dictionary<ClassEQType, PlayerEQClassProperties> eqClassPropertiesByEQClass = PlayerEQClassProperties.GetAllEQClassPropertiesByEQClass();

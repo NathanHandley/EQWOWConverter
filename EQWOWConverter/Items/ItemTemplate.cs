@@ -2001,7 +2001,7 @@ namespace EQWOWConverter.Items
                         case ClassEQType.Ranger: allowedClassStringBuilder.Append("RNG "); break;
                         case ClassEQType.ShadowKnight: allowedClassStringBuilder.Append("SHD "); break;
                         case ClassEQType.Druid: allowedClassStringBuilder.Append("DRU "); break;
-                        case ClassEQType.Monk: allowedClassStringBuilder.Append("MMK "); break;
+                        case ClassEQType.Monk: allowedClassStringBuilder.Append("MNK "); break;
                         case ClassEQType.Bard: allowedClassStringBuilder.Append("BRD "); break;
                         case ClassEQType.Rogue: allowedClassStringBuilder.Append("ROG "); break;
                         case ClassEQType.Shaman: allowedClassStringBuilder.Append("SHM "); break;

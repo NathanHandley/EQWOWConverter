@@ -30,16 +30,24 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`wowclass` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`eqclass_base` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`eqclass_defaultsecond` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`eqclass_eligiblesecond_mask` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("PRIMARY KEY (`wowclass`) USING BTREE); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(ClassWOWType wowClassType, ClassEQType eqBaseClassType, ClassEQType eqDefaultSecondCLassType)
+        public void AddRow(ClassWOWType wowClassType, ClassEQType eqBaseClassType, ClassEQType eqDefaultSecondCLassType, List<ClassEQType> eligibleSecondEQClassTypes)
         {
+            // Build a bitmask of the EQ classes eligible to be set as a secondary class, where each bit position is (server EQ class ID - 1)
+            int eligibleSecondMask = 0;
+            foreach (ClassEQType eligibleSecondEQClassType in eligibleSecondEQClassTypes)
+                eligibleSecondMask |= 1 << (PlayerEQClassProperties.GetServerEQClassIDFromEQClassType(eligibleSecondEQClassType) - 1);
+            eligibleSecondMask |= 1 << (PlayerEQClassProperties.GetServerEQClassIDFromEQClassType(eqDefaultSecondCLassType) - 1);
+
             SQLRow newRow = new SQLRow();
             newRow.AddInt("wowclass", (int)wowClassType);
             newRow.AddInt("eqclass_base", PlayerEQClassProperties.GetServerEQClassIDFromEQClassType(eqBaseClassType));
             newRow.AddInt("eqclass_defaultsecond", PlayerEQClassProperties.GetServerEQClassIDFromEQClassType(eqDefaultSecondCLassType));
+            newRow.AddInt("eqclass_eligiblesecond_mask", eligibleSecondMask);
             Rows.Add(newRow);
         }
     }
