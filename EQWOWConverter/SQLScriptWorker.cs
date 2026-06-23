@@ -975,6 +975,7 @@ namespace EQWOWConverter
             Dictionary<int, List<CreatureLootEntry>> creatureLootEntriesByCreatureTemplateID, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
         {
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWID = ItemTemplate.GetItemTemplatesByWOWEntryID();
+            HashSet<int> addedLearnScrollItemIDs = new HashSet<int>();
             foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
             {
                 if (itemTemplate.IsExistingItemAlready == true)
@@ -1015,6 +1016,14 @@ namespace EQWOWConverter
                                 scrollName = string.Concat(itemTemplate.Name, " (", scrollPropertiesByClassType.Key.ToString(), ")");
                             itemTemplateSQL.AddRow(itemTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollName,
                                 itemTemplate.GetDescriptionStringWithAddedAllowedClasses(new List<ClassEQType>() { scrollPropertiesByClassType.Key }), scrollPropertiesByClassType.Value.LearnLevel, itemTemplate.ItemDisplayInfo);
+
+                            // This also needs a metadata item
+                            if (addedLearnScrollItemIDs.Contains(scrollPropertiesByClassType.Value.WOWItemTemplateID) == false)
+                            {
+                                modEverquestItemTemplateSQL.AddRow(scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollPropertiesByClassType.Value.WOWItemTemplateID,
+                                    creatureWornEffectSpellID, new List<ClassEQType>() { scrollPropertiesByClassType.Key });
+                                addedLearnScrollItemIDs.Add(scrollPropertiesByClassType.Value.WOWItemTemplateID);
+                            }
                         }
                     }
                 }
@@ -1580,7 +1589,9 @@ namespace EQWOWConverter
 
                 int multiclassTrainerID = TrainerSQL.GenerateUniqueTrainerID();
                 multiclassTrainerIDByEQClass.Add(eqClassType, multiclassTrainerID);
-                trainerSQL.AddRow(multiclassTrainerID, 0, 0, "What would you like to learn?");
+                // Type 2 (Tradeskill) rather than 0 (Class) with a 0 requirement as the core only validates the class and without this,
+                // there will be lots of errors in the logs ("invalid class requirement").  Since the call is intercepted though, they will work as clas strainers.
+                trainerSQL.AddRow(multiclassTrainerID, 2, 0, "What would you like to learn?");
                 HashSet<int> addedSpellIDs = new HashSet<int>();
                 foreach (ClassWOWType trainableWOWClass in trainableWOWClasses)
                     foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForClass(trainableWOWClass))
