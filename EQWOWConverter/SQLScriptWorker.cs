@@ -997,7 +997,7 @@ namespace EQWOWConverter
                         itemTemplate.DoesTeachSpell = false;
                         itemTemplate.Quality = ItemWOWQuality.Poor;
                         itemTemplate.Description = "The magic in this scroll has faded to time";
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), itemTemplate.RequiredLevel,
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(itemTemplate.AllowedClassTypesEQ), itemTemplate.RequiredLevel,
                             itemTemplate.ItemDisplayInfo);
                     }
                     else
@@ -1014,17 +1014,17 @@ namespace EQWOWConverter
                             if (spellTemplate.LearnScrollPropertiesByEQClassType.Count != 1)
                                 scrollName = string.Concat(itemTemplate.Name, " (", scrollPropertiesByClassType.Key.ToString(), ")");
                             itemTemplateSQL.AddRow(itemTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollName,
-                                itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), scrollPropertiesByClassType.Value.LearnLevel, itemTemplate.ItemDisplayInfo);
+                                itemTemplate.GetDescriptionStringWithAddedAllowedClasses(new List<ClassEQType>() { scrollPropertiesByClassType.Key }), scrollPropertiesByClassType.Value.LearnLevel, itemTemplate.ItemDisplayInfo);
                         }
                     }
                 }
                 else
                 {
                     // Factor for creature-wearable versions and starter versions
-                    itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), itemTemplate.RequiredLevel, itemTemplate.ItemDisplayInfo);
+                    itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(itemTemplate.AllowedClassTypesEQ), itemTemplate.RequiredLevel, itemTemplate.ItemDisplayInfo);
                     if (itemTemplate.ItemDisplayInfoForCreatureEquip != null)
                     {
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryIDForNPCEquip, string.Concat(itemTemplate.Name, " (npc)"), itemTemplate.GetDescriptionStringWithAddedAllowedClasses(),
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryIDForNPCEquip, string.Concat(itemTemplate.Name, " (npc)"), itemTemplate.GetDescriptionStringWithAddedAllowedClasses(itemTemplate.AllowedClassTypesEQ),
                             itemTemplate.RequiredLevel, itemTemplate.ItemDisplayInfoForCreatureEquip);
                     }
                     if (itemTemplate.StarterVersionItemTemplateID > 0)
@@ -1032,7 +1032,7 @@ namespace EQWOWConverter
                         string startVersionName = itemTemplate.Name;
                         if (startVersionName.Contains("*") == false)
                             startVersionName = String.Concat(startVersionName, "*");
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.StarterVersionItemTemplateID, startVersionName, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(), itemTemplate.RequiredLevel, itemTemplate.ItemDisplayInfo);
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.StarterVersionItemTemplateID, startVersionName, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(itemTemplate.AllowedClassTypesEQ), itemTemplate.RequiredLevel, itemTemplate.ItemDisplayInfo);
                     }
                     for (int i = 0; i < itemTemplate.ContainedItems.Count; i++)
                     {

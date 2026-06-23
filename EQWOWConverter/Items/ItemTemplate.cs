@@ -1982,16 +1982,16 @@ namespace EQWOWConverter.Items
             CUR_ITEM_GENERATED_EQID++;
         }
 
-        public string GetDescriptionStringWithAddedAllowedClasses()
+        public string GetDescriptionStringWithAddedAllowedClasses(List<ClassEQType> allowedClassTypesEQ)
         {
             // Build the class string
             StringBuilder allowedClassStringBuilder = new StringBuilder();
             allowedClassStringBuilder.Append("|cFFFFFFFFEQ Classes: ");
-            if (AllowedClassTypesEQ.Count == 0)
+            if (allowedClassTypesEQ.Count == 0)
                 allowedClassStringBuilder.Append("NONE");
             else
             {
-                foreach (ClassEQType allowedClassType in AllowedClassTypesEQ)
+                foreach (ClassEQType allowedClassType in allowedClassTypesEQ)
                 {
                     switch (allowedClassType)
                     {
