@@ -49,7 +49,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("Flags", GetFlags(itemTemplate));
             newRow.AddInt("FlagsExtra", 0);
             newRow.AddInt("BuyCount", itemTemplate.BuyCount);
-            newRow.AddInt("BuyPrice", itemTemplate.BuyPriceInCopper);
+            newRow.AddInt("BuyPrice", itemTemplate.BuyPriceInCopper * itemTemplate.BuyCount);
             if (itemTemplate.DoesVanishOnLogout == true)
                 newRow.AddInt("SellPrice", 0);
             else if (itemTemplate.StarterVersionItemTemplateID > 0 && entryID == itemTemplate.StarterVersionItemTemplateID)
