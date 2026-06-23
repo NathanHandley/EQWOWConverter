@@ -1375,26 +1375,11 @@ namespace EQWOWConverter.ObjectModels
                     FindAndSetAnimationForType(AnimationType.Fall);
                     FindAndSetAnimationForType(AnimationType.ReadyUnarmed); // Fixed levitation + wolf form + in combat
 
-                    // Update the stand/fidget animation timers so that there is a fidget sometimes
-                    if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)
+                    // Update the stand/fidget animation timers so that there is a fidget sometimes.
+                    if (ModelAnimations.Count > 3 && ModelAnimations[0].AnimationType == AnimationType.Stand && ModelAnimations[1].AnimationType == AnimationType.Stand 
+                        && ModelAnimations[2].AnimationType == AnimationType.Stand && ModelAnimations[3].AnimationType == AnimationType.Stand)
                     {
-                        // Update timers
-                        int fidgetSliceAll = Convert.ToInt32(32767 * (Convert.ToDouble(Configuration.CREATURE_FIDGET_TIME_PERCENT) / 100));
-                        int nonFidgetSliceAll = 32767 - fidgetSliceAll;
-                        int nonFidgetSlice1 = nonFidgetSliceAll / 2;
-                        int nonFidgetSlice2 = nonFidgetSliceAll - nonFidgetSlice1;
-                        int fidgetSlice1 = fidgetSliceAll / 2;
-                        int fidgetSlice2 = fidgetSliceAll - fidgetSlice1;
-                        ModelAnimations[0].PlayFrequency = Convert.ToInt16(nonFidgetSlice1);
-                        ModelAnimations[1].PlayFrequency = Convert.ToInt16(nonFidgetSlice2);
-                        ModelAnimations[2].PlayFrequency = Convert.ToInt16(fidgetSlice1);
-                        ModelAnimations[3].PlayFrequency = Convert.ToInt16(fidgetSlice2);
-
-                        // Link animations
-                        ModelAnimations[0].NextAnimation = 2;
-                        ModelAnimations[1].NextAnimation = 3;
-                        ModelAnimations[2].NextAnimation = 1;
-                        ModelAnimations[3].NextAnimation = 0;
+                        SetStandFidgetTimersAndLinks();
                     }
                 }
             }
@@ -1440,6 +1425,76 @@ namespace EQWOWConverter.ObjectModels
                 Logger.WriteError("Zero animations for skeletal model object '" + Name + "', so it will crash if you try to load it");
 
             return true;
+        }
+
+        private void SetStandFidgetTimersAndLinks()
+        {
+            // Clamp the configured fidget time percentage into a range
+            double fidgetTimePercent = Configuration.CREATURE_FIDGET_TIME_PERCENT;
+            if (fidgetTimePercent < 0.0)
+                fidgetTimePercent = 0.0;
+            if (fidgetTimePercent > 100.0)
+                fidgetTimePercent = 100.0;
+
+            // Force a quiet window by repeating calm stand loops to meet the configured timer
+            uint minCalmMS = Convert.ToUInt32(Math.Max(0, Configuration.CREATURE_FIDGET_MIN_CALM_SECONDS) * 1000);
+            uint calmReplay0 = GetReplayCountForDuration(ModelAnimations[0].DurationInMS, minCalmMS);
+            uint calmReplay1 = GetReplayCountForDuration(ModelAnimations[1].DurationInMS, minCalmMS);
+            ModelAnimations[0].ReplayMin = calmReplay0;
+            ModelAnimations[0].ReplayMax = calmReplay0;
+            ModelAnimations[1].ReplayMin = calmReplay1;
+            ModelAnimations[1].ReplayMax = calmReplay1;
+            ModelAnimations[2].ReplayMin = 0;
+            ModelAnimations[2].ReplayMax = 0;
+            ModelAnimations[3].ReplayMin = 0;
+            ModelAnimations[3].ReplayMax = 0;
+
+            // Target share of idle time for each animation (two calm + two fidget, evenly split)
+            double calmTimeShareEach = (100.0 - fidgetTimePercent) / 2.0;
+            double fidgetTimeShareEach = fidgetTimePercent / 2.0;
+
+            // Frequency weight factors for on-screen duration time
+            double effDur0 = Math.Max(1.0, ModelAnimations[0].DurationInMS * (double)calmReplay0);
+            double effDur1 = Math.Max(1.0, ModelAnimations[1].DurationInMS * (double)calmReplay1);
+            double effDur2 = Math.Max(1.0, (double)ModelAnimations[2].DurationInMS);
+            double effDur3 = Math.Max(1.0, (double)ModelAnimations[3].DurationInMS);
+            double[] weights = new double[4];
+            weights[0] = calmTimeShareEach / effDur0;
+            weights[1] = calmTimeShareEach / effDur1;
+            weights[2] = fidgetTimeShareEach / effDur2;
+            weights[3] = fidgetTimeShareEach / effDur3;
+            double weightTotal = weights[0] + weights[1] + weights[2] + weights[3];
+            if (weightTotal <= 0.0)
+                weightTotal = 1.0;
+
+            // Turn weights into frequencies and avoid rounding errors
+            int[] freqs = new int[4];
+            int largestIndex = 0;
+            for (int i = 0; i < 4; i++)
+            {
+                freqs[i] = Convert.ToInt32(Math.Round(32767.0 * (weights[i] / weightTotal)));
+                if (freqs[i] > freqs[largestIndex])
+                    largestIndex = i;
+            }
+            freqs[largestIndex] += 32767 - (freqs[0] + freqs[1] + freqs[2] + freqs[3]);
+            for (int i = 0; i < 4; i++)
+                ModelAnimations[i].PlayFrequency = Convert.ToInt16(freqs[i]);
+
+            // Link animations (circular)
+            ModelAnimations[0].NextAnimation = 2;
+            ModelAnimations[1].NextAnimation = 3;
+            ModelAnimations[2].NextAnimation = 1;
+            ModelAnimations[3].NextAnimation = 0;
+        }
+
+        private static uint GetReplayCountForDuration(uint durationInMS, uint minDurationInMS)
+        {
+            if (durationInMS == 0 || minDurationInMS == 0)
+                return 1;
+            uint count = minDurationInMS / durationInMS;
+            if (minDurationInMS % durationInMS != 0)
+                count++;
+            return Math.Max(1u, count);
         }
 
         public void SetupPortraitCamera()
