@@ -1196,12 +1196,7 @@ namespace EQWOWConverter
 
                     // Stealth (Existing WoW version)
                     if (eqClassProperties.EQClass == ClassEQType.Rogue)
-                    {
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1784, 1);  // Stealth (Rank 1)
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1785, 20); // Stealth (Rank 2)
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1786, 40); // Stealth (Rank 3)
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1787, 60); // Stealth (Rank 4)
-                    }
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1784, 1);  // Stealth
 
                     // Shield
                     if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
