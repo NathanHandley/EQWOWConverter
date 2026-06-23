@@ -182,6 +182,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMax", Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH.ToString());
             modEverquestSystemConfigsSQL.AddRow("DazeEnabledInEQZones", Configuration.COMBAT_DAZE_IN_EQ_ZONES_ENABLED == true ? "1" : "0");
             modEverquestSystemConfigsSQL.AddRow("DeathKnightsStartLikeOtherClasses", Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true ? "1" : "0");
+            modEverquestSystemConfigsSQL.AddRow("GateTetherAuraSpellID", Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID.ToString());
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMin", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMax", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("InvisVsUndeadDetectSpellID", Configuration.SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID.ToString());
