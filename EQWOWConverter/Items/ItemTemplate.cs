@@ -15,10 +15,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.Spells;
-using EQWOWConverter.Quests;
 using EQWOWConverter.Player;
+using EQWOWConverter.Quests;
+using EQWOWConverter.Spells;
 using EQWOWConverter.WOWFiles;
+using System.Collections.Generic;
 using System.Text;
 
 namespace EQWOWConverter.Items
@@ -1931,8 +1932,8 @@ namespace EQWOWConverter.Items
             return itemTemplate;
         }
 
-        public static void ConvertItemToClickyVersionWithBagAndEssence(ref ItemTemplate originalItemTemplate, int newItemWOWItemEntryID, int essenceWOWItemEntryID, out ItemTemplate createdBagItemTemplate,
-            out ItemTemplate createdEssenceItem)
+        public static void ConvertItemToClickyVersionWithBagAndEssence(ref ItemTemplate originalItemTemplate, int newItemWOWItemEntryID, int essenceWOWItemEntryID, 
+            out ItemTemplate createdBagItemTemplate, out ItemTemplate createdEssenceItem)
         {
             // Create the bag
             createdBagItemTemplate = new ItemTemplate();
@@ -1962,6 +1963,7 @@ namespace EQWOWConverter.Items
             createdBagItemTemplate.BuyPriceInCopper = originalItemTemplate.BuyPriceInCopper;
             createdBagItemTemplate.SellPriceInCopper = originalItemTemplate.SellPriceInCopper;
             createdBagItemTemplate.CanBeOpened = true;
+            createdBagItemTemplate.AllowedClassTypesEQ = new List<ClassEQType>() { ClassEQType.All };
 
             // Create the essence
             createdEssenceItem = new ItemTemplate();
@@ -1983,6 +1985,10 @@ namespace EQWOWConverter.Items
             createdEssenceItem.ParentItemTemplate = createdBagItemTemplate;
             createdEssenceItem.CastTime = originalItemTemplate.CastTime;
             createdEssenceItem.WOWClickSpellEffectID = originalItemTemplate.WOWClickSpellEffectID;
+            if (originalItemTemplate.EQClickType == 4 || originalItemTemplate.EQClickType == 5)
+                createdEssenceItem.AllowedClassTypesEQ.AddRange(originalItemTemplate.AllowedClassTypesEQ);
+            else
+                createdEssenceItem.AllowedClassTypesEQ = new List<ClassEQType>() { ClassEQType.All };
 
             // Remap the original item template
             originalItemTemplate.WOWEntryID = newItemWOWItemEntryID;
