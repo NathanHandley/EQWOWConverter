@@ -39,7 +39,7 @@ namespace EQWOWConverter
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones
         // will load and work properly
-        public static List<string> CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { };
+        public static List<string> CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { "freportw", "freporte", "freportn", "southkarana" };
 
         // ====================================================================
         // Paths and Files
@@ -436,8 +436,8 @@ namespace EQWOWConverter
         public static float CREATURE_STAT_MOD_HP_MIN = 1.5f;
         public static float CREATURE_STAT_MOD_HP_MAX_NORMAL = 4f;
         public static float CREATURE_STAT_MOD_HP_MAX_RARE = 5f;
-        public static float CREATURE_STAT_MOD_HP_SET_ELITE = 20f;
-        public static float CREATURE_STAT_MOD_HP_SET_ELITERARE = 80f;
+        public static float CREATURE_STAT_MOD_HP_SET_ELITE = 15f; // WOTLK 20f
+        public static float CREATURE_STAT_MOD_HP_SET_ELITERARE = 30f; // WOTLK 80f
         public static float CREATURE_STAT_MOD_HP_SET_BOSS = 200f;
         public static float CREATURE_STAT_MOD_AVGDMG_ADD = 0.6f;
         public static float CREATURE_STAT_MOD_AVGDMG_MIN = 1f;
