@@ -398,6 +398,8 @@ namespace EQWOWConverter.Zones
             foreach (ObjectInstance objectInstance in eqObjectInstances)
             {
                 string modelName = objectInstance.ModelName;
+                if (ZoneProperties.DisabledObjectNames.Contains(modelName) == true)
+                    continue;
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(modelName.ToLower());
 
                 // Handle model swaps

@@ -137,6 +137,7 @@ namespace EQWOWConverter.Zones
         public List<ZoneArea> SubZoneAreas = new List<ZoneArea>();
         public HashSet<string> Enabled2DSoundInstancesByDaySoundName = new HashSet<string>();
         public HashSet<string> Disabled3DSoundInstancesByName = new HashSet<string>();
+        public HashSet<string> DisabledObjectNames = new HashSet<string>();
         public bool IsRestingZoneWide = false;
         public int RainChanceWinter = 0;
         public int RainChanceSpring = 0;
@@ -1104,6 +1105,9 @@ namespace EQWOWConverter.Zones
                 foreach (string disabled3DSoundInstanceName in propertiesRow["Disabled3DSoundInstances"].Split(","))
                     if (disabled3DSoundInstanceName.Trim().Length > 0)
                         zoneProperties.Disabled3DSoundInstancesByName.Add(disabled3DSoundInstanceName.Trim());
+                foreach (string disabledObjectName in propertiesRow["DisableObjectNamesAlways"].Split(","))
+                    if (disabledObjectName.Trim().Length > 0)
+                        zoneProperties.DisabledObjectNames.Add(disabledObjectName.Trim());
                 zoneProperties.DefaultZoneArea.SetAmbientSound(propertiesRow["AmbienceSoundDay"].Trim(), propertiesRow["AmbienceSoundNight"].Trim());
                 if (propertiesRow["MusicIsAltTrack"].Trim() == "0" || Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
                     zoneProperties.DefaultZoneArea.SetMusic(propertiesRow["Music"].Trim(), propertiesRow["Music"].Trim(), true, Convert.ToSingle(propertiesRow["MusicVolume"]));
