@@ -1165,32 +1165,41 @@ namespace EQWOWConverter
                     // Bind/Gate
                     if (Configuration.PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START == true)
                     {
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.SPELLS_BINDCUSTOM_SPELLDBC_ID);
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.SPELLS_BINDCUSTOM_SPELLDBC_ID, 1);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID, 1);
                     }
 
                     // Forage
                     if (eqClassProperties.HasForage == true)
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.FORAGE_SPELL_TEMPLATE_ID);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.FORAGE_SPELL_TEMPLATE_ID, 1);
 
                     // Bash
                     if (Configuration.COMBATSKILL_BASH_ENABLED == true && Configuration.COMBATSKILL_BASH_PLAYER_LEARNABLE == true && eqClassProperties.HasBash == true)
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_BASH_SPELL_ID);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_BASH_SPELL_ID, 1);
 
                     // Feign Death
                     if (Configuration.COMBATSKILL_FEIGNDEATH_ENABLED == true && Configuration.COMBATSKILL_FEIGNDEATH_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.Monk)
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_FEIGNDEATH_SPELL_ID);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_FEIGNDEATH_SPELL_ID, 1);
 
                     // Harm Touch
                     if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true && Configuration.COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.ShadowKnight)
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID, 1);
+
+                    // Stealth (Existing WoW version)
+                    if (eqClassProperties.EQClass == ClassEQType.Rogue)
+                    {
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1784, 1);  // Stealth (Rank 1)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1785, 20); // Stealth (Rank 2)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1786, 40); // Stealth (Rank 3)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1787, 60); // Stealth (Rank 4)
+                    }
 
                     // Shield
                     if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
                     {
                         if (raceType == RaceType.Human)
                             modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 433);
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 9116);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 9116, 1);
                     }
 
                     // Bow
@@ -1198,8 +1207,8 @@ namespace EQWOWConverter
                     {
                         if (raceType == RaceType.Human)
                             modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 45);
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 264);
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 3018); // Shoot
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 264, 1);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 3018, 1); // Shoot
                     }
 
                     // Melee weapon skills
@@ -1209,61 +1218,61 @@ namespace EQWOWConverter
                         {
                             if (raceType == RaceType.Human)
                                 modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 44);
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 196);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 196, 1);
                         }
                         if (eqClassProperties.Has2HAxe == true)
                         {
                             if (raceType == RaceType.Human)
                                 modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 172);
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 197);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 197, 1);
                         }
                         if (eqClassProperties.Has1HMace == true)
                         {
                             if (raceType == RaceType.Human)
                                 modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 54);
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 198);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 198, 1);
                         }
                         if (eqClassProperties.Has2HMace == true)
                         {
                             if (raceType == RaceType.Human)
                                 modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 160);
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 199);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 199, 1);
                         }
                         if (eqClassProperties.HasPolearm == true)
                         {
                             if (raceType == RaceType.Human)
                                 modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 229);
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 200);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 200, 1);
                         }
                         if (eqClassProperties.Has1HSword == true)
                         {
                             if (raceType == RaceType.Human)
                                 modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 43);
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 201);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 201, 1);
                         }
                         if (eqClassProperties.Has2HSword == true)
                         {
                             if (raceType == RaceType.Human)
                                 modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 55);
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 202);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 202, 1);
                         }
                         if (eqClassProperties.HasStaff == true)
                         {
                             if (raceType == RaceType.Human)
                                 modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 136);
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 227);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 227, 1);
                         }
                         if (eqClassProperties.HasFistWeapon == true)
                         {
                             if (raceType == RaceType.Human)
                                 modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 473);
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 15590);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 15590, 1);
                         }
                         if (eqClassProperties.HasDagger == true)
                         {
                             if (raceType == RaceType.Human)
                                 modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 173);
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1180);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1180, 1);
                         }
                     }
 
@@ -1275,19 +1284,19 @@ namespace EQWOWConverter
                         {
                             if (raceType == RaceType.Human)
                                 modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 414);
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 9077);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 9077, 1);
                         }
                         if (armorSubClassByClass >= ItemWOWArmorSubclassType.Mail)
                         {
                             if (raceType == RaceType.Human)
                                 modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 413);
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 8737);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 8737, 1);
                         }
                         if (armorSubClassByClass >= ItemWOWArmorSubclassType.Plate)
                         {
                             if (raceType == RaceType.Human)
                                 modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 293);
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 750);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 750, 1);
                         }
 
                     }
@@ -1306,7 +1315,7 @@ namespace EQWOWConverter
                     {
                         // Slam
                         if (wowRaceProperties.HasSlam == true)
-                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassType, wowRaceProperties.WOWRaceType, Configuration.COMBATSKILL_SLAM_SPELL_ID);
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassType, wowRaceProperties.WOWRaceType, Configuration.COMBATSKILL_SLAM_SPELL_ID, 1);
                     }
                 }
             }

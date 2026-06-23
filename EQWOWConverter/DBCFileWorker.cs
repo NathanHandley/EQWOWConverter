@@ -525,6 +525,14 @@ namespace EQWOWConverter
             // Skills
             List<ClassWOWType> wowClassTypes = new List<ClassWOWType>();
             wowClassTypes.Add(ClassWOWType.All);
+
+            // Make rogue stealth available to other classes due to the secondary EQ class thing
+            skillRaceClassInfoDBC.AddRow(39, wowClassTypes);
+            skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 39, 1784, 2); // Stealth (Rank 1)
+            skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 39, 1785, 2); // Stealth (Rank 2)
+            skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 39, 1786, 2); // Stealth (Rank 3)
+            skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 39, 1787, 2); // Stealth (Rank 4)
+
             if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
             {
                 skillRaceClassInfoDBC.AddRow(433, wowClassTypes);

@@ -30,17 +30,19 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`eqclass` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`race` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`spell` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`level` TINYINT(3) UNSIGNED NOT NULL DEFAULT '1',");
             stringBuilder.AppendLine("PRIMARY KEY (`eqclass`, `race`, `spell`) USING BTREE); ");
             return stringBuilder.ToString();
         }
 
         // raceID of 0 means the spell is learned by the class regardless of race
-        public void AddRow(ClassEQType eqClassType, RaceType raceType, int spellID)
+        public void AddRow(ClassEQType eqClassType, RaceType raceType, int spellID, int learnLevel)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("eqclass", PlayerEQClassProperties.GetServerEQClassIDFromEQClassType(eqClassType));
             newRow.AddInt("race", (int)raceType);
             newRow.AddInt("spell", spellID);
+            newRow.AddInt("level", learnLevel);
             Rows.Add(newRow);
         }
     }
