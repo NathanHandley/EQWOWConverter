@@ -23,7 +23,7 @@ namespace EQWOWConverter
         // ====================================================================
         // Not Loaded From Configuration File
         // ====================================================================
-        public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration_multiclass.txt";
+        public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
         public static int CONFIGONLY_CORE_MOD_VERSION = 24;
