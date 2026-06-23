@@ -1317,7 +1317,7 @@ namespace EQWOWConverter
             {
                 foreach (ClassEQType eqClassType in Enum.GetValues(typeof(ClassEQType)))
                 {
-                    if (eqClassType == ClassEQType.All)
+                    if (eqClassType == ClassEQType.All || eqClassType == ClassEQType.None)
                         continue;
 
                     if (Configuration.COMBATSKILL_SLAM_ENABLED == true && Configuration.COMBATSKILL_SLAM_PLAYER_LEARNABLE == true)
@@ -1574,7 +1574,7 @@ namespace EQWOWConverter
             Dictionary<ClassEQType, int> multiclassTrainerIDByEQClass = new Dictionary<ClassEQType, int>();
             foreach (ClassEQType eqClassType in Enum.GetValues(typeof(ClassEQType)))
             {
-                if (eqClassType == ClassEQType.All)
+                if (eqClassType == ClassEQType.All || eqClassType == ClassEQType.None)
                     continue;
 
                 // Collect every WoW class that can train at a guild master of this EQ class (base or secondary)
@@ -1660,7 +1660,7 @@ namespace EQWOWConverter
             // Associate creature templates to trainer lists
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
-                if (creatureTemplate.EQClassTrainerType != ClassEQType.All
+                if (creatureTemplate.EQClassTrainerType != ClassEQType.All && creatureTemplate.EQClassTrainerType != ClassEQType.None
                     && multiclassTrainerIDByEQClass.ContainsKey(creatureTemplate.EQClassTrainerType))
                 {
                     creatureDefaultTrainerSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, multiclassTrainerIDByEQClass[creatureTemplate.EQClassTrainerType]);

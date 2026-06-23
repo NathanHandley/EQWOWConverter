@@ -137,6 +137,7 @@ namespace EQWOWConverter.Player
         {
             switch (inputString.ToLower().Trim())
             {
+                case "none": return ClassEQType.None;
                 case "bard": return ClassEQType.Bard;
                 case "cleric": return ClassEQType.Cleric;
                 case "druid": return ClassEQType.Druid;

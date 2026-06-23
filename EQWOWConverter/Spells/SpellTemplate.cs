@@ -631,7 +631,7 @@ namespace EQWOWConverter.Spells
             // Potentially one for each class
             foreach (ClassEQType eqClass in Enum.GetValues(typeof(ClassEQType)))
             {
-                if (eqClass == ClassEQType.All)
+                if (eqClass == ClassEQType.All || eqClass == ClassEQType.None)
                     continue;
 
                 // Pull details

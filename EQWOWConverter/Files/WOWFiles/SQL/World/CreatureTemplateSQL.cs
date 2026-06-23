@@ -60,7 +60,7 @@ namespace EQWOWConverter.WOWFiles
                 npcFlags |= 4194304; // 0x00400000 = Is a stable master
                 numOfRoles++;
             }
-            if (creatureTemplate.EQClassTrainerType != ClassEQType.All)
+            if (creatureTemplate.EQClassTrainerType != ClassEQType.All && creatureTemplate.EQClassTrainerType != ClassEQType.None)
             {
                 // Due to multi-class options for secondary class, just mark all trainers and filter in mod-everquest
                 npcFlags |= 16;    // 0x00000010 = Is a trainer

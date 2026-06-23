@@ -19,6 +19,7 @@ namespace EQWOWConverter.Common
 	// Values here are the bitmask values for items
     internal enum ClassEQType : int
     {
+		None = 0,
 		Warrior = 1,
 		Cleric = 2,
 		Paladin = 4,

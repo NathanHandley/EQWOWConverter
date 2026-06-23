@@ -67,7 +67,7 @@ namespace EQWOWConverter.Creatures
         public bool IsNorrathPriestOfDiscord = false;
         public bool IsAzerothPriestOfDiscord = false;
         public ClassWOWType WOWClassTrainerType = ClassWOWType.None;
-        public ClassEQType EQClassTrainerType = ClassEQType.All;
+        public ClassEQType EQClassTrainerType = ClassEQType.None;
         public TradeskillType TradeskillTrainerType = TradeskillType.None;
         public int GossipMenuID = 0;
         public bool IsNonNPC = false;
