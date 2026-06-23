@@ -33,6 +33,7 @@ namespace EQWOWConverter.Items
         HitRating = 31,
         CritRating = 32,
         HasteRating = 36,
+        ExpertiseRating = 37,
         SpellPower = 45,
         HealthRegen = 46,
         BlockValue = 48

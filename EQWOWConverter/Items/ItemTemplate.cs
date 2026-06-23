@@ -532,6 +532,15 @@ namespace EQWOWConverter.Items
             // Resist Frost
             if (eqResistCold != 0)
                 itemTemplate.FrostResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Res", eqResistCold));
+
+            // Expertise uses the lowest of agl and dex when both are there
+            if (eqAgility > 0 && eqDexterity > 0)
+            {
+                int lowestAglVsDex = Math.Min(eqAgility, eqDexterity);
+                int calculatedExpertise = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "ExpertiseRating", lowestAglVsDex));
+                if (calculatedExpertise > 0)
+                    itemTemplate.StatValues.Add((ItemWOWStatType.ExpertiseRating, Convert.ToInt32(calculatedExpertise)));
+            }
         }
 
         private static ItemWOWQuality CalculateQuality(List<(ItemWOWStatType, int)> statValues, int eqResistPoison, 
