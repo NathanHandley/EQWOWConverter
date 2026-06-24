@@ -530,6 +530,10 @@ namespace EQWOWConverter
             skillRaceClassInfoDBC.AddRow(39, wowClassTypes);
             skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 39, 1784, 2); // Stealth
 
+            // Make hunter Auto Shot available to other classes due as well to support secondary EQ classes
+            skillRaceClassInfoDBC.AddRow(163, wowClassTypes);
+            skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 163, 75, 2); // Auto Shot
+
             if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
             {
                 skillRaceClassInfoDBC.AddRow(433, wowClassTypes);
