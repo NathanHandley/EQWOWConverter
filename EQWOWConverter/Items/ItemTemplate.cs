@@ -64,6 +64,7 @@ namespace EQWOWConverter.Items
         public Int64 ColorPacked = 0;
         public int BuyCount = 1;
         public int BuyPriceInCopper = 0;
+        public int OverrideStackBuyPriceInCopper = 0;
         public int SellPriceInCopper = 0;
         public int BagSlots = 0;
         public int StackSize = 1;
@@ -1564,6 +1565,7 @@ namespace EQWOWConverter.Items
                 newItemTemplate.EQItemDisplayFileName = columns["item_display_file"].Trim().ToLower();
 
                 // Price
+                newItemTemplate.OverrideStackBuyPriceInCopper = Convert.ToInt32(columns["override_buy_stack_price"]);
                 newItemTemplate.BuyPriceInCopper = Convert.ToInt32(float.Parse(columns["price"]) * float.Parse(columns["sellrate"]));
                 if (newItemTemplate.BuyPriceInCopper <= 0)
                     newItemTemplate.BuyPriceInCopper = 1;
