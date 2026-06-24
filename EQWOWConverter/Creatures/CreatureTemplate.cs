@@ -66,8 +66,7 @@ namespace EQWOWConverter.Creatures
         public bool IsRidingTrainer = false;
         public bool IsNorrathPriestOfDiscord = false;
         public bool IsAzerothPriestOfDiscord = false;
-        public ClassWOWType WOWClassTrainerType = ClassWOWType.None;
-        public ClassEQType EQClassTrainerType = ClassEQType.None;
+        public ClassWOWType ClassTrainerType = ClassWOWType.None;
         public TradeskillType TradeskillTrainerType = TradeskillType.None;
         public int GossipMenuID = 0;
         public bool IsNonNPC = false;
@@ -113,7 +112,7 @@ namespace EQWOWConverter.Creatures
                 return true;
             if (IsReagentVendor == true)
                 return true;
-            if (WOWClassTrainerType != ClassWOWType.None)
+            if (ClassTrainerType != ClassWOWType.None)
                 return true;
             if (TradeskillTrainerType != TradeskillType.None && TradeskillTrainerType != TradeskillType.Unknown)
                 return true;
@@ -617,86 +616,72 @@ namespace EQWOWConverter.Creatures
             {
                 case 20: // Warrior GM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Warrior);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.Warrior;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Warrior);
                         creatureTemplate.SubName = "Warrior Trainer";
                     } break;
                 case 21: // Cleric GM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Cleric);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.Cleric;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Cleric);
                         creatureTemplate.SubName = "Cleric Trainer";
                     } break;
                 case 22: // Paladin GM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Paladin);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.Paladin;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Paladin);
                         creatureTemplate.SubName = "Paladin Trainer";
                     } break;
                 case 23: // RangerGM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Ranger);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.Ranger;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Ranger);
                         creatureTemplate.SubName = "Ranger Trainer";
                     } break;
                 case 24: // ShadowKnight GM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.ShadowKnight);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.ShadowKnight;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.ShadowKnight);
                         creatureTemplate.SubName = "Shadow Knight Trainer";
                     } break;
                 case 25: // Druid GM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Druid);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.Druid;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Druid);
                         creatureTemplate.SubName = "Druid Trainer";
                     } break;
                 case 26: // Monk GM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Monk);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.Monk;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Monk);
                         creatureTemplate.SubName = "Monk Trainer";
                     } break;
                 case 27: // Bard GM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Bard);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.Bard;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Bard);
                         creatureTemplate.SubName = "Bard Trainer";
                     } break;
                 case 28: // Rogue GM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Rogue);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.Rogue;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Rogue);
                         creatureTemplate.SubName = "Rogue Trainer";
                     } break;
                 case 29: // Shaman GM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Shaman);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.Shaman;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Shaman);
                         creatureTemplate.SubName = "Shaman Trainer";
                     } break;
                 case 30: // Necromancer GM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Necromancer);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.Necromancer;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Necromancer);
                         creatureTemplate.SubName = "Necromancer Trainer";
                     } break;
                 case 31: // Wizard GM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Wizard);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.Wizard;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Wizard);
                         creatureTemplate.SubName = "Wizard Trainer";
                     } break;
                 case 32: // Magician GM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Magician);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.Magician;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Magician);
                         creatureTemplate.SubName = "Magician Trainer";
                     } break;
                 case 33: // Enchanter GM
                     {
-                        creatureTemplate.WOWClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Enchanter);
-                        creatureTemplate.EQClassTrainerType = ClassEQType.Enchanter;
+                        creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Enchanter);
                         creatureTemplate.SubName = "Enchanter Trainer";
                     } break;
                 //case 34: // Beastlord GM

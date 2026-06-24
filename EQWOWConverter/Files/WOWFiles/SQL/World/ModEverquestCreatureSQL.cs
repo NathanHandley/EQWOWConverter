@@ -14,8 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using EQWOWConverter.Player;
 using System.Text;
 
 namespace EQWOWConverter.WOWFiles
@@ -31,19 +29,17 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`CanShowHeldLootItems` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`CanShowHeldLootShields` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`SpawnLimit` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
-            stringBuilder.AppendLine("`EQClassTrainerType` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("PRIMARY KEY (`CreatureTemplateID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int creatureTemplateID, bool canShowHeldLootItems, bool canShowHeldLootShields, int spawnLimit, ClassEQType eqClassTrainerType)
+        public void AddRow(int creatureTemplateID, bool canShowHeldLootItems, bool canShowHeldLootShields, int spawnLimit)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatureTemplateID", creatureTemplateID);
             newRow.AddInt("CanShowHeldLootItems", canShowHeldLootItems == true ? 1 : 0);
             newRow.AddInt("CanShowHeldLootShields", canShowHeldLootShields == true ? 1 : 0);
             newRow.AddInt("SpawnLimit", spawnLimit);
-            newRow.AddInt("EQClassTrainerType", PlayerEQClassProperties.GetServerEQClassIDFromEQClassType(eqClassTrainerType));
             Rows.Add(newRow);
         }
     }
