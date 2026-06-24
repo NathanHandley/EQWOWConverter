@@ -1567,7 +1567,10 @@ namespace EQWOWConverter.Items
                 newItemTemplate.BuyPriceInCopper = Convert.ToInt32(float.Parse(columns["price"]) * float.Parse(columns["sellrate"]));
                 if (newItemTemplate.BuyPriceInCopper <= 0)
                     newItemTemplate.BuyPriceInCopper = 1;
-                newItemTemplate.SellPriceInCopper = int.Max(Convert.ToInt32(Convert.ToDouble(newItemTemplate.BuyPriceInCopper) * 0.25), 0);
+                if (newItemTemplate.IsNoDrop == true || newItemTemplate.DoesVanishOnLogout == true)
+                    newItemTemplate.SellPriceInCopper = 0;
+                else
+                    newItemTemplate.SellPriceInCopper = int.Max(Convert.ToInt32(Convert.ToDouble(newItemTemplate.BuyPriceInCopper) * 0.25), 0);
 
                 // Bag properties
                 newItemTemplate.BagSlots = int.Parse(columns["bagslots"]) * Configuration.ITEMS_BAG_SLOT_MULTIPLIER;
