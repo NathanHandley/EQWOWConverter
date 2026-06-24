@@ -617,72 +617,86 @@ namespace EQWOWConverter.Creatures
                 case 20: // Warrior GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Warrior);
-                        creatureTemplate.SubName = "Warrior Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 case 21: // Cleric GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Cleric);
-                        creatureTemplate.SubName = "Cleric Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 case 22: // Paladin GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Paladin);
-                        creatureTemplate.SubName = "Paladin Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 case 23: // RangerGM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Ranger);
-                        creatureTemplate.SubName = "Ranger Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 case 24: // ShadowKnight GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.ShadowKnight);
-                        creatureTemplate.SubName = "Shadow Knight Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 case 25: // Druid GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Druid);
-                        creatureTemplate.SubName = "Druid Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 case 26: // Monk GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Monk);
-                        creatureTemplate.SubName = "Monk Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 case 27: // Bard GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Bard);
-                        creatureTemplate.SubName = "Bard Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 case 28: // Rogue GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Rogue);
-                        creatureTemplate.SubName = "Rogue Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 case 29: // Shaman GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Shaman);
-                        creatureTemplate.SubName = "Shaman Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 case 30: // Necromancer GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Necromancer);
-                        creatureTemplate.SubName = "Necromancer Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 case 31: // Wizard GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Wizard);
-                        creatureTemplate.SubName = "Wizard Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 case 32: // Magician GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Magician);
-                        creatureTemplate.SubName = "Magician Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 case 33: // Enchanter GM
                     {
                         creatureTemplate.ClassTrainerType = PlayerClassMapping.GetWOWClassForBaseEQClass(ClassEQType.Enchanter);
-                        creatureTemplate.SubName = "Enchanter Trainer";
+                        if (creatureTemplate.ClassTrainerType != ClassWOWType.None && creatureTemplate.ClassTrainerType != ClassWOWType.None)
+                            creatureTemplate.SubName = string.Concat(creatureTemplate.ClassTrainerType.ToString(), " Trainer");
                     } break;
                 //case 34: // Beastlord GM
                 case 40: // Banker
