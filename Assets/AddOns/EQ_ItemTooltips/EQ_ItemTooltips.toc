@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: EQ Item Tooltips
+## Notes: Colors the "EQ Classes:" usability line on item tooltips and vendor lists by your active EQ class
+## Version: 1.0
+
+EQ_ItemTooltips.lua

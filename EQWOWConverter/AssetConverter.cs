@@ -3178,6 +3178,13 @@ namespace EQWOWConverter
             // Copy it
             FileTool.CopyFile(sourcePatchFileNameAndPath, targetPatchFileNameAndPath);
 
+            // Deploy the EQ item tooltips addon (colors item usability by EQ class)
+            string sourceItemTooltipsAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_ItemTooltips");
+            string targetItemTooltipsAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_ItemTooltips");
+            if (Directory.Exists(targetItemTooltipsAddOnFolder) == true)
+                Directory.Delete(targetItemTooltipsAddOnFolder, true);
+            FileTool.CopyDirectoryAndContents(sourceItemTooltipsAddOnFolder, targetItemTooltipsAddOnFolder, true, true);
+
             // Also deploy the minimaps patch & addon, if configured to do so
             if (Configuration.GENERATE_WORLDMAPS == true)
             {
