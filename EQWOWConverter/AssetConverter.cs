@@ -268,6 +268,13 @@ namespace EQWOWConverter
                 // Copy the loading screens
                 CreateLoadingScreens();
 
+                // Copy the item tooltip addon into the prep location
+                string sourceItemTooltipsAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_ItemTooltips");
+                string targetItemTooltipsAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_ItemTooltips");
+                if (Directory.Exists(targetItemTooltipsAddOnFolder) == true)
+                    Directory.Delete(targetItemTooltipsAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceItemTooltipsAddOnFolder, targetItemTooltipsAddOnFolder, true, true);
+
                 // Create or update the MPQs
                 string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ"));
                 if (Configuration.CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
