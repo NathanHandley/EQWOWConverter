@@ -711,6 +711,7 @@ namespace EQWOWConverter
 
         // This is the default amount influence spell strength by spell power (when not overriden)
         public static float SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT = 0.33f;
+        public static float SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT = 0.17f;
 
         // Summoner dummy spell ID used to prevent creatures from summoning more creatures
         public static int SPELL_SUMMON_CASTER_AURA_SPELL_ID = 86905;
@@ -1475,7 +1476,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS", SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS, "Default time that a shrink/grow spell will last for");
             OutputVariableToConfig("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID", SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, "Values for the cooldown spells applied by Priests of Discord when you switch worlds, setting cooldown duration to 0 will disable it", false);
             OutputVariableToConfig("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN, "");
-            OutputVariableToConfig("SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT", SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT, "This is the default amount influence spell strength by spell power (when not overriden)");
+            OutputVariableToConfig("SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT", SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT, "This is the default amount influence spell strength by spell power (when not overriden)", false);
+            OutputVariableToConfig("SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT", SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT, "");
             OutputVariableToConfig("SPELL_SUMMON_CASTER_AURA_SPELL_ID", SPELL_SUMMON_CASTER_AURA_SPELL_ID, "Summoner dummy spell ID used to prevent creatures from summoning more creatures");
             OutputVariableToConfig("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID, "Hidden passive aura used to reduce creature mana regeneration (see CREATURE_MANA_REGEN_PERCENT)");
             OutputVariableToConfig("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID, "This is the ID used to detect invis and stealth, and already exists in AzerothCore");
@@ -1980,6 +1982,7 @@ namespace EQWOWConverter
             SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID = ReadVariableFromConfigString("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID", configValuesByVariableName, SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID);
             SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN = ReadVariableFromConfigString("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", configValuesByVariableName, SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN);
             SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT = ReadVariableFromConfigString("SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT", configValuesByVariableName, SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT);
+            SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT = ReadVariableFromConfigString("SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT", configValuesByVariableName, SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT);
             SPELL_SUMMON_CASTER_AURA_SPELL_ID = ReadVariableFromConfigString("SPELL_SUMMON_CASTER_AURA_SPELL_ID", configValuesByVariableName, SPELL_SUMMON_CASTER_AURA_SPELL_ID);
             SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID);
             SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID);

@@ -23,12 +23,20 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM spell_bonus_data WHERE `entry` >= " + Configuration.DBCID_SPELL_ID_START.ToString() + " AND `entry` <= " + Configuration.DBCID_SPELL_ID_END + ";";
         }
 
-        public void AddRow(int spellTemplateID, string comment)
+        public void AddRow(int spellTemplateID, bool isBardSong, string comment)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entry", spellTemplateID);
-            newRow.AddFloat("direct_bonus", Configuration.SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT);
-            newRow.AddFloat("dot_bonus", Configuration.SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT);
+            if (isBardSong == true)
+            {
+                newRow.AddFloat("direct_bonus", Configuration.SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT);
+                newRow.AddFloat("dot_bonus", Configuration.SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT);
+            }
+            else
+            {
+                newRow.AddFloat("direct_bonus", Configuration.SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT);
+                newRow.AddFloat("dot_bonus", Configuration.SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT);
+            }
             newRow.AddFloat("ap_bonus", 0);
             newRow.AddFloat("ap_dot_bonus", 0);
             newRow.AddString("comments", comment);
