@@ -1204,6 +1204,20 @@ namespace EQWOWConverter
                     if (eqClassProperties.EQClass == ClassEQType.Ranger)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 75, 1);  // Auto Shot
 
+                    // Dual Wield (Existing WoW version) - Learned at the EQ-appropriate level.
+                    int dualWieldLearnLevel = 0;
+                    switch (eqClassProperties.EQClass)
+                    {
+                        case ClassEQType.Monk: dualWieldLearnLevel = 1; break;
+                        case ClassEQType.Rogue: dualWieldLearnLevel = 13; break;
+                        case ClassEQType.Warrior: dualWieldLearnLevel = 13; break;
+                        case ClassEQType.Ranger: dualWieldLearnLevel = 17; break;
+                        case ClassEQType.Bard: dualWieldLearnLevel = 17; break;
+                        default: break;
+                    }
+                    if (dualWieldLearnLevel > 0)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 674, dualWieldLearnLevel);  // Dual Wield
+
                     // Auto-added items (not race dependent, so add only once per EQ class)
                     if (raceType == RaceType.Human)
                     {

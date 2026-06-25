@@ -534,6 +534,10 @@ namespace EQWOWConverter
             skillRaceClassInfoDBC.AddRow(163, wowClassTypes);
             skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 163, 75, 2); // Auto Shot
 
+            // Make Dual Wield available to other classes to support secondary EQ classes
+            skillRaceClassInfoDBC.AddRow(118, wowClassTypes);
+            skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 118, 674, 0); // Dual Wield
+
             if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
             {
                 skillRaceClassInfoDBC.AddRow(433, wowClassTypes);
