@@ -3178,13 +3178,6 @@ namespace EQWOWConverter
             // Copy it
             FileTool.CopyFile(sourcePatchFileNameAndPath, targetPatchFileNameAndPath);
 
-            // Deploy the EQ item tooltips addon (colors item usability by EQ class)
-            string sourceItemTooltipsAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_ItemTooltips");
-            string targetItemTooltipsAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_ItemTooltips");
-            if (Directory.Exists(targetItemTooltipsAddOnFolder) == true)
-                Directory.Delete(targetItemTooltipsAddOnFolder, true);
-            FileTool.CopyDirectoryAndContents(sourceItemTooltipsAddOnFolder, targetItemTooltipsAddOnFolder, true, true);
-
             // Also deploy the minimaps patch & addon, if configured to do so
             if (Configuration.GENERATE_WORLDMAPS == true)
             {
@@ -3218,12 +3211,17 @@ namespace EQWOWConverter
                 // Copy it
                 FileTool.CopyFile(sourceMinimapPatchFileNameAndPath, targetMinimapPatchFileNameAndPath);
 
-                // Also delete/copy the maplinks addon
+                // Also delete/copy the addons
                 string sourceMapLinkerAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_MapLinker");
                 string targetMapLinkerAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_MapLinker");
                 if (Directory.Exists(targetMapLinkerAddOnFolder) == true)
                     Directory.Delete(targetMapLinkerAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceMapLinkerAddOnFolder, targetMapLinkerAddOnFolder, true, true);
+                string sourceItemToolTipAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_ItemTooltips");
+                string targetItemToolTipAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_ItemTooltips");
+                if (Directory.Exists(targetItemToolTipAddOnFolder) == true)
+                    Directory.Delete(targetItemToolTipAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceItemToolTipAddOnFolder, targetItemToolTipAddOnFolder, true, true);
             }
 
             Logger.WriteDebug("Deploying to client complete");
