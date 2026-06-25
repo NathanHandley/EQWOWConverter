@@ -2422,6 +2422,41 @@ namespace EQWOWConverter
                 spellTemplates.Add(feignDeathSpellTemplate);
             }
 
+            // Implementing creature ranged as a spell, and basing it on TAKP's NPC::RangedAttack
+            if (Configuration.COMBATSKILL_RANGED_ENABLED == true)
+            {
+                int rangedIconID = Configuration.COMBATSKILL_RANGED_SPELL_ICON_EQ_ID;
+                if (rangedIconID < 0 || rangedIconID > 22)
+                {
+                    Logger.WriteError("COMBATSKILL_RANGED_SPELL_ICON_EQ_ID value must be 0-22. Setting to 13");
+                    rangedIconID = 13;
+                }
+                SpellTemplate rangedAttackSpellTemplate = new SpellTemplate();
+                rangedAttackSpellTemplate.Name = "Ranged Attack";
+                rangedAttackSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_RANGED_SPELL_ID;
+                rangedAttackSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                rangedAttackSpellTemplate.Description = "Looses a ranged shot at a distant foe, dealing physical damage.";
+                rangedAttackSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(rangedIconID);
+                rangedAttackSpellTemplate.CastTimeInMS = 0;
+                rangedAttackSpellTemplate.RecoveryTimeInMS = 0; // The mod throttles firing on the creature's swing timer
+                rangedAttackSpellTemplate.SpellRange = Convert.ToInt32(Convert.ToSingle(Configuration.COMBATSKILL_RANGED_DEFAULT_MAX_RANGE) * Configuration.GENERATE_WORLD_SCALE);
+                rangedAttackSpellTemplate.SchoolMask = 1; // Physical
+                rangedAttackSpellTemplate.DefenseType = 3; // Ranged (uses ranged miss/avoidance; flags it as a ranged-weapon spell so the client renders an arrow)
+                rangedAttackSpellTemplate.EquippedItemClass = 2; // ITEM_CLASS_WEAPON
+                rangedAttackSpellTemplate.EquippedItemSubClassMask = (1 << 2) | (1 << 3) | (1 << 18); // Bow/Gun/Crossbow translates to IsRangedWeaponSpell
+                rangedAttackSpellTemplate.UsesRangedWeaponSlot = true; // SPELL_ATTR0_USES_RANGED_SLOT causes CAST_FLAG_PROJECTILE so the client renders the arrow projectile (if that creature has a bow mount point in a cast/combat animation)
+                rangedAttackSpellTemplate.TriggersGlobalCooldown = false;
+                rangedAttackSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                rangedAttackSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
+                rangedAttackSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
+                // Base value of 1. The mod overrides the damage per-cast (SPELLVALUE_BASE_POINT0) from the creature's melee damage
+                SpellEffectWOW rangedAttackDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, 1, 0, 0);
+                rangedAttackDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+                rangedAttackDamageEffect.ActionDescription = "shoots";
+                rangedAttackSpellTemplate.WOWSpellEffects.Add(rangedAttackDamageEffect);
+                spellTemplates.Add(rangedAttackSpellTemplate);
+            }
+
             Logger.WriteDebug("Generating custom spells completed.");
         }
 

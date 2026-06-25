@@ -196,6 +196,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("QuestSQLIDMin", Configuration.SQL_QUEST_TEMPLATE_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("QuestSQLIDMax", Configuration.SQL_QUEST_TEMPLATE_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("WorldScale", Configuration.GENERATE_WORLD_SCALE.ToString());
+            modEverquestSystemConfigsSQL.AddRow("RangedAttackSpellID", Configuration.COMBATSKILL_RANGED_ENABLED == true ? Configuration.COMBATSKILL_RANGED_SPELL_ID.ToString() : "0");
         }
 
         private void PopulateCreatureData(List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
@@ -531,9 +532,11 @@ namespace EQWOWConverter
                     }
                 }
 
-                // All creature data
+                // Ranged attack data, if any
+                int rangedMinRangeWOW = creatureTemplate.RangedAttackMinRangeEQ > 0 ? Convert.ToInt32(Math.Round(creatureTemplate.RangedAttackMinRangeEQ * Configuration.GENERATE_WORLD_SCALE)) : 0;
+                int rangedMaxRangeWOW = creatureTemplate.RangedAttackMaxRangeEQ > 0 ? Convert.ToInt32(Math.Round(creatureTemplate.RangedAttackMaxRangeEQ * Configuration.GENERATE_WORLD_SCALE)) : 0;
                 modEverquestCreatureSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.Race.CanHoldVisualItems, creatureTemplate.Race.CanHoldVisualShields,
-                    creatureTemplate.SpawnLimit);
+                    creatureTemplate.SpawnLimit, creatureTemplate.HasRangedAttackAbility, rangedMinRangeWOW, rangedMaxRangeWOW, creatureTemplate.RangedAttackDamageModPercent);
 
                 // Determine the display id
                 int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;

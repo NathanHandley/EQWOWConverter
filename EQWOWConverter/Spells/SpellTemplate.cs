@@ -234,6 +234,7 @@ namespace EQWOWConverter.Spells
         public int EquippedItemClass = -1;
         public int EquippedItemSubClassMask = 0;
         public int EquippedItemInventoryTypeMask = 0;
+        public bool UsesRangedWeaponSlot = false;
         public bool AllowInShapeshift = false;
 
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();

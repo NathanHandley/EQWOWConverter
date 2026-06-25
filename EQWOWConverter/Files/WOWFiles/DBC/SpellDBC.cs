@@ -237,15 +237,14 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 16; // SPELL_ATTR0_IS_ABILITY (0x00000010)
                 attributeFlags |= 32; // SPELL_ATTR0_IS_TRADESKILL (0x00000020)
             }
-            // Worn/equip effect auras must persist through shapeshift forms (e.g. druid bear/cat). The core's
-            // Player::UpdateEquipSpellsAtFormChange -> SpellInfo::CheckShapeshift removes any equip aura carrying
-            // SPELL_ATTR0_NOT_SHAPESHIFTED when entering a "stance" form, so don't set it on worn equip effects.
             if (isWornEquipEffect == false)
                 attributeFlags |= 65536; // SPELL_ATTR0_NOT_SHAPESHIFTED (0x00010000)
             if (preventClickOff == true || spellTemplate.AlwaysPersist == true)
                 attributeFlags |= 2147483648; // SPELL_ATTR0_NO_AURA_CANCEL (0x80000000)
             if (spellTemplate.ForceAsDebuff == true)
                 attributeFlags |= 67108864; // SPELL_ATTR0_AURA_IS_DEBUFF (0x04000000)
+            if (spellTemplate.UsesRangedWeaponSlot == true)
+                attributeFlags |= 2; // SPELL_ATTR0_USES_RANGED_SLOT (0x00000002) - makes the client render the arrow/bullet projectile
             return attributeFlags;
         }
 

@@ -85,6 +85,10 @@ namespace EQWOWConverter.Creatures
         public bool UsesBash = false;
         public bool UsesHarmTouch = false;
         public bool UsesLayOnHands = false;
+        public bool HasRangedAttackAbility = false;
+        public int RangedAttackMinRangeEQ = 0;
+        public int RangedAttackMaxRangeEQ = 0;
+        public int RangedAttackDamageModPercent = 0;
         public long MechanicImmuneMask = 0;
         public int CreatureImmunitiesId = 0;
         public bool SeesInvisible = false;
@@ -352,6 +356,16 @@ namespace EQWOWConverter.Creatures
                     if (newCreatureTemplate.UsesBash == true || newCreatureTemplate.UsesHarmTouch == true || newCreatureTemplate.UsesLayOnHands == true)
                         newCreatureTemplate.HasSmartScript = true;
 
+                    // "bow+arrow" enabled shooting is calc'ed by the server, so only catch the special ability "ranged attack"
+                    if (Configuration.COMBATSKILL_RANGED_ENABLED == true &&
+                        TryParseRangedAttackAbility(specialAbilitiesRaw, out int rangedMaxRangeEQ, out int rangedMinRangeEQ, out int rangedDamageModPercent) == true)
+                    {
+                        newCreatureTemplate.HasRangedAttackAbility = true;
+                        newCreatureTemplate.RangedAttackMaxRangeEQ = rangedMaxRangeEQ;
+                        newCreatureTemplate.RangedAttackMinRangeEQ = rangedMinRangeEQ;
+                        newCreatureTemplate.RangedAttackDamageModPercent = rangedDamageModPercent;
+                    }
+
                     // Crowd-control immunities from EQ special abilities
                     newCreatureTemplate.MechanicImmuneMask = DetermineCreatureMechanicImmuneMask(specialAbilitiesRaw);
 
@@ -524,6 +538,39 @@ namespace EQWOWConverter.Creatures
             if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 17) == true) // FearImmunity
                 mask |= 1L << (int)SpellMechanicType.Fleeing;
             return mask;
+        }
+
+        private static bool TryParseRangedAttackAbility(string specialAbilitiesRaw, out int maxRangeEQ, out int minRangeEQ, out int damageModPct)
+        {
+            // The EQ "ranged attack" special ability is ID 11. Reading like TAKP does which is "id,value,param0,param1,param2,etc"
+            // Looks like index 1 is max range, 2 is min range, 3 is damage modifier %.  Range 0 is 'use default' it seems.
+            maxRangeEQ = 0;
+            minRangeEQ = 0;
+            damageModPct = 0;
+            if (string.IsNullOrWhiteSpace(specialAbilitiesRaw))
+                return false;
+
+            string[] abilityGroups = specialAbilitiesRaw.Split('^');
+            foreach (string abilityGroup in abilityGroups)
+            {
+                if (abilityGroup.Trim().Length == 0)
+                    continue;
+                string[] parts = abilityGroup.Split(',');
+                if (parts.Length < 2)
+                    continue;
+                if (int.TryParse(parts[0].Trim(), out int curID) == false || curID != 11)
+                    continue;
+                if (int.TryParse(parts[1].Trim(), out int value) == false || value <= 0)
+                    return false;
+                if (parts.Length > 3)
+                    int.TryParse(parts[3].Trim(), out maxRangeEQ);
+                if (parts.Length > 4)
+                    int.TryParse(parts[4].Trim(), out minRangeEQ);
+                if (parts.Length > 5)
+                    int.TryParse(parts[5].Trim(), out damageModPct);
+                return true;
+            }
+            return false;
         }
 
         private static bool HasSpecialAbilityEnabled(string specialAbilitiesRaw, int abilityID)

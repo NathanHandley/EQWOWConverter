@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 27;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 28;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -792,6 +792,12 @@ namespace EQWOWConverter
         public static int COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT = 5;
         public static int COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS = 1500;
 
+        // Ranged attack in EQ zones is based on TAKP, and creatures will ranged attack if they have a bow + arrow or the creature has a special skill attribute
+        public static bool COMBATSKILL_RANGED_ENABLED = true;
+        public static int COMBATSKILL_RANGED_SPELL_ID = 86914;
+        public static int COMBATSKILL_RANGED_SPELL_ICON_EQ_ID = 13;
+        public static int COMBATSKILL_RANGED_DEFAULT_MAX_RANGE = 250; // TAKP range value
+
         //=====================================================================
         // Fishing
         //=====================================================================
@@ -1531,6 +1537,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID", COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT", COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT, "", false);
             OutputVariableToConfig("COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS", COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS, "");
+            OutputVariableToConfig("COMBATSKILL_RANGED_ENABLED", COMBATSKILL_RANGED_ENABLED, "Ranged attack in EQ zones is based on TAKP, and creatures will ranged attack if they have a bow + arrow or the creature has a special skill attribute", false);
+            OutputVariableToConfig("COMBATSKILL_RANGED_SPELL_ID", COMBATSKILL_RANGED_SPELL_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_RANGED_SPELL_ICON_EQ_ID", COMBATSKILL_RANGED_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_RANGED_DEFAULT_MAX_RANGE", COMBATSKILL_RANGED_DEFAULT_MAX_RANGE, "");
             OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_60", FISHING_SKILL_CONVERSION_MOD_60, "How much to multiply the EQ fish catching skill requirement for WOW", false);
             OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_80", FISHING_SKILL_CONVERSION_MOD_80, "");
             OutputVariableToConfig("FORAGE_SPELL_ICON_EQ_ID", FORAGE_SPELL_ICON_EQ_ID, "Which eq spell icon to use for the Forage skill. Can be a value between 0-22");
@@ -2035,6 +2045,10 @@ namespace EQWOWConverter
             COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID);
             COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT = ReadVariableFromConfigString("COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT", configValuesByVariableName, COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT);
             COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS = ReadVariableFromConfigString("COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS", configValuesByVariableName, COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS);
+            COMBATSKILL_RANGED_ENABLED = ReadVariableFromConfigString("COMBATSKILL_RANGED_ENABLED", configValuesByVariableName, COMBATSKILL_RANGED_ENABLED);
+            COMBATSKILL_RANGED_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_RANGED_SPELL_ID", configValuesByVariableName, COMBATSKILL_RANGED_SPELL_ID);
+            COMBATSKILL_RANGED_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_RANGED_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_RANGED_SPELL_ICON_EQ_ID);
+            COMBATSKILL_RANGED_DEFAULT_MAX_RANGE = ReadVariableFromConfigString("COMBATSKILL_RANGED_DEFAULT_MAX_RANGE", configValuesByVariableName, COMBATSKILL_RANGED_DEFAULT_MAX_RANGE);
             FISHING_SKILL_CONVERSION_MOD_60 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_60", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_60);
             FISHING_SKILL_CONVERSION_MOD_80 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_80", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_80);
             FORAGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("FORAGE_SPELL_ICON_EQ_ID", configValuesByVariableName, FORAGE_SPELL_ICON_EQ_ID);
