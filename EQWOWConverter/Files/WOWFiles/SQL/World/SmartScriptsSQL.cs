@@ -121,12 +121,15 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRowForCreatureTemplateInCombatSpellCast(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
             string comment)
+            string comment, int eventChance = 100)
         {
             int recastDelayInMSMax = recastDelayInMS + Convert.ToInt32(Convert.ToSingle(recastDelayInMS) * Configuration.CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
             AddRow(creatureTemplateID,
                 0,          
+                0,
                 0, // SMART_EVENT_UPDATE_IC
                 100,
+                eventChance,
                 1, // Initial delay in MS (minimum) - Set to 1 so it defaults after heals
                 1, // Initial delay in MS (maximum) - Set to 1 so it defaults after heals
                 recastDelayInMS, // Recast delay in MS (minimum)

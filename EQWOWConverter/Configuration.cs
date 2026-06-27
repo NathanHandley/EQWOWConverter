@@ -502,6 +502,9 @@ namespace EQWOWConverter
         // At what level of life a creature should cast a heal spell, if they have one
         public static int CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT = 30;
 
+        // How long to cooldown an attack proc from a creature, such as Ice Borrower's 'Frost Breath'
+        public static int CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS = 3000;
+
         // Percent (0-100) of the normal mana regeneration rate that spell-casting creatures should have, with approximately 10% being more EQ like
         public static int CREATURE_MANA_REGEN_PERCENT = 10;
 
@@ -1403,6 +1406,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS", CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS, "");
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD", CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD, "How much time to add the the max recast delay for combat spells so that there's a bit of variation");
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT", CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT, "At what level of life a creature should cast a heal spell, if they have one");
+            OutputVariableToConfig("CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS", CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS, "How long to cooldown an attack proc from a creature, such as Ice Borrower's 'Frost Breath'");
             OutputVariableToConfig("CREATURE_MANA_REGEN_PERCENT ", CREATURE_MANA_REGEN_PERCENT, "Percent (0-100) of the normal mana regeneration rate that spell-casting creatures should have, with approximately 10% being more EQ like");
             OutputTextLineToConfig("# If \"GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION\" is true, this is the text");
             OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT, "that displays when you talk to a Priest of Discord", false);
@@ -1905,6 +1909,7 @@ namespace EQWOWConverter
             CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS", configValuesByVariableName, CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS);
             CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD", configValuesByVariableName, CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
             CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT", configValuesByVariableName, CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT);
+            CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS", configValuesByVariableName, CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS);
             CREATURE_MANA_REGEN_PERCENT = ReadVariableFromConfigString("CREATURE_MANA_REGEN_PERCENT", configValuesByVariableName, CREATURE_MANA_REGEN_PERCENT);
             CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT);
             CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT);

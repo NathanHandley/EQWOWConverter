@@ -691,7 +691,7 @@ namespace EQWOWConverter
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[eqSpellIDAndProcChance.Item1];
                         string comment = string.Concat("EQ Attack Proc ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
                         smartScriptsSQL.AddRowForCreatureTemplateApplySpellOnDamageDone(creatureTemplate.WOWCreatureTemplateID, eqSpellIDAndProcChance.Item2,
-                            curSpellTemplate.WOWSpellID, comment);
+                            curSpellTemplate.WOWSpellID, Configuration.CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS, comment);
                     }
 
                     // Summons need to add an aura to the caster
