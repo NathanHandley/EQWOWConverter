@@ -76,6 +76,32 @@ namespace EQWOWConverter.Creatures
             }
         }
 
+        // Try to match general cast priority picking as referenced from TAKP mob_ai.cpp AICastSpell
+        public static int GetCombatSpellEventChance(int eqSpellTypeFlags, int priority)
+        {
+            // Priority 0 spells always cast (raid bosses have these)
+            if (priority <= 0)
+                return 100;
+
+            // Non-nuke spellcast type chance (direct damage spells are always 100%)
+            int typeChance = 100;
+            if ((eqSpellTypeFlags & 4) == 4) typeChance = Configuration.CREATURE_SPELL_COMBAT_ROOT_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 128) == 128) typeChance = Configuration.CREATURE_SPELL_COMBAT_SNARE_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 256) == 256) typeChance = Configuration.CREATURE_SPELL_COMBAT_DOT_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 512) == 512) typeChance = Configuration.CREATURE_SPELL_COMBAT_DISPEL_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 2048) == 2048) typeChance = Configuration.CREATURE_SPELL_COMBAT_MEZ_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 4096) == 4096) typeChance = Configuration.CREATURE_SPELL_COMBAT_CHARM_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 8192) == 8192) typeChance = Configuration.CREATURE_SPELL_COMBAT_SLOW_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 16384) == 16384) typeChance = Configuration.CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 64) == 64) typeChance = Configuration.CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE;
+
+            // Priority-order preference to drop less priority ones off
+            int priorityChance = 100;
+            if (priority > Configuration.CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD)
+                priorityChance = Math.Max(Configuration.CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN, 100 - ((priority - Configuration.CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD) * Configuration.CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP));
+            return Math.Min(typeChance, priorityChance);
+        }
+
         public int CompareTo(CreatureSpellEntry other)
         {
             // Proper way to do this is to sort by "Priority", however doing that will cause much less

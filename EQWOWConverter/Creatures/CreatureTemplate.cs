@@ -80,6 +80,8 @@ namespace EQWOWConverter.Creatures
         public List<CreatureSpellEntry> CreatureSpellEntriesHeal = new List<CreatureSpellEntry>();
         public List<CreatureSpellEntry> CreatureSpellEntriesOutOfCombatBuff = new List<CreatureSpellEntry>();
         public List<CreatureSpellEntry> CreatureSpellEntriesOutOfCombatSummons = new List<CreatureSpellEntry>();
+        public List<CreatureSpellEntry> CreatureSpellEntriesEscape = new List<CreatureSpellEntry>();
+        public List<CreatureSpellEntry> CreatureSpellEntriesInCombatBuff = new List<CreatureSpellEntry>();
         public bool DoesSummonPets = false;
         public List<(int, int)> AttackEQSpellIDAndProcChance = new List<(int, int)>();
         public bool UsesBash = false;

@@ -1639,7 +1639,9 @@ namespace EQWOWConverter
                         creatureTemplate.DoesSummonPets = true;
                         addedToList = true;
                     }
-                    if ((spellEntry.TypeFlags & 8) == 8) // Buff
+                    if ((spellEntry.TypeFlags & 32768) == 32768) // Looking at some EQ emulator source, it looks like NPCs never cast cure-type spells
+                        addedToList = true;
+                    else if ((spellEntry.TypeFlags & 8) == 8) // Buff
                     {
                         creatureTemplate.CreatureSpellEntriesOutOfCombatBuff.Add(spellEntry);
                         addedToList = true;
@@ -1659,6 +1661,16 @@ namespace EQWOWConverter
 
                         addedToList = true;
                     }
+                    else if ((spellEntry.TypeFlags & 16) == 16) // Escape
+                    {
+                        creatureTemplate.CreatureSpellEntriesEscape.Add(spellEntry);
+                        addedToList = true;
+                    }
+                    else if ((spellEntry.TypeFlags & 1024) == 1024) // InCombatBuff
+                    {
+                        creatureTemplate.CreatureSpellEntriesInCombatBuff.Add(spellEntry);
+                        addedToList = true;
+                    }
 
                     if (addedToList == false)
                         creatureTemplate.CreatureSpellEntriesCombat.Add(spellEntry);
@@ -1666,12 +1678,14 @@ namespace EQWOWConverter
 
                 // Mark if it'll have any smart scripts
                 if (creatureTemplate.AttackEQSpellIDAndProcChance.Count > 0 || creatureTemplate.CreatureSpellEntriesCombat.Count > 0 ||
-                        creatureTemplate.CreatureSpellEntriesHeal.Count > 0 || creatureTemplate.CreatureSpellEntriesOutOfCombatBuff.Count > 0)
+                        creatureTemplate.CreatureSpellEntriesHeal.Count > 0 || creatureTemplate.CreatureSpellEntriesOutOfCombatBuff.Count > 0 ||
+                        creatureTemplate.CreatureSpellEntriesEscape.Count > 0 || creatureTemplate.CreatureSpellEntriesInCombatBuff.Count > 0)
                     creatureTemplate.HasSmartScript = true;
 
                 // Sort then set recasts (where needed) to make sure it cycles
                 creatureTemplate.CreatureSpellEntriesCombat.Sort();
                 creatureTemplate.CreatureSpellEntriesOutOfCombatBuff.Sort();
+                creatureTemplate.CreatureSpellEntriesInCombatBuff.Sort();
             }
 
             Logger.WriteDebug("Converting Creature Spell AI complete.");

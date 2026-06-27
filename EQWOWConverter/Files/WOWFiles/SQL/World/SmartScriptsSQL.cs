@@ -120,15 +120,12 @@ namespace EQWOWConverter.WOWFiles
         }
 
         public void AddRowForCreatureTemplateInCombatSpellCast(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
-            string comment)
             string comment, int eventChance = 100)
         {
             int recastDelayInMSMax = recastDelayInMS + Convert.ToInt32(Convert.ToSingle(recastDelayInMS) * Configuration.CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
             AddRow(creatureTemplateID,
-                0,          
                 0,
                 0, // SMART_EVENT_UPDATE_IC
-                100,
                 eventChance,
                 1, // Initial delay in MS (minimum) - Set to 1 so it defaults after heals
                 1, // Initial delay in MS (maximum) - Set to 1 so it defaults after heals
@@ -183,6 +180,67 @@ namespace EQWOWConverter.WOWFiles
                 comment,
                 idOverride: -1,
                 eventFlags: 256 // SMART_EVENT_FLAG_DONT_RESET
+            );
+        }
+
+        public void AddRowForCreatureTemplateEscapeSelfCast(int creatureTemplateID, int healthTriggerPct, int eventChance, int recastDelayInMS, int wowSpellID, string comment)
+        {
+            AddRow(creatureTemplateID,
+                0,
+                2, // SMART_EVENT_HEALTH_PCT
+                eventChance,
+                0,                // HP min %
+                healthTriggerPct, // HP max %
+                recastDelayInMS,  // Repeat min in MS
+                recastDelayInMS,  // Repeat max in MS
+                0,
+                0,
+                11, // SMART_ACTION_CAST
+                wowSpellID,
+                0,  // Cast flags (self cast, no combat move needed)
+                0,
+                0,
+                0,
+                0,
+                1, // SMART_TARGET_SELF
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment
+            );
+        }
+
+        public void AddRowForCreatureTemplateInCombatSelfBuffCast(int creatureTemplateID, int recastDelayInMS, int eventChance, int wowSpellID, string comment)
+        {
+            int recastDelayInMSMax = recastDelayInMS + Convert.ToInt32(Convert.ToSingle(recastDelayInMS) * Configuration.CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
+            AddRow(creatureTemplateID,
+                0,
+                0, // SMART_EVENT_UPDATE_IC
+                eventChance,
+                1, // Initial delay in MS (minimum)
+                1, // Initial delay in MS (maximum)
+                recastDelayInMS, // Recast delay in MS (minimum)
+                recastDelayInMSMax, // Recast delay in MS (maximum)
+                0,
+                0,
+                11, // SMART_ACTION_CAST
+                wowSpellID,
+                96, // SMARTCAST_COMBAT_MOVE (64) + SMARTCAST_AURA_NOT_PRESENT (32)
+                0,
+                0,
+                0,
+                0,
+                1, // SMART_TARGET_SELF
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment
             );
         }
 
@@ -478,17 +536,16 @@ namespace EQWOWConverter.WOWFiles
             );
         }
 
-        public void AddRowForCreatureTemplateApplySpellOnDamageDone(int creatureTemplateID, int chance, int wowSpellID, /* int spellVisualImpactKitID, */string comment)
+        public void AddRowForCreatureTemplateApplySpellOnDamageDone(int creatureTemplateID, int chance, int wowSpellID, int cooldownInMS, /* int spellVisualImpactKitID, */string comment)
         {
-            // Damage event
             AddRow(creatureTemplateID,
                 0,
                 33, // SMART_EVENT_DAMAGED_TARGET
                 chance,
                 0, // Min Damage
                 1000000, // Max Damage (ensures always happens
-                0,
-                0,
+                cooldownInMS, // Cooldown min (ms) between procs
+                cooldownInMS, // Cooldown max (ms) between procs
                 0,
                 0,
                 11, // SMART_ACTION_CAST

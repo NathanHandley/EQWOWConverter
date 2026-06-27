@@ -650,9 +650,34 @@ namespace EQWOWConverter
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesCombat)
                     {
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
+
+                        // Gates detrimental casts behind per-type rolls and honor priority order (lower number = preferred)
+                        int eventChance = CreatureSpellEntry.GetCombatSpellEventChance(creatureSpellEntry.TypeFlags, creatureSpellEntry.Priority);
+
                         string comment = string.Concat("EQ In Combat ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
                         smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID,
-                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment);
+                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment, eventChance);
+                    }
+
+                    // Add spell events for every in-combat self buff entry (cast on self, not the victim)
+                    foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesInCombatBuff)
+                    {
+                        SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
+                        string comment = string.Concat("EQ In Combat Self Buff ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
+                        smartScriptsSQL.AddRowForCreatureTemplateInCombatSelfBuffCast(creatureTemplate.WOWCreatureTemplateID,
+                            creatureSpellEntry.CalculatedMinimumDelayInMS, Configuration.CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE, curSpellTemplate.WOWSpellID, comment);
+                    }
+
+                    // Add escape spells
+                    if (creatureTemplate.IsPet == false)
+                    {
+                        foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesEscape)
+                        {
+                            SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
+                            string comment = string.Concat("EQ Escape ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
+                            smartScriptsSQL.AddRowForCreatureTemplateEscapeSelfCast(creatureTemplate.WOWCreatureTemplateID, Configuration.CREATURE_SPELL_ESCAPE_HEALTH_TRIGGER_PCT, Configuration.CREATURE_SPELL_ESCAPE_CAST_CHANCE,
+                                Configuration.CREATURE_SPELL_ESCAPE_RECAST_DELAY_IN_MS, curSpellTemplate.WOWSpellID, comment);
+                        }
                     }
 
                     // Add spell events for every summon

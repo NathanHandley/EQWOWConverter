@@ -502,8 +502,33 @@ namespace EQWOWConverter
         // At what level of life a creature should cast a heal spell, if they have one
         public static int CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT = 30;
 
+        // Chance rolls are used in a tree to determine which detrimental spell type to cast
+        // (referenced from TAKP mod_ai.cpp AICastSpell)
+        public static int CREATURE_SPELL_COMBAT_ROOT_CAST_CHANCE = 40;
+        public static int CREATURE_SPELL_COMBAT_SNARE_CAST_CHANCE = 30;
+        public static int CREATURE_SPELL_COMBAT_DOT_CAST_CHANCE = 40;
+        public static int CREATURE_SPELL_COMBAT_DISPEL_CAST_CHANCE = 10;
+        public static int CREATURE_SPELL_COMBAT_MEZ_CAST_CHANCE = 30;
+        public static int CREATURE_SPELL_COMBAT_CHARM_CAST_CHANCE = 30;
+        public static int CREATURE_SPELL_COMBAT_SLOW_CAST_CHANCE = 70;
+        public static int CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE = 50;
+        public static int CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE = 50;
+
+        // Spell pick priority order weights
+        public static int CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD = 1;
+        public static int CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP = 30;
+        public static int CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN = 20;
+
         // How long to cooldown an attack proc from a creature, such as Ice Borrower's 'Frost Breath'
         public static int CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS = 3000;
+
+        // Health and cast chance a creature will cast an escape spell
+        public static int CREATURE_SPELL_ESCAPE_HEALTH_TRIGGER_PCT = 15;
+        public static int CREATURE_SPELL_ESCAPE_CAST_CHANCE = 50;
+        public static int CREATURE_SPELL_ESCAPE_RECAST_DELAY_IN_MS = 5000;
+
+        // Chance to cast an in-combat buff
+        public static int CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE = 50;
 
         // Percent (0-100) of the normal mana regeneration rate that spell-casting creatures should have, with approximately 10% being more EQ like
         public static int CREATURE_MANA_REGEN_PERCENT = 10;
@@ -1406,7 +1431,23 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS", CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS, "");
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD", CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD, "How much time to add the the max recast delay for combat spells so that there's a bit of variation");
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT", CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT, "At what level of life a creature should cast a heal spell, if they have one");
+            OutputVariableToConfig("CREATURE_SPELL_COMBAT_ROOT_CAST_CHANCE", CREATURE_SPELL_COMBAT_ROOT_CAST_CHANCE, "Chance rolls are used in a tree to determine which detrimental spell type to cast", false);
+            OutputVariableToConfig("CREATURE_SPELL_COMBAT_SNARE_CAST_CHANCE", CREATURE_SPELL_COMBAT_SNARE_CAST_CHANCE, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_COMBAT_DOT_CAST_CHANCE", CREATURE_SPELL_COMBAT_DOT_CAST_CHANCE, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_COMBAT_DISPEL_CAST_CHANCE", CREATURE_SPELL_COMBAT_DISPEL_CAST_CHANCE, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_COMBAT_MEZ_CAST_CHANCE", CREATURE_SPELL_COMBAT_MEZ_CAST_CHANCE, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_COMBAT_CHARM_CAST_CHANCE", CREATURE_SPELL_COMBAT_CHARM_CAST_CHANCE, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_COMBAT_SLOW_CAST_CHANCE", CREATURE_SPELL_COMBAT_SLOW_CAST_CHANCE, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE", CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE", CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE, "");
+            OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD", CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD, "Spell pick priority order weights", false);
+            OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP", CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN", CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN, "");
             OutputVariableToConfig("CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS", CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS, "How long to cooldown an attack proc from a creature, such as Ice Borrower's 'Frost Breath'");
+            OutputVariableToConfig("CREATURE_SPELL_ESCAPE_HEALTH_TRIGGER_PCT", CREATURE_SPELL_ESCAPE_HEALTH_TRIGGER_PCT, "Health and cast chance a creature will cast an escape spell", false);
+            OutputVariableToConfig("CREATURE_SPELL_ESCAPE_CAST_CHANCE", CREATURE_SPELL_ESCAPE_CAST_CHANCE, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_ESCAPE_RECAST_DELAY_IN_MS", CREATURE_SPELL_ESCAPE_RECAST_DELAY_IN_MS, "");
+            OutputVariableToConfig("CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE", CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE, "Chance to cast an in-combat buff");
             OutputVariableToConfig("CREATURE_MANA_REGEN_PERCENT ", CREATURE_MANA_REGEN_PERCENT, "Percent (0-100) of the normal mana regeneration rate that spell-casting creatures should have, with approximately 10% being more EQ like");
             OutputTextLineToConfig("# If \"GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION\" is true, this is the text");
             OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT, "that displays when you talk to a Priest of Discord", false);
@@ -1909,7 +1950,23 @@ namespace EQWOWConverter
             CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS", configValuesByVariableName, CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS);
             CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD", configValuesByVariableName, CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
             CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT", configValuesByVariableName, CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT);
+            CREATURE_SPELL_COMBAT_ROOT_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_ROOT_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_COMBAT_ROOT_CAST_CHANCE);
+            CREATURE_SPELL_COMBAT_SNARE_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_SNARE_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_COMBAT_SNARE_CAST_CHANCE);
+            CREATURE_SPELL_COMBAT_DOT_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_DOT_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_COMBAT_DOT_CAST_CHANCE);
+            CREATURE_SPELL_COMBAT_DISPEL_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_DISPEL_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_COMBAT_DISPEL_CAST_CHANCE);
+            CREATURE_SPELL_COMBAT_MEZ_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_MEZ_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_COMBAT_MEZ_CAST_CHANCE);
+            CREATURE_SPELL_COMBAT_CHARM_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_CHARM_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_COMBAT_CHARM_CAST_CHANCE);
+            CREATURE_SPELL_COMBAT_SLOW_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_SLOW_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_COMBAT_SLOW_CAST_CHANCE);
+            CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE);
+            CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE);
+            CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD);
+            CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP);
+            CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN);
             CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS", configValuesByVariableName, CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS);
+            CREATURE_SPELL_ESCAPE_HEALTH_TRIGGER_PCT = ReadVariableFromConfigString("CREATURE_SPELL_ESCAPE_HEALTH_TRIGGER_PCT", configValuesByVariableName, CREATURE_SPELL_ESCAPE_HEALTH_TRIGGER_PCT);
+            CREATURE_SPELL_ESCAPE_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_ESCAPE_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_ESCAPE_CAST_CHANCE);
+            CREATURE_SPELL_ESCAPE_RECAST_DELAY_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_ESCAPE_RECAST_DELAY_IN_MS", configValuesByVariableName, CREATURE_SPELL_ESCAPE_RECAST_DELAY_IN_MS);
+            CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE);
             CREATURE_MANA_REGEN_PERCENT = ReadVariableFromConfigString("CREATURE_MANA_REGEN_PERCENT", configValuesByVariableName, CREATURE_MANA_REGEN_PERCENT);
             CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT);
             CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT);
