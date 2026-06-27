@@ -66,6 +66,7 @@ namespace EQWOWConverter.Creatures
         public bool IsRidingTrainer = false;
         public bool IsNorrathPriestOfDiscord = false;
         public bool IsAzerothPriestOfDiscord = false;
+        public bool IsPlaneTeleporter = false;
         public ClassWOWType ClassTrainerType = ClassWOWType.None;
         public TradeskillType TradeskillTrainerType = TradeskillType.None;
         public int GossipMenuID = 0;
@@ -773,6 +774,11 @@ namespace EQWOWConverter.Creatures
                     {
                         creatureTemplate.IsReagentVendor = true;
                         creatureTemplate.SubName = "Reagent Merchant";
+                    } break;
+                case 104: // Planes Teleporter
+                    {
+                        creatureTemplate.IsPlaneTeleporter = true;
+                        creatureTemplate.SubName = "Bridger of Planes";
                     } break;
                 default:
                     {   

@@ -16,7 +16,7 @@
 
 namespace EQWOWConverter.Creatures.Teleporters
 {
-    internal class CreatureTeleporter
+    internal class CreatureTeleporterInAzeroth
     {
         public int MapID;
         public int AreaID;
@@ -25,11 +25,11 @@ namespace EQWOWConverter.Creatures.Teleporters
         public float ZPosition;
         public float Orientation;
 
-        private static List<CreatureTeleporter> CreatureTeleporters = new List<CreatureTeleporter>();
+        private static List<CreatureTeleporterInAzeroth> CreatureTeleporters = new List<CreatureTeleporterInAzeroth>();
 
         public static readonly object CreatureTeleporterLock = new object();
 
-        public static List<CreatureTeleporter> GetAllCreatureTeleporters()
+        public static List<CreatureTeleporterInAzeroth> GetAllCreatureTeleporters()
         {
             lock (CreatureTeleporterLock)
             {
@@ -47,7 +47,7 @@ namespace EQWOWConverter.Creatures.Teleporters
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(creatureTeleporterFileName, "|");
             foreach (Dictionary<string, string> columns in rows)
             {
-                CreatureTeleporter newTeleporter = new CreatureTeleporter();
+                CreatureTeleporterInAzeroth newTeleporter = new CreatureTeleporterInAzeroth();
                 newTeleporter.MapID = int.Parse(columns["MapID"]);
                 newTeleporter.AreaID = int.Parse(columns["AreaID"]);
                 newTeleporter.XPosition = float.Parse(columns["X"]);

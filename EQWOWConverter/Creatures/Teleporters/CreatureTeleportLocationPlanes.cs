@@ -14,26 +14,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-
 namespace EQWOWConverter.Creatures.Teleporters
 {
-    internal class CreatureTeleportLocationAzeroth
+    internal class CreatureTeleportLocationPlanes
     {
-        public RaceType Race;
-        public int MapID;
-        public int AreaID;
+        public string ZoneShortName = string.Empty;
         public float XPosition;
         public float YPosition;
         public float ZPosition;
         public float Orientation;
         public string MenuItemText = string.Empty;
 
-        private static List<CreatureTeleportLocationAzeroth> TeleportLocations = new List<CreatureTeleportLocationAzeroth>();
-
+        private static List<CreatureTeleportLocationPlanes> TeleportLocations = new List<CreatureTeleportLocationPlanes>();
         public static readonly object TeleporterLock = new object();
 
-        public static List<CreatureTeleportLocationAzeroth> GetAllTeleportLocations()
+        public static List<CreatureTeleportLocationPlanes> GetAllTeleportLocations()
         {
             lock (TeleporterLock)
             {
@@ -46,24 +41,16 @@ namespace EQWOWConverter.Creatures.Teleporters
         private static void LoadTeleportLocations()
         {
             TeleportLocations.Clear();
-            string teleportLocationFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "TeleportLocationsToAzeroth.csv");
-            Logger.WriteDebug("Populating Azeroth teleport locations list via file '" + teleportLocationFileName + "'");
+            string teleportLocationFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "TeleportLocationsToPlanes.csv");
+            Logger.WriteDebug("Populating Planes teleport locations list via file '" + teleportLocationFileName + "'");
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(teleportLocationFileName, "|");
             foreach (Dictionary<string, string> columns in rows)
             {
-                int raceID = int.Parse(columns["RaceID"]);
-                if (Enum.IsDefined(typeof(RaceType), raceID) == false)
-                {
-                    Logger.WriteError("Error in LoadTeleportLocations, as there was no RaceType that maps to int value '", raceID.ToString(), "'");
-                    continue;
-                }
-                CreatureTeleportLocationAzeroth teleportLocation = new CreatureTeleportLocationAzeroth();
-                teleportLocation.Race = (RaceType)raceID;
-                teleportLocation.MapID = int.Parse(columns["MapID"]);
-                teleportLocation.AreaID = int.Parse(columns["AreaID"]);
-                teleportLocation.XPosition = float.Parse(columns["X"]);
-                teleportLocation.YPosition = float.Parse(columns["Y"]);
-                teleportLocation.ZPosition = float.Parse(columns["Z"]);
+                CreatureTeleportLocationPlanes teleportLocation = new CreatureTeleportLocationPlanes();
+                teleportLocation.ZoneShortName = columns["ZoneShortName"];
+                teleportLocation.XPosition = float.Parse(columns["X"]) * Configuration.GENERATE_WORLD_SCALE;
+                teleportLocation.YPosition = float.Parse(columns["Y"]) * Configuration.GENERATE_WORLD_SCALE;
+                teleportLocation.ZPosition = float.Parse(columns["Z"]) * Configuration.GENERATE_WORLD_SCALE;
                 teleportLocation.Orientation = float.Parse(columns["O"]);
                 teleportLocation.MenuItemText = columns["MenuItemText"];
                 TeleportLocations.Add(teleportLocation);

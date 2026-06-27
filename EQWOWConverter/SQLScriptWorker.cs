@@ -459,6 +459,38 @@ namespace EQWOWConverter
                 }
             }
 
+            // Planes teleportation
+            List<CreatureTeleportLocationPlanes> planesTeleportLocations;
+            SortedDictionary<int, CreatureTeleportLocationPlanes> planesTeleportLocationByMenuOptionID = new SortedDictionary<int, CreatureTeleportLocationPlanes>();
+            int planesTeleporterGossipMenuID = -1;
+            if (Configuration.GENERANE_ENABLE_PLANES_TELEPORTATION == true)
+            {
+                // Base menu
+                int menuBroadcastTextID = BroadcastTextSQL.GenerateUniqueID();
+                broadcastTextSQL.AddRow(menuBroadcastTextID, Configuration.CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT, Configuration.CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT);
+                int menuNPCTextID = NPCTextSQL.GenerateUniqueID();
+                planesTeleportLocations = CreatureTeleportLocationPlanes.GetAllTeleportLocations();
+                planesTeleporterGossipMenuID = GossipMenuSQL.GenerateUniqueMenuID();
+                npcTextSQL.AddRow(menuNPCTextID, Configuration.CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT, menuBroadcastTextID);
+                gossipMenuSQL.AddRow(planesTeleporterGossipMenuID, menuNPCTextID);
+
+                // Teleports
+                int curMenuOptionID = 0;
+                foreach (CreatureTeleportLocationPlanes teleportLocation in planesTeleportLocations)
+                {
+                    // Broadcast
+                    int menuBroadcastID = BroadcastTextSQL.GenerateUniqueID();
+                    broadcastTextSQL.AddRow(menuBroadcastID, teleportLocation.MenuItemText, teleportLocation.MenuItemText);
+
+                    // Menu Option
+                    gossipMenuOptionSQL.AddRow(planesTeleporterGossipMenuID, curMenuOptionID, 0, teleportLocation.MenuItemText, menuBroadcastID, 1, 1, 0);
+
+                    // Save
+                    planesTeleportLocationByMenuOptionID.Add(curMenuOptionID, teleportLocation);
+                    curMenuOptionID++;
+                }
+            }
+
             // Creature Templates
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
             List<CreatureVendorItem> reagentVendorItems = CreatureVendorItem.GetCreatureReagentItems();
@@ -528,6 +560,23 @@ namespace EQWOWConverter
                         int mapID = mapIDsByShortName[curTeleportLocation.ZoneShortName];
                         string comment = string.Concat("EQ teleport player to Norrath ('", curTeleportLocation.MenuItemText, "')");
                         smartScriptsSQL.AddRowForMenuOptionTriggeredTeleport(creatureTemplate.WOWCreatureTemplateID, azerothPriestOfDiscordGossipMenuID, norrathTeleportLocationByGossipMenuOptionID.Key,
+                            mapID, curTeleportLocation.XPosition, curTeleportLocation.YPosition, curTeleportLocation.ZPosition, curTeleportLocation.Orientation, comment);
+                    }
+                }
+
+                // If there are any planes teleports
+                if (Configuration.GENERANE_ENABLE_PLANES_TELEPORTATION == true && creatureTemplate.IsPlaneTeleporter == true)
+                {
+                    creatureTemplate.HasSmartScript = true;
+                    creatureTemplate.GossipMenuID = planesTeleporterGossipMenuID;
+                    foreach (var planesTeleportLocationByGossipMenuOptionID in planesTeleportLocationByMenuOptionID)
+                    {
+                        CreatureTeleportLocationPlanes curTeleportLocation = planesTeleportLocationByGossipMenuOptionID.Value;
+                        if (mapIDsByShortName.ContainsKey(curTeleportLocation.ZoneShortName) == false)
+                            continue;
+                        int mapID = mapIDsByShortName[curTeleportLocation.ZoneShortName];
+                        string comment = string.Concat("EQ teleport player to Planes ('", curTeleportLocation.MenuItemText, "')");
+                        smartScriptsSQL.AddRowForMenuOptionTriggeredTeleport(creatureTemplate.WOWCreatureTemplateID, planesTeleporterGossipMenuID, planesTeleportLocationByGossipMenuOptionID.Key,
                             mapID, curTeleportLocation.XPosition, curTeleportLocation.YPosition, curTeleportLocation.ZPosition, curTeleportLocation.Orientation, comment);
                     }
                 }
@@ -804,19 +853,19 @@ namespace EQWOWConverter
             if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
             {
                 // Creatures themselves
-                List<CreatureTeleporter> creatureTeleporters = CreatureTeleporter.GetAllCreatureTeleporters();
+                List<CreatureTeleporterInAzeroth> creatureTeleporters = CreatureTeleporterInAzeroth.GetAllCreatureTeleporters();
                 Dictionary<int, CreatureTemplate> creatureTemplatesByWOWID = CreatureTemplate.GetCreatureTemplateListByWOWID();
-                if (creatureTemplatesByWOWID.ContainsKey(Configuration.GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID) == false)
+                if (creatureTemplatesByWOWID.ContainsKey(Configuration.GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID) == false)
                 {
                     Logger.WriteError("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION was true but no creature template with ID as defined by GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID could be found.");
                 }
                 else
                 {
-                    foreach (CreatureTeleporter creatureTeleporter in creatureTeleporters)
+                    foreach (CreatureTeleporterInAzeroth creatureTeleporter in creatureTeleporters)
                     {
                         string creatureComment = string.Concat("EQ Azeroth Priest of Discord");
                         int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                        creatureSQL.AddRow(creatureGUID, Configuration.GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID, creatureTeleporter.MapID,
+                        creatureSQL.AddRow(creatureGUID, Configuration.GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID, creatureTeleporter.MapID,
                             creatureTeleporter.AreaID, creatureTeleporter.AreaID, creatureTeleporter.XPosition, creatureTeleporter.YPosition,
                             creatureTeleporter.ZPosition, creatureTeleporter.Orientation, CreatureMovementType.None, creatureComment, false);
                     }

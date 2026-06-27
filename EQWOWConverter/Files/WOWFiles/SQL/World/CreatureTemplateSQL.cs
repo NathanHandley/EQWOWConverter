@@ -95,6 +95,8 @@ namespace EQWOWConverter.WOWFiles
             }
             if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true && (creatureTemplate.IsAzerothPriestOfDiscord == true || creatureTemplate.IsNorrathPriestOfDiscord == true))
                 numOfRoles+=2;
+            if (Configuration.GENERANE_ENABLE_PLANES_TELEPORTATION == true && creatureTemplate.IsPlaneTeleporter == true)
+                numOfRoles+=2;
             if (numOfRoles > 1)
                 npcFlags |= 1;     // 0x00000001 = Has Gossip Menu
             if (creatureTemplate.CanAssist == true)
@@ -130,7 +132,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("exp", 0); // Which expansion to use (0 = classic)
             if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                 newRow.AddInt("faction", Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL);
-            else if (creatureTemplate.WOWCreatureTemplateID == Configuration.GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID)
+            else if (creatureTemplate.WOWCreatureTemplateID == Configuration.GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID)
                 newRow.AddInt("faction", 35); // This is a 'friendly with all' rep
             else
                 newRow.AddInt("faction", creatureTemplate.WOWFactionTemplateID); // References FactionTemplate.dbc

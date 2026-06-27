@@ -174,7 +174,10 @@ namespace EQWOWConverter
         // If true, Priests of Discord (in Norrath) will teleport players to Azeroth, and Azeroth will have Priests of Discord to send players back to Norrath
         // Note that CreatureFactionClassAlignment.csv and PlayerWOWRaceProperties.csv factor into Norrath destinations
         public static bool GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION = true;
-        public static int GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID = 55813;
+        public static int GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID = 55813;
+
+        // If true, a creature shows up in the EC tunnel that can teleport you to airplane and hateplane
+        public static bool GENERANE_ENABLE_PLANES_TELEPORTATION = true;
 
         // If false, equipment is balanced to max level 60 and original levels are used. If true, use adjusted levels and zones/equip is balanced to 80
         // with Classic through 60, Kunark through 70, and Velious through 80. Zones will also have a smoother level curve if set to true (NYI)
@@ -538,6 +541,10 @@ namespace EQWOWConverter
         public static string CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT = "Ah, child of Azeroth. The Priests of Discord have torn the rift wide so that your wars and ours may bleed together. Where shall I send you to spread the Discord?";
         public static string CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT = "Hail, traveler of Norrath. I can only send you back through the rift to the land in Azeroth that calls calls to your blood. Let your arrival there spread confusion and chaos among your kin. Where does your heritage demand I deliver you?";
         public static string CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT = "Greetings. As much as I wish to help you sow Discord, you carry with you the recent echo of one of our portals. See me again once that echo fades, and I shall aid you.";
+
+        // If "GENERANE_ENABLE_PLANES_TELEPORTATION" is true, this is the text that displays
+        // when you talk to a planes teleporter
+        public static string CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT = "Heehee! Greetings, $N! I am %s, master of the arcane tinker-torium! While those other stuffy wizards hoard their portals, I offer free teleportation services to the most dangerous planes of existence! Just say the word and I will zap you straight to the Plane of Sky or the Plane of Hate — no reagents, no waiting, no pesky deaths required! What will it be, adventurer?";
 
         // If true, any creature initial spawn location will instead be the first node in the path grid, but only for paths managed by the AzerothCore engine
         public static bool CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH = true;
@@ -1269,7 +1276,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("DUNGEON_FINDER_ENABLED", DUNGEON_FINDER_ENABLED, "If true, dungeon finder can be used for special versions of EQ dungeons");
             OutputTextLineToConfig("# If true, Priests of Discord (in Norrath) will teleport players to Azeroth, and Azeroth will have Priests of Discord to send players back to Norrath");
             OutputVariableToConfig("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION, "Note that CreatureFactionClassAlignment.csv and PlayerWOWRaceProperties.csv factor into Norrath destinations", false);
-            OutputVariableToConfig("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID, "");
+            OutputVariableToConfig("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID, "");
+            OutputVariableToConfig("GENERANE_ENABLE_PLANES_TELEPORTATION", GENERANE_ENABLE_PLANES_TELEPORTATION, "If true, a creature shows up in the EC tunnel that can teleport you to airplane and hateplane");
             OutputVariableToConfig("GENERATE_ENABLE_GUILD_VAULTS", GENERATE_ENABLE_GUILD_VAULTS, "If true, guild banks will now appear. In some cases this will replace an existing banker, others will add a new guild bank NPC object");
             OutputVariableToConfig("OBJECT_GAMEOBJECT_ENABLE_MAILBOXES", OBJECT_GAMEOBJECT_ENABLE_MAILBOXES, "If true, custom mailboxes are put into the game as 'postmen'");
             OutputVariableToConfig("OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER", OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER, "If true, a fixed respawn timer will be used for 'ground objects', and if false then the EQ respawn timers will be used");
@@ -1453,6 +1461,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT, "that displays when you talk to a Priest of Discord", false);
             OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT, "");
             OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT, "");
+            OutputVariableToConfig("CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT", CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT, "If \"GENERANE_ENABLE_PLANES_TELEPORTATION\" is true, this is the text that displays when you talk to a planes teleporter");
             OutputVariableToConfig("CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH", CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH, "If true, any creature initial spawn location will instead be the first node in the path grid, but only for paths managed by the AzerothCore engine");
             OutputVariableToConfig("ITEMS_USE_ALTERNATE_STATS", ITEMS_USE_ALTERNATE_STATS, "If true, this uses alternate stats for items that have been tweaked for balance reasons");
             OutputVariableToConfig("ITEMS_WEAPON_DELAY_REDUCTION_AMT", ITEMS_WEAPON_DELAY_REDUCTION_AMT, "This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;");
@@ -1814,7 +1823,8 @@ namespace EQWOWConverter
             GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE = ReadVariableFromConfigString("GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE", configValuesByVariableName, GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
             GENERATE_ENABLE_GUILD_VAULTS = ReadVariableFromConfigString("GENERATE_ENABLE_GUILD_VAULTS", configValuesByVariableName, GENERATE_ENABLE_GUILD_VAULTS);
             GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION = ReadVariableFromConfigString("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", configValuesByVariableName, GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION);
-            GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID = ReadVariableFromConfigString("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", configValuesByVariableName, GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID);
+            GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID = ReadVariableFromConfigString("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", configValuesByVariableName, GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID);
+            GENERANE_ENABLE_PLANES_TELEPORTATION = ReadVariableFromConfigString("GENERANE_ENABLE_PLANES_TELEPORTATION", configValuesByVariableName, GENERANE_ENABLE_PLANES_TELEPORTATION);
             GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 = ReadVariableFromConfigString("GENERATE_REBALANCE_CONTENT_TO_LEVEL_80", configValuesByVariableName, GENERATE_REBALANCE_CONTENT_TO_LEVEL_80);
             GENERATE_NON_PLAYER_OBTAINABLE_ITEMS = ReadVariableFromConfigString("GENERATE_NON_PLAYER_OBTAINABLE_ITEMS", configValuesByVariableName, GENERATE_NON_PLAYER_OBTAINABLE_ITEMS);
 
@@ -1971,6 +1981,7 @@ namespace EQWOWConverter
             CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT);
             CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT);
             CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT);
+            CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT);
             CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH = ReadVariableFromConfigString("CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH", configValuesByVariableName, CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH);
 
             ITEMS_USE_ALTERNATE_STATS = ReadVariableFromConfigString("ITEMS_USE_ALTERNATE_STATS", configValuesByVariableName, ITEMS_USE_ALTERNATE_STATS);
