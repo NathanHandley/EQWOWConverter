@@ -437,18 +437,18 @@ namespace EQWOWConverter
 
         // Stat modifiers for creatures
         // - "MIN" and "MAX" are applied after all other calculations
-        public static float CREATURE_STAT_MOD_HP_ADD = 1.5f;
-        public static float CREATURE_STAT_MOD_HP_MIN = 1.5f;
-        public static float CREATURE_STAT_MOD_HP_MAX_NORMAL = 4f;
+        public static float CREATURE_STAT_MOD_HP_ADD = 2f;
+        public static float CREATURE_STAT_MOD_HP_MIN = 2f;
+        public static float CREATURE_STAT_MOD_HP_MAX_NORMAL = 4.5f;
         public static float CREATURE_STAT_MOD_HP_MAX_RARE = 5f;
-        public static float CREATURE_STAT_MOD_HP_SET_ELITE = 15f; // WOTLK 20f
+        public static float CREATURE_STAT_MOD_HP_SET_ELITE = 10f; // WOTLK 20f
         public static float CREATURE_STAT_MOD_HP_SET_ELITERARE = 30f; // WOTLK 80f
         public static float CREATURE_STAT_MOD_HP_SET_BOSS = 200f;
         public static float CREATURE_STAT_MOD_AVGDMG_ADD = 0.6f;
         public static float CREATURE_STAT_MOD_AVGDMG_MIN = 1f;
         public static float CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL = 2.5f;
         public static float CREATURE_STAT_MOD_AVGDMG_MAX_RARE = 2.5f;
-        public static float CREATURE_STAT_MOD_AVGDMG_SET_ELITE = 8f;
+        public static float CREATURE_STAT_MOD_AVGDMG_SET_ELITE = 5f;
         public static float CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE = 10f;
         public static float CREATURE_STAT_MOD_AVGDMG_SET_BOSS = 18f;
 
