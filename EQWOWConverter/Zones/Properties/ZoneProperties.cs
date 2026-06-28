@@ -163,6 +163,7 @@ namespace EQWOWConverter.Zones
         public int RaidPlayerSize = 0;
         public int RaidDurationInSeconds = 0;
         public bool AlwaysZoomOutMapToNorrathMap = false;
+        public float SocialAgroMod = 1f;
         public bool DisableObjectsInMapGenMode = false;
 
         public ZoneProperties(UInt32 wmoAreaTableDBCID)
@@ -1097,6 +1098,9 @@ namespace EQWOWConverter.Zones
                 }
                 zoneProperties.AlwaysZoomOutMapToNorrathMap = propertiesRow["AlwaysZoomOutToNorrathMap"].Trim() == "1" ? true : false;
                 zoneProperties.DisableObjectsInMapGenMode = propertiesRow["DisableObjectsInMapGenMode"].Trim() == "1" ? true : false;
+
+                // Creature properties
+                zoneProperties.SocialAgroMod = float.Parse(propertiesRow["SocialAgroMod"]);
 
                 // Sound and Music
                 foreach (string enabled2DSoundInstanceName in propertiesRow["Enabled2DSoundInstances"].Split(","))

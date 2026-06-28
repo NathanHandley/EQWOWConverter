@@ -1422,7 +1422,17 @@ namespace EQWOWConverter
                     foreach (CreatureSpawnEntry spawnEntry in creatureSpawnEntriesByGroupID[spawnGroup.Key])
                     {
                         if (creatureTemplatesByEQID.ContainsKey(spawnEntry.EQCreatureTemplateID))
+                        {
+                            // Add template to spawn pool
                             curSpawnPool.AddCreatureTemplate(creatureTemplatesByEQID[spawnEntry.EQCreatureTemplateID], spawnEntry.Chance);
+
+                            // Apply any agro radius modifications
+                            if (mapIDsByShortName.ContainsKey(spawnGroup.Value.ZoneShortName) == true)
+                            {
+                                float zoneSocialMod = zonePropertiesByMapID[mapIDsByShortName[spawnGroup.Value.ZoneShortName]].SocialAgroMod;
+                                creatureTemplatesByEQID[spawnEntry.EQCreatureTemplateID].AgroSocialDistanceMod = zoneSocialMod;
+                            }
+                        }
                     }
                 }
 

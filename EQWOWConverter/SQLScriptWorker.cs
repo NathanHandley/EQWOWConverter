@@ -584,8 +584,11 @@ namespace EQWOWConverter
                 // Ranged attack data, if any
                 int rangedMinRangeWOW = creatureTemplate.RangedAttackMinRangeEQ > 0 ? Convert.ToInt32(Math.Round(creatureTemplate.RangedAttackMinRangeEQ * Configuration.GENERATE_WORLD_SCALE)) : 0;
                 int rangedMaxRangeWOW = creatureTemplate.RangedAttackMaxRangeEQ > 0 ? Convert.ToInt32(Math.Round(creatureTemplate.RangedAttackMaxRangeEQ * Configuration.GENERATE_WORLD_SCALE)) : 0;
+
+                // Mod data
                 modEverquestCreatureSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.Race.CanHoldVisualItems, creatureTemplate.Race.CanHoldVisualShields,
-                    creatureTemplate.SpawnLimit, creatureTemplate.HasRangedAttackAbility, rangedMinRangeWOW, rangedMaxRangeWOW, creatureTemplate.RangedAttackDamageModPercent);
+                    creatureTemplate.SpawnLimit, creatureTemplate.HasRangedAttackAbility, rangedMinRangeWOW, rangedMaxRangeWOW, creatureTemplate.RangedAttackDamageModPercent,
+                    creatureTemplate.AgroSocialDistanceMod);
 
                 // Determine the display id
                 int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;

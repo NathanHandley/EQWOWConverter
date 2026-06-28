@@ -33,12 +33,14 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`RangedAttackMinRange` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`RangedAttackMaxRange` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`RangedAttackDamageModPct` INT(11) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`AgroSocialDistanceMod` FLOAT NOT NULL DEFAULT '1', ");
             stringBuilder.AppendLine("PRIMARY KEY (`CreatureTemplateID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
         public void AddRow(int creatureTemplateID, bool canShowHeldLootItems, bool canShowHeldLootShields, int spawnLimit,
-            bool rangedAttackEnabled, int rangedAttackMinRange, int rangedAttackMaxRange, int rangedAttackDamageModPct)
+            bool rangedAttackEnabled, int rangedAttackMinRange, int rangedAttackMaxRange, int rangedAttackDamageModPct,
+            float agroSocialDistanceMod)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatureTemplateID", creatureTemplateID);
@@ -49,6 +51,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RangedAttackMinRange", rangedAttackMinRange);
             newRow.AddInt("RangedAttackMaxRange", rangedAttackMaxRange);
             newRow.AddInt("RangedAttackDamageModPct", rangedAttackDamageModPct);
+            newRow.AddFloat("AgroSocialDistanceMod", agroSocialDistanceMod);
             Rows.Add(newRow);
         }
     }

@@ -102,6 +102,7 @@ namespace EQWOWConverter.Creatures
         public bool IsStableMaster = false;
         public bool IsReagentVendor = false;
         public float ExperiencMultiplier = 1;
+        public float AgroSocialDistanceMod = 1.0f;
 
         private static readonly object CreatureIDsLock = new object();
         private static int CURRENT_SQL_CREATURE_GUID = -1;
