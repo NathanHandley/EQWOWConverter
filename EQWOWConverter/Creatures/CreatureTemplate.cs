@@ -101,6 +101,7 @@ namespace EQWOWConverter.Creatures
         public float ModelTemplateScale = 1.0f; // Used for form changes
         public bool IsStableMaster = false;
         public bool IsReagentVendor = false;
+        public float ExperiencMultiplier = 1;
 
         private static readonly object CreatureIDsLock = new object();
         private static int CURRENT_SQL_CREATURE_GUID = -1;
@@ -249,6 +250,7 @@ namespace EQWOWConverter.Creatures
 
         private static void PopulateCreatureTemplateList()
         {
+            Dictionary<int, CreatureLevelProperties> creatureLevelPropertiesByLevel = CreatureLevelProperties.GetCreatureLevelPropertiesByLevel();
             lock (CreatureTemplateLock)
             {
                 // Grab the baselines
@@ -448,6 +450,12 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.CanAssist = CreatureFaction.CanFactionAssistPlayer(newCreatureTemplate.EQFactionID);
                     foreach (CreatureFactionKillReward factionKillReward in CreatureFaction.GetCreatureFactionKillRewards(newCreatureTemplate.EQNPCFactionID))
                         newCreatureTemplate.CreatureFactionKillRewards.Add(factionKillReward);
+
+                    // Level-specific properties
+                    if (creatureLevelPropertiesByLevel.ContainsKey(newCreatureTemplate.Level) == true)
+                    {
+                        newCreatureTemplate.ExperiencMultiplier = creatureLevelPropertiesByLevel[newCreatureTemplate.Level].ExperienceMod;
+                    }
 
                     // Must be a unique record
                     if (CreatureTemplateListByEQID.ContainsKey(newCreatureTemplate.EQCreatureTemplateID))
