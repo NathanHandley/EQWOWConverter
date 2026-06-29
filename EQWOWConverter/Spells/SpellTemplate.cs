@@ -2837,6 +2837,11 @@ namespace EQWOWConverter.Spells
                     if (eqEffect.EQBaseValue != 0)
                         effectStackKeys.Add(MakeEffectStackKey(eqEffect.EQEffectType, slot));
                     break;
+                case SpellEQEffectType.CurrentHitPoints:
+                case SpellEQEffectType.CurrentMana:
+                    if (eqEffect.EQBaseValue > 0)
+                        effectStackKeys.Add(MakeEffectStackKey(eqEffect.EQEffectType, slot));
+                    break;
                 // Binary effects
                 case SpellEQEffectType.InvisibilityUnstable:
                 case SpellEQEffectType.SeeInvisibility:
