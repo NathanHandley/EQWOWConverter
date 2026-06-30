@@ -47,13 +47,15 @@ namespace EQWOWConverter.ObjectModels
         public SpellVisualEmitterSpawnPatternType SpellEmissionPattern = SpellVisualEmitterSpawnPatternType.None;
         public SpellVisualStageType SpellVisualEffectStageType = SpellVisualStageType.None;
         public SpellVisualType SpellVisualType = SpellVisualType.Beneficial;
+        public SpellVisualCategoryType SpellCategoryType = SpellVisualCategoryType.Spell;
         public int SpellVisualEffectIndex = 0;
 
         public void LoadFromSpellEffect(EQSpellsEFF.EFFSpellEmitter effEmitter, SpellVisualStageType spellVisualEffectStageType,
             SpellVisualType spellVisualType, float distanceScaleMod, float lifespanMod, float scaleMin, float scaleMax,
-            SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
+            SpellVisualCategoryType spellVisualCategory, SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
         {
             SourceType = ObjectModelParticleEmitterSourceType.SpellEffect;
+            SpellCategoryType = spellVisualCategory;
             SpellVisualEffectIndex = effEmitter.VisualEffectIndex;
             SpellVisualEffectStageType = spellVisualEffectStageType;
             SpellVisualType = spellVisualType;

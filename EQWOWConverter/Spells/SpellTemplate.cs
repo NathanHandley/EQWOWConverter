@@ -386,7 +386,7 @@ namespace EQWOWConverter.Spells
 
                 // Visual
                 newSpellTemplate.EQSpellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
-                if (newSpellTemplate.EQSpellVisualEffectIndex >= 0 && newSpellTemplate.EQSpellVisualEffectIndex < 52)
+                if (newSpellTemplate.EQSpellVisualEffectIndex >= 0 && newSpellTemplate.EQSpellVisualEffectIndex < 255)
                 {
                     SpellVisualType spellVisualType = SpellVisualType.Beneficial;
                     if (newSpellTemplate.IsBardSongAura == true)

@@ -126,7 +126,12 @@ namespace EQWOWConverter.WOWFiles
                         EmissionRate.TrackSequences.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS), new M2Float(0));
                 }
                 else
-                    EmissionRate.TrackSequences.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS), new M2Float(0));
+                {
+                    int emitterLongestSpellTimeInMS = Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS;
+                    if (objectModelParticleEmitter.SpellCategoryType == SpellVisualCategoryType.DragonBreath)
+                        emitterLongestSpellTimeInMS = Configuration.SPELL_EFFECT_EMITTER_DURATION_DRAGONBREATH_IN_MS;
+                    EmissionRate.TrackSequences.AddValueToLastSequence(Convert.ToUInt32(emitterLongestSpellTimeInMS), new M2Float(0));
+                }
             }
 
             ZSource.TrackSequences.AddSequence();
