@@ -260,6 +260,16 @@ namespace EQWOWConverter.Spells
         private static void GenerateEmitterModels(ref SpellVisual spellVisual, EQSpellsEFF.EQSpellEffect spellEffect, SpellVisualStageType stageType,
             SpellVisualType spellVisualType)
         {
+            SpellVisualCategoryType categoryType = SpellVisualCategoryType.Spell;
+            if (spellVisual.EQVisualEffectIndex >= 61 && spellVisual.EQVisualEffectIndex <= 64 )
+                categoryType = SpellVisualCategoryType.DragonBreath;
+            else if (spellVisual.EQVisualEffectIndex >= 65)
+                categoryType = SpellVisualCategoryType.Environment;
+
+            // There are no 'cast' models except for dragon breaths
+            if (stageType == SpellVisualStageType.Cast && categoryType != SpellVisualCategoryType.DragonBreath)
+                return;
+
             List<EQSpellsEFF.EFFSpellSpriteListEffect> spriteListEffects = new List<EQSpellsEFF.EFFSpellSpriteListEffect>();
             if (stageType == SpellVisualStageType.Precast)
                 spriteListEffects = spellEffect.CasterUnitSpriteListEffects;
@@ -286,24 +296,21 @@ namespace EQWOWConverter.Spells
                 float lifespanMod = Configuration.SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD_SPELL;
                 float scaleMin = Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN_SPELL;
                 float scaleMax = Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX_SPELL;
-                SpellVisualCategoryType categoryType = SpellVisualCategoryType.Spell;
-                if (emitter.VisualEffectIndex >= 61 && emitter.VisualEffectIndex <= 64)
+                if (categoryType == SpellVisualCategoryType.DragonBreath)
                 {
                     // Dragon Breath
                     distanceScaleMod = Configuration.SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD_DRAGONBREATH;
                     lifespanMod = Configuration.SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD_DRAGONBREATH;
                     scaleMin = Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN_DRAGONBREATH;
                     scaleMax = Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX_DRAGONBREATH;
-                    categoryType = SpellVisualCategoryType.DragonBreath;
                 }
-                else if (emitter.VisualEffectIndex >= 65)
+                else if (categoryType == SpellVisualCategoryType.Environment)
                 {
                     // Environment
                     distanceScaleMod = Configuration.SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD_ENVIRONMENT;
                     lifespanMod = Configuration.SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD_ENVIRONMENT;
                     scaleMin = Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN_ENVIRONMENT;
                     scaleMax = Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX_ENVIRONMENT;
-                    categoryType = SpellVisualCategoryType.Environment;
                 }
 
                 // Only process stage-aligned unit emitter targets
