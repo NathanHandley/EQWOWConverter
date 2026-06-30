@@ -120,9 +120,10 @@ namespace EQWOWConverter.WOWFiles
         }
 
         public void AddRowForCreatureTemplateInCombatSpellCast(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
-            string comment, int eventChance = 100)
+            string comment, int eventChance = 100, bool castOnSelf = false)
         {
             int recastDelayInMSMax = recastDelayInMS + Convert.ToInt32(Convert.ToSingle(recastDelayInMS) * Configuration.CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
+            int targetType = castOnSelf ? 1 : 2; // SMART_TARGET_SELF : SMART_TARGET_VICTIM
             AddRow(creatureTemplateID,
                 0,
                 0, // SMART_EVENT_UPDATE_IC
@@ -140,7 +141,7 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 0,
                 0,
-                2, // SMART_TARGET_VICTIM
+                targetType,
                 0,
                 0,
                 0,

@@ -162,6 +162,7 @@ namespace EQWOWConverter.Spells
         public List<SpellEffectWOW> WOWSpellEffects = new List<SpellEffectWOW>();
         public UInt32 ManaCost = 0;
         public SpellEQTargetType EQTargetType = SpellEQTargetType.Single;
+        public bool IsSelfCenteredAreaBreath = false; // Dragon breath
         public bool CanTargetBothFriendlyAndEnemy = false;
         public UInt32 TargetCreatureType = 0; // No specific creature type
         public bool CastOnCorpse = false;
@@ -386,6 +387,9 @@ namespace EQWOWConverter.Spells
 
                 // Visual
                 newSpellTemplate.EQSpellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
+                if (newSpellTemplate.EQSpellVisualEffectIndex >= 61 && newSpellTemplate.EQSpellVisualEffectIndex <= 64 // These are dragonbreath
+                    && newSpellTemplate.CastTimeInMS < Configuration.SPELL_EFFECT_DRAGONBREATH_CAST_TIME_IN_MS)
+                    newSpellTemplate.CastTimeInMS = Configuration.SPELL_EFFECT_DRAGONBREATH_CAST_TIME_IN_MS;
                 if (newSpellTemplate.EQSpellVisualEffectIndex >= 0 && newSpellTemplate.EQSpellVisualEffectIndex < 255)
                 {
                     SpellVisualType spellVisualType = SpellVisualType.Beneficial;
@@ -789,8 +793,18 @@ namespace EQWOWConverter.Spells
                     {
                         if (isDetrimental == true)
                         {
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitDestinationAreaEnemy);
+                            // Dragon breath (visual index 61-64) must NOT have a primary unit target
+                            if (spellTemplate.EQSpellVisualEffectIndex >= 61 && spellTemplate.EQSpellVisualEffectIndex <= 64)
+                            {
+                                spellWOWTargetTypes.Add(SpellWOWTargetType.SourceCaster);
+                                spellWOWTargetTypes.Add(SpellWOWTargetType.UnitSourceAreaEnemy);
+                                spellTemplate.IsSelfCenteredAreaBreath = true;
+                            }
+                            else
+                            {
+                                spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
+                                spellWOWTargetTypes.Add(SpellWOWTargetType.UnitDestinationAreaEnemy);
+                            }
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets an enemy and other enemies within ", spellRadius, " yards around the target");
                         }
                         else

@@ -708,7 +708,7 @@ namespace EQWOWConverter
 
                         string comment = string.Concat("EQ In Combat ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
                         smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID,
-                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment, eventChance);
+                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment, eventChance, curSpellTemplate.IsSelfCenteredAreaBreath);
                     }
 
                     // Add spell events for every in-combat self buff entry (cast on self, not the victim)

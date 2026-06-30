@@ -307,6 +307,8 @@ namespace EQWOWConverter.Spells
                 }
 
                 // Only process stage-aligned unit emitter targets
+                if ((stageType == SpellVisualStageType.Precast || stageType == SpellVisualStageType.Cast) && emitter.TargetType != EQSpellEffectTargetType.Caster && categoryType == SpellVisualCategoryType.DragonBreath)
+                    continue;
                 if (stageType == SpellVisualStageType.Precast && emitter.TargetType != EQSpellEffectTargetType.Caster)
                     continue;
                 if (stageType == SpellVisualStageType.Impact && emitter.TargetType != EQSpellEffectTargetType.Target)
