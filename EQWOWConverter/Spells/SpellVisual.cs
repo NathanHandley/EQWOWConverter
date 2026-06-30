@@ -34,6 +34,7 @@ namespace EQWOWConverter.Spells
         public AnimationType[] AnimationTypeInStage = new AnimationType[3];
         public int[] SoundEntryDBCIDInStage = new int[3];
         public int EQVisualEffectIndex = 0;
+        public SpellVisualCategoryType CategoryType = SpellVisualCategoryType.Spell;
         public Dictionary<SpellEmitterModelAttachLocationType, ObjectModel> PrecastEmitterObjectModelByAttachLocation = new Dictionary<SpellEmitterModelAttachLocationType, ObjectModel>();
         public Dictionary<SpellEmitterModelAttachLocationType, ObjectModel> CastEmitterObjectModelByAttachLocation = new Dictionary<SpellEmitterModelAttachLocationType, ObjectModel>();
         public Dictionary<SpellEmitterModelAttachLocationType, ObjectModel> ImpactEmitterObjectModelByAttachLocation = new Dictionary<SpellEmitterModelAttachLocationType, ObjectModel>();
@@ -114,6 +115,10 @@ namespace EQWOWConverter.Spells
                         SpellVisualType spellVisualType = (SpellVisualType)j;
                         EQSpellsEFF.EQSpellEffect spellEffect = EQSpellsEFF.SpellEffects[i];
                         SpellVisual spellVisual = new SpellVisual();
+                        if (i >= 65)
+                            spellVisual.CategoryType = SpellVisualCategoryType.Environment;
+                        else if (i >= 61)
+                            spellVisual.CategoryType = SpellVisualCategoryType.DragonBreath;
                         spellVisual.EQVisualEffectIndex = i;
                         spellVisual.SpellVisualDBCID = SpellVisualDBC.GenerateID();
                         ConvertStageVisualData(ref spellVisual, spellEffect, SpellVisualStageType.Precast, spellVisualType);
@@ -256,7 +261,7 @@ namespace EQWOWConverter.Spells
             SpellVisualType spellVisualType)
         {
             List<EQSpellsEFF.EFFSpellSpriteListEffect> spriteListEffects = new List<EQSpellsEFF.EFFSpellSpriteListEffect>();
-            if (stageType == SpellVisualStageType.Precast /*|| stageType == SpellVisualStageType.Cast*/)
+            if (stageType == SpellVisualStageType.Precast)
                 spriteListEffects = spellEffect.CasterUnitSpriteListEffects;
             else if (stageType == SpellVisualStageType.Impact)
                 spriteListEffects = spellEffect.TargetUnitSpriteListEffects;
@@ -291,7 +296,7 @@ namespace EQWOWConverter.Spells
                     scaleMax = Configuration.SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX_DRAGONBREATH;
                     categoryType = SpellVisualCategoryType.DragonBreath;
                 }
-                else if (emitter.VisualEffectIndex >= 60)
+                else if (emitter.VisualEffectIndex >= 65)
                 {
                     // Environment
                     distanceScaleMod = Configuration.SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD_ENVIRONMENT;
@@ -360,16 +365,16 @@ namespace EQWOWConverter.Spells
         {
             switch (soundID)
             {
-                case 103: return "spell_1"; // TODO: Confirm
+                case 103: return "spell_1";
                 case 104: return "spell_2";
                 case 105: return "spell_3";
                 case 106: return "spell_4";
                 case 107: return "spell_5";
                 case 108: return "spelcast";
                 case 109: return "spelgdht";
-                case 110: return "spelhit1"; // TODO: Confirm
+                case 110: return "spelhit1";
                 case 111: return "spelhit2";
-                case 112: return "spelhit3"; // TODO: Confirm
+                case 112: return "spelhit3";
                 case 113: return "spelhit4";
                 default: return string.Empty;
             }
