@@ -1391,9 +1391,9 @@ namespace EQWOWConverter.Items
         
         private static void FillFocusProperties(ref ItemTemplate itemTemplate, Dictionary<string, string> columns)
         {
-            // Bard focus data
-            int bardFocusValue = int.Parse(columns["bardvalue"]);
-            if (bardFocusValue > 0)
+            // In EQ, the 'bardvalue' column is actually tenths which means that 20 = 2x
+            int bardRawValue = int.Parse(columns["bardvalue"]);
+            if (bardRawValue > 0)
             {
                 int bardFocusType = int.Parse(columns["bardtype"]);
                 switch (bardFocusType)
@@ -1407,8 +1407,9 @@ namespace EQWOWConverter.Items
                 }
                 if (itemTemplate.FocusType != ItemFocusType.None)
                 {
-                    itemTemplate.FocusValue = bardFocusValue;
-                    // Categorize the instrument into its totem group so songs can require (but not consume) it
+                    int bardBoostPercent = (bardRawValue - 10) * 10;
+                    itemTemplate.FocusValue = bardBoostPercent > 0 ? bardBoostPercent : 0;
+                    // Categorize the instrument into its totem group so songs can require (but not consume) it.
                     switch (itemTemplate.FocusType)
                     {
                         case ItemFocusType.BardWindInstruments: itemTemplate.TotemDBCID = Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_WIND; break;
