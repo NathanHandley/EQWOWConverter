@@ -750,9 +750,21 @@ namespace EQWOWConverter
         public static int SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID = 86902;
         public static int SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN = 30;
 
-        // This is the default amount influence spell strength by spell power (when not overriden)
-        public static float SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT = 0.33f;
-        public static float SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT = 0.17f;
+        // This is the default amount influence spell strength by spell power
+        public static float SPELL_DEFAULT_SPELL_POWER_INFLUANCE_MOD = 1f;
+        public static float SPELL_BARD_SPELL_POWER_INFLUANCE_MOD = 0.5f;
+        // A cast at/above this gets the full coefficient
+        public static int SPELL_SPELL_POWER_STANDARD_CAST_TIME_IN_MS = 3500;
+        // Cast times (and instants) are floored here for the coefficient
+        public static int SPELL_SPELL_POWER_MIN_CAST_TIME_IN_MS = 1500;
+        // A DoT/HoT's total coefficient equals duration / this value
+        public static int SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS = 15000;
+        // Area spells influence at a reduced rate (this is WoW-like)
+        public static float SPELL_SPELL_POWER_AOE_MULTIPLIER = 0.5f;
+        // Additional mod that reduces spell power influence on low-level spells (1 = disabled)
+        public static float SPELL_SPELL_POWER_LOW_LEVEL_MOD = 0.25f;
+        // The level to phase out this new mod (linear from level 1)
+        public static int SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL = 40;
 
         // Summoner dummy spell ID used to prevent creatures from summoning more creatures
         public static int SPELL_SUMMON_CASTER_AURA_SPELL_ID = 86905;
@@ -1555,6 +1567,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_SPELL_POWER_MIN_CAST_TIME_IN_MS", SPELL_SPELL_POWER_MIN_CAST_TIME_IN_MS, "Cast times (and instants) are floored here for the coefficient");
             OutputVariableToConfig("SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS", SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS, "A DoT/HoT's total coefficient equals duration / this value");
             OutputVariableToConfig("SPELL_SPELL_POWER_AOE_MULTIPLIER", SPELL_SPELL_POWER_AOE_MULTIPLIER, "Area spells influence at a reduced rate (this is WoW-like)");
+            OutputVariableToConfig("SPELL_SPELL_POWER_LOW_LEVEL_MOD", SPELL_SPELL_POWER_LOW_LEVEL_MOD, "Additional mod that reduces spell power influence on low-level spells (1 = disabled)");
+            OutputVariableToConfig("SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL", SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL, "The level to phase out this new mod (linear from level 1)");
             OutputVariableToConfig("SPELL_SUMMON_CASTER_AURA_SPELL_ID", SPELL_SUMMON_CASTER_AURA_SPELL_ID, "Summoner dummy spell ID used to prevent creatures from summoning more creatures");
             OutputVariableToConfig("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID, "Hidden passive aura used to reduce creature mana regeneration (see CREATURE_MANA_REGEN_PERCENT)");
             OutputVariableToConfig("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID, "This is the ID used to detect invis and stealth, and already exists in AzerothCore");
@@ -2094,6 +2108,8 @@ namespace EQWOWConverter
             SPELL_SPELL_POWER_MIN_CAST_TIME_IN_MS = ReadVariableFromConfigString("SPELL_SPELL_POWER_MIN_CAST_TIME_IN_MS", configValuesByVariableName, SPELL_SPELL_POWER_MIN_CAST_TIME_IN_MS);
             SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS = ReadVariableFromConfigString("SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS", configValuesByVariableName, SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS);
             SPELL_SPELL_POWER_AOE_MULTIPLIER = ReadVariableFromConfigString("SPELL_SPELL_POWER_AOE_MULTIPLIER", configValuesByVariableName, SPELL_SPELL_POWER_AOE_MULTIPLIER);
+            SPELL_SPELL_POWER_LOW_LEVEL_MOD = ReadVariableFromConfigString("SPELL_SPELL_POWER_LOW_LEVEL_MOD", configValuesByVariableName, SPELL_SPELL_POWER_LOW_LEVEL_MOD);
+            SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL = ReadVariableFromConfigString("SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL", configValuesByVariableName, SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL);
             SPELL_SUMMON_CASTER_AURA_SPELL_ID = ReadVariableFromConfigString("SPELL_SUMMON_CASTER_AURA_SPELL_ID", configValuesByVariableName, SPELL_SUMMON_CASTER_AURA_SPELL_ID);
             SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID);
             SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID);

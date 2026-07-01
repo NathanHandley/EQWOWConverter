@@ -537,6 +537,35 @@ namespace EQWOWConverter.Spells
                 influenceMultiplier = Configuration.SPELL_BARD_SPELL_POWER_INFLUANCE_MOD;
             directCoefficient *= influenceMultiplier;
             dotCoefficient *= influenceMultiplier;
+
+            // Additional low-level mod (applies to both bard and default): a level-1 spell is reduced by the low-level
+            // mod, ramping linearly back to 1.0 (no reduction) at/above the phaseout level
+            float lowLevelMod = GetLowLevelSpellPowerMod();
+            directCoefficient *= lowLevelMod;
+            dotCoefficient *= lowLevelMod;
+        }
+
+        private float GetLowLevelSpellPowerMod()
+        {
+            float levelOneMod = Configuration.SPELL_SPELL_POWER_LOW_LEVEL_MOD;
+            int phaseoutLevel = Configuration.SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL;
+
+            // Disabled / no ramp
+            if (levelOneMod == 1.0f || phaseoutLevel <= 1)
+                return 1.0f;
+
+            // Use the spell's lowest learn level as its level (unknown levels are treated as level 1)
+            int spellLevel = MinimumPlayerLearnLevel;
+            if (spellLevel < 1)
+                spellLevel = 1;
+
+            // Fully phased out at/above the phaseout level
+            if (spellLevel >= phaseoutLevel)
+                return 1.0f;
+
+            // Linearly interpolate from level 1 to phaseout, in which this becomes 1.0f (no reduction)
+            float phaseProgress = Convert.ToSingle(spellLevel - 1) / Convert.ToSingle(phaseoutLevel - 1);
+            return levelOneMod + (phaseProgress * (1.0f - levelOneMod));
         }
 
         private static int GetLongestSpellPowerPeriodicTickInMSForBlock(SpellEffectBlock effectBlock)
