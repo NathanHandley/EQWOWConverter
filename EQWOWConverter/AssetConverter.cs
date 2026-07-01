@@ -3425,11 +3425,13 @@ namespace EQWOWConverter
                     else
                     {
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[itemTemplate.EQWornEffectSpellID];
-                        if (curSpellTemplate.WOWSpellIDWorn <= 0)
-                            Logger.WriteError("Could not map spell with eqid ", itemTemplate.EQWornEffectSpellID.ToString(), " to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as the spell did not have a value in 'wow_worn-id'");
+                        if (itemTemplate.WOWWornEffectSpellID <= 0)
+                            Logger.WriteError("Could not map spell with eqid ", itemTemplate.EQWornEffectSpellID.ToString(), " to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as the item did not have a value in 'worn_wow_spellid'");
                         else
                         {
-                            itemTemplate.WOWSpellID1 = curSpellTemplate.WOWSpellIDWorn;
+                            // Generate a per-item worn version of the spell using this item's unique worn spell ID. non-zero = locked level, zero = level dynamic
+                            curSpellTemplate.GenerateWornSpellVariant(itemTemplate.WOWWornEffectSpellID, itemTemplate.EQWornEffectMinLevel);
+                            itemTemplate.WOWSpellID1 = itemTemplate.WOWWornEffectSpellID;
                             itemTemplate.WOWSpellTrigger1 = 1; // On Equip
                             itemTemplate.WOWSpellPPMRate1 = 0;
                             itemTemplate.WOWSpellCharges1 = 0; // Unlimited

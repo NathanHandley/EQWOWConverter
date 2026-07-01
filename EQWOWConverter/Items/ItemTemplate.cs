@@ -99,6 +99,7 @@ namespace EQWOWConverter.Items
         public int EQScrollSpellID = 0;
         public int EQWornEffectSpellID = 0;
         public int EQWornEffectMinLevel = 0;
+        public int WOWWornEffectSpellID = 0;
         public int EQClickSpellEffectID = 0;
         public int WOWClickSpellEffectID = 0;
         public int EQClickType = 0;
@@ -214,10 +215,9 @@ namespace EQWOWConverter.Items
                 return 0;
             if (spellTemplatesByEQID.ContainsKey(EQWornEffectSpellID) == false)
                 return 0;
-            int wornEffectSpellID = spellTemplatesByEQID[EQWornEffectSpellID].WOWSpellIDWorn;
-            if (wornEffectSpellID <= 0)
+            if (WOWWornEffectSpellID <= 0)
                 return 0;
-            return wornEffectSpellID;
+            return WOWWornEffectSpellID;
         }
 
         public ItemTemplate(int wowEntryID, ItemWOWInventoryType inventoryType)
@@ -1504,6 +1504,7 @@ namespace EQWOWConverter.Items
                 {
                     newItemTemplate.EQWornEffectSpellID = int.Parse(columns["worneffect"]);
                     newItemTemplate.EQWornEffectMinLevel = int.Parse(columns["wornlevel"]);
+                    newItemTemplate.WOWWornEffectSpellID = int.Parse(columns["worn_wow_spellid"]);
                 }
                 else if (bookTextName.Length == 0) // Many books have a proc effect that should be skipped to avoid issues
                 {

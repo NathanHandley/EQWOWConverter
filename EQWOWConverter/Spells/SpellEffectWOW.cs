@@ -403,5 +403,29 @@ namespace EQWOWConverter.Spells
         {
             EffectBasePoints = basePoints;
         }
+
+        public void FixValueToLevel(int fixedLevel)
+        {
+            if (fixedLevel < 1)
+                fixedLevel = 1;
+
+            // If there is no per-level scaling then the value is already fixed
+            if (EffectRealPointsPerLevel == 0)
+            {
+                CalcEffectLowLevel = fixedLevel;
+                CalcEffectHighLevel = fixedLevel;
+                return;
+            }
+
+            int calcLevel = Math.Clamp(fixedLevel, CalcEffectLowLevel, CalcEffectHighLevel);
+            int fixedValue = CalcEffectLowLevelValue + Convert.ToInt32((calcLevel - CalcEffectLowLevel) * EffectRealPointsPerLevel);
+
+            EffectBasePoints = fixedValue;
+            EffectRealPointsPerLevel = 0;
+            CalcEffectLowLevelValue = fixedValue;
+            CalcEffectHighLevelValue = fixedValue;
+            CalcEffectLowLevel = fixedLevel;
+            CalcEffectHighLevel = fixedLevel;
+        }
     }
 }

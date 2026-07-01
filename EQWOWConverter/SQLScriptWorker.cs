@@ -1618,7 +1618,8 @@ namespace EQWOWConverter
             {
                 // Core Spell Data
                 AddSpellDataBlock(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput, "");
-                AddSpellDataBlock(spellTemplate, spellTemplate.GroupedWornSpellEffectBlocksForOutput, " (Worn)");
+                foreach (List<SpellEffectBlock> wornSpellEffectBlocks in spellTemplate.ItemWornSpellEffectBlockSets)
+                    AddSpellDataBlock(spellTemplate, wornSpellEffectBlocks, " (Worn)");
                 AddSpellDataBlock(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput, " (Proc)");
                 for (int i = 0; i < spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count; i++)
                     AddSpellDataBlock(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[i], " (Clicky)");
@@ -1627,8 +1628,8 @@ namespace EQWOWConverter
                 foreach (int spellGroupStackingID in spellTemplate.SpellGroupStackingIDs)
                 {
                     spellGroupSQL.AddRow(spellGroupStackingID, spellTemplate.WOWSpellID);
-                    if (spellTemplate.WOWSpellIDWorn > 0)
-                        spellGroupSQL.AddRow(spellGroupStackingID, spellTemplate.WOWSpellIDWorn);
+                    foreach (List<SpellEffectBlock> wornSpellEffectBlocks in spellTemplate.ItemWornSpellEffectBlockSets)
+                        spellGroupSQL.AddRow(spellGroupStackingID, wornSpellEffectBlocks[0].WOWSpellID);
                     if (spellTemplate.WOWSpellIDProcAndGoodEffect != -1)
                         spellGroupSQL.AddRow(spellGroupStackingID, spellTemplate.WOWSpellIDProcAndGoodEffect);
                     for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
@@ -1658,8 +1659,8 @@ namespace EQWOWConverter
                     string chainedSpellName = chainedGroupedBaseSpellEffectBlocksForOutput[0].SpellName;
                     bool forceHitTrigger = chainedSpellTemplate.ChainAppliesViaHitTrigger;
                     AddSpellChain(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0], chainedSpellID, chainedSpellName, forceHitTrigger);
-                    if (spellTemplate.WOWSpellIDWorn > 0)
-                        AddSpellChain(spellTemplate, spellTemplate.GroupedWornSpellEffectBlocksForOutput[0], chainedSpellID, chainedSpellName, forceHitTrigger);
+                    foreach (List<SpellEffectBlock> wornSpellEffectBlocks in spellTemplate.ItemWornSpellEffectBlockSets)
+                        AddSpellChain(spellTemplate, wornSpellEffectBlocks[0], chainedSpellID, chainedSpellName, forceHitTrigger);
                     if (spellTemplate.WOWSpellIDProcAndGoodEffect > 0)
                         AddSpellChain(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput[0], chainedSpellID, chainedSpellName, forceHitTrigger);
                     for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)

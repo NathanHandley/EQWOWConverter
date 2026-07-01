@@ -81,7 +81,6 @@ namespace EQWOWConverter.Spells
         }
 
         public int WOWSpellID = 0;
-        public int WOWSpellIDWorn = -1;
         public int WOWSpellIDProcAndGoodEffect = -1;
         public List<ClickySpellParameters> ClickySpellParatemers = new List<ClickySpellParameters>();
         public int EQSpellID = -1;
@@ -248,16 +247,7 @@ namespace EQWOWConverter.Spells
                 return _GroupedBaseSpellEffectBlocksForOutput;
             }
         }
-        private List<SpellEffectBlock> _GroupedWornSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
-        public List<SpellEffectBlock> GroupedWornSpellEffectBlocksForOutput
-        {
-            get
-            {
-                if (_GroupedBaseSpellEffectBlocksForOutput.Count == 0)
-                    GenerateOutputEffectBlocks();
-                return _GroupedWornSpellEffectBlocksForOutput;
-            }
-        }
+        public List<List<SpellEffectBlock>> ItemWornSpellEffectBlockSets = new List<List<SpellEffectBlock>>();
         private List<SpellEffectBlock> _GroupedGoodProcSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedGoodProcSpellEffectBlocksForOutput
         {
@@ -325,7 +315,6 @@ namespace EQWOWConverter.Spells
                 SpellTemplate newSpellTemplate = new SpellTemplate();
                 newSpellTemplate.EQSpellID = int.Parse(columns["eq_id"]);
                 newSpellTemplate.WOWSpellID = int.Parse(columns["wow_id"]);
-                newSpellTemplate.WOWSpellIDWorn = int.Parse(columns["wow_worn_id"]);
                 newSpellTemplate.WOWSpellIDProcAndGoodEffect = int.Parse(columns["wow_good_proc_id"]);
                 newSpellTemplate.Name = columns["name"];
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
@@ -3076,6 +3065,41 @@ namespace EQWOWConverter.Spells
             return false;
         }
 
+        public int GenerateWornSpellVariant(int primaryWornWOWSpellID, int wornFixedLevel)
+        {
+            if (primaryWornWOWSpellID <= 0)
+            {
+                Logger.WriteError("GenerateWornSpellVariant called with an invalid primary worn spell ID for spell eq id ", EQSpellID.ToString());
+                return 0;
+            }
+
+            // Ensure the base blocks are generated before cloning from them
+            List<SpellEffectBlock> baseBlocks = GroupedBaseSpellEffectBlocksForOutput;
+
+            List<SpellEffectBlock> wornBlocks = new List<SpellEffectBlock>();
+            foreach (SpellEffectBlock baseBlock in baseBlocks)
+            {
+                SpellEffectBlock wornBlock = new SpellEffectBlock();
+                if (wornBlocks.Count == 0)
+                    wornBlock.WOWSpellID = primaryWornWOWSpellID;
+                else
+                    wornBlock.WOWSpellID = GenerateUniqueWOWSpellID();
+                wornBlock.SpellName = string.Concat(baseBlock.SpellName, " (from gear)");
+                wornBlock.ForceVisibleSplitAura = baseBlock.ForceVisibleSplitAura;
+                foreach (SpellEffectWOW baseEffect in baseBlock.SpellEffects)
+                {
+                    SpellEffectWOW wornEffect = baseEffect.Clone();
+                    if (wornFixedLevel != 0)
+                        wornEffect.FixValueToLevel(wornFixedLevel);
+                    wornBlock.SpellEffects.Add(wornEffect);
+                }
+                wornBlocks.Add(wornBlock);
+            }
+
+            ItemWornSpellEffectBlockSets.Add(wornBlocks);
+            return primaryWornWOWSpellID;
+        }
+
         private void GenerateOutputEffectBlocks()
         {
             if (_GroupedBaseSpellEffectBlocksForOutput.Count != 0)
@@ -3138,20 +3162,6 @@ namespace EQWOWConverter.Spells
                         baseEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
                     }
                     _GroupedBaseSpellEffectBlocksForOutput.Add(baseEffectBlock);
-
-                    // Worn versions also get their own copy
-                    if (WOWSpellIDWorn > 0)
-                    {
-                        SpellEffectBlock wornEffectBlock = new SpellEffectBlock();
-                        if (_GroupedWornSpellEffectBlocksForOutput.Count == 0)
-                            wornEffectBlock.WOWSpellID = WOWSpellIDWorn;
-                        else
-                            wornEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
-                        foreach (SpellEffectWOW spellEffect in baseEffectBlock.SpellEffects)
-                            wornEffectBlock.SpellEffects.Add(spellEffect);
-                        wornEffectBlock.SpellName = string.Concat(baseEffectBlock.SpellName, " (from gear)");
-                        _GroupedWornSpellEffectBlocksForOutput.Add(wornEffectBlock);
-                    }
 
                     // Good proc versions also get a copy
                     if (WOWSpellIDProcAndGoodEffect > 0)
