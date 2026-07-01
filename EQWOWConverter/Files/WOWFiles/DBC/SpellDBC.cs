@@ -89,7 +89,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // ProcCharges
             newRow.AddUInt32(Convert.ToUInt32(maximumSpellLevel)); // MaxLevel
             newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // BaseLevel
-            newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // SpellLevel
+            newRow.AddUInt32(0); // SpellLevel (Always make this 0, or else it breaks spell power calculations for some reason)
             if (overrideDurationToInfinite == true)
                 newRow.AddUInt32(21); // DurationIndex (SpellDuration.dbc id) - 21 is infinite (auras use it)
             else if (spellTemplate.AuraDuration.MaxDurationInMS == 0)
