@@ -30,6 +30,7 @@ namespace EQWOWConverter.Creatures
         public int RespawnTimeInSeconds = 0;
         public int Variance = 0; // TODO: Figure out what this is...
         public int PathGridID = 0;
+        public CreatureStandStateType SpawnStandState = CreatureStandStateType.Stand;
 
         public int MapID = 0;
         public int AreaID = 0;
@@ -94,6 +95,7 @@ namespace EQWOWConverter.Creatures
                 newSpawnDetail.RespawnTimeInSeconds = int.Parse(columns["respawntime"]);
                 newSpawnDetail.Variance = int.Parse(columns["variance"]);
                 newSpawnDetail.PathGridID = int.Parse(columns["pathgrid"]);
+                newSpawnDetail.SpawnStandState = ConvertEQAnimationToStandState(int.Parse(columns["animation"]));
 
                 // Get orientation from heading. EQ uses 0-256 range, and can be 2x that (512) and then convert to degrees and then radians
                 float modHeading = 0;
@@ -113,6 +115,24 @@ namespace EQWOWConverter.Creatures
                     continue;
                 }
                 SpawnInstanceListByID.Add(newSpawnDetail.ID, newSpawnDetail);
+            }
+        }
+                
+        private static CreatureStandStateType ConvertEQAnimationToStandState(int eqAnimation)
+        {
+            // In EQ (TAKP), these values are: 0 = Standing, 1 = Sitting, 2 = Crouching, 3 = Dead (lying down), 4 = Looting
+            switch (eqAnimation)
+            {
+                case 0: return CreatureStandStateType.Stand;
+                case 1: return CreatureStandStateType.Sit;
+                case 2: return CreatureStandStateType.Kneel;   // EQ ducking/crouch has no true WoW version, so using kneel
+                case 3: return CreatureStandStateType.Sleep;
+                case 4: return CreatureStandStateType.Kneel;   // In EQ this is looting, but WoW "kneel" seems close enough
+                default:
+                    {
+                        Logger.WriteError("CreatureSpawnInstance had an unhandled EQ animation value of '" + eqAnimation.ToString() + "'");
+                        return CreatureStandStateType.Stand;
+                    }
             }
         }
     }

@@ -942,7 +942,7 @@ namespace EQWOWConverter
             {
                 if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                     creatureTemplate.SubName = spawnInstance.ID + " Roams";
-                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, creatureAddonAuras);
+                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, spawnInstance.SpawnStandState, creatureAddonAuras);
                 modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
                     true, spawnGroup.RoamMinX, spawnGroup.RoamMaxX, spawnGroup.RoamMinY, spawnGroup.RoamMaxY, spawnGroup.RoamMinZ, spawnGroup.RoamMaxZ, spawnGroup.RoamMinDelayInMS, 
                     spawnGroup.RoamMaxDelayInMS);
@@ -956,7 +956,7 @@ namespace EQWOWConverter
                     || wanderType == CreaturePathGridWanderType.GridRand5LoS || wanderType == CreaturePathGridWanderType.GridRandomCenterPoint
                     || wanderType == CreaturePathGridWanderType.GridRandomPath)
                 {
-                    creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, creatureAddonAuras);
+                    creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, spawnInstance.SpawnStandState, creatureAddonAuras);
                     if (alreadySavedCustomWaypointGridIDsByMapID.ContainsKey(spawnInstance.MapID) == false)
                         alreadySavedCustomWaypointGridIDsByMapID.Add(spawnInstance.MapID, new HashSet<int>());
                     if (alreadySavedCustomWaypointGridIDsByMapID[spawnInstance.MapID].Contains(pathEntries[0].GridID) == false)
@@ -978,7 +978,7 @@ namespace EQWOWConverter
                     int waypointGUID = creatureGUID * 1000;
                     if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                         waypointGUID = creatureGUID * 10;
-                    creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID, creatureAddonAuras);
+                    creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID, spawnInstance.SpawnStandState, creatureAddonAuras);
                     bool useModScript = false;
                     switch (wanderType)
                     {
@@ -1047,7 +1047,7 @@ namespace EQWOWConverter
             {
                 if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                     creatureTemplate.SubName = spawnInstance.ID + " Immobile";
-                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, creatureAddonAuras);
+                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, spawnInstance.SpawnStandState, creatureAddonAuras);
                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
                     spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, comment, false);
             }

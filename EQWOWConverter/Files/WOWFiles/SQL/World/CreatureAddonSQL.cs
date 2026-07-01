@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Creatures;
 using System.Text;
 
 namespace EQWOWConverter.WOWFiles
@@ -29,13 +30,13 @@ namespace EQWOWConverter.WOWFiles
             return sb.ToString();
         }
 
-        public void AddRow(int guid, int pathID, int emoteID, string auras = "")
+        public void AddRow(int guid, int pathID, int emoteID, CreatureStandStateType standState, string auras = "")
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("guid", guid);
             newRow.AddInt("path_id", pathID);
             newRow.AddInt("mount", 0);
-            newRow.AddInt("bytes1", 0);
+            newRow.AddInt("bytes1", (int)standState);
             newRow.AddInt("bytes2", 0);
             newRow.AddInt("emote", emoteID);
             newRow.AddInt("visibilityDistanceType", 0);
