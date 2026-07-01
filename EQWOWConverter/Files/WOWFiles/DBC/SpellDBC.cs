@@ -179,7 +179,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddStringLang(effectBlock.SpellName); // Name_Lang
             newRow.AddStringLang(""); // NameSubtext_Lang
             newRow.AddStringLang(spellDescription); // Description_Lang
-            newRow.AddStringLang(spellTemplate.AuraDescription); // AuraDescription_Lang
+            newRow.AddStringLang(isWornEquipEffect == true ? spellDescription : spellTemplate.AuraDescription); // AuraDescription_Lang
             newRow.AddUInt32(0); // ManaCostPct
             if (spellTemplate.TriggersGlobalCooldown == true)
             {

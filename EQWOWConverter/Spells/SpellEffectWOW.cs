@@ -48,6 +48,11 @@ namespace EQWOWConverter.Spells
         public Vector3 TelePosition = new Vector3();
         public float TeleOrientation;
         public int TeleMapID;
+        private bool AuraDescriptionHasDeferredAmount = false;
+        private string AuraDescriptionPrefix = string.Empty;
+        private string AuraDescriptionSuffix = string.Empty;
+        private bool AuraAmountUsesPercent = false;
+        private string AuraAmountLeadin = string.Empty;
 
         public SpellEffectWOW() { }
 
@@ -86,6 +91,11 @@ namespace EQWOWConverter.Spells
                 EffectTriggerSpell = this.EffectTriggerSpell,
                 ActionDescription = this.ActionDescription,
                 AuraDescription = this.AuraDescription,
+                AuraDescriptionHasDeferredAmount = this.AuraDescriptionHasDeferredAmount,
+                AuraDescriptionPrefix = this.AuraDescriptionPrefix,
+                AuraDescriptionSuffix = this.AuraDescriptionSuffix,
+                AuraAmountUsesPercent = this.AuraAmountUsesPercent,
+                AuraAmountLeadin = this.AuraAmountLeadin,
                 CalcEffectLowLevelValue = this.CalcEffectLowLevelValue,
                 CalcEffectLowLevel = this.CalcEffectLowLevel,
                 CalcEffectHighLevelValue = this.CalcEffectHighLevelValue,
@@ -378,13 +388,40 @@ namespace EQWOWConverter.Spells
                 return string.Empty;
 
             StringBuilder stringBuilder = new StringBuilder();
-            int lowValue = Math.Abs(CalcEffectLowLevelValue);
             stringBuilder.Append(leadinTextIfSingleValue);
-            stringBuilder.Append(lowValue);
+            stringBuilder.Append(Math.Abs(CalcEffectLowLevelValue));
             if (addPercentSymbol == true)
                 stringBuilder.Append("%");
-
             return stringBuilder.ToString();
+        }
+
+        public void SetAuraDescription(string prefix, bool amountUsesPercent, string amountLeadin, string suffix)
+        {
+            AuraDescriptionHasDeferredAmount = true;
+            AuraDescriptionPrefix = prefix;
+            AuraAmountUsesPercent = amountUsesPercent;
+            AuraAmountLeadin = amountLeadin;
+            AuraDescriptionSuffix = suffix;
+        }
+
+        public string RenderAuraDescription()
+        {
+            // Effects whose description was set directly (no deferred amount) are already final
+            if (AuraDescriptionHasDeferredAmount == false)
+                return AuraDescription;
+
+            // Show the amount only when the effect resolves to a single value (a level-scaled band stays generic)
+            string amount = string.Empty;
+            if (CalcEffectLowLevelValue == CalcEffectHighLevelValue)
+            {
+                StringBuilder amountSB = new StringBuilder();
+                amountSB.Append(AuraAmountLeadin);
+                amountSB.Append(Math.Abs(CalcEffectLowLevelValue));
+                if (AuraAmountUsesPercent == true)
+                    amountSB.Append("%");
+                amount = amountSB.ToString();
+            }
+            return string.Concat(AuraDescriptionPrefix, amount, AuraDescriptionSuffix);
         }
 
         public int CompareTo(SpellEffectWOW? other)

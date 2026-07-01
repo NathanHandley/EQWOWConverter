@@ -142,6 +142,9 @@ namespace EQWOWConverter
             if (spellEffectBlocks.Count == 0 || spellEffectBlocks[0].WOWSpellID <= 0)
                 return;
 
+            // Fixed-level worn items have their own exact amount aura description
+            string wornAuraDescription = spellEffectBlocks[0].AuraDescriptionOverride.Length > 0 ? spellEffectBlocks[0].AuraDescriptionOverride : spellTemplate.AuraDescription;
+
             for (int i = 0; i < spellEffectBlocks.Count; i++)
             {
                 SpellEffectBlock curEffectBlock = spellEffectBlocks[i];
@@ -155,10 +158,10 @@ namespace EQWOWConverter
                 else
                 {
                     if (Configuration.ITEMS_SHOW_WORN_EFFECT_AURA_ICON == true)
-                        spellDBC.AddRow(curEffectBlock, spellTemplate.AuraDescription, spellTemplate, i != 0, true, true,
+                        spellDBC.AddRow(curEffectBlock, wornAuraDescription, spellTemplate, i != 0, true, true,
                             curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, true);
                     else
-                        spellDBC.AddRow(curEffectBlock, spellTemplate.AuraDescription, spellTemplate, true, true, true,
+                        spellDBC.AddRow(curEffectBlock, wornAuraDescription, spellTemplate, true, true, true,
                             curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, true);
                 }
             }
