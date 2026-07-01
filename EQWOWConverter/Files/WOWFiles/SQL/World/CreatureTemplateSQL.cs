@@ -128,7 +128,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("IconName", 100, iconName);
             newRow.AddInt("gossip_menu_id", creatureTemplate.GossipMenuID);
             newRow.AddInt("minlevel", creatureTemplate.Level);
-            newRow.AddInt("maxlevel", creatureTemplate.Level);
+            newRow.AddInt("maxlevel", creatureTemplate.MaxLevel);
             newRow.AddInt("exp", 0); // Which expansion to use (0 = classic)
             if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                 newRow.AddInt("faction", Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL);

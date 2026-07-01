@@ -37,6 +37,7 @@ namespace EQWOWConverter.Creatures
         private string NameNoFormat = string.Empty;
         public string SubName = string.Empty; // Restrict to 100 characters
         public int Level = 1;
+        public int MaxLevel = 1;
         public CreatureRace Race = new CreatureRace();
         public int EQClass = 1;
         public int EQBodyType = 24; // This is common for the body type
@@ -309,9 +310,17 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.NameNoFormat = namePreFormat;
                     newCreatureTemplate.SubName = columns["lastname"].Replace('_', ' ');
                     if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == true)
+                    {
                         newCreatureTemplate.Level = int.Max(int.Parse(columns["level80"]), 1);
+                        newCreatureTemplate.MaxLevel = int.Max(int.Parse(columns["level80"]), 1);
+                    }
                     else
+                    {
                         newCreatureTemplate.Level = int.Max(int.Parse(columns["level60"]), 1);
+                        newCreatureTemplate.MaxLevel = int.Parse(columns["maxlevel60"]);
+                        if (newCreatureTemplate.MaxLevel == 0)
+                            newCreatureTemplate.MaxLevel = newCreatureTemplate.Level;
+                    }
                     newCreatureTemplate.DefaultEmoteID = int.Max(int.Parse(columns["idle_emote_id"]), 0);
                     newCreatureTemplate.EQBodyType = int.Parse(columns["bodytype"]);
                     newCreatureTemplate.Size = float.Parse(columns["size"]);
