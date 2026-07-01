@@ -17,7 +17,6 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.Items;
-using EQWOWConverter.Player;
 using EQWOWConverter.Tradeskills;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
@@ -499,6 +498,97 @@ namespace EQWOWConverter.Spells
         private static bool IsNonDummySpellEffect(SpellEffectWOW spellEffect)
         {
             return spellEffect.EffectType != SpellWOWEffectType.Dummy;
+        }
+
+        public void CalculateSpellPowerCoefficientsForBlock(SpellEffectBlock effectBlock, out float directCoefficient, out float dotCoefficient)
+        {
+            // Direct coefficient
+            float standardCastTimeMS = Convert.ToSingle(Configuration.SPELL_SPELL_POWER_STANDARD_CAST_TIME_IN_MS);
+            float clampedCastTimeMS = Math.Clamp(Convert.ToSingle(CastTimeInMS),
+                Convert.ToSingle(Configuration.SPELL_SPELL_POWER_MIN_CAST_TIME_IN_MS), standardCastTimeMS);
+            directCoefficient = clampedCastTimeMS / standardCastTimeMS;
+
+            // DoT calculation.  Spread out coefficient over full duration (and it applies to channeled too, but I don't think there are any EQ channeled...)
+            dotCoefficient = directCoefficient; // Fallback for blocks with no periodic effect (the core never reads it there)
+            int tickPeriodMS = GetLongestSpellPowerPeriodicTickInMSForBlock(effectBlock);
+            if (tickPeriodMS > 0)
+            {
+                if (IsChanneled == true)
+                {
+                    int tickCount = 1;
+                    if (AuraDuration.MaxDurationInMS > 0)
+                        tickCount = Math.Max(1, AuraDuration.MaxDurationInMS / tickPeriodMS);
+                    dotCoefficient = 1.0f / Convert.ToSingle(tickCount);
+                }
+                else
+                    dotCoefficient = Convert.ToSingle(tickPeriodMS) / Convert.ToSingle(Configuration.SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS);
+            }
+
+            // Area spells influence at a reduced rate
+            if (BlockIsAreaEffect(effectBlock) == true)
+            {
+                directCoefficient *= Configuration.SPELL_SPELL_POWER_AOE_MULTIPLIER;
+                dotCoefficient *= Configuration.SPELL_SPELL_POWER_AOE_MULTIPLIER;
+            }
+
+            // Apply multiplier
+            float influenceMultiplier = Configuration.SPELL_DEFAULT_SPELL_POWER_INFLUANCE_MOD;
+            if (IsBardSongAura == true)
+                influenceMultiplier = Configuration.SPELL_BARD_SPELL_POWER_INFLUANCE_MOD;
+            directCoefficient *= influenceMultiplier;
+            dotCoefficient *= influenceMultiplier;
+        }
+
+        private static int GetLongestSpellPowerPeriodicTickInMSForBlock(SpellEffectBlock effectBlock)
+        {
+            int highestTickPeriodMS = 0;
+            foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
+            {
+                if (IsSpellPowerPeriodicAuraType(spellEffect.EffectAuraType) == false)
+                    continue;
+                int tickPeriodMS = Convert.ToInt32(spellEffect.EffectAuraPeriod);
+                if (tickPeriodMS > highestTickPeriodMS)
+                    highestTickPeriodMS = tickPeriodMS;
+            }
+            return highestTickPeriodMS;
+        }
+
+        private static bool IsSpellPowerPeriodicAuraType(SpellWOWAuraType auraType)
+        {
+            if (auraType == SpellWOWAuraType.PeriodicDamage)
+                return true;
+            if (auraType == SpellWOWAuraType.PeriodicHeal)
+                return true;
+            if (auraType == SpellWOWAuraType.PeriodicLeech)
+                return true;
+            return false;
+        }
+
+        private static bool BlockIsAreaEffect(SpellEffectBlock effectBlock)
+        {
+            foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
+            {
+                if (IsAreaTargetType(spellEffect.ImplicitTargetA) == true)
+                    return true;
+                if (IsAreaTargetType(spellEffect.ImplicitTargetB) == true)
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool IsAreaTargetType(SpellWOWTargetType targetType)
+        {
+            if (targetType == SpellWOWTargetType.UnitSourceAreaEnemy)
+                return true;
+            if (targetType == SpellWOWTargetType.UnitDestinationAreaEnemy)
+                return true;
+            if (targetType == SpellWOWTargetType.UnitCasterAreaParty)
+                return true;
+            if (targetType == SpellWOWTargetType.UnitDestinationAreaAlly)
+                return true;
+            if (targetType == SpellWOWTargetType.UnitDestinationAreaParty)
+                return true;
+            return false;
         }
 
         public static void GenerateItemEnchantSpellIfNotCreated(string itemName, int procSpellEQID, int enchantSpellWOWID, out SpellTemplate? enchantSpellTemplate)

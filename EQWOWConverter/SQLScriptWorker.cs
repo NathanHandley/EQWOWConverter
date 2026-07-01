@@ -1571,7 +1571,12 @@ namespace EQWOWConverter
 
                 // Spell power
                 if (spellTemplate.InfluencedBySpellPower == true && commentFragment != " (Worn)")
-                    spellBonusDataSQL.AddRow(curEffectBlock.WOWSpellID, spellTemplate.IsBardSongAura, string.Concat("EQ Spell ", spellTemplate.Name, commentFragment, " Block ", i));
+                {
+                    float directBonus;
+                    float dotBonus;
+                    spellTemplate.CalculateSpellPowerCoefficientsForBlock(curEffectBlock, out directBonus, out dotBonus);
+                    spellBonusDataSQL.AddRow(curEffectBlock.WOWSpellID, directBonus, dotBonus, string.Concat("EQ Spell ", spellTemplate.Name, commentFragment, " Block ", i));
+                }
 
                 // Additional effects beyond the first
                 if (i > 0)

@@ -39,7 +39,7 @@ namespace EQWOWConverter
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones
         // will load and work properly
-        public static List<string> CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { };
+        public static List<string> CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { "paw", "mistmoore", "freportw", "freportn", "freporte", "soldungb", "dreadlands", "gukbottom", "guktop", "highkeep" };
 
         // ====================================================================
         // Paths and Files
@@ -1549,8 +1549,12 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS", SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS, "Default time that a shrink/grow spell will last for");
             OutputVariableToConfig("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID", SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, "Values for the cooldown spells applied by Priests of Discord when you switch worlds, setting cooldown duration to 0 will disable it", false);
             OutputVariableToConfig("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN, "");
-            OutputVariableToConfig("SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT", SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT, "This is the default amount influence spell strength by spell power (when not overriden)", false);
-            OutputVariableToConfig("SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT", SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT, "");
+            OutputVariableToConfig("SPELL_DEFAULT_SPELL_POWER_INFLUANCE_MOD", SPELL_DEFAULT_SPELL_POWER_INFLUANCE_MOD, "This is the default amount influence spell strength by spell power", false);
+            OutputVariableToConfig("SPELL_BARD_SPELL_POWER_INFLUANCE_MOD", SPELL_BARD_SPELL_POWER_INFLUANCE_MOD, "Same as the default influence multiplier, but for bard songs");
+            OutputVariableToConfig("SPELL_SPELL_POWER_STANDARD_CAST_TIME_IN_MS", SPELL_SPELL_POWER_STANDARD_CAST_TIME_IN_MS, "A cast at or above this length gets the full (1.0) direct spell power coefficient before the influence multiplier");
+            OutputVariableToConfig("SPELL_SPELL_POWER_MIN_CAST_TIME_IN_MS", SPELL_SPELL_POWER_MIN_CAST_TIME_IN_MS, "Cast times (and instants) are floored here for the coefficient");
+            OutputVariableToConfig("SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS", SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS, "A DoT/HoT's total coefficient equals duration / this value");
+            OutputVariableToConfig("SPELL_SPELL_POWER_AOE_MULTIPLIER", SPELL_SPELL_POWER_AOE_MULTIPLIER, "Area spells influence at a reduced rate (this is WoW-like)");
             OutputVariableToConfig("SPELL_SUMMON_CASTER_AURA_SPELL_ID", SPELL_SUMMON_CASTER_AURA_SPELL_ID, "Summoner dummy spell ID used to prevent creatures from summoning more creatures");
             OutputVariableToConfig("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID, "Hidden passive aura used to reduce creature mana regeneration (see CREATURE_MANA_REGEN_PERCENT)");
             OutputVariableToConfig("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID, "This is the ID used to detect invis and stealth, and already exists in AzerothCore");
@@ -2084,8 +2088,12 @@ namespace EQWOWConverter
             SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS = ReadVariableFromConfigString("SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS", configValuesByVariableName, SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS);
             SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID = ReadVariableFromConfigString("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID", configValuesByVariableName, SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID);
             SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN = ReadVariableFromConfigString("SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN", configValuesByVariableName, SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN);
-            SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT = ReadVariableFromConfigString("SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT", configValuesByVariableName, SPELL_DEFAULT_SPELL_POWER_INFLUENCE_PERCENT);
-            SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT = ReadVariableFromConfigString("SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT", configValuesByVariableName, SPELL_BARD_SPELL_POWER_INFLUENCE_PERCENT);
+            SPELL_DEFAULT_SPELL_POWER_INFLUANCE_MOD = ReadVariableFromConfigString("SPELL_DEFAULT_SPELL_POWER_INFLUANCE_MOD", configValuesByVariableName, SPELL_DEFAULT_SPELL_POWER_INFLUANCE_MOD);
+            SPELL_BARD_SPELL_POWER_INFLUANCE_MOD = ReadVariableFromConfigString("SPELL_BARD_SPELL_POWER_INFLUANCE_MOD", configValuesByVariableName, SPELL_BARD_SPELL_POWER_INFLUANCE_MOD);
+            SPELL_SPELL_POWER_STANDARD_CAST_TIME_IN_MS = ReadVariableFromConfigString("SPELL_SPELL_POWER_STANDARD_CAST_TIME_IN_MS", configValuesByVariableName, SPELL_SPELL_POWER_STANDARD_CAST_TIME_IN_MS);
+            SPELL_SPELL_POWER_MIN_CAST_TIME_IN_MS = ReadVariableFromConfigString("SPELL_SPELL_POWER_MIN_CAST_TIME_IN_MS", configValuesByVariableName, SPELL_SPELL_POWER_MIN_CAST_TIME_IN_MS);
+            SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS = ReadVariableFromConfigString("SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS", configValuesByVariableName, SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS);
+            SPELL_SPELL_POWER_AOE_MULTIPLIER = ReadVariableFromConfigString("SPELL_SPELL_POWER_AOE_MULTIPLIER", configValuesByVariableName, SPELL_SPELL_POWER_AOE_MULTIPLIER);
             SPELL_SUMMON_CASTER_AURA_SPELL_ID = ReadVariableFromConfigString("SPELL_SUMMON_CASTER_AURA_SPELL_ID", configValuesByVariableName, SPELL_SUMMON_CASTER_AURA_SPELL_ID);
             SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID);
             SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID);
