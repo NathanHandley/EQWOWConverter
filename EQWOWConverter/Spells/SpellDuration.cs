@@ -35,7 +35,7 @@ namespace EQWOWConverter.Spells
                 return MaxDurationInMS;
             if (level <= MinLevel)
                 return BaseDurationInMS;
-            int calcMSForLevel = BaseDurationInMS + ((MinLevel - level) * DurationInMSPerLevel);
+            int calcMSForLevel = BaseDurationInMS + ((level - MinLevel) * DurationInMSPerLevel);
             if (calcMSForLevel > MaxDurationInMS)
                 return MaxDurationInMS;
             else
@@ -106,10 +106,13 @@ namespace EQWOWConverter.Spells
             }
             else
             {
-                if (maxBuffDurationInTicks > 0)
-                    MaxDurationInMS = maxBuffDurationInMS;
                 // These are dynamic formulas
                 int endCalcLevel = Configuration.SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL;
+                if (maxBuffDurationInTicks > 0)
+                    MaxDurationInMS = maxBuffDurationInMS;
+                // No max duration means the formula determines it, so cap at highest calc level
+                else
+                    MaxDurationInMS = CalcAuraDurationInMSForLevel(endCalcLevel, eqBuffDurationFormula);
                 BaseDurationInMS = CalcAuraDurationInMSForLevel(spellLevel, eqBuffDurationFormula);
                 if (MaxDurationInMS > 0 && BaseDurationInMS > MaxDurationInMS)
                     BaseDurationInMS = MaxDurationInMS;
