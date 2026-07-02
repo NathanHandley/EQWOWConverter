@@ -221,6 +221,7 @@ namespace EQWOWConverter.Spells
         public int EffectFailChancePercent = 0;
         public bool StunUsesBashKickChance = false;
         public int SpellIDCastOnTargetWhenStunLands = 0;
+        public bool AuraStaysOnSecondaryClassSwitch = false;
         public bool ShowFocusBoostInDescriptionIfExists = false;
         public bool IsllusionSpellParent = false;
         public bool ForceHiddenFromDisplay = false;
@@ -2402,6 +2403,7 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.AuraDescription = "you are tethered to the location where you gated and may return there if you click it off before the buff wears off, but it will fail in combat";
                                     newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.Gate;
                                     spellTemplate.AuraDuration.SetFixedDuration(1800000); // 30 minutes
+                                    spellTemplate.AuraStaysOnSecondaryClassSwitch = true;
                                 }
                                 else
                                 {

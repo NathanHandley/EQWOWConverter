@@ -2049,6 +2049,7 @@ namespace EQWOWConverter
                 gateSpellTemplate.Description = string.Concat(gateSpellTemplate.Description, " You will have 30 minutes where you can return to your gate point after casting it.");
                 gateSpellTemplate.AuraDescription = "You are tethered to the location where you gated. Click off before the buff wears off to return there. The tether will fail if you attempt return while in combat.";
                 gateSpellTemplate.AuraDuration.SetFixedDuration(1800000); // 30 minutes
+                gateSpellTemplate.AuraStaysOnSecondaryClassSwitch = true;
                 gateSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, (int)SpellDummyType.Gate, 0));
             }
             else

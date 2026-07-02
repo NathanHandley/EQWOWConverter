@@ -44,6 +44,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`EffectFailableType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`StunUsesBashKickChance` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`SpellIDCastOnTargetWhenStunLands` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`AuraStaysOnSecondaryClassSwitch` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -84,6 +85,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("EffectFailableType", (int)spellTemplate.FailableType);
             newRow.AddInt("StunUsesBashKickChance", spellTemplate.StunUsesBashKickChance ? 1 : 0);
             newRow.AddInt("SpellIDCastOnTargetWhenStunLands", spellTemplate.SpellIDCastOnTargetWhenStunLands);
+            newRow.AddInt("AuraStaysOnSecondaryClassSwitch", spellTemplate.AuraStaysOnSecondaryClassSwitch ? 1 : 0);
             Rows.Add(newRow);
         }
     }
