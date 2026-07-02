@@ -2461,6 +2461,41 @@ namespace EQWOWConverter.Spells
 
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
+                        case SpellEQEffectType.Succor:
+                            {
+                                // In-zone succor has "same" in this field, which the mod side of the code will have to figure it out
+                                if (teleportZoneOrPetTypeName.Trim().ToLower() == "same")
+                                {
+                                    SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.Dummy;
+                                    newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
+                                    newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.Succor;
+                                    newSpellEffectWOW.ActionDescription = "returns the affected to a safe location in their current zone";
+                                    newSpellEffects.Add(newSpellEffectWOW);
+                                }
+                                // Other-zone succor, which is mostly a normal teleport
+                                else
+                                {
+                                    if (zonePropertiesByShortName.ContainsKey(teleportZoneOrPetTypeName) == false)
+                                    {
+                                        Logger.WriteDebug("Could not convert succor spell effect for eq spell id ", spellTemplate.EQSpellID.ToString(), " since there is no output zone properties loaded for zone short name ", teleportZoneOrPetTypeName);
+                                        continue;
+                                    }
+                                    ZoneProperties destinationZoneProperties = zonePropertiesByShortName[teleportZoneOrPetTypeName];
+                                    SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                    newSpellEffectWOW.ImplicitTargetB = SpellWOWTargetType.DestinationDatabaseForTeleport;
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.TeleportUnits;
+                                    newSpellEffectWOW.EffectDieSides = 1;
+                                    newSpellEffectWOW.EffectBasePoints = -1;
+                                    newSpellEffectWOW.ActionDescription = string.Concat("returns the affected to a safe location in ", destinationZoneProperties.DescriptiveName);
+                                    newSpellEffectWOW.TeleMapID = destinationZoneProperties.DBCMapID;
+                                    newSpellEffectWOW.TelePosition = new Vector3(destinationZoneProperties.SafePosition);
+                                    newSpellEffectWOW.TeleOrientation = MathF.PI;
+                                    if (targets.Count > 1)
+                                        Logger.WriteError("Succor for eq spell id ", spellTemplate.EQSpellID.ToString(), " will not properly hit targets since there is > 2 targets");
+                                    newSpellEffects.Add(newSpellEffectWOW);
+                                }
+                            } break;
                         case SpellEQEffectType.Silence:
                             {
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();

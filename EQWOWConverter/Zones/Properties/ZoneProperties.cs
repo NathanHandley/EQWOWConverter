@@ -126,6 +126,7 @@ namespace EQWOWConverter.Zones
         public bool HasShadowBox = false;
         public Vector3 TelePosition = new Vector3();
         public float TeleOrientation = 0;
+        public Vector3 SafePosition = new Vector3();
         public int ExpansionID = 0;
         public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();
         public List<ZoneLiquidGroup> LiquidGroups = new List<ZoneLiquidGroup>();
@@ -1042,6 +1043,9 @@ namespace EQWOWConverter.Zones
                 zoneProperties.TelePosition.Y = float.Parse(propertiesRow["TeleY"]) * Configuration.GENERATE_WORLD_SCALE;
                 zoneProperties.TelePosition.Z = float.Parse(propertiesRow["TeleZ"]) * Configuration.GENERATE_WORLD_SCALE;
                 zoneProperties.TeleOrientation = float.Parse(propertiesRow["TeleOrientation"]);
+                zoneProperties.SafePosition.X = float.Parse(propertiesRow["SafeX"]) * Configuration.GENERATE_WORLD_SCALE;
+                zoneProperties.SafePosition.Y = float.Parse(propertiesRow["SafeY"]) * Configuration.GENERATE_WORLD_SCALE;
+                zoneProperties.SafePosition.Z = float.Parse(propertiesRow["SafeZ"]) * Configuration.GENERATE_WORLD_SCALE;
                 zoneProperties.Continent = (ZoneContinentType)int.Parse(propertiesRow["ContinentID"]);
                 zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);
                 zoneProperties.IsRestingZoneWide = propertiesRow["RestZoneWide"].Trim() == "1" ? true : false;

@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 29;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 30;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -39,7 +39,7 @@ namespace EQWOWConverter
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones
         // will load and work properly
-        public static List<string> CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { "paw", "mistmoore", "freportw", "freportn", "freporte", "soldungb", "dreadlands", "gukbottom", "guktop", "highkeep" };
+        public static List<string> CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { };
 
         // ====================================================================
         // Paths and Files

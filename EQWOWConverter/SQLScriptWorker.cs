@@ -90,6 +90,7 @@ namespace EQWOWConverter
         private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
         private ModEverquestSystemConfigsSQL modEverquestSystemConfigsSQL = new ModEverquestSystemConfigsSQL();
         private ModEverquestTransportTriggerSQL modEverquestTransportTriggerSQL = new ModEverquestTransportTriggerSQL();
+        private ModEverquestZoneSafePointSQL modEverquestZoneSafePointSQL = new ModEverquestZoneSafePointSQL();
         private ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
         private ModEverquestQuestReactionSQL modEverquestQuestReactionSQL = new ModEverquestQuestReactionSQL();
         private NPCTextSQL npcTextSQL = new NPCTextSQL();
@@ -1862,6 +1863,9 @@ namespace EQWOWConverter
                 if (zone.DescriptiveNameOnlyLetters.ToLower() != zone.ShortName.ToLower())
                     gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ShortName, zone.ZoneProperties.TelePosition.X, zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
 
+                // Zone safe point (used by the mod for in-zone succor teleports)
+                modEverquestZoneSafePointSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.SafePosition);
+
                 // Weather data
                 if (Configuration.ZONE_WEATHER_ENABLED == true)
                     gameWeatherSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DefaultZoneArea.DBCAreaTableID), zone.ZoneProperties.RainChanceWinter, zone.ZoneProperties.SnowChanceWinter,
@@ -2047,6 +2051,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.SaveToDisk("mod_everquest_systemconfigs", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
             modEverquestTransportTriggerSQL.SaveToDisk("mod_everquest_transport_trigger", SQLFileType.World);
+            modEverquestZoneSafePointSQL.SaveToDisk("mod_everquest_zone_safe_point", SQLFileType.World);
             modEverquestQuestReactionSQL.SaveToDisk("mod_everquest_quest_reaction", SQLFileType.World);
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);

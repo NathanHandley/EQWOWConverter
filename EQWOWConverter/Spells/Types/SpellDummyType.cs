@@ -37,5 +37,6 @@ namespace EQWOWConverter.Spells
         IllusionParent = 15,
         Forage = 16,
         SummonActive = 17,
+        Succor = 18,
     }
 }
