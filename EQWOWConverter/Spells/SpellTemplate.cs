@@ -60,7 +60,7 @@ namespace EQWOWConverter.Spells
         private static int CUR_GENERATED_SPELL_GROUP_ID = Configuration.SQL_SPELL_GROUP_ID_START;
 
         private static Dictionary<int, SpellTemplate> SpellTemplatesByEQID = new Dictionary<int, SpellTemplate>();
-        private static Dictionary<(ItemFocusType, int), SpellTemplate> SpellTemplatesByFocusTypeAndValue = new Dictionary<(ItemFocusType, int), SpellTemplate>();
+        private static Dictionary<(string, int, ItemFocusType, int), SpellTemplate> SpellTemplatesByFocusTypeAndValue = new Dictionary<(string, int, ItemFocusType, int), SpellTemplate>();
         private static readonly object SpellTemplateLock = new object();
         private static int CUR_GENERATED_WOW_SPELL_ID = Configuration.DBCID_SPELL_ID_GENERATED_START;
         private static readonly object SpellEQIDLock = new object();
@@ -483,6 +483,11 @@ namespace EQWOWConverter.Spells
                             continue;
                         spellTemplate.WOWSpellEffects.Add(spellEffect.Clone());
                     }
+
+                    // Add proper stacking rules for illusion spells
+                    foreach (int parentStackGroupID in spellTemplate.IllusionSpellParent.SpellGroupStackingIDs)
+                        if (spellTemplate.SpellGroupStackingIDs.Contains(parentStackGroupID) == false)
+                            spellTemplate.SpellGroupStackingIDs.Add(parentStackGroupID);
                 }
 
                 // Set the spell and aura descriptions
@@ -675,11 +680,12 @@ namespace EQWOWConverter.Spells
             lock (SpellTemplateLock)
             {
                 focusSpellTemplate = null;
+                (string, int, ItemFocusType, int) focusSpellKey = (itemName, itemIconID, focusType, focusValue);
 
                 // Don't do anything if it already exists
-                if (SpellTemplatesByFocusTypeAndValue.ContainsKey((focusType, focusValue)) == true)
+                if (SpellTemplatesByFocusTypeAndValue.ContainsKey(focusSpellKey) == true)
                 {
-                    focusSpellTemplate =  SpellTemplatesByFocusTypeAndValue[(focusType, focusValue)];
+                    focusSpellTemplate =  SpellTemplatesByFocusTypeAndValue[focusSpellKey];
                     isNewSpell = false;
                     return;
                 }
@@ -735,7 +741,7 @@ namespace EQWOWConverter.Spells
                 focusSpellTemplate.AlwaysPersist = true;
                 focusSpellTemplate.AuraDuration = new SpellDuration();
                 focusSpellTemplate.AuraDuration.IsInfinite = true;
-                SpellTemplatesByFocusTypeAndValue.Add((focusType, focusValue), focusSpellTemplate);
+                SpellTemplatesByFocusTypeAndValue.Add(focusSpellKey, focusSpellTemplate);
             }
         }
 
