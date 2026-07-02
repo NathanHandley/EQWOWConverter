@@ -574,6 +574,21 @@ namespace EQWOWConverter.Spells
             return levelOneMod + (phaseProgress * (1.0f - levelOneMod));
         }
 
+        public int GetMinimumTargetLevel()
+        {
+            // TAKP has the buff restriction of beneficial buffs above a level threshold can only land on players "(learn level / 2) + 15" or higher
+            int spellLevelThreshold = Configuration.SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD;
+            if (spellLevelThreshold <= 0)
+                return 0;
+            if (IsGoodEffect == false || IsBardSongAura == true)
+                return 0;
+            if (AuraDuration.MaxDurationInMS == 0)
+                return 0;
+            if (MinimumPlayerLearnLevel <= spellLevelThreshold)
+                return 0;
+            return (MinimumPlayerLearnLevel / 2) + 15;
+        }
+
         private static int GetLongestSpellPowerPeriodicTickInMSForBlock(SpellEffectBlock effectBlock)
         {
             int highestTickPeriodMS = 0;

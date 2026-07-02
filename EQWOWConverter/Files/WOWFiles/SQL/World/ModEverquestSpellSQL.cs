@@ -45,6 +45,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`StunUsesBashKickChance` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`SpellIDCastOnTargetWhenStunLands` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`AuraStaysOnSecondaryClassSwitch` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`MinTargetLevel` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -86,6 +87,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("StunUsesBashKickChance", spellTemplate.StunUsesBashKickChance ? 1 : 0);
             newRow.AddInt("SpellIDCastOnTargetWhenStunLands", spellTemplate.SpellIDCastOnTargetWhenStunLands);
             newRow.AddInt("AuraStaysOnSecondaryClassSwitch", spellTemplate.AuraStaysOnSecondaryClassSwitch ? 1 : 0);
+            if (isWorn == true)
+                newRow.AddInt("MinTargetLevel", 0); // Worn effects have no target level restriction in EQ
+            else
+                newRow.AddInt("MinTargetLevel", spellTemplate.GetMinimumTargetLevel());
             Rows.Add(newRow);
         }
     }

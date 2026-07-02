@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 31;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 32;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -765,6 +765,9 @@ namespace EQWOWConverter
         public static float SPELL_SPELL_POWER_LOW_LEVEL_MOD = 0.25f;
         // The level to phase out this new mod (linear from level 1)
         public static int SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL = 40;
+
+        // Minimum level to enforce buff constraints against low level players, with 0 being off. 50 is EQ-like (according to TAKP)
+        public static int SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD = 50;
 
         // Summoner dummy spell ID used to prevent creatures from summoning more creatures
         public static int SPELL_SUMMON_CASTER_AURA_SPELL_ID = 86905;
@@ -1569,6 +1572,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_SPELL_POWER_AOE_MULTIPLIER", SPELL_SPELL_POWER_AOE_MULTIPLIER, "Area spells influence at a reduced rate (this is WoW-like)");
             OutputVariableToConfig("SPELL_SPELL_POWER_LOW_LEVEL_MOD", SPELL_SPELL_POWER_LOW_LEVEL_MOD, "Additional mod that reduces spell power influence on low-level spells (1 = disabled)");
             OutputVariableToConfig("SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL", SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL, "The level to phase out this new mod (linear from level 1)");
+            OutputVariableToConfig("SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD", SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD, "Minimum level to enforce buff constraints against low level players, with 0 being off. 50 is EQ-like (according to TAKP)");
             OutputVariableToConfig("SPELL_SUMMON_CASTER_AURA_SPELL_ID", SPELL_SUMMON_CASTER_AURA_SPELL_ID, "Summoner dummy spell ID used to prevent creatures from summoning more creatures");
             OutputVariableToConfig("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID, "Hidden passive aura used to reduce creature mana regeneration (see CREATURE_MANA_REGEN_PERCENT)");
             OutputVariableToConfig("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID, "This is the ID used to detect invis and stealth, and already exists in AzerothCore");
@@ -2110,6 +2114,7 @@ namespace EQWOWConverter
             SPELL_SPELL_POWER_AOE_MULTIPLIER = ReadVariableFromConfigString("SPELL_SPELL_POWER_AOE_MULTIPLIER", configValuesByVariableName, SPELL_SPELL_POWER_AOE_MULTIPLIER);
             SPELL_SPELL_POWER_LOW_LEVEL_MOD = ReadVariableFromConfigString("SPELL_SPELL_POWER_LOW_LEVEL_MOD", configValuesByVariableName, SPELL_SPELL_POWER_LOW_LEVEL_MOD);
             SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL = ReadVariableFromConfigString("SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL", configValuesByVariableName, SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL);
+            SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD = ReadVariableFromConfigString("SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD", configValuesByVariableName, SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD);
             SPELL_SUMMON_CASTER_AURA_SPELL_ID = ReadVariableFromConfigString("SPELL_SUMMON_CASTER_AURA_SPELL_ID", configValuesByVariableName, SPELL_SUMMON_CASTER_AURA_SPELL_ID);
             SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID);
             SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID);
