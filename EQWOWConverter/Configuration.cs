@@ -748,7 +748,7 @@ namespace EQWOWConverter
 
         // Values for the cooldown spells applied by Priests of Discord when you switch worlds, setting cooldown duration to 0 will disable it
         public static int SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID = 86902;
-        public static int SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN = 30;
+        public static int SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN = 0;
 
         // This is the default amount influence spell strength by spell power
         public static float SPELL_DEFAULT_SPELL_POWER_INFLUANCE_MOD = 1f;
