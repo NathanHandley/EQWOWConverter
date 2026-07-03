@@ -27,6 +27,9 @@ namespace EQWOWConverter.Creatures
         private static Dictionary<int, CreatureTemplate> CreatureTemplateListByEQID = new Dictionary<int, CreatureTemplate>();
         private static Dictionary<int, CreatureTemplate> CreatureTemplateListByWOWID = new Dictionary<int, CreatureTemplate>();
         private static SortedDictionary<int, Dictionary<string, float>> StatBaselinesByLevels = new SortedDictionary<int, Dictionary<string, float>>();
+        private static Dictionary<string, float> StatBaselineMinimums = new Dictionary<string, float>();
+        private static Dictionary<string, float> StatBaselineMaximums = new Dictionary<string, float>();
+        private static Dictionary<string, float> StatBaselineDefaults = new Dictionary<string, float>();
         private static Dictionary<(string, string), List<CreatureTemplate>> CreatureTemplatesBySpawnZonesAndName = new Dictionary<(string, string), List<CreatureTemplate>>();
         private static readonly object CreatureTemplateLock = new object();
 
@@ -56,6 +59,7 @@ namespace EQWOWConverter.Creatures
         public bool HasMana = false;
         public float HPMod = 1f;
         public float DamageMod = 1f;
+        public int AttackTime = 2000; // TODO: Use config value
         public CreatureRankType Rank = CreatureRankType.Normal;
         public int EQFactionID = 0;
         public int EQNPCFactionID = 0;
@@ -353,8 +357,9 @@ namespace EQWOWConverter.Creatures
                         newCreatureTemplate.MerchantID = 0;
                     newCreatureTemplate.ColorTintID = int.Parse(columns["armortint_id"]);
                     newCreatureTemplate.HasMana = (int.Parse(columns["mana"]) > 0);
-                    newCreatureTemplate.HPMod = GetStatMod("hp", newCreatureTemplate.Level, newCreatureTemplate.Rank, float.Parse(columns["hp"]));
-                    newCreatureTemplate.DamageMod = GetStatMod("avgdmg", newCreatureTemplate.Level, newCreatureTemplate.Rank, float.Parse(columns["avgdmg"]));
+                    newCreatureTemplate.HPMod = GetStatMod("hp", newCreatureTemplate.Level, float.Parse(columns["hp"]), CreatureStatModType.RelativeMod);
+                    newCreatureTemplate.DamageMod = GetStatMod("avgdamage", newCreatureTemplate.Level, float.Parse(columns["avgdmg"]), CreatureStatModType.RelativeMod);
+                    newCreatureTemplate.AttackTime = (int)GetStatMod("attackdelay", newCreatureTemplate.Level, float.Parse(columns["attack_delay"]), CreatureStatModType.FixedValue);
                     float detectionRange = float.Parse(columns["aggroradius"]);
                     newCreatureTemplate.DetectionRange = detectionRange * Configuration.GENERATE_WORLD_SCALE;
                     newCreatureTemplate.EQClass = int.Parse(columns["class"]);
@@ -807,149 +812,85 @@ namespace EQWOWConverter.Creatures
 
         private static void PopulateStatBaselinesByLevel()
         {
+            // Clear old data
+            StatBaselinesByLevels.Clear();
+            StatBaselineMinimums.Clear();
+            StatBaselineMaximums.Clear();
+            StatBaselineDefaults.Clear();
+
+            // Load the stat baselines themselves
             string creatureStatBaselineFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureStatBaselines.csv");
             Logger.WriteDebug("Populating Creature Stat Baselines list via file '" + creatureStatBaselineFile + "'");
-            List<string> creatureStatBaselineRows = FileTool.ReadAllStringLinesFromFile(creatureStatBaselineFile, true, true);
-            foreach (string row in creatureStatBaselineRows)
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(creatureStatBaselineFile, "|");
+            foreach (Dictionary<string, string> columns in rows)
             {
-                // Load the row
-                string[] rowBlocks = row.Split("|");
-                int level = int.Parse(rowBlocks[0]);
-                int hp = int.Parse(rowBlocks[1]);
-                float avgDMG = float.Parse(rowBlocks[2]);
+                // Pull values
+                int level = int.Parse(columns["level"]);
+                float hp = float.Parse(columns["hp"]);
+                //float mana = float.Parse(columns["mana"]);
+                float avgDamage = float.Parse(columns["avgdmg"]);
+                float attackDelay = float.Parse(columns["attackdelay"]);
 
-                // Create the baseline record
+                // Create level baseline record
                 StatBaselinesByLevels.Add(level, new Dictionary<string, float>());
                 StatBaselinesByLevels[level].Add("hp", hp);
-                StatBaselinesByLevels[level].Add("avgdmg", avgDMG);
+                //StatBaselinesByLevels[level].Add("mana", mana);
+                StatBaselinesByLevels[level].Add("avgdamage", avgDamage);
+                StatBaselinesByLevels[level].Add("attackdelay", attackDelay);
             }
+
+            // Precache min/max values for later calcs
+            // TODO: Move to config
+            StatBaselineMinimums.Add("hp", 0.001f);
+            StatBaselineMaximums.Add("hp", 650f);
+            StatBaselineDefaults.Add("hp", 1f);
+            StatBaselineMinimums.Add("avgdamage", 0.01f);
+            StatBaselineMaximums.Add("avgdamage", 35.0f);
+            StatBaselineDefaults.Add("avgdamage", 1f);
+            StatBaselineMinimums.Add("attackdelay", 250f);
+            StatBaselineMaximums.Add("attackdelay", 6000f);
+            StatBaselineDefaults.Add("attackdelay", 2000f);
         }
 
-        private static float GetStatMod(string statName, int creatureLevel, CreatureRankType creatureRank, float creatureStatValue)
+        private static float GetStatMod(string statName, int creatureLevel, float creatureStatValue, CreatureStatModType statModType)
         {
+            // Non-mappable
+            if (StatBaselinesByLevels[1].ContainsKey(statName) == false)
+            {
+                Logger.WriteError("CreatureTemplate::GetStatMod failure, as no stat named '", statName, "' exists, returning 1");
+                return 1f;
+            }
+            if (creatureLevel > 63)
+            {
+                creatureLevel = 63;
+                Logger.WriteDebug("CreatureTemplate::GetStatMod had a level > 63, so normalizing down to 63");
+            }
             if (creatureLevel == 0)
-                return 1;
+                return StatBaselineDefaults[statName];
             if (creatureStatValue < 1)
-                return 1;
+                return StatBaselineDefaults[statName];
 
-            // Determine the boundaries and adds
-            float modAdd;
-            float modMin;
-            float modMax;
-            float modSet;
-            switch(statName)
+            // Calculate the stat
+            float baselineStatValue = StatBaselinesByLevels[creatureLevel][statName];
+            float calcStat = StatBaselineDefaults[statName];
+            switch (statModType)
             {
-                case "hp":
+                case CreatureStatModType.RelativeMod:
                     {
-                        modAdd = Configuration.CREATURE_STAT_MOD_HP_ADD;
-                        modMin = Configuration.CREATURE_STAT_MOD_HP_MIN;
-                        modMax = GetValueForRank(creatureRank, Configuration.CREATURE_STAT_MOD_HP_MAX_NORMAL,
-                            -1, -1, -1, Configuration.CREATURE_STAT_MOD_HP_MAX_RARE);
-                        modSet = GetValueForRank(creatureRank, -1, Configuration.CREATURE_STAT_MOD_HP_SET_ELITE,
-                            Configuration.CREATURE_STAT_MOD_HP_SET_ELITERARE, Configuration.CREATURE_STAT_MOD_HP_SET_BOSS, -1);
+                        calcStat = creatureStatValue / baselineStatValue;
                     } break;
-                case "avgdmg":
+                case CreatureStatModType.FixedValue:
                     {
-                        modAdd = Configuration.CREATURE_STAT_MOD_AVGDMG_ADD;
-                        modMin = Configuration.CREATURE_STAT_MOD_AVGDMG_MIN;
-                        modMax = GetValueForRank(creatureRank, Configuration.CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL,
-                            -1, -1, -1, Configuration.CREATURE_STAT_MOD_AVGDMG_MAX_RARE);
-                        modSet = GetValueForRank(creatureRank, -1, Configuration.CREATURE_STAT_MOD_AVGDMG_SET_ELITE,
-                            Configuration.CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE, Configuration.CREATURE_STAT_MOD_AVGDMG_SET_BOSS, -1);
+                        float relativeToBaseline = creatureStatValue / baselineStatValue;
+                        calcStat = relativeToBaseline * StatBaselineDefaults[statName];
                     } break;
                 default:
                     {
-                        Logger.WriteError("GetStatMod failed due to unhandled stat name of '" + statName + "'");
-                        return 1;
-                    }
+                        Logger.WriteError("CreatureTemplate::GetStatMod Unhandled statModType of '", statModType.ToString(), "', returning default");
+                    } break;
             }
 
-            // Calculate the specific baseline to use based on range
-            int levelLow = -1;
-            int levelHigh = -1;
-            float statLow = -1;
-            float statHigh = -1;
-            foreach (var statBaselineForLevel in StatBaselinesByLevels)
-            {
-                // Grab the stat for this level row
-                if (statBaselineForLevel.Value.ContainsKey(statName) == false)
-                {
-                    Logger.WriteError("Error in GetStatMod as stat name '" + statName + "' did not exist");
-                    return 1;
-                }
-                int recordLevel = statBaselineForLevel.Key;
-                float recordStat = statBaselineForLevel.Value[statName];
-
-                // Store based on current bounds
-                if (levelLow == -1)
-                {
-                    levelLow = recordLevel;
-                    levelHigh = recordLevel;
-                    statLow = recordStat;
-                    statHigh = recordStat;
-                    if (levelLow == creatureLevel)
-                        break;
-                    else
-                        continue;
-                }
-                if (recordLevel <= creatureLevel)
-                {
-                    levelLow = recordLevel;
-                    statLow = recordStat;
-                }
-                if (creatureLevel <= recordLevel)
-                {
-                    levelHigh = recordLevel;
-                    statHigh = recordStat;
-                    break;
-                }
-            }
-            if (levelLow == -1 || levelHigh == -1 || statLow == -1 || statHigh == -1)
-            {
-                Logger.WriteError("GetStatMod failed as one of the range caps was -1");
-                return 1;
-            }
-
-            // Generate a stat mod
-            float statRelative;
-            if (creatureLevel == levelLow)
-                statRelative = statLow;
-            else if (creatureLevel == levelHigh)
-                statRelative = statHigh;
-            else
-            {
-                float normalLevelRelative = (Convert.ToSingle(creatureLevel - levelLow) / Convert.ToSingle(levelHigh - levelLow));
-                statRelative = normalLevelRelative * statHigh + ((1 - normalLevelRelative) * statLow);
-            }
-            float genStatValue = creatureStatValue / statRelative;
-
-            // Apply adds and limits
-            genStatValue += modAdd;
-            if (modMin != -1)
-                genStatValue = MathF.Max(genStatValue, modMin);
-            if (modMax != -1)
-                genStatValue = MathF.Min(genStatValue, modMax);
-            if (modSet != -1)
-                genStatValue = modSet;
-            return genStatValue;
-        }
-
-        private static float GetValueForRank(CreatureRankType creatureRank, float normalValue, float eliteValue, float eliteRareValue,
-            float bossValue, float rareValue)
-        {
-            switch (creatureRank)
-            {
-                case CreatureRankType.Normal: return normalValue;
-                case CreatureRankType.Elite: return eliteValue;
-                case CreatureRankType.Boss: return bossValue;
-                case CreatureRankType.Rare: return rareValue;
-                case CreatureRankType.EliteRare: return eliteRareValue;
-                default:
-                    {
-                        Logger.WriteError("GeTValueForRank failed since rank '" + creatureRank + "' was not defined");
-                        return 1;
-                    }
-            }
+            return calcStat;
         }
 
         // Debug elements
