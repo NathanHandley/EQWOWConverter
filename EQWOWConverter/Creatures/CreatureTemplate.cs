@@ -852,6 +852,16 @@ namespace EQWOWConverter.Creatures
             StatBaselineDefaults.Add("attackdelay", 2000f);
         }
 
+        private static float GetModInLevelSpan(float level1Mod, float levelCapMod, int levelCap, int levelToCalcFor)
+        {
+            float levelFractionMod = (float)(levelToCalcFor - 1) / (levelCap - 1);
+            if (levelFractionMod < 0f)
+                levelFractionMod = 0f;
+            else if (levelFractionMod > 1f)
+                levelFractionMod = 1f;
+            return level1Mod + ((levelCapMod - level1Mod) * levelFractionMod);
+        }
+
         private static float GetStatMod(string statName, int creatureLevel, float creatureStatValue, CreatureStatModType statModType)
         {
             // Non-mappable
@@ -867,8 +877,17 @@ namespace EQWOWConverter.Creatures
             }
             if (creatureLevel == 0)
                 return StatBaselineDefaults[statName];
-            if (creatureStatValue < 1)
+            if (creatureStatValue <= 0)
                 return StatBaselineDefaults[statName];
+
+            // Determine the range intensity (higher makes the low/high swing greater) and amount to add after calculations
+            float addedMod = 0f;
+            float rangeIntensity = 1.0f;
+            if (statName == "hp")
+            {
+                rangeIntensity = GetModInLevelSpan(1f, 2f, 63, creatureLevel);
+                addedMod = GetModInLevelSpan(0f, 0.5f, 30, creatureLevel); // TODO: Put in config
+            }
 
             // Calculate the stat
             float baselineStatValue = StatBaselinesByLevels[creatureLevel][statName];
@@ -890,7 +909,7 @@ namespace EQWOWConverter.Creatures
                     } break;
             }
 
-            return calcStat;
+            return calcStat + addedMod;
         }
 
         // Debug elements
