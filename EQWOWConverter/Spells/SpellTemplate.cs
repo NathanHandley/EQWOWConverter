@@ -1186,8 +1186,8 @@ namespace EQWOWConverter.Spells
             if ((int)curEffect.EQBaseValueFormulaType >= 111 || (int)curEffect.EQBaseValueFormulaType <= 118)
                 spellTemplate.HasEffectBaseFormulaUsingSpellLevel = true;
 
-            // Teleports use fixed columns for values
-            if (curEffect.EQEffectType == SpellEQEffectType.Teleport)
+            // Teleports and succors use fixed columns for values
+            if (curEffect.EQEffectType == SpellEQEffectType.Teleport || curEffect.EQEffectType == SpellEQEffectType.Succor)
             {
                 curEffect.EQTelePosition = new Vector3(float.Parse(rowColumns["effect_base_value1"]),
                     float.Parse(rowColumns["effect_base_value2"]),
@@ -2504,10 +2504,29 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.TeleportUnits;
                                     newSpellEffectWOW.EffectDieSides = 1;
                                     newSpellEffectWOW.EffectBasePoints = -1;
-                                    newSpellEffectWOW.ActionDescription = string.Concat("returns the affected to a safe location in ", destinationZoneProperties.DescriptiveName);
+                                    newSpellEffectWOW.ActionDescription = string.Concat("returns the affected to ", destinationZoneProperties.DescriptiveName);
                                     newSpellEffectWOW.TeleMapID = destinationZoneProperties.DBCMapID;
-                                    newSpellEffectWOW.TelePosition = new Vector3(destinationZoneProperties.SafePosition);
-                                    newSpellEffectWOW.TeleOrientation = MathF.PI;
+
+                                    // Cross-zone succor teleports to the spell coordinates (TAKP also has a range, not replicated here)
+                                    Vector3 telePosition = new Vector3(eqEffect.EQTelePosition);
+                                    telePosition.X *= Configuration.GENERATE_WORLD_SCALE;
+                                    telePosition.Y *= Configuration.GENERATE_WORLD_SCALE;
+                                    telePosition.Z *= Configuration.GENERATE_WORLD_SCALE;
+                                    newSpellEffectWOW.TelePosition = telePosition;
+
+                                    // Orientation
+                                    // Note: "Heading" in EQ was 0-512 instead of 0-360, and the result needs to rotate 180 degrees due to y axis difference
+                                    float orientation;
+                                    if (eqEffect.EQTeleHeading == 0)
+                                        orientation = MathF.PI;
+                                    else
+                                    {
+                                        float orientationInDegrees = (eqEffect.EQTeleHeading / 512) * 360;
+                                        float orientationInRadians = orientationInDegrees * MathF.PI / 180.0f;
+                                        orientation = orientationInRadians + MathF.PI;
+                                    }
+                                    newSpellEffectWOW.TeleOrientation = orientation;
+
                                     if (targets.Count > 1)
                                         Logger.WriteError("Succor for eq spell id ", spellTemplate.EQSpellID.ToString(), " will not properly hit targets since there is > 2 targets");
                                     newSpellEffects.Add(newSpellEffectWOW);
