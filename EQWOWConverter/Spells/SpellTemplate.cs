@@ -1699,7 +1699,6 @@ namespace EQWOWConverter.Spells
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
-                        case SpellEQEffectType.AttackSpeed2:
                         case SpellEQEffectType.Attack:
                             {
                                 if (eqEffect.EQBaseValue == 0)
@@ -1962,6 +1961,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         case SpellEQEffectType.AttackSpeed:
+                        case SpellEQEffectType.AttackSpeed2:
                             {
                                 if (eqEffect.EQBaseValue == 0)
                                     continue;
