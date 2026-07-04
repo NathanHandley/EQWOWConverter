@@ -1791,7 +1791,10 @@ namespace EQWOWConverter
                             lootEntry.ItemTemplateEntryID = resolvedItem.wowItemID;
                             lootEntry.Chance = resolvedItem.chance;
                             lootEntry.ItemMultiplier = Math.Max(itemDropEntry.Multiplier, 1);
-                            lootEntry.ItemCharges = Math.Max(itemDropEntry.ItemCharges, 1);
+                            if (curItemTemplate.StackSize > 1)
+                                lootEntry.ItemCharges = Math.Max(itemDropEntry.ItemCharges, 1);
+                            else
+                                lootEntry.ItemCharges = 1;
                             lootEntries.Add(lootEntry);
                             groupHadAnyEntries = true;
 
