@@ -357,9 +357,6 @@ namespace EQWOWConverter.Creatures
                         newCreatureTemplate.MerchantID = 0;
                     newCreatureTemplate.ColorTintID = int.Parse(columns["armortint_id"]);
                     newCreatureTemplate.HasMana = (int.Parse(columns["mana"]) > 0);
-                    newCreatureTemplate.HPMod = GetStatMod("hp", newCreatureTemplate.Level, float.Parse(columns["hp"]), CreatureStatModType.RelativeMod);
-                    newCreatureTemplate.DamageMod = GetStatMod("avgdamage", newCreatureTemplate.Level, float.Parse(columns["avgdmg"]), CreatureStatModType.RelativeMod);
-                    newCreatureTemplate.AttackTime = (int)GetStatMod("attackdelay", newCreatureTemplate.Level, float.Parse(columns["attack_delay"]), CreatureStatModType.FixedValue);
                     float detectionRange = float.Parse(columns["aggroradius"]);
                     newCreatureTemplate.DetectionRange = detectionRange * Configuration.GENERATE_WORLD_SCALE;
                     newCreatureTemplate.EQClass = int.Parse(columns["class"]);
@@ -367,6 +364,11 @@ namespace EQWOWConverter.Creatures
                     if (newCreatureTemplate.IsRidingTrainer == true && Configuration.CREATURE_RIDING_TRAINERS_ENABLED == false)
                         continue;
                     newCreatureTemplate.CreatureSpellListID = int.Parse(columns["creaturespelllistid"]);
+
+                    // Scaled Stats
+                    newCreatureTemplate.HPMod = GetStatOrMod("hp", newCreatureTemplate.Level, float.Parse(columns["hp"]), CreatureStatModType.RelativeMod, float.Parse(columns["hp_multi_override"]));
+                    newCreatureTemplate.DamageMod = GetStatOrMod("avgdamage", newCreatureTemplate.Level, float.Parse(columns["avgdmg"]), CreatureStatModType.RelativeMod, float.Parse(columns["avgdmg_multi_override"]));
+                    newCreatureTemplate.AttackTime = (int)GetStatOrMod("attackdelay", newCreatureTemplate.Level, float.Parse(columns["attack_delay"]), CreatureStatModType.FixedValue);
 
                     // Determine if the creature should do any special abilities
                     string specialAbilitiesRaw = columns.ContainsKey("special_abilities") ? columns["special_abilities"] : string.Empty;
@@ -842,10 +844,10 @@ namespace EQWOWConverter.Creatures
             // Precache min/max values for later calcs
             // TODO: Move to config
             StatBaselineMinimums.Add("hp", 0.001f);
-            StatBaselineMaximums.Add("hp", 650f);
+            StatBaselineMaximums.Add("hp", 80f);
             StatBaselineDefaults.Add("hp", 1f);
             StatBaselineMinimums.Add("avgdamage", 0.01f);
-            StatBaselineMaximums.Add("avgdamage", 35.0f);
+            StatBaselineMaximums.Add("avgdamage", 15f);
             StatBaselineDefaults.Add("avgdamage", 1f);
             StatBaselineMinimums.Add("attackdelay", 250f);
             StatBaselineMaximums.Add("attackdelay", 6000f);
@@ -862,8 +864,12 @@ namespace EQWOWConverter.Creatures
             return level1Mod + ((levelCapMod - level1Mod) * levelFractionMod);
         }
 
-        private static float GetStatMod(string statName, int creatureLevel, float creatureStatValue, CreatureStatModType statModType)
+        private static float GetStatOrMod(string statName, int creatureLevel, float creatureStatValue, CreatureStatModType statModType, float overrideValue = -1.0f)
         {
+            // Just return overrides
+            if (overrideValue > 0)
+                return overrideValue;
+
             // Non-mappable
             if (StatBaselinesByLevels[1].ContainsKey(statName) == false)
             {
@@ -885,7 +891,12 @@ namespace EQWOWConverter.Creatures
             float rangeIntensity = 1.0f;
             if (statName == "hp")
             {
-                rangeIntensity = GetModInLevelSpan(1f, 2f, 63, creatureLevel);
+                rangeIntensity = GetModInLevelSpan(1f, 2f, 63, creatureLevel); // TODO: Put in config
+                addedMod = GetModInLevelSpan(0f, 0.5f, 30, creatureLevel); // TODO: Put in config
+            }
+            else if (statName == "avgdamage")
+            {
+                rangeIntensity = GetModInLevelSpan(1f, 2f, 63, creatureLevel); // TODO: Put in config
                 addedMod = GetModInLevelSpan(0f, 0.5f, 30, creatureLevel); // TODO: Put in config
             }
 
@@ -909,7 +920,8 @@ namespace EQWOWConverter.Creatures
                     } break;
             }
 
-            return calcStat + addedMod;
+            float finalCalcResult = calcStat + addedMod;
+            return MathF.Min(StatBaselineMaximums[statName], finalCalcResult);
         }
 
         // Debug elements
