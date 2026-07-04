@@ -78,6 +78,7 @@ namespace EQWOWConverter
         private ModEverquestCreatureInstanceSQL modEverquestCreatureInstanceSQL = new ModEverquestCreatureInstanceSQL();
         private ModEverquestCreatureLootSQL modEverquestCreatureLootSQL = new ModEverquestCreatureLootSQL();
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
+        private ModEverquestCreatureKillSpawnSQL modEverquestCreatureKillSpawnSQL = new ModEverquestCreatureKillSpawnSQL();
         private ModEverquestCreatureSpawnPointSQL modEverquestCreatureSpawnPointSQL = new ModEverquestCreatureSpawnPointSQL();
         private ModEverquestCreatureWaypointSQL modEverquestCreatureWaypointSQL = new ModEverquestCreatureWaypointSQL();
         private ModEverquestForageZoneItemsSQL modEverquestForageZoneItemsSQL = new ModEverquestForageZoneItemsSQL();
@@ -2040,6 +2041,7 @@ namespace EQWOWConverter
             modEverquestCreatureInstanceSQL.SaveToDisk("mod_everquest_creature_instance", SQLFileType.World);
             modEverquestCreatureLootSQL.SaveToDisk("mod_everquest_creature_loot", SQLFileType.World);
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
+            modEverquestCreatureKillSpawnSQL.SaveToDisk("mod_everquest_creature_kill_spawn", SQLFileType.World);
             modEverquestCreatureSpawnPointSQL.SaveToDisk("mod_everquest_creature_spawn_point", SQLFileType.World);
             modEverquestCreatureWaypointSQL.SaveToDisk("mod_everquest_creature_waypoint", SQLFileType.World);
             modEverquestForageZoneItemsSQL.SaveToDisk("mod_everquest_forage_zone_items", SQLFileType.World);
