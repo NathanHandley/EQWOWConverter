@@ -429,11 +429,11 @@ namespace EQWOWConverter
         //=====================================================================
         // Creatures
         //=====================================================================
-        // Precent of total idle time that is in a 'fidget' (1-100, don't go outside of this)
-        public static int CREATURE_FIDGET_TIME_PERCENT = 15;
+        // Percent chance (0-100) that a fidget animation plays after each completed calm stand cycle
+        public static int CREATURE_FIDGET_CHANCE_PERCENT = 20;
 
-        // Minimum number of seconds of idle that must play before any fidget, and 0 disables it
-        public static int CREATURE_FIDGET_MIN_CALM_SECONDS = 8;
+        // How long (in ms) the calm standing animation plays before each fidget chance roll
+        public static int CREATURE_FIDGET_STAND_TIME_IN_MS = 1000;
 
         // Stat modifiers for creatures
         // - "MIN" and "MAX" are applied after all other calculations
@@ -1423,8 +1423,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("OBJECT_GAMEOBJECT_OPENCLOSE_SLEEPER_FIELD_ANIMATIONTIME_INMS", OBJECT_GAMEOBJECT_OPENCLOSE_SLEEPER_FIELD_ANIMATIONTIME_INMS, "");
             OutputVariableToConfig("OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE", OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE, "How big of an area that a tradeskill focus item (forge, cooking fire) covers in effect");
             OutputVariableToConfig("OBJECT_IGNORE_RENDER_MATERIAL_ID_START", OBJECT_IGNORE_RENDER_MATERIAL_ID_START, "The starting ID for any material index that should be ignored from rendering");
-            OutputVariableToConfig("CREATURE_FIDGET_TIME_PERCENT", CREATURE_FIDGET_TIME_PERCENT, "Precent of total idle time that is in a 'fidget' (1-100, don't go outside of this)");
-            OutputVariableToConfig("CREATURE_FIDGET_MIN_CALM_SECONDS", CREATURE_FIDGET_MIN_CALM_SECONDS, "Minimum number of seconds of idle that must play before any fidget, and 0 disables it");
+            OutputVariableToConfig("CREATURE_FIDGET_CHANCE_PERCENT", CREATURE_FIDGET_CHANCE_PERCENT, "Percent chance (0-100) that a fidget animation plays after each completed calm stand cycle");
+            OutputVariableToConfig("CREATURE_FIDGET_STAND_TIME_IN_MS", CREATURE_FIDGET_STAND_TIME_IN_MS, "How long (in ms) the calm standing animation plays before each fidget chance roll");
             //OutputVariableToConfig("CREATURE_STAT_MOD_HP_ADD", CREATURE_STAT_MOD_HP_ADD, "Stat modifiers for creatures - \"MIN\" and \"MAX\" are applied after all other calculations", false);
             //OutputVariableToConfig("CREATURE_STAT_MOD_HP_MIN", CREATURE_STAT_MOD_HP_MIN, "", false);
             //OutputVariableToConfig("CREATURE_STAT_MOD_HP_MAX_NORMAL", CREATURE_STAT_MOD_HP_MAX_NORMAL, "", false);
@@ -1957,8 +1957,8 @@ namespace EQWOWConverter
             OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC = ReadVariableFromConfigString("OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC", configValuesByVariableName, OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC);
             OBJECT_IGNORE_RENDER_MATERIAL_ID_START = ReadVariableFromConfigString("OBJECT_IGNORE_RENDER_MATERIAL_ID_START", configValuesByVariableName, OBJECT_IGNORE_RENDER_MATERIAL_ID_START);
 
-            CREATURE_FIDGET_TIME_PERCENT = ReadVariableFromConfigString("CREATURE_FIDGET_TIME_PERCENT", configValuesByVariableName, CREATURE_FIDGET_TIME_PERCENT);
-            CREATURE_FIDGET_MIN_CALM_SECONDS = ReadVariableFromConfigString("CREATURE_FIDGET_MIN_CALM_SECONDS", configValuesByVariableName, CREATURE_FIDGET_MIN_CALM_SECONDS);
+            CREATURE_FIDGET_CHANCE_PERCENT = ReadVariableFromConfigString("CREATURE_FIDGET_CHANCE_PERCENT", configValuesByVariableName, CREATURE_FIDGET_CHANCE_PERCENT);
+            CREATURE_FIDGET_STAND_TIME_IN_MS = ReadVariableFromConfigString("CREATURE_FIDGET_STAND_TIME_IN_MS", configValuesByVariableName, CREATURE_FIDGET_STAND_TIME_IN_MS);
             //CREATURE_STAT_MOD_HP_ADD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_ADD", configValuesByVariableName, CREATURE_STAT_MOD_HP_ADD);
             //CREATURE_STAT_MOD_HP_MIN = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MIN", configValuesByVariableName, CREATURE_STAT_MOD_HP_MIN);
             //CREATURE_STAT_MOD_HP_MAX_NORMAL = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MAX_NORMAL", configValuesByVariableName, CREATURE_STAT_MOD_HP_MAX_NORMAL);
