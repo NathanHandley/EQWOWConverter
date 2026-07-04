@@ -36,6 +36,7 @@ namespace EQWOWConverter.Spells
         {
             public int WOWSpellID = -1;
             public bool IsForcedSelfOnly = false;
+            public int FixedLevel = 0; // When > 0, effect values and aura duration are exactly this level (like tiered potions)
             protected int _SpellCastTimeDBCID = 1; // First row, instant cast
             public int SpellCastTimeDBCID { get { return _SpellCastTimeDBCID; } }
             protected int _CastTimeInMS = 0;
@@ -138,6 +139,9 @@ namespace EQWOWConverter.Spells
         public int EQBuffDurationFormula = 0;
         public SpellDuration AuraDuration = new SpellDuration();
         public List<int> SpellGroupStackingIDs = new List<int>();
+        public List<int> WornSpellGroupStackingIDs = new List<int>(); // Worn auras only stack-compete with other worn auras, so they get separate groups
+        private List<int> AuraStackEffectKeys = new List<int>();
+        private int AuraStackKeyFlagBits = 0;
         public UInt32 RecoveryTimeInMS = 0; // Note that this may be zero for a player but not a creature.  See Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS
         public int EQSpellVisualEffectIndex = 0;
         public UInt32 SpellVisualID1 = 0;
@@ -282,18 +286,19 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        public ClickySpellParameters SetClickySpellParameters(int wowSpellID, int castTimeInMS, bool isForcedSelfOnly)
+        public ClickySpellParameters SetClickySpellParameters(int wowSpellID, int castTimeInMS, bool isForcedSelfOnly, int fixedLevel)
         {
             // Only make unique
             foreach (ClickySpellParameters clickySpell in this.ClickySpellParatemers)
             {
-                if (clickySpell.CastTimeInMS == castTimeInMS && clickySpell.IsForcedSelfOnly == isForcedSelfOnly)
+                if (clickySpell.CastTimeInMS == castTimeInMS && clickySpell.IsForcedSelfOnly == isForcedSelfOnly && clickySpell.FixedLevel == fixedLevel)
                     return clickySpell;
             }
             ClickySpellParameters newClickySpell = new ClickySpellParameters();
             newClickySpell.WOWSpellID = wowSpellID;
             newClickySpell.IsForcedSelfOnly = isForcedSelfOnly;
             newClickySpell.CastTimeInMS = castTimeInMS;
+            newClickySpell.FixedLevel = fixedLevel;
             this.ClickySpellParatemers.Add(newClickySpell);
             return newClickySpell;
         }
@@ -305,6 +310,13 @@ namespace EQWOWConverter.Spells
             string spellTemplatesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpellTemplates.csv");
             Logger.WriteDebug(string.Concat("Loading spell templates via file '", spellTemplatesFile, "'"));
             List<Dictionary<string, string>> spellTemplateRows = FileTool.ReadAllRowsFromFileWithHeader(spellTemplatesFile, "|");
+
+            // Spells cast by clicking an item need stacking rules even if they have no player spell category
+            HashSet<int> itemClickSpellEQIDs = new HashSet<int>();
+            foreach (ItemTemplate itemTemplate in itemTemplatesByEQDBID.Values)
+                if (itemTemplate.EQClickSpellEffectID > 0)
+                    itemClickSpellEQIDs.Add(itemTemplate.EQClickSpellEffectID);
+
             foreach (Dictionary<string, string> columns in spellTemplateRows)
             {
                 // Skip invalid
@@ -426,11 +438,12 @@ namespace EQWOWConverter.Spells
                     continue;
 
                 // Stacking rules
-                SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]), newSpellTemplate.IsBardSongAura, isDetrimental);
+                bool isItemClickSpell = itemClickSpellEQIDs.Contains(newSpellTemplate.EQSpellID);
+                SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]), newSpellTemplate.IsBardSongAura, isDetrimental, isItemClickSpell);
                 for (int i = 0; i < effectGeneratedSpellTemplates.Count; i++)
                 {
                     SpellTemplate effectGeneratedSpellTemplate = effectGeneratedSpellTemplates[i];
-                    SetAuraStackRule(ref effectGeneratedSpellTemplate, int.Parse(columns["spell_category"]), effectGeneratedSpellTemplate.IsBardSongAura, isDetrimental);
+                    SetAuraStackRule(ref effectGeneratedSpellTemplate, int.Parse(columns["spell_category"]), effectGeneratedSpellTemplate.IsBardSongAura, isDetrimental, isItemClickSpell);
                 }
 
                 // Add it, and any effect generated ones
@@ -2961,9 +2974,10 @@ namespace EQWOWConverter.Spells
             spellTemplate.WOWSpellEffects.Sort();
         }
 
-        private static void SetAuraStackRule(ref SpellTemplate spellTemplate, int eqSpellCategory, bool isBardSongAura, bool isDetrimental)
+        private static void SetAuraStackRule(ref SpellTemplate spellTemplate, int eqSpellCategory, bool isBardSongAura, bool isDetrimental, bool isItemClickSpell)
         {
-            if (eqSpellCategory < 0) // NPC = -99, AA Procs = -1
+            // Spells attached to item clicks always take a buff slot in EQ, so they stack-compete even when they have no player spell category (the potion/poison-only spells are all -99)
+            if (eqSpellCategory < 0 && isItemClickSpell == false) // NPC = -99, AA Procs = -1
                 return;
             if (eqSpellCategory > 250) // AA Abilities = 999
                 return;
@@ -2985,18 +2999,25 @@ namespace EQWOWConverter.Spells
             {
                 // Consider bard songs differently since they only conflict with each other, and split detrimental from
                 // beneficial since buffs and debuffs of the same effect
-                int compositeKey = (effectStackKey * 4) + (isBardSongAura ? 2 : 0) + (isDetrimental ? 1 : 0);
-                if (SpellGroupIDByEffectStackKey.TryGetValue(compositeKey, out int groupStackingID) == false)
-                {
-                    groupStackingID = CUR_GENERATED_SPELL_GROUP_ID;
-                    CUR_GENERATED_SPELL_GROUP_ID++;
-                    if (groupStackingID > Configuration.SQL_SPELL_GROUP_ID_END)
-                        Logger.WriteError("Generated an ID higher than SQL_SPELL_GROUP_ID_END (", Configuration.SQL_SPELL_GROUP_ID_END.ToString(), ")");
-                    SpellGroupIDByEffectStackKey[compositeKey] = groupStackingID;
-                    SpellGroupStackRuleByGroup[groupStackingID] = 4; // SPELL_GROUP_STACK_RULE_EXCLUSIVE_HIGHEST (not sure this is working...)
-                }
-                spellTemplate.SpellGroupStackingIDs.Add(groupStackingID);
+                int compositeKey = (effectStackKey * 8) + (isBardSongAura ? 2 : 0) + (isDetrimental ? 1 : 0);
+                spellTemplate.SpellGroupStackingIDs.Add(GetOrCreateSpellGroupID(compositeKey));
+                spellTemplate.AuraStackEffectKeys.Add(effectStackKey);
             }
+            spellTemplate.AuraStackKeyFlagBits = (isBardSongAura ? 2 : 0) + (isDetrimental ? 1 : 0);
+        }
+
+        private static int GetOrCreateSpellGroupID(int compositeKey)
+        {
+            if (SpellGroupIDByEffectStackKey.TryGetValue(compositeKey, out int groupStackingID) == false)
+            {
+                groupStackingID = CUR_GENERATED_SPELL_GROUP_ID;
+                CUR_GENERATED_SPELL_GROUP_ID++;
+                if (groupStackingID > Configuration.SQL_SPELL_GROUP_ID_END)
+                    Logger.WriteError("Generated an ID higher than SQL_SPELL_GROUP_ID_END (", Configuration.SQL_SPELL_GROUP_ID_END.ToString(), ")");
+                SpellGroupIDByEffectStackKey[compositeKey] = groupStackingID;
+                SpellGroupStackRuleByGroup[groupStackingID] = 4; // SPELL_GROUP_STACK_RULE_EXCLUSIVE_HIGHEST
+            }
+            return groupStackingID;
         }
 
         // Combine similar EQ effect type with a raw slot for slot calculations, to factor for spacers (CHA placeholders)
@@ -3278,6 +3299,11 @@ namespace EQWOWConverter.Spells
             // Ensure the base blocks are generated before cloning from them
             List<SpellEffectBlock> baseBlocks = GroupedBaseSpellEffectBlocksForOutput;
 
+            // Worn effects are item bonuses in EQ that never conflict with cast buffs, so they get their own stack groups where they only compete with other worn copies of the same effect
+            if (WornSpellGroupStackingIDs.Count == 0)
+                foreach (int effectStackKey in AuraStackEffectKeys)
+                    WornSpellGroupStackingIDs.Add(GetOrCreateSpellGroupID((effectStackKey * 8) + 4 + AuraStackKeyFlagBits));
+
             List<SpellEffectBlock> wornBlocks = new List<SpellEffectBlock>();
             List<SpellEffectWOW> wornEffectsForDescription = new List<SpellEffectWOW>();
             foreach (SpellEffectBlock baseBlock in baseBlocks)
@@ -3330,6 +3356,9 @@ namespace EQWOWConverter.Spells
                 _GroupedBaseSpellEffectBlocksForOutput.Add(blankEffectBlock);
                 return;
             }
+
+            // Collects fixed-level clicky (tiered potion) effects so exact-value descriptions can be built
+            Dictionary<int, List<SpellEffectWOW>> clickyEffectsForDescriptionByIndex = new Dictionary<int, List<SpellEffectWOW>>();
 
             // Pre-group by 'max' levels so that spell value calculations work properly
             Dictionary<int, List<SpellEffectWOW>> spellEffectsByMaxLevel = new Dictionary<int, List<SpellEffectWOW>>();
@@ -3411,12 +3440,43 @@ namespace EQWOWConverter.Spells
                             SpellEffectWOW effectClone = spellEffect.Clone();
                             if (ClickySpellParatemers[clickyIndex].IsForcedSelfOnly == true)
                                 effectClone.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                            if (clickySpellParameters.FixedLevel > 0)
+                                effectClone.FixValueToLevel(clickySpellParameters.FixedLevel);
                             clickEffectBlock.SpellEffects.Add(effectClone);
+                            if (clickySpellParameters.FixedLevel > 0)
+                            {
+                                if (clickyEffectsForDescriptionByIndex.ContainsKey(clickyIndex) == false)
+                                    clickyEffectsForDescriptionByIndex.Add(clickyIndex, new List<SpellEffectWOW>());
+                                clickyEffectsForDescriptionByIndex[clickyIndex].Add(effectClone);
+                            }
                         }
                         clickEffectBlock.SpellName = string.Concat(baseEffectBlock.SpellName);
                         _GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyIndex].Add(clickEffectBlock);
                         clickyIndex++;
                     }
+                }
+            }
+
+            // Fixed level clickies (tiered potions) don't scale, so make fixed descriptions like fixed worn items get
+            foreach (var clickyEffectsForDescription in clickyEffectsForDescriptionByIndex)
+            {
+                string fixedAuraDescription = BuildAuraDescriptionFromEffects(clickyEffectsForDescription.Value);
+                if (fixedAuraDescription.Length > 0)
+                {
+                    SpellEffectBlock firstClickyBlock = _GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyEffectsForDescription.Key][0];
+                    firstClickyBlock.AuraDescriptionOverride = fixedAuraDescription;
+
+                    // Item tooltips read the click spell's description, so rebuild it with the exact values and pinned duration
+                    StringBuilder actionDescriptionSB = new StringBuilder(fixedAuraDescription);
+                    if (TargetDescriptionTextFragment.Length > 0)
+                    {
+                        actionDescriptionSB.Append(" ");
+                        actionDescriptionSB.Append(TargetDescriptionTextFragment);
+                        actionDescriptionSB.Append(".");
+                    }
+                    int fixedDurationInMS = AuraDuration.GetBuffDurationForLevel(ClickySpellParatemers[clickyEffectsForDescription.Key].FixedLevel);
+                    actionDescriptionSB.Append(GetTimeDurationStringFromMSWithLeadingSpace(fixedDurationInMS, AuraDuration.GetTimeTextForDurationInMS(fixedDurationInMS)));
+                    firstClickyBlock.ActionDescriptionOverride = actionDescriptionSB.ToString();
                 }
             }
         }

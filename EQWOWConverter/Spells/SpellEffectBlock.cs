@@ -23,5 +23,6 @@ namespace EQWOWConverter.Spells
         public List<SpellEffectWOW> SpellEffects = new List<SpellEffectWOW>(); // Guarenteed to be 3 elements
         public bool ForceVisibleSplitAura = false; // Sometimes auras can sit behind non-aura base spells
         public string AuraDescriptionOverride = string.Empty; // Used for fixed-level spells on items
+        public string ActionDescriptionOverride = string.Empty; // Used for fixed-level clickies (tiered potions) so item tooltips show exact values
     }
 }

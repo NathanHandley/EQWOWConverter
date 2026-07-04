@@ -50,7 +50,7 @@ namespace EQWOWConverter.WOWFiles
             return stringBuilder.ToString();
         }
 
-        public void AddRow(SpellTemplate spellTemplate, int spellID, bool isWorn)
+        public void AddRow(SpellTemplate spellTemplate, int spellID, bool isWorn, int clickyFixedLevel)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("SpellID", spellID);
@@ -60,6 +60,15 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("AuraDurationBaseInMS", 0);
                 newRow.AddInt("AuraDurationAddPerLevelInMS", 0);
                 newRow.AddInt("AuraDurationMaxInMS", 0);
+                newRow.AddInt("AuraDurationCalcMinLevel", 0);
+                newRow.AddInt("AuraDurationCalcMaxLevel", 0);
+            }
+            else if (clickyFixedLevel > 0)
+            {
+                int fixedDurationInMS = spellTemplate.AuraDuration.GetBuffDurationForLevel(clickyFixedLevel);
+                newRow.AddInt("AuraDurationBaseInMS", fixedDurationInMS);
+                newRow.AddInt("AuraDurationAddPerLevelInMS", 0);
+                newRow.AddInt("AuraDurationMaxInMS", fixedDurationInMS);
                 newRow.AddInt("AuraDurationCalcMinLevel", 0);
                 newRow.AddInt("AuraDurationCalcMaxLevel", 0);
             }

@@ -167,6 +167,11 @@ namespace EQWOWConverter.Spells
             return curDurationInTicks * 1000 * Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ;
         }
 
+        public string GetTimeTextForDurationInMS(int durationInMS)
+        {
+            return GetTimeTextFragmentForMS(durationInMS);
+        }
+
         public string GetTimeText()
         {
             StringBuilder timeSB = new StringBuilder();

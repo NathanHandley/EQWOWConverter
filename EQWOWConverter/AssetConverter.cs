@@ -3526,8 +3526,13 @@ namespace EQWOWConverter
                         bool forceSelfOnly = false;
                         if (spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID].IsGoodEffect == true && (itemTemplate.EQClickType == 1 || itemTemplate.EQClickType == 3 || itemTemplate.EQClickType == 5))
                             forceSelfOnly = true;
+
+                        // Tierd potions cast at the item's click level
+                        int clickyFixedLevel = 0;
+                        if (itemTemplate.IsTieredPotion() == true && itemTemplate.EQClickLevel > 0)
+                            clickyFixedLevel = itemTemplate.EQClickLevel;
                         SpellTemplate.ClickySpellParameters clickySpellParameters = spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID].SetClickySpellParameters(itemTemplate.WOWClickSpellEffectID,
-                            itemTemplate.CastTime, forceSelfOnly);
+                            itemTemplate.CastTime, forceSelfOnly, clickyFixedLevel);
                         itemTemplate.WOWSpellID1 = clickySpellParameters.WOWSpellID;
                     }
                 }

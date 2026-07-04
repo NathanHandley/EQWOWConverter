@@ -1557,7 +1557,7 @@ namespace EQWOWConverter
         }
 
         HashSet<int> PetSpellIDsAdded = new HashSet<int>();
-        private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, string commentFragment)
+        private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, string commentFragment, int clickyFixedLevel = 0)
         {
             if (spellEffectBlocks.Count == 0 ||  spellEffectBlocks[0].WOWSpellID <= 0)
                 return;
@@ -1567,7 +1567,7 @@ namespace EQWOWConverter
                 SpellEffectBlock curEffectBlock = spellEffectBlocks[i];
 
                 // Mod data
-                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)");
+                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)", clickyFixedLevel);
 
                 // Spell power
                 if (spellTemplate.InfluencedBySpellPower == true && commentFragment != " (Worn)")
@@ -1627,19 +1627,22 @@ namespace EQWOWConverter
                     AddSpellDataBlock(spellTemplate, wornSpellEffectBlocks, " (Worn)");
                 AddSpellDataBlock(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput, " (Proc)");
                 for (int i = 0; i < spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count; i++)
-                    AddSpellDataBlock(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[i], " (Clicky)");
+                    AddSpellDataBlock(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[i], " (Clicky)", spellTemplate.ClickySpellParatemers[i].FixedLevel);
 
                 // Stack rules
                 foreach (int spellGroupStackingID in spellTemplate.SpellGroupStackingIDs)
                 {
                     spellGroupSQL.AddRow(spellGroupStackingID, spellTemplate.WOWSpellID);
-                    foreach (List<SpellEffectBlock> wornSpellEffectBlocks in spellTemplate.ItemWornSpellEffectBlockSets)
-                        spellGroupSQL.AddRow(spellGroupStackingID, wornSpellEffectBlocks[0].WOWSpellID);
                     if (spellTemplate.WOWSpellIDProcAndGoodEffect != -1)
                         spellGroupSQL.AddRow(spellGroupStackingID, spellTemplate.WOWSpellIDProcAndGoodEffect);
                     for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
                         spellGroupSQL.AddRow(spellGroupStackingID, spellTemplate.ClickySpellParatemers[clickyIndex].WOWSpellID);
                 }
+
+                // Worn auras are item bonuses in EQ that never conflict with cast buffs, so they only join worn-specific groups
+                foreach (int wornSpellGroupStackingID in spellTemplate.WornSpellGroupStackingIDs)
+                    foreach (List<SpellEffectBlock> wornSpellEffectBlocks in spellTemplate.ItemWornSpellEffectBlockSets)
+                        spellGroupSQL.AddRow(wornSpellGroupStackingID, wornSpellEffectBlocks[0].WOWSpellID);
 
                 // Teleports
                 for (int i = 0; i < spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0].SpellEffects.Count; i++)

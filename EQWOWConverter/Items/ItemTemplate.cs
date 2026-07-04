@@ -103,6 +103,7 @@ namespace EQWOWConverter.Items
         public int EQClickSpellEffectID = 0;
         public int WOWClickSpellEffectID = 0;
         public int EQClickType = 0;
+        public int EQClickLevel = 0;
         public int WOWClickEquipItemTemplateWOWID = 0;
         public int WOWClickEssenceItemTemplateWOWID = 0;
         public int WOWProcEnchantSpellIDWOW = 0;
@@ -194,6 +195,18 @@ namespace EQWOWConverter.Items
                 return true;
             if (ParentItemTemplate != null)
                 return ParentItemTemplate.IsPlayerObtainable();
+            return false;
+        }
+
+        // Logic taken from TAKP's ItemInstance::IsTieredPotion
+        public bool IsTieredPotion()
+        {
+            if (ClassID != 0 || SubClassID != 1) // Potion
+                return false;
+            if (EQClickSpellEffectID == 49)
+                return true;
+            if (EQClickSpellEffectID >= 1252 && EQClickSpellEffectID <= 1266)
+                return true;
             return false;
         }
 
@@ -1515,6 +1528,7 @@ namespace EQWOWConverter.Items
                 newItemTemplate.EQClickSpellEffectID = int.Parse(columns["clickeffect"]);
                 newItemTemplate.WOWClickSpellEffectID = int.Parse(columns["clickeffect_wow"]);
                 newItemTemplate.EQClickType = int.Parse(columns["clicktype"]);
+                newItemTemplate.EQClickLevel = int.Parse(columns["clicklevel"]);
                 newItemTemplate.WOWClickEquipItemTemplateWOWID = int.Parse(columns["clickequipwowid"]);
                 newItemTemplate.WOWClickEssenceItemTemplateWOWID = int.Parse(columns["clickessencewowid"]);
                 newItemTemplate.WOWProcEnchantSpellIDWOW = int.Parse(columns["procenchant_spellIDWOW"]);

@@ -142,8 +142,9 @@ namespace EQWOWConverter
             if (spellEffectBlocks.Count == 0 || spellEffectBlocks[0].WOWSpellID <= 0)
                 return;
 
-            // Fixed-level worn items have their own exact amount aura description
-            string wornAuraDescription = spellEffectBlocks[0].AuraDescriptionOverride.Length > 0 ? spellEffectBlocks[0].AuraDescriptionOverride : spellTemplate.AuraDescription;
+            // Fixed-level worn items and fixed-level clickies (tiered potions) have their own exact amount descriptions (sometimes)
+            string auraDescription = spellEffectBlocks[0].AuraDescriptionOverride.Length > 0 ? spellEffectBlocks[0].AuraDescriptionOverride : spellTemplate.AuraDescription;
+            string actionDescription = spellEffectBlocks[0].ActionDescriptionOverride.Length > 0 ? spellEffectBlocks[0].ActionDescriptionOverride : spellTemplate.Description;
 
             for (int i = 0; i < spellEffectBlocks.Count; i++)
             {
@@ -152,16 +153,16 @@ namespace EQWOWConverter
                 {
                     // Don't hide the chain spells if there's an aura under the non-aura
                     bool hideFromDisplay = (i != 0) && (curEffectBlock.ForceVisibleSplitAura == false);
-                    spellDBC.AddRow(curEffectBlock, spellTemplate.Description, spellTemplate, hideFromDisplay, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
+                    spellDBC.AddRow(curEffectBlock, actionDescription, auraDescription, spellTemplate, hideFromDisplay, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
                         curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, false);
                 }
                 else
                 {
                     if (Configuration.ITEMS_SHOW_WORN_EFFECT_AURA_ICON == true)
-                        spellDBC.AddRow(curEffectBlock, wornAuraDescription, spellTemplate, i != 0, true, true,
+                        spellDBC.AddRow(curEffectBlock, auraDescription, auraDescription, spellTemplate, i != 0, true, true,
                             curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, true);
                     else
-                        spellDBC.AddRow(curEffectBlock, wornAuraDescription, spellTemplate, true, true, true,
+                        spellDBC.AddRow(curEffectBlock, auraDescription, auraDescription, spellTemplate, true, true, true,
                             curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, true);
                 }
             }

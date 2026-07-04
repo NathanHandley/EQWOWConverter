@@ -20,7 +20,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellDBC : DBCFile
     {
-        public void AddRow(SpellEffectBlock effectBlock, string spellDescription, SpellTemplate spellTemplate, bool doHideFromDisplay, bool overrideDurationToInfinite,
+        public void AddRow(SpellEffectBlock effectBlock, string spellDescription, string auraDescription, SpellTemplate spellTemplate, bool doHideFromDisplay, bool overrideDurationToInfinite,
             bool preventClickOff, int maximumSpellLevel, bool isToggleAura, int castTimeDBCID, bool isWornEquipEffect)
         {
             if (effectBlock.SpellEffects.Count != 3)
@@ -179,7 +179,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddStringLang(effectBlock.SpellName); // Name_Lang
             newRow.AddStringLang(""); // NameSubtext_Lang
             newRow.AddStringLang(spellDescription); // Description_Lang
-            newRow.AddStringLang(isWornEquipEffect == true ? spellDescription : spellTemplate.AuraDescription); // AuraDescription_Lang
+            newRow.AddStringLang(auraDescription); // AuraDescription_Lang
             newRow.AddUInt32(0); // ManaCostPct
             if (spellTemplate.TriggersGlobalCooldown == true)
             {
