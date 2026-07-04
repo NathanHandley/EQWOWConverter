@@ -33,8 +33,11 @@ namespace EQWOWConverter
                 TotalNumber = totalNumber;
                 CurProgress = StartProgress;
                 Logger.WriteInfo(counterMessage, false);
-                StartCursorLeft = Console.CursorLeft;
-                StartCursorTop = Console.CursorTop;
+                if (Console.IsOutputRedirected == false)
+                {
+                    StartCursorLeft = Console.CursorLeft;
+                    StartCursorTop = Console.CursorTop;
+                }
                 Logger.WriteInfo(string.Empty, true, false);
             }
         }

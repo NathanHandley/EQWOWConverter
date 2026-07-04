@@ -50,6 +50,8 @@ namespace EQWOWConverter
         {
             lock (writeLock)
             {
+                if (Console.IsOutputRedirected == true)
+                    return;
                 int currentCursorLeft = Console.CursorLeft;
                 int currentCursorTop = Console.CursorTop;
                 Console.SetCursorPosition(outputLeft, outputTop);
