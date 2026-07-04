@@ -395,6 +395,16 @@ namespace EQWOWConverter.Spells
             return stringBuilder.ToString();
         }
 
+        public void ClearDescriptions()
+        {
+            ActionDescription = string.Empty;
+            AuraDescription = string.Empty;
+            AuraDescriptionHasDeferredAmount = false;
+            AuraDescriptionPrefix = string.Empty;
+            AuraDescriptionSuffix = string.Empty;
+            AuraAmountLeadin = string.Empty;
+        }
+
         public void SetAuraDescription(string prefix, bool amountUsesPercent, string amountLeadin, string suffix)
         {
             AuraDescriptionHasDeferredAmount = true;

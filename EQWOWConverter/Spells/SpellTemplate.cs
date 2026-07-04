@@ -1490,8 +1490,7 @@ namespace EQWOWConverter.Spells
                                 // Make a second for the buff on the caster
                                 SpellEffectWOW casterStrBuffEffect = newSpellEffectWOW.Clone();
                                 casterStrBuffEffect.Invert();
-                                casterStrBuffEffect.ActionDescription = string.Empty;
-                                casterStrBuffEffect.AuraDescription = string.Empty;
+                                casterStrBuffEffect.ClearDescriptions();
                                 newSpellEffects.Add(casterStrBuffEffect);
                             } break;
                         case SpellEQEffectType.Agility:
@@ -1516,8 +1515,7 @@ namespace EQWOWConverter.Spells
                                 // Make a second for the buff on the caster
                                 SpellEffectWOW casterAglBuffEffect = newSpellEffectWOW.Clone();
                                 casterAglBuffEffect.Invert();
-                                casterAglBuffEffect.ActionDescription = string.Empty;
-                                casterAglBuffEffect.AuraDescription = string.Empty;
+                                casterAglBuffEffect.ClearDescriptions();
                                 newSpellEffects.Add(casterAglBuffEffect);
                             } break;
                         case SpellEQEffectType.ArmorClass:
@@ -1542,8 +1540,7 @@ namespace EQWOWConverter.Spells
                                 // Make a second for the buff on the caster
                                 SpellEffectWOW casterArmorBuffEffect = newSpellEffectWOW.Clone();
                                 casterArmorBuffEffect.Invert();
-                                casterArmorBuffEffect.ActionDescription = string.Empty;
-                                casterArmorBuffEffect.AuraDescription = string.Empty;
+                                casterArmorBuffEffect.ClearDescriptions();
                                 newSpellEffects.Add(casterArmorBuffEffect);
                             } break;
                         default:
@@ -1735,8 +1732,7 @@ namespace EQWOWConverter.Spells
 
                                 // Add a second for ranged attack power
                                 SpellEffectWOW newSpellEffectWOW2 = newSpellEffectWOW.Clone();
-                                newSpellEffectWOW2.ActionDescription = string.Empty;
-                                newSpellEffectWOW2.AuraDescription = string.Empty;
+                                newSpellEffectWOW2.ClearDescriptions();
                                 newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModRangedAttackPower;
                                 newSpellEffects.Add(newSpellEffectWOW2);
                             } break;
@@ -1972,6 +1968,12 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.SetAuraDescription("hit chance decreased", true, " by ", "");
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
+
+                                // Add a second for spell hit, since ModHitChance only covers melee and ranged
+                                SpellEffectWOW newSpellEffectWOW2 = newSpellEffectWOW.Clone();
+                                newSpellEffectWOW2.ClearDescriptions();
+                                newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModSpellHitChance;
+                                newSpellEffects.Add(newSpellEffectWOW2);
                             } break;
                         case SpellEQEffectType.AttackSpeed:
                         case SpellEQEffectType.AttackSpeed2:
