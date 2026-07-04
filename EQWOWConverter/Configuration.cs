@@ -1439,6 +1439,13 @@ namespace EQWOWConverter
             OutputVariableToConfig("OBJECT_IGNORE_RENDER_MATERIAL_ID_START", OBJECT_IGNORE_RENDER_MATERIAL_ID_START, "The starting ID for any material index that should be ignored from rendering");
             OutputVariableToConfig("CREATURE_FIDGET_CHANCE_PERCENT", CREATURE_FIDGET_CHANCE_PERCENT, "Percent chance (0-100) that a fidget animation plays after each completed calm stand cycle");
             OutputVariableToConfig("CREATURE_FIDGET_STAND_TIME_IN_MS", CREATURE_FIDGET_STAND_TIME_IN_MS, "How long (in ms) the calm standing animation plays before each fidget chance roll");
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD", CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD, "Stat modifiers for creatures - \"MODADD\" are values added after all dynamic calculations", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD", CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL", CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD", CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD", CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL", CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD", CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD", CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL", CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVEL1_MOD", CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVEL1_MOD, "", false);
@@ -1453,6 +1460,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_STAT_MOD_ATKDELAY_MIN_AMT", CREATURE_STAT_MOD_ATKDELAY_MIN_AMT, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_ATKDELAY_MAX_AMT", CREATURE_STAT_MOD_ATKDELAY_MAX_AMT, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT", CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT, "");
+            OutputVariableToConfig("CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE", CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE, "Creatures that cross these thresholds will be elite if not given another rank", false);
+            OutputVariableToConfig("CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE", CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE, "");
             OutputVariableToConfig("CREATURE_PET_ALLOW_STAT_MOD_SCALING", CREATURE_PET_ALLOW_STAT_MOD_SCALING, "If true, creature pets will have the same scaling as set above");
             OutputVariableToConfig("CREATURE_FACTION_ROOT_NAME", CREATURE_FACTION_ROOT_NAME, "The value to name the everquest parent reputation item as");
             OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_DEFAULT", CREATURE_FACTION_TEMPLATE_DEFAULT, "The default faction values to use if none can be mapped.  Using the 'neutral' record for now.", false);
