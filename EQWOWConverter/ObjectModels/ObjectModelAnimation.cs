@@ -443,7 +443,7 @@ namespace EQWOWConverter.ObjectModels
                     break;
                 case AnimationType.JumpEnd:
                     {
-                        // TODO:
+                        // No landing animation exists in EQ, so this will fall through to the stand fallbacks
                     }
                     break;
                 case AnimationType.Fall:
@@ -536,15 +536,24 @@ namespace EQWOWConverter.ObjectModels
                     break;
                 default:
                     {
-                        returnTypes.Add(EQAnimationType.p01StandPassive);
-                        returnTypes.Add(EQAnimationType.o02StandArmsToSide);
-                        returnTypes.Add(EQAnimationType.o01StandIdle);
-                        returnTypes.Add(EQAnimationType.l09SwimIdle);
-                        returnTypes.Add(EQAnimationType.posStandPose);
+                        returnTypes.AddRange(GetFallbackStandEQAnimationTypes());
                     } break;
             }
 
             // Return the types
+            return returnTypes;
+        }
+
+        // These are the last resort animation candidates to help avoid freezes due to missing animations,
+        // which was discovered as a need as WoW has strange client expectations when it comes to animations while hovering (fly)
+        public static List<EQAnimationType> GetFallbackStandEQAnimationTypes()
+        {
+            List<EQAnimationType> returnTypes = new List<EQAnimationType>();
+            returnTypes.Add(EQAnimationType.p01StandPassive);
+            returnTypes.Add(EQAnimationType.o02StandArmsToSide);
+            returnTypes.Add(EQAnimationType.o01StandIdle);
+            returnTypes.Add(EQAnimationType.l09SwimIdle);
+            returnTypes.Add(EQAnimationType.posStandPose);
             return returnTypes;
         }
 

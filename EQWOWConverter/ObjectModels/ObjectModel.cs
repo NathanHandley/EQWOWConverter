@@ -27,6 +27,7 @@ namespace EQWOWConverter.ObjectModels
         // These were added to fix an issue where floating creatures locked up the client when casting spells
         private const int FLY_ANIMATION_TYPE_OFFSET = 229; // This offset add gets the 'fly' version of regular animations
         private const int HIGHEST_GROUND_ANIMATION_TYPE = 228; // GrabThrown is the highest, used for limit checks above
+        private const int HIGHEST_LOOKUP_ANIMATION_TYPE = 465; // FlySettle, so the hover/fly transition animations (ToFly through FlySettle) have lookup slots
 
         public string Name = string.Empty;
         public ObjectModelType ModelType;
@@ -1273,7 +1274,7 @@ namespace EQWOWConverter.ObjectModels
         {
             // Pre-fill animation lookups
             AnimationLookups.Clear();
-            for (Int16 i = 0; i <= HIGHEST_GROUND_ANIMATION_TYPE + FLY_ANIMATION_TYPE_OFFSET; i++)
+            for (Int16 i = 0; i <= HIGHEST_LOOKUP_ANIMATION_TYPE; i++)
                 AnimationLookups.Add(-1);
 
             List<EQAnimationType>? standOverrideEQAnimationTypes = null;
@@ -1366,14 +1367,80 @@ namespace EQWOWConverter.ObjectModels
                     //FindAndSetAnimationForType(AnimationType.StealthStand);
                     FindAndSetAnimationForType(AnimationType.StealthWalk);
                     FindAndSetAnimationForType(AnimationType.JumpStart);
+                    FindAndSetAnimationForType(AnimationType.Jump);
                     FindAndSetAnimationForType(AnimationType.JumpEnd);
                     FindAndSetAnimationForType(AnimationType.JumpLandRun);
+                    FindAndSetAnimationForType(AnimationType.Land); // Landing while levitating can request this instead of JumpEnd, and the client freezes if it's missing
+                    FindAndSetAnimationForType(AnimationType.Stun);
+                    FindAndSetAnimationForType(AnimationType.Knockdown);
+                    FindAndSetAnimationForType(AnimationType.Dodge);
+                    FindAndSetAnimationForType(AnimationType.ParryUnarmed);
+                    FindAndSetAnimationForType(AnimationType.Parry1H);
+                    FindAndSetAnimationForType(AnimationType.Parry2H);
+                    FindAndSetAnimationForType(AnimationType.Parry2HL);
+                    FindAndSetAnimationForType(AnimationType.ShieldBlock);
                     FindAndSetAnimationForType(AnimationType.KneelStart);
                     FindAndSetAnimationForType(AnimationType.KneelEnd);
                     FindAndSetAnimationForType(AnimationType.Loot);
                     FindAndSetAnimationForType(AnimationType.LootUp);
                     FindAndSetAnimationForType(AnimationType.Fall);
                     FindAndSetAnimationForType(AnimationType.ReadyUnarmed); // Fixed levitation + wolf form + in combat
+
+                    // Spell visual kits force the caster to play animations via the kit sometimes (Call Pet playes EmoteShout, for example) and
+                    // without these sequences, there is a slight crash/freeze when a unet is levitating or hovering
+                    FindAndSetAnimationForType(AnimationType.Stop);
+                    FindAndSetAnimationForType(AnimationType.StandWound);
+                    FindAndSetAnimationForType(AnimationType.HandsClosed);
+                    FindAndSetAnimationForType(AnimationType.Spell);
+                    FindAndSetAnimationForType(AnimationType.BattleRoar);
+                    FindAndSetAnimationForType(AnimationType.ReadyAbility);
+                    FindAndSetAnimationForType(AnimationType.EmoteTalk);
+                    FindAndSetAnimationForType(AnimationType.EmoteEat);
+                    FindAndSetAnimationForType(AnimationType.EmoteWork);
+                    FindAndSetAnimationForType(AnimationType.EmoteUseStanding);
+                    FindAndSetAnimationForType(AnimationType.EmoteTalkExclamation);
+                    FindAndSetAnimationForType(AnimationType.EmoteTalkQuestion);
+                    FindAndSetAnimationForType(AnimationType.EmoteBow);
+                    FindAndSetAnimationForType(AnimationType.EmoteWave);
+                    FindAndSetAnimationForType(AnimationType.EmoteDance);
+                    FindAndSetAnimationForType(AnimationType.EmoteSleep);
+                    FindAndSetAnimationForType(AnimationType.EmoteSitGround);
+                    FindAndSetAnimationForType(AnimationType.EmoteRude);
+                    FindAndSetAnimationForType(AnimationType.EmoteRoar);
+                    FindAndSetAnimationForType(AnimationType.EmoteKneel);
+                    FindAndSetAnimationForType(AnimationType.EmoteKiss);
+                    FindAndSetAnimationForType(AnimationType.EmoteCry);
+                    FindAndSetAnimationForType(AnimationType.EmoteChicken);
+                    FindAndSetAnimationForType(AnimationType.EmoteBeg);
+                    FindAndSetAnimationForType(AnimationType.EmoteApplaud);
+                    FindAndSetAnimationForType(AnimationType.EmoteShout);
+                    FindAndSetAnimationForType(AnimationType.EmoteFlex);
+                    FindAndSetAnimationForType(AnimationType.EmoteShy);
+                    FindAndSetAnimationForType(AnimationType.EmoteSalute);
+                    FindAndSetAnimationForType(AnimationType.EmoteYes);
+                    FindAndSetAnimationForType(AnimationType.EmoteNo);
+                    FindAndSetAnimationForType(AnimationType.EmoteTrain);
+                    FindAndSetAnimationForType(AnimationType.EmoteDanceOnce);
+                    FindAndSetAnimationForType(AnimationType.EmoteEatNoSheathe);
+                    FindAndSetAnimationForType(AnimationType.EmoteTalkNoSheathe);
+                    FindAndSetAnimationForType(AnimationType.EmotePointNoSheathe);
+                    FindAndSetAnimationForType(AnimationType.EmoteSaluteNoSheathe);
+                    FindAndSetAnimationForType(AnimationType.EmoteWorkNoSheathe);
+                    FindAndSetAnimationForType(AnimationType.EmoteStunNoSheathe);
+                    FindAndSetAnimationForType(AnimationType.EmoteUseStandingNoSheathe);
+                    FindAndSetAnimationForType(AnimationType.KneelLoop);
+                    FindAndSetAnimationForType(AnimationType.EatingLoop);
+                    FindAndSetAnimationForType(AnimationType.UseStandingLoop);
+                    FindAndSetAnimationForType(AnimationType.UseStandingStart);
+                    FindAndSetAnimationForType(AnimationType.UseStandingEnd);
+                    FindAndSetAnimationForType(AnimationType.Sheath);
+                    FindAndSetAnimationForType(AnimationType.HipSheath);
+                    FindAndSetAnimationForType(AnimationType.Mount);
+                    FindAndSetAnimationForType(AnimationType.Birth);
+                    FindAndSetAnimationForType(AnimationType.Cower);
+
+                    // Any fly or hover transition animation left unmapped will freeze the client if a levitating unit plays it (cast release, landing after a zone, etc)
+                    FillUnsetFlyAndHoverTransitionAnimationLookups();
 
                     // Update the stand/fidget animation timers so that there is a fidget sometimes.
                     if (ModelAnimations.Count > 3 && ModelAnimations[0].AnimationType == AnimationType.Stand && ModelAnimations[1].AnimationType == AnimationType.Stand 
@@ -1727,6 +1794,14 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
+            // If no candidate matched, retry with the fallback stand types so a real sequence always exists for this type.  The client
+            // freezes for several seconds if an animation type with no sequence plays while the unit is levitating/hovering.
+            if (overrideEQAnimationTypes == null)
+            {
+                FindAndSetAnimationForType(animationType, particleCloudsByName, ObjectModelAnimation.GetFallbackStandEQAnimationTypes());
+                return;
+            }
+
             Logger.WriteDebug(String.Concat("No animation candidate was found for object '", Name, "'"));
         }
 
@@ -1742,6 +1817,45 @@ namespace EQWOWConverter.ObjectModels
                 if (flyLookupIndex < AnimationLookups.Count)
                     AnimationLookups[flyLookupIndex] = modelAnimationIndex;
             }
+        }
+
+        private void FillUnsetFlyAndHoverTransitionAnimationLookups()
+        {
+            Int16 standAnimationIndex = AnimationLookups[Convert.ToInt32(AnimationType.Stand)];
+            if (standAnimationIndex == -1)
+                return;
+
+            // Fly versions of ground animations fall back to the ground version if it was mapped, otherwise stand
+            for (int groundLookupIndex = 0; groundLookupIndex <= HIGHEST_GROUND_ANIMATION_TYPE; groundLookupIndex++)
+            {
+                int flyLookupIndex = groundLookupIndex + FLY_ANIMATION_TYPE_OFFSET;
+                if (AnimationLookups[flyLookupIndex] != -1)
+                    continue;
+                if (AnimationLookups[groundLookupIndex] != -1)
+                    AnimationLookups[flyLookupIndex] = AnimationLookups[groundLookupIndex];
+                else
+                    AnimationLookups[flyLookupIndex] = standAnimationIndex;
+            }
+
+            // Hover/fly transitions (takeoff, landing, settle) play when levitation starts or ends and when a hovering unit touches down
+            Int16 hoverAnimationIndex = AnimationLookups[Convert.ToInt32(AnimationType.Hover)];
+            if (hoverAnimationIndex == -1)
+                hoverAnimationIndex = standAnimationIndex;
+            SetAnimationLookupIfUnset(AnimationType.ToFly, hoverAnimationIndex);
+            SetAnimationLookupIfUnset(AnimationType.ToHover, hoverAnimationIndex);
+            SetAnimationLookupIfUnset(AnimationType.ToGround, standAnimationIndex);
+            SetAnimationLookupIfUnset(AnimationType.FlyToFly, hoverAnimationIndex);
+            SetAnimationLookupIfUnset(AnimationType.FlyToHover, hoverAnimationIndex);
+            SetAnimationLookupIfUnset(AnimationType.FlyToGround, standAnimationIndex);
+            SetAnimationLookupIfUnset(AnimationType.Settle, standAnimationIndex);
+            SetAnimationLookupIfUnset(AnimationType.FlySettle, standAnimationIndex);
+        }
+
+        private void SetAnimationLookupIfUnset(AnimationType animationType, Int16 modelAnimationIndex)
+        {
+            int lookupIndex = Convert.ToInt32(animationType);
+            if (AnimationLookups[lookupIndex] == -1)
+                AnimationLookups[lookupIndex] = modelAnimationIndex;
         }
 
         public int GetFirstBoneIndexForEQBoneNames(params string[] eqBoneNames)
