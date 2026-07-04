@@ -59,7 +59,7 @@ namespace EQWOWConverter.Creatures
         public bool HasMana = false;
         public float HPMod = 1f;
         public float DamageMod = 1f;
-        public int AttackTime = 2000; // TODO: Use config value
+        public int AttackTime = (int)Configuration.CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT;
         public CreatureRankType Rank = CreatureRankType.Normal;
         public bool IsBoss = false;
         public int EQFactionID = 0;
@@ -374,8 +374,7 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.IsBoss = columns["is_boss"] == "1" ? true : false;
                     if (newCreatureTemplate.IsBoss == true)
                         newCreatureTemplate.Rank = CreatureRankType.Boss;
-                    // TODO: Put in config
-                    if (newCreatureTemplate.Rank == CreatureRankType.Normal && (newCreatureTemplate.HPMod > 1.9f || newCreatureTemplate.DamageMod > 1.9f))
+                    if (newCreatureTemplate.Rank == CreatureRankType.Normal && (newCreatureTemplate.HPMod > Configuration.CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE || newCreatureTemplate.DamageMod > Configuration.CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE))
                         newCreatureTemplate.Rank = CreatureRankType.Elite;
 
                     // Determine if the creature should do any special abilities
@@ -850,16 +849,15 @@ namespace EQWOWConverter.Creatures
             }
 
             // Precache min/max values for later calcs
-            // TODO: Move to config
-            StatBaselineMinimums.Add("hp", 0.001f);
-            StatBaselineMaximums.Add("hp", 80f);
-            StatBaselineDefaults.Add("hp", 1f);
-            StatBaselineMinimums.Add("avgdamage", 0.01f);
-            StatBaselineMaximums.Add("avgdamage", 15f);
-            StatBaselineDefaults.Add("avgdamage", 1f);
-            StatBaselineMinimums.Add("attackdelay", 250f);
-            StatBaselineMaximums.Add("attackdelay", 6000f);
-            StatBaselineDefaults.Add("attackdelay", 2000f);
+            StatBaselineMinimums.Add("hp", Configuration.CREATURE_STAT_MOD_HP_MIN_MOD);
+            StatBaselineMaximums.Add("hp", Configuration.CREATURE_STAT_MOD_HP_MAX_MOD);
+            StatBaselineDefaults.Add("hp", Configuration.CREATURE_STAT_MOD_HP_DEFAULT_MOD);
+            StatBaselineMinimums.Add("avgdamage", Configuration.CREATURE_STAT_MOD_DMG_MIN_MOD);
+            StatBaselineMaximums.Add("avgdamage", Configuration.CREATURE_STAT_MOD_DMG_MAX_MOD);
+            StatBaselineDefaults.Add("avgdamage", Configuration.CREATURE_STAT_MOD_DMG_DEFAULT_MOD);
+            StatBaselineMinimums.Add("attackdelay", Configuration.CREATURE_STAT_MOD_ATKDELAY_MIN_AMT);
+            StatBaselineMaximums.Add("attackdelay", Configuration.CREATURE_STAT_MOD_ATKDELAY_MAX_AMT);
+            StatBaselineDefaults.Add("attackdelay", Configuration.CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT);
         }
 
         private static float GetModInLevelSpan(float level1Mod, float levelCapMod, int levelCap, int levelToCalcFor)
@@ -899,13 +897,13 @@ namespace EQWOWConverter.Creatures
             float rangeIntensity = 1.0f;
             if (statName == "hp")
             {
-                rangeIntensity = GetModInLevelSpan(1f, 2f, 63, creatureLevel); // TODO: Put in config
-                addedMod = GetModInLevelSpan(0f, 0.5f, 30, creatureLevel); // TODO: Put in config
+                rangeIntensity = GetModInLevelSpan(Configuration.CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD, Configuration.CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD, Configuration.CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL, creatureLevel);
+                addedMod = GetModInLevelSpan(Configuration.CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD, Configuration.CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD, Configuration.CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL, creatureLevel);
             }
             else if (statName == "avgdamage")
             {
-                rangeIntensity = GetModInLevelSpan(1f, 2f, 63, creatureLevel); // TODO: Put in config
-                addedMod = GetModInLevelSpan(0f, 0.5f, 30, creatureLevel); // TODO: Put in config
+                rangeIntensity = GetModInLevelSpan(Configuration.CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVEL1_MOD, Configuration.CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD, Configuration.CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL, creatureLevel);
+                addedMod = GetModInLevelSpan(Configuration.CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD, Configuration.CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD, Configuration.CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL, creatureLevel);
             }
 
             // Calculate the stat

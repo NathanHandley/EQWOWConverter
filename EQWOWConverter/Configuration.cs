@@ -436,21 +436,35 @@ namespace EQWOWConverter
         public static int CREATURE_FIDGET_STAND_TIME_IN_MS = 1000;
 
         // Stat modifiers for creatures
-        // - "MIN" and "MAX" are applied after all other calculations
-        //public static float CREATURE_STAT_MOD_HP_ADD = 2f;
-        //public static float CREATURE_STAT_MOD_HP_MIN = 2f;
-        //public static float CREATURE_STAT_MOD_HP_MAX_NORMAL = 4.5f;
-        //public static float CREATURE_STAT_MOD_HP_MAX_RARE = 5f;
-        //public static float CREATURE_STAT_MOD_HP_SET_ELITE = 10f; // WOTLK 20f
-        //public static float CREATURE_STAT_MOD_HP_SET_ELITERARE = 30f; // WOTLK 80f
-        //public static float CREATURE_STAT_MOD_HP_SET_BOSS = 200f;
-        //public static float CREATURE_STAT_MOD_AVGDMG_ADD = 0.6f;
-        //public static float CREATURE_STAT_MOD_AVGDMG_MIN = 1f;
-        //public static float CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL = 2.5f;
-        //public static float CREATURE_STAT_MOD_AVGDMG_MAX_RARE = 2.5f;
-        //public static float CREATURE_STAT_MOD_AVGDMG_SET_ELITE = 5f;
-        //public static float CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE = 10f;
-        //public static float CREATURE_STAT_MOD_AVGDMG_SET_BOSS = 18f;
+        // - "MODADD" are values added after all dynamic calculations
+        // - "RANGEINTENSITY" is the amount of 'swing' differences in stats come out to be
+        public static float CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD = 0.5f;
+        public static float CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD = 0.75f;
+        public static int CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL = 30;
+        public static float CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD = 1.0f;
+        public static float CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD = 2.0f;
+        public static int CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL = 63;
+        public static float CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD = 0f;
+        public static float CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD = 0.5f;
+        public static int CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL = 30;
+        public static float CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVEL1_MOD = 1.0f;
+        public static float CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD = 2.0f;
+        public static int CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL = 63;
+
+        // Min/Max/Default values for stat mods on creatures (overrides can violate these)
+        public static float CREATURE_STAT_MOD_HP_MIN_MOD = 0.001f;
+        public static float CREATURE_STAT_MOD_HP_MAX_MOD = 80f;
+        public static float CREATURE_STAT_MOD_HP_DEFAULT_MOD = 1f;
+        public static float CREATURE_STAT_MOD_DMG_MIN_MOD = 0.01f;
+        public static float CREATURE_STAT_MOD_DMG_MAX_MOD = 15f;
+        public static float CREATURE_STAT_MOD_DMG_DEFAULT_MOD = 1f;
+        public static float CREATURE_STAT_MOD_ATKDELAY_MIN_AMT = 250f;
+        public static float CREATURE_STAT_MOD_ATKDELAY_MAX_AMT = 6000f;
+        public static float CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT = 2000f;
+
+        // Creatures that cross these threasholds will be elite if not given another rank
+        public static float CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE = 2.01f;
+        public static float CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE = 2.01f;
 
         // If true, creature pets will have the same scaling as set above
         public static bool CREATURE_PET_ALLOW_STAT_MOD_SCALING = false;
@@ -1425,20 +1439,20 @@ namespace EQWOWConverter
             OutputVariableToConfig("OBJECT_IGNORE_RENDER_MATERIAL_ID_START", OBJECT_IGNORE_RENDER_MATERIAL_ID_START, "The starting ID for any material index that should be ignored from rendering");
             OutputVariableToConfig("CREATURE_FIDGET_CHANCE_PERCENT", CREATURE_FIDGET_CHANCE_PERCENT, "Percent chance (0-100) that a fidget animation plays after each completed calm stand cycle");
             OutputVariableToConfig("CREATURE_FIDGET_STAND_TIME_IN_MS", CREATURE_FIDGET_STAND_TIME_IN_MS, "How long (in ms) the calm standing animation plays before each fidget chance roll");
-            //OutputVariableToConfig("CREATURE_STAT_MOD_HP_ADD", CREATURE_STAT_MOD_HP_ADD, "Stat modifiers for creatures - \"MIN\" and \"MAX\" are applied after all other calculations", false);
-            //OutputVariableToConfig("CREATURE_STAT_MOD_HP_MIN", CREATURE_STAT_MOD_HP_MIN, "", false);
-            //OutputVariableToConfig("CREATURE_STAT_MOD_HP_MAX_NORMAL", CREATURE_STAT_MOD_HP_MAX_NORMAL, "", false);
-            //OutputVariableToConfig("CREATURE_STAT_MOD_HP_MAX_RARE", CREATURE_STAT_MOD_HP_MAX_RARE, "", false);
-            //OutputVariableToConfig("CREATURE_STAT_MOD_HP_SET_ELITE", CREATURE_STAT_MOD_HP_SET_ELITE, "", false);
-            //OutputVariableToConfig("CREATURE_STAT_MOD_HP_SET_ELITERARE", CREATURE_STAT_MOD_HP_SET_ELITERARE, "", false);
-            //OutputVariableToConfig("CREATURE_STAT_MOD_HP_SET_BOSS", CREATURE_STAT_MOD_HP_SET_BOSS, "", false);
-            //OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_ADD", CREATURE_STAT_MOD_AVGDMG_ADD, "", false);
-            //OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_MIN", CREATURE_STAT_MOD_AVGDMG_MIN, "", false);
-            //OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL", CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL, "", false);
-            //OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_MAX_RARE", CREATURE_STAT_MOD_AVGDMG_MAX_RARE, "", false);
-            //OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_SET_ELITE", CREATURE_STAT_MOD_AVGDMG_SET_ELITE, "", false);
-            //OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE", CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE, "", false);
-            //OutputVariableToConfig("CREATURE_STAT_MOD_AVGDMG_SET_BOSS", CREATURE_STAT_MOD_AVGDMG_SET_BOSS, "");
+            OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD", CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL", CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVEL1_MOD", CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVEL1_MOD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD", CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL", CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL, "");
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MIN_MOD", CREATURE_STAT_MOD_HP_MIN_MOD, "Min/Max/Default values for stat mods on creatures (overrides can violate these)", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MAX_MOD", CREATURE_STAT_MOD_HP_MAX_MOD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_HP_DEFAULT_MOD", CREATURE_STAT_MOD_HP_DEFAULT_MOD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MIN_MOD", CREATURE_STAT_MOD_DMG_MIN_MOD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MAX_MOD", CREATURE_STAT_MOD_DMG_MAX_MOD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_DMG_DEFAULT_MOD", CREATURE_STAT_MOD_DMG_DEFAULT_MOD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_ATKDELAY_MIN_AMT", CREATURE_STAT_MOD_ATKDELAY_MIN_AMT, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_ATKDELAY_MAX_AMT", CREATURE_STAT_MOD_ATKDELAY_MAX_AMT, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT", CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT, "");
             OutputVariableToConfig("CREATURE_PET_ALLOW_STAT_MOD_SCALING", CREATURE_PET_ALLOW_STAT_MOD_SCALING, "If true, creature pets will have the same scaling as set above");
             OutputVariableToConfig("CREATURE_FACTION_ROOT_NAME", CREATURE_FACTION_ROOT_NAME, "The value to name the everquest parent reputation item as");
             OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_DEFAULT", CREATURE_FACTION_TEMPLATE_DEFAULT, "The default faction values to use if none can be mapped.  Using the 'neutral' record for now.", false);
@@ -1959,20 +1973,33 @@ namespace EQWOWConverter
 
             CREATURE_FIDGET_CHANCE_PERCENT = ReadVariableFromConfigString("CREATURE_FIDGET_CHANCE_PERCENT", configValuesByVariableName, CREATURE_FIDGET_CHANCE_PERCENT);
             CREATURE_FIDGET_STAND_TIME_IN_MS = ReadVariableFromConfigString("CREATURE_FIDGET_STAND_TIME_IN_MS", configValuesByVariableName, CREATURE_FIDGET_STAND_TIME_IN_MS);
-            //CREATURE_STAT_MOD_HP_ADD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_ADD", configValuesByVariableName, CREATURE_STAT_MOD_HP_ADD);
-            //CREATURE_STAT_MOD_HP_MIN = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MIN", configValuesByVariableName, CREATURE_STAT_MOD_HP_MIN);
-            //CREATURE_STAT_MOD_HP_MAX_NORMAL = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MAX_NORMAL", configValuesByVariableName, CREATURE_STAT_MOD_HP_MAX_NORMAL);
-            //CREATURE_STAT_MOD_HP_MAX_RARE = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MAX_RARE", configValuesByVariableName, CREATURE_STAT_MOD_HP_MAX_RARE);
-            //CREATURE_STAT_MOD_HP_SET_ELITE = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_SET_ELITE", configValuesByVariableName, CREATURE_STAT_MOD_HP_SET_ELITE);
-            //CREATURE_STAT_MOD_HP_SET_ELITERARE = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_SET_ELITERARE", configValuesByVariableName, CREATURE_STAT_MOD_HP_SET_ELITERARE);
-            //CREATURE_STAT_MOD_HP_SET_BOSS = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_SET_BOSS", configValuesByVariableName, CREATURE_STAT_MOD_HP_SET_BOSS);
-            //CREATURE_STAT_MOD_AVGDMG_ADD = ReadVariableFromConfigString("CREATURE_STAT_MOD_AVGDMG_ADD", configValuesByVariableName, CREATURE_STAT_MOD_AVGDMG_ADD);
-            //CREATURE_STAT_MOD_AVGDMG_MIN = ReadVariableFromConfigString("CREATURE_STAT_MOD_AVGDMG_MIN", configValuesByVariableName, CREATURE_STAT_MOD_AVGDMG_MIN);
-            //CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL = ReadVariableFromConfigString("CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL", configValuesByVariableName, CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL);
-            //CREATURE_STAT_MOD_AVGDMG_MAX_RARE = ReadVariableFromConfigString("CREATURE_STAT_MOD_AVGDMG_MAX_RARE", configValuesByVariableName, CREATURE_STAT_MOD_AVGDMG_MAX_RARE);
-            //CREATURE_STAT_MOD_AVGDMG_SET_ELITE = ReadVariableFromConfigString("CREATURE_STAT_MOD_AVGDMG_SET_ELITE", configValuesByVariableName, CREATURE_STAT_MOD_AVGDMG_SET_ELITE);
-            //CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE = ReadVariableFromConfigString("CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE", configValuesByVariableName, CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE);
-            //CREATURE_STAT_MOD_AVGDMG_SET_BOSS = ReadVariableFromConfigString("CREATURE_STAT_MOD_AVGDMG_SET_BOSS", configValuesByVariableName, CREATURE_STAT_MOD_AVGDMG_SET_BOSS);
+
+            CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD);
+            CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD);
+            CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL", configValuesByVariableName, CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL);
+            CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD);
+            CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD);
+            CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL", configValuesByVariableName, CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL);
+            CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD", configValuesByVariableName, CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD);
+            CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD", configValuesByVariableName, CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD);
+            CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL", configValuesByVariableName, CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL);
+            CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVEL1_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVEL1_MOD", configValuesByVariableName, CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVEL1_MOD);
+            CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD", configValuesByVariableName, CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD);
+            CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL", configValuesByVariableName, CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL);
+
+            CREATURE_STAT_MOD_HP_MIN_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MIN_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MIN_MOD);
+            CREATURE_STAT_MOD_HP_MAX_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MAX_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MAX_MOD);
+            CREATURE_STAT_MOD_HP_DEFAULT_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_DEFAULT_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_DEFAULT_MOD);
+            CREATURE_STAT_MOD_DMG_MIN_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_MIN_MOD", configValuesByVariableName, CREATURE_STAT_MOD_DMG_MIN_MOD);
+            CREATURE_STAT_MOD_DMG_MAX_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_MAX_MOD", configValuesByVariableName, CREATURE_STAT_MOD_DMG_MAX_MOD);
+            CREATURE_STAT_MOD_DMG_DEFAULT_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_DEFAULT_MOD", configValuesByVariableName, CREATURE_STAT_MOD_DMG_DEFAULT_MOD);
+            CREATURE_STAT_MOD_ATKDELAY_MIN_AMT = ReadVariableFromConfigString("CREATURE_STAT_MOD_ATKDELAY_MIN_AMT", configValuesByVariableName, CREATURE_STAT_MOD_ATKDELAY_MIN_AMT);
+            CREATURE_STAT_MOD_ATKDELAY_MAX_AMT = ReadVariableFromConfigString("CREATURE_STAT_MOD_ATKDELAY_MAX_AMT", configValuesByVariableName, CREATURE_STAT_MOD_ATKDELAY_MAX_AMT);
+            CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT = ReadVariableFromConfigString("CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT", configValuesByVariableName, CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT);
+
+            CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE = ReadVariableFromConfigString("CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE", configValuesByVariableName, CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE);
+            CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE = ReadVariableFromConfigString("CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE", configValuesByVariableName, CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE);
+
             CREATURE_PET_ALLOW_STAT_MOD_SCALING = ReadVariableFromConfigString("CREATURE_PET_ALLOW_STAT_MOD_SCALING", configValuesByVariableName, CREATURE_PET_ALLOW_STAT_MOD_SCALING);
             CREATURE_FACTION_ROOT_NAME = ReadVariableFromConfigString("CREATURE_FACTION_ROOT_NAME", configValuesByVariableName, CREATURE_FACTION_ROOT_NAME);
             CREATURE_FACTION_TEMPLATE_DEFAULT = ReadVariableFromConfigString("CREATURE_FACTION_TEMPLATE_DEFAULT", configValuesByVariableName, CREATURE_FACTION_TEMPLATE_DEFAULT);
