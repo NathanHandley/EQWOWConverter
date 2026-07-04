@@ -293,7 +293,7 @@ namespace EQWOWConverter.WOWFiles
                 range,
                 11, // SMART_ACTION_CAST
                 wowSpellID,
-                33, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_INTERRUPT_PREVIOUS (1)
+                96, // SMARTCAST_COMBAT_MOVE + SMARTCAST_AURA_NOT_PRESENT
                 0,
                 0,
                 0,
