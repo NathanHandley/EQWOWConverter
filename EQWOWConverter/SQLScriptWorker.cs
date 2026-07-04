@@ -146,6 +146,9 @@ namespace EQWOWConverter
             Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
             PopulateCreatureData(creatureTemplates, creatureModelTemplates, creatureSpawnPools, spellTemplatesByEQID, mapIDsByShortName);
 
+            // Kill-triggered spawns
+            PopulateCreatureKillSpawnData(mapIDsByShortName);
+
             // Game Events
             foreach (GameEvent gameEvent in gameEvents)
                 gameEventSQL.AddRow(gameEvent);
@@ -198,6 +201,51 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("QuestSQLIDMax", Configuration.SQL_QUEST_TEMPLATE_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("WorldScale", Configuration.GENERATE_WORLD_SCALE.ToString());
             modEverquestSystemConfigsSQL.AddRow("RangedAttackSpellID", Configuration.COMBATSKILL_RANGED_ENABLED == true ? Configuration.COMBATSKILL_RANGED_SPELL_ID.ToString() : "0");
+        }
+
+        private void PopulateCreatureKillSpawnData(Dictionary<string, int> mapIDsByShortName)
+        {
+            Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
+            foreach (CreatureKillSpawn killSpawn in CreatureKillSpawn.GetKillSpawnList())
+            {
+                if (mapIDsByShortName.ContainsKey(killSpawn.ZoneShortName) == false)
+                {
+                    Logger.WriteDebug("Skipping creature kill spawn '" + killSpawn.ID + "' since zone '" + killSpawn.ZoneShortName + "' has no map");
+                    continue;
+                }
+                if (creatureTemplatesByEQID.ContainsKey(killSpawn.TriggerEQCreatureTemplateID) == false)
+                {
+                    Logger.WriteDebug("Skipping creature kill spawn '" + killSpawn.ID + "' since trigger creature '" + killSpawn.TriggerEQCreatureTemplateID + "' has no template");
+                    continue;
+                }
+                int targetWOWID = 0;
+                if (killSpawn.TargetEQCreatureTemplateID > 0)
+                {
+                    if (creatureTemplatesByEQID.ContainsKey(killSpawn.TargetEQCreatureTemplateID) == false)
+                    {
+                        Logger.WriteDebug("Skipping creature kill spawn '" + killSpawn.ID + "' since target creature '" + killSpawn.TargetEQCreatureTemplateID + "' has no template");
+                        continue;
+                    }
+                    targetWOWID = creatureTemplatesByEQID[killSpawn.TargetEQCreatureTemplateID].WOWCreatureTemplateID;
+                }
+                int onlyIfNotAliveWOWID = 0;
+                if (killSpawn.OnlyIfNotAliveEQCreatureTemplateID > 0 && creatureTemplatesByEQID.ContainsKey(killSpawn.OnlyIfNotAliveEQCreatureTemplateID))
+                    onlyIfNotAliveWOWID = creatureTemplatesByEQID[killSpawn.OnlyIfNotAliveEQCreatureTemplateID].WOWCreatureTemplateID;
+                List<string> requireDeadWOWIDs = new List<string>();
+                foreach (int eqID in killSpawn.RequireDeadEQCreatureTemplateIDs)
+                    if (creatureTemplatesByEQID.ContainsKey(eqID))
+                        requireDeadWOWIDs.Add(creatureTemplatesByEQID[eqID].WOWCreatureTemplateID.ToString());
+                List<string> requireAliveWOWIDs = new List<string>();
+                foreach (int eqID in killSpawn.RequireAliveEQCreatureTemplateIDs)
+                    if (creatureTemplatesByEQID.ContainsKey(eqID))
+                        requireAliveWOWIDs.Add(creatureTemplatesByEQID[eqID].WOWCreatureTemplateID.ToString());
+                modEverquestCreatureKillSpawnSQL.AddRow(killSpawn.ID, creatureTemplatesByEQID[killSpawn.TriggerEQCreatureTemplateID].WOWCreatureTemplateID,
+                    mapIDsByShortName[killSpawn.ZoneShortName], Convert.ToInt32(killSpawn.ActionType), targetWOWID, killSpawn.Chance,
+                    killSpawn.AltGroup, killSpawn.AltID, killSpawn.AltWeight, killSpawn.SpawnAtCorpse, killSpawn.XPosition, killSpawn.YPosition,
+                    killSpawn.ZPosition, killSpawn.Orientation, killSpawn.DelayMinMS, killSpawn.DelayMaxMS, onlyIfNotAliveWOWID,
+                    string.Join(",", requireDeadWOWIDs), string.Join(",", requireAliveWOWIDs), killSpawn.AddToHateList,
+                    killSpawn.TriggerMinLevel, killSpawn.TriggerMaxLevel, killSpawn.Comment);
+            }
         }
 
         private void PopulateCreatureData(List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
