@@ -81,13 +81,11 @@ namespace EQWOWConverter.WOWFiles
                 numOfRoles += 1;
             }
             if (creatureTemplate.IsTameable() == true)
-            {
                 typeFlags |= 1;     // 0x00000001 CREATURE_TYPE_FLAG_TAMEABLE
-            }
             if (creatureTemplate.IsExoticTameable() == true)
-            {
                 typeFlags |= 65536;     // 0x00010000 CREATURE_TYPE_FLAG_TAMEABLE_EXOTIC
-            }
+            if (creatureTemplate.IsBoss == true)
+                typeFlags |= 4;     // 0x00000004 CREATURE_TYPE_FLAG_BOSS_MOB
             if (creatureTemplate.IsQuestGiver == true)
             {
                 npcFlags |= 2;      // 0x00000002	Quest Giver
@@ -148,7 +146,7 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddFloat("DamageModifier", creatureTemplate.DamageMod);
             else
                 newRow.AddFloat("DamageModifier", 1);
-            newRow.AddInt("BaseAttackTime", 2000); // 2,000 very common, but can be lower like 1,500
+            newRow.AddInt("BaseAttackTime", creatureTemplate.AttackTime);
             newRow.AddInt("RangeAttackTime", 2000);
             newRow.AddFloat("BaseVariance", 1);
             newRow.AddFloat("RangeVariance", 1);

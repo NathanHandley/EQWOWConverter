@@ -61,6 +61,7 @@ namespace EQWOWConverter.Creatures
         public float DamageMod = 1f;
         public int AttackTime = 2000; // TODO: Use config value
         public CreatureRankType Rank = CreatureRankType.Normal;
+        public bool IsBoss = false;
         public int EQFactionID = 0;
         public int EQNPCFactionID = 0;
         public int WOWFactionTemplateID = 0;
@@ -306,8 +307,7 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.SpawnZones = spawnZones;
                     newCreatureTemplate.IsNonNPC = int.Parse(columns["non_npc"]) > 0;
                     if (newCreatureTemplate.WOWCreatureTemplateID < Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW || newCreatureTemplate.WOWCreatureTemplateID > Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH)
-                        Logger.WriteError("Creature template with EQ id of '' had a wow id of '', but that's outside the bounds of CREATURETEMPLATE_ENTRY_LOW and CREATURETEMPLATE_ENTRY_HIGH.  SQL deletes will not catch everything");
-                    newCreatureTemplate.Rank = (CreatureRankType)int.Parse(columns["rank"]);
+                        Logger.WriteError("Creature template with EQ id of '", newCreatureTemplate.EQCreatureTemplateID.ToString(), "' had a wow id of '", newCreatureTemplate.WOWCreatureTemplateID.ToString(), "', but that's outside the bounds of CREATURETEMPLATE_ENTRY_LOW and CREATURETEMPLATE_ENTRY_HIGH.  SQL deletes will not catch everything");
                     newCreatureTemplate.Name = columns["name"].Replace('_', ' ');
                     newCreatureTemplate.Name = newCreatureTemplate.Name.Replace("#", "");
                     newCreatureTemplate.SpawnLimit = int.Parse(columns["spawn_limit"]);
@@ -369,6 +369,14 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.HPMod = GetStatOrMod("hp", newCreatureTemplate.Level, float.Parse(columns["hp"]), CreatureStatModType.RelativeMod, float.Parse(columns["hp_multi_override"]));
                     newCreatureTemplate.DamageMod = GetStatOrMod("avgdamage", newCreatureTemplate.Level, float.Parse(columns["avgdmg"]), CreatureStatModType.RelativeMod, float.Parse(columns["avgdmg_multi_override"]));
                     newCreatureTemplate.AttackTime = (int)GetStatOrMod("attackdelay", newCreatureTemplate.Level, float.Parse(columns["attack_delay"]), CreatureStatModType.FixedValue);
+
+                    // Rank (must come after Scaled Stats)
+                    newCreatureTemplate.IsBoss = columns["is_boss"] == "1" ? true : false;
+                    if (newCreatureTemplate.IsBoss == true)
+                        newCreatureTemplate.Rank = CreatureRankType.Boss;
+                    // TODO: Put in config
+                    if (newCreatureTemplate.Rank == CreatureRankType.Normal && (newCreatureTemplate.HPMod > 1.9f || newCreatureTemplate.DamageMod > 1.9f))
+                        newCreatureTemplate.Rank = CreatureRankType.Elite;
 
                     // Determine if the creature should do any special abilities
                     string specialAbilitiesRaw = columns.ContainsKey("special_abilities") ? columns["special_abilities"] : string.Empty;
