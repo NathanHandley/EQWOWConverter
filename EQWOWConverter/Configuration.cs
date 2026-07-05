@@ -438,11 +438,11 @@ namespace EQWOWConverter
         // Stat modifiers for creatures
         // - "MODADD" are values added after all dynamic calculations
         // - "RANGEINTENSITY" is the amount of 'swing' differences in stats come out to be
-        public static float CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD = 0.5f;
-        public static float CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD = 0.75f;
+        public static float CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD = 0.2f;
+        public static float CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD = 3f;
         public static int CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL = 30;
         public static float CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD = 1.0f;
-        public static float CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD = 2.0f;
+        public static float CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD = 3.0f;
         public static int CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL = 63;
         public static float CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD = 0f;
         public static float CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD = 0.5f;
@@ -463,8 +463,8 @@ namespace EQWOWConverter
         public static float CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT = 2000f;
 
         // Creatures that cross these threasholds will be elite if not given another rank
-        public static float CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE = 2.01f;
-        public static float CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE = 2.01f;
+        public static float CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE = 8.01f;
+        public static float CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE = 6.01f;
 
         // If true, creature pets will have the same scaling as set above
         public static bool CREATURE_PET_ALLOW_STAT_MOD_SCALING = false;
