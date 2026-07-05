@@ -30,6 +30,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`CreatureTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`LootGroupID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`GroupMultiplier` INT(10) UNSIGNED NOT NULL DEFAULT '1', ");
+            stringBuilder.AppendLine("`GroupMultiplierMin` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`GroupProbability` FLOAT NOT NULL DEFAULT '100', ");
             stringBuilder.AppendLine("`DropLimit` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`MinDrop` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
@@ -48,6 +49,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("CreatureTemplateID", lootEntry.CreatureTemplateEntryID);
             newRow.AddInt("LootGroupID", lootEntry.LootGroupID);
             newRow.AddInt("GroupMultiplier", lootEntry.GroupMultiplier);
+            newRow.AddInt("GroupMultiplierMin", lootEntry.GroupMultiplierMin);
             newRow.AddFloat("GroupProbability", lootEntry.GroupProbability);
             newRow.AddInt("DropLimit", lootEntry.DropLimit);
             newRow.AddInt("MinDrop", lootEntry.MinDrop);

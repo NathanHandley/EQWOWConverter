@@ -22,6 +22,7 @@ namespace EQWOWConverter.Items
         public int CreatureTemplateEntryID = 0;
         public int LootGroupID = 0;
         public int GroupMultiplier = 1;
+        public int GroupMultiplierMin = 0;
         public float GroupProbability = 100;
         public int DropLimit = 0;
         public int MinDrop = 0;

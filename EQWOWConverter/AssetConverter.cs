@@ -1785,6 +1785,7 @@ namespace EQWOWConverter
                             lootEntry.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
                             lootEntry.LootGroupID = lootGroupID;
                             lootEntry.GroupMultiplier = Math.Max(lootTableEntry.Multiplier, 1);
+                            lootEntry.GroupMultiplierMin = lootTableEntry.MultiplierMin;
                             lootEntry.GroupProbability = lootTableEntry.Probability;
                             lootEntry.DropLimit = lootTableEntry.DropLimit;
                             lootEntry.MinDrop = lootTableEntry.MinDrop;
