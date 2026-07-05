@@ -259,6 +259,9 @@ namespace EQWOWConverter.Spells
             {
                 if (_GroupedBaseSpellEffectBlocksForOutput.Count == 0)
                     GenerateOutputEffectBlocks();
+
+                // WOWSpellIDProcAndGoodEffect can be assigned after the base blocks were generated, so build the good proc blocks if they are needed and missing
+                GenerateMissingGoodProcOutputEffectBlocks();
                 return _GroupedGoodProcSpellEffectBlocksForOutput;
             }
         }
@@ -269,6 +272,10 @@ namespace EQWOWConverter.Spells
             {
                 if (_GroupedBaseSpellEffectBlocksForOutput.Count == 0)
                     GenerateOutputEffectBlocks();
+
+                // Clicky parameters can be registered after the base blocks were generated (worn effects on an earlier item forces generation), so fill in blocks for any parameters that don't have them yet
+                if (_GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count < ClickySpellParatemers.Count)
+                    GenerateMissingClickyOutputEffectBlocks();
                 return _GroupedClickySpellEffectBlocksForOutputBySpellParameters;
             }
         }
@@ -3359,9 +3366,6 @@ namespace EQWOWConverter.Spells
                 return;
             }
 
-            // Collects fixed-level clicky (tiered potion) effects so exact-value descriptions can be built
-            Dictionary<int, List<SpellEffectWOW>> clickyEffectsForDescriptionByIndex = new Dictionary<int, List<SpellEffectWOW>>();
-
             // Pre-group by 'max' levels so that spell value calculations work properly
             Dictionary<int, List<SpellEffectWOW>> spellEffectsByMaxLevel = new Dictionary<int, List<SpellEffectWOW>>();
             foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
@@ -3405,80 +3409,98 @@ namespace EQWOWConverter.Spells
                         baseEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
                     }
                     _GroupedBaseSpellEffectBlocksForOutput.Add(baseEffectBlock);
-
-                    // Good proc versions also get a copy
-                    if (WOWSpellIDProcAndGoodEffect > 0)
-                    {
-                        SpellEffectBlock goodProcEffectBlock = new SpellEffectBlock();
-                        if (_GroupedGoodProcSpellEffectBlocksForOutput.Count == 0)
-                            goodProcEffectBlock.WOWSpellID = WOWSpellIDProcAndGoodEffect;
-                        else
-                            goodProcEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
-                        foreach (SpellEffectWOW spellEffect in baseEffectBlock.SpellEffects)
-                        {
-                            // Override the implicit target since the user is the only one it can be used on
-                            SpellEffectWOW effectClone = spellEffect.Clone();
-                            effectClone.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
-                            goodProcEffectBlock.SpellEffects.Add(effectClone);
-                        }
-                        goodProcEffectBlock.SpellName = baseEffectBlock.SpellName;
-                        _GroupedGoodProcSpellEffectBlocksForOutput.Add(goodProcEffectBlock);
-                    }
-
-                    // Clicky spells each need these blocks
-                    int clickyIndex = 0;
-                    foreach (ClickySpellParameters clickySpellParameters in this.ClickySpellParatemers)
-                    {
-                        SpellEffectBlock clickEffectBlock = new SpellEffectBlock();
-                        if (_GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count == clickyIndex)
-                        {
-                            _GroupedClickySpellEffectBlocksForOutputBySpellParameters.Add(new List<SpellEffectBlock>());
-                            clickEffectBlock.WOWSpellID = clickySpellParameters.WOWSpellID;
-                        }
-                        else
-                            clickEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
-                        foreach (SpellEffectWOW spellEffect in baseEffectBlock.SpellEffects)
-                        {
-                            SpellEffectWOW effectClone = spellEffect.Clone();
-                            if (ClickySpellParatemers[clickyIndex].IsForcedSelfOnly == true)
-                                effectClone.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
-                            if (clickySpellParameters.FixedLevel > 0)
-                                effectClone.FixValueToLevel(clickySpellParameters.FixedLevel);
-                            clickEffectBlock.SpellEffects.Add(effectClone);
-                            if (clickySpellParameters.FixedLevel > 0)
-                            {
-                                if (clickyEffectsForDescriptionByIndex.ContainsKey(clickyIndex) == false)
-                                    clickyEffectsForDescriptionByIndex.Add(clickyIndex, new List<SpellEffectWOW>());
-                                clickyEffectsForDescriptionByIndex[clickyIndex].Add(effectClone);
-                            }
-                        }
-                        clickEffectBlock.SpellName = string.Concat(baseEffectBlock.SpellName);
-                        _GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyIndex].Add(clickEffectBlock);
-                        clickyIndex++;
-                    }
                 }
             }
 
-            // Fixed level clickies (tiered potions) don't scale, so make fixed descriptions like fixed worn items get
-            foreach (var clickyEffectsForDescription in clickyEffectsForDescriptionByIndex)
-            {
-                string fixedAuraDescription = BuildAuraDescriptionFromEffects(clickyEffectsForDescription.Value);
-                if (fixedAuraDescription.Length > 0)
-                {
-                    SpellEffectBlock firstClickyBlock = _GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyEffectsForDescription.Key][0];
-                    firstClickyBlock.AuraDescriptionOverride = fixedAuraDescription;
+            // Good proc and clicky spells each need copies of the base blocks
+            GenerateMissingGoodProcOutputEffectBlocks();
+            GenerateMissingClickyOutputEffectBlocks();
+        }
 
-                    // Item tooltips read the click spell's description, so rebuild it with the exact values and pinned duration
-                    StringBuilder actionDescriptionSB = new StringBuilder(fixedAuraDescription);
-                    if (TargetDescriptionTextFragment.Length > 0)
+        private void GenerateMissingGoodProcOutputEffectBlocks()
+        {
+            if (WOWSpellIDProcAndGoodEffect <= 0 || _GroupedGoodProcSpellEffectBlocksForOutput.Count > 0)
+                return;
+            if (WOWSpellEffects.Count == 0)
+                return;
+
+            foreach (SpellEffectBlock baseEffectBlock in _GroupedBaseSpellEffectBlocksForOutput)
+            {
+                SpellEffectBlock goodProcEffectBlock = new SpellEffectBlock();
+                if (_GroupedGoodProcSpellEffectBlocksForOutput.Count == 0)
+                    goodProcEffectBlock.WOWSpellID = WOWSpellIDProcAndGoodEffect;
+                else
+                    goodProcEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
+                foreach (SpellEffectWOW spellEffect in baseEffectBlock.SpellEffects)
+                {
+                    // Override the implicit target since the user is the only one it can be used on
+                    SpellEffectWOW effectClone = spellEffect.Clone();
+                    effectClone.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                    goodProcEffectBlock.SpellEffects.Add(effectClone);
+                }
+                goodProcEffectBlock.SpellName = baseEffectBlock.SpellName;
+                _GroupedGoodProcSpellEffectBlocksForOutput.Add(goodProcEffectBlock);
+            }
+        }
+
+        private void GenerateMissingClickyOutputEffectBlocks()
+        {
+            // Spells with no effects don't get clicky blocks (matches the base block blank-out behavior)
+            if (WOWSpellEffects.Count == 0)
+                return;
+
+            for (int clickyIndex = _GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count; clickyIndex < ClickySpellParatemers.Count; clickyIndex++)
+            {
+                ClickySpellParameters clickySpellParameters = ClickySpellParatemers[clickyIndex];
+                List<SpellEffectBlock> clickyBlocks = new List<SpellEffectBlock>();
+
+                // Collects fixed-level clicky (tiered potion) effects so exact-value descriptions can be built
+                List<SpellEffectWOW> clickyEffectsForDescription = new List<SpellEffectWOW>();
+                foreach (SpellEffectBlock baseEffectBlock in _GroupedBaseSpellEffectBlocksForOutput)
+                {
+                    SpellEffectBlock clickEffectBlock = new SpellEffectBlock();
+                    if (clickyBlocks.Count == 0)
+                        clickEffectBlock.WOWSpellID = clickySpellParameters.WOWSpellID;
+                    else
+                        clickEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
+                    foreach (SpellEffectWOW spellEffect in baseEffectBlock.SpellEffects)
                     {
-                        actionDescriptionSB.Append(" ");
-                        actionDescriptionSB.Append(TargetDescriptionTextFragment);
-                        actionDescriptionSB.Append(".");
+                        SpellEffectWOW effectClone = spellEffect.Clone();
+                        if (clickySpellParameters.IsForcedSelfOnly == true)
+                            effectClone.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                        if (clickySpellParameters.FixedLevel > 0)
+                        {
+                            effectClone.FixValueToLevel(clickySpellParameters.FixedLevel);
+                            clickyEffectsForDescription.Add(effectClone);
+                        }
+                        clickEffectBlock.SpellEffects.Add(effectClone);
                     }
-                    int fixedDurationInMS = AuraDuration.GetBuffDurationForLevel(ClickySpellParatemers[clickyEffectsForDescription.Key].FixedLevel);
-                    actionDescriptionSB.Append(GetTimeDurationStringFromMSWithLeadingSpace(fixedDurationInMS, AuraDuration.GetTimeTextForDurationInMS(fixedDurationInMS)));
-                    firstClickyBlock.ActionDescriptionOverride = actionDescriptionSB.ToString();
+                    clickEffectBlock.SpellName = string.Concat(baseEffectBlock.SpellName);
+                    clickyBlocks.Add(clickEffectBlock);
+                }
+                _GroupedClickySpellEffectBlocksForOutputBySpellParameters.Add(clickyBlocks);
+
+                // Fixed level clickies (tiered potions) don't scale, so make fixed descriptions like fixed worn items get
+                if (clickyEffectsForDescription.Count > 0)
+                {
+                    string fixedAuraDescription = BuildAuraDescriptionFromEffects(clickyEffectsForDescription);
+                    if (fixedAuraDescription.Length > 0)
+                    {
+                        SpellEffectBlock firstClickyBlock = clickyBlocks[0];
+                        firstClickyBlock.AuraDescriptionOverride = fixedAuraDescription;
+
+                        // Item tooltips read the click spell's description, so rebuild it with the exact values and pinned duration
+                        StringBuilder actionDescriptionSB = new StringBuilder(fixedAuraDescription);
+                        if (TargetDescriptionTextFragment.Length > 0)
+                        {
+                            actionDescriptionSB.Append(" ");
+                            actionDescriptionSB.Append(TargetDescriptionTextFragment);
+                            actionDescriptionSB.Append(".");
+                        }
+                        int fixedDurationInMS = AuraDuration.GetBuffDurationForLevel(clickySpellParameters.FixedLevel);
+                        actionDescriptionSB.Append(GetTimeDurationStringFromMSWithLeadingSpace(fixedDurationInMS, AuraDuration.GetTimeTextForDurationInMS(fixedDurationInMS)));
+                        firstClickyBlock.ActionDescriptionOverride = actionDescriptionSB.ToString();
+                    }
                 }
             }
         }
