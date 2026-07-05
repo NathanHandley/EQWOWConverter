@@ -25,6 +25,7 @@ namespace EQWOWConverter.Quests
         Say = 4,
         Spawn = 5,
         SpawnUnique = 6,
-        Yell = 7
+        Yell = 7,
+        KillSpawn = 8
     }
 }

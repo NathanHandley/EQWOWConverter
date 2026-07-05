@@ -34,5 +34,6 @@ namespace EQWOWConverter.Quests
         public bool CreatureIsSelf = false;
         public int CreatureEQID = 0;
         public int CreatureWOWID = 0;
+        public int DelayInMS = 0;
     }
 }

@@ -42,11 +42,13 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`PositionZ` FLOAT NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`Orientation` FLOAT NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`CreatureTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`QuestgiverCreatureTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`DelayInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY(`ID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int questTemplateID, QuestReaction questReaction)
+        public void AddRow(int questTemplateID, int questgiverCreatureTemplateID, QuestReaction questReaction)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ID", CUR_ID);
@@ -63,6 +65,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("PositionZ", questReaction.PositionZ);
             newRow.AddFloat("Orientation", questReaction.WOWOrientation);
             newRow.AddInt("CreatureTemplateID", questReaction.CreatureWOWID);
+            newRow.AddInt("QuestgiverCreatureTemplateID", questgiverCreatureTemplateID);
+            newRow.AddInt("DelayInMS", questReaction.DelayInMS);
             Rows.Add(newRow);
 
             CUR_ID++;

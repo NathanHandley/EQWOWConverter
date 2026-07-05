@@ -227,12 +227,26 @@ namespace EQWOWConverter.Quests
                             reaction.ReactionValue = reactionValue1;
                         }
                         break;
+                    case "killspawn": // Spawned when the questgiver is killed after completing the quest
+                        {
+                            reaction.ReactionType = QuestReactionType.KillSpawn;
+                            reaction.CreatureEQID = int.Parse(reactionValue1);
+                            reaction.PositionX = ParseTool.ParseFloat(columns["PositionX"], 0);
+                            reaction.PositionY = ParseTool.ParseFloat(columns["PositionY"], 0);
+                            reaction.PositionZ = ParseTool.ParseFloat(columns["PositionZ"], 0);
+                            reaction.EQHeading = ParseTool.ParseFloat(columns["Heading"], 0);
+                        }
+                        break;
                     default:
                         {
                             Logger.WriteError(string.Concat("Unhandled reaction type of '", reactionTypeString, "'"));
                             continue;
                         }
                 }
+
+                string delayString = columns["DelayMS"];
+                if (delayString.Length > 0)
+                    reaction.DelayInMS = int.Parse(delayString);
 
                 // Scale positions for wow world scale
                 reaction.PositionX *= Configuration.GENERATE_WORLD_SCALE;

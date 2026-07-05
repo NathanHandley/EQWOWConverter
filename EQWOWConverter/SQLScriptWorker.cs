@@ -1557,8 +1557,8 @@ namespace EQWOWConverter
                             smartScriptsSQL.AddRowForQuestCompleteTalkEvent(creatureTemplateID, creatureTextGroupID + 1, repeatQuestID, comment);
                         }
 
-                        // Attack/Spawn/Despawn actions
-                        if (reaction.ReactionType == QuestReactionType.AttackPlayer || reaction.ReactionType == QuestReactionType.Despawn || reaction.ReactionType == QuestReactionType.Spawn || reaction.ReactionType == QuestReactionType.SpawnUnique)
+                        // Attack/Spawn/Despawn/KillSpawn actions
+                        if (reaction.ReactionType == QuestReactionType.AttackPlayer || reaction.ReactionType == QuestReactionType.Despawn || reaction.ReactionType == QuestReactionType.Spawn || reaction.ReactionType == QuestReactionType.SpawnUnique || reaction.ReactionType == QuestReactionType.KillSpawn)
                         {
                             if (reaction.CreatureEQID > 0)
                             {
@@ -1572,8 +1572,8 @@ namespace EQWOWConverter
                             if (reaction.CreatureIsSelf == true)
                                 reaction.CreatureWOWID = creatureTemplateID;
 
-                            modEverquestQuestReactionSQL.AddRow(firstQuestID, reaction);
-                            modEverquestQuestReactionSQL.AddRow(repeatQuestID, reaction);
+                            modEverquestQuestReactionSQL.AddRow(firstQuestID, creatureTemplateID, reaction);
+                            modEverquestQuestReactionSQL.AddRow(repeatQuestID, creatureTemplateID, reaction);
                         }
                     }
                 }
