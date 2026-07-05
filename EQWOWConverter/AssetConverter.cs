@@ -1983,19 +1983,8 @@ namespace EQWOWConverter
                     SpellTemplate.GenerateFocusSpellIfNotCreated(itemTemplate.Name, itemTemplate.IconID, itemTemplate.FocusType, itemTemplate.FocusValue, out enchantSpellTemplate, out isNewSpell);
                     if (enchantSpellTemplate != null)
                     {
-                        if (itemTemplate.WOWSpellID1 > 0)
-                        {
-                            Logger.WriteError("Attempted to add focus spell effect to item with WOWID of ", itemTemplate.WOWEntryID.ToString(), " but it already had a WOWSpellID1"); ;
-                            continue;
-                        }
-                        itemTemplate.WOWSpellID1 = enchantSpellTemplate.WOWSpellID;
-                        itemTemplate.WOWSpellTrigger1 = 1; // On Equip
-                        itemTemplate.WOWSpellPPMRate1 = 0;
-                        itemTemplate.WOWSpellCharges1 = 0; // Unlimited
-                        itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
-                        itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
-                        itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
-                        if (isNewSpell)
+                        itemTemplate.WOWFocusSpellID = enchantSpellTemplate.WOWSpellID;
+                        if (isNewSpell == true)
                             spellTemplates.Add(enchantSpellTemplate);
                     }
                 }
@@ -3536,6 +3525,31 @@ namespace EQWOWConverter
                             itemTemplate.CastTime, forceSelfOnly, clickyFixedLevel);
                         itemTemplate.WOWSpellID1 = clickySpellParameters.WOWSpellID;
                     }
+                }
+
+                // Avoid attach collision from a focus spell before
+                // TODO: Should probably approach this differently and queue up spell IDs to attach and then process later
+                if (itemTemplate.WOWFocusSpellID > 0)
+                {
+                    if (itemTemplate.WOWSpellID1 == 0)
+                    {
+                        itemTemplate.WOWSpellID1 = itemTemplate.WOWFocusSpellID;
+                        itemTemplate.WOWSpellTrigger1 = 1; // On Equip
+                        itemTemplate.WOWSpellPPMRate1 = 0;
+                        itemTemplate.WOWSpellCharges1 = 0; // Unlimited
+                        itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
+                        itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
+                        itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
+                    }
+                    else if (itemTemplate.WOWSpellID2 == 0)
+                    {
+                        itemTemplate.WOWSpellID2 = itemTemplate.WOWFocusSpellID;
+                        itemTemplate.WOWSpellTrigger2 = 1; // On Equip
+                        itemTemplate.WOWSpellPPMRate2 = 0;
+                        itemTemplate.WOWSpellCharges2 = 0; // Unlimited
+                    }
+                    else
+                        Logger.WriteError("Could not attach focus spell to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as both spell slots were already used");
                 }
             }
         }

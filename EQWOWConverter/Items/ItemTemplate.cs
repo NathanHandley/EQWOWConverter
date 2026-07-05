@@ -141,6 +141,7 @@ namespace EQWOWConverter.Items
         public ItemTemplate? ParentItemTemplate = null;
         public ItemFocusType FocusType = ItemFocusType.None;
         public int FocusValue = 0;
+        public int WOWFocusSpellID = 0;
         public BookText? BookTextReference = null;
         public Dictionary<ClassEQType, int> ClassSpecificItemVersionsByEQClassID = new Dictionary<ClassEQType, int>(); // Used for quests
         public int StarterVersionItemTemplateID = -1;
