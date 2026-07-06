@@ -28,7 +28,7 @@ namespace EQWOWConverter.WOWFiles
             SQLRow newRow = new SQLRow();
             newRow.AddInt("DisplayID", displayID); // Reference to CreatureDisplayInfo.dbc
             newRow.AddFloat("BoundingRadius", 0); // Not currently used (?)
-            newRow.AddFloat("CombatReach", 1.5f); // Lots of 0 as well, consider changing
+            newRow.AddFloat("CombatReach", 1.5f * (Configuration.GENERATE_EQUIPMENT_SCALE / Configuration.GENERATE_CREATURE_SCALE)); // Core multiplies this by unit scale which carries some baked in scaling, so take it out
             newRow.AddInt("Gender", gender); // 0: Male, 1: Female, 2: None/Neutral
             newRow.AddInt("DisplayID_Other_Gender", 0); // Record that relates to the 'other' gender ID (if male, this is the female row...)
             Rows.Add(newRow);

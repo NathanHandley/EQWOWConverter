@@ -118,8 +118,7 @@ namespace EQWOWConverter
         // A WORLD_SCALE value of 0.25 seems to be 1:1 with EQ.  0.28 allows humans and 0.4 allows taurens to enter rivervale bank door
         public static float GENERATE_WORLD_SCALE = 0.29f;
         public static float GENERATE_CREATURE_SCALE = 0.255f;
-        public static float GENERATE_EQUIPMENT_PLAYER_SCALE = 0.35f; // The size of equipment on players
-        public static float GENERATE_EQUIPMENT_CREATURE_SCALE = 0.255f; // The size of equipment on creatures/npcs
+        public static float GENERATE_EQUIPMENT_SCALE = 0.35f; // Scaling to apply to equipment models
 
         // Identifier for what subset of expansion data to work with.  0: Classic, 1: Kunark, 2: Velious
         public static int GENERATE_EQ_EXPANSION_ID_GENERAL = 2; // Not advisable to set this lower than 2
@@ -1356,8 +1355,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("LOGGING_FILE_MIN_LEVEL", LOGGING_FILE_MIN_LEVEL, "");
             OutputVariableToConfig("GENERATE_WORLD_SCALE", GENERATE_WORLD_SCALE, "The value EQ vertices multiply by when translated into WOW vertices. A WORLD_SCALE value of 0.25 seems to be 1:1 with EQ.  0.28 allows humans and 0.4 allows taurens to enter rivervale bank door", false);
             OutputVariableToConfig("GENERATE_CREATURE_SCALE", GENERATE_CREATURE_SCALE, "", false);
-            OutputVariableToConfig("GENERATE_EQUIPMENT_PLAYER_SCALE", GENERATE_EQUIPMENT_PLAYER_SCALE, "The size of equipment on players", false);
-            OutputVariableToConfig("GENERATE_EQUIPMENT_CREATURE_SCALE", GENERATE_EQUIPMENT_CREATURE_SCALE, "The size of equipment on creatures/npcs");
+            OutputVariableToConfig("GENERATE_EQUIPMENT_SCALE", GENERATE_EQUIPMENT_SCALE, "Scaling to apply to equipment models");
             OutputVariableToConfig("GENERATE_EQ_EXPANSION_ID_GENERAL", GENERATE_EQ_EXPANSION_ID_GENERAL, "Identifier for what subset of expansion data to work with.  0: Classic, 1: Kunark, 2: Velious.", false);
             OutputVariableToConfig("GENERATE_EQ_EXPANSION_ID_ZONES", GENERATE_EQ_EXPANSION_ID_ZONES, "", false);
             OutputVariableToConfig("GENERATE_EQ_EXPANSION_ID_TRANSPORTS", GENERATE_EQ_EXPANSION_ID_TRANSPORTS, "", false);
@@ -1864,8 +1862,7 @@ namespace EQWOWConverter
 
             GENERATE_WORLD_SCALE = ReadVariableFromConfigString("GENERATE_WORLD_SCALE", configValuesByVariableName, GENERATE_WORLD_SCALE);
             GENERATE_CREATURE_SCALE = ReadVariableFromConfigString("GENERATE_CREATURE_SCALE", configValuesByVariableName, GENERATE_CREATURE_SCALE);
-            GENERATE_EQUIPMENT_PLAYER_SCALE = ReadVariableFromConfigString("GENERATE_EQUIPMENT_PLAYER_SCALE", configValuesByVariableName, GENERATE_EQUIPMENT_PLAYER_SCALE);
-            GENERATE_EQUIPMENT_CREATURE_SCALE = ReadVariableFromConfigString("GENERATE_EQUIPMENT_CREATURE_SCALE", configValuesByVariableName, GENERATE_EQUIPMENT_CREATURE_SCALE);
+            GENERATE_EQUIPMENT_SCALE = ReadVariableFromConfigString("GENERATE_EQUIPMENT_SCALE", configValuesByVariableName, GENERATE_EQUIPMENT_SCALE);
 
             GENERATE_EQ_EXPANSION_ID_GENERAL = ReadVariableFromConfigString("GENERATE_EQ_EXPANSION_ID_GENERAL", configValuesByVariableName, GENERATE_EQ_EXPANSION_ID_GENERAL);
             GENERATE_EQ_EXPANSION_ID_ZONES = ReadVariableFromConfigString("GENERATE_EQ_EXPANSION_ID_ZONES", configValuesByVariableName, GENERATE_EQ_EXPANSION_ID_ZONES);

@@ -33,7 +33,6 @@ namespace EQWOWConverter.Items
         private static Dictionary<string, List<Int64>> GeneratedArmorPartBySourceNameThenColorID = new Dictionary<string, List<long>>();
 
         public int ItemDisplayInfoDBCID = 0;
-        public ItemEquipUnitType itemEquipUnitType = ItemEquipUnitType.Player;
         public string IconFileNameNoExt = string.Empty;
         public string ModelName1 = string.Empty;
         public string ModelName2 = string.Empty;
@@ -139,8 +138,8 @@ namespace EQWOWConverter.Items
             return File.Exists(sourceTextureTestName);
         }
 
-        public static ItemDisplayInfo CreateItemDisplayInfo(string itemDisplayCommonName, string iconFileNameNoExt, 
-            ItemWOWInventoryType inventoryType, int materialTypeID, Int64 colorPacked, ItemEquipUnitType equipUnitType)
+        public static ItemDisplayInfo CreateItemDisplayInfo(string itemDisplayCommonName, string iconFileNameNoExt,
+            ItemWOWInventoryType inventoryType, int materialTypeID, Int64 colorPacked)
         {
             // Perform known lookup replacements
             switch (itemDisplayCommonName.ToLower())
@@ -163,7 +162,7 @@ namespace EQWOWConverter.Items
 
             foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfos)
             {
-                if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt && itemDisplayInfo.ModelName1 == modelFileName && itemDisplayInfo.itemEquipUnitType == equipUnitType && itemDisplayInfo.IsShield == isShield)
+                if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt && itemDisplayInfo.ModelName1 == modelFileName && itemDisplayInfo.IsShield == isShield)
                     return itemDisplayInfo;
             }
 
@@ -240,7 +239,7 @@ namespace EQWOWConverter.Items
             // Held objects have models
             else if (IsHeld(inventoryType) == true)
             {
-                ObjectModel objectModel = GetOrCreateModelForHeldItem(itemDisplayNameWithEQ, inventoryType, equipUnitType);
+                ObjectModel objectModel = GetOrCreateModelForHeldItem(itemDisplayNameWithEQ, inventoryType);
                 newItemDisplayInfo.ModelName1 = objectModel.Name + ".mdx";
             }
             // Armor
@@ -387,7 +386,7 @@ namespace EQWOWConverter.Items
             IT159RelativeFileName = String.Concat("Particles\\EverQuest\\", outputName, ".mdx");
         }
 
-        private static ObjectModel GetOrCreateModelForHeldItem(string itemDisplayCommonName, ItemWOWInventoryType inventoryType, ItemEquipUnitType equipUnitType)
+        private static ObjectModel GetOrCreateModelForHeldItem(string itemDisplayCommonName, ItemWOWInventoryType inventoryType)
         {
             // Make sure things are loaded
             string equipmentSourceBasePath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment");
@@ -421,8 +420,6 @@ namespace EQWOWConverter.Items
                 itemDisplayCommonName = "eq_it63";
 
             string outputName = itemDisplayCommonName;
-            if (equipUnitType == ItemEquipUnitType.Creature)
-                outputName = string.Concat(itemDisplayCommonName, "_npc");
 
             // Get or load the model
             if (inventoryType == ItemWOWInventoryType.Shield && ShieldObjectModelsByEQItemOutputName.ContainsKey(outputName) == true)
@@ -445,7 +442,6 @@ namespace EQWOWConverter.Items
 
                 // Create a new model
                 ObjectModelProperties objectModelProperties = ObjectModelProperties.GetObjectPropertiesForObject(outputName);
-                objectModelProperties.EquipUnitType = equipUnitType;
                 ObjectModel equipmentModel = new ObjectModel(outputName, objectModelProperties, modelType);
                 equipmentModel.LoadEQObjectFromFile(equipmentSourceBasePath, eqAssetFileName);
 

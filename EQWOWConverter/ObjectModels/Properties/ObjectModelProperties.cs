@@ -46,7 +46,6 @@ namespace EQWOWConverter.ObjectModels
         public SpellVisualType SpellVisualType = SpellVisualType.Beneficial;
         public bool SpellEmitterSpraysFromHands = false;
         public bool RenderingEnabled = true; // Note: This is also makes it non-interactive (non-clickable)
-        public ItemEquipUnitType EquipUnitType = ItemEquipUnitType.Player;
         public bool IncludeInMinimapGeneration = false;
         public string AlternateModelSwapName = string.Empty;
         public string CustomMaterialListLine = string.Empty;
@@ -76,7 +75,6 @@ namespace EQWOWConverter.ObjectModels
             SpellVisualType = other.SpellVisualType;
             SpellEmitterSpraysFromHands = other.SpellEmitterSpraysFromHands;
             RenderingEnabled = other.RenderingEnabled;
-            EquipUnitType = other.EquipUnitType;
             IncludeInMinimapGeneration = other.IncludeInMinimapGeneration;
             AlternateModelSwapName = other.AlternateModelSwapName;
             CustomMaterialListLine = other.CustomMaterialListLine;
@@ -112,7 +110,6 @@ namespace EQWOWConverter.ObjectModels
 
         public static ObjectModelProperties GetObjectPropertiesForObject(string objectName)
         {
-            objectName = objectName.Replace("_npc", "");
             lock (PropertiesLock)
             {
                 if (ObjectPropertiesByName.Count == 0)

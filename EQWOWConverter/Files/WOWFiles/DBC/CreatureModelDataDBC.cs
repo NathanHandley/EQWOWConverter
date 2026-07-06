@@ -37,8 +37,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // FootstepShakeSize, references CameraShakes.dbc
             newRow.AddInt32(0); // DeathThudShakeSize, references CameraShakes.dbc
             newRow.AddInt32(creatureModelTemplate.DBCCreatureSoundDataID); // SoundID, references CreatureSoundData.dbc
-            newRow.AddFloat(0.6944f); // CollisionWidth, must be > 0.41670012920929
-            newRow.AddFloat(2.083f); // CollisionHeight
+            float collisionScaleCompensation = Configuration.GENERATE_EQUIPMENT_SCALE / Configuration.GENERATE_CREATURE_SCALE;
+            newRow.AddFloat(0.6944f * collisionScaleCompensation); // CollisionWidth
+            newRow.AddFloat(2.083f * collisionScaleCompensation); // CollisionHeight
             newRow.AddFloat(0); // MountHeight
             newRow.AddFloat(-1 * creatureModelTemplate.Race.GeoboxInradius); // GeoBoxMinX, Min vert X
             newRow.AddFloat(-1 * creatureModelTemplate.Race.GeoboxInradius); // GeoBoxMinY, Min vert Y

@@ -112,9 +112,7 @@ namespace EQWOWConverter.ObjectModels
             TransparencyOverride = particleCloudProperties.TransparencyPercentOverride;
 
             // Scale
-            float equipTypeScale = Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
-            if (parentObjectModel.Properties.EquipUnitType == Items.ItemEquipUnitType.Creature)
-                equipTypeScale = Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
+            float equipTypeScale = Configuration.GENERATE_EQUIPMENT_SCALE;
             Scale = (particleCloud.SpawnScale * equipTypeScale) * particleCloudProperties.ScaleMod;
 
             Radius = particleCloud.SpawnRadius * particleCloudProperties.RadiusMod;

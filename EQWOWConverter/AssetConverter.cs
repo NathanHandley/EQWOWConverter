@@ -1881,12 +1881,7 @@ namespace EQWOWConverter
             {
                 string iconName = "INV_EQ_" + (itemTemplate.IconID).ToString();
                 itemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo(itemTemplate.EQItemDisplayFileName, iconName,
-                    itemTemplate.InventoryType, itemTemplate.EQArmorMaterialType, itemTemplate.ColorPacked, ItemEquipUnitType.Player);
-                if (itemTemplate.WOWEntryIDForNPCEquip > 0)
-                {
-                    itemTemplate.ItemDisplayInfoForCreatureEquip = ItemDisplayInfo.CreateItemDisplayInfo(itemTemplate.EQItemDisplayFileName, iconName,
-                        itemTemplate.InventoryType, itemTemplate.EQArmorMaterialType, itemTemplate.ColorPacked, ItemEquipUnitType.Creature);
-                }
+                    itemTemplate.InventoryType, itemTemplate.EQArmorMaterialType, itemTemplate.ColorPacked);
             }
 
             // Build output directory

@@ -51,7 +51,6 @@ namespace EQWOWConverter.Items
         
         public int EQItemID = 0;
         public int WOWEntryID = 0;
-        public int WOWEntryIDForNPCEquip = -1;
         public int NonEssenceWOWEntryID = 0; // Filled in only for "essence split clickies" for tradeskills/quests to reference a non-essence version
         public int ClassID = 0;
         public int SubClassID = 0;
@@ -86,7 +85,6 @@ namespace EQWOWConverter.Items
         public bool DoesVanishOnLogout = false;
         public bool IsNoDrop = false;
         public ItemDisplayInfo? ItemDisplayInfo = null;
-        public ItemDisplayInfo? ItemDisplayInfoForCreatureEquip = null;
         public bool DoesTeachSpell = false;
         public int WOWSpellID1 = 0;
         public int WOWSpellTrigger1 = 0;
@@ -207,15 +205,6 @@ namespace EQWOWConverter.Items
             if (EQClickSpellEffectID == 49)
                 return true;
             if (EQClickSpellEffectID >= 1252 && EQClickSpellEffectID <= 1266)
-                return true;
-            return false;
-        }
-
-        public bool IsHeldInHandsNonRanged()
-        {
-            if (InventoryType == ItemWOWInventoryType.OneHand || InventoryType == ItemWOWInventoryType.HeldInOffHand ||
-                InventoryType == ItemWOWInventoryType.Shield || InventoryType == ItemWOWInventoryType.Shield ||
-                InventoryType == ItemWOWInventoryType.TwoHand || InventoryType == ItemWOWInventoryType.OffHandWeapon)
                 return true;
             return false;
         }
@@ -1496,7 +1485,6 @@ namespace EQWOWConverter.Items
                 ItemTemplate newItemTemplate = new ItemTemplate();
                 newItemTemplate.EQItemID = int.Parse(columns["id"]);
                 newItemTemplate.WOWEntryID = int.Parse(columns["wowid"]);
-                newItemTemplate.WOWEntryIDForNPCEquip = int.Parse(columns["wowid_npc"]);
                 newItemTemplate.Name = columns["Name"];
                 newItemTemplate.IsAlwaysGenerated = columns["always_gen"] == "1" ? true : false;
                 newItemTemplate.StarterVersionItemTemplateID = int.Parse(columns["starterwowid"]);
@@ -1695,12 +1683,6 @@ namespace EQWOWConverter.Items
                     itemsToAdd.Add(newBagItemTemplate);
                     itemsToAdd.Add(newEssenceItemTemplate);
                 }
-
-                // NPC equipment is different than player for scaling reasons, so only leave it set for items are held
-                if (newItemTemplate.IsHeldInHandsNonRanged() == false)
-                    newItemTemplate.WOWEntryIDForNPCEquip = 0;
-                else if (newItemTemplate.WOWEntryIDForNPCEquip <= 0)
-                    Logger.WriteError("ItemTemplate with ID ", newItemTemplate.WOWEntryID.ToString(), " is a held item but is missing wowid_npc");
 
                 // Add the items
                 itemsToAdd.Add(newItemTemplate);

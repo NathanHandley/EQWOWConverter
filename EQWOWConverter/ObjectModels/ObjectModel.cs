@@ -218,7 +218,7 @@ namespace EQWOWConverter.ObjectModels
             // Creatures have a lift variable to factor for
             if (ModelType != ObjectModelType.TransportShip && Properties.CreatureModelTemplate != null)
             {
-                float lift = Properties.CreatureModelTemplate.Race.Lift * Configuration.GENERATE_CREATURE_SCALE;
+                float lift = Properties.CreatureModelTemplate.Race.Lift * Configuration.GENERATE_EQUIPMENT_SCALE;
                 if (Properties.CreatureModelTemplate.Race.BoundaryRadiusOverride > 0)
                 {
                     float halfHeight = Properties.CreatureModelTemplate.Race.BoundaryHeightOverride / 2;
@@ -499,12 +499,9 @@ namespace EQWOWConverter.ObjectModels
                     newParticleBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
                     newParticleBone.ParentBone = (Int16)i;
                     newParticleBone.ParentBoneNameEQ = baseAttachBone.BoneNameEQ;
-                    float equipUnitTypeScale = Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
-                    if (Properties.EquipUnitType == ItemEquipUnitType.Creature)
-                        equipUnitTypeScale = Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
-                    Vector3 particleTranslation = new Vector3(particleCloudProperties.EmitterAddX * equipUnitTypeScale,
-                        particleCloudProperties.EmitterAddY * equipUnitTypeScale,
-                        particleCloudProperties.EmitterAddZ * equipUnitTypeScale);
+                    Vector3 particleTranslation = new Vector3(particleCloudProperties.EmitterAddX * Configuration.GENERATE_EQUIPMENT_SCALE,
+                        particleCloudProperties.EmitterAddY * Configuration.GENERATE_EQUIPMENT_SCALE,
+                        particleCloudProperties.EmitterAddZ * Configuration.GENERATE_EQUIPMENT_SCALE);
                     for (int frameID = 0; frameID < baseAttachBone.RotationTrack.Timestamps.Count; frameID++)
                     {
                         newParticleBone.ScaleTrack.AddSequence();
@@ -1614,15 +1611,8 @@ namespace EQWOWConverter.ObjectModels
         private float GetScaleAmount()
         {
             float scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_WORLD_SCALE;
-            if (ModelType == ObjectModelType.Creature)
-                scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_CREATURE_SCALE;
-            else if (ModelType == ObjectModelType.EquipmentHeldNonBow || ModelType == ObjectModelType.EquipmentHeldBow)
-            {
-                if (Properties.EquipUnitType == Items.ItemEquipUnitType.Player)
-                    scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_EQUIPMENT_PLAYER_SCALE;
-                else if (Properties.EquipUnitType == Items.ItemEquipUnitType.Creature)
-                    scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_EQUIPMENT_CREATURE_SCALE;
-            }
+            if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.EquipmentHeldNonBow || ModelType == ObjectModelType.EquipmentHeldBow)
+                scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_EQUIPMENT_SCALE;
             scaleAmount *= Properties.AdditionalScaleMultiplier;
             return scaleAmount;
         }

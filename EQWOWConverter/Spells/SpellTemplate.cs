@@ -2833,9 +2833,10 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.SummonPet;
                                 newSpellEffects.Add(newSpellEffectWOW);
 
-                                // Correct scaling of pet & mark as a pet
+                                // This scaling is to ensure that equipment looks the right size on creatures
                                 CreatureRace creatureRace = creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].Race;
-                                creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].ModelTemplateScale = creatureRace.Height * creatureRace.SpawnSizeMod;
+                                creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].ModelTemplateScale = creatureRace.Height * creatureRace.SpawnSizeMod
+                                    * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;
                             } break;
                         case SpellEQEffectType.Illusion:
@@ -2878,7 +2879,7 @@ namespace EQWOWConverter.Spells
                                     Logger.WriteError("SpellTemplate with wow spell template id ", spellTemplate.WOWSpellID.ToString(), " has an illusion effect but could not find a raceid with id ", eqEffect.EQBaseValue.ToString());
                                     continue;
                                 }
-                                float scaleMale = creatureRaceMale.Height * creatureRaceMale.SpawnSizeMod;
+                                float scaleMale = creatureRaceMale.Height * creatureRaceMale.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
                                 CreatureTemplate maleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(maleFormSpellTemplate.Name, creatureRaceMale, creatureRaceMale.Gender, 0, textureID, 0, 0, scaleMale, wowFactionTemplateID);
                                 maleFormSpellEffectWOW.EffectMiscValueA = maleCreatureTemplate.WOWCreatureTemplateID;
                                 string raceName = creatureRaceMale.Name;
@@ -2912,7 +2913,7 @@ namespace EQWOWConverter.Spells
                                     Logger.WriteError("SpellTemplate with wow spell template id ", spellTemplate.WOWSpellID.ToString(), " has an illusion effect but could not find a raceid with id ", eqEffect.EQBaseValue.ToString());
                                     continue;
                                 }
-                                float scaleFemale = creatureRaceFemale.Height * creatureRaceFemale.SpawnSizeMod;
+                                float scaleFemale = creatureRaceFemale.Height * creatureRaceFemale.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
                                 CreatureTemplate femaleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(femaleFormSpellTemplate.Name, creatureRaceFemale, creatureRaceFemale.Gender, 0, textureID, 0, 0, scaleFemale, wowFactionTemplateID);
                                 femaleFormSpellEffectWOW.EffectMiscValueA = femaleCreatureTemplate.WOWCreatureTemplateID;
                                 raceName = creatureRaceFemale.Name;

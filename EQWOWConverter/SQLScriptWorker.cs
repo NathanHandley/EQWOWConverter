@@ -621,7 +621,8 @@ namespace EQWOWConverter
                 if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true && creatureTemplate.IsWaypointDebugCreature == true)
                 {
                     creatureTemplateSQL.AddRow(creatureTemplate);
-                    creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, 1f);
+                    creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID,
+                        Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
                     int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                     string comment = string.Concat(creatureTemplate.Name, " - EQ Debug Creature");
                     creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, creatureTemplate.SpawnWaypointDebugMapID, creatureTemplate.SpawnWaypointDebugAreaID,
@@ -734,7 +735,8 @@ namespace EQWOWConverter
                 }
 
                 // Create the records
-                float scale = creatureTemplate.Size * creatureTemplate.Race.SpawnSizeMod;
+                // This scale ensures that creature held equipment is the right size
+                float scale = creatureTemplate.Size * creatureTemplate.Race.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
                 creatureTemplateSQL.AddRow(creatureTemplate);
                 creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, displayID, scale);
 
@@ -1181,10 +1183,7 @@ namespace EQWOWConverter
 
                 // Save any additional metadata
                 int creatureWornEffectSpellID = itemTemplate.GetCreatureGrantableWornEffectSpellID(spellTemplatesByEQID);
-                if (itemTemplate.WOWEntryIDForNPCEquip > 0)
-                    modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryIDForNPCEquip, creatureWornEffectSpellID, itemTemplate.AllowedClassTypesEQ);
-                else
-                    modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryID, creatureWornEffectSpellID, itemTemplate.AllowedClassTypesEQ);
+                modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryID, creatureWornEffectSpellID, itemTemplate.AllowedClassTypesEQ);
 
                 // Associate spells if it's a learnable item
                 if (itemTemplate.DoesTeachSpell == true && itemTemplate.EQScrollSpellID != 0)
@@ -1227,13 +1226,8 @@ namespace EQWOWConverter
                 }
                 else
                 {
-                    // Factor for creature-wearable versions and starter versions
+                    // Factor for starter versions
                     itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(itemTemplate.AllowedClassTypesEQ), itemTemplate.RequiredLevel, itemTemplate.ItemDisplayInfo);
-                    if (itemTemplate.ItemDisplayInfoForCreatureEquip != null)
-                    {
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryIDForNPCEquip, string.Concat(itemTemplate.Name, " (npc)"), itemTemplate.GetDescriptionStringWithAddedAllowedClasses(itemTemplate.AllowedClassTypesEQ),
-                            itemTemplate.RequiredLevel, itemTemplate.ItemDisplayInfoForCreatureEquip);
-                    }
                     if (itemTemplate.StarterVersionItemTemplateID > 0)
                     {
                         string startVersionName = itemTemplate.Name;

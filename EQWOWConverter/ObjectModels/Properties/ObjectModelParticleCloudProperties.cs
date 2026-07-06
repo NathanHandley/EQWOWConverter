@@ -46,7 +46,6 @@ namespace EQWOWConverter.ObjectModels
 
         public static ObjectModelParticleCloudProperties GetPropertiesForObjectCloud(string objectName, string particleCloudName)
         {
-            objectName = objectName.Replace("_npc", "");
             lock (PropertiesLock)
             {
                 if (PropertiesByObjectAndCloudName.Count == 0)
