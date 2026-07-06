@@ -649,6 +649,11 @@ namespace EQWOWConverter
                 {
                     if (creatureImmunitiesIdByMask.TryGetValue(creatureTemplate.MechanicImmuneMask, out int existingImmunitiesId) == true)
                         creatureTemplate.CreatureImmunitiesId = existingImmunitiesId;
+                    else if (nextCreatureImmunitiesId > Configuration.SQL_CREATUREIMMUNITIES_ID_END)
+                    {
+                        Logger.WriteError("nextCreatureImmunitiesID is greater than SQL_CREATUREIMMUNITIES_ID_END so creature template '" + creatureTemplate.Name + "' will have no crowd control immunities");
+                        creatureTemplate.CreatureImmunitiesId = 0;
+                    }
                     else
                     {
                         creatureTemplate.CreatureImmunitiesId = nextCreatureImmunitiesId;

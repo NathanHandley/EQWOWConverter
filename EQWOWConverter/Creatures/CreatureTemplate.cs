@@ -395,8 +395,9 @@ namespace EQWOWConverter.Creatures
                         newCreatureTemplate.RangedAttackDamageModPercent = rangedDamageModPercent;
                     }
 
-                    // Crowd-control immunities from EQ special abilities
-                    newCreatureTemplate.MechanicImmuneMask = DetermineCreatureMechanicImmuneMask(specialAbilitiesRaw);
+                    // Crowd-control immunities from EQ special abilities.  Use the EQ level for this
+                    int minLevelEQ = int.Parse(columns["levelEQ"]);
+                    newCreatureTemplate.MechanicImmuneMask = DetermineCreatureMechanicImmuneMask(specialAbilitiesRaw, minLevelEQ);
 
                     // See invisibility
                     if (columns.ContainsKey("see_invis") && int.TryParse(columns["see_invis"], out int seeInvisValue) && seeInvisValue > 0)
@@ -556,7 +557,7 @@ namespace EQWOWConverter.Creatures
             return false;
         }
 
-        private static long DetermineCreatureMechanicImmuneMask(string specialAbilitiesRaw)
+        private static long DetermineCreatureMechanicImmuneMask(string specialAbilitiesRaw, int minLevelEQ)
         {
             // creature_immunities.MechanicsMask uses (1 << SpellMechanicType) per immunity
             long mask = 0;
@@ -571,6 +572,10 @@ namespace EQWOWConverter.Creatures
             if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 16) == true) // SnareImmunity (EQ blocks both snare and root)
                 mask |= (1L << (int)SpellMechanicType.Snared) | (1L << (int)SpellMechanicType.Rooted);
             if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 17) == true) // FearImmunity
+                mask |= 1L << (int)SpellMechanicType.Fleeing;
+
+            // TAKP hardcaps fear immunity for all NPCs above level 52 regardless of special abilities, even against NPC casters
+            if (Configuration.CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ > 0 && minLevelEQ > Configuration.CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ)
                 mask |= 1L << (int)SpellMechanicType.Fleeing;
             return mask;
         }
