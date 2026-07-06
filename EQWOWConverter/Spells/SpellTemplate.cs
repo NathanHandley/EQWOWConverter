@@ -173,6 +173,7 @@ namespace EQWOWConverter.Spells
         private string TargetDescriptionTextFragment = string.Empty;
         public bool BreakEffectOnNonAutoDirectDamage = false;
         public bool NoPartialImmunity = false;
+        public int MaxCreatureTargetLevel = 0; // 0 = no limit
         public UInt32 DefenseType = 0; // 0 None, 1 Magic, 2 Melee, 3 Ranged
         public UInt32 PreventionType = 0; // 0 None, 1 Silence, 2 Pacify, 4 No Actions
         public int WeaponSpellItemEnchantmentDBCID = 0;
@@ -2111,6 +2112,11 @@ namespace EQWOWConverter.Spells
                                 effectGeneratedSpellTemplate.AuraDuration = new SpellDuration();
                                 effectGeneratedSpellTemplate.AuraDuration.SetFixedDuration(eqEffect.EQBaseValue);
                                 effectGeneratedSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
+                                if (eqEffect.EQMaxValue > 0)
+                                    effectGeneratedSpellTemplate.MaxCreatureTargetLevel = eqEffect.EQMaxValue;
+                                else
+                                    effectGeneratedSpellTemplate.MaxCreatureTargetLevel = Configuration.SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT;
+
                                 SpellEffectWOW stunSpellEffectWOW = new SpellEffectWOW();
                                 stunSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 stunSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStun;
@@ -2663,8 +2669,11 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("mesmerises the target which stops all actions until damage is taken");
                                 newSpellEffectWOW.AuraDescription = string.Concat("mesmerized");
                                 newSpellEffectWOW.EffectMechanic = SpellMechanicType.Incapacitated;
+                                if (eqEffect.EQMaxValue > 0 && (spellTemplate.MaxCreatureTargetLevel == 0 || eqEffect.EQMaxValue < spellTemplate.MaxCreatureTargetLevel))
+                                    spellTemplate.MaxCreatureTargetLevel = eqEffect.EQMaxValue;
                                 spellTemplate.InterruptAuraOnTakeDamage = true;
                                 spellTemplate.NoPartialImmunity = true;
+
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         case SpellEQEffectType.Charm:
@@ -2675,6 +2684,8 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("charms the target which makes it fight for you");
                                 newSpellEffectWOW.AuraDescription = string.Concat("charmed");
                                 newSpellEffectWOW.EffectMechanic = SpellMechanicType.Charmed;
+                                if (eqEffect.EQMaxValue > 0 && (spellTemplate.MaxCreatureTargetLevel == 0 || eqEffect.EQMaxValue < spellTemplate.MaxCreatureTargetLevel))
+                                    spellTemplate.MaxCreatureTargetLevel = eqEffect.EQMaxValue;
                                 spellTemplate.NoPartialImmunity = true;
                                 spellTemplate.GenerateNoThreat = true; // This avoids being stuck in combat
                                 spellTemplate.IsCharmSpell = true; // This too

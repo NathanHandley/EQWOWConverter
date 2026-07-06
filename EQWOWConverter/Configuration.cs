@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 35;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 36;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -785,6 +785,9 @@ namespace EQWOWConverter
 
         // Minimum level to enforce buff constraints against low level players, with 0 being off. 50 is EQ-like (according to TAKP)
         public static int SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD = 50;
+
+        // Default level to block stuns on creatures (EQ-like)
+        public static int SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT = 55;
 
         // Summoner dummy spell ID used to prevent creatures from summoning more creatures
         public static int SPELL_SUMMON_CASTER_AURA_SPELL_ID = 86905;
@@ -1600,6 +1603,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_SPELL_POWER_LOW_LEVEL_MOD", SPELL_SPELL_POWER_LOW_LEVEL_MOD, "Additional mod that reduces spell power influence on low-level spells (1 = disabled)");
             OutputVariableToConfig("SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL", SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL, "The level to phase out this new mod (linear from level 1)");
             OutputVariableToConfig("SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD", SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD, "Minimum level to enforce buff constraints against low level players, with 0 being off. 50 is EQ-like (according to TAKP)");
+            OutputVariableToConfig("SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT", SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT, "Default level to block stuns on creatures (EQ-like)");
             OutputVariableToConfig("SPELL_SUMMON_CASTER_AURA_SPELL_ID", SPELL_SUMMON_CASTER_AURA_SPELL_ID, "Summoner dummy spell ID used to prevent creatures from summoning more creatures");
             OutputVariableToConfig("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID, "Hidden passive aura used to reduce creature mana regeneration (see CREATURE_MANA_REGEN_PERCENT)");
             OutputVariableToConfig("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID, "This is the ID used to detect invis and stealth, and already exists in AzerothCore");
@@ -2157,6 +2161,7 @@ namespace EQWOWConverter
             SPELL_SPELL_POWER_LOW_LEVEL_MOD = ReadVariableFromConfigString("SPELL_SPELL_POWER_LOW_LEVEL_MOD", configValuesByVariableName, SPELL_SPELL_POWER_LOW_LEVEL_MOD);
             SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL = ReadVariableFromConfigString("SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL", configValuesByVariableName, SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL);
             SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD = ReadVariableFromConfigString("SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD", configValuesByVariableName, SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD);
+            SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT = ReadVariableFromConfigString("SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT", configValuesByVariableName, SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT);
             SPELL_SUMMON_CASTER_AURA_SPELL_ID = ReadVariableFromConfigString("SPELL_SUMMON_CASTER_AURA_SPELL_ID", configValuesByVariableName, SPELL_SUMMON_CASTER_AURA_SPELL_ID);
             SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID);
             SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID);

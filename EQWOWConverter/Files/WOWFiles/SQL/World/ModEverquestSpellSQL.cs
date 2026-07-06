@@ -46,6 +46,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`SpellIDCastOnTargetWhenStunLands` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`AuraStaysOnSecondaryClassSwitch` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`MinTargetLevel` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`MaxCreatureTargetLevel` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -100,6 +101,7 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("MinTargetLevel", 0); // Worn effects have no target level restriction in EQ
             else
                 newRow.AddInt("MinTargetLevel", spellTemplate.GetMinimumTargetLevel());
+            newRow.AddInt("MaxCreatureTargetLevel", isWorn == true ? 0 : spellTemplate.MaxCreatureTargetLevel);
             Rows.Add(newRow);
         }
     }
