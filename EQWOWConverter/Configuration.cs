@@ -463,8 +463,8 @@ namespace EQWOWConverter
         public static float CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT = 2000f;
 
         // Creatures that cross these threasholds will be elite if not given another rank
-        public static float CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE = 8.01f;
-        public static float CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE = 6.01f;
+        public static float CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE = 5.01f;
+        public static float CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE = 2.01f;
 
         // If true, creature pets will have the same scaling as set above
         public static bool CREATURE_PET_ALLOW_STAT_MOD_SCALING = false;
