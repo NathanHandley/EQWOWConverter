@@ -72,30 +72,28 @@ namespace EQWOWConverter.Spells
             if (spellLevel < 1)
                 spellLevel = 1;
 
-            // Handle population based on the type of formula
-            if (eqBuffDurationFormula == 3600)
+            // Handle population based on the type of formula (Forumlas >= 200 are duration in ticks)
+            if (eqBuffDurationFormula >= 200)
             {
-                int calcMS = 21600000; // 6 hours is the default
-                if (maxBuffDurationInMS != 0)
-                    calcMS = maxBuffDurationInMS * Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ * 1000;
+                int calcMS = eqBuffDurationFormula * Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ * 1000;
                 BaseDurationInMS = calcMS;
                 MaxDurationInMS = calcMS;
             }
             else if (eqBuffDurationFormula == 4)
             {
-                // 50 ticks or max
+                // Max duration, capped at 50 ticks
                 int calcMS = 50 * Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ * 1000;
                 if (maxBuffDurationInMS > 0)
-                    calcMS = Math.Max(calcMS, maxBuffDurationInMS);
+                    calcMS = Math.Min(calcMS, maxBuffDurationInMS);
                 BaseDurationInMS = calcMS;
                 MaxDurationInMS = calcMS;
             }
             else if (eqBuffDurationFormula == 5)
             {
-                // 2 ticks or max
+                // Max duration, capped at 2 ticks
                 int calcMS = 2 * Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ * 1000;
                 if (maxBuffDurationInMS > 0)
-                    calcMS = Math.Max(calcMS, maxBuffDurationInMS);
+                    calcMS = Math.Min(calcMS, maxBuffDurationInMS);
                 BaseDurationInMS = calcMS;
                 MaxDurationInMS = calcMS;
             }
@@ -141,7 +139,7 @@ namespace EQWOWConverter.Spells
             int curDurationInTicks = 0;
             switch (eqBuffDurationFormula)
             {
-                case 1: curDurationInTicks = curLevel / 2; break;
+                case 1: curDurationInTicks = Math.Max(curLevel / 2, 1); break;
                 case 2:
                     {
                         if (curLevel > 3)
