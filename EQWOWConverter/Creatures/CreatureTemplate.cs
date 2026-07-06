@@ -79,6 +79,7 @@ namespace EQWOWConverter.Creatures
         public bool IsNonNPC = false;
         public string SpawnZones = string.Empty;
         public bool IsQuestGiver = false;
+        public bool HasGossipReactions = false;
         public int SpawnLimit = 0;
         public bool HasSmartScript = false;
         public int DefaultEmoteID = 0;

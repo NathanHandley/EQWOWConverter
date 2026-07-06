@@ -94,6 +94,7 @@ namespace EQWOWConverter
         private ModEverquestZoneSafePointSQL modEverquestZoneSafePointSQL = new ModEverquestZoneSafePointSQL();
         private ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
         private ModEverquestQuestReactionSQL modEverquestQuestReactionSQL = new ModEverquestQuestReactionSQL();
+        private ModEverquestGossipReactionSQL modEverquestGossipReactionSQL = new ModEverquestGossipReactionSQL();
         private NPCTextSQL npcTextSQL = new NPCTextSQL();
         private NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
         private PageTextSQL pageTextSQL = new PageTextSQL();
@@ -141,6 +142,9 @@ namespace EQWOWConverter
 
             // Trainer Abilities (Class and Profession)
             PopulateTrainerData(creatureTemplates);
+
+            // Talk-triggered (gossip) reactions, before creature data so the gossip flags are set prior to creature_template rows generating
+            PopulateCreatureGossipData();
 
             // Creatures
             Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
@@ -201,6 +205,64 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("QuestSQLIDMax", Configuration.SQL_QUEST_TEMPLATE_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("WorldScale", Configuration.GENERATE_WORLD_SCALE.ToString());
             modEverquestSystemConfigsSQL.AddRow("RangedAttackSpellID", Configuration.COMBATSKILL_RANGED_ENABLED == true ? Configuration.COMBATSKILL_RANGED_SPELL_ID.ToString() : "0");
+        }
+
+        private void PopulateCreatureGossipData()
+        {
+            Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
+
+            // Group the reactions by the creature they attach to
+            Dictionary<(string, string), List<QuestGossipReaction>> gossipReactionsByZoneAndCreatureName = new Dictionary<(string, string), List<QuestGossipReaction>>();
+            foreach (QuestGossipReaction gossipReaction in QuestGossipReaction.GetGossipReactions())
+            {
+                (string, string) key = (gossipReaction.ZoneShortName, gossipReaction.CreatureName);
+                if (gossipReactionsByZoneAndCreatureName.ContainsKey(key) == false)
+                    gossipReactionsByZoneAndCreatureName.Add(key, new List<QuestGossipReaction>());
+                gossipReactionsByZoneAndCreatureName[key].Add(gossipReaction);
+            }
+
+            foreach (var gossipReactionsForCreature in gossipReactionsByZoneAndCreatureName)
+            {
+                string zoneShortName = gossipReactionsForCreature.Key.Item1;
+                string creatureName = gossipReactionsForCreature.Key.Item2;
+                List<QuestGossipReaction> gossipReactions = gossipReactionsForCreature.Value;
+                List<CreatureTemplate> gossipCreatureTemplates = CreatureTemplate.GetCreatureTemplatesForSpawnZonesAndName(zoneShortName, creatureName);
+                if (gossipCreatureTemplates.Count == 0)
+                {
+                    Logger.WriteDebug(string.Concat("Skipping gossip reactions with zone '", zoneShortName, "' and name '", creatureName, "' as no creature template could be found"));
+                    continue;
+                }
+
+                // Greeting text shown when the gossip window opens
+                string menuText = gossipReactions[0].MenuText;
+                if (menuText.Length == 0)
+                    menuText = "Greetings, $N.";
+                int menuBroadcastTextID = BroadcastTextSQL.GenerateUniqueID();
+                broadcastTextSQL.AddRow(menuBroadcastTextID, menuText, menuText);
+                int menuNPCTextID = NPCTextSQL.GenerateUniqueID();
+                npcTextSQL.AddRow(menuNPCTextID, menuText, menuBroadcastTextID);
+
+                foreach (CreatureTemplate gossipCreatureTemplate in gossipCreatureTemplates)
+                {
+                    gossipCreatureTemplate.HasGossipReactions = true;
+                    foreach (QuestGossipReaction gossipReaction in gossipReactions)
+                    {
+                        int targetCreatureTemplateID = 0;
+                        if (gossipReaction.CreatureEQID > 0)
+                        {
+                            if (creatureTemplatesByEQID.ContainsKey(gossipReaction.CreatureEQID) == false)
+                            {
+                                Logger.WriteDebug(string.Concat("Skipping gossip reaction for creature '", creatureName, "' as the target creature EQID of ", gossipReaction.CreatureEQID.ToString(), " could not be found"));
+                                continue;
+                            }
+                            targetCreatureTemplateID = creatureTemplatesByEQID[gossipReaction.CreatureEQID].WOWCreatureTemplateID;
+                        }
+                        if (gossipReaction.CreatureIsSelf == true)
+                            targetCreatureTemplateID = gossipCreatureTemplate.WOWCreatureTemplateID;
+                        modEverquestGossipReactionSQL.AddRow(gossipCreatureTemplate.WOWCreatureTemplateID, menuNPCTextID, gossipReaction, targetCreatureTemplateID);
+                    }
+                }
+            }
         }
 
         private void PopulateCreatureKillSpawnData(Dictionary<string, int> mapIDsByShortName)
@@ -2110,6 +2172,7 @@ namespace EQWOWConverter
             modEverquestTransportTriggerSQL.SaveToDisk("mod_everquest_transport_trigger", SQLFileType.World);
             modEverquestZoneSafePointSQL.SaveToDisk("mod_everquest_zone_safe_point", SQLFileType.World);
             modEverquestQuestReactionSQL.SaveToDisk("mod_everquest_quest_reaction", SQLFileType.World);
+            modEverquestGossipReactionSQL.SaveToDisk("mod_everquest_gossip_reaction", SQLFileType.World);
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
             pageTextSQL.SaveToDisk("page_text", SQLFileType.World);

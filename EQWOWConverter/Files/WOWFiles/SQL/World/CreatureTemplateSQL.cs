@@ -95,6 +95,8 @@ namespace EQWOWConverter.WOWFiles
                 numOfRoles+=2;
             if (Configuration.GENERANE_ENABLE_PLANES_TELEPORTATION == true && creatureTemplate.IsPlaneTeleporter == true)
                 numOfRoles+=2;
+            if (creatureTemplate.HasGossipReactions == true)
+                numOfRoles += 2;
             if (numOfRoles > 1)
                 npcFlags |= 1;     // 0x00000001 = Has Gossip Menu
             if (creatureTemplate.CanAssist == true)
@@ -190,7 +192,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RegenHealth", 1);
             newRow.AddInt("CreatureImmunitiesId", creatureTemplate.CreatureImmunitiesId);
             newRow.AddInt("flags_extra", extraFlags);
-            newRow.AddString("ScriptName", 64, string.Empty);
+            if (creatureTemplate.HasGossipReactions == true)
+                newRow.AddString("ScriptName", 64, "EverQuest_GossipScript");
+            else
+                newRow.AddString("ScriptName", 64, string.Empty);
             newRow.AddInt("VerifiedBuild", 12340);
             Rows.Add(newRow);
         }
