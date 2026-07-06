@@ -61,6 +61,7 @@ namespace EQWOWConverter.Player
                             Logger.WriteError("Race properties error, as the alignment string '" + alignmentString + "' has no mapping");
                         } break;
                 }
+                raceProperties.HasSlam = columns["HasSlam"].Trim() == "1" ? true : false;
                 WOWRacePropertiesByRaceType.Add(raceProperties.WOWRaceType, raceProperties);
             }
         }

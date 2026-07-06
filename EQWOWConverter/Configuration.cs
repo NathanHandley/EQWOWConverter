@@ -827,7 +827,7 @@ namespace EQWOWConverter
         public static int COMBATSKILL_BASH_FORBEARANCE_DURATION_IN_MS = 5000;
 
         // Slam is an Ogre/Troll/Barb racial in EQ (a Bash-equivalent that needs no shield). It shares a cooldown with Bash.
-        // Granted to players by race (PlayerClassRaceProperties.HasSlam), available from level 1.
+        // Granted to players by race (PlayerWOWRaceProperties.HasSlam), available from level 1.
         public static bool COMBATSKILL_SLAM_ENABLED = true;
         public static bool COMBATSKILL_SLAM_PLAYER_LEARNABLE = true;
         public static int COMBATSKILL_SLAM_SPELL_ID = 86911;
@@ -1623,7 +1623,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID", COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_FORBEARANCE_DURATION_IN_MS", COMBATSKILL_BASH_FORBEARANCE_DURATION_IN_MS, "");
             OutputTextLineToConfig("# Slam is an Ogre/Troll/Barb racial in EQ (a Bash-equivalent that needs no shield). It shares a cooldown with Bash.");
-            OutputVariableToConfig("COMBATSKILL_SLAM_ENABLED", COMBATSKILL_SLAM_ENABLED, "Granted to players by race (PlayerClassRaceProperties.HasSlam), available from level 1.", false);
+            OutputVariableToConfig("COMBATSKILL_SLAM_ENABLED", COMBATSKILL_SLAM_ENABLED, "Granted to players by race (PlayerWOWRaceProperties.HasSlam), available from level 1.", false);
             OutputVariableToConfig("COMBATSKILL_SLAM_PLAYER_LEARNABLE", COMBATSKILL_SLAM_PLAYER_LEARNABLE, "Whether races that have Slam learn it as players (from level 1)", false);
             OutputVariableToConfig("COMBATSKILL_SLAM_SPELL_ID", COMBATSKILL_SLAM_SPELL_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_SLAM_SPELL_ICON_EQ_ID", COMBATSKILL_SLAM_SPELL_ICON_EQ_ID, "", false);
