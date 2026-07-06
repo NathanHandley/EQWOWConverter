@@ -732,7 +732,7 @@ namespace EQWOWConverter.Items
         private static ItemWOWInventoryType GetInventoryTypeFromSlotMask(int slotMask)
         {
             if (slotMask == 0)
-                return 0;
+                return ItemWOWInventoryType.NoEquip;
             if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Chest, slotMask))
                 return ItemWOWInventoryType.Chest;
             if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Hands, slotMask))
@@ -769,6 +769,10 @@ namespace EQWOWConverter.Items
                 return ItemWOWInventoryType.Neck;
             if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Back, slotMask))
                 return ItemWOWInventoryType.Back;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ranged, slotMask))
+                return ItemWOWInventoryType.Ranged;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask))
+                return ItemWOWInventoryType.MainHand;
             return ItemWOWInventoryType.NoEquip;
         }
         private static bool IsPackedSlotMask(ItemEQEquipSlotBitmaskType itemSlotBitmaskType, int slotMask)
@@ -853,7 +857,7 @@ namespace EQWOWConverter.Items
             return false;
         }
 
-        private static void PopulateItemClassSpecificProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask, 
+        private static void PopulateItemClassSpecificProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask,
             int iconID, int damage, int castTime, BookText? bookText, int baitPotency)
         {
             bool allowBothHands = false;
@@ -1067,6 +1071,8 @@ namespace EQWOWConverter.Items
                     } break;
                 case 11: // Misc
                     {
+                        ItemWOWInventoryType inventoryType = GetInventoryTypeFromSlotMask(slotMask);
+
                         // If it can be equipped in hands, make it holdable
                         if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) ||
                            IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Secondary, slotMask))
@@ -1082,7 +1088,15 @@ namespace EQWOWConverter.Items
                             itemTemplate.ClassID = 2;
                             itemTemplate.SubClassID = 14;
                             itemTemplate.InventoryType = ItemWOWInventoryType.Ranged;
-                        }                        
+                        }
+
+                        // Test if it can be equipped, if so make it equippable
+                        else if (inventoryType != ItemWOWInventoryType.NoEquip)
+                        {
+                            itemTemplate.ClassID = 4;
+                            itemTemplate.SubClassID = Convert.ToInt32(GetArmorSubclass(classMask));
+                            itemTemplate.InventoryType = inventoryType;
+                        }
 
                         // Otherwise, store it as misc
                         else
