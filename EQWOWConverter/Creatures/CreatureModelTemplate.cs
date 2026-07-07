@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.ObjectModels;
+using System.Globalization;
 using System.Text;
 using EQWOWConverter.WOWFiles;
 
@@ -42,16 +43,35 @@ namespace EQWOWConverter.Creatures
         public int DBCCreatureSoundDataID;
         private static readonly object CreatureLock = new object();
 
+        // Values are [DBCCreatureModelDataID, DBCCreatureDisplayID, DBCCreatureSoundDataID] keyed by the generating context
+        private static Dictionary<string, int[]>? SavedDBCIDsByContextKey = null;
+
         public CreatureModelTemplate(CreatureRace creatureRace, CreatureGenderType genderType, int helmTextureID,
             int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale)
         {
             lock (CreatureLock)
             {
-                DBCCreatureModelDataID = CURRENT_DBCID_CREATUREMODELDATAID;
-                CURRENT_DBCID_CREATUREMODELDATAID++;
-                DBCCreatureDisplayID = GenerateDisplayInfoID();
-                DBCCreatureSoundDataID = CURRENT_DBCID_CREATURESOUNDDATAID;
-                CURRENT_DBCID_CREATURESOUNDDATAID++;
+                LoadSavedDBCIDsIfNeeded();
+                string contextKey = GenerateDBCIDsContextKey(creatureRace.ID, genderType, helmTextureID, textureIndex,
+                    faceIndex, colorTintID, modelTemplateScale);
+                if (SavedDBCIDsByContextKey!.ContainsKey(contextKey) == true)
+                {
+                    int[] savedDBCIDs = SavedDBCIDsByContextKey[contextKey];
+                    DBCCreatureModelDataID = savedDBCIDs[0];
+                    DBCCreatureDisplayID = savedDBCIDs[1];
+                    DBCCreatureSoundDataID = savedDBCIDs[2];
+                }
+                else
+                {
+                    DBCCreatureModelDataID = CURRENT_DBCID_CREATUREMODELDATAID;
+                    CURRENT_DBCID_CREATUREMODELDATAID++;
+                    DBCCreatureDisplayID = GenerateDisplayInfoID();
+                    DBCCreatureSoundDataID = CURRENT_DBCID_CREATURESOUNDDATAID;
+                    CURRENT_DBCID_CREATURESOUNDDATAID++;
+                    SavedDBCIDsByContextKey.Add(contextKey, new int[] { DBCCreatureModelDataID, DBCCreatureDisplayID, DBCCreatureSoundDataID });
+                    AppendSavedDBCIDsToFile(creatureRace.ID, genderType, helmTextureID, textureIndex, faceIndex,
+                        colorTintID, modelTemplateScale, DBCCreatureModelDataID, DBCCreatureDisplayID, DBCCreatureSoundDataID);
+                }
             }
 
             Race = creatureRace;
@@ -86,6 +106,104 @@ namespace EQWOWConverter.Creatures
                 CURRENT_DBCID_CREATUREDISPLAYINFOID++;
                 return returnID;
             }
+        }
+
+        private static string GetSavedDBCIDsFilePath()
+        {
+            return Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureModelTemplateIDs.csv");
+        }
+
+        private static string GenerateDBCIDsContextKey(int raceID, CreatureGenderType genderType, int helmTextureID,
+            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale)
+        {
+            StringBuilder keySB = new StringBuilder();
+            keySB.Append(raceID);
+            keySB.Append("|");
+            keySB.Append(Convert.ToInt32(genderType));
+            keySB.Append("|");
+            keySB.Append(helmTextureID);
+            keySB.Append("|");
+            keySB.Append(textureIndex);
+            keySB.Append("|");
+            keySB.Append(faceIndex);
+            keySB.Append("|");
+            keySB.Append(colorTintID);
+            keySB.Append("|");
+            keySB.Append(modelTemplateScale.ToString(CultureInfo.InvariantCulture));
+            return keySB.ToString();
+        }
+
+        private static void LoadSavedDBCIDsIfNeeded()
+        {
+            if (SavedDBCIDsByContextKey != null)
+                return;
+            SavedDBCIDsByContextKey = new Dictionary<string, int[]>();
+            if (CURRENT_DBCID_CREATUREDISPLAYINFOID == -1)
+                CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.DBCID_CREATUREDISPLAYINFO_ID_START;
+
+            string savedDBCIDsFilePath = GetSavedDBCIDsFilePath();
+            if (File.Exists(savedDBCIDsFilePath) == false)
+            {
+                Logger.WriteDebug("No saved creature model template DBC IDs file found at '" + savedDBCIDsFilePath + "', so all IDs will be newly generated");
+                return;
+            }
+
+            Logger.WriteDebug("Loading saved creature model template DBC IDs via file '" + savedDBCIDsFilePath + "'");
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(savedDBCIDsFilePath, "|");
+            foreach (Dictionary<string, string> columns in rows)
+            {
+                StringBuilder keySB = new StringBuilder();
+                keySB.Append(columns["raceid"]);
+                keySB.Append("|");
+                keySB.Append(columns["genderid"]);
+                keySB.Append("|");
+                keySB.Append(columns["helmtextureid"]);
+                keySB.Append("|");
+                keySB.Append(columns["textureindex"]);
+                keySB.Append("|");
+                keySB.Append(columns["faceindex"]);
+                keySB.Append("|");
+                keySB.Append(columns["colortintid"]);
+                keySB.Append("|");
+                keySB.Append(columns["modeltemplatescale"]);
+                string contextKey = keySB.ToString();
+                if (SavedDBCIDsByContextKey.ContainsKey(contextKey) == true)
+                {
+                    Logger.WriteError("Duplicate context key '" + contextKey + "' found in '" + savedDBCIDsFilePath + "', skipping the duplicate row");
+                    continue;
+                }
+
+                int modelDataDBCID = int.Parse(columns["creaturemodeldata_dbcid"]);
+                int displayDBCID = int.Parse(columns["creaturedisplay_dbcid"]);
+                int soundDataDBCID = int.Parse(columns["creaturesounddata_dbcid"]);
+                SavedDBCIDsByContextKey.Add(contextKey, new int[] { modelDataDBCID, displayDBCID, soundDataDBCID });
+
+                // Ensure newly generated IDs never collide with previously saved ones
+                if (modelDataDBCID >= CURRENT_DBCID_CREATUREMODELDATAID)
+                    CURRENT_DBCID_CREATUREMODELDATAID = modelDataDBCID + 1;
+                if (displayDBCID >= CURRENT_DBCID_CREATUREDISPLAYINFOID)
+                    CURRENT_DBCID_CREATUREDISPLAYINFOID = displayDBCID + 1;
+                if (soundDataDBCID >= CURRENT_DBCID_CREATURESOUNDDATAID)
+                    CURRENT_DBCID_CREATURESOUNDDATAID = soundDataDBCID + 1;
+            }
+        }
+
+        private static void AppendSavedDBCIDsToFile(int raceID, CreatureGenderType genderType, int helmTextureID,
+            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale, int modelDataDBCID,
+            int displayDBCID, int soundDataDBCID)
+        {
+            Dictionary<string, string> rowValues = new Dictionary<string, string>();
+            rowValues.Add("raceid", raceID.ToString());
+            rowValues.Add("genderid", Convert.ToInt32(genderType).ToString());
+            rowValues.Add("helmtextureid", helmTextureID.ToString());
+            rowValues.Add("textureindex", textureIndex.ToString());
+            rowValues.Add("faceindex", faceIndex.ToString());
+            rowValues.Add("colortintid", colorTintID.ToString());
+            rowValues.Add("modeltemplatescale", modelTemplateScale.ToString(CultureInfo.InvariantCulture));
+            rowValues.Add("creaturemodeldata_dbcid", modelDataDBCID.ToString());
+            rowValues.Add("creaturedisplay_dbcid", displayDBCID.ToString());
+            rowValues.Add("creaturesounddata_dbcid", soundDataDBCID.ToString());
+            FileTool.AppendRowToFileWithHeader(GetSavedDBCIDsFilePath(), "|", rowValues);
         }
 
         public static CreatureModelTemplate CreateCreatureModelTemplateForWaypointDebugging()

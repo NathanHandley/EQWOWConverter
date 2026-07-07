@@ -267,6 +267,41 @@ namespace EQWOWConverter
                     outputFile.WriteLine(outputLine);
         }
 
+        public static void AppendRowToFileWithHeader(string fileName, string delimeter, Dictionary<string, string> rowValues)
+        {
+            List<string> outputLines = new List<string>();
+
+            // Header, but only if the file doesn't exist yet
+            if (File.Exists(fileName) == false)
+            {
+                StringBuilder headerSB = new StringBuilder();
+                for (int i = 0; i < rowValues.Keys.Count; i++)
+                {
+                    string columnName = rowValues.Keys.ToList()[i];
+                    headerSB.Append(columnName);
+                    if (i < rowValues.Keys.Count - 1)
+                        headerSB.Append(delimeter);
+                }
+                outputLines.Add(headerSB.ToString());
+            }
+
+            // Body
+            StringBuilder bodySB = new StringBuilder();
+            for (int j = 0; j < rowValues.Values.Count; j++)
+            {
+                string value = rowValues.Values.ToList()[j];
+                bodySB.Append(value);
+                if (j < rowValues.Keys.Count - 1)
+                    bodySB.Append(delimeter);
+            }
+            outputLines.Add(bodySB.ToString());
+
+            // Output to the file
+            using (var outputFile = new StreamWriter(fileName, true))
+                foreach (string outputLine in outputLines)
+                    outputFile.WriteLine(outputLine);
+        }
+
         public static bool IsFileLocked(string fileName)
         {
             try
