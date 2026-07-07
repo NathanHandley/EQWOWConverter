@@ -519,6 +519,38 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
+            // Backfill "pos" frame for any skeleton bone that an animation never references.  Without this, such bones get an empty track and
+            // the WoW client renders them at identity (no translation or rotation), collapsing that body part onto its parent joint.  Without this,
+            // some models like freeport guards or pixie wings simply don't render properly
+            if (Animations.ContainsKey("pos") == true && SkeletonData.BoneStructures.Count > 0)
+            {
+                Dictionary<string, Animation.BoneAnimationFrame> posFramesByBoneName = new Dictionary<string, Animation.BoneAnimationFrame>();
+                foreach (Animation.BoneAnimationFrame posFrame in Animations["pos"].AnimationFrames)
+                    if (posFramesByBoneName.ContainsKey(posFrame.GetBoneName()) == false)
+                        posFramesByBoneName.Add(posFrame.GetBoneName(), posFrame);
+                foreach (var animationByName in Animations)
+                {
+                    if (animationByName.Key == "pos")
+                        continue;
+                    Animation curAnimation = animationByName.Value;
+                    HashSet<string> boneNamesInAnimation = new HashSet<string>();
+                    foreach (Animation.BoneAnimationFrame animationFrame in curAnimation.AnimationFrames)
+                        boneNamesInAnimation.Add(animationFrame.GetBoneName());
+                    foreach (EQSkeleton.EQSkeletonBone skeletonBone in SkeletonData.BoneStructures)
+                    {
+                        if (boneNamesInAnimation.Contains(skeletonBone.BoneName) == true)
+                            continue;
+                        if (posFramesByBoneName.ContainsKey(skeletonBone.BoneName) == false)
+                            continue;
+                        Animation.BoneAnimationFrame newFrame = posFramesByBoneName[skeletonBone.BoneName];
+                        newFrame.FrameIndex = 0;
+                        newFrame.FramesMS = curAnimation.TotalTimeInMS;
+                        curAnimation.AnimationFrames.Add(newFrame);
+                        Logger.WriteDebug("- [" + inputObjectName + "]: Bone '" + skeletonBone.BoneName + "' had no frames in animation '" + animationByName.Key + "', so a bind pose frame was added for it");
+                    }
+                }
+            }
+
             // Generate any appropriate reversals
             {
                 Dictionary<string, Animation> newReverseAnimationsByName = new Dictionary<string, Animation>();
