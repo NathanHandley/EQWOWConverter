@@ -218,7 +218,7 @@ namespace EQWOWConverter.ObjectModels
             // Creatures have a lift variable to factor for
             if (ModelType != ObjectModelType.TransportShip && Properties.CreatureModelTemplate != null)
             {
-                float lift = Properties.CreatureModelTemplate.Race.Lift * Configuration.GENERATE_EQUIPMENT_SCALE;
+                float lift = Properties.CreatureModelTemplate.Race.Lift * Configuration.GENERATE_EQUIPMENT_SCALE * Properties.AdditionalScaleMultiplier;
                 if (Properties.CreatureModelTemplate.Race.BoundaryRadiusOverride > 0)
                 {
                     float halfHeight = Properties.CreatureModelTemplate.Race.BoundaryHeightOverride / 2;

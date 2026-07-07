@@ -577,6 +577,9 @@ namespace EQWOWConverter.GameObjects
                                     objectProperties.CreatureModelTemplate = creatureModelTemplate;
                                     objectProperties.ModelScalePreWorldScale = creatureRace.ModelScale;
                                     objectProperties.ModelLiftPreWorldScale = creatureRace.Lift;
+                                    
+                                    // Counteract the scaling done to models since these have a different way of scaling
+                                    objectProperties.AdditionalScaleMultiplier = Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE;
                                     curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.Creature);
                                     curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.ModelName);
                                 } break;
