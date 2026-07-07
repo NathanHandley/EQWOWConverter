@@ -437,6 +437,9 @@ namespace EQWOWConverter
         // NPCs with an EQ level above this are immune to fear (EQ/TAKP like), note that it uses the original EQ min level for this to match live-like behavior
         public static int CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ = 52;
 
+        // How many seconds will elapse before a boss creature respawns after dying
+        public static int CREATURE_BOSS_RESPAWN_TIME_IN_SEC = 3600;
+
         // Stat modifiers for creatures
         // - "MODADD" are values added after all dynamic calculations
         // - "RANGEINTENSITY" is the amount of 'swing' differences in stats come out to be
@@ -1444,6 +1447,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_FIDGET_CHANCE_PERCENT", CREATURE_FIDGET_CHANCE_PERCENT, "Percent chance (0-100) that a fidget animation plays after each completed calm stand cycle");
             OutputVariableToConfig("CREATURE_FIDGET_STAND_TIME_IN_MS", CREATURE_FIDGET_STAND_TIME_IN_MS, "How long (in ms) the calm standing animation plays before each fidget chance roll");
             OutputVariableToConfig("CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ", CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ, "NPCs with an EQ level above this are immune to fear (EQ/TAKP like), note that it uses the original EQ min level for this to match live-like behavior");
+            OutputVariableToConfig("CREATURE_BOSS_RESPAWN_TIME_IN_SEC", CREATURE_BOSS_RESPAWN_TIME_IN_SEC, "How many seconds will elapse before a boss creature respawns after dying");
             OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD", CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD, "Stat modifiers for creatures - \"MODADD\" are values added after all dynamic calculations", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD", CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL", CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL, "", false);
@@ -1989,6 +1993,7 @@ namespace EQWOWConverter
             CREATURE_FIDGET_STAND_TIME_IN_MS = ReadVariableFromConfigString("CREATURE_FIDGET_STAND_TIME_IN_MS", configValuesByVariableName, CREATURE_FIDGET_STAND_TIME_IN_MS);
 
             CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ = ReadVariableFromConfigString("CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ", configValuesByVariableName, CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ);
+            CREATURE_BOSS_RESPAWN_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_BOSS_RESPAWN_TIME_IN_SEC", configValuesByVariableName, CREATURE_BOSS_RESPAWN_TIME_IN_SEC);
 
             CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD);
             CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD);
