@@ -38,6 +38,8 @@ namespace EQWOWConverter
         private static List<string> ZoneShortNamesToProcess = new List<string>();
         private static readonly object ZoneLock = new object();
         private static readonly object CreatureModelWorkLock = new object();
+        private static Queue<string> ObjectNamesToProcess = new Queue<string>();
+        private static readonly object ObjectConversionLock = new object();
 
         public bool ConvertEQDataToWOW()
         {
@@ -518,64 +520,41 @@ namespace EQWOWConverter
             if (Directory.Exists(exportObjectsFolder))
                 Directory.Delete(exportObjectsFolder, true);
 
-            // Generate static EQ objects
+            // Perform static + skeletal object in work queues
             string staticObjectListFileName = Path.Combine(conditionedObjectFolderRoot, "static_objects.txt");
             List<string> staticObjectList = FileTool.ReadAllStringLinesFromFile(staticObjectListFileName, false, true);
-            LogCounter staticObjectProgressCounter = new LogCounter("Converting static EQ objects...", 0, staticObjectList.Count);
-            foreach (string staticObjectName in staticObjectList)
-            {
-                staticObjectProgressCounter.AddToProgress(1);
-                string curObjectOutputFolder = Path.Combine(exportObjectsFolder, staticObjectName);
-
-                // Load the EQ object
-                ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectName);
-                ObjectModel curObject = new ObjectModel(staticObjectName, objectProperties, ObjectModelType.StaticDoodad);
-                Logger.WriteDebug("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "'");
-                curObject.LoadEQObjectFromFile(conditionedObjectFolderRoot, staticObjectName);
-                Logger.WriteDebug("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "' complete");
-
-                // Create the M2 and Skin
-                string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", staticObjectName);
-                M2 objectM2 = new M2(curObject, relativeMPQPath);
-                objectM2.WriteToDisk(curObject.Name, curObjectOutputFolder);
-
-                // Place the related textures
-                string objectTextureFolder = Path.Combine(conditionedObjectFolderRoot, "textures");
-                ExportTexturesForObject(curObject, new List<string>() { objectTextureFolder }, curObjectOutputFolder);
-
-                // Save it for use elsewhere
-                ObjectModel.StaticObjectModelsByName.Add(curObject.Name, curObject);
-                staticObjectProgressCounter.Write();
-            }
-
-            // Generate skeletal EQ objects
             string skeletalObjectListFileName = Path.Combine(conditionedObjectFolderRoot, "skeletal_objects.txt");
             List<string> skeletalObjectList = FileTool.ReadAllStringLinesFromFile(skeletalObjectListFileName, false, true);
-            LogCounter skeletalObjectProgressCounter = new LogCounter("Converting skeletal EQ objects...", 0, skeletalObjectList.Count);            
-            foreach (string skeletalObjectName in skeletalObjectList)
+            lock (ObjectConversionLock)
             {
-                skeletalObjectProgressCounter.AddToProgress(1);
-                string curObjectOutputFolder = Path.Combine(exportObjectsFolder, skeletalObjectName);
+                ObjectNamesToProcess.Clear();
+                foreach (string staticObjectName in staticObjectList)
+                    ObjectNamesToProcess.Enqueue(staticObjectName);
+                foreach (string skeletalObjectName in skeletalObjectList)
+                    ObjectNamesToProcess.Enqueue(skeletalObjectName);
+            }
+            LogCounter objectProgressCounter = new LogCounter("Converting static and skeletal EQ objects...", 0, staticObjectList.Count + skeletalObjectList.Count);
+            objectProgressCounter.Write(0);
 
-                // Load the EQ object
-                ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletalObjectName);
-                ObjectModel curObject = new ObjectModel(skeletalObjectName, objectProperties, ObjectModelType.StaticDoodad);
-                Logger.WriteDebug("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "'");
-                curObject.LoadEQObjectFromFile(conditionedObjectFolderRoot, skeletalObjectName);
-                Logger.WriteDebug("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "' complete");
-
-                // Create the M2 and Skin
-                string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", skeletalObjectName);
-                M2 objectM2 = new M2(curObject, relativeMPQPath);
-                objectM2.WriteToDisk(curObject.Name, curObjectOutputFolder);
-
-                // Place the related textures
-                string objectTextureFolder = Path.Combine(conditionedObjectFolderRoot, "textures");
-                ExportTexturesForObject(curObject, new List<string>() { objectTextureFolder }, curObjectOutputFolder);
-
-                // Save it for use elsewhere
-                ObjectModel.StaticObjectModelsByName.Add(curObject.Name, curObject);
-                skeletalObjectProgressCounter.Write();
+            if (Configuration.CORE_ENABLE_MULTITHREADING == true)
+            {
+                int taskCount = Configuration.CORE_OBJECT_THREAD_COUNT;
+                if (ObjectNamesToProcess.Count < taskCount)
+                    taskCount = Math.Max(1, ObjectNamesToProcess.Count);
+                Task[] tasks = new Task[taskCount];
+                for (int i = 0; i < taskCount; i++)
+                {
+                    int iCopy = i + 1;
+                    tasks[i] = Task.Factory.StartNew(() =>
+                    {
+                        ObjectConversionThreadWorker(iCopy, conditionedObjectFolderRoot, exportObjectsFolder, objectProgressCounter);
+                    });
+                }
+                Task.WaitAll(tasks);
+            }
+            else
+            {
+                ObjectConversionThreadWorker(1, conditionedObjectFolderRoot, exportObjectsFolder, objectProgressCounter);
             }
 
             // Update all game object model references
@@ -3827,6 +3806,52 @@ namespace EQWOWConverter
             }
 
             Logger.WriteDebug("- [" + zone.ShortName + "]: Ambient sound output for zone '" + zone.ShortName + "' complete");
+        }
+
+        private void ObjectConversionThreadWorker(int threadID, string conditionedObjectFolderRoot, string exportObjectsFolder, LogCounter progressCounter)
+        {
+            Logger.WriteInfo(string.Concat("<+> Thread [Object Subworker ", threadID.ToString(), "] Started"));
+            string objectTextureFolder = Path.Combine(conditionedObjectFolderRoot, "textures");
+            bool moreToProcess = true;
+            while (moreToProcess)
+            {
+                // Grab the next object to work with
+                string objectName = string.Empty;
+                lock (ObjectConversionLock)
+                {
+                    if (ObjectNamesToProcess.Count > 0)
+                        objectName = ObjectNamesToProcess.Dequeue();
+                }
+                if (objectName == string.Empty)
+                {
+                    moreToProcess = false;
+                    continue;
+                }
+
+                progressCounter.AddToProgress(1);
+                string curObjectOutputFolder = Path.Combine(exportObjectsFolder, objectName);
+
+                // Load the EQ object
+                ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(objectName);
+                ObjectModel curObject = new ObjectModel(objectName, objectProperties, ObjectModelType.StaticDoodad);
+                Logger.WriteDebug("- [" + objectName + "]: Importing EQ object '" + objectName + "'");
+                curObject.LoadEQObjectFromFile(conditionedObjectFolderRoot, objectName);
+                Logger.WriteDebug("- [" + objectName + "]: Importing EQ object '" + objectName + "' complete");
+
+                // Create the M2 and Skin
+                string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", objectName);
+                M2 objectM2 = new M2(curObject, relativeMPQPath);
+                objectM2.WriteToDisk(curObject.Name, curObjectOutputFolder);
+
+                // Place the related textures
+                ExportTexturesForObject(curObject, new List<string>() { objectTextureFolder }, curObjectOutputFolder);
+
+                // Save it for use elsewhere
+                lock (ObjectConversionLock)
+                    ObjectModel.StaticObjectModelsByName.Add(curObject.Name, curObject);
+                progressCounter.Write();
+            }
+            Logger.WriteInfo(string.Concat("<-> Thread [Object Subworker ", threadID.ToString(), "] Ended"));
         }
 
         public void ExportTexturesForObject(ObjectModel wowObjectModelData, List<string> objectTextureInputFolders, string objectExportPath)
