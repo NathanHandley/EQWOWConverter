@@ -37,6 +37,7 @@ namespace EQWOWConverter
     {
         private static List<string> ZoneShortNamesToProcess = new List<string>();
         private static readonly object ZoneLock = new object();
+        private static readonly object CreatureModelWorkLock = new object();
 
         public bool ConvertEQDataToWOW()
         {
@@ -1274,15 +1275,73 @@ namespace EQWOWConverter
             LogCounter progressionCounter = new LogCounter("Creating creature model files...");
             CreatureModelTemplate.CreateCreatureModelTemplatesFromCreatureTemplates(creatureTemplates);
             CreatureIllusionVersionRegistry.CreateModelTemplatesForRegisteredForms();
+
+            // Group threading by race
+            List<List<CreatureModelTemplate>> raceTemplateWorkQueue = new List<List<CreatureModelTemplate>>();
             foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
+                raceTemplateWorkQueue.Add(modelTemplatesByRaceID.Value);
+
+            if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
-                foreach (CreatureModelTemplate modelTemplate in modelTemplatesByRaceID.Value)
+                int taskCount = Configuration.CORE_CREATUREDISPLAY_THREAD_COUNT;
+                if (raceTemplateWorkQueue.Count < taskCount)
+                    taskCount = raceTemplateWorkQueue.Count;
+                if (taskCount < 1)
+                    taskCount = 1;
+                Task<List<CreatureModelTemplate>>[] tasks = new Task<List<CreatureModelTemplate>>[taskCount];
+                for (int i = 0; i < taskCount; i++)
                 {
-                    modelTemplate.CreateModelFiles(charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath);
-                    creatureModelTemplates.Add(modelTemplate);
-                    progressionCounter.Write(1);
+                    int threadID = i + 1;
+                    tasks[i] = Task.Factory.StartNew(() =>
+                    {
+                        return CreatureModelFileThreadWorker(threadID, raceTemplateWorkQueue, charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath, progressionCounter);
+                    });
                 }
+                Task.WaitAll(tasks);
+                foreach (var task in tasks)
+                    creatureModelTemplates.AddRange(task.Result);
             }
+            else
+            {
+                List<CreatureModelTemplate> processedModelTemplates = CreatureModelFileThreadWorker(1, raceTemplateWorkQueue, charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath, progressionCounter);
+                creatureModelTemplates.AddRange(processedModelTemplates);
+            }
+        }
+
+        private List<CreatureModelTemplate> CreatureModelFileThreadWorker(int threadID, List<List<CreatureModelTemplate>> raceTemplateWorkQueue,
+            string charactersFolderRoot, string inputObjectTextureFolder, string exportAnimatedObjectsFolder, string generatedTexturesFolderPath, LogCounter progressionCounter)
+        {
+            Logger.WriteInfo(string.Concat("<+> Thread [Creature Model Subworker ", threadID.ToString(), "] Started"));
+            List<CreatureModelTemplate> processedModelTemplates = new List<CreatureModelTemplate>();
+            bool moreToProcess = true;
+            while (moreToProcess)
+            {
+                // Grab the next race's templates to work with
+                List<CreatureModelTemplate>? raceModelTemplates = null;
+                lock (CreatureModelWorkLock)
+                {
+                    if (raceTemplateWorkQueue.Count > 0)
+                    {
+                        raceModelTemplates = raceTemplateWorkQueue[0];
+                        raceTemplateWorkQueue.RemoveAt(0);
+                    }
+                }
+
+                // A race was found, so build all of its model files
+                if (raceModelTemplates != null)
+                {
+                    foreach (CreatureModelTemplate modelTemplate in raceModelTemplates)
+                    {
+                        modelTemplate.CreateModelFiles(charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath);
+                        processedModelTemplates.Add(modelTemplate);
+                        progressionCounter.Write(1);
+                    }
+                }
+                else
+                    moreToProcess = false;
+            }
+            Logger.WriteInfo(string.Concat("<-> Thread [Creature Model Subworker ", threadID.ToString(), "] Ended"));
+            return processedModelTemplates;
         }
 
         public bool ConvertCreaturesForDebug(Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, ref List<CreatureSpawnPool> creatureSpawnPools)
