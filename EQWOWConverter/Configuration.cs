@@ -274,7 +274,7 @@ namespace EQWOWConverter
         // Dungeons
         //=====================================================================
         // If true, dungeon finder can be used for special versions of EQ dungeons
-        public static bool DUNGEON_FINDER_ENABLED = true;
+        public static bool DUNGEON_FINDER_ENABLED = false;
 
         //=====================================================================
         // World Maps (and Minimaps)
