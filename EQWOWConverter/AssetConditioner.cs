@@ -61,7 +61,7 @@ namespace EQWOWConverter
             string outputWorldMapsFolderRoot = Path.Combine(eqExportsCondensedPath, "worldmaps");
             string tempFolderRoot = Path.Combine(eqExportsCondensedPath, "temp");
             if (Directory.Exists(eqExportsCondensedPath))
-                Directory.Delete(eqExportsCondensedPath, true);
+                FileTool.DeleteDirectoryAndWait(eqExportsCondensedPath);
             Directory.CreateDirectory(eqExportsCondensedPath);
             Directory.CreateDirectory(outputObjectsFolderRoot);
             Directory.CreateDirectory(outputObjectsTexturesFolderRoot);

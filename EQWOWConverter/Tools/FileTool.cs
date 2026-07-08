@@ -85,6 +85,29 @@ namespace EQWOWConverter
             Directory.CreateDirectory(targetDirectory);
         }
 
+        // Ensures a delete happens before unblocking the thread (fixed a race condition)
+        public static void DeleteDirectoryAndWait(string directory)
+        {
+            if (Directory.Exists(directory) == false)
+                return;
+            int attemptsRemaining = 50;
+            while (attemptsRemaining > 0)
+            {
+                try
+                {
+                    if (Directory.Exists(directory) == true)
+                        Directory.Delete(directory, true);
+                }
+                catch (IOException) { }
+                catch (UnauthorizedAccessException) { }
+                if (Directory.Exists(directory) == false)
+                    return;
+                System.Threading.Thread.Sleep(200);
+                attemptsRemaining--;
+            }
+            Logger.WriteError("DeleteDirectoryAndWait was unable to fully delete directory '" + directory + "'");
+        }
+
         public static bool CopyDirectoryAndContents(string sourceDirectory, string targetDirectory, bool deleteTargetContents, bool recursive, string searchPattern = "*.*")
         {
             // Create the folder if it doesn't exist, or recreate if the contents should be deleted
@@ -92,7 +115,7 @@ namespace EQWOWConverter
                 Directory.CreateDirectory(targetDirectory);
             else if (deleteTargetContents)
             {
-                Directory.Delete(targetDirectory, true);
+                DeleteDirectoryAndWait(targetDirectory);
                 Directory.CreateDirectory(targetDirectory);
             }
 
