@@ -44,14 +44,13 @@ namespace EQWOWConverter
             catch { return fileName.ToLowerInvariant(); }
         }
 
-        // Drops any cached content for a path that is being written/overwritten, so a subsequent read
-        // sees fresh data even if the file changes mid-run.
         private static void InvalidateReadContentCacheForPath(string fileName)
         {
             if (ReadContentCacheEnabled == false)
                 return;
             ReadContentCacheByPath.TryRemove(NormalizeCacheKey(fileName), out _);
         }
+
         // Method taken from  https://stackoverflow.com/questions/7931304/comparing-two-files-in-c-sharp
         // Rights of this method belong to James Johnson (https://stackoverflow.com/users/879420/james-johnson)
         public static bool AreFilesTheSame(string file1, string file2)
@@ -204,7 +203,6 @@ namespace EQWOWConverter
 
         public static string ReadAllDataFromFile(string fileName)
         {
-            // Serve from the read-content cache when active (see EnableReadContentCache)
             string cacheKey = string.Empty;
             if (ReadContentCacheEnabled == true)
             {

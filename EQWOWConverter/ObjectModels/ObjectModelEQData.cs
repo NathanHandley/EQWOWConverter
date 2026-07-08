@@ -17,17 +17,15 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.EQFiles;
+using System.Collections.Concurrent;
 
 namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelEQData
     {
-        private static Dictionary<string, EQMesh> CachedRenderMeshByFileName = new Dictionary<string, EQMesh>();
-        private static readonly object MeshLock = new object();
-        private static Dictionary<string, EQSkeleton> CachedSkeletonDataByFileName = new Dictionary<string, EQSkeleton>();
-        private static readonly object SkeletonLock = new object();
-        private static Dictionary<string, EQParticleCloud> CachedParticleCloudDataByFileName = new Dictionary<string, EQParticleCloud>();
-        private static readonly object ParticleCloudLock = new object();
+        private static readonly ConcurrentDictionary<string, EQMesh> CachedRenderMeshByFileName = new ConcurrentDictionary<string, EQMesh>();
+        private static readonly ConcurrentDictionary<string, EQSkeleton> CachedSkeletonDataByFileName = new ConcurrentDictionary<string, EQSkeleton>();
+        private static readonly ConcurrentDictionary<string, EQParticleCloud> CachedParticleCloudDataByFileName = new ConcurrentDictionary<string, EQParticleCloud>();
 
         public MeshData MeshData = new MeshData();
         public List<Material> Materials = new List<Material>();
@@ -260,17 +258,14 @@ namespace EQWOWConverter.ObjectModels
                 // Load this mesh, if needed
                 string renderMeshFileName = Path.Combine(inputObjectFolder, "Meshes", meshNameByBoneIndex.Key + ".txt");
                 EQMesh eqMeshData = new EQMesh();
-                lock (MeshLock)
+                if (CachedRenderMeshByFileName.TryGetValue(renderMeshFileName, out EQMesh? cachedRenderMesh) == true)
+                    eqMeshData = new EQMesh(cachedRenderMesh);
+                else if (eqMeshData.LoadFromDisk(renderMeshFileName) == true)
+                    CachedRenderMeshByFileName.TryAdd(renderMeshFileName, new EQMesh(eqMeshData));
+                else
                 {
-                    if (CachedRenderMeshByFileName.ContainsKey(renderMeshFileName) == true)
-                        eqMeshData = new EQMesh(CachedRenderMeshByFileName[renderMeshFileName]);
-                    else if (eqMeshData.LoadFromDisk(renderMeshFileName) == true)
-                        CachedRenderMeshByFileName.Add(renderMeshFileName, new EQMesh(eqMeshData));
-                    else
-                    {
-                        Logger.WriteError("- [" + inputObjectName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
-                        return;
-                    }                        
+                    Logger.WriteError("- [" + inputObjectName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
+                    return;
                 }
 
                 // Associate bone references
@@ -360,46 +355,40 @@ namespace EQWOWConverter.ObjectModels
         {
             Logger.WriteDebug("- [" + inputObjectName + "]: Reading skeleton data...");
             string skeletonFileName = Path.Combine(inputObjectFolder, "Skeletons", inputObjectName + ".txt");
-            lock(SkeletonLock)
+            if (CachedSkeletonDataByFileName.TryGetValue(skeletonFileName, out EQSkeleton? cachedSkeleton) == true)
+                SkeletonData = new EQSkeleton(cachedSkeleton);
+            else
             {
-                if (CachedSkeletonDataByFileName.ContainsKey(skeletonFileName) == true)
-                    SkeletonData = new EQSkeleton(CachedSkeletonDataByFileName[skeletonFileName]);
-                else
+                SkeletonData = new EQSkeleton();
+                if (SkeletonData.LoadFromDisk(skeletonFileName) == false)
                 {
-                    SkeletonData = new EQSkeleton();
-                    if (SkeletonData.LoadFromDisk(skeletonFileName) == false)
-                    {
-                        Logger.WriteError("- [" + inputObjectName + "]: Issue loading skeleton data that should be at '" + skeletonFileName + "'");
-                        return;
-                    }
-                    CachedSkeletonDataByFileName.Add(skeletonFileName, new EQSkeleton(SkeletonData));
+                    Logger.WriteError("- [" + inputObjectName + "]: Issue loading skeleton data that should be at '" + skeletonFileName + "'");
+                    return;
                 }
+                CachedSkeletonDataByFileName.TryAdd(skeletonFileName, new EQSkeleton(SkeletonData));
             }
         }
 
         public void LoadParticleCloudData(string inputObjectName, List<string> particleCloudNames, string inputObjectFolder)
         {
             Logger.WriteDebug("- [" + inputObjectName + "]: Reading particle cloud data...");
-            lock (ParticleCloudLock)
+            foreach (string particleCloudName in particleCloudNames)
             {
-                foreach (string particleCloudName in particleCloudNames)
+                string particleCloudFileName = Path.Combine(inputObjectFolder, "Particles", particleCloudName + ".txt");
+                if (ParticleCloudsByName.ContainsKey(particleCloudName) == true)
+                    continue;
+                if (CachedParticleCloudDataByFileName.TryGetValue(particleCloudFileName, out EQParticleCloud? cachedParticleCloud) == true)
+                    ParticleCloudsByName.Add(particleCloudName, new EQParticleCloud(cachedParticleCloud)); // Clone
+                else
                 {
-                    string particleCloudFileName = Path.Combine(inputObjectFolder, "Particles", particleCloudName + ".txt");
-                    if (ParticleCloudsByName.ContainsKey(particleCloudName) == true)
-                        continue;
-                    if (CachedParticleCloudDataByFileName.ContainsKey(particleCloudFileName) == true)
-                        ParticleCloudsByName.Add(particleCloudName, CachedParticleCloudDataByFileName[particleCloudFileName]);
-                    else
+                    EQParticleCloud newParticleCloud = new EQParticleCloud();
+                    if (newParticleCloud.LoadFromDisk(particleCloudFileName) == false)
                     {
-                        EQParticleCloud newParticleCloud = new EQParticleCloud();
-                        if (newParticleCloud.LoadFromDisk(particleCloudFileName) == false)
-                        {
-                            Logger.WriteError("- [" + inputObjectName + "]: Issue loading particle cloud data that should be at '" + particleCloudFileName + "'");
-                            return;
-                        }
-                        ParticleCloudsByName.Add(particleCloudName, newParticleCloud);
-                        CachedParticleCloudDataByFileName.Add(particleCloudFileName, new EQParticleCloud(newParticleCloud));
+                        Logger.WriteError("- [" + inputObjectName + "]: Issue loading particle cloud data that should be at '" + particleCloudFileName + "'");
+                        return;
                     }
+                    ParticleCloudsByName.Add(particleCloudName, newParticleCloud);
+                    CachedParticleCloudDataByFileName.TryAdd(particleCloudFileName, new EQParticleCloud(newParticleCloud));
                 }
             }
         }
