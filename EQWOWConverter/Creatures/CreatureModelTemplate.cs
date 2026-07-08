@@ -103,6 +103,8 @@ namespace EQWOWConverter.Creatures
                 if (CURRENT_DBCID_CREATUREDISPLAYINFOID == -1)
                     CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.DBCID_CREATUREDISPLAYINFO_ID_START;
                 int returnID = CURRENT_DBCID_CREATUREDISPLAYINFOID;
+                if (returnID > Configuration.DBCID_CREATUREDISPLAYINFO_ID_END)
+                    Logger.WriteError(string.Concat("Generated CreatureDisplayInfo ID '", returnID.ToString(), "' is above DBCID_CREATUREDISPLAYINFO_ID_END of '", Configuration.DBCID_CREATUREDISPLAYINFO_ID_END.ToString(), "', and this will crash the world server"));
                 CURRENT_DBCID_CREATUREDISPLAYINFOID++;
                 return returnID;
             }

@@ -1273,6 +1273,7 @@ namespace EQWOWConverter
 
             LogCounter progressionCounter = new LogCounter("Creating creature model files...");
             CreatureModelTemplate.CreateCreatureModelTemplatesFromCreatureTemplates(creatureTemplates);
+            CreatureIllusionVersionRegistry.CreateModelTemplatesForRegisteredForms();
             foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
             {
                 foreach (CreatureModelTemplate modelTemplate in modelTemplatesByRaceID.Value)

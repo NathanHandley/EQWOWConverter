@@ -39,6 +39,27 @@ namespace EQWOWConverter.Creatures
             return CreatureTemplateColorTints;
         }
 
+        public static void AddGeneratedColorTint(int id, string name, ColorRGBA color)
+        {
+            Dictionary<int, CreatureTemplateColorTint> colorTints = GetCreatureTemplateColorTints();
+            if (colorTints.ContainsKey(id) == true)
+            {
+                Logger.WriteError("Unable to add generated creature template color tint with ID '" + id.ToString() + "' as that ID already exists in the collection");
+                return;
+            }
+            CreatureTemplateColorTint colorTint = new CreatureTemplateColorTint();
+            colorTint.ID = id;
+            colorTint.Name = name;
+            colorTint.HelmColor = color;
+            colorTint.ChestColor = color;
+            colorTint.ArmsColor = color;
+            colorTint.BracerColor = color;
+            colorTint.HandsColor = color;
+            colorTint.LegsColor = color;
+            colorTint.FeetColor = color;
+            colorTints.Add(id, colorTint);
+        }
+
         private static void PopulateCreatureTemplateColorTints()
         {
             CreatureTemplateColorTints.Clear();

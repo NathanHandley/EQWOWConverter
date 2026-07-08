@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 37;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 38;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -436,6 +436,9 @@ namespace EQWOWConverter
 
         // NPCs with an EQ level above this are immune to fear (EQ/TAKP like), note that it uses the original EQ min level for this to match live-like behavior
         public static int CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ = 52;
+
+        // How many colors are in the illusion chest tint palette, larger numbers mean larger builds but more color representation
+        public static int CREATURE_ILLUSION_TINT_PALETTE_SIZE = 12;
 
         // How many seconds will elapse before a boss creature respawns after dying
         public static int CREATURE_BOSS_RESPAWN_TIME_IN_SEC = 3600;
@@ -955,7 +958,7 @@ namespace EQWOWConverter
 
         // IDs for CreatureDisplayInfo.dbc
         public static int DBCID_CREATUREDISPLAYINFO_ID_START = 34000;
-        public static int DBCID_CREATUREDISPLAYINFO_ID_END = 40000;
+        public static int DBCID_CREATUREDISPLAYINFO_ID_END = 80000;
 
         // IDs for CreatureDisplayInfoExtra.dbc
         public static int DBCID_CREATUREDISPLAYINFOEXTRA_ID_START = 23000;
@@ -1447,6 +1450,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_FIDGET_CHANCE_PERCENT", CREATURE_FIDGET_CHANCE_PERCENT, "Percent chance (0-100) that a fidget animation plays after each completed calm stand cycle");
             OutputVariableToConfig("CREATURE_FIDGET_STAND_TIME_IN_MS", CREATURE_FIDGET_STAND_TIME_IN_MS, "How long (in ms) the calm standing animation plays before each fidget chance roll");
             OutputVariableToConfig("CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ", CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ, "NPCs with an EQ level above this are immune to fear (EQ/TAKP like), note that it uses the original EQ min level for this to match live-like behavior");
+            OutputVariableToConfig("CREATURE_ILLUSION_TINT_PALETTE_SIZE", CREATURE_ILLUSION_TINT_PALETTE_SIZE, "How many colors are in the illusion chest tint palette, larger numbers mean larger builds but more color representation");
             OutputVariableToConfig("CREATURE_BOSS_RESPAWN_TIME_IN_SEC", CREATURE_BOSS_RESPAWN_TIME_IN_SEC, "How many seconds will elapse before a boss creature respawns after dying");
             OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD", CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD, "Stat modifiers for creatures - \"MODADD\" are values added after all dynamic calculations", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD", CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD, "", false);
@@ -1993,6 +1997,7 @@ namespace EQWOWConverter
             CREATURE_FIDGET_STAND_TIME_IN_MS = ReadVariableFromConfigString("CREATURE_FIDGET_STAND_TIME_IN_MS", configValuesByVariableName, CREATURE_FIDGET_STAND_TIME_IN_MS);
 
             CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ = ReadVariableFromConfigString("CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ", configValuesByVariableName, CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ);
+            CREATURE_ILLUSION_TINT_PALETTE_SIZE = ReadVariableFromConfigString("CREATURE_ILLUSION_TINT_PALETTE_SIZE", configValuesByVariableName, CREATURE_ILLUSION_TINT_PALETTE_SIZE);
             CREATURE_BOSS_RESPAWN_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_BOSS_RESPAWN_TIME_IN_SEC", configValuesByVariableName, CREATURE_BOSS_RESPAWN_TIME_IN_SEC);
 
             CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD);

@@ -2893,6 +2893,8 @@ namespace EQWOWConverter.Spells
                                 maleFormSpellTemplate.IllusionSpellParent = spellTemplate;
                                 spellTemplate.MaleFormSpellTemplateID = maleFormSpellTemplate.WOWSpellID;
                                 effectGeneratedSpellTemplates.Add(maleFormSpellTemplate);
+                                if (creatureRaceMale.CanShowEquipInIllusion == true)
+                                    CreatureIllusionVersionRegistry.RegisterFormSpell(maleFormSpellTemplate.WOWSpellID, creatureRaceMale, creatureRaceMale.Gender, scaleMale);
 
                                 // Female form
                                 SpellTemplate femaleFormSpellTemplate = new SpellTemplate();
@@ -2927,6 +2929,8 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.FemaleFormSpellTemplateID = femaleFormSpellTemplate.WOWSpellID;
                                 femaleFormSpellTemplate.IllusionSpellParent = spellTemplate;
                                 effectGeneratedSpellTemplates.Add(femaleFormSpellTemplate);
+                                if (creatureRaceFemale.CanShowEquipInIllusion == true)
+                                    CreatureIllusionVersionRegistry.RegisterFormSpell(femaleFormSpellTemplate.WOWSpellID, creatureRaceFemale, creatureRaceFemale.Gender, scaleFemale);
 
                                 // Parent illusion spell
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();

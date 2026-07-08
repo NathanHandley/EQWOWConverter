@@ -82,6 +82,7 @@ namespace EQWOWConverter
         private ModEverquestCreatureSpawnPointSQL modEverquestCreatureSpawnPointSQL = new ModEverquestCreatureSpawnPointSQL();
         private ModEverquestCreatureWaypointSQL modEverquestCreatureWaypointSQL = new ModEverquestCreatureWaypointSQL();
         private ModEverquestForageZoneItemsSQL modEverquestForageZoneItemsSQL = new ModEverquestForageZoneItemsSQL();
+        private ModEverquestIllusionDisplaySQL modEverquestIllusionDisplaySQL = new ModEverquestIllusionDisplaySQL();
         private ModEverquestItemTemplateSQL modEverquestItemTemplateSQL = new ModEverquestItemTemplateSQL();
         private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
         private ModEverquestPlayerCreateInfoSQL modEverquestPlayerCreateInfoSQL = new ModEverquestPlayerCreateInfoSQL();
@@ -159,6 +160,9 @@ namespace EQWOWConverter
 
             // Items
             PopulateItemData(itemLootTemplatesByCreatureTemplateID, creatureLootEntriesByCreatureTemplateID, spellTemplatesByEQID);
+
+            // Illusion appearance displays
+            PopulateIllusionDisplayData();
 
             // Forage
             PopulateForageData();
@@ -1191,7 +1195,12 @@ namespace EQWOWConverter
 
                 // Save any additional metadata
                 int creatureWornEffectSpellID = itemTemplate.GetCreatureGrantableWornEffectSpellID(spellTemplatesByEQID);
-                modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryID, creatureWornEffectSpellID, itemTemplate.AllowedClassTypesEQ);
+                int illusionBodySet = CreatureIllusionTintPalette.GetBodySetForEQArmorMaterialType(itemTemplate.EQArmorMaterialType);
+                if (illusionBodySet < 0)
+                    illusionBodySet = 0;
+                int illusionTintID = CreatureIllusionTintPalette.GetTintIDForColorPacked(itemTemplate.ColorPacked);
+                modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryID, creatureWornEffectSpellID, itemTemplate.AllowedClassTypesEQ,
+                    illusionBodySet, illusionTintID);
 
                 // Associate spells if it's a learnable item
                 if (itemTemplate.DoesTeachSpell == true && itemTemplate.EQScrollSpellID != 0)
@@ -1226,7 +1235,7 @@ namespace EQWOWConverter
                             if (addedLearnScrollItemIDs.Contains(scrollPropertiesByClassType.Value.WOWItemTemplateID) == false)
                             {
                                 modEverquestItemTemplateSQL.AddRow(scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollPropertiesByClassType.Value.WOWItemTemplateID,
-                                    creatureWornEffectSpellID, new List<ClassEQType>() { scrollPropertiesByClassType.Key });
+                                    creatureWornEffectSpellID, new List<ClassEQType>() { scrollPropertiesByClassType.Key }, illusionBodySet, illusionTintID);
                                 addedLearnScrollItemIDs.Add(scrollPropertiesByClassType.Value.WOWItemTemplateID);
                             }
                         }
@@ -1269,6 +1278,23 @@ namespace EQWOWConverter
             // Page text (for books)
             foreach (ItemTemplate.BookText bookText in ItemTemplate.GetAllBookTexts())
                 pageTextSQL.AddRow(bookText.PageTextID, bookText.Text);
+        }
+
+        private void PopulateIllusionDisplayData()
+        {
+            // These rows are generated during creature model file generation, so that must run before this
+            List<CreatureIllusionDisplayRow> displayRows = CreatureIllusionVersionRegistry.GetDisplayRows();
+
+            // Keep only unique primary key
+            HashSet<string> addedRowKeys = new HashSet<string>();
+            foreach (CreatureIllusionDisplayRow displayRow in displayRows)
+            {
+                string rowKey = string.Concat(displayRow.FormSpellID, "|", displayRow.BodySet, "|", displayRow.TintID, "|", displayRow.HelmOn);
+                if (addedRowKeys.Contains(rowKey) == true)
+                    continue;
+                addedRowKeys.Add(rowKey);
+                modEverquestIllusionDisplaySQL.AddRow(displayRow.FormSpellID, displayRow.BodySet, displayRow.TintID, displayRow.HelmOn, displayRow.DisplayID);
+            }
         }
 
         private void PopulateForageData()
@@ -2162,6 +2188,7 @@ namespace EQWOWConverter
             modEverquestCreatureSpawnPointSQL.SaveToDisk("mod_everquest_creature_spawn_point", SQLFileType.World);
             modEverquestCreatureWaypointSQL.SaveToDisk("mod_everquest_creature_waypoint", SQLFileType.World);
             modEverquestForageZoneItemsSQL.SaveToDisk("mod_everquest_forage_zone_items", SQLFileType.World);
+            modEverquestIllusionDisplaySQL.SaveToDisk("mod_everquest_illusion_display", SQLFileType.World);
             modEverquestItemTemplateSQL.SaveToDisk("mod_everquest_item_template", SQLFileType.World);
             modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);
             modEverquestPlayerCreateInfoSQL.SaveToDisk("mod_everquest_playercreateinfo", SQLFileType.World);
