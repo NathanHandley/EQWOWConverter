@@ -176,6 +176,15 @@ namespace EQWOWConverter
                 {
                     foreach (string sourceModelName in skeletalGameObjectSourceModelNamesByZoneShortName[topDirectoryFolderNameOnly])
                     {
+                        // Since game objects can reference a model from another zone, this must be put in to avoid crashes here due to no reference
+                        string sourceModelMeshFileName = Path.Combine(tempObjectsFolder, "Meshes", sourceModelName + ".txt");
+                        if (oldToNewObjectRenames.ContainsKey(sourceModelName) == false && File.Exists(sourceModelMeshFileName) == false)
+                        {
+                            Logger.WriteDebug("- [" + topDirectoryFolderNameOnly + "] Game object model '" + sourceModelName + "' is not in this zone, so it is assumed to come from another zone");
+                            skeletalGameObjectNameMap.Add(sourceModelName, sourceModelName);
+                            continue;
+                        }
+
                         // If the object wasn't mapped yet, process it
                         if (oldToNewObjectRenames.ContainsKey(sourceModelName) == false)
                         {
@@ -184,7 +193,10 @@ namespace EQWOWConverter
                             if (sourceModelName != outputObjectName)
                                 oldToNewObjectRenames.Add(sourceModelName, outputObjectName);
                         }
-                        skeletalGameObjectNameMap.Add(sourceModelName, oldToNewObjectRenames[sourceModelName]);
+                        if (oldToNewObjectRenames.ContainsKey(sourceModelName) == true)
+                            skeletalGameObjectNameMap.Add(sourceModelName, oldToNewObjectRenames[sourceModelName]);
+                        else
+                            skeletalGameObjectNameMap.Add(sourceModelName, sourceModelName);
                     }
                 }
 
@@ -222,6 +234,15 @@ namespace EQWOWConverter
                             continue;
                         }
 
+                        // Since game objects can reference a model from another zone, this must be put in to avoid crashes here due to no reference
+                        string sourceModelMeshFileName = Path.Combine(tempObjectsFolder, "Meshes", sourceModelName + ".txt");
+                        if (oldToNewObjectRenames.ContainsKey(sourceModelName) == false && File.Exists(sourceModelMeshFileName) == false)
+                        {
+                            Logger.WriteDebug("- [" + topDirectoryFolderNameOnly + "] Game object model '" + sourceModelName + "' is not in this zone, so it is assumed to come from another zone");
+                            staticGameObjectNameMap.Add(sourceModelName, sourceModelName);
+                            continue;
+                        }
+
                         // If the object wasn't mapped yet, process it
                         if (oldToNewObjectRenames.ContainsKey(sourceModelName) == false)
                         {
@@ -230,7 +251,10 @@ namespace EQWOWConverter
                             if (sourceModelName != outputObjectName)
                                 oldToNewObjectRenames.Add(sourceModelName, outputObjectName);
                         }
-                        staticGameObjectNameMap.Add(sourceModelName, oldToNewObjectRenames[sourceModelName]);
+                        if (oldToNewObjectRenames.ContainsKey(sourceModelName) == true)
+                            staticGameObjectNameMap.Add(sourceModelName, oldToNewObjectRenames[sourceModelName]);
+                        else
+                            staticGameObjectNameMap.Add(sourceModelName, sourceModelName);
                     }
                 }
 
