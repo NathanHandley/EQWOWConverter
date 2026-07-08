@@ -23,6 +23,10 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureModelTemplate
     {
+        // FaceIndex of 99 marks an illusion version model with replaceable face textures (real faces are only 0-9).  These get their own M2 files
+        // (separate from any NPC-shared templates) where the head/face textures are typed as creature skins, so the face is selected at runtime through CreatureDisplayInfo texture variations instead of being baked in
+        public const int ILLUSION_REPLACEABLE_FACE_INDEX = 99;
+
         public static Dictionary<int, List<CreatureModelTemplate>> AllTemplatesByRaceID = new Dictionary<int, List<CreatureModelTemplate>>();
 
         public CreatureRace Race;
@@ -45,6 +49,14 @@ namespace EQWOWConverter.Creatures
 
         // Values are [DBCCreatureModelDataID, DBCCreatureDisplayID, DBCCreatureSoundDataID] keyed by the generating context
         private static Dictionary<string, int[]>? SavedDBCIDsByContextKey = null;
+
+        // Illusion version face displays, keyed by the generating context with values of CreatureDisplayInfo IDs
+        private static Dictionary<string, int>? SavedIllusionFaceDisplayIDsByContextKey = null;
+
+        // Illusion version (FaceIndex 99) face data, populated during CreateModelFiles.  Face 0 head piece texture names are stored in head piece order, and per selectable face the display ID and texture variation names (one per head piece)
+        public List<string> FaceHeadPieceTextureNames = new List<string>();
+        public SortedDictionary<int, int> IllusionFaceDisplayIDsByFaceIndex = new SortedDictionary<int, int>();
+        public SortedDictionary<int, List<string>> IllusionFaceTextureVariationsByFaceIndex = new SortedDictionary<int, List<string>>();
 
         public CreatureModelTemplate(CreatureRace creatureRace, CreatureGenderType genderType, int helmTextureID,
             int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale)
@@ -115,6 +127,29 @@ namespace EQWOWConverter.Creatures
             return Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureModelTemplateIDs.csv");
         }
 
+        private static string GetSavedIllusionFaceDisplayIDsFilePath()
+        {
+            return Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "IllusionFaceDisplayIDs.csv");
+        }
+
+        private static string GenerateIllusionFaceDisplayIDContextKey(int raceID, CreatureGenderType genderType, int helmTextureID,
+            int textureIndex, int colorTintID, int faceIndex)
+        {
+            StringBuilder keySB = new StringBuilder();
+            keySB.Append(raceID);
+            keySB.Append("|");
+            keySB.Append(Convert.ToInt32(genderType));
+            keySB.Append("|");
+            keySB.Append(helmTextureID);
+            keySB.Append("|");
+            keySB.Append(textureIndex);
+            keySB.Append("|");
+            keySB.Append(colorTintID);
+            keySB.Append("|");
+            keySB.Append(faceIndex);
+            return keySB.ToString();
+        }
+
         private static string GenerateDBCIDsContextKey(int raceID, CreatureGenderType genderType, int helmTextureID,
             int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale)
         {
@@ -142,6 +177,7 @@ namespace EQWOWConverter.Creatures
             SavedDBCIDsByContextKey = new Dictionary<string, int[]>();
             if (CURRENT_DBCID_CREATUREDISPLAYINFOID == -1)
                 CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.DBCID_CREATUREDISPLAYINFO_ID_START;
+            LoadSavedIllusionFaceDisplayIDs();
 
             string savedDBCIDsFilePath = GetSavedDBCIDsFilePath();
             if (File.Exists(savedDBCIDsFilePath) == false)
@@ -187,6 +223,74 @@ namespace EQWOWConverter.Creatures
                     CURRENT_DBCID_CREATUREDISPLAYINFOID = displayDBCID + 1;
                 if (soundDataDBCID >= CURRENT_DBCID_CREATURESOUNDDATAID)
                     CURRENT_DBCID_CREATURESOUNDDATAID = soundDataDBCID + 1;
+            }
+        }
+
+        private static void LoadSavedIllusionFaceDisplayIDs()
+        {
+            SavedIllusionFaceDisplayIDsByContextKey = new Dictionary<string, int>();
+            string savedFaceDisplayIDsFilePath = GetSavedIllusionFaceDisplayIDsFilePath();
+            if (File.Exists(savedFaceDisplayIDsFilePath) == false)
+            {
+                Logger.WriteDebug("No saved illusion face display IDs file found at '" + savedFaceDisplayIDsFilePath + "', so all IDs will be newly generated");
+                return;
+            }
+
+            Logger.WriteDebug("Loading saved illusion face display IDs via file '" + savedFaceDisplayIDsFilePath + "'");
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(savedFaceDisplayIDsFilePath, "|");
+            foreach (Dictionary<string, string> columns in rows)
+            {
+                StringBuilder keySB = new StringBuilder();
+                keySB.Append(columns["raceid"]);
+                keySB.Append("|");
+                keySB.Append(columns["genderid"]);
+                keySB.Append("|");
+                keySB.Append(columns["helmtextureid"]);
+                keySB.Append("|");
+                keySB.Append(columns["textureindex"]);
+                keySB.Append("|");
+                keySB.Append(columns["colortintid"]);
+                keySB.Append("|");
+                keySB.Append(columns["faceindex"]);
+                string contextKey = keySB.ToString();
+                if (SavedIllusionFaceDisplayIDsByContextKey.ContainsKey(contextKey) == true)
+                {
+                    Logger.WriteError("Duplicate context key '" + contextKey + "' found in '" + savedFaceDisplayIDsFilePath + "', skipping the duplicate row");
+                    continue;
+                }
+
+                int displayDBCID = int.Parse(columns["creaturedisplay_dbcid"]);
+                SavedIllusionFaceDisplayIDsByContextKey.Add(contextKey, displayDBCID);
+
+                // Ensure newly generated IDs never collide with previously saved ones
+                if (displayDBCID >= CURRENT_DBCID_CREATUREDISPLAYINFOID)
+                    CURRENT_DBCID_CREATUREDISPLAYINFOID = displayDBCID + 1;
+            }
+        }
+
+        private static int GetOrCreateIllusionFaceDisplayID(int raceID, CreatureGenderType genderType, int helmTextureID,
+            int textureIndex, int colorTintID, int faceIndex)
+        {
+            lock (CreatureLock)
+            {
+                LoadSavedDBCIDsIfNeeded();
+                string contextKey = GenerateIllusionFaceDisplayIDContextKey(raceID, genderType, helmTextureID, textureIndex,
+                    colorTintID, faceIndex);
+                if (SavedIllusionFaceDisplayIDsByContextKey!.ContainsKey(contextKey) == true)
+                    return SavedIllusionFaceDisplayIDsByContextKey[contextKey];
+
+                int displayDBCID = GenerateDisplayInfoID();
+                SavedIllusionFaceDisplayIDsByContextKey.Add(contextKey, displayDBCID);
+                Dictionary<string, string> rowValues = new Dictionary<string, string>();
+                rowValues.Add("raceid", raceID.ToString());
+                rowValues.Add("genderid", Convert.ToInt32(genderType).ToString());
+                rowValues.Add("helmtextureid", helmTextureID.ToString());
+                rowValues.Add("textureindex", textureIndex.ToString());
+                rowValues.Add("colortintid", colorTintID.ToString());
+                rowValues.Add("faceindex", faceIndex.ToString());
+                rowValues.Add("creaturedisplay_dbcid", displayDBCID.ToString());
+                FileTool.AppendRowToFileWithHeader(GetSavedIllusionFaceDisplayIDsFilePath(), "|", rowValues);
+                return displayDBCID;
             }
         }
 
@@ -320,6 +424,10 @@ namespace EQWOWConverter.Creatures
             // Place the related textures
             foreach (ObjectModelTexture texture in curObject.ModelTextures)
             {
+                // Replaceable textures (illusion version faces) have no baked filename in the M2, and the actual face textures get copied in GenerateIllusionFaceData below
+                if (texture.Type != ObjectModelTextureType.Hardcoded)
+                    continue;
+
                 string inputTextureNameInCharTextureFolder = Path.Combine(inputObjectTextureFolder, texture.TextureName + ".blp");
                 string inputTextureNameInGeneratedTextureFolder = Path.Combine(generatedTexturesFolderPath, texture.TextureName + ".blp");
                 string outputTextureName = Path.Combine(outputFullMPQPath, texture.TextureName + ".blp");
@@ -340,7 +448,79 @@ namespace EQWOWConverter.Creatures
                 }
             }
 
+            // Illusion versions get replaceable face textures and per-face display IDs
+            if (FaceIndex == ILLUSION_REPLACEABLE_FACE_INDEX)
+                GenerateIllusionFaceData(curObject, inputObjectTextureFolder, outputFullMPQPath);
+
             Logger.WriteDebug(String.Concat("For creature template '", objectName, "', completed creating the object files"));
+        }
+
+        private void GenerateIllusionFaceData(ObjectModel curObject, string inputObjectTextureFolder, string outputFullMPQPath)
+        {
+            FaceHeadPieceTextureNames.Clear();
+            IllusionFaceDisplayIDsByFaceIndex.Clear();
+            IllusionFaceTextureVariationsByFaceIndex.Clear();
+
+            // Collect the face texture names in head piece order, which were typed CreatureSkin1/2/3 during the object model build
+            SortedDictionary<int, string> pieceTextureNamesBySkinSlot = new SortedDictionary<int, string>();
+            foreach (ObjectModelTexture modelTexture in curObject.ModelTextures)
+            {
+                if (modelTexture.Type == ObjectModelTextureType.CreatureSkin1)
+                    pieceTextureNamesBySkinSlot[0] = modelTexture.TextureName;
+                else if (modelTexture.Type == ObjectModelTextureType.CreatureSkin2)
+                    pieceTextureNamesBySkinSlot[1] = modelTexture.TextureName;
+                else if (modelTexture.Type == ObjectModelTextureType.CreatureSkin3)
+                    pieceTextureNamesBySkinSlot[2] = modelTexture.TextureName;
+            }
+            foreach (var pieceTextureNameBySkinSlot in pieceTextureNamesBySkinSlot)
+                FaceHeadPieceTextureNames.Add(pieceTextureNameBySkinSlot.Value);
+
+            // Helm-tier versions (HelmTextureIndex > 0) have no face materials, so they get no face displays
+            if (FaceHeadPieceTextureNames.Count == 0)
+                return;
+
+            // Copy every face texture that exists for the head pieces (faces 0-9)
+            foreach (string faceZeroTextureName in FaceHeadPieceTextureNames)
+            {
+                for (int faceIndex = 0; faceIndex <= 9; faceIndex++)
+                {
+                    string faceTextureName = GetFaceTextureName(faceZeroTextureName, faceIndex);
+                    string inputTexturePath = Path.Combine(inputObjectTextureFolder, faceTextureName + ".blp");
+                    if (File.Exists(inputTexturePath) == true)
+                        FileTool.CopyFile(inputTexturePath, Path.Combine(outputFullMPQPath, faceTextureName + ".blp"));
+                }
+            }
+
+            // Build a display per selectable face index
+            for (int faceIndex = 1; faceIndex <= 9; faceIndex++)
+            {
+                bool faceTextureExistsForAnyPiece = false;
+                List<string> variationTextureNames = new List<string>();
+                foreach (string faceZeroTextureName in FaceHeadPieceTextureNames)
+                {
+                    string faceTextureName = GetFaceTextureName(faceZeroTextureName, faceIndex);
+                    if (File.Exists(Path.Combine(inputObjectTextureFolder, faceTextureName + ".blp")) == true)
+                    {
+                        faceTextureExistsForAnyPiece = true;
+                        variationTextureNames.Add(faceTextureName);
+                    }
+                    else
+                        variationTextureNames.Add(faceZeroTextureName);
+                }
+                if (faceTextureExistsForAnyPiece == false)
+                    continue;
+
+                int faceDisplayID = GetOrCreateIllusionFaceDisplayID(Race.ID, GenderType, HelmTextureIndex, TextureIndex, ColorTintID, faceIndex);
+                IllusionFaceDisplayIDsByFaceIndex.Add(faceIndex, faceDisplayID);
+                IllusionFaceTextureVariationsByFaceIndex.Add(faceIndex, variationTextureNames);
+            }
+        }
+
+        // Face textures are named '{skeleton}he00{faceIndex}{headPieceDigit}', so swap the second-to-last character
+        private static string GetFaceTextureName(string faceZeroTextureName, int faceIndex)
+        {
+            return string.Concat(faceZeroTextureName.Substring(0, faceZeroTextureName.Length - 2), faceIndex.ToString(),
+                faceZeroTextureName[faceZeroTextureName.Length - 1]);
         }
 
         public string GenerateFileName()

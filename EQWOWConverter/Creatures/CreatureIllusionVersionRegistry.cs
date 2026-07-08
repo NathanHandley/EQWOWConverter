@@ -85,17 +85,20 @@ namespace EQWOWConverter.Creatures
                             continue;
                         int colorTintID = CreatureIllusionTintPalette.GetColorTintIDForTintID(chestAppearance.TintID);
 
-                        // Helm-off variant (bare head)
+                        // Helm-off version (bare head)
+                        // FaceIndex 99 marks an illusion variant with replaceable face textures (real faces are only 0-9), which keeps these templates from sharing M2s with NPC templates that have the same (race, gender, texture, tint, scale) key
                         CreatureModelTemplate helmOffTemplate = CreatureModelTemplate.GetOrCreateCreatureModelTemplate(formRecord.Race,
-                            formRecord.Gender, 0, chestAppearance.BodySet, 0, colorTintID, formRecord.ModelTemplateScale);
+                            formRecord.Gender, 0, chestAppearance.BodySet, CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX,
+                            colorTintID, formRecord.ModelTemplateScale);
                         DisplayRows.Add(new CreatureIllusionDisplayRow(formRecord.FormSpellID, chestAppearance.BodySet, chestAppearance.TintID,
                             0, helmOffTemplate.DBCCreatureDisplayID));
 
-                        // Helm-on variant.  Body sets 1-3 use the matching helm mesh (races without that helm mesh fall back to a bare head), while set 0 and the robe sets have no helm mesh so they reuse the helm-off display
+                        // Helm-on version.  Body sets 1-3 use the matching helm mesh (races without that helm mesh fall back to a bare head), while set 0 and the robe sets have no helm mesh so they reuse the helm-off display
                         if (chestAppearance.BodySet >= 1 && chestAppearance.BodySet <= 3)
                         {
                             CreatureModelTemplate helmOnTemplate = CreatureModelTemplate.GetOrCreateCreatureModelTemplate(formRecord.Race,
-                                formRecord.Gender, chestAppearance.BodySet, chestAppearance.BodySet, 0, colorTintID, formRecord.ModelTemplateScale);
+                                formRecord.Gender, chestAppearance.BodySet, chestAppearance.BodySet, CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX,
+                                colorTintID, formRecord.ModelTemplateScale);
                             DisplayRows.Add(new CreatureIllusionDisplayRow(formRecord.FormSpellID, chestAppearance.BodySet, chestAppearance.TintID,
                                 1, helmOnTemplate.DBCCreatureDisplayID));
                         }

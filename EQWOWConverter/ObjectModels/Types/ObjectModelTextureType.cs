@@ -26,6 +26,8 @@ namespace EQWOWConverter.ObjectModels
         // 5 Obsolete
         CharacterHair = 6,
         // 7-10 Skip
-        CreatureSkin1 = 11
+        CreatureSkin1 = 11, // Replaced by CreatureDisplayInfo TextureVariation1
+        CreatureSkin2 = 12, // Replaced by CreatureDisplayInfo TextureVariation2
+        CreatureSkin3 = 13  // Replaced by CreatureDisplayInfo TextureVariation3
     }
 }

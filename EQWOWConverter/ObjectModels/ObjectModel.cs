@@ -2248,6 +2248,43 @@ namespace EQWOWConverter.ObjectModels
                     newModelTexture.WrapType = ObjectModelTextureWrapType.None;
                 ModelTextures.Add(newModelTexture);
             }
+
+            // Illusion models (face index 99) get their face textures replaced at runtime through CreatureDisplayInfo, so type those textures as creature skins instead of hardcoded paths
+            if (Properties.CreatureModelTemplate != null && Properties.CreatureModelTemplate.FaceIndex == CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX)
+                SetReplaceableFaceTextureTypes(Properties.CreatureModelTemplate.Race.SkeletonName);
+        }
+
+        private void SetReplaceableFaceTextureTypes(string skeletonName)
+        {
+            // Gather the unique face texture names.  Sorting the full names sorts by head piece digit, since the names only differ in the last character
+            string faceTexturePrefix = string.Concat(skeletonName, "he00").ToLower();
+            List<string> faceTextureNames = new List<string>();
+            foreach (ObjectModelTexture modelTexture in ModelTextures)
+            {
+                string curTextureName = modelTexture.TextureName.ToLower();
+                if (curTextureName.StartsWith(faceTexturePrefix) == true && faceTextureNames.Contains(curTextureName) == false)
+                    faceTextureNames.Add(curTextureName);
+            }
+            if (faceTextureNames.Count == 0)
+                return;
+            faceTextureNames.Sort(StringComparer.Ordinal);
+            if (faceTextureNames.Count > 3)
+            {
+                Logger.WriteDebug(string.Concat("Object model '", Name, "' has '", faceTextureNames.Count.ToString(), "' face textures, but only 3 can be replaceable so the extras will remain hardcoded"));
+                faceTextureNames.RemoveRange(3, faceTextureNames.Count - 3);
+            }
+
+            // Assign the types in head piece order
+            foreach (ObjectModelTexture modelTexture in ModelTextures)
+            {
+                int faceTextureIndex = faceTextureNames.IndexOf(modelTexture.TextureName.ToLower());
+                if (faceTextureIndex == 0)
+                    modelTexture.Type = ObjectModelTextureType.CreatureSkin1;
+                else if (faceTextureIndex == 1)
+                    modelTexture.Type = ObjectModelTextureType.CreatureSkin2;
+                else if (faceTextureIndex == 2)
+                    modelTexture.Type = ObjectModelTextureType.CreatureSkin3;
+            }
         }
 
         private void SetMaterialColorByTextureNameFragment(string textureNameFragmentToMatch, int colorID, ColorRGBA color)

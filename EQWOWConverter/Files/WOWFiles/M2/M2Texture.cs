@@ -28,8 +28,17 @@ namespace EQWOWConverter.WOWFiles
         public M2Texture(ObjectModelTexture texture, string textureFolder)
         {
             Texture = texture;
-            FullTexturePath = Path.Combine(textureFolder, texture.TextureName + ".blp\0");
-            FileNameLength = Convert.ToUInt32(FullTexturePath.Length);
+            if (texture.Type != ObjectModelTextureType.Hardcoded)
+            {
+                // Replaceable textures (like CreatureSkin1/2/3) are resolved at runtime by the client (through CreatureDisplayInfo texture variations), so they get a zero-length filename with an offset of 0
+                FullTexturePath = string.Empty;
+                FileNameLength = 0;
+            }
+            else
+            {
+                FullTexturePath = Path.Combine(textureFolder, texture.TextureName + ".blp\0");
+                FileNameLength = Convert.ToUInt32(FullTexturePath.Length);
+            }
         }
 
         public UInt32 GetHeaderSize()

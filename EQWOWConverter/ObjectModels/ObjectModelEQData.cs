@@ -133,8 +133,9 @@ namespace EQWOWConverter.ObjectModels
                 else
                     LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, creatureModelTemplate.TextureIndex, objectProperties.CustomMaterialListLine);
 
-                // For multi-face races, swap the faces
-                if (creatureModelTemplate.FaceIndex > 0 && (raceID < 13 || raceID == 70 || raceID == 128 || raceID == 130))
+                // For multi-face races, swap the faces. Illusion versions (face index 99) keep the face 0 textures baked in the material list, since their faces are swapped at runtime via CreatureDisplayInfo
+                if (creatureModelTemplate.FaceIndex > 0 && creatureModelTemplate.FaceIndex != CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX
+                    && (raceID < 13 || raceID == 70 || raceID == 128 || raceID == 130))
                 {
                     string faceTextureStart = string.Concat(eqInputObjectFileName, "he00");
                     faceTextureStart = faceTextureStart.ToLower();

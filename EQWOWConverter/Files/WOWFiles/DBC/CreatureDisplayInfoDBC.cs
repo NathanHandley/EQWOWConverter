@@ -18,7 +18,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class CreatureDisplayInfoDBC : DBCFile
     {
-        public void AddRow(int id, int displayID, string textureVariation1 = "", string textureVariation2 = "")
+        public void AddRow(int id, int displayID, string textureVariation1 = "", string textureVariation2 = "", string textureVariation3 = "")
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID
@@ -29,7 +29,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(255); // Opacity (255 opaque, 0 transparent)
             newRow.AddString(textureVariation1); // Texture1 (texture for 1st geoset)
             newRow.AddString(textureVariation2); // Texture2 (texture for 2nd geoset)
-            newRow.AddString(string.Empty); // Texture3 (texture for 3rd geoset)
+            newRow.AddString(textureVariation3); // Texture3 (texture for 3rd geoset)
             newRow.AddString(string.Empty); // Portrait Texture
             newRow.AddInt32(1); // Blood level (appears to reference UnitBloodLevels.dbc, but actually uses CreatureModelData)
             newRow.AddInt32(0); // Blood ID (appears to reference UnitBlood.dbc, but that doesn't exist...)

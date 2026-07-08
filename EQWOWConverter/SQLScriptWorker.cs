@@ -83,6 +83,7 @@ namespace EQWOWConverter
         private ModEverquestCreatureWaypointSQL modEverquestCreatureWaypointSQL = new ModEverquestCreatureWaypointSQL();
         private ModEverquestForageZoneItemsSQL modEverquestForageZoneItemsSQL = new ModEverquestForageZoneItemsSQL();
         private ModEverquestIllusionDisplaySQL modEverquestIllusionDisplaySQL = new ModEverquestIllusionDisplaySQL();
+        private ModEverquestIllusionFaceSQL modEverquestIllusionFaceSQL = new ModEverquestIllusionFaceSQL();
         private ModEverquestItemTemplateSQL modEverquestItemTemplateSQL = new ModEverquestItemTemplateSQL();
         private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
         private ModEverquestPlayerCreateInfoSQL modEverquestPlayerCreateInfoSQL = new ModEverquestPlayerCreateInfoSQL();
@@ -162,7 +163,7 @@ namespace EQWOWConverter
             PopulateItemData(itemLootTemplatesByCreatureTemplateID, creatureLootEntriesByCreatureTemplateID, spellTemplatesByEQID);
 
             // Illusion appearance displays
-            PopulateIllusionDisplayData();
+            PopulateIllusionDisplayData(creatureModelTemplates);
 
             // Forage
             PopulateForageData();
@@ -1280,7 +1281,7 @@ namespace EQWOWConverter
                 pageTextSQL.AddRow(bookText.PageTextID, bookText.Text);
         }
 
-        private void PopulateIllusionDisplayData()
+        private void PopulateIllusionDisplayData(List<CreatureModelTemplate> creatureModelTemplates)
         {
             // These rows are generated during creature model file generation, so that must run before this
             List<CreatureIllusionDisplayRow> displayRows = CreatureIllusionVersionRegistry.GetDisplayRows();
@@ -1294,6 +1295,17 @@ namespace EQWOWConverter
                     continue;
                 addedRowKeys.Add(rowKey);
                 modEverquestIllusionDisplaySQL.AddRow(displayRow.FormSpellID, displayRow.BodySet, displayRow.TintID, displayRow.HelmOn, displayRow.DisplayID);
+            }
+
+            // Selectable faces per illusion. These face displays are always in CreatureDisplayInfo.dbc since DBCFileWorker generates the DBC rows from the
+            // same template data, and each face display also gets a creature_model_info row
+            foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
+            {
+                foreach (var faceDisplayIDByFaceIndex in creatureModelTemplate.IllusionFaceDisplayIDsByFaceIndex)
+                {
+                    modEverquestIllusionFaceSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, faceDisplayIDByFaceIndex.Key, faceDisplayIDByFaceIndex.Value);
+                    creatureModelInfoSQL.AddRow(faceDisplayIDByFaceIndex.Value, Convert.ToInt32(creatureModelTemplate.GenderType));
+                }
             }
         }
 
@@ -2189,6 +2201,7 @@ namespace EQWOWConverter
             modEverquestCreatureWaypointSQL.SaveToDisk("mod_everquest_creature_waypoint", SQLFileType.World);
             modEverquestForageZoneItemsSQL.SaveToDisk("mod_everquest_forage_zone_items", SQLFileType.World);
             modEverquestIllusionDisplaySQL.SaveToDisk("mod_everquest_illusion_display", SQLFileType.World);
+            modEverquestIllusionFaceSQL.SaveToDisk("mod_everquest_illusion_face", SQLFileType.World);
             modEverquestItemTemplateSQL.SaveToDisk("mod_everquest_item_template", SQLFileType.World);
             modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);
             modEverquestPlayerCreateInfoSQL.SaveToDisk("mod_everquest_playercreateinfo", SQLFileType.World);

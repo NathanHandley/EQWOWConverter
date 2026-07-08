@@ -258,7 +258,23 @@ namespace EQWOWConverter
             int curCreatureFootstepID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START;
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
             {
-                creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCCreatureDisplayID, creatureModelTemplate.DBCCreatureModelDataID);
+                // Illusion versiont models have replaceable face textures
+                string textureVariation1;
+                string textureVariation2;
+                string textureVariation3;
+                GetCreatureTextureVariations(creatureModelTemplate.FaceHeadPieceTextureNames, out textureVariation1, out textureVariation2, out textureVariation3);
+                creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCCreatureDisplayID, creatureModelTemplate.DBCCreatureModelDataID,
+                    textureVariation1, textureVariation2, textureVariation3);
+
+                // Selectable illusion face displays share the model of the base display, swapping in the per-face textures
+                foreach (var faceDisplayIDByFaceIndex in creatureModelTemplate.IllusionFaceDisplayIDsByFaceIndex)
+                {
+                    GetCreatureTextureVariations(creatureModelTemplate.IllusionFaceTextureVariationsByFaceIndex[faceDisplayIDByFaceIndex.Key],
+                        out textureVariation1, out textureVariation2, out textureVariation3);
+                    creatureDisplayInfoDBC.AddRow(faceDisplayIDByFaceIndex.Value, creatureModelTemplate.DBCCreatureModelDataID,
+                        textureVariation1, textureVariation2, textureVariation3);
+                }
+
                 string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
                 creatureModelDataDBC.AddRow(creatureModelTemplate, relativeModelPath);
                 if (creatureModelTemplate.Race.SoundWalkingName.Trim().Length > 0)
@@ -850,6 +866,20 @@ namespace EQWOWConverter
             zoneMusicDBC.SaveToDisk(dbcOutputServerFolder);
 
             Logger.WriteDebug("Creating DBC Files complete");
+        }
+
+        private static void GetCreatureTextureVariations(List<string> textureNames, out string textureVariation1,
+            out string textureVariation2, out string textureVariation3)
+        {
+            textureVariation1 = string.Empty;
+            textureVariation2 = string.Empty;
+            textureVariation3 = string.Empty;
+            if (textureNames.Count >= 1)
+                textureVariation1 = textureNames[0];
+            if (textureNames.Count >= 2)
+                textureVariation2 = textureNames[1];
+            if (textureNames.Count >= 3)
+                textureVariation3 = textureNames[2];
         }
 
         private void AddLightData(int mapID, ZoneEnvironmentSettings zoneEnvironmentSettings)

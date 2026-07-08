@@ -69,6 +69,13 @@ namespace EQWOWConverter.WOWFiles
             List<byte> dataBytes = new List<byte>();
             foreach (M2Texture texture in Textures)
             {
+                // Replaceable textures have no filename, and get an offset of 0
+                if (texture.FileNameLength == 0)
+                {
+                    texture.FileNameOffset = 0;
+                    continue;
+                }
+
                 texture.FileNameOffset = curOffset;
                 dataBytes.AddRange(Encoding.ASCII.GetBytes(texture.FullTexturePath.ToUpper()));
                 curOffset += texture.FileNameLength;
