@@ -46,6 +46,17 @@ namespace EQWOWConverter.Creatures
         public int DBCCreatureDisplayID;
         public int DBCCreatureSoundDataID;
         private static readonly object CreatureLock = new object();
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, object> OutputFolderLocksByName = new System.Collections.Concurrent.ConcurrentDictionary<string, object>();
+
+        private static object GetOutputFolderLock(string outputFolderName)
+        {
+            return OutputFolderLocksByName.GetOrAdd(outputFolderName, CreateOutputFolderLock);
+        }
+
+        private static object CreateOutputFolderLock(string outputFolderName)
+        {
+            return new object();
+        }
 
         // Values are [DBCCreatureModelDataID, DBCCreatureDisplayID, DBCCreatureSoundDataID] keyed by the generating context
         private static Dictionary<string, int[]>? SavedDBCIDsByContextKey = null;
@@ -419,32 +430,40 @@ namespace EQWOWConverter.Creatures
 
             // Create the M2 and Skin
             M2 objectM2 = new M2(curObject, relativeMPQPath);
-            objectM2.WriteToDisk(GenerateFileName(), outputFullMPQPath);
+            lock (GetOutputFolderLock(Path.Combine(outputObjectFolderName, GenerateFileName())))
+                objectM2.WriteToDisk(GenerateFileName(), outputFullMPQPath);
 
-            // Place the related textures
-            foreach (ObjectModelTexture texture in curObject.ModelTextures)
+            // Place the related textures. Serialized per shared race output folder because every model template of a race copies into the same folder
+            lock (GetOutputFolderLock(outputObjectFolderName))
             {
-                // Replaceable textures (illusion version faces) have no baked filename in the M2, and the actual face textures get copied in GenerateIllusionFaceData below
-                if (texture.Type != ObjectModelTextureType.Hardcoded)
-                    continue;
+                foreach (ObjectModelTexture texture in curObject.ModelTextures)
+                {
+                    // Replaceable textures (illusion version faces) have no baked filename in the M2, and the actual face textures get copied in GenerateIllusionFaceData below
+                    if (texture.Type != ObjectModelTextureType.Hardcoded)
+                        continue;
 
-                string inputTextureNameInCharTextureFolder = Path.Combine(inputObjectTextureFolder, texture.TextureName + ".blp");
-                string inputTextureNameInGeneratedTextureFolder = Path.Combine(generatedTexturesFolderPath, texture.TextureName + ".blp");
-                string outputTextureName = Path.Combine(outputFullMPQPath, texture.TextureName + ".blp");
-                if (Path.Exists(inputTextureNameInCharTextureFolder) == true)
-                {
-                    FileTool.CopyFile(inputTextureNameInCharTextureFolder, outputTextureName);
-                    Logger.WriteDebug(String.Concat("- [", curObject.Name, "]: Texture named '", texture.TextureName, ".blp' copied"));
-                }
-                else if (Path.Exists(inputTextureNameInGeneratedTextureFolder) == true)
-                {
-                    FileTool.CopyFile(inputTextureNameInGeneratedTextureFolder, outputTextureName);
-                    Logger.WriteDebug("- [" + curObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
-                }
-                else
-                {
-                    Logger.WriteError("- [" + curObject.Name + "]: Error Texture named '" + texture.TextureName + ".blp' not found.  Did you run blpconverter?");
-                    return;
+                    string inputTextureNameInCharTextureFolder = Path.Combine(inputObjectTextureFolder, texture.TextureName + ".blp");
+                    string inputTextureNameInGeneratedTextureFolder = Path.Combine(generatedTexturesFolderPath, texture.TextureName + ".blp");
+                    string outputTextureName = Path.Combine(outputFullMPQPath, texture.TextureName + ".blp");
+
+                    if (File.Exists(outputTextureName) == true)
+                        continue;
+
+                    if (Path.Exists(inputTextureNameInCharTextureFolder) == true)
+                    {
+                        FileTool.CopyFile(inputTextureNameInCharTextureFolder, outputTextureName);
+                        Logger.WriteDebug(String.Concat("- [", curObject.Name, "]: Texture named '", texture.TextureName, ".blp' copied"));
+                    }
+                    else if (Path.Exists(inputTextureNameInGeneratedTextureFolder) == true)
+                    {
+                        FileTool.CopyFile(inputTextureNameInGeneratedTextureFolder, outputTextureName);
+                        Logger.WriteDebug("- [" + curObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
+                    }
+                    else
+                    {
+                        Logger.WriteError("- [" + curObject.Name + "]: Error Texture named '" + texture.TextureName + ".blp' not found.  Did you run blpconverter?");
+                        return;
+                    }
                 }
             }
 
@@ -480,14 +499,18 @@ namespace EQWOWConverter.Creatures
                 return;
 
             // Copy every face texture that exists for the head pieces (faces 0-9)
-            foreach (string faceZeroTextureName in FaceHeadPieceTextureNames)
+            lock (GetOutputFolderLock(GetCreatureModelFolderName()))
             {
-                for (int faceIndex = 0; faceIndex <= 9; faceIndex++)
+                foreach (string faceZeroTextureName in FaceHeadPieceTextureNames)
                 {
-                    string faceTextureName = GetFaceTextureName(faceZeroTextureName, faceIndex);
-                    string inputTexturePath = Path.Combine(inputObjectTextureFolder, faceTextureName + ".blp");
-                    if (File.Exists(inputTexturePath) == true)
-                        FileTool.CopyFile(inputTexturePath, Path.Combine(outputFullMPQPath, faceTextureName + ".blp"));
+                    for (int faceIndex = 0; faceIndex <= 9; faceIndex++)
+                    {
+                        string faceTextureName = GetFaceTextureName(faceZeroTextureName, faceIndex);
+                        string inputTexturePath = Path.Combine(inputObjectTextureFolder, faceTextureName + ".blp");
+                        string outputFaceTexturePath = Path.Combine(outputFullMPQPath, faceTextureName + ".blp");
+                        if (File.Exists(inputTexturePath) == true && File.Exists(outputFaceTexturePath) == false)
+                            FileTool.CopyFile(inputTexturePath, outputFaceTexturePath);
+                    }
                 }
             }
 

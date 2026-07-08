@@ -14,12 +14,44 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Collections.Concurrent;
 using System.Text;
 
 namespace EQWOWConverter
 {
     internal class FileTool
     {
+        private static readonly ConcurrentDictionary<string, string> ReadContentCacheByPath = new ConcurrentDictionary<string, string>();
+        private static volatile bool ReadContentCacheEnabled = false;
+        private const long ReadContentCacheMaxFileBytes = 4L * 1024L * 1024L; // Only cache files below this size
+
+        // Enables (and resets) the read-content cache. Should only be called when all file changes are done (that would be used as sources for other stuff)
+        public static void EnableReadContentCache()
+        {
+            ReadContentCacheByPath.Clear();
+            ReadContentCacheEnabled = true;
+        }
+
+        public static void DisableReadContentCache()
+        {
+            ReadContentCacheEnabled = false;
+            ReadContentCacheByPath.Clear();
+        }
+
+        private static string NormalizeCacheKey(string fileName)
+        {
+            try { return Path.GetFullPath(fileName).ToLowerInvariant(); }
+            catch { return fileName.ToLowerInvariant(); }
+        }
+
+        // Drops any cached content for a path that is being written/overwritten, so a subsequent read
+        // sees fresh data even if the file changes mid-run.
+        private static void InvalidateReadContentCacheForPath(string fileName)
+        {
+            if (ReadContentCacheEnabled == false)
+                return;
+            ReadContentCacheByPath.TryRemove(NormalizeCacheKey(fileName), out _);
+        }
         // Method taken from  https://stackoverflow.com/questions/7931304/comparing-two-files-in-c-sharp
         // Rights of this method belong to James Johnson (https://stackoverflow.com/users/879420/james-johnson)
         public static bool AreFilesTheSame(string file1, string file2)
@@ -172,6 +204,15 @@ namespace EQWOWConverter
 
         public static string ReadAllDataFromFile(string fileName)
         {
+            // Serve from the read-content cache when active (see EnableReadContentCache)
+            string cacheKey = string.Empty;
+            if (ReadContentCacheEnabled == true)
+            {
+                cacheKey = NormalizeCacheKey(fileName);
+                if (ReadContentCacheByPath.TryGetValue(cacheKey, out string? cachedData) == true)
+                    return cachedData;
+            }
+
             string returnString = string.Empty;
             try
             {
@@ -182,7 +223,11 @@ namespace EQWOWConverter
             catch
             {
                 Logger.WriteError("Unable to read all text from file '" + fileName + "'");
+                return returnString; // Do not cache failed reads
             }
+
+            if (ReadContentCacheEnabled == true && returnString.Length <= ReadContentCacheMaxFileBytes)
+                ReadContentCacheByPath[cacheKey] = returnString;
             return returnString;
         }
 
@@ -254,6 +299,7 @@ namespace EQWOWConverter
 
         public static void WriteAllRowsToFileWithHeader(string fileName, string delimeter, List<Dictionary<string, string>> outputColumnRows)
         {
+            InvalidateReadContentCacheForPath(fileName);
             if (File.Exists(fileName))
                 File.Delete(fileName);
 
@@ -361,6 +407,7 @@ namespace EQWOWConverter
             //    Directory.CreateDirectory(targetDirectory);
 
             // Copy the file normally unless the file is locked, then do it manually by a file stream
+            InvalidateReadContentCacheForPath(targetPath);
             try
             {
                 File.Copy(sourcePath, targetPath, true);
@@ -392,6 +439,7 @@ namespace EQWOWConverter
             string combinedContent = firstFileContent.TrimEnd() + Environment.NewLine + secondFileContent;
 
             // Write the file
+            InvalidateReadContentCacheForPath(targetTextFilePath);
             if (File.Exists(targetTextFilePath) == true)
                 File.Delete(targetTextFilePath);
             File.WriteAllText(targetTextFilePath, combinedContent);

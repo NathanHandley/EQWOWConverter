@@ -25,7 +25,17 @@ namespace EQWOWConverter
     internal class ImageTool
     {
         private static readonly object PNGtoBLPLock = new object();
-        private static readonly object GeneratedTintedTextureLock = new object();
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, object> GeneratedTintedTextureLocksByOutput = new System.Collections.Concurrent.ConcurrentDictionary<string, object>();
+
+        private static object GetGeneratedTintedTextureLock(string outputFullPath)
+        {
+            return GeneratedTintedTextureLocksByOutput.GetOrAdd(outputFullPath, CreateTintedTextureLock);
+        }
+
+        private static object CreateTintedTextureLock(string outputFullPath)
+        {
+            return new object();
+        }
 
         public enum IconSeriesDirection
         {
@@ -397,7 +407,7 @@ namespace EQWOWConverter
             string outputBLPName = outputTextureFileNameNoExt + ".blp";
             string outputBLPFullPath = Path.Combine(workingDirectory, outputBLPName);
 
-            lock (GeneratedTintedTextureLock)
+            lock (GetGeneratedTintedTextureLock(outputBLPFullPath))
             {
                 // Do existance checks for early exits
                 if (File.Exists(outputBLPFullPath) == true)

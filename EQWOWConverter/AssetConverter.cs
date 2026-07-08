@@ -46,6 +46,9 @@ namespace EQWOWConverter
             Logger.WriteInfo("Converting from EQ to WoW...");
             Logger.WriteInfo("- Note: CORE_ENABLE_MULTITHREADING is " + Configuration.CORE_ENABLE_MULTITHREADING.ToString());
 
+            // Since conditioning is complete, we can have read cache since the conditioned data won't change
+            FileTool.EnableReadContentCache();
+
             // Verify Input Path
             if (Directory.Exists(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER) == false)
             {
@@ -1255,16 +1258,17 @@ namespace EQWOWConverter
             CreatureModelTemplate.CreateCreatureModelTemplatesFromCreatureTemplates(creatureTemplates);
             CreatureIllusionVersionRegistry.CreateModelTemplatesForRegisteredForms();
 
-            // Group threading by race
-            List<List<CreatureModelTemplate>> raceTemplateWorkQueue = new List<List<CreatureModelTemplate>>();
+            // Put every race's model templates into a single work queue and process one per working thread.
+            Queue<CreatureModelTemplate> modelTemplateWorkQueue = new Queue<CreatureModelTemplate>();
             foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
-                raceTemplateWorkQueue.Add(modelTemplatesByRaceID.Value);
+                foreach (CreatureModelTemplate modelTemplate in modelTemplatesByRaceID.Value)
+                    modelTemplateWorkQueue.Enqueue(modelTemplate);
 
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
                 int taskCount = Configuration.CORE_CREATUREDISPLAY_THREAD_COUNT;
-                if (raceTemplateWorkQueue.Count < taskCount)
-                    taskCount = raceTemplateWorkQueue.Count;
+                if (modelTemplateWorkQueue.Count < taskCount)
+                    taskCount = modelTemplateWorkQueue.Count;
                 if (taskCount < 1)
                     taskCount = 1;
                 Task<List<CreatureModelTemplate>>[] tasks = new Task<List<CreatureModelTemplate>>[taskCount];
@@ -1273,7 +1277,7 @@ namespace EQWOWConverter
                     int threadID = i + 1;
                     tasks[i] = Task.Factory.StartNew(() =>
                     {
-                        return CreatureModelFileThreadWorker(threadID, raceTemplateWorkQueue, charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath, progressionCounter);
+                        return CreatureModelFileThreadWorker(threadID, modelTemplateWorkQueue, charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath, progressionCounter);
                     });
                 }
                 Task.WaitAll(tasks);
@@ -1282,12 +1286,12 @@ namespace EQWOWConverter
             }
             else
             {
-                List<CreatureModelTemplate> processedModelTemplates = CreatureModelFileThreadWorker(1, raceTemplateWorkQueue, charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath, progressionCounter);
+                List<CreatureModelTemplate> processedModelTemplates = CreatureModelFileThreadWorker(1, modelTemplateWorkQueue, charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath, progressionCounter);
                 creatureModelTemplates.AddRange(processedModelTemplates);
             }
         }
 
-        private List<CreatureModelTemplate> CreatureModelFileThreadWorker(int threadID, List<List<CreatureModelTemplate>> raceTemplateWorkQueue,
+        private List<CreatureModelTemplate> CreatureModelFileThreadWorker(int threadID, Queue<CreatureModelTemplate> modelTemplateWorkQueue,
             string charactersFolderRoot, string inputObjectTextureFolder, string exportAnimatedObjectsFolder, string generatedTexturesFolderPath, LogCounter progressionCounter)
         {
             Logger.WriteInfo(string.Concat("<+> Thread [Creature Model Subworker ", threadID.ToString(), "] Started"));
@@ -1295,26 +1299,19 @@ namespace EQWOWConverter
             bool moreToProcess = true;
             while (moreToProcess)
             {
-                // Grab the next race's templates to work with
-                List<CreatureModelTemplate>? raceModelTemplates = null;
+                // Grab the next model template to work with
+                CreatureModelTemplate? modelTemplate = null;
                 lock (CreatureModelWorkLock)
                 {
-                    if (raceTemplateWorkQueue.Count > 0)
-                    {
-                        raceModelTemplates = raceTemplateWorkQueue[0];
-                        raceTemplateWorkQueue.RemoveAt(0);
-                    }
+                    if (modelTemplateWorkQueue.Count > 0)
+                        modelTemplate = modelTemplateWorkQueue.Dequeue();
                 }
 
-                // A race was found, so build all of its model files
-                if (raceModelTemplates != null)
+                if (modelTemplate != null)
                 {
-                    foreach (CreatureModelTemplate modelTemplate in raceModelTemplates)
-                    {
-                        modelTemplate.CreateModelFiles(charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath);
-                        processedModelTemplates.Add(modelTemplate);
-                        progressionCounter.Write(1);
-                    }
+                    modelTemplate.CreateModelFiles(charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath);
+                    processedModelTemplates.Add(modelTemplate);
+                    progressionCounter.Write(1);
                 }
                 else
                     moreToProcess = false;
