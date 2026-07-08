@@ -26,6 +26,8 @@ namespace EQWOWConverter.ObjectModels
         private static readonly ConcurrentDictionary<string, EQMesh> CachedRenderMeshByFileName = new ConcurrentDictionary<string, EQMesh>();
         private static readonly ConcurrentDictionary<string, EQSkeleton> CachedSkeletonDataByFileName = new ConcurrentDictionary<string, EQSkeleton>();
         private static readonly ConcurrentDictionary<string, EQParticleCloud> CachedParticleCloudDataByFileName = new ConcurrentDictionary<string, EQParticleCloud>();
+        private static readonly ConcurrentDictionary<string, EQMaterialList> CachedMaterialListByKey = new ConcurrentDictionary<string, EQMaterialList>(); // Keyed by <file>|<customMaterialListLine>
+        private static readonly ConcurrentDictionary<string, EQMesh> CachedCollisionMeshByFileName = new ConcurrentDictionary<string, EQMesh>();
 
         public MeshData MeshData = new MeshData();
         public List<Material> Materials = new List<Material>();
@@ -304,25 +306,44 @@ namespace EQWOWConverter.ObjectModels
         {
             Logger.WriteDebug("- [" + inputObjectName + "]: Reading materials...");
             string materialListFileName = Path.Combine(inputObjectFolder, "MaterialLists", inputObjectName + ".txt");
-            EQMaterialList materialListData = new EQMaterialList();
-            if (materialListData.LoadFromDisk(materialListFileName, customMaterialListLine) == false)
-                Logger.WriteError("- [" + inputObjectName + "]: No material data found.");
-            else
+
+            // Parse the material list once per (file, customMaterialListLine) and reuse.
+            string cacheKey = materialListFileName + "|" + customMaterialListLine;
+            EQMaterialList? materialListData;
+            if (CachedMaterialListByKey.TryGetValue(cacheKey, out materialListData) == false)
             {
-                if (materialIndex >= materialListData.MaterialsByTextureVariation.Count)
+                materialListData = new EQMaterialList();
+                if (materialListData.LoadFromDisk(materialListFileName, customMaterialListLine) == false)
                 {
-                    if (materialListData.MaterialsByTextureVariation.Count > 0)
-                    {
-                        Materials = materialListData.MaterialsByTextureVariation[0];
-                        Logger.WriteDebug("- [" + inputObjectName + "]: materialIndex of value '" + materialIndex + "' exceeded count of MaterialsByTextureVariation of value '" + materialListData.MaterialsByTextureVariation.Count + "', so fell back to 0.");
-                    }
-                    else
-                        Logger.WriteError("- [" + inputObjectName + "]: materialIndex of value '" + materialIndex + "' exceeded count of MaterialsByTextureVariation of value '" + materialListData.MaterialsByTextureVariation.Count + "'.");
+                    Logger.WriteError("- [" + inputObjectName + "]: No material data found.");
+                    return;
+                }
+                CachedMaterialListByKey.TryAdd(cacheKey, materialListData);
+            }
+
+            // Select the texture variation (with fallback to 0), matching the original behavior
+            List<Material>? sourceMaterials = null;
+            if (materialIndex >= materialListData.MaterialsByTextureVariation.Count)
+            {
+                if (materialListData.MaterialsByTextureVariation.Count > 0)
+                {
+                    sourceMaterials = materialListData.MaterialsByTextureVariation[0];
+                    Logger.WriteDebug("- [" + inputObjectName + "]: materialIndex of value '" + materialIndex + "' exceeded count of MaterialsByTextureVariation of value '" + materialListData.MaterialsByTextureVariation.Count + "', so fell back to 0.");
                 }
                 else
-                {
-                    Materials = materialListData.MaterialsByTextureVariation[materialIndex];
-                }
+                    Logger.WriteError("- [" + inputObjectName + "]: materialIndex of value '" + materialIndex + "' exceeded count of MaterialsByTextureVariation of value '" + materialListData.MaterialsByTextureVariation.Count + "'.");
+            }
+            else
+            {
+                sourceMaterials = materialListData.MaterialsByTextureVariation[materialIndex];
+            }
+
+            // Use a deep copy so per-template material changes don't cause problems with the cache
+            if (sourceMaterials != null)
+            {
+                Materials = new List<Material>(sourceMaterials.Count);
+                foreach (Material sourceMaterial in sourceMaterials)
+                    Materials.Add(new Material(sourceMaterial));
             }
         }
 
@@ -340,7 +361,11 @@ namespace EQWOWConverter.ObjectModels
                     continue;
                 }
                 EQMesh meshData = new EQMesh();
-                if (meshData.LoadFromDisk(collisionMeshFileName) == false)
+                if (CachedCollisionMeshByFileName.TryGetValue(collisionMeshFileName, out EQMesh? cachedCollisionMesh) == true)
+                    meshData = new EQMesh(cachedCollisionMesh);
+                else if (meshData.LoadFromDisk(collisionMeshFileName) == true)
+                    CachedCollisionMeshByFileName.TryAdd(collisionMeshFileName, new EQMesh(meshData));
+                else
                 {
                     Logger.WriteError("- [" + inputObjectName + "]: Error loading collision mesh at '" + collisionMeshFileName + "'");
                     continue;
