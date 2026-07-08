@@ -25,6 +25,7 @@ namespace EQWOWConverter
     internal class ImageTool
     {
         private static readonly object PNGtoBLPLock = new object();
+        private static readonly object GeneratedTintedTextureLock = new object();
 
         public enum IconSeriesDirection
         {
@@ -396,81 +397,84 @@ namespace EQWOWConverter
             string outputBLPName = outputTextureFileNameNoExt + ".blp";
             string outputBLPFullPath = Path.Combine(workingDirectory, outputBLPName);
 
-            // Do existance checks for early exits
-            if (File.Exists(outputBLPFullPath) == true)
+            lock (GeneratedTintedTextureLock)
             {
-                Logger.WriteDebug("No need to created '" + outputBLPFullPath + "' as it already exists");
-                return;
-            }
-            if (File.Exists(inputPNGFullPath) == false)
-            {
-                Logger.WriteError("Failed to create '" + outputBLPFullPath + "' because the input texture '" + inputPNGFullPath + "' did not exist");
-                return;
-            }
-
-            // Build a color-changed image
-            using (Bitmap inputImage = new Bitmap(inputPNGFullPath))
-            using (Bitmap outputImage = new Bitmap(inputImage.Width, inputImage.Height, PixelFormat.Format32bppArgb))
-            {
-                // Lock the input and output bitmaps bits for faster operation
-                BitmapData inputData = inputImage.LockBits(new Rectangle(0, 0, inputImage.Width, inputImage.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-                BitmapData outputData = outputImage.LockBits(new Rectangle(0, 0, outputImage.Width, outputImage.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
-                try
+                // Do existance checks for early exits
+                if (File.Exists(outputBLPFullPath) == true)
                 {
-                    unsafe
+                    Logger.WriteDebug("No need to created '" + outputBLPFullPath + "' as it already exists");
+                    return;
+                }
+                if (File.Exists(inputPNGFullPath) == false)
+                {
+                    Logger.WriteError("Failed to create '" + outputBLPFullPath + "' because the input texture '" + inputPNGFullPath + "' did not exist");
+                    return;
+                }
+
+                // Build a color-changed image
+                using (Bitmap inputImage = new Bitmap(inputPNGFullPath))
+                using (Bitmap outputImage = new Bitmap(inputImage.Width, inputImage.Height, PixelFormat.Format32bppArgb))
+                {
+                    // Lock the input and output bitmaps bits for faster operation
+                    BitmapData inputData = inputImage.LockBits(new Rectangle(0, 0, inputImage.Width, inputImage.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                    BitmapData outputData = outputImage.LockBits(new Rectangle(0, 0, outputImage.Width, outputImage.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+                    try
                     {
-                        // Pointers to the pixel data
-                        byte* inputPtr = (byte*)inputData.Scan0;
-                        byte* outputPtr = (byte*)outputData.Scan0;
-
-                        // Bytes per pixel (4 for ARGB: A, R, G, B)
-                        int bytesPerPixel = 4;
-                        int height = inputImage.Height;
-                        int widthInBytes = inputImage.Width * bytesPerPixel;
-
-                        for (int y = 0; y < height; y++)
+                        unsafe
                         {
-                            byte* currentInputLine = inputPtr + (y * inputData.Stride);
-                            byte* currentOutputLine = outputPtr + (y * outputData.Stride);
+                            // Pointers to the pixel data
+                            byte* inputPtr = (byte*)inputData.Scan0;
+                            byte* outputPtr = (byte*)outputData.Scan0;
 
-                            for (int x = 0; x < widthInBytes; x += bytesPerPixel)
+                            // Bytes per pixel (4 for ARGB: A, R, G, B)
+                            int bytesPerPixel = 4;
+                            int height = inputImage.Height;
+                            int widthInBytes = inputImage.Width * bytesPerPixel;
+
+                            for (int y = 0; y < height; y++)
                             {
-                                // Extract ARGB from input
-                                byte blue = currentInputLine[x];
-                                byte green = currentInputLine[x + 1];
-                                byte red = currentInputLine[x + 2];
-                                byte alpha = currentInputLine[x + 3];
+                                byte* currentInputLine = inputPtr + (y * inputData.Stride);
+                                byte* currentOutputLine = outputPtr + (y * outputData.Stride);
 
-                                // Apply blend (multiply RGB by color, preserve alpha)
-                                byte blendedR = (byte)((red * color.R) / 255);
-                                byte blendedG = (byte)((green * color.G) / 255);
-                                byte blendedB = (byte)((blue * color.B) / 255);
+                                for (int x = 0; x < widthInBytes; x += bytesPerPixel)
+                                {
+                                    // Extract ARGB from input
+                                    byte blue = currentInputLine[x];
+                                    byte green = currentInputLine[x + 1];
+                                    byte red = currentInputLine[x + 2];
+                                    byte alpha = currentInputLine[x + 3];
 
-                                // Write to output
-                                currentOutputLine[x] = blendedB;
-                                currentOutputLine[x + 1] = blendedG;
-                                currentOutputLine[x + 2] = blendedR;
-                                currentOutputLine[x + 3] = alpha;
+                                    // Apply blend (multiply RGB by color, preserve alpha)
+                                    byte blendedR = (byte)((red * color.R) / 255);
+                                    byte blendedG = (byte)((green * color.G) / 255);
+                                    byte blendedB = (byte)((blue * color.B) / 255);
+
+                                    // Write to output
+                                    currentOutputLine[x] = blendedB;
+                                    currentOutputLine[x + 1] = blendedG;
+                                    currentOutputLine[x + 2] = blendedR;
+                                    currentOutputLine[x + 3] = alpha;
+                                }
                             }
                         }
                     }
-                }
-                finally
-                {
-                    // Unlock the bits
-                    inputImage.UnlockBits(inputData);
-                    outputImage.UnlockBits(outputData);
+                    finally
+                    {
+                        // Unlock the bits
+                        inputImage.UnlockBits(inputData);
+                        outputImage.UnlockBits(outputData);
+                    }
+
+                    // Save the output image
+                    outputImage.Save(outputPNGFullPath, ImageFormat.Png);
                 }
 
-                // Save the output image
-                outputImage.Save(outputPNGFullPath, ImageFormat.Png);
+                // Generate the BLP file, if needed
+                if (doGenerateBLP == true)
+                    ConvertPNGTexturesToBLP(new List<string>() { outputPNGFullPath }, imageAssociationType);
+                Logger.WriteDebug("Generating colored texture completed for '" + outputBLPFullPath + "'");
             }
-
-            // Generate the BLP file, if needed
-            if (doGenerateBLP == true)
-                ConvertPNGTexturesToBLP(new List<string>() { outputPNGFullPath }, imageAssociationType);
-            Logger.WriteDebug("Generating colored texture completed for '" + outputBLPFullPath + "'");
         }
 
         public static void ConvertPNGTexturesToBLP(List<string> fullFileInputPaths, ImageAssociationType imageType, LogCounter? progressionCounter = null)
