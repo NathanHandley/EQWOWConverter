@@ -3051,16 +3051,14 @@ namespace EQWOWConverter
             mpqMaxFileCount <<= 1;
             Logger.WriteDebug("MPQ hash table sized to " + mpqMaxFileCount + " for " + mpqReadyFileCount + " files");
 
-            StringBuilder mpqCreateScriptText = new StringBuilder();
-            mpqCreateScriptText.AppendLine("new \"" + outputPatchFileName + "\" " + mpqMaxFileCount);
-            mpqCreateScriptText.AppendLine("add \"" + outputPatchFileName + "\" \"" + mpqReadyFolder + "\\*\" /auto /r");
-            string mpqNewScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "mpqnew.txt");
-            using (var mpqNewScriptFile = new StreamWriter(mpqNewScriptFileName))
-                mpqNewScriptFile.WriteLine(mpqCreateScriptText.ToString());
+            // Full bild just needs a wildcard
+            List<string> scriptLines = new List<string>();
+            scriptLines.Add("new \"" + outputPatchFileName + "\" " + mpqMaxFileCount);
+            scriptLines.Add("add \"" + outputPatchFileName + "\" \"" + mpqReadyFolder + "\\*\" /auto /r");
 
             // Generate the new MPQ using the script
             Logger.WriteDebug("Generating MPQ file");
-            return RunMPQEditorScript(mpqNewScriptFileName, "Failed to generate MPQ file.");
+            return RunMPQEditorScriptInBatches(scriptLines, workingGeneratedScriptsFolder, "mpqnew", "Failed to generate MPQ file.");
         }
 
         private bool UpdateMainPatchMPQ(string mpqReadyFolder, string outputPatchFileName, string patchManifestFileName,
@@ -3085,30 +3083,25 @@ namespace EQWOWConverter
             Logger.WriteDebug("Generating script to update the MPQ file");
             string workingGeneratedScriptsFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
             FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
-            StringBuilder mpqUpdateScriptText = new StringBuilder();
+            List<string> scriptLines = new List<string>();
 
             // Remove files that are no longer needed
             foreach (string relativePathToRemove in relativePathsToRemove)
-                mpqUpdateScriptText.AppendLine("delete \"" + outputPatchFileName + "\" \"" + relativePathToRemove + "\"");
+                scriptLines.Add("delete \"" + outputPatchFileName + "\" \"" + relativePathToRemove + "\"");
 
-            // Add or overwrite the new/changed files
+            // Add or overwrite the new or changed files
             foreach (string relativePathToAddOrUpdate in relativePathsToAddOrUpdate)
             {
                 string fullFilePath = Path.Combine(mpqReadyFolder, relativePathToAddOrUpdate);
-                mpqUpdateScriptText.AppendLine("add \"" + outputPatchFileName + "\" \"" + fullFilePath + "\" \"" + relativePathToAddOrUpdate + "\"");
+                scriptLines.Add("add \"" + outputPatchFileName + "\" \"" + fullFilePath + "\" \"" + relativePathToAddOrUpdate + "\"");
             }
 
-            // Finally, compact it to reclaim the space freed by deleted/overwritten files
-            mpqUpdateScriptText.AppendLine("compact \"" + outputPatchFileName + "\" /r");
+            // Compact it
+            scriptLines.Add("compact \"" + outputPatchFileName + "\" /r");
 
-            // Output the script to disk
-            string mpqUpdateScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "mpqupdate.txt");
-            using (var mpqUpdateScriptFile = new StreamWriter(mpqUpdateScriptFileName))
-                mpqUpdateScriptFile.WriteLine(mpqUpdateScriptText.ToString());
-
-            // Update the MPQ using the script
+            // Update the MPQ using the script(s)
             Logger.WriteDebug("Updating MPQ file");
-            return RunMPQEditorScript(mpqUpdateScriptFileName, "Failed to update MPQ file.");
+            return RunMPQEditorScriptInBatches(scriptLines, workingGeneratedScriptsFolder, "mpqupdate", "Failed to update MPQ file.");
         }
 
         private bool CreateDeltaOnlyMainPatchMPQ(string mpqReadyFolder, string patchManifestFileName,
@@ -3150,20 +3143,18 @@ namespace EQWOWConverter
             mpqMaxFileCount <<= 1;
             Logger.WriteDebug("Delta patch MPQ hash table sized to " + mpqMaxFileCount + " for " + relativePathsToAddOrUpdate.Count + " files");
 
-            StringBuilder mpqDeltaScriptText = new StringBuilder();
-            mpqDeltaScriptText.AppendLine("new \"" + outputDeltaPatchFileName + "\" " + mpqMaxFileCount);
+            // The 'new' must be first so it lands at the start of the first batch and creates the archive before any adds
+            List<string> scriptLines = new List<string>();
+            scriptLines.Add("new \"" + outputDeltaPatchFileName + "\" " + mpqMaxFileCount);
             foreach (string relativePathToAddOrUpdate in relativePathsToAddOrUpdate)
             {
                 string fullFilePath = Path.Combine(mpqReadyFolder, relativePathToAddOrUpdate);
-                mpqDeltaScriptText.AppendLine("add \"" + outputDeltaPatchFileName + "\" \"" + fullFilePath + "\" \"" + relativePathToAddOrUpdate + "\"");
+                scriptLines.Add("add \"" + outputDeltaPatchFileName + "\" \"" + fullFilePath + "\" \"" + relativePathToAddOrUpdate + "\"");
             }
-            string mpqDeltaScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "mpqdelta.txt");
-            using (var mpqDeltaScriptFile = new StreamWriter(mpqDeltaScriptFileName))
-                mpqDeltaScriptFile.WriteLine(mpqDeltaScriptText.ToString());
 
-            // Generate the delta patch MPQ using the script
+            // Generate the delta patch MPQ using the script(s)
             Logger.WriteDebug("Generating delta patch MPQ file");
-            return RunMPQEditorScript(mpqDeltaScriptFileName, "Failed to generate delta-only main patch MPQ file.");
+            return RunMPQEditorScriptInBatches(scriptLines, workingGeneratedScriptsFolder, "mpqdelta", "Failed to generate delta-only main patch MPQ file.");
         }
 
         private void ComputePatchFileDelta(Dictionary<string, string> currentFileHashesByRelativePath,
@@ -3182,6 +3173,33 @@ namespace EQWOWConverter
                 if (currentFileHashesByRelativePath.ContainsKey(previousFileHash.Key) == false)
                     relativePathsToRemove.Add(previousFileHash.Key);
             }
+        }
+
+        private bool RunMPQEditorScriptInBatches(List<string> scriptLines, string workingGeneratedScriptsFolder,
+            string scriptBaseName, string failureMessagePrefix)
+        {
+            const int maxLinesPerScript = 2500;
+            int batchCount = (scriptLines.Count + maxLinesPerScript - 1) / maxLinesPerScript;
+            if (batchCount < 1)
+                batchCount = 1;
+            for (int batchIndex = 0; batchIndex < batchCount; batchIndex++)
+            {
+                StringBuilder scriptText = new StringBuilder();
+                int startLine = batchIndex * maxLinesPerScript;
+                int endLine = Math.Min(startLine + maxLinesPerScript, scriptLines.Count);
+                for (int lineIndex = startLine; lineIndex < endLine; lineIndex++)
+                    scriptText.AppendLine(scriptLines[lineIndex]);
+
+                string scriptFileName = Path.Combine(workingGeneratedScriptsFolder, scriptBaseName + (batchIndex + 1) + ".txt");
+                using (var scriptFile = new StreamWriter(scriptFileName))
+                    scriptFile.WriteLine(scriptText.ToString());
+
+                if (batchCount > 1)
+                    Logger.WriteDebug("Running MPQ script batch " + (batchIndex + 1) + " of " + batchCount);
+                if (RunMPQEditorScript(scriptFileName, failureMessagePrefix) == false)
+                    return false;
+            }
+            return true;
         }
 
         private bool RunMPQEditorScript(string mpqScriptFileName, string failureMessagePrefix)
