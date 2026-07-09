@@ -49,9 +49,9 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        public static int GenerateID(string contextKeyPart1, string contextKeyPart2, string contextKeyPart3 = "", string contextKeyPart4 = "", string contextKeyPart5 = "")
+        public static int GenerateID(string contextKeyPart1, string contextKeyPart2, string contextKeyPart3 = "")
         {
-            string contextKey = string.Concat(contextKeyPart1, "~", contextKeyPart2, "~", contextKeyPart3, "~", contextKeyPart4, "~", contextKeyPart5);
+            string contextKey = string.Concat(contextKeyPart1, "~", contextKeyPart2, "~", contextKeyPart3);
             lock (GameObjectDisplayLock)
             {
                 LoadSavedIDsIfNeeded();

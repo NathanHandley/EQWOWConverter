@@ -105,7 +105,7 @@ namespace EQWOWConverter.Transports
                 curTransportShip.EQWalkSpeed = float.Parse(columns["walkspeed"]);
                 curTransportShip.EQRunSpeed = float.Parse(columns["runspeed"]);
                 curTransportShip.TouchedZones = columns["touchedzones"];
-                curTransportShip.TaxiPathID = TaxiPathDBC.GenerateID();
+                curTransportShip.TaxiPathID = TaxiPathDBC.GenerateID(curTransportShip.Name);
                 curTransportShip.MapID = int.Parse(columns["wow_mapID"]);
                 curTransportShip.FixedSpeed = int.Parse(columns["fixed_speed"]);
                 curTransportShip.Scale = float.Parse(columns["scale"]);
