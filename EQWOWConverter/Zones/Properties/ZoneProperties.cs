@@ -119,7 +119,7 @@ namespace EQWOWConverter.Zones
         public int DBCMapDifficultyDungeonID;
         public int DBCMapDifficultyRaidID;
         public int DBCWorldMapAreaID;
-        public UInt32 DBCWMOID; // TODO: Move to config
+        public UInt32 DBCWMOID;
         public string ShortName = string.Empty;
         public string DescriptiveName = string.Empty;
         public ZoneContinentType Continent;

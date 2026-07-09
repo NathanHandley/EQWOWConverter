@@ -2303,7 +2303,7 @@ namespace EQWOWConverter
                 Logger.WriteError("Deploying sql to server failed.");
             }
 
-            Logger.WriteDebug("Deploying sql to server complete");
+            Logger.WriteInfo("Deploying sql to server complete");
         }
     }
 }

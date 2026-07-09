@@ -1129,7 +1129,7 @@ namespace EQWOWConverter
             tileYMax = Math.Max(32, tileYMax);
 
             // Generate a WMO ID for the zone-wide WMO
-            UInt32 uniqueWMOID = ADT.GenerateUniqueModelID();
+            UInt32 uniqueWMOID = Convert.ToUInt32(1000000 + curZone.ZoneProperties.DBCMapID);
 
             // Create the WDT
             WDT zoneWDT = new WDT(curZone, zoneWMO.RootFileRelativePathWithFileName, tileXMin, tileXMax, tileYMin, tileYMax, uniqueWMOID);

@@ -31,9 +31,7 @@ namespace EQWOWConverter.WOWFiles
         public List<string> DoodadPathStrings = new List<string>();
         public Dictionary<string, int> DoodadPathStringOffsets = new Dictionary<string, int>();
         private List<ZoneDoodadInstance> TileDoodadInstances = new List<ZoneDoodadInstance>();
-        private static readonly object UNIQUE_MODEL_ID_LOCK = new object();
-        private static readonly UInt32 UNIQUE_MODEL_ID_START = 1000000;
-        private static UInt32 CUR_UNIQUE_MODEL_ID = UNIQUE_MODEL_ID_START;
+        private UInt32 UniqueADTID = 0;
 
         public ADT(Zone zone, string wmoFileName, UInt32 tileXIndex, UInt32 tileYIndex, float zoneFloorHeight,
             string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder, UInt32 uniqueWMOID)
@@ -43,6 +41,7 @@ namespace EQWOWConverter.WOWFiles
             ZoneFloorHeight = zoneFloorHeight;
             TileXIndex = tileXIndex;
             TileYIndex = tileYIndex;
+            UniqueADTID = ((tileXIndex * 1000) + tileYIndex) + 1100000;
 
             // Add doodads only if trying to generate minimaps
             if (Configuration.WORLDMAP_DEBUG_GENERATION_MODE_ENABLED == true)
@@ -75,16 +74,6 @@ namespace EQWOWConverter.WOWFiles
                 //}
             }
             DataBytes = GenerateDataBytes(tileXIndex, tileYIndex, uniqueWMOID);
-        }
-
-        public static UInt32 GenerateUniqueModelID()
-        {
-            lock (UNIQUE_MODEL_ID_LOCK)
-            {
-                UInt32 generatedID = CUR_UNIQUE_MODEL_ID;
-                CUR_UNIQUE_MODEL_ID++;
-                return generatedID;
-            }
         }
 
         private List<byte> GenerateDataBytes(UInt32 tileXIndex, UInt32 tileYIndex, UInt32 uniqueWMOID)
@@ -309,7 +298,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
             foreach (ZoneDoodadInstance doodadInstance in TileDoodadInstances)
-                chunkBytes.AddRange(doodadInstance.ToBytesForADT(GenerateUniqueModelID()));
+                chunkBytes.AddRange(doodadInstance.ToBytesForADT(UniqueADTID));
             return WrapInChunk("MDDF", chunkBytes.ToArray());
         }
 
