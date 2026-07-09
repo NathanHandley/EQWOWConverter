@@ -156,7 +156,7 @@ namespace EQWOWConverter.Zones
             // If set, generate a shadowbox
             if (ZoneProperties.HasShadowBox == true)
             {
-                ZoneModelObject curWorldObjectModel = new ZoneModelObject(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
+                ZoneModelObject curWorldObjectModel = new ZoneModelObject(ShortName, Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
                 curWorldObjectModel.LoadAsShadowBox(Materials, AllGeometryBoundingBox, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
@@ -742,7 +742,7 @@ namespace EQWOWConverter.Zones
                     chunkLiquid = chunkLiquid.GeneratePartialFromScaledTransformedBoundingBox(intersectingBox[0]);
                 }
 
-                ZoneModelObject curWorldObjectModel = new ZoneModelObject(Convert.ToUInt16(ZoneObjectModels.Count), zoneArea.DBCAreaTableID);
+                ZoneModelObject curWorldObjectModel = new ZoneModelObject(ShortName, Convert.ToUInt16(ZoneObjectModels.Count), zoneArea.DBCAreaTableID);
                 meshDataChunk.CondenseAndRenumberVertexIndices();
                 curWorldObjectModel.LoadAsCollidableArea(meshDataChunk, boundingBox, zoneArea.DisplayName, areaMusic, chunkLiquid);
                 ZoneObjectModels.Add(curWorldObjectModel);
@@ -939,7 +939,7 @@ namespace EQWOWConverter.Zones
             // Create a group for each chunk
             foreach (MeshData meshDataChunk in meshDataChunks)
             {
-                ZoneModelObject curWorldObjectModel = new ZoneModelObject(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
+                ZoneModelObject curWorldObjectModel = new ZoneModelObject(ShortName, Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
                 meshDataChunk.CondenseAndRenumberVertexIndices();
                 curWorldObjectModel.LoadAsRendered(meshDataChunk, Materials);
                 ZoneObjectModels.Add(curWorldObjectModel);
