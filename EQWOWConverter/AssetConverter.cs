@@ -378,7 +378,7 @@ namespace EQWOWConverter
                     transportWMO.WriteToDisk();
                     // Note: WMO is collision only so no textures are required
 
-                    int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
+                    int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID("transportship", shipName);
                     transportShipZoneModelsByShipName.Add(shipName, curZone);
                     gameObjectDisplayInfoIDsByName.Add(shipName, gameObjectDisplayInfoID);
                     TransportShip.TransportShipWMOsByGameObjectDisplayInfoID.Add(gameObjectDisplayInfoID, transportWMO);
@@ -418,7 +418,7 @@ namespace EQWOWConverter
                     ExportTexturesForObject(curObjectModel, new List<string>() { objectTextureFolder }, curStaticObjectOutputFolder);
 
                     // Store it
-                    int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
+                    int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID("transportlift", transportLift.MeshName);
                     transportLiftObjectModelsByMeshName.Add(transportLift.MeshName, curObjectModel);
                     gameObjectDisplayInfoIDsByName.Add(transportLift.MeshName, gameObjectDisplayInfoID);
                     TransportLift.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);
@@ -460,7 +460,7 @@ namespace EQWOWConverter
                     ExportTexturesForObject(curObjectModel, new List<string>() { objectTextureFolder }, curStaticObjectOutputFolder);
 
                     // Store it
-                    int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
+                    int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID("transportlifttrigger", transportLiftTrigger.MeshName);
                     transportLiftTriggerObjectModelsByMeshName.Add(transportLiftTrigger.MeshName, curObjectModel);
                     gameObjectDisplayInfoIDsByName.Add(transportLiftTrigger.MeshName, gameObjectDisplayInfoID);
                     TransportLiftTrigger.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);

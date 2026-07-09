@@ -634,7 +634,7 @@ namespace EQWOWConverter.GameObjects
                         // Store it
                         gameObject.ObjectModel = curObjectModel;
                         NonDoodadObjectModelsByNameAndOpenType.Add((gameObject.OriginalModelName, gameObject.OpenType), curObjectModel);
-                        int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
+                        int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID("gameobject", gameObject.OriginalModelName, gameObject.OpenType.ToString());
                         gameObject.GameObjectDisplayInfoID = gameObjectDisplayInfoID;
                         GameObjectDisplayInfoIDsByModelNameAndOpenType.Add((gameObject.OriginalModelName, gameObject.OpenType), gameObjectDisplayInfoID);
                     }

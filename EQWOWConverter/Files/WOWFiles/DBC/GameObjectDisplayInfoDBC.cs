@@ -22,6 +22,7 @@ namespace EQWOWConverter.WOWFiles
     {
         private static int CUR_ID = Configuration.DBCID_GAMEOBJECTDISPLAYINFO_ID_START;
         private static readonly object GameObjectDisplayLock = new object();
+        private static Dictionary<string, int>? SavedIDsByContextKey = null;
 
         public void AddRow(int id, string modelNameAndRelativePath, BoundingBox boundingBox, int openSoundEntryID = 0, int closeSoundEntryID = 0)
         {
@@ -48,15 +49,67 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        public static int GenerateID()
+        public static int GenerateID(string contextKeyPart1, string contextKeyPart2, string contextKeyPart3 = "", string contextKeyPart4 = "", string contextKeyPart5 = "")
         {
-            int id;
+            string contextKey = string.Concat(contextKeyPart1, "~", contextKeyPart2, "~", contextKeyPart3, "~", contextKeyPart4, "~", contextKeyPart5);
             lock (GameObjectDisplayLock)
             {
-                id = CUR_ID;
+                LoadSavedIDsIfNeeded();
+                if (SavedIDsByContextKey!.ContainsKey(contextKey) == true)
+                    return SavedIDsByContextKey[contextKey];
+
+                int id = CUR_ID;
                 CUR_ID++;
+                SavedIDsByContextKey.Add(contextKey, id);
+                AppendSavedIDToFile(contextKey, id);
+                return id;
             }
-            return id;
+        }
+
+        private static string GetSavedIDsFilePath()
+        {
+            return Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "GameObjectDisplayInfoIDs.csv");
+        }
+
+        private static void LoadSavedIDsIfNeeded()
+        {
+            if (SavedIDsByContextKey != null)
+                return;
+            SavedIDsByContextKey = new Dictionary<string, int>();
+
+            string savedIDsFilePath = GetSavedIDsFilePath();
+            if (File.Exists(savedIDsFilePath) == false)
+            {
+                Logger.WriteDebug("No saved game object display info IDs file found at '" + savedIDsFilePath + "', so all IDs will be newly generated");
+                return;
+            }
+
+            Logger.WriteDebug("Loading saved game object display info IDs via file '" + savedIDsFilePath + "'");
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(savedIDsFilePath, "|");
+            foreach (Dictionary<string, string> columns in rows)
+            {
+                string contextKey = columns["contextkey"];
+                if (SavedIDsByContextKey.ContainsKey(contextKey) == true)
+                {
+                    Logger.WriteError("Duplicate context key '" + contextKey + "' found in '" + savedIDsFilePath + "', skipping the duplicate row");
+                    continue;
+                }
+
+                int displayInfoID = int.Parse(columns["gameobjectdisplayinfo_id"]);
+                SavedIDsByContextKey.Add(contextKey, displayInfoID);
+
+                // Ensure newly generated IDs never collide with previously saved ones
+                if (displayInfoID >= CUR_ID)
+                    CUR_ID = displayInfoID + 1;
+            }
+        }
+
+        private static void AppendSavedIDToFile(string contextKey, int displayInfoID)
+        {
+            Dictionary<string, string> rowValues = new Dictionary<string, string>();
+            rowValues.Add("contextkey", contextKey);
+            rowValues.Add("gameobjectdisplayinfo_id", displayInfoID.ToString());
+            FileTool.AppendRowToFileWithHeader(GetSavedIDsFilePath(), "|", rowValues);
         }
     }
 }
