@@ -53,7 +53,7 @@ namespace EQWOWConverter.ObjectModels
                 // Allocate an estimated size
                 List<Byte> bytes = new List<Byte>(Convert.ToInt32(Values.Count * Values[0].GetBytesSize()));
                 foreach (T value in Values)
-                    bytes.AddRange(value.ToBytes());
+                    value.WriteToBuffer(bytes);
                 return bytes;
             }
         }

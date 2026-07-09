@@ -24,13 +24,37 @@ namespace EQWOWConverter
         // Rows written to the console, for tracking
         private static readonly object writeLock = new object();
 
+        private static StreamWriter? fileWriter = null;
+
         public static void ResetLog()
         {
             lock (writeLock)
             {
-                if (File.Exists("log.txt"))
-                    File.Delete("log.txt");
+                CloseFileWriter();
+                try
+                {
+                    if (File.Exists("log.txt"))
+                        File.Delete("log.txt");
+                }
+                catch { /* best effort */ }
             }
+        }
+
+        private static void AppendToLogFile(string text)
+        {
+            try
+            {
+                if (fileWriter == null)
+                    fileWriter = new StreamWriter(new FileStream("log.txt", FileMode.Append, FileAccess.Write, FileShare.Read)) { AutoFlush = true };
+                fileWriter.Write(text);
+            }
+            catch {}
+        }
+
+        private static void CloseFileWriter()
+        {
+            try { fileWriter?.Dispose(); } catch { }
+            fileWriter = null;
         }
 
         private static void WriteToConsole(string text, ConsoleColor consoleColor, bool outputNewLine = true)
@@ -73,7 +97,7 @@ namespace EQWOWConverter
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 1)
                 {
                     stringBuilder.Append("\n");
-                    File.AppendAllText("log.txt", stringBuilder.ToString());
+                    AppendToLogFile(stringBuilder.ToString());
                 }
             }
         }
@@ -91,7 +115,7 @@ namespace EQWOWConverter
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 1)
                 {
                     stringBuilder.Append("\n");
-                    File.AppendAllText("log.txt", stringBuilder.ToString());
+                    AppendToLogFile(stringBuilder.ToString());
                 }
             }
         }
@@ -112,7 +136,7 @@ namespace EQWOWConverter
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 3)
                 {
                     stringBuilder.Append("\n");
-                    File.AppendAllText("log.txt", stringBuilder.ToString());
+                    AppendToLogFile(stringBuilder.ToString());
                 }
             }
         }
@@ -134,7 +158,7 @@ namespace EQWOWConverter
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 3)
                 {
                     stringBuilder.Append("\n");
-                    File.AppendAllText("log.txt", stringBuilder.ToString());
+                    AppendToLogFile(stringBuilder.ToString());
                 }
             }
         }
@@ -152,7 +176,7 @@ namespace EQWOWConverter
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 2)
                 {
                     stringBuilder.Append("\n");
-                    File.AppendAllText("log.txt", stringBuilder.ToString());
+                    AppendToLogFile(stringBuilder.ToString());
                 }
             }
         }

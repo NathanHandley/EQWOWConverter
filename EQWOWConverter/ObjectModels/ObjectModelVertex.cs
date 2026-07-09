@@ -48,14 +48,19 @@ namespace EQWOWConverter.ObjectModels
 
         public List<byte> ToBytes()
         {
-            List<byte> bytes = new List<byte>();
-            bytes.AddRange(Position.ToBytes());
-            bytes.AddRange(BoneWeights.ToArray());
-            bytes.AddRange(BoneIndicesLookup.ToArray());
-            bytes.AddRange(Normal.ToBytes());
-            bytes.AddRange(Texture1TextureCoordinates.ToBytes());
-            bytes.AddRange(Texture2TextureCoordinates.ToBytes());
+            List<byte> bytes = new List<byte>(Convert.ToInt32(GetBytesSize()));
+            WriteToBuffer(bytes);
             return bytes;
+        }
+
+        public void WriteToBuffer(List<byte> buffer)
+        {
+            Position.WriteToBuffer(buffer);
+            buffer.AddRange(BoneWeights);
+            buffer.AddRange(BoneIndicesLookup);
+            Normal.WriteToBuffer(buffer);
+            Texture1TextureCoordinates.WriteToBuffer(buffer);
+            Texture2TextureCoordinates.WriteToBuffer(buffer);
         }
     }
 }

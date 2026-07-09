@@ -68,12 +68,20 @@ namespace EQWOWConverter.Common
 
         public List<Byte> ToBytes()
         {
-            List<Byte> bytes = new List<Byte>();
-            bytes.AddRange(BitConverter.GetBytes(GetFloatAsShort(X)));
-            bytes.AddRange(BitConverter.GetBytes(GetFloatAsShort(Y)));
-            bytes.AddRange(BitConverter.GetBytes(GetFloatAsShort(Z)));
-            bytes.AddRange(BitConverter.GetBytes(GetFloatAsShort(W)));
+            List<Byte> bytes = new List<Byte>(8);
+            bytes.AddUInt16LE(GetFloatAsShort(X));
+            bytes.AddUInt16LE(GetFloatAsShort(Y));
+            bytes.AddUInt16LE(GetFloatAsShort(Z));
+            bytes.AddUInt16LE(GetFloatAsShort(W));
             return bytes;
+        }
+
+        public void WriteToBuffer(List<byte> buffer)
+        {
+            buffer.AddUInt16LE(GetFloatAsShort(X));
+            buffer.AddUInt16LE(GetFloatAsShort(Y));
+            buffer.AddUInt16LE(GetFloatAsShort(Z));
+            buffer.AddUInt16LE(GetFloatAsShort(W));
         }
 
         // Generates a list of quaternions at equidistant locations around a circle

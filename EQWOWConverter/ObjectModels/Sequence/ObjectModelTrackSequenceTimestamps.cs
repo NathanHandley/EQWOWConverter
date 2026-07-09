@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
+
 namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelTrackSequenceTimestamps
@@ -44,9 +46,9 @@ namespace EQWOWConverter.ObjectModels
 
         public List<Byte> GetDataBytes()
         {
-            List<Byte> bytes = new List<Byte>();
+            List<Byte> bytes = new List<Byte>(Timestamps.Count * 4);
             foreach (UInt32 value in Timestamps)
-                bytes.AddRange(BitConverter.GetBytes(value));
+                bytes.AddUInt32LE(value);
             return bytes;
         }
     }

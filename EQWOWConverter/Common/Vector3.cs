@@ -52,11 +52,18 @@ namespace EQWOWConverter.Common
 
         public List<byte> ToBytes()
         {
-            List<byte> returnBytes = new List<byte>();
-            returnBytes.AddRange(BitConverter.GetBytes(X));
-            returnBytes.AddRange(BitConverter.GetBytes(Y));
-            returnBytes.AddRange(BitConverter.GetBytes(Z));
+            List<byte> returnBytes = new List<byte>(12);
+            returnBytes.AddSingleLE(X);
+            returnBytes.AddSingleLE(Y);
+            returnBytes.AddSingleLE(Z);
             return returnBytes;
+        }
+
+        public void WriteToBuffer(List<byte> buffer)
+        {
+            buffer.AddSingleLE(X);
+            buffer.AddSingleLE(Y);
+            buffer.AddSingleLE(Z);
         }
 
         public static Vector3 operator -(Vector3 v1, Vector3 v2)

@@ -20,5 +20,7 @@ namespace EQWOWConverter.Common
     {
         public UInt32 GetBytesSize();
         public List<byte> ToBytes();
+
+        public void WriteToBuffer(List<byte> buffer) => buffer.AddRange(ToBytes());
     }
 }

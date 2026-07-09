@@ -40,10 +40,16 @@ namespace EQWOWConverter.Common
 
         public List<byte> ToBytes()
         {
-            List<byte> returnBytes = new List<byte>();
-            returnBytes.AddRange(BitConverter.GetBytes(X));
-            returnBytes.AddRange(BitConverter.GetBytes(Y));
+            List<byte> returnBytes = new List<byte>(8);
+            returnBytes.AddSingleLE(X);
+            returnBytes.AddSingleLE(Y);
             return returnBytes;
+        }
+
+        public void WriteToBuffer(List<byte> buffer)
+        {
+            buffer.AddSingleLE(X);
+            buffer.AddSingleLE(Y);
         }
     }
 }
