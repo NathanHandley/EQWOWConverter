@@ -14,6 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using System.Globalization;
+using System.Text;
+
 namespace EQWOWConverter.Common
 {
     internal class Sound
@@ -22,6 +25,7 @@ namespace EQWOWConverter.Common
         private static readonly object SoundLock = new object();
         private static Dictionary<string, float> AmbientSoundVolumesByAudioFileNameNoExt = new Dictionary<string, float>();
         private static Dictionary<string, string> SoundFileNameRemapsBySourceName = new Dictionary<string, string>();
+        private static Dictionary<string, int>? SavedDBCIDsByContextKey = null; // SoundEntries DBC IDs keyed by the generating context (constructor arguments)
 
         public int DBCID;
         public string Name = string.Empty;
@@ -39,9 +43,19 @@ namespace EQWOWConverter.Common
             {
                 if (AmbientSoundVolumesByAudioFileNameNoExt.Count == 0)
                     PopulateSoundPropertiesFromFile();
+                LoadSavedDBCIDsIfNeeded();
 
-                DBCID = CURRENT_SOUNDENTRY_ID;
-                CURRENT_SOUNDENTRY_ID++;
+                string contextKey = GenerateDBCIDContextKey(name, audioFileNameNoExt, type, minDistance, distanceCutoff, loop, volume);
+                if (SavedDBCIDsByContextKey!.ContainsKey(contextKey) == true)
+                    DBCID = SavedDBCIDsByContextKey[contextKey];
+                else
+                {
+                    DBCID = CURRENT_SOUNDENTRY_ID;
+                    CURRENT_SOUNDENTRY_ID++;
+                    SavedDBCIDsByContextKey.Add(contextKey, DBCID);
+                    AppendSavedDBCIDToFile(name, audioFileNameNoExt, type, minDistance, distanceCutoff, loop, volume, DBCID);
+                }
+
                 Name = name;
                 AudioFileNameNoExt = audioFileNameNoExt;
                 if (SoundFileNameRemapsBySourceName.ContainsKey(AudioFileNameNoExt.Trim().ToLower()) == true)
@@ -52,6 +66,82 @@ namespace EQWOWConverter.Common
                 Loop = loop;
                 Volume = volume;
             }
+        }
+
+        private static string GetSavedDBCIDsFilePath()
+        {
+            return Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SoundDBCIDs.csv");
+        }
+
+        private static string GenerateDBCIDContextKey(string name, string audioFileNameNoExt, SoundType type, float minDistance,
+            float distanceCutoff, bool loop, float volume)
+        {
+            StringBuilder keySB = new StringBuilder();
+            keySB.Append(name);
+            keySB.Append("|");
+            keySB.Append(audioFileNameNoExt);
+            keySB.Append("|");
+            keySB.Append(Convert.ToInt32(type));
+            keySB.Append("|");
+            keySB.Append(minDistance.ToString(CultureInfo.InvariantCulture));
+            keySB.Append("|");
+            keySB.Append(distanceCutoff.ToString(CultureInfo.InvariantCulture));
+            keySB.Append("|");
+            keySB.Append(loop == true ? "1" : "0");
+            keySB.Append("|");
+            keySB.Append(volume.ToString(CultureInfo.InvariantCulture));
+            return keySB.ToString();
+        }
+
+        private static void LoadSavedDBCIDsIfNeeded()
+        {
+            if (SavedDBCIDsByContextKey != null)
+                return;
+            SavedDBCIDsByContextKey = new Dictionary<string, int>();
+
+            string savedDBCIDsFilePath = GetSavedDBCIDsFilePath();
+            if (File.Exists(savedDBCIDsFilePath) == false)
+            {
+                Logger.WriteDebug("No saved sound DBC IDs file found at '" + savedDBCIDsFilePath + "', so all IDs will be newly generated");
+                return;
+            }
+
+            Logger.WriteDebug("Loading saved sound DBC IDs via file '" + savedDBCIDsFilePath + "'");
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(savedDBCIDsFilePath, "|");
+            foreach (Dictionary<string, string> columns in rows)
+            {
+                string contextKey = GenerateDBCIDContextKey(columns["name"], columns["audiofilenamenoext"],
+                    (SoundType)int.Parse(columns["type"]), Convert.ToSingle(columns["mindistance"], CultureInfo.InvariantCulture),
+                    Convert.ToSingle(columns["distancecutoff"], CultureInfo.InvariantCulture), columns["loop"] == "1",
+                    Convert.ToSingle(columns["volume"], CultureInfo.InvariantCulture));
+                if (SavedDBCIDsByContextKey.ContainsKey(contextKey) == true)
+                {
+                    Logger.WriteError("Duplicate context key '" + contextKey + "' found in '" + savedDBCIDsFilePath + "', skipping the duplicate row");
+                    continue;
+                }
+
+                int dbcID = int.Parse(columns["soundentry_dbcid"]);
+                SavedDBCIDsByContextKey.Add(contextKey, dbcID);
+
+                // Ensure newly generated IDs never collide with previously saved ones
+                if (dbcID >= CURRENT_SOUNDENTRY_ID)
+                    CURRENT_SOUNDENTRY_ID = dbcID + 1;
+            }
+        }
+
+        private static void AppendSavedDBCIDToFile(string name, string audioFileNameNoExt, SoundType type, float minDistance,
+            float distanceCutoff, bool loop, float volume, int dbcID)
+        {
+            Dictionary<string, string> rowValues = new Dictionary<string, string>();
+            rowValues.Add("name", name);
+            rowValues.Add("audiofilenamenoext", audioFileNameNoExt);
+            rowValues.Add("type", Convert.ToInt32(type).ToString());
+            rowValues.Add("mindistance", minDistance.ToString(CultureInfo.InvariantCulture));
+            rowValues.Add("distancecutoff", distanceCutoff.ToString(CultureInfo.InvariantCulture));
+            rowValues.Add("loop", loop ? "1" : "0");
+            rowValues.Add("volume", volume.ToString(CultureInfo.InvariantCulture));
+            rowValues.Add("soundentry_dbcid", dbcID.ToString());
+            FileTool.AppendRowToFileWithHeader(GetSavedDBCIDsFilePath(), "|", rowValues);
         }
 
         private static void PopulateSoundPropertiesFromFile()
