@@ -1048,48 +1048,41 @@ namespace EQWOWConverter.Common
                     intersectingFaces.Add(face);
             }
 
-            // Create the new mesh objects for categorized faces so far
             extractedMeshData = new MeshData(meshToExtractFrom.GetMeshDataForFaces(extractedFaces));
-            extractedMeshData.CondenseAndRenumberVertexIndices();
             remainderMeshData = new MeshData(meshToExtractFrom.GetMeshDataForFaces(remainderFaces));
-            remainderMeshData.CondenseAndRenumberVertexIndices();
             MeshData intersectingMeshData = new MeshData(meshToExtractFrom.GetMeshDataForFaces(intersectingFaces));
-            intersectingMeshData.CondenseAndRenumberVertexIndices();
 
             // Process known intersecting triangles crossing the high X line
             MeshData newWorkingInsideIntersectingMeshDataHighX = new MeshData();
             foreach (TriangleFace triangleFace in intersectingMeshData.TriangleFaces)
                 SplitTriangleByX(triangleFace, extractionArea.TopCorner.X, ref remainderMeshData, ref newWorkingInsideIntersectingMeshDataHighX, intersectingMeshData);
-            remainderMeshData.CondenseAndRenumberVertexIndices();
 
             // Processing triangles crossing the low x line
             MeshData newWorkingInsideIntersectingMeshDataLowX = new MeshData();
             foreach (TriangleFace triangleFace in newWorkingInsideIntersectingMeshDataHighX.TriangleFaces)
                 SplitTriangleByX(triangleFace, extractionArea.BottomCorner.X, ref newWorkingInsideIntersectingMeshDataLowX, ref remainderMeshData, newWorkingInsideIntersectingMeshDataHighX);
-            remainderMeshData.CondenseAndRenumberVertexIndices();
 
             // Processing triangles crossing the high y line
             MeshData newWorkingInsideIntersectingMeshDataHighY = new MeshData();
             foreach (TriangleFace triangleFace in newWorkingInsideIntersectingMeshDataLowX.TriangleFaces)
                 SplitTriangleByY(triangleFace, extractionArea.TopCorner.Y, ref remainderMeshData, ref newWorkingInsideIntersectingMeshDataHighY, newWorkingInsideIntersectingMeshDataLowX);
-            remainderMeshData.CondenseAndRenumberVertexIndices();
 
             // Processing triangles crossing the low y line
             MeshData newWorkingInsideIntersectingMeshDataLowY = new MeshData();
             foreach (TriangleFace triangleFace in newWorkingInsideIntersectingMeshDataHighY.TriangleFaces)
                 SplitTriangleByY(triangleFace, extractionArea.BottomCorner.Y, ref newWorkingInsideIntersectingMeshDataLowY, ref remainderMeshData, newWorkingInsideIntersectingMeshDataHighY);
-            remainderMeshData.CondenseAndRenumberVertexIndices();
 
             // Processing triangles crossing the high z line
             MeshData newWorkingInsideIntersectingMeshDataHighZ = new MeshData();
             foreach (TriangleFace triangleFace in newWorkingInsideIntersectingMeshDataLowY.TriangleFaces)
                 SplitTriangleByZ(triangleFace, extractionArea.TopCorner.Z, ref remainderMeshData, ref newWorkingInsideIntersectingMeshDataHighZ, newWorkingInsideIntersectingMeshDataLowY);
-            remainderMeshData.CondenseAndRenumberVertexIndices();
 
             // Processing triangles crossing the low z line
             MeshData newWorkingInsideIntersectingMeshDataLowZ = new MeshData();
             foreach (TriangleFace triangleFace in newWorkingInsideIntersectingMeshDataHighZ.TriangleFaces)
                 SplitTriangleByZ(triangleFace, extractionArea.BottomCorner.Z, ref newWorkingInsideIntersectingMeshDataLowZ, ref remainderMeshData, newWorkingInsideIntersectingMeshDataHighZ);
+
+            // Condense
             remainderMeshData.CondenseAndRenumberVertexIndices();
 
             // Finalize the extracted data
