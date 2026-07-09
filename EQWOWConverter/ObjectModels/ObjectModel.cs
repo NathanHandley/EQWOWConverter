@@ -2033,11 +2033,27 @@ namespace EQWOWConverter.ObjectModels
                 ModelBones[boneIndex].KeyBoneID = Convert.ToInt32(keyBoneType);
         }
 
+        private Dictionary<string, ObjectModelBone>? BoneByNameEQ = null;
+        private int BoneByNameEQBuiltForCount = -1;
+
+        private Dictionary<string, ObjectModelBone> GetBoneByNameLookup()
+        {
+            if (BoneByNameEQ == null || BoneByNameEQBuiltForCount != ModelBones.Count)
+            {
+                Dictionary<string, ObjectModelBone> lookup = new Dictionary<string, ObjectModelBone>(ModelBones.Count);
+                foreach (ObjectModelBone bone in ModelBones)
+                    if (lookup.ContainsKey(bone.BoneNameEQ) == false)
+                        lookup.Add(bone.BoneNameEQ, bone);
+                BoneByNameEQ = lookup;
+                BoneByNameEQBuiltForCount = ModelBones.Count;
+            }
+            return BoneByNameEQ;
+        }
+
         private ObjectModelBone GetBoneWithName(string name)
         {
-            foreach (ObjectModelBone bone in ModelBones)
-                if (bone.BoneNameEQ == name)
-                    return bone;
+            if (GetBoneByNameLookup().TryGetValue(name, out ObjectModelBone? bone) == true)
+                return bone;
 
             Logger.WriteError("No bone named '" + name + "' for object '" + Name + "'");
             return new ObjectModelBone();
@@ -2045,10 +2061,7 @@ namespace EQWOWConverter.ObjectModels
 
         private bool DoesBoneExistForName(string name)
         {
-            foreach (ObjectModelBone bone in ModelBones)
-                if (bone.BoneNameEQ == name)
-                    return true;
-            return false;
+            return GetBoneByNameLookup().ContainsKey(name);
         }
 
         private void GenerateModelVertices(MeshData meshData)

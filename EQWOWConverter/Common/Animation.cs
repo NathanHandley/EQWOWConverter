@@ -48,7 +48,25 @@ namespace EQWOWConverter.Common
 
         public struct BoneAnimationFrame
         {
-            public string BoneFullNameInPath = string.Empty;
+            private string _boneFullNameInPath = string.Empty;
+            public string BoneName = string.Empty;
+            public string ParentBoneName = string.Empty;
+
+            public string BoneFullNameInPath
+            {
+                get
+                {
+                    return _boneFullNameInPath;
+                }
+                set
+                {
+                    _boneFullNameInPath = value;
+                    string[] nameParts = value.Split('/');
+                    BoneName = nameParts[nameParts.Length - 1];
+                    ParentBoneName = nameParts.Length <= 1 ? string.Empty : nameParts[nameParts.Length - 2];
+                }
+            }
+
             public int FrameIndex = 0;
             public float XPosition = 0;
             public float YPosition = 0;
@@ -67,16 +85,12 @@ namespace EQWOWConverter.Common
 
             public string GetBoneName()
             {
-                string[] nameParts = BoneFullNameInPath.Split('/');
-                return nameParts[nameParts.Length - 1];
+                return BoneName;
             }
 
             public string GetParentBoneName()
             {
-                string[] nameParts = BoneFullNameInPath.Split('/');
-                if (nameParts.Length <= 1)
-                    return string.Empty;
-                return nameParts[nameParts.Length - 2];
+                return ParentBoneName;
             }
         }
         
