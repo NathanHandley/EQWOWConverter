@@ -38,10 +38,6 @@ namespace EQWOWConverter.Creatures
         public CreatureTemplateColorTint? ColorTint = null;
         public float ModelTemplateScale = 1.0f; // Used for form changes
 
-        private static int CURRENT_DBCID_CREATUREMODELDATAID = Configuration.DBCID_CREATUREMODELDATA_ID_START;
-        private static int CURRENT_DBCID_CREATUREDISPLAYINFOID = -1;
-        private static int CURRENT_DBCID_CREATURESOUNDDATAID = Configuration.DBCID_CREATURESOUNDDATA_ID_START;
-        private static readonly object CreatureIDLock = new object();
         public int DBCCreatureModelDataID;
         public int DBCCreatureDisplayID;
         public int DBCCreatureSoundDataID;
@@ -58,12 +54,6 @@ namespace EQWOWConverter.Creatures
             return new object();
         }
 
-        // Values are [DBCCreatureModelDataID, DBCCreatureDisplayID, DBCCreatureSoundDataID] keyed by the generating context
-        private static Dictionary<string, int[]>? SavedDBCIDsByContextKey = null;
-
-        // Illusion version face displays, keyed by the generating context with values of CreatureDisplayInfo IDs
-        private static Dictionary<string, int>? SavedIllusionFaceDisplayIDsByContextKey = null;
-
         // Illusion version (FaceIndex 99) face data, populated during CreateModelFiles.  Face 0 head piece texture names are stored in head piece order, and per selectable face the display ID and texture variation names (one per head piece)
         public List<string> FaceHeadPieceTextureNames = new List<string>();
         public SortedDictionary<int, int> IllusionFaceDisplayIDsByFaceIndex = new SortedDictionary<int, int>();
@@ -72,30 +62,12 @@ namespace EQWOWConverter.Creatures
         public CreatureModelTemplate(CreatureRace creatureRace, CreatureGenderType genderType, int helmTextureID,
             int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale)
         {
-            lock (CreatureLock)
-            {
-                LoadSavedDBCIDsIfNeeded();
-                string contextKey = GenerateDBCIDsContextKey(creatureRace.ID, genderType, helmTextureID, textureIndex,
-                    faceIndex, colorTintID, modelTemplateScale);
-                if (SavedDBCIDsByContextKey!.ContainsKey(contextKey) == true)
-                {
-                    int[] savedDBCIDs = SavedDBCIDsByContextKey[contextKey];
-                    DBCCreatureModelDataID = savedDBCIDs[0];
-                    DBCCreatureDisplayID = savedDBCIDs[1];
-                    DBCCreatureSoundDataID = savedDBCIDs[2];
-                }
-                else
-                {
-                    DBCCreatureModelDataID = CURRENT_DBCID_CREATUREMODELDATAID;
-                    CURRENT_DBCID_CREATUREMODELDATAID++;
-                    DBCCreatureDisplayID = GenerateDisplayInfoID();
-                    DBCCreatureSoundDataID = CURRENT_DBCID_CREATURESOUNDDATAID;
-                    CURRENT_DBCID_CREATURESOUNDDATAID++;
-                    SavedDBCIDsByContextKey.Add(contextKey, new int[] { DBCCreatureModelDataID, DBCCreatureDisplayID, DBCCreatureSoundDataID });
-                    AppendSavedDBCIDsToFile(creatureRace.ID, genderType, helmTextureID, textureIndex, faceIndex,
-                        colorTintID, modelTemplateScale, DBCCreatureModelDataID, DBCCreatureDisplayID, DBCCreatureSoundDataID);
-                }
-            }
+            string raceIDString = creatureRace.ID.ToString();
+            string genderIDString = Convert.ToInt32(genderType).ToString();
+            string scaleString = modelTemplateScale.ToString(CultureInfo.InvariantCulture);
+            DBCCreatureModelDataID = IDGenerationTool.GenerateID("CreatureModelDataID", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
+            DBCCreatureDisplayID = IDGenerationTool.GenerateID("CreatureDisplayInfoID", "modeltemplate", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
+            DBCCreatureSoundDataID = IDGenerationTool.GenerateID("CreatureSoundDataID", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
 
             Race = creatureRace;
             GenderType = genderType;
@@ -119,208 +91,10 @@ namespace EQWOWConverter.Creatures
             ModelTemplateScale = modelTemplateScale;
         }
 
-        public static int GenerateDisplayInfoID()
-        {
-            lock (CreatureIDLock)
-            {
-                if (CURRENT_DBCID_CREATUREDISPLAYINFOID == -1)
-                    CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.DBCID_CREATUREDISPLAYINFO_ID_START;
-                int returnID = CURRENT_DBCID_CREATUREDISPLAYINFOID;
-                if (returnID > Configuration.DBCID_CREATUREDISPLAYINFO_ID_END)
-                    Logger.WriteError(string.Concat("Generated CreatureDisplayInfo ID '", returnID.ToString(), "' is above DBCID_CREATUREDISPLAYINFO_ID_END of '", Configuration.DBCID_CREATUREDISPLAYINFO_ID_END.ToString(), "', and this will crash the world server"));
-                CURRENT_DBCID_CREATUREDISPLAYINFOID++;
-                return returnID;
-            }
-        }
-
-        private static string GetSavedDBCIDsFilePath()
-        {
-            return Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureModelTemplateIDs.csv");
-        }
-
-        private static string GetSavedIllusionFaceDisplayIDsFilePath()
-        {
-            return Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureIllusionFaceDisplayIDs.csv");
-        }
-
-        private static string GenerateIllusionFaceDisplayIDContextKey(int raceID, CreatureGenderType genderType, int helmTextureID,
-            int textureIndex, int colorTintID, int faceIndex)
-        {
-            StringBuilder keySB = new StringBuilder();
-            keySB.Append(raceID);
-            keySB.Append("|");
-            keySB.Append(Convert.ToInt32(genderType));
-            keySB.Append("|");
-            keySB.Append(helmTextureID);
-            keySB.Append("|");
-            keySB.Append(textureIndex);
-            keySB.Append("|");
-            keySB.Append(colorTintID);
-            keySB.Append("|");
-            keySB.Append(faceIndex);
-            return keySB.ToString();
-        }
-
-        private static string GenerateDBCIDsContextKey(int raceID, CreatureGenderType genderType, int helmTextureID,
-            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale)
-        {
-            StringBuilder keySB = new StringBuilder();
-            keySB.Append(raceID);
-            keySB.Append("|");
-            keySB.Append(Convert.ToInt32(genderType));
-            keySB.Append("|");
-            keySB.Append(helmTextureID);
-            keySB.Append("|");
-            keySB.Append(textureIndex);
-            keySB.Append("|");
-            keySB.Append(faceIndex);
-            keySB.Append("|");
-            keySB.Append(colorTintID);
-            keySB.Append("|");
-            keySB.Append(modelTemplateScale.ToString(CultureInfo.InvariantCulture));
-            return keySB.ToString();
-        }
-
-        private static void LoadSavedDBCIDsIfNeeded()
-        {
-            if (SavedDBCIDsByContextKey != null)
-                return;
-            SavedDBCIDsByContextKey = new Dictionary<string, int[]>();
-            if (CURRENT_DBCID_CREATUREDISPLAYINFOID == -1)
-                CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.DBCID_CREATUREDISPLAYINFO_ID_START;
-            LoadSavedIllusionFaceDisplayIDs();
-
-            string savedDBCIDsFilePath = GetSavedDBCIDsFilePath();
-            if (File.Exists(savedDBCIDsFilePath) == false)
-            {
-                Logger.WriteDebug("No saved creature model template DBC IDs file found at '" + savedDBCIDsFilePath + "', so all IDs will be newly generated");
-                return;
-            }
-
-            Logger.WriteDebug("Loading saved creature model template DBC IDs via file '" + savedDBCIDsFilePath + "'");
-            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(savedDBCIDsFilePath, "|");
-            foreach (Dictionary<string, string> columns in rows)
-            {
-                StringBuilder keySB = new StringBuilder();
-                keySB.Append(columns["raceid"]);
-                keySB.Append("|");
-                keySB.Append(columns["genderid"]);
-                keySB.Append("|");
-                keySB.Append(columns["helmtextureid"]);
-                keySB.Append("|");
-                keySB.Append(columns["textureindex"]);
-                keySB.Append("|");
-                keySB.Append(columns["faceindex"]);
-                keySB.Append("|");
-                keySB.Append(columns["colortintid"]);
-                keySB.Append("|");
-                keySB.Append(columns["modeltemplatescale"]);
-                string contextKey = keySB.ToString();
-                if (SavedDBCIDsByContextKey.ContainsKey(contextKey) == true)
-                {
-                    Logger.WriteError("Duplicate context key '" + contextKey + "' found in '" + savedDBCIDsFilePath + "', skipping the duplicate row");
-                    continue;
-                }
-
-                int modelDataDBCID = int.Parse(columns["creaturemodeldata_dbcid"]);
-                int displayDBCID = int.Parse(columns["creaturedisplay_dbcid"]);
-                int soundDataDBCID = int.Parse(columns["creaturesounddata_dbcid"]);
-                SavedDBCIDsByContextKey.Add(contextKey, new int[] { modelDataDBCID, displayDBCID, soundDataDBCID });
-
-                // Ensure newly generated IDs never collide with previously saved ones
-                if (modelDataDBCID >= CURRENT_DBCID_CREATUREMODELDATAID)
-                    CURRENT_DBCID_CREATUREMODELDATAID = modelDataDBCID + 1;
-                if (displayDBCID >= CURRENT_DBCID_CREATUREDISPLAYINFOID)
-                    CURRENT_DBCID_CREATUREDISPLAYINFOID = displayDBCID + 1;
-                if (soundDataDBCID >= CURRENT_DBCID_CREATURESOUNDDATAID)
-                    CURRENT_DBCID_CREATURESOUNDDATAID = soundDataDBCID + 1;
-            }
-        }
-
-        private static void LoadSavedIllusionFaceDisplayIDs()
-        {
-            SavedIllusionFaceDisplayIDsByContextKey = new Dictionary<string, int>();
-            string savedFaceDisplayIDsFilePath = GetSavedIllusionFaceDisplayIDsFilePath();
-            if (File.Exists(savedFaceDisplayIDsFilePath) == false)
-            {
-                Logger.WriteDebug("No saved illusion face display IDs file found at '" + savedFaceDisplayIDsFilePath + "', so all IDs will be newly generated");
-                return;
-            }
-
-            Logger.WriteDebug("Loading saved illusion face display IDs via file '" + savedFaceDisplayIDsFilePath + "'");
-            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(savedFaceDisplayIDsFilePath, "|");
-            foreach (Dictionary<string, string> columns in rows)
-            {
-                StringBuilder keySB = new StringBuilder();
-                keySB.Append(columns["raceid"]);
-                keySB.Append("|");
-                keySB.Append(columns["genderid"]);
-                keySB.Append("|");
-                keySB.Append(columns["helmtextureid"]);
-                keySB.Append("|");
-                keySB.Append(columns["textureindex"]);
-                keySB.Append("|");
-                keySB.Append(columns["colortintid"]);
-                keySB.Append("|");
-                keySB.Append(columns["faceindex"]);
-                string contextKey = keySB.ToString();
-                if (SavedIllusionFaceDisplayIDsByContextKey.ContainsKey(contextKey) == true)
-                {
-                    Logger.WriteError("Duplicate context key '" + contextKey + "' found in '" + savedFaceDisplayIDsFilePath + "', skipping the duplicate row");
-                    continue;
-                }
-
-                int displayDBCID = int.Parse(columns["creaturedisplay_dbcid"]);
-                SavedIllusionFaceDisplayIDsByContextKey.Add(contextKey, displayDBCID);
-
-                // Ensure newly generated IDs never collide with previously saved ones
-                if (displayDBCID >= CURRENT_DBCID_CREATUREDISPLAYINFOID)
-                    CURRENT_DBCID_CREATUREDISPLAYINFOID = displayDBCID + 1;
-            }
-        }
-
         private static int GetOrCreateIllusionFaceDisplayID(int raceID, CreatureGenderType genderType, int helmTextureID,
             int textureIndex, int colorTintID, int faceIndex)
         {
-            lock (CreatureLock)
-            {
-                LoadSavedDBCIDsIfNeeded();
-                string contextKey = GenerateIllusionFaceDisplayIDContextKey(raceID, genderType, helmTextureID, textureIndex,
-                    colorTintID, faceIndex);
-                if (SavedIllusionFaceDisplayIDsByContextKey!.ContainsKey(contextKey) == true)
-                    return SavedIllusionFaceDisplayIDsByContextKey[contextKey];
-
-                int displayDBCID = GenerateDisplayInfoID();
-                SavedIllusionFaceDisplayIDsByContextKey.Add(contextKey, displayDBCID);
-                Dictionary<string, string> rowValues = new Dictionary<string, string>();
-                rowValues.Add("raceid", raceID.ToString());
-                rowValues.Add("genderid", Convert.ToInt32(genderType).ToString());
-                rowValues.Add("helmtextureid", helmTextureID.ToString());
-                rowValues.Add("textureindex", textureIndex.ToString());
-                rowValues.Add("colortintid", colorTintID.ToString());
-                rowValues.Add("faceindex", faceIndex.ToString());
-                rowValues.Add("creaturedisplay_dbcid", displayDBCID.ToString());
-                FileTool.AppendRowToFileWithHeader(GetSavedIllusionFaceDisplayIDsFilePath(), "|", rowValues);
-                return displayDBCID;
-            }
-        }
-
-        private static void AppendSavedDBCIDsToFile(int raceID, CreatureGenderType genderType, int helmTextureID,
-            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale, int modelDataDBCID,
-            int displayDBCID, int soundDataDBCID)
-        {
-            Dictionary<string, string> rowValues = new Dictionary<string, string>();
-            rowValues.Add("raceid", raceID.ToString());
-            rowValues.Add("genderid", Convert.ToInt32(genderType).ToString());
-            rowValues.Add("helmtextureid", helmTextureID.ToString());
-            rowValues.Add("textureindex", textureIndex.ToString());
-            rowValues.Add("faceindex", faceIndex.ToString());
-            rowValues.Add("colortintid", colorTintID.ToString());
-            rowValues.Add("modeltemplatescale", modelTemplateScale.ToString(CultureInfo.InvariantCulture));
-            rowValues.Add("creaturemodeldata_dbcid", modelDataDBCID.ToString());
-            rowValues.Add("creaturedisplay_dbcid", displayDBCID.ToString());
-            rowValues.Add("creaturesounddata_dbcid", soundDataDBCID.ToString());
-            FileTool.AppendRowToFileWithHeader(GetSavedDBCIDsFilePath(), "|", rowValues);
+            return IDGenerationTool.GenerateID("CreatureDisplayInfoID", "illusionface", raceID.ToString(), Convert.ToInt32(genderType).ToString(), helmTextureID.ToString(), textureIndex.ToString(), colorTintID.ToString(), faceIndex.ToString());
         }
 
         public static CreatureModelTemplate CreateCreatureModelTemplateForWaypointDebugging()

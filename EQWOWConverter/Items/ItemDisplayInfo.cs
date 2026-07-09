@@ -23,9 +23,7 @@ namespace EQWOWConverter.Items
     internal class ItemDisplayInfo
     {
         public static List<ItemDisplayInfo> ItemDisplayInfos = new List<ItemDisplayInfo>();
-        private static int CURRENT_DBCID_ITEMDISPLAYINFO = Configuration.DBCID_ITEMDISPLAYINFO_START;
         private static readonly object GeneratedDBCIDLock = new object();
-        private static Dictionary<string, int>? SavedDBCIDsByContextKey = null;
         private static Dictionary<string, int> DBCIDOccurrenceCountsByContextKey = new Dictionary<string, int>();
         private static Dictionary<string, ObjectModel> ShieldObjectModelsByEQItemOutputName = new Dictionary<string, ObjectModel>();
         private static Dictionary<string, ObjectModel> WeaponObjectModelsByEQItemOutputName = new Dictionary<string, ObjectModel>();
@@ -90,70 +88,15 @@ namespace EQWOWConverter.Items
                 materialTypeID, "~", colorPacked);
             lock (GeneratedDBCIDLock)
             {
-                LoadSavedDBCIDsIfNeeded();
-
+                // Repeat requests for the same context are distinct display infos, so number each occurrence
                 int occurrence = 0;
                 if (DBCIDOccurrenceCountsByContextKey.TryGetValue(contextKey, out occurrence) == true)
                     DBCIDOccurrenceCountsByContextKey[contextKey] = occurrence + 1;
                 else
                     DBCIDOccurrenceCountsByContextKey.Add(contextKey, 1);
-                string fullContextKey = string.Concat(contextKey, "~", occurrence);
 
-                if (SavedDBCIDsByContextKey!.ContainsKey(fullContextKey) == true)
-                    return SavedDBCIDsByContextKey[fullContextKey];
-
-                int returnID = CURRENT_DBCID_ITEMDISPLAYINFO;
-                CURRENT_DBCID_ITEMDISPLAYINFO++;
-                SavedDBCIDsByContextKey.Add(fullContextKey, returnID);
-                AppendSavedDBCIDToFile(fullContextKey, returnID);
-                return returnID;
+                return IDGenerationTool.GenerateID("ItemDisplayInfoID", iconFileNameNoExt, modelName, isShield.ToString(), ((int)inventoryType).ToString(), materialTypeID.ToString(), colorPacked.ToString(), occurrence.ToString());
             }
-        }
-
-        private static string GetSavedDBCIDsFilePath()
-        {
-            return Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemDisplayInfoDBCIDs.csv");
-        }
-
-        private static void LoadSavedDBCIDsIfNeeded()
-        {
-            if (SavedDBCIDsByContextKey != null)
-                return;
-            SavedDBCIDsByContextKey = new Dictionary<string, int>();
-
-            string savedDBCIDsFilePath = GetSavedDBCIDsFilePath();
-            if (File.Exists(savedDBCIDsFilePath) == false)
-            {
-                Logger.WriteDebug("No saved item display info DBC IDs file found at '" + savedDBCIDsFilePath + "', so all IDs will be newly generated");
-                return;
-            }
-
-            Logger.WriteDebug("Loading saved item display info DBC IDs via file '" + savedDBCIDsFilePath + "'");
-            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(savedDBCIDsFilePath, "|");
-            foreach (Dictionary<string, string> columns in rows)
-            {
-                string contextKey = columns["contextkey"];
-                if (SavedDBCIDsByContextKey.ContainsKey(contextKey) == true)
-                {
-                    Logger.WriteError("Duplicate context key '" + contextKey + "' found in '" + savedDBCIDsFilePath + "', skipping the duplicate row");
-                    continue;
-                }
-
-                int dbcID = int.Parse(columns["itemdisplayinfo_dbcid"]);
-                SavedDBCIDsByContextKey.Add(contextKey, dbcID);
-
-                // Ensure newly generated IDs never collide with previously saved ones
-                if (dbcID >= CURRENT_DBCID_ITEMDISPLAYINFO)
-                    CURRENT_DBCID_ITEMDISPLAYINFO = dbcID + 1;
-            }
-        }
-
-        private static void AppendSavedDBCIDToFile(string contextKey, int dbcID)
-        {
-            Dictionary<string, string> rowValues = new Dictionary<string, string>();
-            rowValues.Add("contextkey", contextKey);
-            rowValues.Add("itemdisplayinfo_dbcid", dbcID.ToString());
-            FileTool.AppendRowToFileWithHeader(GetSavedDBCIDsFilePath(), "|", rowValues);
         }
 
         private static void BuildAndCopyTexturesForArmorPart(string subfolderName, string fileNamePrefix, string armorIdentifier, string genderIdentifier, Int64 colorPacked)

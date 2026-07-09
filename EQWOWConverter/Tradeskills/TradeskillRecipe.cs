@@ -222,7 +222,7 @@ namespace EQWOWConverter.Tradeskills
                                 recipe.RequiredIWOWtemIDs.Add(requiredWOWItemID);
                             string itemName = itemTemplatesByEQDBID[requiredEQItemID].Name;
                             if (TotemIDsByItemName.ContainsKey(itemName) == false)
-                                TotemIDsByItemName.Add(itemName, TotemCategoryDBC.GetUniqueID(itemName));
+                                TotemIDsByItemName.Add(itemName, Convert.ToUInt32(IDGenerationTool.GenerateID("TotemCategoryID", itemName)));
                             if (i == 0)
                                 recipe.RequiredTotemID1 = TotemIDsByItemName[itemName];
                             else

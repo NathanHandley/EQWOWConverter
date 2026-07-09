@@ -22,10 +22,6 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneModelObject
     {
-        private static UInt32 CURRENT_WMOGROUPID = Configuration.DBCID_WMOAREATABLE_WMOGROUPID_START;
-        private static readonly object WMOGroupIDLock = new object();
-        private static Dictionary<string, UInt32>? SavedWMOGroupIDsByContextKey = null; // WMOGroupIDs keyed by the generating context (zone short name + group index)
-
         public UInt32 WMOGroupID;
         public string DisplayName = string.Empty;
         public UInt32 AreaTableID = 0;
@@ -47,78 +43,9 @@ namespace EQWOWConverter.Zones
 
         public ZoneModelObject(string zoneShortName, UInt16 groupIndex, UInt32 areaTableID)
         {
-            lock (WMOGroupIDLock)
-            {
-                LoadSavedWMOGroupIDsIfNeeded();
-                string contextKey = GenerateWMOGroupIDContextKey(zoneShortName, groupIndex);
-                if (SavedWMOGroupIDsByContextKey!.ContainsKey(contextKey) == true)
-                    WMOGroupID = SavedWMOGroupIDsByContextKey[contextKey];
-                else
-                {
-                    WMOGroupID = CURRENT_WMOGROUPID;
-                    CURRENT_WMOGROUPID++;
-                    SavedWMOGroupIDsByContextKey.Add(contextKey, WMOGroupID);
-                    AppendSavedWMOGroupIDToFile(zoneShortName, groupIndex, WMOGroupID);
-                }
-            }
+            WMOGroupID = Convert.ToUInt32(IDGenerationTool.GenerateID("ZoneWMOGroupID", zoneShortName, groupIndex.ToString()));
             GroupIndex = groupIndex;
             AreaTableID = areaTableID;
-        }
-
-        private static string GetSavedWMOGroupIDsFilePath()
-        {
-            return Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneModelObjectWMOGroupIDs.csv");
-        }
-
-        private static string GenerateWMOGroupIDContextKey(string zoneShortName, UInt16 groupIndex)
-        {
-            StringBuilder keySB = new StringBuilder();
-            keySB.Append(zoneShortName);
-            keySB.Append("|");
-            keySB.Append(groupIndex);
-            return keySB.ToString();
-        }
-
-        private static void LoadSavedWMOGroupIDsIfNeeded()
-        {
-            if (SavedWMOGroupIDsByContextKey != null)
-                return;
-            SavedWMOGroupIDsByContextKey = new Dictionary<string, UInt32>();
-
-            string savedWMOGroupIDsFilePath = GetSavedWMOGroupIDsFilePath();
-            if (File.Exists(savedWMOGroupIDsFilePath) == false)
-            {
-                Logger.WriteDebug("No saved zone model object WMO group IDs file found at '" + savedWMOGroupIDsFilePath + "', so all IDs will be newly generated");
-                return;
-            }
-
-            Logger.WriteDebug("Loading saved zone model object WMO group IDs via file '" + savedWMOGroupIDsFilePath + "'");
-            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(savedWMOGroupIDsFilePath, "|");
-            foreach (Dictionary<string, string> columns in rows)
-            {
-                string contextKey = GenerateWMOGroupIDContextKey(columns["zoneshortname"], UInt16.Parse(columns["groupindex"]));
-                if (SavedWMOGroupIDsByContextKey.ContainsKey(contextKey) == true)
-                {
-                    Logger.WriteError("Duplicate context key '" + contextKey + "' found in '" + savedWMOGroupIDsFilePath + "', skipping the duplicate row");
-                    continue;
-                }
-
-                UInt32 wmoGroupID = UInt32.Parse(columns["wmogroupid"]);
-                SavedWMOGroupIDsByContextKey.Add(contextKey, wmoGroupID);
-
-                // Ensure newly generated IDs never collide with previously saved ones
-                if (wmoGroupID >= CURRENT_WMOGROUPID)
-                    CURRENT_WMOGROUPID = wmoGroupID + 1;
-            }
-        }
-
-        private static void AppendSavedWMOGroupIDToFile(string zoneShortName, UInt16 groupIndex, UInt32 wmoGroupID)
-        {
-            Dictionary<string, string> rowValues = new Dictionary<string, string>();
-            rowValues.Add("zoneshortname", zoneShortName);
-            rowValues.Add("groupindex", groupIndex.ToString());
-            rowValues.Add("wmogroupid", wmoGroupID.ToString());
-            FileTool.AppendRowToFileWithHeader(GetSavedWMOGroupIDsFilePath(), "|", rowValues);
         }
 
         public void LoadAsRendered(MeshData meshData, List<Material> materials)

@@ -378,7 +378,7 @@ namespace EQWOWConverter
                     transportWMO.WriteToDisk();
                     // Note: WMO is collision only so no textures are required
 
-                    int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID("transportship", shipName);
+                    int gameObjectDisplayInfoID = IDGenerationTool.GenerateID("GameObjectDisplayInfoID", "transportship", shipName);
                     transportShipZoneModelsByShipName.Add(shipName, curZone);
                     gameObjectDisplayInfoIDsByName.Add(shipName, gameObjectDisplayInfoID);
                     TransportShip.TransportShipWMOsByGameObjectDisplayInfoID.Add(gameObjectDisplayInfoID, transportWMO);
@@ -418,7 +418,7 @@ namespace EQWOWConverter
                     ExportTexturesForObject(curObjectModel, new List<string>() { objectTextureFolder }, curStaticObjectOutputFolder);
 
                     // Store it
-                    int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID("transportlift", transportLift.MeshName);
+                    int gameObjectDisplayInfoID = IDGenerationTool.GenerateID("GameObjectDisplayInfoID", "transportlift", transportLift.MeshName);
                     transportLiftObjectModelsByMeshName.Add(transportLift.MeshName, curObjectModel);
                     gameObjectDisplayInfoIDsByName.Add(transportLift.MeshName, gameObjectDisplayInfoID);
                     TransportLift.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);
@@ -460,7 +460,7 @@ namespace EQWOWConverter
                     ExportTexturesForObject(curObjectModel, new List<string>() { objectTextureFolder }, curStaticObjectOutputFolder);
 
                     // Store it
-                    int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID("transportlifttrigger", transportLiftTrigger.MeshName);
+                    int gameObjectDisplayInfoID = IDGenerationTool.GenerateID("GameObjectDisplayInfoID", "transportlifttrigger", transportLiftTrigger.MeshName);
                     transportLiftTriggerObjectModelsByMeshName.Add(transportLiftTrigger.MeshName, curObjectModel);
                     gameObjectDisplayInfoIDsByName.Add(transportLiftTrigger.MeshName, gameObjectDisplayInfoID);
                     TransportLiftTrigger.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);
@@ -3594,7 +3594,7 @@ namespace EQWOWConverter
                                 {
                                     if (spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect == -1)
                                     {
-                                        spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect = SpellTemplate.GenerateUniqueWOWSpellID("itemgoodproc", itemTemplate.EQCombatProcSpellEffectID.ToString());
+                                        spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect = IDGenerationTool.GenerateID("SpellID", "itemgoodproc", itemTemplate.EQCombatProcSpellEffectID.ToString());
                                         Logger.WriteError("Created SpellID for spell ", itemTemplate.EQCombatProcSpellEffectID.ToString(), " on item proc item ", itemTemplate.WOWEntryID.ToString(), " since it will need map from targetally to self");
                                     }
                                     itemTemplate.WOWSpellID1 = spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellIDProcAndGoodEffect;
