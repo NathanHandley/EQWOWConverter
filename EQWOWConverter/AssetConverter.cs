@@ -3303,66 +3303,63 @@ namespace EQWOWConverter
         {
             Logger.WriteInfo("Deploying to client...");
 
-            // Make sure a patch was created
-            string dataLocPatchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
-            string sourcePatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, dataLocPatchMPQName);
-            if (File.Exists(sourcePatchFileNameAndPath) == false)
+            // Deploy the delta-only patch if it was generated, otherwise the normal patch
+            string deltaPatchName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
+            string sourceDeltaPatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, deltaPatchName);
+            if (Configuration.CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH == true && File.Exists(sourceDeltaPatchFileNameAndPath) == true)
             {
-                Logger.WriteError("Failed to deploy to client. Patch at '" + sourcePatchFileNameAndPath + "' did not exist");
-                return;
-            }
-
-            // Delete the old one if it's already deployed on the client
-            string targetPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", Configuration.PATCH_LOCALIZATION_STRING, dataLocPatchMPQName);
-            if (File.Exists(targetPatchFileNameAndPath) == true)
-            {
-                try
+                // Delete the old one if it's already deployed on the client (localized patch lives under Data/<localization>)
+                string targetDeltaPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", Configuration.PATCH_LOCALIZATION_STRING, deltaPatchName);
+                if (File.Exists(targetDeltaPatchFileNameAndPath) == true)
                 {
-                    File.Delete(targetPatchFileNameAndPath);
+                    try
+                    {
+                        File.Delete(targetDeltaPatchFileNameAndPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteError("Failed to delete the file at '" + targetDeltaPatchFileNameAndPath + "', it may be in use (client running, open in MPQ editor, etc)");
+                        if (ex.StackTrace != null)
+                            Logger.WriteDebug(ex.StackTrace.ToString());
+                        Logger.WriteError("Deploying to client failed");
+                        return;
+                    }
                 }
-                catch (Exception ex)
+
+                // Copy it
+                FileTool.CopyFile(sourceDeltaPatchFileNameAndPath, targetDeltaPatchFileNameAndPath);
+            }
+            else
+            {
+                // Make sure a patch was created
+                string dataLocPatchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
+                string sourcePatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, dataLocPatchMPQName);
+                if (File.Exists(sourcePatchFileNameAndPath) == false)
                 {
-                    Logger.WriteError("Failed to delete the file at '" + targetPatchFileNameAndPath + "', it may be in use (client running, open in MPQ editor, etc)");
-                    if (ex.StackTrace != null)
-                        Logger.WriteDebug(ex.StackTrace.ToString());
-                    Logger.WriteError("Deploying to client failed");
+                    Logger.WriteError("Failed to deploy to client. Patch at '" + sourcePatchFileNameAndPath + "' did not exist");
                     return;
                 }
-            }
 
-            // Copy it
-            FileTool.CopyFile(sourcePatchFileNameAndPath, targetPatchFileNameAndPath);
-
-            // Also deploy the delta-only main patch if enabled and one was actually generated this run
-            if (Configuration.CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH == true)
-            {
-                string deltaPatchName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
-                string sourceDeltaPatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, deltaPatchName);
-                if (File.Exists(sourceDeltaPatchFileNameAndPath) == false)
-                    Logger.WriteDebug("No delta-only main patch at '" + sourceDeltaPatchFileNameAndPath + "', skipping the deploy");
-                else
+                // Delete the old one if it's already deployed on the client
+                string targetPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", Configuration.PATCH_LOCALIZATION_STRING, dataLocPatchMPQName);
+                if (File.Exists(targetPatchFileNameAndPath) == true)
                 {
-                    // Delete the old one if it's already deployed on the client (localized patch lives under Data/<localization>)
-                    string targetDeltaPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", Configuration.PATCH_LOCALIZATION_STRING, deltaPatchName);
-                    if (File.Exists(targetDeltaPatchFileNameAndPath) == true)
+                    try
                     {
-                        try
-                        {
-                            File.Delete(targetDeltaPatchFileNameAndPath);
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.WriteError("Failed to delete the file at '" + targetDeltaPatchFileNameAndPath + "', it may be in use (client running, open in MPQ editor, etc)");
-                            if (ex.StackTrace != null)
-                                Logger.WriteDebug(ex.StackTrace.ToString());
-                            Logger.WriteError("Deploying to client failed");
-                            return;
-                        }
+                        File.Delete(targetPatchFileNameAndPath);
                     }
-
-                    // Copy it
-                    FileTool.CopyFile(sourceDeltaPatchFileNameAndPath, targetDeltaPatchFileNameAndPath);
+                    catch (Exception ex)
+                    {
+                        Logger.WriteError("Failed to delete the file at '" + targetPatchFileNameAndPath + "', it may be in use (client running, open in MPQ editor, etc)");
+                        if (ex.StackTrace != null)
+                            Logger.WriteDebug(ex.StackTrace.ToString());
+                        Logger.WriteError("Deploying to client failed");
+                        return;
+                    }
                 }
+
+                // Copy it
+                FileTool.CopyFile(sourcePatchFileNameAndPath, targetPatchFileNameAndPath);
             }
 
             // Also deploy the minimaps patch & addon, if configured to do so
