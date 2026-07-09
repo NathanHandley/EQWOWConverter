@@ -16,8 +16,7 @@
 
 namespace EQWOWConverter.Common
 {
-    // This is a 'short' version of the quaternion that is used for bones
-    internal class QuaternionShort : IByteSerializable
+    internal struct QuaternionShort : IByteSerializable
     {
         public float X = 0;
         public float Y = 0;
