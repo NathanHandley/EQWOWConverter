@@ -18,8 +18,9 @@ namespace EQWOWConverter
 {
     internal class LogCounter
     {
-        private int StartCursorLeft = 0;
-        private int StartCursorTop = 0;
+        // Where the live counter value is drawn (end of the message)
+        private int MessageEndCursorLeft = 0;
+        private int MessageEndCursorTop = 0;
         private int StartProgress = 0;
         private int CurProgress = 0;
         private int TotalNumber = 0;
@@ -32,13 +33,7 @@ namespace EQWOWConverter
                 StartProgress = startProgress;
                 TotalNumber = totalNumber;
                 CurProgress = StartProgress;
-                Logger.WriteInfo(counterMessage, false);
-                if (Console.IsOutputRedirected == false)
-                {
-                    StartCursorLeft = Console.CursorLeft;
-                    StartCursorTop = Console.CursorTop;
-                }
-                Logger.WriteInfo(string.Empty, true, false);
+                Logger.WriteInfoAndSetupCounter(counterMessage, out MessageEndCursorLeft, out MessageEndCursorTop);
             }
         }
 
@@ -70,7 +65,7 @@ namespace EQWOWConverter
                     outputString = "(" + CurProgress.ToString() + " of " + TotalNumber.ToString() + ")";
                 else
                     outputString = "(" + CurProgress.ToString() + ")";
-                Logger.WriteForCounter(outputString, StartCursorLeft, StartCursorTop);
+                Logger.WriteForCounter(outputString, MessageEndCursorLeft, MessageEndCursorTop);
             }
         }
     }

@@ -70,7 +70,41 @@ namespace EQWOWConverter
             }
         }
 
-        public static void WriteForCounter(string outputString, int outputLeft, int outputTop)
+        public static void WriteInfoAndSetupCounter(string text, out int messageEndLeft, out int messageEndTop)
+        {
+            lock (writeLock)
+            {
+                messageEndLeft = 0;
+                messageEndTop = 0;
+
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("[ ] Info | ");
+                stringBuilder.Append(text);
+
+                if (Configuration.LOGGING_FILE_MIN_LEVEL >= 1)
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(stringBuilder.ToString());
+                    Console.ResetColor();
+                    if (Console.IsOutputRedirected == false)
+                    {
+                        messageEndLeft = Console.CursorLeft;
+                        messageEndTop = Console.CursorTop;
+                        int topBeforeNewLine = Console.CursorTop;
+                        Console.WriteLine();
+                        if (Console.CursorTop == topBeforeNewLine)
+                            messageEndTop -= 1;
+                    }
+                    else
+                        Console.WriteLine();
+
+                    stringBuilder.Append("\n");
+                    AppendToLogFile(stringBuilder.ToString());
+                }
+            }
+        }
+
+        public static void WriteForCounter(string outputString, int messageEndLeft, int messageEndTop)
         {
             lock (writeLock)
             {
@@ -78,9 +112,16 @@ namespace EQWOWConverter
                     return;
                 int currentCursorLeft = Console.CursorLeft;
                 int currentCursorTop = Console.CursorTop;
-                Console.SetCursorPosition(outputLeft, outputTop);
-                Console.Write(outputString);
-                Console.SetCursorPosition(currentCursorLeft, currentCursorTop);
+                try
+                {
+                    Console.SetCursorPosition(messageEndLeft, messageEndTop);
+                    Console.Write(outputString);
+                    Console.SetCursorPosition(currentCursorLeft, currentCursorTop);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    // The counter's line has scrolled out of the console buffer (or it was resized), so skip this refresh
+                }
             }
         }
 
