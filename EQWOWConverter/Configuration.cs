@@ -99,11 +99,11 @@ namespace EQWOWConverter
 
         // If true, the conditioner & generator will run in multithreading mode
         public static bool CORE_ENABLE_MULTITHREADING = true;
-        public static int CORE_ZONEGEN_THREAD_COUNT = 8;
-        public static int CORE_OBJECT_THREAD_COUNT = 8;
-        public static int CORE_PNGTOBLPCONVERSION_THREAD_COUNT = 8;
-        public static int CORE_MUSICCONVERSION_THREAD_COUNT = 8;
-        public static int CORE_CREATUREDISPLAY_THREAD_COUNT = 8;
+        public static int CORE_ZONEGEN_THREAD_COUNT = Environment.ProcessorCount;
+        public static int CORE_OBJECT_THREAD_COUNT = Environment.ProcessorCount;
+        public static int CORE_PNGTOBLPCONVERSION_THREAD_COUNT = Environment.ProcessorCount;
+        public static int CORE_MUSICCONVERSION_THREAD_COUNT = Environment.ProcessorCount;
+        public static int CORE_CREATUREDISPLAY_THREAD_COUNT = Environment.ProcessorCount;
 
         // ====================================================================
         // Logging

@@ -591,17 +591,19 @@ namespace EQWOWConverter.Common
             bool hasBones = BoneIDs.Count != 0;
             bool hasAnimatedVertexFrames = AnimatedVertexFramesByVertexIndex.Count != 0;
 
-            Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>(Vertices.Count);
+            int[] oldToNewVertexIndex = new int[Vertices.Count];
+            Array.Fill(oldToNewVertexIndex, -1);
             int curSortedVertexCount = 0;
             for (int i = 0; i < TriangleFaces.Count; i++)
             {
                 TriangleFace curTriangleFace = TriangleFaces[i];
 
                 // Face vertex 1
-                if (!oldNewVertexIndices.TryGetValue(curTriangleFace.V1, out int newVertexIndex1))
+                int newVertexIndex1 = oldToNewVertexIndex[curTriangleFace.V1];
+                if (newVertexIndex1 == -1)
                 {
                     newVertexIndex1 = curSortedVertexCount++;
-                    oldNewVertexIndices.Add(curTriangleFace.V1, newVertexIndex1);
+                    oldToNewVertexIndex[curTriangleFace.V1] = newVertexIndex1;
                     sortedVertices.Add(Vertices[curTriangleFace.V1]);
                     if (hasNormals == true)
                         sortedNormals.Add(Normals[curTriangleFace.V1]);
@@ -617,10 +619,11 @@ namespace EQWOWConverter.Common
                 curTriangleFace.V1 = newVertexIndex1;
 
                 // Face vertex 2
-                if (!oldNewVertexIndices.TryGetValue(curTriangleFace.V2, out int newVertexIndex2))
+                int newVertexIndex2 = oldToNewVertexIndex[curTriangleFace.V2];
+                if (newVertexIndex2 == -1)
                 {
                     newVertexIndex2 = curSortedVertexCount++;
-                    oldNewVertexIndices.Add(curTriangleFace.V2, newVertexIndex2);
+                    oldToNewVertexIndex[curTriangleFace.V2] = newVertexIndex2;
                     sortedVertices.Add(Vertices[curTriangleFace.V2]);
                     if (hasNormals == true)
                         sortedNormals.Add(Normals[curTriangleFace.V2]);
@@ -636,10 +639,11 @@ namespace EQWOWConverter.Common
                 curTriangleFace.V2 = newVertexIndex2;
 
                 // Face vertex 3
-                if (!oldNewVertexIndices.TryGetValue(curTriangleFace.V3, out int newVertexIndex3))
+                int newVertexIndex3 = oldToNewVertexIndex[curTriangleFace.V3];
+                if (newVertexIndex3 == -1)
                 {
                     newVertexIndex3 = curSortedVertexCount++;
-                    oldNewVertexIndices.Add(curTriangleFace.V3, newVertexIndex3);
+                    oldToNewVertexIndex[curTriangleFace.V3] = newVertexIndex3;
                     sortedVertices.Add(Vertices[curTriangleFace.V3]);
                     if (hasNormals == true)
                         sortedNormals.Add(Normals[curTriangleFace.V3]);
