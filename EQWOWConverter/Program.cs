@@ -195,6 +195,8 @@ internal class Program
             //    Logger.WriteInfo("- CREATURE_ADD_DEBUG_VALUES_TO_NAME is true, so creature names will be in debug mode");
             Logger.WriteInfo("- GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 is set to ", Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80.ToString());
             Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_GENERAL is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL.ToString());
+            if (Configuration.CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH == true)
+                Logger.WriteInfo("- CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH is true, so a delta-only patch will generate if there's already a generated regular patch");
             if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
                 Logger.WriteInfo("- GENERATE_PLAYER_ARMOR_GRAPHICS is false, so no player armor will be generated");
             if (Configuration.GENERATE_OBJECTS == false)

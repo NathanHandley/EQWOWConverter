@@ -41,6 +41,11 @@ namespace EQWOWConverter
         // will load and work properly
         public static List<string> CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { };
 
+        // If true, a special 'config only' delta patch is created.  This is a patch that will use the ID shown and will only
+        // contain any new/updated/deleted files based on the manifest
+        public static bool CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH = false;
+        public static string CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID = "6";
+
         // ====================================================================
         // Paths and Files
         // ====================================================================
@@ -99,9 +104,6 @@ namespace EQWOWConverter
 
         // If true, the conditioner & generator will run in multithreading mode
         public static bool CORE_ENABLE_MULTITHREADING = true;
-        public static int CORE_OBJECT_THREAD_COUNT = Environment.ProcessorCount;
-        public static int CORE_PNGTOBLPCONVERSION_THREAD_COUNT = Environment.ProcessorCount;
-        public static int CORE_MUSICCONVERSION_THREAD_COUNT = Environment.ProcessorCount;
         public static int CORE_THREAD_COUNT = Environment.ProcessorCount;
 
         // ====================================================================
