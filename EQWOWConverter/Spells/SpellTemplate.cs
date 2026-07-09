@@ -64,6 +64,8 @@ namespace EQWOWConverter.Spells
         private static Dictionary<(string, int, ItemFocusType, int), SpellTemplate> SpellTemplatesByFocusTypeAndValue = new Dictionary<(string, int, ItemFocusType, int), SpellTemplate>();
         private static readonly object SpellTemplateLock = new object();
         private static int CUR_GENERATED_WOW_SPELL_ID = Configuration.DBCID_SPELL_ID_GENERATED_START;
+        private static readonly object GeneratedWOWSpellIDLock = new object();
+        private static Dictionary<string, int>? SavedGeneratedWOWSpellIDsByContextKey = null; // Generated WOW spell IDs keyed by a context key
         private static readonly object SpellEQIDLock = new object();
         private static int CUR_GENERATED_EQ_SPELL_ID = 5000;
 
@@ -767,7 +769,7 @@ namespace EQWOWConverter.Spells
 
                 focusSpellTemplate = new SpellTemplate();
                 focusSpellTemplate.Name = string.Concat(itemName, " Focus");
-                focusSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+                focusSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID("focus", itemName.ToString(), itemIconID.ToString(), ((int)focusType).ToString(), focusValue.ToString());
                 focusSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                 focusSpellTemplate.Description = description;
                 focusSpellTemplate.AuraDescription = description;
@@ -1293,7 +1295,7 @@ namespace EQWOWConverter.Spells
             // Generate the effect spell, and move many of the properties over to it
             SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
             effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Effect");
-            effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+            effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID("bardsongeffect", spellTemplate.EQSpellID.ToString());
             effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
             effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
             effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
@@ -2099,7 +2101,7 @@ namespace EQWOWConverter.Spells
                                 // Stuns become their own spell since the stun duration can differ from a parent aura duration
                                 SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
                                 effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Stunning Effect");
-                                effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+                                effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID("stun", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                 effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
                                 effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
@@ -2606,7 +2608,7 @@ namespace EQWOWConverter.Spells
                                     // Create a healing spell for this
                                     SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
                                     effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Heal Effect");
-                                    effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+                                    effectGeneratedSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID("heal", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                     effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                     effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
                                     effectGeneratedSpellTemplate.SpellVisualID1 = 5560; // Lesser Heal visual, like Judgement of Light
@@ -2863,7 +2865,7 @@ namespace EQWOWConverter.Spells
                                 // Male form
                                 SpellTemplate maleFormSpellTemplate = new SpellTemplate();
                                 maleFormSpellTemplate.Name = string.Concat(spellTemplate.Name);
-                                maleFormSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+                                maleFormSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID("maleform", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                 maleFormSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 maleFormSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
                                 SpellEffectWOW maleFormSpellEffectWOW = new SpellEffectWOW();
@@ -2899,7 +2901,7 @@ namespace EQWOWConverter.Spells
                                 // Female form
                                 SpellTemplate femaleFormSpellTemplate = new SpellTemplate();
                                 femaleFormSpellTemplate.Name = string.Concat(spellTemplate.Name);
-                                femaleFormSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID();
+                                femaleFormSpellTemplate.WOWSpellID = GenerateUniqueWOWSpellID("femaleform", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                 femaleFormSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 femaleFormSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
                                 SpellEffectWOW femaleFormSpellEffectWOW = new SpellEffectWOW();
@@ -3337,7 +3339,7 @@ namespace EQWOWConverter.Spells
                 if (wornBlocks.Count == 0)
                     wornBlock.WOWSpellID = primaryWornWOWSpellID;
                 else
-                    wornBlock.WOWSpellID = GenerateUniqueWOWSpellID();
+                    wornBlock.WOWSpellID = GenerateUniqueWOWSpellID("wornblock", primaryWornWOWSpellID.ToString(), wornBlocks.Count.ToString());
                 wornBlock.SpellName = string.Concat(baseBlock.SpellName, " (from gear)");
                 wornBlock.ForceVisibleSplitAura = baseBlock.ForceVisibleSplitAura;
                 foreach (SpellEffectWOW baseEffect in baseBlock.SpellEffects)
@@ -3422,7 +3424,7 @@ namespace EQWOWConverter.Spells
                         }
                         else
                             baseEffectBlock.SpellName = string.Concat(Name, " Split ", _GroupedBaseSpellEffectBlocksForOutput.Count.ToString());
-                        baseEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
+                        baseEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID("basesplit", WOWSpellID.ToString(), _GroupedBaseSpellEffectBlocksForOutput.Count.ToString());
                     }
                     _GroupedBaseSpellEffectBlocksForOutput.Add(baseEffectBlock);
                 }
@@ -3446,7 +3448,7 @@ namespace EQWOWConverter.Spells
                 if (_GroupedGoodProcSpellEffectBlocksForOutput.Count == 0)
                     goodProcEffectBlock.WOWSpellID = WOWSpellIDProcAndGoodEffect;
                 else
-                    goodProcEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
+                    goodProcEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID("goodprocblock", WOWSpellIDProcAndGoodEffect.ToString(), _GroupedGoodProcSpellEffectBlocksForOutput.Count.ToString());
                 foreach (SpellEffectWOW spellEffect in baseEffectBlock.SpellEffects)
                 {
                     // Override the implicit target since the user is the only one it can be used on
@@ -3478,7 +3480,7 @@ namespace EQWOWConverter.Spells
                     if (clickyBlocks.Count == 0)
                         clickEffectBlock.WOWSpellID = clickySpellParameters.WOWSpellID;
                     else
-                        clickEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID();
+                        clickEffectBlock.WOWSpellID = GenerateUniqueWOWSpellID("clickyblock", clickySpellParameters.WOWSpellID.ToString(), clickyBlocks.Count.ToString());
                     foreach (SpellEffectWOW spellEffect in baseEffectBlock.SpellEffects)
                     {
                         SpellEffectWOW effectClone = spellEffect.Clone();
@@ -3521,16 +3523,72 @@ namespace EQWOWConverter.Spells
             }
         }
     
-        public static int GenerateUniqueWOWSpellID()
+        public static int GenerateUniqueWOWSpellID(string contextKeyPart1, string contextKeyPart2, string contextKeyPart3 = "", string contextKeyPart4 = "", string contextKeyPart5 = "")
         {
-            int returnID = CUR_GENERATED_WOW_SPELL_ID;
-            CUR_GENERATED_WOW_SPELL_ID++;
-            if (CUR_GENERATED_WOW_SPELL_ID >= Configuration.DBCID_SPELL_ID_END)
+            string contextKey = string.Concat(contextKeyPart1, "~", contextKeyPart2, "~", contextKeyPart3, "~", contextKeyPart4, "~", contextKeyPart5);
+            lock (GeneratedWOWSpellIDLock)
             {
-                Logger.WriteError("Spell DBCID max exceeded");
-                throw new Exception("Spell DBCID max exceeded");
+                LoadSavedGeneratedWOWSpellIDsIfNeeded();
+                if (SavedGeneratedWOWSpellIDsByContextKey!.ContainsKey(contextKey) == true)
+                    return SavedGeneratedWOWSpellIDsByContextKey[contextKey];
+
+                int returnID = CUR_GENERATED_WOW_SPELL_ID;
+                CUR_GENERATED_WOW_SPELL_ID++;
+                if (CUR_GENERATED_WOW_SPELL_ID >= Configuration.DBCID_SPELL_ID_END)
+                {
+                    Logger.WriteError("Spell DBCID max exceeded");
+                    throw new Exception("Spell DBCID max exceeded");
+                }
+                SavedGeneratedWOWSpellIDsByContextKey.Add(contextKey, returnID);
+                AppendSavedGeneratedWOWSpellIDToFile(contextKey, returnID);
+                return returnID;
             }
-            return returnID;
+        }
+
+        private static string GetSavedGeneratedWOWSpellIDsFilePath()
+        {
+            return Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpellGeneratedSpellIDs.csv");
+        }
+
+        private static void LoadSavedGeneratedWOWSpellIDsIfNeeded()
+        {
+            if (SavedGeneratedWOWSpellIDsByContextKey != null)
+                return;
+            SavedGeneratedWOWSpellIDsByContextKey = new Dictionary<string, int>();
+
+            string savedGeneratedWOWSpellIDsFilePath = GetSavedGeneratedWOWSpellIDsFilePath();
+            if (File.Exists(savedGeneratedWOWSpellIDsFilePath) == false)
+            {
+                Logger.WriteDebug("No saved generated WOW spell IDs file found at '" + savedGeneratedWOWSpellIDsFilePath + "', so all IDs will be newly generated");
+                return;
+            }
+
+            Logger.WriteDebug("Loading saved generated WOW spell IDs via file '" + savedGeneratedWOWSpellIDsFilePath + "'");
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(savedGeneratedWOWSpellIDsFilePath, "|");
+            foreach (Dictionary<string, string> columns in rows)
+            {
+                string contextKey = columns["contextkey"];
+                if (SavedGeneratedWOWSpellIDsByContextKey.ContainsKey(contextKey) == true)
+                {
+                    Logger.WriteError("Duplicate context key '" + contextKey + "' found in '" + savedGeneratedWOWSpellIDsFilePath + "', skipping the duplicate row");
+                    continue;
+                }
+
+                int wowSpellID = int.Parse(columns["wow_spell_id"]);
+                SavedGeneratedWOWSpellIDsByContextKey.Add(contextKey, wowSpellID);
+
+                // Ensure newly generated IDs never collide with previously saved ones
+                if (wowSpellID >= CUR_GENERATED_WOW_SPELL_ID)
+                    CUR_GENERATED_WOW_SPELL_ID = wowSpellID + 1;
+            }
+        }
+
+        private static void AppendSavedGeneratedWOWSpellIDToFile(string contextKey, int wowSpellID)
+        {
+            Dictionary<string, string> rowValues = new Dictionary<string, string>();
+            rowValues.Add("contextkey", contextKey);
+            rowValues.Add("wow_spell_id", wowSpellID.ToString());
+            FileTool.AppendRowToFileWithHeader(GetSavedGeneratedWOWSpellIDsFilePath(), "|", rowValues);
         }
 
         public static int GenerateUniqueEQSpellID()

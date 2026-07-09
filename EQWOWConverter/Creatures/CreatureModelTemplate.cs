@@ -140,7 +140,7 @@ namespace EQWOWConverter.Creatures
 
         private static string GetSavedIllusionFaceDisplayIDsFilePath()
         {
-            return Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "IllusionFaceDisplayIDs.csv");
+            return Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureIllusionFaceDisplayIDs.csv");
         }
 
         private static string GenerateIllusionFaceDisplayIDContextKey(int raceID, CreatureGenderType genderType, int helmTextureID,
