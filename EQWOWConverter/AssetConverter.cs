@@ -29,6 +29,8 @@ using EQWOWConverter.Tradeskills;
 using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
+using System.Collections.Concurrent;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace EQWOWConverter
@@ -270,11 +272,7 @@ namespace EQWOWConverter
                 FileTool.CopyDirectoryAndContents(sourceItemTooltipsAddOnFolder, targetItemTooltipsAddOnFolder, true, true);
 
                 // Create or update the MPQs
-                string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ"));
-                if (Configuration.CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
-                    CreateMainPatchMPQ();
-                else
-                    UpdateMainPatchMPQ();
+                CreateOrUpdateMainPatchMPQ();
                 if (Configuration.GENERATE_WORLDMAPS == true)
                     CreateMinimapPatchMPQ();
 
@@ -523,7 +521,7 @@ namespace EQWOWConverter
 
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
-                int taskCount = Configuration.CORE_OBJECT_THREAD_COUNT;
+                int taskCount = Configuration.CORE_THREAD_COUNT;
                 if (ObjectNamesToProcess.Count < taskCount)
                     taskCount = Math.Max(1, ObjectNamesToProcess.Count);
                 Task[] tasks = new Task[taskCount];
@@ -1037,7 +1035,7 @@ namespace EQWOWConverter
             List<Zone> workingZones = new List<Zone>();
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
-                int taskCount = Configuration.CORE_ZONEGEN_THREAD_COUNT;
+                int taskCount = Configuration.CORE_THREAD_COUNT;
                 if (ZoneShortNamesToProcess.Count < taskCount)
                     taskCount = ZoneShortNamesToProcess.Count;
                 Task<List<Zone>>[] tasks = new Task<List<Zone>>[taskCount];
@@ -1244,7 +1242,7 @@ namespace EQWOWConverter
 
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
-                int taskCount = Configuration.CORE_CREATUREDISPLAY_THREAD_COUNT;
+                int taskCount = Configuration.CORE_THREAD_COUNT;
                 if (modelTemplateWorkQueue.Count < taskCount)
                     taskCount = modelTemplateWorkQueue.Count;
                 if (taskCount < 1)
@@ -2983,31 +2981,59 @@ namespace EQWOWConverter
             Logger.WriteDebug("Building minimap patch MPQ complete");
         }
 
-        public void CreateMainPatchMPQ()
+        public void CreateOrUpdateMainPatchMPQ()
         {
-            Logger.WriteInfo("Building main patch MPQ...");
-
             // Make sure the output folder exists
             if (Directory.Exists(Configuration.PATH_EXPORT_FOLDER) == false)
                 throw new Exception("Export folder '" + Configuration.PATH_EXPORT_FOLDER + "' did not exist, make sure you set PATH_EXPORT_FOLDER");
 
-            // Delete the old patch file, if it exists
-            Logger.WriteDebug("Deleting old patch file if it exists");
+            // Make sure the folder full of files to pack exists
+            string mpqReadyFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
+            if (Directory.Exists(mpqReadyFolder) == false)
+                throw new Exception("There was no MPQReady folder inside of '" + Configuration.PATH_EXPORT_FOLDER + "'");
+
+            // Resolve output patch and file manifest locations
             string patchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
             string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, patchMPQName);
+            string patchManifestFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, patchMPQName + ".filehashes.txt");
+
+            // Build the current manifest (relative-in-mpq path -> content hash) for everything staged in MPQReady, in parallel
+            Logger.WriteDebug("Hashing files staged in MPQReady to determine patch contents");
+            Dictionary<string, string> currentFileHashesByRelativePath = ComputeMPQReadyFileHashes(mpqReadyFolder);
+
+            // If there's no existing patch (or no manifest to compare against), build a brand new patch from scratch.  Otherwise only do the add/update/remove.
+            bool patchOperationSucceeded;
+            if (File.Exists(outputPatchFileName) == false || File.Exists(patchManifestFileName) == false)
+                patchOperationSucceeded = CreateMainPatchMPQ(mpqReadyFolder, outputPatchFileName, currentFileHashesByRelativePath.Count);
+            else
+                patchOperationSucceeded = UpdateMainPatchMPQ(mpqReadyFolder, outputPatchFileName, patchManifestFileName, currentFileHashesByRelativePath);
+
+            // Only record the manifest once the patch is confirmed built. 
+            if (patchOperationSucceeded == false)
+            {
+                Logger.WriteError("Failed the patch MPQ create or update, so not updating the patch file manifest");
+                return;
+            }
+            WritePatchFileManifest(patchManifestFileName, currentFileHashesByRelativePath);
+
+            Logger.WriteDebug("Building main patch MPQ complete");
+        }
+
+        private bool CreateMainPatchMPQ(string mpqReadyFolder, string outputPatchFileName, int mpqReadyFileCount)
+        {
+            Logger.WriteInfo("Building main patch MPQ (full build)...");
+
+            // Delete the old patch file, if it exists
+            Logger.WriteDebug("Deleting old patch file if it exists");
             if (File.Exists(outputPatchFileName) == true)
                 File.Delete(outputPatchFileName);
 
             // Generate a script to generate the mpq file
             Logger.WriteDebug("Generating script to generate MPQ file");
-            string mpqReadyFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
-            if (Directory.Exists(mpqReadyFolder) == false)
-                throw new Exception("There was no MPQReady folder inside of '" + Configuration.PATH_EXPORT_FOLDER + "'");
             string workingGeneratedScriptsFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
             FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
 
             // Calculate the size of the file count property for the MPQ
-            int mpqReadyFileCount = Directory.EnumerateFiles(mpqReadyFolder, "*", SearchOption.AllDirectories).Count();
             int mpqMaxFileCount = 1024;
             while (mpqMaxFileCount < mpqReadyFileCount)
                 mpqMaxFileCount <<= 1;
@@ -3023,177 +3049,59 @@ namespace EQWOWConverter
 
             // Generate the new MPQ using the script
             Logger.WriteDebug("Generating MPQ file");
-            string mpqEditorFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
-            if (File.Exists(mpqEditorFullPath) == false)
-                throw new Exception("Failed to generate MPQ file. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
-            string args = "console \"" + mpqNewScriptFileName + "\"";
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.Arguments = args;
-            process.StartInfo.FileName = mpqEditorFullPath;
-            process.Start();
-            process.WaitForExit();
-
-            Logger.WriteDebug("Building main patch MPQ complete");
+            return RunMPQEditorScript(mpqNewScriptFileName, "Failed to generate MPQ file.");
         }
 
-        public void UpdateMainPatchMPQ()
+        private bool UpdateMainPatchMPQ(string mpqReadyFolder, string outputPatchFileName, string patchManifestFileName,
+            Dictionary<string, string> currentFileHashesByRelativePath)
         {
             Logger.WriteInfo("Updating main patch MPQ...");
-            string patchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
-            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, patchMPQName);
-            if (File.Exists(exportMPQFileName) == false)
+
+            // Load the manifest from the previous run so the current candidate files can be compared
+            Dictionary<string, string> previousFileHashesByRelativePath = ReadPatchFileManifest(patchManifestFileName);
+
+            // Files that are new / changed need to be added, and files no longer as candidates need to be removed
+            List<string> relativePathsToAddOrUpdate = new List<string>();
+            foreach (var currentFileHash in currentFileHashesByRelativePath)
             {
-                Logger.WriteError("Attempted to update the patch MPQ, but it didn't exist at '" + exportMPQFileName + "'");
-                return;
+                if (previousFileHashesByRelativePath.TryGetValue(currentFileHash.Key, out string? previousHash) == false || previousHash != currentFileHash.Value)
+                    relativePathsToAddOrUpdate.Add(currentFileHash.Key);
+            }
+            List<string> relativePathsToRemove = new List<string>();
+            foreach (var previousFileHash in previousFileHashesByRelativePath)
+            {
+                if (currentFileHashesByRelativePath.ContainsKey(previousFileHash.Key) == false)
+                    relativePathsToRemove.Add(previousFileHash.Key);
             }
 
-            // Generate a script to update the new MPQ
+            Logger.WriteInfo("- Patch delta: " + relativePathsToAddOrUpdate.Count + " added/updated, " + relativePathsToRemove.Count + " removed");
+
+            // If nothing changed, there's no reason to touch the existing patch at all
+            if (relativePathsToAddOrUpdate.Count == 0 && relativePathsToRemove.Count == 0)
+            {
+                Logger.WriteInfo("- No file changes detected, leaving the existing patch MPQ as-is");
+                return true;
+            }
+
+            // Generate a script to update the existing MPQ, only operating on the changed files
             Logger.WriteDebug("Generating script to update the MPQ file");
-            string mpqReadyFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
-            if (Directory.Exists(mpqReadyFolder) == false)
-                throw new Exception("There was no MPQReady folder inside of '" + Configuration.PATH_EXPORT_FOLDER + "'");
             string workingGeneratedScriptsFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
             FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
             StringBuilder mpqUpdateScriptText = new StringBuilder();
-            
-            // Zones
-            foreach(string zoneName in Configuration.CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES)
+
+            // Remove files that are no longer needed
+            foreach (string relativePathToRemove in relativePathsToRemove)
+                mpqUpdateScriptText.AppendLine("delete \"" + outputPatchFileName + "\" \"" + relativePathToRemove + "\"");
+
+            // Add or overwrite the new/changed files
+            foreach (string relativePathToAddOrUpdate in relativePathsToAddOrUpdate)
             {
-                // Add zone-specific folders
-                // ZoneObjects
-                string relativeZoneObjectsPath = Path.Combine("World", "Everquest", "ZoneObjects", zoneName);
-                string fullZoneObjectsPath = Path.Combine(mpqReadyFolder, relativeZoneObjectsPath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneObjectsPath + "\" \"" + relativeZoneObjectsPath + "\" /r");
-
-                // ZoneTextures
-                string relativeZoneTexturesPath = Path.Combine("World", "Everquest", "ZoneTextures", zoneName);
-                string fullZoneZoneTexturesPath = Path.Combine(mpqReadyFolder, relativeZoneTexturesPath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneZoneTexturesPath + "\" \"" + relativeZoneTexturesPath + "\" /r");
-
-                // Maps
-                string relativeZoneMapsPath = Path.Combine("World", "Maps", "EQ_" + zoneName);
-                string fullZoneMapsPath = Path.Combine(mpqReadyFolder, relativeZoneMapsPath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneMapsPath + "\" \"" + relativeZoneMapsPath + "\" /r");
-
-                // WMO
-                string relativeZoneWmoPath = Path.Combine("World", "wmo", "Everquest", zoneName);
-                string fullZoneWmoPath = Path.Combine(mpqReadyFolder, relativeZoneWmoPath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneWmoPath + "\" \"" + relativeZoneWmoPath + "\" /r");
-
-                // Music
-                string relativeZoneMusicPath = Path.Combine("Sound", "Music", "Everquest", zoneName);
-                string fullZoneMusicPath = Path.Combine(mpqReadyFolder, relativeZoneMusicPath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneMusicPath + "\" \"" + relativeZoneMusicPath + "\" /r");
-
-                // Maps
-                string relativeWorldMapsPath = Path.Combine("Interface", "WorldMap", string.Concat("EQ_", zoneName));
-                string fullWorldMapPath = Path.Combine(mpqReadyFolder, relativeWorldMapsPath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullWorldMapPath + "\" \"" + relativeWorldMapsPath + "\" /r");
+                string fullFilePath = Path.Combine(mpqReadyFolder, relativePathToAddOrUpdate);
+                mpqUpdateScriptText.AppendLine("add \"" + outputPatchFileName + "\" \"" + fullFilePath + "\" \"" + relativePathToAddOrUpdate + "\"");
             }
 
-            // Transports
-            if (Configuration.GENERATE_TRANSPORTS == true)
-            {
-                foreach (TransportShip transportShip in TransportShip.GetAllTransportShips())
-                {
-                    string wmoName = string.Concat(transportShip.MeshName + transportShip.EQTexture.ToString());
-
-                    // WMO
-                    string relativeTransportWmoPath = Path.Combine("World", "wmo", "Everquest", wmoName);
-                    string fullTransportWmoPath = Path.Combine(mpqReadyFolder, relativeTransportWmoPath);
-                    mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportWmoPath + "\" \"" + relativeTransportWmoPath + "\" /r");
-
-                    // ZoneTextures
-                    string relativeTransportTexturesPath = Path.Combine("World", "Everquest", "TransportTextures", wmoName);
-                    string fullTransportTexturesPath = Path.Combine(mpqReadyFolder, relativeTransportTexturesPath);
-                    mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportTexturesPath + "\" \"" + relativeTransportTexturesPath + "\" /r");
-                }
-                if (TransportLift.GetAllTransportLifts().Count > 0)
-                {
-                    // Transport lift models
-                    string relativeTransportsPath = Path.Combine("World", "Everquest", "Transports");
-                    string fullTransportsPath = Path.Combine(mpqReadyFolder, relativeTransportsPath);
-                    mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportsPath + "\" \"" + relativeTransportsPath + "\" /r");
-
-                    // Transport lift sounds
-                    string relativeDoodadSoundsPath = Path.Combine("Sound", "EQTransports");
-                    string fullDoodadSoundsPath = Path.Combine(mpqReadyFolder, relativeDoodadSoundsPath);
-                    mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullDoodadSoundsPath + "\" \"" + relativeDoodadSoundsPath + "\" /r");
-                }
-            }
-
-            // Objects
-            if (Configuration.GENERATE_OBJECTS == true)
-            {
-                string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
-                string fullStaticDoodadsPath = Path.Combine(mpqReadyFolder, relativeStaticDoodadsPath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullStaticDoodadsPath + "\" \"" + relativeStaticDoodadsPath + "\" /r");
-
-                string relativeGameObjectsPath = Path.Combine("World", "Everquest", "GameObjects");
-                string fullGameObjectsPath = Path.Combine(mpqReadyFolder, relativeGameObjectsPath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullGameObjectsPath + "\" \"" + relativeGameObjectsPath + "\" /r");
-            }
-
-            // Creatures
-            if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
-            {
-                string relativeCreaturePath = Path.Combine("Creature", "Everquest");
-                string fullCreaturePath = Path.Combine(mpqReadyFolder, relativeCreaturePath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullCreaturePath + "\" \"" + relativeCreaturePath + "\" /r");
-
-                string relativeCreatureSoundsPath = Path.Combine("Sound", "Creature", "Everquest");
-                string fullCreatureSoundPath = Path.Combine(mpqReadyFolder, relativeCreatureSoundsPath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullCreatureSoundPath + "\" \"" + relativeCreatureSoundsPath + "\" /r");
-            }
-
-            // Items
-            string relativeItemsPath = Path.Combine("Item");
-            string fullItemsPath = Path.Combine(mpqReadyFolder, relativeItemsPath);
-            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullItemsPath + "\" \"" + relativeItemsPath + "\" /r");
-
-            // Particles
-            string relativeParticlesPath = Path.Combine("Particles");
-            string fullParticlesPath = Path.Combine(mpqReadyFolder, relativeParticlesPath);
-            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullParticlesPath + "\" \"" + relativeParticlesPath + "\" /r");
-
-            // Icons
-            string relativeIconsPath = Path.Combine("Interface", "ICONS");
-            string fullIconsPath = Path.Combine(mpqReadyFolder, relativeIconsPath);
-            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullIconsPath + "\" \"" + relativeIconsPath + "\" /r");
-
-            // Ambient Sounds
-            string relativeAmbientSoundsPath = Path.Combine("Sound", "Ambience", "Everquest");
-            string fullAmbientSoundsPath = Path.Combine(mpqReadyFolder, relativeAmbientSoundsPath);
-            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullAmbientSoundsPath + "\" \"" + relativeAmbientSoundsPath + "\" /r");
-
-            // Loading Screens
-            string relativeLoadingScreensPath = Path.Combine("Interface", "Glues", "LoadingScreens");
-            string fullLoadingScreensPath = Path.Combine(mpqReadyFolder, relativeLoadingScreensPath);
-            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullLoadingScreensPath + "\" \"" + relativeLoadingScreensPath + "\" /r");
-
-            // Liquid Materials
-            string relativeLiquidMaterialsPath = Path.Combine("XTEXTURES", "everquest");
-            string fullLiquidMaterialsPath = Path.Combine(mpqReadyFolder, relativeLiquidMaterialsPath);
-            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullLiquidMaterialsPath + "\" \"" + relativeLiquidMaterialsPath + "\" /r");
-
-            // Spell Sounds
-            string relativeSpellSoundsPath = Path.Combine("Sound", "Spells", "Everquest");
-            string fullSpellSoundsPath = Path.Combine(mpqReadyFolder, relativeSpellSoundsPath);
-            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullSpellSoundsPath + "\" \"" + relativeSpellSoundsPath + "\" /r");
-
-            // Spell Particle Emitters
-            string relativeSpellEmittersPath = Path.Combine("SPELLS", "Everquest");
-            string fullSpellEmittersPath = Path.Combine(mpqReadyFolder, relativeSpellEmittersPath);
-            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullSpellEmittersPath + "\" \"" + relativeSpellEmittersPath + "\" /r");
-
-            // DBC Files
-            string relativeDBCClientPath = Path.Combine("DBFilesClient");
-            string fullDBCClientPath = Path.Combine(mpqReadyFolder, relativeDBCClientPath);
-            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullDBCClientPath + "\" \"" + relativeDBCClientPath + "\" /r");
-
-            // Finally, compact it
-            mpqUpdateScriptText.AppendLine("compact \"" + exportMPQFileName + "\" /r");
+            // Finally, compact it to reclaim the space freed by deleted/overwritten files
+            mpqUpdateScriptText.AppendLine("compact \"" + outputPatchFileName + "\" /r");
 
             // Output the script to disk
             string mpqUpdateScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "mpqupdate.txt");
@@ -3202,10 +3110,15 @@ namespace EQWOWConverter
 
             // Update the MPQ using the script
             Logger.WriteDebug("Updating MPQ file");
+            return RunMPQEditorScript(mpqUpdateScriptFileName, "Failed to update MPQ file.");
+        }
+
+        private bool RunMPQEditorScript(string mpqScriptFileName, string failureMessagePrefix)
+        {
             string mpqEditorFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
             if (File.Exists(mpqEditorFullPath) == false)
-                throw new Exception("Failed to update MPQ file. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
-            string args = "console \"" + mpqUpdateScriptFileName + "\"";
+                throw new Exception(failureMessagePrefix + " '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
+            string args = "console \"" + mpqScriptFileName + "\"";
             System.Diagnostics.Process process = new System.Diagnostics.Process();
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.Arguments = args;
@@ -3213,7 +3126,88 @@ namespace EQWOWConverter
             process.Start();
             process.WaitForExit();
 
-            Logger.WriteDebug("Building main patch MPQ complete");
+            if (process.ExitCode != 0)
+            {
+                Logger.WriteError(failureMessagePrefix + " MPQEditor exited with code " + process.ExitCode + " running script '" + mpqScriptFileName + "'");
+                return false;
+            }
+            return true;
+        }
+
+        private Dictionary<string, string> ComputeMPQReadyFileHashes(string mpqReadyFolder)
+        {
+            List<string> fullFilePaths = new List<string>(Directory.EnumerateFiles(mpqReadyFolder, "*", SearchOption.AllDirectories));
+            ConcurrentDictionary<string, string> fileHashesByRelativePath = new ConcurrentDictionary<string, string>();
+
+            if (Configuration.CORE_ENABLE_MULTITHREADING == true && fullFilePaths.Count > 1)
+            {
+                int taskCount = Configuration.CORE_THREAD_COUNT;
+                if (fullFilePaths.Count < taskCount)
+                    taskCount = Math.Max(1, fullFilePaths.Count);
+                ConcurrentQueue<string> filePathQueue = new ConcurrentQueue<string>(fullFilePaths);
+                Task[] tasks = new Task[taskCount];
+                for (int i = 0; i < taskCount; i++)
+                {
+                    tasks[i] = Task.Factory.StartNew(() =>
+                    {
+                        while (filePathQueue.TryDequeue(out string? curFullFilePath) == true)
+                        {
+                            string relativePath = GetMPQReadyRelativePath(mpqReadyFolder, curFullFilePath);
+                            fileHashesByRelativePath[relativePath] = ComputeFileContentHash(curFullFilePath);
+                        }
+                    });
+                }
+                Task.WaitAll(tasks);
+            }
+            else
+            {
+                foreach (string curFullFilePath in fullFilePaths)
+                {
+                    string relativePath = GetMPQReadyRelativePath(mpqReadyFolder, curFullFilePath);
+                    fileHashesByRelativePath[relativePath] = ComputeFileContentHash(curFullFilePath);
+                }
+            }
+
+            return new Dictionary<string, string>(fileHashesByRelativePath);
+        }
+
+        private string GetMPQReadyRelativePath(string mpqReadyFolder, string fullFilePath)
+        {
+            // Normalize to backslash separators so the key matches the path used inside the MPQ archive
+            return Path.GetRelativePath(mpqReadyFolder, fullFilePath).Replace('/', '\\');
+        }
+
+        private string ComputeFileContentHash(string fullFilePath)
+        {
+            using (MD5 md5 = MD5.Create())
+            using (FileStream stream = File.OpenRead(fullFilePath))
+                return Convert.ToHexString(md5.ComputeHash(stream));
+        }
+
+        private void WritePatchFileManifest(string patchManifestFileName, Dictionary<string, string> fileHashesByRelativePath)
+        {
+            StringBuilder manifestText = new StringBuilder();
+            foreach (var fileHash in fileHashesByRelativePath)
+                manifestText.Append(fileHash.Key).Append('\t').Append(fileHash.Value).Append('\n');
+            using (var manifestFile = new StreamWriter(patchManifestFileName, false))
+                manifestFile.Write(manifestText.ToString());
+        }
+
+        private Dictionary<string, string> ReadPatchFileManifest(string patchManifestFileName)
+        {
+            Dictionary<string, string> fileHashesByRelativePath = new Dictionary<string, string>();
+            foreach (string line in File.ReadAllLines(patchManifestFileName))
+            {
+                if (line.Length == 0)
+                    continue;
+                int separatorIndex = line.IndexOf('\t');
+                if (separatorIndex <= 0)
+                    continue;
+                string relativePath = line.Substring(0, separatorIndex);
+                string hash = line.Substring(separatorIndex + 1);
+                fileHashesByRelativePath[relativePath] = hash;
+            }
+            return fileHashesByRelativePath;
         }
 
         public void DeployClient()

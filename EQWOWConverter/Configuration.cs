@@ -99,11 +99,10 @@ namespace EQWOWConverter
 
         // If true, the conditioner & generator will run in multithreading mode
         public static bool CORE_ENABLE_MULTITHREADING = true;
-        public static int CORE_ZONEGEN_THREAD_COUNT = Environment.ProcessorCount;
         public static int CORE_OBJECT_THREAD_COUNT = Environment.ProcessorCount;
         public static int CORE_PNGTOBLPCONVERSION_THREAD_COUNT = Environment.ProcessorCount;
         public static int CORE_MUSICCONVERSION_THREAD_COUNT = Environment.ProcessorCount;
-        public static int CORE_CREATUREDISPLAY_THREAD_COUNT = Environment.ProcessorCount;
+        public static int CORE_THREAD_COUNT = Environment.ProcessorCount;
 
         // ====================================================================
         // Logging
@@ -441,6 +440,9 @@ namespace EQWOWConverter
 
         // How many colors are in the illusion chest tint palette, larger numbers mean larger builds but more color representation
         public static int CREATURE_ILLUSION_TINT_PALETTE_SIZE = 12;
+
+        // How high up from the ground the eye height is as a baseline in illusion spells
+        public static float CREATURE_ILLUSION_EYE_HEIGHT_BASELINE = 2.031f;
 
         // How many seconds will elapse before a boss creature respawns after dying
         public static int CREATURE_BOSS_RESPAWN_TIME_IN_SEC = 3600;
@@ -1356,11 +1358,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY", DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY, "If true and when deploying client files, clear the cache (only relevant if you set DEPLOY_CLIENT_FILES to true, otherwise ignored)");
             OutputVariableToConfig("CORE_CONSOLE_BEEP_ON_COMPLETE", CORE_CONSOLE_BEEP_ON_COMPLETE, "Plays a beep sound when the generate completes if set to true");
             OutputVariableToConfig("CORE_ENABLE_MULTITHREADING", CORE_ENABLE_MULTITHREADING, "If true, the conditioner & generator will run in multithreading mode", false);
-            OutputVariableToConfig("CORE_ZONEGEN_THREAD_COUNT", CORE_ZONEGEN_THREAD_COUNT, "", false);
-            OutputVariableToConfig("CORE_OBJECT_THREAD_COUNT", CORE_OBJECT_THREAD_COUNT, "", false);
-            OutputVariableToConfig("CORE_PNGTOBLPCONVERSION_THREAD_COUNT", CORE_PNGTOBLPCONVERSION_THREAD_COUNT, "", false);
-            OutputVariableToConfig("CORE_MUSICCONVERSION_THREAD_COUNT", CORE_MUSICCONVERSION_THREAD_COUNT, "", false);
-            OutputVariableToConfig("CORE_CREATUREDISPLAY_THREAD_COUNT", CORE_CREATUREDISPLAY_THREAD_COUNT, "");
+            OutputVariableToConfig("CORE_THREAD_COUNT", CORE_THREAD_COUNT, "");
             OutputVariableToConfig("LOGGING_CONSOLE_MIN_LEVEL", LOGGING_CONSOLE_MIN_LEVEL, "Level of logs to write to the console and log file. 1: Error, 2: Info, 3: Debug", false);
             OutputVariableToConfig("LOGGING_FILE_MIN_LEVEL", LOGGING_FILE_MIN_LEVEL, "");
             OutputVariableToConfig("GENERATE_WORLD_SCALE", GENERATE_WORLD_SCALE, "The value EQ vertices multiply by when translated into WOW vertices. A WORLD_SCALE value of 0.25 seems to be 1:1 with EQ.  0.28 allows humans and 0.4 allows taurens to enter rivervale bank door", false);
@@ -1865,11 +1863,7 @@ namespace EQWOWConverter
 
             CORE_CONSOLE_BEEP_ON_COMPLETE = ReadVariableFromConfigString("CORE_CONSOLE_BEEP_ON_COMPLETE", configValuesByVariableName, CORE_CONSOLE_BEEP_ON_COMPLETE);
             CORE_ENABLE_MULTITHREADING = ReadVariableFromConfigString("CORE_ENABLE_MULTITHREADING", configValuesByVariableName, CORE_ENABLE_MULTITHREADING);
-            CORE_ZONEGEN_THREAD_COUNT = ReadVariableFromConfigString("CORE_ZONEGEN_THREAD_COUNT", configValuesByVariableName, CORE_ZONEGEN_THREAD_COUNT);
-            CORE_OBJECT_THREAD_COUNT = ReadVariableFromConfigString("CORE_OBJECT_THREAD_COUNT", configValuesByVariableName, CORE_OBJECT_THREAD_COUNT);
-            CORE_PNGTOBLPCONVERSION_THREAD_COUNT = ReadVariableFromConfigString("CORE_PNGTOBLPCONVERSION_THREAD_COUNT", configValuesByVariableName, CORE_PNGTOBLPCONVERSION_THREAD_COUNT);
-            CORE_MUSICCONVERSION_THREAD_COUNT = ReadVariableFromConfigString("CORE_MUSICCONVERSION_THREAD_COUNT", configValuesByVariableName, CORE_MUSICCONVERSION_THREAD_COUNT);
-            CORE_CREATUREDISPLAY_THREAD_COUNT = ReadVariableFromConfigString("CORE_CREATUREDISPLAY_THREAD_COUNT", configValuesByVariableName, CORE_CREATUREDISPLAY_THREAD_COUNT);
+            CORE_THREAD_COUNT = ReadVariableFromConfigString("CORE_THREAD_COUNT", configValuesByVariableName, CORE_THREAD_COUNT);
 
             LOGGING_CONSOLE_MIN_LEVEL = ReadVariableFromConfigString("LOGGING_CONSOLE_MIN_LEVEL", configValuesByVariableName, LOGGING_CONSOLE_MIN_LEVEL);
             LOGGING_FILE_MIN_LEVEL = ReadVariableFromConfigString("LOGGING_FILE_MIN_LEVEL", configValuesByVariableName, LOGGING_FILE_MIN_LEVEL);

@@ -657,9 +657,9 @@ namespace EQWOWConverter
             }
 
             progressCounter.Write(0);
-            if (Configuration.CORE_ENABLE_MULTITHREADING == true && Configuration.CORE_MUSICCONVERSION_THREAD_COUNT > 1)
+            if (Configuration.CORE_ENABLE_MULTITHREADING == true && Configuration.CORE_THREAD_COUNT > 1)
             {
-                int taskCount = Configuration.CORE_MUSICCONVERSION_THREAD_COUNT;
+                int taskCount = Configuration.CORE_THREAD_COUNT;
                 Task[] tasks = new Task[taskCount];
                 for (int i = 0; i < taskCount; i++)
                 {
@@ -986,7 +986,7 @@ namespace EQWOWConverter
             progressCounter.Write(0);
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
-                int taskCount = Configuration.CORE_PNGTOBLPCONVERSION_THREAD_COUNT;
+                int taskCount = Configuration.CORE_THREAD_COUNT;
                 Task[] tasks = new Task[taskCount];
                 for (int i = 0; i < taskCount; i++)
                 {
@@ -1050,7 +1050,7 @@ namespace EQWOWConverter
             progressCounter.Write(0);
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
-                int taskCount = Configuration.CORE_PNGTOBLPCONVERSION_THREAD_COUNT;
+                int taskCount = Configuration.CORE_THREAD_COUNT;
                 Task[] tasks = new Task[taskCount];
                 for (int i = 0; i < taskCount; i++)
                 {
