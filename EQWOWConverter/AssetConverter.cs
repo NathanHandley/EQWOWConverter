@@ -68,6 +68,12 @@ namespace EQWOWConverter
             if (Directory.Exists(exportAddOnsRootFolder) == true)
                 Directory.Delete(exportAddOnsRootFolder, true);
 
+            // Clear the tinted working folder
+            string generatedCreatureTexturesFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
+            if (Directory.Exists(generatedCreatureTexturesFolder) == true)
+                Directory.Delete(generatedCreatureTexturesFolder, true);
+            Directory.CreateDirectory(generatedCreatureTexturesFolder);
+
             // Extract DBC files
             DBCFileWorker dbcFileWorker = new DBCFileWorker();
             if (Configuration.GENERATE_EXTRACT_DBC_FILES == true)
@@ -83,8 +89,6 @@ namespace EQWOWConverter
             List<Zone> zones = new List<Zone>();
             Task zoneAndObjectTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Zone, Maps, Objects] Started");
-
                 // Objects (must always come before zones)
                 if (Configuration.GENERATE_OBJECTS == true)
                     ConvertEQObjectsToWOW();
@@ -98,8 +102,6 @@ namespace EQWOWConverter
                     CopyZoneMaps();
                     GenerateMapAddOns(zones);
                 }
-
-                Logger.WriteInfo("<-> Thread [Zone, Maps, Objects] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 zoneAndObjectTask.Wait();
@@ -110,8 +112,6 @@ namespace EQWOWConverter
             List<GameEvent> gameEvents = new List<GameEvent>();
             Task creaturesAndSpawnsTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Creatures, Transports, Spawns, Events] Started");
-
                 // Events
                 gameEvents = GameEvent.GetGameEventsList();
 
@@ -131,8 +131,6 @@ namespace EQWOWConverter
                     ConvertTransports();
                 else
                     Logger.WriteInfo("- Note: Transport generation is set to false in the Configuration");
-
-                Logger.WriteInfo("<-> Thread [Creatures, Transports, Spawns] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 creaturesAndSpawnsTask.Wait();
@@ -143,8 +141,6 @@ namespace EQWOWConverter
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
             Task itemsSpellsTradeskillsTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills] Started");
-
                 // Generate item templates
                 Logger.WriteInfo("Generating item templates...");
                 itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
@@ -182,8 +178,6 @@ namespace EQWOWConverter
 
                 // Tradeskills
                 GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates, out tradeskillRecipes);
-
-                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills] Ended");
             }, TaskCreationOptions.LongRunning);
             creaturesAndSpawnsTask.Wait();
             itemsSpellsTradeskillsTask.Wait();
@@ -193,11 +187,7 @@ namespace EQWOWConverter
             List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
             Task creatureModelFilesTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Creature Models] Started");
-
                 GenerateCreatureModelFiles(creatureTemplates, ref creatureModelTemplates);
-
-                Logger.WriteInfo("<-> Thread [Creature Models] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 creatureModelFilesTask.Wait();
@@ -263,8 +253,6 @@ namespace EQWOWConverter
             // Thread 1: Client
             Task clientBuildAndDeployTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Client Build and Deploy] Started");
-
                 // Icons
                 CopyIconFiles();
 
@@ -299,8 +287,6 @@ namespace EQWOWConverter
                 }
                 else
                     Logger.WriteInfo("- Note: DEPLOY_CLIENT_FILES set false in the Configuration");
-
-                Logger.WriteInfo("<-> Thread [Client Build and Deploy] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 clientBuildAndDeployTask.Wait();
@@ -308,8 +294,6 @@ namespace EQWOWConverter
             // Thead 2: Server
             Task serverDeployTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Server Build and Deploy] Started");
-
                 // Create the SQL Scripts (note: this must always be after DBC files)
                 SQLScriptWorker sqlWorker = new SQLScriptWorker();
                 sqlWorker.CreateSQLScripts(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools,
@@ -324,8 +308,6 @@ namespace EQWOWConverter
                     sqlWorker.DeployServerSQL();
                 else
                     Logger.WriteInfo("- Note: DEPLOY_SERVER_SQL set false in the Configuration");
-
-                Logger.WriteInfo("<-> Thread [Server Build and Deploy] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 serverDeployTask.Wait();
@@ -1085,7 +1067,6 @@ namespace EQWOWConverter
         private List<Zone> ZoneThreadWorker(int threadID, string inputZoneFolder, string exportMPQRootFolder, string relativeStaticDoodadsPath, 
             string inputObjectTexturesFolder, string inputMusicFolderRoot, string inputSoundFolderRoot, LogCounter progressCounter)
         {
-            Logger.WriteInfo(string.Concat("<+> Thread [Zone Subworker ", threadID.ToString(), "] Started"));
             List<Zone> processedZones = new List<Zone>();
             bool moreToProcess = true;
             while (moreToProcess)
@@ -1110,7 +1091,6 @@ namespace EQWOWConverter
                 else
                     moreToProcess = false;
             }
-            Logger.WriteInfo(string.Concat("<-> Thread [Zone Subworker ", threadID.ToString(), "] Ended"));
             return processedZones;
         }
 
@@ -1217,11 +1197,9 @@ namespace EQWOWConverter
 
         public void GenerateCreatureModelFiles(List<CreatureTemplate> creatureTemplates, ref List<CreatureModelTemplate> creatureModelTemplates)
         {
-            // Generate folder paths
             string workingTexturePath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
-            if (Directory.Exists(workingTexturePath))
-                Directory.Delete(workingTexturePath, true);
-            Directory.CreateDirectory(workingTexturePath);
+            if (Directory.Exists(workingTexturePath) == false)
+                Directory.CreateDirectory(workingTexturePath);
             string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
             string exportAnimatedObjectsFolder = Path.Combine(exportMPQRootFolder, "Creature", "Everquest");
@@ -1294,7 +1272,6 @@ namespace EQWOWConverter
         private List<CreatureModelTemplate> CreatureModelFileThreadWorker(int threadID, Queue<CreatureModelTemplate> modelTemplateWorkQueue,
             string charactersFolderRoot, string inputObjectTextureFolder, string exportAnimatedObjectsFolder, string generatedTexturesFolderPath, LogCounter progressionCounter)
         {
-            Logger.WriteInfo(string.Concat("<+> Thread [Creature Model Subworker ", threadID.ToString(), "] Started"));
             List<CreatureModelTemplate> processedModelTemplates = new List<CreatureModelTemplate>();
             bool moreToProcess = true;
             while (moreToProcess)
@@ -1316,7 +1293,6 @@ namespace EQWOWConverter
                 else
                     moreToProcess = false;
             }
-            Logger.WriteInfo(string.Concat("<-> Thread [Creature Model Subworker ", threadID.ToString(), "] Ended"));
             return processedModelTemplates;
         }
 
@@ -1931,23 +1907,19 @@ namespace EQWOWConverter
             LogCounter progressionCounter = new LogCounter("Converting and copying equipment textures... ");
             Task equipTexConv1Task = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Equipment Texture Subworker 1] Started");
                 ConvertAndCopyEquipmentTextures("ArmLowerTexture", progressionCounter);
                 ConvertAndCopyEquipmentTextures("ArmUpperTexture", progressionCounter);
                 ConvertAndCopyEquipmentTextures("LegLowerTexture", progressionCounter);
                 ConvertAndCopyEquipmentTextures("LegUpperTexture", progressionCounter);
                 ConvertAndCopyEquipmentTextures("FootTexture", progressionCounter);
-                Logger.WriteInfo("<-> Thread [Equipment Texture Subworker 1] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 equipTexConv1Task.Wait();
             Task equipTexConv2Task = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Equipment Texture Subworker 2] Started");
                 ConvertAndCopyEquipmentTextures("TorsoLowerTexture", progressionCounter);
                 ConvertAndCopyEquipmentTextures("TorsoUpperTexture", progressionCounter);
                 ConvertAndCopyEquipmentTextures("HandTexture", progressionCounter);
-                Logger.WriteInfo("<-> Thread [Equipment Texture Subworker 2] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 equipTexConv2Task.Wait();
@@ -3033,8 +3005,17 @@ namespace EQWOWConverter
                 throw new Exception("There was no MPQReady folder inside of '" + Configuration.PATH_EXPORT_FOLDER + "'");
             string workingGeneratedScriptsFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
             FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
+
+            // Calculate the size of the file count property for the MPQ
+            int mpqReadyFileCount = Directory.EnumerateFiles(mpqReadyFolder, "*", SearchOption.AllDirectories).Count();
+            int mpqMaxFileCount = 1024;
+            while (mpqMaxFileCount < mpqReadyFileCount)
+                mpqMaxFileCount <<= 1;
+            mpqMaxFileCount <<= 1;
+            Logger.WriteDebug("MPQ hash table sized to " + mpqMaxFileCount + " for " + mpqReadyFileCount + " files");
+
             StringBuilder mpqCreateScriptText = new StringBuilder();
-            mpqCreateScriptText.AppendLine("new \"" + outputPatchFileName + "\" 65536");
+            mpqCreateScriptText.AppendLine("new \"" + outputPatchFileName + "\" " + mpqMaxFileCount);
             mpqCreateScriptText.AppendLine("add \"" + outputPatchFileName + "\" \"" + mpqReadyFolder + "\\*\" /auto /r");
             string mpqNewScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "mpqnew.txt");
             using (var mpqNewScriptFile = new StreamWriter(mpqNewScriptFileName))
@@ -3807,7 +3788,6 @@ namespace EQWOWConverter
 
         private void ObjectConversionThreadWorker(int threadID, string conditionedObjectFolderRoot, string exportObjectsFolder, LogCounter progressCounter)
         {
-            Logger.WriteInfo(string.Concat("<+> Thread [Object Subworker ", threadID.ToString(), "] Started"));
             string objectTextureFolder = Path.Combine(conditionedObjectFolderRoot, "textures");
             bool moreToProcess = true;
             while (moreToProcess)
@@ -3848,7 +3828,6 @@ namespace EQWOWConverter
                     ObjectModel.StaticObjectModelsByName.Add(curObject.Name, curObject);
                 progressCounter.Write();
             }
-            Logger.WriteInfo(string.Concat("<-> Thread [Object Subworker ", threadID.ToString(), "] Ended"));
         }
 
         public void ExportTexturesForObject(ObjectModel wowObjectModelData, List<string> objectTextureInputFolders, string objectExportPath)
