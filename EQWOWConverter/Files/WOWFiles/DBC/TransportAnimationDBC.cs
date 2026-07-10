@@ -18,12 +18,9 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class TransportAnimationDBC : DBCFile
     {
-        private static int CUR_ID = Configuration.DBCID_TRANSPORTANIMATION_ID_START;
-
         public void AddRow(int gameObjectTemplateID, int timestampInMS, float posX, float posY, float posZ, int animationSequenceID)
         {
-            int id = CUR_ID;
-            CUR_ID++;
+            int id = IDGenerationTool.GenerateID("TransportAnimationID", gameObjectTemplateID.ToString(), timestampInMS.ToString());
 
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID

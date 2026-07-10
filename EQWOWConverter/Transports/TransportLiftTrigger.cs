@@ -89,7 +89,7 @@ namespace EQWOWConverter.Transports
                 string closeSoundName = columns["sound_close"].Trim();
                 if (closeSoundName.Length > 0)
                     curLiftTrigger.CloseSound = GetSound(closeSoundName);
-                curLiftTrigger.GameObjectGUID = GameObjectSQL.GenerateGUID();
+                curLiftTrigger.GameObjectGUID = IDGenerationTool.GenerateID("GameObjectGUID", "transportlifttrigger", curLiftTrigger.GameObjectTemplateID.ToString());
                 AllTransportLiftTriggers.Add(curLiftTrigger);
             }
         }

@@ -20,14 +20,10 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class LightDBC : DBCFile
     {
-        // DBCIDs
-        private static int CURRENT_LIGHTID = Configuration.DBCID_LIGHT_ID_START;
-
-        public void AddRow(int mapId, ZoneEnvironmentSettings zoneEnvironmentSettings)
+        public void AddRow(int mapId, ZoneEnvironmentSettings zoneEnvironmentSettings, string lightContextKey)
         {
             // Generate unique Light ID
-            int lightID = CURRENT_LIGHTID;
-            CURRENT_LIGHTID++;
+            int lightID = IDGenerationTool.GenerateID("LightID", lightContextKey);
 
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(lightID);

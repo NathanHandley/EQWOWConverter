@@ -112,8 +112,6 @@ namespace EQWOWConverter.Creatures
         public float AgroSocialDistanceMod = 1.0f;
 
         private static readonly object CreatureIDsLock = new object();
-        private static int CURRENT_SQL_CREATURE_GUID = -1;
-        private static int CURRENT_SQL_CREATURE_TEMPLATE_GUID = -1;
         private static int CURRENT_CREATURE_EQID = 200000;
 
         public bool IsInteractive()
@@ -188,37 +186,8 @@ namespace EQWOWConverter.Creatures
                 return new List<CreatureTemplate>();
         }
 
-        public static int GenerateCreatureSQLGUID()
-        {
-            lock (CreatureIDsLock)
-            {
-                if (CURRENT_SQL_CREATURE_GUID == -1)
-                {
-                    if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
-                        CURRENT_SQL_CREATURE_GUID = Configuration.CONFIGONLY_SQL_CREATURE_GUID_DEBUG_LOW;
-                    else
-                        CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
-                }
-                int returnGUID = CURRENT_SQL_CREATURE_GUID;
-                CURRENT_SQL_CREATURE_GUID++;
-                return returnGUID;
-            }
-        }
-
-        public static int GenerateCreatureTemplateID()
-        {
-            lock (CreatureIDsLock)
-            {
-                if (CURRENT_SQL_CREATURE_TEMPLATE_GUID == -1)
-                    CURRENT_SQL_CREATURE_TEMPLATE_GUID = Configuration.SQL_CREATURETEMPLATE_GENERATED_START_ID;
-                int returnID = CURRENT_SQL_CREATURE_TEMPLATE_GUID;
-                CURRENT_SQL_CREATURE_TEMPLATE_GUID++;
-                return returnID;
-            }
-        }
-
         public static CreatureTemplate GenerateCreatureTemplate(string name, CreatureRace race, CreatureGenderType genderType, int helmTextureID, int textureIndex, int faceIndex, int colorTintID,
-            float modelTemplateScale, int wowFactionTemplateID)
+            float modelTemplateScale, int wowFactionTemplateID, int uniqueContextID)
         {
             lock (CreatureTemplateLock)
             {
@@ -227,7 +196,7 @@ namespace EQWOWConverter.Creatures
                 // Generate new IDs
                 newCreatureTemplate.EQCreatureTemplateID = CURRENT_CREATURE_EQID;
                 CURRENT_CREATURE_EQID++;
-                newCreatureTemplate.WOWCreatureTemplateID = GenerateCreatureTemplateID();
+                newCreatureTemplate.WOWCreatureTemplateID = IDGenerationTool.GenerateID("CreatureTemplateID", uniqueContextID.ToString());
 
                 // Assign properties
                 newCreatureTemplate.Name = name;

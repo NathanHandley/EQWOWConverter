@@ -18,13 +18,9 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class WMOAreaTableDBC : DBCFile
     {
-        private static int CURRENT_ID = Configuration.DBCID_WMOAREATABLE_ID_START;
-
         public void AddRow(int wmoID, int wmoGroupID, int zoneMusic, int areaTableID, string areaName)
         {
-            // Generate a new ID
-            int ID = CURRENT_ID;
-            CURRENT_ID++;
+            int ID = IDGenerationTool.GenerateID("WMOAreaTableID", wmoID.ToString(), wmoGroupID.ToString());
 
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(ID);

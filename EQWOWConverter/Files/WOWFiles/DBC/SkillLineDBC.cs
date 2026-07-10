@@ -20,9 +20,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SkillLineDBC : DBCFile
     {
-        private static int CUR_ID = Configuration.DBCID_SKILLLINE_ID_START;
         private static Dictionary<SpellEQSkillCategory, int> SkillLineIDBySkillCategory = new Dictionary<SpellEQSkillCategory, int>();
-        private static readonly object ID_LOCK = new object();
 
         public void AddRow(int id, string name, int spellIconID)
         {
@@ -83,17 +81,10 @@ namespace EQWOWConverter.WOWFiles
                 foreach (SpellEQSkillCategory category in Enum.GetValues<SpellEQSkillCategory>())
                 {
                     if (category != SpellEQSkillCategory.Unknown)
-                        SkillLineIDBySkillCategory.Add(category, GenerateID());
+                        SkillLineIDBySkillCategory.Add(category, IDGenerationTool.GenerateID("SkillLineID", category.ToString()));
                 }
             }
             return SkillLineIDBySkillCategory;
-        }
-
-        private static int GenerateID()
-        {
-            int newID = CUR_ID;
-            CUR_ID++;
-            return newID;
         }
     }
 }

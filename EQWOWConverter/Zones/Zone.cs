@@ -971,7 +971,7 @@ namespace EQWOWConverter.Zones
                 musicName += ZoneAreaMusics.Count.ToString();
             else
                 musicName += "0" + ZoneAreaMusics.Count.ToString();
-            ZoneAreaMusic newMusic = new ZoneAreaMusic(musicName, daySound, nightSound, musicFileNameDay, musicFileNameNight);
+            ZoneAreaMusic newMusic = new ZoneAreaMusic(ShortName, musicName, daySound, nightSound, musicFileNameDay, musicFileNameNight);
             ZoneAreaMusics.Add(newMusic);
 
             // Return it
@@ -998,7 +998,7 @@ namespace EQWOWConverter.Zones
             Sound? nightSound = GenerateOrGetAreaSound(soundFileNameNight, ref AmbientSoundsByFileNameNoExt, "EQ Ambient ", SoundType.ZoneAmbience, true);
 
             // Generate the ambient sounds
-            ZoneAreaAmbientSound newAmbientSound = new ZoneAreaAmbientSound(daySound, nightSound, soundFileNameDay, soundFileNameNight);
+            ZoneAreaAmbientSound newAmbientSound = new ZoneAreaAmbientSound(ShortName, daySound, nightSound, soundFileNameDay, soundFileNameNight);
             ZoneAreaAmbientSounds.Add(newAmbientSound);
 
             // Return it

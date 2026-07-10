@@ -102,22 +102,11 @@ namespace EQWOWConverter.Zones
                     timeSlice.CloudDensity = cloudDensity;
             }
 
-            // DBCIDs
-            private static int CURRENT_LIGHTPARAMSID = Configuration.DBCID_LIGHTPARAMS_ID_START;
-            private static readonly object LIGHTSPARAMSLock = new object();
-            public int DBCLightParamsID;
+            public int DBCLightParamsID = 0; // This will be assigned when the light data rows are generated
             public float Glow = 0.5f;
             public int HighlightSky = 0; // Boolean, 1 or 0
             public int SkyboxID = 0;
 
-            public ZoneEnvironmentParameters()
-            {
-                lock (LIGHTSPARAMSLock)
-                {
-                    DBCLightParamsID = CURRENT_LIGHTPARAMSID;
-                    CURRENT_LIGHTPARAMSID++;
-                }
-            }        
         }
 
         // Parameters

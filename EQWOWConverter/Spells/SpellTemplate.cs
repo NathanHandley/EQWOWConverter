@@ -46,7 +46,7 @@ namespace EQWOWConverter.Spells
                 set
                 {
                     if (SpellCastTimeDBCIDsByCastTime.ContainsKey(value) == false)
-                        SpellCastTimeDBCIDsByCastTime.Add(value, SpellCastTimesDBC.GenerateDBCID());
+                        SpellCastTimeDBCIDsByCastTime.Add(value, IDGenerationTool.GenerateID("SpellCastTimeID", value.ToString()));
                     _SpellCastTimeDBCID = SpellCastTimeDBCIDsByCastTime[value];
                     _CastTimeInMS = value;
                 }
@@ -58,7 +58,6 @@ namespace EQWOWConverter.Spells
         public static Dictionary<int, int> SpellRadiusDBCIDsBySpellRadius = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellGroupStackRuleByGroup = new Dictionary<int, int>();
         private static Dictionary<int, int> SpellGroupIDByEffectStackKey = new Dictionary<int, int>();
-        private static int CUR_GENERATED_SPELL_GROUP_ID = Configuration.SQL_SPELL_GROUP_ID_START;
 
         private static Dictionary<int, SpellTemplate> SpellTemplatesByEQID = new Dictionary<int, SpellTemplate>();
         private static Dictionary<(string, int, ItemFocusType, int), SpellTemplate> SpellTemplatesByFocusTypeAndValue = new Dictionary<(string, int, ItemFocusType, int), SpellTemplate>();
@@ -100,7 +99,7 @@ namespace EQWOWConverter.Spells
             set
             {
                 if (SpellCastTimeDBCIDsByCastTime.ContainsKey(value) == false)
-                    SpellCastTimeDBCIDsByCastTime.Add(value, SpellCastTimesDBC.GenerateDBCID());
+                    SpellCastTimeDBCIDsByCastTime.Add(value, IDGenerationTool.GenerateID("SpellCastTimeID", value.ToString()));
                 _SpellCastTimeDBCID = SpellCastTimeDBCIDsByCastTime[value];
                 _CastTimeInMS = value;
             }
@@ -114,7 +113,7 @@ namespace EQWOWConverter.Spells
             set
             {
                 if (SpellRangeDBCIDsBySpellRange.ContainsKey(value) == false)
-                    SpellRangeDBCIDsBySpellRange.Add(value, SpellRangeDBC.GenerateDBCID());
+                    SpellRangeDBCIDsBySpellRange.Add(value, IDGenerationTool.GenerateID("SpellRangeID", value.ToString()));
                 _SpellRangeDBCID = SpellRangeDBCIDsBySpellRange[value];
                 _SpellRange = value;
             }
@@ -128,7 +127,7 @@ namespace EQWOWConverter.Spells
             set
             {
                 if (SpellRadiusDBCIDsBySpellRadius.ContainsKey(value) == false)
-                    SpellRadiusDBCIDsBySpellRadius.Add(value, SpellRadiusDBC.GenerateDBCID());
+                    SpellRadiusDBCIDsBySpellRadius.Add(value, IDGenerationTool.GenerateID("SpellRadiusID", value.ToString()));
                 _SpellRadiusDBCID = SpellRadiusDBCIDsBySpellRadius[value];
                 _SpellRadius = value;
             }
@@ -690,7 +689,7 @@ namespace EQWOWConverter.Spells
                 descriptionSB.Append(procSpellTemplate.Description);
 
                 // Generate an enchant ID
-                int enchantID = SpellItemEnchantmentDBC.GenerateUniqueID();
+                int enchantID = IDGenerationTool.GenerateID("SpellItemEnchantmentID", itemName, procSpellTemplate.WOWSpellID.ToString());
 
                 // Create the new spell
                 SpellTemplate enchantSpell = new SpellTemplate();
@@ -2825,7 +2824,7 @@ namespace EQWOWConverter.Spells
                                 if (Configuration.SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR == true)
                                 {
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.Summon;
-                                    spellTemplate.SummonPropertiesDBCID = SummonPropertiesDBC.GenerateUniqueID();
+                                    spellTemplate.SummonPropertiesDBCID = IDGenerationTool.GenerateID("SummonPropertiesID", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                     newSpellEffectWOW.EffectMiscValueB = spellTemplate.SummonPropertiesDBCID;
                                 }
                                 else
@@ -2879,7 +2878,7 @@ namespace EQWOWConverter.Spells
                                     continue;
                                 }
                                 float scaleMale = creatureRaceMale.Height * creatureRaceMale.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
-                                CreatureTemplate maleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(maleFormSpellTemplate.Name, creatureRaceMale, creatureRaceMale.Gender, 0, textureID, 0, 0, scaleMale, wowFactionTemplateID);
+                                CreatureTemplate maleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(maleFormSpellTemplate.Name, creatureRaceMale, creatureRaceMale.Gender, 0, textureID, 0, 0, scaleMale, wowFactionTemplateID, maleFormSpellTemplate.WOWSpellID);
                                 maleFormSpellEffectWOW.EffectMiscValueA = maleCreatureTemplate.WOWCreatureTemplateID;
                                 string raceName = creatureRaceMale.Name;
                                 string textParticle = "a";
@@ -2915,7 +2914,7 @@ namespace EQWOWConverter.Spells
                                     continue;
                                 }
                                 float scaleFemale = creatureRaceFemale.Height * creatureRaceFemale.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
-                                CreatureTemplate femaleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(femaleFormSpellTemplate.Name, creatureRaceFemale, creatureRaceFemale.Gender, 0, textureID, 0, 0, scaleFemale, wowFactionTemplateID);
+                                CreatureTemplate femaleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(femaleFormSpellTemplate.Name, creatureRaceFemale, creatureRaceFemale.Gender, 0, textureID, 0, 0, scaleFemale, wowFactionTemplateID, femaleFormSpellTemplate.WOWSpellID);
                                 femaleFormSpellEffectWOW.EffectMiscValueA = femaleCreatureTemplate.WOWCreatureTemplateID;
                                 raceName = creatureRaceFemale.Name;
                                 textParticle = "a";
@@ -3034,10 +3033,7 @@ namespace EQWOWConverter.Spells
         {
             if (SpellGroupIDByEffectStackKey.TryGetValue(compositeKey, out int groupStackingID) == false)
             {
-                groupStackingID = CUR_GENERATED_SPELL_GROUP_ID;
-                CUR_GENERATED_SPELL_GROUP_ID++;
-                if (groupStackingID > Configuration.SQL_SPELL_GROUP_ID_END)
-                    Logger.WriteError("Generated an ID higher than SQL_SPELL_GROUP_ID_END (", Configuration.SQL_SPELL_GROUP_ID_END.ToString(), ")");
+                groupStackingID = IDGenerationTool.GenerateID("SpellGroupID", compositeKey.ToString());
                 SpellGroupIDByEffectStackKey[compositeKey] = groupStackingID;
                 SpellGroupStackRuleByGroup[groupStackingID] = 4; // SPELL_GROUP_STACK_RULE_EXCLUSIVE_HIGHEST
             }

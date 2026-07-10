@@ -18,7 +18,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellCategoryDBC : DBCFile
     {
-        private static int CUR_ID = Configuration.DBCID_SPELLCATEGORY_ID_START;
         private static List<int> GeneratedDBCIDs = new List<int>();
         private static readonly object ID_LOCK = new object();
 
@@ -56,16 +55,6 @@ namespace EQWOWConverter.WOWFiles
 
                 // Purge raw data
                 row.SourceRawBytes.Clear();
-            }
-        }
-
-        public static int GenerateUniqueID()
-        {
-            lock (ID_LOCK)
-            {
-                int uniqueID = CUR_ID;
-                CUR_ID++;
-                return uniqueID;
             }
         }
 

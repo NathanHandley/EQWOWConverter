@@ -20,7 +20,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class GameObjectSQL : SQLFile
     {
-        private static int CUR_GUID = Configuration.SQL_GAMEOBJECT_GUID_ID_START;
 
         public override string DeleteRowSQL()
         {
@@ -52,13 +51,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("VerifiedBuild", 0);
             newRow.AddString("Comment", comment);
             Rows.Add(newRow);
-        }
-
-        public static int GenerateGUID()
-        {
-            int curGUID = CUR_GUID;
-            CUR_GUID++;
-            return curGUID;
         }
     }
 }

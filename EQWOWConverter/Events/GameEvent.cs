@@ -18,8 +18,6 @@ namespace EQWOWConverter.Events
 {
     internal class GameEvent
     {
-        private static int CurGameEventsSQLID = Configuration.SQL_GAME_EVENTS_ID_START;
-        private static readonly object GameEventSQLIDLock = new object();
         private static List<GameEvent> GameEvents = new List<GameEvent>();
         private static Dictionary<string, Dictionary<int, GameEvent>> GameEventsByZoneAndConditionID = new Dictionary<string, Dictionary<int, GameEvent>>();
         private static readonly object GameEventsLock = new object();
@@ -62,17 +60,6 @@ namespace EQWOWConverter.Events
             ForceAlwaysOn = other.ForceAlwaysOn;
         }
 
-        public static int GenerateEventSQLID()
-        {
-            lock (GameEventSQLIDLock)
-            {
-                int returnEventID = CurGameEventsSQLID;
-                CurGameEventsSQLID++;
-                if (CurGameEventsSQLID > Configuration.SQL_GAME_EVENTS_ID_END)
-                    Logger.WriteError("game_event ID exceeded ", Configuration.SQL_GAME_EVENTS_ID_END.ToString());
-                return returnEventID;
-            }
-        }
 
         public static List<GameEvent> GetGameEventsList()
         {
@@ -201,7 +188,7 @@ namespace EQWOWConverter.Events
             // Event post-load processing
             foreach (GameEvent gameEvent in GameEvents)
             {
-                gameEvent.GameEventsSQLID = GenerateEventSQLID();
+                gameEvent.GameEventsSQLID = IDGenerationTool.GenerateID("GameEventID", string.Join(",", gameEvent.ZoneShortNames), gameEvent.ZoneEventID.ToString());
 
                 // Clean up description
                 string zonePluralFragment = string.Empty;

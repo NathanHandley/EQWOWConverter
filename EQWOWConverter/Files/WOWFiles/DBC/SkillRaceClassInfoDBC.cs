@@ -20,18 +20,17 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SkillRaceClassInfoDBC : DBCFile
     {
-        private static int CUR_SKILLRACECLASSINFO_DBCID = Configuration.DBCID_SKILLRACECLASSINFO_ID_START;
-
         public void AddRow(int skillID, List<ClassWOWType> allowedClasses)
         {
             DBCRow newRow = new DBCRow();
 
-            int id = GenerateID();
+            int classMask = CalculateClassMask(allowedClasses);
+            int id = IDGenerationTool.GenerateID("SkillRaceClassInfoID", skillID.ToString(), classMask.ToString());
 
             newRow.AddInt32(id); // ID
             newRow.AddInt32(skillID); // SkillID
             newRow.AddInt32(-1); // RaceMask
-            newRow.AddInt32(CalculateClassMask(allowedClasses)); // ClassMask
+            newRow.AddInt32(classMask); // ClassMask
             newRow.AddInt32(128); // Flags (0x80 / 128 = "Available for learning for Class/Race"
             newRow.AddInt32(0); // MinLevel
             newRow.AddInt32(0); // SkillTierID
@@ -72,13 +71,6 @@ namespace EQWOWConverter.WOWFiles
                 // Purge raw data
                 row.SourceRawBytes.Clear();
             }
-        }
-
-        public static int GenerateID()
-        {
-            int newID = CUR_SKILLRACECLASSINFO_DBCID;
-            CUR_SKILLRACECLASSINFO_DBCID++;
-            return newID;
         }
 
         private int CalculateClassMask(List<ClassWOWType> allowedClassTypes)

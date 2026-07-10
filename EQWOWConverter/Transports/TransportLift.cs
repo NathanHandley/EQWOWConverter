@@ -79,7 +79,7 @@ namespace EQWOWConverter.Transports
                 curTransportLift.SpawnZ = float.Parse(columns["spawn_z"]) * Configuration.GENERATE_WORLD_SCALE;
                 curTransportLift.Orientation = float.Parse(columns["orientation"]);
                 curTransportLift.EndTimestamp = int.Parse(columns["end_timestamp"]);
-                curTransportLift.GameObjectGUID = GameObjectSQL.GenerateGUID();
+                curTransportLift.GameObjectGUID = IDGenerationTool.GenerateID("GameObjectGUID", "transportlift", curTransportLift.GameObjectTemplateID.ToString());
                 TransportLifts.Add(curTransportLift);
             }
         }

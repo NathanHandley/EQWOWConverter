@@ -242,9 +242,9 @@ namespace EQWOWConverter
                 string menuText = gossipReactions[0].MenuText;
                 if (menuText.Length == 0)
                     menuText = "Greetings, $N.";
-                int menuBroadcastTextID = BroadcastTextSQL.GenerateUniqueID();
+                int menuBroadcastTextID = IDGenerationTool.GenerateID("BroadcastTextID", "gossipgreeting", zoneShortName, creatureName);
                 broadcastTextSQL.AddRow(menuBroadcastTextID, menuText, menuText);
-                int menuNPCTextID = NPCTextSQL.GenerateUniqueID();
+                int menuNPCTextID = IDGenerationTool.GenerateID("NPCTextID", "gossipgreeting", zoneShortName, creatureName);
                 npcTextSQL.AddRow(menuNPCTextID, menuText, menuBroadcastTextID);
 
                 foreach (CreatureTemplate gossipCreatureTemplate in gossipCreatureTemplates)
@@ -329,7 +329,7 @@ namespace EQWOWConverter
                 {
                     CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[0];
                     CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
-                    int creatureSQLGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                    int creatureSQLGUID = IDGenerationTool.GenerateID("CreatureGUID", "spawn", spawnInstance.ID.ToString(), creatureTemplate.EQCreatureTemplateID.ToString());
                     string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
                     CreateCreatureAndRelatedSQLEntries(creatureSQLGUID, creatureTemplate, spawnInstance, spawnPool.SpawnGroup, comment);
                     if (spawnPool.LinkedSpawnGameEvent != null)
@@ -354,7 +354,7 @@ namespace EQWOWConverter
 
                     if (hasRealSpawnCap == true)
                     {
-                        int poolID = CreatureSpawnPool.GetPoolTemplateSQLID();
+                        int poolID = IDGenerationTool.GenerateID("PoolTemplateID", "cappedpool", spawnPool.SpawnGroup.ID.ToString());
                         poolTemplateSQL.AddRow(poolID, poolDescription, spawnPool.SpawnLimit);
                         if (spawnPool.LinkedSpawnGameEvent != null)
                             gameEventPoolSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, poolID, true);
@@ -368,7 +368,7 @@ namespace EQWOWConverter
                         {
                             CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[spawnInstanceIndex];
                             CreatureTemplate creatureTemplate = pointTemplates[spawnInstanceIndex];
-                            int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                            int creatureGUID = IDGenerationTool.GenerateID("CreatureGUID", "spawn", spawnInstance.ID.ToString(), creatureTemplate.EQCreatureTemplateID.ToString());
                             poolCreatureSQL.AddRow(creatureGUID, poolID, 0, creatureTemplate.Name);
                             modEverquestCreatureSpawnPointSQL.AddRow(creatureGUID, spawnInstance.MapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, spawnPool.SpawnLimit);
                             string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
@@ -381,7 +381,7 @@ namespace EQWOWConverter
                         CreatureTemplate template = spawnPool.CreatureTemplates[0];
                         foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
                         {
-                            int creatureSQLGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                            int creatureSQLGUID = IDGenerationTool.GenerateID("CreatureGUID", "spawn", spawnInstance.ID.ToString(), template.EQCreatureTemplateID.ToString());
                             string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
                             CreateCreatureAndRelatedSQLEntries(creatureSQLGUID, template, spawnInstance, spawnPool.SpawnGroup, comment);
                             if (spawnPool.LinkedSpawnGameEvent != null)
@@ -395,7 +395,7 @@ namespace EQWOWConverter
                     {
                         foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
                         {
-                            int poolID = CreatureSpawnPool.GetPoolTemplateSQLID();
+                            int poolID = IDGenerationTool.GenerateID("PoolTemplateID", "weightedpool", spawnPool.SpawnGroup.ID.ToString(), spawnInstance.ID.ToString());
                             poolTemplateSQL.AddRow(poolID, poolDescription, 1);
                             if (spawnPool.LinkedSpawnGameEvent != null)
                                 gameEventPoolSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, poolID, true);
@@ -405,7 +405,7 @@ namespace EQWOWConverter
                             {
                                 CreatureTemplate template = spawnPool.CreatureTemplates[i];
                                 int chance = spawnPool.CreatureTemplateChances[i];
-                                int guid = CreatureTemplate.GenerateCreatureSQLGUID();
+                                int guid = IDGenerationTool.GenerateID("CreatureGUID", "spawn", spawnInstance.ID.ToString(), template.EQCreatureTemplateID.ToString(), i.ToString());
                                 poolCreatureSQL.AddRow(guid, poolID, chance, template.Name);
                                 modEverquestCreatureSpawnPointSQL.AddRow(guid, spawnInstance.MapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, 0);
                                 string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
@@ -427,18 +427,18 @@ namespace EQWOWConverter
             if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
             {
                 // Cooldown menu text
-                int menuBroadcastTextID = BroadcastTextSQL.GenerateUniqueID();
+                int menuBroadcastTextID = IDGenerationTool.GenerateID("BroadcastTextID", "podcooldown");
                 broadcastTextSQL.AddRow(menuBroadcastTextID, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT);
-                int menuNPCTextID = NPCTextSQL.GenerateUniqueID();
+                int menuNPCTextID = IDGenerationTool.GenerateID("NPCTextID", "podcooldown");
                 priestOfDiscordCooldownMenuNPCTextID = menuNPCTextID;
                 npcTextSQL.AddRow(menuNPCTextID, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT, menuBroadcastTextID);
 
                 // Teleporting to Azeroth
                 azerothTeleportLocations = CreatureTeleportLocationAzeroth.GetAllTeleportLocations();
-                norrathPriestOfDiscordGossipMenuID = GossipMenuSQL.GenerateUniqueMenuID();
-                menuBroadcastTextID = BroadcastTextSQL.GenerateUniqueID();
+                norrathPriestOfDiscordGossipMenuID = IDGenerationTool.GenerateID("GossipMenuID", "podnorrath");
+                menuBroadcastTextID = IDGenerationTool.GenerateID("BroadcastTextID", "podnorrathmenu");
                 broadcastTextSQL.AddRow(menuBroadcastTextID, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT);
-                menuNPCTextID = NPCTextSQL.GenerateUniqueID();
+                menuNPCTextID = IDGenerationTool.GenerateID("NPCTextID", "podnorrathmenu");
                 npcTextSQL.AddRow(menuNPCTextID, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT, menuBroadcastTextID);
                 gossipMenuSQL.AddRow(norrathPriestOfDiscordGossipMenuID, menuNPCTextID);
                 gossipMenuSQL.AddRow(norrathPriestOfDiscordGossipMenuID, priestOfDiscordCooldownMenuNPCTextID);
@@ -454,7 +454,7 @@ namespace EQWOWConverter
                 foreach (CreatureTeleportLocationAzeroth teleportLocation in azerothTeleportLocations)
                 {
                     // Broadcast
-                    int menuBroadcastID = BroadcastTextSQL.GenerateUniqueID();
+                    int menuBroadcastID = IDGenerationTool.GenerateID("BroadcastTextID", "podnorrathoption", curMenuOptionID.ToString(), teleportLocation.MenuItemText);
                     broadcastTextSQL.AddRow(menuBroadcastID, teleportLocation.MenuItemText, teleportLocation.MenuItemText);
 
                     // Menu Option
@@ -475,10 +475,10 @@ namespace EQWOWConverter
 
                 // Teleporting to Norrath
                 norrathTeleportLocations = CreatureTeleportLocationNorrath.GetAllTeleportLocations();
-                azerothPriestOfDiscordGossipMenuID = GossipMenuSQL.GenerateUniqueMenuID();
-                menuBroadcastTextID = BroadcastTextSQL.GenerateUniqueID();
+                azerothPriestOfDiscordGossipMenuID = IDGenerationTool.GenerateID("GossipMenuID", "podazeroth");
+                menuBroadcastTextID = IDGenerationTool.GenerateID("BroadcastTextID", "podazerothmenu");
                 broadcastTextSQL.AddRow(menuBroadcastTextID, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT);
-                menuNPCTextID = NPCTextSQL.GenerateUniqueID();
+                menuNPCTextID = IDGenerationTool.GenerateID("NPCTextID", "podazerothmenu");
                 npcTextSQL.AddRow(menuNPCTextID, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT, menuBroadcastTextID);
                 gossipMenuSQL.AddRow(azerothPriestOfDiscordGossipMenuID, menuNPCTextID);
                 gossipMenuSQL.AddRow(azerothPriestOfDiscordGossipMenuID, priestOfDiscordCooldownMenuNPCTextID);
@@ -494,7 +494,7 @@ namespace EQWOWConverter
                 foreach (CreatureTeleportLocationNorrath teleportLocation in norrathTeleportLocations)
                 {
                     // Broadcast
-                    int menuBroadcastID = BroadcastTextSQL.GenerateUniqueID();
+                    int menuBroadcastID = IDGenerationTool.GenerateID("BroadcastTextID", "podazerothoption", curMenuOptionID.ToString(), teleportLocation.MenuItemText);
                     broadcastTextSQL.AddRow(menuBroadcastID, teleportLocation.MenuItemText, teleportLocation.MenuItemText);
 
                     // Menu Option
@@ -582,11 +582,11 @@ namespace EQWOWConverter
             if (Configuration.GENERANE_ENABLE_PLANES_TELEPORTATION == true)
             {
                 // Base menu
-                int menuBroadcastTextID = BroadcastTextSQL.GenerateUniqueID();
+                int menuBroadcastTextID = IDGenerationTool.GenerateID("BroadcastTextID", "planesmenu");
                 broadcastTextSQL.AddRow(menuBroadcastTextID, Configuration.CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT, Configuration.CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT);
-                int menuNPCTextID = NPCTextSQL.GenerateUniqueID();
+                int menuNPCTextID = IDGenerationTool.GenerateID("NPCTextID", "planesmenu");
                 planesTeleportLocations = CreatureTeleportLocationPlanes.GetAllTeleportLocations();
-                planesTeleporterGossipMenuID = GossipMenuSQL.GenerateUniqueMenuID();
+                planesTeleporterGossipMenuID = IDGenerationTool.GenerateID("GossipMenuID", "planes");
                 npcTextSQL.AddRow(menuNPCTextID, Configuration.CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT, menuBroadcastTextID);
                 gossipMenuSQL.AddRow(planesTeleporterGossipMenuID, menuNPCTextID);
 
@@ -595,7 +595,7 @@ namespace EQWOWConverter
                 foreach (CreatureTeleportLocationPlanes teleportLocation in planesTeleportLocations)
                 {
                     // Broadcast
-                    int menuBroadcastID = BroadcastTextSQL.GenerateUniqueID();
+                    int menuBroadcastID = IDGenerationTool.GenerateID("BroadcastTextID", "planesoption", curMenuOptionID.ToString(), teleportLocation.MenuItemText);
                     broadcastTextSQL.AddRow(menuBroadcastID, teleportLocation.MenuItemText, teleportLocation.MenuItemText);
 
                     // Menu Option
@@ -612,7 +612,6 @@ namespace EQWOWConverter
             List<CreatureVendorItem> reagentVendorItems = CreatureVendorItem.GetCreatureReagentItems();
             // Distinct crowd-control immunity masks get a shared creature_immunities row so the table stays tiny
             Dictionary<long, int> creatureImmunitiesIdByMask = new Dictionary<long, int>();
-            int nextCreatureImmunitiesId = Configuration.SQL_CREATUREIMMUNITIES_ID_START;
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
                 // Skip invalid creatures
@@ -628,7 +627,7 @@ namespace EQWOWConverter
                     creatureTemplateSQL.AddRow(creatureTemplate);
                     creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID,
                         Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
-                    int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                    int creatureGUID = IDGenerationTool.GenerateID("CreatureGUID", "debugwaypoint", creatureTemplate.WOWCreatureTemplateID.ToString());
                     string comment = string.Concat(creatureTemplate.Name, " - EQ Debug Creature");
                     creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, creatureTemplate.SpawnWaypointDebugMapID, creatureTemplate.SpawnWaypointDebugAreaID,
                         creatureTemplate.SpawnWaypointDebugAreaID, creatureTemplate.SpawnWaypointDebugXPosition, creatureTemplate.SpawnWaypointDebugYPosition,
@@ -717,17 +716,12 @@ namespace EQWOWConverter
                 {
                     if (creatureImmunitiesIdByMask.TryGetValue(creatureTemplate.MechanicImmuneMask, out int existingImmunitiesId) == true)
                         creatureTemplate.CreatureImmunitiesId = existingImmunitiesId;
-                    else if (nextCreatureImmunitiesId > Configuration.SQL_CREATUREIMMUNITIES_ID_END)
-                    {
-                        Logger.WriteError("nextCreatureImmunitiesID is greater than SQL_CREATUREIMMUNITIES_ID_END so creature template '" + creatureTemplate.Name + "' will have no crowd control immunities");
-                        creatureTemplate.CreatureImmunitiesId = 0;
-                    }
                     else
                     {
-                        creatureTemplate.CreatureImmunitiesId = nextCreatureImmunitiesId;
-                        creatureImmunitiesIdByMask.Add(creatureTemplate.MechanicImmuneMask, nextCreatureImmunitiesId);
-                        creatureImmunitiesSQL.AddRow(nextCreatureImmunitiesId, creatureTemplate.MechanicImmuneMask);
-                        nextCreatureImmunitiesId++;
+                        int creatureImmunitiesId = IDGenerationTool.GenerateID("CreatureImmunitiesID", creatureTemplate.MechanicImmuneMask.ToString());
+                        creatureTemplate.CreatureImmunitiesId = creatureImmunitiesId;
+                        creatureImmunitiesIdByMask.Add(creatureTemplate.MechanicImmuneMask, creatureImmunitiesId);
+                        creatureImmunitiesSQL.AddRow(creatureImmunitiesId, creatureTemplate.MechanicImmuneMask);
                     }
                 }
 
@@ -990,7 +984,7 @@ namespace EQWOWConverter
                     foreach (CreatureTeleporterInAzeroth creatureTeleporter in creatureTeleporters)
                     {
                         string creatureComment = string.Concat("EQ Azeroth Priest of Discord");
-                        int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                        int creatureGUID = IDGenerationTool.GenerateID("CreatureGUID", "azerothteleporter", creatureTeleporter.MapID.ToString(), creatureTeleporter.AreaID.ToString(), creatureTeleporter.XPosition.ToString("0"));
                         creatureSQL.AddRow(creatureGUID, Configuration.GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID, creatureTeleporter.MapID,
                             creatureTeleporter.AreaID, creatureTeleporter.AreaID, creatureTeleporter.XPosition, creatureTeleporter.YPosition,
                             creatureTeleporter.ZPosition, creatureTeleporter.Orientation, CreatureMovementType.None, 300, creatureComment, false);
@@ -1325,7 +1319,7 @@ namespace EQWOWConverter
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWID = ItemTemplate.GetItemTemplatesByWOWEntryID();
 
             // Junk fishing reference
-            int junkReferenceID = ReferenceLootTemplateSQL.GenerateID();
+            int junkReferenceID = IDGenerationTool.GenerateID("ReferenceLootTemplateID", "junkfishing");
             foreach (FishingZoneItem junkFishingZoneItem in FishingZoneItem.GetJunkFishingItems())
             {
                 ItemTemplate curItemTemplate = itemTemplatesByWOWID[junkFishingZoneItem.WOWItemTemplateID];
@@ -1634,10 +1628,6 @@ namespace EQWOWConverter
                         // Reward say/yell/emote actions
                         if (reaction.ReactionType == QuestReactionType.Emote || reaction.ReactionType == QuestReactionType.Say || reaction.ReactionType == QuestReactionType.Yell)
                         {
-                            // Broadcast Text
-                            int broadcastID = BroadcastTextSQL.GenerateUniqueID();
-                            broadcastTextSQL.AddRow(broadcastID, reaction.ReactionValue, reaction.ReactionValue);
-
                             // Creature Text
                             int creatureTextGroupID = 0;
                             if (creatureTextGroupIDsByCreatureTemplateID.ContainsKey(creatureTemplateID) == true)
@@ -1647,6 +1637,10 @@ namespace EQWOWConverter
                             }
                             else
                                 creatureTextGroupIDsByCreatureTemplateID.Add(creatureTemplateID, 0);
+
+                            // Broadcast Text
+                            int broadcastID = IDGenerationTool.GenerateID("BroadcastTextID", "questreaction", creatureTemplateID.ToString(), creatureTextGroupID.ToString());
+                            broadcastTextSQL.AddRow(broadcastID, reaction.ReactionValue, reaction.ReactionValue);
                             string comment = string.Concat("EQ ", creatureTemplateByWOWID[creatureTemplateID].Name, " Quest ", reaction.ReactionType.ToString());
                             int messageType = 12; // Default to say
                             switch (reaction.ReactionType)
@@ -1844,7 +1838,7 @@ namespace EQWOWConverter
             {
                 if (classType == ClassWOWType.All || classType == ClassWOWType.None)
                     continue;
-                trainerIDsByClass.Add(classType, TrainerSQL.GenerateUniqueTrainerID());
+                trainerIDsByClass.Add(classType, IDGenerationTool.GenerateID("TrainerID", "class", classType.ToString()));
                 trainerSQL.AddRow(trainerIDsByClass[classType], 0, (int)classType, "What would you like to learn?");
                 foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForClass(classType))
                     trainerSpellSQL.AddRow(trainerIDsByClass[classType], trainerAbility);
@@ -1857,7 +1851,7 @@ namespace EQWOWConverter
                 if (tradeskillType == TradeskillType.Unknown || tradeskillType == TradeskillType.None)
                     continue;
                 
-                trainerIDsByTradeskill.Add(tradeskillType, TrainerSQL.GenerateUniqueTrainerID());
+                trainerIDsByTradeskill.Add(tradeskillType, IDGenerationTool.GenerateID("TrainerID", "tradeskill", tradeskillType.ToString()));
                 trainerSQL.AddRow(trainerIDsByTradeskill[tradeskillType], 2, 0, "What would you like to learn?");
                 trainerSpellSQL.AddDevelopmentSkillsForTradeskill(trainerIDsByTradeskill[tradeskillType], tradeskillType);
                 foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForTradeskill(tradeskillType))
@@ -1865,7 +1859,7 @@ namespace EQWOWConverter
             }
 
             // Trainer Abilities - Riding Trainer
-            int trainerIDForRidingTrainer = TrainerSQL.GenerateUniqueTrainerID();
+            int trainerIDForRidingTrainer = IDGenerationTool.GenerateID("TrainerID", "riding");
             trainerSQL.AddRow(trainerIDForRidingTrainer, 1, 0, "What would you like to learn?");
             trainerSpellSQL.AddRiderSkills(trainerIDForRidingTrainer);
 
@@ -1877,7 +1871,7 @@ namespace EQWOWConverter
                     continue;
 
                 // Base menu
-                int gossipMenuID = GossipMenuSQL.GenerateUniqueMenuID();
+                int gossipMenuID = IDGenerationTool.GenerateID("GossipMenuID", "classtrainer", classType.ToString());
                 classTrainerMenuIDs.Add(classType, gossipMenuID);
                 gossipMenuSQL.AddRow(gossipMenuID, Configuration.CREATURE_GOSSIP_NPC_TEXT_ID);
 
@@ -1897,11 +1891,11 @@ namespace EQWOWConverter
             }
 
             // Pre-generate profession/rider trainer menus
-            int nonClassTrainerGossipMenuIDNoShop = GossipMenuSQL.GenerateUniqueMenuID();
+            int nonClassTrainerGossipMenuIDNoShop = IDGenerationTool.GenerateID("GossipMenuID", "nonclasstrainernoshop");
             gossipMenuSQL.AddRow(nonClassTrainerGossipMenuIDNoShop, Configuration.CREATURE_GOSSIP_NPC_TEXT_ID);
             gossipMenuOptionSQL.AddRow(nonClassTrainerGossipMenuIDNoShop, 0, 3, "I would like to train.",
                 Configuration.CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID, 5, 16, 0);
-            int nonClassTrainerGossipMenuIDWithShop = GossipMenuSQL.GenerateUniqueMenuID();
+            int nonClassTrainerGossipMenuIDWithShop = IDGenerationTool.GenerateID("GossipMenuID", "nonclasstrainerwithshop");
             gossipMenuSQL.AddRow(nonClassTrainerGossipMenuIDWithShop, Configuration.CREATURE_GOSSIP_NPC_TEXT_ID);
             gossipMenuOptionSQL.AddRow(nonClassTrainerGossipMenuIDWithShop, 0, 3, "I would like to train.",
                 Configuration.CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID, 5, 16, 0);
@@ -2077,7 +2071,7 @@ namespace EQWOWConverter
                     gameGraveyardSQL.AddRow(graveyard, mapID);
 
                     // And there should be one spirit healer per graveyard
-                    int spiritHealerGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                    int spiritHealerGUID = IDGenerationTool.GenerateID("CreatureGUID", "spirithealer", graveyard.WorldSafeLocsDBCID.ToString());
                     int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
                     creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID,
                         graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 300, string.Empty, false);

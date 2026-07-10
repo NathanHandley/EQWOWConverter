@@ -18,7 +18,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class GossipMenuSQL : SQLFile
     {
-        private static int CUR_MENU_ID = Configuration.SQL_GOSSIPMENU_MENUID_START;
 
         public override string DeleteRowSQL()
         {
@@ -31,13 +30,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("MenuID", menuID);
             newRow.AddInt("TextID", npcTextID);
             Rows.Add(newRow);
-        }
-
-        public static int GenerateUniqueMenuID()
-        {
-            int returnVal = CUR_MENU_ID;
-            CUR_MENU_ID++;
-            return returnVal;
         }
     }
 }

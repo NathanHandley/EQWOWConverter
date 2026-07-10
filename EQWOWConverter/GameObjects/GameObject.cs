@@ -323,7 +323,7 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.PositionMinX = xPositionMin;
                 newGameObject.PositionMinY = yPositionMin;
                 newGameObject.Scale = float.Parse(gameObjectsRow["size"]) / 100f;
-                newGameObject.GameObjectGUID = GameObjectSQL.GenerateGUID();
+                newGameObject.GameObjectGUID = IDGenerationTool.GenerateID("GameObjectGUID", "gameobject", newGameObject.ID.ToString());
                 newGameObject.ModelIsInEquipmentFolder = modelIsInEquipmentFolder;
                 string tradeskillFocusTypeString = gameObjectsRow["tradeskill_focus"].Trim().ToLower();
                 switch (tradeskillFocusTypeString)

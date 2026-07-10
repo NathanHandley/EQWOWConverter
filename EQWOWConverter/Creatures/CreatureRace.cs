@@ -128,9 +128,9 @@ namespace EQWOWConverter.Creatures
 
                     if (FootstepIDBySoundName.ContainsKey(creatureRace.SoundWalkingName) == false)
                     {
-                        FootstepIDBySoundName.Add(creatureRace.SoundWalkingName, CUR_CREATURE_FOOTSTEP_ID);
-                        FootstepIDBySoundID.Add(GetSoundIDForSound(creatureRace.SoundWalkingName, creatureRace.SoundMaxDistance), CUR_CREATURE_FOOTSTEP_ID);
-                        CUR_CREATURE_FOOTSTEP_ID++;
+                        int creatureFootstepID = IDGenerationTool.GenerateID("CreatureFootstepID", creatureRace.SoundWalkingName);
+                        FootstepIDBySoundName.Add(creatureRace.SoundWalkingName, creatureFootstepID);
+                        FootstepIDBySoundID.Add(GetSoundIDForSound(creatureRace.SoundWalkingName, creatureRace.SoundMaxDistance), creatureFootstepID);
                     }
                 }
             }

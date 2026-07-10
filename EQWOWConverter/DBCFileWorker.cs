@@ -169,7 +169,7 @@ namespace EQWOWConverter
 
             // Skill-bound spells
             if (spellTemplate.SkillLine != 0)
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate, spellEffectBlocks[0].WOWSpellID, 0);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", spellTemplate.SkillLine.ToString(), spellEffectBlocks[0].WOWSpellID.ToString()), spellTemplate, spellEffectBlocks[0].WOWSpellID, 0);
         }
 
         public void CreateDBCFiles(List<Zone> zones, List<CreatureModelTemplate> creatureModelTemplates, List<SpellTemplate> spellTemplates)
@@ -333,9 +333,9 @@ namespace EQWOWConverter
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
 
                 // Light Tables
-                AddLightData(zoneProperties.DBCMapID, zoneProperties.ZonewideEnvironmentProperties);
-                foreach (ZoneEnvironmentSettings areaLightSettings in zoneProperties.AreaLightZoneEnvironmentProperties)
-                    AddLightData(zoneProperties.DBCMapID, areaLightSettings);
+                AddLightData(zoneProperties.DBCMapID, zoneProperties.ZonewideEnvironmentProperties, string.Concat(zone.ShortName, "~zonewide"));
+                for (int areaLightIndex = 0; areaLightIndex < zoneProperties.AreaLightZoneEnvironmentProperties.Count; areaLightIndex++)
+                    AddLightData(zoneProperties.DBCMapID, zoneProperties.AreaLightZoneEnvironmentProperties[areaLightIndex], string.Concat(zone.ShortName, "~arealight", areaLightIndex.ToString()));
 
                 // Map
                 mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.LoadingScreenID);
@@ -546,58 +546,58 @@ namespace EQWOWConverter
 
             // Make rogue stealth available to other classes due to the secondary EQ class thing
             skillRaceClassInfoDBC.AddRow(39, wowClassTypes);
-            skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 39, 1784, 2); // Stealth
+            skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "39", "1784"), 39, 1784, 2); // Stealth
 
             // Make hunter Auto Shot available to other classes due as well to support secondary EQ classes
             skillRaceClassInfoDBC.AddRow(163, wowClassTypes);
-            skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 163, 75, 2); // Auto Shot
+            skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "163", "75"), 163, 75, 2); // Auto Shot
 
             // Make Dual Wield available to other classes to support secondary EQ classes
             skillRaceClassInfoDBC.AddRow(118, wowClassTypes);
-            skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 118, 674, 0); // Dual Wield
+            skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "118", "674"), 118, 674, 0); // Dual Wield
 
             if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
             {
                 skillRaceClassInfoDBC.AddRow(433, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 433, 9116, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "433", "9116"), 433, 9116, 2);
             }
             if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES == true)
             {
                 skillRaceClassInfoDBC.AddRow(414, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 414, 9077, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "414", "9077"), 414, 9077, 2);
                 skillRaceClassInfoDBC.AddRow(413, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 413, 8737, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "413", "8737"), 413, 8737, 2);
                 skillRaceClassInfoDBC.AddRow(293, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 293, 750, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "293", "750"), 293, 750, 2);
             }
             if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == true)
             {
                 skillRaceClassInfoDBC.AddRow(44, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 44, 196, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "44", "196"), 44, 196, 2);
                 skillRaceClassInfoDBC.AddRow(172, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 172, 197, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "172", "197"), 172, 197, 2);
                 skillRaceClassInfoDBC.AddRow(54, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 54, 198, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "54", "198"), 54, 198, 2);
                 skillRaceClassInfoDBC.AddRow(160, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 160, 199, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "160", "199"), 160, 199, 2);
                 skillRaceClassInfoDBC.AddRow(229, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 229, 200, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "229", "200"), 229, 200, 2);
                 skillRaceClassInfoDBC.AddRow(43, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 43, 201, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "43", "201"), 43, 201, 2);
                 skillRaceClassInfoDBC.AddRow(55, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 55, 202, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "55", "202"), 55, 202, 2);
                 skillRaceClassInfoDBC.AddRow(136, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 136, 227, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "136", "227"), 136, 227, 2);
                 skillRaceClassInfoDBC.AddRow(473, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 473, 15590, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "473", "15590"), 473, 15590, 2);
                 skillRaceClassInfoDBC.AddRow(173, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 173, 1180, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "173", "1180"), 173, 1180, 2);
             }
             if (Configuration.PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES == true)
             {
                 skillRaceClassInfoDBC.AddRow(45, wowClassTypes);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 45, 264, 2);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), 45, 3018, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "45", "264"), 45, 264, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "45", "3018"), 45, 3018, 2);
             }
 
             // Spells
@@ -882,9 +882,13 @@ namespace EQWOWConverter
                 textureVariation3 = textureNames[2];
         }
 
-        private void AddLightData(int mapID, ZoneEnvironmentSettings zoneEnvironmentSettings)
+        private void AddLightData(int mapID, ZoneEnvironmentSettings zoneEnvironmentSettings, string lightContextKey)
         {
-            lightDBC.AddRow(mapID, zoneEnvironmentSettings);
+            zoneEnvironmentSettings.ParamatersClearWeather.DBCLightParamsID = IDGenerationTool.GenerateID("LightParamsID", lightContextKey, "clear");
+            zoneEnvironmentSettings.ParamatersClearWeatherUnderwater.DBCLightParamsID = IDGenerationTool.GenerateID("LightParamsID", lightContextKey, "clearunderwater");
+            zoneEnvironmentSettings.ParamatersStormyWeather.DBCLightParamsID = IDGenerationTool.GenerateID("LightParamsID", lightContextKey, "stormy");
+            zoneEnvironmentSettings.ParamatersStormyWeatherUnderwater.DBCLightParamsID = IDGenerationTool.GenerateID("LightParamsID", lightContextKey, "stormyunderwater");
+            lightDBC.AddRow(mapID, zoneEnvironmentSettings, lightContextKey);
 
             lightFloatBandDBC.AddRows(zoneEnvironmentSettings.ParamatersClearWeather);
             lightFloatBandDBC.AddRows(zoneEnvironmentSettings.ParamatersClearWeatherUnderwater);

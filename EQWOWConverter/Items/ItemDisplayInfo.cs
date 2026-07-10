@@ -68,7 +68,7 @@ namespace EQWOWConverter.Items
                 lock (IT159SpellVisualIDLock)
                 {
                     if (_IT159SpellVisualID == -1)
-                        _IT159SpellVisualID = SpellVisualDBC.GenerateID();
+                        _IT159SpellVisualID = IDGenerationTool.GenerateID("SpellVisualID", "IT159");
                     return _IT159SpellVisualID;
                 }
             }
@@ -204,8 +204,8 @@ namespace EQWOWConverter.Items
             if (itemDisplayCommonName == "it159" && IT159SpellVisualStateKitID == -1)
             {
                 newItemDisplayInfo.SpellVisualID = IT159SpellVisualID;
-                IT159SpellVisualStateKitID = SpellVisualKitDBC.GenerateID();
-                IT159SpellVisualEffectNameID = SpellVisualEffectNameDBC.GenerateID();
+                IT159SpellVisualStateKitID = IDGenerationTool.GenerateID("SpellVisualKitID", "IT159");
+                IT159SpellVisualEffectNameID = IDGenerationTool.GenerateID("SpellVisualEffectNameID", "IT159");
                 CreateIT159VisualEffect();
             }
 

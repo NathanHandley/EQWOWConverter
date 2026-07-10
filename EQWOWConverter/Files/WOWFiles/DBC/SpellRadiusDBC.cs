@@ -18,9 +18,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellRadiusDBC : DBCFile
     {
-        private static int CUR_DBCID = Configuration.DBCID_SPELLRADIUS_ID_START;
-        private static readonly object SpellRadiusDBCLock = new object();
-
         public void AddRow(int dbcID, float radius)
         {
             DBCRow newRow = new DBCRow();
@@ -29,16 +26,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0); // RadiusPerLevel
             newRow.AddFloat(radius); // RadiusMax
             Rows.Add(newRow);
-        }
-
-        public static int GenerateDBCID()
-        {
-            lock (SpellRadiusDBCLock)
-            {
-                int newDBCID = CUR_DBCID;
-                CUR_DBCID++;
-                return newDBCID;
-            }
         }
     }
 }

@@ -20,7 +20,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class TrainerSQL : SQLFile
     {
-        private static int CUR_ID = Configuration.SQL_TRAINER_ID_START;
 
         public override string DeleteRowSQL()
         {
@@ -38,15 +37,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("Greeting", greetingText);
             newRow.AddInt("VerifiedBuild", 0);
             Rows.Add(newRow);
-        }
-
-        public static int GenerateUniqueTrainerID()
-        {
-            int returnVal = CUR_ID;
-            CUR_ID++;
-            if (CUR_ID > Configuration.SQL_TRAINER_ID_END)
-                Logger.WriteError("Exceeded maximum value of SQL_TRAINER_ID_END");
-            return returnVal;
         }
     }
 }

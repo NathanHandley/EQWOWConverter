@@ -18,7 +18,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class GameTeleSQL : SQLFile
     {
-        private static int CURRENT_ROWID = Configuration.SQL_GAMETELE_ROWID_START;
 
         public override string DeleteRowSQL()
         {
@@ -27,8 +26,7 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRow(int mapID, string name, float x, float y, float z, float orientation)
         {
-            int ID = CURRENT_ROWID;
-            CURRENT_ROWID++;
+            int ID = IDGenerationTool.GenerateID("GameTeleRowID", name);
 
             SQLRow newRow = new SQLRow();
             newRow.AddInt("id", ID);

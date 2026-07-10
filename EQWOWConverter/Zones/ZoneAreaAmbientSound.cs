@@ -20,22 +20,15 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneAreaAmbientSound
     {
-        private static int CURRENT_SOUNDAMBIENCE_ID = Configuration.DBCID_SOUNDAMBIENCE_ID_START;
-        private static readonly object SOUNDAMBIENCEIDLock = new object();
-
         public int DBCID;
         public string FileNameNoExtDay = string.Empty;
         public string FileNameNoExtNight = string.Empty;
         public Sound? DaySound;
         public Sound? NightSound;
 
-        public ZoneAreaAmbientSound(Sound? daySound, Sound? nightSound, string fileNameNoExtDay, string fileNameNoExtNight)
+        public ZoneAreaAmbientSound(string zoneShortName, Sound? daySound, Sound? nightSound, string fileNameNoExtDay, string fileNameNoExtNight)
         { 
-            lock (SOUNDAMBIENCEIDLock)
-            {
-                DBCID = CURRENT_SOUNDAMBIENCE_ID;
-                CURRENT_SOUNDAMBIENCE_ID++;
-            }
+            DBCID = IDGenerationTool.GenerateID("SoundAmbienceID", zoneShortName, fileNameNoExtDay, fileNameNoExtNight);
             DaySound = daySound;
             NightSound = nightSound;
             FileNameNoExtDay = fileNameNoExtDay;

@@ -18,7 +18,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class NPCTextSQL : SQLFile
     {
-        private static int CUR_ID = Configuration.SQL_NPCTEXT_ID_START;
 
         public override string DeleteRowSQL()
         {
@@ -119,13 +118,6 @@ namespace EQWOWConverter.WOWFiles
 			newRow.AddInt("em7_5", 0);
 			newRow.AddInt("VerifiedBuild", 0);
             Rows.Add(newRow);
-        }
-
-        public static int GenerateUniqueID()
-        {
-            int returnVal = CUR_ID;
-            CUR_ID++;
-            return returnVal;
         }
     }
 }

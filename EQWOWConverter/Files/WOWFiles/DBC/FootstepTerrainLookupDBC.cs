@@ -18,15 +18,12 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class FootstepTerrainLookupDBC : DBCFile
     {
-        public static int CURRENT_ID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_ID_START;
-
         public void AddRow(int creatureFootstepID, int soundID)
         {
             // 10 rows are created for every creaturefootstep record to cover values within TerrainType.dbc
             for (int terrainTypeSoundID = 0; terrainTypeSoundID < 10; terrainTypeSoundID++)
             {
-                int curID = CURRENT_ID;
-                CURRENT_ID++;
+                int curID = IDGenerationTool.GenerateID("FootstepTerrainLookupID", creatureFootstepID.ToString(), terrainTypeSoundID.ToString());
                 DBCRow newRow = new DBCRow();
                 newRow.AddInt32(curID); // ID
                 newRow.AddInt32(creatureFootstepID);

@@ -20,9 +20,6 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureSpawnPool
     {
-        private static int CURRENT_POOL_TEMPLATE_ENTRYID = Configuration.SQL_POOL_TEMPLATE_ID_START;
-        private static readonly object PoolLock = new object();
-
         public List<CreatureSpawnInstance> CreatureSpawnInstances = new List<CreatureSpawnInstance>();
         public List<CreatureTemplate> CreatureTemplates = new List<CreatureTemplate>();
         public List<int> CreatureTemplateChances = new List<int>();
@@ -88,16 +85,6 @@ namespace EQWOWConverter.Creatures
                             return;
                     }
                 }
-            }
-        }
-
-        public static int GetPoolTemplateSQLID()
-        {
-            lock (PoolLock)
-            {
-                int returnTemplateID = CURRENT_POOL_TEMPLATE_ENTRYID;
-                CURRENT_POOL_TEMPLATE_ENTRYID++;
-                return returnTemplateID;
             }
         }
     }

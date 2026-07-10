@@ -18,8 +18,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellItemEnchantmentDBC : DBCFile
     {
-        private static int CURRENT_ID = Configuration.DBCID_SPELLITEMENCHANTMENT_ID_START;
-
         public void AddRowForRogueWeaponProc(int id, int spellID, int procRate, string name)
         {
             DBCRow newRow = new DBCRow();
@@ -46,13 +44,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // RequiredSkillRank
             newRow.AddInt32(0); // MinLevel
             Rows.Add(newRow);
-        }
-
-        public static int GenerateUniqueID()
-        {
-            int uniqueID = CURRENT_ID;
-            CURRENT_ID++;
-            return uniqueID;
         }
     }
 }

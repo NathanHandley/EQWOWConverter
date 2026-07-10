@@ -18,8 +18,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class TaxiPathNodeDBC : DBCFile
     {
-        private static int CUR_ID = Configuration.DBCID_TAXIPATHNODE_ID_START;
-
         public void AddRow(int pathID, int nodeIndex, int mapID, float posX, float posY, float posZ,
             int delayInSeconds)
         {
@@ -32,7 +30,7 @@ namespace EQWOWConverter.WOWFiles
             int delayInSecCalc = delayInSecCalc = Convert.ToInt32(MathF.Round(Convert.ToSingle(delayInSeconds) * Configuration.TRANSPORT_PAUSE_MULTIPLIER));            
 
             DBCRow newRow = new DBCRow();
-            newRow.AddInt32(CUR_ID); // ID
+            newRow.AddInt32(IDGenerationTool.GenerateID("TaxiPathNodeID", pathID.ToString(), nodeIndex.ToString())); // ID
             newRow.AddInt32(pathID); // PathID
             newRow.AddInt32(nodeIndex); // NodeIndex
             newRow.AddInt32(mapID); // ContinentID
@@ -49,8 +47,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.SortValue2 = nodeIndex;
 
             Rows.Add(newRow);
-
-            CUR_ID++;
         }
 
         protected override void OnPostLoadDataFromDisk()

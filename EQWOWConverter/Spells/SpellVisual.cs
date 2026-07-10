@@ -120,7 +120,7 @@ namespace EQWOWConverter.Spells
                         else if (i >= 61)
                             spellVisual.CategoryType = SpellVisualCategoryType.DragonBreath;
                         spellVisual.EQVisualEffectIndex = i;
-                        spellVisual.SpellVisualDBCID = SpellVisualDBC.GenerateID();
+                        spellVisual.SpellVisualDBCID = IDGenerationTool.GenerateID("SpellVisualID", i.ToString(), j.ToString());
                         ConvertStageVisualData(ref spellVisual, spellEffect, SpellVisualStageType.Precast, spellVisualType);
                         ConvertStageVisualData(ref spellVisual, spellEffect, SpellVisualStageType.Cast, spellVisualType);
                         ConvertStageVisualData(ref spellVisual, spellEffect, SpellVisualStageType.Impact, spellVisualType);
@@ -134,7 +134,7 @@ namespace EQWOWConverter.Spells
         private static void ConvertStageVisualData(ref SpellVisual spellVisual, EQSpellsEFF.EQSpellEffect spellEffect, SpellVisualStageType stageType, SpellVisualType spellVisualType)
         {
             // ID
-            spellVisual.SpellVisualKitDBCIDsInStage[(int)stageType] = SpellVisualKitDBC.GenerateID();
+            spellVisual.SpellVisualKitDBCIDsInStage[(int)stageType] = IDGenerationTool.GenerateID("SpellVisualKitID", spellVisual.SpellVisualDBCID.ToString(), ((int)stageType).ToString());
 
             // Stage-specific logic
             switch (stageType)
@@ -279,7 +279,7 @@ namespace EQWOWConverter.Spells
             {
                 string objectName = string.Concat("eqemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString(), "_Chest");
                 ObjectModelProperties objectProperties = new ObjectModelProperties();
-                objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
+                objectProperties.SpellVisualEffectNameDBCID = IDGenerationTool.GenerateID("SpellVisualEffectNameID", objectName);
                 objectProperties.SpellVisualType = spellVisualType;
                 ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.SpellParticleEmitter);
                 objectModel.Load(new List<Material>(), new MeshData(), new List<Vector3>(), new List<TriangleFace>(), spriteListEffects);
@@ -351,7 +351,7 @@ namespace EQWOWConverter.Spells
                     // Make new
                     string objectName = string.Concat("eqemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString(), "_", emitter.SpellEmissionLocation.ToString());
                     ObjectModelProperties objectProperties = new ObjectModelProperties();
-                    objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
+                    objectProperties.SpellVisualEffectNameDBCID = IDGenerationTool.GenerateID("SpellVisualEffectNameID", objectName);
                     objectProperties.ParticleEmitters.Add(emitter);
                     objectProperties.SpellVisualEffectStageType = stageType;
                     objectProperties.SpellVisualType = spellVisualType;

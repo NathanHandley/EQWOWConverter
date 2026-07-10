@@ -18,8 +18,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class ReferenceLootTemplateSQL : SQLFile
     {
-        private static int CUR_ID = Configuration.SQL_REFERENCE_LOOT_TEMPLATE_ID_START;
-        private static object idlock = new object();
 
         public override string DeleteRowSQL()
         {
@@ -43,18 +41,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("MaxCount", 1);
             newRow.AddString("Comment", 255, comment);
             Rows.Add(newRow);  
-        }
-
-        public static int GenerateID()
-        {
-            lock (idlock)
-            {
-                int returnID = CUR_ID;
-                CUR_ID++;
-                if (CUR_ID > Configuration.SQL_REFERENCE_LOOT_TEMPLATE_ID_END)
-                    Logger.WriteError("ReferenceLootTemplateSQL exceeded Configuration.SQL_REFERENCE_LOOT_TEMPLATE_ID_END");
-                return returnID;
-            }
         }
     }
 }

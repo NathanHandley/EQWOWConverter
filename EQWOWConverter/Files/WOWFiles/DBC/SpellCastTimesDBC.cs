@@ -18,8 +18,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellCastTimesDBC : DBCFile
     {
-        private static int CUR_DBCID = Configuration.DBCID_SPELLCASTTIME_ID_START;
-
         public void AddRow(int dbcID, int castTime)
         {
             DBCRow newRow = new DBCRow();
@@ -28,13 +26,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // Amount of milliseconds deducted per spell level
             newRow.AddInt32(0); // Minimum cast time in milliseconds
             Rows.Add(newRow);
-        }
-
-        public static int GenerateDBCID()
-        {
-            int newDBCID = CUR_DBCID;
-            CUR_DBCID++;
-            return newDBCID;
         }
     }
 }

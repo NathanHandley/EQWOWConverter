@@ -18,7 +18,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class PageTextSQL : SQLFile
     {
-        private static int CUR_ID = Configuration.SQL_PAGETEXT_ID_START;
 
         public override string DeleteRowSQL()
         {
@@ -31,13 +30,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("ID", id);
             newRow.AddString("Text", text);
             Rows.Add(newRow);
-        }
-
-        public static int GenerateUniqueID()
-        {
-            int returnVal = CUR_ID;
-            CUR_ID++;
-            return returnVal;
         }
     }
 }

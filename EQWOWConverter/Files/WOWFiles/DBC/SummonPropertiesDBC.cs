@@ -20,9 +20,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SummonPropertiesDBC : DBCFile
     {
-        private static int CURRENT_ID = Configuration.DBCID_SUMMONPROPERTIES_ID_START;
-        private static readonly object SummonIDLock = new object();
-
         public void AddRow(int id, SpellPet spellPet)
         {
             DBCRow newRow = new DBCRow();
@@ -50,16 +47,6 @@ namespace EQWOWConverter.WOWFiles
                 flags |= 2; // Help when Summoned in combat
             }
             return flags;
-        }
-
-        public static int GenerateUniqueID()
-        {
-            lock (SummonIDLock)
-            {
-                int curID = CURRENT_ID;
-                CURRENT_ID++;
-                return curID;
-            }
         }
     }
 }

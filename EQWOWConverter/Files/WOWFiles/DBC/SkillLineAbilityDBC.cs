@@ -23,8 +23,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SkillLineAbilityDBC : DBCFile
     {
-        private static int CUR_SKILLLINEABILITY_DBCID = Configuration.DBCID_SKILLLINEABILITY_ID_START;
-
         public void AddRow(int id, int skillLineID, int spellTemplateID, int acquireMethodID)
         {
             DBCRow newRow = new DBCRow();
@@ -82,13 +80,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.SortValue2 = id;
             
             Rows.Add(newRow);
-        }
-
-        public static int GenerateID()
-        {
-            int spellID = CUR_SKILLLINEABILITY_DBCID;
-            CUR_SKILLLINEABILITY_DBCID++;
-            return spellID;
         }
 
         protected override void OnPostLoadDataFromDisk()
