@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 39;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 40;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -886,6 +886,33 @@ namespace EQWOWConverter
         public static int COMBATSKILL_RANGED_DEFAULT_MAX_RANGE = 250; // TAKP range value
 
         //=====================================================================
+        // Achievements
+        //=====================================================================
+        // If true, a feat of strength achievement is awarded to characters on accounts created before the configured date
+        public static bool ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED = true;
+
+        // The name of the legacy account feat of strength achievement, also used as the reward mail subject
+        public static string ACHIEVEMENT_LEGACY_ACCOUNT_NAME = "Legacy of the Old Guard";
+
+        // The description of the legacy account feat of strength achievement
+        public static string ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION = "Awarded to characters on accounts created before August of 2026.";
+
+        // Which EQ item icon to use for the legacy account feat of strength achievement
+        public static int ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID = 145;
+
+        // Accounts created before this date (server time) are awarded the legacy account feat of strength
+        public static string ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE = "2026-08-01 00:00:00";
+
+        // Name of the creature that sends the reward mail, which must match a creature in CreatureTemplates.csv
+        public static string ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME = "Norrath Observer";
+
+        // Body text of the reward mail sent when the legacy account feat of strength is awarded
+        public static string ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT = "I have seen your history, and award you this token to return to your roots.";
+
+        // WOW entry ID of the item attached to the reward mail
+        public static int ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID = 110431;
+
+        //=====================================================================
         // Fishing
         //=====================================================================
         // How much to multiply the EQ fish catching skill requirement for WOW
@@ -944,6 +971,10 @@ namespace EQWOWConverter
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================
+        // IDs used for Achievement.dbc
+        public static int DBCID_ACHIEVEMENT_ID_START = 5000;
+        public static int DBCID_ACHIEVEMENT_ID_END = 5099;
+
         // IDs for AreaBit used in AreaTable, should be unique (max of 4095)
         public static int DBCID_AREATABLE_AREABIT_BLOCK_1_START = 3092;
         public static int DBCID_AREATABLE_AREABIT_BLOCK_1_END = 3172;
@@ -1029,7 +1060,7 @@ namespace EQWOWConverter
         // ID for spells found in Spell.dbc
         // - Manually created spells reserve IDs from 86900 to 86999 and all are defined in the config
         // - Recipes reserve IDs 87000 to 91362
-        // - Converted spells IDs start at 92000 and base spells range to 95826,
+        // - Converted spells IDs start at 92000 and base spells range to 95827,
         // - SpellIDs 96000 - 96099 currently unused
         // - SpellIDs 96100 - 96199 reserved for 'coat' effects that come from rogue poisons, triggering another spell
         // - SpellIDs 96200 - 97656 reserved for 'clicky' effects (defined in ItemTemplates.csv under clickeffect_wow)
@@ -1333,6 +1364,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES, "", false);
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES, "");
             OutputVariableToConfig("DUNGEON_FINDER_ENABLED", DUNGEON_FINDER_ENABLED, "If true, dungeon finder can be used for special versions of EQ dungeons");
+            OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED", ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED, "If true, a feat of strength achievement is awarded to characters on accounts created before ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE", false);
+            OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_NAME", ACHIEVEMENT_LEGACY_ACCOUNT_NAME, "", false);
+            OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION", ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION, "", false);
+            OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID", ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID, "", false);
             OutputTextLineToConfig("# If true, Priests of Discord (in Norrath) will teleport players to Azeroth, and Azeroth will have Priests of Discord to send players back to Norrath");
             OutputVariableToConfig("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION, "Note that CreatureFactionClassAlignment.csv and PlayerWOWRaceProperties.csv factor into Norrath destinations", false);
             OutputVariableToConfig("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID, "");
@@ -1821,6 +1856,11 @@ namespace EQWOWConverter
 
             DUNGEON_FINDER_ENABLED = ReadVariableFromConfigString("DUNGEON_FINDER_ENABLED", configValuesByVariableName, DUNGEON_FINDER_ENABLED);
 
+            ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED);
+            ACHIEVEMENT_LEGACY_ACCOUNT_NAME = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_NAME", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_NAME);
+            ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION);
+            ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID);
+            ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE);
             WORLDMAP_DEBUG_GENERATION_MODE_ENABLED = ReadVariableFromConfigString("WORLDMAP_DEBUG_GENERATION_MODE_ENABLED", configValuesByVariableName, WORLDMAP_DEBUG_GENERATION_MODE_ENABLED);
             WORLDMAP_LEFT_BORDER_PIXEL_SIZE = ReadVariableFromConfigString("WORLDMAP_LEFT_BORDER_PIXEL_SIZE", configValuesByVariableName, WORLDMAP_LEFT_BORDER_PIXEL_SIZE);
             WORLDMAP_RIGHT_BORDER_PIXEL_SIZE = ReadVariableFromConfigString("WORLDMAP_RIGHT_BORDER_PIXEL_SIZE", configValuesByVariableName, WORLDMAP_RIGHT_BORDER_PIXEL_SIZE);

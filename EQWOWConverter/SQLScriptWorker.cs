@@ -38,6 +38,7 @@ namespace EQWOWConverter
         // Characters
         private CharacterAuraSQL characterAuraSQL = new CharacterAuraSQL();
         // World
+        private AchievementRewardSQL achievementRewardSQL = new AchievementRewardSQL();
         private AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
         private AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
         private BroadcastTextSQL broadcastTextSQL = new BroadcastTextSQL();
@@ -137,6 +138,9 @@ namespace EQWOWConverter
             // System configs
             PopulateSystemConfigs();
 
+            // Achievements
+            PopulateAchievementData(creatureTemplates);
+
             // Zones
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
             Dictionary<string, int> mapIDsByShortName;
@@ -200,6 +204,8 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMin", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMax", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("InvisVsUndeadDetectSpellID", Configuration.SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID.ToString());
+            modEverquestSystemConfigsSQL.AddRow("LegacyAchievementID", Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true ? Configuration.DBCID_ACHIEVEMENT_ID_START.ToString() : "0");
+            modEverquestSystemConfigsSQL.AddRow("LegacyAchievementAccountCreatedBefore", Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true ? Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE : "");
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMin", Configuration.DBCID_MAP_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMax", Configuration.DBCID_MAP_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("ShipEntryTemplateIDMin", Configuration.SQL_GAMEOBJECTTEMPLATE_SHIP_ID_START.ToString());
@@ -210,6 +216,31 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("QuestSQLIDMax", Configuration.SQL_QUEST_TEMPLATE_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("WorldScale", Configuration.GENERATE_WORLD_SCALE.ToString());
             modEverquestSystemConfigsSQL.AddRow("RangedAttackSpellID", Configuration.COMBATSKILL_RANGED_ENABLED == true ? Configuration.COMBATSKILL_RANGED_SPELL_ID.ToString() : "0");
+        }
+
+        private void PopulateAchievementData(List<CreatureTemplate> creatureTemplates)
+        {
+            if (Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == false)
+                return;
+
+            // The reward mail 'from' name shown in the client is the name of the sender creature template
+            int senderCreatureTemplateID = 0;
+            foreach (CreatureTemplate creatureTemplate in creatureTemplates)
+            {
+                if (creatureTemplate.Name == Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME)
+                {
+                    senderCreatureTemplateID = creatureTemplate.WOWCreatureTemplateID;
+                    break;
+                }
+            }
+            if (senderCreatureTemplateID == 0)
+            {
+                Logger.WriteError("ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED was true but no creature template named '" + Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME + "' could be found in CreatureTemplates.csv, so no reward mail will be sent");
+                return;
+            }
+
+            achievementRewardSQL.AddRow(Configuration.DBCID_ACHIEVEMENT_ID_START, Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID, senderCreatureTemplateID, 
+                Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_NAME, Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT);
         }
 
         private void PopulateCreatureGossipData()
@@ -2150,6 +2181,7 @@ namespace EQWOWConverter
             // Characters
             characterAuraSQL.SaveToDisk("character_aura", SQLFileType.Characters);
             // World
+            achievementRewardSQL.SaveToDisk("achievement_reward", SQLFileType.World);
             areaTriggerSQL.SaveToDisk("areatrigger", SQLFileType.World);
             areaTriggerTeleportSQL.SaveToDisk("areatrigger_teleport", SQLFileType.World);
             broadcastTextSQL.SaveToDisk("broadcast_text", SQLFileType.World);

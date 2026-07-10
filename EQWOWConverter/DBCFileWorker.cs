@@ -31,6 +31,7 @@ namespace EQWOWConverter
 {
     internal class DBCFileWorker
     {
+        private AchievementDBC achievementDBC = new AchievementDBC();
         private AreaTableDBC areaTableDBC = new AreaTableDBC();
         private AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
         private CharStartOutfitDBC charStartOutfitDBC = new CharStartOutfitDBC();
@@ -197,6 +198,7 @@ namespace EQWOWConverter
             Directory.CreateDirectory(dbcOutputServerFolder);
 
             // Load the files
+            achievementDBC.LoadFromDisk(dbcInputFolder, "Achievement.dbc");
             areaTableDBC.LoadFromDisk(dbcInputFolder, "AreaTable.dbc");
             areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
             charStartOutfitDBC.LoadFromDisk(dbcInputFolder, "CharStartOutfit.dbc");
@@ -244,6 +246,11 @@ namespace EQWOWConverter
             worldSafeLocsDBC.LoadFromDisk(dbcInputFolder, "WorldSafeLocs.dbc");
             wmoAreaTableDBC.LoadFromDisk(dbcInputFolder, "WMOAreaTable.dbc");
             zoneMusicDBC.LoadFromDisk(dbcInputFolder, "ZoneMusic.dbc");
+
+            // Achievements
+            if (Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true)
+                achievementDBC.AddRowForFeatOfStrength(Configuration.DBCID_ACHIEVEMENT_ID_START, Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_NAME,
+                    Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION, SpellIconDBC.GetDBCIDForItemIconID(Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID));
 
             // Liquid is common
             liquidTypeDBC.AddRows();
@@ -770,6 +777,8 @@ namespace EQWOWConverter
             totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_ALL), "All Instruments", curTotemCategoryID, 0xF);
 
             // Save the files
+            achievementDBC.SaveToDisk(dbcOutputClientFolder);
+            achievementDBC.SaveToDisk(dbcOutputServerFolder);
             areaTableDBC.SaveToDisk(dbcOutputClientFolder);
             areaTableDBC.SaveToDisk(dbcOutputServerFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputClientFolder);
