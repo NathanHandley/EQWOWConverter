@@ -18,9 +18,19 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class TransportAnimationDBC : DBCFile
     {
+        private Dictionary<string, int> RowOccurrenceCountsByContextKey = new Dictionary<string, int>();
+
         public void AddRow(int gameObjectTemplateID, int timestampInMS, float posX, float posY, float posZ, int animationSequenceID)
         {
-            int id = IDGenerationTool.GenerateID("TransportAnimationID", gameObjectTemplateID.ToString(), timestampInMS.ToString());
+            // Same transports can have the same timestamps in a path, so number the occurance to ensure unique IDs are generated
+            string contextKey = string.Concat(gameObjectTemplateID, "~", timestampInMS);
+            int occurrence = 0;
+            if (RowOccurrenceCountsByContextKey.TryGetValue(contextKey, out occurrence) == true)
+                RowOccurrenceCountsByContextKey[contextKey] = occurrence + 1;
+            else
+                RowOccurrenceCountsByContextKey.Add(contextKey, 1);
+
+            int id = IDGenerationTool.GenerateID("TransportAnimationID", gameObjectTemplateID.ToString(), timestampInMS.ToString(), occurrence == 0 ? "" : occurrence.ToString());
 
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID

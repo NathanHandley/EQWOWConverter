@@ -18,6 +18,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class PetNameGenerationSQL : SQLFile
     {
+        private HashSet<int> AddedRowIDs = new HashSet<int>();
 
         public override string DeleteRowSQL()
         {
@@ -26,8 +27,14 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRow(int creatureTemplateEntryID, string wordPart, bool isFirstHalf)
         {
+            // Since multiple spells can summon the same pet creature, skip if the ID is already added
+            int id = IDGenerationTool.GenerateID("PetNameGenerationID", creatureTemplateEntryID.ToString(), wordPart, isFirstHalf == true ? "0" : "1");
+            if (AddedRowIDs.Contains(id) == true)
+                return;
+            AddedRowIDs.Add(id);
+
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("id", IDGenerationTool.GenerateID("PetNameGenerationID", creatureTemplateEntryID.ToString(), wordPart, isFirstHalf == true ? "0" : "1"));
+            newRow.AddInt("id", id);
             newRow.AddString("word", wordPart);
             newRow.AddInt("entry", creatureTemplateEntryID);
             if (isFirstHalf == true)
