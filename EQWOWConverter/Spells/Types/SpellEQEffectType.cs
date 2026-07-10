@@ -110,7 +110,7 @@ namespace EQWOWConverter.Spells
         AttackSpeed2 = 98, // Looks like this stacks with the other attack speed
         Root = 99,
         HealOverTime = 100,
-        //....
+        CompleteHeal = 101, // Not to be confused with the regular complete heal, this one heals 7500 x base value up front and its buff blocks reuse until it wears off (Donal's Chestplate, Celestial Aura)
         // Fearless = 102,
         // CallPet = 103,
         // Translocate = 104, // Move the target to a place

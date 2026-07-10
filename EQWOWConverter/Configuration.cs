@@ -1063,7 +1063,7 @@ namespace EQWOWConverter
         // - Converted spells IDs start at 92000 and base spells range to 95827,
         // - SpellIDs 96000 - 96099 currently unused
         // - SpellIDs 96100 - 96199 reserved for 'coat' effects that come from rogue poisons, triggering another spell
-        // - SpellIDs 96200 - 97656 reserved for 'clicky' effects (defined in ItemTemplates.csv under clickeffect_wow)
+        // - SpellIDs 96200 - 97657 reserved for 'clicky' effects (defined in ItemTemplates.csv under clickeffect_wow)
         // - SpellIDs 97700 - 97715 reserved for 'good clicky' effects (defined in SpellTemplate.csv under wow_good_proc_id)
         // - SpellIDs 98000 - 98358 reserved for 'worn' effects (effects that always take effect when worn, defined in ItemTemplate.csv)
         // - SpellIDs 98500+ used for 'generated spell IDs'
@@ -1368,6 +1368,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_NAME", ACHIEVEMENT_LEGACY_ACCOUNT_NAME, "", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION", ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION, "", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID", ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE", ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE, "Accounts created before this date (server time) are awarded the feat of strength", false);
+            OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME", ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME, "Sender of the reward mail, which must match a creature name in CreatureTemplates.csv", false);
+            OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT", ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT, "", false);
+            OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID", ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID, "WOW entry ID of the item attached to the reward mail");
             OutputTextLineToConfig("# If true, Priests of Discord (in Norrath) will teleport players to Azeroth, and Azeroth will have Priests of Discord to send players back to Norrath");
             OutputVariableToConfig("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION, "Note that CreatureFactionClassAlignment.csv and PlayerWOWRaceProperties.csv factor into Norrath destinations", false);
             OutputVariableToConfig("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID, "");
@@ -1861,6 +1865,10 @@ namespace EQWOWConverter
             ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION);
             ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID);
             ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE);
+            ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME);
+            ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT);
+            ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID);
+
             WORLDMAP_DEBUG_GENERATION_MODE_ENABLED = ReadVariableFromConfigString("WORLDMAP_DEBUG_GENERATION_MODE_ENABLED", configValuesByVariableName, WORLDMAP_DEBUG_GENERATION_MODE_ENABLED);
             WORLDMAP_LEFT_BORDER_PIXEL_SIZE = ReadVariableFromConfigString("WORLDMAP_LEFT_BORDER_PIXEL_SIZE", configValuesByVariableName, WORLDMAP_LEFT_BORDER_PIXEL_SIZE);
             WORLDMAP_RIGHT_BORDER_PIXEL_SIZE = ReadVariableFromConfigString("WORLDMAP_RIGHT_BORDER_PIXEL_SIZE", configValuesByVariableName, WORLDMAP_RIGHT_BORDER_PIXEL_SIZE);

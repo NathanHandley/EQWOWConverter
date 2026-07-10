@@ -1641,6 +1641,54 @@ namespace EQWOWConverter.Spells
                                     newSpellEffects.Add(newSpellEffectWOW);
                                 }
                             } break;
+                        case SpellEQEffectType.CompleteHeal:
+                            {
+                                if (eqEffect.EQBaseValue == 0)
+                                    continue;
+
+                                // Heals 7500 x the base value when it lands (Lookup SE_CompleteHeal in TAKP)
+                                int preFormulaEffectAmount = Math.Abs(eqEffect.EQBaseValue) * 7500;
+                                SpellEffectWOW healSpellEffectWOW = new SpellEffectWOW();
+                                healSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
+                                healSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, 0, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealDirectHPS", SpellEffectWOWConversionScaleType.CastTime);
+                                healSpellEffectWOW.EffectType = SpellWOWEffectType.Heal;
+                                healSpellEffectWOW.ActionDescription = string.Concat("heal for ", healSpellEffectWOW.GetFormattedEffectActionString(false));
+                                spellTemplate.HighestDirectHealAmountInSpellEffect = Math.Max(spellTemplate.HighestDirectHealAmountInSpellEffect, healSpellEffectWOW.CalcEffectHighLevelValue);
+                                spellTemplate.InfluencedBySpellPower = true;
+                                newSpellEffects.Add(healSpellEffectWOW);
+
+                                // Residual buff that regenerates 1 mana per tick and blocks another complete heal until it wears off
+                                SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
+                                effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Residual");
+                                effectGeneratedSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "completehealresidual", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
+                                effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+                                effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                                effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                                effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
+                                effectGeneratedSpellTemplate.SpellRange = spellTemplate.SpellRange;
+                                effectGeneratedSpellTemplate.AuraDuration = new SpellDuration();
+                                effectGeneratedSpellTemplate.AuraDuration.SetFixedDuration(auraDuration.MaxDurationInMS);
+
+                                SpellEffectWOW residualSpellEffectWOW = new SpellEffectWOW();
+                                residualSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                residualSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicEnergize;
+                                residualSpellEffectWOW.EffectMiscValueA = 0; // Power Type = Mana
+                                residualSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
+                                residualSpellEffectWOW.SetEffectAmountValues(1, 0, spellTemplate.MinimumPlayerLearnLevel, SpellEQBaseValueFormulaType.BaseValue, spellCastTimeInMS, "ManaUpOverTimeMPS", SpellEffectWOWConversionScaleType.Periodic);
+                                residualSpellEffectWOW.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                                residualSpellEffectWOW.ActionDescription = string.Concat("recover ", residualSpellEffectWOW.GetFormattedEffectActionString(false), " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds and block additional complete heals from similar items");
+                                residualSpellEffectWOW.SetAuraDescription("recovering", false, " ", string.Concat(" mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds and blocking additional complete heals from similar items"));
+                                effectGeneratedSpellTemplate.WOWSpellEffects.Add(residualSpellEffectWOW);
+
+                                // Prevent application if the buff is on
+                                effectGeneratedSpellTemplates.Add(effectGeneratedSpellTemplate);
+                                spellTemplate.ChainedSpellTemplates.Add(effectGeneratedSpellTemplate);
+                                spellTemplate.ExcludeTargetAuraSpellID = effectGeneratedSpellTemplate.WOWSpellID;
+                                spellTemplate.PreventAuraClickOff = true;
+                                
+                                // Lock the duration
+                                spellTemplate.AuraDuration.SetFixedDuration(spellTemplate.AuraDuration.MaxDurationInMS);
+                            } break;
                         case SpellEQEffectType.CurrentMana:
                         case SpellEQEffectType.CurrentManaOnce:
                             {
