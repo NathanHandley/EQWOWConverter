@@ -1220,5 +1220,10 @@ namespace EQWOWConverter.Zones
             DescriptiveNameOnlyLetters = rgx.Replace(DescriptiveNameOnlyLetters, "");
             DescriptiveNameOnlyLetters = DescriptiveNameOnlyLetters.Replace(" ", "");
         }
+
+        public static int CompareZonesByShortName(Zone zone1, Zone zone2)
+        {
+            return string.CompareOrdinal(zone1.ShortName, zone2.ShortName);
+        }
     }
 }

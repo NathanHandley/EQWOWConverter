@@ -354,5 +354,10 @@ namespace EQWOWConverter.Creatures
 
             return raceID + raceName;
         }
+
+        public static int CompareCreatureModelTemplatesByModelDataID(CreatureModelTemplate template1, CreatureModelTemplate template2)
+        {
+            return template1.DBCCreatureModelDataID.CompareTo(template2.DBCCreatureModelDataID);
+        }
     }
 }

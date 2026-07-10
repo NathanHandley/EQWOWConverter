@@ -42,6 +42,7 @@ namespace EQWOWConverter
         private static readonly object CreatureModelWorkLock = new object();
         private static Queue<string> ObjectNamesToProcess = new Queue<string>();
         private static readonly object ObjectConversionLock = new object();
+        private static bool DeltaPatchSkippedForNoChanges = false;
 
         public bool ConvertEQDataToWOW()
         {
@@ -1058,6 +1059,9 @@ namespace EQWOWConverter
                     workingZones.AddRange(processedZones);
             }
 
+            // This sort ensures regenerations order the same in dbc files (since threading can make this change each run)
+            workingZones.Sort(Zone.CompareZonesByShortName);
+
             zones = workingZones;
             return true;
         }
@@ -1265,6 +1269,9 @@ namespace EQWOWConverter
                 List<CreatureModelTemplate> processedModelTemplates = CreatureModelFileThreadWorker(1, modelTemplateWorkQueue, charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath, progressionCounter);
                 creatureModelTemplates.AddRange(processedModelTemplates);
             }
+
+            // Sorting this will ensure dbc output row orders don't change when reruning
+            creatureModelTemplates.Sort(CreatureModelTemplate.CompareCreatureModelTemplatesByModelDataID);
         }
 
         private List<CreatureModelTemplate> CreatureModelFileThreadWorker(int threadID, Queue<CreatureModelTemplate> modelTemplateWorkQueue,
@@ -1944,8 +1951,38 @@ namespace EQWOWConverter
             Directory.CreateDirectory(outputFolder);
             string[] pngFileNamesWithPath = Directory.GetFiles(workingFolder, "*.png");
 
+            // Only convert PNGs whose content changed since the last conversion, or that have no BLP yet
+            string storedPNGHashesFilePath = Path.Combine(workingFolder, "ConvertedPNGHashes.csv");
+            Dictionary<string, string> storedPNGHashesByFileName = new Dictionary<string, string>();
+            if (File.Exists(storedPNGHashesFilePath) == true)
+            {
+                List<Dictionary<string, string>> storedPNGHashRows = FileTool.ReadAllRowsFromFileWithHeader(storedPNGHashesFilePath, "|");
+                foreach (Dictionary<string, string> storedPNGHashRow in storedPNGHashRows)
+                    storedPNGHashesByFileName[storedPNGHashRow["filename"]] = storedPNGHashRow["contenthash"];
+            }
+            List<string> pngFileNamesWithPathToConvert = new List<string>();
+            List<Dictionary<string, string>> outputPNGHashRows = new List<Dictionary<string, string>>();
+            foreach (string pngFileNameWithPath in pngFileNamesWithPath)
+            {
+                string pngFileName = Path.GetFileName(pngFileNameWithPath);
+                string contentHash = ComputeFileContentHash(pngFileNameWithPath);
+                Dictionary<string, string> outputPNGHashRow = new Dictionary<string, string>();
+                outputPNGHashRow.Add("filename", pngFileName);
+                outputPNGHashRow.Add("contenthash", contentHash);
+                outputPNGHashRows.Add(outputPNGHashRow);
+                string blpFileNameWithPath = Path.ChangeExtension(pngFileNameWithPath, ".blp");
+                if (File.Exists(blpFileNameWithPath) == false || storedPNGHashesByFileName.ContainsKey(pngFileName) == false ||
+                    storedPNGHashesByFileName[pngFileName] != contentHash)
+                {
+                    pngFileNamesWithPathToConvert.Add(pngFileNameWithPath);
+                }
+            }
+
             progressionCounter.Write();
-            ImageTool.ConvertPNGTexturesToBLP(pngFileNamesWithPath.ToList(), ImageTool.ImageAssociationType.Clothing, progressionCounter);
+            if (pngFileNamesWithPathToConvert.Count > 0)
+                ImageTool.ConvertPNGTexturesToBLP(pngFileNamesWithPathToConvert, ImageTool.ImageAssociationType.Clothing, progressionCounter);
+            if (outputPNGHashRows.Count > 0)
+                FileTool.WriteAllRowsToFileWithHeader(storedPNGHashesFilePath, "|", outputPNGHashRows);
             FileTool.CopyDirectoryAndContents(workingFolder, outputFolder, true, false, "*.blp");
         }
 
@@ -3108,19 +3145,20 @@ namespace EQWOWConverter
             Dictionary<string, string> currentFileHashesByRelativePath)
         {
             Logger.WriteInfo("Building delta-only main patch MPQ...");
+            DeltaPatchSkippedForNoChanges = false;
 
             // Determine which files would have been added/updated into the main patch this run
             Dictionary<string, string> previousFileHashesByRelativePath = ReadPatchFileManifest(patchManifestFileName);
             ComputePatchFileDelta(currentFileHashesByRelativePath, previousFileHashesByRelativePath,
                 out List<string> relativePathsToAddOrUpdate, out List<string> relativePathsToRemove);
 
-            Logger.WriteInfo("- Delta patch contents: " + relativePathsToAddOrUpdate.Count + " new/updated files ("
-                + relativePathsToRemove.Count + " removed files cannot be represented in a delta patch)");
+            Logger.WriteInfo("Delta patch contents: " + relativePathsToAddOrUpdate.Count + " new/updated files (" + relativePathsToRemove.Count + " removed files cannot be represented in a delta patch)");
 
-            // Nothing new or changed means there's nothing to put in a delta patch
+            // Skip if there's nothing to put in the patch
             if (relativePathsToAddOrUpdate.Count == 0)
             {
-                Logger.WriteInfo("- No new or updated files, skipping delta patch generation");
+                Logger.WriteInfo("No new or updated files, skipping delta patch generation");
+                DeltaPatchSkippedForNoChanges = true;
                 return true;
             }
 
@@ -3306,7 +3344,9 @@ namespace EQWOWConverter
             // Deploy the delta-only patch if it was generated, otherwise the normal patch
             string deltaPatchName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
             string sourceDeltaPatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, deltaPatchName);
-            if (Configuration.CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH == true && File.Exists(sourceDeltaPatchFileNameAndPath) == true)
+            if (Configuration.CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH == true && DeltaPatchSkippedForNoChanges == true)
+                Logger.WriteInfo("The delta patch had no new or updated files this run, so not deploying it to the client");
+            else if (Configuration.CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH == true && File.Exists(sourceDeltaPatchFileNameAndPath) == true)
             {
                 // Delete the old one if it's already deployed on the client (localized patch lives under Data/<localization>)
                 string targetDeltaPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", Configuration.PATCH_LOCALIZATION_STRING, deltaPatchName);
