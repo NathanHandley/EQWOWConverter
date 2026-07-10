@@ -43,7 +43,7 @@ namespace EQWOWConverter
 
         // If true, a special 'config only' delta patch is created.  This is a patch that will use the ID shown and will only
         // contain any new/updated/deleted files based on the manifest
-        public static bool CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH = false;
+        public static bool CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH = true;
         public static string CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID = "6";
 
         // ====================================================================
@@ -615,6 +615,9 @@ namespace EQWOWConverter
         // The ID here is the icon ID as defined by X in "INV_EQ_X.blp"
         public static int ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID = 57;
 
+        // This is the "Opening" spell already used in WOTLK, which items that act as keys use to unlock objects
+        public static int ITEMS_KEY_OPENING_SPELL_ID = 3366;
+
         // Arrows reuse existing WOW models, and the specific model is defined here
         public static string ITEM_ARROW_MODEL_NAME = "ArrowFlight_01.mdx";
         public static string ITEM_ARROW_TEXTURE_NAME = "Arrow_A_01Brown";
@@ -1030,6 +1033,9 @@ namespace EQWOWConverter
         // Identifies the Light.DBC row, used for environmental properties
         public static int DBCID_LIGHT_ID_START = 3500;
 
+        // IDs for rows inside Lock.dbc, used for keyed doors and teleports
+        public static int DBCID_LOCK_ID_START = 3000;
+
         // Identifies the LightParams.dbc, used for detailed values related to a Light.DBC row
         public static int DBCID_LIGHTPARAMS_ID_START = 1050;
 
@@ -1230,6 +1236,15 @@ namespace EQWOWConverter
         public static string PATH_EQEXPORTSRAW_FOLDER { get => Path.Combine(PATH_WORKING_FOLDER, "EQClientExportRaw"); }
         public static string PATH_EQEXPORTSCONDITIONED_FOLDER { get => Path.Combine(PATH_WORKING_FOLDER, "EQClientExportConditioned"); }
         public static string PATH_EXPORT_FOLDER { get => Path.Combine(PATH_WORKING_FOLDER, "WOWExports"); }
+
+        public static List<string> GetGeneratedPatchFileNames()
+        {
+            List<string> generatedPatchFileNames = new List<string>();
+            generatedPatchFileNames.Add(string.Concat("patch-", PATCH_CLIENT_DATA_ID, ".mpq").ToLower());
+            generatedPatchFileNames.Add(string.Concat("patch-", PATCH_LOCALIZATION_STRING, "-", PATCH_CLIENT_DATA_LOC_ID, ".mpq").ToLower());
+            generatedPatchFileNames.Add(string.Concat("patch-", PATCH_LOCALIZATION_STRING, "-", CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID, ".mpq").ToLower());
+            return generatedPatchFileNames;
+        }
 
         public static List<string> SplitIntoFixedLines(string text, int maxLength = 80)
         {
@@ -1579,6 +1594,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEMS_BAG_SLOT_MULTIPLIER", ITEMS_BAG_SLOT_MULTIPLIER, "How much to multiple the slot size of a bag in EQ.  EQ allows for 2x the number bags of WOW (not including starter)");
             OutputVariableToConfig("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT, "When ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED is true, this is how much to increase bag size by");
             OutputVariableToConfig("ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID", ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID, "This is the icon ID that is used for multi-item containers that contain more than one item");
+            OutputVariableToConfig("ITEMS_KEY_OPENING_SPELL_ID", ITEMS_KEY_OPENING_SPELL_ID, "This is the \"Opening\" spell already used in WOTLK, which items that act as keys use to unlock objects");
             OutputVariableToConfig("ITEM_ARROW_MODEL_NAME", ITEM_ARROW_MODEL_NAME, "Arrows reuse existing WOW models, and the specific model is defined here", false);
             OutputVariableToConfig("ITEM_ARROW_TEXTURE_NAME", ITEM_ARROW_TEXTURE_NAME, "");
             OutputVariableToConfig("ITEMS_FISHING_BAIT_POTENCY_TIER_1_SPELL_ID", ITEMS_FISHING_BAIT_POTENCY_TIER_1_SPELL_ID, "Spell IDs for the +fishing effect of bait", false);
@@ -2020,6 +2036,7 @@ namespace EQWOWConverter
             ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED = ReadVariableFromConfigString("ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED", configValuesByVariableName, ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED);
             ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT = ReadVariableFromConfigString("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", configValuesByVariableName, ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT);
             ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID = ReadVariableFromConfigString("ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID", configValuesByVariableName, ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID);
+            ITEMS_KEY_OPENING_SPELL_ID = ReadVariableFromConfigString("ITEMS_KEY_OPENING_SPELL_ID", configValuesByVariableName, ITEMS_KEY_OPENING_SPELL_ID);
             ITEM_ARROW_MODEL_NAME = ReadVariableFromConfigString("ITEM_ARROW_MODEL_NAME", configValuesByVariableName, ITEM_ARROW_MODEL_NAME);
             ITEM_ARROW_TEXTURE_NAME = ReadVariableFromConfigString("ITEM_ARROW_TEXTURE_NAME", configValuesByVariableName, ITEM_ARROW_TEXTURE_NAME);
             ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID = ReadVariableFromConfigString("ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID", configValuesByVariableName, ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID);

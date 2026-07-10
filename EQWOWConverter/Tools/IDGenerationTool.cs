@@ -80,6 +80,7 @@ namespace EQWOWConverter
             Initialize("ItemDisplayInfoID", Configuration.DBCID_ITEMDISPLAYINFO_START, int.MaxValue);
             Initialize("LightID", Configuration.DBCID_LIGHT_ID_START, int.MaxValue);
             Initialize("LightParamsID", Configuration.DBCID_LIGHTPARAMS_ID_START, int.MaxValue);
+            Initialize("LockID", Configuration.DBCID_LOCK_ID_START, int.MaxValue);
             Initialize("SkillLineID", Configuration.DBCID_SKILLLINE_ID_START, int.MaxValue);
             Initialize("SkillLineAbilityID", Configuration.DBCID_SKILLLINEABILITY_ID_START, int.MaxValue);
             Initialize("SkillRaceClassInfoID", Configuration.DBCID_SKILLRACECLASSINFO_ID_START, int.MaxValue);

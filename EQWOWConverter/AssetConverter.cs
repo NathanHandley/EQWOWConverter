@@ -165,6 +165,36 @@ namespace EQWOWConverter
                     itemTemplatesByEQDBID[chestObject.ContainedEQItemID].IsFromGroundSpawnChest = true;
                 }
 
+                // Bind key to doors/teleports
+                foreach (var gameObjectsByZone in GameObject.GetNonDoodadGameObjectsByZoneShortNames())
+                {
+                    foreach (GameObject keyedGameObject in gameObjectsByZone.Value)
+                    {
+                        if (keyedGameObject.KeyItemEQID <= 0)
+                            continue;
+                        if (itemTemplatesByEQDBID.ContainsKey(keyedGameObject.KeyItemEQID) == false)
+                        {
+                            Logger.WriteDebug("Keyed game object with ID '", keyedGameObject.ID.ToString(), "' has a key item ID of '", keyedGameObject.KeyItemEQID.ToString(), "' which did not exist as an item, so it will not be locked");
+                            continue;
+                        }
+                        keyedGameObject.KeyItemTemplate = itemTemplatesByEQDBID[keyedGameObject.KeyItemEQID];
+                        keyedGameObject.KeyItemTemplate.IsGameObjectKey = true;
+                        keyedGameObject.KeyItemTemplate.SetAsKeyringKeyIfOnlyUsableAsKey();
+                        if (keyedGameObject.AltKeyItemEQID > 0)
+                        {
+                            if (itemTemplatesByEQDBID.ContainsKey(keyedGameObject.AltKeyItemEQID) == false)
+                                Logger.WriteDebug("Keyed game object with ID '", keyedGameObject.ID.ToString(), "' has an alt key item ID of '", keyedGameObject.AltKeyItemEQID.ToString(), "' which did not exist as an item, so only the main key will work");
+                            else
+                            {
+                                keyedGameObject.AltKeyItemTemplate = itemTemplatesByEQDBID[keyedGameObject.AltKeyItemEQID];
+                                keyedGameObject.AltKeyItemTemplate.IsGameObjectKey = true;
+                                keyedGameObject.AltKeyItemTemplate.SetAsKeyringKeyIfOnlyUsableAsKey();
+                            }
+                        }
+                        keyedGameObject.LockDBCID = IDGenerationTool.GenerateID("LockID", "keyitems", keyedGameObject.KeyItemEQID.ToString(), keyedGameObject.AltKeyItemEQID.ToString());
+                    }
+                }
+
                 // Spells                                        
                 GenerateSpells(out spellTemplates, itemTemplatesByEQDBID, ref creatureTemplatesByEQID); // TODO: Remove the 'ref'
 
@@ -2902,21 +2932,18 @@ namespace EQWOWConverter
                 throw new Exception("WoW client patches folder does not exist at '" + wowPatchesFolderRoot + "', did you set PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER?");
             string wowPatchesFolderLoc = Path.Combine(wowPatchesFolderRoot, Configuration.PATCH_LOCALIZATION_STRING);
 
-            // Calc patch names
-            string dataPatchNameNoExt = string.Concat("patch-", Configuration.PATCH_CLIENT_DATA_ID);
-            string dataLocPatchNameNoExt = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID);
-
-            // Get a list of valid patch files (it's done this way to ensure sorting order is exactly right). Also ignore existing patch file
+            // Get a filtered list of patch files to avoid repulling our own patch DBCs
+            List<string> generatedPatchFileNames = Configuration.GetGeneratedPatchFileNames();
             List<string> patchFileNames = new List<string>();
             patchFileNames.Add(Path.Combine(wowPatchesFolderLoc, string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, ".MPQ")));
             string[] existingPatchFiles = Directory.GetFiles(wowPatchesFolderLoc, "patch-*-*.MPQ");
             foreach (string existingPatchName in existingPatchFiles)
-                if (existingPatchName.Contains(dataLocPatchNameNoExt) == false)
+                if (generatedPatchFileNames.Contains(Path.GetFileName(existingPatchName).ToLower()) == false)
                     patchFileNames.Add(existingPatchName);
             patchFileNames.Add(Path.Combine(wowPatchesFolderRoot, "patch.MPQ"));
             existingPatchFiles = Directory.GetFiles(wowPatchesFolderRoot, "patch-*.MPQ");
             foreach (string existingPatchName in existingPatchFiles)
-                if (existingPatchName.Contains(dataPatchNameNoExt) == false)
+                if (generatedPatchFileNames.Contains(Path.GetFileName(existingPatchName).ToLower()) == false)
                     patchFileNames.Add(existingPatchName);
 
             // Make sure all of the files are not locked
@@ -3152,7 +3179,11 @@ namespace EQWOWConverter
             ComputePatchFileDelta(currentFileHashesByRelativePath, previousFileHashesByRelativePath,
                 out List<string> relativePathsToAddOrUpdate, out List<string> relativePathsToRemove);
 
-            Logger.WriteInfo("Delta patch contents: " + relativePathsToAddOrUpdate.Count + " new/updated files (" + relativePathsToRemove.Count + " removed files cannot be represented in a delta patch)");
+            // Different message based on if there are files to remove
+            if (relativePathsToRemove.Count > 0)
+                Logger.WriteInfo("Delta patch contents: ", relativePathsToAddOrUpdate.Count.ToString(), " new/updated files (", relativePathsToRemove.Count.ToString(), " removed files cannot be represented in a delta patch)");
+            else
+                Logger.WriteInfo("Delta patch contents: ", relativePathsToAddOrUpdate.Count.ToString(), " new/updated files");
 
             // Skip if there's nothing to put in the patch
             if (relativePathsToAddOrUpdate.Count == 0)
@@ -3714,6 +3745,29 @@ namespace EQWOWConverter
                     }
                     else
                         Logger.WriteError("Could not attach focus spell to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as both spell slots were already used");
+                }
+
+                // Items acting as keys for locked objects need the "Opening" spell, since the client casts it from the key to perform the unlock
+                if (itemTemplate.IsGameObjectKey == true)
+                {
+                    if (itemTemplate.WOWSpellID1 == 0)
+                    {
+                        itemTemplate.WOWSpellID1 = Configuration.ITEMS_KEY_OPENING_SPELL_ID;
+                        itemTemplate.WOWSpellTrigger1 = 0; // Use (click)
+                        itemTemplate.WOWSpellCharges1 = 0; // Unlimited
+                        itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
+                        itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
+                        itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
+                    }
+                    else if (itemTemplate.WOWSpellID2 == 0)
+                    {
+                        itemTemplate.WOWSpellID2 = Configuration.ITEMS_KEY_OPENING_SPELL_ID;
+                        itemTemplate.WOWSpellTrigger2 = 0; // Use (click)
+                        itemTemplate.WOWSpellPPMRate2 = 0;
+                        itemTemplate.WOWSpellCharges2 = 0; // Unlimited
+                    }
+                    else
+                        Logger.WriteError("Could not attach the key opening spell to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as both spell slots were already used");
                 }
             }
         }

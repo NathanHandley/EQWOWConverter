@@ -587,7 +587,38 @@ namespace EQWOWConverter.WOWFiles
             //);
         }
 
-        public void AddRowForGameObjectTriggeredTeleport(int gameObjectTemplateID, int targetMapID, float targetX, float targetY, float targetZ, 
+        public void AddRowForGameObjectTriggeredTeleportOnActivate(int gameObjectTemplateID, int targetMapID, float targetX, float targetY, float targetZ,
+            float targetOrientation, string comment)
+        {
+            // Locked (keyed) teleports activate through the key's unlock "spell", which skips the gossip so listen here for the state (both unlock and clicking will cause this)
+            AddRow(gameObjectTemplateID, // Negative for GUID, Positive for Entry
+                1,  // SMART_SCRIPT_TYPE_GAMEOBJECT
+                70, // SMART_EVENT_GO_STATE_CHANGED
+                100,
+                2,  // State = Active (1 = Ready, 2 = Active Alternative)
+                0,
+                0,
+                0,
+                0,
+                0,
+                62,  // SMART_ACTION_TELEPORT,
+                targetMapID,
+                0,
+                0,
+                0,
+                0,
+                0,
+                7, // SMART_TARGET_ACTION_INVOKER
+                0,
+                0,
+                targetX,
+                targetY,
+                targetZ,
+                targetOrientation,
+                comment);
+        }
+
+        public void AddRowForGameObjectTriggeredTeleport(int gameObjectTemplateID, int targetMapID, float targetX, float targetY, float targetZ,
             float targetOrientation, string comment)
         {
             AddRow(gameObjectTemplateID, // Negative for GUID, Positive for Entry

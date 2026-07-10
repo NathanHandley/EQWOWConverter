@@ -82,13 +82,13 @@ namespace EQWOWConverter.WOWFiles
                     break;
                 case GameObjectType.Door:
                     {
-                        AddRow(gameObject.GameObjectTemplateEntryID, 
+                        AddRow(gameObject.GameObjectTemplateEntryID,
                             0, // Door
-                            gameObject.GameObjectDisplayInfoID, name, 
+                            gameObject.GameObjectDisplayInfoID, name,
                             0, // Start open
-                            0, // "ID" from Lock.dbc
+                            gameObject.LockDBCID, // "ID" from Lock.dbc
                             gameObject.CloseTimeInMS, // Autoclose time in MS
-                            0, // N/A                            
+                            0, // N/A
                             1, // "Area of Interest" is set to infinite (see from any distance)
                             0, 0, gameObject.Scale, aiName, string.Empty);
                     } break;
@@ -98,9 +98,9 @@ namespace EQWOWConverter.WOWFiles
                             0, // Door <- Overrides the visibility distance making it visible from very far away, but should be "10" (Goober)
                             gameObject.GameObjectDisplayInfoID, name,
                             0, // Start clickable
-                            0, // "ID" from Lock.dbc
+                            gameObject.LockDBCID, // "ID" from Lock.dbc
                             50, // Autoclose time in MS (which is the 'make reusable time' in this case)
-                            0, // N/A                            
+                            0, // N/A
                             1, // "Area of Interest" is set to infinite (see from any distance)
                             0, 0, gameObject.Scale, aiName, string.Empty);
                     } break;

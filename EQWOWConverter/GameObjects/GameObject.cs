@@ -86,6 +86,11 @@ namespace EQWOWConverter.GameObjects
         public int RespawnTimeInMS = 0;
         public int ContainedEQItemID = 0;
         public ItemTemplate? ContainedItemTemplate = null;
+        public int KeyItemEQID = 0;
+        public int AltKeyItemEQID = 0;
+        public int LockDBCID = 0;
+        public ItemTemplate? KeyItemTemplate = null;
+        public ItemTemplate? AltKeyItemTemplate = null;
 
         public static List<GameObject> GetChestGameObjects()
         {
@@ -347,6 +352,13 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.MaxSpawnNum = int.Parse(gameObjectsRow["max_spawn_allowed"]);
                 newGameObject.RespawnTimeInMS = int.Parse(gameObjectsRow["respawn_time"]);
                 newGameObject.ContainedEQItemID = int.Parse(gameObjectsRow["contained_item"]);
+
+                // Keys
+                if (gameObjectType == GameObjectType.Door || gameObjectType == GameObjectType.Teleport)
+                {
+                    newGameObject.KeyItemEQID = Math.Max(int.Parse(gameObjectsRow["keyitem"]), 0);
+                    newGameObject.AltKeyItemEQID = Math.Max(int.Parse(gameObjectsRow["altkeyitem"]), 0);
+                }
 
                 // Sound, if enabled
                 if (newGameObject.SoundEnabled)

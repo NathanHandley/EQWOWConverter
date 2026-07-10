@@ -2155,7 +2155,7 @@ namespace EQWOWConverter
                             spawnTimeInSec = Configuration.OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC;
                         gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, gameObject.InteractiveRotation, spawnTimeInSec, comment);
                         gameObjectTemplateSQL.AddRowForGameObject(name, gameObject);
-                        gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateEntryID);
+                        gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateEntryID, gameObject.LockDBCID != 0);
                         if (gameObject.EQIncline != 0)
                             gameObjectAddonSQL.AddRow(gameObject.GameObjectGUID);
 
@@ -2168,8 +2168,12 @@ namespace EQWOWConverter
                         else if (gameObject.ObjectType == GameObjects.GameObjectType.Teleport)
                         {
                             string scriptComment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUID, " Teleports to ", gameObject.DestinationZoneShortName);
-                            smartScriptsSQL.AddRowForGameObjectTriggeredTeleport(gameObject.GameObjectTemplateEntryID, gameObject.DestinationMapID, gameObject.DestinationPosition.X,
-                                gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
+                            if (gameObject.LockDBCID != 0)
+                                smartScriptsSQL.AddRowForGameObjectTriggeredTeleportOnActivate(gameObject.GameObjectTemplateEntryID, gameObject.DestinationMapID, gameObject.DestinationPosition.X,
+                                    gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
+                            else
+                                smartScriptsSQL.AddRowForGameObjectTriggeredTeleport(gameObject.GameObjectTemplateEntryID, gameObject.DestinationMapID, gameObject.DestinationPosition.X,
+                                    gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
                         }
                     }
                 }

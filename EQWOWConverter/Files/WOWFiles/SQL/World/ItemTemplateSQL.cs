@@ -195,7 +195,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("MaxDurability", 0);
             newRow.AddInt("area", 0);
             newRow.AddInt("Map", 0);
-            newRow.AddInt("BagFamily", 0);
+            newRow.AddInt("BagFamily", itemTemplate.ClassID == 13 ? 256 : 0); // Keys go into the key ring bag family
             newRow.AddInt("TotemCategory", itemTemplate.TotemDBCID);
             newRow.AddInt("socketColor_1", 0);
             newRow.AddInt("socketContent_1", 0);

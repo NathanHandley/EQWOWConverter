@@ -23,9 +23,12 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM gameobject_template_addon WHERE `entry` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `entry` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
-        public void AddRowNoDespawn(int entryID)
+        public void AddRowNoDespawn(int entryID, bool isLocked = false)
         {
-            AddRow(entryID, 0, 32, 0, 0, 0, 0, 0, 0); // 32 = no despawn
+            int flags = 32; // 32 = no despawn
+            if (isLocked == true)
+                flags |= 2; // 2 = locked
+            AddRow(entryID, 0, flags, 0, 0, 0, 0, 0, 0);
         }
 
         public void AddRowForTransport(int entryID)

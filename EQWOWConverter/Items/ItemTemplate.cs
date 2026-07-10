@@ -127,6 +127,7 @@ namespace EQWOWConverter.Items
         public bool IsCreatedBySpell = false;
         public bool IsFoundInGameObject = false;
         public bool IsFromGroundSpawnChest = false;
+        public bool IsGameObjectKey = false; // Opens some locked game object
         public bool IsAlwaysGenerated = false;
         public bool IsForaged = false;
         public bool IsFished = false;
@@ -2013,6 +2014,21 @@ namespace EQWOWConverter.Items
             originalItemTemplate.EQItemID = CUR_ITEM_GENERATED_EQID;
             originalItemTemplate.ParentItemTemplate = createdBagItemTemplate;
             CUR_ITEM_GENERATED_EQID++;
+        }
+
+        public void SetAsKeyringKeyIfOnlyUsableAsKey()
+        {
+            // Items that are wearable or usable beyond opening locks keep their type, since key-class items can't be equipped or used
+            if (InventoryType != ItemWOWInventoryType.NoEquip)
+                return;
+            if (EQClickSpellEffectID > 0 || EQScrollSpellID > 0 || EQWornEffectSpellID > 0 || EQCombatProcSpellEffectID > 0 || WOWFocusSpellID > 0)
+                return;
+            if (FocusType != ItemFocusType.None)
+                return;
+            if (BagSlots > 0 || FoodType > 0)
+                return;
+            ClassID = 13; // Key (stores in the key ring through the item's bag family)
+            SubClassID = 0; // Key
         }
 
         public string GetDescriptionStringWithAddedAllowedClasses(List<ClassEQType> allowedClassTypesEQ)

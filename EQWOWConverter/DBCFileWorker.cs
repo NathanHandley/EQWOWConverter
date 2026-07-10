@@ -52,6 +52,7 @@ namespace EQWOWConverter
         private LightParamsDBC lightParamsDBC = new LightParamsDBC();
         private LiquidTypeDBC liquidTypeDBC = new LiquidTypeDBC();
         private LoadingScreensDBC loadingScreensDBC = new LoadingScreensDBC();
+        private LockDBC lockDBC = new LockDBC();
         private MapDBC mapDBC = new MapDBC();
         private MapDifficultyDBC mapDifficultyDBC = new MapDifficultyDBC();
         private SkillLineDBC skillLineDBC = new SkillLineDBC();
@@ -91,14 +92,14 @@ namespace EQWOWConverter
             if (Directory.Exists(wowPatchesFolder) == false)
                 throw new Exception("WoW client patches folder does not exist at '" + wowPatchesFolder + "', did you set PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER?");
 
-            // Get a list of valid patch files (it's done this way to ensure sorting order is exactly right). Also ignore existing patch file
-            string dataLocPatchNameNoExt = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID);
+            // Filter away any patches this converter is generating
+            List<string> generatedPatchFileNames = Configuration.GetGeneratedPatchFileNames();
             List<string> patchFileNames = new List<string>();
             patchFileNames.Add(Path.Combine(wowPatchesFolder, string.Concat("locale-", Configuration.PATCH_LOCALIZATION_STRING, ".MPQ")));
             patchFileNames.Add(Path.Combine(wowPatchesFolder, string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, ".MPQ")));
             string[] existingPatchFiles = Directory.GetFiles(wowPatchesFolder, "patch-*-*.MPQ");
             foreach (string existingPatchName in existingPatchFiles)
-                if (existingPatchName.Contains(dataLocPatchNameNoExt) == false)
+                if (generatedPatchFileNames.Contains(Path.GetFileName(existingPatchName).ToLower()) == false)
                     patchFileNames.Add(existingPatchName);
 
             // Make sure all of the files are not locked
@@ -219,6 +220,7 @@ namespace EQWOWConverter
             lightParamsDBC.LoadFromDisk(dbcInputFolder, "LightParams.dbc");
             liquidTypeDBC.LoadFromDisk(dbcInputFolder, "LiquidType.dbc");
             loadingScreensDBC.LoadFromDisk(dbcInputFolder, "LoadingScreens.dbc");
+            lockDBC.LoadFromDisk(dbcInputFolder, "Lock.dbc");
             mapDBC.LoadFromDisk(dbcInputFolder, "Map.dbc");
             mapDifficultyDBC.LoadFromDisk(dbcInputFolder, "MapDifficulty.dbc");
             skillLineDBC.LoadFromDisk(dbcInputFolder, "SkillLine.dbc");
@@ -259,6 +261,22 @@ namespace EQWOWConverter
             loadingScreensDBC.AddRow(Configuration.DBCID_LOADINGSCREEN_ID_START, "EQAntonica", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQClassic.blp");
             loadingScreensDBC.AddRow(Configuration.DBCID_LOADINGSCREEN_ID_START + 1, "EQKunark", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQKunark.blp");
             loadingScreensDBC.AddRow(Configuration.DBCID_LOADINGSCREEN_ID_START + 2, "EQVelious", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQVelious.blp");
+
+            // Locks for keyed doors and teleports (multiple game objects can share one lock, so only add each once)
+            HashSet<int> addedLockDBCIDs = new HashSet<int>();
+            foreach (var gameObjectsByZoneShortName in GameObject.GetNonDoodadGameObjectsByZoneShortNames())
+            {
+                foreach (GameObject gameObject in gameObjectsByZoneShortName.Value)
+                {
+                    if (gameObject.LockDBCID == 0 || gameObject.KeyItemTemplate == null)
+                        continue;
+                    if (addedLockDBCIDs.Contains(gameObject.LockDBCID) == true)
+                        continue;
+                    int altKeyItemWOWID = gameObject.AltKeyItemTemplate != null ? gameObject.AltKeyItemTemplate.WOWEntryID : 0;
+                    lockDBC.AddRowForItemKeys(gameObject.LockDBCID, gameObject.KeyItemTemplate.WOWEntryID, altKeyItemWOWID);
+                    addedLockDBCIDs.Add(gameObject.LockDBCID);
+                }
+            }
 
             // Creatures
             Dictionary<string, int> creatureFootstepIDBySoundNames = new Dictionary<string, int>();
@@ -819,6 +837,8 @@ namespace EQWOWConverter
             liquidTypeDBC.SaveToDisk(dbcOutputServerFolder);
             loadingScreensDBC.SaveToDisk(dbcOutputClientFolder);
             loadingScreensDBC.SaveToDisk(dbcOutputServerFolder);
+            lockDBC.SaveToDisk(dbcOutputClientFolder);
+            lockDBC.SaveToDisk(dbcOutputServerFolder);
             mapDBC.SaveToDisk(dbcOutputClientFolder);
             mapDBC.SaveToDisk(dbcOutputServerFolder);
             mapDifficultyDBC.SaveToDisk(dbcOutputClientFolder);
