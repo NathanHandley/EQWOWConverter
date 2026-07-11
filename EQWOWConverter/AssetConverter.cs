@@ -3655,6 +3655,7 @@ namespace EQWOWConverter
                         itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
                         itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
                         itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
+                        itemTemplate.ScriptName = "EverQuest_ItemScript"; // Casts the proc without the item so the buff isn't removed on unequip
 
                         // If it's a good effect and targets ally, then it needs a special spellID so it only targets self
                         if (spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].IsGoodEffect)

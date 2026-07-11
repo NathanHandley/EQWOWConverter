@@ -210,7 +210,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("duration", 0);
             newRow.AddInt("ItemLimitCategory", 0);
             newRow.AddInt("HolidayId", 0);
-            newRow.AddString("ScriptName", 64, string.Empty);
+            newRow.AddString("ScriptName", 64, itemTemplate.ScriptName);
             newRow.AddInt("DisenchantID", 0);
             newRow.AddInt("FoodType", itemTemplate.FoodType); // For pets: 1 - Meat, 2 - Fish, 3 - Cheese, 4 - Bread, 5 - Fungus, 6 - fruit, 7 - Raw Meat, 8 - Raw Fish
             newRow.AddInt("minMoneyLoot", 0);

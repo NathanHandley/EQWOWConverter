@@ -86,6 +86,7 @@ namespace EQWOWConverter.Items
         public bool IsNoDrop = false;
         public ItemDisplayInfo? ItemDisplayInfo = null;
         public bool DoesTeachSpell = false;
+        public string ScriptName = string.Empty;
         public int WOWSpellID1 = 0;
         public int WOWSpellTrigger1 = 0;
         public int WOWSpellCharges1 = 0;
