@@ -83,6 +83,8 @@ namespace EQWOWConverter.Creatures
         public int SpawnLimit = 0;
         public bool HasSmartScript = false;
         public int DefaultEmoteID = 0;
+        public int EQEmoteSetID = 0;
+        public bool HasHailedEmote = false;
         public int CreatureSpellListID = 0;
         public List<CreatureSpellEntry> CreatureSpellEntriesCombat = new List<CreatureSpellEntry>();
         public List<CreatureSpellEntry> CreatureSpellEntriesHeal = new List<CreatureSpellEntry>();
@@ -296,6 +298,7 @@ namespace EQWOWConverter.Creatures
                             newCreatureTemplate.MaxLevel = newCreatureTemplate.Level;
                     }
                     newCreatureTemplate.DefaultEmoteID = int.Max(int.Parse(columns["idle_emote_id"]), 0);
+                    newCreatureTemplate.EQEmoteSetID = int.Max(int.Parse(columns["emoteid"]), 0);
                     newCreatureTemplate.EQBodyType = int.Parse(columns["bodytype"]);
                     newCreatureTemplate.Size = float.Parse(columns["size"]);
                     if (newCreatureTemplate.Size <= 0)

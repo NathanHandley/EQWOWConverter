@@ -79,6 +79,7 @@ namespace EQWOWConverter
         private ModEverquestCreatureInstanceSQL modEverquestCreatureInstanceSQL = new ModEverquestCreatureInstanceSQL();
         private ModEverquestCreatureLootSQL modEverquestCreatureLootSQL = new ModEverquestCreatureLootSQL();
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
+        private ModEverquestCreatureEmoteSQL modEverquestCreatureEmoteSQL = new ModEverquestCreatureEmoteSQL();
         private ModEverquestCreatureKillSpawnSQL modEverquestCreatureKillSpawnSQL = new ModEverquestCreatureKillSpawnSQL();
         private ModEverquestCreatureSpawnPointSQL modEverquestCreatureSpawnPointSQL = new ModEverquestCreatureSpawnPointSQL();
         private ModEverquestCreatureWaypointSQL modEverquestCreatureWaypointSQL = new ModEverquestCreatureWaypointSQL();
@@ -151,6 +152,9 @@ namespace EQWOWConverter
 
             // Talk-triggered (gossip) reactions, before creature data so the gossip flags are set prior to creature_template rows generating
             PopulateCreatureGossipData();
+
+            // Creature say/emote events, also before creature data since 'hailed' emotes set gossip flags on the creature templates
+            PopulateCreatureEmoteData();
 
             // Creatures
             Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
@@ -298,6 +302,42 @@ namespace EQWOWConverter
                         modEverquestGossipReactionSQL.AddRow(gossipCreatureTemplate.WOWCreatureTemplateID, menuNPCTextID, gossipReaction, targetCreatureTemplateID);
                     }
                 }
+            }
+        }
+
+        private void PopulateCreatureEmoteData()
+        {
+            // Event emotes
+            Dictionary<int, List<CreatureEmote>> emotesByEQEmoteSetID = CreatureEmote.GetEmotesByEQEmoteSetID();
+            Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
+            foreach (CreatureTemplate creatureTemplate in creatureTemplatesByEQID.Values)
+            {
+                if (creatureTemplate.EQEmoteSetID == 0)
+                    continue;
+                if (emotesByEQEmoteSetID.ContainsKey(creatureTemplate.EQEmoteSetID) == false)
+                {
+                    Logger.WriteDebug("Skipping creature emotes for creature template '", creatureTemplate.EQCreatureTemplateID.ToString(), "' since emote set '", creatureTemplate.EQEmoteSetID.ToString(), "' has no rows");
+                    continue;
+                }
+                foreach (CreatureEmote emote in emotesByEQEmoteSetID[creatureTemplate.EQEmoteSetID])
+                {
+                    if (emote.EventType == CreatureEmoteEventType.Hailed)
+                        creatureTemplate.HasHailedEmote = true;
+                    modEverquestCreatureEmoteSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, emote);
+                }
+            }
+
+            // Ambient emotes
+            foreach (var ambientEmotesForCreature in CreatureEmote.GetAmbientEmotesByEQCreatureTemplateID())
+            {
+                if (creatureTemplatesByEQID.ContainsKey(ambientEmotesForCreature.Key) == false)
+                {
+                    Logger.WriteDebug("Skipping ambient emotes for creature template '" + ambientEmotesForCreature.Key + "' since no creature template could be found");
+                    continue;
+                }
+                CreatureTemplate creatureTemplate = creatureTemplatesByEQID[ambientEmotesForCreature.Key];
+                foreach (CreatureEmote emote in ambientEmotesForCreature.Value)
+                    modEverquestCreatureEmoteSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, emote);
             }
         }
 
@@ -1669,9 +1709,14 @@ namespace EQWOWConverter
                             else
                                 creatureTextGroupIDsByCreatureTemplateID.Add(creatureTemplateID, 0);
 
+                            // Bake in the names
+                            string reactionText = reaction.ReactionValue;
+                            if (reaction.ReactionType == QuestReactionType.Emote)
+                                reactionText = string.Concat(creatureTemplateByWOWID[creatureTemplateID].Name, " ", reactionText);
+
                             // Broadcast Text
                             int broadcastID = IDGenerationTool.GenerateID("BroadcastTextID", "questreaction", creatureTemplateID.ToString(), creatureTextGroupID.ToString());
-                            broadcastTextSQL.AddRow(broadcastID, reaction.ReactionValue, reaction.ReactionValue);
+                            broadcastTextSQL.AddRow(broadcastID, reactionText, reactionText);
                             string comment = string.Concat("EQ ", creatureTemplateByWOWID[creatureTemplateID].Name, " Quest ", reaction.ReactionType.ToString());
                             int messageType = 12; // Default to say
                             switch (reaction.ReactionType)
@@ -1681,8 +1726,8 @@ namespace EQWOWConverter
                                 case QuestReactionType.Yell: messageType = 14; break;
                                 default: Logger.WriteError("Unhandled quest reaction type of " + reaction.ReactionType); break;
                             }
-                            creatureTextSQL.AddRow(creatureTemplateID, creatureTextGroupID, messageType, reaction.ReactionValue, broadcastID, Configuration.QUESTS_TEXT_DURATION_IN_MS, comment);
-                            creatureTextSQL.AddRow(creatureTemplateID, creatureTextGroupID + 1, messageType, reaction.ReactionValue, broadcastID, Configuration.QUESTS_TEXT_DURATION_IN_MS, comment);
+                            creatureTextSQL.AddRow(creatureTemplateID, creatureTextGroupID, messageType, reactionText, broadcastID, Configuration.QUESTS_TEXT_DURATION_IN_MS, comment);
+                            creatureTextSQL.AddRow(creatureTemplateID, creatureTextGroupID + 1, messageType, reactionText, broadcastID, Configuration.QUESTS_TEXT_DURATION_IN_MS, comment);
 
                             // Smart Script
                             smartScriptsSQL.AddRowForQuestCompleteTalkEvent(creatureTemplateID, creatureTextGroupID, firstQuestID, comment);
@@ -2226,6 +2271,7 @@ namespace EQWOWConverter
             modEverquestCreatureInstanceSQL.SaveToDisk("mod_everquest_creature_instance", SQLFileType.World);
             modEverquestCreatureLootSQL.SaveToDisk("mod_everquest_creature_loot", SQLFileType.World);
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
+            modEverquestCreatureEmoteSQL.SaveToDisk("mod_everquest_creature_emote", SQLFileType.World);
             modEverquestCreatureKillSpawnSQL.SaveToDisk("mod_everquest_creature_kill_spawn", SQLFileType.World);
             modEverquestCreatureSpawnPointSQL.SaveToDisk("mod_everquest_creature_spawn_point", SQLFileType.World);
             modEverquestCreatureWaypointSQL.SaveToDisk("mod_everquest_creature_waypoint", SQLFileType.World);

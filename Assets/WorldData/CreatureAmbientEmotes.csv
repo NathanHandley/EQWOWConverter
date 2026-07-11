@@ -1,0 +1,325 @@
+id|zone|npc_name|eq_npc_id|event|emote_type|chance|param1|param2|min_expansion|max_expansion|text|comment
+1|airplane|Gwan|71069|death|emote|100|0|0|-1|-1|lets out one last, frustrated breath and gasps.|event_death_complete speech
+2|airplane|Gwan|71069|death|say|100|0|0|-1|-1|Trunt! Prepare yourself!|event_death_complete speech
+3|airplane|Gwan|71069|spawn|say|100|0|0|-1|-1|Im ready when you are. Tell me when you are [prepared].|event_spawn speech
+4|airplane|Sirran_the_Lunatic|71058|combat|shout|100|0|0|-1|-1|What?! Now you've done it! The bunnies are angry! ANGRY I TELL YOU!|event_combat speech
+5|akanon|Cleaner_X|55161|timer|say|100|120000|240000|-1|-1|Click.. Dust. Dust. Dust.|event_waypoint_arrive bark (approximated as timer)
+6|akanon|Clockwork_IIZ|55086|timer|say|100|3100000|3100000|-1|-1|Please do not disturb the animals.|event_timer bark
+7|akanon|Clockwork_IZ|55216|timer|say|100|4200000|4200000|-1|-1|Do not poke, shoot, or enchant the animals.|event_timer bark
+8|akanon|Duster_V|55163|timer|say|100|120000|240000|-1|-1|Click.. Dust. Dust. Dust.|event_waypoint_arrive bark (approximated as timer)
+9|akanon|Duster_X|55001|timer|say|100|120000|240000|-1|-1|Click.. Dust. Dust. Dust.|event_waypoint_arrive bark (approximated as timer)
+10|akanon|Scrubber_IV|55221|timer|say|100|120000|240000|-1|-1|Click.. Dust. Dust. Dust.|event_waypoint_arrive bark (approximated as timer)
+11|burningwood|Azdalin|87006|combat|say|100|0|0|-1|-1|Foolish adventurer!! You shall die. You are nothing to Azdalin.|event_combat speech
+12|burningwood|Azdalin|87006|combat|say|100|0|0|-1|-1|$class like you always bring out the worst in me!|event_combat speech
+13|burningwood|Azdalin|87006|combat|say|100|0|0|-1|-1|I really hate $class like you!|event_combat speech
+14|burningwood|Azdalin|87006|combat|say|100|0|0|-1|-1|$class like you are an affront to my senses!|event_combat speech
+15|burningwood|Gylton|87070|combat|say|100|0|0|-1|-1|You will perish!! You are weak and should have kept to your own realm!!|event_combat speech
+16|burningwood|Gylton|87070|combat|say|100|0|0|-1|-1|$class like you always bring out the worst in me!|event_combat speech
+17|burningwood|Gylton|87070|combat|say|100|0|0|-1|-1|I really hate $class like you!|event_combat speech
+18|burningwood|Gylton|87070|combat|say|100|0|0|-1|-1|$class like you are an affront to my senses!|event_combat speech
+19|burningwood|Gylton|87070|death|emote|100|0|0|-1|-1|slams to the ground with a loud THUD!! The ground around you still trembles. 'Now.. I shall never slay my blasphemous.. brother.. Xyl..'|event_death_complete speech
+20|chardok|A_mix|103210|proximity|emote|100|25|60000|-1|-1|sulfur and dust hangs heavily in the air.|event_enter box trigger
+21|chardok|Clanging_sounds|103196|proximity|emote|100|25|60000|-1|-1|of metal striking stone echo through the tunnel.|event_enter box trigger
+22|chardok|The_clang|103161|proximity|emote|100|25|60000|-1|-1|of picks and shovels can be heard above the constant crack of whips.|event_enter box trigger
+23|chardok|The_cries|103160|proximity|emote|100|25|60000|-1|-1|of slaves echo through the dusty halls.|event_enter box trigger
+24|chardok|The_musty|103168|proximity|emote|100|25|60000|-1|-1|scent of sweat and labor wafts up from the tunnels below.|event_enter box trigger
+25|chardok|The_sounds|103176|proximity|emote|100|25|60000|-1|-1|of hard labor ring from below as chains rattle above your head.|event_enter box trigger
+26|chardok|The_stench|103187|proximity|emote|100|25|60000|-1|-1|of decaying flesh and freshly turned soil overpowers your other senses.|event_enter box trigger
+27|chardok|The_thick|103174|proximity|emote|100|25|60000|-1|-1|dust is beginning to clog your throat and nostrils.|event_enter box trigger
+28|chardok|Your_feet_splash|103213|proximity|emote|100|25|60000|-1|-1|through shallow puddles as you walk along.|event_enter box trigger
+29|commons|Duggin_Scumber|21136|timer|emote|100|120000|240000|-1|-1|runs up and steals the note. 'Aha!! Foolish Qeynite or whatever you call yourself!! I have found the note and now I shall take it to my superior!! Just try and catch me!!'|event_waypoint_arrive bark (approximated as timer)
+30|commons|Mojax_Hikspin|21120|timer|say|100|120000|240000|-1|-1|Here you are. I hid it in this box behind the marker. Take it to Eastyana of the Temple of Marr. Goodbye.|event_waypoint_arrive bark (approximated as timer)
+31|crushbone|Lord_Darish|58028|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+32|crushbone|Lord_Darish|58028|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+33|crushbone|Lord_Darish|58028|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+34|crushbone|Orc_Scoutsman|58042|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+35|crushbone|Orc_Scoutsman|58042|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+36|crushbone|Orc_Scoutsman|58042|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+37|crushbone|Orc_Warden|58047|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+38|crushbone|Orc_Warden|58047|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+39|crushbone|Orc_Warden|58047|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+40|crushbone|The_Prophet|58031|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+41|crushbone|The_Prophet|58031|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+42|crushbone|The_Prophet|58031|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+43|crushbone|orc_centurion|58009|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+44|crushbone|orc_centurion|58009|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+45|crushbone|orc_centurion|58009|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+46|crushbone|orc_centurion|58061|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+47|crushbone|orc_centurion|58061|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+48|crushbone|orc_centurion|58061|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+49|crushbone|orc_centurion|58062|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+50|crushbone|orc_centurion|58062|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+51|crushbone|orc_centurion|58062|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+52|crushbone|orc_centurion|58064|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+53|crushbone|orc_centurion|58064|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+54|crushbone|orc_centurion|58064|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+55|crushbone|orc_emissary|58041|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+56|crushbone|orc_emissary|58041|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+57|crushbone|orc_emissary|58041|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+58|crushbone|orc_slaver|58029|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+59|crushbone|orc_slaver|58029|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+60|crushbone|orc_slaver|58029|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+61|crushbone|orc_slaver|58065|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+62|crushbone|orc_slaver|58065|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+63|crushbone|orc_slaver|58065|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+64|crushbone|orc_taskmaster|58040|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+65|crushbone|orc_taskmaster|58040|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+66|crushbone|orc_taskmaster|58040|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+67|crushbone|orc_trainer|58035|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+68|crushbone|orc_trainer|58035|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+69|crushbone|orc_trainer|58035|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+70|crushbone|orc_warlord|58002|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+71|crushbone|orc_warlord|58002|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+72|crushbone|orc_warlord|58002|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+73|crushbone|royal_guard|58030|combat|say|100|0|0|-1|-1|Death!! Death to all who oppose the Crushbone orcs!!|event_combat speech
+74|crushbone|royal_guard|58030|combat|say|100|0|0|-1|-1|Hail, Emperor Crush!!|event_combat speech
+75|crushbone|royal_guard|58030|combat|say|100|0|0|-1|-1|Fall before the might of Clan Crushbone!!|event_combat speech
+76|dalnir|a_coerced_channeler|104001|death|shout|100|0|0|-1|-1|the river of Xinth...|event_death_complete speech
+77|eastkarana|#Guard_Elias|15193|timer|say|100|120000|240000|-1|-1|Hello, Milea. It is unfortunate for you that your friends have led me right to you. Soon you will join Nerissa in the afterlife. Do you have any last words?|event_waypoint_arrive bark (approximated as timer)
+78|eastkarana|Sir_Morgan|15045|timer|say|100|120000|240000|-1|-1|Hello, Wimbley, old chap!|event_waypoint_arrive bark (approximated as timer)
+79|eastkarana|Sir_Morgan|15045|timer|say|100|120000|240000|-1|-1|Almost there...|event_waypoint_arrive bark (approximated as timer)
+80|eastkarana|Sir_Morgan|15045|timer|say|100|120000|240000|-1|-1|Well, here we are! It is just a short jaunt through the pass ahead. Just remember to take the high road. I'm off, then. Good luck!|event_waypoint_arrive bark (approximated as timer)
+81|eastwastes|#Peffin_Ambersnow|116038|combat|shout|100|0|0|-1|-1|Take me if you can outlander! Your hunt ends here...I hope you enjoy the taste of Kromrif steel!|event_combat speech
+82|ecommons|Sergeant_Slate|22067|timer|say|100|120000|240000|-1|-1|Condition report soldier!|event_waypoint_arrive bark (approximated as timer)
+83|erudsxing|Ooglyn|98009|timer|say|100|120000|240000|-1|-1|Ok, here is place for you to for waiting. Hab fun shaman!|event_waypoint_arrive bark (approximated as timer)
+84|everfrost|Tundra_Jack|30061|timer|say|100|120000|240000|-1|-1|Come on, Iceberg! Time to do a little mining.|event_waypoint_arrive bark (approximated as timer)
+85|everfrost|Tundra_Jack|30061|timer|say|100|120000|240000|-1|-1|Silver and Gold!!.. Silver and Gold!!|event_waypoint_arrive bark (approximated as timer)
+86|everfrost|Tundra_Jack|30061|timer|say|100|120000|240000|-1|-1|Nothin'!!|event_waypoint_arrive bark (approximated as timer)
+87|fearplane|Cazic_Thule|72003|combat|shout|100|0|0|-1|-1|Denizens of Fear, your master commands you to come forth to his aid!!|event_combat speech
+88|fearplane|Cazic_Thule|72005|combat|shout|100|0|0|-1|-1|Denizens of Fear, your master commands you to come forth to his aid!!|event_combat speech
+89|fieldofbone|Gharg_Oberbord|78090|timer|emote|100|3100000|3100000|-1|-1|laughs heartily at one of the skeletons.|event_timer bark
+90|firiona|#Hero_Goxnok|84401|combat|say|100|0|0|-1|-1|Die by the power of Greenmist!!|event_combat speech
+91|firiona|Sergeant_Daelione|84008|timer|shout|100|120000|240000|-1|-1|We march Onward!|event_waypoint_arrive bark (approximated as timer)
+92|freporte|Brunar_Rankin|10173|timer|say|100|120000|240000|-1|-1|Here is my catch for today, Gregor|event_waypoint_arrive bark (approximated as timer)
+93|freporte|Brunar_Rankin|10173|timer|say|100|120000|240000|-1|-1|Ho hum, what a lovely day !|event_waypoint_arrive bark (approximated as timer)
+94|freporte|Henna_Treghost|10172|timer|say|100|1040000|1040000|-1|-1|Let's hear some music.|event_timer bark
+95|freporte|Henna_Treghost|10172|timer|say|100|1040000|1040000|-1|-1|Music!! Music!!|event_timer bark
+96|freporte|Henna_Treghost|10172|timer|say|100|1040000|1040000|-1|-1|Play us some music bard!!|event_timer bark
+97|freporte|Henna_Treghost|10172|timer|say|100|1040000|1040000|-1|-1|Let's liven this pub up!|event_timer bark
+98|freporte|Henna_Treghost|10172|timer|say|100|1040000|1040000|-1|-1|Try to cheer this place up, bard.|event_timer bark
+99|freporte|Henna_Treghost|10172|timer|say|100|1040000|1040000|-1|-1|Where is the music? I don't pay you bards to drink all the grog!!|event_timer bark
+100|freporte|Henna_Treghost|10172|timer|say|100|1040000|1040000|-1|-1|Sing us a melody.|event_timer bark
+101|freportw|Krazen_Loosh|9143|timer|say|100|120000|240000|-1|-1|Hello, Alayle. We just got a message from Qeynos. I think you should come with me.|event_waypoint_arrive bark (approximated as timer)
+102|freportw|Lady_Shae|9058|timer|say|100|120000|240000|-1|-1|I will be back soon, Pandos. Please keep an eye on my room for me.|event_waypoint_arrive bark (approximated as timer)
+103|freportw|Shintl_Lowbrew|9056|timer|say|100|120000|240000|-1|-1|Any mail for room number two?|event_waypoint_arrive bark (approximated as timer)
+104|freportw|a_prisoner|9138|timer|say|100|150000|150000|-1|-1|unngh!!.. Biggle and boo.. Goggle froo..|event_timer bark
+105|freportw|a_prisoner|9138|timer|say|100|150000|150000|-1|-1|ahhhh!!.. Tiggle bumble coo.. Bog n' Goo..|event_timer bark
+106|freportw|peasant_woman|9122|timer|emote|100|3000000|3000000|-1|-1|grunts as she tries to fill two buckets of [water]. Her frail arms strain at her work and pain fills her eyes with tears.|event_timer bark
+107|frozenshadow|a_distant_voice|111164|proximity|say|100|45|60000|-1|-1|She took us during the battle. She could feel us dying during our struggle with the heretics. She brought us here, far from home. Do you see why you must go back now? Look at what she has done. They do not see, they think they are home. She feeds her captive souls with knowledge to power her tools of domination. Soon they will be bricks and steel, used for nothing but war.|event_enter box trigger
+108|frozenshadow|a_haunting_voice|111146|proximity|say|100|25|60000|-1|-1|Please, you must turn back. They no longer recognize, they no longer know.|event_enter box trigger
+109|gfaydark|a_drunkard|54261|timer|say|100|120000|240000|-1|-1|Please.. Can anyone spare some coppers? <Hic>.. Anyone?|event_waypoint_arrive bark (approximated as timer)
+110|growthplane|#a_thifling_sprite|127009|timer|emote|100|45000|45000|-1|-1|makes an odd series of gurgles and murmurs to itself. It seems like the random collection of unintelligeble noise is supposed to simulate language.|event_timer bark
+111|growthplane|Tunarean_Earthmelder|127042|timer|emote|100|90000|90000|-1|-1|seems to pulse as its roots dig into the ground around it.|event_timer bark
+112|growthplane|a_guardian_power|127037|timer|emote|100|120000|240000|-1|-1|roars loudly and stomps on the ground as it looks into the trees as if in challenge to anything that would harm the sifaye.|event_waypoint_arrive bark (approximated as timer)
+113|growthplane|a_mumbling_totem_man|127046|timer|emote|100|120000|240000|-1|-1|mumbles and clicks to itself as it stares at the huge totem.|event_waypoint_arrive bark (approximated as timer)
+114|growthplane|a_mumbling_totem_man|127046|timer|emote|100|120000|240000|-1|-1|clicks to itself as it circles the ancient totem.|event_waypoint_arrive bark (approximated as timer)
+115|growthplane|a_reverent_treant|127013|timer|emote|100|30000|30000|-1|-1|rumbles. Its voice sounds like bark cracking and moving in a strange hum of song. It seems to be humming to the large tree.|event_timer bark
+116|growthplane|a_reverent_treant|127013|timer|emote|100|30000|30000|-1|-1|whispers, like wind through the tree tops, as it speaks hushed words to the tree.|event_timer bark
+117|growthplane|a_thifling_orator|127041|timer|say|100|180000|180000|-1|-1|Step three is... uh... I forgets but step four is growth. Dont forget!|event_timer bark
+118|hateplane|A_blood|76046|proximity|emote|100|25|60000|-1|-1|chilling cry echoes through the darkened streets|event_enter box trigger
+119|hateplane|A_wise|76061|proximity|emote|100|25|60000|-1|-1|man would not find himself invading the realm of Innoruuk.|event_enter box trigger
+120|hateplane|The_stench|76390|proximity|emote|100|25|60000|-1|-1|of decay is overpowering|event_enter box trigger
+121|hateplane|You_really|76389|proximity|emote|100|25|60000|-1|-1|hate this place.|event_enter box trigger
+122|hateplane|You_would|76058|proximity|emote|100|25|60000|-1|-1|much rather be in a safe and warm inn than this hellish dimension.|event_enter box trigger
+123|highkeep|Isabella_Cellus|6167|timer|say|100|120000|240000|-1|-1|Would you please leave me alone?!|event_waypoint_arrive bark (approximated as timer)
+124|highkeep|Isabella_Cellus|6167|timer|say|100|120000|240000|-1|-1|I need to get out of here.|event_waypoint_arrive bark (approximated as timer)
+125|highkeep|Isabella_Cellus|6167|timer|say|100|120000|240000|-1|-1|Would you please stop following me!!|event_waypoint_arrive bark (approximated as timer)
+126|highkeep|Isabella_Cellus|6167|timer|say|100|120000|240000|-1|-1|I just adore this place.|event_waypoint_arrive bark (approximated as timer)
+127|iceclad|Bilf|110056|timer|emote|100|70000|70000|-1|-1|rolls a pair of handcarved dice. 'Har har! The bones be favorin' me today!'|event_timer bark
+128|iceclad|Bilf|110056|timer|emote|100|70000|70000|-1|-1|rolls a pair of handcarved dice. 'Bah! You loaded these dice! I never roll this bad!'|event_timer bark
+129|iceclad|Bilf|110056|timer|emote|100|70000|70000|-1|-1|gets a strange smile and throws down a couple of chips. 'Time ta ante up. I'm feelin' lucky.'|event_timer bark
+130|iceclad|Ergrez_Shortpaw|110010|timer|emote|100|120000|120000|-1|-1|works at skinning and cleaning the raw furs around him.|event_timer bark
+131|iceclad|Lodizal|110003|timer|emote|100|120000|240000|-1|-1|sniffs and turns slowly, its huge head swinging from side to side as it looks for food.|event_waypoint_arrive bark (approximated as timer)
+132|iceclad|Lodizal|110003|timer|emote|100|120000|240000|-1|-1|roars at the village angrily, its trail of destruction stretching behind.|event_waypoint_arrive bark (approximated as timer)
+133|iceclad|Lodizal|110003|timer|emote|100|120000|240000|-1|-1|bellows one last time, its fiery maw satiated by its angry feeding. It heads towards the ocean, its gut full and its anger quenched.|event_waypoint_arrive bark (approximated as timer)
+134|iceclad|Lodizal|110003|timer|emote|100|120000|240000|-1|-1|bellows and thrashes around. His flippers kick hard snow and ice into the air. His maw snaps and opens like a promise of death.|event_waypoint_arrive bark (approximated as timer)
+135|iceclad|Madan_Eflik|110040|timer|emote|100|3000000|3000000|-1|-1|rubs her arms to warm herself up. 'Did you find me something other than biscuits yet? What? No? Stay on your side of the igloo, then, Sojan!|event_timer bark
+136|iceclad|Madan_Eflik|110040|timer|emote|100|3000000|3000000|-1|-1|shivers violently. 'I hate this place. My sister always told me I shouldn't be a pirate and that you were nothing but a clockwork grease pouring imbecile!'|event_timer bark
+137|iceclad|Novyak_the_Lookout|110070|timer|say|100|2400000|2400000|-1|-1|Guys, can I get down now please?|event_timer bark
+138|kael|The_sound_of|113422|proximity|emote|100|45|60000|-1|-1|chanting seems to be coming from all directions.|event_enter box trigger
+139|kael|a_fish|113087|proximity|emote|100|45|60000|-1|-1|nearly jumps onto the ice.|event_enter box trigger
+140|kael|a_gust_of_wind|113560|proximity|emote|100|45|60000|-1|-1|blows through the cavern.|event_enter box trigger
+141|kael|water|113431|proximity|emote|100|45|60000|-1|-1|drips from the stalactite to the stalagmite.|event_enter box trigger
+142|kaesora|failed_crypt_raider|88092|death|say|100|0|0|-1|-1|Never.. to feel the mist.. again..|event_death_complete speech
+143|kaladimb|Jark|67056|timer|emote|100|4200000|4200000|-1|-1|strikes the wall with his pick. A dull clang sounds throughout the cave. 'Arrr. Nothin' here either.|event_timer bark
+144|kerraridge|Urkath_Greyface|74022|timer|say|100|3000000|3000000|-1|-1|Errrrrmf. If only just that [wish] for Urrkath?|event_timer bark
+145|kithicor|General_V-ghera|20205|timer|emote|100|6000|6000|-1|-1|picks up something from the ground.|event_timer bark
+146|lakerathe|#Natasha_Whitewater|51138|spawn|shout|100|0|0|-1|-1|The Triumvirate of Water has decreed your fate, Shmendrik Lavawalker!! I am here to deliver said fate!!|event_spawn speech
+147|lakerathe|Princess_Lenya_Thex|51176|spawn|shout|100|0|0|-1|-1|I am free..|event_spawn speech
+148|lakerathe|Princess_Lenya_Thex|51176|spawn|emote|100|0|0|-1|-1|<glug>' She motions to you to follow her to shore.'|event_spawn speech
+149|lavastorm|Eejag|27119|spawn|shout|100|0|0|-1|-1|What imbecile dares challenge a Celestial Fist?! Do you even know who you are challenging? HA! You are nothing but an insect! I will enjoy crushing you, I have not charred the flesh of an idiot in decades! If you truly wish to fight me, the battle shall be held in my own element. Come, challenger, come down to the pits of flowing fire.|event_spawn speech
+150|mischiefplane|#Lithiniath|126014|timer|shout|100|120000|240000|-1|-1|The madness has fled my mind and I am once again whole! Give Gelistial my regards, I must leave this place and try to quell the madness I have inflicted.|event_waypoint_arrive bark (approximated as timer)
+151|mischiefplane|Rissa|126235|timer|say|100|120000|240000|-1|-1|Ahhhhhh! Someone help me! This crazy Bixie is chasing me!|event_waypoint_arrive bark (approximated as timer)
+152|mischiefplane|Rissa|126235|timer|say|100|120000|240000|-1|-1|Its almost got me! Someone help!|event_waypoint_arrive bark (approximated as timer)
+153|mischiefplane|Rissa|126235|timer|say|100|120000|240000|-1|-1|Won't anyone help me! Ahhh!|event_waypoint_arrive bark (approximated as timer)
+154|mischiefplane|Rissa|126235|timer|say|100|120000|240000|-1|-1|NO NO NO NO! I can keep running! You will not catch me you crazed Bixie!|event_waypoint_arrive bark (approximated as timer)
+155|mischiefplane|Rissa|126235|timer|say|100|120000|240000|-1|-1|These legs will carry me to salvation! Someone get this Bixie off me!|event_waypoint_arrive bark (approximated as timer)
+156|mischiefplane|Rissa|126235|timer|say|100|120000|240000|-1|-1|Maybe if it rains, her wings will be wet and I can get her!|event_waypoint_arrive bark (approximated as timer)
+157|mischiefplane|Rissa|126235|timer|say|100|120000|240000|-1|-1|Blast it all! No help! No help from anyone I see! AHHHHHH!|event_waypoint_arrive bark (approximated as timer)
+158|mischiefplane|Vinny_V._D-vicci|126277|timer|say|100|94000|94000|-1|-1|I'm fishing fishing fishing. I fish the whole week through. Just fishing fishing fishing. It's what I always do.|event_timer bark
+159|misty|Blixkin_Entopop|33066|combat|say|100|0|0|-1|-1|What do you think you are doing?!?|event_combat speech
+160|misty|Blixkin_Entopop|33066|timer|say|100|120000|240000|-1|-1|Ember?! Ember?! Where are you, girl?!|event_waypoint_arrive bark (approximated as timer)
+161|misty|Ella_Foodcrafter|33077|timer|emote|100|120000|240000|-1|-1|hums a little as she drops off supplies for the deputies.|event_waypoint_arrive bark (approximated as timer)
+162|misty|Ella_Foodcrafter|33077|timer|say|100|120000|240000|-1|-1|Hope things are going well here.|event_waypoint_arrive bark (approximated as timer)
+163|misty|Ella_Foodcrafter|33077|timer|say|100|120000|240000|-1|-1|Air's nice as always out here.|event_waypoint_arrive bark (approximated as timer)
+164|neriaka|Pungla|40088|combat|say|100|0|0|-1|-1|Guards! Guards!|event_combat speech
+165|neriaka|Rolynn_B-Div|40003|timer|say|100|120000|240000|-1|-1|Hear yee. Master Narex of the Indigo Brotherhood is offering one gold piece for every Leatherfoot Raider skullcap.|event_waypoint_arrive bark (approximated as timer)
+166|neriakb|#a_leatherfoot_spy|41104|spawn|say|100|0|0|-1|-1|I have been discovered!!! You will never stop us from reclaiming the Nektulos for Karana, $name!!|event_spawn speech
+167|neriakc|Lokar_To-Biath|42106|death|say|100|0|0|-1|-1|The death of a Dark Bargainer never goes unnoticed!|event_death_complete speech
+168|neriakc|Mare_X-Lottl|42051|timer|say|100|4200000|4200000|-1|-1|Yoohoo!|event_timer bark
+169|neriakc|Verina_Tomb|42112|combat|say|100|0|0|-1|-1|Hatred is the Universal Truth.|event_combat speech
+170|northkarana|Guard_Shilster|13021|timer|emote|100|120000|240000|-1|-1|stumbles and says, 'Hey fools. Blackburrow stout for sale five gold. Load up now 'cause it's going fast! Just make sure you enjoy it in privacy or you might get arrested, ha haaaa!'|event_waypoint_arrive bark (approximated as timer)
+171|northkarana|Guard_Shilster|13021|timer|emote|100|120000|240000|-1|-1|burps loudly and says, 'Your loss. Back to the bridge I go to keep us safe from the enemy or whatever it is I'm supposed to be doing out there.'|event_waypoint_arrive bark (approximated as timer)
+172|oot|Dayle_Jornin|69153|timer|say|100|120000|240000|-1|-1|Join the Pirates of Gunthak, wench, or die!!|event_waypoint_arrive bark (approximated as timer)
+173|oot|Sentry_Xyrin|69132|timer|say|100|3600000|3600000|-1|-1|Heeelp! The evil undead on this isle are overwhelming!|event_timer bark
+174|oot|Zyle_Bensmill|69092|timer|say|100|120000|240000|-1|-1|Join the Pirates of Gunthak, wench, or die!!|event_waypoint_arrive bark (approximated as timer)
+175|overthere|Captain_Rottgrime|93085|timer|say|100|120000|240000|-1|-1|Atteeennntion !!|event_waypoint_arrive bark (approximated as timer)
+176|overthere|General_V-Deers|93087|timer|say|100|120000|240000|-1|-1|Forward.. march!! Your left.. Your.. left, right, march! Eighty.. second.. dragoon soldier!! Pick up your weapon and follow me!!|event_waypoint_arrive bark (approximated as timer)
+177|overthere|Nekexin_Virulence|93043|timer|emote|100|1800000|1800000|-1|-1|chuckles to himself as he notices blades of grass disintegrate beneath his feet. He stares out over the water as if watching for some sign.|event_timer bark
+178|paineel|Elia_Athrex|75020|timer|say|100|3100000|3100000|-1|-1|The cold of souls and stench of death! Always, here, do I find it...|event_timer bark
+179|permafrost|Lady_Vox|73057|proximity|proximity|100|30|60000|-1|-1|I will not fight you, but I shall banish you!|event_enter box trigger
+180|qey2hh1|Brother_Estle|12043|timer|say|100|120000|240000|-1|-1|I believe here is where I am to wait for the [blessed oil].|event_waypoint_arrive bark (approximated as timer)
+181|qey2hh1|Brother_Estle|12043|timer|say|100|120000|240000|-1|-1|Cleanse your souls, sinners! The way of life is found through the [Prime Healer]. Repent and join us!|event_waypoint_arrive bark (approximated as timer)
+182|qey2hh1|Cleet_Miller|12108|timer|emote|100|120000|240000|-1|-1|gathers up a bale of straw|event_waypoint_arrive bark (approximated as timer)
+183|qey2hh1|Cleet_Miller_Jr|12029|timer|emote|100|120000|240000|-1|-1|gathers up a bale of straw|event_waypoint_arrive bark (approximated as timer)
+184|qey2hh1|Furball_Miller|12041|timer|emote|100|120000|240000|-1|-1|gathers up a bale of straw|event_waypoint_arrive bark (approximated as timer)
+185|qey2hh1|Yiz_Pon|12006|combat|say|100|0|0|-1|-1|He has found me! Help meeeeeee!|event_combat speech
+186|qeynos|#Guard_Sylus|1182|timer|say|100|120000|240000|-1|-1|Come along, prisoner.|event_waypoint_arrive bark (approximated as timer)
+187|qeynos|Behroe_Dlexon|1000|death|say|100|0|0|-1|-1|Your actions will not go unnoticed! The League of Antonican Bards has many members all over this continent.|event_death_complete speech
+188|qeynos|Caleah_Herblender|1118|timer|say|100|350000|350000|-1|-1|Drawna.. Are we all out of bat fur again?|event_timer bark
+189|qeynos|Danaria_Hollin|1066|timer|say|100|120000|240000|-1|-1|I would like an Erudian tart, please.|event_waypoint_arrive bark (approximated as timer)
+190|qeynos|Danaria_Hollin|1066|timer|say|100|120000|240000|-1|-1|Time in the pub shall keep them from advancing to the next level of the mind. When will they learn?|event_waypoint_arrive bark (approximated as timer)
+191|qeynos|Danaria_Hollin|1066|timer|say|100|120000|240000|-1|-1|A magnificent piece of workmanship! The clock, too.|event_waypoint_arrive bark (approximated as timer)
+192|qeynos|Den_Magason|1153|timer|say|100|120000|240000|-1|-1|Psst.. Hey, you there.. Yeah, you.. You need some [blank scroll sheets].. I just got a special shipment of things in.. Come on, it's just what you're looking for.. I know you.|event_waypoint_arrive bark (approximated as timer)
+193|qeynos|Endric|1080|timer|say|100|6200000|6200000|-1|-1|Clean the [aqueducts] they tell me! Peh. I don't care how much they pay me, I am not climbing into that filth.|event_timer bark
+194|qeynos|Executioner|1202|timer|say|100|120000|240000|-1|-1|Sir. You called for me?|event_waypoint_arrive bark (approximated as timer)
+195|qeynos|Executioner|1202|timer|say|100|120000|240000|-1|-1|McNeal Jocub? You have been found guilty of crimes against the city of Qeynos.|event_waypoint_arrive bark (approximated as timer)
+196|qeynos|Faren|1159|timer|say|100|300000|300000|-1|-1|Whoo!!! I think I got a [bite]! Darn.. Seaweed.|event_timer bark
+197|qeynos|Gash_Flockwalker|1138|timer|say|100|120000|240000|-1|-1|Even the beauty of the ocean pales in comparison to the towering pines of Surefall Glade.|event_waypoint_arrive bark (approximated as timer)
+198|qeynos|Gash_Flockwalker|1138|timer|say|100|120000|240000|-1|-1|I have had a tree sap from Surefall Glade which tastes better than this ale.|event_waypoint_arrive bark (approximated as timer)
+199|qeynos|Guard_Beren|1090|timer|say|100|120000|240000|-1|-1|How are they biting, little brother?|event_waypoint_arrive bark (approximated as timer)
+200|qeynos|Guard_Sylus|1314|timer|say|100|120000|240000|-1|-1|Come along, fiend. We haven't far to go.|event_waypoint_arrive bark (approximated as timer)
+201|qeynos|Hansl_Bigroon|1096|proximity|proximity|100|30|60000|-1|-1|A note on the ground catches your eye.|event_enter box trigger
+202|qeynos|Joffrey_Clay|1123|timer|say|100|120000|240000|-1|-1|Belious, I'm working on this new tune I learned on my last trip to Kelethin. It's about Tunare. If you have a free ear, would you care to take a listen?|event_waypoint_arrive bark (approximated as timer)
+203|qeynos|Joffrey_Clay|1123|timer|say|100|120000|240000|-1|-1|Ahem. Tunare and the Pact, sung by Joffrey Clay.|event_waypoint_arrive bark (approximated as timer)
+204|qeynos|Joffrey_Clay|1123|timer|say|100|120000|240000|-1|-1|La da di, la di da.. la da di. la di da..|event_waypoint_arrive bark (approximated as timer)
+205|qeynos|Jusean_Evanesque|1049|timer|emote|100|120000|240000|-1|-1|growls, revealing his fangs.|event_waypoint_arrive bark (approximated as timer)
+206|qeynos|Kazlo_Naedra|1054|timer|say|100|120000|240000|-1|-1|Hey guys, you got any blank scroll sheets for sale? Or know where I could get some around here?|event_waypoint_arrive bark (approximated as timer)
+207|qeynos|Klieb_Torne|1071|timer|say|100|600000|600000|-1|-1|Can you believe that? That guy actually thinks he is going to find the [Paw of Opolla!]! Bwah ha ha ha!|event_timer bark
+208|qeynos|Lieutenant_Arathur|1085|timer|say|100|120000|240000|-1|-1|Guard, stand up straight!|event_waypoint_arrive bark (approximated as timer)
+209|qeynos|Lomarc|1190|timer|say|100|120000|240000|-1|-1|Psst.. Hey, you there.. Yeah, you.. You need some [blank scroll sheets].. I just got a special shipment of things in.. Come on, it's just what you're looking for.. I know you.|event_waypoint_arrive bark (approximated as timer)
+210|qeynos|McNeal_Jocub|1099|timer|say|100|120000|240000|-1|-1|Blast!! We are running [low]!!|event_waypoint_arrive bark (approximated as timer)
+211|qeynos|Menkes_Tabolet|1142|timer|say|100|120000|240000|-1|-1|Get your rat fur caps here! Get your snakes fang necklaces here! Special discount prices.. this week only.|event_waypoint_arrive bark (approximated as timer)
+212|qeynos|Menkes_Tabolet|1142|timer|say|100|120000|240000|-1|-1|Custom made rat pelt capes.. cheap, cheap, cheap!|event_waypoint_arrive bark (approximated as timer)
+213|qeynos|Menkes_Tabolet|1142|timer|say|100|120000|240000|-1|-1|Feeling a bit unlucky lately? Gnoll pups always picking on you? Fire beetles attacking you when you aren't looking? what you need is a lucky rat's foot necklace! Satisfaction guaranteed!|event_waypoint_arrive bark (approximated as timer)
+214|qeynos|Menkes_Tabolet|1142|timer|say|100|120000|240000|-1|-1|Get your rat fur caps here! Get your snake fang necklaces here! Special discount prices.. This week only.|event_waypoint_arrive bark (approximated as timer)
+215|qeynos|Menkes_Tabolet|1142|timer|say|100|120000|240000|-1|-1|Menkes' discount fashions and jewelry, now open for business.. custom made hats, to fit any size head.|event_waypoint_arrive bark (approximated as timer)
+216|qeynos|Nostahla_Westfend|1121|timer|say|100|120000|240000|-1|-1|Gahlith, I'm going down to the docks to see if Ghul has anything new from overseas today. I'll be back in a little while.|event_waypoint_arrive bark (approximated as timer)
+217|qeynos|Vicus_Nonad|1047|timer|emote|100|350000|350000|-1|-1|coughs and wheezes.|event_timer bark
+218|qeynos|Wolten_Grafe|1043|timer|say|100|120000|240000|-1|-1|Your Excellency, we need to recruit a newcomer to find and infiltrate the Shrine of Bertoxxulous. The Shrine's eyes are watching all our moves.|event_waypoint_arrive bark (approximated as timer)
+219|qeynos|Zamel|1079|timer|say|100|300000|300000|-1|-1|Clean the [aqueducts] they tell me. Peh, they don't pay me enough to climb into that filth!|event_timer bark
+220|qeynos2|Guard_Aerryn|2121|timer|say|100|120000|240000|-1|-1|Have you noticed anything strange about Commander Bayle lately? I saw him talking to that trouble-making Irontoe the other day and one night late last week, when I was on patrol, I saw him sneaking into Crow's.|event_waypoint_arrive bark (approximated as timer)
+221|qeynos2|Guard_Weleth|2079|timer|say|100|120000|240000|-1|-1|Argh. Not again. This whole crate needs to be returned!|event_waypoint_arrive bark (approximated as timer)
+222|qeynos2|Hurrieta_Ironforge|2038|timer|say|100|120000|240000|-1|-1|My roses are growing quite well.|event_waypoint_arrive bark (approximated as timer)
+223|qeynos2|Knargon_Lanenda|2072|timer|say|100|120000|240000|-1|-1|Hey Pelshia, how's business?|event_waypoint_arrive bark (approximated as timer)
+224|qeynos2|Knargon_Lanenda|2072|timer|say|100|120000|240000|-1|-1|And what about you, gorgeous? Looking as delightful as ever, I must say.|event_waypoint_arrive bark (approximated as timer)
+225|qeynos2|Knargon_Lanenda|2072|timer|say|100|120000|240000|-1|-1|So, yeah, that Pelshia, she's all over me. And Renux, too. She was giving me the look, man. I'm telling ya. Zan, all the ladies want a piece of the Knargman.|event_waypoint_arrive bark (approximated as timer)
+226|qeynos2|Lashun_Novashine|2032|timer|shout|100|120000|240000|-1|-1|Cease this endless conflict and seek salvation in the Temple of Life! The glory of Rodcet Nife awaits you!|event_waypoint_arrive bark (approximated as timer)
+227|qeynos2|Lashun_Novashine|2032|timer|say|100|120000|240000|-1|-1|Greetings, people of Qeynos! Are you lost? Has the chaotic life of an adventurer left you empty and alone? Seek redemption in the glorious light of the Prime Healer. Only through Rodcet Nife and the Temple of Life will you find true health and salvation.|event_waypoint_arrive bark (approximated as timer)
+228|qeynos2|Moodoro_Finharn|2040|death|emote|100|0|0|-1|-1|'s corpse says 'I'll get you back %s!' $name|event_death_complete speech
+229|qeynos2|Moodoro_Finharn|2040|timer|say|100|120000|240000|-1|-1|<urp>.. I don't feel so well.|event_waypoint_arrive bark (approximated as timer)
+230|qeynos2|Moodoro_Finharn|2040|timer|say|100|120000|240000|-1|-1|Ooooh.. Bllaughhh.. Ooh.. I need some tonic.|event_waypoint_arrive bark (approximated as timer)
+231|qeynos2|Nerissa_Clothspinner|2036|timer|say|100|120000|240000|-1|-1|When will my sister show up? I need her!|event_waypoint_arrive bark (approximated as timer)
+232|qeynos2|Nerissa_Clothspinner|2036|timer|say|100|120000|240000|-1|-1|Bartender! Some water, please.|event_waypoint_arrive bark (approximated as timer)
+233|qeynos2|Phin_Esrinap|2075|timer|say|100|4100000|4100000|-1|-1|I can't believe that lazy [Konem] has been gone for over two days. That's the last time I send that guy out for me.|event_timer bark
+234|qeynos2|Renux_Herkanor|2033|timer|say|100|120000|240000|-1|-1|When is Lomarc getting back from Odus? He was supposed to be back three nights ago. Have you heard anything?|event_waypoint_arrive bark (approximated as timer)
+235|qeynos2|Renux_Herkanor|2033|timer|say|100|120000|240000|-1|-1|Hanns, you are not going to want to hear this, but one of our boys in Donovan's gang swears he saw Stanos in the Karanas a week ago. And we still haven't cornered Malka Rale.|event_waypoint_arrive bark (approximated as timer)
+236|qeynos2|Sabnie_Blagard|2083|timer|say|100|120000|240000|-1|-1|Did someone order an ale up here?|event_waypoint_arrive bark (approximated as timer)
+237|qeynos2|Sabnie_Blagard|2083|timer|say|100|120000|240000|-1|-1|Tubal doesn't suspect a thing.. the poor sap.|event_waypoint_arrive bark (approximated as timer)
+238|qeynos2|Tubal_Weaver|2062|timer|say|100|120000|240000|-1|-1|Whew. I am parched. I will be back in a few minutes.|event_waypoint_arrive bark (approximated as timer)
+239|qeynos2|Tubal_Weaver|2062|timer|say|100|120000|240000|-1|-1|Hey sweetheart, I'll have my usual. Could you bring it upstairs for me?|event_waypoint_arrive bark (approximated as timer)
+240|qeynos2|Tubal_Weaver|2062|timer|say|100|120000|240000|-1|-1|Hey, hey, hey! Tubal Weaver open for business!|event_waypoint_arrive bark (approximated as timer)
+241|qeynos2|Zannsin_Resdinet|2085|timer|say|100|120000|240000|-1|-1|Hey Hanns.. Have you gotten word from Prak about the spy in Carson's guards?|event_waypoint_arrive bark (approximated as timer)
+242|qeytoqrg|#Apprentice_of_Saxuus|4170|timer|say|100|120000|240000|-1|-1|Nice day for a walk, wouldn't you say?|event_waypoint_arrive bark (approximated as timer)
+243|qeytoqrg|Baobob_Miller|4055|timer|say|100|120000|240000|-1|-1|Greetings, sister! I just wanted to make sure no harm had befallen you.|event_waypoint_arrive bark (approximated as timer)
+244|qeytoqrg|Guard_Cheslin|4081|timer|say|100|120000|240000|-1|-1|Hail, fellow guards! I am off to protect the travelers of the hills from evil. I shall return!|event_waypoint_arrive bark (approximated as timer)
+245|qeytoqrg|Guard_Cheslin|4081|timer|say|100|120000|240000|-1|-1|Fear not, simple travelers. Cheslin the masterful is here to protect you.|event_waypoint_arrive bark (approximated as timer)
+246|qeytoqrg|Guard_Cheslin|4081|timer|say|100|120000|240000|-1|-1|Hey! Did I just drop something?|event_waypoint_arrive bark (approximated as timer)
+247|qeytoqrg|Guard_Cheslin|4081|timer|say|100|120000|240000|-1|-1|I lost some of my [illusion] playing cards. And they were the rare ones too! Darn it! If anyone finds them, please return them to me.|event_waypoint_arrive bark (approximated as timer)
+248|qeytoqrg|Niclaus_Ressinn|4060|timer|say|100|120000|240000|-1|-1|Guard! Come quick! The undead gather near the ruins of Geupal!|event_waypoint_arrive bark (approximated as timer)
+249|qeytoqrg|Niclaus_Ressinn|4060|timer|say|100|120000|240000|-1|-1|Shh.. The fiends seems to dwell amongst the ruins. They wander off but eventually congregate back here. Shh.. OK NOW! RODCET PROTECT US!|event_waypoint_arrive bark (approximated as timer)
+250|qeytoqrg|Tovax_Vmar|4020|timer|say|20|30000|60000|-1|-1|S'ragg is going to have my head for losing that letter...|event_waypoint_arrive bark (approximated as timer)
+251|qrg|Bren_Treeclimber|3027|timer|say|100|120000|240000|-1|-1|Hey there, big bear! Good bear! Keep clear of those mean ol' poachers.|event_waypoint_arrive bark (approximated as timer)
+252|qrg|Corun_Finisc|3022|timer|shout|100|120000|240000|-1|-1|Heed the wishes of Tunare and leave the bears of Surefall Glade undisturbed!|event_waypoint_arrive bark (approximated as timer)
+253|qrg|Corun_Finisc|3022|timer|say|100|120000|240000|-1|-1|By the will of Tunare, I serve this glade until I become one with it.|event_waypoint_arrive bark (approximated as timer)
+254|rivervale|Blinza_Toepopal|19088|timer|say|100|550000|550000|-1|-1|[Jillin]? Jillin? Where did he go? Hrumph!|event_timer bark
+255|rivervale|Charlotte_Diggs|19106|timer|emote|100|100000|100000|-1|-1|picks up something from the ground.|event_timer bark
+256|rivervale|Daleen_Leafsway|19079|timer|say|100|600000|600000|-1|-1|Oh Dear.. I can't believe I forgot.. He must be [starving]!|event_timer bark
+257|rivervale|Fiddy_Bobick|19083|timer|say|100|120000|240000|-1|-1|When will Wickystick send help?!|event_waypoint_arrive bark (approximated as timer)
+258|rivervale|Gaffin_Deeppockets|19070|timer|say|100|950000|950000|-1|-1|Lenny, we has a problem. Stanos is back, and he ain't happy. He told me to tell ya that he would be calling in his markers soon. I reckon ya know what that means, and that's bad business with the Circle. Whatcha wanna do?|event_timer bark
+259|rivervale|Mangler|19115|timer|say|100|720000|720000|-1|-1|<Bark, bark, bark! Hoooooowwwwwwl!>|event_timer bark
+260|rivervale|Nillipuss|19015|timer|emote|1|30000|60000|-1|-1|shouts, 'Nillipuss, Nillipuss is my name. Stealing jumjum is my game. Think you can catch me? Let's see if you can! I'll always run faster than you ever ran.'|event_waypoint_arrive bark (approximated as timer)
+261|rivervale|Reebo_Leafsway|19052|timer|emote|100|120000|240000|-1|-1|whistles a happy hafling tune.|event_waypoint_arrive bark (approximated as timer)
+262|runnyeye|A_sharp_rock|11176|proximity|emote|100|25|60000|-1|-1|falls from the low ceiling, banging you on the head! Why are you here again?|event_enter box trigger
+263|runnyeye|If_the|11158|proximity|emote|100|25|60000|-1|-1|people of Rivervale hate the goblins so much, why do they not simply root this place out? Probably because they are not that foolish. 'One with the Wall' indeed!|event_enter box trigger
+264|runnyeye|Perhaps|11160|proximity|emote|100|25|60000|-1|-1|bards and storytellers will sing a song of your death here one day.|event_enter box trigger
+265|runnyeye|Progressing|11175|proximity|emote|100|25|60000|-1|-1|further into the citadel may prove to be a bad idea.|event_enter box trigger
+266|runnyeye|The_constant|11152|proximity|emote|100|25|60000|-1|-1|yowling and gibberish of goblins echos throughout the passageways.|event_enter box trigger
+267|runnyeye|Thoughts|11163|proximity|emote|100|25|60000|-1|-1|of great treasures and fame spur you on. Thoughts of certain and painful death do not deter you.|event_enter box trigger
+268|runnyeye|You_are|11148|proximity|emote|100|25|60000|-1|-1|not quite sure what a moldmaster is, but you are sure that you don't want to meet it alone, and in the dark.|event_enter box trigger
+269|runnyeye|You_feel|11161|proximity|emote|100|25|60000|-1|-1|brave enough to challenge the Goblin Lord in his lair. Brave, or foolish?|event_enter box trigger
+270|skyshrine|Guardian_Silnark|114557|timer|say|100|120000|240000|-1|-1|Greetings Xatyl, how goes the watch?|event_waypoint_arrive bark (approximated as timer)
+271|skyshrine|Guardian_Silnark|114557|timer|say|100|120000|240000|-1|-1|I'm sure Kin Erepon will agree that we are prepared for any attack that anyone may throw at us.|event_waypoint_arrive bark (approximated as timer)
+272|skyshrine|Guardian_Silnark|114557|timer|say|100|120000|240000|-1|-1|Well, I have many more rounds to do before I can end my watch. Farewell.|event_waypoint_arrive bark (approximated as timer)
+273|skyshrine|Guardian_Silnark|114557|timer|say|100|120000|240000|-1|-1|We have defended the shrine from many others, this one should be no more dangerous.|event_waypoint_arrive bark (approximated as timer)
+274|skyshrine|Guardian_Silnark|114557|timer|say|100|120000|240000|-1|-1|Aye, well I must see to the other Kin, fairwell.|event_waypoint_arrive bark (approximated as timer)
+275|skyshrine|Guardian_Silnark|114557|timer|say|100|120000|240000|-1|-1|Greetings Kin Sarot, How goes this day?|event_waypoint_arrive bark (approximated as timer)
+276|skyshrine|Guardian_Silnark|114557|timer|say|100|120000|240000|-1|-1|This is Indeed great news. I was hoping to hear that from someone this day.|event_waypoint_arrive bark (approximated as timer)
+277|skyshrine|Sentry_Enots|114566|timer|say|100|120000|240000|-1|-1|Pardon my intrusion master, but I bring you news from the gate.|event_waypoint_arrive bark (approximated as timer)
+278|skyshrine|Sentry_Enots|114566|timer|say|100|120000|240000|-1|-1|My lord, outsiders have arrived at our gates. They are of a race I have never seen. Kcor is with them now attempting to discern their intent.|event_waypoint_arrive bark (approximated as timer)
+279|skyshrine|Sentry_Enots|114566|timer|say|100|120000|240000|-1|-1|Very well, master. My will is but to obey the Kin.|event_waypoint_arrive bark (approximated as timer)
+280|skyshrine|Sentry_Enots|114566|timer|say|100|120000|240000|-1|-1|Herald Ziglark Whisperwing wishes an audience with the outsiders; please do not keep him waiting.|event_waypoint_arrive bark (approximated as timer)
+281|sleeper|A_warning|128136|combat|emote|100|0|0|-1|-1|fills your mind ``HEED THESE WORDS! This prison was made to hold the most dangerous being ever to walk the face of Norrath. The combined might of all Wurmkind was required to subdue The Sleeper, and only eternal vigilance will keep him imprisoned. If you are not here on behest of the Council, you will be destroyed unless you depart now. YOU HAVE BEEN WARNED!``|event_combat speech
+282|soldungb|Lord_Nagafen|32040|proximity|proximity|100|30|60000|-1|-1|I will not fight you, but I shall banish you!|event_enter box trigger
+283|southkarana|Yeka_Ias|14078|timer|emote|100|2700000|2700000|-1|-1|seems oblivious to the outside world. He stares into the water, chuckling every so often, as he drops in some sort of pebble that hisses for a moment on impact. His robes seem faded, tattered, and caked in dirt. A slight green shimmer surrounds his body.|event_timer bark
+284|steamfont|Renux_Herkanor|56172|death|say|100|0|0|-1|-1|Tell Hanns I tried, and will love him always. Tell Father I will save a seat in hell for him!|event_death_complete speech
+285|stonebrunt|Ghost_of_Ridossan|100018|spawn|say|100|0|0|-1|-1|Thank you, $name. I am not long for this world. Before I leave, I would like to reward the one who helped me have my revenge. Please, hand me the token of my God, of Cazic-Thule, and I shall pass you the spear I once used. You've earned it.|event_spawn speech
+286|templeveeshan|A_deafening_roar|124135|proximity|proximity|100|30|60000|-1|-1|A deafening roar fills the halls.|event_enter box trigger
+287|templeveeshan|A_feeling|124140|proximity|proximity|100|30|60000|-1|-1|A feeling of danger washes over you.|event_enter box trigger
+288|templeveeshan|A_raging_wind|124153|proximity|emote|100|30|60000|-1|-1|whistles through the great cavern nearly bowling you over.|event_enter box trigger
+289|templeveeshan|A_sense_of_awe|124151|proximity|emote|100|30|60000|-1|-1|overcomes you.|event_enter box trigger
+290|templeveeshan|As_you_pass|124148|proximity|proximity|100|30|60000|-1|-1|As you pass the archway a faint glow surrounds your body.|event_enter box trigger
+291|templeveeshan|Empty_egg_shells|124117|proximity|proximity|100|30|60000|-1|-1|Empty egg shells crack beneath your feet.|event_enter box trigger
+292|templeveeshan|Something_seems|124150|proximity|emote|100|30|60000|-1|-1|to be moving in the water.|event_enter box trigger
+293|templeveeshan|The_sound_of|124130|proximity|proximity|100|30|60000|-1|-1|The sound of a thousand wings fills the halls.|event_enter box trigger
+294|thurgadina|##Loremaster_Sarl|115000|timer|say|100|120000|240000|-1|-1|Ah hah! Here it is! Let's see here... Yes, I remember now. This here has a recordin' o Burdael's tale. I'll lend ya the book, but it'll cost ya 50 platinum.|event_waypoint_arrive bark (approximated as timer)
+295|thurgadina|#Loremaster_Sarl|115082|timer|say|100|120000|240000|-1|-1|There are only a few myths we've recorded havin to do with Dragons, many less legends. There's a story of an ancestor of the Dain ridin a 'Wurm' into battle against Giants. A Wurm be a lesser form of a Dragon, not able to use magic or fly, but still just as mean. There's another story, more recent, about a pair a Coldain that rampaged through the countryside along side a magical sea turtle, undoing evil and saving this and that. Heheh, more likely a drunken wive's tale.|event_waypoint_arrive bark (approximated as timer)
+296|thurgadina|#Loremaster_Sarl|115082|timer|say|100|120000|240000|-1|-1|'Ye may not know this, but we didn't always make our home here in Thurgadin. Centuries ago we lived deep down in the ground, close to Brell. That was our first home after we became stranded on this chunk of ice. We lived there peacefully for a while, until the Giant kin found us. They drove us out, though we didn't leave without a fight. This statue coming up here is of a hero that sacrificed his life in that battle to bring a great cavern down on the heads of many o those giants.|event_waypoint_arrive bark (approximated as timer)
+297|thurgadina|#Loremaster_Sarl|115082|timer|say|100|120000|240000|-1|-1|I brung up our old home o Froststone because we had many books and tablets that were lost when we were forced to flee. We had a long history during our peaceful time there, much of it is lost to us now. Still, we were able to save a few slim volumes. I'm thinkin we may find yer answer in o those old recordings. We'll see...Ahhh, here we are. Remember to keep yer voice down, it is a library ye know.|event_waypoint_arrive bark (approximated as timer)
+298|thurgadina|#Loremaster_Sarl|115082|timer|say|100|120000|240000|-1|-1|If we Coldain just work together, obeying Brell's teachings, nothing can stop us from overcoming our enemies. Even the Kromrif will fall before us if we are undivided. It is only when we stray from our fundamental knowledge that we are vulnerable.|event_waypoint_arrive bark (approximated as timer)
+299|thurgadina|#Loremaster_Sarl|115082|timer|say|100|120000|240000|-1|-1|Ok, here we are. Let me see.' Sarl runs a finger along the book labels searching for a particular volume...|event_waypoint_arrive bark (approximated as timer)
+300|thurgadina|#Loremaster_Sarl|115082|timer|say|100|120000|240000|-1|-1|Do ye know anythin about this dragon? Ye need his name right? Some o these older ones are organized in strange ways. I love me fore fathers, but they made some funny kinda rules. Do you know what color this dragon was?|event_waypoint_arrive bark (approximated as timer)
+301|thurgadina|Initiate_Kroskain|115203|timer|say|100|320000|320000|-1|-1|Sir, you said Royt face. Guard Royt is just on the other side of this wall!|event_timer bark
+302|thurgadina|Lieutenant_Ulfur|115103|timer|emote|100|120000|240000|-1|-1|yawns and says, 'Well, time fer me ta walk the floor again lads.'|event_waypoint_arrive bark (approximated as timer)
+303|thurgadina|Templar_Franchus|115204|timer|say|100|480000|480000|-1|-1|Ok lads, remember what I taught you now. Thrust, block, slash...|event_timer bark
+304|thurgadina|Templar_Tingar|115200|timer|say|100|480000|480000|-1|-1|Oh Brell, what ever did I do to inspire your wrath?|event_timer bark
+305|thurgadina|Templar_Tingar|115200|timer|say|100|480000|480000|-1|-1|Ok, let's try this again.|event_timer bark
+306|thurgadina|Templar_Tingar|115200|timer|say|100|480000|480000|-1|-1|ROYGHT FACE!|event_timer bark
+307|thurgadinb|Seneschal_Aldikar|129000|timer|say|100|120000|240000|-1|-1|Please, shut the door behind you. What I am about to share with you must not be overheard.|event_waypoint_arrive bark (approximated as timer)
+308|thurgadinb|Seneschal_Aldikar|129000|timer|say|100|120000|240000|-1|-1|My army stands prepared to launch an assault on Kael itself, but one task must be completed before this can happen.|event_waypoint_arrive bark (approximated as timer)
+309|thurgadinb|Seneschal_Aldikar|129000|timer|say|100|120000|240000|-1|-1|It seems Rodrick was not alone in his treachery. There is a faction of Coldain who believe that a treaty should be signed with the Kromrif, ending our hostilities with them. This, of course, is impossible. If there is one thing our history here has taught us, it is that the Kromrif simply cannot be trusted.|event_waypoint_arrive bark (approximated as timer)
+310|thurgadinb|Seneschal_Aldikar|129000|timer|say|100|120000|240000|-1|-1|These traitors are poisoning the minds of our citizens, promising great rewards to those who will betray the Dain. It will take the unbiased eye of an outlander to flush out the masterminds behind this plan. Once again we turn to you.|event_waypoint_arrive bark (approximated as timer)
+311|thurgadinb|Seneschal_Aldikar|129000|timer|say|100|120000|240000|-1|-1|Will you accept this task, outlander?|event_waypoint_arrive bark (approximated as timer)
+312|thurgadinb|Seneschal_Aldikar|129000|timer|say|100|120000|240000|-1|-1|Farewell.|event_waypoint_arrive bark (approximated as timer)
+313|timorous|Alrik_Farsight|96032|timer|say|100|120000|240000|-1|-1|Hey there again, Xib! Still a great day, isn't it?|event_waypoint_arrive bark (approximated as timer)
+314|timorous|Alrik_Farsight|96032|timer|emote|100|120000|240000|-1|-1|grins a little and mumbles. 'This place is great. Feels like I'm at the end of the universe.'|event_waypoint_arrive bark (approximated as timer)
+315|tox|#abandoned_heretic_pet|38012|timer|say|100|120000|240000|-1|-1|Speed up the digging my pets!|event_waypoint_arrive bark (approximated as timer)
+316|tox|#abandoned_heretic_pet|38012|timer|say|100|120000|240000|-1|-1|Blast you, skeletons! Why I ever resurrected you, I don't know!|event_waypoint_arrive bark (approximated as timer)
+317|tox|Sentinel_Creot|38053|timer|say|100|120000|240000|-1|-1|Hail citizens. Sentinel Creot of the High Guard is on watch.|event_waypoint_arrive bark (approximated as timer)
+318|tox|Shintar_Vinlail|38067|timer|say|100|3100000|3100000|-1|-1|Where are they?! I can't wait forever!|event_timer bark
+319|trakanon|Kaiaren|95105|death|say|100|0|0|-1|-1|Not bad.. Now lets see if you can find my trueform if you do we discuss this further.|event_death_complete speech
+320|wakening|#Rapticor|119116|combat|emote|100|0|0|-1|-1|pounces on $name in a flurry of deadly claws and teeth.|event_combat speech
+321|wakening|a_tigeraptor|119001|combat|emote|100|0|0|-1|-1|pounces on $name in a flurry of deadly claws and teeth.|event_combat speech
+322|wakening|a_tigesaurous|119033|combat|emote|100|0|0|-1|-1|pounces on $name in a flurry of deadly claws and teeth.|event_combat speech
+323|westwastes|A_sentinel-s_voice|120116|proximity|proximity|100|45|60000|-1|-1|A sentinel's voice invades your thoughts: 'Beware mortal! This land is marked by Veeshan, and is sacred to her brood. None but Dragonkin are welcome here. Your life is forteit if you proceed. Ignore this message at your peril!'|event_enter box trigger
+324|westwastes|Julius_Oresko|120031|combat|say|100|0|0|-1|-1|My blades have slain dragons! A $race like you does not have a chance of survival!|event_combat speech

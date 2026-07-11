@@ -97,6 +97,8 @@ namespace EQWOWConverter.WOWFiles
                 numOfRoles+=2;
             if (creatureTemplate.HasGossipReactions == true)
                 numOfRoles += 2;
+            if (creatureTemplate.HasHailedEmote == true)
+                numOfRoles += 2;
             if (numOfRoles > 1)
                 npcFlags |= 1;     // 0x00000001 = Has Gossip Menu
             if (creatureTemplate.CanAssist == true)
@@ -192,7 +194,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RegenHealth", 1);
             newRow.AddInt("CreatureImmunitiesId", creatureTemplate.CreatureImmunitiesId);
             newRow.AddInt("flags_extra", extraFlags);
-            if (creatureTemplate.HasGossipReactions == true)
+            if (creatureTemplate.HasGossipReactions == true || creatureTemplate.HasHailedEmote == true)
                 newRow.AddString("ScriptName", 64, "EverQuest_GossipScript");
             else
                 newRow.AddString("ScriptName", 64, string.Empty);
