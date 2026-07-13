@@ -16,6 +16,7 @@
 
 using System.Text;
 using EQWOWConverter.Common;
+using EQWOWConverter.Creatures;
 using EQWOWConverter.ObjectModels;
 
 namespace EQWOWConverter.WOWFiles
@@ -237,9 +238,20 @@ namespace EQWOWConverter.WOWFiles
             int boneIndex = wowObjectModel.GetBoneIndexForAttachmentType(attachmentType);
             M2Attachment attachment = new M2Attachment(attachmentType, Convert.ToUInt16(boneIndex));
 
-            // The third-person camera needs a model space position for the attachment, otherwise it points at the knees-ish
             if (IsAnchorAttachment(attachmentType) && boneIndex >= 0)
-                attachment.SetPosition(wowObjectModel.GetBoneRestPositionModelSpace(boneIndex));
+            {
+                float modelScale = 1.0f;
+                CreatureRace? race = null;
+                if (wowObjectModel.Properties.CreatureModelTemplate != null)
+                {
+                    modelScale = wowObjectModel.Properties.CreatureModelTemplate.ModelTemplateScale;
+                    race = wowObjectModel.Properties.CreatureModelTemplate.Race;
+                }
+                Vector3 anchorPosition = Vector3.GetScaled(wowObjectModel.GetBoneRestPositionModelSpace(boneIndex), modelScale);
+                if (race != null)
+                    anchorPosition.Z *= race.CamPivotZMod;
+                attachment.SetPosition(anchorPosition);
+            }
 
             Attachments.AddElement(attachment);
             AttachmentIndicesLookup.SetElementValue(Convert.ToInt32(attachmentType), new M2Int16(Convert.ToInt16(Attachments.Count - 1)));

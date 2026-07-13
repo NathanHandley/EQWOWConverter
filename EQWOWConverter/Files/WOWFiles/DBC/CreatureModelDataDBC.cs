@@ -39,11 +39,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(creatureModelTemplate.DBCCreatureSoundDataID); // SoundID, references CreatureSoundData.dbc
             float collisionScaleCompensation = Configuration.GENERATE_EQUIPMENT_SCALE / Configuration.GENERATE_CREATURE_SCALE;
             newRow.AddFloat(0.6944f * collisionScaleCompensation); // CollisionWidth
-            bool hasGeometryBoundingBox = creatureModelTemplate.GeometryBoundingBox.TopCorner.Z > Configuration.GENERATE_FLOAT_EPSILON;
-            if (hasGeometryBoundingBox == true)
-                newRow.AddFloat(creatureModelTemplate.GeometryBoundingBox.TopCorner.Z * 0.954f); // CollisionHeight (0.954 is a native eye-level ratio for HumanMale (2.031 / 2.129)
-            else
-                newRow.AddFloat(2.083f * collisionScaleCompensation); // CollisionHeight
+            newRow.AddFloat(2.083f * collisionScaleCompensation); // CollisionHeight
             newRow.AddFloat(0); // MountHeight
             newRow.AddFloat(-1 * creatureModelTemplate.Race.GeoboxInradius); // GeoBoxMinX, Min vert X
             newRow.AddFloat(-1 * creatureModelTemplate.Race.GeoboxInradius); // GeoBoxMinY, Min vert Y
@@ -115,38 +111,36 @@ namespace EQWOWConverter.WOWFiles
             // Update collision heights if needed
             if (Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED == true)
             {
-                // IDs to update
-                HashSet<int> playerModelIDs = new HashSet<int>();
-                playerModelIDs.Add(49); // Human Male
-                playerModelIDs.Add(50); // Human Female
-                playerModelIDs.Add(51); // Orc Male
-                playerModelIDs.Add(52); // Orc Female
-                playerModelIDs.Add(53); // Dwarf Male
-                playerModelIDs.Add(54); // Dwarf Female
-                playerModelIDs.Add(55); // Night Elf Male
-                playerModelIDs.Add(56); // Night Elf Female
-                playerModelIDs.Add(57); // Undead Male
-                playerModelIDs.Add(58); // Undead Female
-                playerModelIDs.Add(59); // Tauren Male
-                playerModelIDs.Add(60); // Tauren Female
-                playerModelIDs.Add(182); // Gnome Male
-                playerModelIDs.Add(183); // Gnome Female
-                playerModelIDs.Add(185); // Troll Male
-                playerModelIDs.Add(186); // Troll Female
-                playerModelIDs.Add(2208); // Blood Elf Male
-                playerModelIDs.Add(2209); // Blood Elf Female
-                playerModelIDs.Add(2248); // Draenei Male
-                playerModelIDs.Add(2250); // Draenei Female
+                Dictionary<int, float> playerModelDisplayScales = new Dictionary<int, float>();
+                playerModelDisplayScales.Add(49, 1.0f);    // Human Male
+                playerModelDisplayScales.Add(50, 1.0f);    // Human Female
+                playerModelDisplayScales.Add(51, 1.0f);    // Orc Male
+                playerModelDisplayScales.Add(52, 1.0f);    // Orc Female
+                playerModelDisplayScales.Add(53, 1.0f);    // Dwarf Male
+                playerModelDisplayScales.Add(54, 1.0f);    // Dwarf Female
+                playerModelDisplayScales.Add(55, 1.0f);    // Night Elf Male
+                playerModelDisplayScales.Add(56, 1.0f);    // Night Elf Female
+                playerModelDisplayScales.Add(57, 1.0f);    // Undead Male
+                playerModelDisplayScales.Add(58, 1.0f);    // Undead Female
+                playerModelDisplayScales.Add(59, 1.35f);   // Tauren Male (display 59 renders at scale 1.35)
+                playerModelDisplayScales.Add(60, 1.0f);    // Tauren Female
+                playerModelDisplayScales.Add(182, 1.15f);  // Gnome Male (display 1563 renders at scale 1.15)
+                playerModelDisplayScales.Add(183, 1.15f);  // Gnome Female (display 1564 renders at scale 1.15)
+                playerModelDisplayScales.Add(185, 1.0f);   // Troll Male
+                playerModelDisplayScales.Add(186, 1.0f);   // Troll Female
+                playerModelDisplayScales.Add(2208, 1.0f);  // Blood Elf Male
+                playerModelDisplayScales.Add(2209, 1.0f);  // Blood Elf Female
+                playerModelDisplayScales.Add(2248, 1.0f);  // Draenei Male
+                playerModelDisplayScales.Add(2250, 1.0f);  // Draenei Female
 
-                // Look for these IDs and update them if they are larger than the max
+                // Set each player race's collision-box top so its effective (scaled) camera-pivot point doesn't go beyond the doorway max
                 foreach (DBCRow row in Rows)
                 {
                     DBCRow.DBCFieldInt32 idField = (DBCRow.DBCFieldInt32)row.AddedFields[0];
-                    if (playerModelIDs.Contains(idField.Value))
+                    if (playerModelDisplayScales.TryGetValue(idField.Value, out float displayScale) == true)
                     {
                         DBCRow.DBCFieldFloat collisionHeight = (DBCRow.DBCFieldFloat)row.AddedFields[15];
-                        if (collisionHeight.Value > Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX)
-                            collisionHeight.Value = Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX;
+                        collisionHeight.Value = Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX / displayScale;
                     }
                 }
             }

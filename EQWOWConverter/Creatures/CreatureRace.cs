@@ -60,6 +60,7 @@ namespace EQWOWConverter.Creatures
         public Vector3 CameraTargetPositionMod = new Vector3();
         public float GeoboxInradius = 0;
         public float NameplateAddedHeight = 0;
+        public float CamPivotZMod = 1f;
         public int WOWCreatureFamily = 0;
         public int WOWCreatureType = 0;
         public bool IsExoticTame = false;
@@ -67,7 +68,6 @@ namespace EQWOWConverter.Creatures
         public static Dictionary<string, Dictionary<int, Sound>> SoundsBySoundNameAndDistance = new Dictionary<string, Dictionary<int, Sound>>();
         public static Dictionary<string, int> FootstepIDBySoundName = new Dictionary<string, int>();
         public static Dictionary<int, int> FootstepIDBySoundID = new Dictionary<int, int>();
-        private static int CUR_CREATURE_FOOTSTEP_ID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START;
 
         public CreatureRace()
         {
@@ -90,7 +90,7 @@ namespace EQWOWConverter.Creatures
             GeoboxInradius = geoboxInradius;
             WOWCreatureFamily = wowCreatureFamily;
             WOWCreatureType = wowCreatureType;
-            IsExoticTame = IsExoticTame;
+            IsExoticTame = isExoticTame;
         }
 
         public static void GenerateAllSounds()
@@ -257,6 +257,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.CameraTargetPositionMod = new Vector3(cameraTargetPositionModX, cameraTargetPositionModY, cameraTargetPositionModZ);
                 newCreatureRace.GeoboxInradius = float.Parse(columns["GeoboxInradius"]) * Configuration.GENERATE_EQUIPMENT_SCALE;
                 newCreatureRace.NameplateAddedHeight = float.Parse(columns["NamePlateHeightAdd"]) * Configuration.GENERATE_EQUIPMENT_SCALE;
+                newCreatureRace.CamPivotZMod = float.Parse(columns["CamPivotZMod"]);
                 newCreatureRace.WOWCreatureFamily = int.Parse(columns["WOWFamily"]);
                 newCreatureRace.WOWCreatureType = int.Parse(columns["WOWType"]);
                 newCreatureRace.IsExoticTame = columns["ExoticTame"].Trim() == "1" ? true : false;
