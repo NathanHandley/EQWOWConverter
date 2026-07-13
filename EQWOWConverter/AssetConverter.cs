@@ -43,6 +43,7 @@ namespace EQWOWConverter
         private static Queue<string> ObjectNamesToProcess = new Queue<string>();
         private static readonly object ObjectConversionLock = new object();
         private static bool DeltaPatchSkippedForNoChanges = false;
+        private static readonly ConcurrentDictionary<string, object> SharedSoundCopyLocksByTargetPath = new ConcurrentDictionary<string, object>();
 
         public bool ConvertEQDataToWOW()
         {
@@ -3943,6 +3944,22 @@ namespace EQWOWConverter
             Logger.WriteDebug(string.Concat("- [", zone.ShortName, "]: Music output for zone '", zone.ShortName, "' complete"));
         }
 
+        // Zones share ambience files and convert in parallel, so parallel protections are needed in locking file copies
+        private static object CreateSharedSoundCopyLock(string targetPath)
+        {
+            return new object();
+        }
+
+        private static void CopySharedSoundFileIfMissing(string sourceFullPath, string targetFullPath)
+        {
+            lock (SharedSoundCopyLocksByTargetPath.GetOrAdd(targetFullPath, CreateSharedSoundCopyLock))
+            {
+                if (File.Exists(targetFullPath) == true)
+                    return;
+                FileTool.CopyFile(sourceFullPath, targetFullPath);
+            }
+        }
+
         public void ExportAmbientSoundForZone(Zone zone, string soundInputFolder, string wowExportPath)
         {
             Logger.WriteDebug("- [" + zone.ShortName + "]: Exporting ambient sound for zone '" + zone.ShortName + "'...");
@@ -3968,7 +3985,7 @@ namespace EQWOWConverter
                     Logger.WriteError("Could not copy ambient sound file '" + sourceFullPath + "', as it did not exist");
                     continue;
                 }
-                FileTool.CopyFile(sourceFullPath, targetFullPath);
+                CopySharedSoundFileIfMissing(sourceFullPath, targetFullPath);
                 Logger.WriteDebug("- [" + zone.ShortName + "]: Ambient sound named '" + ambientSoundByFileName.Value.AudioFileNameNoExt + "' copied");
             }
             foreach (SoundInstance soundInstance in zone.SoundInstances)
@@ -3985,7 +4002,7 @@ namespace EQWOWConverter
                         Logger.WriteError("Could not copy sound instance sound file '" + sourceFullPath + "', as it did not exist");
                         continue;
                     }
-                    FileTool.CopyFile(sourceFullPath, targetFullPath);
+                    CopySharedSoundFileIfMissing(sourceFullPath, targetFullPath);
                     Logger.WriteDebug("- [" + zone.ShortName + "]: Sound instance sound named '" + curSound.AudioFileNameNoExt + "' copied");
                 }
             }
