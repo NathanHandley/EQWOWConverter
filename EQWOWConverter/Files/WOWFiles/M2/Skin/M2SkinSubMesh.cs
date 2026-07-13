@@ -54,22 +54,27 @@ namespace EQWOWConverter.WOWFiles
             if (modelVertices.Count == 0)
                 return;
 
+            // Use the model space (posed) vertex positions
+            List<Vector3> posedPositions = new List<Vector3>(modelVertices.Count);
+            foreach (ObjectModelVertex vertex in modelVertices)
+                posedPositions.Add(vertex.PosedPosition);
+
             // Build a bounding box
-            BoundingBox boundingBox = BoundingBox.GenerateBoxFromVectors(modelVertices);
+            BoundingBox boundingBox = BoundingBox.GenerateBoxFromVectors(posedPositions, 0);
 
             // Calculate the average vertex center position
             float totalX = 0;
             float totalY = 0;
             float totalZ = 0;
-            foreach (ObjectModelVertex vertex in modelVertices)
+            foreach (Vector3 posedPosition in posedPositions)
             {
-                totalX += vertex.Position.X;
-                totalY += vertex.Position.Y;
-                totalZ += vertex.Position.Z;
+                totalX += posedPosition.X;
+                totalY += posedPosition.Y;
+                totalZ += posedPosition.Z;
             }
-            AverageVertexCenterPosition.X = totalX / modelVertices.Count;
-            AverageVertexCenterPosition.Y = totalY / modelVertices.Count;
-            AverageVertexCenterPosition.Z = totalZ / modelVertices.Count;
+            AverageVertexCenterPosition.X = totalX / posedPositions.Count;
+            AverageVertexCenterPosition.Y = totalY / posedPositions.Count;
+            AverageVertexCenterPosition.Z = totalZ / posedPositions.Count;
 
             // Bounding box
             BoundingBoxCenterPosition = boundingBox.GetCenter();

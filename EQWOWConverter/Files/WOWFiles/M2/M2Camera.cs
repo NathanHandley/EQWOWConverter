@@ -21,8 +21,11 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class M2Camera : IOffsetByteSerializable
     {
-        private UInt32 CameraType = 0; // 0 = portrait
-        private float DiagonalFOV = 0.950022f;
+        public const float PORTRAIT_DIAGONAL_FOV = 0.950022f;
+        public const float CHARACTER_INFO_DIAGONAL_FOV = 0.9799f; // Matches HumanMale.m2
+
+        private UInt32 CameraType = 0; // 0 = portrait, 1 = character info
+        private float DiagonalFOV = PORTRAIT_DIAGONAL_FOV;
         private float FarClip = 27.77778f;
         private float NearClip = 0.2222222f;
         private Vector3 Position = new Vector3();
@@ -32,8 +35,11 @@ namespace EQWOWConverter.WOWFiles
         public M2TrackSequences<SplineKey> TranslationTarget;
         public M2TrackSequences<M2Float> RollEffect;
 
-        public M2Camera(Vector3 position, Vector3 target)
+        public M2Camera(UInt32 cameraType, float diagonalFOV, Vector3 position, Vector3 target)
         {
+            CameraType = cameraType;
+            DiagonalFOV = diagonalFOV;
+
             // Translation Position
             ObjectModelTrackSequences<SplineKey> translationPositionTrack = new ObjectModelTrackSequences<SplineKey>();
             translationPositionTrack.AddSequence();

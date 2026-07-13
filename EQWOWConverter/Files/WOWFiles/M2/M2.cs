@@ -187,8 +187,10 @@ namespace EQWOWConverter.WOWFiles
             // Cameras & ID Lookup
             if (wowObjectModel.IsSkeletal)
             {
-                Cameras.AddElement(new M2Camera(wowObjectModel.PortraitCameraPosition, wowObjectModel.PortraitCameraTargetPosition));
+                Cameras.AddElement(new M2Camera(0, M2Camera.PORTRAIT_DIAGONAL_FOV, wowObjectModel.PortraitCameraPosition, wowObjectModel.PortraitCameraTargetPosition));
                 CamerasIndicesLookup.Add(new M2Int16(0)); // Portrait
+                Cameras.AddElement(new M2Camera(1, M2Camera.CHARACTER_INFO_DIAGONAL_FOV, wowObjectModel.CharacterInfoCameraPosition, wowObjectModel.CharacterInfoCameraTargetPosition));
+                CamerasIndicesLookup.Add(new M2Int16(1)); // Character Info
             }
 
             // Ribbon Emitters
@@ -233,8 +235,31 @@ namespace EQWOWConverter.WOWFiles
         private void SetSkeletonAttachment(ObjectModel wowObjectModel, ObjectModelAttachmentType attachmentType)
         {
             int boneIndex = wowObjectModel.GetBoneIndexForAttachmentType(attachmentType);
-            Attachments.AddElement(new M2Attachment(attachmentType, Convert.ToUInt16(boneIndex)));
+            M2Attachment attachment = new M2Attachment(attachmentType, Convert.ToUInt16(boneIndex));
+
+            // The third-person camera needs a model space position for the attachment, otherwise it points at the knees-ish
+            if (IsAnchorAttachment(attachmentType) && boneIndex >= 0)
+                attachment.SetPosition(wowObjectModel.GetBoneRestPositionModelSpace(boneIndex));
+
+            Attachments.AddElement(attachment);
             AttachmentIndicesLookup.SetElementValue(Convert.ToInt32(attachmentType), new M2Int16(Convert.ToInt16(Attachments.Count - 1)));
+        }
+
+        private static bool IsAnchorAttachment(ObjectModelAttachmentType attachmentType)
+        {
+            switch (attachmentType)
+            {
+                case ObjectModelAttachmentType.HeadTop:
+                case ObjectModelAttachmentType.MouthBreath:
+                case ObjectModelAttachmentType.PlayerName:
+                case ObjectModelAttachmentType.GroundBase:
+                case ObjectModelAttachmentType.Chest:
+                case ObjectModelAttachmentType.ChestBloodFront:
+                case ObjectModelAttachmentType.ChestBloodBack:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private void SetEvents(ObjectModel wowObjectModel)

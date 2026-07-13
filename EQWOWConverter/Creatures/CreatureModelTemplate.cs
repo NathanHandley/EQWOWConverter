@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using System.Globalization;
 using System.Text;
@@ -41,6 +42,7 @@ namespace EQWOWConverter.Creatures
         public int DBCCreatureModelDataID;
         public int DBCCreatureDisplayID;
         public int DBCCreatureSoundDataID;
+        public BoundingBox GeometryBoundingBox = new BoundingBox();
         private static readonly object CreatureLock = new object();
         private static readonly System.Collections.Concurrent.ConcurrentDictionary<string, object> OutputFolderLocksByName = new System.Collections.Concurrent.ConcurrentDictionary<string, object>();
 
@@ -201,6 +203,9 @@ namespace EQWOWConverter.Creatures
                 curObject.NumOfFidgetSounds = 2;
             else if (Race.SoundIdle1Name.ToLower() != "null24.wav")
                 curObject.NumOfFidgetSounds = 1;
+
+            // Save the geometry box (for CreatureModelData.dbc)
+            GeometryBoundingBox = curObject.GeometryBoundingBox;
 
             // Create the M2 and Skin
             M2 objectM2 = new M2(curObject, relativeMPQPath);

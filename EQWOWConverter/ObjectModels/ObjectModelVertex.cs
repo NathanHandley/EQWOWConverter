@@ -21,6 +21,7 @@ namespace EQWOWConverter.ObjectModels
     internal class ObjectModelVertex : IByteSerializable
     {
         public Vector3 Position = new Vector3();
+        public Vector3 PosedPosition = new Vector3(); // Model space position (computed from skeletals), needed to propely get in-game camera pivots right
         public List<byte> BoneWeights = new List<byte>(new byte[4]);        // Any more than 4 elements will be ignored
         public List<UInt16> BoneIndicesTrue = new List<UInt16>(new UInt16[4]);    // Bone indexes compared to the bone list
         public List<byte> BoneIndicesLookup = new List<byte>(new byte[4]);  // Bone indexes compared to the bone lookup table

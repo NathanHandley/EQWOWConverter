@@ -37,6 +37,11 @@ namespace EQWOWConverter.WOWFiles
             DataTrack = new M2TrackSequences<M2Int32>(objectModelTrackSequences);
         }
 
+        public void SetPosition(Vector3 position)
+        {
+            Position = new Vector3(position);
+        }
+
         public UInt32 GetHeaderSize()
         {
             UInt32 size = 0;

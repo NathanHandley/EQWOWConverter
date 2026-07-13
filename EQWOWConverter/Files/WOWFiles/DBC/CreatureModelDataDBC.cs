@@ -39,7 +39,11 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(creatureModelTemplate.DBCCreatureSoundDataID); // SoundID, references CreatureSoundData.dbc
             float collisionScaleCompensation = Configuration.GENERATE_EQUIPMENT_SCALE / Configuration.GENERATE_CREATURE_SCALE;
             newRow.AddFloat(0.6944f * collisionScaleCompensation); // CollisionWidth
-            newRow.AddFloat(2.083f * collisionScaleCompensation); // CollisionHeight
+            bool hasGeometryBoundingBox = creatureModelTemplate.GeometryBoundingBox.TopCorner.Z > Configuration.GENERATE_FLOAT_EPSILON;
+            if (hasGeometryBoundingBox == true)
+                newRow.AddFloat(creatureModelTemplate.GeometryBoundingBox.TopCorner.Z * 0.954f); // CollisionHeight (0.954 is a native eye-level ratio for HumanMale (2.031 / 2.129)
+            else
+                newRow.AddFloat(2.083f * collisionScaleCompensation); // CollisionHeight
             newRow.AddFloat(0); // MountHeight
             newRow.AddFloat(-1 * creatureModelTemplate.Race.GeoboxInradius); // GeoBoxMinX, Min vert X
             newRow.AddFloat(-1 * creatureModelTemplate.Race.GeoboxInradius); // GeoBoxMinY, Min vert Y

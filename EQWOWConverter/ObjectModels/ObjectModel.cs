@@ -56,6 +56,9 @@ namespace EQWOWConverter.ObjectModels
         public int NumOfFidgetSounds = 0;
         public Vector3 PortraitCameraPosition = new Vector3();
         public Vector3 PortraitCameraTargetPosition = new Vector3();
+        public Vector3 CharacterInfoCameraPosition = new Vector3();
+        public Vector3 CharacterInfoCameraTargetPosition = new Vector3();
+        public BoundingBox GeometryBoundingBox = new BoundingBox();
         public MeshData MeshData = new MeshData();
         public bool IsSkeletal = false;
         public bool IsLoaded = false;
@@ -389,6 +392,9 @@ namespace EQWOWConverter.ObjectModels
                 {
                     // Set the portrait camera locations
                     SetupPortraitCamera();
+
+                    // Set the character info camera (character tab/screen)
+                    SetupCharacterInfoCameraAndGeometryBoundingBox();
                 }
             }
 
@@ -1608,6 +1614,55 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
+        public void SetupCharacterInfoCameraAndGeometryBoundingBox()
+        {
+            // Character screen camera is scaled based on the HumanMale.m2 properties
+            float characterInfoCameraScale = 1f;
+            if (PortraitCameraTargetPosition.Z > Configuration.GENERATE_FLOAT_EPSILON)
+                characterInfoCameraScale = PortraitCameraTargetPosition.Z / 1.8636f;
+            CharacterInfoCameraPosition = new Vector3(3.6585f, 0.0338f, 0.9227f) * characterInfoCameraScale;
+            CharacterInfoCameraTargetPosition = new Vector3(-0.3644f, 0.0291f, 0.9873f) * characterInfoCameraScale;
+
+            // Geometry bounding box from the posed vertex positions
+            if (ModelVertices.Count == 0 || ModelBones.Count == 0 || ModelAnimations.Count == 0)
+                return;
+            List<Vector3> posedVertexPositions = new List<Vector3>(ModelVertices.Count);
+            foreach (ObjectModelVertex modelVertex in ModelVertices)
+            {
+                Vector3 posedPosition = new Vector3(modelVertex.Position);
+                int boneIndex = modelVertex.BoneIndicesTrue[0];
+                if (boneIndex < 0 || boneIndex >= ModelBones.Count)
+                {
+                    posedVertexPositions.Add(posedPosition);
+                    continue;
+                }
+                ObjectModelBone curBone = ModelBones[boneIndex];
+                bool moreToProcess = true;
+                while (moreToProcess)
+                {
+                    // Rotate
+                    if (curBone.RotationTrack.Values[0].Values.Count > 0)
+                        posedPosition = Vector3.GetRotated(posedPosition, curBone.RotationTrack.Values[0].Values[0]);
+
+                    // Scale
+                    if (curBone.ScaleTrack.Values[0].Values.Count > 0)
+                        posedPosition = Vector3.GetScaled(posedPosition, curBone.ScaleTrack.Values[0].Values[0].X);
+
+                    // Translate
+                    if (curBone.TranslationTrack.Values[0].Values.Count > 0)
+                        posedPosition += curBone.TranslationTrack.Values[0].Values[0];
+
+                    if (curBone.ParentBone != -1)
+                        curBone = ModelBones[curBone.ParentBone];
+                    else
+                        moreToProcess = false;
+                }
+                posedVertexPositions.Add(posedPosition);
+                modelVertex.PosedPosition = posedPosition;
+            }
+            GeometryBoundingBox = BoundingBox.GenerateBoxFromVectors(posedVertexPositions, 0);
+        }
+
         private float GetScaleAmount()
         {
             float scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_WORLD_SCALE;
@@ -1868,7 +1923,7 @@ namespace EQWOWConverter.ObjectModels
                     } break;
                 case ObjectModelAttachmentType.MouthBreath:
                     {
-                        returnValue = GetFirstBoneIndexForEQBoneNames("ja", "head_point", "he", "ch", "pe", "root");
+                        returnValue = GetFirstBoneIndexForEQBoneNames("ja", "head_point", "he", "nameplate", "root");
                     } break;
                 case ObjectModelAttachmentType.GroundBase:
                     {
@@ -1881,7 +1936,7 @@ namespace EQWOWConverter.ObjectModels
                     break;
                 case ObjectModelAttachmentType.HeadTop:
                     {
-                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "pe", "root");
+                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "nameplate", "root");
                     } break;
                 case ObjectModelAttachmentType.HandLeft_ItemVisual2:
                 case ObjectModelAttachmentType.SpellLeftHand:
@@ -1915,6 +1970,27 @@ namespace EQWOWConverter.ObjectModels
             }
 
             return returnValue;
+        }
+
+        public Vector3 GetBoneRestPositionModelSpace(int boneIndex)
+        {
+            // Based on stand pose frame 0, used to get proper attach position for some things
+            if (boneIndex < 0 || boneIndex >= ModelBones.Count)
+                return new Vector3(0, 0, 0);
+            Vector3 position = new Vector3(0, 0, 0);
+            int currentBoneIndex = boneIndex;
+            while (currentBoneIndex != -1 && currentBoneIndex < ModelBones.Count)
+            {
+                ObjectModelBone bone = ModelBones[currentBoneIndex];
+                if (bone.RotationTrack.Values.Count > 0 && bone.RotationTrack.Values[0].Values.Count > 0)
+                    position = Vector3.GetRotated(position, bone.RotationTrack.Values[0].Values[0]);
+                if (bone.ScaleTrack.Values.Count > 0 && bone.ScaleTrack.Values[0].Values.Count > 0)
+                    position = Vector3.GetScaled(position, bone.ScaleTrack.Values[0].Values[0].X);
+                if (bone.TranslationTrack.Values.Count > 0 && bone.TranslationTrack.Values[0].Values.Count > 0)
+                    position += bone.TranslationTrack.Values[0].Values[0];
+                currentBoneIndex = bone.ParentBone;
+            }
+            return position;
         }
 
         public int GetBoneIndexForKeyBoneType(KeyBoneType keyBoneType)
@@ -2072,6 +2148,7 @@ namespace EQWOWConverter.ObjectModels
             {
                 ObjectModelVertex newModelVertex = new ObjectModelVertex();
                 newModelVertex.Position = new Vector3(meshData.Vertices[i]);
+                newModelVertex.PosedPosition = new Vector3(meshData.Vertices[i]);
                 newModelVertex.Normal = new Vector3(meshData.Normals[i]);
                 newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(meshData.TextureCoordinates[i]);
                 if (meshData.BoneIDs.Count > 0)
