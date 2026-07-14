@@ -1795,7 +1795,16 @@ namespace EQWOWConverter.ObjectModels
 
                                 // For bones that connect to root, add the height mod
                                 if (curBone.ParentBoneNameEQ == "root")
+                                {
                                     frameTranslation.Z += Properties.ModelLiftPreWorldScale * worldScaleAmount;
+
+                                    // Some EQ sit animations step the model forward, so recenter the mounted sit onto the mount seat per race
+                                    if (animationType == AnimationType.Mount && creatureRace != null)
+                                    {
+                                        frameTranslation.X += creatureRace.MountSitXAddedOffset * worldScaleAmount;
+                                        frameTranslation.Y += creatureRace.MountSitYAddedOffset * worldScaleAmount;
+                                    }
+                                }
 
                                 // Calculate the frame start time
                                 UInt32 curTimestamp = 0;

@@ -39,6 +39,8 @@ namespace EQWOWConverter.Creatures
         public bool CanHoldVisualShields = false;
         public bool CanShowEquipInIllusion = false;
         public bool CanMount = false;
+        public float MountSitXAddedOffset = 0;
+        public float MountSitYAddedOffset = 0;
         public string SoundLoopName = string.Empty;
         public string SoundIdle1Name = string.Empty;
         public string SoundIdle2Name = string.Empty;
@@ -231,6 +233,8 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.CanHoldVisualShields = columns["CanHoldVisualShields"].Trim() == "1";
                 newCreatureRace.CanShowEquipInIllusion = columns["CanShowEquipInIllusion"].Trim() == "1";
                 newCreatureRace.CanMount = columns["CanMount"].Trim() == "1";
+                newCreatureRace.MountSitXAddedOffset = float.Parse(columns["MountSitXAddedOffset"]);
+                newCreatureRace.MountSitYAddedOffset = float.Parse(columns["MountSitYAddedOffset"]);
                 newCreatureRace.SoundLoopName = columns["SndLoop"];
                 newCreatureRace.SoundIdle1Name = columns["SndIdle1"];
                 newCreatureRace.SoundIdle2Name = columns["SndIdle2"];
