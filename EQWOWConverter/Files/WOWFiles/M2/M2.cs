@@ -261,13 +261,7 @@ namespace EQWOWConverter.WOWFiles
         {
             switch (attachmentType)
             {
-                case ObjectModelAttachmentType.HeadTop:
-                case ObjectModelAttachmentType.MouthBreath:
-                case ObjectModelAttachmentType.PlayerName:
-                case ObjectModelAttachmentType.GroundBase:
-                case ObjectModelAttachmentType.Chest:
-                case ObjectModelAttachmentType.ChestBloodFront:
-                case ObjectModelAttachmentType.ChestBloodBack:
+                case ObjectModelAttachmentType.MouthBreath: // Kept for a properly working anchor camera when in illusion forms
                     return true;
                 default:
                     return false;
