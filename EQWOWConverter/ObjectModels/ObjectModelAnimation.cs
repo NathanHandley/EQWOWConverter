@@ -248,6 +248,7 @@ namespace EQWOWConverter.ObjectModels
                         returnTypes.Add(EQAnimationType.c02AttackPierce);
                     }
                     break;
+                case AnimationType.Mount: // Fallthrough
                 case AnimationType.SitGround:
                     {
                         // Skeletons don't have sit animation
