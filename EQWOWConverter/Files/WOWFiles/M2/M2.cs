@@ -244,7 +244,9 @@ namespace EQWOWConverter.WOWFiles
                 CreatureRace? race = null;
                 if (wowObjectModel.Properties.CreatureModelTemplate != null)
                 {
-                    modelScale = wowObjectModel.Properties.CreatureModelTemplate.ModelTemplateScale;
+                    // Models that bake the scale into the geometry do not need anchor pre-scaling
+                    if (wowObjectModel.Properties.CreatureModelTemplate.DoBakeModelTemplateScaleIntoGeometry() == false)
+                        modelScale = wowObjectModel.Properties.CreatureModelTemplate.ModelTemplateScale;
                     race = wowObjectModel.Properties.CreatureModelTemplate.Race;
                 }
                 Vector3 anchorPosition = Vector3.GetScaled(wowObjectModel.GetBoneRestPositionModelSpace(boneIndex), modelScale);

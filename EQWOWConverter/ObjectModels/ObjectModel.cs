@@ -224,8 +224,9 @@ namespace EQWOWConverter.ObjectModels
                 float lift = Properties.CreatureModelTemplate.Race.Lift * Configuration.GENERATE_EQUIPMENT_SCALE * Properties.AdditionalScaleMultiplier;
                 if (Properties.CreatureModelTemplate.Race.BoundaryRadiusOverride > 0)
                 {
-                    float halfHeight = Properties.CreatureModelTemplate.Race.BoundaryHeightOverride / 2;
-                    float radius = Properties.CreatureModelTemplate.Race.BoundaryRadiusOverride;
+                    float bakedModelTemplateScale = GetBakedModelTemplateScale();
+                    float halfHeight = (Properties.CreatureModelTemplate.Race.BoundaryHeightOverride / 2) * bakedModelTemplateScale;
+                    float radius = Properties.CreatureModelTemplate.Race.BoundaryRadiusOverride * bakedModelTemplateScale;
                     //animation.BoundingRadius = radius;
                     InteractionBoundingBox.TopCorner.X = radius;
                     InteractionBoundingBox.TopCorner.Y = radius;
@@ -1609,8 +1610,9 @@ namespace EQWOWConverter.ObjectModels
             PortraitCameraPosition = headLocation;
             if (Properties.CreatureModelTemplate != null)
             {
-                PortraitCameraPosition += Properties.CreatureModelTemplate.Race.CameraPositionMod;
-                PortraitCameraTargetPosition += Properties.CreatureModelTemplate.Race.CameraTargetPositionMod;
+                float bakedModelTemplateScale = GetBakedModelTemplateScale();
+                PortraitCameraPosition += Properties.CreatureModelTemplate.Race.CameraPositionMod * bakedModelTemplateScale;
+                PortraitCameraTargetPosition += Properties.CreatureModelTemplate.Race.CameraTargetPositionMod * bakedModelTemplateScale;
             }
         }
 
@@ -1663,6 +1665,13 @@ namespace EQWOWConverter.ObjectModels
             GeometryBoundingBox = BoundingBox.GenerateBoxFromVectors(posedVertexPositions, 0);
         }
 
+        private float GetBakedModelTemplateScale()
+        {
+            if (Properties.CreatureModelTemplate != null && Properties.CreatureModelTemplate.DoBakeModelTemplateScaleIntoGeometry() == true)
+                return Properties.CreatureModelTemplate.ModelTemplateScale;
+            return 1f;
+        }
+
         private float GetScaleAmount()
         {
             float scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_WORLD_SCALE;
@@ -1703,8 +1712,11 @@ namespace EQWOWConverter.ObjectModels
                         newAnimation.AnimationType = animationType;
 
                         // Movement animations play at a rate of unitMoveSpeed / (MoveSpeed * renderScale), so compensate for the model template scale to be more EQ-like
-                        if (newAnimation.MoveSpeed > 0 && Properties.CreatureModelTemplate != null && Properties.CreatureModelTemplate.ModelTemplateScale > Configuration.GENERATE_FLOAT_EPSILON)
+                        if (newAnimation.MoveSpeed > 0 && Properties.CreatureModelTemplate != null && Properties.CreatureModelTemplate.ModelTemplateScale > Configuration.GENERATE_FLOAT_EPSILON
+                            && Properties.CreatureModelTemplate.DoBakeModelTemplateScaleIntoGeometry() == false)
+                        {
                             newAnimation.MoveSpeed /= Properties.CreatureModelTemplate.ModelTemplateScale;
+                        }
                         newAnimation.EQAnimationTypeTrue = animation.Value.EQAnimationType;
                         newAnimation.EQAnimationTypePreferred = compatibleAnimationTypes[0];
                         newAnimation.AliasNext = Convert.ToUInt16(ModelAnimations.Count); // The next animation is itself, so it's a loop (TODO: Change this)

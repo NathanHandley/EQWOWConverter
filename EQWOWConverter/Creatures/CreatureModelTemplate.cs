@@ -91,6 +91,11 @@ namespace EQWOWConverter.Creatures
             ModelTemplateScale = modelTemplateScale;
         }
 
+        public bool DoBakeModelTemplateScaleIntoGeometry()
+        {
+            return FaceIndex == ILLUSION_REPLACEABLE_FACE_INDEX && ModelTemplateScale > Configuration.GENERATE_FLOAT_EPSILON;
+        }
+
         private static int GetOrCreateIllusionFaceDisplayID(int raceID, CreatureGenderType genderType, int helmTextureID,
             int textureIndex, int colorTintID, int faceIndex)
         {
@@ -188,6 +193,8 @@ namespace EQWOWConverter.Creatures
             objectProperties.CreatureModelTemplate = this;
             objectProperties.ModelScalePreWorldScale = Race.ModelScale;
             objectProperties.ModelLiftPreWorldScale = lift;
+            if (DoBakeModelTemplateScaleIntoGeometry() == true)
+                objectProperties.AdditionalScaleMultiplier *= ModelTemplateScale;
             ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Creature);
             curObject.LoadEQObjectFromFile(charactersFolderRoot, skeletonName);
             StringBuilder nameSB = new StringBuilder();
