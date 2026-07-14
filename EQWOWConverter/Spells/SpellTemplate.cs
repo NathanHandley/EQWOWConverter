@@ -232,6 +232,7 @@ namespace EQWOWConverter.Spells
         public SpellTemplate? IllusionSpellParent = null;
         public int MaleFormSpellTemplateID = 0;
         public int FemaleFormSpellTemplateID = 0;
+        public bool CanMountWhileInForm = false;
         public bool AllowSpellPowerToInfluence = false;
         public bool InfluencedBySpellPower = false;
         public int EquippedItemClass = -1;
@@ -2925,6 +2926,7 @@ namespace EQWOWConverter.Spells
                                     Logger.WriteError("SpellTemplate with wow spell template id ", spellTemplate.WOWSpellID.ToString(), " has an illusion effect but could not find a raceid with id ", eqEffect.EQBaseValue.ToString());
                                     continue;
                                 }
+                                maleFormSpellTemplate.CanMountWhileInForm = creatureRaceMale.CanMount;
                                 float scaleMale = creatureRaceMale.Height * creatureRaceMale.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
                                 CreatureTemplate maleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(maleFormSpellTemplate.Name, creatureRaceMale, creatureRaceMale.Gender, 0, textureID, 0, 0, scaleMale, wowFactionTemplateID, maleFormSpellTemplate.WOWSpellID);
                                 maleFormSpellEffectWOW.EffectMiscValueA = maleCreatureTemplate.WOWCreatureTemplateID;
@@ -2961,6 +2963,7 @@ namespace EQWOWConverter.Spells
                                     Logger.WriteError("SpellTemplate with wow spell template id ", spellTemplate.WOWSpellID.ToString(), " has an illusion effect but could not find a raceid with id ", eqEffect.EQBaseValue.ToString());
                                     continue;
                                 }
+                                femaleFormSpellTemplate.CanMountWhileInForm = creatureRaceFemale.CanMount;
                                 float scaleFemale = creatureRaceFemale.Height * creatureRaceFemale.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
                                 CreatureTemplate femaleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(femaleFormSpellTemplate.Name, creatureRaceFemale, creatureRaceFemale.Gender, 0, textureID, 0, 0, scaleFemale, wowFactionTemplateID, femaleFormSpellTemplate.WOWSpellID);
                                 femaleFormSpellEffectWOW.EffectMiscValueA = femaleCreatureTemplate.WOWCreatureTemplateID;

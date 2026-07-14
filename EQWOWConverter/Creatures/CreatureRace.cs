@@ -38,6 +38,7 @@ namespace EQWOWConverter.Creatures
         public bool CanHoldVisualItems = false;
         public bool CanHoldVisualShields = false;
         public bool CanShowEquipInIllusion = false;
+        public bool CanMount = false;
         public string SoundLoopName = string.Empty;
         public string SoundIdle1Name = string.Empty;
         public string SoundIdle2Name = string.Empty;
@@ -229,6 +230,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.CanHoldVisualItems = columns["CanHoldVisualItems"].Trim() == "1";
                 newCreatureRace.CanHoldVisualShields = columns["CanHoldVisualShields"].Trim() == "1";
                 newCreatureRace.CanShowEquipInIllusion = columns["CanShowEquipInIllusion"].Trim() == "1";
+                newCreatureRace.CanMount = columns["CanMount"].Trim() == "1";
                 newCreatureRace.SoundLoopName = columns["SndLoop"];
                 newCreatureRace.SoundIdle1Name = columns["SndIdle1"];
                 newCreatureRace.SoundIdle2Name = columns["SndIdle2"];

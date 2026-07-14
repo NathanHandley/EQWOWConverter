@@ -140,7 +140,8 @@ namespace EQWOWConverter.WOWFiles
                     if (playerModelDisplayScales.TryGetValue(idField.Value, out float displayScale) == true)
                     {
                         DBCRow.DBCFieldFloat collisionHeight = (DBCRow.DBCFieldFloat)row.AddedFields[15];
-                        collisionHeight.Value = Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX / displayScale;
+                        if (collisionHeight.Value > Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX) // If this line exists, short races are normal but the pivot camera Z doesn't go high enough. Revisit/fix later though.
+                            collisionHeight.Value = Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX / displayScale;
                     }
                 }
             }

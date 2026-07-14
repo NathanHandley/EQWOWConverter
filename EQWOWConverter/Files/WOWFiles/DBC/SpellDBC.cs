@@ -245,6 +245,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 67108864; // SPELL_ATTR0_AURA_IS_DEBUFF (0x04000000)
             if (spellTemplate.UsesRangedWeaponSlot == true)
                 attributeFlags |= 2; // SPELL_ATTR0_USES_RANGED_SLOT (0x00000002) - makes the client render the arrow/bullet projectile
+            if (spellTemplate.CanMountWhileInForm == true)
+                attributeFlags |= 16777216; // SPELL_ATTR0_ALLOW_WHILE_MOUNTED (0x01000000) - lets Unit::IsInDisallowedMountForm pass for this transform
             return attributeFlags;
         }
 
