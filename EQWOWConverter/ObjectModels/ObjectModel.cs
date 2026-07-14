@@ -1701,6 +1701,10 @@ namespace EQWOWConverter.ObjectModels
                         ObjectModelAnimation newAnimation = new ObjectModelAnimation();
                         newAnimation.DurationInMS = Convert.ToUInt32(animation.Value.TotalTimeInMS);
                         newAnimation.AnimationType = animationType;
+
+                        // Movement animations play at a rate of unitMoveSpeed / (MoveSpeed * renderScale), so compensate for the model template scale to be more EQ-like
+                        if (newAnimation.MoveSpeed > 0 && Properties.CreatureModelTemplate != null && Properties.CreatureModelTemplate.ModelTemplateScale > Configuration.GENERATE_FLOAT_EPSILON)
+                            newAnimation.MoveSpeed /= Properties.CreatureModelTemplate.ModelTemplateScale;
                         newAnimation.EQAnimationTypeTrue = animation.Value.EQAnimationType;
                         newAnimation.EQAnimationTypePreferred = compatibleAnimationTypes[0];
                         newAnimation.AliasNext = Convert.ToUInt16(ModelAnimations.Count); // The next animation is itself, so it's a loop (TODO: Change this)
