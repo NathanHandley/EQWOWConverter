@@ -295,6 +295,14 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        public bool HasTeleportEffect()
+        {
+            foreach (SpellEffectEQ eqEffect in EQSpellEffects)
+                if (eqEffect.EQEffectType == SpellEQEffectType.Gate || eqEffect.EQEffectType == SpellEQEffectType.Teleport || eqEffect.EQEffectType == SpellEQEffectType.Succor)
+                    return true;
+            return false;
+        }
+
         public static int GetCastTimeAfterConfigModsInMS(int castTimeInMS)
         {
             // Don't reduce anything below global cooldown
@@ -356,8 +364,6 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.EQAOERange = int.Parse(columns["aoerange"]);
                 newSpellTemplate.SpellRadius = Convert.ToInt32(Convert.ToSingle(newSpellTemplate.EQAOERange) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.Category = 0; // Temp / TODO: Figure out how/what to set here
-                newSpellTemplate.CastTimeBeforeModsInMS = int.Parse(columns["cast_time"]);
-                newSpellTemplate.CastTimeInMS = GetCastTimeAfterConfigModsInMS(newSpellTemplate.CastTimeBeforeModsInMS);
                 newSpellTemplate.RecourseLinkEQSpellID = int.Parse(columns["RecourseLink"]);
 
                 // Recovery time (take highest)
@@ -373,6 +379,13 @@ namespace EQWOWConverter.Spells
                 // Skip if there isn't an effect
                 if (newSpellTemplate.EQSpellEffects.Count == 0)
                     continue;
+
+                // Cast time (teleport-adjacent spells keep their original cast time)
+                newSpellTemplate.CastTimeBeforeModsInMS = int.Parse(columns["cast_time"]);
+                if (newSpellTemplate.HasTeleportEffect() == true)
+                    newSpellTemplate.CastTimeInMS = newSpellTemplate.CastTimeBeforeModsInMS;
+                else
+                    newSpellTemplate.CastTimeInMS = GetCastTimeAfterConfigModsInMS(newSpellTemplate.CastTimeBeforeModsInMS);
 
                 // Generic properties
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
