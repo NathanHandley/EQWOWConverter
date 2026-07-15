@@ -254,6 +254,10 @@ namespace EQWOWConverter
             // Force load of the fishing data before clearing invalid, so that fishing items don't get culled
             FishingZoneItem.GetWOWFishingLevelByZoneShortName();
 
+            // Remove locks from doors and teleports that have no player-obtainable key, if configured
+            if (Configuration.OBJECT_GAMEOBJECT_UNLOCK_WHEN_NO_OBTAINABLE_KEY == true)
+                RemoveLocksFromGameObjectsWithNoObtainableKey();
+
             // If there are any non player obtainable things (spells, items), clear them out
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
             if (Configuration.GENERATE_NON_PLAYER_OBTAINABLE_ITEMS == false)
@@ -3809,6 +3813,45 @@ namespace EQWOWConverter
                     }
                     else
                         Logger.WriteError("Could not attach the key opening spell to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as both spell slots were already used");
+                }
+            }
+        }
+
+        public void RemoveLocksFromGameObjectsWithNoObtainableKey()
+        {
+            Logger.WriteInfo("Removing locks from game objects with no player-obtainable key...");
+            foreach (var gameObjectsByZone in GameObject.GetNonDoodadGameObjectsByZoneShortNames())
+            {
+                foreach (GameObject lockedGameObject in gameObjectsByZone.Value)
+                {
+                    if (lockedGameObject.LockDBCID == 0)
+                        continue;
+                    bool keyIsObtainable = lockedGameObject.KeyItemTemplate != null && lockedGameObject.KeyItemTemplate.IsPlayerObtainable() == true;
+                    bool altKeyIsObtainable = lockedGameObject.AltKeyItemTemplate != null && lockedGameObject.AltKeyItemTemplate.IsPlayerObtainable() == true;
+                    if (keyIsObtainable == true && (lockedGameObject.AltKeyItemTemplate == null || altKeyIsObtainable == true))
+                        continue;
+                    if (keyIsObtainable == false && altKeyIsObtainable == false)
+                    {
+                        // No key can be obtained by a player, so remove the lock entirely
+                        Logger.WriteDebug("Locked game object with ID '", lockedGameObject.ID.ToString(), "' has no player-obtainable key, so its lock was removed");
+                        lockedGameObject.KeyItemTemplate = null;
+                        lockedGameObject.AltKeyItemTemplate = null;
+                        lockedGameObject.LockDBCID = 0;
+                        continue;
+                    }
+
+                    // Only one of the two keys is obtainable, so rebuild the lock around only that key
+                    if (keyIsObtainable == false)
+                    {
+                        Logger.WriteDebug("Locked game object with ID '", lockedGameObject.ID.ToString(), "' has a non-obtainable key item ID of '", lockedGameObject.KeyItemEQID.ToString(), "', so only the alt key will work");
+                        lockedGameObject.KeyItemTemplate = lockedGameObject.AltKeyItemTemplate;
+                        lockedGameObject.KeyItemEQID = lockedGameObject.AltKeyItemEQID;
+                    }
+                    else
+                        Logger.WriteDebug("Locked game object with ID '", lockedGameObject.ID.ToString(), "' has a non-obtainable alt key item ID of '", lockedGameObject.AltKeyItemEQID.ToString(), "', so only the main key will work");
+                    lockedGameObject.AltKeyItemTemplate = null;
+                    lockedGameObject.AltKeyItemEQID = 0;
+                    lockedGameObject.LockDBCID = IDGenerationTool.GenerateID("LockID", "keyitems", lockedGameObject.KeyItemEQID.ToString(), lockedGameObject.AltKeyItemEQID.ToString());
                 }
             }
         }
