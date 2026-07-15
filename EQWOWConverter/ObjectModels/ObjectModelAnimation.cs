@@ -119,6 +119,7 @@ namespace EQWOWConverter.ObjectModels
                         returnTypes.Add(EQAnimationType.l02Run);
                     }
                     break;
+                case AnimationType.JumpLandRun: // Fallback
                 case AnimationType.Run:
                     {
                         returnTypes.Add(EQAnimationType.l02Run);
