@@ -38,5 +38,6 @@ namespace EQWOWConverter.Spells
         Forage = 16,
         SummonActive = 17,
         Succor = 18,
+        StoneGate = 19,
     }
 }
