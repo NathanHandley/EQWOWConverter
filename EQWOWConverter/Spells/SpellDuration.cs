@@ -51,6 +51,35 @@ namespace EQWOWConverter.Spells
             MaxLevel = 0;
         }
 
+        public void ScaleDuration(float durationMod, int roundUpToNextMultipleOfMSAmount)
+        {
+            if (IsInfinite == true)
+                return;
+            BaseDurationInMS = GetScaledDurationInMS(BaseDurationInMS, durationMod, roundUpToNextMultipleOfMSAmount);
+            MaxDurationInMS = GetScaledDurationInMS(MaxDurationInMS, durationMod, roundUpToNextMultipleOfMSAmount);
+            if (MaxLevel > MinLevel && MaxDurationInMS > BaseDurationInMS)
+                DurationInMSPerLevel = (MaxDurationInMS - BaseDurationInMS) / (MaxLevel - MinLevel);
+            else
+                DurationInMSPerLevel = 0;
+        }
+
+        private int GetScaledDurationInMS(int durationInMS, float durationMod, int roundUpToNextMultipleOfMSAmount)
+        {
+            if (durationInMS <= 0)
+                return durationInMS;
+            int scaledDurationInMS = Convert.ToInt32(Convert.ToSingle(durationInMS) * durationMod);
+            if (roundUpToNextMultipleOfMSAmount > 0)
+            {
+                int remainderMS = scaledDurationInMS % roundUpToNextMultipleOfMSAmount;
+                if (remainderMS != 0)
+                    scaledDurationInMS += roundUpToNextMultipleOfMSAmount - remainderMS;
+                scaledDurationInMS = Math.Max(scaledDurationInMS, roundUpToNextMultipleOfMSAmount);
+            }
+            else
+                scaledDurationInMS = Math.Max(scaledDurationInMS, 1);
+            return scaledDurationInMS;
+        }
+
         public void CalculateAndSetAuraDuration(int spellLevel, int eqBuffDurationFormula, int maxBuffDurationInTicks,
             bool isModelChangeSize)
         {

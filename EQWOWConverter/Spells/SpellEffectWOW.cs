@@ -113,8 +113,9 @@ namespace EQWOWConverter.Spells
             EffectBasePoints *= -1;
         }
 
-        public int GetEffectAmountValueByLevel(int inputEffectBasePoints, int inputEffectMaxPoints, int spellInfluencingLevel, int unitInfluencingLevel, 
-            SpellEQBaseValueFormulaType eqFormula, int spellCastTimeInMS, string valueScalingFormulaName, SpellEffectWOWConversionScaleType conversionScaleType)
+        public int GetEffectAmountValueByLevel(int inputEffectBasePoints, int inputEffectMaxPoints, int spellInfluencingLevel, int unitInfluencingLevel,
+            SpellEQBaseValueFormulaType eqFormula, int spellCastTimeInMS, string valueScalingFormulaName, SpellEffectWOWConversionScaleType conversionScaleType,
+            float periodicValueMultiplier = 1f, int castTimeBeforeModsInMS = 0)
         {
             // Only work with positive values
             bool effectBasePointsWasNegative = false;
@@ -158,17 +159,26 @@ namespace EQWOWConverter.Spells
             {
                 float beforeValue = calculatedEffectBasePoints;
                 if (conversionScaleType == SpellEffectWOWConversionScaleType.Periodic)
-                    beforeValue /= Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ);
+                    beforeValue = (beforeValue * periodicValueMultiplier) / Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ);
                 float normalizeMod = 0;
                 if (conversionScaleType == SpellEffectWOWConversionScaleType.CastTime)
                 {
+                    // Normalization needs the pre-mod cast time so that the cast time mods don't shift where the value lands when converting
+                    int normalizationCastTimeInMS = castTimeBeforeModsInMS > 0 ? castTimeBeforeModsInMS : spellCastTimeInMS;
+
                     // No lower than 1 second for the calculation
-                    normalizeMod = 1 / Math.Max((Convert.ToSingle(spellCastTimeInMS) * 0.001f), 1f);
+                    normalizeMod = 1 / Math.Max((Convert.ToSingle(normalizationCastTimeInMS) * 0.001f), 1f);
                     beforeValue *= normalizeMod;
                 }
                 float afterValue = GetConvertedEqValueToWowValue(valueScalingFormulaName, beforeValue);
                 if (conversionScaleType == SpellEffectWOWConversionScaleType.CastTime)
+                {
                     afterValue /= normalizeMod;
+
+                    // Ensure DPS/HPS stays the same
+                    if (castTimeBeforeModsInMS > 0 && spellCastTimeInMS != castTimeBeforeModsInMS)
+                        afterValue = (afterValue * Convert.ToSingle(spellCastTimeInMS)) / Convert.ToSingle(castTimeBeforeModsInMS);
+                }
                 if (conversionScaleType == SpellEffectWOWConversionScaleType.Periodic)
                     afterValue *= Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW);
                 calculatedEffectBasePoints = Math.Max(Convert.ToInt32(afterValue), 1);
@@ -180,8 +190,9 @@ namespace EQWOWConverter.Spells
             return calculatedEffectBasePoints;
         }
 
-        public void SetEffectAmountValues(int effectBasePoints, int effectMaxPoints, int spellLevel, SpellEQBaseValueFormulaType eqFormula, 
-            int spellCastTimeInMS, string valueScalingFormulaName, SpellEffectWOWConversionScaleType conversionScaleType)
+        public void SetEffectAmountValues(int effectBasePoints, int effectMaxPoints, int spellLevel, SpellEQBaseValueFormulaType eqFormula,
+            int spellCastTimeInMS, string valueScalingFormulaName, SpellEffectWOWConversionScaleType conversionScaleType,
+            float periodicValueMultiplier = 1f, int castTimeBeforeModsInMS = 0)
         {
             // Normalize the formula name
             valueScalingFormulaName = valueScalingFormulaName.ToLower().Trim();
@@ -195,19 +206,19 @@ namespace EQWOWConverter.Spells
             if (eqFormula == SpellEQBaseValueFormulaType.BaseDivideBy100 || eqFormula == SpellEQBaseValueFormulaType.UnknownUseBaseOrMaxWhicheverHigher || Configuration.SPELL_EFFECT_USE_DYNAMIC_EFFECT_VALUES == false)
             {
                 EffectBasePoints = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
-                    valueScalingFormulaName, conversionScaleType);                
+                    valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS);
                 CalcEffectLowLevelValue = EffectBasePoints;
                 CalcEffectLowLevel = spellLevel;
-                CalcEffectHighLevelValue = EffectBasePoints;                
-                CalcEffectHighLevel = spellLevel;                
+                CalcEffectHighLevelValue = EffectBasePoints;
+                CalcEffectHighLevel = spellLevel;
             }
             else
             {
                 int calcMaxPoints = GetEffectAmountValueByLevel(effectMaxPoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
-                    valueScalingFormulaName, conversionScaleType);
+                    valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS);
                 int endCalcLevel = Configuration.SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL;
                 EffectBasePoints = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
-                    valueScalingFormulaName, conversionScaleType);
+                    valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS);
                 CalcEffectLowLevelValue = EffectBasePoints;
                 CalcEffectLowLevel = spellLevel;
 
@@ -224,7 +235,7 @@ namespace EQWOWConverter.Spells
                     {
                         CalcEffectHighLevel = curCalcLevel;
                         CalcEffectHighLevelValue = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, curCalcLevel, eqFormula, spellCastTimeInMS,
-                            valueScalingFormulaName, conversionScaleType);
+                            valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS);
                         if (CalcEffectHighLevelValue == calcMaxPoints)
                             curCalcLevel = endCalcLevel + 1;
                     }

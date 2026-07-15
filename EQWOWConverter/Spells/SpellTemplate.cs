@@ -104,6 +104,7 @@ namespace EQWOWConverter.Spells
                 _CastTimeInMS = value;
             }
         }
+        public int CastTimeBeforeModsInMS = 0; // Original EQ cast time before any mods, required for aligning things like DPS
         protected int _SpellRangeDBCID = 1; // First row, self only (no range)
         public int SpellRangeDBCID { get { return _SpellRangeDBCID; } }
         protected int _SpellRange = 0;
@@ -136,6 +137,7 @@ namespace EQWOWConverter.Spells
         public int EQBuffDurationInTicks = 0;
         public int EQBuffDurationFormula = 0;
         public SpellDuration AuraDuration = new SpellDuration();
+        public float PeriodicDamageDurationCompensationMod = 1f;
         public List<int> SpellGroupStackingIDs = new List<int>();
         public List<int> WornSpellGroupStackingIDs = new List<int>(); // Worn auras only stack-compete with other worn auras, so they get separate groups
         private List<int> AuraStackEffectKeys = new List<int>();
@@ -340,7 +342,19 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.EQAOERange = int.Parse(columns["aoerange"]);
                 newSpellTemplate.SpellRadius = Convert.ToInt32(Convert.ToSingle(newSpellTemplate.EQAOERange) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.Category = 0; // Temp / TODO: Figure out how/what to set here
-                newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
+                float castTime = float.Parse(columns["cast_time"]);
+                newSpellTemplate.CastTimeBeforeModsInMS = int.Parse(columns["cast_time"]);
+                if (castTime > 500)
+                {
+                    castTime *= Configuration.SPELLS_CAST_TIME_MOD;
+
+                    // Never reduce below the floor, but spells starting at/below the floor keep their original cast time
+                    float castTimeReductionFloor = Math.Min(newSpellTemplate.CastTimeBeforeModsInMS, Configuration.SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS);
+                    castTime = Math.Max(castTime, castTimeReductionFloor);
+                    newSpellTemplate.CastTimeInMS = (int)Math.Ceiling(castTime / 100f) * 100; // Round up for cleaner cast times
+                }
+                else
+                    newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
                 newSpellTemplate.RecourseLinkEQSpellID = int.Parse(columns["RecourseLink"]);
 
                 // Recovery time (take highest)
@@ -421,6 +435,10 @@ namespace EQWOWConverter.Spells
                 // Set defensive properties
                 newSpellTemplate.DefenseType = 1; // Magic
                 newSpellTemplate.PreventionType = 1; // Silence
+
+                // Modify DoT and crowd control durations for non-bard sounds
+                if (isDetrimental == true && newSpellTemplate.IsBardSongAura == false)
+                    ApplyDurationModsToDoTAndCrowdControlDurations(ref newSpellTemplate);
 
                 // Get targets and convert the spell effects
                 int eqTargetTypeID = int.Parse(columns["targettype"]);
@@ -1165,6 +1183,49 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        private static void ApplyDurationModsToDoTAndCrowdControlDurations(ref SpellTemplate spellTemplate)
+        {
+            // Stun durations are defined in the the 'effect value', so they must be modified here
+            if (Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD != 1f)
+            {
+                foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
+                    if (eqEffect.EQEffectType == SpellEQEffectType.Stun && eqEffect.EQBaseValue > 1)
+                        eqEffect.EQBaseValue = Convert.ToInt32(Convert.ToSingle(eqEffect.EQBaseValue) * Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD);
+            }
+
+            if (spellTemplate.AuraDuration.IsInfinite == true || spellTemplate.AuraDuration.MaxDurationInMS <= 0)
+                return;
+            bool hasPeriodicDamage = false;
+            bool hasCrowdControl = false;
+            foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
+            {
+                if (eqEffect.EQEffectType == SpellEQEffectType.CurrentHitPoints && eqEffect.EQBaseValue < 0)
+                    hasPeriodicDamage = true;
+                else if (eqEffect.EQEffectType == SpellEQEffectType.Charm || eqEffect.EQEffectType == SpellEQEffectType.Fear ||
+                        eqEffect.EQEffectType == SpellEQEffectType.Mez || eqEffect.EQEffectType == SpellEQEffectType.Root)
+                    hasCrowdControl = true;
+            }
+
+            // DoT gets priority over crowd control mods in order to keep the relative damage output the same
+            if (hasPeriodicDamage == true)
+            {
+                if (Configuration.SPELLS_DOT_TIME_DURATION_MOD == 1f)
+                    return;
+
+                // Round up to the next periodic tick, otherwise we'll drop the last tick in rounding sometimes
+                int tickPeriodInMS = Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW * 1000;
+                int maxDurationBeforeModInMS = spellTemplate.AuraDuration.MaxDurationInMS;
+                spellTemplate.AuraDuration.ScaleDuration(Configuration.SPELLS_DOT_TIME_DURATION_MOD, tickPeriodInMS);
+                spellTemplate.PeriodicDamageDurationCompensationMod = Convert.ToSingle(maxDurationBeforeModInMS) / Convert.ToSingle(spellTemplate.AuraDuration.MaxDurationInMS);
+            }
+            else if (hasCrowdControl == true)
+            {
+                if (Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD == 1f)
+                    return;
+                spellTemplate.AuraDuration.ScaleDuration(Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD, 0);
+            }
+        }
+
         private static void PopulateEQSpellEffect(ref SpellTemplate spellTemplate, int slotID, Dictionary<string, string> rowColumns)
         {
             // Skip non and unmapped effects
@@ -1389,7 +1450,7 @@ namespace EQWOWConverter.Spells
                                 }
                                 int preFormulaEffectAmount = Math.Abs(eqEffect.EQBaseValue);
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
-                                newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ManaUpDirect", SpellEffectWOWConversionScaleType.CastTime);
+                                newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ManaUpDirect", SpellEffectWOWConversionScaleType.CastTime, castTimeBeforeModsInMS: spellTemplate.CastTimeBeforeModsInMS);
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.PowerDrain;
                                 newSpellEffectWOW.EffectMiscValueA = 0; // Power Type = Mana
                                 newSpellEffectWOW.EffectMultipleValue = 1;
@@ -1419,7 +1480,7 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
                                     if (eqEffect.EQBaseValue > 0)
                                     {
-                                        newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealDirectHPS", SpellEffectWOWConversionScaleType.CastTime);
+                                        newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealDirectHPS", SpellEffectWOWConversionScaleType.CastTime, castTimeBeforeModsInMS: spellTemplate.CastTimeBeforeModsInMS);
                                         newSpellEffectWOW.EffectType = SpellWOWEffectType.Heal;
                                         newSpellEffectWOW.ActionDescription = string.Concat("transfer ", newSpellEffectWOW.GetFormattedEffectActionString(false), " of your life to the target");
                                         newSpellEffects.Add(newSpellEffectWOW);
@@ -1434,7 +1495,7 @@ namespace EQWOWConverter.Spells
                                     }
                                     else
                                     {
-                                        newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageDirectDPS", SpellEffectWOWConversionScaleType.CastTime);
+                                        newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageDirectDPS", SpellEffectWOWConversionScaleType.CastTime, castTimeBeforeModsInMS: spellTemplate.CastTimeBeforeModsInMS);
                                         newSpellEffectWOW.EffectType = SpellWOWEffectType.HealthLeech;
                                         if (elementalSchoolName.Length > 0)
                                             newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " ", elementalSchoolName, " damage and return it as life to yourself");
@@ -1459,13 +1520,13 @@ namespace EQWOWConverter.Spells
                                         newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicLeech;
                                         if (elementalSchoolName.Length > 0)
                                         {
-                                            newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic);
+                                            newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic, spellTemplate.PeriodicDamageDurationCompensationMod);
                                             newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds and return it as life to yourself");
                                             newSpellEffectWOW.SetAuraDescription("suffering", false, " ", string.Concat(" ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds and return it as life to yourself"));
                                         }
                                         else
                                         {
-                                            newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic);
+                                            newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic, spellTemplate.PeriodicDamageDurationCompensationMod);
                                             newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds and return it as life to yourself");
                                             newSpellEffectWOW.SetAuraDescription("suffering", false, " ", string.Concat(" damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds and return it as life to yourself"));
                                         }
@@ -1593,14 +1654,14 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
                                     if (eqEffect.EQBaseValue > 0)
                                     {
-                                        newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealDirectHPS", SpellEffectWOWConversionScaleType.CastTime);
+                                        newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealDirectHPS", SpellEffectWOWConversionScaleType.CastTime, castTimeBeforeModsInMS: spellTemplate.CastTimeBeforeModsInMS);
                                         newSpellEffectWOW.EffectType = SpellWOWEffectType.Heal;
                                         newSpellEffectWOW.ActionDescription = string.Concat("heal for ", newSpellEffectWOW.GetFormattedEffectActionString(false));
                                         spellTemplate.HighestDirectHealAmountInSpellEffect = Math.Max(spellTemplate.HighestDirectHealAmountInSpellEffect, newSpellEffectWOW.CalcEffectHighLevelValue);
                                     }
                                     else
                                     {
-                                        newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageDirectDPS", SpellEffectWOWConversionScaleType.CastTime);
+                                        newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageDirectDPS", SpellEffectWOWConversionScaleType.CastTime, castTimeBeforeModsInMS: spellTemplate.CastTimeBeforeModsInMS);
                                         newSpellEffectWOW.EffectType = SpellWOWEffectType.SchoolDamage;
                                         if (elementalSchoolName.Length > 0)
                                             newSpellEffectWOW.ActionDescription = string.Concat("strike for ", newSpellEffectWOW.GetFormattedEffectActionString(false), " ", elementalSchoolName, " damage");
@@ -1628,13 +1689,13 @@ namespace EQWOWConverter.Spells
                                         newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicDamage;
                                         if (elementalSchoolName.Length > 0)
                                         {
-                                            newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic);
+                                            newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic, spellTemplate.PeriodicDamageDurationCompensationMod);
                                             newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                             newSpellEffectWOW.SetAuraDescription("suffering", false, " ", string.Concat(" ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds"));
                                         }
                                         else
                                         {
-                                            newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic);
+                                            newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic, spellTemplate.PeriodicDamageDurationCompensationMod);
                                             newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                             newSpellEffectWOW.SetAuraDescription("suffering", false, " ", string.Concat(" damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds"));
                                         }
@@ -1651,7 +1712,7 @@ namespace EQWOWConverter.Spells
                                 int preFormulaEffectAmount = Math.Abs(eqEffect.EQBaseValue) * 7500;
                                 SpellEffectWOW healSpellEffectWOW = new SpellEffectWOW();
                                 healSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
-                                healSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, 0, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealDirectHPS", SpellEffectWOWConversionScaleType.CastTime);
+                                healSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, 0, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealDirectHPS", SpellEffectWOWConversionScaleType.CastTime, castTimeBeforeModsInMS: spellTemplate.CastTimeBeforeModsInMS);
                                 healSpellEffectWOW.EffectType = SpellWOWEffectType.Heal;
                                 healSpellEffectWOW.ActionDescription = string.Concat("heal for ", healSpellEffectWOW.GetFormattedEffectActionString(false));
                                 spellTemplate.HighestDirectHealAmountInSpellEffect = Math.Max(spellTemplate.HighestDirectHealAmountInSpellEffect, healSpellEffectWOW.CalcEffectHighLevelValue);

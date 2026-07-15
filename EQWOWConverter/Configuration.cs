@@ -669,6 +669,18 @@ namespace EQWOWConverter
         // How much to multiply the EQ range value for WoW
         public static float SPELLS_RANGE_MULTIPLIER = 0.3333f;
 
+        // How much to modify cast time of EverQuest spells when converting (spell DPS/HPS amounts remain the same)
+        public static float SPELLS_CAST_TIME_MOD = 0.5f;
+
+        // Cast times are never reduced below this by SPELLS_CAST_TIME_MOD (spells already at or below it keep their original cast time)
+        public static int SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS = 1500;
+
+        // How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)
+        public static float SPELLS_DOT_TIME_DURATION_MOD = 0.5f;
+
+        // How much to modify the duration of non-bard crowd control spells
+        public static float SPELLS_CROWD_CONTROL_DURATION_MOD = 0.5f;
+
         // The most that a movement speed reduction can slow a target.  Should be above -100
         public static int SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE = -90;
 
@@ -1611,6 +1623,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_GATECUSTOM_SPELLDBC_ID", SPELLS_GATECUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest");
             OutputVariableToConfig("SPELLS_BINDCUSTOM_SPELLDBC_ID", SPELLS_BINDCUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest");
             OutputVariableToConfig("SPELLS_RANGE_MULTIPLIER", SPELLS_RANGE_MULTIPLIER, "How much to multiply the EQ range value for WoW");
+            OutputVariableToConfig("SPELLS_CAST_TIME_MOD", SPELLS_CAST_TIME_MOD, "How much to modify cast time of EverQuest spells when converting (spell DPS/HPS amounts remain the same)");
+            OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS", SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS, "Cast times are never reduced below this by SPELLS_CAST_TIME_MOD (spells already at or below it keep their original cast time)");
+            OutputVariableToConfig("SPELLS_DOT_TIME_DURATION_MOD", SPELLS_DOT_TIME_DURATION_MOD, "How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)");
+            OutputVariableToConfig("SPELLS_CROWD_CONTROL_DURATION_MOD", SPELLS_CROWD_CONTROL_DURATION_MOD, "How much to modify the duration of non-bard crowd control spells");
             OutputVariableToConfig("SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE", SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE, "The most that a movement speed reduction can slow a target.  Should be above -100");
             OutputVariableToConfig("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", SPELL_PERIODIC_SECONDS_PER_TICK_WOW, "Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier");
             OutputVariableToConfig("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS, "This is 'added time' in the periodic tick that comes from bard casters.");
@@ -2057,6 +2073,10 @@ namespace EQWOWConverter
             SPELLS_GATECUSTOM_SPELLDBC_ID = ReadVariableFromConfigString("SPELLS_GATECUSTOM_SPELLDBC_ID", configValuesByVariableName, SPELLS_GATECUSTOM_SPELLDBC_ID);
             SPELLS_BINDCUSTOM_SPELLDBC_ID = ReadVariableFromConfigString("SPELLS_BINDCUSTOM_SPELLDBC_ID", configValuesByVariableName, SPELLS_BINDCUSTOM_SPELLDBC_ID);
             SPELLS_RANGE_MULTIPLIER = ReadVariableFromConfigString("SPELLS_RANGE_MULTIPLIER", configValuesByVariableName, SPELLS_RANGE_MULTIPLIER);
+            SPELLS_CAST_TIME_MOD = ReadVariableFromConfigString("SPELLS_CAST_TIME_MOD", configValuesByVariableName, SPELLS_CAST_TIME_MOD);
+            SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS = ReadVariableFromConfigString("SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS", configValuesByVariableName, SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS);
+            SPELLS_DOT_TIME_DURATION_MOD = ReadVariableFromConfigString("SPELLS_DOT_TIME_DURATION_MOD", configValuesByVariableName, SPELLS_DOT_TIME_DURATION_MOD);
+            SPELLS_CROWD_CONTROL_DURATION_MOD = ReadVariableFromConfigString("SPELLS_CROWD_CONTROL_DURATION_MOD", configValuesByVariableName, SPELLS_CROWD_CONTROL_DURATION_MOD);
             SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE = ReadVariableFromConfigString("SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE", configValuesByVariableName, SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE);
             SPELL_PERIODIC_SECONDS_PER_TICK_EQ = ReadVariableFromConfigString("SPELL_PERIODIC_SECONDS_PER_TICK_EQ", configValuesByVariableName, SPELL_PERIODIC_SECONDS_PER_TICK_EQ);
             SPELL_PERIODIC_SECONDS_PER_TICK_WOW = ReadVariableFromConfigString("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", configValuesByVariableName, SPELL_PERIODIC_SECONDS_PER_TICK_WOW);
