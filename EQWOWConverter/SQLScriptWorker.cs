@@ -28,6 +28,7 @@ using EQWOWConverter.Spells;
 using EQWOWConverter.Tradeskills;
 using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
+using System.Text;
 using EQWOWConverter.Zones;
 using MySql.Data.MySqlClient;
 
@@ -81,6 +82,7 @@ namespace EQWOWConverter
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
         private ModEverquestCreatureEmoteSQL modEverquestCreatureEmoteSQL = new ModEverquestCreatureEmoteSQL();
         private ModEverquestCreatureKillSpawnSQL modEverquestCreatureKillSpawnSQL = new ModEverquestCreatureKillSpawnSQL();
+        private ModEverquestCreatureMovementSoundSQL modEverquestCreatureMovementSoundSQL = new ModEverquestCreatureMovementSoundSQL();
         private ModEverquestCreatureSpawnPointSQL modEverquestCreatureSpawnPointSQL = new ModEverquestCreatureSpawnPointSQL();
         private ModEverquestCreatureWaypointSQL modEverquestCreatureWaypointSQL = new ModEverquestCreatureWaypointSQL();
         private ModEverquestForageZoneItemsSQL modEverquestForageZoneItemsSQL = new ModEverquestForageZoneItemsSQL();
@@ -1038,7 +1040,17 @@ namespace EQWOWConverter
 
             // Creature models
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
+            {
                 creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
+
+                // When playing walk/run sounds through the mod, need to send the data to the server
+                if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true)
+                {
+                    AddCreatureMovementSoundRowIfNeeded(creatureModelTemplate, creatureModelTemplate.DBCCreatureDisplayID);
+                    foreach (var faceDisplayIDByFaceIndex in creatureModelTemplate.IllusionFaceDisplayIDsByFaceIndex)
+                        AddCreatureMovementSoundRowIfNeeded(creatureModelTemplate, faceDisplayIDByFaceIndex.Value);
+                }
+            }
             
             // Azeroth creatures for teleports
             if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
@@ -1344,6 +1356,48 @@ namespace EQWOWConverter
             // Page text (for books)
             foreach (ItemTemplate.BookText bookText in ItemTemplate.GetAllBookTexts())
                 pageTextSQL.AddRow(bookText.PageTextID, bookText.Text);
+        }
+
+        private HashSet<int> creatureMovementSoundAddedDisplayIDs = new HashSet<int>();
+
+        private void AddCreatureMovementSoundRowIfNeeded(CreatureModelTemplate creatureModelTemplate, int displayID)
+        {
+            if (creatureMovementSoundAddedDisplayIDs.Contains(displayID) == true)
+                return;
+            CreatureRace race = creatureModelTemplate.Race;
+            string walkSoundEntryIDs;
+            string walkSoundDurationsMS;
+            GetCreatureMovementSoundPieceLists(race.SoundWalkingName, race.SoundMaxDistance, out walkSoundEntryIDs, out walkSoundDurationsMS);
+            string runSoundEntryIDs;
+            string runSoundDurationsMS;
+            GetCreatureMovementSoundPieceLists(race.SoundRunningName, race.SoundMaxDistance, out runSoundEntryIDs, out runSoundDurationsMS);
+            if (walkSoundEntryIDs.Length == 0 && runSoundEntryIDs.Length == 0)
+                return;
+            creatureMovementSoundAddedDisplayIDs.Add(displayID);
+            modEverquestCreatureMovementSoundSQL.AddRow(displayID, walkSoundEntryIDs, walkSoundDurationsMS, runSoundEntryIDs, runSoundDurationsMS, race.SoundMaxDistance);
+        }
+
+        private void GetCreatureMovementSoundPieceLists(string soundFileName, int soundMaxDistance, out string pieceSoundEntryIDs, out string pieceSoundDurationsMS)
+        {
+            pieceSoundEntryIDs = string.Empty;
+            pieceSoundDurationsMS = string.Empty;
+            CreatureMovementSoundSet? movementSoundSet = CreatureRace.GetMovementSoundSet(soundFileName, soundMaxDistance);
+            if (movementSoundSet == null)
+                return;
+            StringBuilder soundEntryIDsSB = new StringBuilder();
+            StringBuilder soundDurationsSB = new StringBuilder();
+            for (int i = 0; i < movementSoundSet.PieceSounds.Count; i++)
+            {
+                if (i > 0)
+                {
+                    soundEntryIDsSB.Append(";");
+                    soundDurationsSB.Append(";");
+                }
+                soundEntryIDsSB.Append(movementSoundSet.PieceSounds[i].DBCID);
+                soundDurationsSB.Append(movementSoundSet.PieceDurationsMS[i]);
+            }
+            pieceSoundEntryIDs = soundEntryIDsSB.ToString();
+            pieceSoundDurationsMS = soundDurationsSB.ToString();
         }
 
         private void PopulateIllusionDisplayData(List<CreatureModelTemplate> creatureModelTemplates)
@@ -2273,6 +2327,7 @@ namespace EQWOWConverter
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
             modEverquestCreatureEmoteSQL.SaveToDisk("mod_everquest_creature_emote", SQLFileType.World);
             modEverquestCreatureKillSpawnSQL.SaveToDisk("mod_everquest_creature_kill_spawn", SQLFileType.World);
+            modEverquestCreatureMovementSoundSQL.SaveToDisk("mod_everquest_creature_movement_sound", SQLFileType.World);
             modEverquestCreatureSpawnPointSQL.SaveToDisk("mod_everquest_creature_spawn_point", SQLFileType.World);
             modEverquestCreatureWaypointSQL.SaveToDisk("mod_everquest_creature_waypoint", SQLFileType.World);
             modEverquestForageZoneItemsSQL.SaveToDisk("mod_everquest_forage_zone_items", SQLFileType.World);

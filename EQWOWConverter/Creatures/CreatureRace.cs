@@ -69,6 +69,7 @@ namespace EQWOWConverter.Creatures
         public bool IsExoticTame = false;
 
         public static Dictionary<string, Dictionary<int, Sound>> SoundsBySoundNameAndDistance = new Dictionary<string, Dictionary<int, Sound>>();
+        public static Dictionary<string, Dictionary<int, CreatureMovementSoundSet>> MovementSoundSetsBySoundNameAndDistance = new Dictionary<string, Dictionary<int, CreatureMovementSoundSet>>();
         public static Dictionary<string, int> FootstepIDBySoundName = new Dictionary<string, int>();
         public static Dictionary<int, int> FootstepIDBySoundID = new Dictionary<int, int>();
 
@@ -129,6 +130,13 @@ namespace EQWOWConverter.Creatures
                     GenerateSoundIfUnique(creatureRace.SoundTechnicalAttackName, creatureRace.SoundMaxDistance);
                     GenerateSoundIfUnique(creatureRace.SoundRunningName, creatureRace.SoundMaxDistance);
 
+                    // If using mod-enabled movement sounds, need to generate cutup sounds
+                    if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true)
+                    {
+                        GenerateMovementSoundSetIfUnique(creatureRace.SoundWalkingName, creatureRace.SoundMaxDistance);
+                        GenerateMovementSoundSetIfUnique(creatureRace.SoundRunningName, creatureRace.SoundMaxDistance);
+                    }
+
                     if (FootstepIDBySoundName.ContainsKey(creatureRace.SoundWalkingName) == false)
                     {
                         int creatureFootstepID = IDGenerationTool.GenerateID("CreatureFootstepID", creatureRace.SoundWalkingName);
@@ -171,6 +179,54 @@ namespace EQWOWConverter.Creatures
             newSound.NoOverlap = true;
             SoundsBySoundNameAndDistance[soundName][radius] = newSound;
         }
+
+        private static void GenerateMovementSoundSetIfUnique(string soundName, int radius)
+        {
+            if (soundName == "null24.wav" || soundName.Trim().Length == 0)
+                return;
+            if (MovementSoundSetsBySoundNameAndDistance.ContainsKey(soundName) == true)
+            {
+                if (MovementSoundSetsBySoundNameAndDistance[soundName].ContainsKey(radius) == true)
+                    return;
+            }
+            else
+                MovementSoundSetsBySoundNameAndDistance.Add(soundName, new Dictionary<int, CreatureMovementSoundSet>());
+
+            string sourceSoundFilePath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds", soundName);
+            List<int> pieceDurationsMS = WavTool.CalculateWavFilePieceDurationsInMS(sourceSoundFilePath, Configuration.AUDIO_CREATURE_MOVEMENT_SOUND_MAX_PIECE_DURATION_IN_MS);
+            if (pieceDurationsMS.Count == 0)
+            {
+                Logger.WriteError("Could not generate a movement sound set for sound '" + soundName + "' since no piece durations could be calculated");
+                return;
+            }
+
+            CreatureMovementSoundSet movementSoundSet = new CreatureMovementSoundSet();
+            movementSoundSet.SourceFileName = soundName;
+            movementSoundSet.PieceDurationsMS = pieceDurationsMS;
+            string pieceFileNameNoExtBase = Path.GetFileNameWithoutExtension(soundName);
+            float minDistance = radius * Configuration.AUDIO_CREATURE_MIN_DISTANCE_MOD;
+            for (int i = 0; i < pieceDurationsMS.Count; i++)
+            {
+                string pieceFileName = string.Concat(pieceFileNameNoExtBase, "Piece", (i + 1).ToString(), ".wav");
+                Sound pieceSound = new Sound(pieceFileName, pieceFileName, SoundType.NPCCombat, minDistance, radius, false);
+                movementSoundSet.PieceSounds.Add(pieceSound);
+            }
+            MovementSoundSetsBySoundNameAndDistance[soundName][radius] = movementSoundSet;
+        }
+
+        public static CreatureMovementSoundSet? GetMovementSoundSet(string soundName, int distance)
+        {
+            lock (CreatureLock)
+            {
+                if (MovementSoundSetsBySoundNameAndDistance.ContainsKey(soundName) == true)
+                {
+                    if (MovementSoundSetsBySoundNameAndDistance[soundName].ContainsKey(distance) == true)
+                        return MovementSoundSetsBySoundNameAndDistance[soundName][distance];
+                }
+                return null;
+            }
+        }
+
 
         public static List<CreatureRace> GetAllCreatureRaces()
         {

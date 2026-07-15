@@ -354,10 +354,13 @@ namespace EQWOWConverter.WOWFiles
                     Events.AddElement(playFidgetSound2);
                 }
 
-                // HandleFootfallAnimEvent ($FSD)
-                M2Event handleFootfallAnimEvent = new M2Event();
-                handleFootfallAnimEvent.PopulateAsHandleFootfallAnimEventFSD(wowObjectModel);
-                Events.AddElement(handleFootfallAnimEvent);
+                // HandleFootfallAnimEvent ($FSD) - only used when not using mod-driven walk/run sounds
+                if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == false)
+                {
+                    M2Event handleFootfallAnimEvent = new M2Event();
+                    handleFootfallAnimEvent.PopulateAsHandleFootfallAnimEventFSD(wowObjectModel);
+                    Events.AddElement(handleFootfallAnimEvent);
+                }
             }
         }
 

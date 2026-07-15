@@ -309,6 +309,10 @@ namespace EQWOWConverter
             foreach (var soundByName in CreatureRace.SoundsBySoundNameAndDistance)
                 foreach (var soundByDistance in soundByName.Value)
                     soundEntriesDBC.AddRow(soundByDistance.Value, soundByDistance.Value.Name, creatureSoundsDirectory);
+            foreach (var movementSoundSetByName in CreatureRace.MovementSoundSetsBySoundNameAndDistance)
+                foreach (var movementSoundSetByDistance in movementSoundSetByName.Value)
+                    foreach (Sound pieceSound in movementSoundSetByDistance.Value.PieceSounds)
+                        soundEntriesDBC.AddRow(pieceSound, pieceSound.Name, creatureSoundsDirectory);
 
             // Faction
             foreach (CreatureFaction creatureFaction in CreatureFaction.GetCreatureFactionsByFactionID().Values)

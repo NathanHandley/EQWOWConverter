@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 41;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 44;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -390,6 +390,12 @@ namespace EQWOWConverter
 
         // Volume of creature sound effects like attacks and being hit
         public static float AUDIO_CREATURE_SOUND_VOLUME = 0.3f;
+
+        // If true, the server will play the movement sound chunks instead of attached sound events on the creature. True is more EQ like
+        public static bool AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED = true;
+
+        // Movement sounds are cut into parts (if AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED is true) and this is the size of those parts
+        public static int AUDIO_CREATURE_MOVEMENT_SOUND_MAX_PIECE_DURATION_IN_MS = 700;
 
         // Creature sound radius (in CreatureRaces) are multilpied for this for the min distance, which is the range of max volume
         public static float AUDIO_CREATURE_MIN_DISTANCE_MOD = 0.5f;
@@ -1514,6 +1520,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE", AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE, "Size of the box when rendering a sound instance (Note: It's 1/2 the in-game size)");
             OutputVariableToConfig("AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME", AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME, "Name of the object material that is used when rendering the soundinstance object");
             OutputVariableToConfig("AUDIO_CREATURE_SOUND_VOLUME", AUDIO_CREATURE_SOUND_VOLUME, "Volume of creature sound effects like attacks and being hit");
+            OutputVariableToConfig("AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED", AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED, "If true, the server will play the movement sound chunks instead of attached sound events on the creature. True is more EQ like");
+            OutputVariableToConfig("AUDIO_CREATURE_MOVEMENT_SOUND_MAX_PIECE_DURATION_IN_MS", AUDIO_CREATURE_MOVEMENT_SOUND_MAX_PIECE_DURATION_IN_MS, "Movement sounds are cut into parts (if AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED is true) and this is the size of those parts");
             OutputVariableToConfig("AUDIO_CREATURE_MIN_DISTANCE_MOD", AUDIO_CREATURE_MIN_DISTANCE_MOD, "Creature sound radius (in CreatureRaces) are multilpied for this for the min distance, which is the range of max volume");
             OutputVariableToConfig("AUDIO_SPELL_SOUND_VOLUME", AUDIO_SPELL_SOUND_VOLUME, "Volume of spells and other effects");
             OutputVariableToConfig("OBJECT_STATIC_LADDER_EXTEND_DISTANCE", OBJECT_STATIC_LADDER_EXTEND_DISTANCE, "For ladders, this is how far to extend out the steppable area in front and back of it (percentage of thickness)");
@@ -1948,6 +1956,8 @@ namespace EQWOWConverter
             AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE = ReadVariableFromConfigString("AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE", configValuesByVariableName, AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE);
             AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME = ReadVariableFromConfigString("AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME", configValuesByVariableName, AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME);
             AUDIO_CREATURE_SOUND_VOLUME = ReadVariableFromConfigString("AUDIO_CREATURE_SOUND_VOLUME", configValuesByVariableName, AUDIO_CREATURE_SOUND_VOLUME);
+            AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED = ReadVariableFromConfigString("AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED", configValuesByVariableName, AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED);
+            AUDIO_CREATURE_MOVEMENT_SOUND_MAX_PIECE_DURATION_IN_MS = ReadVariableFromConfigString("AUDIO_CREATURE_MOVEMENT_SOUND_MAX_PIECE_DURATION_IN_MS", configValuesByVariableName, AUDIO_CREATURE_MOVEMENT_SOUND_MAX_PIECE_DURATION_IN_MS);
             AUDIO_CREATURE_MIN_DISTANCE_MOD = ReadVariableFromConfigString("AUDIO_CREATURE_MIN_DISTANCE_MOD", configValuesByVariableName, AUDIO_CREATURE_MIN_DISTANCE_MOD);
             AUDIO_SPELL_SOUND_VOLUME = ReadVariableFromConfigString("AUDIO_SPELL_SOUND_VOLUME", configValuesByVariableName, AUDIO_SPELL_SOUND_VOLUME);
 

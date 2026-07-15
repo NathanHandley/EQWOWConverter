@@ -1381,9 +1381,28 @@ namespace EQWOWConverter
                 if (File.Exists(targetSoundFileName) == false)
                     FileTool.CopyFile(sourceSoundFileName, targetSoundFileName);
             }
+            GenerateCreatureMovementSoundPieceFiles(inputSoundFolderRoot, exportCreatureSoundsDirectory);
 
             Logger.WriteInfo("Creature generation complete.");
             return true;
+        }
+
+        private static void GenerateCreatureMovementSoundPieceFiles(string inputSoundFolderRoot, string exportCreatureSoundsDirectory)
+        {
+            // Make sound part files for playback when a creature moves. It's in parts so if it ends early it doesn't bleed too long
+            if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == false)
+                return;
+            Logger.WriteInfo("Generating creature movement sound piece files...");
+            foreach (var movementSoundSetByName in CreatureRace.MovementSoundSetsBySoundNameAndDistance)
+            {
+                string sourceFileName = movementSoundSetByName.Value.First().Value.SourceFileName;
+                string sourceSoundFilePath = Path.Combine(inputSoundFolderRoot, sourceFileName);
+                string pieceFileNameNoExtBase = Path.GetFileNameWithoutExtension(sourceFileName);
+                string firstPieceFilePath = Path.Combine(exportCreatureSoundsDirectory, string.Concat(pieceFileNameNoExtBase, "Piece1.wav"));
+                if (File.Exists(firstPieceFilePath) == false)
+                    WavTool.WriteWavFilePieces(sourceSoundFilePath, exportCreatureSoundsDirectory, pieceFileNameNoExtBase,
+                        Configuration.AUDIO_CREATURE_MOVEMENT_SOUND_MAX_PIECE_DURATION_IN_MS);
+            }
         }
 
         public bool ConvertCreatures(Dictionary<int, CreatureTemplate> creatureTemplatesByEQID, ref List<CreatureSpawnPool> creatureSpawnPools)
@@ -1590,6 +1609,7 @@ namespace EQWOWConverter
                 if (File.Exists(targetSoundFileName) == false)
                     FileTool.CopyFile(sourceSoundFileName, targetSoundFileName);
             }
+            GenerateCreatureMovementSoundPieceFiles(inputSoundFolderRoot, exportCreatureSoundsDirectory);
 
             Logger.WriteInfo("Creature generation complete.");
             return true;
