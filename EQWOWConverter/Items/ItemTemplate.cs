@@ -551,9 +551,9 @@ namespace EQWOWConverter.Items
         }
 
         private static ItemWOWQuality CalculateQuality(List<(ItemWOWStatType, int)> statValues, int eqResistPoison, 
-            int eqResistMagic, int eqResistDisease, int eqResistFire, int eqResistCold)
+            int eqResistMagic, int eqResistDisease, int eqResistFire, int eqResistCold, bool hasSpellEffect)
         {
-            if (statValues.Count > 0 || eqResistPoison > 0 || eqResistMagic > 0 || eqResistDisease > 0 || eqResistCold > 0 || eqResistFire > 0)
+            if (statValues.Count > 0 || eqResistPoison > 0 || eqResistMagic > 0 || eqResistDisease > 0 || eqResistCold > 0 || eqResistFire > 0 || hasSpellEffect == true)
                 return ItemWOWQuality.Uncommon;
             else
                 return ItemWOWQuality.Common;
@@ -1681,7 +1681,10 @@ namespace EQWOWConverter.Items
 
                 // Set the quality
                 if (qualityOverride == -1)
-                    newItemTemplate.Quality = CalculateQuality(newItemTemplate.StatValues, resistPoison, resistMagic, resistDisease, resistFire, resistCold);
+                {
+                    bool hasSpellEffect = (newItemTemplate.EQWornEffectSpellID > 0 || newItemTemplate.WOWWornEffectSpellID > 0 || newItemTemplate.EQCombatProcSpellEffectID > 0);
+                    newItemTemplate.Quality = CalculateQuality(newItemTemplate.StatValues, resistPoison, resistMagic, resistDisease, resistFire, resistCold, hasSpellEffect);
+                }
                 else
                     newItemTemplate.Quality = (ItemWOWQuality)qualityOverride;
 
