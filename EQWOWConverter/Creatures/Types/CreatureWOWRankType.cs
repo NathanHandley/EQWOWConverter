@@ -16,7 +16,7 @@
 
 namespace EQWOWConverter.Creatures
 {
-    internal enum CreatureRankType : Int32
+    internal enum CreatureWOWRankType : Int32
     {
         Normal = 0,
         Elite = 1,

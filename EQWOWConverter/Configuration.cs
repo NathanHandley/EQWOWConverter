@@ -452,8 +452,11 @@ namespace EQWOWConverter
         // How high up from the ground the eye height is as a baseline in illusion spells
         public static float CREATURE_ILLUSION_EYE_HEIGHT_BASELINE = 2.031f;
 
-        // How many seconds will elapse before a boss creature respawns after dying
-        public static int CREATURE_BOSS_RESPAWN_TIME_IN_SEC = 3600;
+        // Maximum number of seconds that can elapse before a raid boss creature respawns after dying (uses the minimum EQ timer if shorter)
+        public static int CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC = 28800;
+
+        // Maximum number of seconds that can elapse before a raid trash creature respawns after dying (uses the minimum EQ timer if shorter)
+        public static int CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC = 7200;
 
         // Stat modifiers for creatures
         // - "MODADD" are values added after all dynamic calculations
@@ -1536,7 +1539,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_FIDGET_STAND_TIME_IN_MS", CREATURE_FIDGET_STAND_TIME_IN_MS, "How long (in ms) the calm standing animation plays before each fidget chance roll");
             OutputVariableToConfig("CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ", CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ, "NPCs with an EQ level above this are immune to fear (EQ/TAKP like), note that it uses the original EQ min level for this to match live-like behavior");
             OutputVariableToConfig("CREATURE_ILLUSION_TINT_PALETTE_SIZE", CREATURE_ILLUSION_TINT_PALETTE_SIZE, "How many colors are in the illusion chest tint palette, larger numbers mean larger builds but more color representation");
-            OutputVariableToConfig("CREATURE_BOSS_RESPAWN_TIME_IN_SEC", CREATURE_BOSS_RESPAWN_TIME_IN_SEC, "How many seconds will elapse before a boss creature respawns after dying");
+            OutputVariableToConfig("CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC", CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC, "Maximum number of seconds that can elapse before a raid boss creature respawns after dying (uses the minimum EQ timer if shorter)");
+            OutputVariableToConfig("CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC", CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC, "Maximum number of seconds that can elapse before a raid trash creature respawns after dying (uses the minimum EQ timer if shorter)");
             OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD", CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD, "Stat modifiers for creatures - \"MODADD\" are values added after all dynamic calculations", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD", CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL", CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL, "", false);
@@ -1978,7 +1982,8 @@ namespace EQWOWConverter
 
             CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ = ReadVariableFromConfigString("CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ", configValuesByVariableName, CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ);
             CREATURE_ILLUSION_TINT_PALETTE_SIZE = ReadVariableFromConfigString("CREATURE_ILLUSION_TINT_PALETTE_SIZE", configValuesByVariableName, CREATURE_ILLUSION_TINT_PALETTE_SIZE);
-            CREATURE_BOSS_RESPAWN_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_BOSS_RESPAWN_TIME_IN_SEC", configValuesByVariableName, CREATURE_BOSS_RESPAWN_TIME_IN_SEC);
+            CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC", configValuesByVariableName, CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC);
+            CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC", configValuesByVariableName, CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC);
 
             CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD);
             CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD);

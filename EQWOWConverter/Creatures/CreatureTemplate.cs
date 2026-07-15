@@ -60,8 +60,8 @@ namespace EQWOWConverter.Creatures
         public float HPMod = 1f;
         public float DamageMod = 1f;
         public int AttackTime = (int)Configuration.CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT;
-        public CreatureRankType Rank = CreatureRankType.Normal;
-        public bool IsBoss = false;
+        public CreatureWOWRankType Rank = CreatureWOWRankType.Normal;
+        public CreatureDifficultyType DifficultyType = CreatureDifficultyType.Normal;
         public int EQFactionID = 0;
         public int EQNPCFactionID = 0;
         public int WOWFactionTemplateID = 0;
@@ -344,11 +344,22 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.AttackTime = (int)GetStatOrMod("attackdelay", newCreatureTemplate.Level, float.Parse(columns["attack_delay"]), CreatureStatModType.FixedValue);
 
                     // Rank (must come after Scaled Stats)
-                    newCreatureTemplate.IsBoss = columns["is_boss"] == "1" ? true : false;
-                    if (newCreatureTemplate.IsBoss == true)
-                        newCreatureTemplate.Rank = CreatureRankType.Boss;
-                    if (newCreatureTemplate.Rank == CreatureRankType.Normal && (newCreatureTemplate.HPMod > Configuration.CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE || newCreatureTemplate.DamageMod > Configuration.CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE))
-                        newCreatureTemplate.Rank = CreatureRankType.Elite;
+                    string difficultyType = columns["difficulty_type"].ToLower().Trim();
+                    switch (difficultyType)
+                    {
+                        case "raidboss": newCreatureTemplate.DifficultyType = CreatureDifficultyType.RaidBoss; break;
+                        case "raidtrash": newCreatureTemplate.DifficultyType = CreatureDifficultyType.RaidTrash; break;
+                        case "normal": newCreatureTemplate.DifficultyType = CreatureDifficultyType.Normal; break;
+                        default:
+                            {
+                                Logger.WriteError("Could not determine difficultyType for creature with wowid '", newCreatureTemplate.WOWCreatureTemplateID.ToString(), "' that had difficulty_type '", difficultyType, "'");
+                                newCreatureTemplate.DifficultyType = CreatureDifficultyType.Normal;
+                            } break;
+                    }
+                    if (newCreatureTemplate.DifficultyType == CreatureDifficultyType.RaidBoss)
+                        newCreatureTemplate.Rank = CreatureWOWRankType.Boss;
+                    if (newCreatureTemplate.Rank == CreatureWOWRankType.Normal && (newCreatureTemplate.HPMod > Configuration.CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE || newCreatureTemplate.DamageMod > Configuration.CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE))
+                        newCreatureTemplate.Rank = CreatureWOWRankType.Elite;
 
                     // Determine if the creature should do any special abilities
                     string specialAbilitiesRaw = columns.ContainsKey("special_abilities") ? columns["special_abilities"] : string.Empty;

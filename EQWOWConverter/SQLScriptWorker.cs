@@ -1127,17 +1127,33 @@ namespace EQWOWConverter
             return assigned;
         }
 
-        private static int GetCreatureRespawnTimeInSeconds(CreatureTemplate creatureTemplate)
+        private static int GetCreatureRespawnTimeInSeconds(CreatureTemplate creatureTemplate, CreatureSpawnInstance? spawnInstance = null)
         {
-            if (creatureTemplate.IsBoss == true)
-                return Configuration.CREATURE_BOSS_RESPAWN_TIME_IN_SEC;
-            return 300;
+            switch (creatureTemplate.DifficultyType)
+            {
+                case CreatureDifficultyType.RaidBoss:
+                case CreatureDifficultyType.RaidTrash:
+                    {
+                        int maxRespawnTimeInSec;
+                        if (creatureTemplate.DifficultyType == CreatureDifficultyType.RaidBoss)
+                            maxRespawnTimeInSec = Configuration.CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC;
+                        else
+                            maxRespawnTimeInSec = Configuration.CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC;
+                        if (spawnInstance == null || spawnInstance.RespawnTimeInSeconds <= 0)
+                            return maxRespawnTimeInSec;
+
+                        // TAKP respawns in "respawntime +/- (variance / 2)", so the minimum (fastest) respawn is "respawntime - (variance / 2)"
+                        int minRespawnTimeInSec = Math.Max(1, spawnInstance.RespawnTimeInSeconds - (spawnInstance.Variance / 2));
+                        return Math.Min(minRespawnTimeInSec, maxRespawnTimeInSec);
+                    }
+                default: return 300;
+            }
         }
 
         private static Dictionary<int, HashSet<int>> alreadySavedCustomWaypointGridIDsByMapID = new Dictionary<int, HashSet<int>>(); // Ensure only 1 of each waypoint set is saved
         private void CreateCreatureAndRelatedSQLEntries(int creatureGUID, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance, CreatureSpawnGroup spawnGroup, string comment)
         {
-            int respawnTimeInSec = GetCreatureRespawnTimeInSeconds(creatureTemplate);
+            int respawnTimeInSec = GetCreatureRespawnTimeInSeconds(creatureTemplate, spawnInstance);
             List<CreaturePathGridEntry> pathEntries = spawnInstance.GetPathGridEntries();
             CreatureMovementType movementType = CreatureMovementType.None;
             CreaturePathGridWanderType wanderType = spawnInstance.GetPathGrid().WanderType;

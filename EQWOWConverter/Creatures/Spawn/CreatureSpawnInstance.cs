@@ -28,7 +28,7 @@ namespace EQWOWConverter.Creatures
         public float SpawnZPosition = 0;
         public float Orientation = 0;
         public int RespawnTimeInSeconds = 0;
-        public int Variance = 0; // TODO: Figure out what this is...
+        public int Variance = 0; // TAKP randomizes the respawn to be RespawnTimeInSeconds +/- (Variance / 2)
         public int PathGridID = 0;
         public CreatureStandStateType SpawnStandState = CreatureStandStateType.Stand;
 
