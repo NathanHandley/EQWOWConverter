@@ -1043,12 +1043,10 @@ namespace EQWOWConverter
             {
                 creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
 
-                // When playing walk/run sounds through the mod, need to send the data to the server
-                if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true)
+                // When playing walk/run sounds through the mod (and not an illusion form), need to send the data to the server
+                if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true && creatureModelTemplate.FaceIndex != CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX)
                 {
                     AddCreatureMovementSoundRowIfNeeded(creatureModelTemplate, creatureModelTemplate.DBCCreatureDisplayID);
-                    foreach (var faceDisplayIDByFaceIndex in creatureModelTemplate.IllusionFaceDisplayIDsByFaceIndex)
-                        AddCreatureMovementSoundRowIfNeeded(creatureModelTemplate, faceDisplayIDByFaceIndex.Value);
                 }
             }
             

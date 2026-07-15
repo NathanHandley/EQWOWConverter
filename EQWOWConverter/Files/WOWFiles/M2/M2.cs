@@ -354,8 +354,9 @@ namespace EQWOWConverter.WOWFiles
                     Events.AddElement(playFidgetSound2);
                 }
 
-                // HandleFootfallAnimEvent ($FSD) - only used when not using mod-driven walk/run sounds
-                if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == false)
+                // HandleFootfallAnimEvent ($FSD) - only used when not using mod-driven walk/run sounds.  Illusion version models are an exception.
+                bool isIllusionVersionModel = wowObjectModel.Properties.CreatureModelTemplate != null && wowObjectModel.Properties.CreatureModelTemplate.FaceIndex == CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX;
+                if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == false || isIllusionVersionModel == true)
                 {
                     M2Event handleFootfallAnimEvent = new M2Event();
                     handleFootfallAnimEvent.PopulateAsHandleFootfallAnimEventFSD(wowObjectModel);

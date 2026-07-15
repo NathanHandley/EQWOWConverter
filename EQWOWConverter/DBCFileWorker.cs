@@ -303,7 +303,14 @@ namespace EQWOWConverter
                 string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
                 creatureModelDataDBC.AddRow(creatureModelTemplate, relativeModelPath);
                 if (creatureModelTemplate.Race.SoundWalkingName.Trim().Length > 0)
-                    creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, creatureModelTemplate.Race, CreatureRace.FootstepIDBySoundName[creatureModelTemplate.Race.SoundWalkingName]);
+                {
+                    // For illusion versions, use the stock walking sound
+                    int creatureFootstepID = CreatureRace.FootstepIDBySoundName[creatureModelTemplate.Race.SoundWalkingName];
+                    if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true &&
+                        creatureModelTemplate.FaceIndex == CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX)
+                        creatureFootstepID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_DEFAULT;
+                    creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, creatureModelTemplate.Race, creatureFootstepID);
+                }
             }
             string creatureSoundsDirectory = "Sound\\Creature\\Everquest";
             foreach (var soundByName in CreatureRace.SoundsBySoundNameAndDistance)

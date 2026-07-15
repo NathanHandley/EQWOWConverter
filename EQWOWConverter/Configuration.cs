@@ -1032,6 +1032,7 @@ namespace EQWOWConverter
         // IDs for FootstepTerrainLookup.dbc
         public static int DBCID_FOOTSTEPTERRAINLOOKUP_ID_START = 600;
         public static int DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START = 250;
+        public static int DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_DEFAULT = 7; // Existing for most player character models (human, orc, tauren, etc.)
 
         // IDs for rows inside GameObjectDisplayInfo.dbc
         public static int DBCID_GAMEOBJECTDISPLAYINFO_ID_START = 11000;
