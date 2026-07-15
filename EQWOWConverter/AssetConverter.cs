@@ -3719,7 +3719,7 @@ namespace EQWOWConverter
                         if (itemTemplate.IsTieredPotion() == true && itemTemplate.EQClickLevel > 0)
                             clickyFixedLevel = itemTemplate.EQClickLevel;
                         SpellTemplate.ClickySpellParameters clickySpellParameters = spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID].SetClickySpellParameters(itemTemplate.WOWClickSpellEffectID,
-                            itemTemplate.CastTime, forceSelfOnly, clickyFixedLevel);
+                            SpellTemplate.GetCastTimeAfterConfigModsInMS(itemTemplate.CastTime), forceSelfOnly, clickyFixedLevel);
                         itemTemplate.WOWSpellID1 = clickySpellParameters.WOWSpellID;
                     }
                 }

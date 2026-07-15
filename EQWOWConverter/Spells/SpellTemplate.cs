@@ -295,6 +295,20 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        public static int GetCastTimeAfterConfigModsInMS(int castTimeInMS)
+        {
+            // Don't reduce anything below global cooldown
+            if (castTimeInMS <= 500)
+                return castTimeInMS;
+
+            float castTime = Convert.ToSingle(castTimeInMS) * Configuration.SPELLS_CAST_TIME_MOD;
+
+            // Never reduce below the floor, but casts starting at/below the floor keep their original cast time
+            float castTimeReductionFloor = Math.Min(castTimeInMS, Configuration.SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS);
+            castTime = Math.Max(castTime, castTimeReductionFloor);
+            return (int)Math.Ceiling(castTime / 100f) * 100; // Round up for cleaner cast times
+        }
+
         public ClickySpellParameters SetClickySpellParameters(int wowSpellID, int castTimeInMS, bool isForcedSelfOnly, int fixedLevel)
         {
             // Only make unique
@@ -342,19 +356,8 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.EQAOERange = int.Parse(columns["aoerange"]);
                 newSpellTemplate.SpellRadius = Convert.ToInt32(Convert.ToSingle(newSpellTemplate.EQAOERange) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.Category = 0; // Temp / TODO: Figure out how/what to set here
-                float castTime = float.Parse(columns["cast_time"]);
                 newSpellTemplate.CastTimeBeforeModsInMS = int.Parse(columns["cast_time"]);
-                if (castTime > 500)
-                {
-                    castTime *= Configuration.SPELLS_CAST_TIME_MOD;
-
-                    // Never reduce below the floor, but spells starting at/below the floor keep their original cast time
-                    float castTimeReductionFloor = Math.Min(newSpellTemplate.CastTimeBeforeModsInMS, Configuration.SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS);
-                    castTime = Math.Max(castTime, castTimeReductionFloor);
-                    newSpellTemplate.CastTimeInMS = (int)Math.Ceiling(castTime / 100f) * 100; // Round up for cleaner cast times
-                }
-                else
-                    newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
+                newSpellTemplate.CastTimeInMS = GetCastTimeAfterConfigModsInMS(newSpellTemplate.CastTimeBeforeModsInMS);
                 newSpellTemplate.RecourseLinkEQSpellID = int.Parse(columns["RecourseLink"]);
 
                 // Recovery time (take highest)
