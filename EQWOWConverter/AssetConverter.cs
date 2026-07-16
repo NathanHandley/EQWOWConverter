@@ -3750,19 +3750,14 @@ namespace EQWOWConverter
                             clickyCastTimeInMS, forceSelfOnly, clickyFixedLevel);
                         itemTemplate.WOWSpellID1 = clickySpellParameters.WOWSpellID;
 
-                        // The legacy account reward stone gets its own version of the gate tether ("Stone Tether"), which returns the player to where the stone was
-                        // used and tracks separately from the normal gate tether
+                        // Legacy account reward uses the same gate tether
                         if (itemTemplate.WOWEntryID == Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID && Configuration.SPELLS_GATE_TETHER_ENABLED == true)
                         {
-                            clickSpellTemplate.Name = "Stone Tether";
-                            SpellEffectWOW stoneTetherEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, (int)SpellDummyType.StoneGate, 0);
+                            SpellEffectWOW stoneTetherEffect = new SpellEffectWOW(SpellWOWEffectType.TriggerSpell, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0);
+                            stoneTetherEffect.EffectTriggerSpell = Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID;
                             stoneTetherEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
                             stoneTetherEffect.ActionDescription = "tethers you for 30 minutes to the location where the stone was used";
-                            stoneTetherEffect.AuraDescription = "you are tethered to the location where you used the stone and may return there if you click this off before it wears off, but it will fail in combat";
-                            clickSpellTemplate.AuraDuration.SetFixedDuration(1800000); // 30 minutes
-                            clickSpellTemplate.AuraStaysOnSecondaryClassSwitch = true;
                             clickSpellTemplate.WOWSpellEffects.Add(stoneTetherEffect);
-                            clickSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(itemTemplate.IconID);
                         }
                     }
                 }
