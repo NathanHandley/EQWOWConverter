@@ -1,4 +1,4 @@
-﻿spawngroupID|npcID|chance|mintime|maxtime|min_expansion|max_expansion|content_flags|content_flags_disabled|wowcustom
+spawngroupID|npcID|chance|mintime|maxtime|min_expansion|max_expansion|content_flags|content_flags_disabled|wowcustom
 1002|1002|100|0|0|-1|-1|||0
 1006|1006|100|0|0|-1|-1|||0
 1007|1007|100|0|0|-1|-1|||0
@@ -9363,6 +9363,7 @@
 126343|126343|100|0|0|-1|-1|||0
 126363|126363|100|0|0|-1|-1|||0
 127000|127000|100|0|0|-1|-1|||0
+127001|127001|100|0|0|-1|-1|||1
 127003|127003|100|0|0|-1|-1|||0
 127004|127004|100|0|0|-1|-1|||0
 127006|127106|100|0|0|-1|-1|||0

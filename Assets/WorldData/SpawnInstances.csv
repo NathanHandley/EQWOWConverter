@@ -1,4 +1,4 @@
-﻿eqid|spawngroupid|zone|x|y|z|heading|respawntime|variance|pathgrid|eq_condition_old|enabled|animation|boot_respawntime|clear_timer_onboot|boot_variance|force_z|min_expansion|max_expansion|content_flags|content_flags_disabled|z_eq_original|wowcustom
+eqid|spawngroupid|zone|x|y|z|heading|respawntime|variance|pathgrid|eq_condition_old|enabled|animation|boot_respawntime|clear_timer_onboot|boot_variance|force_z|min_expansion|max_expansion|content_flags|content_flags_disabled|z_eq_original|wowcustom
 325071|55000|akanon|809|-205.00002|-71.96875|62|1200|0|0|0|1|0|0|0|0|0|-1|-1|||-70|0
 325072|55059|akanon|827|-171|-71.96875|116|1200|0|0|0|1|0|0|0|0|0|-1|-1|||-70|0
 325073|55218|akanon|827|-201.00002|-71.96875|102|360|0|0|0|1|0|0|0|0|0|-1|-1|||-70|0
@@ -25348,3 +25348,4 @@
 15000182|1000017|ecommons|-1349.672974|728.03186|0|60|320|0|0|0|1|0|0|0|0|0|-1|-1|||0|1
 15000183|1100028|tutorial|133.758316|146.609802|1.00001|186.56|320|0|0|0|1|0|0|0|0|0|-1|-1|||0|1
 15000184|1100029|tutorial|237.073898|-23.31509|28.000019|-133.5|320|0|0|0|1|0|0|0|0|0|-1|-1|||0|1
+15000185|127001|growthplane|1525|-1632|206|0|604800|0|0|0|1|0|0|0|0|0|-1|-1|||206|1

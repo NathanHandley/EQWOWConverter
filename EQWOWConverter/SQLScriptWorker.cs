@@ -381,11 +381,11 @@ namespace EQWOWConverter
                     if (creatureTemplatesByEQID.ContainsKey(eqID))
                         requireAliveWOWIDs.Add(creatureTemplatesByEQID[eqID].WOWCreatureTemplateID.ToString());
                 modEverquestCreatureKillSpawnSQL.AddRow(killSpawn.ID, creatureTemplatesByEQID[killSpawn.TriggerEQCreatureTemplateID].WOWCreatureTemplateID,
-                    mapIDsByShortName[killSpawn.ZoneShortName], Convert.ToInt32(killSpawn.ActionType), targetWOWID, killSpawn.Chance,
+                    Convert.ToInt32(killSpawn.TriggerType), mapIDsByShortName[killSpawn.ZoneShortName], Convert.ToInt32(killSpawn.ActionType), targetWOWID, killSpawn.Chance,
                     killSpawn.AltGroup, killSpawn.AltID, killSpawn.AltWeight, killSpawn.SpawnAtCorpse, killSpawn.XPosition, killSpawn.YPosition,
                     killSpawn.ZPosition, killSpawn.Orientation, killSpawn.DelayMinMS, killSpawn.DelayMaxMS, onlyIfNotAliveWOWID,
                     string.Join(",", requireDeadWOWIDs), string.Join(",", requireAliveWOWIDs), killSpawn.AddToHateList,
-                    killSpawn.TriggerMinLevel, killSpawn.TriggerMaxLevel, killSpawn.Comment);
+                    killSpawn.TriggerMinLevel, killSpawn.TriggerMaxLevel, killSpawn.RespawnTimeInSec, killSpawn.Comment);
             }
         }
 

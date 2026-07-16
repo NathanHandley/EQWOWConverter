@@ -25,6 +25,7 @@ namespace EQWOWConverter.Creatures
         public int ID;
         public string ZoneShortName = string.Empty;
         public int TriggerEQCreatureTemplateID;
+        public CreatureKillSpawnTriggerType TriggerType = CreatureKillSpawnTriggerType.Death;
         public CreatureKillSpawnActionType ActionType = CreatureKillSpawnActionType.Spawn;
         public int TargetEQCreatureTemplateID;
         public float Chance = 100;
@@ -44,6 +45,7 @@ namespace EQWOWConverter.Creatures
         public bool AddToHateList;
         public int TriggerMinLevel;
         public int TriggerMaxLevel;
+        public int RespawnTimeInSec;
         public string Comment = string.Empty;
 
         public static List<CreatureKillSpawn> GetKillSpawnList()
@@ -86,11 +88,24 @@ namespace EQWOWConverter.Creatures
                 newKillSpawn.ID = int.Parse(columns["id"]);
                 newKillSpawn.ZoneShortName = columns["zone"].ToLower().Trim();
                 newKillSpawn.TriggerEQCreatureTemplateID = int.Parse(columns["trigger_eq_npc_id"]);
-                switch (columns["action"])
+                switch (columns["trigger_event"].ToLower().Trim())
+                {
+                    case "death": newKillSpawn.TriggerType = CreatureKillSpawnTriggerType.Death; break;
+                    case "combat": newKillSpawn.TriggerType = CreatureKillSpawnTriggerType.Combat; break;
+                    case "evade": newKillSpawn.TriggerType = CreatureKillSpawnTriggerType.Evade; break;
+                    case "ooctimer": newKillSpawn.TriggerType = CreatureKillSpawnTriggerType.OutOfCombatTimer; break;
+                    default:
+                        {
+                            Logger.WriteError("CreatureKillSpawn row '" + newKillSpawn.ID + "' has unknown trigger_event '" + columns["trigger_event"] + "'");
+                            continue;
+                        }
+                }
+                switch (columns["action"].ToLower().Trim())
                 {
                     case "spawn": newKillSpawn.ActionType = CreatureKillSpawnActionType.Spawn; break;
                     case "despawn": newKillSpawn.ActionType = CreatureKillSpawnActionType.Despawn; break;
                     case "respawnself": newKillSpawn.ActionType = CreatureKillSpawnActionType.RespawnSelf; break;
+                    case "respawntarget": newKillSpawn.ActionType = CreatureKillSpawnActionType.RespawnTarget; break;
                     default:
                         {
                             Logger.WriteError("CreatureKillSpawn row '" + newKillSpawn.ID + "' has unknown action '" + columns["action"] + "'");
@@ -126,6 +141,12 @@ namespace EQWOWConverter.Creatures
                 newKillSpawn.AddToHateList = columns["add_to_hate"].Trim() == "1";
                 newKillSpawn.TriggerMinLevel = int.Parse(columns["trigger_min_level"]);
                 newKillSpawn.TriggerMaxLevel = int.Parse(columns["trigger_max_level"]);
+
+                // A respawn time of -1 means to use the raid boss respawn window
+                // TODO: Have a lookup for boss creatures so it uses the right respawn max time (could be raid trash)
+                newKillSpawn.RespawnTimeInSec = int.Parse(columns["respawn_time_sec"]);
+                if (newKillSpawn.RespawnTimeInSec == -1)
+                    newKillSpawn.RespawnTimeInSec = Configuration.CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC;
                 newKillSpawn.Comment = columns["comment"];
                 KillSpawnList.Add(newKillSpawn);
 

@@ -16,11 +16,11 @@
 
 namespace EQWOWConverter.Creatures
 {
-    internal enum CreatureKillSpawnActionType : Int32
+    internal enum CreatureKillSpawnTriggerType : Int32
     {
-        Spawn = 0,
-        Despawn = 1,
-        RespawnSelf = 2,
-        RespawnTarget = 3
+        Death = 0,
+        Combat = 1,
+        Evade = 2,
+        OutOfCombatTimer = 3 // Fires after delay_min_ms of continuous out-of-combat time; combat resets the countdown
     }
 }

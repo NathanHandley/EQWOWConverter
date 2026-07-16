@@ -1,4 +1,4 @@
-﻿id|zone|name|spawn_limit|min_x|max_x|min_y|max_y|min_z|max_z|delay|mindelay|despawn|despawn_timer|rand_spawns|rand_respawntime|rand_variance|rand_condition_|wp_spawns|wowcustom|spawn_zone_event_id|despawn_zone_event_id
+id|zone|name|spawn_limit|min_x|max_x|min_y|max_y|min_z|max_z|delay|mindelay|despawn|despawn_timer|rand_spawns|rand_respawntime|rand_variance|rand_condition_|wp_spawns|wowcustom|spawn_zone_event_id|despawn_zone_event_id
 1002|qeynos|qeynos_Guard_Jerith14|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|0|1|-1
 1006|qeynos|qeynos_Guard_Cyrillian13|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|0|1|-1
 1007|qeynos|qeynos_Miltiades_Tal`Azroth19|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|0|-1|-1
@@ -6137,6 +6137,7 @@
 126343|mischiefplane|mischiefplane_Treasure_Chest91|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|0|-1|-1
 126363|mischiefplane|mischiefplane_TwentyTwo92|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|0|-1|-1
 127000|growthplane|growthplane_a_thifling_sprite1|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|0|-1|-1
+127001|growthplane|growthplane_#_Tunare1|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1
 127003|growthplane|growthplane_a_protector_of_growth4|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|0|-1|-1
 127004|growthplane|growthplane_a_warm_light6|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|0|-1|-1
 127006|growthplane|growthplane_a_thifling_focuser8|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|0|-1|-1
