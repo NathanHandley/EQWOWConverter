@@ -26,6 +26,6 @@ namespace EQWOWConverter.Items
         Epic = 4,
         Legendary = 5,
         Artifact = 6,
-        Heirloom = 7
+        Heirloom = 7 // Makes it bind on account
     }
 }

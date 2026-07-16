@@ -176,7 +176,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("spellcooldown_5", -1);
             newRow.AddInt("spellcategory_5", 0);
             newRow.AddInt("spellcategorycooldown_5", -1);
-            newRow.AddInt("bonding", itemTemplate.IsNoDrop == true ? 1 : 0);
+            newRow.AddInt("bonding", (itemTemplate.IsNoDrop == true || itemTemplate.Quality == ItemWOWQuality.Heirloom) ? 1 : 0);
             newRow.AddString("description", 255, description);
             if (itemTemplate.BookTextReference != null)
                 newRow.AddInt("PageText", itemTemplate.BookTextReference.PageTextID);
@@ -229,6 +229,8 @@ namespace EQWOWConverter.WOWFiles
                 flags += 4;
             if (itemTemplate.DoesTeachSpell == true && itemTemplate.WOWSpellID1 != 0)
                 flags += 64; // ITEM_FLAG_PLAYERCAST
+            if (itemTemplate.Quality == ItemWOWQuality.Heirloom)
+                flags += 134217728; // ITEM_FLAG_IS_BOUND_TO_ACCOUNT
             return flags;
         }
     }
