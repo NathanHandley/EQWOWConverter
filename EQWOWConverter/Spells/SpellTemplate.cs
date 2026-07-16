@@ -303,7 +303,25 @@ namespace EQWOWConverter.Spells
             return false;
         }
 
-        public static int GetCastTimeAfterConfigModsInMS(int castTimeInMS)
+        public bool HasPetSummonEffect()
+        {
+            foreach (SpellEffectEQ eqEffect in EQSpellEffects)
+                if (eqEffect.EQEffectType == SpellEQEffectType.SummonPet || eqEffect.EQEffectType == SpellEQEffectType.NecPet)
+                    return true;
+            return false;
+        }
+
+        public bool IsOffensiveDispell()
+        {
+            if (IsGoodEffect == true)
+                return false;
+            foreach (SpellEffectEQ eqEffect in EQSpellEffects)
+                if (eqEffect.EQEffectType == SpellEQEffectType.CancelMagic)
+                    return true;
+            return false;
+        }
+
+        public static int GetCastTimeAfterConfigModsInMS(int castTimeInMS, bool isOffensiveDispell)
         {
             // Don't reduce anything below global cooldown
             if (castTimeInMS <= 500)
@@ -312,7 +330,10 @@ namespace EQWOWConverter.Spells
             float castTime = Convert.ToSingle(castTimeInMS) * Configuration.SPELLS_CAST_TIME_MOD;
 
             // Never reduce below the floor, but casts starting at/below the floor keep their original cast time
-            float castTimeReductionFloor = Math.Min(castTimeInMS, Configuration.SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS);
+            int configuredFloorInMS = Configuration.SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS;
+            if (isOffensiveDispell == true)
+                configuredFloorInMS = Math.Max(configuredFloorInMS, Configuration.SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS);
+            float castTimeReductionFloor = Math.Min(castTimeInMS, configuredFloorInMS);
             castTime = Math.Max(castTime, castTimeReductionFloor);
             return (int)Math.Ceiling(castTime / 100f) * 100; // Round up for cleaner cast times
         }
@@ -380,18 +401,19 @@ namespace EQWOWConverter.Spells
                 if (newSpellTemplate.EQSpellEffects.Count == 0)
                     continue;
 
-                // Cast time (teleport-adjacent spells keep their original cast time)
+                newSpellTemplate.IsGoodEffect = int.Parse(columns["goodEffect"]) != 0 ? true : false ;// 0 = detrimental, 1 = beneficial, 2 = beneficial group only.  Both 1 and 2 are non-detrimental.
+                bool isDetrimental = !newSpellTemplate.IsGoodEffect;
+
+                // Cast time (teleport-adjacent and pet summoning spells keep their original cast time)
                 newSpellTemplate.CastTimeBeforeModsInMS = int.Parse(columns["cast_time"]);
-                if (newSpellTemplate.HasTeleportEffect() == true)
+                if (newSpellTemplate.HasTeleportEffect() == true || newSpellTemplate.HasPetSummonEffect() == true)
                     newSpellTemplate.CastTimeInMS = newSpellTemplate.CastTimeBeforeModsInMS;
                 else
-                    newSpellTemplate.CastTimeInMS = GetCastTimeAfterConfigModsInMS(newSpellTemplate.CastTimeBeforeModsInMS);
+                    newSpellTemplate.CastTimeInMS = GetCastTimeAfterConfigModsInMS(newSpellTemplate.CastTimeBeforeModsInMS, newSpellTemplate.IsOffensiveDispell());
 
                 // Generic properties
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
-                newSpellTemplate.IsGoodEffect = int.Parse(columns["goodEffect"]) != 0 ? true : false ;// 0 = detrimental, 1 = beneficial, 2 = beneficial group only.  Both 1 and 2 are non-detrimental.
-                bool isDetrimental = !newSpellTemplate.IsGoodEffect; 
 
                 // Buff duration (if any)
                 newSpellTemplate.EQBuffDurationInTicks = Convert.ToInt32(columns["buffduration"]);
