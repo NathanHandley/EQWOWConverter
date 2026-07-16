@@ -313,7 +313,8 @@ namespace EQWOWConverter.Spells
 
         public bool IsOffensiveDispell()
         {
-            if (IsGoodEffect == true)
+            // Beneficial-flagged dispells (like Cancel Magic) can be aimed at enemies, so only self-only dispells are excluded
+            if (EQTargetType == SpellEQTargetType.Self)
                 return false;
             foreach (SpellEffectEQ eqEffect in EQSpellEffects)
                 if (eqEffect.EQEffectType == SpellEQEffectType.CancelMagic)
@@ -401,8 +402,13 @@ namespace EQWOWConverter.Spells
                 if (newSpellTemplate.EQSpellEffects.Count == 0)
                     continue;
 
-                newSpellTemplate.IsGoodEffect = int.Parse(columns["goodEffect"]) != 0 ? true : false ;// 0 = detrimental, 1 = beneficial, 2 = beneficial group only.  Both 1 and 2 are non-detrimental.
+                newSpellTemplate.IsGoodEffect = int.Parse(columns["goodEffect"]) != 0 ? true : false ; // 0 = detrimental, 1 = beneficial, 2 = beneficial group only.  Both 1 and 2 are non-detrimental.
                 bool isDetrimental = !newSpellTemplate.IsGoodEffect;
+
+                // Target type (needed before cast time so the offensive dispell floor can exclude self-only dispells)
+                int eqTargetTypeID = int.Parse(columns["targettype"]);
+                if (Enum.IsDefined(typeof(SpellEQTargetType), eqTargetTypeID) == true)
+                    newSpellTemplate.EQTargetType = (SpellEQTargetType)eqTargetTypeID;
 
                 // Cast time (teleport-adjacent and pet summoning spells keep their original cast time)
                 newSpellTemplate.CastTimeBeforeModsInMS = int.Parse(columns["cast_time"]);
@@ -479,7 +485,6 @@ namespace EQWOWConverter.Spells
                     ApplyDurationModsToDoTAndCrowdControlDurations(ref newSpellTemplate);
 
                 // Get targets and convert the spell effects
-                int eqTargetTypeID = int.Parse(columns["targettype"]);
                 List<SpellTemplate> effectGeneratedSpellTemplates = new List<SpellTemplate>();
                 if (newSpellTemplate.IsBardSongAura == true)
                 {
