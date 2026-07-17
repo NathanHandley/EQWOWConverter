@@ -36,6 +36,7 @@ namespace EQWOWConverter.Spells
         {
             public int WOWSpellID = -1;
             public bool IsForcedSelfOnly = false;
+            public bool IsUsableWhileSilenced = false;
             public int FixedLevel = 0; // When > 0, effect values and aura duration are exactly this level (like tiered potions)
             protected int _SpellCastTimeDBCID = 1; // First row, instant cast
             public int SpellCastTimeDBCID { get { return _SpellCastTimeDBCID; } }
@@ -339,12 +340,12 @@ namespace EQWOWConverter.Spells
             return (int)Math.Ceiling(castTime / 100f) * 100; // Round up for cleaner cast times
         }
 
-        public ClickySpellParameters SetClickySpellParameters(int wowSpellID, int castTimeInMS, bool isForcedSelfOnly, int fixedLevel)
+        public ClickySpellParameters SetClickySpellParameters(int wowSpellID, int castTimeInMS, bool isForcedSelfOnly, int fixedLevel, bool isUsableWhileSilenced)
         {
             // Only make unique
             foreach (ClickySpellParameters clickySpell in this.ClickySpellParatemers)
             {
-                if (clickySpell.CastTimeInMS == castTimeInMS && clickySpell.IsForcedSelfOnly == isForcedSelfOnly && clickySpell.FixedLevel == fixedLevel)
+                if (clickySpell.CastTimeInMS == castTimeInMS && clickySpell.IsForcedSelfOnly == isForcedSelfOnly && clickySpell.FixedLevel == fixedLevel && clickySpell.IsUsableWhileSilenced == isUsableWhileSilenced)
                     return clickySpell;
             }
             ClickySpellParameters newClickySpell = new ClickySpellParameters();
@@ -352,6 +353,7 @@ namespace EQWOWConverter.Spells
             newClickySpell.IsForcedSelfOnly = isForcedSelfOnly;
             newClickySpell.CastTimeInMS = castTimeInMS;
             newClickySpell.FixedLevel = fixedLevel;
+            newClickySpell.IsUsableWhileSilenced = isUsableWhileSilenced;
             this.ClickySpellParatemers.Add(newClickySpell);
             return newClickySpell;
         }

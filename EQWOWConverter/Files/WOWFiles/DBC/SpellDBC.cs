@@ -21,7 +21,7 @@ namespace EQWOWConverter.WOWFiles
     internal class SpellDBC : DBCFile
     {
         public void AddRow(SpellEffectBlock effectBlock, string spellDescription, string auraDescription, SpellTemplate spellTemplate, bool doHideFromDisplay, bool overrideDurationToInfinite,
-            bool preventClickOff, int maximumSpellLevel, bool isToggleAura, int castTimeDBCID, bool isWornEquipEffect)
+            bool preventClickOff, int maximumSpellLevel, bool isToggleAura, int castTimeDBCID, bool isWornEquipEffect, bool isUsableWhileSilenced)
         {
             if (effectBlock.SpellEffects.Count != 3)
             {
@@ -198,7 +198,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // SpellClassMask3
             newRow.AddUInt32(0); // MaxTargets
             newRow.AddUInt32(spellTemplate.DefenseType); // DefenseType
-            newRow.AddUInt32(spellTemplate.PreventionType); // PreventionType
+            if (isUsableWhileSilenced == true)
+                newRow.AddUInt32(0); // PreventionType (0 = None, so silence doesn't block the cast)
+            else
+                newRow.AddUInt32(spellTemplate.PreventionType); // PreventionType
             newRow.AddUInt32(0); // StanceBarOrder
             newRow.AddFloat(0); // EffectChainAmplitude1
             newRow.AddFloat(0); // EffectChainAmplitude2

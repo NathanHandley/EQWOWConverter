@@ -139,7 +139,7 @@ namespace EQWOWConverter
             Logger.WriteDebug("Extracting client DBC files complete");
         }
 
-        private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, int castTimeDBCID, bool isWorn)
+        private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, int castTimeDBCID, bool isWorn, bool isUsableWhileSilenced)
         {
             if (spellEffectBlocks.Count == 0 || spellEffectBlocks[0].WOWSpellID <= 0)
                 return;
@@ -156,16 +156,16 @@ namespace EQWOWConverter
                     // Don't hide the chain spells if there's an aura under the non-aura
                     bool hideFromDisplay = (i != 0) && (curEffectBlock.ForceVisibleSplitAura == false);
                     spellDBC.AddRow(curEffectBlock, actionDescription, auraDescription, spellTemplate, hideFromDisplay, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
-                        curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, false);
+                        curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, false, isUsableWhileSilenced);
                 }
                 else
                 {
                     if (Configuration.ITEMS_SHOW_WORN_EFFECT_AURA_ICON == true)
                         spellDBC.AddRow(curEffectBlock, auraDescription, auraDescription, spellTemplate, i != 0, true, true,
-                            curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, true);
+                            curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, true, isUsableWhileSilenced);
                     else
                         spellDBC.AddRow(curEffectBlock, auraDescription, auraDescription, spellTemplate, true, true, true,
-                            curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, true);
+                            curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, true, isUsableWhileSilenced);
                 }
             }
 
@@ -644,12 +644,13 @@ namespace EQWOWConverter
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
                 // Block-specific data
-                AddSpellDataBlock(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput, spellTemplate.SpellCastTimeDBCID, false);
+                AddSpellDataBlock(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput, spellTemplate.SpellCastTimeDBCID, false, false);
                 foreach (List<SpellEffectBlock> wornSpellEffectBlocks in spellTemplate.ItemWornSpellEffectBlockSets)
-                    AddSpellDataBlock(spellTemplate, wornSpellEffectBlocks, 1, true);
-                AddSpellDataBlock(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput, 1, false);
+                    AddSpellDataBlock(spellTemplate, wornSpellEffectBlocks, 1, true, false);
+                AddSpellDataBlock(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput, 1, false, false);
                 for (int i = 0; i < spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count; i++)
-                    AddSpellDataBlock(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[i], spellTemplate.ClickySpellParatemers[i].SpellCastTimeDBCID, false);
+                    AddSpellDataBlock(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[i], spellTemplate.ClickySpellParatemers[i].SpellCastTimeDBCID, false,
+                        spellTemplate.ClickySpellParatemers[i].IsUsableWhileSilenced);
 
                 // Add the enchantment, if there is one
                 if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)

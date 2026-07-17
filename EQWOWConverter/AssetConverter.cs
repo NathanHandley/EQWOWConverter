@@ -3742,12 +3742,18 @@ namespace EQWOWConverter
                         int clickyFixedLevel = 0;
                         if (itemTemplate.IsTieredPotion() == true && itemTemplate.EQClickLevel > 0)
                             clickyFixedLevel = itemTemplate.EQClickLevel;
+
+                        // Expendable clickies (potions) and the legacy account reward can be used while silenced
+                        bool clickyUsableWhileSilenced = false;
+                        if (itemTemplate.EQClickType == 3 || itemTemplate.WOWEntryID == Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID)
+                            clickyUsableWhileSilenced = true;
+
                         SpellTemplate clickSpellTemplate = spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID];
                         int clickyCastTimeInMS = itemTemplate.CastTime;
                         if (clickSpellTemplate.HasTeleportEffect() == false && clickSpellTemplate.HasPetSummonEffect() == false)
                             clickyCastTimeInMS = SpellTemplate.GetCastTimeAfterConfigModsInMS(clickyCastTimeInMS, clickSpellTemplate.IsOffensiveDispell());
                         SpellTemplate.ClickySpellParameters clickySpellParameters = clickSpellTemplate.SetClickySpellParameters(itemTemplate.WOWClickSpellEffectID,
-                            clickyCastTimeInMS, forceSelfOnly, clickyFixedLevel);
+                            clickyCastTimeInMS, forceSelfOnly, clickyFixedLevel, clickyUsableWhileSilenced);
                         itemTemplate.WOWSpellID1 = clickySpellParameters.WOWSpellID;
 
                         // Legacy account reward uses the same gate tether
