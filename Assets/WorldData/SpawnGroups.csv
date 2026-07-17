@@ -8585,3 +8585,4 @@ id|zone|name|spawn_limit|min_x|max_x|min_y|max_y|min_z|max_z|delay|mindelay|desp
 1100027|trakanon|trakanon_namedcamp_95004|1|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|0|-1|-1
 1100028|tutorial|tutorial_sara_goldhand|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1
 1100029|tutorial|tutorial_upyago_teleporter|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
+1000018|templeveeshan|templeveeshan_#Vulak`Aerr|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1

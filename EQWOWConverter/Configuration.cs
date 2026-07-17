@@ -271,7 +271,7 @@ namespace EQWOWConverter
         public static bool ZONE_WEATHER_ENABLED = true;
 
         // If true, characters can fly in the zones if they have a mount
-        public static bool ZONE_FLYING_ALLOWED = true;
+        public static bool ZONE_FLYING_ALLOWED = false;
 
         //=====================================================================
         // Dungeons
@@ -529,7 +529,7 @@ namespace EQWOWConverter
         public static bool CREATURE_RIDING_TRAINERS_ENABLED = true;
 
         // If true, riding trainers will include flying mounts as well
-        public static bool CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY = true;
+        public static bool CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY = false;
 
         // Minimum amount of duration a creature buff buff needs to be in order to be cast out of combat
         public static int CREATURE_SPELL_OOC_BUFF_MIN_DURATION_IN_MS = 60000;
