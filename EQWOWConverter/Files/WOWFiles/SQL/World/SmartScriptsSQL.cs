@@ -136,7 +136,7 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 11, // SMART_ACTION_CAST
                 wowSpellID,
-                96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
+                32, // SMARTCAST_AURA_NOT_PRESENT
                 0,
                 0,
                 0,
@@ -166,7 +166,7 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 11, // SMART_ACTION_CAST
                 wowSpellID,
-                64, // SMARTCAST_COMBAT_MOVE (move into range if needed)
+                0, // Cast Flags (none)
                 0,
                 0,
                 0,
@@ -229,7 +229,7 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 11, // SMART_ACTION_CAST
                 wowSpellID,
-                96, // SMARTCAST_COMBAT_MOVE (64) + SMARTCAST_AURA_NOT_PRESENT (32)
+                32, // SMARTCAST_AURA_NOT_PRESENT
                 0,
                 0,
                 0,
@@ -259,7 +259,7 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 11, // SMART_ACTION_CAST
                 wowSpellID,
-                0,  // Cast flags (self cast, no combat move needed)
+                0, // Cast Flags (none)
                 0,
                 0,
                 0,
@@ -293,7 +293,7 @@ namespace EQWOWConverter.WOWFiles
                 range,
                 11, // SMART_ACTION_CAST
                 wowSpellID,
-                96, // SMARTCAST_COMBAT_MOVE + SMARTCAST_AURA_NOT_PRESENT
+                32, // SMARTCAST_AURA_NOT_PRESENT
                 0,
                 0,
                 0,
@@ -325,7 +325,7 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 11, // SMART_ACTION_CAST
                 wowSpellID,
-                96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
+                32, // SMARTCAST_AURA_NOT_PRESENT (32)
                 0,
                 0,
                 0,
@@ -355,7 +355,7 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 11, // SMART_ACTION_CAST
                 wowSpellID,
-                64, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting)
+                0, // Cast Flags (none)
                 0,
                 0,
                 0,
@@ -495,7 +495,7 @@ namespace EQWOWConverter.WOWFiles
                     0, 0,
                     11, // SMART_ACTION_CAST
                     spellTemplateIDs[i],
-                    96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
+                    32, // SMARTCAST_AURA_NOT_PRESENT
                     0,
                     0,
                     0,
@@ -551,7 +551,7 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 11, // SMART_ACTION_CAST
                 wowSpellID,
-                64, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting)
+                0, // Cast Flags (none)
                 0,
                 0,
                 0,
