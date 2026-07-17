@@ -312,6 +312,19 @@ namespace EQWOWConverter.Spells
             return false;
         }
 
+        public UInt32 GetCounterBasedDispelType()
+        {
+            // Detrimental spells with a positive counter are cured by the counter regardless of resist type
+            foreach (SpellEffectEQ eqEffect in EQSpellEffects)
+            {
+                if (eqEffect.EQEffectType == SpellEQEffectType.DiseaseCounter && eqEffect.EQBaseValue > 0)
+                    return 3; // Disease
+                if (eqEffect.EQEffectType == SpellEQEffectType.PoisonCounter && eqEffect.EQBaseValue > 0)
+                    return 4; // Poison
+            }
+            return 0;
+        }
+
         public bool IsOffensiveDispell()
         {
             // Beneficial-flagged dispells (like Cancel Magic) can be aimed at enemies, so only self-only dispells are excluded
@@ -472,6 +485,12 @@ namespace EQWOWConverter.Spells
                 int resistType = int.Parse(columns["resisttype"]);
                 newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
                 newSpellTemplate.DispelType = GetDispelTypeForResistType(resistType, isDetrimental, newSpellTemplate.AuraDuration.MaxDurationInMS > 0);
+                if (isDetrimental == true && newSpellTemplate.AuraDuration.MaxDurationInMS > 0)
+                {
+                    UInt32 counterBasedDispelType = newSpellTemplate.GetCounterBasedDispelType();
+                    if (counterBasedDispelType != 0)
+                        newSpellTemplate.DispelType = counterBasedDispelType;
+                }
 
                 // Reagents (Components).  Bard instruments are required to play a song but not consumed, so they map to a
                 // totem category requirement instead of a consumed reagent.  Everything else is a normal reagent.
