@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 47;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 49;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -913,6 +913,10 @@ namespace EQWOWConverter
         public static int COMBATSKILL_RANGED_SPELL_ICON_EQ_ID = 13;
         public static int COMBATSKILL_RANGED_DEFAULT_MAX_RANGE = 250; // TAKP range value
 
+        // Creatures in this level range will never enrage (taken from TAKP's mob_ai.cpp CheckEnrage), with 0 in both disabling this suppression
+        public static int COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ = 53;
+        public static int COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ = 55;
+
         //=====================================================================
         // Achievements
         //=====================================================================
@@ -1767,6 +1771,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_RANGED_SPELL_ID", COMBATSKILL_RANGED_SPELL_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_RANGED_SPELL_ICON_EQ_ID", COMBATSKILL_RANGED_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_RANGED_DEFAULT_MAX_RANGE", COMBATSKILL_RANGED_DEFAULT_MAX_RANGE, "");
+            OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ, "Creatures in this level range will never enrage (taken from TAKP's mob_ai.cpp CheckEnrage), with 0 in both disabling this suppression", false);
+            OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ, "");
             OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_60", FISHING_SKILL_CONVERSION_MOD_60, "How much to multiply the EQ fish catching skill requirement for WOW", false);
             OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_80", FISHING_SKILL_CONVERSION_MOD_80, "");
             OutputVariableToConfig("FORAGE_SPELL_ICON_EQ_ID", FORAGE_SPELL_ICON_EQ_ID, "Which eq spell icon to use for the Forage skill. Can be a value between 0-22");
@@ -2223,6 +2229,8 @@ namespace EQWOWConverter
             COMBATSKILL_RANGED_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_RANGED_SPELL_ID", configValuesByVariableName, COMBATSKILL_RANGED_SPELL_ID);
             COMBATSKILL_RANGED_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_RANGED_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_RANGED_SPELL_ICON_EQ_ID);
             COMBATSKILL_RANGED_DEFAULT_MAX_RANGE = ReadVariableFromConfigString("COMBATSKILL_RANGED_DEFAULT_MAX_RANGE", configValuesByVariableName, COMBATSKILL_RANGED_DEFAULT_MAX_RANGE);
+            COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ = ReadVariableFromConfigString("COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ", configValuesByVariableName, COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ);
+            COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ = ReadVariableFromConfigString("COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ", configValuesByVariableName, COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ);
             FISHING_SKILL_CONVERSION_MOD_60 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_60", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_60);
             FISHING_SKILL_CONVERSION_MOD_80 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_80", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_80);
             FORAGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("FORAGE_SPELL_ICON_EQ_ID", configValuesByVariableName, FORAGE_SPELL_ICON_EQ_ID);

@@ -775,10 +775,17 @@ namespace EQWOWConverter
                 int rangedMinRangeWOW = creatureTemplate.RangedAttackMinRangeEQ > 0 ? Convert.ToInt32(Math.Round(creatureTemplate.RangedAttackMinRangeEQ * Configuration.GENERATE_WORLD_SCALE)) : 0;
                 int rangedMaxRangeWOW = creatureTemplate.RangedAttackMaxRangeEQ > 0 ? Convert.ToInt32(Math.Round(creatureTemplate.RangedAttackMaxRangeEQ * Configuration.GENERATE_WORLD_SCALE)) : 0;
 
+                // Rampage range is an EQ distance, so scale it into WOW units (0 = use default)
+                int rampageRangeWOW = creatureTemplate.RampageRangeEQ > 0 ? Convert.ToInt32(Math.Round(creatureTemplate.RampageRangeEQ * Configuration.GENERATE_WORLD_SCALE)) : 0;
+
                 // Mod data
                 modEverquestCreatureSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.Race.CanHoldVisualItems, creatureTemplate.Race.CanHoldVisualShields,
                     creatureTemplate.SpawnLimit, creatureTemplate.HasRangedAttackAbility, rangedMinRangeWOW, rangedMaxRangeWOW, creatureTemplate.RangedAttackDamageModPercent,
-                    creatureTemplate.AgroSocialDistanceMod);
+                    creatureTemplate.AgroSocialDistanceMod, creatureTemplate.HasEnrageAbility, creatureTemplate.EnrageHPPercent, creatureTemplate.EnrageDurationInMS,
+                    creatureTemplate.EnrageCooldownInMS, creatureTemplate.HasFlurryAbility, creatureTemplate.FlurryChancePercent, creatureTemplate.HasRampageAbility,
+                    creatureTemplate.RampageChancePercent, rampageRangeWOW, creatureTemplate.RampageDamagePercent, creatureTemplate.HasWildRampageAbility,
+                    creatureTemplate.WildRampageChancePercent, creatureTemplate.WildRampageMaxTargets, creatureTemplate.WildRampageDamagePercent,
+                    creatureTemplate.EQAttackRoundTimeInMS);
 
                 // Determine the display id
                 int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;

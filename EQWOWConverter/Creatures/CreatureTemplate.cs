@@ -101,6 +101,21 @@ namespace EQWOWConverter.Creatures
         public int RangedAttackMinRangeEQ = 0;
         public int RangedAttackMaxRangeEQ = 0;
         public int RangedAttackDamageModPercent = 0;
+        public bool HasEnrageAbility = false;
+        public int EnrageHPPercent = 0;
+        public int EnrageDurationInMS = 0;
+        public int EnrageCooldownInMS = 0;
+        public bool HasFlurryAbility = false;
+        public int FlurryChancePercent = 0;
+        public bool HasRampageAbility = false;
+        public int RampageChancePercent = 0;
+        public int RampageRangeEQ = 0;
+        public int RampageDamagePercent = 0;
+        public bool HasWildRampageAbility = false;
+        public int WildRampageChancePercent = 0;
+        public int WildRampageMaxTargets = 0;
+        public int WildRampageDamagePercent = 0;
+        public int EQAttackRoundTimeInMS = 0;
         public long MechanicImmuneMask = 0;
         public int CreatureImmunitiesId = 0;
         public bool SeesInvisible = false;
@@ -343,6 +358,10 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.DamageMod = GetStatOrMod("avgdamage", newCreatureTemplate.Level, float.Parse(columns["avgdmg"]), CreatureStatModType.RelativeMod, float.Parse(columns["avgdmg_multi_override"]));
                     newCreatureTemplate.AttackTime = (int)GetStatOrMod("attackdelay", newCreatureTemplate.Level, float.Parse(columns["attack_delay"]), CreatureStatModType.FixedValue);
 
+                    // Raw EQ attack round time is what drives enrage/flurry/rampage rolls, and TAKP treats attack_delay values under 401 as hundreds of milliseconds
+                    int eqAttackDelay = Convert.ToInt32(float.Parse(columns["attack_delay"]));
+                    newCreatureTemplate.EQAttackRoundTimeInMS = eqAttackDelay < 401 ? eqAttackDelay * 100 : eqAttackDelay;
+
                     // Rank (must come after Scaled Stats)
                     string difficultyType = columns["difficulty_type"].ToLower().Trim();
                     switch (difficultyType)
@@ -378,9 +397,44 @@ namespace EQWOWConverter.Creatures
                         newCreatureTemplate.RangedAttackMinRangeEQ = rangedMinRangeEQ;
                         newCreatureTemplate.RangedAttackDamageModPercent = rangedDamageModPercent;
                     }
+                    int minLevelEQ = int.Parse(columns["levelEQ"]);
+
+                    // Enrage
+                    if ((minLevelEQ < Configuration.COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ || minLevelEQ > Configuration.COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ) &&
+                        TryParseSpecialAbilityWithParams(specialAbilitiesRaw, 2, out int enrageHPPercent, out int enrageDurationInMS, out int enrageCooldownInMS) == true)
+                    {
+                        newCreatureTemplate.HasEnrageAbility = true;
+                        newCreatureTemplate.EnrageHPPercent = enrageHPPercent;
+                        newCreatureTemplate.EnrageDurationInMS = enrageDurationInMS;
+                        newCreatureTemplate.EnrageCooldownInMS = enrageCooldownInMS;
+                    }
+
+                    // Flurry
+                    if (TryParseSpecialAbilityWithParams(specialAbilitiesRaw, 5, out int flurryChancePercent, out int _, out int _) == true)
+                    {
+                        newCreatureTemplate.HasFlurryAbility = true;
+                        newCreatureTemplate.FlurryChancePercent = flurryChancePercent;
+                    }
+
+                    // Rampage
+                    if (TryParseSpecialAbilityWithParams(specialAbilitiesRaw, 3, out int rampageChancePercent, out int rampageRangeEQ, out int rampageDamagePercent) == true)
+                    {
+                        newCreatureTemplate.HasRampageAbility = true;
+                        newCreatureTemplate.RampageChancePercent = rampageChancePercent;
+                        newCreatureTemplate.RampageRangeEQ = rampageRangeEQ;
+                        newCreatureTemplate.RampageDamagePercent = rampageDamagePercent;
+                    }
+
+                    // Wild Rampage
+                    if (TryParseSpecialAbilityWithParams(specialAbilitiesRaw, 4, out int wildRampageChancePercent, out int wildRampageMaxTargets, out int wildRampageDamagePercent) == true)
+                    {
+                        newCreatureTemplate.HasWildRampageAbility = true;
+                        newCreatureTemplate.WildRampageChancePercent = wildRampageChancePercent;
+                        newCreatureTemplate.WildRampageMaxTargets = wildRampageMaxTargets;
+                        newCreatureTemplate.WildRampageDamagePercent = wildRampageDamagePercent;
+                    }
 
                     // Crowd-control immunities from EQ special abilities.  Use the EQ level for this
-                    int minLevelEQ = int.Parse(columns["levelEQ"]);
                     newCreatureTemplate.MechanicImmuneMask = DetermineCreatureMechanicImmuneMask(specialAbilitiesRaw, minLevelEQ);
 
                     // See invisibility
@@ -592,6 +646,38 @@ namespace EQWOWConverter.Creatures
                     int.TryParse(parts[4].Trim(), out minRangeEQ);
                 if (parts.Length > 5)
                     int.TryParse(parts[5].Trim(), out damageModPct);
+                return true;
+            }
+            return false;
+        }
+
+        private static bool TryParseSpecialAbilityWithParams(string specialAbilitiesRaw, int abilityID, out int param0, out int param1, out int param2)
+        {
+            // A param of 0 means 'use the default' which mirrors TAKP behavior
+            param0 = 0;
+            param1 = 0;
+            param2 = 0;
+            if (string.IsNullOrWhiteSpace(specialAbilitiesRaw))
+                return false;
+
+            string[] abilityGroups = specialAbilitiesRaw.Split('^');
+            foreach (string abilityGroup in abilityGroups)
+            {
+                if (abilityGroup.Trim().Length == 0)
+                    continue;
+                string[] parts = abilityGroup.Split(',');
+                if (parts.Length < 2)
+                    continue;
+                if (int.TryParse(parts[0].Trim(), out int curID) == false || curID != abilityID)
+                    continue;
+                if (int.TryParse(parts[1].Trim(), out int value) == false || value <= 0)
+                    return false;
+                if (parts.Length > 2)
+                    int.TryParse(parts[2].Trim(), out param0);
+                if (parts.Length > 3)
+                    int.TryParse(parts[3].Trim(), out param1);
+                if (parts.Length > 4)
+                    int.TryParse(parts[4].Trim(), out param2);
                 return true;
             }
             return false;
