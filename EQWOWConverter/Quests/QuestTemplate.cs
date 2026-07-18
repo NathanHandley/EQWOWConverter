@@ -46,7 +46,7 @@ namespace EQWOWConverter.Quests
         public List<QuestItemReference> RequiredItems = new List<QuestItemReference>();
         public List<QuestItemReference> RewardItems = new List<QuestItemReference>();
         public int RewardMoneyInCopper;
-        public int RewardExperience;
+        public int RewardExperienceEQ;
         // TODO: Faction
         // TODO: Required Class
         public string RequestText = string.Empty;
@@ -304,7 +304,7 @@ namespace EQWOWConverter.Quests
                     }
                 }
                 newQuestTemplate.RewardMoneyInCopper = int.Parse(columns["reward_money"]);
-                newQuestTemplate.RewardExperience = int.Parse(columns["reward_exp"]);
+                newQuestTemplate.RewardExperienceEQ = int.Parse(columns["reward_exp_eq"]);
                 for (int i = 1; i <= 38; i++)
                 {
                     int rewardItemID = int.Parse(columns[string.Concat("reward_item_ID", i)]);

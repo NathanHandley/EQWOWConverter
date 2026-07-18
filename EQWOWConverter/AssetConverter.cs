@@ -987,8 +987,12 @@ namespace EQWOWConverter
                 }
 
                 // To avoid exploits in broken quests, clear exp if there are no components to hand-in
-                if (questTemplate.RewardExperience > 0 && (questTemplate.RequiredItems.Count == 0))
-                    questTemplate.RewardExperience = 0;
+                if (questTemplate.RewardExperienceEQ > 0 && (questTemplate.RequiredItems.Count == 0))
+                    questTemplate.RewardExperienceEQ = 0;
+
+                // Give levelless quests that award experience the lowest level where the reward is still a full proportion of the level's experience, so the reward converts proportionally
+                if (questTemplate.QuestLevel < 1 && questTemplate.RewardExperienceEQ > 0)
+                    questTemplate.QuestLevel = QuestExperience.GetLowestLevelWithProportionalReward(questTemplate.RewardExperienceEQ);
 
                 // Add the default area id for quest sorting
                 questTemplate.AreaID = Convert.ToInt32(zonePropertiesByShortName[questTemplate.ZoneShortName.ToLower()].DefaultZoneArea.DBCAreaTableID);

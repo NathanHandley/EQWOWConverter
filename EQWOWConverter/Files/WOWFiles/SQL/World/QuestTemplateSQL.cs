@@ -42,7 +42,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RequiredFactionValue1", questTemplate.MinimumQuestgiverFactionValue);
             newRow.AddInt("RequiredFactionValue2", 0);
             newRow.AddInt("RewardNextQuest", 0);
-            newRow.AddInt("RewardXPDifficulty", (questTemplate.RewardExperience > 0 && questTemplate.QuestLevel > 0) ? 3 : 0);
+            newRow.AddInt("RewardXPDifficulty", QuestExperience.GetRewardXPDifficulty(questTemplate.QuestLevel, questTemplate.RewardExperienceEQ));
             newRow.AddInt("RewardMoney", questTemplate.RequiredMoneyInCopper > 0 ? (-1 * questTemplate.RequiredMoneyInCopper) : questTemplate.RewardMoneyInCopper);
             newRow.AddInt("RewardMoneyDifficulty", 0);
             newRow.AddInt("RewardDisplaySpell", 0);
