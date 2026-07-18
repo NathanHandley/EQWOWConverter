@@ -862,7 +862,6 @@ namespace EQWOWConverter
         public static int COMBATSKILL_BASH_STUN_DURATION_IN_MS = 2000;
         public static int COMBATSKILL_BASH_BASE_DAMAGE = 4;
         public static float COMBATSKILL_BASH_DAMAGE_PER_LEVEL = 1.5f;
-        public static int COMBATSKILL_BASH_RANGE = 5;
         // Bash Forbearance gives protection from bash to prevent stunlocking
         public static bool COMBATSKILL_BASH_FORBEARANCE_ENABLED = true;
         public static int COMBATSKILL_BASH_FORBEARANCE_SPELL_ID = 86906;
@@ -878,7 +877,6 @@ namespace EQWOWConverter
         public static int COMBATSKILL_SLAM_STUN_DURATION_IN_MS = 2000;
         public static int COMBATSKILL_SLAM_BASE_DAMAGE = 4;
         public static float COMBATSKILL_SLAM_DAMAGE_PER_LEVEL = 1.5f;
-        public static int COMBATSKILL_SLAM_RANGE = 5;
 
         // Harm Touch is a shadowknight ability (a long-cooldown direct damage "touch"). Also granted to player Death Knights. HP is ~2.5x higher in WoW
         public static bool COMBATSKILL_HARMTOUCH_ENABLED = true;
@@ -1732,8 +1730,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_BASH_COOLDOWN_IN_MS", COMBATSKILL_BASH_COOLDOWN_IN_MS, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_STUN_DURATION_IN_MS", COMBATSKILL_BASH_STUN_DURATION_IN_MS, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_BASE_DAMAGE", COMBATSKILL_BASH_BASE_DAMAGE, "", false);
-            OutputVariableToConfig("COMBATSKILL_BASH_DAMAGE_PER_LEVEL", COMBATSKILL_BASH_DAMAGE_PER_LEVEL, "", false);
-            OutputVariableToConfig("COMBATSKILL_BASH_RANGE", COMBATSKILL_BASH_RANGE, "");
+            OutputVariableToConfig("COMBATSKILL_BASH_DAMAGE_PER_LEVEL", COMBATSKILL_BASH_DAMAGE_PER_LEVEL, "");
             OutputVariableToConfig("COMBATSKILL_BASH_FORBEARANCE_ENABLED", COMBATSKILL_BASH_FORBEARANCE_ENABLED, "Bash Forbearance: a target struck by Bash briefly cannot be affected by Bash again", false);
             OutputVariableToConfig("COMBATSKILL_BASH_FORBEARANCE_SPELL_ID", COMBATSKILL_BASH_FORBEARANCE_SPELL_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID", COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID, "", false);
@@ -1746,7 +1743,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_SLAM_STUN_DURATION_IN_MS", COMBATSKILL_SLAM_STUN_DURATION_IN_MS, "", false);
             OutputVariableToConfig("COMBATSKILL_SLAM_BASE_DAMAGE", COMBATSKILL_SLAM_BASE_DAMAGE, "", false);
             OutputVariableToConfig("COMBATSKILL_SLAM_DAMAGE_PER_LEVEL", COMBATSKILL_SLAM_DAMAGE_PER_LEVEL, "", false);
-            OutputVariableToConfig("COMBATSKILL_SLAM_RANGE", COMBATSKILL_SLAM_RANGE, "", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_ENABLED", COMBATSKILL_HARMTOUCH_ENABLED, "Harm Touch is a shadowknight ability (a long-cooldown direct damage \"touch\"). Also granted to player Death Knights. HP is ~2.5x higher in WoW", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE", COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE, "", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_SPELL_ID", COMBATSKILL_HARMTOUCH_SPELL_ID, "", false);
@@ -2193,7 +2189,6 @@ namespace EQWOWConverter
             COMBATSKILL_BASH_STUN_DURATION_IN_MS = ReadVariableFromConfigString("COMBATSKILL_BASH_STUN_DURATION_IN_MS", configValuesByVariableName, COMBATSKILL_BASH_STUN_DURATION_IN_MS);
             COMBATSKILL_BASH_BASE_DAMAGE = ReadVariableFromConfigString("COMBATSKILL_BASH_BASE_DAMAGE", configValuesByVariableName, COMBATSKILL_BASH_BASE_DAMAGE);
             COMBATSKILL_BASH_DAMAGE_PER_LEVEL = ReadVariableFromConfigString("COMBATSKILL_BASH_DAMAGE_PER_LEVEL", configValuesByVariableName, COMBATSKILL_BASH_DAMAGE_PER_LEVEL);
-            COMBATSKILL_BASH_RANGE = ReadVariableFromConfigString("COMBATSKILL_BASH_RANGE", configValuesByVariableName, COMBATSKILL_BASH_RANGE);
             COMBATSKILL_BASH_FORBEARANCE_ENABLED = ReadVariableFromConfigString("COMBATSKILL_BASH_FORBEARANCE_ENABLED", configValuesByVariableName, COMBATSKILL_BASH_FORBEARANCE_ENABLED);
             COMBATSKILL_BASH_FORBEARANCE_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_FORBEARANCE_SPELL_ID", configValuesByVariableName, COMBATSKILL_BASH_FORBEARANCE_SPELL_ID);
             COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID);
@@ -2205,7 +2200,6 @@ namespace EQWOWConverter
             COMBATSKILL_SLAM_STUN_DURATION_IN_MS = ReadVariableFromConfigString("COMBATSKILL_SLAM_STUN_DURATION_IN_MS", configValuesByVariableName, COMBATSKILL_SLAM_STUN_DURATION_IN_MS);
             COMBATSKILL_SLAM_BASE_DAMAGE = ReadVariableFromConfigString("COMBATSKILL_SLAM_BASE_DAMAGE", configValuesByVariableName, COMBATSKILL_SLAM_BASE_DAMAGE);
             COMBATSKILL_SLAM_DAMAGE_PER_LEVEL = ReadVariableFromConfigString("COMBATSKILL_SLAM_DAMAGE_PER_LEVEL", configValuesByVariableName, COMBATSKILL_SLAM_DAMAGE_PER_LEVEL);
-            COMBATSKILL_SLAM_RANGE = ReadVariableFromConfigString("COMBATSKILL_SLAM_RANGE", configValuesByVariableName, COMBATSKILL_SLAM_RANGE);
             COMBATSKILL_HARMTOUCH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_ENABLED", configValuesByVariableName, COMBATSKILL_HARMTOUCH_ENABLED);
             COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE);
             COMBATSKILL_HARMTOUCH_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_SPELL_ID", configValuesByVariableName, COMBATSKILL_HARMTOUCH_SPELL_ID);

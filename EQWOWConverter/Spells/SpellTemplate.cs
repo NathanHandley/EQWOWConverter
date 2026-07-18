@@ -120,6 +120,11 @@ namespace EQWOWConverter.Spells
                 _SpellRange = value;
             }
         }
+        public void SetSpellRangeToMeleeRange()
+        {
+            _SpellRangeDBCID = Configuration.DBCID_SPELLRANGE_MELEE_ID;
+            _SpellRange = 5;
+        }
         protected int _SpellRadiusDBCID = 0;
         public int SpellRadiusDBCID { get { return _SpellRadiusDBCID; } }
         protected int _SpellRadius = 0;

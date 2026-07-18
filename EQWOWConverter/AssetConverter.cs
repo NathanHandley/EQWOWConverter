@@ -2324,7 +2324,7 @@ namespace EQWOWConverter
                 bashSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS);
                 bashSpellTemplate.Category = Convert.ToUInt32(bashAndSlamSpellCategoryID);
                 bashSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS); // Shared cooldown with Slam
-                bashSpellTemplate.SpellRange = Configuration.COMBATSKILL_BASH_RANGE;
+                bashSpellTemplate.SetSpellRangeToMeleeRange();
                 bashSpellTemplate.SchoolMask = 1; // Physical
                 bashSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)
                 bashSpellTemplate.TriggersGlobalCooldown = false;
@@ -2404,7 +2404,7 @@ namespace EQWOWConverter
                 slamSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS);
                 slamSpellTemplate.Category = Convert.ToUInt32(bashAndSlamSpellCategoryID);
                 slamSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS);
-                slamSpellTemplate.SpellRange = Configuration.COMBATSKILL_SLAM_RANGE;
+                slamSpellTemplate.SetSpellRangeToMeleeRange();
                 slamSpellTemplate.SchoolMask = 1; // Physical
                 slamSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)
                 slamSpellTemplate.AllowInShapeshift = true;
