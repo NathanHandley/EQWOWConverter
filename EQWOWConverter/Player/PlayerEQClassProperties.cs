@@ -39,6 +39,7 @@ namespace EQWOWConverter.Player
         public bool HasFistWeapon = false;
         public bool HasDagger = false;
         public bool HasBow = false;
+        public bool HasThrown = false;
 
         public static Dictionary<ClassEQType, PlayerEQClassProperties> GetAllEQClassPropertiesByEQClass()
         {
@@ -112,6 +113,7 @@ namespace EQWOWConverter.Player
                 classProperties.HasFistWeapon = columns["Fist"].Trim() == "1";
                 classProperties.HasDagger = columns["Dagger"].Trim() == "1";
                 classProperties.HasBow = columns["Bow"].Trim() == "1";
+                classProperties.HasThrown = columns["Thrown"].Trim() == "1";
 
                 if (EQClassPropertiesByEQClass.ContainsKey(eqClass) == true)
                     Logger.WriteError("In PlayerEQClassProperties attempted to add more than one ", eqClass.ToString());

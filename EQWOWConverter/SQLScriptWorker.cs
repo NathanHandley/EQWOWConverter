@@ -1620,6 +1620,15 @@ namespace EQWOWConverter
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 3018, 1); // Shoot
                     }
 
+                    // Thrown
+                    if (Configuration.PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES == true && eqClassProperties.HasThrown == true)
+                    {
+                        if (raceType == RaceType.Human)
+                            modEverquestPlayerAutoLearnSkillsSQL.AddRow(eqClassProperties.EQClass, 176);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 2567, 1);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 2764, 1); // Throw
+                    }
+
                     // Melee weapon skills
                     if (Configuration.PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES == true)
                     {

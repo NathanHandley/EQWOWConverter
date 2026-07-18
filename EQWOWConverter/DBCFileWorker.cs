@@ -635,6 +635,12 @@ namespace EQWOWConverter
                 skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "45", "264"), 45, 264, 2);
                 skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "45", "3018"), 45, 3018, 2);
             }
+            if (Configuration.PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES == true)
+            {
+                skillRaceClassInfoDBC.AddRow(176, wowClassTypes);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "176", "2567"), 176, 2567, 2);
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "176", "2764"), 176, 2764, 2);
+            }
 
             // Spells
             for (int i = 0; i < 23; i++)
