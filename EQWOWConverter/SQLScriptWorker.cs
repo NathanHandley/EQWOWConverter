@@ -85,6 +85,7 @@ namespace EQWOWConverter
         private ModEverquestCreatureMovementSoundSQL modEverquestCreatureMovementSoundSQL = new ModEverquestCreatureMovementSoundSQL();
         private ModEverquestCreatureSpawnPointSQL modEverquestCreatureSpawnPointSQL = new ModEverquestCreatureSpawnPointSQL();
         private ModEverquestCreatureWaypointSQL modEverquestCreatureWaypointSQL = new ModEverquestCreatureWaypointSQL();
+        private ModEverquestFactionSQL modEverquestFactionSQL = new ModEverquestFactionSQL();
         private ModEverquestForageZoneItemsSQL modEverquestForageZoneItemsSQL = new ModEverquestForageZoneItemsSQL();
         private ModEverquestIllusionDisplaySQL modEverquestIllusionDisplaySQL = new ModEverquestIllusionDisplaySQL();
         private ModEverquestIllusionFaceSQL modEverquestIllusionFaceSQL = new ModEverquestIllusionFaceSQL();
@@ -142,6 +143,9 @@ namespace EQWOWConverter
             // System configs
             PopulateSystemConfigs();
 
+            // Creature factions
+            PopulateCreatureFactionData();
+
             // Achievements
             PopulateAchievementData(creatureTemplates);
 
@@ -198,6 +202,12 @@ namespace EQWOWConverter
 
             // Output them
             OutputSQLScriptsToDisk();
+        }
+
+        private void PopulateCreatureFactionData()
+        {
+            foreach (CreatureFaction creatureFaction in CreatureFaction.GetCreatureFactionsByFactionID().Values)
+                modEverquestFactionSQL.AddRow(creatureFaction.FactionTemplateID, creatureFaction.WillDefendFriendlyPlayers, creatureFaction.DefendersWillAttackToDefendPlayer);
         }
 
         private void PopulateSystemConfigs()
@@ -2394,6 +2404,7 @@ namespace EQWOWConverter
             modEverquestCreatureMovementSoundSQL.SaveToDisk("mod_everquest_creature_movement_sound", SQLFileType.World);
             modEverquestCreatureSpawnPointSQL.SaveToDisk("mod_everquest_creature_spawn_point", SQLFileType.World);
             modEverquestCreatureWaypointSQL.SaveToDisk("mod_everquest_creature_waypoint", SQLFileType.World);
+            modEverquestFactionSQL.SaveToDisk("mod_everquest_faction", SQLFileType.World);
             modEverquestForageZoneItemsSQL.SaveToDisk("mod_everquest_forage_zone_items", SQLFileType.World);
             modEverquestIllusionDisplaySQL.SaveToDisk("mod_everquest_illusion_display", SQLFileType.World);
             modEverquestIllusionFaceSQL.SaveToDisk("mod_everquest_illusion_face", SQLFileType.World);

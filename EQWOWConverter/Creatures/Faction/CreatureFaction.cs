@@ -65,6 +65,8 @@ namespace EQWOWConverter.Creatures
         public string Name = string.Empty;
         public string Description = string.Empty;
         public bool ForceAgro = false;
+        public bool WillDefendFriendlyPlayers = false;
+        public bool DefendersWillAttackToDefendPlayer = false;
         public int EnemyFaction1 = 0;
         public int EnemyFaction2 = 0;
         public int EnemyFaction3 = 0;
@@ -251,6 +253,8 @@ namespace EQWOWConverter.Creatures
                 newCreatureFaction.BaseRepUnalignedRaces = int.Parse(columns["BaseRepUnalignedRace"]);
                 newCreatureFaction.Description = columns["Description"];
                 newCreatureFaction.ForceAgro = int.Parse(columns["ForceAgro"]) == 1 ? true : false;
+                newCreatureFaction.WillDefendFriendlyPlayers = int.Parse(columns["WillDefendFriendlyPlayers"]) == 1 ? true : false;
+                newCreatureFaction.DefendersWillAttackToDefendPlayer = int.Parse(columns["DefendersWillAttackToDefendPlayer"]) == 1 ? true : false;
                 if (int.Parse(columns["AlignedRaceGood"]) == 1)
                     newCreatureFaction.AlignedRacesMask += GoodRacesMask;
                 if (int.Parse(columns["AlignedRaceNeutral"]) == 1)
