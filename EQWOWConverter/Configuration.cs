@@ -681,7 +681,7 @@ namespace EQWOWConverter
         // How much to multiply the EQ range value for WoW
         public static float SPELLS_RANGE_MULTIPLIER = 0.3333f;
 
-        // How much to modify cast time of EverQuest spells when converting (spell DPS/HPS amounts remain the same)
+        // How much to modify cast time of EverQuest spells when converting, with direct heal/damage amounts and mana cost also modifying
         public static float SPELLS_CAST_TIME_MOD = 0.5f;
 
         // Cast times are never reduced below this by SPELLS_CAST_TIME_MOD (spells already at or below it keep their original cast time)
@@ -1645,7 +1645,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_GATECUSTOM_SPELLDBC_ID", SPELLS_GATECUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest");
             OutputVariableToConfig("SPELLS_BINDCUSTOM_SPELLDBC_ID", SPELLS_BINDCUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest");
             OutputVariableToConfig("SPELLS_RANGE_MULTIPLIER", SPELLS_RANGE_MULTIPLIER, "How much to multiply the EQ range value for WoW");
-            OutputVariableToConfig("SPELLS_CAST_TIME_MOD", SPELLS_CAST_TIME_MOD, "How much to modify cast time of EverQuest spells when converting (spell DPS/HPS amounts remain the same)");
+            OutputVariableToConfig("SPELLS_CAST_TIME_MOD", SPELLS_CAST_TIME_MOD, "How much to modify cast time of EverQuest spells when converting, with direct heal/damage amounts and mana cost also modifying");
             OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS", SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS, "Cast times are never reduced below this by SPELLS_CAST_TIME_MOD (spells already at or below it keep their original cast time)", false);
             OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS", SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS, "");
             OutputVariableToConfig("SPELLS_DOT_TIME_DURATION_MOD", SPELLS_DOT_TIME_DURATION_MOD, "How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)");

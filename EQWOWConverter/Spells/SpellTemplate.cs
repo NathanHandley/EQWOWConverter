@@ -526,6 +526,9 @@ namespace EQWOWConverter.Spells
                 if (newSpellTemplate.WOWSpellEffects.Count == 0)
                     continue;
 
+                // Scale mana cost to follow any change in total direct healing/damage caused by the cast time mod
+                ApplyManaCostScalingForDirectOutputChange(ref newSpellTemplate);
+
                 // Stacking rules
                 bool isItemClickSpell = itemClickSpellEQIDs.Contains(newSpellTemplate.EQSpellID);
                 SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]), newSpellTemplate.IsBardSongAura, isDetrimental, isItemClickSpell);
@@ -1288,6 +1291,34 @@ namespace EQWOWConverter.Spells
                     return;
                 spellTemplate.AuraDuration.ScaleDuration(Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD, 0);
             }
+        }
+
+        private static void ApplyManaCostScalingForDirectOutputChange(ref SpellTemplate spellTemplate)
+        {
+            // Only direct (non-periodic) heals and damage have their total output scaled by the cast time mod;
+            if (spellTemplate.CastTimeBeforeModsInMS <= 0 || spellTemplate.CastTimeInMS == spellTemplate.CastTimeBeforeModsInMS)
+                return;
+            if (spellTemplate.ManaCost == 0)
+                return;
+
+            bool hasDirectHealOrDamage = false;
+            foreach (SpellEffectWOW wowEffect in spellTemplate.WOWSpellEffects)
+            {
+                if (wowEffect.EffectAuraType != SpellWOWAuraType.None)
+                    continue; // Periodic (DoT/HoT) effects carry an aura type and keep their total output
+                if (wowEffect.EffectType == SpellWOWEffectType.Heal || wowEffect.EffectType == SpellWOWEffectType.SchoolDamage ||
+                    wowEffect.EffectType == SpellWOWEffectType.HealthLeech)
+                {
+                    hasDirectHealOrDamage = true;
+                    break;
+                }
+            }
+            if (hasDirectHealOrDamage == false)
+                return;
+
+            // Total direct output scaled by the same ratio the direct amounts did (see SpellEffectWOW cast time scaling)
+            float outputMod = Convert.ToSingle(spellTemplate.CastTimeInMS) / Convert.ToSingle(spellTemplate.CastTimeBeforeModsInMS);
+            spellTemplate.ManaCost = Convert.ToUInt32(Math.Max(1.0, Math.Round(Convert.ToDouble(spellTemplate.ManaCost) * outputMod)));
         }
 
         private static void PopulateEQSpellEffect(ref SpellTemplate spellTemplate, int slotID, Dictionary<string, string> rowColumns)
