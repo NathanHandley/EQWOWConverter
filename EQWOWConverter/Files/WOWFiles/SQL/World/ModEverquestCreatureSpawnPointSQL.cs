@@ -30,11 +30,13 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`SpawnPointID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`SpawnGroupID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`SpawnGroupLimit` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`CycleRespawnTimeSec` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`CycleChance` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`CreatureGUID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int creatureGUID, int mapID, int spawnPointID, int spawnGroupID, int spawnGroupLimit)
+        public void AddRow(int creatureGUID, int mapID, int spawnPointID, int spawnGroupID, int spawnGroupLimit, int cycleRespawnTimeSec, int cycleChance)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatureGUID", creatureGUID);
@@ -42,6 +44,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("SpawnPointID", spawnPointID);
             newRow.AddInt("SpawnGroupID", spawnGroupID);
             newRow.AddInt("SpawnGroupLimit", spawnGroupLimit);
+            newRow.AddInt("CycleRespawnTimeSec", cycleRespawnTimeSec);
+            newRow.AddInt("CycleChance", cycleChance);
             Rows.Add(newRow);
         }
     }

@@ -426,7 +426,33 @@ namespace EQWOWConverter
                     // Identify which spawn pools need a real cap
                     bool hasRealSpawnCap = spawnPool.SpawnLimit > 0 && spawnPool.SpawnLimit < spawnPool.CreatureSpawnInstances.Count;
 
-                    if (hasRealSpawnCap == true)
+                    // Cycle groups (capped, with near-instant EQ respawn times, like the Trakanon's Teeth forager/hunter cycles) get every point-and-candidate combination as a plain spawn so any candidate can appear at any point.
+                    bool isCycleSpawnGroup = hasRealSpawnCap;
+                    if (isCycleSpawnGroup == true)
+                        foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
+                            if (spawnInstance.RespawnTimeInSeconds <= 0 || spawnInstance.RespawnTimeInSeconds > Configuration.CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC)
+                                isCycleSpawnGroup = false;
+                    if (isCycleSpawnGroup == true)
+                    {
+                        foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
+                        {
+                            for (int i = 0; i < spawnPool.CreatureTemplates.Count; i++)
+                            {
+                                CreatureTemplate template = spawnPool.CreatureTemplates[i];
+                                int chance = spawnPool.CreatureTemplateChances[i];
+                                int guid = IDGenerationTool.GenerateID("CreatureGUID", "spawn", spawnInstance.ID.ToString(), template.EQCreatureTemplateID.ToString(), i.ToString());
+                                modEverquestCreatureSpawnPointSQL.AddRow(guid, spawnInstance.MapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, spawnPool.SpawnLimit,
+                                    spawnInstance.RespawnTimeInSeconds, chance);
+                                string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
+                                CreateCreatureAndRelatedSQLEntries(guid, template, spawnInstance, spawnPool.SpawnGroup, comment, Configuration.CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC);
+                                if (spawnPool.LinkedSpawnGameEvent != null)
+                                    gameEventCreatureSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, guid, true);
+                                if (spawnPool.LinkedDespawnGameEvent != null)
+                                    gameEventCreatureSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, guid, false);
+                            }
+                        }
+                    }
+                    else if (hasRealSpawnCap == true)
                     {
                         int poolID = IDGenerationTool.GenerateID("PoolTemplateID", "cappedpool", spawnPool.SpawnGroup.ID.ToString());
                         poolTemplateSQL.AddRow(poolID, poolDescription, spawnPool.SpawnLimit);
@@ -444,7 +470,7 @@ namespace EQWOWConverter
                             CreatureTemplate creatureTemplate = pointTemplates[spawnInstanceIndex];
                             int creatureGUID = IDGenerationTool.GenerateID("CreatureGUID", "spawn", spawnInstance.ID.ToString(), creatureTemplate.EQCreatureTemplateID.ToString());
                             poolCreatureSQL.AddRow(creatureGUID, poolID, 0, creatureTemplate.Name);
-                            modEverquestCreatureSpawnPointSQL.AddRow(creatureGUID, spawnInstance.MapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, spawnPool.SpawnLimit);
+                            modEverquestCreatureSpawnPointSQL.AddRow(creatureGUID, spawnInstance.MapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, spawnPool.SpawnLimit, 0, 0);
                             string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
                             CreateCreatureAndRelatedSQLEntries(creatureGUID, creatureTemplate, spawnInstance, spawnPool.SpawnGroup, comment);
                         }
@@ -481,7 +507,7 @@ namespace EQWOWConverter
                                 int chance = spawnPool.CreatureTemplateChances[i];
                                 int guid = IDGenerationTool.GenerateID("CreatureGUID", "spawn", spawnInstance.ID.ToString(), template.EQCreatureTemplateID.ToString(), i.ToString());
                                 poolCreatureSQL.AddRow(guid, poolID, chance, template.Name);
-                                modEverquestCreatureSpawnPointSQL.AddRow(guid, spawnInstance.MapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, 0);
+                                modEverquestCreatureSpawnPointSQL.AddRow(guid, spawnInstance.MapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, 0, 0, 0);
                                 string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
                                 CreateCreatureAndRelatedSQLEntries(guid, template, spawnInstance, spawnPool.SpawnGroup, comment);
                             }
@@ -1159,9 +1185,13 @@ namespace EQWOWConverter
         }
 
         private static Dictionary<int, HashSet<int>> alreadySavedCustomWaypointGridIDsByMapID = new Dictionary<int, HashSet<int>>(); // Ensure only 1 of each waypoint set is saved
-        private void CreateCreatureAndRelatedSQLEntries(int creatureGUID, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance, CreatureSpawnGroup spawnGroup, string comment)
+        private void CreateCreatureAndRelatedSQLEntries(int creatureGUID, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance, CreatureSpawnGroup spawnGroup, string comment, int respawnTimeOverrideInSec = 0)
         {
-            int respawnTimeInSec = GetCreatureRespawnTimeInSeconds(creatureTemplate, spawnInstance);
+            int respawnTimeInSec;
+            if (respawnTimeOverrideInSec > 0)
+                respawnTimeInSec = respawnTimeOverrideInSec;
+            else
+                respawnTimeInSec = GetCreatureRespawnTimeInSeconds(creatureTemplate, spawnInstance);
             List<CreaturePathGridEntry> pathEntries = spawnInstance.GetPathGridEntries();
             CreatureMovementType movementType = CreatureMovementType.None;
             CreaturePathGridWanderType wanderType = spawnInstance.GetPathGrid().WanderType;

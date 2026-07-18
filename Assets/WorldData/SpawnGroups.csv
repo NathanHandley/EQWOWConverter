@@ -4499,10 +4499,10 @@ id|zone|name|spawn_limit|min_x|max_x|min_y|max_y|min_z|max_z|delay|mindelay|desp
 94133|emeraldjungle|emeraldjungle_Several_large259|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|0|-1|-1
 94225|emeraldjungle|emeraldjungle_a_moldering_ape225|0|0|0|0|0|0|0|0|0|0|100|0|1200|0|0|0|0|-1|-1
 94236|emeraldjungle|emeraldjungle_Erollisi_mantrap226|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|0|-1|-1
-95000|trakanon|trakanon_froglok_hunter243|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|1|0|-1|-1
+95000|trakanon|trakanon_froglok_hunter243|1|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|1|0|-1|-1
 95001|trakanon|trakanon_spectral_champion76|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|0|-1|-1
 95003|trakanon|trakanon_froglok_shin_knight13|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|0|-1|-1
-95004|trakanon|trakanon_froglok_forager276|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|1|0|-1|-1
+95004|trakanon|trakanon_froglok_forager276|1|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|1|0|-1|-1
 95007|trakanon|trakanon_spectral_keeper45|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|0|-1|-1
 95012|trakanon|trakanon_spectral_commander79|0|-2719|-2107|2216|3000|0|0|38000|15000|0|100|0|1200|0|0|0|0|-1|-1
 95026|trakanon|trakanon_spectral_legionnaire53|0|-2414|-675|-3053|-2483|0|0|38000|15000|0|100|0|1200|0|0|0|0|-1|-1
@@ -8581,8 +8581,6 @@ id|zone|name|spawn_limit|min_x|max_x|min_y|max_y|min_z|max_z|delay|mindelay|desp
 1100023|skyfire|skyfire_ph_Eldrig_the_Old|1|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|0|-1|-1
 1100024|sro|sro_ph_an_ancient_cyclops|1|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|0|-1|-1
 1100025|sro|sro_ph_Sandgiant_Husam|1|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|0|-1|-1
-1100026|trakanon|trakanon_namedcamp_95000|1|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|0|-1|-1
-1100027|trakanon|trakanon_namedcamp_95004|1|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|0|-1|-1
 1100028|tutorial|tutorial_sara_goldhand|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1
 1100029|tutorial|tutorial_upyago_teleporter|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
 1000018|templeveeshan|templeveeshan_#Vulak`Aerr|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1

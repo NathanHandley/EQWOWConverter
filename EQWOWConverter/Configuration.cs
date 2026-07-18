@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 49;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 50;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -461,6 +461,12 @@ namespace EQWOWConverter
 
         // Maximum number of seconds that can elapse before a raid trash creature respawns after dying (uses the minimum EQ timer if shorter)
         public static int CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC = 7200;
+
+        // Spawn groups with a spawn limit whose points all respawn within this many seconds are 'cycle' groups (like the Trakanon's Teeth forager-hunter cycles and the Swamp of No Hope froglok camps)
+        public static int CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC = 10;
+
+        // Natural respawn time given to every creature row in a cycle group, kept long since the mod drives the actual cycle respawns
+        public static int CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC = 86400;
 
         // Stat modifiers for creatures
         // - "MODADD" are values added after all dynamic calculations
@@ -1130,6 +1136,9 @@ namespace EQWOWConverter
         // ID for SpellRange.dbc
         public static int DBCID_SPELLRANGE_ID_START = 190;
 
+        // ID for (existing) SpellRange.dbc row "Combat Range"
+        public static int DBCID_SPELLRANGE_MELEE_ID = 2;
+
         // IDs for the SpellVisual line of DBC files
         public static int DBCID_SPELLVISUAL_ID_START = 17000;
         public static int DBCID_SPELLVISUALKIT_ID_START = 16000;
@@ -1553,6 +1562,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_ILLUSION_TINT_PALETTE_SIZE", CREATURE_ILLUSION_TINT_PALETTE_SIZE, "How many colors are in the illusion chest tint palette, larger numbers mean larger builds but more color representation");
             OutputVariableToConfig("CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC", CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC, "Maximum number of seconds that can elapse before a raid boss creature respawns after dying (uses the minimum EQ timer if shorter)");
             OutputVariableToConfig("CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC", CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC, "Maximum number of seconds that can elapse before a raid trash creature respawns after dying (uses the minimum EQ timer if shorter)");
+            OutputVariableToConfig("CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC", CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC, "Spawn groups with a spawn limit whose points all respawn within this many seconds are 'cycle' groups (like the Trakanon's Teeth forager-hunter cycles and the Swamp of No Hope froglok camps)");
+            OutputVariableToConfig("CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC", CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC, "Natural respawn time given to every creature row in a cycle group, kept long since the mod drives the actual cycle respawns");
             OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD", CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD, "Stat modifiers for creatures - \"MODADD\" are values added after all dynamic calculations", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD", CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL", CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL, "", false);
@@ -2000,6 +2011,8 @@ namespace EQWOWConverter
             CREATURE_ILLUSION_TINT_PALETTE_SIZE = ReadVariableFromConfigString("CREATURE_ILLUSION_TINT_PALETTE_SIZE", configValuesByVariableName, CREATURE_ILLUSION_TINT_PALETTE_SIZE);
             CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC", configValuesByVariableName, CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC);
             CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC", configValuesByVariableName, CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC);
+            CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC", configValuesByVariableName, CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC);
+            CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC", configValuesByVariableName, CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC);
 
             CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD);
             CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD);
