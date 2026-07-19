@@ -220,6 +220,7 @@ namespace EQWOWConverter.Spells
         public bool InterruptAuraOnMount = false;
         public bool InterruptAuraOnCast = false;
         public bool InterruptAuraOnTakeDamage = false;
+        public bool IsNegateIfCombat = false;
         public bool RemoveAuraWhenCasterCreatureInitsAgro = false;
         public bool PreventAuraClickOff = false;
         public bool AlwaysPersist = false;
@@ -3172,6 +3173,13 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.InterruptAuraOnCast = true;
                                 spellTemplate.InterruptAuraOnMeleeAttack = true;
                             } break;
+                        case SpellEQEffectType.NegateIfCombat:
+                            {
+                                // Break when the wearer casts a spell or attacks
+                                spellTemplate.InterruptAuraOnCast = true;
+                                spellTemplate.InterruptAuraOnMeleeAttack = true;
+                                spellTemplate.IsNegateIfCombat = true;
+                            } break;
                         default:
                             {
                                 Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
@@ -3423,6 +3431,8 @@ namespace EQWOWConverter.Spells
             // Add any additional fragments to descriptions
             if (spellTemplate.BreakEffectOnNonAutoDirectDamage == true)
                 descriptionSB.Append(" May break on direct damage.");
+            if (spellTemplate.IsNegateIfCombat == true)
+                descriptionSB.Append(" Breaks if you cast a spell or attack.");
 
             // Capitalize Norrath
             descriptionSB.Replace("norrath", "Norrath");
