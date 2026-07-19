@@ -113,7 +113,7 @@ namespace EQWOWConverter.Spells
             EffectBasePoints *= -1;
         }
 
-        public int GetEffectAmountValueByLevel(int inputEffectBasePoints, int inputEffectMaxPoints, int spellInfluencingLevel, int unitInfluencingLevel,
+        public float GetEffectAmountFloatValueByLevel(int inputEffectBasePoints, int inputEffectMaxPoints, int spellInfluencingLevel, int unitInfluencingLevel,
             SpellEQBaseValueFormulaType eqFormula, int spellCastTimeInMS, string valueScalingFormulaName, SpellEffectWOWConversionScaleType conversionScaleType,
             float periodicValueMultiplier = 1f, int castTimeBeforeModsInMS = 0)
         {
@@ -155,6 +155,7 @@ namespace EQWOWConverter.Spells
                 calculatedEffectBasePoints = Math.Min(calculatedEffectBasePoints, inputEffectMaxPoints);
 
             // Scale the value if it's a controlled type
+            float calculatedEffectPointsFloat = calculatedEffectBasePoints;
             if (valueScalingFormulaName.Length > 0)
             {
                 float beforeValue = calculatedEffectBasePoints;
@@ -181,13 +182,13 @@ namespace EQWOWConverter.Spells
                 }
                 if (conversionScaleType == SpellEffectWOWConversionScaleType.Periodic)
                     afterValue *= Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW);
-                calculatedEffectBasePoints = Math.Max(Convert.ToInt32(afterValue), 1);
+                calculatedEffectPointsFloat = MathF.Max(afterValue, 1f);
             }
 
             // Reverse the sign, if needed
             if (effectBasePointsWasNegative == true)
-                calculatedEffectBasePoints *= -1;
-            return calculatedEffectBasePoints;
+                calculatedEffectPointsFloat *= -1;
+            return calculatedEffectPointsFloat;
         }
 
         public void SetEffectAmountValues(int effectBasePoints, int effectMaxPoints, int spellLevel, SpellEQBaseValueFormulaType eqFormula,
@@ -205,8 +206,8 @@ namespace EQWOWConverter.Spells
             EffectRealPointsPerLevel = 0;
             if (eqFormula == SpellEQBaseValueFormulaType.BaseDivideBy100 || eqFormula == SpellEQBaseValueFormulaType.UnknownUseBaseOrMaxWhicheverHigher || Configuration.SPELL_EFFECT_USE_DYNAMIC_EFFECT_VALUES == false)
             {
-                EffectBasePoints = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
-                    valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS);
+                EffectBasePoints = Convert.ToInt32(GetEffectAmountFloatValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
+                    valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS));
                 CalcEffectLowLevelValue = EffectBasePoints;
                 CalcEffectLowLevel = spellLevel;
                 CalcEffectHighLevelValue = EffectBasePoints;
@@ -214,16 +215,18 @@ namespace EQWOWConverter.Spells
             }
             else
             {
-                int calcMaxPoints = GetEffectAmountValueByLevel(effectMaxPoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
+                // Compared as floats since integer rounding can erase some small level scaling
+                float calcMaxPointsFloat = GetEffectAmountFloatValueByLevel(effectMaxPoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
                     valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS);
                 int endCalcLevel = Configuration.SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL;
-                EffectBasePoints = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
+                float lowValueFloat = GetEffectAmountFloatValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
                     valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS);
+                EffectBasePoints = Convert.ToInt32(lowValueFloat);
                 CalcEffectLowLevelValue = EffectBasePoints;
                 CalcEffectLowLevel = spellLevel;
 
                 // Only calculate the larger band if the two levels aren't the same
-                if (endCalcLevel <= spellLevel || EffectBasePoints == calcMaxPoints)
+                if (endCalcLevel <= spellLevel || lowValueFloat == calcMaxPointsFloat)
                 {
                     CalcEffectHighLevelValue = EffectBasePoints;
                     CalcEffectHighLevel = spellLevel;
@@ -231,13 +234,24 @@ namespace EQWOWConverter.Spells
                 else
                 {
                     // Calculate for every level in the gap as a spread until a max is hit
+                    float highValueFloat = lowValueFloat;
                     for (int curCalcLevel = spellLevel+1; curCalcLevel <= endCalcLevel; curCalcLevel++)
                     {
                         CalcEffectHighLevel = curCalcLevel;
-                        CalcEffectHighLevelValue = GetEffectAmountValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, curCalcLevel, eqFormula, spellCastTimeInMS,
+                        highValueFloat = GetEffectAmountFloatValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, curCalcLevel, eqFormula, spellCastTimeInMS,
                             valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS);
-                        if (CalcEffectHighLevelValue == calcMaxPoints)
+                        if (highValueFloat == calcMaxPointsFloat)
                             curCalcLevel = endCalcLevel + 1;
+                    }
+                    CalcEffectHighLevelValue = Convert.ToInt32(highValueFloat);
+
+                    // Keep at least one point of spread so rounding doesn't eliminate a level band if it's tight
+                    if (CalcEffectHighLevelValue == EffectBasePoints)
+                    {
+                        if (highValueFloat >= lowValueFloat)
+                            CalcEffectHighLevelValue = EffectBasePoints + 1;
+                        else
+                            CalcEffectHighLevelValue = EffectBasePoints - 1;
                     }
 
                     float totalLevelSteps = CalcEffectHighLevel - spellLevel;
