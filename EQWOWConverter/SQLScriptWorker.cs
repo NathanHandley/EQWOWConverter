@@ -207,7 +207,7 @@ namespace EQWOWConverter
         private void PopulateCreatureFactionData()
         {
             foreach (CreatureFaction creatureFaction in CreatureFaction.GetCreatureFactionsByFactionID().Values)
-                modEverquestFactionSQL.AddRow(creatureFaction.FactionTemplateID, creatureFaction.WillDefendFriendlyPlayers, creatureFaction.DefendersWillAttackToDefendPlayer);
+                modEverquestFactionSQL.AddRow(creatureFaction.FactionTemplateID, creatureFaction.WillDefendFriendlyPlayers, creatureFaction.DefendersWillAttackToDefendPlayer, creatureFaction.DefendCombatFactionTemplateID);
         }
 
         private void PopulateSystemConfigs()

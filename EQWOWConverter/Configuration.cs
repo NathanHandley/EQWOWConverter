@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 51;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 52;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1047,6 +1047,9 @@ namespace EQWOWConverter
 
         // IDs for CreatureSoundData.dbc
         public static int DBCID_CREATURESOUNDDATA_ID_START = 3300;
+
+        // Factions that defend friendly players get a second "defend combat" faction template at this ID offset
+        public static int DBCID_FACTIONTEMPLATE_ID_DEFEND_SHIFT = 100;
 
         // IDs for FootstepTerrainLookup.dbc
         public static int DBCID_FOOTSTEPTERRAINLOOKUP_ID_START = 600;

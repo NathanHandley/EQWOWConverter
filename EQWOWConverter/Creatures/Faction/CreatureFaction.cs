@@ -71,6 +71,8 @@ namespace EQWOWConverter.Creatures
         public int EnemyFaction2 = 0;
         public int EnemyFaction3 = 0;
         public int EnemyFaction4 = 0;
+        public int DefendCombatFactionTemplateID = 0;
+        public List<int> DefendCombatEnemyFactionIDs = new List<int>();
 
         public static int GetRootFactionParentWOWFactionID()
         {
@@ -267,6 +269,35 @@ namespace EQWOWConverter.Creatures
                 newCreatureFaction.EnemyFaction3 = int.Parse(columns["EnemyFaction3"]);
                 newCreatureFaction.EnemyFaction4 = int.Parse(columns["EnemyFaction4"]);
                 CreatureFactionsByWOWFactionID.Add(newCreatureFaction.FactionID, newCreatureFaction);
+            }
+
+            // Factions that defend friendly players get a second "defend combat" faction template that is hostile to every faction whose members can provoke a defense
+            List<int> attackerFactionIDs = new List<int>();
+            foreach (CreatureFaction creatureFaction in CreatureFactionsByWOWFactionID.Values)
+                if (creatureFaction.DefendersWillAttackToDefendPlayer == true)
+                    attackerFactionIDs.Add(creatureFaction.FactionID);
+            attackerFactionIDs.Sort();
+            foreach (CreatureFaction creatureFaction in CreatureFactionsByWOWFactionID.Values)
+            {
+                if (creatureFaction.WillDefendFriendlyPlayers == false)
+                    continue;
+                creatureFaction.DefendCombatFactionTemplateID = creatureFaction.FactionTemplateID + Configuration.DBCID_FACTIONTEMPLATE_ID_DEFEND_SHIFT;
+                if (creatureFaction.EnemyFaction1 != 0)
+                    creatureFaction.DefendCombatEnemyFactionIDs.Add(creatureFaction.EnemyFaction1);
+                if (creatureFaction.EnemyFaction2 != 0)
+                    creatureFaction.DefendCombatEnemyFactionIDs.Add(creatureFaction.EnemyFaction2);
+                if (creatureFaction.EnemyFaction3 != 0)
+                    creatureFaction.DefendCombatEnemyFactionIDs.Add(creatureFaction.EnemyFaction3);
+                if (creatureFaction.EnemyFaction4 != 0)
+                    creatureFaction.DefendCombatEnemyFactionIDs.Add(creatureFaction.EnemyFaction4);
+                foreach (int attackerFactionID in attackerFactionIDs)
+                    if (creatureFaction.DefendCombatEnemyFactionIDs.Contains(attackerFactionID) == false)
+                        creatureFaction.DefendCombatEnemyFactionIDs.Add(attackerFactionID);
+                if (creatureFaction.DefendCombatEnemyFactionIDs.Count > 4)
+                {
+                    Logger.WriteError("CreatureFaction - Defend combat faction template for faction '" + creatureFaction.FactionID + "' needs " + creatureFaction.DefendCombatEnemyFactionIDs.Count + " enemy factions but FactionTemplate only holds 4, truncating");
+                    creatureFaction.DefendCombatEnemyFactionIDs.RemoveRange(4, creatureFaction.DefendCombatEnemyFactionIDs.Count - 4);
+                }
             }
 
             // Update the parents for these factions

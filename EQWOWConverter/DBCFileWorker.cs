@@ -326,7 +326,11 @@ namespace EQWOWConverter
             {
                 factionDBC.AddRow(creatureFaction);
                 if (creatureFaction.Name != Configuration.CREATURE_FACTION_ROOT_NAME)
+                {
                     factionTemplateDBC.AddRow(creatureFaction);
+                    if (creatureFaction.DefendCombatFactionTemplateID != 0)
+                        factionTemplateDBC.AddDefendCombatRow(creatureFaction);
+                }
             }
 
             // Footstep Terrain Lookup (for creatures)

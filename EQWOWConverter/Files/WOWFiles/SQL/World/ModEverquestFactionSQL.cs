@@ -28,16 +28,18 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`FactionTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`WillDefendFriendlyPlayers` TINYINT UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`DefendersWillAttackToDefendPlayer` TINYINT UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`DefendCombatFactionTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`FactionTemplateID`) USING BTREE); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int factionTemplateID, bool willDefendFriendlyPlayers, bool defendersWillAttackToDefendPlayer)
+        public void AddRow(int factionTemplateID, bool willDefendFriendlyPlayers, bool defendersWillAttackToDefendPlayer, int defendCombatFactionTemplateID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("FactionTemplateID", factionTemplateID);
             newRow.AddInt("WillDefendFriendlyPlayers", willDefendFriendlyPlayers == true ? 1 : 0);
             newRow.AddInt("DefendersWillAttackToDefendPlayer", defendersWillAttackToDefendPlayer == true ? 1 : 0);
+            newRow.AddInt("DefendCombatFactionTemplateID", defendCombatFactionTemplateID);
             Rows.Add(newRow);
         }
     }

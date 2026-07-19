@@ -47,5 +47,36 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // Friend 4
             Rows.Add(newRow);
         }
+
+        public void AddDefendCombatRow(CreatureFaction creatureFaction)
+        {
+            // Determine flags
+            int flags = 1; // 0x0001 - Respond to calls for help
+            flags |= 32; // 0x0020 - Search for enemies (med priority)
+
+            // Fill the row
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt32(creatureFaction.DefendCombatFactionTemplateID); // ID
+            newRow.AddInt32(creatureFaction.FactionID); // Faction.ID
+            newRow.AddInt32(flags); // Flags
+            newRow.AddInt32(8); // FactionGroup.ID (lots of 0, 1, 8)
+            newRow.AddInt32(0); // FriendGroup (bitmask field)
+            if (creatureFaction.ForceAgro == false && creatureFaction.ReputationIndex < 0)
+                newRow.AddInt32(0); // EnemyGroup (bitmask field)
+            else
+                newRow.AddInt32(1); // EnemyGroup (bitmask field) - 1 = All players (and pets)
+            for (int i = 0; i < 4; i++) // Enemies 1 - 4
+            {
+                if (i < creatureFaction.DefendCombatEnemyFactionIDs.Count)
+                    newRow.AddInt32(creatureFaction.DefendCombatEnemyFactionIDs[i]);
+                else
+                    newRow.AddInt32(0);
+            }
+            newRow.AddInt32(creatureFaction.FactionID); // Friend 1 (help self)
+            newRow.AddInt32(0); // Friend 2
+            newRow.AddInt32(0); // Friend 3
+            newRow.AddInt32(0); // Friend 4
+            Rows.Add(newRow);
+        }
     }
 }
