@@ -84,17 +84,35 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
+        private static HashSet<Int16> GetMeleeAttackAnimationIndexes(ObjectModel wowObjectModel)
+        {
+            HashSet<Int16> attackAnimationIndexes = new HashSet<Int16>();
+            AnimationType[] meleeAttackAnimationTypes = new AnimationType[] { AnimationType.AttackUnarmed, AnimationType.Attack1H,
+                AnimationType.Attack1HPierce, AnimationType.Attack2H, AnimationType.Attack2HL, AnimationType.AttackOff,
+                AnimationType.AttackOffPierce };
+            foreach (AnimationType animationType in meleeAttackAnimationTypes)
+            {
+                int lookupIndex = Convert.ToInt32(animationType);
+                if (lookupIndex >= wowObjectModel.AnimationLookups.Count)
+                    continue;
+                Int16 animationIndex = wowObjectModel.AnimationLookups[lookupIndex];
+                if (animationIndex >= 0)
+                    attackAnimationIndexes.Add(animationIndex);
+            }
+            return attackAnimationIndexes;
+        }
+
         public void PopulateAsHandleCombatAnimCAH(ObjectModel wowObjectModel)
         {
             Identifier = "$CAH";
             ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("cah"));
 
-            // TODO: Make this work for more than "unarmed"
             // TODO: Figure out how to time the strike with the animation
+            HashSet<Int16> attackAnimationIndexes = GetMeleeAttackAnimationIndexes(wowObjectModel);
             for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
             {
                 Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
-                if (wowObjectModel.AnimationLookups[Convert.ToInt16(AnimationType.AttackUnarmed)] != i)
+                if (attackAnimationIndexes.Contains(Convert.ToInt16(i)))
                     Timestamps[i].AddTimestamp(0);
             }
         }
@@ -104,12 +122,12 @@ namespace EQWOWConverter.WOWFiles
             Identifier = "$CSS";
             ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("css"));
 
-            // TODO: Make this work for more than "unarmed"
             // TODO: Figure out how to time the strike with the animation
+            HashSet<Int16> attackAnimationIndexes = GetMeleeAttackAnimationIndexes(wowObjectModel);
             for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
             {
                 Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
-                if (wowObjectModel.AnimationLookups[Convert.ToInt16(AnimationType.AttackUnarmed)] != i)
+                if (attackAnimationIndexes.Contains(Convert.ToInt16(i)))
                     Timestamps[i].AddTimestamp(0);
             }
         }
@@ -119,12 +137,12 @@ namespace EQWOWConverter.WOWFiles
             Identifier = "$CPP";
             ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("cpp"));
 
-            // TODO: Make this work for more than "unarmed"
             // TODO: Figure out how to time the strike with the animation
+            HashSet<Int16> attackAnimationIndexes = GetMeleeAttackAnimationIndexes(wowObjectModel);
             for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
             {
                 Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
-                if (wowObjectModel.AnimationLookups[Convert.ToInt16(AnimationType.AttackUnarmed)] != i)
+                if (attackAnimationIndexes.Contains(Convert.ToInt16(i)))
                     Timestamps[i].AddTimestamp(0);
             }
         }
