@@ -1491,7 +1491,6 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 31288|kerraridge|Kirran_Mirrah|attackplayer||||||||
 31288|kerraridge|Kirran_Mirrah|say|Ahhhhhhhh! I can't believe that you ---- ahhhhhhhh! Die you, you, you evil evil heretic!|||||||
 31289|kerraridge|Marl_Kastane|emote|%s reads the note, eyes widening in panic. He raises his eyes to you and says, 'This is grave news, friend. If the prophecy is allowed to be fulfilled, our strength will vanish into obscurity. Goodness and purity will spread like a plague across the land and the servants of Hate will be powerless to stop it!'|||||||
-31290|kerraridge|Marl_Kastane|despawn|self|||||||
 31290|kerraridge|Marl_Kastane|say|Here, you take this shroud. You must now find the spirit of glohnor and place this item on him. This should force him back into his mummified body and then you must destroy this newly raised form and return to me its wrappings.|||||||
 31291|kerraridge|Marl_Kastane|say|You've done it! Your efforts will stand as a tribute to our kind for time eternal, my friend. Although nothing could possibly serve as a just reward for your accomplishments, please accept this as well as my eternal gratitude. It has been fashioned from the wraps of the mummy and shall protect you well.|||||||
 31292|kerraridge|Melixis|say|Many thanks... rrrr... here is dull ring.|||||||
