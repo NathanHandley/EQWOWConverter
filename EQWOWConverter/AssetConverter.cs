@@ -3763,6 +3763,7 @@ namespace EQWOWConverter
                         // Legacy account reward uses the same gate tether
                         if (itemTemplate.WOWEntryID == Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID && Configuration.SPELLS_GATE_TETHER_ENABLED == true)
                         {
+                            clickSpellTemplate.Description = string.Concat(clickSpellTemplate.Description, " You will have 30 minutes where you can return to your gate point after casting it. This tether is shared with Gate.");
                             SpellEffectWOW stoneTetherEffect = new SpellEffectWOW(SpellWOWEffectType.TriggerSpell, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0);
                             stoneTetherEffect.EffectTriggerSpell = Configuration.SPELLS_GATECUSTOM_SPELLDBC_ID;
                             stoneTetherEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
