@@ -599,21 +599,35 @@ namespace EQWOWConverter
                     }
                     else if (curObject.ModelIsSkeletal == true)
                     {
-                        if (skeletalObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
+                        if (skeletalObjectNameMap.ContainsKey(curObject.OriginalModelName) == true)
+                            curObject.ModelName = skeletalObjectNameMap[curObject.OriginalModelName];
+                        else if (File.Exists(Path.Combine(conditionedObjectFolderRoot, "Skeletons", string.Concat(curObject.OriginalModelName, ".txt"))) == true)
                         {
-                            Logger.WriteError(string.Concat("Unable to find interactive skeletal original model name ", curObject.OriginalModelName, " in zone ", interactiveGameObjectsInZone.Key));
+                            // Objects added to GameObjects.csv after the conditioning step won't be in the zone's map, so fall back to the shared conditioned object if one exists
+                            Logger.WriteDebug(string.Concat("Interactive skeletal original model name ", curObject.OriginalModelName, " was not in the game object map for zone ", interactiveGameObjectsInZone.Key, ", so the shared conditioned object will be used"));
+                            curObject.ModelName = curObject.OriginalModelName;
+                        }
+                        else
+                        {
+                            Logger.WriteError(string.Concat("Unable to find interactive skeletal original model name ", curObject.OriginalModelName, " in zone ", interactiveGameObjectsInZone.Key, " or in the conditioned objects folder"));
                             continue;
                         }
-                        curObject.ModelName = skeletalObjectNameMap[curObject.OriginalModelName];
                     }
                     else
                     {
-                        if (staticObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
+                        if (staticObjectNameMap.ContainsKey(curObject.OriginalModelName) == true)
+                            curObject.ModelName = staticObjectNameMap[curObject.OriginalModelName];
+                        else if (File.Exists(Path.Combine(conditionedObjectFolderRoot, "Meshes", string.Concat(curObject.OriginalModelName, ".txt"))) == true)
                         {
-                            Logger.WriteError(string.Concat("Unable to find interactive static original model name ", curObject.OriginalModelName, " in zone ", interactiveGameObjectsInZone.Key));
+                            // Objects added to GameObjects.csv after the conditioning step won't be in the zone's map, so fall back to the shared conditioned object if one exists
+                            Logger.WriteDebug(string.Concat("Interactive static original model name ", curObject.OriginalModelName, " was not in the game object map for zone ", interactiveGameObjectsInZone.Key, ", so the shared conditioned object will be used"));
+                            curObject.ModelName = curObject.OriginalModelName;
+                        }
+                        else
+                        {
+                            Logger.WriteError(string.Concat("Unable to find interactive static original model name ", curObject.OriginalModelName, " in zone ", interactiveGameObjectsInZone.Key, " or in the conditioned objects folder"));
                             continue;
                         }
-                        curObject.ModelName = staticObjectNameMap[curObject.OriginalModelName];
                     }
 
                     // Process any rotation data by first making a rotation vector, and then converting to the appropriate quarterion
