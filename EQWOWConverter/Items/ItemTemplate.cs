@@ -1005,7 +1005,6 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
-                        itemTemplate.InventoryType = ItemWOWInventoryType.TwoHand;
                     } break;
                 case 2: // 1 Hand Pierce => Dagger
                     {
@@ -1075,6 +1074,14 @@ namespace EQWOWConverter.Items
                     {
                         ItemWOWInventoryType inventoryType = GetInventoryTypeFromSlotMask(slotMask);
 
+                        // If it can equip in range, allow it to equip there
+                        if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ranged, slotMask))
+                        {
+                            itemTemplate.ClassID = 2;
+                            itemTemplate.SubClassID = 14;
+                            itemTemplate.InventoryType = ItemWOWInventoryType.Ranged;
+                        }
+
                         // If it can be equipped in hands, make it holdable
                         if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) ||
                            IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Secondary, slotMask))
@@ -1082,14 +1089,6 @@ namespace EQWOWConverter.Items
                             itemTemplate.ClassID = 2;
                             itemTemplate.SubClassID = 14;
                             itemTemplate.InventoryType = ItemWOWInventoryType.HeldInOffHand;
-                        }
-
-                        // If it can equip in range, allow it to equip there (as a wand)
-                        else if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ranged, slotMask))
-                        {
-                            itemTemplate.ClassID = 2;
-                            itemTemplate.SubClassID = 14;
-                            itemTemplate.InventoryType = ItemWOWInventoryType.Ranged;
                         }
 
                         // Test if it can be equipped, if so make it equippable
@@ -1377,6 +1376,10 @@ namespace EQWOWConverter.Items
                         itemTemplate.SubClassID = 0;
                     } break;
             }
+
+            // If a weapon type and allows ranged, put in that spot
+            if (itemTemplate.ClassID == 2 && IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ranged, slotMask))
+                itemTemplate.InventoryType = ItemWOWInventoryType.Ranged;
 
             CalculateAndSetSheatheType(ref itemTemplate);
         }
