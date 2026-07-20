@@ -48,6 +48,24 @@ namespace EQWOWConverter.Items
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByWOWEntryID = new SortedDictionary<int, ItemTemplate>();
         private static int CUR_ITEM_GENERATED_EQID = 50000;
         private static readonly object ItemLock = new object();
+
+        // Slotshifting items are wearable items in multiple slots (in EQ) that change to other slots on click
+        private static readonly List<(string ColumnName, ItemWOWInventoryType InventoryType)> SlotshiftSlotsByColumnName = new List<(string, ItemWOWInventoryType)>()
+        {
+            ("wowid_head", ItemWOWInventoryType.Head),
+            ("wowid_neck", ItemWOWInventoryType.Neck),
+            ("wowid_shoulder", ItemWOWInventoryType.Shoulder),
+            ("wowid_back", ItemWOWInventoryType.Back),
+            ("wowid_chest", ItemWOWInventoryType.Chest),
+            ("wowid_wrists", ItemWOWInventoryType.Wrists),
+            ("wowid_hands", ItemWOWInventoryType.Hands),
+            ("wowid_waist", ItemWOWInventoryType.Waist),
+            ("wowid_legs", ItemWOWInventoryType.Legs),
+            ("wowid_feet", ItemWOWInventoryType.Feet),
+            ("wowid_finger", ItemWOWInventoryType.Finger),
+            ("wowid_trinket", ItemWOWInventoryType.Trinket),
+            ("wowid_ranged", ItemWOWInventoryType.Ranged)
+        };
         
         public int EQItemID = 0;
         public int WOWEntryID = 0;
@@ -145,6 +163,10 @@ namespace EQWOWConverter.Items
         public BookText? BookTextReference = null;
         public Dictionary<ClassEQType, int> ClassSpecificItemVersionsByEQClassID = new Dictionary<ClassEQType, int>(); // Used for quests
         public int StarterVersionItemTemplateID = -1;
+        public Dictionary<ItemWOWInventoryType, int> SlotshiftWOWIDsBySlot = new Dictionary<ItemWOWInventoryType, int>();
+        public ItemTemplate? SlotshiftNextItemTemplate = null;
+        public bool IsSlotshiftVariant = false;
+        public int WOWSlotshiftSpellID = 0;
 
         public ItemTemplate()
         {
@@ -784,6 +806,154 @@ namespace EQWOWConverter.Items
             return false;
         }
 
+        private static bool IsSlotshiftWearableInInventoryType(int slotMask, ItemWOWInventoryType inventoryType)
+        {
+            switch (inventoryType)
+            {
+                case ItemWOWInventoryType.Head: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Head, slotMask) || IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Face, slotMask);
+                case ItemWOWInventoryType.Neck: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Neck, slotMask);
+                case ItemWOWInventoryType.Shoulder: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Shoulder, slotMask) || IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Arms, slotMask);
+                case ItemWOWInventoryType.Back: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Back, slotMask);
+                case ItemWOWInventoryType.Chest: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Chest, slotMask);
+                case ItemWOWInventoryType.Wrists: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Wrist1, slotMask) || IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Wrist2, slotMask);
+                case ItemWOWInventoryType.Hands: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Hands, slotMask);
+                case ItemWOWInventoryType.Waist: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Waist, slotMask);
+                case ItemWOWInventoryType.Legs: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Legs, slotMask);
+                case ItemWOWInventoryType.Feet: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Feet, slotMask);
+                case ItemWOWInventoryType.Finger: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ring1, slotMask) || IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ring2, slotMask);
+                case ItemWOWInventoryType.Trinket: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ear1, slotMask) || IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ear2, slotMask);
+                case ItemWOWInventoryType.Ranged: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ranged, slotMask);
+                default: return false;
+            }
+        }
+
+        private static List<ItemWOWInventoryType> GetSlotshiftTargetInventoryTypes(ItemTemplate itemTemplate)
+        {
+            List<ItemWOWInventoryType> targetInventoryTypes = new List<ItemWOWInventoryType>();
+
+            // Only items that converted into an armor, shield, ranged, held or hand-weapon slot can slotshift
+            ItemWOWInventoryType baseInventoryType = itemTemplate.InventoryType;
+            if (baseInventoryType == ItemWOWInventoryType.Robe)
+                baseInventoryType = ItemWOWInventoryType.Chest;
+            switch (baseInventoryType)
+            {
+                case ItemWOWInventoryType.Head:
+                case ItemWOWInventoryType.Neck:
+                case ItemWOWInventoryType.Shoulder:
+                case ItemWOWInventoryType.Back:
+                case ItemWOWInventoryType.Chest:
+                case ItemWOWInventoryType.Wrists:
+                case ItemWOWInventoryType.Hands:
+                case ItemWOWInventoryType.Waist:
+                case ItemWOWInventoryType.Legs:
+                case ItemWOWInventoryType.Feet:
+                case ItemWOWInventoryType.Finger:
+                case ItemWOWInventoryType.Trinket:
+                case ItemWOWInventoryType.Shield:
+                case ItemWOWInventoryType.Ranged:
+                case ItemWOWInventoryType.HeldInOffHand:
+                case ItemWOWInventoryType.OneHand:
+                case ItemWOWInventoryType.MainHand:
+                case ItemWOWInventoryType.OffHandWeapon:
+                case ItemWOWInventoryType.TwoHand: break;
+                default: return targetInventoryTypes;
+            }
+
+            foreach ((string columnName, ItemWOWInventoryType inventoryType) in SlotshiftSlotsByColumnName)
+            {
+                if (inventoryType == baseInventoryType)
+                    continue;
+                if (IsSlotshiftWearableInInventoryType(itemTemplate.EQSlotMask, inventoryType) == true)
+                    targetInventoryTypes.Add(inventoryType);
+            }
+            return targetInventoryTypes;
+        }
+
+        private static List<ItemTemplate> CreateSlotshiftVariantItems(ItemTemplate baseItemTemplate, int eqArmorClass, int eqStrength,
+            int eqAgility, int eqCharisma, int eqDexterity, int eqIntelligence, int eqStamina, int eqWisdom, int eqHp, int eqMana,
+            int eqResistPoison, int eqResistMagic, int eqResistDisease, int eqResistFire, int eqResistCold, int damage, int delay,
+            int qualityOverride)
+        {
+            List<ItemTemplate> variantItemTemplates = new List<ItemTemplate>();
+
+            // Items with a click effect can never slotshift, since a single click would fire both the click effect and the slotshift
+            if (baseItemTemplate.EQClickSpellEffectID > 0)
+                return variantItemTemplates;
+
+            // Stackable items can't slotshift since the shift consumes and creates exactly one item
+            if (baseItemTemplate.StackSize > 1)
+                return variantItemTemplates;
+
+            List<ItemWOWInventoryType> targetInventoryTypes = GetSlotshiftTargetInventoryTypes(baseItemTemplate);
+            if (targetInventoryTypes.Count == 0)
+                return variantItemTemplates;
+
+            // Slotshift item IDs are pre-assigned in ItemTemplates.csv and never generated at runtime, so fail the whole item if any are missing
+            foreach (ItemWOWInventoryType targetInventoryType in targetInventoryTypes)
+            {
+                if (baseItemTemplate.SlotshiftWOWIDsBySlot.ContainsKey(targetInventoryType) == false)
+                {
+                    Logger.WriteError("Item '", baseItemTemplate.Name, "' (wowid '", baseItemTemplate.WOWEntryID.ToString(),
+                        "') can be worn in multiple slots but has no ID in the 'wowid_", targetInventoryType.ToString().ToLower(),
+                        "' column of ItemTemplates.csv, so no slotshift versions will be made for it");
+                    return new List<ItemTemplate>();
+                }
+            }
+
+            // Create a version of the item for each of the other wearable slots
+            foreach (ItemWOWInventoryType targetInventoryType in targetInventoryTypes)
+            {
+                ItemTemplate variantItemTemplate = (ItemTemplate)baseItemTemplate.MemberwiseClone();
+                variantItemTemplate.WOWEntryID = baseItemTemplate.SlotshiftWOWIDsBySlot[targetInventoryType];
+                variantItemTemplate.EQItemID = CUR_ITEM_GENERATED_EQID;
+                CUR_ITEM_GENERATED_EQID++;
+                variantItemTemplate.IsSlotshiftVariant = true;
+                variantItemTemplate.ParentItemTemplate = baseItemTemplate;
+                variantItemTemplate.StarterVersionItemTemplateID = -1;
+                variantItemTemplate.InventoryType = targetInventoryType;
+                if (targetInventoryType == ItemWOWInventoryType.Ranged)
+                {
+                    // Rangeable non-weapons convert as misc weapons, matching other rangeable held items
+                    variantItemTemplate.ClassID = 2;
+                    variantItemTemplate.SubClassID = 14;
+                }
+                else
+                {
+                    variantItemTemplate.ClassID = 4;
+                    variantItemTemplate.SubClassID = Convert.ToInt32(GetArmorSubclass(baseItemTemplate.EQClassMask));
+                }
+
+                // Stats get re-baselined against the new slot's budget.  Weapon damage never carries over, since EQ's ranged and armor slots grant stats only (a weapon in the range slot can't attack with it)
+                variantItemTemplate.WeaponMinDamage = 0;
+                variantItemTemplate.WeaponMaxDamage = 0;
+                variantItemTemplate.WeaponDelay = 0;
+                variantItemTemplate.StatValues = new List<(ItemWOWStatType, int)>();
+                variantItemTemplate.AllowedClassTypesEQ = new List<ClassEQType>(baseItemTemplate.AllowedClassTypesEQ);
+                variantItemTemplate.Armor = 0;
+                variantItemTemplate.ArcaneResist = 0;
+                variantItemTemplate.ShadowResist = 0;
+                variantItemTemplate.FrostResist = 0;
+                variantItemTemplate.FireResist = 0;
+                variantItemTemplate.NatureResist = 0;
+                variantItemTemplate.Block = 0;
+                PopulateStats(ref variantItemTemplate, targetInventoryType, variantItemTemplate.ClassID, variantItemTemplate.SubClassID,
+                    baseItemTemplate.EQClassMask, eqArmorClass, eqStrength, eqAgility, eqCharisma, eqDexterity, eqIntelligence,
+                    eqStamina, eqWisdom, eqHp, eqMana, eqResistPoison, eqResistMagic, eqResistDisease, eqResistFire, eqResistCold,
+                    damage, delay, qualityOverride);
+                variantItemTemplate.Quality = baseItemTemplate.Quality; // Keep quality consistent across the ring
+                CalculateAndSetSheatheType(ref variantItemTemplate);
+                variantItemTemplates.Add(variantItemTemplate);
+            }
+
+            // Link the ring so each version's slotshift spell can point at the next one
+            List<ItemTemplate> slotshiftRingItemTemplates = new List<ItemTemplate>() { baseItemTemplate };
+            slotshiftRingItemTemplates.AddRange(variantItemTemplates);
+            for (int i = 0; i < slotshiftRingItemTemplates.Count; i++)
+                slotshiftRingItemTemplates[i].SlotshiftNextItemTemplate = slotshiftRingItemTemplates[(i + 1) % slotshiftRingItemTemplates.Count];
+
+            return variantItemTemplates;
+        }
+
         private static ItemWOWArmorSubclassType GetArmorSubclass(int classMask)
         {
             if (classMask == 0)
@@ -1377,10 +1547,6 @@ namespace EQWOWConverter.Items
                     } break;
             }
 
-            // If a weapon type and allows ranged, put in that spot
-            if (itemTemplate.ClassID == 2 && IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ranged, slotMask))
-                itemTemplate.InventoryType = ItemWOWInventoryType.Ranged;
-
             CalculateAndSetSheatheType(ref itemTemplate);
         }
 
@@ -1691,9 +1857,22 @@ namespace EQWOWConverter.Items
                 else
                     newItemTemplate.Quality = (ItemWOWQuality)qualityOverride;
 
+                // Slotshifting (items wearable in multiple slots become a ring of per-slot versions that swap on click)
+                foreach ((string slotshiftColumnName, ItemWOWInventoryType slotshiftInventoryType) in SlotshiftSlotsByColumnName)
+                {
+                    if (columns.ContainsKey(slotshiftColumnName) == false)
+                        continue;
+                    int slotshiftWOWID = int.Parse(columns[slotshiftColumnName]);
+                    if (slotshiftWOWID > 0)
+                        newItemTemplate.SlotshiftWOWIDsBySlot.Add(slotshiftInventoryType, slotshiftWOWID);
+                }
+                List<ItemTemplate> slotshiftVariantItems = CreateSlotshiftVariantItems(newItemTemplate, armorClass, strength, agility, charisma, dexterity, intelligence, stamina, 
+                    wisdom, hp, mana, resistPoison, resistMagic, resistDisease, resistFire, resistCold, damage, delay, qualityOverride);
+
                 progressionCounter.Write(1);
 
                 List<ItemTemplate> itemsToAdd = new List<ItemTemplate>();
+                itemsToAdd.AddRange(slotshiftVariantItems);
                 // Add additional items if clicky items need to be split out
                 if (Configuration.ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS == true && newItemTemplate.EQClickSpellEffectID > 0 &&
                     newItemTemplate.WOWClickEquipItemTemplateWOWID > 0 && newItemTemplate.WOWClickEssenceItemTemplateWOWID > 0)

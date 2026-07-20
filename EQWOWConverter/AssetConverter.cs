@@ -264,7 +264,7 @@ namespace EQWOWConverter
                 ClearNonPlayerObtainableItemsAndRecipes(ref tradeskillRecipes, ref itemTemplatesByWOWEntryID);
 
             // Assign item spell effects
-            AssignItemSpellEffects(ref itemTemplatesByWOWEntryID);
+            AssignItemSpellEffects(ref itemTemplatesByWOWEntryID, ref spellTemplates);
 
             // Quests Finish-up
             if (Configuration.GENERATE_QUESTS == true)
@@ -3608,7 +3608,7 @@ namespace EQWOWConverter
             FileTool.CopyDirectoryAndContents(sourceTextureFolder, targetTextureFolder, true, true, "*.blp");
         }
 
-        public void AssignItemSpellEffects(ref SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
+        public void AssignItemSpellEffects(ref SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID, ref List<SpellTemplate> spellTemplates)
         {
             Logger.WriteInfo("Assigning item spell effects...");
 
@@ -3818,6 +3818,58 @@ namespace EQWOWConverter
                     else
                         Logger.WriteError("Could not attach the key opening spell to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as both spell slots were already used");
                 }
+            }
+
+            // Create the slotshift spells, which swap a multi-slot item between its per-slot versions when clicked
+            foreach (ItemTemplate itemTemplate in itemTemplatesByWOWEntryID.Values)
+            {
+                if (itemTemplate.SlotshiftNextItemTemplate == null)
+                    continue;
+                ItemTemplate slotshiftNextItemTemplate = itemTemplate.SlotshiftNextItemTemplate;
+                if (itemTemplatesByWOWEntryID.ContainsKey(slotshiftNextItemTemplate.WOWEntryID) == false)
+                {
+                    Logger.WriteError("Could not create the slotshift spell for item '", itemTemplate.Name, "' (wowid '", itemTemplate.WOWEntryID.ToString(),
+                        "') since the next item in its slotshift ring (wowid '", slotshiftNextItemTemplate.WOWEntryID.ToString(), "') was removed");
+                    continue;
+                }
+
+                SpellTemplate slotshiftSpellTemplate = new SpellTemplate();
+                slotshiftSpellTemplate.Name = "Slotshift";
+                slotshiftSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "slotshift", itemTemplate.WOWEntryID.ToString());
+                slotshiftSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                slotshiftSpellTemplate.Description = string.Concat("Reforms this item so it can be worn in the ", GetSlotshiftSlotName(slotshiftNextItemTemplate.InventoryType), " slot.");
+                slotshiftSpellTemplate.SchoolMask = 1; // "Normal"
+                slotshiftSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(itemTemplate.IconID);
+                slotshiftSpellTemplate.AllowCastInCombat = false;
+                SpellEffectWOW slotshiftCreateItemEffect = new SpellEffectWOW(SpellWOWEffectType.CreateItem, SpellWOWAuraType.None, 0, Convert.ToUInt32(slotshiftNextItemTemplate.WOWEntryID), 1, 0, 0, 0);
+                slotshiftCreateItemEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                slotshiftSpellTemplate.WOWSpellEffects.Add(slotshiftCreateItemEffect);
+                spellTemplates.Add(slotshiftSpellTemplate);
+                itemTemplate.WOWSlotshiftSpellID = slotshiftSpellTemplate.WOWSpellID;
+            }
+        }
+
+        private static string GetSlotshiftSlotName(ItemWOWInventoryType inventoryType)
+        {
+            switch (inventoryType)
+            {
+                case ItemWOWInventoryType.Head: return "head";
+                case ItemWOWInventoryType.Neck: return "neck";
+                case ItemWOWInventoryType.Shoulder: return "shoulder";
+                case ItemWOWInventoryType.Back: return "back";
+                case ItemWOWInventoryType.Chest: return "chest";
+                case ItemWOWInventoryType.Robe: return "chest";
+                case ItemWOWInventoryType.Wrists: return "wrist";
+                case ItemWOWInventoryType.Hands: return "hands";
+                case ItemWOWInventoryType.Waist: return "waist";
+                case ItemWOWInventoryType.Legs: return "legs";
+                case ItemWOWInventoryType.Feet: return "feet";
+                case ItemWOWInventoryType.Finger: return "finger";
+                case ItemWOWInventoryType.Trinket: return "trinket";
+                case ItemWOWInventoryType.Shield: return "off hand (as a shield)";
+                case ItemWOWInventoryType.Ranged: return "ranged";
+                case ItemWOWInventoryType.HeldInOffHand: return "off hand (as a held item)";
+                default: return inventoryType.ToString().ToLower();
             }
         }
 

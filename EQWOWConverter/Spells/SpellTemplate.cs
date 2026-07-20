@@ -261,6 +261,7 @@ namespace EQWOWConverter.Spells
             }
         }
         public List<List<SpellEffectBlock>> ItemWornSpellEffectBlockSets = new List<List<SpellEffectBlock>>();
+        private HashSet<int> GeneratedWornSpellVariantIDs = new HashSet<int>();
         private List<SpellEffectBlock> _GroupedGoodProcSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedGoodProcSpellEffectBlocksForOutput
         {
@@ -3540,6 +3541,11 @@ namespace EQWOWConverter.Spells
                 Logger.WriteError("GenerateWornSpellVariant called with an invalid primary worn spell ID for spell eq id ", EQSpellID.ToString());
                 return 0;
             }
+
+            // Items sharing a worn spell ID (slotshift rings) only generate the worn blocks once
+            if (GeneratedWornSpellVariantIDs.Contains(primaryWornWOWSpellID) == true)
+                return primaryWornWOWSpellID;
+            GeneratedWornSpellVariantIDs.Add(primaryWornWOWSpellID);
 
             // Ensure the base blocks are generated before cloning from them
             List<SpellEffectBlock> baseBlocks = GroupedBaseSpellEffectBlocksForOutput;
