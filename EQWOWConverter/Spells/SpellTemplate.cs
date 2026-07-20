@@ -2704,7 +2704,7 @@ namespace EQWOWConverter.Spells
                                     orientation = MathF.PI;
                                 else
                                 {
-                                    float orientationInDegrees = (eqEffect.EQTeleHeading / 512) * 360;
+                                    float orientationInDegrees = (eqEffect.EQTeleHeading / 512.0f) * 360.0f;
                                     float orientationInRadians = orientationInDegrees * MathF.PI / 180.0f;
                                     orientation = orientationInRadians + MathF.PI;
                                 }
@@ -2758,7 +2758,7 @@ namespace EQWOWConverter.Spells
                                         orientation = MathF.PI;
                                     else
                                     {
-                                        float orientationInDegrees = (eqEffect.EQTeleHeading / 512) * 360;
+                                        float orientationInDegrees = (eqEffect.EQTeleHeading / 512.0f) * 360.0f;
                                         float orientationInRadians = orientationInDegrees * MathF.PI / 180.0f;
                                         orientation = orientationInRadians + MathF.PI;
                                     }
