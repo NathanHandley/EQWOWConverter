@@ -164,7 +164,6 @@ namespace EQWOWConverter.Zones
         public int RaidLevel = 0;
         public int RaidPlayerSize = 0;
         public int RaidDurationInSeconds = 0;
-        public bool AlwaysZoomOutMapToNorrathMap = false;
         public float SocialAgroMod = 1f;
         public bool DisableObjectsInMapGenMode = false;
 
@@ -1102,7 +1101,6 @@ namespace EQWOWConverter.Zones
                     zoneProperties.RaidPlayerSize = int.Parse(propertiesRow["RaidPlayerSize60"]);
                     zoneProperties.RaidDurationInSeconds = int.Parse(propertiesRow["RaidDurInSec60"]);
                 }
-                zoneProperties.AlwaysZoomOutMapToNorrathMap = propertiesRow["AlwaysZoomOutToNorrathMap"].Trim() == "1" ? true : false;
                 zoneProperties.DisableObjectsInMapGenMode = propertiesRow["DisableObjectsInMapGenMode"].Trim() == "1" ? true : false;
 
                 // Creature properties

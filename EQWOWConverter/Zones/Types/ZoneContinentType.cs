@@ -23,7 +23,6 @@ namespace EQWOWConverter.Zones
         Odus = 1,
         Faydwer = 2,
         Kunark = 3,
-        Velious = 4,
-        Development = 5
+        Velious = 4
     }
 }

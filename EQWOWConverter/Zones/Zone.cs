@@ -1028,7 +1028,6 @@ namespace EQWOWConverter.Zones
             {
                 case ZoneContinentType.Antonica:
                 case ZoneContinentType.Faydwer:
-                case ZoneContinentType.Development:
                 case ZoneContinentType.Odus:
                     {
                         LoadingScreenID = Configuration.DBCID_LOADINGSCREEN_ID_START;
