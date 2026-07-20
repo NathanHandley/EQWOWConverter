@@ -3841,6 +3841,7 @@ namespace EQWOWConverter
                 slotshiftSpellTemplate.SchoolMask = 1; // "Normal"
                 slotshiftSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(itemTemplate.IconID);
                 slotshiftSpellTemplate.AllowCastInCombat = false;
+                slotshiftSpellTemplate.SpellVisualID1 = Convert.ToUInt32(ItemTemplate.SlotshiftSpellVisualID);
                 SpellEffectWOW slotshiftCreateItemEffect = new SpellEffectWOW(SpellWOWEffectType.CreateItem, SpellWOWAuraType.None, 0, Convert.ToUInt32(slotshiftNextItemTemplate.WOWEntryID), 1, 0, 0, 0);
                 slotshiftCreateItemEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
                 slotshiftSpellTemplate.WOWSpellEffects.Add(slotshiftCreateItemEffect);

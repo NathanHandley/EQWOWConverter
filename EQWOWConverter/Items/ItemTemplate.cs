@@ -66,6 +66,34 @@ namespace EQWOWConverter.Items
             ("wowid_trinket", ItemWOWInventoryType.Trinket),
             ("wowid_ranged", ItemWOWInventoryType.Ranged)
         };
+
+        // Sound-only spell visual shared by all slotshift spells
+        private static int _SlotshiftSpellVisualID = -1;
+        public static int SlotshiftSpellVisualID
+        {
+            get
+            {
+                lock (ItemLock)
+                {
+                    if (_SlotshiftSpellVisualID == -1)
+                        _SlotshiftSpellVisualID = IDGenerationTool.GenerateID("SpellVisualID", "Slotshift");
+                    return _SlotshiftSpellVisualID;
+                }
+            }
+        }
+        private static int _SlotshiftSpellVisualKitID = -1;
+        public static int SlotshiftSpellVisualKitID
+        {
+            get
+            {
+                lock (ItemLock)
+                {
+                    if (_SlotshiftSpellVisualKitID == -1)
+                        _SlotshiftSpellVisualKitID = IDGenerationTool.GenerateID("SpellVisualKitID", "Slotshift");
+                    return _SlotshiftSpellVisualKitID;
+                }
+            }
+        }
         
         public int EQItemID = 0;
         public int WOWEntryID = 0;

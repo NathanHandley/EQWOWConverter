@@ -1101,6 +1101,9 @@ namespace EQWOWConverter
         // ID for sounds found in SoundEntries.dbc
         public static int DBCID_SOUNDENTRIES_ID_START = 22000;
 
+        // ID of the existing client sound played when a slotshift spell is used ("JewelcraftingFinalize", the socket gems sound)
+        public static int DBCID_SOUNDENTRIES_SLOTSHIFT_SOUND_ID = 10590;
+
         // ID for sounds found in SoundAmbience.dbc
         public static int DBCID_SOUNDAMBIENCE_ID_START = 600;
 
