@@ -3433,6 +3433,9 @@ namespace EQWOWConverter.Spells
                 descriptionSB.Append(" May break on direct damage.");
             if (spellTemplate.IsNegateIfCombat == true)
                 descriptionSB.Append(" Breaks if you cast a spell or attack.");
+            int minimumTargetLevel = spellTemplate.GetMinimumTargetLevel();
+            if (minimumTargetLevel > 0)
+                descriptionSB.Append(string.Concat(" Only works on players level ", minimumTargetLevel.ToString(), " or greater."));
 
             // Capitalize Norrath
             descriptionSB.Replace("norrath", "Norrath");
