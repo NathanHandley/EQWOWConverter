@@ -510,8 +510,7 @@ namespace EQWOWConverter.Items
                     itemTemplate.StatValues.Add((ItemWOWStatType.Stamina, wowStamina));
             }
 
-            // Spell Power
-            // Note: Only applies to equipment usable by caster classes
+            // Caster item specific stats
             if (classMask >= 32767 ||
                 IsPackedClassMask(ClassEQType.Cleric, classMask) ||
                 IsPackedClassMask(ClassEQType.Paladin, classMask) ||
@@ -524,6 +523,7 @@ namespace EQWOWConverter.Items
             {
                 ItemWOWWeaponSubclassType subClass = (ItemWOWWeaponSubclassType)subClassID;
 
+                // Spell Power
                 // Weapons
                 if (classID == 2)
                 {
@@ -540,7 +540,6 @@ namespace EQWOWConverter.Items
                             itemTemplate.StatValues.Add((ItemWOWStatType.SpellPower, Convert.ToInt32(spellPower)));
                     }
                 }
-
                 // Armor
                 else
                 {
@@ -552,20 +551,47 @@ namespace EQWOWConverter.Items
                         itemTemplate.StatValues.Add((ItemWOWStatType.SpellPower, Convert.ToInt32(spellPower)));
                     }
                 }
+
+                // If there is WIS but no INT, grant some INT (comes last to avoid it having influence on derived stats)
+                if (eqWisdom > 0 && eqIntelligence == 0)
+                {
+                    int halfWisdom = (int)((double)(eqWisdom) * 0.5);
+                    itemTemplate.StatValues.Add((ItemWOWStatType.Intellect, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Int", halfWisdom))));
+                }
+            }
+
+            // Melee specific stats
+            if (classMask >= 32767 ||
+                IsPackedClassMask(ClassEQType.Bard, classMask) ||
+                IsPackedClassMask(ClassEQType.Monk, classMask) ||
+                IsPackedClassMask(ClassEQType.Ranger, classMask) ||
+                IsPackedClassMask(ClassEQType.Rogue, classMask) ||
+                IsPackedClassMask(ClassEQType.Paladin, classMask) ||
+                IsPackedClassMask(ClassEQType.ShadowKnight, classMask) ||
+                IsPackedClassMask(ClassEQType.Warrior, classMask))
+            {
+                // Expertise uses the lowest of agl and dex when both are there
+                if (eqAgility > 0 && eqDexterity > 0)
+                {
+                    int lowestAglVsDex = Math.Min(eqAgility, eqDexterity);
+                    int calculatedExpertise = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "ExpertiseRating", lowestAglVsDex));
+                    if (calculatedExpertise > 0)
+                        itemTemplate.StatValues.Add((ItemWOWStatType.ExpertiseRating, Convert.ToInt32(calculatedExpertise)));
+                }
+
+                // Block Value
+                // Note: Using AC as the scale for shield since there's no other anchor
+                if (classID == 4 && subClassID == 6) // Shields only
+                    itemTemplate.Block = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "BlockValue", eqArmorClass));
             }
 
             // HP
             if (eqHp != 0)
-                itemTemplate.StatValues.Add((ItemWOWStatType.Health, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Hp", eqHp))));
+            itemTemplate.StatValues.Add((ItemWOWStatType.Health, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Hp", eqHp))));
 
             // Mana
             if (eqMana != 0)
                 itemTemplate.StatValues.Add((ItemWOWStatType.Mana, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Mp", eqMana))));
-
-            // Block Value
-            // Note: Using AC as the scale for shield since there's no other anchor
-            if (classID == 4 && subClassID == 6) // Shields only
-                itemTemplate.Block = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "BlockValue", eqArmorClass));
 
             // Resist Arcane
             // Note: Magic resist is being mapped to Arcane
@@ -590,13 +616,15 @@ namespace EQWOWConverter.Items
             if (eqResistCold != 0)
                 itemTemplate.FrostResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Res", eqResistCold));
 
-            // Expertise uses the lowest of agl and dex when both are there
-            if (eqAgility > 0 && eqDexterity > 0)
+            // (AGI or DEX) + (INT or WIS) = Crit (amount based on INT or WIS)
+            if ((eqAgility > 0 || eqDexterity > 0) && (eqWisdom > 0 || eqIntelligence > 0))
             {
-                int lowestAglVsDex = Math.Min(eqAgility, eqDexterity);
-                int calculatedExpertise = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "ExpertiseRating", lowestAglVsDex));
-                if (calculatedExpertise > 0)
-                    itemTemplate.StatValues.Add((ItemWOWStatType.ExpertiseRating, Convert.ToInt32(calculatedExpertise)));
+                // Skip "all stats" items to avoid too much crit going around
+                if (eqAgility == 0 || eqDexterity == 0 || eqWisdom == 0 || eqIntelligence == 0 || eqCharisma == 0)
+                {
+                    int higherBetweenIntWis = Math.Max(eqWisdom, eqIntelligence);
+                    itemTemplate.StatValues.Add((ItemWOWStatType.CritRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "CritRating", higherBetweenIntWis))));
+                }
             }
         }
 
