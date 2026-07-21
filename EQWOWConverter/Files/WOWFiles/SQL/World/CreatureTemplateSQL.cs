@@ -165,7 +165,14 @@ namespace EQWOWConverter.WOWFiles
             if (creatureTemplate.IsPet == true)
                 newRow.AddInt("type", 3); // Note: If the pet isn't a demon, the name won't generate randomly (for random name types).  If undead the name will be random, but will not heed if resummoned.
             else
-                newRow.AddInt("type", creatureTemplate.Race.WOWCreatureType); // 0: None, 1: Beast, 2: Dragonkin, 3: Demon, 4: Elemental, 5: Giant, 6: Undead, 7: Humanoid, 8: Critter, 9: Mechanical, 10: Non-Specified, 11: Totem, 12: Non-Combat Pet, 13: Gas Cloud
+            {
+                // 0: None, 1: Beast, 2: Dragonkin, 3: Demon, 4: Elemental, 5: Giant, 6: Undead, 7: Humanoid, 8: Critter, 9: Mechanical, 10: Non-Specified, 11: Totem, 12: Non-Combat Pet, 13: Gas Cloud
+                // Special logic for froglok ghouls that are actually live plate ones
+                if (creatureTemplate.Race.ID == 27 && creatureTemplate.TextureID == 0) // Froglok Ghoul race, but 'plate' armor texture
+                    newRow.AddInt("type", 7);
+                else
+                    newRow.AddInt("type", creatureTemplate.Race.WOWCreatureType); 
+            }   
             newRow.AddInt("type_flags", typeFlags); // "Is this minable, tameable, etc"
             newRow.AddInt("lootid", creatureTemplate.WOWLootID);
             newRow.AddInt("pickpocketloot", 0);
