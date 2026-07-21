@@ -2349,6 +2349,8 @@ namespace EQWOWConverter
                 bashSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
                 bashSpellTemplate.EquippedItemClass = 4; // ITEM_CLASS_ARMOR
                 bashSpellTemplate.EquippedItemSubClassMask = 1 << 6; // ITEM_SUBCLASS_ARMOR_SHIELD (to require shields) - Look into making this work for Fiery Defender/Avenger
+                bashSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellTemplate.BashSpellVisualID);
+                SpellVisual.GetOrCreateSoundDBCID("bashshld");
                 SpellEffectWOW bashDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_BASH_BASE_DAMAGE, 0, 0);
                 bashDamageEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_BASH_DAMAGE_PER_LEVEL;
                 bashDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
@@ -2428,6 +2430,9 @@ namespace EQWOWConverter
                 slamSpellTemplate.AuraDuration.SetFixedDuration(Configuration.COMBATSKILL_SLAM_STUN_DURATION_IN_MS);
                 slamSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
                 slamSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
+                slamSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellTemplate.SlamSpellVisualID);
+                SpellVisual.GetOrCreateSoundDBCID("swing");
+                SpellVisual.GetOrCreateSoundDBCID("punchhit");
                 SpellEffectWOW slamDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_SLAM_BASE_DAMAGE, 0, 0);
                 slamDamageEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_SLAM_DAMAGE_PER_LEVEL;
                 slamDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;

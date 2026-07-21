@@ -354,6 +354,11 @@ namespace EQWOWConverter.ObjectModels
                         returnTypes.Add(EQAnimationType.c07ShieldBash);
                     }
                     break;
+                case AnimationType.ShieldBash:
+                    {
+                        returnTypes.Add(EQAnimationType.c07ShieldBash);
+                    }
+                    break;
                 case AnimationType.ReadyUnarmed:
                     {
                         returnTypes.Add(EQAnimationType.p01StandPassive);

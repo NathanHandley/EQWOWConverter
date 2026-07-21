@@ -186,6 +186,14 @@ namespace EQWOWConverter.Spells
                 return 0;
             string soundFileNameNoExt = GetSoundFileNameNoExtFromSoundID(effectSoundID);
             if (soundFileNameNoExt != string.Empty)
+                return GetOrCreateSoundDBCID(soundFileNameNoExt);
+            else
+                return 0;
+        }
+
+        public static int GetOrCreateSoundDBCID(string soundFileNameNoExt)
+        {
+            lock (SpellVisualLock)
             {
                 if (SoundsByFileNameNoExt.ContainsKey(soundFileNameNoExt) == false)
                 {
@@ -195,8 +203,6 @@ namespace EQWOWConverter.Spells
                 }
                 return SoundsByFileNameNoExt[soundFileNameNoExt].DBCID;
             }
-            else
-                return 0;
         }
 
         private ObjectModel? GetObjectModelInStageAtAttachLocation(SpellVisualStageType stage, SpellEmitterModelAttachLocationType attachLocation)

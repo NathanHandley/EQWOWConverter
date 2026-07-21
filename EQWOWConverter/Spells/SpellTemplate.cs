@@ -66,6 +66,74 @@ namespace EQWOWConverter.Spells
         private static readonly object SpellEQIDLock = new object();
         private static int CUR_GENERATED_EQ_SPELL_ID = 5000;
 
+        // Shield-bash animation spell visuals for the Bash and Slam combat skills (Bash's kit also carries the bash sound)
+        // TODO: Consider doing this better
+        private static int _BashSpellVisualID = -1;
+        public static int BashSpellVisualID
+        {
+            get
+            {
+                lock (SpellTemplateLock)
+                {
+                    if (_BashSpellVisualID == -1)
+                        _BashSpellVisualID = IDGenerationTool.GenerateID("SpellVisualID", "CombatSkillBash");
+                    return _BashSpellVisualID;
+                }
+            }
+        }
+        private static int _BashSpellVisualKitID = -1;
+        public static int BashSpellVisualKitID
+        {
+            get
+            {
+                lock (SpellTemplateLock)
+                {
+                    if (_BashSpellVisualKitID == -1)
+                        _BashSpellVisualKitID = IDGenerationTool.GenerateID("SpellVisualKitID", "CombatSkillBash");
+                    return _BashSpellVisualKitID;
+                }
+            }
+        }
+        private static int _SlamSpellVisualID = -1;
+        public static int SlamSpellVisualID
+        {
+            get
+            {
+                lock (SpellTemplateLock)
+                {
+                    if (_SlamSpellVisualID == -1)
+                        _SlamSpellVisualID = IDGenerationTool.GenerateID("SpellVisualID", "CombatSkillSlam");
+                    return _SlamSpellVisualID;
+                }
+            }
+        }
+        private static int _SlamSpellVisualKitID = -1;
+        public static int SlamSpellVisualKitID
+        {
+            get
+            {
+                lock (SpellTemplateLock)
+                {
+                    if (_SlamSpellVisualKitID == -1)
+                        _SlamSpellVisualKitID = IDGenerationTool.GenerateID("SpellVisualKitID", "CombatSkillSlam");
+                    return _SlamSpellVisualKitID;
+                }
+            }
+        }
+        private static int _SlamImpactSpellVisualKitID = -1;
+        public static int SlamImpactSpellVisualKitID
+        {
+            get
+            {
+                lock (SpellTemplateLock)
+                {
+                    if (_SlamImpactSpellVisualKitID == -1)
+                        _SlamImpactSpellVisualKitID = IDGenerationTool.GenerateID("SpellVisualKitID", "CombatSkillSlamImpact");
+                    return _SlamImpactSpellVisualKitID;
+                }
+            }
+        }
+
         public class Reagent
         {
             public int WOWItemTemplateEntryID;

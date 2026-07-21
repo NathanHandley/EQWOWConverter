@@ -1383,6 +1383,7 @@ namespace EQWOWConverter.ObjectModels
                     FindAndSetAnimationForType(AnimationType.Parry2H);
                     FindAndSetAnimationForType(AnimationType.Parry2HL);
                     FindAndSetAnimationForType(AnimationType.ShieldBlock);
+                    FindAndSetAnimationForType(AnimationType.ShieldBash);
                     FindAndSetAnimationForType(AnimationType.KneelStart);
                     FindAndSetAnimationForType(AnimationType.KneelEnd);
                     FindAndSetAnimationForType(AnimationType.Loot);

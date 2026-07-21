@@ -575,6 +575,19 @@ namespace EQWOWConverter
             spellVisualDBC.AddRow(ItemTemplate.SlotshiftSpellVisualID, 0, ItemTemplate.SlotshiftSpellVisualKitID, 0, 0);
             spellVisualKitDBC.AddRow(ItemTemplate.SlotshiftSpellVisualKitID, -1, Configuration.DBCID_SOUNDENTRIES_SLOTSHIFT_SOUND_ID, 0, 0, 0, 0);
 
+            // Shield-bash animation visuals for the Bash and Slam combat skills
+            if (Configuration.COMBATSKILL_BASH_ENABLED == true)
+            {
+                spellVisualDBC.AddRow(SpellTemplate.BashSpellVisualID, 0, SpellTemplate.BashSpellVisualKitID, 0, 0);
+                spellVisualKitDBC.AddRow(SpellTemplate.BashSpellVisualKitID, Convert.ToInt32(AnimationType.ShieldBash), SpellVisual.GetOrCreateSoundDBCID("bashshld"), 0, 0, 0, 0);
+            }
+            if (Configuration.COMBATSKILL_SLAM_ENABLED == true)
+            {
+                spellVisualDBC.AddRow(SpellTemplate.SlamSpellVisualID, 0, SpellTemplate.SlamSpellVisualKitID, SpellTemplate.SlamImpactSpellVisualKitID, 0);
+                spellVisualKitDBC.AddRow(SpellTemplate.SlamSpellVisualKitID, Convert.ToInt32(AnimationType.ShieldBash), SpellVisual.GetOrCreateSoundDBCID("swing"), 0, 0, 0, 0);
+                spellVisualKitDBC.AddRow(SpellTemplate.SlamImpactSpellVisualKitID, -1, SpellVisual.GetOrCreateSoundDBCID("punchhit"), 0, 0, 0, 0);
+            }
+
             // SkillLine
             Dictionary<SpellEQSkillCategory, int> skillLineIDsBySkillCategory = SkillLineDBC.GetAllSkillLineIDsBySkillCategory();
             foreach (var skillLineIDBySkillCategory in skillLineIDsBySkillCategory)
