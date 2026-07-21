@@ -2343,6 +2343,7 @@ namespace EQWOWConverter
                 bashSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)
                 bashSpellTemplate.TriggersGlobalCooldown = false;
                 bashSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                bashSpellTemplate.InitiatesAutoAttack = true;
                 bashSpellTemplate.AuraDuration = new SpellDuration();
                 bashSpellTemplate.AuraDuration.SetFixedDuration(Configuration.COMBATSKILL_BASH_STUN_DURATION_IN_MS);
                 bashSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
@@ -2426,6 +2427,7 @@ namespace EQWOWConverter
                 slamSpellTemplate.AllowInShapeshift = true;
                 slamSpellTemplate.TriggersGlobalCooldown = false;
                 slamSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                slamSpellTemplate.InitiatesAutoAttack = true;
                 slamSpellTemplate.AuraDuration = new SpellDuration();
                 slamSpellTemplate.AuraDuration.SetFixedDuration(Configuration.COMBATSKILL_SLAM_STUN_DURATION_IN_MS);
                 slamSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;

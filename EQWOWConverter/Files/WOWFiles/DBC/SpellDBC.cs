@@ -273,7 +273,9 @@ namespace EQWOWConverter.WOWFiles
             }
             if (spellTemplate.GenerateNoThreat == true)
                 attributeFlags |= 1024; // SPELL_ATTR1_NO_THREAT (0x00000400)
-                
+            if (spellTemplate.InitiatesAutoAttack == true)
+                attributeFlags |= 512; // SPELL_ATTR1_INITIATE_COMBAT (0x00000200)
+
             return attributeFlags;
         }
 

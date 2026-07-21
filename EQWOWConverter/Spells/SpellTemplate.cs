@@ -265,6 +265,7 @@ namespace EQWOWConverter.Spells
         public bool HideCaster = false;
         public bool TriggersGlobalCooldown = true;
         public bool DoNotInterruptAutoActionsAndSwingTimers = false;
+        public bool InitiatesAutoAttack = false;
         public bool IsModelSizeChangeSpell = false;
         public bool IsChanneled = false;
         public bool ForceAsDebuff = false;
