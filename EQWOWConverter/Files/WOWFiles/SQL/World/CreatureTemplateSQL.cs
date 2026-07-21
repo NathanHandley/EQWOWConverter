@@ -169,7 +169,9 @@ namespace EQWOWConverter.WOWFiles
                 // 0: None, 1: Beast, 2: Dragonkin, 3: Demon, 4: Elemental, 5: Giant, 6: Undead, 7: Humanoid, 8: Critter, 9: Mechanical, 10: Non-Specified, 11: Totem, 12: Non-Combat Pet, 13: Gas Cloud
                 if (creatureTemplate.Race.ID == 27 && creatureTemplate.TextureID == 0) // Froglok Ghoul race, but non-undead
                     newRow.AddInt("type", 7);
-                else if (creatureTemplate.Race.ID == 39 && creatureTemplate.TextureID == 3) // Undead ghouls with undead graphics
+                else if (creatureTemplate.Race.ID == 39 && creatureTemplate.TextureID == 3) // Undead gnolls with undead graphics
+                    newRow.AddInt("type", 6);
+                else if (creatureTemplate.Race.ID == 41 && creatureTemplate.TextureID == 1) // Undead gorilla with undead graphics
                     newRow.AddInt("type", 6);
                 else
                     newRow.AddInt("type", creatureTemplate.Race.WOWCreatureType); 
