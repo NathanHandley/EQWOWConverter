@@ -311,6 +311,13 @@ namespace EQWOWConverter
                     Directory.Delete(targetItemTooltipsAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceItemTooltipsAddOnFolder, targetItemTooltipsAddOnFolder, true, true);
 
+                // Copy the character stats addon into the prep location
+                string sourceCharacterStatsAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_CharacterStats");
+                string targetCharacterStatsAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_CharacterStats");
+                if (Directory.Exists(targetCharacterStatsAddOnFolder) == true)
+                    Directory.Delete(targetCharacterStatsAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceCharacterStatsAddOnFolder, targetCharacterStatsAddOnFolder, true, true);
+
                 // Create or update the MPQs
                 CreateOrUpdateMainPatchMPQ();
                 if (Configuration.GENERATE_WORLDMAPS == true)
@@ -3646,6 +3653,11 @@ namespace EQWOWConverter
                 if (Directory.Exists(targetItemToolTipAddOnFolder) == true)
                     Directory.Delete(targetItemToolTipAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceItemToolTipAddOnFolder, targetItemToolTipAddOnFolder, true, true);
+                string sourceCharacterStatsAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_CharacterStats");
+                string targetCharacterStatsAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_CharacterStats");
+                if (Directory.Exists(targetCharacterStatsAddOnFolder) == true)
+                    Directory.Delete(targetCharacterStatsAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceCharacterStatsAddOnFolder, targetCharacterStatsAddOnFolder, true, true);
             }
 
             Logger.WriteDebug("Deploying to client complete");

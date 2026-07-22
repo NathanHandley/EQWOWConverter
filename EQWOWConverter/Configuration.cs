@@ -220,6 +220,9 @@ namespace EQWOWConverter
         // Warning: This should only be done if you plan to use EQ start locations, otherwise you'll just be 'stuck' as a level 1 in a hard area
         public static bool PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES = false;
 
+        // Warrior, Rogue, and DeathKnight are missing spell stat data, and this is the donor class ID to fill it with
+        public static int PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID = 9;
+
         //=====================================================================
         // Zone General
         //=====================================================================
@@ -1436,6 +1439,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES, "", false);
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES, "");
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES, "");
+            OutputTextLineToConfig("# If true, the per-class stat game tables (gtChanceToSpellCrit and related) have their zeroed-out class rows (Warrior, Rogue, DeathKnight)");
+            OutputVariableToConfig("PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID", PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID, "Warrior, Rogue, and DeathKnight are missing spell stat data, and this is the donor class ID to fill it with");
             OutputVariableToConfig("DUNGEON_FINDER_ENABLED", DUNGEON_FINDER_ENABLED, "If true, dungeon finder can be used for special versions of EQ dungeons");
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED", ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED, "If true, a feat of strength achievement is awarded to characters on accounts created before ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_NAME", ACHIEVEMENT_LEGACY_ACCOUNT_NAME, "", false);
@@ -1931,6 +1936,7 @@ namespace EQWOWConverter
             PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES);
             PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES);
             PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES = ReadVariableFromConfigString("PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES", configValuesByVariableName, PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES);
+            PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID = ReadVariableFromConfigString("PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID", configValuesByVariableName, PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID);
 
             ZONE_SHOW_STATIC_GEOMETRY = ReadVariableFromConfigString("ZONE_SHOW_STATIC_GEOMETRY", configValuesByVariableName, ZONE_SHOW_STATIC_GEOMETRY);
             ZONE_MAX_FACES_PER_WMOGROUP = ReadVariableFromConfigString("ZONE_MAX_FACES_PER_WMOGROUP", configValuesByVariableName, ZONE_MAX_FACES_PER_WMOGROUP);

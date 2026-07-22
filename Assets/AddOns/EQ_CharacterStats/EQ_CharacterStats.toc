@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: EQ Character Stats
+## Notes: Shows mana regen and mana/spell crit stat tooltips on the character sheet for classes whose native power is not mana (Warrior, Rogue, Death Knight)
+## Version: 1.0
+
+EQ_CharacterStats.lua

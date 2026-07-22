@@ -43,6 +43,9 @@ namespace EQWOWConverter
         private FactionTemplateDBC factionTemplateDBC = new FactionTemplateDBC();
         private FootstepTerrainLookupDBC footstepTerrainLookupDBC = new FootstepTerrainLookupDBC();
         private GameObjectDisplayInfoDBC gameObjectDisplayInfoDBC = new GameObjectDisplayInfoDBC();
+        private GameTableDBC gtSpellCritBaseDBC = new GameTableDBC();
+        private GameTableDBC gtSpellCritDBC = new GameTableDBC();
+        private GameTableDBC gtOCTRegenMPDBC = new GameTableDBC();
         private ItemDBC itemDBC = new ItemDBC();
         private ItemDisplayInfoDBC itemDisplayInfoDBC = new ItemDisplayInfoDBC();
         private LFGDungeonGroupDBC lfgDungeonGroupDBC = new LFGDungeonGroupDBC();
@@ -211,6 +214,9 @@ namespace EQWOWConverter
             factionTemplateDBC.LoadFromDisk(dbcInputFolder, "FactionTemplate.dbc");
             footstepTerrainLookupDBC.LoadFromDisk(dbcInputFolder, "FootstepTerrainLookup.dbc");
             gameObjectDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "GameObjectDisplayInfo.dbc");
+            gtSpellCritBaseDBC.LoadFromDisk(dbcInputFolder, "gtChanceToSpellCritBase.dbc");
+            gtSpellCritDBC.LoadFromDisk(dbcInputFolder, "gtChanceToSpellCrit.dbc");
+            gtOCTRegenMPDBC.LoadFromDisk(dbcInputFolder, "gtOCTRegenMP.dbc");
             itemDBC.LoadFromDisk(dbcInputFolder, "Item.dbc");
             itemDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "ItemDisplayInfo.dbc");
             lfgDungeonGroupDBC.LoadFromDisk(dbcInputFolder, "LFGDungeonGroup.dbc");
@@ -494,6 +500,17 @@ namespace EQWOWConverter
                     int mapID = zonePropertiesByShortName[graveyard.LocationShortName].DBCMapID;
                     worldSafeLocsDBC.AddRow(graveyard, mapID);
                 }
+            }
+
+            // Game tables (per-class stat scaling, the stock game tables have all-zero rows for Warrior, Rogue and DeathKnight)
+            int donorClassID = Configuration.PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID;
+            List<int> zeroedClassIDs = new List<int>() { 1, 4, 6 }; // Warrior, Rogue, DeathKnight
+
+            foreach (int zeroedClassID in zeroedClassIDs)
+            {
+                gtSpellCritBaseDBC.CopyClassRows(donorClassID, zeroedClassID, 1);
+                gtSpellCritDBC.CopyClassRows(donorClassID, zeroedClassID, 100);
+                gtOCTRegenMPDBC.CopyClassRows(donorClassID, zeroedClassID, 100);
             }
 
             // Character start data
@@ -867,6 +884,12 @@ namespace EQWOWConverter
             footstepTerrainLookupDBC.SaveToDisk(dbcOutputServerFolder);
             gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
             gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
+            gtSpellCritBaseDBC.SaveToDisk(dbcOutputClientFolder);
+            gtSpellCritBaseDBC.SaveToDisk(dbcOutputServerFolder);
+            gtSpellCritDBC.SaveToDisk(dbcOutputClientFolder);
+            gtSpellCritDBC.SaveToDisk(dbcOutputServerFolder);
+            gtOCTRegenMPDBC.SaveToDisk(dbcOutputClientFolder);
+            gtOCTRegenMPDBC.SaveToDisk(dbcOutputServerFolder);
             itemDBC.SaveToDisk(dbcOutputClientFolder);
             itemDBC.SaveToDisk(dbcOutputServerFolder);
             lfgDungeonGroupDBC.SaveToDisk(dbcOutputClientFolder);
