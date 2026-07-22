@@ -181,7 +181,7 @@ namespace EQWOWConverter.Items
         public int NumOfTradeskillsThatCreateIt = 0;
         public int IconID = 0;
         public int TotemDBCID = 0;
-        public int RequiredLevel = 1;
+        public int RequiredLevel = 0;
         public bool IsRogueOnlyPoison = false;
         public string EQItemDisplayFileName = string.Empty;
         public ItemTemplate? ParentItemTemplate = null;
