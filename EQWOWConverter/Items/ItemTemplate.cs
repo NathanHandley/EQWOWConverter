@@ -131,7 +131,7 @@ namespace EQWOWConverter.Items
         public bool IsNoDrop = false;
         public ItemDisplayInfo? ItemDisplayInfo = null;
         public bool DoesTeachSpell = false;
-        public int LearningSpellID = 483; // On-use spell for learn items. 483 "Learning" shows nothing, 55884 shows "Teaches you how to summon this companion."
+        public int LearningSpellID = 483; // On-use spell for learn items (483 "Learning", 55884 for companion pets). The "Use:" tooltip text comes from the item description, not this spell.
         public bool IsCompanionPetItem = false;
         public string ScriptName = string.Empty;
         public int WOWSpellID1 = 0;
@@ -2172,6 +2172,7 @@ namespace EQWOWConverter.Items
             itemTemplate.AllowedClassTypesEQ = new List<ClassEQType>() { ClassEQType.All };
             itemTemplate.IsCompanionPetItem = true;
             itemTemplate.DoesTeachSpell = true;
+            itemTemplate.Description = "Teaches you how to summon this companion.";
             itemTemplate.LearningSpellID = Creatures.CreatureCompanionPet.ITEM_LEARNING_SPELL_ID;
             itemTemplate.WOWSpellID1 = summonSpellWOWID;
 
@@ -2342,14 +2343,24 @@ namespace EQWOWConverter.Items
 
             // Build the full string
             StringBuilder fullDescription = new StringBuilder();
-            if (allowedClassStringBuilder.Length > 0)
+            if (DoesTeachSpell == true && Description.Length > 0)
             {
+                fullDescription.Append(Description);
+                fullDescription.Append("|n"); // Newline
                 fullDescription.Append(allowedClassStringBuilder.ToString().TrimEnd());
                 fullDescription.Append("|r"); // End coloration
-                if (Description.Length > 0)
-                    fullDescription.Append("|n"); // Newline
             }
-            fullDescription.Append(Description);
+            else
+            {
+                if (allowedClassStringBuilder.Length > 0)
+                {
+                    fullDescription.Append(allowedClassStringBuilder.ToString().TrimEnd());
+                    fullDescription.Append("|r"); // End coloration
+                    if (Description.Length > 0)
+                        fullDescription.Append("|n"); // Newline
+                }
+                fullDescription.Append(Description);
+            }
             return fullDescription.ToString();
         }
     }

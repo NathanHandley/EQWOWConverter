@@ -85,12 +85,18 @@ end
 -- Given a tooltip line's raw text, returns whether the player can use the item:
 --   true  = usable, false = not usable, nil = the line is not an "EQ Classes:" line
 local function EQItemTooltips_EvaluateClassLine(text)
-	-- Strip color codes, then drop anything after the line's "|n" so a trailing
-	-- original description does not get parsed as class abbreviations.
+	-- Strip color codes, then isolate the "|n"-separated segment that carries the class list
+	-- (learn-on-use items put the teaching description first, other items put the class line
+	-- first) so surrounding description text does not get parsed as class abbreviations.
 	local plain = text:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "");
-	plain = plain:gsub("|n.*$", "");
 
-	local list = plain:match("EQ Classes:%s*(.+)");
+	local list;
+	for segment in (plain .. "|n"):gmatch("(.-)|n") do
+		list = segment:match("EQ Classes:%s*(.+)");
+		if ( list ) then
+			break;
+		end
+	end
 	if ( not list ) then
 		return nil;
 	end
@@ -131,6 +137,15 @@ local function EQItemTooltips_ColorTooltip(tooltip)
 		if ( text and text:find("|cFFFFFFFFEQ Classes:", 1, true) ) then
 			local usable = EQItemTooltips_EvaluateClassLine(text);
 			if ( usable ~= nil ) then
+				local color = usable and COLOR_USABLE or COLOR_UNUSABLE;
+
+				-- Learn-on-use items place the class line AFTER the teaching text on the green
+				-- "Use:" line, where the client adds no quotes: just recolor the stamp in place.
+				if ( not (text:find("^|cFFFFFFFFEQ Classes:") or text:find("^\"|cFFFFFFFFEQ Classes:")) ) then
+					fontString:SetText((text:gsub("|cFFFFFFFFEQ Classes:", color .. "EQ Classes:")));
+					return;
+				end
+
 				-- Peel the client-added surrounding quotes off the description block
 				local inner = text;
 				local hadQuotes = false;
@@ -149,7 +164,6 @@ local function EQItemTooltips_ColorTooltip(tooltip)
 				end
 
 				-- Color the classes line green (usable) / red (not usable)
-				local color = usable and COLOR_USABLE or COLOR_UNUSABLE;
 				classesPart = classesPart:gsub("|cFFFFFFFFEQ Classes:", color .. "EQ Classes:");
 
 				local newText;
