@@ -216,6 +216,10 @@ namespace EQWOWConverter
             creaturesAndSpawnsTask.Wait();
             itemsSpellsTradeskillsTask.Wait();
 
+            // Companion pets (needs creature race sounds and items loaded, and must be before the creature template items below)
+            if (Configuration.CREATURE_COMPANION_PETS_DROPS_ENABLED == true)
+                GenerateCompanionPets(ref spellTemplates);
+
             // Creature model files
             List<CreatureTemplate> creatureTemplates = CreatureTemplate.GetCreatureTemplateListByWOWID().Values.ToList();
             List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
@@ -384,7 +388,7 @@ namespace EQWOWConverter
                     {
                         CreatureRace transportRace = new CreatureRace(999, CreatureGenderType.Male, 0, transportShip.MeshName, transportShip.MeshName, string.Empty,
                             0, transportShip.Scale, 6, 0.2f, 1.96078f, 0, 0, false);
-                        CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(transportRace, CreatureGenderType.Male, 0, transportShip.EQTexture, 0, 0, 1f);
+                        CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(transportRace, CreatureGenderType.Male, 0, transportShip.EQTexture, 0, 0, 1f, false);
                         objectProperties.CreatureModelTemplate = creatureModelTemplate;
                         objectProperties.ModelScalePreWorldScale = transportRace.ModelScale;
                         objectProperties.ModelLiftPreWorldScale = transportRace.Lift;
@@ -1804,102 +1808,112 @@ namespace EQWOWConverter
             creatureLootEntriesByCreatureTemplateID = new Dictionary<int, List<CreatureLootEntry>>();
             Dictionary<int, ItemLootDrop> itemLootDropsByEQID = ItemLootDrop.GetItemLootDropsByEQID();
             Dictionary<int, ItemLootTable> itemLootTablesByEQID = ItemLootTable.GetItemLootTablesByEQID();
+            bool doCompanionPetDrops = Configuration.CREATURE_COMPANION_PETS_DROPS_ENABLED == true && CreatureCompanionPet.GetEnabledCompanionPetsByID().Count > 0;
             foreach(CreatureTemplate creatureTemplate in creatureTemplates)
             {
-                // Skip creatures with no loot table
-                if (creatureTemplate.EQLootTableID == 0)
-                    continue;
-                if (itemLootTablesByEQID.ContainsKey(creatureTemplate.EQLootTableID) == false)
-                {
-                    // In review, these errors have to do with future expansions that this code won't support
-                    Logger.WriteDebug("For creature template '" + creatureTemplate.EQCreatureTemplateID + "' named '" + creatureTemplate.Name + "', lootTableID of '" + creatureTemplate.EQLootTableID + "' was not found");
-                    continue;
-                }
-                ItemLootTable curItemLootTable = itemLootTablesByEQID[creatureTemplate.EQLootTableID];
-
-                // Set money
-                creatureTemplate.MoneyMinInCopper = curItemLootTable.MinMoney;
-                creatureTemplate.MoneyMaxInCopper = curItemLootTable.MaxMoney;
-
-                // Create the item loot template records
                 List<CreatureLootEntry> lootEntries = new List<CreatureLootEntry>();
                 Dictionary<int, float> catalogChanceByItemID = new Dictionary<int, float>();
                 Dictionary<int, string> catalogCommentByItemID = new Dictionary<int, string>();
                 int lootGroupID = 1;
-                foreach (ItemLootTableEntry lootTableEntry in curItemLootTable.ItemLootTableEntries)
+
+                // EQ loot table drops, for creatures that have a loot table
+                ItemLootTable? curItemLootTable = null;
+                if (creatureTemplate.EQLootTableID != 0)
                 {
-                    // Skip invalid rows
-                    if (itemLootDropsByEQID.ContainsKey(lootTableEntry.LootDropID) == false)
+                    if (itemLootTablesByEQID.ContainsKey(creatureTemplate.EQLootTableID) == true)
+                        curItemLootTable = itemLootTablesByEQID[creatureTemplate.EQLootTableID];
+                    else
                     {
                         // In review, these errors have to do with future expansions that this code won't support
-                        Logger.WriteDebug("ItemLootTable with ID '" + lootTableEntry.LootTableID + "' references ItemLootDrop with ID '" + lootTableEntry.LootDropID + "', but it did not exist");
-                        continue;
+                        Logger.WriteDebug("For creature template '" + creatureTemplate.EQCreatureTemplateID + "' named '" + creatureTemplate.Name + "', lootTableID of '" + creatureTemplate.EQLootTableID + "' was not found");
                     }
+                }
+                if (curItemLootTable != null)
+                {
+                    // Set money
+                    creatureTemplate.MoneyMinInCopper = curItemLootTable.MinMoney;
+                    creatureTemplate.MoneyMaxInCopper = curItemLootTable.MaxMoney;
 
-                    // Each loottable entry is one lootdrop reference and becomes one loot group.  The loottable-level multiplier/probability/droplimit/mindrop are provided to the server mod
-                    ItemLootDrop curItemLootDrop = itemLootDropsByEQID[lootTableEntry.LootDropID];
-                    bool groupHadAnyEntries = false;
-                    foreach (ItemLootDropEntry itemDropEntry in curItemLootDrop.ItemLootDropEntries)
+                    // Create the item loot template records
+                    foreach (ItemLootTableEntry lootTableEntry in curItemLootTable.ItemLootTableEntries)
                     {
-                        if (itemTemplatesByEQDBID.ContainsKey(itemDropEntry.ItemIDEQ) == false)
+                        // Skip invalid rows
+                        if (itemLootDropsByEQID.ContainsKey(lootTableEntry.LootDropID) == false)
                         {
-                            // In review, these errors have to do with items in future expansions
-                            Logger.WriteDebug("ItemDropEntry with ID '" + itemDropEntry.LootDropID + "' references ItemID of '" + itemDropEntry.ItemIDEQ + "', but it did not exist");
+                            // In review, these errors have to do with future expansions that this code won't support
+                            Logger.WriteDebug("ItemLootTable with ID '" + lootTableEntry.LootTableID + "' references ItemLootDrop with ID '" + lootTableEntry.LootDropID + "', but it did not exist");
                             continue;
                         }
-                        ItemTemplate curItemTemplate = itemTemplatesByEQDBID[itemDropEntry.ItemIDEQ];
-                        curItemTemplate.IsDroppedByCreature = true;
 
-                        // Items that have class specific copies need to be added for each copy, otherwise just one
-                        List<(int wowItemID, float chance, string nameSuffix)> resolvedItems = new List<(int, float, string)>();
-                        if (curItemTemplate.ClassSpecificItemVersionsByEQClassID.Count > 0)
+                        // Each loottable entry is one lootdrop reference and becomes one loot group.  The loottable-level multiplier/probability/droplimit/mindrop are provided to the server mod
+                        ItemLootDrop curItemLootDrop = itemLootDropsByEQID[lootTableEntry.LootDropID];
+                        bool groupHadAnyEntries = false;
+                        foreach (ItemLootDropEntry itemDropEntry in curItemLootDrop.ItemLootDropEntries)
                         {
-                            var classVersions = curItemTemplate.ClassSpecificItemVersionsByEQClassID.ToList();
-                            float remainderChance = itemDropEntry.Chance;
-                            float stepChance = remainderChance / classVersions.Count;
-                            for (int j = 0; j < classVersions.Count; j++)
+                            if (itemTemplatesByEQDBID.ContainsKey(itemDropEntry.ItemIDEQ) == false)
                             {
-                                float versionChance = (j < classVersions.Count - 1) ? stepChance : remainderChance;
-                                remainderChance -= stepChance;
-                                resolvedItems.Add((classVersions[j].Value, versionChance, string.Concat(" (", classVersions[j].Key.ToString(), ")")));
+                                // In review, these errors have to do with items in future expansions
+                                Logger.WriteDebug("ItemDropEntry with ID '" + itemDropEntry.LootDropID + "' references ItemID of '" + itemDropEntry.ItemIDEQ + "', but it did not exist");
+                                continue;
+                            }
+                            ItemTemplate curItemTemplate = itemTemplatesByEQDBID[itemDropEntry.ItemIDEQ];
+                            curItemTemplate.IsDroppedByCreature = true;
+
+                            // Items that have class specific copies need to be added for each copy, otherwise just one
+                            List<(int wowItemID, float chance, string nameSuffix)> resolvedItems = new List<(int, float, string)>();
+                            if (curItemTemplate.ClassSpecificItemVersionsByEQClassID.Count > 0)
+                            {
+                                var classVersions = curItemTemplate.ClassSpecificItemVersionsByEQClassID.ToList();
+                                float remainderChance = itemDropEntry.Chance;
+                                float stepChance = remainderChance / classVersions.Count;
+                                for (int j = 0; j < classVersions.Count; j++)
+                                {
+                                    float versionChance = (j < classVersions.Count - 1) ? stepChance : remainderChance;
+                                    remainderChance -= stepChance;
+                                    resolvedItems.Add((classVersions[j].Value, versionChance, string.Concat(" (", classVersions[j].Key.ToString(), ")")));
+                                }
+                            }
+                            else
+                            {
+                                resolvedItems.Add((curItemTemplate.WOWEntryID, itemDropEntry.Chance, string.Empty));
+                            }
+
+                            foreach (var resolvedItem in resolvedItems)
+                            {
+                                CreatureLootEntry lootEntry = new CreatureLootEntry();
+                                lootEntry.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
+                                lootEntry.LootGroupID = lootGroupID;
+                                lootEntry.GroupMultiplier = Math.Max(lootTableEntry.Multiplier, 1);
+                                lootEntry.GroupMultiplierMin = lootTableEntry.MultiplierMin;
+                                lootEntry.GroupProbability = lootTableEntry.Probability;
+                                lootEntry.DropLimit = lootTableEntry.DropLimit;
+                                lootEntry.MinDrop = lootTableEntry.MinDrop;
+                                lootEntry.ItemTemplateEntryID = resolvedItem.wowItemID;
+                                lootEntry.Chance = resolvedItem.chance;
+                                lootEntry.ItemMultiplier = Math.Max(itemDropEntry.Multiplier, 1);
+                                if (curItemTemplate.StackSize > 1)
+                                    lootEntry.ItemCharges = Math.Max(itemDropEntry.ItemCharges, 1);
+                                else
+                                    lootEntry.ItemCharges = 1;
+                                lootEntries.Add(lootEntry);
+                                groupHadAnyEntries = true;
+
+                                // Track for the creature_loot_template catalog (keep the highest chance seen)
+                                if (catalogChanceByItemID.TryGetValue(resolvedItem.wowItemID, out float existingChance) == false || resolvedItem.chance > existingChance)
+                                    catalogChanceByItemID[resolvedItem.wowItemID] = resolvedItem.chance;
+                                if (catalogCommentByItemID.ContainsKey(resolvedItem.wowItemID) == false)
+                                    catalogCommentByItemID[resolvedItem.wowItemID] = string.Concat(creatureTemplate.Name, " - ", curItemTemplate.Name, resolvedItem.nameSuffix);
                             }
                         }
-                        else
-                        {
-                            resolvedItems.Add((curItemTemplate.WOWEntryID, itemDropEntry.Chance, string.Empty));
-                        }
 
-                        foreach (var resolvedItem in resolvedItems)
-                        {
-                            CreatureLootEntry lootEntry = new CreatureLootEntry();
-                            lootEntry.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
-                            lootEntry.LootGroupID = lootGroupID;
-                            lootEntry.GroupMultiplier = Math.Max(lootTableEntry.Multiplier, 1);
-                            lootEntry.GroupMultiplierMin = lootTableEntry.MultiplierMin;
-                            lootEntry.GroupProbability = lootTableEntry.Probability;
-                            lootEntry.DropLimit = lootTableEntry.DropLimit;
-                            lootEntry.MinDrop = lootTableEntry.MinDrop;
-                            lootEntry.ItemTemplateEntryID = resolvedItem.wowItemID;
-                            lootEntry.Chance = resolvedItem.chance;
-                            lootEntry.ItemMultiplier = Math.Max(itemDropEntry.Multiplier, 1);
-                            if (curItemTemplate.StackSize > 1)
-                                lootEntry.ItemCharges = Math.Max(itemDropEntry.ItemCharges, 1);
-                            else
-                                lootEntry.ItemCharges = 1;
-                            lootEntries.Add(lootEntry);
-                            groupHadAnyEntries = true;
-
-                            // Track for the creature_loot_template catalog (keep the highest chance seen)
-                            if (catalogChanceByItemID.TryGetValue(resolvedItem.wowItemID, out float existingChance) == false || resolvedItem.chance > existingChance)
-                                catalogChanceByItemID[resolvedItem.wowItemID] = resolvedItem.chance;
-                            if (catalogCommentByItemID.ContainsKey(resolvedItem.wowItemID) == false)
-                                catalogCommentByItemID[resolvedItem.wowItemID] = string.Concat(creatureTemplate.Name, " - ", curItemTemplate.Name, resolvedItem.nameSuffix);
-                        }
+                        if (groupHadAnyEntries == true)
+                            lootGroupID++;
                     }
-
-                    if (groupHadAnyEntries == true)
-                        lootGroupID++;
                 }
+
+                // Companion pet drops can come from every killable creature (excluding non-NPCs, pets, and generated templates like the companions themselves)
+                if (doCompanionPetDrops == true && creatureTemplate.IsNonNPC == false && creatureTemplate.IsPet == false && creatureTemplate.SpawnZones.Trim().Length > 0)
+                    AddCompanionPetLootForCreature(creatureTemplate, lootEntries, ref lootGroupID, catalogChanceByItemID, catalogCommentByItemID);
 
                 if (lootEntries.Count > 0)
                 {
@@ -1925,6 +1939,57 @@ namespace EQWOWConverter
             }
 
             Logger.WriteInfo("Item and loot conversion complete.");
+        }
+
+        private void AddCompanionPetLootForCreature(CreatureTemplate creatureTemplate, List<CreatureLootEntry> lootEntries, ref int lootGroupID,
+            Dictionary<int, float> catalogChanceByItemID, Dictionary<int, string> catalogCommentByItemID)
+        {
+            CreatureCompanionPet? companionPet = CreatureCompanionPet.GetCompanionPetForCreatureTemplate(creatureTemplate);
+            if (companionPet == null)
+            {
+                // Invisible Man creatures deliberately have no companion pet
+                if (creatureTemplate.Race.ID != 127)
+                {
+                    Logger.WriteError("Companion pet lookup failed for creature template with EQ ID '", creatureTemplate.EQCreatureTemplateID.ToString(), "' and WOW ID '", creatureTemplate.WOWCreatureTemplateID.ToString(), "' named '", creatureTemplate.Name, "' (race '",
+                        creatureTemplate.Race.ID.ToString(), "', gender '", Convert.ToInt32(creatureTemplate.GenderType).ToString(), "', texture '", creatureTemplate.TextureID.ToString(), "', helmtexture '", creatureTemplate.HelmTextureID.ToString(), "', face '", creatureTemplate.FaceID.ToString(), "')");
+                }
+                return;
+            }
+            if (companionPet.ItemTemplate == null)
+                return;
+
+            // Bosses use their own drop rate, otherwise it comes from the companion pet's drop_rate
+            float dropChance;
+            if (creatureTemplate.Rank == CreatureWOWRankType.Boss)
+                dropChance = Configuration.CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT;
+            else if (companionPet.IsHighDropRate == true)
+                dropChance = Configuration.CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT;
+            else
+                dropChance = Configuration.CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT;
+
+            // The carrier rolls as its own single-item group so it's an independent straight percent chance
+            companionPet.ItemTemplate.IsDroppedByCreature = true;
+            CreatureLootEntry lootEntry = new CreatureLootEntry();
+            lootEntry.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
+            lootEntry.LootGroupID = lootGroupID;
+            lootEntry.GroupMultiplier = 1;
+            lootEntry.GroupMultiplierMin = 0;
+            lootEntry.GroupProbability = 100;
+            lootEntry.DropLimit = 0;
+            lootEntry.MinDrop = 0;
+            lootEntry.ItemTemplateEntryID = companionPet.ItemTemplate.WOWEntryID;
+            lootEntry.Chance = dropChance;
+            lootEntry.ItemMultiplier = 1;
+            lootEntry.ItemCharges = 1;
+            lootEntries.Add(lootEntry);
+            lootGroupID++;
+
+            // Track for the creature_loot_template
+            if (catalogChanceByItemID.ContainsKey(companionPet.ItemTemplate.WOWEntryID) == false)
+            {
+                catalogChanceByItemID.Add(companionPet.ItemTemplate.WOWEntryID, dropChance);
+                catalogCommentByItemID.Add(companionPet.ItemTemplate.WOWEntryID, string.Concat(creatureTemplate.Name, " - ", companionPet.ItemTemplate.Name));
+            }
         }
 
         private void ConvertForage(ref SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
@@ -1969,6 +2034,9 @@ namespace EQWOWConverter
             Logger.WriteInfo("Generating item display info...");
             foreach (ItemTemplate itemTemplate in itemTemplatesByEQDBID.Values)
             {
+                // Companion pet carriers use a stock wow icon assigned at creation
+                if (itemTemplate.IsCompanionPetItem == true)
+                    continue;
                 string iconName = "INV_EQ_" + (itemTemplate.IconID).ToString();
                 itemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo(itemTemplate.EQItemDisplayFileName, iconName,
                     itemTemplate.InventoryType, itemTemplate.EQArmorMaterialType, itemTemplate.ColorPacked);
@@ -2138,6 +2206,59 @@ namespace EQWOWConverter
             EQSpellsLUA.Generate(spellTemplates);
 
             Logger.WriteDebug("Generating spells complete.");
+        }
+
+        public void GenerateCompanionPets(ref List<SpellTemplate> spellTemplates)
+        {
+            Logger.WriteInfo("Generating companion pets...");
+            SortedDictionary<int, CreatureCompanionPet> companionPetsByID = CreatureCompanionPet.GetEnabledCompanionPetsByID();
+            foreach (CreatureCompanionPet companionPet in companionPetsByID.Values)
+            {
+                // The creature that gets summoned
+                CreatureRace? creatureRace = CreatureRace.GetRaceForRaceGenderVariant(companionPet.RaceID, companionPet.DisplayGender, 0, true);
+                if (creatureRace == null)
+                {
+                    Logger.WriteError("Could not generate companion pet with id '", companionPet.ID.ToString(), "' named '", companionPet.Name, "' since no creature race with id '", companionPet.RaceID.ToString(), "' was found");
+                    continue;
+                }
+                CreatureTemplate companionCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(companionPet.Name, creatureRace, companionPet.DisplayGender,
+                    companionPet.DisplayHelmTexture, companionPet.DisplayTexture, companionPet.DisplayFace, 0, 1.0f, 35, companionPet.WOWSpellID);
+                companionCreatureTemplate.IsCompanionPet = true;
+                companionPet.CreatureTemplate = companionCreatureTemplate;
+
+                // Summoning plays the race idle sound, falling back to the attack sound when there is no idle sound
+                string summonSoundName = creatureRace.SoundIdle1Name;
+                if (summonSoundName.Trim().Length == 0 || summonSoundName.ToLower() == "null24.wav")
+                    summonSoundName = creatureRace.SoundAttackName;
+                if (summonSoundName.Trim().Length > 0 && summonSoundName.ToLower() != "null24.wav")
+                    companionPet.SummonSoundEntryDBCID = CreatureRace.GetSoundIDForSound(summonSoundName, creatureRace.SoundMaxDistance);
+                companionPet.SpellVisualDBCID = IDGenerationTool.GenerateID("SpellVisualID", "companionpet", companionPet.ID.ToString());
+                companionPet.SpellVisualKitDBCID = IDGenerationTool.GenerateID("SpellVisualKitID", "companionpet", companionPet.ID.ToString());
+
+                // The summon spell, shaped like the wow vanity pet spells (summon effect with the stock companion SummonProperties)
+                SpellTemplate summonSpellTemplate = new SpellTemplate();
+                summonSpellTemplate.Name = companionPet.Name;
+                summonSpellTemplate.WOWSpellID = companionPet.WOWSpellID;
+                summonSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                summonSpellTemplate.Description = "Right Click to summon and dismiss your companion.";
+                summonSpellTemplate.SpellIconID = CreatureCompanionPet.SPELL_ICON_DBC_ID;
+                summonSpellTemplate.SkillLine = CreatureCompanionPet.SKILL_LINE_COMPANIONS_ID;
+                summonSpellTemplate.AuraDuration.IsInfinite = true;
+                summonSpellTemplate.SpellVisualID1 = Convert.ToUInt32(companionPet.SpellVisualDBCID);
+                summonSpellTemplate.SummonCreatureTemplateID = companionCreatureTemplate.WOWCreatureTemplateID;
+                SpellEffectWOW summonSpellEffect = new SpellEffectWOW();
+                summonSpellEffect.EffectType = SpellWOWEffectType.Summon;
+                summonSpellEffect.EffectDieSides = 1;
+                summonSpellEffect.ImplicitTargetA = SpellWOWTargetType.DestinationCasterSummon;
+                summonSpellEffect.EffectMiscValueA = companionCreatureTemplate.WOWCreatureTemplateID;
+                summonSpellEffect.EffectMiscValueB = CreatureCompanionPet.SUMMON_PROPERTIES_COMPANION_DBC_ID;
+                summonSpellTemplate.WOWSpellEffects.Add(summonSpellEffect);
+                spellTemplates.Add(summonSpellTemplate);
+
+                // The carrier item that teaches the summon spell
+                companionPet.ItemTemplate = ItemTemplate.CreateCompanionPetItem(companionPet.Name, companionPet.WOWItemID, companionPet.WOWSpellID);
+            }
+            Logger.WriteInfo(string.Concat("Generating companion pets complete, generated '", companionPetsByID.Count.ToString(), "'"));
         }
 
         public void GenerateCustomSpells(ref List<SpellTemplate> spellTemplates)

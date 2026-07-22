@@ -31,6 +31,7 @@ namespace EQWOWConverter.Spells
         SourceCaster = 22,
         UnitTargetAny = 25,
         UnitDestinationAreaAlly = 31,
+        DestinationCasterSummon = 32,
         UnitDestinationAreaParty = 34,
         UnitTargetParty = 35,
         DestinationTargetAny = 63

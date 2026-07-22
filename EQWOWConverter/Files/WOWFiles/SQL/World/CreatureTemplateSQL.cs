@@ -164,6 +164,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("family", creatureTemplate.Race.WOWCreatureFamily); // I see other values here, like 1 and 3
             if (creatureTemplate.IsPet == true)
                 newRow.AddInt("type", 3); // Note: If the pet isn't a demon, the name won't generate randomly (for random name types).  If undead the name will be random, but will not heed if resummoned.
+            else if (creatureTemplate.IsCompanionPet == true)
+                newRow.AddInt("type", 12); // Non-Combat Pet, like the stock wow companion pets
             else
             {
                 // 0: None, 1: Beast, 2: Dragonkin, 3: Demon, 4: Elemental, 5: Giant, 6: Undead, 7: Humanoid, 8: Critter, 9: Mechanical, 10: Non-Specified, 11: Totem, 12: Non-Combat Pet, 13: Gas Cloud

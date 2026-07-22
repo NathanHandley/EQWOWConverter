@@ -302,7 +302,7 @@ namespace EQWOWConverter
 
                 string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
                 creatureModelDataDBC.AddRow(creatureModelTemplate, relativeModelPath);
-                if (creatureModelTemplate.Race.SoundWalkingName.Trim().Length > 0)
+                if (creatureModelTemplate.Race.SoundWalkingName.Trim().Length > 0 && creatureModelTemplate.IsCompanionPetVersion == false)
                 {
                     // For illusion versions, use the stock walking sound
                     int creatureFootstepID = CreatureRace.FootstepIDBySoundName[creatureModelTemplate.Race.SoundWalkingName];
@@ -586,6 +586,15 @@ namespace EQWOWConverter
                 spellVisualDBC.AddRow(SpellTemplate.SlamSpellVisualID, 0, SpellTemplate.SlamSpellVisualKitID, SpellTemplate.SlamImpactSpellVisualKitID, 0);
                 spellVisualKitDBC.AddRow(SpellTemplate.SlamSpellVisualKitID, Convert.ToInt32(AnimationType.ShieldBash), SpellVisual.GetOrCreateSoundDBCID("swing"), 0, 0, 0, 0);
                 spellVisualKitDBC.AddRow(SpellTemplate.SlamImpactSpellVisualKitID, -1, SpellVisual.GetOrCreateSoundDBCID("punchhit"), 0, 0, 0, 0);
+            }
+
+            // Sound-only visuals for the companion pet summon spells
+            foreach (CreatureCompanionPet companionPet in CreatureCompanionPet.GetEnabledCompanionPetsByID().Values)
+            {
+                if (companionPet.SpellVisualDBCID == 0)
+                    continue;
+                spellVisualDBC.AddRow(companionPet.SpellVisualDBCID, 0, companionPet.SpellVisualKitDBCID, 0, 0);
+                spellVisualKitDBC.AddRow(companionPet.SpellVisualKitDBCID, -1, companionPet.SummonSoundEntryDBCID, 0, 0, 0, 0);
             }
 
             // SkillLine

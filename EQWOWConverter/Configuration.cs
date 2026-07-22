@@ -596,6 +596,13 @@ namespace EQWOWConverter
         // If true, any creature initial spawn location will instead be the first node in the path grid, but only for paths managed by the AzerothCore engine
         public static bool CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH = true;
 
+        // Companion pets can drop from any creature in the world
+        public static bool CREATURE_COMPANION_PETS_DROPS_ENABLED = true;
+        public static float CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT = 0.3f;
+        public static float CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT = 1.0f;
+        public static float CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT = 5.0f;
+        public static float CREATURE_COMPANION_PETS_MODEL_HEIGHT = 0.5f;
+
         //=====================================================================
         // Items
         //=====================================================================
@@ -1116,10 +1123,12 @@ namespace EQWOWConverter
         // - SpellIDs 96200 - 97657 reserved for 'clicky' effects (defined in ItemTemplates.csv under clickeffect_wow)
         // - SpellIDs 97700 - 97715 reserved for 'good clicky' effects (defined in SpellTemplate.csv under wow_good_proc_id)
         // - SpellIDs 98000 - 98358 reserved for 'worn' effects (effects that always take effect when worn, defined in ItemTemplate.csv)
-        // - SpellIDs 98500+ used for 'generated spell IDs'
+        // - SpellIDs 98500 - 120000 used for 'generated spell IDs'
+        // - SpellIDs 120001 - 120366 reserved for companion pets (defined in CompanionPetsMap.csv)
         public static int DBCID_SPELL_ID_START = 86900;
         public static int DBCID_SPELL_ID_GENERATED_START = 98500;
-        public static int DBCID_SPELL_ID_END = 110500;
+        public static int DBCID_SPELL_ID_GENERATED_END = 120000;
+        public static int DBCID_SPELL_ID_END = 130000;
 
         // ID for spellcasttimes.dbc
         public static int DBCID_SPELLCASTTIME_ID_START = 215;
@@ -1237,8 +1246,9 @@ namespace EQWOWConverter
         // - Quest Template multi-item reward containers IDs range 116000 - 116200
         // - Tradeskill multi-item creation containers IDs range 117000 - 117349
         // - Switched Slot items have IDs 120000 - 121000
+        // - Companion Pet Items have IDs 123000 - 124000
         public static int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;
-        public static int SQL_ITEM_TEMPLATE_ENTRY_END = 121000;
+        public static int SQL_ITEM_TEMPLATE_ENTRY_END = 124000;
 
         // Start and end IDs for npc_text sql records
         public static int SQL_NPCTEXT_ID_START = 80000;
@@ -1639,6 +1649,11 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT, "");
             OutputVariableToConfig("CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT", CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT, "If \"GENERANE_ENABLE_PLANES_TELEPORTATION\" is true, this is the text that displays when you talk to a planes teleporter");
             OutputVariableToConfig("CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH", CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH, "If true, any creature initial spawn location will instead be the first node in the path grid, but only for paths managed by the AzerothCore engine");
+            OutputVariableToConfig("CREATURE_COMPANION_PETS_DROPS_ENABLED", CREATURE_COMPANION_PETS_DROPS_ENABLED, "Companion pets can drop from any creature in the world", false);
+            OutputVariableToConfig("CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT", CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT, "", false);
+            OutputVariableToConfig("CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT", CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT, "", false);
+            OutputVariableToConfig("CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT", CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT, "", false);
+            OutputVariableToConfig("CREATURE_COMPANION_PETS_MODEL_HEIGHT", CREATURE_COMPANION_PETS_MODEL_HEIGHT, "");
             OutputVariableToConfig("ITEMS_USE_ALTERNATE_STATS", ITEMS_USE_ALTERNATE_STATS, "If true, this uses alternate stats for items that have been tweaked for balance reasons");
             OutputVariableToConfig("ITEMS_WEAPON_DELAY_REDUCTION_AMT", ITEMS_WEAPON_DELAY_REDUCTION_AMT, "This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;");
             OutputVariableToConfig("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", ITEMS_WEAPON_EFFECT_PPM_BASE_RATE, "This is the base PPM (Procs Per Minute) used for weapon proc weapons");
@@ -2092,6 +2107,11 @@ namespace EQWOWConverter
             CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT);
             CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT);
             CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH = ReadVariableFromConfigString("CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH", configValuesByVariableName, CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH);
+            CREATURE_COMPANION_PETS_DROPS_ENABLED = ReadVariableFromConfigString("CREATURE_COMPANION_PETS_DROPS_ENABLED", configValuesByVariableName, CREATURE_COMPANION_PETS_DROPS_ENABLED);
+            CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT = ReadVariableFromConfigString("CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT", configValuesByVariableName, CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT);
+            CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT = ReadVariableFromConfigString("CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT", configValuesByVariableName, CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT);
+            CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT = ReadVariableFromConfigString("CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT", configValuesByVariableName, CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT);
+            CREATURE_COMPANION_PETS_MODEL_HEIGHT = ReadVariableFromConfigString("CREATURE_COMPANION_PETS_MODEL_HEIGHT", configValuesByVariableName, CREATURE_COMPANION_PETS_MODEL_HEIGHT);
 
             ITEMS_USE_ALTERNATE_STATS = ReadVariableFromConfigString("ITEMS_USE_ALTERNATE_STATS", configValuesByVariableName, ITEMS_USE_ALTERNATE_STATS);
             ITEMS_WEAPON_DELAY_REDUCTION_AMT = ReadVariableFromConfigString("ITEMS_WEAPON_DELAY_REDUCTION_AMT", configValuesByVariableName, ITEMS_WEAPON_DELAY_REDUCTION_AMT);

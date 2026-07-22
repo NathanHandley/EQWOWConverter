@@ -18,8 +18,6 @@ using EQWOWConverter.Common;
 using EQWOWConverter.Player;
 using EQWOWConverter.Quests;
 using EQWOWConverter.Spells;
-using EQWOWConverter.WOWFiles;
-using System.Collections.Generic;
 using System.Text;
 
 namespace EQWOWConverter.Items
@@ -46,6 +44,7 @@ namespace EQWOWConverter.Items
         private static Dictionary<string, Dictionary<string, float>> StatBaselinesBySlotAndStat = new Dictionary<string, Dictionary<string, float>>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByWOWEntryID = new SortedDictionary<int, ItemTemplate>();
+        private static ItemDisplayInfo? CompanionPetItemDisplayInfo = null; // Same across all companion pets
         private static int CUR_ITEM_GENERATED_EQID = 50000;
         private static readonly object ItemLock = new object();
 
@@ -132,6 +131,8 @@ namespace EQWOWConverter.Items
         public bool IsNoDrop = false;
         public ItemDisplayInfo? ItemDisplayInfo = null;
         public bool DoesTeachSpell = false;
+        public int LearningSpellID = 483; // On-use spell for learn items. 483 "Learning" shows nothing, 55884 shows "Teaches you how to summon this companion."
+        public bool IsCompanionPetItem = false;
         public string ScriptName = string.Empty;
         public int WOWSpellID1 = 0;
         public int WOWSpellTrigger1 = 0;
@@ -2146,6 +2147,39 @@ namespace EQWOWConverter.Items
                 bagDescriptionSB.Append(string.Concat(" ", item.Value, " x ", containedItemTemplate.Name));
             }          
             itemTemplate.Description = bagDescriptionSB.ToString();
+
+            // Save it
+            ItemTemplatesByEQDBID.Add(itemTemplate.EQItemID, itemTemplate);
+            ItemTemplatesByWOWEntryID.Add(itemTemplate.WOWEntryID, itemTemplate);
+
+            CUR_ITEM_GENERATED_EQID++;
+            return itemTemplate;
+        }
+
+        public static ItemTemplate CreateCompanionPetItem(string petName, int wowItemTemplateID, int summonSpellWOWID)
+        {
+            ItemTemplate itemTemplate = new ItemTemplate();
+            itemTemplate.WOWEntryID = wowItemTemplateID;
+            itemTemplate.EQItemID = CUR_ITEM_GENERATED_EQID;
+            CUR_ITEM_GENERATED_EQID++;
+            itemTemplate.Name = string.Concat("Pet Carrier (", petName, ")");
+            itemTemplate.ClassID = 15; // Miscellaneous
+            itemTemplate.SubClassID = 2; // Companion Pets
+            itemTemplate.Quality = ItemWOWQuality.Rare;
+            itemTemplate.InventoryType = ItemWOWInventoryType.NoEquip;
+            itemTemplate.BuyPriceInCopper = 0;
+            itemTemplate.SellPriceInCopper = 0; // No vendor sell price
+            itemTemplate.AllowedClassTypesEQ = new List<ClassEQType>() { ClassEQType.All };
+            itemTemplate.IsCompanionPetItem = true;
+            itemTemplate.DoesTeachSpell = true;
+            itemTemplate.LearningSpellID = Creatures.CreatureCompanionPet.ITEM_LEARNING_SPELL_ID;
+            itemTemplate.WOWSpellID1 = summonSpellWOWID;
+
+            // All carriers share the one display info, which uses the stock wow pet carrier icon
+            if (CompanionPetItemDisplayInfo == null)
+                CompanionPetItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo("companionpetcarrier",
+                    Creatures.CreatureCompanionPet.ITEM_ICON_FILE_NAME_NO_EXT, ItemWOWInventoryType.NoEquip, 0, 0);
+            itemTemplate.ItemDisplayInfo = CompanionPetItemDisplayInfo;
 
             // Save it
             ItemTemplatesByEQDBID.Add(itemTemplate.EQItemID, itemTemplate);

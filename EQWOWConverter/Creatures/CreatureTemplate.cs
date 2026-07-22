@@ -122,6 +122,7 @@ namespace EQWOWConverter.Creatures
         public bool SeesInvisibleUndead = false;
         public bool SeesStealth = false;
         public bool IsPet = false;
+        public bool IsCompanionPet = false;
         public float ModelTemplateScale = 1.0f; // Used for form changes
         public bool IsStableMaster = false;
         public bool IsReagentVendor = false;

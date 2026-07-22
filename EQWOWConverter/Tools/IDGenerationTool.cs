@@ -86,7 +86,7 @@ namespace EQWOWConverter
             Initialize("SkillRaceClassInfoID", Configuration.DBCID_SKILLRACECLASSINFO_ID_START, int.MaxValue);
             Initialize("SoundAmbienceID", Configuration.DBCID_SOUNDAMBIENCE_ID_START, int.MaxValue);
             Initialize("SoundEntryID", Configuration.DBCID_SOUNDENTRIES_ID_START, int.MaxValue);
-            Initialize("SpellID", Configuration.DBCID_SPELL_ID_GENERATED_START, Configuration.DBCID_SPELL_ID_END);
+            Initialize("SpellID", Configuration.DBCID_SPELL_ID_GENERATED_START, Configuration.DBCID_SPELL_ID_GENERATED_END);
             Initialize("SpellCastTimeID", Configuration.DBCID_SPELLCASTTIME_ID_START, int.MaxValue);
             Initialize("SpellCategoryID", Configuration.DBCID_SPELLCATEGORY_ID_START, int.MaxValue);
             Initialize("SpellItemEnchantmentID", Configuration.DBCID_SPELLITEMENCHANTMENT_ID_START, int.MaxValue);

@@ -118,7 +118,7 @@ namespace EQWOWConverter.WOWFiles
             {
                 if (itemTemplate.WOWSlotshiftSpellID != 0)
                     Logger.WriteError("Item '", itemTemplate.Name, "' (wowid '", entryID.ToString(), "') teaches a spell but also has a slotshift spell, which can't be attached since all three spell slots are used");
-                newRow.AddInt("spellid_1", 483); // "Learning" wow spell ID
+                newRow.AddInt("spellid_1", itemTemplate.LearningSpellID); // "Learning" wow spell ID (483, or 55884 for companion pets)
                 newRow.AddInt("spelltrigger_1", 0);
                 newRow.AddInt("spellcharges_1", -1);
                 newRow.AddFloat("spellppmRate_1", -1);

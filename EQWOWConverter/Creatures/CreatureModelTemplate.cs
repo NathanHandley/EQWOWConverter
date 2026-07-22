@@ -37,6 +37,8 @@ namespace EQWOWConverter.Creatures
         public int ColorTintID = 0;
         public CreatureTemplateColorTint? ColorTint = null;
         public float ModelTemplateScale = 1.0f; // Used for form changes
+        public bool IsCompanionPetVersion = false;
+        public float ModelStandingHeight = 0; // Z extent of the stand-posed geometry in final (rendered) model space
 
         public int DBCCreatureModelDataID;
         public int DBCCreatureDisplayID;
@@ -60,14 +62,25 @@ namespace EQWOWConverter.Creatures
         public SortedDictionary<int, List<string>> IllusionFaceTextureVariationsByFaceIndex = new SortedDictionary<int, List<string>>();
 
         public CreatureModelTemplate(CreatureRace creatureRace, CreatureGenderType genderType, int helmTextureID,
-            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale)
+            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale, bool isCompanionPetVersion)
         {
             string raceIDString = creatureRace.ID.ToString();
             string genderIDString = Convert.ToInt32(genderType).ToString();
             string scaleString = modelTemplateScale.ToString(CultureInfo.InvariantCulture);
-            DBCCreatureModelDataID = IDGenerationTool.GenerateID("CreatureModelDataID", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
-            DBCCreatureDisplayID = IDGenerationTool.GenerateID("CreatureDisplayInfoID", "modeltemplate", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
-            DBCCreatureSoundDataID = IDGenerationTool.GenerateID("CreatureSoundDataID", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
+            IsCompanionPetVersion = isCompanionPetVersion;
+            if (isCompanionPetVersion == true)
+            {
+                // Companion pet versions key separately from the shared NPC templates
+                DBCCreatureModelDataID = IDGenerationTool.GenerateID("CreatureModelDataID", "companionpet", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
+                DBCCreatureDisplayID = IDGenerationTool.GenerateID("CreatureDisplayInfoID", "companionpet", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
+                DBCCreatureSoundDataID = 0; // Make them silent
+            }
+            else
+            {
+                DBCCreatureModelDataID = IDGenerationTool.GenerateID("CreatureModelDataID", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
+                DBCCreatureDisplayID = IDGenerationTool.GenerateID("CreatureDisplayInfoID", "modeltemplate", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
+                DBCCreatureSoundDataID = IDGenerationTool.GenerateID("CreatureSoundDataID", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
+            }
 
             Race = creatureRace;
             GenderType = genderType;
@@ -108,7 +121,7 @@ namespace EQWOWConverter.Creatures
             {
                 // Otherwise create a new one
                 CreatureRace debugRace = new CreatureRace(1, CreatureGenderType.Male, 0, "Debug Male", "HUM", "ELM", 3, 1, 6, 0.2f, 1.96078f, 0, 7, false);
-                CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(debugRace, 0, 0, 0, 0, 0, 1);
+                CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(debugRace, 0, 0, 0, 0, 0, 1, false);
                 AllTemplatesByRaceID.Add(1, new List<CreatureModelTemplate>());
                 AllTemplatesByRaceID[1].Add(newModelTemplate);
                 return newModelTemplate;
@@ -116,7 +129,7 @@ namespace EQWOWConverter.Creatures
         }
 
         public static CreatureModelTemplate GetOrCreateCreatureModelTemplate(CreatureRace creatureRace, CreatureGenderType genderType, int helmTextureID,
-            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale)
+            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale, bool isCompanionPetVersion)
         {
             lock (CreatureLock)
             {
@@ -133,7 +146,8 @@ namespace EQWOWConverter.Creatures
                         modelTemplate.TextureIndex == textureIndex &&
                         modelTemplate.FaceIndex == faceIndex &&
                         modelTemplate.ColorTintID == colorTintID &&
-                        modelTemplate.ModelTemplateScale == modelTemplateScale)
+                        modelTemplate.ModelTemplateScale == modelTemplateScale &&
+                        modelTemplate.IsCompanionPetVersion == isCompanionPetVersion)
                     {
                         return modelTemplate;
                     }
@@ -141,7 +155,7 @@ namespace EQWOWConverter.Creatures
 
                 // Otherwise create a new one
                 CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(creatureRace, genderType, helmTextureID,
-                    textureIndex, faceIndex, colorTintID, modelTemplateScale);
+                    textureIndex, faceIndex, colorTintID, modelTemplateScale, isCompanionPetVersion);
                 AllTemplatesByRaceID[creatureRace.ID].Add(newModelTemplate);
                 return newModelTemplate;
             }
@@ -157,7 +171,7 @@ namespace EQWOWConverter.Creatures
             {
                 CreatureModelTemplate curModelTemplate = GetOrCreateCreatureModelTemplate(creatureTemplate.Race,
                     creatureTemplate.GenderType, creatureTemplate.HelmTextureID, creatureTemplate.TextureID, creatureTemplate.FaceID,
-                    creatureTemplate.ColorTintID, creatureTemplate.ModelTemplateScale);
+                    creatureTemplate.ColorTintID, creatureTemplate.ModelTemplateScale, creatureTemplate.IsCompanionPet);
                 creatureTemplate.ModelTemplate = curModelTemplate;
             }
         }
@@ -197,17 +211,22 @@ namespace EQWOWConverter.Creatures
                 objectProperties.AdditionalScaleMultiplier *= ModelTemplateScale;
             ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Creature);
             curObject.LoadEQObjectFromFile(charactersFolderRoot, skeletonName);
+            // GeometryBoundingBox is the stand-posed vertices in the same space the client renders
+            ModelStandingHeight = curObject.GeometryBoundingBox.TopCorner.Z - curObject.GeometryBoundingBox.BottomCorner.Z;
             StringBuilder nameSB = new StringBuilder();
             nameSB.Append(Race.Name);
             nameSB.Append(" ");
             nameSB.Append(GenerateFileName());
             curObject.Name = nameSB.ToString();
 
-            // Set fidget count for M2
-            if (Race.SoundIdle2Name.ToLower() != "null24.wav")
-                curObject.NumOfFidgetSounds = 2;
-            else if (Race.SoundIdle1Name.ToLower() != "null24.wav")
-                curObject.NumOfFidgetSounds = 1;
+            // Set fidget count for M2 (companion pet versions are silent, so they keep zero fidget sounds)
+            if (IsCompanionPetVersion == false)
+            {
+                if (Race.SoundIdle2Name.ToLower() != "null24.wav")
+                    curObject.NumOfFidgetSounds = 2;
+                else if (Race.SoundIdle1Name.ToLower() != "null24.wav")
+                    curObject.NumOfFidgetSounds = 1;
+            }
 
             // Create the M2 and Skin
             M2 objectM2 = new M2(curObject, relativeMPQPath);
@@ -341,6 +360,8 @@ namespace EQWOWConverter.Creatures
             sb.Append("t" + TextureIndex);
             sb.Append("f" + FaceIndex);
             sb.Append("c" + ColorTintID);
+            if (IsCompanionPetVersion == true)
+                sb.Append("cp");
             return sb.ToString();
         }
 

@@ -89,7 +89,7 @@ namespace EQWOWConverter.Creatures
                         // FaceIndex 99 marks an illusion variant with replaceable face textures (real faces are only 0-9), which keeps these templates from sharing M2s with NPC templates that have the same (race, gender, texture, tint, scale) key
                         CreatureModelTemplate helmOffTemplate = CreatureModelTemplate.GetOrCreateCreatureModelTemplate(formRecord.Race,
                             formRecord.Gender, 0, chestAppearance.BodySet, CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX,
-                            colorTintID, formRecord.ModelTemplateScale);
+                            colorTintID, formRecord.ModelTemplateScale, false);
                         DisplayRows.Add(new CreatureIllusionDisplayRow(formRecord.FormSpellID, chestAppearance.BodySet, chestAppearance.TintID,
                             0, helmOffTemplate.DBCCreatureDisplayID));
 
@@ -98,7 +98,7 @@ namespace EQWOWConverter.Creatures
                         {
                             CreatureModelTemplate helmOnTemplate = CreatureModelTemplate.GetOrCreateCreatureModelTemplate(formRecord.Race,
                                 formRecord.Gender, chestAppearance.BodySet, chestAppearance.BodySet, CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX,
-                                colorTintID, formRecord.ModelTemplateScale);
+                                colorTintID, formRecord.ModelTemplateScale, false);
                             DisplayRows.Add(new CreatureIllusionDisplayRow(formRecord.FormSpellID, chestAppearance.BodySet, chestAppearance.TintID,
                                 1, helmOnTemplate.DBCCreatureDisplayID));
                         }

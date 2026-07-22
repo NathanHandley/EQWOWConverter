@@ -311,7 +311,9 @@ namespace EQWOWConverter.WOWFiles
                 newEvent.PopulateAsGameObjectPlayAnimatedSoundCloseGO3(wowObjectModel);
                 Events.AddElement(newEvent);
             }
-            if (wowObjectModel.IsSkeletal)
+            // Companion pet versions get no sound/combat events, so they stay silent after being summoned
+            bool isCompanionPetVersion = wowObjectModel.Properties.CreatureModelTemplate != null && wowObjectModel.Properties.CreatureModelTemplate.IsCompanionPetVersion == true;
+            if (wowObjectModel.IsSkeletal && isCompanionPetVersion == false)
             {
                 // DeathThud / LootEffect ($DTH)
                 M2Event deathThud = new M2Event();

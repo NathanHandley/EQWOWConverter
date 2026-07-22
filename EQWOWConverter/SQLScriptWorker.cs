@@ -853,6 +853,10 @@ namespace EQWOWConverter
                 // Create the records
                 // This scale ensures that creature held equipment is the right size
                 float scale = creatureTemplate.Size * creatureTemplate.Race.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
+
+                // Companion pets normalize to a uniform world height
+                if (creatureTemplate.IsCompanionPet == true && creatureTemplate.ModelTemplate.ModelStandingHeight > Configuration.GENERATE_FLOAT_EPSILON)
+                    scale = Configuration.CREATURE_COMPANION_PETS_MODEL_HEIGHT / creatureTemplate.ModelTemplate.ModelStandingHeight;
                 creatureTemplateSQL.AddRow(creatureTemplate);
                 creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, displayID, scale);
 
@@ -1087,8 +1091,9 @@ namespace EQWOWConverter
             {
                 creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
 
-                // When playing walk/run sounds through the mod (and not an illusion form), need to send the data to the server
-                if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true && creatureModelTemplate.FaceIndex != CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX)
+                // When playing walk/run sounds through the mod (and not an illusion form or a silent companion pet), need to send the data to the server
+                if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true && creatureModelTemplate.FaceIndex != CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX
+                    && creatureModelTemplate.IsCompanionPetVersion == false)
                 {
                     AddCreatureMovementSoundRowIfNeeded(creatureModelTemplate, creatureModelTemplate.DBCCreatureDisplayID);
                 }
