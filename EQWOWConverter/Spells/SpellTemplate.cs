@@ -2288,8 +2288,7 @@ namespace EQWOWConverter.Spells
 
                                 // Add a second for ranged attack speed
                                 SpellEffectWOW newSpellEffectWOW2 = newSpellEffectWOW.Clone();
-                                newSpellEffectWOW2.ActionDescription = string.Empty;
-                                newSpellEffectWOW2.AuraDescription = string.Empty;
+                                newSpellEffectWOW2.ClearDescriptions();
                                 newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModRangedHaste;
                                 if (newSpellEffectWOW2.EffectBasePoints < 0)
                                     newSpellEffectWOW2.EffectMechanic = SpellMechanicType.Slowed;
