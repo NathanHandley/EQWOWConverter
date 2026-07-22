@@ -64,7 +64,7 @@ namespace EQWOWConverter.WOWFiles
             {
                 if (Configuration.CREATURE_FACTION_SHOW_ALL == true)
                     reputationFlags |= 0x01; // Show by default
-                if (baseReputation <= -3000 || reputationIndex == -1)
+                if (baseReputation < 0 || reputationIndex == -1)
                     reputationFlags |= 0x02; // FACTION_FLAG_AT_WAR
             }
             return reputationFlags;

@@ -31,7 +31,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(creatureFaction.FactionTemplateID); // ID
             newRow.AddInt32(creatureFaction.FactionID); // Faction.ID
             newRow.AddInt32(flags); // Flags
-            newRow.AddInt32(8); // FactionGroup.ID (lots of 0, 1, 8)
+            if (creatureFaction.ReputationIndex >= 0)
+                newRow.AddInt32(0); // FactionGroup.ID
+            else
+                newRow.AddInt32(8); // FactionGroup.ID (8 = "Monster")
             newRow.AddInt32(0); // FriendGroup (bitmask field)
             if (creatureFaction.ForceAgro == false && creatureFaction.ReputationIndex < 0)
                 newRow.AddInt32(0); // EnemyGroup (bitmask field)
@@ -59,7 +62,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(creatureFaction.DefendCombatFactionTemplateID); // ID
             newRow.AddInt32(creatureFaction.FactionID); // Faction.ID
             newRow.AddInt32(flags); // Flags
-            newRow.AddInt32(8); // FactionGroup.ID (lots of 0, 1, 8)
+            if (creatureFaction.ReputationIndex >= 0)
+                newRow.AddInt32(0); // FactionGroup.ID
+            else
+                newRow.AddInt32(8); // FactionGroup.ID (8 = "Monster")
             newRow.AddInt32(0); // FriendGroup (bitmask field)
             if (creatureFaction.ForceAgro == false && creatureFaction.ReputationIndex < 0)
                 newRow.AddInt32(0); // EnemyGroup (bitmask field)
