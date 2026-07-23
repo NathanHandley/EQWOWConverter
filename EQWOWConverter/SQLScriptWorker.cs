@@ -1968,7 +1968,10 @@ namespace EQWOWConverter
                 SpellEffectBlock curEffectBlock = spellEffectBlocks[i];
 
                 // Mod data
-                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)", clickyFixedLevel);
+                int blockEQHasteVersion = 0;
+                foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
+                    blockEQHasteVersion = Math.Max(blockEQHasteVersion, blockEffect.EQHasteVersion);
+                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion);
 
                 // Spell power
                 if (spellTemplate.InfluencedBySpellPower == true && commentFragment != " (Worn)")

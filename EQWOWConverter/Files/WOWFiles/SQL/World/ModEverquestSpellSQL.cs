@@ -48,11 +48,12 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`MinTargetLevel` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`MaxCreatureTargetLevel` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`ResistDiff` INT(10) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`HasteType` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(SpellTemplate spellTemplate, int spellID, bool isWorn, int clickyFixedLevel)
+        public void AddRow(SpellTemplate spellTemplate, int spellID, bool isWorn, int clickyFixedLevel, int blockEQHasteVersion)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("SpellID", spellID);
@@ -104,6 +105,19 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("MinTargetLevel", spellTemplate.GetMinimumTargetLevel());
             newRow.AddInt("MaxCreatureTargetLevel", isWorn == true ? 0 : spellTemplate.MaxCreatureTargetLevel);
             newRow.AddInt("ResistDiff", isWorn == true ? 0 : spellTemplate.ResistDiff);
+
+            // EQ haste never stacks within a category, only across them.  0 = no haste, 1 = worn/item, 2 = spell/song/clicky (v1), 3 = v2
+            int hasteType = 0;
+            if (blockEQHasteVersion > 0)
+            {
+                if (isWorn == true)
+                    hasteType = 1;
+                else if (blockEQHasteVersion == 2)
+                    hasteType = 3;
+                else
+                    hasteType = 2;
+            }
+            newRow.AddInt("HasteType", hasteType);
             Rows.Add(newRow);
         }
     }

@@ -2286,6 +2286,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue - 100, attackSpeedEQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "", SpellEffectWOWConversionScaleType.None);
                                 if (newSpellEffectWOW.EffectBasePoints >= 0)
                                 {
+                                    newSpellEffectWOW.EQHasteVersion = eqEffect.EQEffectType == SpellEQEffectType.AttackSpeed2 ? 2 : 1;
                                     newSpellEffectWOW.ActionDescription = string.Concat("increase attack speed by ", newSpellEffectWOW.GetFormattedEffectActionString(true));
                                     newSpellEffectWOW.SetAuraDescription("attack speed increased", true, " by ", "");
                                 }

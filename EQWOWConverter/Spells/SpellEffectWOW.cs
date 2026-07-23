@@ -48,6 +48,7 @@ namespace EQWOWConverter.Spells
         public Vector3 TelePosition = new Vector3();
         public float TeleOrientation;
         public int TeleMapID;
+        public int EQHasteVersion = 0; // Positive attack speed effects only. 0 = not haste, 1 = v1 (spell/song/clicky/worn), 2 = v2 (bard-only "AttackSpeed2")
         private bool AuraDescriptionHasDeferredAmount = false;
         private string AuraDescriptionPrefix = string.Empty;
         private string AuraDescriptionSuffix = string.Empty;
@@ -102,7 +103,8 @@ namespace EQWOWConverter.Spells
                 CalcEffectHighLevel = this.CalcEffectHighLevel,
                 TelePosition = new Vector3(this.TelePosition),
                 TeleOrientation = this.TeleOrientation,
-                TeleMapID = this.TeleMapID
+                TeleMapID = this.TeleMapID,
+                EQHasteVersion = this.EQHasteVersion
             };
         }
 
