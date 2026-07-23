@@ -2466,6 +2466,31 @@ namespace EQWOWConverter
             resistAdjustmentSpellTemplate.ForceHiddenFromDisplay = true;
             spellTemplates.Add(resistAdjustmentSpellTemplate);
 
+            // Everquest Adventurer (permanent aura on new characters, removed by the mod when the player does non-EQ content)
+            if (Configuration.ACHIEVEMENT_EQ_ADVENTURER_ENABLED == true)
+            {
+                SpellTemplate eqAdventurerSpellTemplate = new SpellTemplate();
+                eqAdventurerSpellTemplate.Name = Configuration.ACHIEVEMENT_EQ_ADVENTURER_NAME;
+                eqAdventurerSpellTemplate.WOWSpellID = Configuration.SPELL_EQ_ADVENTURER_AURA_SPELL_ID;
+                eqAdventurerSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                eqAdventurerSpellTemplate.Description = "Marks an adventurer whose deeds belong to Norrath alone.";
+                eqAdventurerSpellTemplate.AuraDescription = "Gaining experience only through Everquest content. Lost if you gain kill credit for a non-Everquest creature, complete a non-Everquest quest, or equip non-Everquest gear.";
+                eqAdventurerSpellTemplate.AuraDuration = new SpellDuration();
+                eqAdventurerSpellTemplate.AuraDuration.IsInfinite = true;
+                eqAdventurerSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
+                eqAdventurerSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                eqAdventurerSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(Configuration.ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID);
+                eqAdventurerSpellTemplate.CastTimeInMS = 0;
+                eqAdventurerSpellTemplate.RecoveryTimeInMS = 0;
+                eqAdventurerSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+                eqAdventurerSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
+                eqAdventurerSpellTemplate.AlwaysPersist = true;
+                eqAdventurerSpellTemplate.CannotBeStolen = true;
+                eqAdventurerSpellTemplate.AuraStaysOnSecondaryClassSwitch = true;
+                eqAdventurerSpellTemplate.TriggersGlobalCooldown = false;
+                spellTemplates.Add(eqAdventurerSpellTemplate);
+            }
+
             // Bash
             int bashAndSlamSpellCategoryID = IDGenerationTool.GenerateID("SpellCategoryID", "bashslam"); // Used for linking cooldown between bash and slam
             if (Configuration.COMBATSKILL_BASH_ENABLED == true)
@@ -3922,7 +3947,7 @@ namespace EQWOWConverter
 
                         // Expendable clickies (potions) and the legacy account reward can be used while silenced
                         bool clickyUsableWhileSilenced = false;
-                        if (itemTemplate.EQClickType == 3 || itemTemplate.WOWEntryID == Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID)
+                        if (itemTemplate.EQClickType == 3 || itemTemplate.WOWEntryID == Configuration.ACHIEVEMENT_TUTORIAL_PORT_STONE_WOW_ITEM_ID)
                             clickyUsableWhileSilenced = true;
 
                         SpellTemplate clickSpellTemplate = spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID];
@@ -3934,7 +3959,7 @@ namespace EQWOWConverter
                         itemTemplate.WOWSpellID1 = clickySpellParameters.WOWSpellID;
 
                         // Legacy account reward uses the same gate tether
-                        if (itemTemplate.WOWEntryID == Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID && Configuration.SPELLS_GATE_TETHER_ENABLED == true)
+                        if (itemTemplate.WOWEntryID == Configuration.ACHIEVEMENT_TUTORIAL_PORT_STONE_WOW_ITEM_ID && Configuration.SPELLS_GATE_TETHER_ENABLED == true)
                         {
                             clickSpellTemplate.Description = string.Concat(clickSpellTemplate.Description, " You will have 30 minutes where you can return to your gate point after casting it. This tether is shared with Gate.");
                             SpellEffectWOW stoneTetherEffect = new SpellEffectWOW(SpellWOWEffectType.TriggerSpell, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0);

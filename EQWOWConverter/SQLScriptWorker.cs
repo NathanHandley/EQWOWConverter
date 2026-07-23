@@ -36,8 +36,6 @@ namespace EQWOWConverter
 {
     internal class SQLScriptWorker
     {
-        // Characters
-        private CharacterAuraSQL characterAuraSQL = new CharacterAuraSQL();
         // World
         private AchievementRewardSQL achievementRewardSQL = new AchievementRewardSQL();
         private AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
@@ -226,8 +224,13 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMin", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMax", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("InvisVsUndeadDetectSpellID", Configuration.SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID.ToString());
+            modEverquestSystemConfigsSQL.AddRow("ItemTemplateIDMin", Configuration.SQL_ITEM_TEMPLATE_ENTRY_START.ToString());
+            modEverquestSystemConfigsSQL.AddRow("ItemTemplateIDMax", Configuration.SQL_ITEM_TEMPLATE_ENTRY_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("LegacyAchievementID", Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true ? Configuration.DBCID_ACHIEVEMENT_ID_START.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("LegacyAchievementAccountCreatedBefore", Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true ? Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE : "");
+            modEverquestSystemConfigsSQL.AddRow("AdventurerAchievementID", Configuration.ACHIEVEMENT_EQ_ADVENTURER_ENABLED == true ? (Configuration.DBCID_ACHIEVEMENT_ID_START + 1).ToString() : "0");
+            modEverquestSystemConfigsSQL.AddRow("AdventurerAuraSpellID", Configuration.ACHIEVEMENT_EQ_ADVENTURER_ENABLED == true ? Configuration.SPELL_EQ_ADVENTURER_AURA_SPELL_ID.ToString() : "0");
+            modEverquestSystemConfigsSQL.AddRow("AdventurerAchievementLevel", Configuration.ACHIEVEMENT_EQ_ADVENTURER_LEVEL.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMin", Configuration.DBCID_MAP_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMax", Configuration.DBCID_MAP_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("ShipEntryTemplateIDMin", Configuration.SQL_GAMEOBJECTTEMPLATE_SHIP_ID_START.ToString());
@@ -263,14 +266,14 @@ namespace EQWOWConverter
 
         private void PopulateAchievementData(List<CreatureTemplate> creatureTemplates)
         {
-            if (Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == false)
+            if (Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == false && Configuration.ACHIEVEMENT_EQ_ADVENTURER_ENABLED == false)
                 return;
 
             // The reward mail 'from' name shown in the client is the name of the sender creature template
             int senderCreatureTemplateID = 0;
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
-                if (creatureTemplate.Name == Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME)
+                if (creatureTemplate.Name == Configuration.ACHIEVEMENT_MAIL_SENDER_CREATURE_NAME)
                 {
                     senderCreatureTemplateID = creatureTemplate.WOWCreatureTemplateID;
                     break;
@@ -278,12 +281,16 @@ namespace EQWOWConverter
             }
             if (senderCreatureTemplateID == 0)
             {
-                Logger.WriteError("ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED was true but no creature template named '" + Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME + "' could be found in CreatureTemplates.csv, so no reward mail will be sent");
+                Logger.WriteError("An achievement was enabled but no creature template named '" + Configuration.ACHIEVEMENT_MAIL_SENDER_CREATURE_NAME + "' could be found in CreatureTemplates.csv, so no reward mail will be sent");
                 return;
             }
 
-            achievementRewardSQL.AddRow(Configuration.DBCID_ACHIEVEMENT_ID_START, Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID, senderCreatureTemplateID, 
-                Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_NAME, Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT);
+            if (Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true)
+                achievementRewardSQL.AddRow(Configuration.DBCID_ACHIEVEMENT_ID_START, Configuration.ACHIEVEMENT_TUTORIAL_PORT_STONE_WOW_ITEM_ID, senderCreatureTemplateID,
+                    Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_NAME, Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT);
+            if (Configuration.ACHIEVEMENT_EQ_ADVENTURER_ENABLED == true)
+                achievementRewardSQL.AddRow(Configuration.DBCID_ACHIEVEMENT_ID_START + 1, Configuration.ACHIEVEMENT_TUTORIAL_PORT_STONE_WOW_ITEM_ID, senderCreatureTemplateID,
+                    Configuration.ACHIEVEMENT_EQ_ADVENTURER_NAME, Configuration.ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT);
         }
 
         private void PopulateCreatureGossipData()
@@ -2400,8 +2407,6 @@ namespace EQWOWConverter
 
         private void OutputSQLScriptsToDisk()
         {
-            // Characters
-            characterAuraSQL.SaveToDisk("character_aura", SQLFileType.Characters);
             // World
             achievementRewardSQL.SaveToDisk("achievement_reward", SQLFileType.World);
             areaTriggerSQL.SaveToDisk("areatrigger", SQLFileType.World);
@@ -2504,27 +2509,27 @@ namespace EQWOWConverter
             try
             {
                 // Character scripts
-                string charactersSQLScriptFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "SQLScripts", SQLFileType.Characters.ToString());
-                if (Directory.Exists(charactersSQLScriptFolder) == false)
-                {
-                    Logger.WriteError("Could not deploy SQL scripts to server. Path '" + charactersSQLScriptFolder + "' did not exist");
-                    return;
-                }
-                using (MySqlConnection connection = new MySqlConnection(Configuration.DEPLOY_SQL_CONNECTION_STRING_CHARACTERS))
-                {
-                    connection.Open();
-                    string[] sqlFiles = Directory.GetFiles(charactersSQLScriptFolder);
-                    foreach (string sqlFile in sqlFiles)
-                    {
-                        currentScriptFileName = sqlFile;
-                        MySqlCommand command = new MySqlCommand();
-                        command.Connection = connection;
-                        command.CommandTimeout = 288000;
-                        command.CommandText = FileTool.ReadAllDataFromFile(sqlFile);
-                        command.ExecuteNonQuery();
-                    }
-                    connection.Close();
-                }
+                //string charactersSQLScriptFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "SQLScripts", SQLFileType.Characters.ToString());
+                //if (Directory.Exists(charactersSQLScriptFolder) == false)
+                //{
+                //    Logger.WriteError("Could not deploy SQL scripts to server. Path '" + charactersSQLScriptFolder + "' did not exist");
+                //    return;
+                //}
+                //using (MySqlConnection connection = new MySqlConnection(Configuration.DEPLOY_SQL_CONNECTION_STRING_CHARACTERS))
+                //{
+                //    connection.Open();
+                //    string[] sqlFiles = Directory.GetFiles(charactersSQLScriptFolder);
+                //    foreach (string sqlFile in sqlFiles)
+                //    {
+                //        currentScriptFileName = sqlFile;
+                //        MySqlCommand command = new MySqlCommand();
+                //        command.Connection = connection;
+                //        command.CommandTimeout = 288000;
+                //        command.CommandText = FileTool.ReadAllDataFromFile(sqlFile);
+                //        command.ExecuteNonQuery();
+                //    }
+                //    connection.Close();
+                //}
 
                 // World scripts
                 string worldSQLScriptFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "SQLScripts", SQLFileType.World.ToString());

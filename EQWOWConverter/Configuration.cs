@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 53;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 54;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -866,6 +866,9 @@ namespace EQWOWConverter
         // Hidden short-duration aura the mod applies to a caster during a cast to shift the spell hit roll by the EQ ResistDiff amount
         public static int SPELL_RESIST_ADJUSTMENT_SPELL_ID = 86915;
 
+        // Permanent aura placed on newly created characters, lost by doing non-EQ content (see ACHIEVEMENT_EQ_ADVENTURER_ENABLED)
+        public static int SPELL_EQ_ADVENTURER_AURA_SPELL_ID = 86916;
+
         // EQ has no "daze" snare when a creature melee-hits a player from behind so this can disable it (in EQ zones only)
         public static bool COMBAT_DAZE_IN_EQ_ZONES_ENABLED = true;
 
@@ -956,14 +959,33 @@ namespace EQWOWConverter
         // Accounts created before this date (server time) are awarded the legacy account feat of strength
         public static string ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE = "2026-08-01 00:00:00";
 
-        // Name of the creature that sends the reward mail, which must match a creature in CreatureTemplates.csv
-        public static string ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME = "Norrath Observer";
-
         // Body text of the reward mail sent when the legacy account feat of strength is awarded
         public static string ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT = "I have seen your history, and award you this token to return to your roots.";
 
-        // WOW entry ID of the item attached to the reward mail
-        public static int ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID = 110431;
+        // If true, newly created characters get the "Everquest Adventurer" aura, and earn a feat of strength achievement if they reach
+        // ACHIEVEMENT_EQ_ADVENTURER_LEVEL without ever losing it (see SPELL_EQ_ADVENTURER_AURA_SPELL_ID for the aura)
+        public static bool ACHIEVEMENT_EQ_ADVENTURER_ENABLED = true;
+
+        // The name of the everquest adventurer feat of strength achievement (and its aura), also used as the reward mail subject
+        public static string ACHIEVEMENT_EQ_ADVENTURER_NAME = "Everquest Adventurer";
+
+        // The description of the everquest adventurer feat of strength achievement
+        public static string ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION = "Awarded to accounts that have had at least one character reach level 60 having only ever adventured through Everquest content.";
+
+        // Which EQ item icon to use for the everquest adventurer feat of strength achievement and aura
+        public static int ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID = 145;
+
+        // Level a character must reach while still holding the everquest adventurer aura to earn the feat of strength
+        public static int ACHIEVEMENT_EQ_ADVENTURER_LEVEL = 60;
+
+        // Body text of the reward mail sent when the everquest adventurer feat of strength is awarded
+        public static string ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT = "You walked the long road of Norrath alone and unswayed. Take this token in recognition of your journey.";
+
+        // Name of the creature that sends achievement reward mail, which must match a creature in CreatureTemplates.csv
+        public static string ACHIEVEMENT_MAIL_SENDER_CREATURE_NAME = "Norrath Observer";
+
+        // WOW entry ID of the item attached to achievement reward mail
+        public static int ACHIEVEMENT_TUTORIAL_PORT_STONE_WOW_ITEM_ID = 110431;
 
         //=====================================================================
         // Fishing
@@ -1450,9 +1472,15 @@ namespace EQWOWConverter
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION", ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION, "", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID", ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID, "", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE", ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE, "Accounts created before this date (server time) are awarded the feat of strength", false);
-            OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME", ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME, "Sender of the reward mail, which must match a creature name in CreatureTemplates.csv", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT", ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT, "", false);
-            OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID", ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID, "WOW entry ID of the item attached to the reward mail");
+            OutputVariableToConfig("ACHIEVEMENT_EQ_ADVENTURER_ENABLED", ACHIEVEMENT_EQ_ADVENTURER_ENABLED, "If true, new characters get the Everquest Adventurer aura and a feat of strength for reaching ACHIEVEMENT_EQ_ADVENTURER_LEVEL without losing it", false);
+            OutputVariableToConfig("ACHIEVEMENT_EQ_ADVENTURER_NAME", ACHIEVEMENT_EQ_ADVENTURER_NAME, "", false);
+            OutputVariableToConfig("ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION", ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION, "", false);
+            OutputVariableToConfig("ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID", ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("ACHIEVEMENT_EQ_ADVENTURER_LEVEL", ACHIEVEMENT_EQ_ADVENTURER_LEVEL, "Level a character must reach while still holding the aura to earn the feat of strength", false);
+            OutputVariableToConfig("ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT", ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT, "", false);
+            OutputVariableToConfig("ACHIEVEMENT_MAIL_SENDER_CREATURE_NAME", ACHIEVEMENT_MAIL_SENDER_CREATURE_NAME, "Sender of achievement reward mail, which must match a creature name in CreatureTemplates.csv", false);
+            OutputVariableToConfig("ACHIEVEMENT_MAIL_ITEM_WOW_ITEM_ID", ACHIEVEMENT_TUTORIAL_PORT_STONE_WOW_ITEM_ID, "WOW entry ID of the item attached to achievement reward mail");
             OutputTextLineToConfig("# If true, Priests of Discord (in Norrath) will teleport players to Azeroth, and Azeroth will have Priests of Discord to send players back to Norrath");
             OutputVariableToConfig("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION, "Note that CreatureFactionClassAlignment.csv and PlayerWOWRaceProperties.csv factor into Norrath destinations", false);
             OutputVariableToConfig("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID, "");
@@ -1967,9 +1995,15 @@ namespace EQWOWConverter
             ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION);
             ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID);
             ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE);
-            ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_SENDER_CREATURE_NAME);
             ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT);
-            ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_ITEM_WOW_ITEM_ID);
+            ACHIEVEMENT_EQ_ADVENTURER_ENABLED = ReadVariableFromConfigString("ACHIEVEMENT_EQ_ADVENTURER_ENABLED", configValuesByVariableName, ACHIEVEMENT_EQ_ADVENTURER_ENABLED);
+            ACHIEVEMENT_EQ_ADVENTURER_NAME = ReadVariableFromConfigString("ACHIEVEMENT_EQ_ADVENTURER_NAME", configValuesByVariableName, ACHIEVEMENT_EQ_ADVENTURER_NAME);
+            ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION = ReadVariableFromConfigString("ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION", configValuesByVariableName, ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION);
+            ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID = ReadVariableFromConfigString("ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID", configValuesByVariableName, ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID);
+            ACHIEVEMENT_EQ_ADVENTURER_LEVEL = ReadVariableFromConfigString("ACHIEVEMENT_EQ_ADVENTURER_LEVEL", configValuesByVariableName, ACHIEVEMENT_EQ_ADVENTURER_LEVEL);
+            ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT = ReadVariableFromConfigString("ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT", configValuesByVariableName, ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT);
+            ACHIEVEMENT_MAIL_SENDER_CREATURE_NAME = ReadVariableFromConfigString("ACHIEVEMENT_MAIL_SENDER_CREATURE_NAME", configValuesByVariableName, ACHIEVEMENT_MAIL_SENDER_CREATURE_NAME);
+            ACHIEVEMENT_TUTORIAL_PORT_STONE_WOW_ITEM_ID = ReadVariableFromConfigString("ACHIEVEMENT_MAIL_ITEM_WOW_ITEM_ID", configValuesByVariableName, ACHIEVEMENT_TUTORIAL_PORT_STONE_WOW_ITEM_ID);
 
             WORLDMAP_DEBUG_GENERATION_MODE_ENABLED = ReadVariableFromConfigString("WORLDMAP_DEBUG_GENERATION_MODE_ENABLED", configValuesByVariableName, WORLDMAP_DEBUG_GENERATION_MODE_ENABLED);
             WORLDMAP_LEFT_BORDER_PIXEL_SIZE = ReadVariableFromConfigString("WORLDMAP_LEFT_BORDER_PIXEL_SIZE", configValuesByVariableName, WORLDMAP_LEFT_BORDER_PIXEL_SIZE);

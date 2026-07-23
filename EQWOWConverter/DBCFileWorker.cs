@@ -259,6 +259,9 @@ namespace EQWOWConverter
             if (Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true)
                 achievementDBC.AddRowForFeatOfStrength(Configuration.DBCID_ACHIEVEMENT_ID_START, Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_NAME,
                     Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION, SpellIconDBC.GetDBCIDForItemIconID(Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID));
+            if (Configuration.ACHIEVEMENT_EQ_ADVENTURER_ENABLED == true)
+                achievementDBC.AddRowForFeatOfStrength(Configuration.DBCID_ACHIEVEMENT_ID_START + 1, Configuration.ACHIEVEMENT_EQ_ADVENTURER_NAME,
+                    Configuration.ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION, SpellIconDBC.GetDBCIDForItemIconID(Configuration.ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID));
 
             // Liquid is common
             liquidTypeDBC.AddRows();
