@@ -7,7 +7,7 @@ To see video references, go here: [YouTube Playlist](https://youtube.com/playlis
 
 # Requirements
 - Windows build environment
-- AzerothCore based WoW 3.3.5 server (last through this changeset: https://github.com/azerothcore/azerothcore-wotlk/commit/cfeb6d85517aba1492d7ddacdfc73b9fa770b4af)
+- AzerothCore based WoW 3.3.5 server (last through this changeset: https://github.com/azerothcore/azerothcore-wotlk/commit/f69161bcfad69ae8b07a5c9957cb8321e4700446)
 - Install the "mod-everquest" mod into AzerothCore (https://github.com/NathanHandley/mod-everquest)
 - Installed unpatched client of the EverQuest Trilogy
 - Installed 3.3.5a WoW client, US version (which must be patched to not check for MD5 signatures, similar to other modded projects) 

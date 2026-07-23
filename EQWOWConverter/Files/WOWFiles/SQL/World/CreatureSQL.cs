@@ -30,7 +30,7 @@ namespace EQWOWConverter.WOWFiles
             return sb.ToString();
         }
 
-        public void AddRow(int guid, int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition,
+        public void AddRow(int guid, int id, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition,
             float orientation, CreatureMovementType movementType, int spawnTimeInSec, string comment, bool useModScript)
         {
             int currentWaypoint = 0;
@@ -39,9 +39,7 @@ namespace EQWOWConverter.WOWFiles
 
             SQLRow newRow = new SQLRow();
             newRow.AddInt("guid", guid);
-            newRow.AddInt("id1", id1);
-            newRow.AddInt("id2", 0);
-            newRow.AddInt("id3", 0);
+            newRow.AddInt("id", id);
             newRow.AddInt("map", mapID);
             newRow.AddInt("zoneId", zoneID);
             newRow.AddInt("areaId", areaID);
