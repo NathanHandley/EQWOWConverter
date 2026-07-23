@@ -204,7 +204,7 @@ namespace EQWOWConverter.Spells
 
             // Run the calculation on both ends of the level band, if relevant
             EffectRealPointsPerLevel = 0;
-            if (eqFormula == SpellEQBaseValueFormulaType.BaseDivideBy100 || eqFormula == SpellEQBaseValueFormulaType.UnknownUseBaseOrMaxWhicheverHigher || Configuration.SPELL_EFFECT_USE_DYNAMIC_EFFECT_VALUES == false)
+            if (eqFormula == SpellEQBaseValueFormulaType.BaseValue || eqFormula == SpellEQBaseValueFormulaType.BaseDivideBy100 || eqFormula == SpellEQBaseValueFormulaType.UnknownUseBaseOrMaxWhicheverHigher || Configuration.SPELL_EFFECT_USE_DYNAMIC_EFFECT_VALUES == false)
             {
                 EffectBasePoints = Convert.ToInt32(GetEffectAmountFloatValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
                     valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS));

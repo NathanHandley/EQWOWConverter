@@ -2279,8 +2279,11 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModMeleeHaste;
 
-                                // Baseline for attack speed is 100, so above that is increase and below that is decrease
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue - 100, eqEffect.EQMaxValue - 100, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "", SpellEffectWOWConversionScaleType.None);
+                                // Baseline for attack speed is 100, so above that is increase and below that is decrease.  A max of 0 means "no max", so leave it 0
+                                int attackSpeedEQMaxValue = eqEffect.EQMaxValue;
+                                if (attackSpeedEQMaxValue != 0)
+                                    attackSpeedEQMaxValue -= 100;
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue - 100, attackSpeedEQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "", SpellEffectWOWConversionScaleType.None);
                                 if (newSpellEffectWOW.EffectBasePoints >= 0)
                                 {
                                     newSpellEffectWOW.ActionDescription = string.Concat("increase attack speed by ", newSpellEffectWOW.GetFormattedEffectActionString(true));

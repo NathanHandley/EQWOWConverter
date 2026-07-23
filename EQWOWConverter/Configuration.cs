@@ -714,8 +714,8 @@ namespace EQWOWConverter
         // How much to modify the duration of non-bard crowd control spells
         public static float SPELLS_CROWD_CONTROL_DURATION_MOD = 0.5f;
 
-        // The most that a movement speed reduction can slow a target.  Should be above -100
-        public static int SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE = -90;
+        // The most that a movement speed reduction can slow a target, and -100 fully stops movement (EQ-like for spells such as Torpor) and is the lowest valid value
+        public static int SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE = -100;
 
         // Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier
         // Increase or decrease this to modify how long spells work for and, in effect, the damage they do
@@ -1722,7 +1722,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS", SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS, "");
             OutputVariableToConfig("SPELLS_DOT_TIME_DURATION_MOD", SPELLS_DOT_TIME_DURATION_MOD, "How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)");
             OutputVariableToConfig("SPELLS_CROWD_CONTROL_DURATION_MOD", SPELLS_CROWD_CONTROL_DURATION_MOD, "How much to modify the duration of non-bard crowd control spells");
-            OutputVariableToConfig("SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE", SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE, "The most that a movement speed reduction can slow a target.  Should be above -100");
+            OutputVariableToConfig("SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE", SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE, "The most that a movement speed reduction can slow a target, and -100 fully stops movement (EQ-like for spells such as Torpor) and is the lowest valid value");
             OutputVariableToConfig("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", SPELL_PERIODIC_SECONDS_PER_TICK_WOW, "Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier");
             OutputVariableToConfig("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS, "This is 'added time' in the periodic tick that comes from bard casters.");
             OutputVariableToConfig("SPELL_RECOVERY_TIME_MINIMUM_IN_MS", SPELL_RECOVERY_TIME_MINIMUM_IN_MS, "This is the minimum allowable recovery time any spell can have, which any smaller will become zero");
