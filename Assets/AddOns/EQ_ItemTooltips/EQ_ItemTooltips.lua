@@ -19,6 +19,10 @@
 --   * Item tooltips (bags, equipped, vendor hover, chat links): the "EQ Classes:" line turns
 --     green (usable) or red (not usable).
 --   * Merchant window: the item name turns red when the item is not usable by your class.
+--   * Auction house (browse/bids/auctions tabs): the item icon gets the default UI's red
+--     "can't use" tint when the item is not usable by your class.  (The "Usable Items"
+--     search filter is handled server-side by mod-everquest, which strips EQ-class-unusable
+--     items out of the search result packet.)
 --
 
 local EQCLASS_PREFIX = "EQCLASS";
@@ -73,9 +77,12 @@ local function EQItemTooltips_UpdatePlayerClass(payload)
 			end
 			haveClass = true;
 
-			-- Repaint an open merchant window so a class switch reflects immediately
+			-- Repaint an open merchant or auction window so a class switch reflects immediately
 			if ( MerchantFrame and MerchantFrame:IsShown() ) then
 				EQItemTooltips_UpdateMerchant();
+			end
+			if ( AuctionFrame and AuctionFrame:IsShown() ) then
+				EQItemTooltips_UpdateAuctionHouse();
 			end
 			return;
 		end
@@ -186,14 +193,11 @@ local function EQItemTooltips_ColorTooltip(tooltip)
 	end
 end
 
--- Hidden tooltip used to read merchant items' class line without showing anything.
+-- Hidden tooltip used to read items' class line without showing anything.
 local scanner = CreateFrame("GameTooltip", "EQItemTooltipsScanner", UIParent, "GameTooltipTemplate");
 
--- Returns usability (true/false) for a merchant slot, or nil if the item has no class line.
--- Scans the item link (reliable) rather than SetMerchantItem, which does not populate the
--- description on a hidden tooltip.
-local function EQItemTooltips_MerchantItemUsable(merchantIndex)
-	local link = GetMerchantItemLink(merchantIndex);
+-- Returns usability (true/false) for an item link, or nil if the item has no class line.
+local function EQItemTooltips_LinkUsable(link)
 	if ( not link ) then
 		return nil;
 	end
@@ -208,6 +212,13 @@ local function EQItemTooltips_MerchantItemUsable(merchantIndex)
 		end
 	end
 	return nil;
+end
+
+-- Returns usability (true/false) for a merchant slot, or nil if the item has no class line.
+-- Scans the item link (reliable) rather than SetMerchantItem, which does not populate the
+-- description on a hidden tooltip.
+local function EQItemTooltips_MerchantItemUsable(merchantIndex)
+	return EQItemTooltips_LinkUsable(GetMerchantItemLink(merchantIndex));
 end
 
 -- Runs after the default merchant refresh.  For items that declare EQ class usability, EQ class is
@@ -260,6 +271,60 @@ function EQItemTooltips_UpdateMerchant()
 	end
 end
 
+-- Applies the default UI's "can't use" red icon tint (the same vertex color the AuctionFrame*_Update
+-- functions use for items failing WOW usability) to auction rows holding items the player's EQ class can
+-- not use.  Only ever paints toward red: rows the default UI already drew red (level requirement, etc)
+-- stay red, and EQ-usable rows are left exactly as the default UI drew them.
+local function EQItemTooltips_PaintAuctionRows(listType, buttonPrefix, numToDisplay, scrollFrame)
+	if ( not haveClass or not scrollFrame ) then
+		return;
+	end
+	local offset = FauxScrollFrame_GetOffset(scrollFrame);
+	for i = 1, numToDisplay do
+		local button = _G[buttonPrefix .. i];
+		if ( button and button:IsShown() ) then
+			local usable = EQItemTooltips_LinkUsable(GetAuctionItemLink(listType, offset + i));
+			if ( usable == false ) then
+				local iconTexture = _G[buttonPrefix .. i .. "ItemIconTexture"];
+				if ( iconTexture ) then
+					iconTexture:SetVertexColor(1.0, 0.1, 0.1);
+				end
+			end
+		end
+	end
+end
+
+-- Repaints all three auction house tabs (safe no-ops for tabs that are not populated / shown).
+function EQItemTooltips_UpdateAuctionHouse()
+	EQItemTooltips_PaintAuctionRows("list", "BrowseButton", NUM_BROWSE_TO_DISPLAY, BrowseScrollFrame);
+	EQItemTooltips_PaintAuctionRows("bidder", "BidButton", NUM_BIDS_TO_DISPLAY, BidScrollFrame);
+	EQItemTooltips_PaintAuctionRows("owner", "AuctionsButton", NUM_AUCTIONS_TO_DISPLAY, AuctionsScrollFrame);
+end
+
+local function EQItemTooltips_UpdateAuctionBrowse()
+	EQItemTooltips_PaintAuctionRows("list", "BrowseButton", NUM_BROWSE_TO_DISPLAY, BrowseScrollFrame);
+end
+
+local function EQItemTooltips_UpdateAuctionBids()
+	EQItemTooltips_PaintAuctionRows("bidder", "BidButton", NUM_BIDS_TO_DISPLAY, BidScrollFrame);
+end
+
+local function EQItemTooltips_UpdateAuctionOwned()
+	EQItemTooltips_PaintAuctionRows("owner", "AuctionsButton", NUM_AUCTIONS_TO_DISPLAY, AuctionsScrollFrame);
+end
+
+-- The auction UI is load-on-demand, so these hooks install when Blizzard_AuctionUI loads.
+local auctionHooksInstalled = false;
+local function EQItemTooltips_TryInstallAuctionHooks()
+	if ( auctionHooksInstalled or not AuctionFrameBrowse_Update ) then
+		return;
+	end
+	auctionHooksInstalled = true;
+	hooksecurefunc("AuctionFrameBrowse_Update", EQItemTooltips_UpdateAuctionBrowse);
+	hooksecurefunc("AuctionFrameBid_Update", EQItemTooltips_UpdateAuctionBids);
+	hooksecurefunc("AuctionFrameAuctions_Update", EQItemTooltips_UpdateAuctionOwned);
+end
+
 -- Tooltip hooks
 GameTooltip:HookScript("OnTooltipSetItem", EQItemTooltips_ColorTooltip);
 ItemRefTooltip:HookScript("OnTooltipSetItem", EQItemTooltips_ColorTooltip);
@@ -267,13 +332,23 @@ ItemRefTooltip:HookScript("OnTooltipSetItem", EQItemTooltips_ColorTooltip);
 -- Merchant window hook
 hooksecurefunc("MerchantFrame_UpdateMerchantInfo", EQItemTooltips_UpdateMerchant);
 
+-- Auction UI hooks (in case Blizzard_AuctionUI is somehow already in, otherwise ADDON_LOADED installs them)
+EQItemTooltips_TryInstallAuctionHooks();
+
 -- Class-state feed.  The server broadcasts EQCLASS as a hidden addon message; we also ask for it
 -- on entering the world (silently handled by ".class uiinfo") so the addon is self-sufficient and
 -- not dependent on the EQ Class pane having been opened.
 local eventFrame = CreateFrame("Frame");
 eventFrame:RegisterEvent("CHAT_MSG_ADDON");
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
+eventFrame:RegisterEvent("ADDON_LOADED");
 eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2)
+	if ( event == "ADDON_LOADED" ) then
+		if ( arg1 == "Blizzard_AuctionUI" ) then
+			EQItemTooltips_TryInstallAuctionHooks();
+		end
+		return;
+	end
 	if ( event == "PLAYER_ENTERING_WORLD" ) then
 		SendChatMessage(".class uiinfo", "SAY");
 		return;
