@@ -125,12 +125,12 @@ namespace EQWOWConverter.Creatures
         public bool IsCompanionPet = false;
         public bool IsIllusionForm = false; 
         public float ModelTemplateScale = 1.0f; // Used for form changes
+        public float CompanionPetSizeMod = 1.0f;
         public bool IsStableMaster = false;
         public bool IsReagentVendor = false;
         public float ExperiencMultiplier = 1;
         public float AgroSocialDistanceMod = 1.0f;
 
-        private static readonly object CreatureIDsLock = new object();
         private static int CURRENT_CREATURE_EQID = 200000;
 
         public bool IsInteractive()

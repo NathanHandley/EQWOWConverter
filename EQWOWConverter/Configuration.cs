@@ -604,7 +604,7 @@ namespace EQWOWConverter
         public static float CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT = 0.3f;
         public static float CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT = 1.0f;
         public static float CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT = 5.0f;
-        public static float CREATURE_COMPANION_PETS_MODEL_HEIGHT = 0.5f;
+        public static float CREATURE_COMPANION_PETS_MODEL_HEIGHT = 0.7f;
 
         //=====================================================================
         // Items

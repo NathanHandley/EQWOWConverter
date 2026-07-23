@@ -882,7 +882,7 @@ namespace EQWOWConverter
 
                 // Companion pets normalize to a uniform world height
                 if (creatureTemplate.IsCompanionPet == true && creatureTemplate.ModelTemplate.ModelStandingHeight > Configuration.GENERATE_FLOAT_EPSILON)
-                    scale = Configuration.CREATURE_COMPANION_PETS_MODEL_HEIGHT / creatureTemplate.ModelTemplate.ModelStandingHeight;
+                    scale = (Configuration.CREATURE_COMPANION_PETS_MODEL_HEIGHT / creatureTemplate.ModelTemplate.ModelStandingHeight) * creatureTemplate.CompanionPetSizeMod;
                 creatureTemplateSQL.AddRow(creatureTemplate);
                 creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, displayID, scale);
 

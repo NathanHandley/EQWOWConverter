@@ -36,6 +36,7 @@ namespace EQWOWConverter.Creatures
         public int WOWSpellID = 0;
         public bool IsHighDropRate = false;
         public string Name = string.Empty;
+        public float SizeMod = 1f;
         public int RaceID = 0;
         public int MatchGender = -1;
         public int MatchTexture = -1;
@@ -82,6 +83,7 @@ namespace EQWOWConverter.Creatures
                 else if (dropRate != "low")
                     Logger.WriteError("CompanionPet with id '", companionPet.ID.ToString(), "' has an unhandled drop_rate of '", dropRate, "', so 'low' will be used");
                 companionPet.Name = columns["name"];
+                companionPet.SizeMod = Convert.ToSingle(columns["size_mod"]);
                 companionPet.RaceID = Convert.ToInt32(columns["race_id"]);
                 companionPet.MatchGender = Convert.ToInt32(columns["match_gender"]);
                 companionPet.MatchTexture = Convert.ToInt32(columns["match_texture"]);

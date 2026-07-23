@@ -2231,6 +2231,7 @@ namespace EQWOWConverter
                 CreatureTemplate companionCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(companionPet.Name, creatureRace, companionPet.DisplayGender,
                     companionPet.DisplayHelmTexture, companionPet.DisplayTexture, companionPet.DisplayFace, 0, 1.0f, 35, companionPet.WOWSpellID);
                 companionCreatureTemplate.IsCompanionPet = true;
+                companionCreatureTemplate.CompanionPetSizeMod = companionPet.SizeMod;
                 companionPet.CreatureTemplate = companionCreatureTemplate;
 
                 // Summoning plays the race idle sound, falling back to the attack sound when there is no idle sound
