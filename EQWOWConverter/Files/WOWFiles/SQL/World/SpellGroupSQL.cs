@@ -20,7 +20,8 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM spell_group WHERE `id` >= " + Configuration.SQL_SPELL_GROUP_ID_START.ToString() + " AND `id` <= " + Configuration.SQL_SPELL_GROUP_ID_END + ";";
+            return "DELETE FROM spell_group WHERE (`id` >= " + Configuration.SQL_SPELL_GROUP_ID_START.ToString() + " AND `id` <= " + Configuration.SQL_SPELL_GROUP_ID_END + ") OR (`id` >= "
+                + Configuration.DBCID_SPELL_ID_START.ToString() + " AND `id` <= " + Configuration.DBCID_SPELL_ID_END.ToString() + ");";
         }
 
         public void AddRow(int id, int wowSpellID)

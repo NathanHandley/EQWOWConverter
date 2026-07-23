@@ -1937,6 +1937,18 @@ namespace EQWOWConverter
                 spellLinkedSpellSQL.AddRowForHitTrigger(triggerBlock.WOWSpellID, chainedSpellID, chainedSpellName);
         }
 
+        // Recasting a spell should refresh it instead of stack-competing with itself, so every cast group member also gets a single-member
+        // subgroup (id = spell id) referenced negatively in the parent group which makes the core skip the group stack rule when comparing
+        // a spell against itself.  Might be a better way to do this, but this works.        
+        HashSet<int> SelfExceptionSpellGroupSpellIDsAdded = new HashSet<int>();
+        private void AddCastSpellGroupMember(int spellGroupStackingID, int wowSpellID)
+        {
+            spellGroupSQL.AddRow(spellGroupStackingID, wowSpellID);
+            if (SelfExceptionSpellGroupSpellIDsAdded.Add(wowSpellID) == true)
+                spellGroupSQL.AddRow(wowSpellID, wowSpellID);
+            spellGroupSQL.AddRow(spellGroupStackingID, -wowSpellID);
+        }
+
         HashSet<int> PetSpellIDsAdded = new HashSet<int>();
         private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, string commentFragment, int clickyFixedLevel = 0)
         {
@@ -2013,11 +2025,11 @@ namespace EQWOWConverter
                 // Stack rules
                 foreach (int spellGroupStackingID in spellTemplate.SpellGroupStackingIDs)
                 {
-                    spellGroupSQL.AddRow(spellGroupStackingID, spellTemplate.WOWSpellID);
+                    AddCastSpellGroupMember(spellGroupStackingID, spellTemplate.WOWSpellID);
                     if (spellTemplate.WOWSpellIDProcAndGoodEffect != -1)
-                        spellGroupSQL.AddRow(spellGroupStackingID, spellTemplate.WOWSpellIDProcAndGoodEffect);
+                        AddCastSpellGroupMember(spellGroupStackingID, spellTemplate.WOWSpellIDProcAndGoodEffect);
                     for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
-                        spellGroupSQL.AddRow(spellGroupStackingID, spellTemplate.ClickySpellParatemers[clickyIndex].WOWSpellID);
+                        AddCastSpellGroupMember(spellGroupStackingID, spellTemplate.ClickySpellParatemers[clickyIndex].WOWSpellID);
                 }
 
                 // Worn auras are item bonuses in EQ that never conflict with cast buffs, so they only join worn-specific groups
