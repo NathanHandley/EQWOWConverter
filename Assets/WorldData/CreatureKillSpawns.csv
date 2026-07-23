@@ -20,7 +20,7 @@ id|zone|trigger_eq_npc_id|action|target_eq_npc_id|chance|alt_group|alt_id|alt_we
 19|airplane|71018|spawn|71110|100|0|0|0|1|0|10|0|0|0|0|0|||1|0|0|-1|-1|death|0|an_essence_harvester
 20|airplane|71018|spawn|71110|100|0|0|0|1|0|-10|0|0|0|0|0|||1|0|0|-1|-1|death|0|an_essence_harvester
 21|airplane|71021|spawn|71058|100|0|0|0|1|0|0|0|0|0|0|0|||0|0|0|-1|-1|death|0|Gorgalosk
-22|airplane|71031|spawn|71059|100|0|0|0|0|-236|-386|-317|201.5|0|0|71059|71111,71031||0|0|0|-1|-1|death|0|Protector_of_Sky via Key_Master
+22|airplane|71031|spawn|71059|100|0|0|0|0|-236|-386|-317|201.5|0|0|71059|7,111,171,031||0|0|0|-1|-1|death|0|Protector_of_Sky via Key_Master
 23|airplane|71032|spawn|71058|100|0|0|0|1|0|0|0|0|0|0|0|||0|0|0|-1|-1|death|0|a_thunder_spirit_princess
 24|airplane|71034|spawn|71060|100|0|0|0|0|-270.1|-1462.2|1250.9|62.9|0|0|71060|||0|0|0|-1|-1|death|0|Overseer_of_Air
 25|airplane|71057|spawn|71034|100|0|0|0|0|767.1|-540.6|174.1|65|0|0|71034|||0|0|0|-1|-1|death|0|Noble_Dojorn
@@ -35,7 +35,7 @@ id|zone|trigger_eq_npc_id|action|target_eq_npc_id|chance|alt_group|alt_id|alt_we
 34|airplane|71105|spawn|71107|100|0|0|0|1|0|0|0|0|0|0|0|||0|0|0|-1|-1|death|0|71105
 35|airplane|71107|spawn|71101|100|0|0|0|1|0|0|0|0|0|0|0|||0|0|0|-1|-1|death|0|71107
 36|airplane|71110|spawn|71100|100|0|0|0|1|0|0|0|0|0|0|0|||1|0|0|-1|-1|death|0|a_soul_harvester
-37|airplane|71111|spawn|71059|100|0|0|0|0|-236|-386|-317|201.5|0|0|71059|71111,71031||0|0|0|-1|-1|death|0|Protector_of_Sky via Key_Master
+37|airplane|71111|spawn|71059|100|0|0|0|0|-236|-386|-317|201.5|0|0|71059|7,111,171,031||0|0|0|-1|-1|death|0|Protector_of_Sky via Key_Master
 38|akanon|55039|spawn|55392|100|10|1|50|1|0|0|0|0|0|0|0|||0|0|0|-1|-1|death|0|Clockwork_XVIIA
 39|akanon|55039|spawn|55392|100|10|2|50|1|0|0|0|0|0|0|0|||0|0|0|-1|-1|death|0|Clockwork_XVIIA
 40|akanon|55039|spawn|55392|100|10|2|50|1|1|1|0|0|0|0|0|||0|0|0|-1|-1|death|0|Clockwork_XVIIA
@@ -437,3 +437,18 @@ id|zone|trigger_eq_npc_id|action|target_eq_npc_id|chance|alt_group|alt_id|alt_we
 436|warrens|101029|spawn|101006|100|0|0|0|0|713|-866|-33|260|0|0|101006|||0|0|0|-1|-1|death|0|a_rabid_kobold
 437|warrens|101029|spawn|101006|100|0|0|0|0|577|-473|-74|200|0|0|101006|||0|0|0|-1|-1|death|0|a_rabid_kobold
 438|warrens|101029|spawn|101006|100|0|0|0|0|506|-1019|-78|60|0|0|101006|||0|0|0|-1|-1|death|0|a_rabid_kobold
+439|sleeper|128090|despawn|128094|100|90|1|1|0|0|0|0|0|25000|25000|0|128,091,128,092,128,000||0|0|0|-1|-1|death|0|Kerafyrm awakening via Nanzata - sleeping form departs (1 in 5, EQ was 1 in 33)
+440|sleeper|128090|spawn|1000031|100|90|1|1|0|-2373|-1481|-1056|260|25000|25000|1000031|128,091,128,092,128,000||0|0|0|-1|-1|death|0|Kerafyrm awakening via Nanzata - awakened form rises (1 in 5, EQ was 1 in 33)
+441|sleeper|128090|despawn|1000031|100|90|2|4|0|0|0|0|0|0|0|0|128094|128094|0|0|0|-1|-1|death|0|Kerafyrm awakening via Nanzata - failed roll arm (contradictory requirements so it never fires)
+442|sleeper|128091|despawn|128094|100|90|1|1|0|0|0|0|0|25000|25000|0|128,090,128,092,128,000||0|0|0|-1|-1|death|0|Kerafyrm awakening via Ventani - sleeping form departs (1 in 5, EQ was 1 in 33)
+443|sleeper|128091|spawn|1000031|100|90|1|1|0|-2373|-1481|-1056|260|25000|25000|1000031|128,090,128,092,128,000||0|0|0|-1|-1|death|0|Kerafyrm awakening via Ventani - awakened form rises (1 in 5, EQ was 1 in 33)
+444|sleeper|128091|despawn|1000031|100|90|2|4|0|0|0|0|0|0|0|0|128094|128094|0|0|0|-1|-1|death|0|Kerafyrm awakening via Ventani - failed roll arm (contradictory requirements so it never fires)
+445|sleeper|128092|despawn|128094|100|90|1|1|0|0|0|0|0|25000|25000|0|128,090,128,091,128,000||0|0|0|-1|-1|death|0|Kerafyrm awakening via Tukaarak - sleeping form departs (1 in 5, EQ was 1 in 33)
+446|sleeper|128092|spawn|1000031|100|90|1|1|0|-2373|-1481|-1056|260|25000|25000|1000031|128,090,128,091,128,000||0|0|0|-1|-1|death|0|Kerafyrm awakening via Tukaarak - awakened form rises (1 in 5, EQ was 1 in 33)
+447|sleeper|128092|despawn|1000031|100|90|2|4|0|0|0|0|0|0|0|0|128094|128094|0|0|0|-1|-1|death|0|Kerafyrm awakening via Tukaarak - failed roll arm (contradictory requirements so it never fires)
+448|sleeper|128093|despawn|128094|100|90|1|1|0|0|0|0|0|25000|25000|0|128,090,128,091,128,000||0|0|0|-1|-1|death|0|Kerafyrm awakening via Hraashna - sleeping form departs (1 in 5, EQ was 1 in 33)
+449|sleeper|128093|spawn|1000031|100|90|1|1|0|-2373|-1481|-1056|260|25000|25000|1000031|128,090,128,091,128,000||0|0|0|-1|-1|death|0|Kerafyrm awakening via Hraashna - awakened form rises (1 in 5, EQ was 1 in 33)
+450|sleeper|128093|despawn|1000031|100|90|2|4|0|0|0|0|0|0|0|0|128094|128094|0|0|0|-1|-1|death|0|Kerafyrm awakening via Hraashna - failed roll arm (contradictory requirements so it never fires)
+451|sleeper|1000031|respawntarget|128094|100|0|0|0|0|0|0|0|0|0|0|0|||0|0|0|-1|-1|death|-1|sleeping Kerafyrm returns after the awakened form is slain
+452|sleeper|1000031|despawn|1000031|100|0|0|0|0|0|0|0|0|7200000|0|0|||0|0|0|-1|-1|ooctimer|0|awakened Kerafyrm departs after 2 unbothered hours
+453|sleeper|1000031|respawntarget|128094|100|0|0|0|0|0|0|0|0|7200000|0|0|||0|0|0|-1|-1|ooctimer|1200|sleeping Kerafyrm returns after the awakened form departs

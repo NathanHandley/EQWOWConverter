@@ -323,3 +323,4 @@ id|zone|npc_name|eq_npc_id|event|emote_type|chance|param1|param2|min_expansion|m
 322|wakening|a_tigesaurous|119033|combat|emote|100|0|0|-1|-1|pounces on $name in a flurry of deadly claws and teeth.|event_combat speech
 323|westwastes|A_sentinel-s_voice|120116|proximity|proximity|100|45|60000|-1|-1|A sentinel's voice invades your thoughts: 'Beware mortal! This land is marked by Veeshan, and is sacred to her brood. None but Dragonkin are welcome here. Your life is forteit if you proceed. Ignore this message at your peril!'|event_enter box trigger
 324|westwastes|Julius_Oresko|120031|combat|say|100|0|0|-1|-1|My blades have slain dragons! A $race like you does not have a chance of survival!|event_combat speech
+325|sleeper|Kerafyrm|1000031|spawn|shout|100|0|0|-1|-1|I AM FREE!|awakened Kerafyrm rises

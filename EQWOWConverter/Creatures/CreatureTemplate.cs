@@ -77,6 +77,7 @@ namespace EQWOWConverter.Creatures
         public TradeskillType TradeskillTrainerType = TradeskillType.None;
         public int GossipMenuID = 0;
         public bool IsNonNPC = false;
+        public bool IsUnattackable = false;
         public string SpawnZones = string.Empty;
         public bool IsQuestGiver = false;
         public bool HasGossipReactions = false;
@@ -438,6 +439,10 @@ namespace EQWOWConverter.Creatures
 
                     // Crowd-control immunities from EQ special abilities.  Use the EQ level for this
                     newCreatureTemplate.MechanicImmuneMask = DetermineCreatureMechanicImmuneMask(specialAbilitiesRaw, minLevelEQ);
+
+                    // Creatures with both AggroImmunity (24) and HarmFromClientImmunity (35) can never fight players
+                    if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 24) == true && HasSpecialAbilityEnabled(specialAbilitiesRaw, 35) == true)
+                        newCreatureTemplate.IsUnattackable = true;
 
                     // See invisibility
                     if (columns.ContainsKey("see_invis") && int.TryParse(columns["see_invis"], out int seeInvisValue) && seeInvisValue > 0)

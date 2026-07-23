@@ -110,6 +110,8 @@ namespace EQWOWConverter.WOWFiles
                 unitFlags |= 512; // 0x00000200 = UNIT_FLAG_IMMUNE_TO_NPC (disable combat assistance w/NPCs)
                 unitFlags |= 256; // 0x00000100 = UNIT_FLAG_IMMUNE_TO_PC (disable combat assistance w/Player)
             }
+            if (creatureTemplate.IsUnattackable == true)
+                unitFlags |= 256; // 0x00000100 = UNIT_FLAG_IMMUNE_TO_PC (can't be attacked by players and won't aggro them, but stays visible and selectable)
             int extraFlags = 0;
             if (creatureTemplate.IsNonNPC == true)
             {
