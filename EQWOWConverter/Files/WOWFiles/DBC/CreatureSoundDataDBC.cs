@@ -20,7 +20,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class CreatureSoundDataDBC : DBCFile
     {
-        public void AddRow(int id, CreatureRace creatureRace, int creatureFootstepSoundID)
+        public void AddRow(int id, CreatureRace creatureRace, int creatureFootstepSoundID, bool playFidgetSounds)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID
@@ -37,8 +37,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // Wing Flap SoundEntriesDBC.ID
             newRow.AddInt32(0); // Wing Glide SoundEntriesDBC.ID
             newRow.AddInt32(0); // Alert SoundEntriesDBC.ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundIdle1Name, creatureRace.SoundMaxDistance)); // Fidget 1 SoundEntriesDBC.ID
-            newRow.AddInt32(CreatureRace.GetSoundIDForSound(creatureRace.SoundIdle2Name, creatureRace.SoundMaxDistance)); // Fidget 2 SoundEntriesDBC.ID
+            newRow.AddInt32(playFidgetSounds == false ? 0 : CreatureRace.GetSoundIDForSound(creatureRace.SoundIdle1Name, creatureRace.SoundMaxDistance)); // Fidget 1 SoundEntriesDBC.ID
+            newRow.AddInt32(playFidgetSounds == false ? 0 : CreatureRace.GetSoundIDForSound(creatureRace.SoundIdle2Name, creatureRace.SoundMaxDistance)); // Fidget 2 SoundEntriesDBC.ID
             newRow.AddInt32(0); // Fidget 3 SoundEntriesDBC.ID
             newRow.AddInt32(0); // Fidget 4 SoundEntriesDBC.ID
             newRow.AddInt32(0); // Fidget 5 SoundEntriesDBC.ID

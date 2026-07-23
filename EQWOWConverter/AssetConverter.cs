@@ -395,7 +395,7 @@ namespace EQWOWConverter
                     {
                         CreatureRace transportRace = new CreatureRace(999, CreatureGenderType.Male, 0, transportShip.MeshName, transportShip.MeshName, string.Empty,
                             0, transportShip.Scale, 6, 0.2f, 1.96078f, 0, 0, false);
-                        CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(transportRace, CreatureGenderType.Male, 0, transportShip.EQTexture, 0, 0, 1f, false);
+                        CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(transportRace, CreatureGenderType.Male, 0, transportShip.EQTexture, 0, 0, 1f, false, false);
                         objectProperties.CreatureModelTemplate = creatureModelTemplate;
                         objectProperties.ModelScalePreWorldScale = transportRace.ModelScale;
                         objectProperties.ModelLiftPreWorldScale = transportRace.Lift;

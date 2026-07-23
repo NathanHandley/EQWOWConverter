@@ -584,7 +584,7 @@ namespace EQWOWConverter.GameObjects
                                     if (gameObject.ObjectType == GameObjectType.Mailbox && (modelRaceID <= 12 || modelRaceID == 128))
                                         colorTint = 300002;
                                     CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, gameObject.ModelGender,
-                                        gameObject.ModelHelmTextureID, gameObject.ModelTextureID, gameObject.ModelFaceID, colorTint, 1f, false);
+                                        gameObject.ModelHelmTextureID, gameObject.ModelTextureID, gameObject.ModelFaceID, colorTint, 1f, false, false);
                                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                                     objectProperties.CreatureModelTemplate = creatureModelTemplate;
                                     objectProperties.ModelScalePreWorldScale = creatureRace.ModelScale;

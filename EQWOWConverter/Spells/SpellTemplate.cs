@@ -3160,6 +3160,7 @@ namespace EQWOWConverter.Spells
                                 maleFormSpellTemplate.CanMountWhileInForm = creatureRaceMale.CanMount;
                                 float scaleMale = creatureRaceMale.Height * creatureRaceMale.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
                                 CreatureTemplate maleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(maleFormSpellTemplate.Name, creatureRaceMale, creatureRaceMale.Gender, 0, textureID, 0, 0, scaleMale, wowFactionTemplateID, maleFormSpellTemplate.WOWSpellID);
+                                maleCreatureTemplate.IsIllusionForm = true;
                                 maleFormSpellEffectWOW.EffectMiscValueA = maleCreatureTemplate.WOWCreatureTemplateID;
                                 string raceName = creatureRaceMale.Name;
                                 string textParticle = "a";
@@ -3197,6 +3198,7 @@ namespace EQWOWConverter.Spells
                                 femaleFormSpellTemplate.CanMountWhileInForm = creatureRaceFemale.CanMount;
                                 float scaleFemale = creatureRaceFemale.Height * creatureRaceFemale.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
                                 CreatureTemplate femaleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(femaleFormSpellTemplate.Name, creatureRaceFemale, creatureRaceFemale.Gender, 0, textureID, 0, 0, scaleFemale, wowFactionTemplateID, femaleFormSpellTemplate.WOWSpellID);
+                                femaleCreatureTemplate.IsIllusionForm = true;
                                 femaleFormSpellEffectWOW.EffectMiscValueA = femaleCreatureTemplate.WOWCreatureTemplateID;
                                 raceName = creatureRaceFemale.Name;
                                 textParticle = "a";

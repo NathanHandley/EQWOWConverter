@@ -312,10 +312,12 @@ namespace EQWOWConverter
                 {
                     // For illusion versions, use the stock walking sound
                     int creatureFootstepID = CreatureRace.FootstepIDBySoundName[creatureModelTemplate.Race.SoundWalkingName];
-                    if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true &&
-                        creatureModelTemplate.FaceIndex == CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX)
+                    if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true && creatureModelTemplate.FaceIndex == CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX)
                         creatureFootstepID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_DEFAULT;
-                    creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, creatureModelTemplate.Race, creatureFootstepID);
+                    
+                    // Player illusion forms stay quiet while idle, so they get no fidget sounds
+                    bool playFidgetSounds = creatureModelTemplate.IsIllusionFormVersion == false && creatureModelTemplate.FaceIndex != CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX;
+                    creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, creatureModelTemplate.Race, creatureFootstepID, playFidgetSounds);
                 }
             }
             string creatureSoundsDirectory = "Sound\\Creature\\Everquest";

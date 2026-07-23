@@ -38,6 +38,7 @@ namespace EQWOWConverter.Creatures
         public CreatureTemplateColorTint? ColorTint = null;
         public float ModelTemplateScale = 1.0f; // Used for form changes
         public bool IsCompanionPetVersion = false;
+        public bool IsIllusionFormVersion = false;
         public float ModelStandingHeight = 0; // Z extent of the stand-posed geometry in final (rendered) model space
 
         public int DBCCreatureModelDataID;
@@ -62,18 +63,26 @@ namespace EQWOWConverter.Creatures
         public SortedDictionary<int, List<string>> IllusionFaceTextureVariationsByFaceIndex = new SortedDictionary<int, List<string>>();
 
         public CreatureModelTemplate(CreatureRace creatureRace, CreatureGenderType genderType, int helmTextureID,
-            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale, bool isCompanionPetVersion)
+            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale, bool isCompanionPetVersion, bool isIllusionFormVersion)
         {
             string raceIDString = creatureRace.ID.ToString();
             string genderIDString = Convert.ToInt32(genderType).ToString();
             string scaleString = modelTemplateScale.ToString(CultureInfo.InvariantCulture);
             IsCompanionPetVersion = isCompanionPetVersion;
+            IsIllusionFormVersion = isIllusionFormVersion;
             if (isCompanionPetVersion == true)
             {
                 // Companion pet versions key separately from the shared NPC templates
                 DBCCreatureModelDataID = IDGenerationTool.GenerateID("CreatureModelDataID", "companionpet", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
                 DBCCreatureDisplayID = IDGenerationTool.GenerateID("CreatureDisplayInfoID", "companionpet", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
                 DBCCreatureSoundDataID = 0; // Make them silent
+            }
+            else if (isIllusionFormVersion == true)
+            {
+                // Illusion form versions key separately from the pet/NPC-shared templates so their sound data can differ (no fidget sounds)
+                DBCCreatureModelDataID = IDGenerationTool.GenerateID("CreatureModelDataID", "illusionform", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
+                DBCCreatureDisplayID = IDGenerationTool.GenerateID("CreatureDisplayInfoID", "illusionform", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
+                DBCCreatureSoundDataID = IDGenerationTool.GenerateID("CreatureSoundDataID", "illusionform", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
             }
             else
             {
@@ -121,7 +130,7 @@ namespace EQWOWConverter.Creatures
             {
                 // Otherwise create a new one
                 CreatureRace debugRace = new CreatureRace(1, CreatureGenderType.Male, 0, "Debug Male", "HUM", "ELM", 3, 1, 6, 0.2f, 1.96078f, 0, 7, false);
-                CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(debugRace, 0, 0, 0, 0, 0, 1, false);
+                CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(debugRace, 0, 0, 0, 0, 0, 1, false, false);
                 AllTemplatesByRaceID.Add(1, new List<CreatureModelTemplate>());
                 AllTemplatesByRaceID[1].Add(newModelTemplate);
                 return newModelTemplate;
@@ -129,7 +138,7 @@ namespace EQWOWConverter.Creatures
         }
 
         public static CreatureModelTemplate GetOrCreateCreatureModelTemplate(CreatureRace creatureRace, CreatureGenderType genderType, int helmTextureID,
-            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale, bool isCompanionPetVersion)
+            int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale, bool isCompanionPetVersion, bool isIllusionFormVersion)
         {
             lock (CreatureLock)
             {
@@ -147,7 +156,8 @@ namespace EQWOWConverter.Creatures
                         modelTemplate.FaceIndex == faceIndex &&
                         modelTemplate.ColorTintID == colorTintID &&
                         modelTemplate.ModelTemplateScale == modelTemplateScale &&
-                        modelTemplate.IsCompanionPetVersion == isCompanionPetVersion)
+                        modelTemplate.IsCompanionPetVersion == isCompanionPetVersion &&
+                        modelTemplate.IsIllusionFormVersion == isIllusionFormVersion)
                     {
                         return modelTemplate;
                     }
@@ -155,7 +165,7 @@ namespace EQWOWConverter.Creatures
 
                 // Otherwise create a new one
                 CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(creatureRace, genderType, helmTextureID,
-                    textureIndex, faceIndex, colorTintID, modelTemplateScale, isCompanionPetVersion);
+                    textureIndex, faceIndex, colorTintID, modelTemplateScale, isCompanionPetVersion, isIllusionFormVersion);
                 AllTemplatesByRaceID[creatureRace.ID].Add(newModelTemplate);
                 return newModelTemplate;
             }
@@ -171,7 +181,7 @@ namespace EQWOWConverter.Creatures
             {
                 CreatureModelTemplate curModelTemplate = GetOrCreateCreatureModelTemplate(creatureTemplate.Race,
                     creatureTemplate.GenderType, creatureTemplate.HelmTextureID, creatureTemplate.TextureID, creatureTemplate.FaceID,
-                    creatureTemplate.ColorTintID, creatureTemplate.ModelTemplateScale, creatureTemplate.IsCompanionPet);
+                    creatureTemplate.ColorTintID, creatureTemplate.ModelTemplateScale, creatureTemplate.IsCompanionPet, creatureTemplate.IsIllusionForm);
                 creatureTemplate.ModelTemplate = curModelTemplate;
             }
         }
