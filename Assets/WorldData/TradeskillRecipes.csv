@@ -7422,22 +7422,22 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 20022|91219|1||Second Half of Bladesoul's Spritual Pouch||-1|75|0|0|0|1|0|-1|-1|40020|Second Half of Bladesoul's Spritual Pouch|1||||||||||29471|Serrated Gargoyle Claw|1|29475|Stinted Velium Drapes|1|29479|Founder's Velium Creation|1|29482|Sightless Velium Eye|1|29483|Drakeen Scales|1||||||||||||||||-1|Any||||||
 20023|91220|1||First Half Filled Tin Box||-1|75|0|0|0|1|0|-1|-1|40021|First Half Filled Tin Box|1||||||||||12434|Petrified Redwood|1|12483|Radiant Meteorite|1|12776|Gold Nugget|1|12794|Rile's Sand Coin|1|12830|A Scarlet Stone|1||||||||||||||||-1|Any||||||
 20024|91221|1||Second Half Filled Tin Box||-1|75|0|0|0|1|0|-1|-1|40022|Second Half Filled Tin Box|1||||||||||12831|Tektite|1|12832|Plains Pebble|1|12833|Jade Magma|1|12834|Heart of Ice|1|12835|Unholy Coldstone|1||||||||||||||||-1|Any||||||
-20025|91222|1||Imbued Amber|Level 29 (Cleric)|-1|100|0|0|45|1|1|-1|-1|22502|Imbued Amber|1||||||||||10022|Amber|1|||||||||||||||||||||||||||||||||||
-20026|91223|1||Imbue Black Pearl|Level 29 (Cleric)|-1|100|0|0|55|1|1|-1|-1|22548|Imbued Black Pearl|1||||||||||19762|Black Pearl|1|||||||||||||||||||||||||||||||||||
-20027|91224|1||Imbue Black Sapphire|Level 29 (Cleric)|-1|100|0|0|65|1|1|-1|-1|22551|Imbued Black Sapphire|1||||||||||10036|Black Sapphire|1|||||||||||||||||||||||||||||||||||
-20028|91225|1||Imbue Diamond|Level 29 (Cleric)|-1|100|0|0|75|1|1|-1|-1|22549|Imbued Diamond|1||||||||||10037|Diamond|1|||||||||||||||||||||||||||||||||||
-20029|91226|1||Imbue Emerald|Level 29 (Cleric)|-1|100|0|0|85|1|1|-1|-1|22507|Imbued Emerald|1||||||||||10029|Emerald|1|||||||||||||||||||||||||||||||||||
-20030|91227|1||Imbue Opal|Level 29 (Cleric)|-1|100|0|0|95|1|1|-1|-1|22560|Imbued Opal|1||||||||||10030|Opal|1|||||||||||||||||||||||||||||||||||
+20025|91222|1||Imbue Amber|Level 29 (Cleric)|-1|100|0|0|65|1|1|-1|-1|22502|Imbued Amber|1||||||||||10022|Amber|1|||||||||||||||||||||||||||||||||||
+20026|91223|1||Imbue Black Pearl|Level 29 (Cleric)|-1|100|0|0|135|1|1|-1|-1|22548|Imbued Black Pearl|1||||||||||19762|Black Pearl|1|||||||||||||||||||||||||||||||||||
+20027|91224|1||Imbue Black Sapphire|Level 29 (Cleric)|-1|100|0|0|180|1|1|-1|-1|22551|Imbued Black Sapphire|1||||||||||10036|Black Sapphire|1|||||||||||||||||||||||||||||||||||
+20028|91225|1||Imbue Diamond|Level 29 (Cleric)|-1|100|0|0|200|1|1|-1|-1|22549|Imbued Diamond|1||||||||||10037|Diamond|1|||||||||||||||||||||||||||||||||||
+20029|91226|1||Imbue Emerald|Level 29 (Cleric)|-1|100|0|0|115|1|1|-1|-1|22507|Imbued Emerald|1||||||||||10029|Emerald|1|||||||||||||||||||||||||||||||||||
+20030|91227|1||Imbue Opal|Level 29 (Cleric)|-1|100|0|0|125|1|1|-1|-1|22560|Imbued Opal|1||||||||||10030|Opal|1|||||||||||||||||||||||||||||||||||
 20031|91228|1||Imbue Peridot|Level 29 (Cleric)|-1|100|0|0|105|1|1|-1|-1|22554|Imbued Peridot|1||||||||||10028|Peridot|1|||||||||||||||||||||||||||||||||||
-20032|91229|1||Imbue Plains Pebble|Level 29 (Cleric)|-1|100|0|0|115|1|1|-1|-1|22553|Imbued Plains Pebble|1||||||||||12832|Plains Pebble|1|||||||||||||||||||||||||||||||||||
-20033|91230|1||Imbue Rose Quartz|Level 29 (Cleric)|-1|100|0|0|125|1|1|-1|-1|22550|Imbued Rose Quartz|1||||||||||10021|Star Rose Quartz|1|||||||||||||||||||||||||||||||||||
-20034|91231|1||Imbue Ruby|Level 29 (Cleric)|-1|100|0|0|135|1|1|-1|-1|22506|Imbued Ruby|1||||||||||10035|Ruby|1|||||||||||||||||||||||||||||||||||
-20035|91232|1||Imbue Sapphire|Level 29 (Cleric)|-1|100|0|0|145|1|1|-1|-1|22508|Imbued Sapphire|1||||||||||10034|Sapphire|1|||||||||||||||||||||||||||||||||||
-20036|91233|1||Imbue Topaz|Level 29 (Cleric)|-1|100|0|0|160|1|1|-1|-1|22555|Imbued Topaz|1||||||||||10025|Topaz|1|||||||||||||||||||||||||||||||||||
-20037|91234|1||Imbue Ivory|Level 29 (Shaman)|-1|100|0|0|200|1|1|-1|-1|22501|Imbued Ivory|1||||||||||22504|Ivory|1|||||||||||||||||||||||||||||||||||
-20038|91235|1||Imbue Jade|Level 29 (Shaman)|-1|100|0|0|180|1|1|-1|-1|22500|Imbued Jade|1||||||||||10023|Jade|1|||||||||||||||||||||||||||||||||||
+20032|91229|1||Imbue Plains Pebble|Level 29 (Cleric)|-1|100|0|0|45|1|1|-1|-1|22553|Imbued Plains Pebble|1||||||||||12832|Plains Pebble|1|||||||||||||||||||||||||||||||||||
+20033|91230|1||Imbue Rose Quartz|Level 29 (Cleric)|-1|100|0|0|55|1|1|-1|-1|22550|Imbued Rose Quartz|1||||||||||10021|Star Rose Quartz|1|||||||||||||||||||||||||||||||||||
+20034|91231|1||Imbue Ruby|Level 29 (Cleric)|-1|100|0|0|160|1|1|-1|-1|22506|Imbued Ruby|1||||||||||10035|Ruby|1|||||||||||||||||||||||||||||||||||
+20035|91232|1||Imbue Sapphire|Level 29 (Cleric)|-1|100|0|0|150|1|1|-1|-1|22508|Imbued Sapphire|1||||||||||10034|Sapphire|1|||||||||||||||||||||||||||||||||||
+20036|91233|1||Imbue Topaz|Level 29 (Cleric)|-1|100|0|0|85|1|1|-1|-1|22555|Imbued Topaz|1||||||||||10025|Topaz|1|||||||||||||||||||||||||||||||||||
+20037|91234|1||Imbue Ivory|Level 29 (Shaman)|-1|100|0|0|95|1|1|-1|-1|22501|Imbued Ivory|1||||||||||22504|Ivory|1|||||||||||||||||||||||||||||||||||
+20038|91235|1||Imbue Jade|Level 29 (Shaman)|-1|100|0|0|75|1|1|-1|-1|22500|Imbued Jade|1||||||||||10023|Jade|1|||||||||||||||||||||||||||||||||||
 20039|91358|1||Enchant Steel|Level 49 (Enchanter)|-1|100|0|0|235|1|1|-1|-1|10440|Large Brick of Enchanted Ore|1||||||||||10469|Large Brick of High Quality Ore|1|||||||||||||||||||||||||||||||||||
 20040|91359|1||Enchant Mithril|Level 49 (Enchanter)|-1|100|0|0|240|1|1|-1|-1|10455|Enchanted Lrg. Brick of Mithril|1||||||||||10476|Large Brick of Mithril|1|||||||||||||||||||||||||||||||||||
 20041|91360|1||Enchant Brellium|Level 49 (Enchanter)|-1|100|0|0|245|1|1|-1|-1|10434|Enchanted Lrg. Brick of Brellium|1||||||||||10474|Large Brick of Brellium|1|||||||||||||||||||||||||||||||||||
 20042|91361|1||Enchant Adamantite|Level 49 (Enchanter)|-1|100|0|0|250|1|1|-1|-1|10449|Enchanted Lrg. Brick of Adamantite|1||||||||||10475|Large Brick of Adamantite|1|||||||||||||||||||||||||||||||||||
-20043|91362|1||Imbue Fire Opal|Level 29 (Wizard)|-1|100|0|0|150|1|1|-1|-1|22552|Imbued Fire Opal|1||||||||||10031|Fire Opal|1|||||||||||||||||||||||||||||||||||
+20043|91362|1||Imbue Fire Opal|Level 29 (Wizard)|-1|100|0|0|145|1|1|-1|-1|22552|Imbued Fire Opal|1||||||||||10031|Fire Opal|1|||||||||||||||||||||||||||||||||||
