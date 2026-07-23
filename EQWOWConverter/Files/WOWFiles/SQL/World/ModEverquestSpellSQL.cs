@@ -47,6 +47,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`AuraStaysOnSecondaryClassSwitch` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`MinTargetLevel` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`MaxCreatureTargetLevel` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`ResistDiff` INT(10) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -102,6 +103,7 @@ namespace EQWOWConverter.WOWFiles
             else
                 newRow.AddInt("MinTargetLevel", spellTemplate.GetMinimumTargetLevel());
             newRow.AddInt("MaxCreatureTargetLevel", isWorn == true ? 0 : spellTemplate.MaxCreatureTargetLevel);
+            newRow.AddInt("ResistDiff", isWorn == true ? 0 : spellTemplate.ResistDiff);
             Rows.Add(newRow);
         }
     }

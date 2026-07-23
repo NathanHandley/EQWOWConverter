@@ -248,6 +248,8 @@ namespace EQWOWConverter.Spells
         public bool BreakEffectOnNonAutoDirectDamage = false;
         public bool NoPartialImmunity = false;
         public int MaxCreatureTargetLevel = 0; // 0 = no limit
+        public bool IsUnresistable = false;
+        public int ResistDiff = 0; // EQ resist roll modifier, negative lands more often
         public UInt32 DefenseType = 0; // 0 None, 1 Magic, 2 Melee, 3 Ranged
         public UInt32 PreventionType = 0; // 0 None, 1 Silence, 2 Pacify, 4 No Actions
         public int WeaponSpellItemEnchantmentDBCID = 0;
@@ -559,6 +561,11 @@ namespace EQWOWConverter.Spells
 
                 // School class
                 int resistType = int.Parse(columns["resisttype"]);
+                // Resisttype 0 in EQ means the spell can not be resisted (TAKP Mob::CheckResistSpell RESIST_NONE)
+                if (resistType == 0)
+                    newSpellTemplate.IsUnresistable = true;
+                else if (isDetrimental == true)
+                    newSpellTemplate.ResistDiff = int.Parse(columns["ResistDiff"]);
                 newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
                 newSpellTemplate.DispelType = GetDispelTypeForResistType(resistType, isDetrimental, newSpellTemplate.AuraDuration.MaxDurationInMS > 0);
                 if (isDetrimental == true && newSpellTemplate.AuraDuration.MaxDurationInMS > 0)

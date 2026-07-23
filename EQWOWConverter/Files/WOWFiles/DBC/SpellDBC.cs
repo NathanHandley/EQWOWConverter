@@ -305,6 +305,8 @@ namespace EQWOWConverter.WOWFiles
             }
             if (spellTemplate.AlwaysPersist == true)
                 attributeFlags |= 1048576; // SPELL_ATTR3_ALLOW_AURA_WHILE_DEAD
+            if (spellTemplate.IsUnresistable == true)
+                attributeFlags |= 536870912; // SPELL_ATTR3_ALWAYS_HIT
             return attributeFlags;
         }
 

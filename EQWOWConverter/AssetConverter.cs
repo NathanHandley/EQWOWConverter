@@ -2445,6 +2445,26 @@ namespace EQWOWConverter
             invisVsUndeadDetectSpellTemplate.ForceHiddenFromDisplay = true;
             spellTemplates.Add(invisVsUndeadDetectSpellTemplate);
 
+            // Resist Adjustment (hidden aura briefly placed on a caster to shift the spell hit roll by the EQ ResistDiff amount)
+            SpellTemplate resistAdjustmentSpellTemplate = new SpellTemplate();
+            resistAdjustmentSpellTemplate.Name = "Resist Adjustment";
+            resistAdjustmentSpellTemplate.WOWSpellID = Configuration.SPELL_RESIST_ADJUSTMENT_SPELL_ID;
+            resistAdjustmentSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            resistAdjustmentSpellTemplate.Description = "Adjusts how strongly the next spell resists.";
+            resistAdjustmentSpellTemplate.AuraDescription = "Spell resist chance adjusted.";
+            resistAdjustmentSpellTemplate.AuraDuration = new SpellDuration();
+            resistAdjustmentSpellTemplate.AuraDuration.SetFixedDuration(5000); // Short-lived so the mod will remove it after it's cast (to handle aborted casts)
+            resistAdjustmentSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModIncreasesSpellPctToHit, 0, 0, 0, 0, 127, 0)); // 127 = all spell schools
+            resistAdjustmentSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            resistAdjustmentSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
+            resistAdjustmentSpellTemplate.CastTimeInMS = 0;
+            resistAdjustmentSpellTemplate.RecoveryTimeInMS = 0;
+            resistAdjustmentSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+            resistAdjustmentSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
+            resistAdjustmentSpellTemplate.TriggersGlobalCooldown = false;
+            resistAdjustmentSpellTemplate.ForceHiddenFromDisplay = true;
+            spellTemplates.Add(resistAdjustmentSpellTemplate);
+
             // Bash
             int bashAndSlamSpellCategoryID = IDGenerationTool.GenerateID("SpellCategoryID", "bashslam"); // Used for linking cooldown between bash and slam
             if (Configuration.COMBATSKILL_BASH_ENABLED == true)
