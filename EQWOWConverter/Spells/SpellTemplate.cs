@@ -612,13 +612,14 @@ namespace EQWOWConverter.Spells
                 // Scale mana cost to follow any change in total direct healing/damage caused by the cast time mod
                 ApplyManaCostScalingForDirectOutputChange(ref newSpellTemplate);
 
-                // Stacking rules
+                // Stacking rules.  Note that bard songs should stack with nearly all other non-Bard songs
                 bool isItemClickSpell = itemClickSpellEQIDs.Contains(newSpellTemplate.EQSpellID);
-                SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]), newSpellTemplate.IsBardSongAura, isDetrimental, isItemClickSpell);
+                if (newSpellTemplate.IsBardSongAura == false)
+                    SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]), false, isDetrimental, isItemClickSpell);
                 for (int i = 0; i < effectGeneratedSpellTemplates.Count; i++)
                 {
                     SpellTemplate effectGeneratedSpellTemplate = effectGeneratedSpellTemplates[i];
-                    SetAuraStackRule(ref effectGeneratedSpellTemplate, int.Parse(columns["spell_category"]), effectGeneratedSpellTemplate.IsBardSongAura, isDetrimental, isItemClickSpell);
+                    SetAuraStackRule(ref effectGeneratedSpellTemplate, int.Parse(columns["spell_category"]), newSpellTemplate.IsBardSongAura, isDetrimental, isItemClickSpell);
                 }
 
                 // Add it, and any effect generated ones
