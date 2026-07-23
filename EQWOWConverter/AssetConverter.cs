@@ -1969,7 +1969,9 @@ namespace EQWOWConverter
             float dropChance;
             if (creatureTemplate.Rank == CreatureWOWRankType.Boss)
                 dropChance = Configuration.CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT;
-            else if (companionPet.IsHighDropRate == true)
+            else if (companionPet.DropRateType == CreatureCompanionDropRateType.Always)
+                dropChance = 100f;
+            else if (companionPet.DropRateType == CreatureCompanionDropRateType.High)
                 dropChance = Configuration.CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT;
             else
                 dropChance = Configuration.CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT;

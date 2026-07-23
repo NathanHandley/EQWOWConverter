@@ -34,7 +34,7 @@ namespace EQWOWConverter.Creatures
         public int ID = 0;
         public int WOWItemID = 0;
         public int WOWSpellID = 0;
-        public bool IsHighDropRate = false;
+        public CreatureCompanionDropRateType DropRateType = CreatureCompanionDropRateType.Low;
         public string Name = string.Empty;
         public float SizeMod = 1f;
         public int RaceID = 0;
@@ -78,10 +78,17 @@ namespace EQWOWConverter.Creatures
                 companionPet.WOWItemID = Convert.ToInt32(columns["wow_itemid"]);
                 companionPet.WOWSpellID = Convert.ToInt32(columns["wow_spelltemplateid"]);
                 string dropRate = columns["drop_rate"].Trim().ToLower();
-                if (dropRate == "high")
-                    companionPet.IsHighDropRate = true;
-                else if (dropRate != "low")
-                    Logger.WriteError("CompanionPet with id '", companionPet.ID.ToString(), "' has an unhandled drop_rate of '", dropRate, "', so 'low' will be used");
+                switch (dropRate)
+                {
+                    case "low": companionPet.DropRateType = CreatureCompanionDropRateType.Low; break;
+                    case "high": companionPet.DropRateType = CreatureCompanionDropRateType.High; break;
+                    case "always": companionPet.DropRateType = CreatureCompanionDropRateType.Always; break;
+                    default:
+                        {
+                            Logger.WriteError("CompanionPet with id '", companionPet.ID.ToString(), "' has an unhandled drop_rate of '", dropRate, "', so 'low' will be used");
+                            companionPet.DropRateType = CreatureCompanionDropRateType.Low;
+                        } break;
+                }                    
                 companionPet.Name = columns["name"];
                 companionPet.SizeMod = Convert.ToSingle(columns["size_mod"]);
                 companionPet.RaceID = Convert.ToInt32(columns["race_id"]);

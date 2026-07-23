@@ -363,5 +363,5 @@ id|enabled|wow_itemid|wow_spelltemplateid|drop_rate|name|size_mod|race_id|match_
 362|1|123361|120362|high|White Dragon|1|195|-1|0|-1|-1|2|0|0|0
 363|1|123362|120363|high|Black Dragon|1|195|-1|1|-1|-1|2|1|1|0
 364|1|123363|120364|high|Ghost Dragon|1|196|-1|-1|-1|-1|2|0|0|0
-365|1|123364|120365|high|Prismatic Dragon|1|198|-1|-1|-1|-1|2|3|0|0
+365|1|123364|120365|always|Prismatic Dragon|1|198|-1|-1|-1|-1|2|3|0|0
 366|1|123365|120366|low|Scaled Wolf|0.7|481|-1|-1|-1|-1|1|0|0|0
