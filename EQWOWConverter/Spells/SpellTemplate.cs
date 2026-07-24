@@ -312,6 +312,9 @@ namespace EQWOWConverter.Spells
         public SpellTemplate? IllusionSpellParent = null;
         public int MaleFormSpellTemplateID = 0;
         public int FemaleFormSpellTemplateID = 0;
+        public int ModFactionRepValue = 0;
+        public CreatureFactionAlignmentType IllusionFormFactionAlignment = CreatureFactionAlignmentType.None;
+        public int IllusionFormEQRaceID = 0;
         public bool CanMountWhileInForm = false;
         public bool AllowSpellPowerToInfluence = false;
         public bool InfluencedBySpellPower = false;
@@ -3144,8 +3147,11 @@ namespace EQWOWConverter.Spells
                                 }
 
                                 int textureID = 0;
-                                if (spellTemplate.EQAOERange < 10) // Why is aoerange the textureID? 
+                                if (spellTemplate.EQAOERange < 10) // Why is aoerange the textureID?
                                     textureID = spellTemplate.EQAOERange;
+
+                                // Factions treat the player as this alignment while in the form
+                                CreatureFactionAlignmentType illusionFactionAlignment = CreatureFaction.GetAlignmentTypeForEQIllusionRace(eqEffect.EQBaseValue);
 
                                 // Temp faction value.  Need to change this on a per-form basis
                                 int wowFactionTemplateID = 35; // Friendly
@@ -3182,6 +3188,8 @@ namespace EQWOWConverter.Spells
                                 maleFormSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
                                 maleFormSpellTemplate.WOWSpellEffects.Add(maleFormSpellEffectWOW);
                                 maleFormSpellTemplate.AuraDuration = spellTemplate.AuraDuration;
+                                maleFormSpellTemplate.IllusionFormFactionAlignment = illusionFactionAlignment;
+                                maleFormSpellTemplate.IllusionFormEQRaceID = eqEffect.EQBaseValue;
                                 maleFormSpellTemplate.IllusionSpellParent = spellTemplate;
                                 spellTemplate.MaleFormSpellTemplateID = maleFormSpellTemplate.WOWSpellID;
                                 effectGeneratedSpellTemplates.Add(maleFormSpellTemplate);
@@ -3220,6 +3228,8 @@ namespace EQWOWConverter.Spells
                                 femaleFormSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
                                 femaleFormSpellTemplate.WOWSpellEffects.Add(femaleFormSpellEffectWOW);
                                 femaleFormSpellTemplate.AuraDuration = spellTemplate.AuraDuration;
+                                femaleFormSpellTemplate.IllusionFormFactionAlignment = illusionFactionAlignment;
+                                femaleFormSpellTemplate.IllusionFormEQRaceID = eqEffect.EQBaseValue;
                                 spellTemplate.FemaleFormSpellTemplateID = femaleFormSpellTemplate.WOWSpellID;
                                 femaleFormSpellTemplate.IllusionSpellParent = spellTemplate;
                                 effectGeneratedSpellTemplates.Add(femaleFormSpellTemplate);

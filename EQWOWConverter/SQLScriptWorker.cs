@@ -147,7 +147,7 @@ namespace EQWOWConverter
             PopulateGameTableData();
 
             // Creature factions
-            PopulateCreatureFactionData();
+            PopulateCreatureFactionData(creatureTemplates);
 
             // Achievements
             PopulateAchievementData(creatureTemplates);

@@ -62,6 +62,7 @@ namespace EQWOWConverter.Creatures
         public int FactionTemplateID = -1;
         public int ParentFactionID = 0;
         public int ReputationIndex = 0;
+        public CreatureFactionAlignmentType BaseAlignment = CreatureFactionAlignmentType.None;
         public string Name = string.Empty;
         public string Description = string.Empty;
         public bool ForceAgro = false;
@@ -136,6 +137,60 @@ namespace EQWOWConverter.Creatures
             if (CreatureFactionsByWOWFactionID.Count == 0)
                 PopulateFactionData();
             return CreatureFactionsByWOWFactionID;
+        }
+
+        // TODO: Consider moving this to a config
+        public static CreatureFactionAlignmentType GetAlignmentTypeForEQIllusionRace(int eqRaceID)
+        {
+            switch (eqRaceID)
+            {
+                case 2: // Barbarian
+                case 4: // Wood Elf
+                case 5: // High Elf
+                case 8: // Dwarf
+                case 11: // Halfling
+                    return CreatureFactionAlignmentType.Good;
+                case 1: // Human                
+                case 3: // Erudite
+                case 7: // Half Elf
+                case 12: // Gnome
+                    return CreatureFactionAlignmentType.Neutral;
+                case 6: // Dark Elf
+                case 9: // Troll
+                case 10: // Ogre
+                case 128: // Iksar
+                    return CreatureFactionAlignmentType.Evil;
+                default: return CreatureFactionAlignmentType.None;
+            }
+        }
+
+        // Class and race alignment masks feed the mod so it can compute a player's baseline alignment at runtime
+        public static int GetGoodClassesMask()
+        {
+            if (CreatureFactionsByWOWFactionID.Count == 0)
+                PopulateFactionData();
+            return GoodClassesMask;
+        }
+
+        public static int GetEvilClassesMask()
+        {
+            if (CreatureFactionsByWOWFactionID.Count == 0)
+                PopulateFactionData();
+            return EvilClassesMask;
+        }
+
+        public static int GetGoodRacesMask()
+        {
+            if (CreatureFactionsByWOWFactionID.Count == 0)
+                PopulateFactionData();
+            return GoodRacesMask;
+        }
+
+        public static int GetEvilRacesMask()
+        {
+            if (CreatureFactionsByWOWFactionID.Count == 0)
+                PopulateFactionData();
+            return EvilRacesMask;
         }
 
         public static List<CreatureFactionKillReward> GetCreatureFactionKillRewards(int eqNPCFactionID)
@@ -248,6 +303,11 @@ namespace EQWOWConverter.Creatures
                 newCreatureFaction.FactionTemplateID = int.Parse(columns["FactionTemplateID"]);
                 newCreatureFaction.ReputationIndex = int.Parse(columns["ReputationIndex"]);
                 newCreatureFaction.Name = columns["Name"];
+                CreatureFactionAlignmentType baseAlignment;
+                if (Enum.TryParse(columns["BaseAlignment"].Trim(), true, out baseAlignment) == true)
+                    newCreatureFaction.BaseAlignment = baseAlignment;
+                else
+                    Logger.WriteError("Creature Faction - Faction with ID '" + newCreatureFaction.FactionID + "' has an unmapped BaseAlignment of '" + columns["BaseAlignment"] + "'");
                 newCreatureFaction.BaseRepOverride = int.Parse(columns["BaseRepOverride"]);
                 newCreatureFaction.BaseRepGoodClasses = int.Parse(columns["BaseRepGoodClass"]);
                 newCreatureFaction.BaseRepEvilClasses = int.Parse(columns["BaseRepEvilClass"]);

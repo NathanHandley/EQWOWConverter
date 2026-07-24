@@ -16,10 +16,11 @@
 
 namespace EQWOWConverter.Creatures
 {
-    internal enum CreatureFactionAlignmentType
+    internal enum CreatureFactionAlignmentType : int
     {
-        Neutral,
-        Good,
-        Evil
+        None = 0,
+        Neutral = 1,
+        Good = 2,
+        Evil = 3
     }
 }

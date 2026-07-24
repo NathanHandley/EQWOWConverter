@@ -26,6 +26,9 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("DROP TABLE IF EXISTS `mod_everquest_faction`; ");
             stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_faction` ( ");
             stringBuilder.AppendLine("`FactionTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`FactionID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`BaseAlignment` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`PredominantEQRaceID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`WillDefendFriendlyPlayers` TINYINT UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`DefendersWillAttackToDefendPlayer` TINYINT UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`DefendCombatFactionTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
@@ -33,10 +36,13 @@ namespace EQWOWConverter.WOWFiles
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int factionTemplateID, bool willDefendFriendlyPlayers, bool defendersWillAttackToDefendPlayer, int defendCombatFactionTemplateID)
+        public void AddRow(int factionTemplateID, int factionID, int baseAlignment, int predominantEQRaceID, bool willDefendFriendlyPlayers, bool defendersWillAttackToDefendPlayer, int defendCombatFactionTemplateID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("FactionTemplateID", factionTemplateID);
+            newRow.AddInt("FactionID", factionID);
+            newRow.AddInt("BaseAlignment", baseAlignment);
+            newRow.AddInt("PredominantEQRaceID", predominantEQRaceID);
             newRow.AddInt("WillDefendFriendlyPlayers", willDefendFriendlyPlayers == true ? 1 : 0);
             newRow.AddInt("DefendersWillAttackToDefendPlayer", defendersWillAttackToDefendPlayer == true ? 1 : 0);
             newRow.AddInt("DefendCombatFactionTemplateID", defendCombatFactionTemplateID);
