@@ -214,12 +214,25 @@ namespace EQWOWConverter.WOWFiles
             for (int i = 0; i < 35; i++)
                 AttachmentIndicesLookup.Add(new M2Int16(-1));
 
+            // Races that can't hold visible items leave off the item attachments, since a model with no attach point for a weapon or shield won't have the wearer's equipped items drawn on it
+            bool doSuppressHeldItemAttachments = false;
+            bool doSuppressHeldShieldAttachment = false;
+            if (wowObjectModel.Properties.CreatureModelTemplate != null)
+            {
+                doSuppressHeldItemAttachments = wowObjectModel.Properties.CreatureModelTemplate.DoSuppressHeldItemAttachments();
+                doSuppressHeldShieldAttachment = wowObjectModel.Properties.CreatureModelTemplate.DoSuppressHeldShieldAttachment();
+            }
+
             // Add the various attachments
-            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.Shield_MountMain_ItemVisual0);
-            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HandRight_ItemVisual1);
-            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HandLeft_ItemVisual2);
-            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.LargeWeaponLeft);
-            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.LargeWeaponRight);
+            if (doSuppressHeldShieldAttachment == false)
+                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.Shield_MountMain_ItemVisual0);
+            if (doSuppressHeldItemAttachments == false)
+            {
+                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HandRight_ItemVisual1);
+                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HandLeft_ItemVisual2);
+                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.LargeWeaponLeft);
+                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.LargeWeaponRight);
+            }
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ChestBloodFront);
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ChestBloodBack);
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.MouthBreath);

@@ -118,6 +118,16 @@ namespace EQWOWConverter.Creatures
             return FaceIndex == ILLUSION_REPLACEABLE_FACE_INDEX && ModelTemplateScale > Configuration.GENERATE_FLOAT_EPSILON;
         }
 
+        public bool DoSuppressHeldItemAttachments()
+        {
+            return Race.CanHoldVisualItems == false;
+        }
+
+        public bool DoSuppressHeldShieldAttachment()
+        {
+            return Race.CanHoldVisualItems == false || Race.CanHoldVisualShields == false;
+        }
+
         private static int GetOrCreateIllusionFaceDisplayID(int raceID, CreatureGenderType genderType, int helmTextureID,
             int textureIndex, int colorTintID, int faceIndex)
         {
