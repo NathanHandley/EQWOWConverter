@@ -2877,6 +2877,20 @@ namespace EQWOWConverter.Spells
                                     newSpellEffects.Add(newSpellEffectWOW);
                                 }
                             } break;
+                        case SpellEQEffectType.TossUp:
+                            {
+                                if (eqEffect.EQBaseValue == 0)
+                                    continue;
+
+                                // Both speeds are stored at ten times their yards persecond value since the server scales them back down by a tenth when the effect lands
+                                float verticalSpeed = MathF.Min(Math.Abs(eqEffect.EQBaseValue) * Configuration.SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD, Configuration.SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX);
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.KnockBack;
+                                newSpellEffectWOW.EffectBasePoints = Convert.ToInt32(verticalSpeed * 10f);
+                                newSpellEffectWOW.EffectMiscValueA = Convert.ToInt32(Configuration.SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED * 10f);
+                                newSpellEffectWOW.ActionDescription = string.Concat("throws the target into the air");
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
                         case SpellEQEffectType.Silence:
                             {
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();

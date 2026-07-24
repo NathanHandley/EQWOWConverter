@@ -822,6 +822,16 @@ namespace EQWOWConverter
         // Revive will give HP/MP instead of EXP on revive, so this is the multiplier to use for that
         public static int SPELL_EFFECT_REVIVE_EXPPCT_TO_HPMP_MULTIPLIER = 22;
 
+        // "Toss up" spells (Gravity Flux, Invert Gravity) throw the target into the air, which converts into a knockback.
+        // The EQ effect value (100 to 350) times the mod becomes the upward speed in yards per second, capped by the max.
+        // Keep the max below 23.7, since above that the drop is far enough for WOW to apply fall damage on landing and the
+        // damage these spells did in EQ is already converted from their own damage effect
+        public static float SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD = 0.175f;
+        public static float SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX = 23f;
+
+        // How far outward (yards per second) a 'toss up' shoves the target, which must stay above zero or creatures won't be thrown at all
+        public static float SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED = 2f;
+
         // Default time that a shrink/grow spell will last for
         public static int SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS = 1800000;
 
@@ -1731,6 +1741,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS, "This is 'added time' in the periodic tick that comes from bard casters.");
             OutputVariableToConfig("SPELL_RECOVERY_TIME_MINIMUM_IN_MS", SPELL_RECOVERY_TIME_MINIMUM_IN_MS, "This is the minimum allowable recovery time any spell can have, which any smaller will become zero");
             OutputVariableToConfig("SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT ", SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT, "The percent chance that a feign death spell cast fails");
+            OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD", SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD, "What to multiply the EQ 'toss up' effect value by to get how fast (yards per second) the target is thrown into the air");
+            OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX", SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX, "The fastest a 'toss up' can throw a target upward, and going above 23.7 will start causing fall damage on landing");
+            OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED", SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED, "How far outward (yards per second) a 'toss up' shoves the target, which must stay above zero or creatures won't be thrown at all");
             OutputVariableToConfig("SPELLS_LEARNABLE_FROM_ITEMS_ENABLED", SPELLS_LEARNABLE_FROM_ITEMS_ENABLED, "If true, you can learn spells from items");
             OutputVariableToConfig("SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS", SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS, "All spell properties");
             OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE", SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE, "How often weapon procs occur", false);
@@ -2206,6 +2219,9 @@ namespace EQWOWConverter
             SPELL_MOD_FACTION_REP_MULTIPLIER = ReadVariableFromConfigString("SPELL_MOD_FACTION_REP_MULTIPLIER", configValuesByVariableName, SPELL_MOD_FACTION_REP_MULTIPLIER);
             SPELL_RECOVERY_TIME_MINIMUM_IN_MS = ReadVariableFromConfigString("SPELL_RECOVERY_TIME_MINIMUM_IN_MS", configValuesByVariableName, SPELL_RECOVERY_TIME_MINIMUM_IN_MS);
             SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT = ReadVariableFromConfigString("SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT", configValuesByVariableName, SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT);
+            SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD);
+            SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX);
+            SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED);
             SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = ReadVariableFromConfigString("SPELLS_LEARNABLE_FROM_ITEMS_ENABLED", configValuesByVariableName, SPELLS_LEARNABLE_FROM_ITEMS_ENABLED);
             SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = ReadVariableFromConfigString("SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS", configValuesByVariableName, SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS);
             SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE = ReadVariableFromConfigString("SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE", configValuesByVariableName, SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE);
