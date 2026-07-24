@@ -892,6 +892,7 @@ namespace EQWOWConverter
         public static bool COMBATSKILL_BASH_ENABLED = true;
         public static bool COMBATSKILL_BASH_PLAYER_LEARNABLE = true;
         public static int COMBATSKILL_BASH_SPELL_ID = 86908;
+        public static int COMBATSKILL_BASH_CREATURE_SPELL_ID = 86917;
         public static int COMBATSKILL_BASH_SPELL_ICON_EQ_ID = 11;
         public static int COMBATSKILL_BASH_CREATURE_MIN_LEVEL = 6;
         public static int COMBATSKILL_BASH_COOLDOWN_IN_MS = 8000;
@@ -1813,6 +1814,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_BASH_ENABLED", COMBATSKILL_BASH_ENABLED, "Bash skills in EQ are either from warrior/cleric/paladin/shadowknight or those that use warrior skills", false);
             OutputVariableToConfig("COMBATSKILL_BASH_PLAYER_LEARNABLE", COMBATSKILL_BASH_PLAYER_LEARNABLE, "Whether classes that have Bash learn it as players (from level 1)", false);
             OutputVariableToConfig("COMBATSKILL_BASH_SPELL_ID", COMBATSKILL_BASH_SPELL_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_BASH_CREATURE_SPELL_ID", COMBATSKILL_BASH_CREATURE_SPELL_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_SPELL_ICON_EQ_ID", COMBATSKILL_BASH_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_CREATURE_MIN_LEVEL", COMBATSKILL_BASH_CREATURE_MIN_LEVEL, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_COOLDOWN_IN_MS", COMBATSKILL_BASH_COOLDOWN_IN_MS, "", false);
@@ -2291,6 +2293,7 @@ namespace EQWOWConverter
             COMBATSKILL_BASH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_BASH_ENABLED", configValuesByVariableName, COMBATSKILL_BASH_ENABLED);
             COMBATSKILL_BASH_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_BASH_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_BASH_PLAYER_LEARNABLE);
             COMBATSKILL_BASH_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_SPELL_ID", configValuesByVariableName, COMBATSKILL_BASH_SPELL_ID);
+            COMBATSKILL_BASH_CREATURE_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_CREATURE_SPELL_ID", configValuesByVariableName, COMBATSKILL_BASH_CREATURE_SPELL_ID);
             COMBATSKILL_BASH_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_BASH_SPELL_ICON_EQ_ID);
             COMBATSKILL_BASH_CREATURE_MIN_LEVEL = ReadVariableFromConfigString("COMBATSKILL_BASH_CREATURE_MIN_LEVEL", configValuesByVariableName, COMBATSKILL_BASH_CREATURE_MIN_LEVEL);
             COMBATSKILL_BASH_COOLDOWN_IN_MS = ReadVariableFromConfigString("COMBATSKILL_BASH_COOLDOWN_IN_MS", configValuesByVariableName, COMBATSKILL_BASH_COOLDOWN_IN_MS);

@@ -66,7 +66,6 @@ namespace EQWOWConverter.Spells
         private static readonly object SpellEQIDLock = new object();
         private static int CUR_GENERATED_EQ_SPELL_ID = 5000;
 
-        // Shield-bash animation spell visuals for the Bash and Slam combat skills (Bash's kit also carries the bash sound)
         // TODO: Consider doing this better
         private static int _BashSpellVisualID = -1;
         public static int BashSpellVisualID
@@ -91,6 +90,32 @@ namespace EQWOWConverter.Spells
                     if (_BashSpellVisualKitID == -1)
                         _BashSpellVisualKitID = IDGenerationTool.GenerateID("SpellVisualKitID", "CombatSkillBash");
                     return _BashSpellVisualKitID;
+                }
+            }
+        }
+        private static int _BashCreatureSpellVisualID = -1;
+        public static int BashCreatureSpellVisualID
+        {
+            get
+            {
+                lock (SpellTemplateLock)
+                {
+                    if (_BashCreatureSpellVisualID == -1)
+                        _BashCreatureSpellVisualID = IDGenerationTool.GenerateID("SpellVisualID", "CombatSkillBashCreature");
+                    return _BashCreatureSpellVisualID;
+                }
+            }
+        }
+        private static int _BashCreatureSpellVisualKitID = -1;
+        public static int BashCreatureSpellVisualKitID
+        {
+            get
+            {
+                lock (SpellTemplateLock)
+                {
+                    if (_BashCreatureSpellVisualKitID == -1)
+                        _BashCreatureSpellVisualKitID = IDGenerationTool.GenerateID("SpellVisualKitID", "CombatSkillBashCreature");
+                    return _BashCreatureSpellVisualKitID;
                 }
             }
         }

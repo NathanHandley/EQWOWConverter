@@ -2271,6 +2271,58 @@ namespace EQWOWConverter
             Logger.WriteInfo(string.Concat("Generating companion pets complete, generated '", companionPetsByID.Count.ToString(), "'"));
         }
 
+        private SpellTemplate BuildBashSpellTemplate(int wowSpellID, int spellVisualID, int bashAndSlamSpellCategoryID, int forbearanceSpellID)
+        {
+            int bashSpellIconID = Configuration.COMBATSKILL_BASH_SPELL_ICON_EQ_ID;
+            if (bashSpellIconID < 0 || bashSpellIconID > 22)
+            {
+                Logger.WriteError("COMBATSKILL_BASH_SPELL_ICON_EQ_ID value must be 0-22. Setting to 11");
+                bashSpellIconID = 11;
+            }
+            SpellTemplate bashSpellTemplate = new SpellTemplate();
+            bashSpellTemplate.Name = "Bash";
+            bashSpellTemplate.WOWSpellID = wowSpellID;
+            bashSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            bashSpellTemplate.Description = "Slams the target with a shield, dealing physical damage and sometimes stunning them briefly.";
+            bashSpellTemplate.AuraDescription = "Stunned.";
+            bashSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(bashSpellIconID);
+            bashSpellTemplate.CastTimeInMS = 0;
+            bashSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS);
+            bashSpellTemplate.Category = Convert.ToUInt32(bashAndSlamSpellCategoryID);
+            bashSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS); // Shared cooldown with Slam
+            bashSpellTemplate.SetSpellRangeToMeleeRange();
+            bashSpellTemplate.SchoolMask = 1; // Physical
+            bashSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)
+            bashSpellTemplate.TriggersGlobalCooldown = false;
+            bashSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+            bashSpellTemplate.InitiatesAutoAttack = true;
+            bashSpellTemplate.AuraDuration = new SpellDuration();
+            bashSpellTemplate.AuraDuration.SetFixedDuration(Configuration.COMBATSKILL_BASH_STUN_DURATION_IN_MS);
+            bashSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
+            bashSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
+            bashSpellTemplate.EquippedItemClass = 4; // ITEM_CLASS_ARMOR
+            bashSpellTemplate.EquippedItemSubClassMask = 1 << 6; // ITEM_SUBCLASS_ARMOR_SHIELD (to require shields) - Look into making this work for Fiery Defender/Avenger. Ignored for creature casters (item requirements are player-only)
+            bashSpellTemplate.SpellVisualID1 = Convert.ToUInt32(spellVisualID);
+            SpellEffectWOW bashDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_BASH_BASE_DAMAGE, 0, 0);
+            bashDamageEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_BASH_DAMAGE_PER_LEVEL;
+            bashDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+            bashDamageEffect.ActionDescription = "bashes";
+            bashSpellTemplate.WOWSpellEffects.Add(bashDamageEffect);
+            SpellEffectWOW bashStunEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModStun, 0, 0, 0, 0, 0, 0);
+            bashStunEffect.EffectMechanic = SpellMechanicType.Stunned;
+            bashStunEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+            bashStunEffect.ActionDescription = "stuns";
+            bashStunEffect.AuraDescription = "stunned";
+            bashSpellTemplate.WOWSpellEffects.Add(bashStunEffect);
+            bashSpellTemplate.StunUsesBashKickChance = true;
+            if (forbearanceSpellID != 0)
+            {
+                bashSpellTemplate.SpellIDCastOnTargetWhenStunLands = forbearanceSpellID;
+                bashSpellTemplate.ExcludeTargetAuraSpellID = forbearanceSpellID;
+            }
+            return bashSpellTemplate;
+        }
+
         public void GenerateCustomSpells(ref List<SpellTemplate> spellTemplates)
         {
             // Custom Gate
@@ -2497,50 +2549,7 @@ namespace EQWOWConverter
             int bashAndSlamSpellCategoryID = IDGenerationTool.GenerateID("SpellCategoryID", "bashslam"); // Used for linking cooldown between bash and slam
             if (Configuration.COMBATSKILL_BASH_ENABLED == true)
             {
-                int bashSpellIconID = Configuration.COMBATSKILL_BASH_SPELL_ICON_EQ_ID;
-                if (bashSpellIconID < 0 || bashSpellIconID > 22)
-                {
-                    Logger.WriteError("CREATURE_BASH_SPELL_ICON_EQ_ID value must be 0-22. Setting to 11");
-                    bashSpellIconID = 11;
-                }
-                SpellTemplate bashSpellTemplate = new SpellTemplate();
-                bashSpellTemplate.Name = "Bash";
-                bashSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_BASH_SPELL_ID;
-                bashSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
-                bashSpellTemplate.Description = "Slams the target with a shield, dealing physical damage and sometimes stunning them briefly.";
-                bashSpellTemplate.AuraDescription = "Stunned.";
-                bashSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(bashSpellIconID);
-                bashSpellTemplate.CastTimeInMS = 0;
-                bashSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS);
-                bashSpellTemplate.Category = Convert.ToUInt32(bashAndSlamSpellCategoryID);
-                bashSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS); // Shared cooldown with Slam
-                bashSpellTemplate.SetSpellRangeToMeleeRange();
-                bashSpellTemplate.SchoolMask = 1; // Physical
-                bashSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)
-                bashSpellTemplate.TriggersGlobalCooldown = false;
-                bashSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
-                bashSpellTemplate.InitiatesAutoAttack = true;
-                bashSpellTemplate.AuraDuration = new SpellDuration();
-                bashSpellTemplate.AuraDuration.SetFixedDuration(Configuration.COMBATSKILL_BASH_STUN_DURATION_IN_MS);
-                bashSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
-                bashSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
-                bashSpellTemplate.EquippedItemClass = 4; // ITEM_CLASS_ARMOR
-                bashSpellTemplate.EquippedItemSubClassMask = 1 << 6; // ITEM_SUBCLASS_ARMOR_SHIELD (to require shields) - Look into making this work for Fiery Defender/Avenger
-                bashSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellTemplate.BashSpellVisualID);
-                SpellVisual.GetOrCreateSoundDBCID("bashshld");
-                SpellEffectWOW bashDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_BASH_BASE_DAMAGE, 0, 0);
-                bashDamageEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_BASH_DAMAGE_PER_LEVEL;
-                bashDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
-                bashDamageEffect.ActionDescription = "bashes";
-                bashSpellTemplate.WOWSpellEffects.Add(bashDamageEffect);
-                SpellEffectWOW bashStunEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModStun, 0, 0, 0, 0, 0, 0);
-                bashStunEffect.EffectMechanic = SpellMechanicType.Stunned;
-                bashStunEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
-                bashStunEffect.ActionDescription = "stuns";
-                bashStunEffect.AuraDescription = "stunned";
-                bashSpellTemplate.WOWSpellEffects.Add(bashStunEffect);
-                bashSpellTemplate.StunUsesBashKickChance = true;
-
+                int bashForbearanceSpellID = 0;
                 if (Configuration.COMBATSKILL_BASH_FORBEARANCE_ENABLED == true)
                 {
                     int bashForbearanceIconID = Configuration.COMBATSKILL_BASH_FORBEARANCE_SPELL_ICON_EQ_ID;
@@ -2570,11 +2579,18 @@ namespace EQWOWConverter
                     bashForbearanceEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
                     bashForbearanceSpellTemplate.WOWSpellEffects.Add(bashForbearanceEffect);
                     spellTemplates.Add(bashForbearanceSpellTemplate);
-                    bashSpellTemplate.SpellIDCastOnTargetWhenStunLands = Configuration.COMBATSKILL_BASH_FORBEARANCE_SPELL_ID;
-                    bashSpellTemplate.ExcludeTargetAuraSpellID = Configuration.COMBATSKILL_BASH_FORBEARANCE_SPELL_ID;
+                    bashForbearanceSpellID = Configuration.COMBATSKILL_BASH_FORBEARANCE_SPELL_ID;
                 }
 
+                // Player Bash
+                SpellVisual.GetOrCreateSoundDBCID("bashshld"); // TODO: make this more direct / differente
+                SpellTemplate bashSpellTemplate = BuildBashSpellTemplate(Configuration.COMBATSKILL_BASH_SPELL_ID, SpellTemplate.BashSpellVisualID, bashAndSlamSpellCategoryID, bashForbearanceSpellID);
                 spellTemplates.Add(bashSpellTemplate);
+
+                // Creature Bash
+                SpellVisual.GetOrCreateSoundDBCID("swing"); // TODO: This too
+                SpellTemplate bashCreatureSpellTemplate = BuildBashSpellTemplate(Configuration.COMBATSKILL_BASH_CREATURE_SPELL_ID, SpellTemplate.BashCreatureSpellVisualID, bashAndSlamSpellCategoryID, bashForbearanceSpellID);
+                spellTemplates.Add(bashCreatureSpellTemplate);
             }
 
             // Slam
