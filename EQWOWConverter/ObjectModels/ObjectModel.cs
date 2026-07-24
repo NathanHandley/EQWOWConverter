@@ -451,6 +451,11 @@ namespace EQWOWConverter.ObjectModels
         {
             ModelRenderGroups.Clear();
 
+            // The M2 vertex bone index is a single byte, so a longer bone list can't hold a true bone index there and those vertices fall back to the render group's lookup index. This
+            // still renders correctly in game (the client skins from the skin's own indices), but external model tools read the M2 index directly and will pose those vertices wrong
+            if (ModelBones.Count >= byte.MaxValue)
+                Logger.WriteWarning("Object model '", Name, "' has ", ModelBones.Count.ToString(), " bones, which is more than the M2 vertex bone index can address");
+
             // Render groups are already sorted out by earlier methods.  Ultimately, they are grouped by
             // material and restricted to 64 max bones
             foreach (MeshData.MeshRenderGroup meshRenderGroup in meshData.RenderGroups)

@@ -58,10 +58,23 @@ namespace EQWOWConverter.ObjectModels
         {
             Position.WriteToBuffer(buffer);
             buffer.AddRange(BoneWeights);
-            buffer.AddRange(BoneIndicesLookup);
+            WriteBoneIndicesToBuffer(buffer);
             Normal.WriteToBuffer(buffer);
             Texture1TextureCoordinates.WriteToBuffer(buffer);
             Texture2TextureCoordinates.WriteToBuffer(buffer);
+        }
+
+        private void WriteBoneIndicesToBuffer(List<byte> buffer)
+        {
+            for (int boneSlotIndex = 0; boneSlotIndex < 4; boneSlotIndex++)
+            {
+                // A model with > 256 bones has no way to express a true index and falls back to the lookup one, which I've only observed from 
+                // from sireed204 and sireed205 (which come from Animated vertices)
+                if (BoneIndicesTrue[boneSlotIndex] <= byte.MaxValue)
+                    buffer.Add(Convert.ToByte(BoneIndicesTrue[boneSlotIndex]));
+                else
+                    buffer.Add(BoneIndicesLookup[boneSlotIndex]);
+            }
         }
     }
 }
