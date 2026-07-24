@@ -1030,6 +1030,8 @@ namespace EQWOWConverter.Spells
                     spellTemplate.CanTargetBothFriendlyAndEnemy = true;
                 else if (effect.EQEffectType == SpellEQEffectType.BindSight)
                     spellTemplate.CanTargetBothFriendlyAndEnemy = true;
+                else if (effect.EQEffectType == SpellEQEffectType.ModFaction)
+                    spellTemplate.CanTargetBothFriendlyAndEnemy = true; // Alliance line lands on NPCs regardless of current standing
             }
 
             // Map the EQ target type to WOW
@@ -2361,6 +2363,28 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.WaterBreathing;
                                 newSpellEffectWOW.ActionDescription = string.Concat("grants ability to breath underwater");
                                 newSpellEffectWOW.AuraDescription = string.Concat("able to breath underwater");
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
+                        case SpellEQEffectType.ModFaction:
+                            {
+                                if (eqEffect.EQBaseValue == 0)
+                                    continue;
+                                spellTemplate.ModFactionRepValue = eqEffect.EQBaseValue * Configuration.SPELL_MOD_FACTION_REP_MULTIPLIER;
+                                spellTemplate.AuraDuration = new SpellDuration();
+                                spellTemplate.AuraDuration.IsInfinite = true;
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
+                                if (spellTemplate.ModFactionRepValue > 0)
+                                {
+                                    newSpellEffectWOW.ActionDescription = string.Concat("improves your reputation with the target's faction while the effect holds");
+                                    newSpellEffectWOW.AuraDescription = string.Concat("the caster's reputation with this creature's faction is improved");
+                                }
+                                else
+                                {
+                                    newSpellEffectWOW.ActionDescription = string.Concat("worsens your reputation with the target's faction while the effect holds");
+                                    newSpellEffectWOW.AuraDescription = string.Concat("the caster's reputation with this creature's faction is worsened");
+                                }
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
                         // Not happy with this

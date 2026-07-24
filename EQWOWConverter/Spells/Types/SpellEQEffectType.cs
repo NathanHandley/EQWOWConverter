@@ -39,7 +39,7 @@ namespace EQWOWConverter.Spells
         //NPCFrenzy = 16, // What is this?
         //NPCAwareness = 17, // What is this?
         //Pacify = 18, -- This isn't implemented in eq emulators so always skip it
-        //ModFaction = 19,
+        ModFaction = 19,
         //Blind = 20,
         Stun = 21,
         Charm = 22,

@@ -725,15 +725,18 @@ namespace EQWOWConverter
         public static int SPELL_PERIODIC_SECONDS_PER_TICK_EQ = 6;
         public static int SPELL_PERIODIC_SECONDS_PER_TICK_WOW = 3;
 
-        // This is 'added time' in the periodic tick that comes from bard casters.  WOW 3.3.5 does not have
-        // 'rolling dots', so without any kind of buffer there won't be a damage/heal 'tick' that occurs
-        // on targets near the bard since the spell would get overridden right when a tick would occur
+        // This is 'added time' in the periodic tick that comes from bard casters.  WOW 3.3.5 does not have 'rolling dots', so without any kind of buffer there won't be
+        // a damage/heal 'tick' that occurs on targets near the bard since the spell would get overridden right when a tick would occur
         public static int SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS = 50;
 
         // Bards can have this many songs playing at the same time.
         // - Set as 0 to disable this entirely, allowing all songs to play at once
         // - Set as 1 to have a more EQ like experience
         public static int SPELL_MAX_CONCURRENT_BARD_SONGS = 3;
+
+        // What to multiply EQ "AddFaction" (ModFaction / Alliance line) spell values by to get WOW reputation points. 30 makes Alliance (+100) span exactly one WOW band
+        // from neutral (0 -> 3000 Friendly), matching the EQ indifferent (0) -> amiable (100) jump.
+        public static int SPELL_MOD_FACTION_REP_MULTIPLIER = 30;
 
         // This is the minimum allowable recovery time any spell can have, which any smaller will become zero
         // and only subjected to the global cooldown of 1.5 seconds.  This is only enforced on the raw spell
@@ -1494,6 +1497,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR", SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR, "If this is true, use the level as defined in everquest for summoned pets as well as the control behavior. (Highly advisable to leave False)");
             OutputVariableToConfig("SPELLS_GATE_TETHER_ENABLED", SPELLS_GATE_TETHER_ENABLED, "If true, the player can return to their gate point by clicking off the buff (within 30 minutes)");
             OutputVariableToConfig("SPELL_MAX_CONCURRENT_BARD_SONGS", SPELL_MAX_CONCURRENT_BARD_SONGS, "Bards can have this many songs playing at the same time.");
+            OutputVariableToConfig("SPELL_MOD_FACTION_REP_MULTIPLIER", SPELL_MOD_FACTION_REP_MULTIPLIER, "What to multiply EQ AddFaction (Alliance line) spell values by to get WOW reputation points");
             OutputVariableToConfig("SPELL_PERIODIC_SECONDS_PER_TICK_EQ", SPELL_PERIODIC_SECONDS_PER_TICK_EQ, "Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier (WoW typically has 3)");
             OutputVariableToConfig("CREATURE_RIDING_TRAINERS_ENABLED", CREATURE_RIDING_TRAINERS_ENABLED, "If true, riding trainers will be generated");
             OutputVariableToConfig("CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY", CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY, "If true, riding trainers will include flying mounts as well");
@@ -2199,6 +2203,7 @@ namespace EQWOWConverter
             SPELL_PERIODIC_SECONDS_PER_TICK_WOW = ReadVariableFromConfigString("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", configValuesByVariableName, SPELL_PERIODIC_SECONDS_PER_TICK_WOW);
             SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS = ReadVariableFromConfigString("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", configValuesByVariableName, SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS);
             SPELL_MAX_CONCURRENT_BARD_SONGS = ReadVariableFromConfigString("SPELL_MAX_CONCURRENT_BARD_SONGS", configValuesByVariableName, SPELL_MAX_CONCURRENT_BARD_SONGS);
+            SPELL_MOD_FACTION_REP_MULTIPLIER = ReadVariableFromConfigString("SPELL_MOD_FACTION_REP_MULTIPLIER", configValuesByVariableName, SPELL_MOD_FACTION_REP_MULTIPLIER);
             SPELL_RECOVERY_TIME_MINIMUM_IN_MS = ReadVariableFromConfigString("SPELL_RECOVERY_TIME_MINIMUM_IN_MS", configValuesByVariableName, SPELL_RECOVERY_TIME_MINIMUM_IN_MS);
             SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT = ReadVariableFromConfigString("SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT", configValuesByVariableName, SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT);
             SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = ReadVariableFromConfigString("SPELLS_LEARNABLE_FROM_ITEMS_ENABLED", configValuesByVariableName, SPELLS_LEARNABLE_FROM_ITEMS_ENABLED);
