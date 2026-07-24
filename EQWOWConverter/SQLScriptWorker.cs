@@ -207,10 +207,41 @@ namespace EQWOWConverter
             OutputSQLScriptsToDisk();
         }
 
-        private void PopulateCreatureFactionData()
+        private void PopulateCreatureFactionData(List<CreatureTemplate> creatureTemplates)
         {
+            // Each faction's top member EQ race drives the illusion same-race faction band bonus
+            Dictionary<int, Dictionary<int, int>> raceCountsByWOWFactionID = new Dictionary<int, Dictionary<int, int>>();
+            foreach (CreatureTemplate creatureTemplate in creatureTemplates)
+            {
+                int wowFactionID = CreatureFaction.GetWOWFactionIDForEQFactionID(creatureTemplate.EQFactionID);
+                if (raceCountsByWOWFactionID.ContainsKey(wowFactionID) == false)
+                    raceCountsByWOWFactionID.Add(wowFactionID, new Dictionary<int, int>());
+                Dictionary<int, int> countsByRaceID = raceCountsByWOWFactionID[wowFactionID];
+                if (countsByRaceID.ContainsKey(creatureTemplate.Race.ID) == false)
+                    countsByRaceID.Add(creatureTemplate.Race.ID, 1);
+                else
+                    countsByRaceID[creatureTemplate.Race.ID]++;
+            }
+
             foreach (CreatureFaction creatureFaction in CreatureFaction.GetCreatureFactionsByFactionID().Values)
-                modEverquestFactionSQL.AddRow(creatureFaction.FactionTemplateID, creatureFaction.WillDefendFriendlyPlayers, creatureFaction.DefendersWillAttackToDefendPlayer, creatureFaction.DefendCombatFactionTemplateID);
+            {
+                // Highest count wins, with lowest race ID breaking ties
+                int predominantEQRaceID = 0;
+                if (raceCountsByWOWFactionID.ContainsKey(creatureFaction.FactionID) == true)
+                {
+                    int predominantCount = 0;
+                    foreach (KeyValuePair<int, int> raceCount in raceCountsByWOWFactionID[creatureFaction.FactionID])
+                    {
+                        if (raceCount.Value > predominantCount || (raceCount.Value == predominantCount && raceCount.Key < predominantEQRaceID))
+                        {
+                            predominantEQRaceID = raceCount.Key;
+                            predominantCount = raceCount.Value;
+                        }
+                    }
+                }
+                modEverquestFactionSQL.AddRow(creatureFaction.FactionTemplateID, creatureFaction.FactionID, (int)creatureFaction.BaseAlignment, predominantEQRaceID,
+                    creatureFaction.WillDefendFriendlyPlayers, creatureFaction.DefendersWillAttackToDefendPlayer, creatureFaction.DefendCombatFactionTemplateID);
+            }
         }
 
         private void PopulateSystemConfigs()
@@ -223,6 +254,10 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("DeathKnightsStartLikeOtherClasses", Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true ? "1" : "0");
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMin", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("GameObjectTemplateIDMax", Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END.ToString());
+            modEverquestSystemConfigsSQL.AddRow("FactionGoodClassMask", CreatureFaction.GetGoodClassesMask().ToString());
+            modEverquestSystemConfigsSQL.AddRow("FactionEvilClassMask", CreatureFaction.GetEvilClassesMask().ToString());
+            modEverquestSystemConfigsSQL.AddRow("FactionGoodRaceMask", CreatureFaction.GetGoodRacesMask().ToString());
+            modEverquestSystemConfigsSQL.AddRow("FactionEvilRaceMask", CreatureFaction.GetEvilRacesMask().ToString());
             modEverquestSystemConfigsSQL.AddRow("InvisVsUndeadDetectSpellID", Configuration.SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID.ToString());
             modEverquestSystemConfigsSQL.AddRow("ItemTemplateIDMin", Configuration.SQL_ITEM_TEMPLATE_ENTRY_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("ItemTemplateIDMax", Configuration.SQL_ITEM_TEMPLATE_ENTRY_END.ToString());
