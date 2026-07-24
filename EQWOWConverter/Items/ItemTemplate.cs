@@ -1232,6 +1232,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
+                        itemTemplate.InventoryType = ItemWOWInventoryType.TwoHand;
                     } break;
                 case 2: // 1 Hand Pierce => Dagger
                     {
