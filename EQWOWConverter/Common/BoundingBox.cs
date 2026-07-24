@@ -301,6 +301,31 @@ namespace EQWOWConverter.Common
             return boundingBox;
         }
 
+        public static BoundingBox GetExpandedBox(BoundingBox sourceBoundingBox, float multiplier, float addedPerSide, float minSize)
+        {
+            BoundingBox expandedBoundingBox = new BoundingBox();
+            ExpandAxisAboutCenter(sourceBoundingBox.BottomCorner.X, sourceBoundingBox.TopCorner.X, multiplier, addedPerSide, minSize,
+                out expandedBoundingBox.BottomCorner.X, out expandedBoundingBox.TopCorner.X);
+            ExpandAxisAboutCenter(sourceBoundingBox.BottomCorner.Y, sourceBoundingBox.TopCorner.Y, multiplier, addedPerSide, minSize,
+                out expandedBoundingBox.BottomCorner.Y, out expandedBoundingBox.TopCorner.Y);
+            ExpandAxisAboutCenter(sourceBoundingBox.BottomCorner.Z, sourceBoundingBox.TopCorner.Z, multiplier, addedPerSide, minSize,
+                out expandedBoundingBox.BottomCorner.Z, out expandedBoundingBox.TopCorner.Z);
+            return expandedBoundingBox;
+        }
+
+        private static void ExpandAxisAboutCenter(float sourceMin, float sourceMax, float multiplier, float addedPerSide, float minSize,
+            out float expandedMin, out float expandedMax)
+        {
+            float center = (sourceMin + sourceMax) * 0.5f;
+            float halfExtent = (sourceMax - sourceMin) * 0.5f;
+            float expandedHalfExtent = (halfExtent * multiplier) + addedPerSide;
+            float minHalfExtent = minSize * 0.5f;
+            if (expandedHalfExtent < minHalfExtent)
+                expandedHalfExtent = minHalfExtent;
+            expandedMin = center - expandedHalfExtent;
+            expandedMax = center + expandedHalfExtent;
+        }
+
         public void ExpandToMinimumSize(float minSize)
         {
             if (GetXDistance() < minSize)

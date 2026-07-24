@@ -170,6 +170,11 @@ namespace EQWOWConverter
         // The minimum size that boundary boxes should be for any object models when output
         public static float GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE = 5f;
 
+        // Modifiers for the 'clickable area' around creatures
+        public static float GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER = 1.1f;
+        public static float GENERATE_CREATURE_CLICKBOX_ADDED_SIZE = 0.2f;
+        public static float GENERATE_CREATURE_CLICKBOX_MIN_SIZE = 0.5f;
+
         // If true, guild banks will now appear. In some cases this will replace an existing banker, others will add a new guild bank NPC object
         public static bool GENERATE_ENABLE_GUILD_VAULTS = true;
 
@@ -1555,6 +1560,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("GENERATE_FLOAT_EPSILON", GENERATE_FLOAT_EPSILON, "What edge buffer to add when doing floating point month");
             OutputVariableToConfig("GENERATE_FORCE_SQL_UPDATES", GENERATE_FORCE_SQL_UPDATES, "If true, SQL files will be generated in a way where they will have a unique ID to force an update if ran by azerothcore, regardless of changes");
             OutputVariableToConfig("GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE", GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE, "The minimum size that boundary boxes should be for any object models when output");
+            OutputVariableToConfig("GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER", GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER, "Modifiers for the 'clickable area' around creatures", false);
+            OutputVariableToConfig("GENERATE_CREATURE_CLICKBOX_ADDED_SIZE", GENERATE_CREATURE_CLICKBOX_ADDED_SIZE, "", false);
+            OutputVariableToConfig("GENERATE_CREATURE_CLICKBOX_MIN_SIZE", GENERATE_CREATURE_CLICKBOX_MIN_SIZE, "");
             OutputVariableToConfig("GENERATE_NON_PLAYER_OBTAINABLE_ITEMS", GENERATE_NON_PLAYER_OBTAINABLE_ITEMS, "If false, unobtainable items will not output to the database");
             OutputVariableToConfig("ZONE_SHOW_STATIC_GEOMETRY", ZONE_SHOW_STATIC_GEOMETRY, "If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging");
             OutputVariableToConfig("ZONE_MAX_FACES_PER_WMOGROUP", ZONE_MAX_FACES_PER_WMOGROUP, "Maximum number of faces that fit into a render WMO group before it subdivides (max is due to various variable limits)");
@@ -1968,6 +1976,9 @@ namespace EQWOWConverter
             GENERATE_FLOAT_EPSILON = ReadVariableFromConfigString("GENERATE_FLOAT_EPSILON", configValuesByVariableName, GENERATE_FLOAT_EPSILON);
             GENERATE_FORCE_SQL_UPDATES = ReadVariableFromConfigString("GENERATE_FORCE_SQL_UPDATES", configValuesByVariableName, GENERATE_FORCE_SQL_UPDATES);
             GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE = ReadVariableFromConfigString("GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE", configValuesByVariableName, GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+            GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER = ReadVariableFromConfigString("GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER", configValuesByVariableName, GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER);
+            GENERATE_CREATURE_CLICKBOX_ADDED_SIZE = ReadVariableFromConfigString("GENERATE_CREATURE_CLICKBOX_ADDED_SIZE", configValuesByVariableName, GENERATE_CREATURE_CLICKBOX_ADDED_SIZE);
+            GENERATE_CREATURE_CLICKBOX_MIN_SIZE = ReadVariableFromConfigString("GENERATE_CREATURE_CLICKBOX_MIN_SIZE", configValuesByVariableName, GENERATE_CREATURE_CLICKBOX_MIN_SIZE);
             GENERATE_ENABLE_GUILD_VAULTS = ReadVariableFromConfigString("GENERATE_ENABLE_GUILD_VAULTS", configValuesByVariableName, GENERATE_ENABLE_GUILD_VAULTS);
             GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION = ReadVariableFromConfigString("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", configValuesByVariableName, GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION);
             GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID = ReadVariableFromConfigString("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", configValuesByVariableName, GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID);

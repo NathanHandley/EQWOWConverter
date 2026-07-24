@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 
 namespace EQWOWConverter.WOWFiles
@@ -50,12 +51,32 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0.6944f * collisionScaleCompensation * bakedGeometryScale); // CollisionWidth
             newRow.AddFloat(2.083f * collisionScaleCompensation * bakedGeometryScale); // CollisionHeight
             newRow.AddFloat(0); // MountHeight
-            newRow.AddFloat(-1 * creatureModelTemplate.Race.GeoboxInradius * bakedGeometryScale); // GeoBoxMinX, Min vert X
-            newRow.AddFloat(-1 * creatureModelTemplate.Race.GeoboxInradius * bakedGeometryScale); // GeoBoxMinY, Min vert Y
-            newRow.AddFloat(-1 * creatureModelTemplate.Race.GeoboxInradius * bakedGeometryScale); // GeoBoxMinZ, Min vert Z
-            newRow.AddFloat(creatureModelTemplate.Race.GeoboxInradius * bakedGeometryScale); // GeoBoxMaxX, Max vert X
-            newRow.AddFloat(creatureModelTemplate.Race.GeoboxInradius * bakedGeometryScale); // GeoBoxMaxY, Max vert Y
-            newRow.AddFloat(creatureModelTemplate.Race.GeoboxInradius * bakedGeometryScale); // GeoBoxMaxZ, Max vert Z
+            // Clickable boundary box
+            BoundingBox geometryBox = creatureModelTemplate.ModelStandingGeometryBox;
+            bool hasGeometryBox = geometryBox.GetXDistance() > Configuration.GENERATE_FLOAT_EPSILON || geometryBox.GetYDistance() > Configuration.GENERATE_FLOAT_EPSILON || geometryBox.GetZDistance() > Configuration.GENERATE_FLOAT_EPSILON;
+            float geoBoxMinX, geoBoxMinY, geoBoxMinZ, geoBoxMaxX, geoBoxMaxY, geoBoxMaxZ;
+            if (hasGeometryBox == true)
+            {
+                BoundingBox clickBox = BoundingBox.GetExpandedBox(geometryBox, Configuration.GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER, Configuration.GENERATE_CREATURE_CLICKBOX_ADDED_SIZE, Configuration.GENERATE_CREATURE_CLICKBOX_MIN_SIZE);
+                geoBoxMinX = clickBox.BottomCorner.X;
+                geoBoxMinY = clickBox.BottomCorner.Y;
+                geoBoxMinZ = clickBox.BottomCorner.Z;
+                geoBoxMaxX = clickBox.TopCorner.X;
+                geoBoxMaxY = clickBox.TopCorner.Y;
+                geoBoxMaxZ = clickBox.TopCorner.Z;
+            }
+            else
+            {
+                float inradius = creatureModelTemplate.Race.GeoboxInradius * bakedGeometryScale;
+                geoBoxMinX = geoBoxMinY = geoBoxMinZ = -1 * inradius;
+                geoBoxMaxX = geoBoxMaxY = geoBoxMaxZ = inradius;
+            }
+            newRow.AddFloat(geoBoxMinX); // GeoBoxMinX, Min vert X
+            newRow.AddFloat(geoBoxMinY); // GeoBoxMinY, Min vert Y
+            newRow.AddFloat(geoBoxMinZ); // GeoBoxMinZ, Min vert Z
+            newRow.AddFloat(geoBoxMaxX); // GeoBoxMaxX, Max vert X
+            newRow.AddFloat(geoBoxMaxY); // GeoBoxMaxY, Max vert Y
+            newRow.AddFloat(geoBoxMaxZ); // GeoBoxMaxZ, Max vert Z
             newRow.AddFloat(1); // WorldEffectScale, typical is 1 but can be 0.03 - 0.9
             newRow.AddFloat(1); // AttachedEffectScale, typical is 1, but can be 0.5 - 2.9
             newRow.AddFloat(0); // MissileCollisionRadius

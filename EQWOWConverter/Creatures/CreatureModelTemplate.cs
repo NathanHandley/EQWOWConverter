@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using System.Globalization;
 using System.Text;
@@ -40,6 +41,7 @@ namespace EQWOWConverter.Creatures
         public bool IsCompanionPetVersion = false;
         public bool IsIllusionFormVersion = false;
         public float ModelStandingHeight = 0; // Z extent of the stand-posed geometry in final (rendered) model space
+        public BoundingBox ModelStandingGeometryBox = new BoundingBox();
 
         public int DBCCreatureModelDataID;
         public int DBCCreatureDisplayID;
@@ -233,6 +235,7 @@ namespace EQWOWConverter.Creatures
             curObject.LoadEQObjectFromFile(charactersFolderRoot, skeletonName);
             // GeometryBoundingBox is the stand-posed vertices in the same space the client renders
             ModelStandingHeight = curObject.GeometryBoundingBox.TopCorner.Z - curObject.GeometryBoundingBox.BottomCorner.Z;
+            ModelStandingGeometryBox = new BoundingBox(curObject.GeometryBoundingBox);
             StringBuilder nameSB = new StringBuilder();
             nameSB.Append(Race.Name);
             nameSB.Append(" ");

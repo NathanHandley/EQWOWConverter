@@ -215,8 +215,13 @@ namespace EQWOWConverter.ObjectModels
 
         private void CalculateInteractionBoundingBoxes()
         {
-            MeshData poseMesh = GetMeshDataByPose(true, EQAnimationType.posStandPose, EQAnimationType.drfStandPose, EQAnimationType.p01StandPassive, EQAnimationType.o01StandIdle, EQAnimationType.l01Walk);
-            InteractionBoundingBox = BoundingBox.GenerateBoxFromVectors(poseMesh.Vertices, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+            if (ModelType == ObjectModelType.Creature)
+                CalculateCreatureInteractionBoundingBox();
+            else
+            {
+                MeshData poseMesh = GetMeshDataByPose(true, EQAnimationType.posStandPose, EQAnimationType.drfStandPose, EQAnimationType.p01StandPassive, EQAnimationType.o01StandIdle, EQAnimationType.l01Walk);
+                InteractionBoundingBox = BoundingBox.GenerateBoxFromVectors(poseMesh.Vertices, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+            }
 
             // Creatures have a lift variable to factor for
             if (ModelType != ObjectModelType.TransportShip && Properties.CreatureModelTemplate != null)
@@ -235,8 +240,9 @@ namespace EQWOWConverter.ObjectModels
                     InteractionBoundingBox.BottomCorner.Y = radius * -1;
                     InteractionBoundingBox.BottomCorner.Z = (halfHeight * -1) + lift;
                 }
-                else
+                else if (ModelType != ObjectModelType.Creature)
                 {
+                    // The lift is baked into the root-child bone translation tracks, so a fully posed creature boxalready carries it.  Only the partially posed box needs it added back on
                     InteractionBoundingBox.TopCorner.Z += lift;
                     InteractionBoundingBox.BottomCorner.Z += lift;
                 }
@@ -248,6 +254,31 @@ namespace EQWOWConverter.ObjectModels
                 animation.BoundingRadius = InteractionBoundingBox.FurthestPointDistanceFromCenter();
                 animation.BoundingBox = InteractionBoundingBox;
             }
+        }
+
+        private void CalculateCreatureInteractionBoundingBox()
+        {
+            BoundingBox standPoseBoundingBox = GeometryBoundingBox;
+            if (IsBoundingBoxMeasurable(standPoseBoundingBox) == false)
+            {
+                MeshData standPoseMesh = GetMeshDataByPose(false, EQAnimationType.posStandPose, EQAnimationType.drfStandPose, EQAnimationType.p01StandPassive, EQAnimationType.o01StandIdle, EQAnimationType.l01Walk);
+                standPoseBoundingBox = BoundingBox.GenerateBoxFromVectors(standPoseMesh.Vertices, 0);
+                if (IsBoundingBoxMeasurable(standPoseBoundingBox) == false)
+                {
+                    Logger.WriteDebug("Could not measure stand pose extents for creature model '", Name, "', falling back to the minimum boundary box size");
+                    InteractionBoundingBox = BoundingBox.GenerateBoxFromVectors(standPoseMesh.Vertices, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+                    return;
+                }
+            }
+
+            InteractionBoundingBox = BoundingBox.GetExpandedBox(standPoseBoundingBox, Configuration.GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER, Configuration.GENERATE_CREATURE_CLICKBOX_ADDED_SIZE, Configuration.GENERATE_CREATURE_CLICKBOX_MIN_SIZE);
+        }
+
+        private static bool IsBoundingBoxMeasurable(BoundingBox boundingBox)
+        {
+            return boundingBox.GetXDistance() > Configuration.GENERATE_FLOAT_EPSILON
+                || boundingBox.GetYDistance() > Configuration.GENERATE_FLOAT_EPSILON
+                || boundingBox.GetZDistance() > Configuration.GENERATE_FLOAT_EPSILON;
         }
 
         private void ProcessBonesAndAnimation(List<EQSpellsEFF.EFFSpellSpriteListEffect>? spriteListEffects, Dictionary<string, EQParticleCloud>? particleCloudsByName)
@@ -2958,6 +2989,34 @@ namespace EQWOWConverter.ObjectModels
                 return new MeshData(MeshData);
             }
 
+            List<System.Numerics.Matrix4x4> absoluteBoneMatrices = BuildAbsoluteBoneMatricesForAnimation(useAnimIndex, ignoreMultiframeBoneVertices);
+
+            // Apply transformations to all vertices / normals
+            MeshData posedMeshData = new MeshData(MeshData);
+            for (int i = 0; i < posedMeshData.Vertices.Count; i++)
+            {
+                int boneIndex = posedMeshData.BoneIDs[i] + 1; // Add 1 because of root
+                if (boneIndex < 0 || boneIndex >= ModelBones.Count)
+                    continue;
+
+                System.Numerics.Matrix4x4 boneMatrix = absoluteBoneMatrices[boneIndex];
+                System.Numerics.Vector3 originalPos = new System.Numerics.Vector3(posedMeshData.Vertices[i].X, posedMeshData.Vertices[i].Y, posedMeshData.Vertices[i].Z);
+                System.Numerics.Vector3 originalNormal = new System.Numerics.Vector3(posedMeshData.Normals[i].X, posedMeshData.Normals[i].Y, posedMeshData.Normals[i].Z);
+
+                // Transform vertex
+                System.Numerics.Vector3 transform = System.Numerics.Vector3.Transform(originalPos, boneMatrix);
+                posedMeshData.Vertices[i] = new Vector3(transform.X, transform.Y, transform.Z);
+
+                // Transform normal
+                System.Numerics.Vector3 transformNormal = System.Numerics.Vector3.TransformNormal(originalNormal, boneMatrix);
+                posedMeshData.Normals[i] = new Vector3(transformNormal.X, transformNormal.Y, transformNormal.Z);
+            }
+
+            return posedMeshData;
+        }
+
+        private List<System.Numerics.Matrix4x4> BuildAbsoluteBoneMatricesForAnimation(int useAnimIndex, bool ignoreMultiframeBoneVertices)
+        {
             // Extract local transforms for every bone the selected animation
             List<System.Numerics.Vector3> curAnimTranslations = new List<System.Numerics.Vector3>(ModelBones.Count);
             List<System.Numerics.Quaternion> curAnimRotations = new List<System.Numerics.Quaternion>(ModelBones.Count);
@@ -3029,28 +3088,7 @@ namespace EQWOWConverter.ObjectModels
                 absoluteBoneMatrices.Add(absoluteMatrix);
             }
 
-            // Apply transformations to all vertices / normals
-            MeshData posedMeshData = new MeshData(MeshData);
-            for (int i = 0; i < posedMeshData.Vertices.Count; i++)
-            {
-                int boneIndex = posedMeshData.BoneIDs[i] + 1; // Add 1 because of root
-                if (boneIndex < 0 || boneIndex >= ModelBones.Count)
-                    continue;
-
-                System.Numerics.Matrix4x4 boneMatrix = absoluteBoneMatrices[boneIndex];
-                System.Numerics.Vector3 originalPos = new System.Numerics.Vector3(posedMeshData.Vertices[i].X, posedMeshData.Vertices[i].Y, posedMeshData.Vertices[i].Z);
-                System.Numerics.Vector3 originalNormal = new System.Numerics.Vector3(posedMeshData.Normals[i].X, posedMeshData.Normals[i].Y, posedMeshData.Normals[i].Z);
-
-                // Transform vertex
-                System.Numerics.Vector3 transform = System.Numerics.Vector3.Transform(originalPos, boneMatrix);
-                posedMeshData.Vertices[i] = new Vector3(transform.X, transform.Y, transform.Z);
-
-                // Transform normal
-                System.Numerics.Vector3 transformNormal = System.Numerics.Vector3.TransformNormal(originalNormal, boneMatrix);
-                posedMeshData.Normals[i] = new Vector3(transformNormal.X, transformNormal.Y, transformNormal.Z);
-            }
-
-            return posedMeshData;
+            return absoluteBoneMatrices;
         }
 
         public int AddTextureAndReturnID(string textureFileNameNoExt)
