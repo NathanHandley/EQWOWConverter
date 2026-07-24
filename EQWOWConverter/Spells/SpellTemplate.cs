@@ -261,6 +261,8 @@ namespace EQWOWConverter.Spells
         public SpellTemplate? RecourseLinkSpellTemplate = null;
         public List<SpellTemplate> ChainedSpellTemplates = new List<SpellTemplate>();
         public bool ChainAppliesViaHitTrigger = false; // If a chained spell and this is 'true', it won't wear off when the initial spell aura fades
+        public bool ChainAppliesViaCastTrigger = false; // If a chained spell and this is 'true', it fires once on cast completion with the original caster executing it (not once per hit unit)
+        public bool IsPlayerCasterOnlySpell = false; // Attaches the spell script that discards caster-targeted effects when the caster is not a player (TAKP NPC casters never self-hit)
         public int ProcLinkEQSpellID = 0;
         public int WOWSpellIDCastOnMeleeAttacker = 0;
         public int ExcludeTargetAuraSpellID = 0; // If the target has this aura, the spell refuses to apply
@@ -3346,6 +3348,48 @@ namespace EQWOWConverter.Spells
 
             // Sort them so the aura effects are last
             spellTemplate.WOWSpellEffects.Sort();
+
+            // A player casting an EQ targeted AE is also hit by it (TAKP Mob::SpellFinished, 'affect_caster = !IsNPC()').  That is only honored for the gravity flux (TossUp)
+            // line by chaining a caster-targeted copy that fires on cast, with a spell script discarding it for NPC casters since they never self-hit in EQ
+            if (isDetrimental == true && spellTemplate.EQTargetType == SpellEQTargetType.TargetedAreaOfEffect)
+            {
+                bool hasKnockBackEffect = false;
+                foreach (SpellEffectWOW spellEffect in spellTemplate.WOWSpellEffects)
+                    if (spellEffect.EffectType == SpellWOWEffectType.KnockBack)
+                        hasKnockBackEffect = true;
+                if (hasKnockBackEffect == true)
+                {
+                    SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
+                    effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Self Hit");
+                    effectGeneratedSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "tossupselfhit", spellTemplate.EQSpellID.ToString(), "0");
+                    effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+                    effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                    effectGeneratedSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
+                    effectGeneratedSpellTemplate.SchoolMask = spellTemplate.SchoolMask;
+                    effectGeneratedSpellTemplate.SpellRange = spellTemplate.SpellRange;
+                    effectGeneratedSpellTemplate.InfluencedBySpellPower = spellTemplate.InfluencedBySpellPower;
+                    effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                    effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
+                    effectGeneratedSpellTemplate.ChainAppliesViaCastTrigger = true;
+                    effectGeneratedSpellTemplate.IsPlayerCasterOnlySpell = true;
+                    if (spellTemplate.AuraDuration.MaxDurationInMS > 0)
+                        effectGeneratedSpellTemplate.AuraDuration.SetFixedDuration(spellTemplate.AuraDuration.MaxDurationInMS);
+                    foreach (SpellEffectWOW spellEffect in spellTemplate.WOWSpellEffects)
+                    {
+                        if (effectGeneratedSpellTemplate.WOWSpellEffects.Count >= 3)
+                        {
+                            Logger.WriteError("Self hit spell for eq spell id ", spellTemplate.EQSpellID.ToString(), " dropped effects beyond the third");
+                            break;
+                        }
+                        SpellEffectWOW selfSpellEffect = spellEffect.Clone();
+                        selfSpellEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                        selfSpellEffect.ImplicitTargetB = SpellWOWTargetType.None;
+                        effectGeneratedSpellTemplate.WOWSpellEffects.Add(selfSpellEffect);
+                    }
+                    effectGeneratedSpellTemplates.Add(effectGeneratedSpellTemplate);
+                    spellTemplate.ChainedSpellTemplates.Add(effectGeneratedSpellTemplate);
+                }
+            }
         }
 
         private static void SetAuraStackRule(ref SpellTemplate spellTemplate, int eqSpellCategory, bool isBardSongAura, bool isDetrimental, bool isItemClickSpell)
@@ -3738,6 +3782,22 @@ namespace EQWOWConverter.Spells
                 return;
             }
 
+            // Knockback origin comes from whichever unit executes the spell, so knockbacks must stay in the primary block with the true caster
+            // They never scale (so never get a level band), which would otherwise always push them into a split block
+            foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
+            {
+                if (spellEffect.EffectType != SpellWOWEffectType.KnockBack || spellEffect.CalcEffectHighLevel != 0)
+                    continue;
+                foreach (SpellEffectWOW otherSpellEffect in WOWSpellEffects)
+                {
+                    if (otherSpellEffect.CalcEffectHighLevel != 0)
+                    {
+                        spellEffect.CalcEffectHighLevel = otherSpellEffect.CalcEffectHighLevel;
+                        break;
+                    }
+                }
+            }
+
             // Pre-group by 'max' levels so that spell value calculations work properly
             Dictionary<int, List<SpellEffectWOW>> spellEffectsByMaxLevel = new Dictionary<int, List<SpellEffectWOW>>();
             foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
@@ -3779,6 +3839,22 @@ namespace EQWOWConverter.Spells
                         else
                             baseEffectBlock.SpellName = string.Concat(Name, " Split ", _GroupedBaseSpellEffectBlocksForOutput.Count.ToString());
                         baseEffectBlock.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "basesplit", WOWSpellID.ToString(), _GroupedBaseSpellEffectBlocksForOutput.Count.ToString());
+
+                        // Split blocks chained by hit trigger are re-cast by each hit unit with that unit as the caster (spell_linked_spell type 1), so retarget the effects onto that unit.
+                        // (Keeping the parent's targets would re-run enemy area selection from the hit unit's perspective, bouncing the spell back onto the original caster and anything near each hit unit)
+                        for (int effectIndex = 0; effectIndex < baseEffectBlock.SpellEffects.Count; effectIndex++)
+                        {
+                            SpellEffectWOW blockSpellEffect = baseEffectBlock.SpellEffects[effectIndex];
+                            if (blockSpellEffect.EffectType == SpellWOWEffectType.None)
+                                continue;
+                            if (blockSpellEffect.EffectType == SpellWOWEffectType.KnockBack)
+                                Logger.WriteError("Spell '", Name, "' (eq id ", EQSpellID.ToString(), ") has a knockback in a split block, so its knockback origin will be wrong");
+                            SpellEffectWOW retargetedSpellEffect = blockSpellEffect.Clone();
+                            retargetedSpellEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                            if (retargetedSpellEffect.ImplicitTargetB != SpellWOWTargetType.DestinationDatabaseForTeleport)
+                                retargetedSpellEffect.ImplicitTargetB = SpellWOWTargetType.None;
+                            baseEffectBlock.SpellEffects[effectIndex] = retargetedSpellEffect;
+                        }
                     }
                     _GroupedBaseSpellEffectBlocksForOutput.Add(baseEffectBlock);
                 }

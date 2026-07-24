@@ -2038,6 +2038,8 @@ namespace EQWOWConverter
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_IllusionSpellScript");
             if (spellTemplate.ResistDiff != 0 && commentFragment != " (Worn)")
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_ResistDiffSpellScript");
+            if (spellTemplate.IsPlayerCasterOnlySpell == true)
+                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_PlayerCasterOnlySpellScript");
 
             // Pet (but avoid duplicates)
             if (spellTemplate.SummonSpellPet != null && PetSpellIDsAdded.Contains(spellEffectBlocks[0].WOWSpellID) == false)
@@ -2106,6 +2108,14 @@ namespace EQWOWConverter
                     List<SpellEffectBlock> chainedGroupedBaseSpellEffectBlocksForOutput = chainedSpellTemplate.GroupedBaseSpellEffectBlocksForOutput;
                     int chainedSpellID = chainedGroupedBaseSpellEffectBlocksForOutput[0].WOWSpellID;
                     string chainedSpellName = chainedGroupedBaseSpellEffectBlocksForOutput[0].SpellName;
+                    if (chainedSpellTemplate.ChainAppliesViaCastTrigger == true)
+                    {
+                        // Cast triggers fire on any cast, so only chain them off blocks a unit deliberately casts (worn spells 'cast' on equip)
+                        spellLinkedSpellSQL.AddRowForCastTrigger(spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0].WOWSpellID, chainedSpellID, chainedSpellName);
+                        for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
+                            spellLinkedSpellSQL.AddRowForCastTrigger(spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyIndex][0].WOWSpellID, chainedSpellID, chainedSpellName);
+                        continue;
+                    }
                     bool forceHitTrigger = chainedSpellTemplate.ChainAppliesViaHitTrigger;
                     AddSpellChain(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0], chainedSpellID, chainedSpellName, forceHitTrigger);
                     foreach (List<SpellEffectBlock> wornSpellEffectBlocks in spellTemplate.ItemWornSpellEffectBlockSets)

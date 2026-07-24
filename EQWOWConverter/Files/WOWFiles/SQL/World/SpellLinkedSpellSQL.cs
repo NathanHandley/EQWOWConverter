@@ -33,6 +33,16 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
+        public void AddRowForCastTrigger(int triggeringSpellID, int triggeredSpellID, string comment)
+        {
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("spell_trigger", triggeringSpellID);
+            newRow.AddInt("spell_effect", triggeredSpellID);
+            newRow.AddInt("type", 0); // 0 fires on cast completion with the original caster executing the triggered spell
+            newRow.AddString("comment", comment);
+            Rows.Add(newRow);
+        }
+
         public void AddRowForHitTrigger(int triggeringSpellID, int triggeredSpellID, string comment)
         {
             SQLRow newRow = new SQLRow();
