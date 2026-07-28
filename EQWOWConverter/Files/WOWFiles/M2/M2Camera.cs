@@ -23,11 +23,13 @@ namespace EQWOWConverter.WOWFiles
     {
         public const float PORTRAIT_DIAGONAL_FOV = 0.950022f;
         public const float CHARACTER_INFO_DIAGONAL_FOV = 0.9799f; // Matches HumanMale.m2
+        public const float DEFAULT_FAR_CLIP = 27.77778f; // Matches HumanMale.m2, which is plenty of room for a player-sized model
+        public const float DEFAULT_NEAR_CLIP = 0.2222222f;
 
         private UInt32 CameraType = 0; // 0 = portrait, 1 = character info
         private float DiagonalFOV = PORTRAIT_DIAGONAL_FOV;
-        private float FarClip = 27.77778f;
-        private float NearClip = 0.2222222f;
+        private float FarClip = DEFAULT_FAR_CLIP;
+        private float NearClip = DEFAULT_NEAR_CLIP;
         private Vector3 Position = new Vector3();
         private Vector3 Target = new Vector3();
 
@@ -35,10 +37,13 @@ namespace EQWOWConverter.WOWFiles
         public M2TrackSequences<SplineKey> TranslationTarget;
         public M2TrackSequences<M2Float> RollEffect;
 
-        public M2Camera(UInt32 cameraType, float diagonalFOV, Vector3 position, Vector3 target)
+        public M2Camera(UInt32 cameraType, float diagonalFOV, Vector3 position, Vector3 target,
+            float farClip = DEFAULT_FAR_CLIP, float nearClip = DEFAULT_NEAR_CLIP)
         {
             CameraType = cameraType;
             DiagonalFOV = diagonalFOV;
+            FarClip = farClip;
+            NearClip = nearClip;
 
             // Translation Position
             ObjectModelTrackSequences<SplineKey> translationPositionTrack = new ObjectModelTrackSequences<SplineKey>();

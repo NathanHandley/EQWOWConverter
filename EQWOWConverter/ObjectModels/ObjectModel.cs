@@ -19,6 +19,7 @@ using EQWOWConverter.Creatures;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.Spells;
 using EQWOWConverter.Items;
+using EQWOWConverter.WOWFiles;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -58,6 +59,8 @@ namespace EQWOWConverter.ObjectModels
         public Vector3 PortraitCameraTargetPosition = new Vector3();
         public Vector3 CharacterInfoCameraPosition = new Vector3();
         public Vector3 CharacterInfoCameraTargetPosition = new Vector3();
+        public float CharacterInfoCameraFarClip = M2Camera.DEFAULT_FAR_CLIP;
+        public float CharacterInfoCameraNearClip = M2Camera.DEFAULT_NEAR_CLIP;
         public BoundingBox GeometryBoundingBox = new BoundingBox();
         public MeshData MeshData = new MeshData();
         public bool IsSkeletal = false;
@@ -1675,13 +1678,28 @@ namespace EQWOWConverter.ObjectModels
 
         public void SetupCharacterInfoCameraAndGeometryBoundingBox()
         {
-            // Character screen camera is scaled based on the HumanMale.m2 properties
-            float characterInfoCameraScale = 1f;
-            if (PortraitCameraTargetPosition.Z > Configuration.GENERATE_FLOAT_EPSILON)
-                characterInfoCameraScale = PortraitCameraTargetPosition.Z / 1.8636f;
-            CharacterInfoCameraPosition = new Vector3(3.6585f, 0.0338f, 0.9227f) * characterInfoCameraScale;
-            CharacterInfoCameraTargetPosition = new Vector3(-0.3644f, 0.0291f, 0.9873f) * characterInfoCameraScale;
+            GenerateGeometryBoundingBoxFromPosedVertices();
 
+            // The character sheet, the dressing room and the companion pet list (all DressUpModel/PlayerModel frames) frame a model through its type 1 camera, which has to fit the whole body
+            if (IsBoundingBoxMeasurable(GeometryBoundingBox) == false)
+            {
+                CharacterInfoCameraPosition = new Vector3(3.6585f, 0.0338f, 0.9227f);
+                CharacterInfoCameraTargetPosition = new Vector3(-0.3644f, 0.0291f, 0.9873f);
+                return;
+            }
+            Vector3 geometryCenter = GeometryBoundingBox.GetCenter();
+            float boundingRadius = GeometryBoundingBox.FurthestPointDistanceFromCenter();
+            float cameraDistance = boundingRadius * Configuration.GENERATE_CHARACTER_INFO_CAMERA_DISTANCE_PER_RADIUS;
+            float cameraTargetZ = geometryCenter.Z * Configuration.GENERATE_CHARACTER_INFO_CAMERA_TARGET_HEIGHT_RATIO;
+            CharacterInfoCameraTargetPosition = new Vector3(geometryCenter.X, geometryCenter.Y, cameraTargetZ);
+            CharacterInfoCameraPosition = new Vector3(geometryCenter.X + cameraDistance, geometryCenter.Y,
+                cameraTargetZ + (cameraDistance * Configuration.GENERATE_CHARACTER_INFO_CAMERA_TILT));
+            CharacterInfoCameraFarClip = Math.Max(M2Camera.DEFAULT_FAR_CLIP, (cameraDistance + boundingRadius) * 1.5f);
+            CharacterInfoCameraNearClip = Math.Min(M2Camera.DEFAULT_NEAR_CLIP, cameraDistance * 0.05f);
+        }
+
+        private void GenerateGeometryBoundingBoxFromPosedVertices()
+        {
             // Geometry bounding box from the posed vertex positions
             if (ModelVertices.Count == 0 || ModelBones.Count == 0 || ModelAnimations.Count == 0)
                 return;
@@ -2052,6 +2070,27 @@ namespace EQWOWConverter.ObjectModels
             }
 
             return returnValue;
+        }
+
+        public Vector3 GetAnchorAttachmentPositionModelSpace(ObjectModelAttachmentType attachmentType)
+        {
+            int boneIndex = GetBoneIndexForAttachmentType(attachmentType);
+            if (boneIndex < 0)
+                return new Vector3(0, 0, 0);
+
+            float renderScale = 1.0f;
+            CreatureRace? race = null;
+            if (Properties.CreatureModelTemplate != null)
+            {
+                if (Properties.CreatureModelTemplate.DoBakeModelTemplateScaleIntoGeometry() == false)
+                    renderScale = Properties.CreatureModelTemplate.ModelTemplateScale;
+                race = Properties.CreatureModelTemplate.Race;
+            }
+
+            Vector3 anchorPosition = Vector3.GetScaled(GetBoneRestPositionModelSpace(boneIndex), renderScale);
+            if (race != null)
+                anchorPosition.Z *= race.CamPivotZMod;
+            return anchorPosition;
         }
 
         public Vector3 GetBoneRestPositionModelSpace(int boneIndex)

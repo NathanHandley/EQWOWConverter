@@ -42,6 +42,7 @@ namespace EQWOWConverter.Creatures
         public bool IsIllusionFormVersion = false;
         public float ModelStandingHeight = 0; // Z extent of the stand-posed geometry in final (rendered) model space
         public BoundingBox ModelStandingGeometryBox = new BoundingBox();
+        public float ModelCameraAnchorHeight = 0;
 
         public int DBCCreatureModelDataID;
         public int DBCCreatureDisplayID;
@@ -115,9 +116,14 @@ namespace EQWOWConverter.Creatures
             ModelTemplateScale = modelTemplateScale;
         }
 
+        public bool DoUseOwnModelFiles()
+        {
+            return IsCompanionPetVersion == true || IsIllusionFormVersion == true || FaceIndex == ILLUSION_REPLACEABLE_FACE_INDEX;
+        }
+
         public bool DoBakeModelTemplateScaleIntoGeometry()
         {
-            return FaceIndex == ILLUSION_REPLACEABLE_FACE_INDEX && ModelTemplateScale > Configuration.GENERATE_FLOAT_EPSILON;
+            return DoUseOwnModelFiles() == true && ModelTemplateScale > Configuration.GENERATE_FLOAT_EPSILON;
         }
 
         public bool DoSuppressHeldItemAttachments()
@@ -178,6 +184,23 @@ namespace EQWOWConverter.Creatures
                 // Otherwise create a new one
                 CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(creatureRace, genderType, helmTextureID,
                     textureIndex, faceIndex, colorTintID, modelTemplateScale, isCompanionPetVersion, isIllusionFormVersion);
+
+                // Baked models write template scale into geometry
+                if (newModelTemplate.DoBakeModelTemplateScaleIntoGeometry() == true)
+                {
+                    string newModelFileName = newModelTemplate.GenerateFileName();
+                    foreach (CreatureModelTemplate existingModelTemplate in AllTemplatesByRaceID[creatureRace.ID])
+                    {
+                        if (existingModelTemplate.DoBakeModelTemplateScaleIntoGeometry() == false)
+                            continue;
+                        if (existingModelTemplate.GenerateFileName() != newModelFileName)
+                            continue;
+                        if (Math.Abs(existingModelTemplate.ModelTemplateScale - modelTemplateScale) <= Configuration.GENERATE_FLOAT_EPSILON)
+                            continue;
+                        Logger.WriteError(string.Concat("Creature model template '", newModelFileName, "' would be written twice with different baked scales (", existingModelTemplate.ModelTemplateScale.ToString(), " and ", modelTemplateScale.ToString(), "), so one of them will render at the wrong size"));
+                    }
+                }
+
                 AllTemplatesByRaceID[creatureRace.ID].Add(newModelTemplate);
                 return newModelTemplate;
             }
@@ -236,6 +259,7 @@ namespace EQWOWConverter.Creatures
             // GeometryBoundingBox is the stand-posed vertices in the same space the client renders
             ModelStandingHeight = curObject.GeometryBoundingBox.TopCorner.Z - curObject.GeometryBoundingBox.BottomCorner.Z;
             ModelStandingGeometryBox = new BoundingBox(curObject.GeometryBoundingBox);
+            ModelCameraAnchorHeight = curObject.GetAnchorAttachmentPositionModelSpace(ObjectModelAttachmentType.MouthBreath).Z;
             StringBuilder nameSB = new StringBuilder();
             nameSB.Append(Race.Name);
             nameSB.Append(" ");
@@ -385,6 +409,8 @@ namespace EQWOWConverter.Creatures
             sb.Append("c" + ColorTintID);
             if (IsCompanionPetVersion == true)
                 sb.Append("cp");
+            else if (IsIllusionFormVersion == true)
+                sb.Append("il");
             return sb.ToString();
         }
 

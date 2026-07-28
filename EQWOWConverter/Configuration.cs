@@ -175,6 +175,11 @@ namespace EQWOWConverter
         public static float GENERATE_CREATURE_CLICKBOX_ADDED_SIZE = 0.2f;
         public static float GENERATE_CREATURE_CLICKBOX_MIN_SIZE = 0.5f;
 
+        // Values needed to make the dressing room and companion pet in-game cameras look right
+        public static float GENERATE_CHARACTER_INFO_CAMERA_DISTANCE_PER_RADIUS = 3.133f;
+        public static float GENERATE_CHARACTER_INFO_CAMERA_TARGET_HEIGHT_RATIO = 0.928f;
+        public static float GENERATE_CHARACTER_INFO_CAMERA_TILT = -0.016f;
+
         // If true, guild banks will now appear. In some cases this will replace an existing banker, others will add a new guild bank NPC object
         public static bool GENERATE_ENABLE_GUILD_VAULTS = true;
 
@@ -213,6 +218,8 @@ namespace EQWOWConverter
         public static bool PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED = true;
         // Default value here is max that allows all but Halfling doors to be entered by all, which seems to be just above Night Elf Female
         public static float PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX = 2.275f;
+        // If true, this will allow camera height to be higher on illusion forms at the cost of short races (like wow gnome) having too high of a collision box
+        public static bool PLAYER_RAISE_MODEL_COLLISION_HEIGHT_FOR_ILLUSION_CAMERA_ENABLED = false;
 
         // If true, all wow classes will gain access to the related skills from level 1, per class alignments in PlayerClassMappings.csv
         public static bool PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES = true;
@@ -1522,6 +1529,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED", ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED, "If true, weight reduction on bags will translate to additional slots");
             OutputVariableToConfig("PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED", PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED, "These properties are for replacing the collision for many race models that otherwise wouldn't fit in most doorways (bigger than human male)");
             OutputVariableToConfig("PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX", PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX, "Default value here is max that allows all but Halfling doors to be entered by all, which seems to be just above Night Elf Female");
+            OutputVariableToConfig("PLAYER_RAISE_MODEL_COLLISION_HEIGHT_FOR_ILLUSION_CAMERA_ENABLED", PLAYER_RAISE_MODEL_COLLISION_HEIGHT_FOR_ILLUSION_CAMERA_ENABLED, "If true, this will allow camera height to be higher on illusion forms at the cost of short races (like wow gnome) having too high of a collision box");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputTextLineToConfig("# | Other Settings (Tuning or Debugging, typically ignore)                    |");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
@@ -1563,6 +1571,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER", GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER, "Modifiers for the 'clickable area' around creatures", false);
             OutputVariableToConfig("GENERATE_CREATURE_CLICKBOX_ADDED_SIZE", GENERATE_CREATURE_CLICKBOX_ADDED_SIZE, "", false);
             OutputVariableToConfig("GENERATE_CREATURE_CLICKBOX_MIN_SIZE", GENERATE_CREATURE_CLICKBOX_MIN_SIZE, "");
+            OutputVariableToConfig("GENERATE_CHARACTER_INFO_CAMERA_DISTANCE_PER_RADIUS", GENERATE_CHARACTER_INFO_CAMERA_DISTANCE_PER_RADIUS, "Values needed to make the dressing room and companion pet in-game cameras look right", false);
+            OutputVariableToConfig("GENERATE_CHARACTER_INFO_CAMERA_TARGET_HEIGHT_RATIO", GENERATE_CHARACTER_INFO_CAMERA_TARGET_HEIGHT_RATIO, "", false);
+            OutputVariableToConfig("GENERATE_CHARACTER_INFO_CAMERA_TILT", GENERATE_CHARACTER_INFO_CAMERA_TILT, "");
             OutputVariableToConfig("GENERATE_NON_PLAYER_OBTAINABLE_ITEMS", GENERATE_NON_PLAYER_OBTAINABLE_ITEMS, "If false, unobtainable items will not output to the database");
             OutputVariableToConfig("ZONE_SHOW_STATIC_GEOMETRY", ZONE_SHOW_STATIC_GEOMETRY, "If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging");
             OutputVariableToConfig("ZONE_MAX_FACES_PER_WMOGROUP", ZONE_MAX_FACES_PER_WMOGROUP, "Maximum number of faces that fit into a render WMO group before it subdivides (max is due to various variable limits)");
@@ -1979,6 +1990,9 @@ namespace EQWOWConverter
             GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER = ReadVariableFromConfigString("GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER", configValuesByVariableName, GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER);
             GENERATE_CREATURE_CLICKBOX_ADDED_SIZE = ReadVariableFromConfigString("GENERATE_CREATURE_CLICKBOX_ADDED_SIZE", configValuesByVariableName, GENERATE_CREATURE_CLICKBOX_ADDED_SIZE);
             GENERATE_CREATURE_CLICKBOX_MIN_SIZE = ReadVariableFromConfigString("GENERATE_CREATURE_CLICKBOX_MIN_SIZE", configValuesByVariableName, GENERATE_CREATURE_CLICKBOX_MIN_SIZE);
+            GENERATE_CHARACTER_INFO_CAMERA_DISTANCE_PER_RADIUS = ReadVariableFromConfigString("GENERATE_CHARACTER_INFO_CAMERA_DISTANCE_PER_RADIUS", configValuesByVariableName, GENERATE_CHARACTER_INFO_CAMERA_DISTANCE_PER_RADIUS);
+            GENERATE_CHARACTER_INFO_CAMERA_TARGET_HEIGHT_RATIO = ReadVariableFromConfigString("GENERATE_CHARACTER_INFO_CAMERA_TARGET_HEIGHT_RATIO", configValuesByVariableName, GENERATE_CHARACTER_INFO_CAMERA_TARGET_HEIGHT_RATIO);
+            GENERATE_CHARACTER_INFO_CAMERA_TILT = ReadVariableFromConfigString("GENERATE_CHARACTER_INFO_CAMERA_TILT", configValuesByVariableName, GENERATE_CHARACTER_INFO_CAMERA_TILT);
             GENERATE_ENABLE_GUILD_VAULTS = ReadVariableFromConfigString("GENERATE_ENABLE_GUILD_VAULTS", configValuesByVariableName, GENERATE_ENABLE_GUILD_VAULTS);
             GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION = ReadVariableFromConfigString("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", configValuesByVariableName, GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION);
             GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID = ReadVariableFromConfigString("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", configValuesByVariableName, GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID);
@@ -1992,6 +2006,7 @@ namespace EQWOWConverter
             PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START = ReadVariableFromConfigString("PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START", configValuesByVariableName, PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START);
             PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED = ReadVariableFromConfigString("PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED", configValuesByVariableName, PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED);
             PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX = ReadVariableFromConfigString("PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX", configValuesByVariableName, PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX);
+            PLAYER_RAISE_MODEL_COLLISION_HEIGHT_FOR_ILLUSION_CAMERA_ENABLED = ReadVariableFromConfigString("PLAYER_RAISE_MODEL_COLLISION_HEIGHT_FOR_ILLUSION_CAMERA_ENABLED", configValuesByVariableName, PLAYER_RAISE_MODEL_COLLISION_HEIGHT_FOR_ILLUSION_CAMERA_ENABLED);
             PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES);
             PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES);
             PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES);

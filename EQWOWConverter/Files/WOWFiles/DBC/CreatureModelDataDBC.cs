@@ -21,6 +21,18 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class CreatureModelDataDBC : DBCFile
     {
+        // Third person camera constants taken out of the 3.3.5 client.
+        // Note: The camera builds its pivot as (MouthBreath attachment Z + CAMERA_PIVOT_ANCHOR_ADD) * the unit's object scale (no ModelScale and no CreatureDisplayInfo scale), then clamps it to
+        //   (effective collision height - CAMERA_PIVOT_CEILING_SUBTRACT) * CAMERA_PIVOT_CEILING_MULTIPLIER, where the collision height is always the player's OWN race and is never re-read from an illusion form
+        public const float CAMERA_PIVOT_ANCHOR_ADD = 0.0972222f;
+        public const float CAMERA_PIVOT_CEILING_SUBTRACT = 0.1666667f;
+        public const float CAMERA_PIVOT_CEILING_MULTIPLIER = 1.2f;
+
+        public static float GetCameraPivotCeiling(float effectiveCollisionHeight)
+        {
+            return (effectiveCollisionHeight - CAMERA_PIVOT_CEILING_SUBTRACT) * CAMERA_PIVOT_CEILING_MULTIPLIER;
+        }
+
         public void AddRow(CreatureModelTemplate creatureModelTemplate, string modelName)
         {
             // Some models need to have the model scale stay 1 if it's a player-cast illusion, to avoid overly big/tiny horses 
@@ -163,16 +175,19 @@ namespace EQWOWConverter.WOWFiles
                 playerModelDisplayScales.Add(2248, 1.0f);  // Draenei Male
                 playerModelDisplayScales.Add(2250, 1.0f);  // Draenei Female
 
-                // Set each player race's collision-box top so its effective (scaled) camera-pivot point doesn't go beyond the doorway max
+                // The client works in the effective height (CollisionHeight x ModelScale x CreatureDisplayInfo scale), and every player model ships ModelScale 1
                 foreach (DBCRow row in Rows)
                 {
                     DBCRow.DBCFieldInt32 idField = (DBCRow.DBCFieldInt32)row.AddedFields[0];
-                    if (playerModelDisplayScales.TryGetValue(idField.Value, out float displayScale) == true)
-                    {
-                        DBCRow.DBCFieldFloat collisionHeight = (DBCRow.DBCFieldFloat)row.AddedFields[15];
-                        if (collisionHeight.Value > Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX) // If this line exists, short races are normal but the pivot camera Z doesn't go high enough. Revisit/fix later though.
-                            collisionHeight.Value = Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX / displayScale;
-                    }
+                    if (playerModelDisplayScales.TryGetValue(idField.Value, out float displayScale) == false)
+                        continue;
+                    DBCRow.DBCFieldFloat collisionHeight = (DBCRow.DBCFieldFloat)row.AddedFields[15];
+                    float effectiveCollisionHeight = collisionHeight.Value * displayScale;
+                    if (Configuration.PLAYER_RAISE_MODEL_COLLISION_HEIGHT_FOR_ILLUSION_CAMERA_ENABLED == true)
+                        collisionHeight.Value = Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX / displayScale;
+                    else if (effectiveCollisionHeight > Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX)
+                        collisionHeight.Value = Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX / displayScale;
+                    Logger.WriteDebug(string.Concat("Player model ", idField.Value.ToString(), " collision height ", effectiveCollisionHeight.ToString(),  " -> ", (collisionHeight.Value * displayScale).ToString(), " effective, camera pivot ceiling ", GetCameraPivotCeiling(collisionHeight.Value * displayScale).ToString()));
                 }
             }
         }

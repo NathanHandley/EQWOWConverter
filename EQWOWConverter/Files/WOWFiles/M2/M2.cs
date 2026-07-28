@@ -190,7 +190,8 @@ namespace EQWOWConverter.WOWFiles
             {
                 Cameras.AddElement(new M2Camera(0, M2Camera.PORTRAIT_DIAGONAL_FOV, wowObjectModel.PortraitCameraPosition, wowObjectModel.PortraitCameraTargetPosition));
                 CamerasIndicesLookup.Add(new M2Int16(0)); // Portrait
-                Cameras.AddElement(new M2Camera(1, M2Camera.CHARACTER_INFO_DIAGONAL_FOV, wowObjectModel.CharacterInfoCameraPosition, wowObjectModel.CharacterInfoCameraTargetPosition));
+                Cameras.AddElement(new M2Camera(1, M2Camera.CHARACTER_INFO_DIAGONAL_FOV, wowObjectModel.CharacterInfoCameraPosition,
+                    wowObjectModel.CharacterInfoCameraTargetPosition, wowObjectModel.CharacterInfoCameraFarClip, wowObjectModel.CharacterInfoCameraNearClip));
                 CamerasIndicesLookup.Add(new M2Int16(1)); // Character Info
             }
 
@@ -252,21 +253,7 @@ namespace EQWOWConverter.WOWFiles
             M2Attachment attachment = new M2Attachment(attachmentType, Convert.ToUInt16(boneIndex));
 
             if (IsAnchorAttachment(attachmentType) && boneIndex >= 0)
-            {
-                float modelScale = 1.0f;
-                CreatureRace? race = null;
-                if (wowObjectModel.Properties.CreatureModelTemplate != null)
-                {
-                    // Models that bake the scale into the geometry do not need anchor pre-scaling
-                    if (wowObjectModel.Properties.CreatureModelTemplate.DoBakeModelTemplateScaleIntoGeometry() == false)
-                        modelScale = wowObjectModel.Properties.CreatureModelTemplate.ModelTemplateScale;
-                    race = wowObjectModel.Properties.CreatureModelTemplate.Race;
-                }
-                Vector3 anchorPosition = Vector3.GetScaled(wowObjectModel.GetBoneRestPositionModelSpace(boneIndex), modelScale);
-                if (race != null)
-                    anchorPosition.Z *= race.CamPivotZMod;
-                attachment.SetPosition(anchorPosition);
-            }
+                attachment.SetPosition(wowObjectModel.GetAnchorAttachmentPositionModelSpace(attachmentType));
 
             Attachments.AddElement(attachment);
             AttachmentIndicesLookup.SetElementValue(Convert.ToInt32(attachmentType), new M2Int16(Convert.ToInt16(Attachments.Count - 1)));
