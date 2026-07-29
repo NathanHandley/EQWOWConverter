@@ -2320,7 +2320,7 @@ namespace EQWOWConverter
                 modEverquestZoneSafePointSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.SafePosition);
 
                 // Zone rules (used by the mod for zone-level behavior like bind restrictions)
-                modEverquestZoneSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.AllowBind);
+                modEverquestZoneSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.AllowBind, zone.ZoneProperties.ExpansionID);
 
                 // Weather data
                 if (Configuration.ZONE_WEATHER_ENABLED == true)

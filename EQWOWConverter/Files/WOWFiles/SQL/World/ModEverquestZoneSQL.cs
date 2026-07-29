@@ -27,15 +27,17 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_zone` ( ");
             stringBuilder.AppendLine("`MapID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`AllowBind` TINYINT(3) UNSIGNED NOT NULL DEFAULT '1', ");
+            stringBuilder.AppendLine("`ExpansionID` INT(10) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`MapID`) USING BTREE); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int mapID, bool allowBind)
+        public void AddRow(int mapID, bool allowBind, int expansionID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("MapID", mapID);
             newRow.AddInt("AllowBind", allowBind ? 1 : 0);
+            newRow.AddInt("ExpansionID", expansionID);
             Rows.Add(newRow);
         }
     }
