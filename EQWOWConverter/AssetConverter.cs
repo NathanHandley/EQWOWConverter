@@ -3972,6 +3972,8 @@ namespace EQWOWConverter
                         int clickyCastTimeInMS = itemTemplate.CastTime;
                         if (clickSpellTemplate.HasTeleportEffect() == false && clickSpellTemplate.HasPetSummonEffect() == false)
                             clickyCastTimeInMS = SpellTemplate.GetCastTimeAfterConfigModsInMS(clickyCastTimeInMS, clickSpellTemplate.IsOffensiveDispell());
+                        else
+                            clickyCastTimeInMS = SpellTemplate.GetCastTimeSnappedToInstantInMS(clickyCastTimeInMS);
                         SpellTemplate.ClickySpellParameters clickySpellParameters = clickSpellTemplate.SetClickySpellParameters(itemTemplate.WOWClickSpellEffectID,
                             clickyCastTimeInMS, forceSelfOnly, clickyFixedLevel, clickyUsableWhileSilenced);
                         itemTemplate.WOWSpellID1 = clickySpellParameters.WOWSpellID;

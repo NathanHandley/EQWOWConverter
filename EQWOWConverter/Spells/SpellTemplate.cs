@@ -444,8 +444,18 @@ namespace EQWOWConverter.Spells
             return false;
         }
 
+        public static int GetCastTimeSnappedToInstantInMS(int castTimeInMS)
+        {
+            // Very short cast times become instant
+            if (castTimeInMS < Configuration.SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS)
+                return 0;
+            return castTimeInMS;
+        }
+
         public static int GetCastTimeAfterConfigModsInMS(int castTimeInMS, bool isOffensiveDispell)
         {
+            castTimeInMS = GetCastTimeSnappedToInstantInMS(castTimeInMS);
+
             // Don't reduce anything below global cooldown
             if (castTimeInMS <= 500)
                 return castTimeInMS;
@@ -536,7 +546,7 @@ namespace EQWOWConverter.Spells
                 // Cast time (teleport-adjacent and pet summoning spells keep their original cast time)
                 newSpellTemplate.CastTimeBeforeModsInMS = int.Parse(columns["cast_time"]);
                 if (newSpellTemplate.HasTeleportEffect() == true || newSpellTemplate.HasPetSummonEffect() == true)
-                    newSpellTemplate.CastTimeInMS = newSpellTemplate.CastTimeBeforeModsInMS;
+                    newSpellTemplate.CastTimeInMS = GetCastTimeSnappedToInstantInMS(newSpellTemplate.CastTimeBeforeModsInMS);
                 else
                     newSpellTemplate.CastTimeInMS = GetCastTimeAfterConfigModsInMS(newSpellTemplate.CastTimeBeforeModsInMS, newSpellTemplate.IsOffensiveDispell());
 

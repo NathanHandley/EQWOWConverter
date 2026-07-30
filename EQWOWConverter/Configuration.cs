@@ -720,6 +720,9 @@ namespace EQWOWConverter
         public static int SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS = 1500;
         public static int SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS = 2500;
 
+        // Any spell (player cast or item clicky) with a cast time below this becomes instant (0 ms)
+        public static int SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS = 200;
+
         // How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)
         public static float SPELLS_DOT_TIME_DURATION_MOD = 0.5f;
 
@@ -1757,6 +1760,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_CAST_TIME_MOD", SPELLS_CAST_TIME_MOD, "How much to modify cast time of EverQuest spells when converting, with direct heal/damage amounts and mana cost also modifying");
             OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS", SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS, "Cast times are never reduced below this by SPELLS_CAST_TIME_MOD (spells already at or below it keep their original cast time)", false);
             OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS", SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS, "");
+            OutputVariableToConfig("SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS", SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS, "Any spell (player cast or item clicky) with a cast time below this becomes instant (0 ms)");
             OutputVariableToConfig("SPELLS_DOT_TIME_DURATION_MOD", SPELLS_DOT_TIME_DURATION_MOD, "How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)");
             OutputVariableToConfig("SPELLS_CROWD_CONTROL_DURATION_MOD", SPELLS_CROWD_CONTROL_DURATION_MOD, "How much to modify the duration of non-bard crowd control spells");
             OutputVariableToConfig("SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE", SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE, "The most that a movement speed reduction can slow a target, and -100 fully stops movement (EQ-like for spells such as Torpor) and is the lowest valid value");
@@ -2240,6 +2244,7 @@ namespace EQWOWConverter
             SPELLS_CAST_TIME_MOD = ReadVariableFromConfigString("SPELLS_CAST_TIME_MOD", configValuesByVariableName, SPELLS_CAST_TIME_MOD);
             SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS = ReadVariableFromConfigString("SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS", configValuesByVariableName, SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS);
             SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS = ReadVariableFromConfigString("SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS", configValuesByVariableName, SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS);
+            SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS = ReadVariableFromConfigString("SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS", configValuesByVariableName, SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS);
             SPELLS_DOT_TIME_DURATION_MOD = ReadVariableFromConfigString("SPELLS_DOT_TIME_DURATION_MOD", configValuesByVariableName, SPELLS_DOT_TIME_DURATION_MOD);
             SPELLS_CROWD_CONTROL_DURATION_MOD = ReadVariableFromConfigString("SPELLS_CROWD_CONTROL_DURATION_MOD", configValuesByVariableName, SPELLS_CROWD_CONTROL_DURATION_MOD);
             SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE = ReadVariableFromConfigString("SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE", configValuesByVariableName, SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE);
