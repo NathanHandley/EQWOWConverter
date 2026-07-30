@@ -53,6 +53,7 @@ namespace EQWOWConverter.Items
         public string ArmorTexture7 = string.Empty;
         public string ArmorTexture8 = string.Empty;
         public bool IsShield = false;
+        public bool IsThrown = false;
         public ObjectModel? EquipmentModel = null;
 
         // IT159 (Celestial Fists / Monk Epic)
@@ -180,9 +181,12 @@ namespace EQWOWConverter.Items
             if (inventoryType == ItemWOWInventoryType.Head)
                 modelFileName = string.Empty;
 
+            // Thrown weapons can share an icon and model with melee items, but need their own display since they carry a missile visual
+            bool isThrown = (inventoryType == ItemWOWInventoryType.Thrown);
             foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfos)
             {
-                if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt && itemDisplayInfo.ModelName1 == modelFileName && itemDisplayInfo.IsShield == isShield)
+                if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt && itemDisplayInfo.ModelName1 == modelFileName && itemDisplayInfo.IsShield == isShield &&
+                    itemDisplayInfo.IsThrown == isThrown)
                     return itemDisplayInfo;
             }
 
@@ -193,6 +197,13 @@ namespace EQWOWConverter.Items
                 // Bows need properties for launching arrows
                 newItemDisplayInfo.GroupSoundIndex = 12;
                 newItemDisplayInfo.SpellVisualID = 5;
+            }
+            else if (isThrown == true)
+            {
+                // Thrown weapons need a missile spell visual, otherwise nothing renders flying through the air when they are used
+                newItemDisplayInfo.IsThrown = true;
+                newItemDisplayInfo.GroupSoundIndex = 8;
+                newItemDisplayInfo.SpellVisualID = GetThrownWeaponSpellVisualID(itemDisplayCommonName);
             }
             else
                 newItemDisplayInfo.IsShield = isShield;
@@ -261,6 +272,16 @@ namespace EQWOWConverter.Items
             {
                 ObjectModel objectModel = GetOrCreateModelForHeldItem(itemDisplayNameWithEQ, inventoryType);
                 newItemDisplayInfo.ModelName1 = objectModel.Name + ".mdx";
+
+                // Thrown weapons render the in-flight projectile from the second model slot, like stock thrown do
+                if (isThrown == true)
+                { 
+                    newItemDisplayInfo.ModelName2 = newItemDisplayInfo.ModelName1;
+
+                    // If there are no model textures provided, it won't render the box.  The texture doesn't even need to be used by the model!
+                    newItemDisplayInfo.ModelTexture1 = "Thrown_1H_Shuriken_A_02Bronze";
+                    newItemDisplayInfo.ModelTexture2 = "Thrown_1H_Shuriken_A_02Bronze";
+                }
             }
             // Armor
             else if (IsVisableArmor(inventoryType) == true && (materialTypeID <= 4 || materialTypeID == 7 || (materialTypeID >= 17 && materialTypeID <= 23)))
@@ -504,6 +525,21 @@ namespace EQWOWConverter.Items
                 else
                     WeaponObjectModelsByEQItemOutputName.Add(outputName, equipmentModel);
                 return equipmentModel;
+            }
+        }
+
+        private static int GetThrownWeaponSpellVisualID(string itemDisplayCommonName)
+        {
+            // These are stock spell visuals, which make the item model fly to the target in a motion style (none embed their own missile model)
+            switch (itemDisplayCommonName.ToLower())
+            {
+                case "it16": // Throwing Spear, Javelin
+                case "it172": // Velium Spear of Impaling
+                case "it10106": return 4081; // Tarmok Hunting Spear - flies point-first like stock throwing spears
+                case "it3": // Throwing Axe
+                case "it177": return 2027; // Shattering Hammer - end-over-end spin like stock throwing axes
+                case "it10650": return 2026; // Returning Knife - knife spin
+                default: return 98; // Everything else (stones, shuriken, fangs, darts) - generic spin like stock throwing stars
             }
         }
 

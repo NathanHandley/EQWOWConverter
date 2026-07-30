@@ -109,6 +109,11 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("ammo_type", 2);
                 newRow.AddFloat("RangedModRange", 100);
             }
+            else if (itemTemplate.ClassID == 2 && itemTemplate.SubClassID == 16) // thrown
+            {
+                newRow.AddInt("ammo_type", 4);
+                newRow.AddFloat("RangedModRange", 100);
+            }
             else
             {
                 newRow.AddInt("ammo_type", 0);
@@ -233,6 +238,8 @@ namespace EQWOWConverter.WOWFiles
                 flags += 64; // ITEM_FLAG_PLAYERCAST
             if (itemTemplate.Quality == ItemWOWQuality.Heirloom)
                 flags += 134217728; // ITEM_FLAG_IS_BOUND_TO_ACCOUNT
+            if (itemTemplate.ClassID == 2 && itemTemplate.SubClassID == 16) // Thrown items
+                flags += 4194304; // 0x0400000 ("throwable")
             return flags;
         }
     }

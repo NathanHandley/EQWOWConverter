@@ -1271,6 +1271,7 @@ namespace EQWOWConverter.Items
                         itemTemplate.InventoryType = ItemWOWInventoryType.Ranged;
                     } break;
                 case 7: // Thrown
+                case 19: // Throwing (2)
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = Convert.ToInt32(ItemWOWWeaponSubclassType.Thrown);
@@ -1443,12 +1444,6 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 0;
                         itemTemplate.SubClassID = 7;
-                    } break;
-                case 19: // Throwing (2)
-                    {
-                        itemTemplate.ClassID = 2;
-                        itemTemplate.SubClassID = 16;
-                        itemTemplate.InventoryType = ItemWOWInventoryType.Thrown;
                     } break;
                 case 20: // Spell/Tome => Book
                     {
@@ -1836,6 +1831,10 @@ namespace EQWOWConverter.Items
                         newItemTemplate.BagSlots = newItemTemplate.BagSlots + additionalBagSlots;
                     }
                 }
+
+                // Range (Intentially not reading in order to normalize)
+                //int eqRange = (int)(float.Parse(columns["range"]) * Configuration.GENERATE_WORLD_SCALE);
+                //newItemTemplate.Range = eqRange;                
 
                 // Other
                 newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);
