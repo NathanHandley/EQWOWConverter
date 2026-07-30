@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 57;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 58;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -995,20 +995,17 @@ namespace EQWOWConverter
         public static string ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT = "I have seen your history, and award you this token to return to your roots.";
 
         // If true, newly created characters get the "Everquest Adventurer" aura, and earn a feat of strength achievement if they reach
-        // ACHIEVEMENT_EQ_ADVENTURER_LEVEL without ever losing it (see SPELL_EQ_ADVENTURER_AURA_SPELL_ID for the aura)
+        // the level in the mod-everquest config's EverQuest.Achievement.AdventurerLevel without ever losing it (see SPELL_EQ_ADVENTURER_AURA_SPELL_ID for the aura)
         public static bool ACHIEVEMENT_EQ_ADVENTURER_ENABLED = true;
 
         // The name of the everquest adventurer feat of strength achievement (and its aura), also used as the reward mail subject
         public static string ACHIEVEMENT_EQ_ADVENTURER_NAME = "Everquest Adventurer";
 
         // The description of the everquest adventurer feat of strength achievement
-        public static string ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION = "Awarded to accounts that have had at least one character reach level 60 having only ever adventured through Everquest content.";
+        public static string ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION = "Awarded to accounts that have had at least one character reach max level (up to 60) having only ever adventured through Everquest content.";
 
         // Which EQ item icon to use for the everquest adventurer feat of strength achievement and aura
         public static int ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID = 145;
-
-        // Level a character must reach while still holding the everquest adventurer aura to earn the feat of strength
-        public static int ACHIEVEMENT_EQ_ADVENTURER_LEVEL = 60;
 
         // Body text of the reward mail sent when the everquest adventurer feat of strength is awarded
         public static string ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT = "You walked the long road of Norrath alone and unswayed. Take this token in recognition of your journey.";
@@ -1484,7 +1481,6 @@ namespace EQWOWConverter
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputBlankLineToConfig();
             OutputTextLineToConfig("# If false, equipment is balanced to max level 60 and original levels are used. If true, use adjusted levels and zones/equip is balanced to 80");
-            OutputVariableToConfig("GENERATE_REBALANCE_CONTENT_TO_LEVEL_80", GENERATE_REBALANCE_CONTENT_TO_LEVEL_80, "with Classic through 60, Kunark through 70, and Velious through 80. Zones will also have a smoother level curve if set to true.");
             OutputVariableToConfig("PLAYER_USE_EQ_START_LOCATION", PLAYER_USE_EQ_START_LOCATION, "If true, new players created will use the everquest start locations defined in PlayerClassRaceProperties");
             OutputVariableToConfig("PLAYER_USE_EQ_START_ITEMS", PLAYER_USE_EQ_START_ITEMS, "If true, players will start with an EQ item loadout instead of a WOW item loadout");
             OutputVariableToConfig("PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS", PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS, "If true, this will also add a hearthstone if using EQ items");
@@ -1505,11 +1501,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID", ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID, "", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE", ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE, "Accounts created before this date (server time) are awarded the feat of strength", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT", ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT, "", false);
-            OutputVariableToConfig("ACHIEVEMENT_EQ_ADVENTURER_ENABLED", ACHIEVEMENT_EQ_ADVENTURER_ENABLED, "If true, new characters get the Everquest Adventurer aura and a feat of strength for reaching ACHIEVEMENT_EQ_ADVENTURER_LEVEL without losing it", false);
+            OutputVariableToConfig("ACHIEVEMENT_EQ_ADVENTURER_ENABLED", ACHIEVEMENT_EQ_ADVENTURER_ENABLED, "If true, new characters get the Everquest Adventurer aura and a feat of strength for reaching the mod config's EverQuest.Achievement.AdventurerLevel without losing it", false);
             OutputVariableToConfig("ACHIEVEMENT_EQ_ADVENTURER_NAME", ACHIEVEMENT_EQ_ADVENTURER_NAME, "", false);
             OutputVariableToConfig("ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION", ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION, "", false);
             OutputVariableToConfig("ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID", ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID, "", false);
-            OutputVariableToConfig("ACHIEVEMENT_EQ_ADVENTURER_LEVEL", ACHIEVEMENT_EQ_ADVENTURER_LEVEL, "Level a character must reach while still holding the aura to earn the feat of strength", false);
             OutputVariableToConfig("ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT", ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT, "", false);
             OutputVariableToConfig("ACHIEVEMENT_MAIL_SENDER_CREATURE_NAME", ACHIEVEMENT_MAIL_SENDER_CREATURE_NAME, "Sender of achievement reward mail, which must match a creature name in CreatureTemplates.csv", false);
             OutputVariableToConfig("ACHIEVEMENT_MAIL_ITEM_WOW_ITEM_ID", ACHIEVEMENT_TUTORIAL_PORT_STONE_WOW_ITEM_ID, "WOW entry ID of the item attached to achievement reward mail");
@@ -2004,7 +1999,6 @@ namespace EQWOWConverter
             GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION = ReadVariableFromConfigString("GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION", configValuesByVariableName, GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION);
             GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID = ReadVariableFromConfigString("GENERATE_ENABLE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID", configValuesByVariableName, GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID);
             GENERANE_ENABLE_PLANES_TELEPORTATION = ReadVariableFromConfigString("GENERANE_ENABLE_PLANES_TELEPORTATION", configValuesByVariableName, GENERANE_ENABLE_PLANES_TELEPORTATION);
-            GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 = ReadVariableFromConfigString("GENERATE_REBALANCE_CONTENT_TO_LEVEL_80", configValuesByVariableName, GENERATE_REBALANCE_CONTENT_TO_LEVEL_80);
             GENERATE_NON_PLAYER_OBTAINABLE_ITEMS = ReadVariableFromConfigString("GENERATE_NON_PLAYER_OBTAINABLE_ITEMS", configValuesByVariableName, GENERATE_NON_PLAYER_OBTAINABLE_ITEMS);
 
             PLAYER_USE_EQ_START_LOCATION = ReadVariableFromConfigString("PLAYER_USE_EQ_START_LOCATION", configValuesByVariableName, PLAYER_USE_EQ_START_LOCATION);
@@ -2052,7 +2046,6 @@ namespace EQWOWConverter
             ACHIEVEMENT_EQ_ADVENTURER_NAME = ReadVariableFromConfigString("ACHIEVEMENT_EQ_ADVENTURER_NAME", configValuesByVariableName, ACHIEVEMENT_EQ_ADVENTURER_NAME);
             ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION = ReadVariableFromConfigString("ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION", configValuesByVariableName, ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION);
             ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID = ReadVariableFromConfigString("ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID", configValuesByVariableName, ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID);
-            ACHIEVEMENT_EQ_ADVENTURER_LEVEL = ReadVariableFromConfigString("ACHIEVEMENT_EQ_ADVENTURER_LEVEL", configValuesByVariableName, ACHIEVEMENT_EQ_ADVENTURER_LEVEL);
             ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT = ReadVariableFromConfigString("ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT", configValuesByVariableName, ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT);
             ACHIEVEMENT_MAIL_SENDER_CREATURE_NAME = ReadVariableFromConfigString("ACHIEVEMENT_MAIL_SENDER_CREATURE_NAME", configValuesByVariableName, ACHIEVEMENT_MAIL_SENDER_CREATURE_NAME);
             ACHIEVEMENT_TUTORIAL_PORT_STONE_WOW_ITEM_ID = ReadVariableFromConfigString("ACHIEVEMENT_MAIL_ITEM_WOW_ITEM_ID", configValuesByVariableName, ACHIEVEMENT_TUTORIAL_PORT_STONE_WOW_ITEM_ID);
