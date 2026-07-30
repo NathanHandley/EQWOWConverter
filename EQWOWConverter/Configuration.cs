@@ -980,13 +980,13 @@ namespace EQWOWConverter
         public static string ACHIEVEMENT_LEGACY_ACCOUNT_NAME = "Legacy of the Old Guard";
 
         // The description of the legacy account feat of strength achievement
-        public static string ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION = "Awarded to characters on accounts created before August of 2026.";
+        public static string ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION = "Awarded to characters on accounts who helped test the server in 2026 before launch.";
 
         // Which EQ item icon to use for the legacy account feat of strength achievement
         public static int ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID = 145;
 
         // Accounts created before this date (server time) are awarded the legacy account feat of strength
-        public static string ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE = "2026-08-01 00:00:00";
+        public static string ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE = "2026-07-31 00:00:00";
 
         // Body text of the reward mail sent when the legacy account feat of strength is awarded
         public static string ACHIEVEMENT_LEGACY_ACCOUNT_MAIL_BODY_TEXT = "I have seen your history, and award you this token to return to your roots.";
