@@ -1,0 +1,64 @@
+talent_rank1_spell_id|wow_class|talent_name|description_or_reason
+11095|Mage|Improved Scorch|Increases your chance to critically hit with Scorch, Fireball and Frostfire Bolt by an additional $s2% and your damaging Scorch spells have a $h% chance to cause your target to be vulnerable to spell damage, increasing spell critical strike chance against that target by $22959s1% and lasts $22959d.
+11237|Mage|Arcane Stability|Reduces the pushback suffered from damaging attacks while casting Arcane Missiles and Arcane Blast by $s1%.
+14082|Rogue|Dirty Deeds|Reduces the Energy cost of your Cheap Shot and Garrote abilities by $s1. Additionally, your special abilities cause 10% more damage against targets below 35% health.
+14128|Rogue|Lethality|Increases the critical strike damage bonus of all combo point-generating abilities that do not require stealth by $s1%.
+14909|Priest|Searing Light|Increases the damage of your Smite, Holy Fire, Holy Nova and Penance spells by $s1%.
+14910|Priest|Mind Melt|Increases the critical strike chance of your Mind Blast, Mind Flay and Mind Sear spells by $s1%, and increases the periodic critical strike chance of your Vampiric Touch, Devouring Plague and Shadow Word: Pain spells by $s2%.
+14911|Priest|Healing Prayers|Reduces the mana cost of your Prayer of Healing and Prayer of Mending spell by $s1%.
+14912|Priest|Improved Healing|Reduces the mana cost of your Lesser Heal, Heal, Greater Heal, Divine Hymn and Penance spells by $s1%.
+16041|Shaman|Call of Thunder|Increases the critical strike chance of your Lightning Bolt, Chain Lightning and Thunderstorm spells by an additional $s1%.
+16493|Warrior|Impale|Increases the critical strike damage bonus of your abilities by $s1%.
+16757|Mage|Arctic Reach|Increases the range of your Frostbolt, Ice Lance, Deep Freeze and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by $s1%.
+16845|Druid|Moonglow|Reduces the Mana cost of your Moonfire, Starfire, Starfall, Wrath, Healing Touch, Nourish, Regrowth and Rejuvenation spells by $s1%.
+16858|Druid|Feral Aggression|Increases the attack power reduction of your Demoralizing Roar by $s1% and the damage caused by your Ferocious Bite by $s2%.
+16934|Druid|Ferocity|Reduces the cost of your Maul, Swipe, Claw, Rake and Mangle abilities by $/10;s1 Rage or Energy.
+16947|Druid|Feral Instinct|Increases the damage done by your Swipe ability by $s2% and reduces the chance enemies have to detect you while Prowling.
+16998|Druid|Savage Fury|Increases the damage caused by your Claw, Rake, Mangle (Cat), Mangle (Bear), and Maul abilities by $s1%.
+17063|Druid|Nature's Focus|Reduces the pushback suffered from damaging attacks while casting Healing Touch, Wrath, Entangling Roots, Cyclone, Nourish, Regrowth and Tranquility by $s1%.
+17074|Druid|Nature's Bounty|Increases the critical effect chance of your Regrowth and Nourish spells by $s1%.
+17783|Warlock|Fel Concentration|Reduces the pushback suffered from damaging attacks while casting Drain Life, Drain Mana, Drain Soul, Unstable Affliction, and Haunt by $s1%.
+17810|Warlock|Improved Corruption|Increases the damage done by your Corruption by $s1%, and increases the critical strike chance of your Seed of Corruption by $s2%.
+18213|Warlock|Improved Drain Soul|Returns $s3% of your maximum mana if the target is killed by you while you drain its soul. In addition, your Affliction spells generate $s2% less threat.
+18218|Warlock|Grim Reach|Increases the range of your Affliction spells by $s1%.
+18288|Warlock|Amplify Curse|Reduces the global cooldown of your Curses by ${$m2/-1000}.1 sec.
+18427|Rogue|Aggression|Increases the damage of your Sinister Strike, Backstab, and Eviscerate abilities by $s1%.
+18530|Priest|Divine Fury|Reduces the casting time of your Smite, Holy Fire, Heal and Greater Heal spells by $/1000;S1 sec.
+19159|Hunter|Savage Strikes|Increases the critical strike chance of Raptor Strike, Mongoose Bite and Counterattack by $s1%.
+19464|Hunter|Improved Stings|Increases the damage done by your Serpent Sting and Wyvern Sting by $s1% and the mana drained by your Viper Sting by $s2%. In addition, reduces the chance your Sting damage over time effects will be dispelled by $s3%.
+20205|Paladin|Spiritual Focus|Reduces the pushback suffered from damaging attacks while casting Flash of Light and Holy Light by $s1%.
+20216|Paladin|Divine Favor|When activated, gives your next Flash of Light, Holy Light, or Holy Shock spell a $s1% critical effect chance.
+20224|Paladin|Seals of the Pure|Increases the damage done by your Seal of Righteousness, Seal of Vengeance and Seal of Corruption and their Judgement effects by $s1%.
+20237|Paladin|Healing Light|Increases the amount healed by your Holy Light, Flash of Light and the effectiveness of Holy Shock spells by $s1%.
+20359|Paladin|Sanctified Light|Increases the critical effect chance of your Holy Light and Holy Shock spells by $s1%.
+24968|Druid|Tranquil Spirit|Reduces the mana cost of your Healing Touch, Nourish and Tranquility spells by $s1%.
+25956|Paladin|Improved Judgements|Decreases the cooldown of your Judgement spells by $/1000;s1 sec.
+27789|Priest|Holy Reach|Increases the range of your Smite and Holy Fire spells and the radius of your Prayer of Healing, Holy Nova, Divine Hymn and Circle of Healing spells by $s1%.
+29787|Warrior|Focused Rage|Reduces the rage cost of your offensive abilities by $/10;s1.
+30060|Warlock|Contagion|Increases the damage of Curse of Agony, Corruption and Seed of Corruption by $s1% and reduces the chance your helpful Affliction spells and damage over time effects will be dispelled by an additional $s3%.
+31234|Rogue|Find Weakness|Offensive ability damage increased by $s1%.
+31670|Mage|Ice Floes|Reduces the cooldown of your Frost Nova, Cone of Cold, Ice Block and Icy Veins spells by $s1%.
+31825|Paladin|Purifying Power|Reduces the mana cost of your Cleanse, Purify and Consecration spells by $s1% and reduces the cooldown of your Exorcism and Holy Wrath spells by $s2%.
+31879|Paladin|Fanaticism|Increases the critical strike chance of all Judgements capable of a critical hit by $s1% and reduces threat caused by all actions by $s2% except when under the effects of Righteous Fury.
+32381|Warlock|Empowered Corruption|Increases the damage of your Corruption spell by an amount equal to $*6;s1% of your spell power.
+32601|Rogue|Surprise Attacks|Your finishing moves can no longer be dodged, and the damage dealt by your Sinister Strike, Backstab, Shiv, Hemorrhage and Gouge abilities is increased by $s2%.
+33158|Priest|Empowered Healing|Your Greater Heal spell gains an additional $s1% and your Flash Heal and Binding Heal gain an additional $s2% of your bonus healing effects.
+33213|Priest|Focused Mind|Reduces the mana cost of your Mind Blast, Mind Control, Mind Flay and Mind Sear spells by $s1%.
+33221|Priest|Shadow Power|Increases the critical strike damage bonus of your Mind Blast, Mind Flay, and Shadow Word: Death spells by $s2%.
+34485|Hunter|Master Marksman|Increases your critical strike chance by $s1%, and reduces the Mana cost of your Steady Shot, Aimed Shot, and Chimera Shot by $s2%.
+35363|Druid|Nature's Majesty|Increases the critical strike chance of your Wrath, Starfire, Starfall, Nourish and Healing Touch spells by $s1%.
+46859|Warrior|Unrelenting Assault|Reduces the cooldown of your Overpower and Revenge abilities by $/1000;s1 secs and increases the damage done by both abilities by $s2%. In addition, if you strike a player with Overpower while they are casting, their magical damage and healing will be reduced by $64849s1% for $64849d.
+47201|Warlock|Everlasting Affliction|Your Corruption and Unstable Affliction spells gain an additional $s2% of your bonus spell damage, and your Drain Life, Drain Soul, Shadow Bolt, and Haunt spells have a $h% chance to reset the duration of your Corruption spell on the target.
+47562|Priest|Divine Providence|Increases the amount healed by Circle of Healing, Binding Heal, Holy Nova, Prayer of Healing, Divine Hymn and Prayer of Mending by $s1%, and reduces the cooldown of your Prayer of Mending by $s3%.
+48409|Druid|Primal Precision|Increases your expertise by $s1, and you are refunded $s2% of the energy cost of a finishing move if it fails to land.
+50334|Druid|Berserk|When activated, this ability causes your Mangle (Bear) ability to hit up to $58923s1 targets and have no cooldown, and reduces the energy cost of all your Cat Form abilities by $s1%. Lasts $d. You cannot use Tiger's Fury while Berserk is active. Clears the effect of Fear and makes you immune to Fear for the duration.
+50685|Warrior|Incite|Increases the critical strike chance of your Heroic Strike, Thunder Clap and Cleave abilities by $s1%.
+51632|Rogue|Blood Spatter|Increases the damage caused by your Garrote and Rupture abilities by $s1%.
+53556|Paladin|Enlightened Judgements|Increases the range of your Judgement of Light and Judgement of Wisdom spells by $s1 yards and increases your chance to hit by $s2%.
+53620|Hunter|Focused Aim|Reduces the pushback suffered from damaging attacks while casting Steady Shot by $s1%, and increases your chance to hit by $s2%.
+53671|Paladin|Judgements of the Pure|Increases the damage done by your Seal and Judgement spells by $s2%, and your Judgement spells increase your casting and melee haste by $53655s1% for $53655d.
+55061|DeathKnight|Icy Reach|Increases the range of your Icy Touch, Chains of Ice and Howling Blast by $s1 yards.
+56927|Warrior|Unending Fury|Increases the damage done by your Slam, Whirlwind and Bloodthirst abilities by $s2%.
+57865|Druid|Nature's Splendor|Increases the duration of your Moonfire and Rejuvenation spells by ${$m1/1000} sec, your Regrowth spell by ${$m2/1000} sec, and your Insect Swarm and Lifebloom spells by ${$m3/1000} sec.
+58435|Warlock|Pandemic|Grants the periodic damage from your Corruption and Unstable Affliction spells the ability to critically hit for $s1% increased damage, and increases the critical strike damage bonus of your Haunt spell by $s2%.
+63108|Warlock|Siphon Life|When you deal damage with your Corruption spell, you are instantly healed for $<percent>% of the damage done. In addition, the damage done by your Corruption, Seed of Corruption and Unstable Affliction damage over time effects is increased by $s2%.

@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 56;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 57;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -754,6 +754,9 @@ namespace EQWOWConverter
         // and only subjected to the global cooldown of 1.5 seconds.  This is only enforced on the raw spell
         // records and not the SpellTemplate, to ensure cast repeats are correct for creatures
         public static int SPELL_RECOVERY_TIME_MINIMUM_IN_MS = 3501;
+
+        // Enables / Disables talent interaction with EQ spells
+        public static bool SPELL_WOW_TALENT_INTERACTION_ENABLED = true;
 
         // The percent chance that a feign death spell cast fails
         public static int SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT = 5;
@@ -1760,7 +1763,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", SPELL_PERIODIC_SECONDS_PER_TICK_WOW, "Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier");
             OutputVariableToConfig("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS, "This is 'added time' in the periodic tick that comes from bard casters.");
             OutputVariableToConfig("SPELL_RECOVERY_TIME_MINIMUM_IN_MS", SPELL_RECOVERY_TIME_MINIMUM_IN_MS, "This is the minimum allowable recovery time any spell can have, which any smaller will become zero");
-            OutputVariableToConfig("SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT ", SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT, "The percent chance that a feign death spell cast fails");
+            OutputVariableToConfig("SPELL_WOW_TALENT_INTERACTION_ENABLED", SPELL_WOW_TALENT_INTERACTION_ENABLED, "Enables or Disables talent interaction with EQ spells");
             OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD", SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD, "What to multiply the EQ 'toss up' effect value by to get how fast (yards per second) the target is thrown into the air");
             OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX", SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX, "The fastest a 'toss up' can throw a target upward, and going above 23.7 will start causing fall damage on landing");
             OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED", SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED, "How far outward (yards per second) a 'toss up' shoves the target, which must stay above zero or creatures won't be thrown at all");
@@ -2246,6 +2249,7 @@ namespace EQWOWConverter
             SPELL_MAX_CONCURRENT_BARD_SONGS = ReadVariableFromConfigString("SPELL_MAX_CONCURRENT_BARD_SONGS", configValuesByVariableName, SPELL_MAX_CONCURRENT_BARD_SONGS);
             SPELL_MOD_FACTION_REP_MULTIPLIER = ReadVariableFromConfigString("SPELL_MOD_FACTION_REP_MULTIPLIER", configValuesByVariableName, SPELL_MOD_FACTION_REP_MULTIPLIER);
             SPELL_RECOVERY_TIME_MINIMUM_IN_MS = ReadVariableFromConfigString("SPELL_RECOVERY_TIME_MINIMUM_IN_MS", configValuesByVariableName, SPELL_RECOVERY_TIME_MINIMUM_IN_MS);
+            SPELL_WOW_TALENT_INTERACTION_ENABLED = ReadVariableFromConfigString("SPELL_WOW_TALENT_INTERACTION_ENABLED", configValuesByVariableName, SPELL_WOW_TALENT_INTERACTION_ENABLED);
             SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT = ReadVariableFromConfigString("SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT", configValuesByVariableName, SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT);
             SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD);
             SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX);

@@ -119,6 +119,8 @@ namespace EQWOWConverter
         private SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
         private SpellBonusDataSQL spellBonusDataSQL = new SpellBonusDataSQL();
         private SpellGroupSQL spellGroupSQL = new SpellGroupSQL();
+        private SpellProcSQL spellProcSQL = new SpellProcSQL();
+        private ModEverquestTalentExclusionSQL modEverquestTalentExclusionSQL = new ModEverquestTalentExclusionSQL();
         private SpellGroupStackRulesSQL spellGroupStackRulesSQL = new SpellGroupStackRulesSQL();
         private SpellLinkedSpellSQL spellLinkedSpellSQL = new SpellLinkedSpellSQL();
         private SpellScriptNamesSQL spellScriptNamesSQL = new SpellScriptNamesSQL();
@@ -2061,6 +2063,13 @@ namespace EQWOWConverter
         private void PopulateSpellAndTradeskillData(List<SpellTemplate> spellTemplates, List<TradeskillRecipe> tradeskillRecipes,
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
         {
+            // Drop the spell family check on the talents that proc off any spell of their class (lets school alignment determine)
+            spellProcSQL.AddFamilyWideProcOverrideRows();
+
+            // Talents the automatic alignment rule would otherwise generalize, so exclude specific ones
+            foreach (SpellTalentExclusion talentExclusion in SpellTalentExclusion.GetSpellTalentExclusions())
+                modEverquestTalentExclusionSQL.AddRow(talentExclusion.TalentRank1SpellID, talentExclusion.WOWClassName, talentExclusion.TalentName, talentExclusion.DescriptionOrReason);
+
             // Spell split data
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
@@ -2538,6 +2547,8 @@ namespace EQWOWConverter
             smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
             spellBonusDataSQL.SaveToDisk("spell_bonus_data", SQLFileType.World);
             spellGroupSQL.SaveToDisk("spell_group", SQLFileType.World);
+            spellProcSQL.SaveToDisk("spell_proc", SQLFileType.World); // spell_ex44
+            modEverquestTalentExclusionSQL.SaveToDisk("mod_everquest_talent_exclusion", SQLFileType.World); // spell_ex44
             spellGroupStackRulesSQL.SaveToDisk("spell_group_stack_rules", SQLFileType.World);
             spellLinkedSpellSQL.SaveToDisk("spell_linked_spell", SQLFileType.World);
             spellScriptNamesSQL.SaveToDisk("spell_script_names", SQLFileType.World);
