@@ -281,6 +281,36 @@ namespace EQWOWConverter.WOWFiles
             int range, string comment)
         {
             int recastDelayInMSMax = recastDelayInMS + Convert.ToInt32(Convert.ToSingle(recastDelayInMS) * Configuration.CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
+
+            // Heal self first (see AI_EngagedCastCheck in TAKP)
+            AddRow(creatureTemplateID,
+                0,
+                2, // SMART_EVENT_HEALTH_PCT
+                100,
+                0, // HP min %
+                Configuration.CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT, // HP max %
+                recastDelayInMS,  // Repeat min in MS
+                recastDelayInMSMax, // Repeat max in MS
+                0,
+                0,
+                11, // SMART_ACTION_CAST
+                wowSpellID,
+                32, // SMARTCAST_AURA_NOT_PRESENT
+                0,
+                0,
+                0,
+                0,
+                1, // SMART_TARGET_SELF
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                string.Concat(comment, " on self")
+            );
+
+            // Heal nearby friendly creatures, but never players since EQ creatures only heal other NPCs (see AICheckCloseBeneficialSpells in TAKP)
             AddRow(creatureTemplateID,
                 0,
                 74, // SMART_EVENT_FRIENDLY_HEALTH_PCT
@@ -290,7 +320,7 @@ namespace EQWOWConverter.WOWFiles
                 recastDelayInMS,
                 recastDelayInMSMax,
                 Configuration.CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT, // HP Min %
-                range,
+                0,
                 11, // SMART_ACTION_CAST
                 wowSpellID,
                 32, // SMARTCAST_AURA_NOT_PRESENT
@@ -298,14 +328,14 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 0,
                 0,
-                7, // SMART_TARGET_ACTION_INVOKER
+                10, // SMART_TARGET_CREATURE_DISTANCE
+                0, // Any creature entry
+                range, // Distance
                 0,
                 0,
                 0,
                 0,
-                0,
-                0,
-                comment
+                string.Concat(comment, " on nearby creature")
             );
         }
 
