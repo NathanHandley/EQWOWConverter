@@ -554,8 +554,8 @@ namespace EQWOWConverter
         public static bool CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY = false;
 
         // Prices of training ranks for riding trainers
-        public static int CREATURE_RIDING_TRAINER_COST_APPRENTICE = 40000;
-        public static int CREATURE_RIDING_TRAINER_COST_JOURNEYMAN = 500000;
+        public static int CREATURE_RIDING_TRAINER_COST_APPRENTICE = 500000; // 40000; = WoW-like
+        public static int CREATURE_RIDING_TRAINER_COST_JOURNEYMAN = 10000000; // 500000; = WoW-like
         public static int CREATURE_RIDING_TRAINER_COST_EXPERT = 2500000;
         public static int CREATURE_RIDING_TRAINER_COST_ARTISAN = 50000000;
 
