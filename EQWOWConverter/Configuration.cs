@@ -553,6 +553,12 @@ namespace EQWOWConverter
         // If true, riding trainers will include flying mounts as well
         public static bool CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY = false;
 
+        // Prices of training ranks for riding trainers
+        public static int CREATURE_RIDING_TRAINER_COST_APPRENTICE = 40000;
+        public static int CREATURE_RIDING_TRAINER_COST_JOURNEYMAN = 500000;
+        public static int CREATURE_RIDING_TRAINER_COST_EXPERT = 2500000;
+        public static int CREATURE_RIDING_TRAINER_COST_ARTISAN = 50000000;
+
         // Minimum amount of duration a creature buff buff needs to be in order to be cast out of combat
         public static int CREATURE_SPELL_OOC_BUFF_MIN_DURATION_IN_MS = 60000;
 
@@ -1525,6 +1531,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_PERIODIC_SECONDS_PER_TICK_EQ", SPELL_PERIODIC_SECONDS_PER_TICK_EQ, "Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier (WoW typically has 3)");
             OutputVariableToConfig("CREATURE_RIDING_TRAINERS_ENABLED", CREATURE_RIDING_TRAINERS_ENABLED, "If true, riding trainers will be generated");
             OutputVariableToConfig("CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY", CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY, "If true, riding trainers will include flying mounts as well");
+            OutputVariableToConfig("CREATURE_RIDING_TRAINER_COST_APPRENTICE", CREATURE_RIDING_TRAINER_COST_APPRENTICE, "Prices of training ranks for riding trainers", false);
+            OutputVariableToConfig("CREATURE_RIDING_TRAINER_COST_JOURNEYMAN", CREATURE_RIDING_TRAINER_COST_JOURNEYMAN, "", false);
+            OutputVariableToConfig("CREATURE_RIDING_TRAINER_COST_EXPERT", CREATURE_RIDING_TRAINER_COST_EXPERT, "", false);
+            OutputVariableToConfig("CREATURE_RIDING_TRAINER_COST_ARTISAN", CREATURE_RIDING_TRAINER_COST_ARTISAN, "");
             OutputVariableToConfig("ZONE_FLYING_ALLOWED", ZONE_FLYING_ALLOWED, "If true, characters can fly in the zones if they have a mount");
             OutputVariableToConfig("EVENTS_DO_NORMALIZE_GAME_EVENTS", EVENTS_DO_NORMALIZE_GAME_EVENTS, "If true, all day or night creature spawn events will have their day/time normalized, and only one event will be created for each. Config variables to tweak this further can be found further below");
             OutputVariableToConfig("ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED", ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED, "If true, weight reduction on bags will translate to additional slots");
@@ -2167,6 +2177,10 @@ namespace EQWOWConverter
             CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID = ReadVariableFromConfigString("CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID", configValuesByVariableName, CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID);
             CREATURE_RIDING_TRAINERS_ENABLED = ReadVariableFromConfigString("CREATURE_RIDING_TRAINERS_ENABLED", configValuesByVariableName, CREATURE_RIDING_TRAINERS_ENABLED);
             CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY = ReadVariableFromConfigString("CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY", configValuesByVariableName, CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY);
+            CREATURE_RIDING_TRAINER_COST_APPRENTICE = ReadVariableFromConfigString("CREATURE_RIDING_TRAINER_COST_APPRENTICE", configValuesByVariableName, CREATURE_RIDING_TRAINER_COST_APPRENTICE);
+            CREATURE_RIDING_TRAINER_COST_JOURNEYMAN = ReadVariableFromConfigString("CREATURE_RIDING_TRAINER_COST_JOURNEYMAN", configValuesByVariableName, CREATURE_RIDING_TRAINER_COST_JOURNEYMAN);
+            CREATURE_RIDING_TRAINER_COST_EXPERT = ReadVariableFromConfigString("CREATURE_RIDING_TRAINER_COST_EXPERT", configValuesByVariableName, CREATURE_RIDING_TRAINER_COST_EXPERT);
+            CREATURE_RIDING_TRAINER_COST_ARTISAN = ReadVariableFromConfigString("CREATURE_RIDING_TRAINER_COST_ARTISAN", configValuesByVariableName, CREATURE_RIDING_TRAINER_COST_ARTISAN);
             CREATURE_SPELL_OOC_BUFF_MIN_DURATION_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_OOC_BUFF_MIN_DURATION_IN_MS", configValuesByVariableName, CREATURE_SPELL_OOC_BUFF_MIN_DURATION_IN_MS);
             CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS", configValuesByVariableName, CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS);
             CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS", configValuesByVariableName, CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS);
