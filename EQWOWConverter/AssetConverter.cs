@@ -2528,7 +2528,7 @@ namespace EQWOWConverter
                 eqAdventurerSpellTemplate.WOWSpellID = Configuration.SPELL_EQ_ADVENTURER_AURA_SPELL_ID;
                 eqAdventurerSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
                 eqAdventurerSpellTemplate.Description = "Marks an adventurer whose deeds belong to Norrath alone.";
-                eqAdventurerSpellTemplate.AuraDescription = "Gaining experience only through Everquest content. Lost if you gain kill credit for a non-Everquest creature, complete a non-Everquest quest, or equip non-Everquest gear.";
+                eqAdventurerSpellTemplate.AuraDescription = "Gaining experience only through Everquest content. Lost if you gain kill credit for a non-Everquest creature or complete a non-Everquest quest.";
                 eqAdventurerSpellTemplate.AuraDuration = new SpellDuration();
                 eqAdventurerSpellTemplate.AuraDuration.IsInfinite = true;
                 eqAdventurerSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
