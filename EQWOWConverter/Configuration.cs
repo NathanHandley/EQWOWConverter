@@ -207,9 +207,6 @@ namespace EQWOWConverter
         // If true, players will start with an EQ item loadout instead of a WOW item loadout
         public static bool PLAYER_USE_EQ_START_ITEMS = false;
 
-        // If true, this will also add a hearthstone if using EQ items
-        public static bool PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS = true;
-
         // If true, players start with a bind and gate spell regardless of class (with no costs)
         public static bool PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START = true;
 
@@ -1489,7 +1486,6 @@ namespace EQWOWConverter
             OutputTextLineToConfig("# If false, equipment is balanced to max level 60 and original levels are used. If true, use adjusted levels and zones/equip is balanced to 80");
             OutputVariableToConfig("PLAYER_USE_EQ_START_LOCATION", PLAYER_USE_EQ_START_LOCATION, "If true, new players created will use the everquest start locations defined in PlayerClassRaceProperties");
             OutputVariableToConfig("PLAYER_USE_EQ_START_ITEMS", PLAYER_USE_EQ_START_ITEMS, "If true, players will start with an EQ item loadout instead of a WOW item loadout");
-            OutputVariableToConfig("PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS", PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS, "If true, this will also add a hearthstone if using EQ items");
             OutputVariableToConfig("PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START", PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START, "If true, players start with a bind and gate spell regardless of class (with no costs)");
             OutputTextLineToConfig("# If true, DeathKnights will start at level 1 and not be locked to the starter area (and comes with runeforging)");
             OutputVariableToConfig("PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES", PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES, "Warning: This should only be done if you plan to use EQ start locations, otherwise you'll just be 'stuck' as a level 1 in a hard area");
@@ -2013,7 +2009,6 @@ namespace EQWOWConverter
 
             PLAYER_USE_EQ_START_LOCATION = ReadVariableFromConfigString("PLAYER_USE_EQ_START_LOCATION", configValuesByVariableName, PLAYER_USE_EQ_START_LOCATION);
             PLAYER_USE_EQ_START_ITEMS = ReadVariableFromConfigString("PLAYER_USE_EQ_START_ITEMS", configValuesByVariableName, PLAYER_USE_EQ_START_ITEMS);
-            PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS = ReadVariableFromConfigString("PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS", configValuesByVariableName, PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS);
             PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START = ReadVariableFromConfigString("PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START", configValuesByVariableName, PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START);
             PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED = ReadVariableFromConfigString("PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED", configValuesByVariableName, PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED);
             PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX = ReadVariableFromConfigString("PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX", configValuesByVariableName, PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX);

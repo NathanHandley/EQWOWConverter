@@ -524,9 +524,6 @@ namespace EQWOWConverter
             if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
             {
                 // Create the non-eq items to be used
-                ItemTemplate itemHearthstone = new ItemTemplate(6948, ItemWOWInventoryType.NoEquip);
-                itemHearthstone.IsGivenAsStartItem = true;
-                itemHearthstone.IsExistingItemAlready = true;
                 ItemTemplate itemTotem = new ItemTemplate(46978, ItemWOWInventoryType.NoEquip);
                 itemTotem.IsGivenAsStartItem = true;
                 itemTotem.IsExistingItemAlready = true;
@@ -545,10 +542,6 @@ namespace EQWOWConverter
                         else
                             startingItems.Add(itemTemplatesByWOWEntry[itemID]);
                     }
-
-                    // Add the hearthstone if configured to do so
-                    if (Configuration.PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS == true)
-                        startingItems.Add(itemHearthstone);
 
                     // Add the rows
                     charStartOutfitDBC.AddRowsForSexes(Convert.ToByte(classRaceProperties.Value.RaceID), Convert.ToByte(classRaceProperties.Value.ClassID), startingItems);
