@@ -94,7 +94,6 @@ namespace EQWOWConverter
         private ModEverquestPlayerCreateInfoSQL modEverquestPlayerCreateInfoSQL = new ModEverquestPlayerCreateInfoSQL();
         private ModEverquestPlayerAutoLearnSkillsSQL modEverquestPlayerAutoLearnSkillsSQL = new ModEverquestPlayerAutoLearnSkillsSQL();
         private ModEverquestPlayerAutoLearnSpellsSQL modEverquestPlayerAutoLearnSpellsSQL = new ModEverquestPlayerAutoLearnSpellsSQL();
-        private ModEverquestPlayerAutoAddItemsSQL modEverquestPlayerAutoAddItemsSQL = new ModEverquestPlayerAutoAddItemsSQL();
         private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
         private ModEverquestSystemConfigsSQL modEverquestSystemConfigsSQL = new ModEverquestSystemConfigsSQL();
         private ModEverquestTransportTriggerSQL modEverquestTransportTriggerSQL = new ModEverquestTransportTriggerSQL();
@@ -1709,14 +1708,6 @@ namespace EQWOWConverter
                     if (dualWieldLearnLevel > 0)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 674, dualWieldLearnLevel);  // Dual Wield
 
-                    // Auto-added items (not race dependent, so add only once per EQ class)
-                    if (raceType == RaceType.Human)
-                    {
-                        // Shaman gets a Totem of the Earthen Ring (so they can use shaman totems)
-                        if (eqClassProperties.EQClass == ClassEQType.Shaman)
-                            modEverquestPlayerAutoAddItemsSQL.AddRow(eqClassProperties.EQClass, 46978);
-                    }
-
                     // Shield
                     if (Configuration.PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES == true)
                     {
@@ -2521,7 +2512,6 @@ namespace EQWOWConverter
             modEverquestPlayerCreateInfoSQL.SaveToDisk("mod_everquest_playercreateinfo", SQLFileType.World);
             modEverquestPlayerAutoLearnSkillsSQL.SaveToDisk("mod_everquest_playerautolearnskills", SQLFileType.World);
             modEverquestPlayerAutoLearnSpellsSQL.SaveToDisk("mod_everquest_playerautolearnspells", SQLFileType.World);
-            modEverquestPlayerAutoAddItemsSQL.SaveToDisk("mod_everquest_playerautoadditems", SQLFileType.World);
             modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
             modEverquestSystemConfigsSQL.SaveToDisk("mod_everquest_systemconfigs", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
