@@ -328,7 +328,7 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 0,
                 0,
-                10, // SMART_TARGET_CREATURE_DISTANCE
+                11, // SMART_TARGET_CREATURE_DISTANCE
                 0, // Any creature entry
                 range, // Distance
                 0,
