@@ -165,6 +165,7 @@ namespace EQWOWConverter.Zones
         public int RaidPlayerSize = 0;
         public int RaidDurationInSeconds = 0;
         public float SocialAgroMod = 1f;
+        public float MaxAgroZDistance = -1f;
         public bool DisableObjectsInMapGenMode = false;
 
         public ZoneProperties(UInt32 wmoAreaTableDBCID)
@@ -1105,6 +1106,13 @@ namespace EQWOWConverter.Zones
 
                 // Creature properties
                 zoneProperties.SocialAgroMod = float.Parse(propertiesRow["SocialAgroMod"]);
+
+                // Max Z agro range, any negative value stays -1, which means "no restriction"
+                float maxAgroZDistance = float.Parse(propertiesRow["MaxAgroZDistance"]);
+                if (maxAgroZDistance < 0f)
+                    zoneProperties.MaxAgroZDistance = -1f;
+                else
+                    zoneProperties.MaxAgroZDistance = maxAgroZDistance * Configuration.GENERATE_WORLD_SCALE;
 
                 // Sound and Music
                 foreach (string enabled2DSoundInstanceName in propertiesRow["Enabled2DSoundInstances"].Split(","))
