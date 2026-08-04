@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: EQ Tracking
+## Notes: EverQuest-style tracking window for Rangers, Druids, and Bards
+## Version: 1.0
+
+EQ_Tracking.lua

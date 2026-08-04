@@ -190,7 +190,7 @@ namespace EQWOWConverter
                                 }
                             }
                         }
-                        keyedGameObject.LockDBCID = IDGenerationTool.GenerateID("LockID", "keyitems", keyedGameObject.KeyItemEQID.ToString(), keyedGameObject.AltKeyItemEQID.ToString());
+                        keyedGameObject.AssignLockDBCID();
                     }
                 }
 
@@ -315,6 +315,13 @@ namespace EQWOWConverter
                 if (Directory.Exists(targetCharacterStatsAddOnFolder) == true)
                     Directory.Delete(targetCharacterStatsAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceCharacterStatsAddOnFolder, targetCharacterStatsAddOnFolder, true, true);
+
+                // Copy the tracking addon into the prep location
+                string sourceTrackingAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_Tracking");
+                string targetTrackingAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_Tracking");
+                if (Directory.Exists(targetTrackingAddOnFolder) == true)
+                    Directory.Delete(targetTrackingAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceTrackingAddOnFolder, targetTrackingAddOnFolder, true, true);
 
                 // Create or update the MPQs
                 CreateOrUpdateMainPatchMPQ();
@@ -2430,6 +2437,28 @@ namespace EQWOWConverter
             forageSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             spellTemplates.Add(forageSpellTemplate);
 
+            // Tracking ability
+            int trackingSpellIconID = Configuration.TRACKING_SPELL_ICON_EQ_ID;
+            if (Configuration.TRACKING_SPELL_ICON_EQ_ID < 0 || Configuration.TRACKING_SPELL_ICON_EQ_ID > 22)
+            {
+                Logger.WriteError("Invalid Configuration.TRACKING_SPELL_ICON_EQ_ID, value must be 0-22. Setting to 21");
+                trackingSpellIconID = 21;
+            }
+            SpellTemplate trackingSpellTemplate = new SpellTemplate();
+            trackingSpellTemplate.Name = "Tracking";
+            trackingSpellTemplate.WOWSpellID = Configuration.TRACKING_SPELL_TEMPLATE_ID;
+            trackingSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            trackingSpellTemplate.Description = "Sense the trails of nearby creatures and pick one to track.";
+            trackingSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(trackingSpellIconID);
+            trackingSpellTemplate.CastTimeInMS = 0;
+            trackingSpellTemplate.RecoveryTimeInMS = 2000; // Matches the mod's per-player scan throttle (EQ_TRACKING_SCAN_MIN_INTERVAL_MS)
+            trackingSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
+            trackingSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
+            trackingSpellTemplate.TriggersGlobalCooldown = false;
+            trackingSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, (int)SpellDummyType.Track, 0));
+            trackingSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            spellTemplates.Add(trackingSpellTemplate);
+
             // Summon Active Aura
             SpellTemplate summonActiveSpellTemplate = new SpellTemplate();
             summonActiveSpellTemplate.Name = "Summon Active";
@@ -3720,6 +3749,11 @@ namespace EQWOWConverter
                 if (Directory.Exists(targetCharacterStatsAddOnFolder) == true)
                     Directory.Delete(targetCharacterStatsAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceCharacterStatsAddOnFolder, targetCharacterStatsAddOnFolder, true, true);
+                string sourceTrackingAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_Tracking");
+                string targetTrackingAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_Tracking");
+                if (Directory.Exists(targetTrackingAddOnFolder) == true)
+                    Directory.Delete(targetTrackingAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceTrackingAddOnFolder, targetTrackingAddOnFolder, true, true);
             }
 
             Logger.WriteDebug("Deploying to client complete");
@@ -4111,6 +4145,7 @@ namespace EQWOWConverter
                         Logger.WriteDebug("Locked game object with ID '", lockedGameObject.ID.ToString(), "' has no player-obtainable key, so its lock was removed");
                         lockedGameObject.KeyItemTemplate = null;
                         lockedGameObject.AltKeyItemTemplate = null;
+                        lockedGameObject.LockPickSkillRequired = 0;
                         lockedGameObject.LockDBCID = 0;
                         continue;
                     }
@@ -4126,7 +4161,7 @@ namespace EQWOWConverter
                         Logger.WriteDebug("Locked game object with ID '", lockedGameObject.ID.ToString(), "' has a non-obtainable alt key item ID of '", lockedGameObject.AltKeyItemEQID.ToString(), "', so only the main key will work");
                     lockedGameObject.AltKeyItemTemplate = null;
                     lockedGameObject.AltKeyItemEQID = 0;
-                    lockedGameObject.LockDBCID = IDGenerationTool.GenerateID("LockID", "keyitems", lockedGameObject.KeyItemEQID.ToString(), lockedGameObject.AltKeyItemEQID.ToString());
+                    lockedGameObject.AssignLockDBCID();
                 }
             }
         }

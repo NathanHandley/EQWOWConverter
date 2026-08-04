@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 59;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 60;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1036,6 +1036,15 @@ namespace EQWOWConverter
         public static int FORAGE_SPELL_TEMPLATE_ID = 86904;
 
         //=====================================================================
+        // Tracking
+        //=====================================================================
+        // Which eq spell icon to use for the Tracking ability. Can be a value between 0-22
+        public static int TRACKING_SPELL_ICON_EQ_ID = 2;
+
+        // Spell id for the tracking spell
+        public static int TRACKING_SPELL_TEMPLATE_ID = 86918;
+
+        //=====================================================================
         // Tradeskills
         //=====================================================================
         // How much to multiply EQ skill requirements by to reach the same for WoW on conversion
@@ -1894,6 +1903,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_80", FISHING_SKILL_CONVERSION_MOD_80, "");
             OutputVariableToConfig("FORAGE_SPELL_ICON_EQ_ID", FORAGE_SPELL_ICON_EQ_ID, "Which eq spell icon to use for the Forage skill. Can be a value between 0-22");
             OutputVariableToConfig("FORAGE_SPELL_TEMPLATE_ID", FORAGE_SPELL_TEMPLATE_ID, "Spell id for the forage spell");
+            OutputVariableToConfig("TRACKING_SPELL_ICON_EQ_ID", TRACKING_SPELL_ICON_EQ_ID, "Which eq spell icon to use for the Tracking ability. Can be a value between 0-22");
+            OutputVariableToConfig("TRACKING_SPELL_TEMPLATE_ID", TRACKING_SPELL_TEMPLATE_ID, "Spell id for the tracking spell");
             OutputVariableToConfig("TRADESKILLS_CONVERSION_MOD_60", TRADESKILLS_CONVERSION_MOD_60, "How much to multiply EQ skill requirements by to reach the same for WoW on conversion", false);
             OutputVariableToConfig("TRADESKILLS_CONVERSION_MOD_80", TRADESKILLS_CONVERSION_MOD_80, "");
             OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_LOW", TRADESKILLS_SKILL_TIER_DISTANCE_LOW, "Max distance between Grey -> Green -> Yellow -> Red steps", false);
@@ -2382,6 +2393,8 @@ namespace EQWOWConverter
             FISHING_SKILL_CONVERSION_MOD_80 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_80", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_80);
             FORAGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("FORAGE_SPELL_ICON_EQ_ID", configValuesByVariableName, FORAGE_SPELL_ICON_EQ_ID);
             FORAGE_SPELL_TEMPLATE_ID = ReadVariableFromConfigString("FORAGE_SPELL_TEMPLATE_ID", configValuesByVariableName, FORAGE_SPELL_TEMPLATE_ID);
+            TRACKING_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("TRACKING_SPELL_ICON_EQ_ID", configValuesByVariableName, TRACKING_SPELL_ICON_EQ_ID);
+            TRACKING_SPELL_TEMPLATE_ID = ReadVariableFromConfigString("TRACKING_SPELL_TEMPLATE_ID", configValuesByVariableName, TRACKING_SPELL_TEMPLATE_ID);
             TRADESKILLS_CONVERSION_MOD_60 = ReadVariableFromConfigString("TRADESKILLS_CONVERSION_MOD_60", configValuesByVariableName, TRADESKILLS_CONVERSION_MOD_60);
             TRADESKILLS_CONVERSION_MOD_80 = ReadVariableFromConfigString("TRADESKILLS_CONVERSION_MOD_80", configValuesByVariableName, TRADESKILLS_CONVERSION_MOD_80);
             TRADESKILLS_SKILL_TIER_DISTANCE_LOW = ReadVariableFromConfigString("TRADESKILLS_SKILL_TIER_DISTANCE_LOW", configValuesByVariableName, TRADESKILLS_SKILL_TIER_DISTANCE_LOW);

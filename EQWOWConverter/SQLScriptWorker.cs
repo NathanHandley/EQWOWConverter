@@ -1674,6 +1674,10 @@ namespace EQWOWConverter
                     if (eqClassProperties.HasForage == true)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.FORAGE_SPELL_TEMPLATE_ID, 1);
 
+                    // Tracking
+                    if (eqClassProperties.EQClass == ClassEQType.Ranger || eqClassProperties.EQClass == ClassEQType.Druid || eqClassProperties.EQClass == ClassEQType.Bard)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.TRACKING_SPELL_TEMPLATE_ID, 1);
+
                     // Bash
                     if (Configuration.COMBATSKILL_BASH_ENABLED == true && Configuration.COMBATSKILL_BASH_PLAYER_LEARNABLE == true && eqClassProperties.HasBash == true)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_BASH_SPELL_ID, 1);
