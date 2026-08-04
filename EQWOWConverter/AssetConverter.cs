@@ -2827,6 +2827,9 @@ namespace EQWOWConverter
             Dictionary<string, int> recipeNameCounts = new Dictionary<string, int>();
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
             tradeskillRecipes = TradeskillRecipe.GetAllRecipes();
+
+            // Prevent recipes from producing items that vendor for more than their components cost to buy
+            TradeskillRecipe.ClampProducedItemSellPricesToComponentCosts(itemTemplatesByWOWEntryID);
             foreach (TradeskillRecipe recipe in tradeskillRecipes)
             {
                 SpellTemplate curSpellTemplate = new SpellTemplate();

@@ -287,6 +287,93 @@ namespace EQWOWConverter.Tradeskills
             }            
         }
 
+        public static void ClampProducedItemSellPricesToComponentCosts(SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
+        {
+            lock (TradeskillLock)
+            {
+                foreach (TradeskillRecipe recipe in AllRecipes)
+                {
+                    // Calculate what the components would cost to buy from a vendor at max reputation discount
+                    long componentCostInCopper = 0;
+                    foreach (var component in recipe.ComponentItemCountsByWOWItemID)
+                    {
+                        if (itemTemplatesByWOWEntryID.ContainsKey(component.Key) == false)
+                            continue;
+                        ItemTemplate componentItemTemplate = itemTemplatesByWOWEntryID[component.Key];
+                        int perUnitBuyPriceInCopper;
+                        if (componentItemTemplate.OverrideStackBuyPriceInCopper > 0)
+                            perUnitBuyPriceInCopper = componentItemTemplate.OverrideStackBuyPriceInCopper / Math.Max(componentItemTemplate.BuyCount, 1);
+                        else
+                            perUnitBuyPriceInCopper = componentItemTemplate.BuyPriceInCopper;
+                        int discountedPerUnitBuyPriceInCopper = Convert.ToInt32(Math.Floor(perUnitBuyPriceInCopper * 0.8)); // Max rep gives 20% price discount
+                        componentCostInCopper += (long)discountedPerUnitBuyPriceInCopper * component.Value;
+                    }
+
+                    // Calculate what the produced items would sell to a vendor for, considering the most valuable form of each
+                    // (a clicky item's bag can be opened for the inner item, and slotshiftable items can shift into variant copies)
+                    long producedSellValueInCopper = 0;
+                    foreach (var produced in recipe.ProducedItemCountsByWOWItemID)
+                    {
+                        if (itemTemplatesByWOWEntryID.ContainsKey(produced.Key) == false)
+                            continue;
+                        producedSellValueInCopper += CalculateMaxSellValueInCopper(itemTemplatesByWOWEntryID[produced.Key], itemTemplatesByWOWEntryID) * produced.Value;
+                    }
+                    if (producedSellValueInCopper <= componentCostInCopper)
+                        continue;
+
+                    // Selling the products would profit over buying the components, so lower the produced sell prices to match the component cost
+                    HashSet<int> loweredWOWItemIDs = new HashSet<int>();
+                    foreach (var produced in recipe.ProducedItemCountsByWOWItemID)
+                    {
+                        if (itemTemplatesByWOWEntryID.ContainsKey(produced.Key) == false)
+                            continue;
+                        LowerSellPriceOfItemAndDerivedItems(itemTemplatesByWOWEntryID[produced.Key], itemTemplatesByWOWEntryID, recipe,
+                            componentCostInCopper, producedSellValueInCopper, loweredWOWItemIDs);
+                    }
+                }
+            }
+        }
+
+        private static long CalculateMaxSellValueInCopper(ItemTemplate itemTemplate, SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
+        {
+            long maxSellValueInCopper = itemTemplate.SellPriceInCopper;
+            foreach (int slotshiftWOWItemID in itemTemplate.SlotshiftWOWIDsBySlot.Values)
+                if (itemTemplatesByWOWEntryID.ContainsKey(slotshiftWOWItemID) == true)
+                    maxSellValueInCopper = Math.Max(maxSellValueInCopper, itemTemplatesByWOWEntryID[slotshiftWOWItemID].SellPriceInCopper);
+            if (itemTemplate.ContainedItems.Count > 0)
+            {
+                long containedSellValueInCopper = 0;
+                foreach (var containedItem in itemTemplate.ContainedItems)
+                    if (containedItem.itemTemplateIDWOW != itemTemplate.WOWEntryID && itemTemplatesByWOWEntryID.ContainsKey(containedItem.itemTemplateIDWOW) == true)
+                        containedSellValueInCopper += CalculateMaxSellValueInCopper(itemTemplatesByWOWEntryID[containedItem.itemTemplateIDWOW], itemTemplatesByWOWEntryID) * containedItem.count;
+                maxSellValueInCopper = Math.Max(maxSellValueInCopper, containedSellValueInCopper);
+            }
+            return maxSellValueInCopper;
+        }
+
+        private static void LowerSellPriceOfItemAndDerivedItems(ItemTemplate itemTemplate, SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID,
+            TradeskillRecipe recipe, long componentCostInCopper, long producedSellValueInCopper, HashSet<int> loweredWOWItemIDs)
+        {
+            if (loweredWOWItemIDs.Contains(itemTemplate.WOWEntryID) == true)
+                return;
+            loweredWOWItemIDs.Add(itemTemplate.WOWEntryID);
+            if (itemTemplate.SellPriceInCopper > 0)
+            {
+                int cappedSellPriceInCopper = Convert.ToInt32(((long)itemTemplate.SellPriceInCopper * componentCostInCopper) / producedSellValueInCopper);
+                Logger.WriteDebug(string.Concat("Recipe '", recipe.Name, "' (eqid ", recipe.EQID, ") sells for more than its components cost, lowering sell price of produced item '",
+                    itemTemplate.Name, "' from ", itemTemplate.SellPriceInCopper, " to ", cappedSellPriceInCopper, " copper"));
+                itemTemplate.SellPriceInCopper = cappedSellPriceInCopper;
+            }
+            foreach (int slotshiftWOWItemID in itemTemplate.SlotshiftWOWIDsBySlot.Values)
+                if (itemTemplatesByWOWEntryID.ContainsKey(slotshiftWOWItemID) == true)
+                    LowerSellPriceOfItemAndDerivedItems(itemTemplatesByWOWEntryID[slotshiftWOWItemID], itemTemplatesByWOWEntryID, recipe,
+                        componentCostInCopper, producedSellValueInCopper, loweredWOWItemIDs);
+            foreach (var containedItem in itemTemplate.ContainedItems)
+                if (itemTemplatesByWOWEntryID.ContainsKey(containedItem.itemTemplateIDWOW) == true)
+                    LowerSellPriceOfItemAndDerivedItems(itemTemplatesByWOWEntryID[containedItem.itemTemplateIDWOW], itemTemplatesByWOWEntryID, recipe,
+                        componentCostInCopper, producedSellValueInCopper, loweredWOWItemIDs);
+        }
+
         private static TradeskillType ConvertTradeskillType(int eqTradeskillTypeID)
         {
             switch (eqTradeskillTypeID)
