@@ -301,6 +301,7 @@ namespace EQWOWConverter.Spells
         public bool IsFarSight = false;
         public bool GenerateNoThreat = false;
         public bool IgnoreTargetRequirements = false;
+        public bool IgnoreLineOfSight = false;
         public bool ProcsOnMeleeAttacks = false;
         public SpellPet? SummonSpellPet = null;
         public int SummonPropertiesDBCID = 0;
@@ -2788,6 +2789,16 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectBasePoints = amountRestored;
                                 newSpellEffectWOW.ActionDescription = string.Concat("brings a dead player back to life with ", amountRestored, " health and ", amountRestored, " mana");
                                 newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
+                        case SpellEQEffectType.SummonPC:
+                            {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.Dummy;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
+                                newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.SummonPC;
+                                newSpellEffectWOW.ActionDescription = "summons the targeted player to the caster, if they accept";
+                                newSpellEffects.Add(newSpellEffectWOW);
+                                spellTemplate.IgnoreLineOfSight = true;
                             } break;
                         case SpellEQEffectType.Gate:
                             {

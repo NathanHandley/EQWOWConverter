@@ -38,5 +38,7 @@ namespace EQWOWConverter.Spells
         Forage = 16,
         SummonActive = 17,
         Succor = 18,
+        Track = 19,
+        SummonPC = 20,
     }
 }

@@ -290,6 +290,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 131072; // SPELL_ATTR2_DO_NOT_RESET_COMBAT_TIMERS (0x00020000)
             if (spellTemplate.AllowInShapeshift == true)
                 attributeFlags |= 524288; // SPELL_ATTR2_ALLOW_WHILE_NOT_SHAPESHIFTED (0x00080000)
+            if (spellTemplate.IgnoreLineOfSight == true)
+                attributeFlags |= 4; // SPELL_ATTR2_IGNORE_LINE_OF_SIGHT (0x00000004)
             return attributeFlags;
         }
 

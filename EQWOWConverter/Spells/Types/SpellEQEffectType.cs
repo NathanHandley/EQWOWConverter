@@ -92,7 +92,7 @@ namespace EQWOWConverter.Spells
         CurrentHitPointsOnce = 79,
         //....
         Revive = 81,
-        // SummonPC = 82 // Summons the player to the casters location
+        SummonPC = 82, // Summons the targeted player to the caster's location
         Teleport = 83,
         TossUp = 84,
         WeaponProc = 85,
