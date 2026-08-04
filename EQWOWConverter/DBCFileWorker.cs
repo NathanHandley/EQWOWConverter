@@ -277,12 +277,13 @@ namespace EQWOWConverter
             {
                 foreach (GameObject gameObject in gameObjectsByZoneShortName.Value)
                 {
-                    if (gameObject.LockDBCID == 0 || gameObject.KeyItemTemplate == null)
+                    if (gameObject.LockDBCID == 0)
                         continue;
                     if (addedLockDBCIDs.Contains(gameObject.LockDBCID) == true)
                         continue;
+                    int keyItemWOWID = gameObject.KeyItemTemplate != null ? gameObject.KeyItemTemplate.WOWEntryID : 0;
                     int altKeyItemWOWID = gameObject.AltKeyItemTemplate != null ? gameObject.AltKeyItemTemplate.WOWEntryID : 0;
-                    lockDBC.AddRowForItemKeys(gameObject.LockDBCID, gameObject.KeyItemTemplate.WOWEntryID, altKeyItemWOWID);
+                    lockDBC.AddRowForItemKeysAndPickLock(gameObject.LockDBCID, keyItemWOWID, altKeyItemWOWID, gameObject.LockPickSkillRequired);
                     addedLockDBCIDs.Add(gameObject.LockDBCID);
                 }
             }
@@ -630,6 +631,10 @@ namespace EQWOWConverter
             // Make rogue stealth available to other classes due to the secondary EQ class thing
             skillRaceClassInfoDBC.AddRow(39, wowClassTypes);
             skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "39", "1784"), 39, 1784, 2); // Stealth
+
+            // Make rogue Pick Lock available to other classes, since the EQ rogue class can land on any WOW class
+            skillRaceClassInfoDBC.AddRow(633, wowClassTypes);
+            skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "633", "1804"), 633, 1804, 2); // Pick Lock
 
             // Make hunter Auto Shot available to other classes due as well to support secondary EQ classes
             skillRaceClassInfoDBC.AddRow(163, wowClassTypes);

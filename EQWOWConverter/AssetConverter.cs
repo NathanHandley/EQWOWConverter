@@ -171,25 +171,23 @@ namespace EQWOWConverter
                 {
                     foreach (GameObject keyedGameObject in gameObjectsByZone.Value)
                     {
-                        if (keyedGameObject.KeyItemEQID <= 0)
-                            continue;
-                        if (itemTemplatesByEQDBID.ContainsKey(keyedGameObject.KeyItemEQID) == false)
+                        if (keyedGameObject.KeyItemEQID > 0 && itemTemplatesByEQDBID.ContainsKey(keyedGameObject.KeyItemEQID) == false)
+                            Logger.WriteDebug("Keyed game object with ID '", keyedGameObject.ID.ToString(), "' has a key item ID of '", keyedGameObject.KeyItemEQID.ToString(), "' which did not exist as an item, so no key will open it");
+                        else if (keyedGameObject.KeyItemEQID > 0)
                         {
-                            Logger.WriteDebug("Keyed game object with ID '", keyedGameObject.ID.ToString(), "' has a key item ID of '", keyedGameObject.KeyItemEQID.ToString(), "' which did not exist as an item, so it will not be locked");
-                            continue;
-                        }
-                        keyedGameObject.KeyItemTemplate = itemTemplatesByEQDBID[keyedGameObject.KeyItemEQID];
-                        keyedGameObject.KeyItemTemplate.IsGameObjectKey = true;
-                        keyedGameObject.KeyItemTemplate.SetAsKeyringKeyIfOnlyUsableAsKey();
-                        if (keyedGameObject.AltKeyItemEQID > 0)
-                        {
-                            if (itemTemplatesByEQDBID.ContainsKey(keyedGameObject.AltKeyItemEQID) == false)
-                                Logger.WriteDebug("Keyed game object with ID '", keyedGameObject.ID.ToString(), "' has an alt key item ID of '", keyedGameObject.AltKeyItemEQID.ToString(), "' which did not exist as an item, so only the main key will work");
-                            else
+                            keyedGameObject.KeyItemTemplate = itemTemplatesByEQDBID[keyedGameObject.KeyItemEQID];
+                            keyedGameObject.KeyItemTemplate.IsGameObjectKey = true;
+                            keyedGameObject.KeyItemTemplate.SetAsKeyringKeyIfOnlyUsableAsKey();
+                            if (keyedGameObject.AltKeyItemEQID > 0)
                             {
-                                keyedGameObject.AltKeyItemTemplate = itemTemplatesByEQDBID[keyedGameObject.AltKeyItemEQID];
-                                keyedGameObject.AltKeyItemTemplate.IsGameObjectKey = true;
-                                keyedGameObject.AltKeyItemTemplate.SetAsKeyringKeyIfOnlyUsableAsKey();
+                                if (itemTemplatesByEQDBID.ContainsKey(keyedGameObject.AltKeyItemEQID) == false)
+                                    Logger.WriteDebug("Keyed game object with ID '", keyedGameObject.ID.ToString(), "' has an alt key item ID of '", keyedGameObject.AltKeyItemEQID.ToString(), "' which did not exist as an item, so only the main key will work");
+                                else
+                                {
+                                    keyedGameObject.AltKeyItemTemplate = itemTemplatesByEQDBID[keyedGameObject.AltKeyItemEQID];
+                                    keyedGameObject.AltKeyItemTemplate.IsGameObjectKey = true;
+                                    keyedGameObject.AltKeyItemTemplate.SetAsKeyringKeyIfOnlyUsableAsKey();
+                                }
                             }
                         }
                         keyedGameObject.LockDBCID = IDGenerationTool.GenerateID("LockID", "keyitems", keyedGameObject.KeyItemEQID.ToString(), keyedGameObject.AltKeyItemEQID.ToString());

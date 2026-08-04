@@ -91,6 +91,21 @@ namespace EQWOWConverter.GameObjects
         public int LockDBCID = 0;
         public ItemTemplate? KeyItemTemplate = null;
         public ItemTemplate? AltKeyItemTemplate = null;
+        public int LockPickSkillRequired = 0;
+
+        public void AssignLockDBCID()
+        {
+            bool hasKey = KeyItemTemplate != null;
+            bool isPickable = LockPickSkillRequired > 0;
+            if (hasKey == false && isPickable == false)
+                LockDBCID = 0;
+            else if (isPickable == false)
+                LockDBCID = IDGenerationTool.GenerateID("LockID", "keyitems", KeyItemEQID.ToString(), AltKeyItemEQID.ToString());
+            else if (hasKey == false)
+                LockDBCID = IDGenerationTool.GenerateID("LockID", "pickonly", LockPickSkillRequired.ToString());
+            else
+                LockDBCID = IDGenerationTool.GenerateID("LockID", "keyitemsandpick", KeyItemEQID.ToString(), AltKeyItemEQID.ToString(), LockPickSkillRequired.ToString());
+        }
 
         public static List<GameObject> GetChestGameObjects()
         {
@@ -358,6 +373,9 @@ namespace EQWOWConverter.GameObjects
                 {
                     newGameObject.KeyItemEQID = Math.Max(int.Parse(gameObjectsRow["keyitem"]), 0);
                     newGameObject.AltKeyItemEQID = Math.Max(int.Parse(gameObjectsRow["altkeyitem"]), 0);
+
+                    // EQ stored a pick difficulty per door, which maps directly onto a lockpicking skill requirement
+                    newGameObject.LockPickSkillRequired = Math.Max(int.Parse(gameObjectsRow["lockpick"]), 0);
                 }
 
                 // Sound, if enabled

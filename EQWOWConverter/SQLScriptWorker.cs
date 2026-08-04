@@ -1690,6 +1690,10 @@ namespace EQWOWConverter
                     if (eqClassProperties.EQClass == ClassEQType.Rogue)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1784, 1);  // Stealth
 
+                    // Pick Lock (Existing WoW version)
+                    if (eqClassProperties.EQClass == ClassEQType.Rogue)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1804, 1);  // Pick Lock
+
                     // Auto Shot (Existing WoW version)
                     if (eqClassProperties.EQClass == ClassEQType.Ranger)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 75, 1);  // Auto Shot

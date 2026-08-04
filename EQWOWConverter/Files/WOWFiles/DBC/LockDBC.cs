@@ -18,42 +18,67 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class LockDBC : DBCFile
     {
-        public void AddRowForItemKeys(int lockID, int keyItemWOWID, int altKeyItemWOWID)
+        private const int LOCK_SLOT_COUNT = 8;
+        private const int LOCK_TYPE_ITEM = 1;
+        private const int LOCK_TYPE_SKILL = 2;
+        private const int LOCK_INDEX_PICKLOCK = 1;
+        private const int LOCK_ACTION_OPEN = 1;
+
+        public void AddRowForItemKeysAndPickLock(int lockID, int keyItemWOWID, int altKeyItemWOWID, int pickLockSkillRequired)
         {
+            List<int> slotTypes = new List<int>();
+            List<int> slotIndexes = new List<int>();
+            List<int> slotSkills = new List<int>();
+            List<int> slotActions = new List<int>();
+            if (keyItemWOWID > 0)
+            {
+                slotTypes.Add(LOCK_TYPE_ITEM);
+                slotIndexes.Add(keyItemWOWID);
+                slotSkills.Add(0);
+                slotActions.Add(LOCK_ACTION_OPEN);
+            }
+            if (altKeyItemWOWID > 0)
+            {
+                slotTypes.Add(LOCK_TYPE_ITEM);
+                slotIndexes.Add(altKeyItemWOWID);
+                slotSkills.Add(0);
+                slotActions.Add(LOCK_ACTION_OPEN);
+            }
+            if (pickLockSkillRequired > 0)
+            {
+                slotTypes.Add(LOCK_TYPE_SKILL);
+                slotIndexes.Add(LOCK_INDEX_PICKLOCK);
+                slotSkills.Add(pickLockSkillRequired);
+                slotActions.Add(LOCK_ACTION_OPEN);
+            }
+            if (slotTypes.Count == 0)
+            {
+                Logger.WriteError("LockDBC was given lock ID '", lockID.ToString(), "' with no key item and no pick lock skill, so it was skipped");
+                return;
+            }
+            if (slotTypes.Count > LOCK_SLOT_COUNT)
+            {
+                Logger.WriteError("LockDBC was given lock ID '", lockID.ToString(), "' with more conditions than the ", LOCK_SLOT_COUNT.ToString(), " available slots");
+                return;
+            }
+            while (slotTypes.Count < LOCK_SLOT_COUNT)
+            {
+                slotTypes.Add(0);
+                slotIndexes.Add(0);
+                slotSkills.Add(0);
+                slotActions.Add(0);
+            }
+
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(lockID); // ID
-            newRow.AddInt32(1); // Type_1 (1 = requires item)
-            newRow.AddInt32(altKeyItemWOWID > 0 ? 1 : 0); // Type_2
-            newRow.AddInt32(0); // Type_3
-            newRow.AddInt32(0); // Type_4
-            newRow.AddInt32(0); // Type_5
-            newRow.AddInt32(0); // Type_6
-            newRow.AddInt32(0); // Type_7
-            newRow.AddInt32(0); // Type_8
-            newRow.AddInt32(keyItemWOWID); // Index_1 (the key item)
-            newRow.AddInt32(altKeyItemWOWID > 0 ? altKeyItemWOWID : 0); // Index_2 (the alternate key item)
-            newRow.AddInt32(0); // Index_3
-            newRow.AddInt32(0); // Index_4
-            newRow.AddInt32(0); // Index_5
-            newRow.AddInt32(0); // Index_6
-            newRow.AddInt32(0); // Index_7
-            newRow.AddInt32(0); // Index_8
-            newRow.AddInt32(0); // Skill_1
-            newRow.AddInt32(0); // Skill_2
-            newRow.AddInt32(0); // Skill_3
-            newRow.AddInt32(0); // Skill_4
-            newRow.AddInt32(0); // Skill_5
-            newRow.AddInt32(0); // Skill_6
-            newRow.AddInt32(0); // Skill_7
-            newRow.AddInt32(0); // Skill_8
-            newRow.AddInt32(1); // Action_1 (1 = open, which the game's key-locked doors all use on their key slots)
-            newRow.AddInt32(altKeyItemWOWID > 0 ? 1 : 0); // Action_2
-            newRow.AddInt32(0); // Action_3
-            newRow.AddInt32(0); // Action_4
-            newRow.AddInt32(0); // Action_5
-            newRow.AddInt32(0); // Action_6
-            newRow.AddInt32(0); // Action_7
-            newRow.AddInt32(0); // Action_8
+            foreach (int slotType in slotTypes)
+                newRow.AddInt32(slotType); // Type_1 through Type_8
+            foreach (int slotIndex in slotIndexes)
+                newRow.AddInt32(slotIndex); // Index_1 through Index_8
+            foreach (int slotSkill in slotSkills)
+                newRow.AddInt32(slotSkill); // Skill_1 through Skill_8
+            foreach (int slotAction in slotActions)
+                newRow.AddInt32(slotAction); // Action_1 through Action_8
             Rows.Add(newRow);
         }
     }
