@@ -287,6 +287,15 @@ namespace EQWOWConverter
         public static bool ZONE_FLYING_ALLOWED = false;
 
         //=====================================================================
+        // Database Viewer
+        //=====================================================================
+        // If true, generate the zone table used by the database viewer
+        public static bool DATABASEVIEWER_ENABLE = true;
+
+        // If true, put the actual drop chances for the database viewer into the chance/mincount/maxcount columns
+        public static bool DATABASEVIEWER_WRITE_EFFECTIVE_DROP_CHANCES = true;
+
+        //=====================================================================
         // Dungeons
         //=====================================================================
         // If true, dungeon finder can be used for special versions of EQ dungeons
@@ -1607,6 +1616,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("ZONE_DEFAULT_GRAVEYARD_ID", ZONE_DEFAULT_GRAVEYARD_ID, "Which ID to use if a graveyard isn't mapped for a zone.  13 is in east commons next to EC tunnel.");
             OutputVariableToConfig("ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID", ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, "ID for the creature template for the spirit healer.");
             OutputVariableToConfig("ZONE_WEATHER_ENABLED", ZONE_WEATHER_ENABLED, "If true, enable weather in zones.");
+            OutputVariableToConfig("DATABASEVIEWER_ENABLE", DATABASEVIEWER_ENABLE, "If true, generate the zone table used by the database viewer");
+            OutputVariableToConfig("DATABASEVIEWER_WRITE_EFFECTIVE_DROP_CHANCES", DATABASEVIEWER_WRITE_EFFECTIVE_DROP_CHANCES, "If true, put the actual drop chances for the database viewer into the chance/mincount/maxcount columns");
             OutputVariableToConfig("WORLDMAP_DEBUG_GENERATION_MODE_ENABLED", WORLDMAP_DEBUG_GENERATION_MODE_ENABLED, "When true, many various proprties are changed to support generation of minimaps, such as 'baking' in animated textures");
             OutputVariableToConfig("WORLDMAP_LEFT_BORDER_PIXEL_SIZE", WORLDMAP_LEFT_BORDER_PIXEL_SIZE, "Borders on any maps that were generated, which is blank space and important to mark since coordinates in map space are calculated at generation", false);
             OutputVariableToConfig("WORLDMAP_RIGHT_BORDER_PIXEL_SIZE", WORLDMAP_RIGHT_BORDER_PIXEL_SIZE, "", false);
@@ -2048,6 +2059,8 @@ namespace EQWOWConverter
             ZONE_DEFAULT_GRAVEYARD_ID = ReadVariableFromConfigString("ZONE_DEFAULT_GRAVEYARD_ID", configValuesByVariableName, ZONE_DEFAULT_GRAVEYARD_ID);
             ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID = ReadVariableFromConfigString("ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID", configValuesByVariableName, ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID);
             ZONE_WEATHER_ENABLED = ReadVariableFromConfigString("ZONE_WEATHER_ENABLED", configValuesByVariableName, ZONE_WEATHER_ENABLED);
+            DATABASEVIEWER_ENABLE = ReadVariableFromConfigString("DATABASEVIEWER_ENABLE", configValuesByVariableName, DATABASEVIEWER_ENABLE);
+            DATABASEVIEWER_WRITE_EFFECTIVE_DROP_CHANCES = ReadVariableFromConfigString("DATABASEVIEWER_WRITE_EFFECTIVE_DROP_CHANCES", configValuesByVariableName, DATABASEVIEWER_WRITE_EFFECTIVE_DROP_CHANCES);
             ZONE_FLYING_ALLOWED = ReadVariableFromConfigString("ZONE_FLYING_ALLOWED", configValuesByVariableName, ZONE_FLYING_ALLOWED);
 
             DUNGEON_FINDER_ENABLED = ReadVariableFromConfigString("DUNGEON_FINDER_ENABLED", configValuesByVariableName, DUNGEON_FINDER_ENABLED);

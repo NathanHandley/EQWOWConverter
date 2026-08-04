@@ -1929,6 +1929,11 @@ namespace EQWOWConverter
 
                 if (lootEntries.Count > 0)
                 {
+                    // Calculate values for the database viewer meta tables
+                    Dictionary<int, EffectiveLootDisplay> effectiveLootDisplayByItemID = new Dictionary<int, EffectiveLootDisplay>();
+                    if (Configuration.DATABASEVIEWER_WRITE_EFFECTIVE_DROP_CHANCES == true)
+                        effectiveLootDisplayByItemID = CalculateEffectiveLootDisplayValues(lootEntries);
+
                     // One creature_loot_template row per distinct item, all in GroupId 0 (so they are independent)
                     List<ItemLootTemplate> itemLootTemplates = new List<ItemLootTemplate>();
                     foreach (var catalogItem in catalogChanceByItemID)
@@ -1941,6 +1946,13 @@ namespace EQWOWConverter
                         newItemLootTemplate.MinCount = 1; // cosmetic; mod overrides via OnBeforeDropAddItem
                         newItemLootTemplate.MaxCount = 1;
                         newItemLootTemplate.Comment = catalogCommentByItemID[catalogItem.Key];
+                        if (effectiveLootDisplayByItemID.ContainsKey(catalogItem.Key) == true)
+                        {
+                            EffectiveLootDisplay effectiveDisplay = effectiveLootDisplayByItemID[catalogItem.Key];
+                            newItemLootTemplate.Chance = effectiveDisplay.ChancePercent;
+                            newItemLootTemplate.MinCount = effectiveDisplay.MinCount;
+                            newItemLootTemplate.MaxCount = effectiveDisplay.MaxCount;
+                        }
                         itemLootTemplates.Add(newItemLootTemplate);
                     }
 
@@ -1951,6 +1963,158 @@ namespace EQWOWConverter
             }
 
             Logger.WriteInfo("Item and loot conversion complete.");
+        }
+
+
+        // Generate data needed for the database viewer site
+        private class EffectiveLootDisplay
+        {
+            public float ChancePercent = 0f;
+            public int MinCount = 1;
+            public int MaxCount = 1;
+        }
+        private Dictionary<int, EffectiveLootDisplay> CalculateEffectiveLootDisplayValues(List<CreatureLootEntry> lootEntries)
+        {
+            // Group the flattened rows back into their loot groups (one group = one EQ lootdrop reference)
+            Dictionary<int, List<CreatureLootEntry>> entriesByGroupID = new Dictionary<int, List<CreatureLootEntry>>();
+            foreach (CreatureLootEntry lootEntry in lootEntries)
+            {
+                if (entriesByGroupID.ContainsKey(lootEntry.LootGroupID) == false)
+                    entriesByGroupID.Add(lootEntry.LootGroupID, new List<CreatureLootEntry>());
+                entriesByGroupID[lootEntry.LootGroupID].Add(lootEntry);
+            }
+
+            Dictionary<int, double> noDropProbabilityByItemID = new Dictionary<int, double>();
+            Dictionary<int, int> maxCountByItemID = new Dictionary<int, int>();
+            Dictionary<int, int> minCountByItemID = new Dictionary<int, int>();
+
+            foreach (var groupPair in entriesByGroupID)
+            {
+                List<CreatureLootEntry> groupEntries = groupPair.Value;
+                if (groupEntries.Count == 0)
+                    continue;
+                CreatureLootEntry groupProperties = groupEntries[0];
+
+                // Groups with probability <= 0 never roll, not even guaranteed iterations
+                if (groupProperties.GroupProbability <= 0f)
+                    continue;
+
+                int groupMultiplier = Math.Max(groupProperties.GroupMultiplier, 1);
+                int guaranteedIterations = Math.Min(Math.Max(groupProperties.GroupMultiplierMin, 0), groupMultiplier);
+                int gatedIterations = groupMultiplier - guaranteedIterations;
+                double groupProbability = Math.Min(groupProperties.GroupProbability / 100.0, 1.0);
+
+                // No-drop probability, max droppable count, and min count-per-success of each item
+                Dictionary<int, double> iterationNoDropProbabilityByItemID = new Dictionary<int, double>();
+                Dictionary<int, int> iterationMaxCountByItemID = new Dictionary<int, int>();
+                Dictionary<int, int> successMinCountByItemID = new Dictionary<int, int>();
+
+                if (groupProperties.DropLimit == 0 && groupProperties.MinDrop == 0)
+                {
+                    // Every entry rolls independently ItemMultiplier times at its raw chance
+                    foreach (CreatureLootEntry lootEntry in groupEntries)
+                    {
+                        double chance = Math.Min(Math.Max(lootEntry.Chance / 100.0, 0.0), 1.0);
+                        int attempts = Math.Max(lootEntry.ItemMultiplier, 1);
+                        int charges = Math.Max(lootEntry.ItemCharges, 1);
+                        if (iterationNoDropProbabilityByItemID.ContainsKey(lootEntry.ItemTemplateEntryID) == false)
+                        {
+                            iterationNoDropProbabilityByItemID.Add(lootEntry.ItemTemplateEntryID, 1.0);
+                            iterationMaxCountByItemID.Add(lootEntry.ItemTemplateEntryID, 0);
+                            successMinCountByItemID.Add(lootEntry.ItemTemplateEntryID, charges);
+                        }
+                        iterationNoDropProbabilityByItemID[lootEntry.ItemTemplateEntryID] *= Math.Pow(1.0 - chance, attempts);
+                        iterationMaxCountByItemID[lootEntry.ItemTemplateEntryID] += attempts * charges;
+                        if (charges < successMinCountByItemID[lootEntry.ItemTemplateEntryID])
+                            successMinCountByItemID[lootEntry.ItemTemplateEntryID] = charges;
+                    }
+                }
+                else
+                {
+                    // Up to DropLimit weighted picks, the first MinDrop of them forced
+                    int dropLimit = groupProperties.DropLimit;
+                    if (groupEntries.Count > 100 && dropLimit == 0)
+                        dropLimit = 10;
+                    if (dropLimit < groupProperties.MinDrop)
+                        dropLimit = groupProperties.MinDrop;
+
+                    double rollTotal = 0;
+                    double noLootProbability = 1;
+                    bool chanceBypass = false;
+                    foreach (CreatureLootEntry lootEntry in groupEntries)
+                    {
+                        rollTotal += lootEntry.Chance;
+                        if (lootEntry.Chance >= 100f)
+                            chanceBypass = true;
+                        else
+                            noLootProbability *= (100.0 - lootEntry.Chance) / 100.0;
+                    }
+                    if (rollTotal <= 0)
+                        continue;
+
+                    int forcedPicks = Math.Min(groupProperties.MinDrop, dropLimit);
+                    int freePicks = dropLimit - forcedPicks;
+                    double pickProbability = chanceBypass == true ? 1.0 : (1.0 - noLootProbability);
+
+                    // Per item selection weight and per-pick counts (an item can appear as multiple entries)
+                    Dictionary<int, double> weightByItemID = new Dictionary<int, double>();
+                    Dictionary<int, int> pickMaxCountByItemID = new Dictionary<int, int>();
+                    foreach (CreatureLootEntry lootEntry in groupEntries)
+                    {
+                        int attempts = Math.Max(lootEntry.ItemMultiplier, 1);
+                        int charges = Math.Max(lootEntry.ItemCharges, 1);
+                        if (weightByItemID.ContainsKey(lootEntry.ItemTemplateEntryID) == false)
+                        {
+                            weightByItemID.Add(lootEntry.ItemTemplateEntryID, 0.0);
+                            pickMaxCountByItemID.Add(lootEntry.ItemTemplateEntryID, 0);
+                            successMinCountByItemID.Add(lootEntry.ItemTemplateEntryID, charges);
+                        }
+                        weightByItemID[lootEntry.ItemTemplateEntryID] += lootEntry.Chance / rollTotal;
+                        if (attempts * charges > pickMaxCountByItemID[lootEntry.ItemTemplateEntryID])
+                            pickMaxCountByItemID[lootEntry.ItemTemplateEntryID] = attempts * charges;
+                        if (charges < successMinCountByItemID[lootEntry.ItemTemplateEntryID])
+                            successMinCountByItemID[lootEntry.ItemTemplateEntryID] = charges;
+                    }
+                    foreach (var weightPair in weightByItemID)
+                    {
+                        double weight = Math.Min(weightPair.Value, 1.0);
+                        double noDropProbability = Math.Pow(1.0 - weight, forcedPicks) * Math.Pow(1.0 - (pickProbability * weight), freePicks);
+                        iterationNoDropProbabilityByItemID.Add(weightPair.Key, noDropProbability);
+                        iterationMaxCountByItemID.Add(weightPair.Key, dropLimit * pickMaxCountByItemID[weightPair.Key]);
+                    }
+                }
+
+                // Pull group's iterations into the per-creature totals
+                foreach (var iterationPair in iterationNoDropProbabilityByItemID)
+                {
+                    double iterationDropProbability = 1.0 - iterationPair.Value;
+                    double groupNoDropProbability = Math.Pow(iterationPair.Value, guaranteedIterations) *
+                        Math.Pow(1.0 - (groupProbability * iterationDropProbability), gatedIterations);
+
+                    if (noDropProbabilityByItemID.ContainsKey(iterationPair.Key) == false)
+                    {
+                        noDropProbabilityByItemID.Add(iterationPair.Key, 1.0);
+                        maxCountByItemID.Add(iterationPair.Key, 0);
+                        minCountByItemID.Add(iterationPair.Key, successMinCountByItemID[iterationPair.Key]);
+                    }
+                    noDropProbabilityByItemID[iterationPair.Key] *= groupNoDropProbability;
+                    maxCountByItemID[iterationPair.Key] += groupMultiplier * iterationMaxCountByItemID[iterationPair.Key];
+                    if (successMinCountByItemID[iterationPair.Key] < minCountByItemID[iterationPair.Key])
+                        minCountByItemID[iterationPair.Key] = successMinCountByItemID[iterationPair.Key];
+                }
+            }
+
+            // Build the display rows
+            Dictionary<int, EffectiveLootDisplay> effectiveLootDisplayByItemID = new Dictionary<int, EffectiveLootDisplay>();
+            foreach (var noDropPair in noDropProbabilityByItemID)
+            {
+                EffectiveLootDisplay effectiveLootDisplay = new EffectiveLootDisplay();
+                effectiveLootDisplay.ChancePercent = (float)((1.0 - noDropPair.Value) * 100.0);
+                effectiveLootDisplay.MinCount = Math.Min(Math.Max(minCountByItemID[noDropPair.Key], 1), 255);
+                effectiveLootDisplay.MaxCount = Math.Min(Math.Max(maxCountByItemID[noDropPair.Key], effectiveLootDisplay.MinCount), 255);
+                effectiveLootDisplayByItemID.Add(noDropPair.Key, effectiveLootDisplay);
+            }
+            return effectiveLootDisplayByItemID;
         }
 
         private void AddCompanionPetLootForCreature(CreatureTemplate creatureTemplate, List<CreatureLootEntry> lootEntries, ref int lootGroupID,
@@ -2431,6 +2595,7 @@ namespace EQWOWConverter
             forageSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(forageSpellIconID);
             forageSpellTemplate.CastTimeInMS = 0;
             forageSpellTemplate.RecoveryTimeInMS = 100000; // 100 seconds
+            forageSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
             forageSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
             forageSpellTemplate.TriggersGlobalCooldown = false;
             forageSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, (int)SpellDummyType.Forage, 0));

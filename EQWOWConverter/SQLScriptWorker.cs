@@ -99,6 +99,7 @@ namespace EQWOWConverter
         private ModEverquestTransportTriggerSQL modEverquestTransportTriggerSQL = new ModEverquestTransportTriggerSQL();
         private ModEverquestZoneSafePointSQL modEverquestZoneSafePointSQL = new ModEverquestZoneSafePointSQL();
         private ModEverquestZoneSQL modEverquestZoneSQL = new ModEverquestZoneSQL();
+        private ModEverquestViewerZoneSQL modEverquestViewerZoneSQL = new ModEverquestViewerZoneSQL();
         private ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
         private ModEverquestQuestReactionSQL modEverquestQuestReactionSQL = new ModEverquestQuestReactionSQL();
         private ModEverquestGossipReactionSQL modEverquestGossipReactionSQL = new ModEverquestGossipReactionSQL();
@@ -2313,6 +2314,11 @@ namespace EQWOWConverter
 
         private void PopulateZoneData(List<Zone> zones, Dictionary<string, ZoneProperties> zonePropertiesByShortName, out Dictionary<string, int> mapIDsByShortName)
         {
+            // For the database view, write one row per continent
+            if (Configuration.DATABASEVIEWER_ENABLE == true)
+                foreach (ZoneContinent zoneContinent in ZoneContinent.GetZoneContinents())
+                    modEverquestViewerZoneSQL.AddRow(zoneContinent.DBCMapID, 0, true, zoneContinent.ShortName, zoneContinent.DescriptiveName, zoneContinent.ExpansionID);
+
             foreach (Zone zone in zones)
             {
                 // Instance list
@@ -2329,6 +2335,17 @@ namespace EQWOWConverter
                 // Zone rules (used by the mod for zone-level behavior like bind restrictions and z agro limits)
                 modEverquestZoneSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.AllowBind, zone.ZoneProperties.ExpansionID,
                     zone.ZoneProperties.MaxAgroZDistance);
+
+                // Database viewer needs zone-to-continent mapping and names
+                if (Configuration.DATABASEVIEWER_ENABLE == true)
+                {
+                    int continentMapID = 0;
+                    foreach (ZoneContinent zoneContinent in ZoneContinent.GetZoneContinents())
+                        if (zoneContinent.ContinentType == zone.ZoneProperties.Continent)
+                            continentMapID = zoneContinent.DBCMapID;
+                    modEverquestViewerZoneSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), continentMapID, false, zone.ShortName,
+                        zone.DescriptiveName, zone.ZoneProperties.ExpansionID);
+                }
 
                 // Weather data
                 if (Configuration.ZONE_WEATHER_ENABLED == true)
@@ -2527,6 +2544,7 @@ namespace EQWOWConverter
             modEverquestTransportTriggerSQL.SaveToDisk("mod_everquest_transport_trigger", SQLFileType.World);
             modEverquestZoneSafePointSQL.SaveToDisk("mod_everquest_zone_safe_point", SQLFileType.World);
             modEverquestZoneSQL.SaveToDisk("mod_everquest_zone", SQLFileType.World);
+            modEverquestViewerZoneSQL.SaveToDisk("mod_everquest_viewer_zone", SQLFileType.World);
             modEverquestQuestReactionSQL.SaveToDisk("mod_everquest_quest_reaction", SQLFileType.World);
             modEverquestGossipReactionSQL.SaveToDisk("mod_everquest_gossip_reaction", SQLFileType.World);
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
