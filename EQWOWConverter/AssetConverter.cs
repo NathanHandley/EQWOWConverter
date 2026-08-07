@@ -302,6 +302,9 @@ namespace EQWOWConverter
                 // Copy the loading screens
                 CreateLoadingScreens();
 
+                // Add any needed character creation screen changes
+                AddCharacterCreateUIFiles();
+
                 // Copy the item tooltip addon into the prep location
                 string sourceItemTooltipsAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_ItemTooltips");
                 string targetItemTooltipsAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_ItemTooltips");
@@ -3973,6 +3976,28 @@ namespace EQWOWConverter
 
 
             Logger.WriteDebug("Deploying files to server complete");
+        }
+
+        public void AddCharacterCreateUIFiles()
+        {
+            // Put the WOW class to EQ class map into the character creation screen's glue lua
+            EQClassCreateLUA.Generate();
+
+            Logger.WriteInfo("Copying character creation EQ class textures");
+            string sourceTextureFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "interface");
+            string targetTextureFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Interface", "Glues", "CharacterCreate");
+            if (Directory.Exists(targetTextureFolder) == false)
+                Directory.CreateDirectory(targetTextureFolder);
+
+            string[] textureFileNames = new string[] { "UI-EQClassCreate-Icon.blp" };
+            foreach (string textureFileName in textureFileNames)
+            {
+                string inputFile = Path.Combine(sourceTextureFolder, textureFileName);
+                if (File.Exists(inputFile) == false)
+                    Logger.WriteError("Could not find texture '" + inputFile + "', it did not exist");
+                else
+                    FileTool.CopyFile(inputFile, Path.Combine(targetTextureFolder, textureFileName));
+            }
         }
 
         public void CreateLoadingScreens()
