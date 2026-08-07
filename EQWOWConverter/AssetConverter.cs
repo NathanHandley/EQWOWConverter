@@ -3989,7 +3989,7 @@ namespace EQWOWConverter
             if (Directory.Exists(targetTextureFolder) == false)
                 Directory.CreateDirectory(targetTextureFolder);
 
-            string[] textureFileNames = new string[] { "UI-EQClassCreate-Icon.blp" };
+            string[] textureFileNames = new string[] { "UI-EQClassCreate-Icon.blp", "UI-EQAlign-Good.blp", "UI-EQAlign-Neutral.blp", "UI-EQAlign-Evil.blp" };
             foreach (string textureFileName in textureFileNames)
             {
                 string inputFile = Path.Combine(sourceTextureFolder, textureFileName);

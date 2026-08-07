@@ -1,0 +1,290 @@
+spell_id|wow_class|spell_name|interaction|effect_index|school_mask|affects_damage|affects_healing|restriction|max_base_cast_time_ms|description_or_reason
+5923|Paladin|Holy Power|describe|0|0|0|0|none|0|This also applies to your EverQuest Holy spells.
+9452|Paladin|Vindication|describe|0|0|0|0|none|0|Also triggers from your EverQuest damaging spells.
+10060|Priest|Power Infusion|describe|0|0|0|0|none|0|Also affects the target's EverQuest spells.
+11069|Mage|Improved Fireball|align|0|4|1|0|direct_damage|0|Also reduces the cast time of your EverQuest direct damage Fire spells by $/1000;S1 sec.
+11070|Mage|Improved Frostbolt|align|0|16|1|0|direct_damage|0|Also reduces the cast time of your EverQuest direct damage Frost spells by $/1000;S1 sec.
+11071|Mage|Frostbite|describe|0|0|0|0|none|0|Also causes your EverQuest direct damage Frost spells to chill the target, reducing movement speed by 30% and attack speed by 25% for 5 sec. This chill can trigger the freeze.
+11083|Mage|Burning Soul|align|0|4|1|0|none|0|Also reduces the pushback suffered from damaging attacks while casting EverQuest Fire damage spells by $s1% and reduces the threat caused by your EverQuest Fire damage spells by $s2%.
+11095|Mage|Improved Scorch|describe|0|0|0|0|none|0|Your EverQuest direct damage Fire spells can also apply the spell vulnerability.
+11100|Mage|Flame Throwing|align|0|4|1|0|none|0|Also increases the range of your EverQuest Fire damage spells by $s1 yards.
+11103|Mage|Impact|describe|0|0|0|0|none|0|Also triggers from your EverQuest damaging spells.
+11108|Mage|World in Flames|align|0|4|1|0|direct_damage|0|Also increases the critical strike chance of your EverQuest direct damage Fire spells and all your EverQuest area damage spells by $s1%.
+11108|Mage|World in Flames|align|0|126|1|0|area_damage|0|
+11115|Mage|Critical Mass|describe|0|0|0|0|none|0|This also applies to your EverQuest Fire damage spells.
+11119|Mage|Ignite|describe|0|0|0|0|none|0|Also triggers from your EverQuest Fire damage spell critical strikes.
+11124|Mage|Fire Power|align|0|4|1|0|none|0|Also increases the damage of your EverQuest Fire damage spells by $s1%.
+11124|Mage|Fire Power|align|1|4|1|0|none|0|
+11129|Mage|Combustion|align|0|4|1|0|none|0|Also increases your critical strike damage bonus with EverQuest Fire damage spells by $s1% while active, and each stack also increases your EverQuest Fire spell critical strike chance by 10%.
+11151|Mage|Piercing Ice|describe|0|0|0|0|none|0|This also applies to your EverQuest Frost damage spells.
+11160|Mage|Frost Channeling|describe|0|0|0|0|none|0|The mana cost reduction also applies to all of your EverQuest spells, and the threat reduction to your EverQuest Frost damage spells.
+11170|Mage|Shatter|describe|0|0|0|0|none|0|The critical strike bonus also applies to your EverQuest spells against frozen targets.
+11175|Mage|Permafrost|exclude|0|0|0|0|none|0|Only the chill effect (Chilled) benefits, which its duration mask already covers natively; EverQuest spell durations are not extended.
+11180|Mage|Winter's Chill|describe|0|0|0|0|none|0|Also triggers from your EverQuest Frost damage spells.
+11207|Mage|Ice Shards|align|0|16|1|0|none|0|Also increases the critical strike damage bonus of your EverQuest Frost damage spells by $s1%.
+11210|Mage|Arcane Subtlety|describe|0|0|0|0|none|0|The threat reduction also applies to your EverQuest Arcane damage spells.
+11213|Mage|Arcane Concentration|describe|0|0|0|0|none|0|Also has a chance to trigger from your EverQuest damaging spells, and its Clearcasting effect also makes your next EverQuest damage spell free.
+11222|Mage|Arcane Focus|align|0|64|1|0|none|0|Also increases the chance to hit and reduces the mana cost of your EverQuest Arcane damage spells by $s1%.
+11237|Mage|Arcane Stability|align|0|64|1|0|none|0|Also reduces the pushback suffered from damaging attacks while casting EverQuest Arcane damage spells by $s1%.
+11242|Mage|Spell Impact|align|0|126|1|0|area_damage|0|Also increases the damage of your EverQuest area damage spells by $s1%.
+11247|Mage|Magic Attunement|align|1|64|1|0|none|0|Also increases the range of your EverQuest Arcane damage spells by $s2 yards.
+11958|Mage|Cold Snap|describe|0|0|0|0|none|0|Also finishes the cooldown on your EverQuest Frost spells.
+12042|Mage|Arcane Power|align|0|126|1|0|none|0|Also increases the damage of your EverQuest spells by $s1% and their mana cost by $s2% while active.
+12042|Mage|Arcane Power|align|1|126|1|1|none|0|
+12042|Mage|Arcane Power|align|2|126|1|0|none|0|
+12043|Mage|Presence of Mind|align|0|126|1|1|none|10000|Also applies to your next EverQuest spell with a cast time below 10 sec.
+12287|Warrior|Improved Thunder Clap|exclude|0|0|0|0|none|0|Physical melee ability modifier that should not reach EverQuest spells.
+12313|Warrior|Improved Disarm|exclude|0|0|0|0|none|0|Physical melee ability modifier that should not reach EverQuest spells.
+12321|Warrior|Booming Voice|exclude|0|0|0|0|none|0|Physical shout modifier that should not reach EverQuest spells.
+12472|Mage|Icy Veins|describe|0|0|0|0|none|0|The spell haste also applies to your EverQuest spells.
+12536|Mage|Clearcasting|align|0|126|1|0|none|0|Your next EverQuest damage spell is also free.
+12797|Warrior|Improved Revenge|exclude|0|0|0|0|none|0|Physical melee ability modifier that should not reach EverQuest spells.
+12834|Warrior|Deep Wounds|describe|0|0|0|0|none|0|Also triggers from your spell EverQuest critical strikes.
+13705|Rogue|Precision|describe|0|0|0|0|none|0|The spell hit chance also applies to your EverQuest spells.
+14082|Rogue|Dirty Deeds|exclude|0|0|0|0|none|0|Reduces the Energy cost of your Cheap Shot and Garrote abilities by $s1. Additionally, your special abilities cause 10% more damage against targets below 35% health.
+14128|Rogue|Lethality|exclude|0|0|0|0|none|0|Increases the critical strike damage bonus of all combo point-generating abilities that do not require stealth by $s1%.
+14158|Rogue|Murder|describe|0|0|0|0|none|0|The damage increase also applies to your EverQuest spells.
+14177|Rogue|Cold Blood|exclude|0|0|0|0|none|0|Physical melee ability modifier that should not reach EverQuest spells.
+14520|Priest|Mental Agility|align|0|126|1|1|none|1|Also reduces the mana cost of your instant cast EverQuest spells by $s1%.
+14523|Priest|Silent Resolve|describe|0|0|0|0|none|0|The threat reduction also applies to your EverQuest Holy and Arcane spells.
+14531|Priest|Martyrdom|describe|0|0|0|0|none|0|The pushback protection also applies to your EverQuest healing and Shadow damage spells.
+14743|Priest|Focused Casting|align|0|32|1|1|none|0|The pushback protection also applies to your EverQuest healing and Shadow damage spells.
+14751|Priest|Inner Focus|align|0|126|1|1|none|0|Also applies to your next EverQuest spell.
+14751|Priest|Inner Focus|align|1|126|1|1|none|0|
+14889|Priest|Holy Specialization|describe|0|0|0|0|none|0|This also applies to your EverQuest Holy spells.
+14892|Priest|Inspiration|describe|0|0|0|0|none|0|Also triggers from critical heals with your EverQuest direct healing spells.
+14898|Priest|Spiritual Healing|align|0|0|0|1|none|0|Also increases the amount healed by your EverQuest healing spells by $s1%.
+14898|Priest|Spiritual Healing|align|1|0|0|1|none|0|
+14908|Priest|Improved Renew|align|0|0|0|1|periodic_heal|0|Also increases the healing of your EverQuest heal over time spells by $s1%.
+14909|Priest|Searing Light|align|0|2|1|0|none|0|Also increases the damage of your EverQuest Holy damage spells by $s1%.
+14909|Priest|Searing Light|align|1|2|1|0|none|0|
+14910|Priest|Mind Melt|align|0|104|1|0|direct_damage|0|Also increases the critical strike chance of your EverQuest direct damage Shadow, Arcane and Nature spells by $s1%, and lets your EverQuest Shadow damage over time spells critically tick with an additional $s2% chance.
+14911|Priest|Healing Prayers|align|0|0|0|1|area_heal|0|Also reduces the mana cost of your EverQuest group healing spells by $s1%.
+14912|Priest|Improved Healing|align|0|0|0|1|none|0|Also reduces the mana cost of your EverQuest healing spells by $s1%.
+14913|Priest|Healing Focus|align|0|0|0|1|none|0|Also reduces the pushback suffered from damaging attacks while casting EverQuest healing spells by $s1%.
+15058|Mage|Arcane Instability|describe|0|0|0|0|none|0|The damage and critical strike chance also apply to your EverQuest spells.
+15257|Priest|Shadow Weaving|describe|0|0|0|0|none|0|Also has a chance to trigger from your EverQuest Shadow damage spells.
+15259|Priest|Darkness|align|0|32|1|0|none|0|Also increases the damage of your EverQuest Shadow damage spells by $s1%.
+15259|Priest|Darkness|align|1|32|1|0|none|0|
+15260|Priest|Shadow Focus|align|0|32|1|0|none|0|Also increases the chance your EverQuest Shadow damage spells will hit by $s1% and reduces their mana cost by $s2%.
+15260|Priest|Shadow Focus|align|1|32|1|0|none|0|
+15275|Priest|Improved Shadow Word: Pain|align|0|32|1|0|periodic_damage|0|Also increases the periodic damage of your EverQuest Shadow damage over time spells by $s1%.
+15318|Priest|Shadow Affinity|align|0|32|1|0|none|0|Also reduces the threat generated by your EverQuest Shadow damage spells by $s1%.
+15337|Priest|Improved Spirit Tap|describe|0|0|0|0|none|0|Also triggers from your EverQuest single target direct damage spell critical strikes.
+15473|Priest|Shadowform|describe|0|0|0|0|none|0|The Shadow damage increase also applies to your EverQuest Shadow damage spells.
+16035|Shaman|Concussion|align|0|28|1|0|none|0|Also increases the damage of your EverQuest Fire, Frost and Nature damage spells by $s1%.
+16035|Shaman|Concussion|align|1|28|1|0|none|0|
+16039|Shaman|Convection|align|0|28|1|0|none|0|Also reduces the mana cost of your EverQuest Fire, Frost and Nature damage spells by $s1%.
+16041|Shaman|Call of Thunder|align|0|8|1|0|none|0|Also increases the critical strike chance of your EverQuest Nature damage spells by $s1%.
+16089|Shaman|Elemental Fury|align|0|28|1|0|none|0|Also increases the critical strike damage bonus of your EverQuest Fire, Frost and Nature damage spells by $s1%.
+16164|Shaman|Elemental Focus|describe|0|0|0|0|none|0|Also triggers from your EverQuest Fire, Frost and Nature damage spell critical strikes, and its Clearcasting effect also reduces the cost of your next 2 EverQuest damage spells.
+16166|Shaman|Elemental Mastery|align|0|28|1|0|none|0|Also applies to your next EverQuest Fire, Frost or Nature damage spell.
+16178|Shaman|Purification|describe|0|0|0|0|none|0|This also applies to your EverQuest healing spells.
+16179|Shaman|Tidal Focus|align|0|0|0|1|none|0|Also reduces the mana cost of your EverQuest healing spells by $s1%.
+16181|Shaman|Healing Focus|align|0|0|0|1|none|0|Also reduces the pushback suffered from damaging attacks while casting EverQuest healing spells by $s1%.
+16188|Shaman|Nature's Swiftness|align|0|8|1|1|none|0|Also applies to your next EverQuest Nature damage or healing spell.
+16194|Shaman|Tidal Mastery|align|0|8|1|1|none|0|Also increases the critical strike chance of your EverQuest Nature damage spells and EverQuest healing spells by $s1%.
+16246|Shaman|Clearcasting|align|0|126|1|0|none|0|Also reduces the mana cost of your next 2 EverQuest damage spells by $s1%.
+16255|Shaman|Thundering Strikes|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells.
+16493|Warrior|Impale|exclude|0|0|0|0|none|0|Increases the critical strike damage bonus of your abilities by $s1%.
+16513|Rogue|Vile Poisons|exclude|0|0|0|0|none|0|Physical poison modifier that should not reach EverQuest spells.
+16578|Shaman|Lightning Mastery|align|0|8|1|0|none|0|Also reduces the cast time of your EverQuest Nature damage spells by $/1000;S1 sec.
+16757|Mage|Arctic Reach|align|0|16|1|0|none|0|Also increases the range and radius of your EverQuest Frost damage spells by $s1%.
+16757|Mage|Arctic Reach|align|1|16|1|0|none|0|
+16814|Druid|Starlight Wrath|align|0|72|1|0|direct_damage|0|Also reduces the cast time of your EverQuest direct damage Nature and Arcane spells by $/1000;S1 sec.
+16819|Druid|Nature's Reach|align|0|72|1|0|none|0|Also increases the range of your EverQuest Nature and Arcane damage spells by $s1%, and reduces the threat they generate by $s2%.
+16819|Druid|Nature's Reach|align|1|72|1|0|none|0|
+16845|Druid|Moonglow|align|0|72|1|1|none|0|Also reduces the mana cost of your EverQuest Nature and Arcane damage spells and your EverQuest healing spells by $s1%.
+16850|Druid|Celestial Focus|describe|0|0|0|0|none|0|The spell haste also applies to your EverQuest spells.
+16858|Druid|Feral Aggression|exclude|0|0|0|0|none|0|Increases the attack power reduction of your Demoralizing Roar by $s1% and the damage caused by your Ferocious Bite by $s2%.
+16864|Druid|Omen of Clarity|describe|0|0|0|0|none|0|Also triggers from your EverQuest spells and abilities, and its Clearcasting effect also makes your next EverQuest spell free.
+16870|Druid|Clearcasting|align|0|126|1|1|none|0|Your next EverQuest spell is also free.
+16880|Druid|Nature's Grace|describe|0|0|0|0|none|0|Also triggers from your EverQuest spell critical strikes, and the spell haste applies to your EverQuest spells.
+16896|Druid|Moonfury|align|0|72|1|0|none|0|Also increases the damage of your EverQuest Nature and Arcane damage spells by $s1%.
+16896|Druid|Moonfury|align|1|72|1|0|none|0|
+16909|Druid|Vengeance|align|0|72|1|0|direct_damage|0|Also increases the critical strike damage bonus of your EverQuest direct damage Nature and Arcane spells by $s1%.
+16934|Druid|Ferocity|exclude|0|0|0|0|none|0|Reduces the cost of your Maul, Swipe, Claw, Rake and Mangle abilities by $/10;s1 Rage or Energy.
+16947|Druid|Feral Instinct|exclude|0|0|0|0|none|0|Increases the damage done by your Swipe ability by $s2% and reduces the chance enemies have to detect you while Prowling.
+16998|Druid|Savage Fury|exclude|0|0|0|0|none|0|Increases the damage caused by your Claw, Rake, Mangle (Cat), Mangle (Bear), and Maul abilities by $s1%.
+17063|Druid|Nature's Focus|align|0|8|1|1|none|0|Also reduces the pushback suffered from damaging attacks while casting EverQuest Nature damage and healing spells by $s1%.
+17074|Druid|Nature's Bounty|exclude|0|0|0|0|none|0|Increases the critical effect chance of your Regrowth and Nourish spells by $s1%.
+17104|Druid|Gift of Nature|align|0|0|0|1|none|0|Also increases the amount healed by your EverQuest healing spells by $s1%.
+17104|Druid|Gift of Nature|align|1|0|0|1|none|0|
+17116|Druid|Nature's Swiftness|align|0|8|1|1|none|0|Also applies to your next EverQuest Nature damage or healing spell.
+17118|Druid|Subtlety|align|0|0|0|1|none|0|Also reduces the threat generated by your EverQuest healing spells by $s1%.
+17322|Priest|Shadow Reach|align|0|32|1|0|none|0|Also increases the range of your EverQuest Shadow damage spells by $s1%.
+17778|Warlock|Cataclysm|align|0|108|1|0|direct_damage|0|Also reduces the mana cost of your EverQuest direct damage Fire, Shadow, Arcane and Nature spells by $s1%.
+17783|Warlock|Fel Concentration|align|0|32|1|0|none|0|Also reduces the pushback suffered from damaging attacks while casting EverQuest Shadow damage spells by $s1%.
+17788|Warlock|Bane|align|0|108|1|0|direct_damage|0|Also reduces the cast time of your EverQuest direct damage Fire, Shadow, Arcane and Nature spells by $/1000;S1 sec.
+17804|Warlock|Soul Siphon|describe|0|0|0|0|none|0|Also increases the amount drained by your EverQuest lifetap spells by $s1% for each of your EverQuest Shadow damage over time effects on the target, up to a maximum of $s2%.
+17810|Warlock|Improved Corruption|align|0|32|1|0|none|0|Also increases the periodic damage of your EverQuest Shadow damage spells by $s1%.
+17917|Warlock|Destructive Reach|align|0|108|1|0|direct_damage|0|Also increases the range of your EverQuest direct damage Fire, Shadow, Arcane and Nature spells by $s1% and reduces the threat they generate by $s2%.
+17917|Warlock|Destructive Reach|align|1|108|1|0|direct_damage|0|
+17941|Warlock|Shadow Trance|align|0|104|1|0|direct_damage|0|Your next EverQuest direct damage Shadow, Arcane or Nature spell is also instant.
+17954|Warlock|Emberstorm|align|0|4|1|0|none|0|Also increases the damage of your EverQuest Fire damage spells by $s1%.
+17954|Warlock|Emberstorm|align|1|4|1|0|none|0|
+17959|Warlock|Ruin|align|0|108|1|0|direct_damage|0|Also increases the critical strike damage bonus of your EverQuest direct damage Fire, Shadow, Arcane and Nature spells by $s1%.
+18094|Warlock|Nightfall|describe|0|0|0|0|none|0|Also has a chance to trigger from your EverQuest Shadow damage spells.
+18119|Warlock|Aftermath|align|1|4|1|0|periodic_damage|0|Also increases the periodic damage of your EverQuest Fire damage over time spells by $s2%.
+18130|Warlock|Devastation|align|0|108|1|0|direct_damage|0|Also increases the critical strike chance of your EverQuest direct damage Fire, Shadow, Arcane and Nature spells by $s1%.
+18135|Warlock|Intensity|align|0|36|1|0|none|0|Also reduces the pushback suffered from damaging attacks while casting EverQuest Fire and Shadow damage spells by $s1%.
+18174|Warlock|Suppression|align|1|32|1|0|none|0|The spell hit chance also applies to your EverQuest Fire and Shadow spells, and the mana cost reduction to your EverQuest Shadow damage spells.
+18179|Warlock|Improved Curse of Weakness|align|0|0|0|0|strength_debuff|0|Also increases the amount of strength reduced by your EverQuest strength reduction debuffs by $s1%.
+18213|Warlock|Improved Drain Soul|exclude|0|0|0|0|none|0|Returns $s3% of your maximum mana if the target is killed by you while you drain its soul. In addition, your Affliction spells generate $s2% less threat.
+18218|Warlock|Grim Reach|align|0|32|1|0|none|0|Also increases the range of your EverQuest Shadow damage spells by $s1%.
+18271|Warlock|Shadow Mastery|align|0|32|1|0|none|0|Also increases the damage dealt or life drained by your EverQuest Shadow damage spells by $s1%.
+18288|Warlock|Amplify Curse|exclude|0|0|0|0|none|0|Reduces the global cooldown of your Curses by ${$m2/-1000}.1 sec.
+18427|Rogue|Aggression|exclude|0|0|0|0|none|0|Increases the damage of your Sinister Strike, Backstab, and Eviscerate abilities by $s1%.
+18459|Mage|Incineration|align|0|126|1|0|pbaoe_damage|0|Also increases the critical strike chance of your EverQuest point blank area damage spells by $s1%.
+18530|Priest|Divine Fury|align|0|2|1|1|none|0|Also reduces the casting time of your EverQuest Holy damage and healing spells by $/1000;S1 sec.
+18708|Warlock|Fel Domination|align|0|0|0|0|pet_summon|0|Also applies to your next EverQuest pet summoning spell.
+18708|Warlock|Fel Domination|align|1|0|0|0|pet_summon|0|
+18769|Warlock|Unholy Power|describe|0|0|0|0|none|0|Also increases the damage done by your EverQuest pet by $s1%.
+19028|Warlock|Soul Link|describe|0|0|0|0|none|0|This also works with your EverQuest pet.
+19159|Hunter|Savage Strikes|exclude|0|0|0|0|none|0|Increases the critical strike chance of Raptor Strike, Mongoose Bite and Counterattack by $s1%.
+19464|Hunter|Improved Stings|exclude|0|0|0|0|none|0|Increases the damage done by your Serpent Sting and Wyvern Sting by $s1% and the mana drained by your Viper Sting by $s2%. In addition, reduces the chance your Sting damage over time effects will be dispelled by $s3%.
+19485|Hunter|Mortal Shots|exclude|0|0|0|0|none|0|Mask matches Mend Pet, so it would give ranged critical damage bonus to EverQuest healing spells.
+19507|Hunter|Ranged Weapon Specialization|describe|0|0|0|0|none|0|The damage increase also applies to your EverQuest spells.
+20049|Paladin|Vengeance|describe|0|0|0|0|none|0|Also triggers from your EverQuest critical strikes, and the damage increase applies to your EverQuest Holy damage spells.
+20101|Paladin|Benediction|align|0|126|1|1|none|1|Also reduces the mana cost of your instant cast EverQuest spells by $s1%.
+20117|Paladin|Conviction|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells.
+20196|Paladin|One-Handed Weapon Specialization|describe|0|0|0|0|none|0|The damage increase also applies to your EverQuest spells.
+20205|Paladin|Spiritual Focus|align|0|0|0|1|none|0|Also reduces the pushback suffered from damaging attacks while casting EverQuest healing spells by $s1%.
+20216|Paladin|Divine Favor|align|0|0|0|1|none|0|When activated, your next EverQuest healing spell also gains a $s1% critical effect chance.
+20224|Paladin|Seals of the Pure|exclude|0|0|0|0|none|0|Increases the damage done by your Seal of Righteousness, Seal of Vengeance and Seal of Corruption and their Judgement effects by $s1%.
+20237|Paladin|Healing Light|align|0|0|0|1|none|0|Also increases the amount healed by your EverQuest healing spells by $s1%.
+20359|Paladin|Sanctified Light|align|0|0|0|1|none|0|Also increases the critical strike chance of your EverQuest healing spells by $s1%.
+24968|Druid|Tranquil Spirit|exclude|0|0|0|0|none|0|Reduces the mana cost of your Healing Touch, Nourish and Tranquility spells by $s1%.
+25956|Paladin|Improved Judgements|exclude|0|0|0|0|none|0|Decreases the cooldown of your Judgement spells by $/1000;s1 sec.
+27789|Priest|Holy Reach|align|0|2|1|0|none|0|Also increases the range of your EverQuest Holy damage spells and the radius of your EverQuest healing spells by $s1%.
+27789|Priest|Holy Reach|align|1|0|0|1|none|0|
+27828|Priest|Focused Casting|align|0|32|1|1|none|0|The pushback protection also applies to your EverQuest healing and Shadow damage spells.
+27839|Priest|Improved Vampiric Embrace|describe|0|0|0|0|none|0|Also increases the health returned by your EverQuest lifetap spells by $s1%.
+28682|Mage|Combustion|align|0|4|1|0|none|0|Also increases the critical strike chance of your EverQuest Fire damage spells by $s1% per stack.
+28999|Shaman|Elemental Reach|align|0|28|1|0|direct_damage|0|Also increases the range of your EverQuest direct damage Fire, Frost and Nature spells by $s1 yards and the radius of your EverQuest Fire, Frost and Nature area damage spells by $s2%.
+28999|Shaman|Elemental Reach|align|1|28|1|0|area_damage|0|
+29062|Shaman|Eye of the Storm|align|0|8|1|0|none|0|Also reduces the pushback suffered from damaging attacks while casting EverQuest Nature damage spells by $s1%.
+29074|Mage|Master of Elements|describe|0|0|0|0|none|0|Also triggers from your EverQuest Fire and Frost damage spell critical strikes.
+29187|Shaman|Healing Grace|align|0|0|0|1|none|0|Also reduces the threat generated by your EverQuest healing spells by $s1%.
+29438|Mage|Precision|describe|0|0|0|0|none|0|The hit chance and mana cost reduction also apply to your EverQuest spells.
+29447|Mage|Torment the Weak|describe|0|0|0|0|none|0|Also increases the damage of your EverQuest direct damage spells against snared or slowed targets by $s1%.
+29787|Warrior|Focused Rage|exclude|0|0|0|0|none|0|Reduces the rage cost of your offensive abilities by $/10;s1.
+30060|Warlock|Contagion|align|0|32|1|0|none|0|Also increases the damage of your EverQuest Shadow damage spells by $s1%.
+30060|Warlock|Contagion|align|1|32|1|0|none|0|
+30160|Shaman|Elemental Devastation|describe|0|0|0|0|none|0|Also triggers from your EverQuest spell critical strikes.
+30242|Warlock|Demonic Tactics|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells.
+30288|Warlock|Shadow and Flame|exclude|0|0|0|0|none|0|Spell power coefficient talents are not generalized to EverQuest spells.
+30672|Shaman|Elemental Precision|describe|0|0|0|0|none|0|This also applies to your EverQuest Fire, Frost and Nature spells.
+30812|Shaman|Mental Quickness|align|0|126|1|1|none|1|Also reduces the mana cost of your instant cast EverQuest spells by $s1%.
+31234|Rogue|Find Weakness|exclude|0|0|0|0|none|0|Offensive ability damage increased by $s1%.
+31571|Mage|Arcane Potency|describe|0|0|0|0|none|0|Also increases the critical strike chance of your next EverQuest spell by $s1% after gaining Clearcasting or Presence of Mind.
+31579|Mage|Arcane Empowerment|describe|0|0|0|0|none|0|The spell damage increase also applies to your EverQuest spells.
+31638|Mage|Playing with Fire|describe|0|0|0|0|none|0|This also applies to your EverQuest spells.
+31656|Mage|Empowered Fire|align|0|4|1|0|direct_damage|0|Also increases the damage of your EverQuest direct damage Fire spells by an additional $s1% of your spell power.
+31670|Mage|Ice Floes|exclude|0|0|0|0|none|0|Reduces the cooldown of your Frost Nova, Cone of Cold, Ice Block and Icy Veins spells by $s1%.
+31674|Mage|Arctic Winds|describe|0|0|0|0|none|0|The Frost damage increase also applies to your EverQuest Frost damage spells.
+31679|Mage|Molten Fury|describe|0|0|0|0|none|0|The damage increase also applies to your EverQuest spells.
+31682|Mage|Empowered Frostbolt|align|0|16|1|0|direct_damage|0|Also increases the damage of your EverQuest direct damage Frost spells by an additional $s1% of your spell power and reduces their cast time by $/1000;S2 sec.
+31682|Mage|Empowered Frostbolt|align|1|16|1|0|direct_damage|0|
+31825|Paladin|Purifying Power|exclude|0|0|0|0|none|0|Reduces the mana cost of your Cleanse, Purify and Consecration spells by $s1% and reduces the cooldown of your Exorcism and Holy Wrath spells by $s2%.
+31842|Paladin|Divine Illumination|describe|0|0|0|0|none|0|The mana cost reduction also applies to your EverQuest spells.
+31844|Paladin|Stoicism|exclude|0|0|0|0|none|0|Dispel resistance effect that does not map to EverQuest spells.
+31848|Paladin|Sacred Duty|exclude|0|0|0|0|none|0|Divine Shield cooldown reduction that would reach EverQuest Holy spell cooldowns.
+31866|Paladin|Crusade|describe|0|0|0|0|none|0|The damage increase also applies to your EverQuest spells.
+31869|Paladin|Sanctified Retribution|exclude|0|0|0|0|none|0|Judgement effect value modifier that does not map to EverQuest spells.
+31879|Paladin|Fanaticism|describe|0|0|0|0|none|0|The threat reduction also applies to your EverQuest spells.
+31879|Paladin|Fanaticism|exclude|0|0|0|0|none|0|Increases the critical strike chance of all Judgements capable of a critical hit by $s1% and reduces threat caused by all actions by $s2% except when under the effects of Righteous Fury.
+32043|Paladin|Sanctity of Battle|describe|0|0|0|0|none|0|The critical strike chance also applies to your EverQuest spells.
+32381|Warlock|Empowered Corruption|exclude|0|0|0|0|none|0|Increases the damage of your Corruption spell by an amount equal to $*6;s1% of your spell power.
+32385|Warlock|Shadow Embrace|describe|0|0|0|0|none|0|Also triggered by your EverQuest lifetap spells.
+32477|Warlock|Malediction|describe|0|0|0|0|none|0|The spell damage increase also applies to your EverQuest spells, and the periodic critical strike chance to your EverQuest Shadow damage over time spells.
+32601|Rogue|Surprise Attacks|exclude|0|0|0|0|none|0|Your finishing moves can no longer be dodged, and the damage dealt by your Sinister Strike, Backstab, Shiv, Hemorrhage and Gouge abilities is increased by $s2%.
+33142|Priest|Blessed Resilience|describe|0|0|0|0|none|0|The healing increase also applies to your EverQuest healing spells.
+33150|Priest|Surge of Light|describe|0|0|0|0|none|0|Also triggers from your EverQuest spell critical strikes.
+33158|Priest|Empowered Healing|align|0|0|0|1|single_target_heal|0|Your EverQuest single target healing spells also gain an additional $s1% of your bonus healing.
+33167|Priest|Absolution|align|0|0|0|1|cure|0|Also reduces the mana cost of your EverQuest cure and dispel spells by $s1%.
+33186|Priest|Focused Power|describe|0|0|0|0|none|0|The damage and healing increases also apply to your EverQuest spells.
+33213|Priest|Focused Mind|align|0|32|1|0|none|0|Also reduces the mana cost of your EverQuest Shadow damage spells by $s1%.
+33221|Priest|Shadow Power|align|1|32|1|0|none|0|Also increases the critical strike damage bonus of your EverQuest Shadow damage spells by $s2%.
+33881|Druid|Natural Perfection|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells.
+33886|Druid|Empowered Rejuvenation|align|0|0|0|1|periodic_heal|0|Also increases the bonus healing effects of your EverQuest heal over time spells by $s1%.
+34293|Mage|Pyromaniac|describe|0|0|0|0|none|0|The critical strike chance also applies to your EverQuest spells.
+34485|Hunter|Master Marksman|exclude|0|0|0|0|none|0|Increases your critical strike chance by $s1%, and reduces the Mana cost of your Steady Shot, Aimed Shot, and Chimera Shot by $s2%.
+34491|Hunter|Resourcefulness|exclude|0|0|0|0|none|0|Trap and sting modifier that should not reach EverQuest spells.
+34494|Hunter|Survival Instincts|exclude|0|0|0|0|none|0|Physical shot modifier that should not reach EverQuest spells.
+34692|Hunter|The Beast Within|describe|0|0|0|0|none|0|The damage increase also applies to your EverQuest spells.
+34753|Priest|Holy Concentration|describe|0|0|0|0|none|0|Also triggers from critical heals with your EverQuest single target healing spells.
+34908|Priest|Enlightenment|describe|0|0|0|0|none|0|The spell haste also applies to your EverQuest spells.
+34935|Warlock|Backlash|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells, and the instant cast effect to your next EverQuest direct damage Shadow, Arcane or Nature spell.
+34936|Warlock|Backlash|align|0|104|1|0|direct_damage|0|Your next EverQuest direct damage Shadow, Arcane or Nature spell is also instant.
+35363|Druid|Nature's Majesty|align|0|72|1|1|none|0|Also increases the critical strike chance of your EverQuest Nature and Arcane damage spells and your EverQuest healing spells by $s1%.
+35578|Mage|Spell Power|align|0|126|1|0|none|0|Also increases the critical strike damage bonus of your EverQuest spells by $s1%.
+44400|Mage|Netherwind Presence|describe|0|0|0|0|none|0|The spell haste also applies to your EverQuest spells.
+44445|Mage|Hot Streak|describe|0|0|0|0|none|0|Critical strikes from your EverQuest direct damage Fire spells also count toward triggering this.
+44449|Mage|Burnout|align|0|126|1|0|none|0|Also increases the critical strike damage bonus of your EverQuest spells by $s1%, and your EverQuest spell criticals cost an additional $s2% of the spell's cost.
+44543|Mage|Fingers of Frost|describe|0|0|0|0|none|0|The frozen treatment also applies to your EverQuest spells.
+44546|Mage|Brain Freeze|describe|0|0|0|0|none|0|Your chill-applying EverQuest direct damage Frost spells can also trigger this, and the effect also makes your next EverQuest direct damage Fire spell instant and free.
+44557|Mage|Enduring Winter|describe|0|0|0|0|none|0|Your EverQuest direct damage Frost spells can also trigger Replenishment.
+44566|Mage|Chilled to the Bone|align|0|16|1|0|none|0|Also increases the damage caused by your EverQuest Frost damage spells by $s1%.
+45234|Priest|Focused Will|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells.
+46859|Warrior|Unrelenting Assault|exclude|0|0|0|0|none|0|Reduces the cooldown of your Overpower and Revenge abilities by $/1000;s1 secs and increases the damage done by both abilities by $s2%. In addition, if you strike a player with Overpower while they are casting, their magical damage and healing will be reduced by $64849s1% for $64849d.
+47195|Warlock|Eradication|describe|0|0|0|0|none|0|Also has a chance to trigger when your EverQuest Shadow damage over time spells deal damage.
+47198|Warlock|Death's Embrace|describe|0|0|0|0|none|0|The Shadow damage increase also applies to your EverQuest Shadow damage spells when the target is below 35% health.
+47201|Warlock|Everlasting Affliction|exclude|0|0|0|0|none|0|Your Corruption and Unstable Affliction spells gain an additional $s2% of your bonus spell damage, and your Drain Life, Drain Soul, Shadow Bolt, and Haunt spells have a $h% chance to reset the duration of your Corruption spell on the target.
+47230|Warlock|Fel Synergy|describe|0|0|0|0|none|0|Also triggers from damage done by your EverQuest spells.
+47236|Warlock|Demonic Pact|describe|0|0|0|0|none|0|The spell damage increase also applies to your EverQuest Fire and Shadow damage spells.
+47236|Warlock|Demonic Pact|exclude|0|0|0|0|none|0|Internal proc effect that does not map to EverQuest spells.
+47509|Priest|Divine Aegis|describe|0|0|0|0|none|0|Also triggers from critical heals with EverQuest healing spells.
+47516|Priest|Grace|describe|0|0|0|0|none|0|Your EverQuest single target direct healing spells can also trigger this.
+47562|Priest|Divine Providence|align|0|0|0|1|none|0|Also increases the amount healed by your EverQuest healing spells by $s1% and reduces the cooldown of your EverQuest healing spells by $s3%.
+47562|Priest|Divine Providence|align|2|0|0|1|none|0|
+47586|Priest|Twin Disciplines|align|0|0|0|1|none|0|Also increases the healing done by your EverQuest healing spells by $s1%.
+48409|Druid|Primal Precision|exclude|0|0|0|0|none|0|Increases your expertise by $s1, and you are refunded $s2% of the energy cost of a finishing move if it fails to land.
+48488|Druid|Gale Winds|align|0|8|1|0|area_damage|0|Also increases the damage of your EverQuest Nature area damage spells by $s1%.
+48506|Druid|Earth and Moon|describe|0|0|0|0|none|0|The spell damage increase also applies to your EverQuest spells.
+48532|Druid|Improved Mangle|exclude|0|0|0|0|none|0|Feral ability modifier whose mask also matches Regrowth.
+48962|DeathKnight|Virulence|describe|0|0|0|0|none|0|The spell hit chance also applies to your EverQuest spells.
+48987|DeathKnight|Dark Conviction|describe|0|0|0|0|none|0|The critical strike chance also applies to your EverQuest spells.
+48988|DeathKnight|Bloody Vengeance|describe|0|0|0|0|none|0|Also triggers from your EverQuest critical strikes.
+49140|DeathKnight|Black Ice|describe|0|0|0|0|none|0|This also applies to your EverQuest Frost and Shadow damage spells.
+49182|DeathKnight|Blade Barrier|describe|0|0|0|0|none|0|Also triggers from your EverQuest spell casts.
+49222|DeathKnight|Bone Shield|describe|0|0|0|0|none|0|The damage increase also applies to your EverQuest spells.
+49796|DeathKnight|Deathchill|align|0|16|1|0|direct_damage|0|When activated, also applies to your next EverQuest direct damage Frost spell.
+50334|Druid|Berserk|exclude|0|0|0|0|none|0|When activated, this ability causes your Mangle (Bear) ability to hit up to $58923s1 targets and have no cooldown, and reduces the energy cost of all your Cat Form abilities by $s1%. Lasts $d. You cannot use Tiger's Fury while Berserk is active. Clears the effect of Fear and makes you immune to Fear for the duration.
+50365|DeathKnight|Improved Blood Presence|describe|0|0|0|0|none|0|Also triggers from damage done by your EverQuest spells.
+50685|Warrior|Incite|exclude|0|0|0|0|none|0|Increases the critical strike chance of your Heroic Strike, Thunder Clap and Cleave abilities by $s1%.
+51099|DeathKnight|Ebon Plaguebringer|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells.
+51179|Druid|Gift of the Earthmother|describe|0|0|0|0|none|0|The spell haste also applies to your EverQuest spells.
+51179|Druid|Gift of the Earthmother|exclude|0|0|0|0|none|0|Global cooldown micro-reduction that does not map to EverQuest spells.
+51466|Shaman|Elemental Oath|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells.
+51525|Shaman|Static Shock|describe|0|0|0|0|none|0|Also triggers from your EverQuest damaging spells.
+51554|Shaman|Blessing of the Eternals|describe|0|0|0|0|none|0|The critical strike chance also applies to your EverQuest spells.
+51560|Shaman|Improved Earth Shield|exclude|0|0|0|0|none|0|Shield charge effect modifier that does not map to EverQuest spells.
+51632|Rogue|Blood Spatter|exclude|0|0|0|0|none|0|Increases the damage caused by your Garrote and Rupture abilities by $s1%.
+51698|Rogue|Honor Among Thieves|describe|0|0|0|0|none|0|Also triggers from critical strikes with EverQuest spells.
+51708|Rogue|Slaughter from the Shadows|describe|0|0|0|0|none|0|The damage increase also applies to your EverQuest spells.
+53241|Hunter|Marked for Death|exclude|0|0|0|0|none|0|Mask matches Mend Pet, so it would give shot critical damage bonus to EverQuest healing spells.
+53265|Hunter|Aspect Mastery|exclude|0|0|0|0|none|0|Aspect effect value modifier that does not map to EverQuest spells.
+53375|Paladin|Sanctified Wrath|exclude|0|0|0|0|none|0|Hammer of Wrath crit chance that would over-generalize to all EverQuest Holy spells.
+53486|Paladin|The Art of War|exclude|0|0|0|0|none|0|Judgement-specific damage that should not generalize to all EverQuest Holy spells.
+53501|Paladin|Sheath of Light|describe|0|0|0|0|none|0|Also triggers from critical heals with EverQuest healing spells.
+53556|Paladin|Enlightened Judgements|describe|0|0|0|0|none|0|The hit chance also applies to your EverQuest spells.
+53556|Paladin|Enlightened Judgements|exclude|0|0|0|0|none|0|Increases the range of your Judgement of Light and Judgement of Wisdom spells by $s1 yards and increases your chance to hit by $s2%.
+53620|Hunter|Focused Aim|exclude|0|0|0|0|none|0|Reduces the pushback suffered from damaging attacks while casting Steady Shot by $s1%, and increases your chance to hit by $s2%.
+53671|Paladin|Judgements of the Pure|exclude|0|0|0|0|none|0|Increases the damage done by your Seal and Judgement spells by $s2%, and your Judgement spells increase your casting and melee haste by $53655s1% for $53655d.
+53695|Paladin|Judgements of the Just|exclude|0|0|0|0|none|0|Seal effect value modifier that does not map to EverQuest spells.
+53754|Warlock|Improved Fear|describe|0|0|0|0|none|0|Your EverQuest fear spells also cause Nightmare when the fear effect ends.
+54646|Mage|Focus Magic|describe|0|0|0|0|none|0|The critical strike chance also applies to the target's EverQuest spells.
+55061|DeathKnight|Icy Reach|align|0|16|1|0|none|0|Also increases the range of your EverQuest Frost damage spells by $s1 yards.
+56927|Warrior|Unending Fury|exclude|0|0|0|0|none|0|Increases the damage done by your Slam, Whirlwind and Bloodthirst abilities by $s2%.
+57470|Priest|Renewed Hope|describe|0|0|0|0|none|0|The critical effect chance also applies to your EverQuest healing spells.
+57761|Mage|Fireball!|align|0|4|1|0|direct_damage|0|Your next EverQuest direct damage Fire spell is also instant and free.
+57761|Mage|Fireball!|align|1|4|1|0|direct_damage|0|
+57810|Druid|Genesis|align|0|72|1|1|none|0|Also increases the periodic damage of your EverQuest Nature and Arcane damage spells and the periodic healing of your EverQuest healing spells by $s1%.
+57865|Druid|Nature's Splendor|exclude|0|0|0|0|none|0|Increases the duration of your Moonfire and Rejuvenation spells by ${$m1/1000} sec, your Regrowth spell by ${$m2/1000} sec, and your Insect Swarm and Lifebloom spells by ${$m3/1000} sec.
+58414|Rogue|Filthy Tricks|exclude|0|0|0|0|none|0|Physical melee cooldown modifier that should not reach EverQuest spells.
+58435|Warlock|Pandemic|describe|0|0|0|0|none|0|Also grants the periodic damage from your EverQuest Shadow damage over time spells the ability to critically hit for the increased damage.
+63108|Warlock|Siphon Life|exclude|0|0|0|0|none|0|When you deal damage with your Corruption spell, you are instantly healed for $<percent>% of the damage done. In addition, the damage done by your Corruption, Seed of Corruption and Unstable Affliction damage over time effects is increased by $s2%.
+63504|Priest|Improved Flash Heal|describe|0|0|0|0|none|0|The critical effect chance also applies to your EverQuest direct healing spells on targets at or below 50% health.
+63534|Priest|Empowered Renew|align|0|0|0|1|periodic_heal|0|Your EverQuest heal over time spells also gain $s1% of your bonus healing and instantly heal for $s2% of their total periodic effect.
+63646|Paladin|Divinity|describe|0|0|0|0|none|0|This also applies to your EverQuest healing spells.

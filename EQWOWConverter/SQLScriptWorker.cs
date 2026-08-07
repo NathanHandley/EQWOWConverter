@@ -121,6 +121,7 @@ namespace EQWOWConverter
         private SpellGroupSQL spellGroupSQL = new SpellGroupSQL();
         private SpellProcSQL spellProcSQL = new SpellProcSQL();
         private ModEverquestTalentExclusionSQL modEverquestTalentExclusionSQL = new ModEverquestTalentExclusionSQL();
+        private ModEverquestTalentAlignmentSQL modEverquestTalentAlignmentSQL = new ModEverquestTalentAlignmentSQL();
         private SpellGroupStackRulesSQL spellGroupStackRulesSQL = new SpellGroupStackRulesSQL();
         private SpellLinkedSpellSQL spellLinkedSpellSQL = new SpellLinkedSpellSQL();
         private SpellScriptNamesSQL spellScriptNamesSQL = new SpellScriptNamesSQL();
@@ -2018,6 +2019,59 @@ namespace EQWOWConverter
                     spellBonusDataSQL.AddRow(curEffectBlock.WOWSpellID, directBonus, dotBonus, string.Concat("EQ Spell ", spellTemplate.Name, commentFragment, " Block ", i));
                 }
 
+                // Any block dealing direct frost damage gets the script that lets the mage Frostbite talent chill the target
+                if ((spellTemplate.SchoolMask & 16) != 0 && commentFragment != " (Worn)")
+                {
+                    foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
+                    {
+                        if (blockEffect.EffectType == SpellWOWEffectType.SchoolDamage)
+                        {
+                            spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_FrostbiteChillSpellScript");
+                            break;
+                        }
+                    }
+                }
+
+                // Any block dealing shadow damage gets the script that lets the priest Shadow Weaving talent proc off it
+                if ((spellTemplate.SchoolMask & 32) != 0 && commentFragment != " (Worn)")
+                {
+                    foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
+                    {
+                        if (blockEffect.EffectType == SpellWOWEffectType.SchoolDamage || blockEffect.EffectType == SpellWOWEffectType.HealthLeech
+                            || blockEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamage || blockEffect.EffectAuraType == SpellWOWAuraType.PeriodicLeech)
+                        {
+                            spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_ShadowWeavingSpellScript");
+                            break;
+                        }
+                    }
+                }
+
+                // Any block with a heal over time gets the script that lets the priest Empowered Renew talent add its up-front heal
+                if (commentFragment != " (Worn)")
+                {
+                    foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
+                    {
+                        if (blockEffect.EffectAuraType == SpellWOWAuraType.PeriodicHeal)
+                        {
+                            spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_EmpoweredRenewSpellScript");
+                            break;
+                        }
+                    }
+                }
+
+                // Any block applying a fear gets the script that lets the warlock Improved Fear talent add Nightmare when the fear ends
+                if (commentFragment != " (Worn)")
+                {
+                    foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
+                    {
+                        if (blockEffect.EffectAuraType == SpellWOWAuraType.ModFear)
+                        {
+                            spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_ImprovedFearAuraScript");
+                            break;
+                        }
+                    }
+                }
+
                 // Additional effects beyond the first
                 if (i > 0)
                     AddSpellChain(spellTemplate, spellEffectBlocks[0], curEffectBlock.WOWSpellID, curEffectBlock.SpellName);
@@ -2065,9 +2119,35 @@ namespace EQWOWConverter
             // Drop the spell family check on the talents that proc off any spell of their class (lets school alignment determine)
             spellProcSQL.AddFamilyWideProcOverrideRows();
 
-            // Talents the automatic alignment rule would otherwise generalize, so exclude specific ones
-            foreach (SpellTalentExclusion talentExclusion in SpellTalentExclusion.GetSpellTalentExclusions())
-                modEverquestTalentExclusionSQL.AddRow(talentExclusion.TalentRank1SpellID, talentExclusion.WOWClassName, talentExclusion.TalentName, talentExclusion.DescriptionOrReason);
+            // Talents whose spell filtering lives inside a stock script (or that need an EverQuest path a data row can't express) get the mod's script versions,
+            // which keep the WOW behavior and add the EverQuest spells
+            if (Configuration.SPELL_WOW_TALENT_INTERACTION_ENABLED == true)
+            {
+                spellScriptNamesSQL.AddCoreScriptReplacementRow(-44445, "spell_mage_hot_streak", "EverQuest_HotStreakAuraScript");
+                spellScriptNamesSQL.AddCoreScriptReplacementRow(-44546, "spell_mage_brain_freeze", "EverQuest_BrainFreezeAuraScript");
+                spellScriptNamesSQL.AddCoreScriptReplacementRow(-15337, "spell_pri_improved_spirit_tap", "EverQuest_ImprovedSpiritTapAuraScript");
+                
+                // Run alongside the stock script
+                spellScriptNamesSQL.AddRow(11958, "EverQuest_ColdSnapSpellScript");
+
+                // No stock script, only add spell filtering
+                spellScriptNamesSQL.AddRow(-18094, "EverQuest_NightfallAuraScript");
+                spellScriptNamesSQL.AddRow(-47516, "EverQuest_GraceAuraScript");
+                spellScriptNamesSQL.AddRow(-34753, "EverQuest_HolyConcentrationAuraScript");
+                spellScriptNamesSQL.AddRow(-32385, "EverQuest_ShadowEmbraceAuraScript");
+                spellScriptNamesSQL.AddRow(-47195, "EverQuest_EradicationAuraScript");
+            }
+
+            // Exclusions the automatic alignment rule would otherwise generalize, and explicit alignments for talents (and proc buffs) whose masks can't be generalized from (mixed schools, empty masks)
+            foreach (SpellTalentInteraction talentInteraction in SpellTalentInteraction.GetSpellTalentInteractions())
+            {
+                if (talentInteraction.InteractionType == SpellTalentInteractionType.Exclude)
+                    modEverquestTalentExclusionSQL.AddRow(talentInteraction.SpellID, talentInteraction.WOWClassName, talentInteraction.SpellName, talentInteraction.DescriptionOrReason);
+                else if (talentInteraction.InteractionType == SpellTalentInteractionType.Align)
+                    modEverquestTalentAlignmentSQL.AddRow(talentInteraction.SpellID, talentInteraction.EffectIndex, talentInteraction.WOWClassName,
+                        talentInteraction.SpellName, talentInteraction.SchoolMask, talentInteraction.AffectsDamage, talentInteraction.AffectsHealing,
+                        (int)talentInteraction.Restriction, talentInteraction.MaxBaseCastTimeInMS);
+            }
 
             // Spell split data
             foreach (SpellTemplate spellTemplate in spellTemplates)
@@ -2565,6 +2645,7 @@ namespace EQWOWConverter
             spellGroupSQL.SaveToDisk("spell_group", SQLFileType.World);
             spellProcSQL.SaveToDisk("spell_proc", SQLFileType.World); // spell_ex44
             modEverquestTalentExclusionSQL.SaveToDisk("mod_everquest_talent_exclusion", SQLFileType.World); // spell_ex44
+            modEverquestTalentAlignmentSQL.SaveToDisk("mod_everquest_talent_alignment", SQLFileType.World); // spell_ex44
             spellGroupStackRulesSQL.SaveToDisk("spell_group_stack_rules", SQLFileType.World);
             spellLinkedSpellSQL.SaveToDisk("spell_linked_spell", SQLFileType.World);
             spellScriptNamesSQL.SaveToDisk("spell_script_names", SQLFileType.World);

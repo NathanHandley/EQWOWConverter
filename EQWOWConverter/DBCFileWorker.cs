@@ -75,6 +75,7 @@ namespace EQWOWConverter
         private SpellVisualEffectNameDBC spellVisualEffectNameDBC = new SpellVisualEffectNameDBC();
         private SpellVisualKitDBC spellVisualKitDBC = new SpellVisualKitDBC();
         private SummonPropertiesDBC summonPropertiesDBC = new SummonPropertiesDBC();
+        private TalentDBC talentDBC = new TalentDBC();
         private TaxiPathDBC taxiPathDBC = new TaxiPathDBC();
         private TaxiPathNodeDBC taxiPathNodeDBC = new TaxiPathNodeDBC();
         private TotemCategoryDBC totemCategoryDBC = new TotemCategoryDBC();
@@ -246,6 +247,7 @@ namespace EQWOWConverter
             spellVisualEffectNameDBC.LoadFromDisk(dbcInputFolder, "SpellVisualEffectName.dbc");
             spellVisualKitDBC.LoadFromDisk(dbcInputFolder, "SpellVisualKit.dbc");
             summonPropertiesDBC.LoadFromDisk(dbcInputFolder, "SummonProperties.dbc");
+            talentDBC.LoadFromDisk(dbcInputFolder, "Talent.dbc"); // Not saving
             taxiPathDBC.LoadFromDisk(dbcInputFolder, "TaxiPath.dbc");
             taxiPathNodeDBC.LoadFromDisk(dbcInputFolder, "TaxiPathNode.dbc");
             totemCategoryDBC.LoadFromDisk(dbcInputFolder, "TotemCategory.dbc");
@@ -254,6 +256,26 @@ namespace EQWOWConverter
             worldSafeLocsDBC.LoadFromDisk(dbcInputFolder, "WorldSafeLocs.dbc");
             wmoAreaTableDBC.LoadFromDisk(dbcInputFolder, "WMOAreaTable.dbc");
             zoneMusicDBC.LoadFromDisk(dbcInputFolder, "ZoneMusic.dbc");
+
+            // Talent descriptions
+            string talentAddendumColorPrefix = "|cFF69CCF0"; // Light blue
+            string talentAddendumColorSuffix = "|r";
+            foreach (SpellTalentInteraction talentInteraction in SpellTalentInteraction.GetSpellTalentInteractions())
+            {
+                if (talentInteraction.InteractionType == SpellTalentInteractionType.Exclude)
+                    continue;
+                if (talentInteraction.DescriptionOrReason.Length == 0)
+                    continue;
+                string addendumText = string.Concat(talentAddendumColorPrefix, talentInteraction.DescriptionOrReason, talentAddendumColorSuffix);
+                List<int> rankSpellIDs;
+                if (talentDBC.TryGetAllRankSpellIDsForFirstRankSpellID(talentInteraction.SpellID, out rankSpellIDs) == true)
+                {
+                    foreach (int rankSpellID in rankSpellIDs)
+                        spellDBC.AppendToDescriptionOfSpellID(rankSpellID, addendumText);
+                }
+                else
+                    spellDBC.AppendToDescriptionOfSpellID(talentInteraction.SpellID, addendumText);
+            }
 
             // Achievements
             if (Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true)
@@ -953,6 +975,8 @@ namespace EQWOWConverter
             spellVisualKitDBC.SaveToDisk(dbcOutputServerFolder);
             summonPropertiesDBC.SaveToDisk(dbcOutputClientFolder);
             summonPropertiesDBC.SaveToDisk(dbcOutputServerFolder);
+            // talentDBC.SaveToDisk(dbcOutputClientFolder);
+            // talentDBC.SaveToDisk(dbcOutputServerFolder);
             taxiPathDBC.SaveToDisk(dbcOutputClientFolder);
             taxiPathDBC.SaveToDisk(dbcOutputServerFolder);
             taxiPathNodeDBC.SaveToDisk(dbcOutputClientFolder);

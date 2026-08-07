@@ -223,6 +223,51 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // SpellDifficultyID
             Rows.Add(newRow);
         }
+
+        private static readonly int DESCRIPTION_LANG_FIELD_BYTE_OFFSET = 680; // First (english) string offset of Description_Lang
+
+        private Dictionary<int, DBCRow> SourceRowsBySpellID = new Dictionary<int, DBCRow>();
+
+        // Loading minimally to avoid performance hit of loading everything
+        protected override void OnPostLoadDataFromDisk()
+        {
+            foreach (DBCRow row in Rows)
+            {
+                if (row.SourceRawBytes.Count == 0)
+                    continue;
+                int spellID = row.SourceRawBytes[0] | (row.SourceRawBytes[1] << 8) | (row.SourceRawBytes[2] << 16) | (row.SourceRawBytes[3] << 24);
+                SourceRowsBySpellID[spellID] = row;
+            }
+        }
+
+        // Appending also minimally to avoid performance hit of loading everything
+        public void AppendToDescriptionOfSpellID(int spellID, string appendText)
+        {
+            if (SourceRowsBySpellID.ContainsKey(spellID) == false)
+            {
+                Logger.WriteError("SpellDBC could not append to the description of spell ID '", spellID.ToString(), "' since no source row has that ID");
+                return;
+            }
+            DBCRow row = SourceRowsBySpellID[spellID];
+
+            // Pull the current description out of the string block
+            int curStringOffset = row.SourceRawBytes[DESCRIPTION_LANG_FIELD_BYTE_OFFSET] | (row.SourceRawBytes[DESCRIPTION_LANG_FIELD_BYTE_OFFSET + 1] << 8)
+                | (row.SourceRawBytes[DESCRIPTION_LANG_FIELD_BYTE_OFFSET + 2] << 16) | (row.SourceRawBytes[DESCRIPTION_LANG_FIELD_BYTE_OFFSET + 3] << 24);
+            string curDescription = string.Empty;
+            for (int i = curStringOffset; i < StringBlock.Count; i++)
+            {
+                if (StringBlock[i] == '\0')
+                    break;
+                curDescription += StringBlock[i];
+            }
+
+            // Store the appended version as a new string and point the row's description at it
+            string newDescription = curDescription.Length == 0 ? appendText : string.Concat(curDescription, "\n\n", appendText);
+            int newStringOffset = PutStringInStringBlockAndGetOffset(newDescription);
+            byte[] newStringOffsetBytes = BitConverter.GetBytes(newStringOffset);
+            for (int i = 0; i < 4; i++)
+                row.SourceRawBytes[DESCRIPTION_LANG_FIELD_BYTE_OFFSET + i] = newStringOffsetBytes[i];
+        }
         
         private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool doHideFromDisplay, bool preventClickOff, bool isWornEquipEffect)
         {

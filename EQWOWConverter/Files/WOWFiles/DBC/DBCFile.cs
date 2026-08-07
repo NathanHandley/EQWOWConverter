@@ -465,7 +465,7 @@ namespace EQWOWConverter.WOWFiles
             Logger.WriteDebug("Saving dbc at '" + FileName + "' completed");
         }
 
-        private int PutStringInStringBlockAndGetOffset(string stringToInsert)
+        protected int PutStringInStringBlockAndGetOffset(string stringToInsert)
         {
             // Append the null at the end
             stringToInsert = stringToInsert + "\0";
