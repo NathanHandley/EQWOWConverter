@@ -72,6 +72,7 @@ namespace EQWOWConverter
         private GameObjectTemplateAddonSQL gameObjectTemplateAddonSQL = new GameObjectTemplateAddonSQL();
         private GameTableDBCSQL gtChanceToSpellCritBaseDBCSQL = new GameTableDBCSQL("gtchancetospellcritbase_dbc");
         private GameTableDBCSQL gtChanceToSpellCritDBCSQL = new GameTableDBCSQL("gtchancetospellcrit_dbc");
+        private GameTableDBCSQL gtRegenMPPerSptDBCSQL = new GameTableDBCSQL("gtregenmpperspt_dbc");
         private InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
         private ItemLootTemplateSQL itemLootTemplateSQL = new ItemLootTemplateSQL();
         private ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
@@ -284,7 +285,7 @@ namespace EQWOWConverter
         private void PopulateGameTableData()
         {
             // The stock spell crit game tables have all-zero rows for Warrior (1), Rogue (4) and DeathKnight (6), making their spell crit a hard 0% in combat
-            // So pull the data from a donor table.  This has to be saved in the database for AzerothCore for the server to use it
+            // Also, the stock mana regen is also zero for those classes
             string dbcInputFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "ExportedDBCFiles");
             int donorClassID = Configuration.PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID;
             List<int> zeroedClassIDs = new List<int>() { 1, 4, 6 }; // Warrior, Rogue, DeathKnight
@@ -293,11 +294,16 @@ namespace EQWOWConverter
             spellCritBaseDBC.LoadFromDisk(dbcInputFolder, "gtChanceToSpellCritBase.dbc");
             GameTableDBC spellCritDBC = new GameTableDBC();
             spellCritDBC.LoadFromDisk(dbcInputFolder, "gtChanceToSpellCrit.dbc");
+            GameTableDBC regenMPPerSptDBC = new GameTableDBC();
+            regenMPPerSptDBC.LoadFromDisk(dbcInputFolder, "gtRegenMPPerSpt.dbc");
             foreach (int zeroedClassID in zeroedClassIDs)
             {
                 gtChanceToSpellCritBaseDBCSQL.AddRow(zeroedClassID - 1, spellCritBaseDBC.GetSingleFloatValue(donorClassID - 1));
                 for (int levelRow = 0; levelRow < 100; levelRow++)
+                {
                     gtChanceToSpellCritDBCSQL.AddRow((zeroedClassID - 1) * 100 + levelRow, spellCritDBC.GetSingleFloatValue((donorClassID - 1) * 100 + levelRow));
+                    gtRegenMPPerSptDBCSQL.AddRow((zeroedClassID - 1) * 100 + levelRow, regenMPPerSptDBC.GetSingleFloatValue((donorClassID - 1) * 100 + levelRow));
+                }
             }
         }
 
@@ -2607,6 +2613,7 @@ namespace EQWOWConverter
             graveyardZoneSQL.SaveToDisk("graveyard_zone", SQLFileType.World);
             gtChanceToSpellCritBaseDBCSQL.SaveToDisk("gtchancetospellcritbase_dbc", SQLFileType.World);
             gtChanceToSpellCritDBCSQL.SaveToDisk("gtchancetospellcrit_dbc", SQLFileType.World);
+            gtRegenMPPerSptDBCSQL.SaveToDisk("gtregenmpperspt_dbc", SQLFileType.World);
             instanceTemplateSQL.SaveToDisk("instance_template", SQLFileType.World);
             itemLootTemplateSQL.SaveToDisk("item_loot_template", SQLFileType.World);
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);

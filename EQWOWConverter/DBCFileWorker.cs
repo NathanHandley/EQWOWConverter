@@ -46,6 +46,7 @@ namespace EQWOWConverter
         private GameTableDBC gtSpellCritBaseDBC = new GameTableDBC();
         private GameTableDBC gtSpellCritDBC = new GameTableDBC();
         private GameTableDBC gtOCTRegenMPDBC = new GameTableDBC();
+        private GameTableDBC gtRegenMPPerSptDBC = new GameTableDBC();
         private ItemDBC itemDBC = new ItemDBC();
         private ItemDisplayInfoDBC itemDisplayInfoDBC = new ItemDisplayInfoDBC();
         private LFGDungeonGroupDBC lfgDungeonGroupDBC = new LFGDungeonGroupDBC();
@@ -218,6 +219,7 @@ namespace EQWOWConverter
             gtSpellCritBaseDBC.LoadFromDisk(dbcInputFolder, "gtChanceToSpellCritBase.dbc");
             gtSpellCritDBC.LoadFromDisk(dbcInputFolder, "gtChanceToSpellCrit.dbc");
             gtOCTRegenMPDBC.LoadFromDisk(dbcInputFolder, "gtOCTRegenMP.dbc");
+            gtRegenMPPerSptDBC.LoadFromDisk(dbcInputFolder, "gtRegenMPPerSpt.dbc");
             itemDBC.LoadFromDisk(dbcInputFolder, "Item.dbc");
             itemDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "ItemDisplayInfo.dbc");
             lfgDungeonGroupDBC.LoadFromDisk(dbcInputFolder, "LFGDungeonGroup.dbc");
@@ -539,6 +541,7 @@ namespace EQWOWConverter
                 gtSpellCritBaseDBC.CopyClassRows(donorClassID, zeroedClassID, 1);
                 gtSpellCritDBC.CopyClassRows(donorClassID, zeroedClassID, 100);
                 gtOCTRegenMPDBC.CopyClassRows(donorClassID, zeroedClassID, 100);
+                gtRegenMPPerSptDBC.CopyClassRows(donorClassID, zeroedClassID, 100);
             }
 
             // Character start data
@@ -917,6 +920,8 @@ namespace EQWOWConverter
             gtSpellCritDBC.SaveToDisk(dbcOutputServerFolder);
             gtOCTRegenMPDBC.SaveToDisk(dbcOutputClientFolder);
             gtOCTRegenMPDBC.SaveToDisk(dbcOutputServerFolder);
+            gtRegenMPPerSptDBC.SaveToDisk(dbcOutputClientFolder);
+            gtRegenMPPerSptDBC.SaveToDisk(dbcOutputServerFolder);
             itemDBC.SaveToDisk(dbcOutputClientFolder);
             itemDBC.SaveToDisk(dbcOutputServerFolder);
             lfgDungeonGroupDBC.SaveToDisk(dbcOutputClientFolder);
