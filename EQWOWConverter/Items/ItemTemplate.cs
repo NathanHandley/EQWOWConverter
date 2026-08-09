@@ -1815,7 +1815,13 @@ namespace EQWOWConverter.Items
                 if (newItemTemplate.IsNoDrop == true || newItemTemplate.DoesVanishOnLogout == true)
                     newItemTemplate.SellPriceInCopper = 0;
                 else
+                {
                     newItemTemplate.SellPriceInCopper = int.Max(Convert.ToInt32(Convert.ToDouble(newItemTemplate.BuyPriceInCopper) * 0.25), 0);
+
+                    // Max price for item sales (before reputation)
+                    if (newItemTemplate.SellPriceInCopper > Configuration.ITEMS_MAX_SELL_PRICE_IN_COPPER)
+                        newItemTemplate.SellPriceInCopper = Configuration.ITEMS_MAX_SELL_PRICE_IN_COPPER;
+                }
 
                 // Bag properties
                 newItemTemplate.BagSlots = int.Parse(columns["bagslots"]) * Configuration.ITEMS_BAG_SLOT_MULTIPLIER;
