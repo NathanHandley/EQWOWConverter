@@ -1880,8 +1880,19 @@ namespace EQWOWConverter
                 string repeatQuestName = string.Concat(questTemplate.Name, " (repeat)");
                 int repeatQuestID = firstQuestID + Configuration.SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT;
 
+                // If every hand-in item can be bought from a vendor then the repeat version shouldn't give experience (if set)
+                bool disableRepeatExperience = false;
+                if (Configuration.QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD == true && questTemplate.RewardExperienceEQ > 0)
+                {
+                    if (questTemplate.AreAllRequiredItemsVendorPurchasable(itemTemplatesByWOWEntryID) == true)
+                    {
+                        disableRepeatExperience = true;
+                        Logger.WriteDebug(string.Concat("Quest '", questTemplate.Name, "' (", questTemplate.QuestIDWOW, ") had experience disabled on the repeat version since all of the required hand-in items are sold by vendors"));
+                    }
+                }
+
                 questTemplateSQL.AddRow(questTemplate, firstQuestID, firstQuestName);
-                questTemplateSQL.AddRow(questTemplate, repeatQuestID, repeatQuestName);
+                questTemplateSQL.AddRow(questTemplate, repeatQuestID, repeatQuestName, disableRepeatExperience);
                 questTemplateAddonSQL.AddRow(questTemplate, firstQuestID, 0, false);
                 questTemplateAddonSQL.AddRow(questTemplate, repeatQuestID, firstQuestID, true);
 

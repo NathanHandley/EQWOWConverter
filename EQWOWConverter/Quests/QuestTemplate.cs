@@ -106,6 +106,39 @@ namespace EQWOWConverter.Quests
             return true;
         }
 
+        public bool AreAllRequiredItemsVendorPurchasable(SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
+        {
+            if (RequiredItems.Count == 0)
+                return false;
+
+            foreach (QuestItemReference requiredItem in RequiredItems)
+            {
+                ItemTemplate? requiredItemTemplate = null;
+                if (itemTemplatesByWOWEntryID.ContainsKey(requiredItem.itemIDWOW) == true)
+                    requiredItemTemplate = itemTemplatesByWOWEntryID[requiredItem.itemIDWOW];
+                else if (itemTemplatesByWOWEntryID.ContainsKey(requiredItem.itemIDParentWOW) == true)
+                    requiredItemTemplate = itemTemplatesByWOWEntryID[requiredItem.itemIDParentWOW];
+
+                // Unknown items can't be confirmed as vendor sold, so consider them too just in case
+                if (requiredItemTemplate == null)
+                    return false;
+                if (IsItemVendorPurchasable(requiredItemTemplate) == false)
+                    return false;
+            }
+            return true;
+        }
+
+        private static bool IsItemVendorPurchasable(ItemTemplate itemTemplate)
+        {
+            if (itemTemplate.IsSoldByVendor == true)
+                return true;
+
+            // Class-specific and essence variants use the source item vendor availability
+            if (itemTemplate.ParentItemTemplate != null)
+                return IsItemVendorPurchasable(itemTemplate.ParentItemTemplate);
+            return false;
+        }
+
         public void AddObjectiveItems(string itemName, int itemCount)
         {
             if (NumOfObjectiveItemsAddedToText != 0)

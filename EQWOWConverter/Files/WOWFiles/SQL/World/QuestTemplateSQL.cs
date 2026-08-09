@@ -27,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM quest_template WHERE `ID` >= " + Configuration.SQL_QUEST_TEMPLATE_ID_START.ToString() + " AND `ID` <= " + Configuration.SQL_QUEST_TEMPLATE_ID_END + ";";
         }
 
-        public void AddRow(QuestTemplate questTemplate, int questID, string questName)
+        public void AddRow(QuestTemplate questTemplate, int questID, string questName, bool disableExperience = false)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ID", questID);
@@ -42,7 +42,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RequiredFactionValue1", questTemplate.MinimumQuestgiverFactionValue);
             newRow.AddInt("RequiredFactionValue2", 0);
             newRow.AddInt("RewardNextQuest", 0);
-            newRow.AddInt("RewardXPDifficulty", QuestExperience.GetRewardXPDifficulty(questTemplate.QuestLevel, questTemplate.RewardExperienceEQ));
+            newRow.AddInt("RewardXPDifficulty", disableExperience == true ? 0 : QuestExperience.GetRewardXPDifficulty(questTemplate.QuestLevel, questTemplate.RewardExperienceEQ));
             newRow.AddInt("RewardMoney", questTemplate.RequiredMoneyInCopper > 0 ? (-1 * questTemplate.RequiredMoneyInCopper) : questTemplate.RewardMoneyInCopper);
             newRow.AddInt("RewardMoneyDifficulty", 0);
             newRow.AddInt("RewardDisplaySpell", 0);

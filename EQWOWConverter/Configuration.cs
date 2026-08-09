@@ -702,6 +702,9 @@ namespace EQWOWConverter
         // The largest fraction of a level's experience that a single quest turn-in could award in EQ, used when converting EQ quest experience rewards into WOW reward experience tiers (TAKP caps quest exp at 25%)
         public static float QUESTS_EXP_EQ_REWARD_LEVEL_FRACTION_CAP = 0.25f;
 
+        // If true, the repeat version of a quest awards no experience when every item it requires as a hand-in can be bought from a vendor
+        public static bool QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD = true;
+
         //=====================================================================
         // Spells
         //=====================================================================
@@ -1774,6 +1777,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID", ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID, "Spell ID for the visual effect from Monk's epic weapon (Celestial Fists)");
             OutputVariableToConfig("QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID", QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID, "This is the icon ID that is used for quest rewards that contain more than one random item");
             OutputVariableToConfig("QUESTS_EXP_EQ_REWARD_LEVEL_FRACTION_CAP", QUESTS_EXP_EQ_REWARD_LEVEL_FRACTION_CAP, "The largest fraction of a level's experience that a single quest turn-in could award in EQ, used when converting EQ quest experience rewards into WOW reward experience tiers (TAKP caps quest exp at 25%)");
+            OutputVariableToConfig("QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD", QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD, "If true, the repeat version of a quest awards no experience when every item it requires as a hand-in can be bought from a vendor");
             OutputVariableToConfig("SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL", SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL, "This is how high (WOW side) stats will be be scaled to.  This should almost always be set to the server max level configuration.");
             OutputVariableToConfig("SPELLS_GATECUSTOM_SPELLDBC_ID", SPELLS_GATECUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest");
             OutputVariableToConfig("SPELLS_BINDCUSTOM_SPELLDBC_ID", SPELLS_BINDCUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest");
@@ -2260,6 +2264,7 @@ namespace EQWOWConverter
             QUESTS_TEXT_DURATION_IN_MS = ReadVariableFromConfigString("QUESTS_TEXT_DURATION_IN_MS", configValuesByVariableName, QUESTS_TEXT_DURATION_IN_MS);
             QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID = ReadVariableFromConfigString("QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID", configValuesByVariableName, QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID);
             QUESTS_EXP_EQ_REWARD_LEVEL_FRACTION_CAP = ReadVariableFromConfigString("QUESTS_EXP_EQ_REWARD_LEVEL_FRACTION_CAP", configValuesByVariableName, QUESTS_EXP_EQ_REWARD_LEVEL_FRACTION_CAP);
+            QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD = ReadVariableFromConfigString("QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD", configValuesByVariableName, QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD);
 
             SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR = ReadVariableFromConfigString("SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR", configValuesByVariableName, SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR);
             SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL = ReadVariableFromConfigString("SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL", configValuesByVariableName, SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL);
