@@ -278,6 +278,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 128; // SPELL_ATTR0_DO_NOT_DISPLAY_SPELLBOOK_AURA_ICON_COMBAT_LOG
             if (spellTemplate.AllowCastInCombat == false)
                 attributeFlags |= 268435456; // SPELL_ATTR0_NOT_IN_COMBAT_ONLY_PEACEFUL (0x10000000)
+            if (spellTemplate.IsPassiveAbility == true)
+                attributeFlags |= 64; // SPELL_ATTR0_PASSIVE (0x00000040) - Shows in spellbook but not the aura bar
             if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
                 attributeFlags |= 16; // SPELL_ATTR0_IS_ABILITY (0x00000010)
             if (spellTemplate.TradeskillRecipe != null)

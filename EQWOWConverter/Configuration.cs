@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 64;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 65;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -997,6 +997,29 @@ namespace EQWOWConverter
         public static int COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ = 55;
 
         //=====================================================================
+        // Agile Fighter (EQ Monk passive)
+        //=====================================================================
+        // Agile Fighter is a passive granted to EQ Monks (primary or secondary) at level 1. It grants no stats directly, but applies either Combat Master or Combat Expert
+        // based on what the character equips (armor / shield)
+        public static bool AGILEFIGHTER_ENABLED = true;
+        public static int AGILEFIGHTER_SPELL_ID = 86919;
+        public static int AGILEFIGHTER_SPELL_ICON_EQ_ID = 9;
+
+        // Combat Master granted when the player is using only cloth and no shield
+        public static int AGILEFIGHTER_COMBATMASTER_SPELL_ID = 86920;
+        public static int AGILEFIGHTER_COMBATMASTER_SPELL_ICON_EQ_ID = 9;
+        public static int AGILEFIGHTER_COMBATMASTER_PHYSICAL_DAMAGE_PERCENT = 35;
+        public static int AGILEFIGHTER_COMBATMASTER_CRITICAL_STRIKE_PERCENT = 15;
+        public static int AGILEFIGHTER_COMBATMASTER_DODGE_PERCENT = 20;
+
+        // Combat Expert is granted when the player is using leather or lighter and has no shield
+        public static int AGILEFIGHTER_COMBATEXPERT_SPELL_ID = 86921;
+        public static int AGILEFIGHTER_COMBATEXPERT_SPELL_ICON_EQ_ID = 18;
+        public static int AGILEFIGHTER_COMBATEXPERT_PHYSICAL_DAMAGE_PERCENT = 20;
+        public static int AGILEFIGHTER_COMBATEXPERT_CRITICAL_STRIKE_PERCENT = 5;
+        public static int AGILEFIGHTER_COMBATEXPERT_DODGE_PERCENT = 10;
+
+        //=====================================================================
         // Achievements
         //=====================================================================
         // If true, a feat of strength achievement is awarded to characters on accounts created before the configured date
@@ -1925,6 +1948,19 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_RANGED_DEFAULT_MAX_RANGE", COMBATSKILL_RANGED_DEFAULT_MAX_RANGE, "");
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ, "Creatures in this level range will never enrage (taken from TAKP's mob_ai.cpp CheckEnrage), with 0 in both disabling this suppression", false);
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ, "");
+            OutputVariableToConfig("AGILEFIGHTER_ENABLED", AGILEFIGHTER_ENABLED, "Agile Fighter is a passive granted to EQ Monks (primary or secondary) at level 1. It grants no stats directly, but applies either Combat Master or Combat Expert based on what the character equips (armor / shield)", false);
+            OutputVariableToConfig("AGILEFIGHTER_SPELL_ID", AGILEFIGHTER_SPELL_ID, "", false);
+            OutputVariableToConfig("AGILEFIGHTER_SPELL_ICON_EQ_ID", AGILEFIGHTER_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("AGILEFIGHTER_COMBATMASTER_SPELL_ID", AGILEFIGHTER_COMBATMASTER_SPELL_ID, "Combat Master granted when the player is using only cloth and no shield", false);
+            OutputVariableToConfig("AGILEFIGHTER_COMBATMASTER_SPELL_ICON_EQ_ID", AGILEFIGHTER_COMBATMASTER_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("AGILEFIGHTER_COMBATMASTER_PHYSICAL_DAMAGE_PERCENT", AGILEFIGHTER_COMBATMASTER_PHYSICAL_DAMAGE_PERCENT, "", false);
+            OutputVariableToConfig("AGILEFIGHTER_COMBATMASTER_CRITICAL_STRIKE_PERCENT", AGILEFIGHTER_COMBATMASTER_CRITICAL_STRIKE_PERCENT, "", false);
+            OutputVariableToConfig("AGILEFIGHTER_COMBATMASTER_DODGE_PERCENT", AGILEFIGHTER_COMBATMASTER_DODGE_PERCENT, "", false);
+            OutputVariableToConfig("AGILEFIGHTER_COMBATEXPERT_SPELL_ID", AGILEFIGHTER_COMBATEXPERT_SPELL_ID, "Combat Expert is granted when the player is using leather or lighter and has no shield", false);
+            OutputVariableToConfig("AGILEFIGHTER_COMBATEXPERT_SPELL_ICON_EQ_ID", AGILEFIGHTER_COMBATEXPERT_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("AGILEFIGHTER_COMBATEXPERT_PHYSICAL_DAMAGE_PERCENT", AGILEFIGHTER_COMBATEXPERT_PHYSICAL_DAMAGE_PERCENT, "", false);
+            OutputVariableToConfig("AGILEFIGHTER_COMBATEXPERT_CRITICAL_STRIKE_PERCENT", AGILEFIGHTER_COMBATEXPERT_CRITICAL_STRIKE_PERCENT, "", false);
+            OutputVariableToConfig("AGILEFIGHTER_COMBATEXPERT_DODGE_PERCENT", AGILEFIGHTER_COMBATEXPERT_DODGE_PERCENT, "");
             OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_60", FISHING_SKILL_CONVERSION_MOD_60, "How much to multiply the EQ fish catching skill requirement for WOW", false);
             OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_80", FISHING_SKILL_CONVERSION_MOD_80, "");
             OutputVariableToConfig("FORAGE_SPELL_ICON_EQ_ID", FORAGE_SPELL_ICON_EQ_ID, "Which eq spell icon to use for the Forage skill. Can be a value between 0-22");
@@ -2421,6 +2457,19 @@ namespace EQWOWConverter
             COMBATSKILL_RANGED_DEFAULT_MAX_RANGE = ReadVariableFromConfigString("COMBATSKILL_RANGED_DEFAULT_MAX_RANGE", configValuesByVariableName, COMBATSKILL_RANGED_DEFAULT_MAX_RANGE);
             COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ = ReadVariableFromConfigString("COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ", configValuesByVariableName, COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ);
             COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ = ReadVariableFromConfigString("COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ", configValuesByVariableName, COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ);
+            AGILEFIGHTER_ENABLED = ReadVariableFromConfigString("AGILEFIGHTER_ENABLED", configValuesByVariableName, AGILEFIGHTER_ENABLED);
+            AGILEFIGHTER_SPELL_ID = ReadVariableFromConfigString("AGILEFIGHTER_SPELL_ID", configValuesByVariableName, AGILEFIGHTER_SPELL_ID);
+            AGILEFIGHTER_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("AGILEFIGHTER_SPELL_ICON_EQ_ID", configValuesByVariableName, AGILEFIGHTER_SPELL_ICON_EQ_ID);
+            AGILEFIGHTER_COMBATMASTER_SPELL_ID = ReadVariableFromConfigString("AGILEFIGHTER_COMBATMASTER_SPELL_ID", configValuesByVariableName, AGILEFIGHTER_COMBATMASTER_SPELL_ID);
+            AGILEFIGHTER_COMBATMASTER_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("AGILEFIGHTER_COMBATMASTER_SPELL_ICON_EQ_ID", configValuesByVariableName, AGILEFIGHTER_COMBATMASTER_SPELL_ICON_EQ_ID);
+            AGILEFIGHTER_COMBATMASTER_PHYSICAL_DAMAGE_PERCENT = ReadVariableFromConfigString("AGILEFIGHTER_COMBATMASTER_PHYSICAL_DAMAGE_PERCENT", configValuesByVariableName, AGILEFIGHTER_COMBATMASTER_PHYSICAL_DAMAGE_PERCENT);
+            AGILEFIGHTER_COMBATMASTER_CRITICAL_STRIKE_PERCENT = ReadVariableFromConfigString("AGILEFIGHTER_COMBATMASTER_CRITICAL_STRIKE_PERCENT", configValuesByVariableName, AGILEFIGHTER_COMBATMASTER_CRITICAL_STRIKE_PERCENT);
+            AGILEFIGHTER_COMBATMASTER_DODGE_PERCENT = ReadVariableFromConfigString("AGILEFIGHTER_COMBATMASTER_DODGE_PERCENT", configValuesByVariableName, AGILEFIGHTER_COMBATMASTER_DODGE_PERCENT);
+            AGILEFIGHTER_COMBATEXPERT_SPELL_ID = ReadVariableFromConfigString("AGILEFIGHTER_COMBATEXPERT_SPELL_ID", configValuesByVariableName, AGILEFIGHTER_COMBATEXPERT_SPELL_ID);
+            AGILEFIGHTER_COMBATEXPERT_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("AGILEFIGHTER_COMBATEXPERT_SPELL_ICON_EQ_ID", configValuesByVariableName, AGILEFIGHTER_COMBATEXPERT_SPELL_ICON_EQ_ID);
+            AGILEFIGHTER_COMBATEXPERT_PHYSICAL_DAMAGE_PERCENT = ReadVariableFromConfigString("AGILEFIGHTER_COMBATEXPERT_PHYSICAL_DAMAGE_PERCENT", configValuesByVariableName, AGILEFIGHTER_COMBATEXPERT_PHYSICAL_DAMAGE_PERCENT);
+            AGILEFIGHTER_COMBATEXPERT_CRITICAL_STRIKE_PERCENT = ReadVariableFromConfigString("AGILEFIGHTER_COMBATEXPERT_CRITICAL_STRIKE_PERCENT", configValuesByVariableName, AGILEFIGHTER_COMBATEXPERT_CRITICAL_STRIKE_PERCENT);
+            AGILEFIGHTER_COMBATEXPERT_DODGE_PERCENT = ReadVariableFromConfigString("AGILEFIGHTER_COMBATEXPERT_DODGE_PERCENT", configValuesByVariableName, AGILEFIGHTER_COMBATEXPERT_DODGE_PERCENT);
             FISHING_SKILL_CONVERSION_MOD_60 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_60", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_60);
             FISHING_SKILL_CONVERSION_MOD_80 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_80", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_80);
             FORAGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("FORAGE_SPELL_ICON_EQ_ID", configValuesByVariableName, FORAGE_SPELL_ICON_EQ_ID);

@@ -283,6 +283,9 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("WorldScale", Configuration.GENERATE_WORLD_SCALE.ToString());
             modEverquestSystemConfigsSQL.AddRow("RangedAttackSpellID", Configuration.COMBATSKILL_RANGED_ENABLED == true ? Configuration.COMBATSKILL_RANGED_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("ResistAdjustmentSpellID", Configuration.SPELL_RESIST_ADJUSTMENT_SPELL_ID.ToString());
+            modEverquestSystemConfigsSQL.AddRow("AgileFighterSpellID", Configuration.AGILEFIGHTER_ENABLED == true ? Configuration.AGILEFIGHTER_SPELL_ID.ToString() : "0");
+            modEverquestSystemConfigsSQL.AddRow("AgileFighterCombatMasterSpellID", Configuration.AGILEFIGHTER_ENABLED == true ? Configuration.AGILEFIGHTER_COMBATMASTER_SPELL_ID.ToString() : "0");
+            modEverquestSystemConfigsSQL.AddRow("AgileFighterCombatExpertSpellID", Configuration.AGILEFIGHTER_ENABLED == true ? Configuration.AGILEFIGHTER_COMBATEXPERT_SPELL_ID.ToString() : "0");
         }
 
         private void PopulateGameTableData()
@@ -1701,6 +1704,10 @@ namespace EQWOWConverter
                     // Feign Death
                     if (Configuration.COMBATSKILL_FEIGNDEATH_ENABLED == true && Configuration.COMBATSKILL_FEIGNDEATH_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.Monk)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_FEIGNDEATH_SPELL_ID, 1);
+
+                    // Agile Fighter
+                    if (Configuration.AGILEFIGHTER_ENABLED == true && eqClassProperties.EQClass == ClassEQType.Monk)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.AGILEFIGHTER_SPELL_ID, 1);
 
                     // Harm Touch
                     if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true && Configuration.COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.ShadowKnight)

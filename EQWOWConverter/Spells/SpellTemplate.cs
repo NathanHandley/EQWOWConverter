@@ -336,6 +336,7 @@ namespace EQWOWConverter.Spells
         public bool ShowFocusBoostInDescriptionIfExists = false;
         public bool IsllusionSpellParent = false;
         public bool ForceHiddenFromDisplay = false;
+        public bool IsPassiveAbility = false;
         public bool CannotBeStolen = false;
         public SpellTemplate? IllusionSpellParent = null;
         public int MaleFormSpellTemplateID = 0;
