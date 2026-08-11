@@ -350,6 +350,7 @@ namespace EQWOWConverter.Spells
         public int EquippedItemClass = -1;
         public int EquippedItemSubClassMask = 0;
         public int EquippedItemInventoryTypeMask = 0;
+        public bool RequiresMainHandWeapon = false;
         public bool UsesRangedWeaponSlot = false;
         public bool AllowInShapeshift = false;
 

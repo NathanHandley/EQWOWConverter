@@ -3023,6 +3023,59 @@ namespace EQWOWConverter
                 spellTemplates.Add(slamSpellTemplate);
             }
 
+            // Piercing Backstab
+            if (Configuration.COMBATSKILL_PIERCINGBACKSTAB_ENABLED == true)
+            {
+                int piercingBackstabSpellIconID = Configuration.COMBATSKILL_PIERCINGBACKSTAB_SPELL_ICON_EQ_ID;
+                if (piercingBackstabSpellIconID < 0 || piercingBackstabSpellIconID > 22)
+                {
+                    Logger.WriteError("COMBATSKILL_PIERCINGBACKSTAB_SPELL_ICON_EQ_ID value must be 0-22. Setting to 0");
+                    piercingBackstabSpellIconID = 0;
+                }
+                int piercingBackstabLearnLevel = Configuration.COMBATSKILL_PIERCINGBACKSTAB_LEARN_LEVEL;
+                int piercingBackstabMaxScalingLevel = Configuration.COMBATSKILL_PIERCINGBACKSTAB_MAX_SCALING_LEVEL;
+                int piercingBackstabLearnPercent = Configuration.COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_LEARN_LEVEL;
+                int piercingBackstabMaxPercent = Configuration.COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_MAX_LEVEL;
+                float piercingBackstabPercentPerLevel = 0;
+                if (piercingBackstabMaxScalingLevel > piercingBackstabLearnLevel)
+                    piercingBackstabPercentPerLevel = Convert.ToSingle(piercingBackstabMaxPercent - piercingBackstabLearnPercent) / Convert.ToSingle(piercingBackstabMaxScalingLevel - piercingBackstabLearnLevel);
+                SpellTemplate piercingBackstabSpellTemplate = new SpellTemplate();
+                piercingBackstabSpellTemplate.Name = "Piercing Backstab";
+                piercingBackstabSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_PIERCINGBACKSTAB_SPELL_ID;
+                piercingBackstabSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                piercingBackstabSpellTemplate.Description = string.Concat("Drives a dagger deep into the target's back, dealing ", piercingBackstabLearnPercent.ToString(),
+                    "% weapon damage, growing to ", piercingBackstabMaxPercent.ToString(), "% by level ", piercingBackstabMaxScalingLevel.ToString(), ". Must be behind the target.");
+                piercingBackstabSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(piercingBackstabSpellIconID);
+                piercingBackstabSpellTemplate.CastTimeInMS = 0;
+                piercingBackstabSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_PIERCINGBACKSTAB_COOLDOWN_IN_MS);
+                piercingBackstabSpellTemplate.Category = Convert.ToUInt32(bashAndSlamSpellCategoryID); // Shared cooldown with Bash and Slam
+                piercingBackstabSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_PIERCINGBACKSTAB_COOLDOWN_IN_MS);
+                piercingBackstabSpellTemplate.SetSpellRangeToMeleeRange();
+                piercingBackstabSpellTemplate.SchoolMask = 1; // Physical
+                piercingBackstabSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)
+                piercingBackstabSpellTemplate.AllowInShapeshift = true;
+                piercingBackstabSpellTemplate.TriggersGlobalCooldown = true; // Unlike Bash and Slam
+                piercingBackstabSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                piercingBackstabSpellTemplate.InitiatesAutoAttack = true;
+                piercingBackstabSpellTemplate.MinimumPlayerLearnLevel = piercingBackstabLearnLevel;
+                piercingBackstabSpellTemplate.EquippedItemClass = 2; // ITEM_CLASS_WEAPON
+                piercingBackstabSpellTemplate.EquippedItemSubClassMask = 1 << 15; // ITEM_SUBCLASS_WEAPON_DAGGER
+                piercingBackstabSpellTemplate.RequiresMainHandWeapon = true;
+                piercingBackstabSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
+                piercingBackstabSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
+                piercingBackstabSpellTemplate.SpellVisualID1 = Convert.ToUInt32(Configuration.DBCID_SPELLVISUAL_BACKSTAB_ID); // Stock Backstab visual
+                SpellEffectWOW piercingBackstabDamageEffect = new SpellEffectWOW(SpellWOWEffectType.WeaponPercentDamage, SpellWOWAuraType.None, 0, 0, 1, piercingBackstabLearnPercent - 1, 0, 0);
+                piercingBackstabDamageEffect.EffectRealPointsPerLevel = piercingBackstabPercentPerLevel;
+                piercingBackstabDamageEffect.CalcEffectLowLevelValue = piercingBackstabLearnPercent;
+                piercingBackstabDamageEffect.CalcEffectLowLevel = piercingBackstabLearnLevel;
+                piercingBackstabDamageEffect.CalcEffectHighLevelValue = piercingBackstabMaxPercent;
+                piercingBackstabDamageEffect.CalcEffectHighLevel = piercingBackstabMaxScalingLevel;
+                piercingBackstabDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+                piercingBackstabDamageEffect.ActionDescription = "backstabs";
+                piercingBackstabSpellTemplate.WOWSpellEffects.Add(piercingBackstabDamageEffect);
+                spellTemplates.Add(piercingBackstabSpellTemplate);
+            }
+
             // Harm Touch
             if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true)
             {

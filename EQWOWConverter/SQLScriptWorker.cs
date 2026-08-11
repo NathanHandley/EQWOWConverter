@@ -120,6 +120,7 @@ namespace EQWOWConverter
         private SkillFishingBaseLevelSQL skillFishingBaseLevelSQL = new SkillFishingBaseLevelSQL();
         private SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
         private SpellBonusDataSQL spellBonusDataSQL = new SpellBonusDataSQL();
+        private SpellCustomAttrSQL spellCustomAttrSQL = new SpellCustomAttrSQL();
         private SpellGroupSQL spellGroupSQL = new SpellGroupSQL();
         private SpellProcSQL spellProcSQL = new SpellProcSQL();
         private ModEverquestTalentExclusionSQL modEverquestTalentExclusionSQL = new ModEverquestTalentExclusionSQL();
@@ -1673,6 +1674,10 @@ namespace EQWOWConverter
             foreach (PlayerClassMapping classMapping in PlayerClassMapping.GetClassMappingsByWOWClass().Values)
                 modEverquestClassMapSQL.AddRow(classMapping.WOWClass, classMapping.BaseEQClass, classMapping.DefaultSecondEQClass, classMapping.AllowedSecondEQClasses);
 
+            // Piercing Backstab requires the caster to be behind the target, which only exists as a server-side custom attribute (applied at startup from spell_custom_attr)
+            if (Configuration.COMBATSKILL_PIERCINGBACKSTAB_ENABLED == true)
+                spellCustomAttrSQL.AddRow(Configuration.COMBATSKILL_PIERCINGBACKSTAB_SPELL_ID, 131072); // 0x00020000 (SPELL_ATTR0_CU_REQ_CASTER_BEHIND_TARGET)
+
             // Item Adds, Spell and Skill Learns - By EQ Class
             Dictionary<ClassEQType, PlayerEQClassProperties> eqClassPropertiesByEQClass = PlayerEQClassProperties.GetAllEQClassPropertiesByEQClass();
             foreach (PlayerEQClassProperties eqClassProperties in eqClassPropertiesByEQClass.Values)
@@ -1724,6 +1729,10 @@ namespace EQWOWConverter
                     // Pick Pocket (Existing WoW version)
                     if (Configuration.CREATURE_PICKPOCKET_LOOT_ENABLED == true && eqClassProperties.EQClass == ClassEQType.Rogue)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 921, 7);  // Pick Pocket
+
+                    // Piercing Backstab
+                    if (Configuration.COMBATSKILL_PIERCINGBACKSTAB_ENABLED == true && Configuration.COMBATSKILL_PIERCINGBACKSTAB_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.Rogue)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_PIERCINGBACKSTAB_SPELL_ID, Configuration.COMBATSKILL_PIERCINGBACKSTAB_LEARN_LEVEL);
 
                     // Auto Shot (Existing WoW version)
                     if (eqClassProperties.EQClass == ClassEQType.Ranger)
@@ -2680,6 +2689,7 @@ namespace EQWOWConverter
             skillFishingBaseLevelSQL.SaveToDisk("skill_fishing_base_level", SQLFileType.World);
             smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
             spellBonusDataSQL.SaveToDisk("spell_bonus_data", SQLFileType.World);
+            spellCustomAttrSQL.SaveToDisk("spell_custom_attr", SQLFileType.World);
             spellGroupSQL.SaveToDisk("spell_group", SQLFileType.World);
             spellProcSQL.SaveToDisk("spell_proc", SQLFileType.World); // spell_ex44
             modEverquestTalentExclusionSQL.SaveToDisk("mod_everquest_talent_exclusion", SQLFileType.World); // spell_ex44
