@@ -657,6 +657,10 @@ namespace EQWOWConverter
             skillRaceClassInfoDBC.AddRow(39, wowClassTypes);
             skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "39", "1784"), 39, 1784, 2); // Stealth
 
+            // Make rogue Pick Pocket available to other classes
+            if (Configuration.CREATURE_PICKPOCKET_LOOT_ENABLED == true)
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "39", "921"), 39, 921, 0); // Pick Pocket
+
             // Make rogue Pick Lock available to other classes, since the EQ rogue class can land on any WOW class
             skillRaceClassInfoDBC.AddRow(633, wowClassTypes);
             skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "633", "1804"), 633, 1804, 2); // Pick Lock

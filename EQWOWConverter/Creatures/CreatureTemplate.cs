@@ -54,6 +54,7 @@ namespace EQWOWConverter.Creatures
         public int MerchantID = 0;
         public int EQLootTableID = 0;
         public int WOWLootID = 0;
+        public int WOWPickpocketLootID = 0;
         public int MoneyMinInCopper = 0;
         public int MoneyMaxInCopper = 0;
         public bool HasMana = false;
@@ -153,6 +154,17 @@ namespace EQWOWConverter.Creatures
             if (IsRidingTrainer == true)
                 return true;
             return false;
+        }
+
+        public bool CanBePickpocketed()
+        {
+            if (EQBodyType != 1) // Humanoid
+                return false;
+            if (IsPet == true || IsCompanionPet == true)
+                return false;
+            if (IsNonNPC == true)
+                return false;
+            return true;
         }
 
         public bool IsTameable()

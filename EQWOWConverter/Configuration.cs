@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 63;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 64;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -629,6 +629,11 @@ namespace EQWOWConverter
         public static float CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT = 1.0f;
         public static float CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT = 5.0f;
         public static float CREATURE_COMPANION_PETS_MODEL_HEIGHT = 0.7f;
+
+        // If Pick Pocket should be enabled for EQ Humanoids
+        public static bool CREATURE_PICKPOCKET_LOOT_ENABLED = true;
+        // The odds that a pick attempt will yield an item
+        public static float CREATURE_PICKPOCKET_LOOT_TOTAL_CHANCE = 35.0f;
 
         //=====================================================================
         // Items
@@ -1757,6 +1762,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT", CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT, "", false);
             OutputVariableToConfig("CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT", CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT, "", false);
             OutputVariableToConfig("CREATURE_COMPANION_PETS_MODEL_HEIGHT", CREATURE_COMPANION_PETS_MODEL_HEIGHT, "");
+            OutputVariableToConfig("CREATURE_PICKPOCKET_LOOT_ENABLED", CREATURE_PICKPOCKET_LOOT_ENABLED, "If Pick Pocket should be enabled for EQ Humanoids", false);
+            OutputVariableToConfig("CREATURE_PICKPOCKET_LOOT_TOTAL_CHANCE", CREATURE_PICKPOCKET_LOOT_TOTAL_CHANCE, "The odds that a pick attempt will yield an item");
             OutputVariableToConfig("ITEMS_USE_ALTERNATE_STATS", ITEMS_USE_ALTERNATE_STATS, "If true, this uses alternate stats for items that have been tweaked for balance reasons");
             OutputVariableToConfig("ITEMS_WEAPON_DELAY_REDUCTION_AMT", ITEMS_WEAPON_DELAY_REDUCTION_AMT, "This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;");
             OutputVariableToConfig("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", ITEMS_WEAPON_EFFECT_PPM_BASE_RATE, "This is the base PPM (Procs Per Minute) used for weapon proc weapons");
@@ -2242,6 +2249,8 @@ namespace EQWOWConverter
             CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT = ReadVariableFromConfigString("CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT", configValuesByVariableName, CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT);
             CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT = ReadVariableFromConfigString("CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT", configValuesByVariableName, CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT);
             CREATURE_COMPANION_PETS_MODEL_HEIGHT = ReadVariableFromConfigString("CREATURE_COMPANION_PETS_MODEL_HEIGHT", configValuesByVariableName, CREATURE_COMPANION_PETS_MODEL_HEIGHT);
+            CREATURE_PICKPOCKET_LOOT_ENABLED = ReadVariableFromConfigString("CREATURE_PICKPOCKET_LOOT_ENABLED", configValuesByVariableName, CREATURE_PICKPOCKET_LOOT_ENABLED);
+            CREATURE_PICKPOCKET_LOOT_TOTAL_CHANCE = ReadVariableFromConfigString("CREATURE_PICKPOCKET_LOOT_TOTAL_CHANCE", configValuesByVariableName, CREATURE_PICKPOCKET_LOOT_TOTAL_CHANCE);
 
             ITEMS_USE_ALTERNATE_STATS = ReadVariableFromConfigString("ITEMS_USE_ALTERNATE_STATS", configValuesByVariableName, ITEMS_USE_ALTERNATE_STATS);
             ITEMS_WEAPON_DELAY_REDUCTION_AMT = ReadVariableFromConfigString("ITEMS_WEAPON_DELAY_REDUCTION_AMT", configValuesByVariableName, ITEMS_WEAPON_DELAY_REDUCTION_AMT);

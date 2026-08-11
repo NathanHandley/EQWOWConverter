@@ -118,6 +118,7 @@ namespace EQWOWConverter.Items
         public int WeaponDelay = 0;
         public int EQClassMask = 32767;
         public int EQSlotMask = 0;
+        public int EQItemClass = 0; // (0 = common, 1 = container, 2 = book)
         public List<ClassEQType> AllowedClassTypesEQ = new List<ClassEQType>();
         public List<(ItemWOWStatType, int)> StatValues = new List<(ItemWOWStatType, int)>();
         public int Armor = 0;
@@ -129,6 +130,7 @@ namespace EQWOWConverter.Items
         public int Block = 0;
         public bool DoesVanishOnLogout = false;
         public bool IsNoDrop = false;
+        public bool IsMagic = false;
         public ItemDisplayInfo? ItemDisplayInfo = null;
         public bool DoesTeachSpell = false;
         public int LearningSpellID = 483; // On-use spell for learn items (483 "Learning", 55884 for companion pets). The "Use:" tooltip text comes from the item description, not this spell.
@@ -260,6 +262,49 @@ namespace EQWOWConverter.Items
             if (EQClickSpellEffectID >= 1252 && EQClickSpellEffectID <= 1266)
                 return true;
             return false;
+        }
+
+        // Logic taken from TAKP's NPC::PickPocket (never lets magic, no-drop, or container items be picked)
+        public bool IsPickpocketableItemType()
+        {
+            if (IsMagic == true)
+                return false;
+            if (IsNoDrop == true)
+                return false;
+            if (EQItemClass == 1) // Container
+                return false;
+            return true;
+        }
+
+        public bool WouldCreatureAttemptToEquip(int lootDropEquipItem)
+        {
+            if (lootDropEquipItem <= 0)
+                return false;
+            if (EQItemClass != 0) // Common
+                return false;
+            return EQSlotMask != 0;
+        }
+
+        public List<int> GetCreatureEquipSlots()
+        {
+            // TAKP's NPC::AddLootDrop - Creatures only ever fill ear (first position), wrist, and finger so collapse into one
+            List<int> equipSlots = new List<int>();
+            for (int slotIndex = 0; slotIndex < 22; slotIndex++)
+            {
+                if ((EQSlotMask & (1 << slotIndex)) == 0)
+                    continue;
+                int collapsedSlotIndex = slotIndex;
+                switch (slotIndex)
+                {
+                    case 4: collapsedSlotIndex = 1; break;   // Ear2 to  Ear1
+                    case 10: collapsedSlotIndex = 9; break;  // Wrist2 to Wrist1
+                    case 16: collapsedSlotIndex = 15; break; // Finger2 to Finger1
+                    default: break;
+                }
+                if (equipSlots.Contains(collapsedSlotIndex) == false)
+                    equipSlots.Add(collapsedSlotIndex);
+            }
+            return equipSlots;
         }
 
         public int GetCreatureGrantableWornEffectSpellID(Dictionary<int, SpellTemplate> spellTemplatesByEQID)
@@ -1772,6 +1817,8 @@ namespace EQWOWConverter.Items
                 // Binding Properties
                 newItemTemplate.IsNoDrop = int.Parse(columns["nodrop"]) == 0 ? true : false;
                 newItemTemplate.DoesVanishOnLogout = int.Parse(columns["norent"]) == 0 ? true : false;
+                newItemTemplate.IsMagic = int.Parse(columns["magic"]) != 0 ? true : false;
+                newItemTemplate.EQItemClass = int.Parse(columns["itemclass"]);
 
                 // Book info
                 if (bookTextName.Length > 0)

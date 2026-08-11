@@ -182,7 +182,7 @@ namespace EQWOWConverter.WOWFiles
             }   
             newRow.AddInt("type_flags", typeFlags); // "Is this minable, tameable, etc"
             newRow.AddInt("lootid", creatureTemplate.WOWLootID);
-            newRow.AddInt("pickpocketloot", 0);
+            newRow.AddInt("pickpocketloot", creatureTemplate.WOWPickpocketLootID);
             newRow.AddInt("skinloot", 0);
             newRow.AddInt("PetSpellDataId", 0);
             newRow.AddInt("VehicleId", 0);

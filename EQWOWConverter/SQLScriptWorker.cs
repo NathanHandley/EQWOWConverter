@@ -108,6 +108,7 @@ namespace EQWOWConverter
         private NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
         private PageTextSQL pageTextSQL = new PageTextSQL();
         private PetNameGenerationSQL petNameGenerationSQL = new PetNameGenerationSQL();
+        private PickpocketingLootTemplateSQL pickpocketingLootTemplateSQL = new PickpocketingLootTemplateSQL();
         private PlayerClassStatsSQL playerClassStatsSQL = new PlayerClassStatsSQL();
         private PlayerCreateInfoSpellCustomSQL playerCreateInfoSpellCustomSQL = new PlayerCreateInfoSpellCustomSQL();
         private PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
@@ -134,7 +135,8 @@ namespace EQWOWConverter
 
         public void CreateSQLScripts(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
             List<CreatureSpawnPool> creatureSpawnPools, Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID,
-            Dictionary<int, List<CreatureLootEntry>> creatureLootEntriesByCreatureTemplateID, List<QuestTemplate> questTemplates,
+            Dictionary<int, List<CreatureLootEntry>> creatureLootEntriesByCreatureTemplateID,
+            Dictionary<int, List<ItemLootTemplate>> pickpocketLootTemplatesByCreatureTemplateID, List<QuestTemplate> questTemplates,
             List<TradeskillRecipe> tradeskillRecipes, List<SpellTemplate> spellTemplates, List<GameEvent> gameEvents)
         {
             Logger.WriteInfo("Creating SQL Scripts...");
@@ -182,7 +184,8 @@ namespace EQWOWConverter
                 gameEventSQL.AddRow(gameEvent);
 
             // Items
-            PopulateItemData(itemLootTemplatesByCreatureTemplateID, creatureLootEntriesByCreatureTemplateID, spellTemplatesByEQID);
+            PopulateItemData(itemLootTemplatesByCreatureTemplateID, creatureLootEntriesByCreatureTemplateID, pickpocketLootTemplatesByCreatureTemplateID,
+                spellTemplatesByEQID);
 
             // Illusion appearance displays
             PopulateIllusionDisplayData(creatureModelTemplates);
@@ -1405,7 +1408,8 @@ namespace EQWOWConverter
         }
 
         private void PopulateItemData(Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID,
-            Dictionary<int, List<CreatureLootEntry>> creatureLootEntriesByCreatureTemplateID, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
+            Dictionary<int, List<CreatureLootEntry>> creatureLootEntriesByCreatureTemplateID, Dictionary<int, List<ItemLootTemplate>> pickpocketLootTemplatesByCreatureTemplateID,
+            Dictionary<int, SpellTemplate> spellTemplatesByEQID)
         {
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWID = ItemTemplate.GetItemTemplatesByWOWEntryID();
             HashSet<int> addedLearnScrollItemIDs = new HashSet<int>();
@@ -1495,6 +1499,10 @@ namespace EQWOWConverter
             foreach (var creatureLootEntriesForCreature in creatureLootEntriesByCreatureTemplateID.Values)
                 foreach (CreatureLootEntry creatureLootEntry in creatureLootEntriesForCreature)
                     modEverquestCreatureLootSQL.AddRow(creatureLootEntry);
+
+            foreach (var pickpocketLootTemplatesForCreature in pickpocketLootTemplatesByCreatureTemplateID.Values)
+                foreach (ItemLootTemplate pickpocketLootTemplate in pickpocketLootTemplatesForCreature)
+                    pickpocketingLootTemplateSQL.AddRow(pickpocketLootTemplate);
 
             // Page text (for books)
             foreach (ItemTemplate.BookText bookText in ItemTemplate.GetAllBookTexts())
@@ -1706,11 +1714,15 @@ namespace EQWOWConverter
                     if (eqClassProperties.EQClass == ClassEQType.Rogue)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1804, 1);  // Pick Lock
 
+                    // Pick Pocket (Existing WoW version)
+                    if (Configuration.CREATURE_PICKPOCKET_LOOT_ENABLED == true && eqClassProperties.EQClass == ClassEQType.Rogue)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 921, 7);  // Pick Pocket
+
                     // Auto Shot (Existing WoW version)
                     if (eqClassProperties.EQClass == ClassEQType.Ranger)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 75, 1);  // Auto Shot
 
-                    // Dual Wield (Existing WoW version) - Learned at the EQ-appropriate level.
+                    // Dual Wield (Existing WoW version)
                     int dualWieldLearnLevel = 0;
                     switch (eqClassProperties.EQClass)
                     {
@@ -2649,6 +2661,7 @@ namespace EQWOWConverter
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
             pageTextSQL.SaveToDisk("page_text", SQLFileType.World);
             petNameGenerationSQL.SaveToDisk("pet_name_generation", SQLFileType.World);
+            pickpocketingLootTemplateSQL.SaveToDisk("pickpocketing_loot_template", SQLFileType.World);
             playerClassStatsSQL.SaveToDisk("player_class_stats", SQLFileType.World);
             playerCreateInfoSpellCustomSQL.SaveToDisk("playercreateinfo_spell_custom", SQLFileType.World);
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);

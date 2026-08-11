@@ -231,7 +231,9 @@ namespace EQWOWConverter
             // Loot
             Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID;
             Dictionary<int, List<CreatureLootEntry>> creatureLootEntriesByCreatureTemplateID;
-            ConvertLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID, out creatureLootEntriesByCreatureTemplateID);
+            Dictionary<int, List<ItemLootTemplate>> pickpocketLootTemplatesByCreatureTemplateID;
+            ConvertLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID, out creatureLootEntriesByCreatureTemplateID,
+                out pickpocketLootTemplatesByCreatureTemplateID);
 
             // Forage
             ConvertForage(ref itemTemplatesByEQDBID);
@@ -349,9 +351,8 @@ namespace EQWOWConverter
             {
                 // Create the SQL Scripts (note: this must always be after DBC files)
                 SQLScriptWorker sqlWorker = new SQLScriptWorker();
-                sqlWorker.CreateSQLScripts(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools,
-                    itemLootTemplatesByCreatureTemplateID, creatureLootEntriesByCreatureTemplateID, questTemplates, tradeskillRecipes, spellTemplates,
-                    gameEvents);
+                sqlWorker.CreateSQLScripts(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID, 
+                    creatureLootEntriesByCreatureTemplateID, pickpocketLootTemplatesByCreatureTemplateID, questTemplates, tradeskillRecipes, spellTemplates, gameEvents);
 
                 if (Configuration.DEPLOY_SERVER_FILES == true)
                     DeployServerFiles();
@@ -1811,7 +1812,8 @@ namespace EQWOWConverter
         }
 
         public void ConvertLoot(List<CreatureTemplate> creatureTemplates, out Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID,
-            out Dictionary<int, List<CreatureLootEntry>> creatureLootEntriesByCreatureTemplateID)
+            out Dictionary<int, List<CreatureLootEntry>> creatureLootEntriesByCreatureTemplateID,
+            out Dictionary<int, List<ItemLootTemplate>> pickpocketLootTemplatesByCreatureTemplateID)
         {
             Logger.WriteInfo("Converting loot tables...");
 
@@ -1821,6 +1823,7 @@ namespace EQWOWConverter
             // EQ uses a different way to calculate drop/roll results and the nuance is handled by the mod-everquest code
             itemLootTemplatesByCreatureTemplateID = new Dictionary<int, List<ItemLootTemplate>>();
             creatureLootEntriesByCreatureTemplateID = new Dictionary<int, List<CreatureLootEntry>>();
+            pickpocketLootTemplatesByCreatureTemplateID = new Dictionary<int, List<ItemLootTemplate>>();
             Dictionary<int, ItemLootDrop> itemLootDropsByEQID = ItemLootDrop.GetItemLootDropsByEQID();
             Dictionary<int, ItemLootTable> itemLootTablesByEQID = ItemLootTable.GetItemLootTablesByEQID();
             bool doCompanionPetDrops = Configuration.CREATURE_COMPANION_PETS_DROPS_ENABLED == true && CreatureCompanionPet.GetEnabledCompanionPetsByID().Count > 0;
@@ -1829,6 +1832,9 @@ namespace EQWOWConverter
                 List<CreatureLootEntry> lootEntries = new List<CreatureLootEntry>();
                 Dictionary<int, float> catalogChanceByItemID = new Dictionary<int, float>();
                 Dictionary<int, string> catalogCommentByItemID = new Dictionary<int, string>();
+                List<PickpocketCandidate> pickpocketCandidates = new List<PickpocketCandidate>();
+                Dictionary<int, int> creatureEquipSlotCounts = new Dictionary<int, int>();
+                bool canBePickpocketed = Configuration.CREATURE_PICKPOCKET_LOOT_ENABLED == true && creatureTemplate.CanBePickpocketed() == true;
                 int lootGroupID = 1;
 
                 // EQ loot table drops, for creatures that have a loot table
@@ -1874,6 +1880,18 @@ namespace EQWOWConverter
                             ItemTemplate curItemTemplate = itemTemplatesByEQDBID[itemDropEntry.ItemIDEQ];
                             curItemTemplate.IsDroppedByCreature = true;
 
+                            // Tally up things creatures would equip for pickpocketing, since in EQ you can't steal equipped stuff
+                            if (canBePickpocketed == true && curItemTemplate.WouldCreatureAttemptToEquip(itemDropEntry.EquipItem) == true)
+                            {
+                                foreach (int equipSlot in curItemTemplate.GetCreatureEquipSlots())
+                                {
+                                    if (creatureEquipSlotCounts.ContainsKey(equipSlot) == true)
+                                        creatureEquipSlotCounts[equipSlot]++;
+                                    else
+                                        creatureEquipSlotCounts.Add(equipSlot, 1);
+                                }
+                            }
+
                             // Items that have class specific copies need to be added for each copy, otherwise just one
                             List<(int wowItemID, float chance, string nameSuffix)> resolvedItems = new List<(int, float, string)>();
                             if (curItemTemplate.ClassSpecificItemVersionsByEQClassID.Count > 0)
@@ -1918,6 +1936,17 @@ namespace EQWOWConverter
                                     catalogChanceByItemID[resolvedItem.wowItemID] = resolvedItem.chance;
                                 if (catalogCommentByItemID.ContainsKey(resolvedItem.wowItemID) == false)
                                     catalogCommentByItemID[resolvedItem.wowItemID] = string.Concat(creatureTemplate.Name, " - ", curItemTemplate.Name, resolvedItem.nameSuffix);
+
+                                // Pickpocket
+                                if (canBePickpocketed == true && curItemTemplate.IsPickpocketableItemType() == true)
+                                {
+                                    PickpocketCandidate newCandidate = new PickpocketCandidate();
+                                    newCandidate.WOWItemTemplateID = resolvedItem.wowItemID;
+                                    newCandidate.Chance = resolvedItem.chance;
+                                    newCandidate.ItemTemplate = curItemTemplate;
+                                    newCandidate.LootDropEquipItem = itemDropEntry.EquipItem;
+                                    pickpocketCandidates.Add(newCandidate);
+                                }
                             }
                         }
 
@@ -1963,11 +1992,85 @@ namespace EQWOWConverter
                     creatureLootEntriesByCreatureTemplateID.Add(creatureTemplate.WOWCreatureTemplateID, lootEntries);
                     creatureTemplate.WOWLootID = creatureTemplate.WOWCreatureTemplateID;
                 }
+
+                if (pickpocketCandidates.Count > 0)
+                {
+                    Dictionary<int, float> pickpocketWeightByItemID = ResolvePickpocketWeights(pickpocketCandidates, creatureEquipSlotCounts);
+                    List<ItemLootTemplate> pickpocketLootTemplates = BuildPickpocketLootTemplates(creatureTemplate, pickpocketWeightByItemID, catalogCommentByItemID);
+                    if (pickpocketLootTemplates.Count > 0)
+                    {
+                        pickpocketLootTemplatesByCreatureTemplateID.Add(creatureTemplate.WOWCreatureTemplateID, pickpocketLootTemplates);
+                        creatureTemplate.WOWPickpocketLootID = creatureTemplate.WOWCreatureTemplateID;
+                    }
+                }
             }
 
             Logger.WriteInfo("Item and loot conversion complete.");
         }
 
+        private class PickpocketCandidate
+        {
+            public int WOWItemTemplateID = 0;
+            public float Chance = 0;
+            public ItemTemplate ItemTemplate = new ItemTemplate();
+            public int LootDropEquipItem = 0;
+        }
+
+        private Dictionary<int, float> ResolvePickpocketWeights(List<PickpocketCandidate> pickpocketCandidates, Dictionary<int, int> creatureEquipSlotCounts)
+        {
+
+            Dictionary<int, float> pickpocketWeightByItemID = new Dictionary<int, float>();
+            foreach (PickpocketCandidate candidate in pickpocketCandidates)
+            {
+                if (candidate.ItemTemplate.WouldCreatureAttemptToEquip(candidate.LootDropEquipItem) == true)
+                {
+                    bool isSlotContested = false;
+                    foreach (int equipSlot in candidate.ItemTemplate.GetCreatureEquipSlots())
+                        if (creatureEquipSlotCounts.ContainsKey(equipSlot) == true && creatureEquipSlotCounts[equipSlot] >= 2)
+                            isSlotContested = true;
+                    if (isSlotContested == false)
+                        continue;
+                }
+
+                if (pickpocketWeightByItemID.TryGetValue(candidate.WOWItemTemplateID, out float existingWeight) == false || candidate.Chance > existingWeight)
+                    pickpocketWeightByItemID[candidate.WOWItemTemplateID] = candidate.Chance;
+            }
+            return pickpocketWeightByItemID;
+        }
+
+        private List<ItemLootTemplate> BuildPickpocketLootTemplates(CreatureTemplate creatureTemplate, Dictionary<int, float> pickpocketWeightByItemID, Dictionary<int, string> commentByItemID)
+        {
+            List<ItemLootTemplate> pickpocketLootTemplates = new List<ItemLootTemplate>();
+            float totalWeight = 0;
+            foreach (float itemWeight in pickpocketWeightByItemID.Values)
+                totalWeight += itemWeight;
+            if (totalWeight <= 0)
+                return pickpocketLootTemplates;
+
+            float totalChance = Math.Clamp(Configuration.CREATURE_PICKPOCKET_LOOT_TOTAL_CHANCE, 0f, 100f);
+            if (totalChance <= 0)
+                return pickpocketLootTemplates;
+
+            foreach (var pickpocketItem in pickpocketWeightByItemID)
+            {
+                ItemLootTemplate newPickpocketLootTemplate = new ItemLootTemplate();
+                newPickpocketLootTemplate.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
+                newPickpocketLootTemplate.ItemTemplateEntryID = pickpocketItem.Key;
+
+                // A zero chance treats each row as "equal chance" in a group, so never let round to zero to avoid too much loot
+                float itemChance = MathF.Round((pickpocketItem.Value / totalWeight) * totalChance, 4);
+                newPickpocketLootTemplate.Chance = MathF.Max(itemChance, 0.0001f);
+                newPickpocketLootTemplate.GroupID = 1;
+                newPickpocketLootTemplate.MinCount = 1;
+                newPickpocketLootTemplate.MaxCount = 1;
+                if (commentByItemID.ContainsKey(pickpocketItem.Key) == true)
+                    newPickpocketLootTemplate.Comment = commentByItemID[pickpocketItem.Key];
+                else
+                    newPickpocketLootTemplate.Comment = string.Concat(creatureTemplate.Name, " - Pick Pocket");
+                pickpocketLootTemplates.Add(newPickpocketLootTemplate);
+            }
+            return pickpocketLootTemplates;
+        }
 
         // Generate data needed for the database viewer site
         private class EffectiveLootDisplay
