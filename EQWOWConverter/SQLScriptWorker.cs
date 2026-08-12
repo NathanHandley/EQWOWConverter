@@ -1278,7 +1278,7 @@ namespace EQWOWConverter
                         int minRespawnTimeInSec = Math.Max(1, spawnInstance.RespawnTimeInSeconds - (spawnInstance.Variance / 2));
                         return Math.Min(minRespawnTimeInSec, maxRespawnTimeInSec);
                     }
-                default: return 300;
+                default: return Configuration.CREATURE_STANDARD_RESPAWN_MAX_TIME_IN_SEC;
             }
         }
 
