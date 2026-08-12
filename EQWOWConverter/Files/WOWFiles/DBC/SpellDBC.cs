@@ -52,7 +52,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(attributesExD); // AttributesExD
             newRow.AddUInt32(GetAttributesExE(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExE
             newRow.AddUInt32(GetAttributesExF(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExF
-            newRow.AddUInt32(0); // AttributesExG
+            newRow.AddUInt32(GetAttributesExG(spellTemplate)); // AttributesExG
             if (spellTemplate.AllowInShapeshift == true)
                 newRow.AddUInt64(0xFFFFFFFFFFFFFFFF); // ShapeshiftMask (all forms when allowed in shapeshift)
             else
@@ -402,6 +402,14 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 4; // SPELL_ATTR6_NOT_AN_ATTACK (0x00000004)
                 attributeFlags |= 8; // SPELL_ATTR6_CAN_ASSIST_IMMUNE_PC
             }
+            return attributeFlags;
+        }
+
+        private UInt32 GetAttributesExG(SpellTemplate spellTemplate)
+        {
+            UInt32 attributeFlags = 0;
+            if (spellTemplate.NeverMisses == true)
+                attributeFlags |= 33554432; // SPELL_ATTR7_NO_ATTACK_MISS (0x02000000) - Skips the hit/miss roll, but immunities/evade/reflect still apply (unlike SPELL_ATTR3_ALWAYS_HIT)
             return attributeFlags;
         }
 

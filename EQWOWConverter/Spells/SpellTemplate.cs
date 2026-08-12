@@ -274,6 +274,7 @@ namespace EQWOWConverter.Spells
         public bool NoPartialImmunity = false;
         public int MaxCreatureTargetLevel = 0; // 0 = no limit
         public bool IsUnresistable = false;
+        public bool NeverMisses = false; // Skips the hit/miss roll but still respects immunities (unlike IsUnresistable)
         public int ResistDiff = 0; // EQ resist roll modifier, negative lands more often
         public UInt32 DefenseType = 0; // 0 None, 1 Magic, 2 Melee, 3 Ranged
         public UInt32 PreventionType = 0; // 0 None, 1 Silence, 2 Pacify, 4 No Actions

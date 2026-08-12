@@ -3096,6 +3096,7 @@ namespace EQWOWConverter
                 harmTouchSpellTemplate.SpellRange = Configuration.COMBATSKILL_HARMTOUCH_RANGE;
                 harmTouchSpellTemplate.SchoolMask = 32; // Shadow
                 harmTouchSpellTemplate.DefenseType = 1; // Magic
+                harmTouchSpellTemplate.NeverMisses = true;
                 harmTouchSpellTemplate.EQSpellVisualEffectIndex = 8;
                 harmTouchSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(harmTouchSpellTemplate.EQSpellVisualEffectIndex, SpellVisualType.Detrimental).SpellVisualDBCID);
                 harmTouchSpellTemplate.TriggersGlobalCooldown = false;
