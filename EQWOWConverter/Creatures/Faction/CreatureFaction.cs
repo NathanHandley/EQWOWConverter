@@ -360,6 +360,18 @@ namespace EQWOWConverter.Creatures
                 }
             }
 
+            // Allow disable of friendly creatures attacking KOS
+            if (Configuration.CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED == false)
+            {
+                foreach (CreatureFaction creatureFaction in CreatureFactionsByWOWFactionID.Values)
+                {
+                    creatureFaction.EnemyFaction1 = 0;
+                    creatureFaction.EnemyFaction2 = 0;
+                    creatureFaction.EnemyFaction3 = 0;
+                    creatureFaction.EnemyFaction4 = 0;
+                }
+            }
+
             // Update the parents for these factions
             int parentFactionID = GetRootFactionParentWOWFactionID();
             if (parentFactionID > 0)

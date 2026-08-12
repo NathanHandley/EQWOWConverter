@@ -537,6 +537,9 @@ namespace EQWOWConverter
         // If set to true, all factions will show up for EverQuest in the faction list immediately
         public static bool CREATURE_FACTION_SHOW_ALL = true;
 
+        // If true, factions that defend friendly players always attack KOS factions
+        public static bool CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED = false;
+
         // What to multiple the EverQuest reputation rewards by.  WOW is approx 20-30x that of EQ in band.
         public static int CREATURE_REP_REWARD_MULTIPLIER = 20;
 
@@ -1755,6 +1758,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_NEUTRAL", CREATURE_FACTION_TEMPLATE_NEUTRAL, "For any quest or merchant NPCs that aren't aligned to a raisable or lowerable faction, they will be mapped to this.  Default is Norrath Settlers.", false);
             OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE", CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE, "");
             OutputVariableToConfig("CREATURE_FACTION_SHOW_ALL", CREATURE_FACTION_SHOW_ALL, "If set to true, all factions will show up for EverQuest in the faction list immediately");
+            OutputVariableToConfig("CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED", CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED, "If true, factions that defend friendly players always attack KOS factions");
             OutputVariableToConfig("CREATURE_REP_REWARD_MULTIPLIER", CREATURE_REP_REWARD_MULTIPLIER, "What to multiple the EverQuest reputation rewards by.  WOW is approx 20-30x that of EQ in band.");
             OutputVariableToConfig("CREATURE_GOSSIP_NPC_TEXT_ID", CREATURE_GOSSIP_NPC_TEXT_ID, "ID for the menu text (328 exists already and is just \"Greetings, $n\")");
             OutputTextLineToConfig("# ID for the menu broadcast texts");
@@ -2260,6 +2264,7 @@ namespace EQWOWConverter
             CREATURE_FACTION_TEMPLATE_NEUTRAL = ReadVariableFromConfigString("CREATURE_FACTION_TEMPLATE_NEUTRAL", configValuesByVariableName, CREATURE_FACTION_TEMPLATE_NEUTRAL);
             CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE = ReadVariableFromConfigString("CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE", configValuesByVariableName, CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE);
             CREATURE_FACTION_SHOW_ALL = ReadVariableFromConfigString("CREATURE_FACTION_SHOW_ALL", configValuesByVariableName, CREATURE_FACTION_SHOW_ALL);
+            CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED = ReadVariableFromConfigString("CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED", configValuesByVariableName, CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED);
             CREATURE_REP_REWARD_MULTIPLIER = ReadVariableFromConfigString("CREATURE_REP_REWARD_MULTIPLIER", configValuesByVariableName, CREATURE_REP_REWARD_MULTIPLIER);
             CREATURE_GOSSIP_NPC_TEXT_ID = ReadVariableFromConfigString("CREATURE_GOSSIP_NPC_TEXT_ID", configValuesByVariableName, CREATURE_GOSSIP_NPC_TEXT_ID);
             CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID = ReadVariableFromConfigString("CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID", configValuesByVariableName, CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID);
