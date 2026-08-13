@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 65;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 66;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1245,7 +1245,7 @@ namespace EQWOWConverter
         // ID for spells found in Spell.dbc
         // - Manually created spells reserve IDs from 86900 to 86999 and all are defined in the config
         // - Recipes reserve IDs 87000 to 91362
-        // - Converted spells IDs start at 92000 and base spells range to 95827,
+        // - Converted spells IDs start at 92000 and base spells range to 95840 (95828 - 95840 are the custom "Guise" illusion spells)
         // - SpellIDs 96000 - 96099 currently unused
         // - SpellIDs 96100 - 96199 reserved for 'coat' effects that come from rogue poisons, triggering another spell
         // - SpellIDs 96200 - 97657 reserved for 'clicky' effects (defined in ItemTemplates.csv under clickeffect_wow)
@@ -1376,6 +1376,7 @@ namespace EQWOWConverter
         // - Equipped Click Essence IDs range 114000 - 114932
         // - Quest Template multi-item reward containers IDs range 116000 - 116202
         // - Tradeskill multi-item creation containers IDs range 117000 - 117349
+        // - Guise illusion consumable items range 118000 - 118012
         // - Switched Slot items have IDs 120000 - 121000
         // - Companion Pet Items have IDs 123000 - 124000
         public static int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;

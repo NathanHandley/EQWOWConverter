@@ -323,7 +323,9 @@ namespace EQWOWConverter.Spells
         public bool IsNegateIfCombat = false;
         public bool RemoveAuraWhenCasterCreatureInitsAgro = false;
         public bool PreventAuraClickOff = false;
-        public bool AlwaysPersist = false;
+        public bool AlwaysPersist = false; // Can't click off
+        public bool PersistThroughDeath = false; // Can click off
+        public bool IsCosmeticOnlyIllusion = false;
         public SpellFocusBoostType FocusBoostType = SpellFocusBoostType.None;
         public bool IsFocusBoostableEffect = false;
         public bool IsToggleAura = false;
@@ -524,6 +526,7 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.SpellRadius = Convert.ToInt32(Convert.ToSingle(newSpellTemplate.EQAOERange) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.Category = 0; // Temp / TODO: Figure out how/what to set here
                 newSpellTemplate.RecourseLinkEQSpellID = int.Parse(columns["RecourseLink"]);
+                newSpellTemplate.IsCosmeticOnlyIllusion = int.Parse(columns["is_cosmetic_only_illusion"]) > 0 ? true : false;
 
                 // Recovery time (take highest)
                 UInt32 eqCastRecoveryTime = UInt32.Parse(columns["cast_recovery_time"]);
@@ -539,7 +542,7 @@ namespace EQWOWConverter.Spells
                 if (newSpellTemplate.EQSpellEffects.Count == 0)
                     continue;
 
-                newSpellTemplate.IsGoodEffect = int.Parse(columns["goodEffect"]) != 0 ? true : false ; // 0 = detrimental, 1 = beneficial, 2 = beneficial group only.  Both 1 and 2 are non-detrimental.
+                newSpellTemplate.IsGoodEffect = int.Parse(columns["goodEffect"]) != 0 ? true : false; // 0 = detrimental, 1 = beneficial, 2 = beneficial group only.  Both 1 and 2 are non-detrimental.
                 bool isDetrimental = !newSpellTemplate.IsGoodEffect;
 
                 // Target type (needed before cast time so the offensive dispell floor can exclude self-only dispells)
@@ -3242,6 +3245,10 @@ namespace EQWOWConverter.Spells
                                 // Factions treat the player as this alignment while in the form
                                 CreatureFactionAlignmentType illusionFactionAlignment = CreatureFaction.GetAlignmentTypeForEQIllusionRace(eqEffect.EQBaseValue);
 
+                                // Cosmetic only illusions are unique in that they don't change faction
+                                if (spellTemplate.IsCosmeticOnlyIllusion == true)
+                                    illusionFactionAlignment = CreatureFactionAlignmentType.None;
+
                                 // Temp faction value.  Need to change this on a per-form basis
                                 int wowFactionTemplateID = 35; // Friendly
 
@@ -3277,6 +3284,8 @@ namespace EQWOWConverter.Spells
                                 maleFormSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
                                 maleFormSpellTemplate.WOWSpellEffects.Add(maleFormSpellEffectWOW);
                                 maleFormSpellTemplate.AuraDuration = spellTemplate.AuraDuration;
+                                if (spellTemplate.IsCosmeticOnlyIllusion == true)
+                                    maleFormSpellTemplate.PersistThroughDeath = true;
                                 maleFormSpellTemplate.IllusionFormFactionAlignment = illusionFactionAlignment;
                                 maleFormSpellTemplate.IllusionFormEQRaceID = eqEffect.EQBaseValue;
                                 maleFormSpellTemplate.IllusionSpellParent = spellTemplate;
@@ -3317,6 +3326,8 @@ namespace EQWOWConverter.Spells
                                 femaleFormSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
                                 femaleFormSpellTemplate.WOWSpellEffects.Add(femaleFormSpellEffectWOW);
                                 femaleFormSpellTemplate.AuraDuration = spellTemplate.AuraDuration;
+                                if (spellTemplate.IsCosmeticOnlyIllusion == true)
+                                    femaleFormSpellTemplate.PersistThroughDeath = true;
                                 femaleFormSpellTemplate.IllusionFormFactionAlignment = illusionFactionAlignment;
                                 femaleFormSpellTemplate.IllusionFormEQRaceID = eqEffect.EQBaseValue;
                                 spellTemplate.FemaleFormSpellTemplateID = femaleFormSpellTemplate.WOWSpellID;

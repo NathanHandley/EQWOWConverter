@@ -1444,6 +1444,16 @@ namespace EQWOWConverter
                         itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(itemTemplate.AllowedClassTypesEQ), itemTemplate.RequiredLevel,
                             itemTemplate.ItemDisplayInfo);
                     }
+                    else if (itemTemplate.DoesTeachSpellToAllClasses == true)
+                    {
+                        SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQScrollSpellID];
+                        itemTemplate.ClassID = 9;
+                        itemTemplate.SubClassID = 0;
+                        itemTemplate.WOWSpellID1 = spellTemplate.WOWSpellID;
+                        itemTemplate.Description = string.Concat("Teaches the spell: ", spellTemplate.Name);
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name,
+                            itemTemplate.GetDescriptionStringWithAddedAllowedClasses(itemTemplate.AllowedClassTypesEQ), itemTemplate.RequiredLevel, itemTemplate.ItemDisplayInfo);
+                    }
                     else
                     {
                         // If it is a valid spell scroll, there is one scroll per class that can learn it
@@ -1666,7 +1676,7 @@ namespace EQWOWConverter
 
                     modEverquestPlayerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[startZoneShortName],
                         areaIDsByShortName[startZoneShortName], classRaceProperties.Value.StartPositionX, classRaceProperties.Value.StartPositionY,
-                        classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation);
+                        classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation, classRaceProperties.Value.IssuedIllusionItemWOWID);
                 }
             }
 

@@ -33,11 +33,12 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`position_y` FLOAT NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`position_z` FLOAT NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("`orientation` FLOAT NOT NULL DEFAULT '0',");
+            stringBuilder.AppendLine("`illusionitem` INT(10) UNSIGNED NOT NULL DEFAULT '0',");
             stringBuilder.AppendLine("PRIMARY KEY (`race`, `class`) USING BTREE); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int raceID, int classID, int mapID, int areaID, float xPosition, float yPosition, float zPosition, float orientation)
+        public void AddRow(int raceID, int classID, int mapID, int areaID, float xPosition, float yPosition, float zPosition, float orientation, int illusionItemID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("race", raceID);
@@ -48,6 +49,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("position_y", yPosition);
             newRow.AddFloat("position_z", zPosition);
             newRow.AddFloat("orientation", orientation);
+            newRow.AddInt("illusionitem", illusionItemID);
             Rows.Add(newRow);
         }
     }

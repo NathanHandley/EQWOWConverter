@@ -586,6 +586,13 @@ namespace EQWOWConverter
                     // Spell scrolls get multiplied out by classes
                     if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQScrollSpellID) == false)
                         itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.ItemDisplayInfo);
+                    else if (itemTemplate.DoesTeachSpellToAllClasses == true)
+                    {
+                        // Items that teach to all classes doesn't split
+                        itemTemplate.ClassID = 9;
+                        itemTemplate.SubClassID = 0;
+                        itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.ItemDisplayInfo);
+                    }
                     else
                     {
                         SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQScrollSpellID];

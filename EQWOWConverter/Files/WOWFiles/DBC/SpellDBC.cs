@@ -352,7 +352,7 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 65536; // SPELL_ATTR3_SUPPRESS_CASTER_PROCS
                 attributeFlags |= 131072; // SPELL_ATTR3_SUPPRESS_TARGET_PROCS
             }
-            if (spellTemplate.AlwaysPersist == true)
+            if (spellTemplate.AlwaysPersist == true || spellTemplate.PersistThroughDeath == true)
                 attributeFlags |= 1048576; // SPELL_ATTR3_ALLOW_AURA_WHILE_DEAD
             if (spellTemplate.IsUnresistable == true)
                 attributeFlags |= 536870912; // SPELL_ATTR3_ALWAYS_HIT

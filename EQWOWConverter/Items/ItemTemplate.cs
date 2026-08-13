@@ -133,6 +133,7 @@ namespace EQWOWConverter.Items
         public bool IsMagic = false;
         public ItemDisplayInfo? ItemDisplayInfo = null;
         public bool DoesTeachSpell = false;
+        public bool DoesTeachSpellToAllClasses = false;
         public int LearningSpellID = 483; // On-use spell for learn items (483 "Learning", 55884 for companion pets). The "Use:" tooltip text comes from the item description, not this spell.
         public bool IsCompanionPetItem = false;
         public string ScriptName = string.Empty;
@@ -1790,6 +1791,11 @@ namespace EQWOWConverter.Items
                 string bookTextName = columns["booktextname"].Trim();
                 newItemTemplate.EQScrollSpellID = int.Parse(columns["scrolleffect"]);
                 newItemTemplate.DoesTeachSpell = columns["scrolltype"] == "7" ? true : false;
+                if (columns["scrolltype"] == "8") // Teaches the spell to all classes
+                {
+                    newItemTemplate.DoesTeachSpell = true;
+                    newItemTemplate.DoesTeachSpellToAllClasses = true;
+                }
                 if (int.Parse(columns["worntype"]) == 2)
                 {
                     newItemTemplate.EQWornEffectSpellID = int.Parse(columns["worneffect"]);

@@ -28,6 +28,7 @@ namespace EQWOWConverter.Player
         public float StartPositionZ;
         public float StartOrientation;
         public List<int> StartItemIDs = new List<int>();
+        public int IssuedIllusionItemWOWID = 0;
 
         public static Dictionary<(int, int), PlayerClassRaceProperties> GetClassRacePropertiesByRaceAndClassID()
         {
@@ -73,6 +74,7 @@ namespace EQWOWConverter.Player
                 int startItemID6 = int.Parse(columns["StartItemID6"]);
                 if (startItemID6 > -1)
                     curProperties.StartItemIDs.Add(startItemID6);
+                curProperties.IssuedIllusionItemWOWID = int.Parse(columns["IssuedIllusionItemWOWID"]);
 
                 // Add if unique
                 if (PlayerClassRacePropertiesByRaceAndClassIDs.ContainsKey((curProperties.RaceID, curProperties.ClassID)) == true)
