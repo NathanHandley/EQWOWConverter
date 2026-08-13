@@ -1024,14 +1024,14 @@ namespace EQWOWConverter
         // Combat Master granted when the player is using only cloth and no shield
         public static int AGILEFIGHTER_COMBATMASTER_SPELL_ID = 86920;
         public static int AGILEFIGHTER_COMBATMASTER_SPELL_ICON_EQ_ID = 9;
-        public static int AGILEFIGHTER_COMBATMASTER_PHYSICAL_DAMAGE_PERCENT = 35;
-        public static int AGILEFIGHTER_COMBATMASTER_CRITICAL_STRIKE_PERCENT = 15;
+        public static int AGILEFIGHTER_COMBATMASTER_PHYSICAL_DAMAGE_PERCENT = 20;
+        public static int AGILEFIGHTER_COMBATMASTER_CRITICAL_STRIKE_PERCENT = 10;
         public static int AGILEFIGHTER_COMBATMASTER_DODGE_PERCENT = 20;
 
         // Combat Expert is granted when the player is using leather or lighter and has no shield
         public static int AGILEFIGHTER_COMBATEXPERT_SPELL_ID = 86921;
         public static int AGILEFIGHTER_COMBATEXPERT_SPELL_ICON_EQ_ID = 18;
-        public static int AGILEFIGHTER_COMBATEXPERT_PHYSICAL_DAMAGE_PERCENT = 20;
+        public static int AGILEFIGHTER_COMBATEXPERT_PHYSICAL_DAMAGE_PERCENT = 10;
         public static int AGILEFIGHTER_COMBATEXPERT_CRITICAL_STRIKE_PERCENT = 5;
         public static int AGILEFIGHTER_COMBATEXPERT_DODGE_PERCENT = 10;
 
