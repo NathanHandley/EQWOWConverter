@@ -652,6 +652,9 @@ namespace EQWOWConverter
         // If true, gear that has a worn effect will show as a buff on the character
         public static bool ITEMS_SHOW_WORN_EFFECT_AURA_ICON = true;
 
+        // If true, any armor that only a Monk can equip (no other EQ class) will be cloth
+        public static bool ITEMS_MONK_ONLY_ARMOR_IS_CLOTH = true;
+
         // If true, any item that is clickable item that also has a spell will be replaced with a 
         // container item that contains both the equippable item as well as a non-equipable version
         // that can be clicked from inventory.  WOW doesn't let you click equipable spell items
@@ -1809,6 +1812,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEMS_WEAPON_DELAY_REDUCTION_AMT", ITEMS_WEAPON_DELAY_REDUCTION_AMT, "This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;");
             OutputVariableToConfig("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", ITEMS_WEAPON_EFFECT_PPM_BASE_RATE, "This is the base PPM (Procs Per Minute) used for weapon proc weapons");
             OutputVariableToConfig("ITEMS_SHOW_WORN_EFFECT_AURA_ICON", ITEMS_SHOW_WORN_EFFECT_AURA_ICON, "If true, gear that has a worn effect will show as a buff on the character");
+            OutputVariableToConfig("ITEMS_MONK_ONLY_ARMOR_IS_CLOTH", ITEMS_MONK_ONLY_ARMOR_IS_CLOTH, "If true, any armor that only a Monk can equip (no other EQ class) will be cloth");
             OutputVariableToConfig("ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS", ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS, "If true, any item that is clickable item that also has a spell will be replaced with a container item that contains both the equippable item as well as a non-equipable version that can be clicked from inventory.");
             OutputVariableToConfig("ITEMS_STATS_LOW_BIAS_WEIGHT", ITEMS_STATS_LOW_BIAS_WEIGHT, "This is how much 'weight' the lower stat has when converting EQ to WoW stats, with values closer to 1 leaning towards the lower stat, and further from 1 leaning towards the higher stat.");
             OutputVariableToConfig("ITEMS_MAX_SELL_PRICE_IN_COPPER", ITEMS_MAX_SELL_PRICE_IN_COPPER, "Maximum amount something can sell to a vendor for");
@@ -2321,6 +2325,7 @@ namespace EQWOWConverter
             ITEMS_WEAPON_DELAY_REDUCTION_AMT = ReadVariableFromConfigString("ITEMS_WEAPON_DELAY_REDUCTION_AMT", configValuesByVariableName, ITEMS_WEAPON_DELAY_REDUCTION_AMT);
             ITEMS_WEAPON_EFFECT_PPM_BASE_RATE = ReadVariableFromConfigString("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", configValuesByVariableName, ITEMS_WEAPON_EFFECT_PPM_BASE_RATE);
             ITEMS_SHOW_WORN_EFFECT_AURA_ICON = ReadVariableFromConfigString("ITEMS_SHOW_WORN_EFFECT_AURA_ICON", configValuesByVariableName, ITEMS_SHOW_WORN_EFFECT_AURA_ICON);
+            ITEMS_MONK_ONLY_ARMOR_IS_CLOTH = ReadVariableFromConfigString("ITEMS_MONK_ONLY_ARMOR_IS_CLOTH", configValuesByVariableName, ITEMS_MONK_ONLY_ARMOR_IS_CLOTH);
             ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS = ReadVariableFromConfigString("ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS", configValuesByVariableName, ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS);
             ITEMS_STATS_LOW_BIAS_WEIGHT = ReadVariableFromConfigString("ITEMS_STATS_LOW_BIAS_WEIGHT", configValuesByVariableName, ITEMS_STATS_LOW_BIAS_WEIGHT);
             ITEMS_MAX_SELL_PRICE_IN_COPPER = ReadVariableFromConfigString("ITEMS_MAX_SELL_PRICE_IN_COPPER", configValuesByVariableName, ITEMS_MAX_SELL_PRICE_IN_COPPER);

@@ -1092,6 +1092,11 @@ namespace EQWOWConverter.Items
                 eqClasses.Add(ClassEQType.Bard);
             if (IsPackedClassMask(ClassEQType.Cleric, classMask))
                 eqClasses.Add(ClassEQType.Cleric);
+
+            // Monk-only gear should be cloth
+            if (Configuration.ITEMS_MONK_ONLY_ARMOR_IS_CLOTH == true && eqClasses.Count == 1 && eqClasses[0] == ClassEQType.Monk)
+                return ItemWOWArmorSubclassType.Cloth;
+
             return PlayerEQClassProperties.GetArmorClassForItemWearableByEQClasses(eqClasses);
         }
 
