@@ -326,6 +326,7 @@ namespace EQWOWConverter.Spells
         public bool AlwaysPersist = false; // Can't click off
         public bool PersistThroughDeath = false; // Can click off
         public bool IsCosmeticOnlyIllusion = false;
+        public bool PersistOnClassChange = false; // When learned all secondary classes have it
         public SpellFocusBoostType FocusBoostType = SpellFocusBoostType.None;
         public bool IsFocusBoostableEffect = false;
         public bool IsToggleAura = false;
@@ -527,6 +528,8 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.Category = 0; // Temp / TODO: Figure out how/what to set here
                 newSpellTemplate.RecourseLinkEQSpellID = int.Parse(columns["RecourseLink"]);
                 newSpellTemplate.IsCosmeticOnlyIllusion = int.Parse(columns["is_cosmetic_only_illusion"]) > 0 ? true : false;
+                if (newSpellTemplate.IsCosmeticOnlyIllusion == true)
+                    newSpellTemplate.PersistOnClassChange = true;
 
                 // Recovery time (take highest)
                 UInt32 eqCastRecoveryTime = UInt32.Parse(columns["cast_recovery_time"]);
@@ -3285,7 +3288,12 @@ namespace EQWOWConverter.Spells
                                 maleFormSpellTemplate.WOWSpellEffects.Add(maleFormSpellEffectWOW);
                                 maleFormSpellTemplate.AuraDuration = spellTemplate.AuraDuration;
                                 if (spellTemplate.IsCosmeticOnlyIllusion == true)
+                                {
+                                    maleFormSpellTemplate.IsCosmeticOnlyIllusion = true;
                                     maleFormSpellTemplate.PersistThroughDeath = true;
+                                    maleFormSpellTemplate.AuraStaysOnSecondaryClassSwitch = true;
+                                    maleFormSpellTemplate.PersistOnClassChange = true;
+                                }
                                 maleFormSpellTemplate.IllusionFormFactionAlignment = illusionFactionAlignment;
                                 maleFormSpellTemplate.IllusionFormEQRaceID = eqEffect.EQBaseValue;
                                 maleFormSpellTemplate.IllusionSpellParent = spellTemplate;
@@ -3327,7 +3335,12 @@ namespace EQWOWConverter.Spells
                                 femaleFormSpellTemplate.WOWSpellEffects.Add(femaleFormSpellEffectWOW);
                                 femaleFormSpellTemplate.AuraDuration = spellTemplate.AuraDuration;
                                 if (spellTemplate.IsCosmeticOnlyIllusion == true)
+                                {
+                                    femaleFormSpellTemplate.IsCosmeticOnlyIllusion = true;
                                     femaleFormSpellTemplate.PersistThroughDeath = true;
+                                    femaleFormSpellTemplate.AuraStaysOnSecondaryClassSwitch = true;
+                                    femaleFormSpellTemplate.PersistOnClassChange = true;
+                                }
                                 femaleFormSpellTemplate.IllusionFormFactionAlignment = illusionFactionAlignment;
                                 femaleFormSpellTemplate.IllusionFormEQRaceID = eqEffect.EQBaseValue;
                                 spellTemplate.FemaleFormSpellTemplateID = femaleFormSpellTemplate.WOWSpellID;
@@ -3671,6 +3684,8 @@ namespace EQWOWConverter.Spells
             int minimumTargetLevel = spellTemplate.GetMinimumTargetLevel();
             if (minimumTargetLevel > 0)
                 descriptionSB.Append(string.Concat(" Only works on players level ", minimumTargetLevel.ToString(), " or greater."));
+            if (spellTemplate.IsCosmeticOnlyIllusion == true)
+                descriptionSB.Append(" Will not alter faction standing with any groups.");
 
             // Capitalize Norrath
             descriptionSB.Replace("norrath", "Norrath");
@@ -3687,6 +3702,9 @@ namespace EQWOWConverter.Spells
             // Bard song auras need target information
             if (spellTemplate.IsBardSongAura && spellTemplate.TargetDescriptionTextFragment.Length > 0)
                 auraDescription = string.Concat(auraDescription, " ", spellTemplate.TargetDescriptionTextFragment, ".");
+
+            if (spellTemplate.IsCosmeticOnlyIllusion == true)
+                auraDescription = string.Concat(auraDescription, " Will not alter faction standing with any groups.");
 
             return auraDescription;
         }

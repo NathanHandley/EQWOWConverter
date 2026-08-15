@@ -52,6 +52,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`ModFactionRepValue` INT(10) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`IllusionFormAlignment` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`IllusionFormEQRaceID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`PersistOnClassChange` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -124,6 +125,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("ModFactionRepValue", isWorn == true ? 0 : spellTemplate.ModFactionRepValue);
             newRow.AddInt("IllusionFormAlignment", (int)spellTemplate.IllusionFormFactionAlignment);
             newRow.AddInt("IllusionFormEQRaceID", spellTemplate.IllusionFormEQRaceID);
+            newRow.AddInt("PersistOnClassChange", spellTemplate.PersistOnClassChange ? 1 : 0);
             Rows.Add(newRow);
         }
     }
