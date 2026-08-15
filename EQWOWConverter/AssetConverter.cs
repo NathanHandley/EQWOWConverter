@@ -4399,7 +4399,7 @@ namespace EQWOWConverter
                         {
                             case 4: // Must equip to click
                             case 1: // Clickable from inventory with level requirement (note: Can't make worn gear clickable from inventory)
-                            case 5: // Clickable from inventory with level, class, race requirements (nuance not yet implemented)
+                            case 5: // Clickable from inventory with level, class, race requirements
                                 {
                                     itemTemplate.WOWSpellCharges1 = itemTemplate.MaxCharges;
                                     if (itemTemplate.ClassID == 0 && itemTemplate.SubClassID == 1) // Potions are expendable
