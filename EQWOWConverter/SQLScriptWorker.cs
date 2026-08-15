@@ -287,6 +287,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("AgileFighterSpellID", Configuration.AGILEFIGHTER_ENABLED == true ? Configuration.AGILEFIGHTER_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("AgileFighterCombatMasterSpellID", Configuration.AGILEFIGHTER_ENABLED == true ? Configuration.AGILEFIGHTER_COMBATMASTER_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("AgileFighterCombatExpertSpellID", Configuration.AGILEFIGHTER_ENABLED == true ? Configuration.AGILEFIGHTER_COMBATEXPERT_SPELL_ID.ToString() : "0");
+            modEverquestSystemConfigsSQL.AddRow("RaidBossRespawnVarianceInSec", Configuration.CREATURE_RAID_BOSS_VARIANCE_IN_SEC.ToString());
         }
 
         private void PopulateGameTableData()
@@ -1268,7 +1269,7 @@ namespace EQWOWConverter
                     {
                         int maxRespawnTimeInSec;
                         if (creatureTemplate.DifficultyType == CreatureDifficultyType.RaidBoss)
-                            maxRespawnTimeInSec = Configuration.CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC;
+                            maxRespawnTimeInSec = Configuration.CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC;
                         else
                             maxRespawnTimeInSec = Configuration.CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC;
                         if (spawnInstance == null || spawnInstance.RespawnTimeInSeconds <= 0)

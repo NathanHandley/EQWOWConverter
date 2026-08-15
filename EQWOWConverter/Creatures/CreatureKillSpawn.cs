@@ -146,7 +146,7 @@ namespace EQWOWConverter.Creatures
                 // TODO: Have a lookup for boss creatures so it uses the right respawn max time (could be raid trash)
                 newKillSpawn.RespawnTimeInSec = int.Parse(columns["respawn_time_sec"]);
                 if (newKillSpawn.RespawnTimeInSec == -1)
-                    newKillSpawn.RespawnTimeInSec = Configuration.CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC;
+                    newKillSpawn.RespawnTimeInSec = Configuration.CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC;
                 newKillSpawn.Comment = columns["comment"];
                 KillSpawnList.Add(newKillSpawn);
 

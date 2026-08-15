@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 68;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 69;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -477,8 +477,9 @@ namespace EQWOWConverter
         // How high up from the ground the eye height is as a baseline in illusion spells
         public static float CREATURE_ILLUSION_EYE_HEIGHT_BASELINE = 2.031f;
 
-        // Maximum number of seconds that can elapse before a creature respawns after dying (uses the minimum EQ timer if shorter)
-        public static int CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC = 28800;
+        // Creature respawn rates
+        public static int CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC = 28800;
+        public static int CREATURE_RAID_BOSS_VARIANCE_IN_SEC = 3600;
         public static int CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC = 7200;
         public static int CREATURE_STANDARD_RESPAWN_MAX_TIME_IN_SEC = 210;
 
@@ -1727,7 +1728,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_FIDGET_STAND_TIME_IN_MS", CREATURE_FIDGET_STAND_TIME_IN_MS, "How long (in ms) the calm standing animation plays before each fidget chance roll");
             OutputVariableToConfig("CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ", CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ, "NPCs with an EQ level above this are immune to fear (EQ/TAKP like), note that it uses the original EQ min level for this to match live-like behavior");
             OutputVariableToConfig("CREATURE_ILLUSION_TINT_PALETTE_SIZE", CREATURE_ILLUSION_TINT_PALETTE_SIZE, "How many colors are in the illusion chest tint palette, larger numbers mean larger builds but more color representation");
-            OutputVariableToConfig("CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC", CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC, "Maximum number of seconds that can elapse before a creature respawns after dying (uses the minimum EQ timer if shorter)", false);
+            OutputVariableToConfig("CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC", CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC, "Creature respawn rates", false);
+            OutputVariableToConfig("CREATURE_RAID_BOSS_VARIANCE_IN_SEC", CREATURE_RAID_BOSS_VARIANCE_IN_SEC, "", false);
             OutputVariableToConfig("CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC", CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC, "", false);
             OutputVariableToConfig("CREATURE_STANDARD_RESPAWN_MAX_TIME_IN_SEC", CREATURE_STANDARD_RESPAWN_MAX_TIME_IN_SEC, "");
             OutputVariableToConfig("CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC", CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC, "Spawn groups with a spawn limit whose points all respawn within this many seconds are 'cycle' groups (like the Trakanon's Teeth forager-hunter cycles and the Swamp of No Hope froglok camps)");
@@ -2231,7 +2233,8 @@ namespace EQWOWConverter
 
             CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ = ReadVariableFromConfigString("CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ", configValuesByVariableName, CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ);
             CREATURE_ILLUSION_TINT_PALETTE_SIZE = ReadVariableFromConfigString("CREATURE_ILLUSION_TINT_PALETTE_SIZE", configValuesByVariableName, CREATURE_ILLUSION_TINT_PALETTE_SIZE);
-            CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC", configValuesByVariableName, CREATURE_RAID_BOSS_RESPAWN_MAX_TIME_IN_SEC);
+            CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC = ReadVariableFromConfigString("CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC", configValuesByVariableName, CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC);
+            CREATURE_RAID_BOSS_VARIANCE_IN_SEC = ReadVariableFromConfigString("CREATURE_RAID_BOSS_VARIANCE_IN_SEC", configValuesByVariableName, CREATURE_RAID_BOSS_VARIANCE_IN_SEC);
             CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC", configValuesByVariableName, CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC);
             CREATURE_STANDARD_RESPAWN_MAX_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_STANDARD_RESPAWN_MAX_TIME_IN_SEC", configValuesByVariableName, CREATURE_STANDARD_RESPAWN_MAX_TIME_IN_SEC);
             CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC", configValuesByVariableName, CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC);
