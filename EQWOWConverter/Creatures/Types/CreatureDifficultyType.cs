@@ -18,8 +18,8 @@ namespace EQWOWConverter.Creatures
 {
     internal enum CreatureDifficultyType
     {
-        Normal,
-        RaidTrash,
-        RaidBoss
+        Normal = 0,
+        RaidTrash = 1,
+        RaidBoss = 2
     }
 }

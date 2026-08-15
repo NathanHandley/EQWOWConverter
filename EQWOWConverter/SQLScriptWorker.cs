@@ -904,7 +904,7 @@ namespace EQWOWConverter
                     creatureTemplate.EnrageCooldownInMS, creatureTemplate.HasFlurryAbility, creatureTemplate.FlurryChancePercent, creatureTemplate.HasRampageAbility,
                     creatureTemplate.RampageChancePercent, rampageRangeWOW, creatureTemplate.RampageDamagePercent, creatureTemplate.HasWildRampageAbility,
                     creatureTemplate.WildRampageChancePercent, creatureTemplate.WildRampageMaxTargets, creatureTemplate.WildRampageDamagePercent,
-                    creatureTemplate.EQAttackRoundTimeInMS);
+                    creatureTemplate.EQAttackRoundTimeInMS, Convert.ToInt32(creatureTemplate.DifficultyType));
 
                 // Determine the display id
                 int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;

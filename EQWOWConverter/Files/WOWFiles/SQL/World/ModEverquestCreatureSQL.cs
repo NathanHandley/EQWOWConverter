@@ -49,6 +49,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`WildRampageMaxTargets` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`WildRampageDamagePct` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`AttackRoundTimeInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`DifficultyType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`CreatureTemplateID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -57,7 +58,8 @@ namespace EQWOWConverter.WOWFiles
             bool rangedAttackEnabled, int rangedAttackMinRange, int rangedAttackMaxRange, int rangedAttackDamageModPct,
             float agroSocialDistanceMod, bool enrageEnabled, int enrageHPPct, int enrageDurationInMS, int enrageCooldownInMS,
             bool flurryEnabled, int flurryChancePct, bool rampageEnabled, int rampageChancePct, int rampageRange, int rampageDamagePct,
-            bool wildRampageEnabled, int wildRampageChancePct, int wildRampageMaxTargets, int wildRampageDamagePct, int attackRoundTimeInMS)
+            bool wildRampageEnabled, int wildRampageChancePct, int wildRampageMaxTargets, int wildRampageDamagePct, int attackRoundTimeInMS,
+            int difficultyType)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatureTemplateID", creatureTemplateID);
@@ -84,6 +86,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("WildRampageMaxTargets", wildRampageMaxTargets);
             newRow.AddInt("WildRampageDamagePct", wildRampageDamagePct);
             newRow.AddInt("AttackRoundTimeInMS", attackRoundTimeInMS);
+            newRow.AddInt("DifficultyType", difficultyType);
             Rows.Add(newRow);
         }
     }
