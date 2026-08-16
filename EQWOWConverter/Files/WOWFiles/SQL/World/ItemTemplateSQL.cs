@@ -236,6 +236,8 @@ namespace EQWOWConverter.WOWFiles
                 flags += 4;
             if (itemTemplate.DoesTeachSpell == true && itemTemplate.WOWSpellID1 != 0)
                 flags += 64; // ITEM_FLAG_PLAYERCAST
+            if (itemTemplate.IsUnique == true)
+                flags += 524288; // 0x080000 (means unique)
             if (itemTemplate.Quality == ItemWOWQuality.Heirloom)
                 flags += 134217728; // ITEM_FLAG_IS_BOUND_TO_ACCOUNT
             if (itemTemplate.ClassID == 2 && itemTemplate.SubClassID == 16) // Thrown items

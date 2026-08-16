@@ -199,6 +199,7 @@ namespace EQWOWConverter.Items
         public ItemTemplate? SlotshiftNextItemTemplate = null;
         public bool IsSlotshiftVariant = false;
         public int WOWSlotshiftSpellID = 0;
+        public bool IsUnique = false;
 
         public ItemTemplate()
         {
@@ -1969,6 +1970,13 @@ namespace EQWOWConverter.Items
                     newItemTemplate.EQClassMask, armorClass, strength, agility, charisma, dexterity, intelligence, stamina, wisdom, hp, 
                     mana, resistPoison, resistMagic, resistDisease, resistFire, resistCold, damage, delay, qualityOverride);
 
+                // Update all keys to be unique and non-conjured
+                if (newItemTemplate.ClassID == 13 && newItemTemplate.SubClassID == 0)
+                {
+                    newItemTemplate.DoesVanishOnLogout = false;
+                    newItemTemplate.IsUnique = true;
+                }
+
                 // Set the quality
                 if (qualityOverride == -1)
                 {
@@ -1990,8 +1998,6 @@ namespace EQWOWConverter.Items
                 List<ItemTemplate> slotshiftVariantItems = CreateSlotshiftVariantItems(newItemTemplate, armorClass, strength, agility, charisma, dexterity, intelligence, stamina, 
                     wisdom, hp, mana, resistPoison, resistMagic, resistDisease, resistFire, resistCold, damage, delay, qualityOverride);
 
-                progressionCounter.Write(1);
-
                 List<ItemTemplate> itemsToAdd = new List<ItemTemplate>();
                 itemsToAdd.AddRange(slotshiftVariantItems);
                 // Add additional items if clicky items need to be split out
@@ -2005,6 +2011,8 @@ namespace EQWOWConverter.Items
                     itemsToAdd.Add(newBagItemTemplate);
                     itemsToAdd.Add(newEssenceItemTemplate);
                 }
+
+                progressionCounter.Write(1);
 
                 // Add the items
                 itemsToAdd.Add(newItemTemplate);
