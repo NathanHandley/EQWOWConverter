@@ -2,8 +2,12 @@ spell_id|wow_class|spell_name|interaction|effect_index|school_mask|affects_damag
 5923|Paladin|Holy Power|describe|0|0|0|0|none|0|This also applies to your EverQuest Holy spells.
 9452|Paladin|Vindication|describe|0|0|0|0|none|0|Also triggers from your EverQuest damaging spells.
 10060|Priest|Power Infusion|describe|0|0|0|0|none|0|Also affects the target's EverQuest spells.
-11069|Mage|Improved Fireball|align|0|4|1|0|direct_damage|0|Also reduces the cast time of your EverQuest direct damage Fire spells by $/1000;S1 sec.
-11070|Mage|Improved Frostbolt|align|0|16|1|0|direct_damage|0|Also reduces the cast time of your EverQuest direct damage Frost spells by $/1000;S1 sec.
+11069|Mage|Improved Fireball|align|0|4|1|0|direct_damage|0|"Also reduces the cast time of your EverQuest direct damage Fire spells by $/1000;S1 sec.
+
+Note: The tooltip will not reflect the reduction in cast time and the global cooldown (GCD) will not change."
+11070|Mage|Improved Frostbolt|align|0|16|1|0|direct_damage|0|"Also reduces the cast time of your EverQuest direct damage Frost spells by $/1000;S1 sec.
+
+Note: The tooltip will not reflect the reduction in cast time and the global cooldown (GCD) will not change."
 11071|Mage|Frostbite|describe|0|0|0|0|none|0|Also causes your EverQuest direct damage Frost spells to chill the target, reducing movement speed by 30% and attack speed by 25% for 5 sec. This chill can trigger the freeze.
 11083|Mage|Burning Soul|align|0|4|1|0|none|0|Also reduces the pushback suffered from damaging attacks while casting EverQuest Fire damage spells by $s1% and reduces the threat caused by your EverQuest Fire damage spells by $s2%.
 11095|Mage|Improved Scorch|describe|0|0|0|0|none|0|Your EverQuest direct damage Fire spells can also apply the spell vulnerability.
@@ -32,7 +36,7 @@ spell_id|wow_class|spell_name|interaction|effect_index|school_mask|affects_damag
 12042|Mage|Arcane Power|align|0|126|1|0|none|0|Also increases the damage of your EverQuest spells by $s1% and their mana cost by $s2% while active.
 12042|Mage|Arcane Power|align|1|126|1|1|none|0|
 12042|Mage|Arcane Power|align|2|126|1|0|none|0|
-12043|Mage|Presence of Mind|align|0|126|1|1|none|10000|Also applies to your next EverQuest spell with a cast time below 10 sec.
+12043|Mage|Presence of Mind|align|0|126|1|1|none|10000|Also makes your next EverQuest spell with a casting time less than 10 sec an instant cast spell.
 12287|Warrior|Improved Thunder Clap|exclude|0|0|0|0|none|0|Physical melee ability modifier that should not reach EverQuest spells.
 12313|Warrior|Improved Disarm|exclude|0|0|0|0|none|0|Physical melee ability modifier that should not reach EverQuest spells.
 12321|Warrior|Booming Voice|exclude|0|0|0|0|none|0|Physical shout modifier that should not reach EverQuest spells.
@@ -78,20 +82,24 @@ spell_id|wow_class|spell_name|interaction|effect_index|school_mask|affects_damag
 16041|Shaman|Call of Thunder|align|0|8|1|0|none|0|Also increases the critical strike chance of your EverQuest Nature damage spells by $s1%.
 16089|Shaman|Elemental Fury|align|0|28|1|0|none|0|Also increases the critical strike damage bonus of your EverQuest Fire, Frost and Nature damage spells by $s1%.
 16164|Shaman|Elemental Focus|describe|0|0|0|0|none|0|Also triggers from your EverQuest Fire, Frost and Nature damage spell critical strikes, and its Clearcasting effect also reduces the cost of your next 2 EverQuest damage spells.
-16166|Shaman|Elemental Mastery|align|0|28|1|0|none|0|Also applies to your next EverQuest Fire, Frost or Nature damage spell.
+16166|Shaman|Elemental Mastery|align|0|28|1|0|none|0|Also makes your next EverQuest Fire, Frost or Nature damage spell an instant cast spell.
 16178|Shaman|Purification|describe|0|0|0|0|none|0|This also applies to your EverQuest healing spells.
 16179|Shaman|Tidal Focus|align|0|0|0|1|none|0|Also reduces the mana cost of your EverQuest healing spells by $s1%.
 16181|Shaman|Healing Focus|align|0|0|0|1|none|0|Also reduces the pushback suffered from damaging attacks while casting EverQuest healing spells by $s1%.
-16188|Shaman|Nature's Swiftness|align|0|8|1|1|none|0|Also applies to your next EverQuest Nature damage or healing spell.
+16188|Shaman|Nature's Swiftness|align|0|8|1|1|none|0|Also makes your next EverQuest Nature damage or healing spell an instant cast spell.
 16194|Shaman|Tidal Mastery|align|0|8|1|1|none|0|Also increases the critical strike chance of your EverQuest Nature damage spells and EverQuest healing spells by $s1%.
 16246|Shaman|Clearcasting|align|0|126|1|0|none|0|Also reduces the mana cost of your next 2 EverQuest damage spells by $s1%.
 16255|Shaman|Thundering Strikes|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells.
 16493|Warrior|Impale|exclude|0|0|0|0|none|0|Increases the critical strike damage bonus of your abilities by $s1%.
 16513|Rogue|Vile Poisons|exclude|0|0|0|0|none|0|Physical poison modifier that should not reach EverQuest spells.
-16578|Shaman|Lightning Mastery|align|0|8|1|0|none|0|Also reduces the cast time of your EverQuest Nature damage spells by $/1000;S1 sec.
+16578|Shaman|Lightning Mastery|align|0|8|1|0|none|0|"Also reduces the cast time of your EverQuest Nature damage spells by $/1000;S1 sec.
+
+Note: The tooltip will not reflect the reduction in cast time and the global cooldown (GCD) will not change."
 16757|Mage|Arctic Reach|align|0|16|1|0|none|0|Also increases the range and radius of your EverQuest Frost damage spells by $s1%.
 16757|Mage|Arctic Reach|align|1|16|1|0|none|0|
-16814|Druid|Starlight Wrath|align|0|72|1|0|direct_damage|0|Also reduces the cast time of your EverQuest direct damage Nature and Arcane spells by $/1000;S1 sec.
+16814|Druid|Starlight Wrath|align|0|72|1|0|direct_damage|0|"Also reduces the cast time of your EverQuest direct damage Nature and Arcane spells by $/1000;S1 sec.
+
+Note: The tooltip will not reflect the reduction in cast time and the global cooldown (GCD) will not change."
 16819|Druid|Nature's Reach|align|0|72|1|0|none|0|Also increases the range of your EverQuest Nature and Arcane damage spells by $s1%, and reduces the threat they generate by $s2%.
 16819|Druid|Nature's Reach|align|1|72|1|0|none|0|
 16845|Druid|Moonglow|align|0|72|1|1|none|0|Also reduces the mana cost of your EverQuest Nature and Arcane damage spells and your EverQuest healing spells by $s1%.
@@ -110,12 +118,14 @@ spell_id|wow_class|spell_name|interaction|effect_index|school_mask|affects_damag
 17074|Druid|Nature's Bounty|exclude|0|0|0|0|none|0|Increases the critical effect chance of your Regrowth and Nourish spells by $s1%.
 17104|Druid|Gift of Nature|align|0|0|0|1|none|0|Also increases the amount healed by your EverQuest healing spells by $s1%.
 17104|Druid|Gift of Nature|align|1|0|0|1|none|0|
-17116|Druid|Nature's Swiftness|align|0|8|1|1|none|0|Also applies to your next EverQuest Nature damage or healing spell.
+17116|Druid|Nature's Swiftness|align|0|8|1|1|none|0|Also makes your next EverQuest Nature damage or healing spell an instant cast spell.
 17118|Druid|Subtlety|align|0|0|0|1|none|0|Also reduces the threat generated by your EverQuest healing spells by $s1%.
 17322|Priest|Shadow Reach|align|0|32|1|0|none|0|Also increases the range of your EverQuest Shadow damage spells by $s1%.
 17778|Warlock|Cataclysm|align|0|108|1|0|direct_damage|0|Also reduces the mana cost of your EverQuest direct damage Fire, Shadow, Arcane and Nature spells by $s1%.
 17783|Warlock|Fel Concentration|align|0|32|1|0|none|0|Also reduces the pushback suffered from damaging attacks while casting EverQuest Shadow damage spells by $s1%.
-17788|Warlock|Bane|align|0|108|1|0|direct_damage|0|Also reduces the cast time of your EverQuest direct damage Fire, Shadow, Arcane and Nature spells by $/1000;S1 sec.
+17788|Warlock|Bane|align|0|108|1|0|direct_damage|0|"Also reduces the cast time of your EverQuest direct damage Fire, Shadow, Arcane and Nature spells by $/1000;S1 sec.
+
+Note: The tooltip will not reflect the reduction in cast time and the global cooldown (GCD) will not change."
 17804|Warlock|Soul Siphon|describe|0|0|0|0|none|0|Also increases the amount drained by your EverQuest lifetap spells by $s1% for each of your EverQuest Shadow damage over time effects on the target, up to a maximum of $s2%.
 17810|Warlock|Improved Corruption|align|0|32|1|0|none|0|Also increases the periodic damage of your EverQuest Shadow damage spells by $s1%.
 17917|Warlock|Destructive Reach|align|0|108|1|0|direct_damage|0|Also increases the range of your EverQuest direct damage Fire, Shadow, Arcane and Nature spells by $s1% and reduces the threat they generate by $s2%.
@@ -137,7 +147,7 @@ spell_id|wow_class|spell_name|interaction|effect_index|school_mask|affects_damag
 18427|Rogue|Aggression|exclude|0|0|0|0|none|0|Increases the damage of your Sinister Strike, Backstab, and Eviscerate abilities by $s1%.
 18459|Mage|Incineration|align|0|126|1|0|pbaoe_damage|0|Also increases the critical strike chance of your EverQuest point blank area damage spells by $s1%.
 18530|Priest|Divine Fury|align|0|2|1|1|none|0|Also reduces the casting time of your EverQuest Holy damage and healing spells by $/1000;S1 sec.
-18708|Warlock|Fel Domination|align|0|0|0|0|pet_summon|0|Also applies to your next EverQuest pet summoning spell.
+18708|Warlock|Fel Domination|align|0|0|0|0|pet_summon|0|Also reduces the casting time of your next EverQuest pet summoning spell by $/1000;S1 sec and its mana cost by $s2%.
 18708|Warlock|Fel Domination|align|1|0|0|0|pet_summon|0|
 18769|Warlock|Unholy Power|describe|0|0|0|0|none|0|Also increases the damage done by your EverQuest pet by $s1%.
 19028|Warlock|Soul Link|describe|0|0|0|0|none|0|This also works with your EverQuest pet.
@@ -184,7 +194,9 @@ spell_id|wow_class|spell_name|interaction|effect_index|school_mask|affects_damag
 31670|Mage|Ice Floes|exclude|0|0|0|0|none|0|Reduces the cooldown of your Frost Nova, Cone of Cold, Ice Block and Icy Veins spells by $s1%.
 31674|Mage|Arctic Winds|describe|0|0|0|0|none|0|The Frost damage increase also applies to your EverQuest Frost damage spells.
 31679|Mage|Molten Fury|describe|0|0|0|0|none|0|The damage increase also applies to your EverQuest spells.
-31682|Mage|Empowered Frostbolt|align|0|16|1|0|direct_damage|0|Also increases the damage of your EverQuest direct damage Frost spells by an additional $s1% of your spell power and reduces their cast time by $/1000;S2 sec.
+31682|Mage|Empowered Frostbolt|align|0|16|1|0|direct_damage|0|"Also increases the damage of your EverQuest direct damage Frost spells by an additional $s1% of your spell power and reduces their cast time by $/1000;S2 sec.
+
+Note: The tooltip will not reflect the reduction in cast time and the global cooldown (GCD) will not change."
 31682|Mage|Empowered Frostbolt|align|1|16|1|0|direct_damage|0|
 31825|Paladin|Purifying Power|exclude|0|0|0|0|none|0|Reduces the mana cost of your Cleanse, Purify and Consecration spells by $s1% and reduces the cooldown of your Exorcism and Holy Wrath spells by $s2%.
 31842|Paladin|Divine Illumination|describe|0|0|0|0|none|0|The mana cost reduction also applies to your EverQuest spells.

@@ -58,7 +58,7 @@ namespace EQWOWConverter.Spells
                 }
                 newInteraction.WOWClassName = columns["wow_class"].Trim();
                 newInteraction.SpellName = columns["spell_name"].Trim();
-                newInteraction.DescriptionOrReason = columns["description_or_reason"].Trim();
+                newInteraction.DescriptionOrReason = RemoveDoubleQuotesOnEnds(columns["description_or_reason"].Trim());
                 string interactionText = columns["interaction"].Trim().ToLower();
                 switch (interactionText)
                 {
@@ -139,6 +139,13 @@ namespace EQWOWConverter.Spells
                 SpellTalentInteractions.Add(newInteraction);
             }
             Logger.WriteDebug("Finished load spell talent interactions.");
+        }
+
+        private static string RemoveDoubleQuotesOnEnds(string rawText)
+        {
+            if (rawText.Length < 2 || rawText.StartsWith("\"") == false || rawText.EndsWith("\"") == false)
+                return rawText;
+            return rawText.Substring(1, rawText.Length - 2).Replace("\"\"", "\"");
         }
     }
 }
