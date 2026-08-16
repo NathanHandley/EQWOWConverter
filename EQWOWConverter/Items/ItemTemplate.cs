@@ -903,11 +903,30 @@ namespace EQWOWConverter.Items
                 return ItemWOWInventoryType.MainHand;
             return ItemWOWInventoryType.NoEquip;
         }
+
         private static bool IsPackedSlotMask(ItemEQEquipSlotBitmaskType itemSlotBitmaskType, int slotMask)
         {
             if ((slotMask & Convert.ToInt32(itemSlotBitmaskType)) == Convert.ToInt32(itemSlotBitmaskType))
                 return true;
             return false;
+        }
+
+        private static bool IsHandEquippedInventoryType(ItemWOWInventoryType inventoryType)
+        {
+            switch (inventoryType)
+            {
+                case ItemWOWInventoryType.OneHand:
+                case ItemWOWInventoryType.MainHand:
+                case ItemWOWInventoryType.OffHandWeapon:
+                case ItemWOWInventoryType.HeldInOffHand:
+                case ItemWOWInventoryType.TwoHand: return true;
+                default: return false;
+            }
+        }
+
+        private static bool IsWeaponInEQ(int damage, int delay)
+        {
+            return damage != 0 && delay != 0;
         }
 
         private static bool IsSlotshiftWearableInInventoryType(int slotMask, ItemWOWInventoryType inventoryType)
@@ -1969,6 +1988,15 @@ namespace EQWOWConverter.Items
                 PopulateStats(ref newItemTemplate, newItemTemplate.InventoryType, newItemTemplate.ClassID, newItemTemplate.SubClassID,
                     newItemTemplate.EQClassMask, armorClass, strength, agility, charisma, dexterity, intelligence, stamina, wisdom, hp, 
                     mana, resistPoison, resistMagic, resistDisease, resistFire, resistCold, damage, delay, qualityOverride);
+
+                // Set non-combat held items as non-weapon to avoid offhand punching while holding it
+                // Fishing needs the weapon class, since the fishing spell requires it
+                if (newItemTemplate.ClassID == 2 && overrideItemClassID < 0 && IsWeaponInEQ(damage, delay) == false && IsHandEquippedInventoryType(newItemTemplate.InventoryType) == true
+                    && newItemTemplate.SubClassID != Convert.ToInt32(ItemWOWWeaponSubclassType.FishingPole))
+                {
+                    newItemTemplate.ClassID = 4; // Armor
+                    newItemTemplate.SubClassID = Convert.ToInt32(ItemWOWArmorSubclassType.Misc);
+                }
 
                 // Update all keys to be unique and non-conjured
                 if (newItemTemplate.ClassID == 13 && newItemTemplate.SubClassID == 0)
