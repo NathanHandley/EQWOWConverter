@@ -142,6 +142,7 @@ namespace EQWOWConverter.Zones
         public HashSet<string> DisabledObjectNames = new HashSet<string>();
         public bool IsRestingZoneWide = false;
         public bool AllowBind = true;
+        public bool DuelingAllowed = true;
         public int RainChanceWinter = 0;
         public int RainChanceSpring = 0;
         public int RainChanceSummer = 0;
@@ -1067,6 +1068,7 @@ namespace EQWOWConverter.Zones
                 zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);
                 zoneProperties.IsRestingZoneWide = propertiesRow["RestZoneWide"].Trim() == "1" ? true : false;
                 zoneProperties.AllowBind = propertiesRow["AllowBind"].Trim() == "1" ? true : false;
+                zoneProperties.DuelingAllowed = propertiesRow["DuelingAllowed"].Trim() == "1" ? true : false;
                 zoneProperties.CollisionMinZ = float.Parse(propertiesRow["CollisionGeometryMinZ"]);
                 zoneProperties.CollisionMaxZ = float.Parse(propertiesRow["CollisionGeometryMaxZ"]);
                 foreach (string alwaysBrightMaterialName in propertiesRow["AlwaysBrightMaterials"].Split(","))
