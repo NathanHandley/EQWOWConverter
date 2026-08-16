@@ -40,6 +40,7 @@ namespace EQWOWConverter
         // World
         private AchievementCriteriaDataSQL achievementCriteriaDataSQL = new AchievementCriteriaDataSQL();
         private AchievementRewardSQL achievementRewardSQL = new AchievementRewardSQL();
+        private AreaTriggerScriptsSQL areaTriggerScriptsSQL = new AreaTriggerScriptsSQL();
         private AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
         private AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
         private BroadcastTextSQL broadcastTextSQL = new BroadcastTextSQL();
@@ -2563,20 +2564,21 @@ namespace EQWOWConverter
                 // Zone safe point (used by the mod for in-zone succor teleports)
                 modEverquestZoneSafePointSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.SafePosition);
 
-                // Zone rules (used by the mod for zone-level behavior like bind restrictions and z agro limits)
-                modEverquestZoneSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.AllowBind, zone.ZoneProperties.ExpansionID,
-                    zone.ZoneProperties.MaxAgroZDistance);
+                // Zone rules (used by the mod for zone-level behavior like bind restrictions and z agro limits).  The raid instance map
+                // is stored on the open world row, since that's what the mod looks up when a player walks a zone line into this zone
+                int instanceRaidLowMapID = zone.ZoneProperties.ShouldGenerateInstanceRaidLow() ? zone.ZoneProperties.DBCMapIDRaidLow : 0;
+                modEverquestZoneSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.AllowBind, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, instanceRaidLowMapID);
 
                 // Raid instance version of the zone, a mirror of the base zone but never allow binding
                 if (zone.ZoneProperties.ShouldGenerateInstanceRaidLow() == true)
                 {
+                    string raidLowDescriptiveName = string.Concat(zone.DescriptiveName, Configuration.CONFIGONLY_DUNGEON_NAME_SUFFIX);
                     instanceTemplateSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow);
                     gameTeleSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, zone.ShortName + "raid", zone.ZoneProperties.TelePosition.X,
                         zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
                     modEverquestZoneSafePointSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, zone.ZoneProperties.SafePosition);
-                    modEverquestZoneSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, false, zone.ZoneProperties.ExpansionID,
-                        zone.ZoneProperties.MaxAgroZDistance);
-                    lfgDungeonTemplateSQL.AddRow(zone.ZoneProperties.DBCLFGDungeonsIDRaidLow, zone.DescriptiveName, zone.ZoneProperties.TelePosition.X,
+                    modEverquestZoneSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, false, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, 0);
+                    lfgDungeonTemplateSQL.AddRow(zone.ZoneProperties.DBCLFGDungeonsIDRaidLow, raidLowDescriptiveName, zone.ZoneProperties.TelePosition.X,
                         zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
 
                     // Raid cleared achievement
@@ -2623,12 +2625,18 @@ namespace EQWOWConverter
                     // Area Trigger Teleport
                     int areaTriggerID = zoneLine.AreaTriggerID;
                     string descriptiveName = "EQ " + zone.ShortName + " - " + zoneLine.TargetZoneShortName + " zone line";
-                    int targetMapId = ZoneProperties.GetZonePropertiesForZone(zoneLine.TargetZoneShortName).DBCMapID;
+                    ZoneProperties targetZoneProperties = ZoneProperties.GetZonePropertiesForZone(zoneLine.TargetZoneShortName);
+                    int targetMapId = targetZoneProperties.DBCMapID;
                     float targetPositionX = zoneLine.TargetZonePosition.X;
                     float targetPositionY = zoneLine.TargetZonePosition.Y;
                     float targetPositionZ = zoneLine.TargetZonePosition.Z;
                     float targetOrientation = zoneLine.TargetZoneOrientation;
                     areaTriggerTeleportSQL.AddRow(areaTriggerID, descriptiveName, targetMapId, targetPositionX, targetPositionY, targetPositionZ, targetOrientation);
+
+                    // Zone lines into a zone that has a raid instance copy are scripted, so the mod can route a player who still has a corpse or a raid inside that instance back
+                    // into it instead of into the open world copy of the zone
+                    if (targetZoneProperties.ShouldGenerateInstanceRaidLow() == true)
+                        areaTriggerScriptsSQL.AddRow(areaTriggerID, Configuration.CONFIGONLY_SQL_AREATRIGGER_SCRIPTNAME_ZONE_LINE);
                 }
             }
             mapIDsByShortName = new Dictionary<string, int>();
@@ -2660,6 +2668,17 @@ namespace EQWOWConverter
                     int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
                     creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID,
                         graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 300, string.Empty, false);
+
+                    // A zone that contains a graveyard also gets a copy of it inside its raid instance version, so a player that dies in the instance stays in the instance
+                    if (curZoneProperties.ShouldGenerateInstanceRaidLow() == true)
+                    {
+                        int raidLowMapID = curZoneProperties.DBCMapIDRaidLow;
+                        gameGraveyardSQL.AddRowForInstanceRaidLow(graveyard, raidLowMapID);
+                        graveyardZoneSQL.AddRowForInstanceRaidLow(graveyard, zoneAreaID);
+                        int raidLowSpiritHealerGUID = IDGenerationTool.GenerateID("CreatureGUID", "spirithealerraidlow", graveyard.WorldSafeLocsDBCID.ToString());
+                        creatureSQL.AddRow(raidLowSpiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, raidLowMapID, zoneAreaID, zoneAreaID,
+                            graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 300, string.Empty, false);
+                    }
                 }
             }
 
@@ -2779,6 +2798,7 @@ namespace EQWOWConverter
             // World
             achievementCriteriaDataSQL.SaveToDisk("achievement_criteria_data", SQLFileType.World);
             achievementRewardSQL.SaveToDisk("achievement_reward", SQLFileType.World);
+            areaTriggerScriptsSQL.SaveToDisk("areatrigger_scripts", SQLFileType.World);
             areaTriggerSQL.SaveToDisk("areatrigger", SQLFileType.World);
             areaTriggerTeleportSQL.SaveToDisk("areatrigger_teleport", SQLFileType.World);
             broadcastTextSQL.SaveToDisk("broadcast_text", SQLFileType.World);

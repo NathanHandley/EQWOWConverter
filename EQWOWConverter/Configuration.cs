@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 71;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 72;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -45,6 +45,13 @@ namespace EQWOWConverter
         // contain any new/updated/deleted files based on the manifest
         public static bool CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH = true;
         public static string CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID = "6";
+
+        // Added to the end of a zone's name for the raid instance copy of that zone, so it's clear which version a player is in.
+        // Not config exposed since the config reader trims values, and the leading space is significant
+        public static string CONFIGONLY_DUNGEON_NAME_SUFFIX = " (instanced)";
+
+        // Must match the script name registered in mod-everquest (EverQuest_AreaTriggerScript.cpp)
+        public static string CONFIGONLY_SQL_AREATRIGGER_SCRIPTNAME_ZONE_LINE = "EverQuest_ZoneLineAreaTriggerScript";
 
         // ====================================================================
         // Paths and Files
@@ -1328,7 +1335,10 @@ namespace EQWOWConverter
 
         // IDs for WorldSafeLocs.dbc, defined in ZoneGraveyards.csv
         public static int DBCID_WORLDSAFELOCS_ID_START = 1800;
-        public static int DBCID_WORLDSAFELOCS_ID_END = 2000;
+        public static int DBCID_WORLDSAFELOCS_ID_END = 2200;
+
+        // Generated block inside the WorldSafeLocs range, used for graveyard copies that live on raid instance maps
+        public static int DBCID_WORLDSAFELOCS_ID_GENERATED_START = 2001;
 
         // Specific rows in WMOAreaTable.dbc
         public static int DBCID_WMOAREATABLE_ID_START = 52000;

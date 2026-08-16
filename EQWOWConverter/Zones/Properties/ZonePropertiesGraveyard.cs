@@ -36,6 +36,25 @@ namespace EQWOWConverter.Zones
         public int WorldSafeLocsDBCID = 0;
         public string Description = string.Empty;
 
+        private int WorldSafeLocsDBCIDRaidLowCached = 0;
+
+        // A second copy of this graveyard lives on the raid instance map of the zone that contains it, so a player that dies inside the instance respawns
+        // inside the instance instead of being pushed out to the open world copy of the zone
+        public int WorldSafeLocsDBCIDRaidLow
+        {
+            get
+            {
+                if (WorldSafeLocsDBCIDRaidLowCached == 0)
+                    WorldSafeLocsDBCIDRaidLowCached = IDGenerationTool.GenerateID("WorldSafeLocsID", "raidlow", ID.ToString());
+                return WorldSafeLocsDBCIDRaidLowCached;
+            }
+        }
+
+        public string DescriptionRaidLow
+        {
+            get { return string.Concat(Description, Configuration.CONFIGONLY_DUNGEON_NAME_SUFFIX); }
+        }
+
         public static ZonePropertiesGraveyard GetGraveyardByID(int ID)
         {
             if (GraveyardsByID.Count == 0)

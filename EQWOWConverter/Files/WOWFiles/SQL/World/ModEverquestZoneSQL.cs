@@ -29,17 +29,19 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`AllowBind` TINYINT(3) UNSIGNED NOT NULL DEFAULT '1', ");
             stringBuilder.AppendLine("`ExpansionID` INT(10) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`MaxAgroZDistance` FLOAT NOT NULL DEFAULT '-1', ");
+            stringBuilder.AppendLine("`InstanceRaidLowMapID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`MapID`) USING BTREE); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int mapID, bool allowBind, int expansionID, float maxAgroZDistance)
+        public void AddRow(int mapID, bool allowBind, int expansionID, float maxAgroZDistance, int instanceRaidLowMapID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("MapID", mapID);
             newRow.AddInt("AllowBind", allowBind ? 1 : 0);
             newRow.AddInt("ExpansionID", expansionID);
             newRow.AddFloat("MaxAgroZDistance", maxAgroZDistance);
+            newRow.AddInt("InstanceRaidLowMapID", instanceRaidLowMapID);
             Rows.Add(newRow);
         }
     }

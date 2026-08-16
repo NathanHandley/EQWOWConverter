@@ -430,12 +430,15 @@ namespace EQWOWConverter
                 // Raid instance version(s) of the zone
                 if (zoneProperties.ShouldGenerateInstanceRaidLow() == true)
                 {
+                    // The instance copy is named apart from the open world copy of the zone, so it's clear which version a player is in
+                    string raidLowDescriptiveName = string.Concat(zone.DescriptiveName, Configuration.CONFIGONLY_DUNGEON_NAME_SUFFIX);
+
                     // Map and difficulty (raid size + instance reset time)
-                    mapDBC.AddRow(zoneProperties.DBCMapIDRaidLow, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.LoadingScreenID, 2, Configuration.DUNGEON_RAID_LOW_MAX_PLAYERS);
+                    mapDBC.AddRow(zoneProperties.DBCMapIDRaidLow, "EQ_" + zone.ShortName, raidLowDescriptiveName, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.LoadingScreenID, 2, Configuration.DUNGEON_RAID_LOW_MAX_PLAYERS);
                     mapDifficultyDBC.AddRow(zoneProperties.DBCMapIDRaidLow, zoneProperties.DBCMapDifficultyIDRaidLow, Convert.ToInt32(zoneProperties.InstanceResetTimeInSecRaidLow), Configuration.DUNGEON_RAID_LOW_MAX_PLAYERS);
 
                     // Raid browser list entry
-                    lfgDungeonsDBC.AddRow(zoneProperties.DBCLFGDungeonsIDRaidLow, zone.DescriptiveName, zoneProperties.RaidLevelLow, zoneProperties.SuggestedMaxLevelWorld,
+                    lfgDungeonsDBC.AddRow(zoneProperties.DBCLFGDungeonsIDRaidLow, raidLowDescriptiveName, zoneProperties.RaidLevelLow, zoneProperties.SuggestedMaxLevelWorld,
                         zoneProperties.RaidLevelLow, zoneProperties.SuggestedMaxLevelWorld, zoneProperties.DBCMapIDRaidLow, true, Configuration.DBCID_LFGDUNGEONGROUP_RAIDS_ID);
 
                     // Light rows are map-keyed, so the instance map needs its own rows referencing the same light parameters generated above
@@ -569,8 +572,12 @@ namespace EQWOWConverter
             {
                 if (zonePropertiesByShortName.ContainsKey(graveyard.LocationShortName) == true)
                 {
-                    int mapID = zonePropertiesByShortName[graveyard.LocationShortName].DBCMapID;
-                    worldSafeLocsDBC.AddRow(graveyard, mapID);
+                    ZoneProperties graveyardZoneProperties = zonePropertiesByShortName[graveyard.LocationShortName];
+                    worldSafeLocsDBC.AddRow(graveyard, graveyardZoneProperties.DBCMapID);
+
+                    // A zone that contains a graveyard also gets a copy of it inside its raid instance version
+                    if (graveyardZoneProperties.ShouldGenerateInstanceRaidLow() == true)
+                        worldSafeLocsDBC.AddRowForInstanceRaidLow(graveyard, graveyardZoneProperties.DBCMapIDRaidLow);
                 }
             }
 

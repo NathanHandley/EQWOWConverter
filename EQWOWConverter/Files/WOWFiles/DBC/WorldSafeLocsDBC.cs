@@ -28,7 +28,19 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(MathF.Round(graveyard.RespawnX, 6)); // X
             newRow.AddFloat(MathF.Round(graveyard.RespawnY, 6)); // Y
             newRow.AddFloat(MathF.Round(graveyard.RespawnZ, 6)); // Z
-            newRow.AddStringLang(graveyard.Description); // Description            
+            newRow.AddStringLang(graveyard.Description); // Description
+            Rows.Add(newRow);
+        }
+
+        public void AddRowForInstanceRaidLow(ZonePropertiesGraveyard graveyard, int raidLowMapID)
+        {
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt32(graveyard.WorldSafeLocsDBCIDRaidLow); // ID
+            newRow.AddInt32(raidLowMapID); // Continent (MapID)
+            newRow.AddFloat(MathF.Round(graveyard.RespawnX, 6)); // X
+            newRow.AddFloat(MathF.Round(graveyard.RespawnY, 6)); // Y
+            newRow.AddFloat(MathF.Round(graveyard.RespawnZ, 6)); // Z
+            newRow.AddStringLang(graveyard.DescriptionRaidLow); // Description
             Rows.Add(newRow);
         }
     }

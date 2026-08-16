@@ -103,6 +103,7 @@ namespace EQWOWConverter
             Initialize("TotemCategoryID", Convert.ToInt32(Configuration.DBCID_TOTEMCATEGORY_ID_START), int.MaxValue);
             Initialize("TransportAnimationID", Configuration.DBCID_TRANSPORTANIMATION_ID_START, int.MaxValue);
             Initialize("WMOAreaTableID", Configuration.DBCID_WMOAREATABLE_ID_START, int.MaxValue);
+            Initialize("WorldSafeLocsID", Configuration.DBCID_WORLDSAFELOCS_ID_GENERATED_START, Configuration.DBCID_WORLDSAFELOCS_ID_END);
             Initialize("ZoneMusicID", Configuration.DBCID_ZONEMUSIC_START, int.MaxValue);
             Initialize("ZoneWMOGroupID", Convert.ToInt32(Configuration.DBCID_WMOAREATABLE_WMOGROUPID_START), int.MaxValue);
 
