@@ -4,7 +4,6 @@ AchievementID|ParentCategoryID|AchievementType|Name|Description|Points|IconSpell
 5102|15102|InstanceClear|Conqueror of Plane of Growth|Defeat Tunare in Plane of Growth.|10|-1|145|growthplane|RaidLow|55300|
 5103|15100|InstanceClear|Conqueror of Plane of Hate|Defeat Innoruuk in Plane of Hate.|10|-1|145|hateplane|RaidLow|51196|
 5104|15102|InstanceClear|Conqueror of Kael Drakkal|Defeat King Tormax and The Avatar of War in Kael Drakkal.|10|-1|145|kael|RaidLow|53779|53808
-5105|15102|InstanceClear|Conqueror of Plane of Mischief|Defeat Bristlebane in Plane of Mischief.|10|-1|145|mischiefplane|RaidLow|55162|
 5106|15102|InstanceClear|Conqueror of Dragon Necropolis|Defeat Zlandicar in Dragon Necropolis.|10|-1|145|necropolis|RaidLow|54893|
 5107|15100|InstanceClear|Conqueror of Permafrost Caverns|Defeat Lady Vox in Permafrost Caverns.|10|-1|145|permafrost|RaidLow|50968|
 5108|15101|InstanceClear|Conqueror of Old Sebilis|Defeat Trakanon in Old Sebilis.|10|-1|145|sebilis|RaidLow|52112|
