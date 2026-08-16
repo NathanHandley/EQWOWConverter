@@ -71,7 +71,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RequiredCityRank", 0);
             newRow.AddInt("RequiredReputationFaction", 0);
             newRow.AddInt("RequiredReputationRank", 0);
-            newRow.AddInt("maxcount", 0);
+            if (itemTemplate.IsUnique == true)
+                newRow.AddInt("maxcount", 1);
+            else
+                newRow.AddInt("maxcount", 0);
             newRow.AddInt("stackable", itemTemplate.StackSize);
             newRow.AddInt("ContainerSlots", itemTemplate.BagSlots);
             for (int i = 1; i <= 10; i++)
@@ -236,8 +239,7 @@ namespace EQWOWConverter.WOWFiles
                 flags += 4;
             if (itemTemplate.DoesTeachSpell == true && itemTemplate.WOWSpellID1 != 0)
                 flags += 64; // ITEM_FLAG_PLAYERCAST
-            if (itemTemplate.IsUnique == true)
-                flags += 524288; // 0x080000 (means unique)
+            //    flags += 524288; // 0x080000 (means unique equipped)
             if (itemTemplate.Quality == ItemWOWQuality.Heirloom)
                 flags += 134217728; // ITEM_FLAG_IS_BOUND_TO_ACCOUNT
             if (itemTemplate.ClassID == 2 && itemTemplate.SubClassID == 16) // Thrown items
