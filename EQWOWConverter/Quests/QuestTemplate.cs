@@ -74,13 +74,13 @@ namespace EQWOWConverter.Quests
         {
             switch (eqFactionValue)
             {
-                case -500:  return -2999;   // EQ Dubious => WOW Unfriendly
-                case -100:  return -2999;   // EQ Apprehensive => WOW Unfriendly
+                case -500:  return -3000;   // EQ Dubious => WOW Unfriendly
+                case -100:  return -3000;   // EQ Apprehensive => WOW Unfriendly
                 case 0:     return 0;       // EQ Indifferent => WOW Neutral
                 case 100:   return 3000;    // EQ Amiable => WOW Friendly
-                case 500:   return 6000;    // EQ Kindly => WOW Honored
-                case 750:   return 12000;   // EQ Warmly => WOW Revered
-                case 1100:  return 21000;   // EQ Ally => WOW Exalted
+                case 500:   return 9000;    // EQ Kindly => WOW Honored
+                case 750:   return 21000;   // EQ Warmly => WOW Revered
+                case 1100:  return 42000;   // EQ Ally => WOW Exalted
                 default:
                     {
                         Logger.WriteError(string.Concat("Could not convert EQ faction value to WOW faction value as unhandled faction value of '", eqFactionValue, "' was provided"));
