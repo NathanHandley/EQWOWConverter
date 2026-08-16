@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 69;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 70;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -95,6 +95,10 @@ namespace EQWOWConverter
         // If deploying to SQL, you need to set these to something real that points to your databases (only relevant if you set DEPLOY_SERVER_SQL to true, otherwise ignored)
         public static string DEPLOY_SQL_CONNECTION_STRING_CHARACTERS = "Server=127.0.0.1;Database=acore_characters;Uid=root;Pwd=rootpass;";
         public static string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
+
+        // Client files must match this between the server and the client, separate from "CONFIGONLY_CORE_MOD_VERSION"
+        public static int DEPLOY_CLIENT_DATA_VERSION = 1;
+        public static string DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE = "Your EverQuest client data is out of date. Please run the launcher to update, then log back in.";
 
         // ====================================================================
         // Core
@@ -1565,6 +1569,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("DEPLOY_SERVER_SQL", DEPLOY_SERVER_SQL, "If true, deploy to the SQL to the server");
             OutputVariableToConfig("DEPLOY_SQL_CONNECTION_STRING_CHARACTERS", DEPLOY_SQL_CONNECTION_STRING_CHARACTERS, "If deploying to SQL, you need to set these to something real that points to your databases (only relevant if you set DEPLOY_SERVER_SQL to true, otherwise ignored)", false);
             OutputVariableToConfig("DEPLOY_SQL_CONNECTION_STRING_WORLD", DEPLOY_SQL_CONNECTION_STRING_WORLD, "");
+            OutputVariableToConfig("DEPLOY_CLIENT_DATA_VERSION", DEPLOY_CLIENT_DATA_VERSION, "Client files must match this between the server and the client, separate from \"CONFIGONLY_CORE_MOD_VERSION\"", false);
+            OutputVariableToConfig("DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE", DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE, "");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputTextLineToConfig("# | 3. Enhancements / Customizations (Settings that alter the world from EQ)  |");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
@@ -2085,6 +2091,8 @@ namespace EQWOWConverter
             DEPLOY_SERVER_SQL = ReadVariableFromConfigString("DEPLOY_SERVER_SQL", configValuesByVariableName, DEPLOY_SERVER_SQL);
             DEPLOY_SQL_CONNECTION_STRING_CHARACTERS = ReadVariableFromConfigString("DEPLOY_SQL_CONNECTION_STRING_CHARACTERS", configValuesByVariableName, DEPLOY_SQL_CONNECTION_STRING_CHARACTERS);
             DEPLOY_SQL_CONNECTION_STRING_WORLD = ReadVariableFromConfigString("DEPLOY_SQL_CONNECTION_STRING_WORLD", configValuesByVariableName, DEPLOY_SQL_CONNECTION_STRING_WORLD);
+            DEPLOY_CLIENT_DATA_VERSION = ReadVariableFromConfigString("DEPLOY_CLIENT_DATA_VERSION", configValuesByVariableName, DEPLOY_CLIENT_DATA_VERSION);
+            DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE = ReadVariableFromConfigString("DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE", configValuesByVariableName, DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE);
 
             CORE_CONSOLE_BEEP_ON_COMPLETE = ReadVariableFromConfigString("CORE_CONSOLE_BEEP_ON_COMPLETE", configValuesByVariableName, CORE_CONSOLE_BEEP_ON_COMPLETE);
             CORE_ENABLE_MULTITHREADING = ReadVariableFromConfigString("CORE_ENABLE_MULTITHREADING", configValuesByVariableName, CORE_ENABLE_MULTITHREADING);

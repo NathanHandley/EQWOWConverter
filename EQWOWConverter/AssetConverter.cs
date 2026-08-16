@@ -311,6 +311,9 @@ namespace EQWOWConverter
                 // Add any needed character creation screen changes
                 AddCharacterCreateUIFiles();
 
+                // Write the client data version so the client can report it for the server's version check
+                EQVersionLUA.Generate();
+
                 // Copy the item tooltip addon into the prep location
                 string sourceItemTooltipsAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_ItemTooltips");
                 string targetItemTooltipsAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_ItemTooltips");

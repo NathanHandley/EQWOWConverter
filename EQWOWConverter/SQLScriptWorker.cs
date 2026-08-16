@@ -258,6 +258,8 @@ namespace EQWOWConverter
         private void PopulateSystemConfigs()
         {
             modEverquestSystemConfigsSQL.AddRow("ModVersion", Configuration.CONFIGONLY_CORE_MOD_VERSION.ToString());
+            modEverquestSystemConfigsSQL.AddRow("ClientDataVersion", Configuration.DEPLOY_CLIENT_DATA_VERSION.ToString());
+            modEverquestSystemConfigsSQL.AddRow("ClientDataVersionMismatchMessage", Configuration.DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE);
             modEverquestSystemConfigsSQL.AddRow("BardMaxConcurrentSongs", Configuration.SPELL_MAX_CONCURRENT_BARD_SONGS.ToString());
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMin", Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString());
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMax", Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH.ToString());

@@ -26,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("DROP TABLE IF EXISTS `mod_everquest_systemconfigs`; ");
             stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_systemconfigs` ( ");
             stringBuilder.AppendLine("`Key` VARCHAR(100) NOT NULL DEFAULT '', ");
-            stringBuilder.AppendLine("`Value` VARCHAR(100) NOT NULL DEFAULT '', ");
+            stringBuilder.AppendLine("`Value` VARCHAR(255) NOT NULL DEFAULT '', ");
             stringBuilder.AppendLine("PRIMARY KEY (`Key`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
