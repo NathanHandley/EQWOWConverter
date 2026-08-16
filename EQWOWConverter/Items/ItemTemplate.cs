@@ -1989,6 +1989,10 @@ namespace EQWOWConverter.Items
                     newItemTemplate.EQClassMask, armorClass, strength, agility, charisma, dexterity, intelligence, stamina, wisdom, hp, 
                     mana, resistPoison, resistMagic, resistDisease, resistFire, resistCold, damage, delay, qualityOverride);
 
+                // Convert all back slot items to cloth
+                if (newItemTemplate.InventoryType == ItemWOWInventoryType.Back && newItemTemplate.ClassID == 4)
+                    newItemTemplate.SubClassID = Convert.ToInt32(ItemWOWArmorSubclassType.Cloth);
+
                 // Set non-combat held items as non-weapon to avoid offhand punching while holding it
                 // Fishing needs the weapon class, since the fishing spell requires it
                 if (newItemTemplate.ClassID == 2 && overrideItemClassID < 0 && IsWeaponInEQ(damage, delay) == false && IsHandEquippedInventoryType(newItemTemplate.InventoryType) == true
