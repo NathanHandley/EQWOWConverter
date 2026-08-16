@@ -293,6 +293,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("AgileFighterCombatMasterSpellID", Configuration.AGILEFIGHTER_ENABLED == true ? Configuration.AGILEFIGHTER_COMBATMASTER_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("AgileFighterCombatExpertSpellID", Configuration.AGILEFIGHTER_ENABLED == true ? Configuration.AGILEFIGHTER_COMBATEXPERT_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("RaidBossRespawnVarianceInSec", Configuration.CREATURE_RAID_BOSS_VARIANCE_IN_SEC.ToString());
+            modEverquestSystemConfigsSQL.AddRow("RaidMiniBossRespawnVarianceInSec", Configuration.CREATURE_RAID_MINI_BOSS_VARIANCE_IN_SEC.ToString());
         }
 
         private void PopulateGameTableData()
@@ -1349,20 +1350,16 @@ namespace EQWOWConverter
         {
             switch (creatureTemplate.DifficultyType)
             {
-                case CreatureDifficultyType.RaidBoss:
+                case CreatureDifficultyType.RaidBoss: return Configuration.CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC;
+                case CreatureDifficultyType.RaidMiniBoss: return Configuration.CREATURE_RAID_MINI_BOSS_RESPAWN_CENTER_IN_SEC;
                 case CreatureDifficultyType.RaidTrash:
                     {
-                        int maxRespawnTimeInSec;
-                        if (creatureTemplate.DifficultyType == CreatureDifficultyType.RaidBoss)
-                            maxRespawnTimeInSec = Configuration.CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC;
-                        else
-                            maxRespawnTimeInSec = Configuration.CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC;
                         if (spawnInstance == null || spawnInstance.RespawnTimeInSeconds <= 0)
-                            return maxRespawnTimeInSec;
+                            return Configuration.CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC;
 
                         // TAKP respawns in "respawntime +/- (variance / 2)", so the minimum (fastest) respawn is "respawntime - (variance / 2)"
                         int minRespawnTimeInSec = Math.Max(1, spawnInstance.RespawnTimeInSeconds - (spawnInstance.Variance / 2));
-                        return Math.Min(minRespawnTimeInSec, maxRespawnTimeInSec);
+                        return Math.Min(minRespawnTimeInSec, Configuration.CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC);
                     }
                 default: return Configuration.CREATURE_STANDARD_RESPAWN_MAX_TIME_IN_SEC;
             }

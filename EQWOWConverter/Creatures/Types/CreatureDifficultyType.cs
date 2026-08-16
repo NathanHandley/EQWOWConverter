@@ -20,6 +20,7 @@ namespace EQWOWConverter.Creatures
     {
         Normal = 0,
         RaidTrash = 1,
-        RaidBoss = 2
+        RaidBoss = 2,
+        RaidMiniBoss = 3
     }
 }

@@ -384,6 +384,7 @@ namespace EQWOWConverter.Creatures
                     switch (difficultyType)
                     {
                         case "raidboss": newCreatureTemplate.DifficultyType = CreatureDifficultyType.RaidBoss; break;
+                        case "raidminiboss": newCreatureTemplate.DifficultyType = CreatureDifficultyType.RaidMiniBoss; break;
                         case "raidtrash": newCreatureTemplate.DifficultyType = CreatureDifficultyType.RaidTrash; break;
                         case "normal": newCreatureTemplate.DifficultyType = CreatureDifficultyType.Normal; break;
                         default:
@@ -392,7 +393,7 @@ namespace EQWOWConverter.Creatures
                                 newCreatureTemplate.DifficultyType = CreatureDifficultyType.Normal;
                             } break;
                     }
-                    if (newCreatureTemplate.DifficultyType == CreatureDifficultyType.RaidBoss)
+                    if (newCreatureTemplate.DifficultyType == CreatureDifficultyType.RaidBoss || newCreatureTemplate.DifficultyType == CreatureDifficultyType.RaidMiniBoss)
                         newCreatureTemplate.Rank = CreatureWOWRankType.Boss;
                     if (newCreatureTemplate.Rank == CreatureWOWRankType.Normal && (newCreatureTemplate.HPMod > Configuration.CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE || newCreatureTemplate.DamageMod > Configuration.CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE))
                         newCreatureTemplate.Rank = CreatureWOWRankType.Elite;

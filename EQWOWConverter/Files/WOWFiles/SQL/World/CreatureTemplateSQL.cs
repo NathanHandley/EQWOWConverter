@@ -84,7 +84,7 @@ namespace EQWOWConverter.WOWFiles
                 typeFlags |= 1;     // 0x00000001 CREATURE_TYPE_FLAG_TAMEABLE
             if (creatureTemplate.IsExoticTameable() == true)
                 typeFlags |= 65536;     // 0x00010000 CREATURE_TYPE_FLAG_TAMEABLE_EXOTIC
-            if (creatureTemplate.DifficultyType == CreatureDifficultyType.RaidBoss)
+            if (creatureTemplate.DifficultyType == CreatureDifficultyType.RaidBoss || creatureTemplate.DifficultyType == CreatureDifficultyType.RaidMiniBoss)
                 typeFlags |= 4;     // 0x00000004 CREATURE_TYPE_FLAG_BOSS_MOB
             if (creatureTemplate.IsQuestGiver == true)
             {
