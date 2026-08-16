@@ -2732,6 +2732,46 @@ namespace EQWOWConverter
                                 smartScriptsSQL.AddRowForGameObjectTriggeredTeleport(gameObject.GameObjectTemplateEntryID, gameObject.DestinationMapID, gameObject.DestinationPosition.X,
                                     gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
                         }
+
+                        // Duplicate the spawn onto the low raid instance map if this zone has one
+                        ZoneProperties gameObjectZoneProperties = zonePropertiesByShortName[gameObjectByShortName.Key];
+                        if (gameObjectZoneProperties.ShouldGenerateInstanceRaidLow() == true && gameObject.GameObjectGUIDRaidLow != 0)
+                        {
+                            int raidMapID = gameObjectZoneProperties.DBCMapIDRaidLow;
+                            int raidSpawnTimeInSec = spawnTimeInSec;
+                            if (gameObject.ObjectType == GameObjects.GameObjectType.Chest)
+                                raidSpawnTimeInSec = Convert.ToInt32(gameObjectZoneProperties.InstanceResetTimeInSecRaidLow);
+                            string raidComment = string.Concat(comment, " RaidLow");
+                            gameObjectSQL.AddRow(gameObject.GameObjectGUIDRaidLow, gameObject.GameObjectTemplateEntryID, raidMapID, areaID, gameObject.Position, gameObject.Orientation, gameObject.InteractiveRotation, raidSpawnTimeInSec, raidComment);
+                            if (gameObject.EQIncline != 0)
+                                gameObjectAddonSQL.AddRow(gameObject.GameObjectGUIDRaidLow);
+
+                            // Raid copies share the base map's GO templates, so smart scripts must be attachd per-guid (negative ID) which makes the needed raid copy run
+                            if (gameObject.TriggerGameObjectGUID != 0)
+                            {
+                                if (gameObject.TriggerGameObjectGUIDRaidLow == 0)
+                                    Logger.WriteError("GameObject with GUID ", gameObject.GameObjectGUID.ToString(), " has a trigger chain, but the trigger target has no raid instance copy so the raid chain is skipped");
+                                else
+                                {
+                                    string scriptComment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUIDRaidLow, " Chain Activates GUID ", gameObject.TriggerGameObjectGUIDRaidLow, " RaidLow");
+                                    smartScriptsSQL.AddRowForGameObjectStateTriggerEvent(-gameObject.GameObjectGUIDRaidLow, gameObject.TriggerGameObjectGUIDRaidLow, gameObject.TriggerGameObjectTemplateEntryID, scriptComment);
+                                }
+                            }
+                            else if (gameObject.ObjectType == GameObjects.GameObjectType.Teleport)
+                            {
+                                // Teleports that stay inside the zone must stay inside the raid instance, otherwise fall out to the base destination map
+                                int raidDestinationMapID = gameObject.DestinationMapID;
+                                if (gameObject.DestinationZoneShortName.ToLower().Trim() == gameObjectByShortName.Key)
+                                    raidDestinationMapID = raidMapID;
+                                string scriptComment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUIDRaidLow, " Teleports to ", gameObject.DestinationZoneShortName, " RaidLow");
+                                if (gameObject.LockDBCID != 0)
+                                    smartScriptsSQL.AddRowForGameObjectTriggeredTeleportOnActivate(-gameObject.GameObjectGUIDRaidLow, raidDestinationMapID, gameObject.DestinationPosition.X,
+                                        gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
+                                else
+                                    smartScriptsSQL.AddRowForGameObjectTriggeredTeleport(-gameObject.GameObjectGUIDRaidLow, raidDestinationMapID, gameObject.DestinationPosition.X,
+                                        gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
+                            }
+                        }
                     }
                 }
             }
