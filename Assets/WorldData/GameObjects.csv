@@ -4609,3 +4609,4 @@ id|eq_id|gotemplate_id|enabled|doorid|zone|type|model_name|model_is_skeletal|mod
 4618|-1|274617|1|3|tutorial|Door|DOOR1|0|0|0|0|0|0|0|Door|71.3194|169.966358|1.98|255|0|71.3194|169.966358||0|0|0|0|1|0|0|0|0|0|0|NONE|0|0|0|0|0|0|100|0|5|1|1|1|1|0|-1|0|Guildhouse (open south)
 4619|-1|274618|1|4|tutorial|Door|DOOR1|0|0|0|0|0|0|0|Door|151.895974|151.938248|0.95|-128|0|151.895974|151.938248||0|0|0|0|1|0|0|0|0|0|0|NONE|0|0|0|0|0|0|100|0|5|1|1|1|1|0|-1|0|Bank of Norrath (open east) - Inside
 4620|-1|274619|1|9999|lakerathe|NonInteract|ladder28|0|0|0|0|0|0|0||3495|234.879684|-46|255|0|3495|234.879684||0|0|0|0|1|0|0|0|0|0|0|NONE|0|0|0|0|0|50|100|0|0|0|0|1|0|0|-1|0|Allows getting to Ragefire in the north house
+4621|-1|274620|1|9999|lavastorm|NonInteract|nrrock5|0|0|0|0|0|0|0||955.155273|428.819794|-24.90068|-125|0|955.155273|428.819794||0|0|0|0|1|0|0|0|0|0|0|NONE|0|0|0|0|0|90|200|0|0|0|0|1|0|0|-1|0|To climb out of the caldera
