@@ -357,6 +357,9 @@ namespace EQWOWConverter.Spells
         public bool RequiresMainHandWeapon = false;
         public bool UsesRangedWeaponSlot = false;
         public bool AllowInShapeshift = false;
+        public bool AllowCastWhileSitting = false;
+        public bool DoNotBreakStealthOrInvisibility = false;
+        public bool AllowCastWhileCasting = false;
 
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput

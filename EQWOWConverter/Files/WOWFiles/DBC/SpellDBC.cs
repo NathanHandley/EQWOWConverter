@@ -287,8 +287,10 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 16; // SPELL_ATTR0_IS_ABILITY (0x00000010)
                 attributeFlags |= 32; // SPELL_ATTR0_IS_TRADESKILL (0x00000020)
             }
-            if (isWornEquipEffect == false)
+            if (isWornEquipEffect == false && spellTemplate.AllowInShapeshift == false)
                 attributeFlags |= 65536; // SPELL_ATTR0_NOT_SHAPESHIFTED (0x00010000)
+            if (spellTemplate.AllowCastWhileSitting == true)
+                attributeFlags |= 134217728; // SPELL_ATTR0_ALLOW_WHILE_SITTING (0x08000000)
             if (preventClickOff == true || spellTemplate.AlwaysPersist == true)
                 attributeFlags |= 2147483648; // SPELL_ATTR0_NO_AURA_CANCEL (0x80000000)
             if (spellTemplate.ForceAsDebuff == true)
@@ -307,8 +309,8 @@ namespace EQWOWConverter.WOWFiles
             UInt32 attributeFlags = 0;
             if (spellTemplate.SummonSpellPet != null)
                 attributeFlags |= 1; // SPELL_ATTR1_DISMISS_PET_FIRST
-            if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
-                attributeFlags |= 32; // 	SPELL_ATTR1_ALLOW_WHILE_STEALTHED (0x00000020)
+            if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0 || spellTemplate.DoNotBreakStealthOrInvisibility == true)
+                attributeFlags |= 32; // 	SPELL_ATTR1_ALLOW_WHILE_STEALTHED (0x00000020) - also catches "on cast" aura interrupt, so feign death and eating survive
             if (spellTemplate.IsChanneled == true)
                 attributeFlags |= 4; // SPELL_ATTR1_IS_CHANNELED (0x00000004)
             if (spellTemplate.IsFarSight == true)
@@ -373,6 +375,8 @@ namespace EQWOWConverter.WOWFiles
             }
             if (spellTemplate.HideCaster == true)
                 attributeFlags |= 1; // SPELL_ATTR4_NO_CAST_LOG
+            if (spellTemplate.AllowCastWhileCasting == true)
+                attributeFlags |= 128; // SPELL_ATTR4_ALLOW_CAST_WHILE_CASTING (0x00000080)
             if (isToggleAura == true || spellTemplate.AlwaysPersist == true)
                 attributeFlags |= 1048576; // SPELL_ATTR4_AURA_NEVER_BOUNCES
             return attributeFlags;

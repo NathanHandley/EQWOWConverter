@@ -2769,6 +2769,11 @@ namespace EQWOWConverter
             trackingSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
             trackingSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
             trackingSpellTemplate.TriggersGlobalCooldown = false;
+            trackingSpellTemplate.AllowInShapeshift = true;
+            trackingSpellTemplate.AllowCastWhileSitting = true;
+            trackingSpellTemplate.DoNotBreakStealthOrInvisibility = true;
+            trackingSpellTemplate.AllowCastWhileCasting = true;
+            trackingSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
             trackingSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, (int)SpellDummyType.Track, 0));
             trackingSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             spellTemplates.Add(trackingSpellTemplate);
