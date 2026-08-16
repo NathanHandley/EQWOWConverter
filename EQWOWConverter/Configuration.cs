@@ -299,7 +299,11 @@ namespace EQWOWConverter
         // Dungeons
         //=====================================================================
         // If true, dungeon finder can be used for special versions of EQ dungeons
-        public static bool DUNGEON_FINDER_ENABLED = false;
+        public static bool DUNGEON_FINDER_ENABLED = true;
+
+        // Low Raid (pre-61+) dungeon instances
+        public static bool DUNGEON_RAID_LOW_INSTANCES_ENABLED = true;
+        public static int DUNGEON_RAID_LOW_MAX_PLAYERS = 25;
 
         //=====================================================================
         // World Maps (and Minimaps)
@@ -479,7 +483,7 @@ namespace EQWOWConverter
 
         // Creature respawn rates
         public static int CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC = 28800;
-        public static int CREATURE_RAID_BOSS_VARIANCE_IN_SEC = 3600;
+        public static int CREATURE_RAID_BOSS_VARIANCE_IN_SEC = 7200;
         public static int CREATURE_RAID_TRASH_RESPAWN_MAX_TIME_IN_SEC = 7200;
         public static int CREATURE_STANDARD_RESPAWN_MAX_TIME_IN_SEC = 210;
 
@@ -621,7 +625,10 @@ namespace EQWOWConverter
 
         // If "GENERANE_ENABLE_PLANES_TELEPORTATION" is true, this is the text that displays
         // when you talk to a planes teleporter
-        public static string CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT = "Heehee! Greetings, $N! I am %s, master of the arcane tinker-torium! While those other stuffy wizards hoard their portals, I offer free teleportation services to the most dangerous planes of existence! Just say the word and I will zap you straight to the Plane of Sky or the Plane of Hate — no reagents, no waiting, no pesky deaths required! What will it be, adventurer?";
+        public static string CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT = "Heehee! Greetings, $N! I am $S, master of the arcane tinker-torium! While those other stuffy wizards hoard their portals, I offer free teleportation services to the most dangerous planes of existence! Just say the word and I will zap you straight to the Plane of Sky or the Plane of Hate — no reagents, no waiting, no pesky deaths required! What will it be, adventurer?";
+
+        // This is the text that displays when you talk to a raid coordinator (creature class 110)
+        public static string CREATURE_RAID_COORDINATOR_GOSSIP_TEXT = "Well met, $N. I coordinate expeditions into the most perilous corners of Norrath. Gather your allies into a raid, and I will send you to the encampment inside. Where does your courage take you?";
 
         // If true, any creature initial spawn location will instead be the first node in the path grid, but only for paths managed by the AzerothCore engine
         public static bool CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH = true;
@@ -1147,9 +1154,15 @@ namespace EQWOWConverter
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================
-        // IDs used for Achievement.dbc
+        // IDs used for Achievement.dbc.  Achievement_Category.dbc IDs come from AchievementCategories.csv (stock rows end at 15062)
         public static int DBCID_ACHIEVEMENT_ID_START = 5000;
         public static int DBCID_ACHIEVEMENT_ID_END = 5099;
+
+        // IDs used for Achievement_Criteria.dbc.
+        // Note: Persists per character keyed by these IDs in a smallint column so they must never change and can never exceed 65535.
+        // Existing rows end near 13000
+        public static int DBCID_ACHIEVEMENTCRITERIA_ID_START = 20000;
+        public static int DBCID_ACHIEVEMENTCRITERIA_ID_END = 65535;
 
         // IDs for AreaBit used in AreaTable, should be unique (max of 4095)
         public static int DBCID_AREATABLE_AREABIT_BLOCK_1_START = 3092;
@@ -1201,7 +1214,7 @@ namespace EQWOWConverter
         // IDs for LFGDungeonGroup.dbc
         public static int DBCID_LFGDUNGEONGROUP_DUNGEONS_ID = 15;
         public static int DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID = 6;
-        public static int DBCID_LFGDUNGEONGROUP_RAIDS_ID = 15;
+        public static int DBCID_LFGDUNGEONGROUP_RAIDS_ID = 16;
         public static int DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID = 22;
 
         // Start ID for LFGDungeons.dbc
@@ -1569,7 +1582,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES, "");
             OutputTextLineToConfig("# If true, the per-class stat game tables (gtChanceToSpellCrit and related) have their zeroed-out class rows (Warrior, Rogue, DeathKnight)");
             OutputVariableToConfig("PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID", PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID, "Warrior, Rogue, and DeathKnight are missing spell stat data, and this is the donor class ID to fill it with");
-            OutputVariableToConfig("DUNGEON_FINDER_ENABLED", DUNGEON_FINDER_ENABLED, "If true, dungeon finder can be used for special versions of EQ dungeons");
+            OutputVariableToConfig("DUNGEON_FINDER_ENABLED", DUNGEON_FINDER_ENABLED, "Used for instanced versions of EQ dungeons", false);
+            OutputVariableToConfig("DUNGEON_RAID_LOW_INSTANCES_ENABLED", DUNGEON_RAID_LOW_INSTANCES_ENABLED, "Low Raid (pre-61+) dungeon instances", false);
+            OutputVariableToConfig("DUNGEON_RAID_LOW_MAX_PLAYERS", DUNGEON_RAID_LOW_MAX_PLAYERS, "");
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED", ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED, "If true, a feat of strength achievement is awarded to characters on accounts created before ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_NAME", ACHIEVEMENT_LEGACY_ACCOUNT_NAME, "", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION", ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION, "", false);
@@ -1803,6 +1818,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT, "");
             OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT, "");
             OutputVariableToConfig("CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT", CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT, "If \"GENERANE_ENABLE_PLANES_TELEPORTATION\" is true, this is the text that displays when you talk to a planes teleporter");
+            OutputVariableToConfig("CREATURE_RAID_COORDINATOR_GOSSIP_TEXT", CREATURE_RAID_COORDINATOR_GOSSIP_TEXT, "This is the text that displays when you talk to a raid coordinator (creature class 110)");
             OutputVariableToConfig("CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH", CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH, "If true, any creature initial spawn location will instead be the first node in the path grid, but only for paths managed by the AzerothCore engine");
             OutputVariableToConfig("CREATURE_COMPANION_PETS_DROPS_ENABLED", CREATURE_COMPANION_PETS_DROPS_ENABLED, "Companion pets can drop from any creature in the world", false);
             OutputVariableToConfig("CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT", CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT, "", false);
@@ -2149,6 +2165,8 @@ namespace EQWOWConverter
             ZONE_FLYING_ALLOWED = ReadVariableFromConfigString("ZONE_FLYING_ALLOWED", configValuesByVariableName, ZONE_FLYING_ALLOWED);
 
             DUNGEON_FINDER_ENABLED = ReadVariableFromConfigString("DUNGEON_FINDER_ENABLED", configValuesByVariableName, DUNGEON_FINDER_ENABLED);
+            DUNGEON_RAID_LOW_INSTANCES_ENABLED = ReadVariableFromConfigString("DUNGEON_RAID_LOW_INSTANCES_ENABLED", configValuesByVariableName, DUNGEON_RAID_LOW_INSTANCES_ENABLED);
+            DUNGEON_RAID_LOW_MAX_PLAYERS = ReadVariableFromConfigString("DUNGEON_RAID_LOW_MAX_PLAYERS", configValuesByVariableName, DUNGEON_RAID_LOW_MAX_PLAYERS);
 
             ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED);
             ACHIEVEMENT_LEGACY_ACCOUNT_NAME = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_NAME", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_NAME);
@@ -2316,6 +2334,7 @@ namespace EQWOWConverter
             CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT);
             CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT);
             CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT);
+            CREATURE_RAID_COORDINATOR_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_RAID_COORDINATOR_GOSSIP_TEXT", configValuesByVariableName, CREATURE_RAID_COORDINATOR_GOSSIP_TEXT);
             CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH = ReadVariableFromConfigString("CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH", configValuesByVariableName, CREATURE_SPAWN_LOCATION_TAKEN_FROM_GRID_FOR_NON_CUSTOM_PATH);
             CREATURE_COMPANION_PETS_DROPS_ENABLED = ReadVariableFromConfigString("CREATURE_COMPANION_PETS_DROPS_ENABLED", configValuesByVariableName, CREATURE_COMPANION_PETS_DROPS_ENABLED);
             CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT = ReadVariableFromConfigString("CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT", configValuesByVariableName, CREATURE_COMPANION_PETS_LOW_DROP_RATE_PCT);

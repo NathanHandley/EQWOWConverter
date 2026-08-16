@@ -95,6 +95,8 @@ namespace EQWOWConverter.WOWFiles
                 numOfRoles+=2;
             if (Configuration.GENERANE_ENABLE_PLANES_TELEPORTATION == true && creatureTemplate.IsPlaneTeleporter == true)
                 numOfRoles+=2;
+            if (creatureTemplate.IsRaidCoordinator == true && creatureTemplate.GossipMenuID > 0) // Menu only exists when raid instances generated
+                numOfRoles+=2;
             if (creatureTemplate.HasGossipReactions == true)
                 numOfRoles += 2;
             if (creatureTemplate.HasHailedEmote == true)
@@ -118,6 +120,8 @@ namespace EQWOWConverter.WOWFiles
                 extraFlags |= 128; // 0x00000080 = CREATURE_FLAG_EXTRA_TRIGGER (invis to players)
                 extraFlags |= 2;   // 0x00000002 = CREATURE_FLAG_EXTRA_CIVILIAN (ignore agro / faction)
             }
+            if (creatureTemplate.BindsRaidInstanceOnKill == true)
+                extraFlags |= 1;   // 0x00000001 = CREATURE_FLAG_EXTRA_INSTANCE_BIND (kill permanently locks raid members to the instance, does nothing in non-instanced maps)
 
             // Create the row
             SQLRow newRow = new SQLRow();

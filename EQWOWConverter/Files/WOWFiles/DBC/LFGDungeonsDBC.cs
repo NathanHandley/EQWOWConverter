@@ -18,12 +18,10 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class LFGDungeonsDBC : DBCFile
     {
-        private static int CUR_ID = Configuration.DBCID_LFGDUNGEONS_ID_START;
-
-        public void AddRow(string name, int minLevel, int targetLevel, int targetLevelMin, int targetLevelMax, int mapID, bool isRaid, int groupID)
+        public void AddRow(int id, string name, int minLevel, int targetLevel, int targetLevelMin, int targetLevelMax, int mapID, bool isRaid, int groupID)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt32(CUR_ID); // ID
+            newRow.AddInt32(id); // ID
             newRow.AddStringLang(name); // Name
             newRow.AddInt32(minLevel); // MinLevel
             newRow.AddInt32(100); // MaxLevel
@@ -42,10 +40,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddStringLang(""); // Description_Lang
 
             // Sort by ID
-            newRow.SortValue1 = CUR_ID;
+            newRow.SortValue1 = id;
 
             Rows.Add(newRow);
-            CUR_ID++;
         }
 
         protected override void OnPostLoadDataFromDisk()

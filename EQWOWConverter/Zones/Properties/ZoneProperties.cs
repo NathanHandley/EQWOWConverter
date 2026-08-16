@@ -113,12 +113,13 @@ namespace EQWOWConverter.Zones
         private static HashSet<string> MusicNames = new HashSet<string>();
 
         public int DBCMapID;
-        public int DBCMapIDDungeon;
-        public int DBCMapIDRaid;
+        public int DBCMapIDRaidLow;
         public int DBCMapDifficultyID;
-        public int DBCMapDifficultyDungeonID;
-        public int DBCMapDifficultyRaidID;
+        public int DBCMapDifficultyIDRaidLow;
         public int DBCWorldMapAreaID;
+        public bool HasInstanceRaidLow = false;
+        public UInt32 InstanceResetTimeInSecRaidLow = 0;
+        public int DBCLFGDungeonsIDRaidLow = 0;
         public UInt32 DBCWMOID;
         public string ShortName = string.Empty;
         public string DescriptiveName = string.Empty;
@@ -159,11 +160,9 @@ namespace EQWOWConverter.Zones
         public float DisplayMapMainTop = 0;
         public float DisplayMapMainBottom = 0;
         public List<ZonePropertiesDisplayMapLinkBox> DisplayMapLinkBoxes = new List<ZonePropertiesDisplayMapLinkBox>();
-        public int SuggestedMinLevel = 0;
-        public int SuggestedMaxLevel = 0;
-        public int RaidLevel = 0;
-        public int RaidPlayerSize = 0;
-        public int RaidDurationInSeconds = 0;
+        public int SuggestedMinLevelWorld = 0;
+        public int SuggestedMaxLevelWorld = 0;
+        public int RaidLevelLow = 0;
         public float SocialAgroMod = 1f;
         public float MaxAgroZDistance = -1f;
         public bool DisableObjectsInMapGenMode = false;
@@ -171,6 +170,13 @@ namespace EQWOWConverter.Zones
         public ZoneProperties(UInt32 wmoAreaTableDBCID)
         {
             DBCWMOID = wmoAreaTableDBCID;
+        }
+
+        public bool ShouldGenerateInstanceRaidLow()
+        {
+            if (Configuration.DUNGEON_RAID_LOW_INSTANCES_ENABLED == false)
+                return false;
+            return HasInstanceRaidLow;
         }
 
         public static HashSet<string> GetMusicNames()
@@ -1033,12 +1039,22 @@ namespace EQWOWConverter.Zones
 
                 zoneProperties.ShortName = shortName;
                 zoneProperties.DBCMapID = int.Parse(propertiesRow["WOWMapID"]);
-                zoneProperties.DBCMapIDDungeon = int.Parse(propertiesRow["WOWMapIDDungeon"]);
-                zoneProperties.DBCMapIDRaid = int.Parse(propertiesRow["WOWMapIDRaid"]);
+                zoneProperties.DBCMapIDRaidLow = int.Parse(propertiesRow["WOWMapIDRaidLow"]);
                 zoneProperties.DBCMapDifficultyID = int.Parse(propertiesRow["WOWMapDifficultyID"]);
-                zoneProperties.DBCMapDifficultyDungeonID = int.Parse(propertiesRow["WOWMapDifficultyDungeonID"]);
-                zoneProperties.DBCMapDifficultyRaidID = int.Parse(propertiesRow["WOWMapDifficultyRaidID"]);
+                zoneProperties.DBCMapDifficultyIDRaidLow = int.Parse(propertiesRow["WOWMapDifficultyIDRaidLow"]);
                 zoneProperties.DBCWorldMapAreaID = int.Parse(propertiesRow["WorldMapAreaID"]);
+                zoneProperties.HasInstanceRaidLow = propertiesRow["HasInstanceRaidLow"].Trim() == "1" ? true : false;
+                zoneProperties.InstanceResetTimeInSecRaidLow = UInt32.Parse(propertiesRow["InstanceResetTimeInSecRaidLow"]);
+                if (zoneProperties.HasInstanceRaidLow == true)
+                {
+                    if (zoneProperties.DBCMapIDRaidLow <= 0)
+                        Logger.WriteError("ZoneProperties for zone '" + shortName + "' has HasInstanceRaidLow set but no valid WOWMapIDRaidLow, so the raid instance will not work");
+                    if (zoneProperties.DBCMapDifficultyIDRaidLow <= 0)
+                        Logger.WriteError("ZoneProperties for zone '" + shortName + "' has HasInstanceRaidLow set but no valid WOWMapDifficultyRaidIDLow, so the raid instance will not work");
+                    if (zoneProperties.InstanceResetTimeInSecRaidLow == 0)
+                        Logger.WriteError("ZoneProperties for zone '" + shortName + "' has HasInstanceRaidLow set but no InstanceResetTimeInSecRaidLow, so raid instance creatures will respawn instantly");
+                    zoneProperties.DBCLFGDungeonsIDRaidLow = IDGenerationTool.GenerateID("LFGDungeonsID", "raidlow", shortName);
+                }
                 zoneProperties.DescriptiveName = propertiesRow["DescriptiveName"];
                 zoneProperties.TelePosition.X = float.Parse(propertiesRow["TeleX"]) * Configuration.GENERATE_WORLD_SCALE;
                 zoneProperties.TelePosition.Y = float.Parse(propertiesRow["TeleY"]) * Configuration.GENERATE_WORLD_SCALE;
@@ -1088,20 +1104,10 @@ namespace EQWOWConverter.Zones
                 zoneProperties.DisplayMapMainRight = float.Parse(propertiesRow["DisplayMapMainRight"]);
                 zoneProperties.DisplayMapMainTop = float.Parse(propertiesRow["DisplayMapMainTop"]);
                 zoneProperties.DisplayMapMainBottom = float.Parse(propertiesRow["DisplayMapMainBottom"]);
-                if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == true)
-                {
-                    zoneProperties.SuggestedMinLevel = int.Parse(propertiesRow["SugLevelMin80"]);
-                    zoneProperties.SuggestedMaxLevel = int.Parse(propertiesRow["SugLevelMax80"]);
-                    Logger.WriteError("Unimplemented level 80 logic for raids");
-                }
-                else
-                {
-                    zoneProperties.SuggestedMinLevel = int.Parse(propertiesRow["SugLevelMin60"]);
-                    zoneProperties.SuggestedMaxLevel = int.Parse(propertiesRow["SugLevelMax60"]);
-                    zoneProperties.RaidLevel = int.Parse(propertiesRow["RaidLevel60"]);
-                    zoneProperties.RaidPlayerSize = int.Parse(propertiesRow["RaidPlayerSize60"]);
-                    zoneProperties.RaidDurationInSeconds = int.Parse(propertiesRow["RaidDurInSec60"]);
-                }
+                zoneProperties.SuggestedMinLevelWorld = int.Parse(propertiesRow["SugLevelMin"]);
+                zoneProperties.SuggestedMaxLevelWorld = int.Parse(propertiesRow["SugLevelMax"]);
+                zoneProperties.RaidLevelLow = int.Parse(propertiesRow["RaidLevelLow"]);
+
                 zoneProperties.DisableObjectsInMapGenMode = propertiesRow["DisableObjectsInMapGenMode"].Trim() == "1" ? true : false;
 
                 // Creature properties

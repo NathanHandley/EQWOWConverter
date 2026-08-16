@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Achievements;
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.Creatures.Teleporters;
@@ -37,6 +38,7 @@ namespace EQWOWConverter
     internal class SQLScriptWorker
     {
         // World
+        private AchievementCriteriaDataSQL achievementCriteriaDataSQL = new AchievementCriteriaDataSQL();
         private AchievementRewardSQL achievementRewardSQL = new AchievementRewardSQL();
         private AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
         private AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
@@ -76,6 +78,7 @@ namespace EQWOWConverter
         private InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
         private ItemLootTemplateSQL itemLootTemplateSQL = new ItemLootTemplateSQL();
         private ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
+        private LfgDungeonTemplateSQL lfgDungeonTemplateSQL = new LfgDungeonTemplateSQL();
         private ModEverquestClassMapSQL modEverquestClassMapSQL = new ModEverquestClassMapSQL();
         private ModEverquestCreatureSQL modEverquestCreatureSQL = new ModEverquestCreatureSQL();
         private ModEverquestCreatureInstanceSQL modEverquestCreatureInstanceSQL = new ModEverquestCreatureInstanceSQL();
@@ -608,6 +611,27 @@ namespace EQWOWConverter
                         }
                     }
                 }
+
+                // Raid instance versions copy the zone's spawn as static spawn points and never repop, so collapse pools to their most rare
+                if (spawnPool.CreatureSpawnInstances.Count > 0 && spawnPool.CreatureTemplates.Count > 0 && mapIDsByShortName.ContainsKey(spawnPool.CreatureSpawnInstances[0].ZoneShortName) == true)
+                {
+                    ZoneProperties? raidLowZoneProperties = GetInstanceRaidLowZoneProperties(spawnPool.CreatureSpawnInstances[0]);
+                    if (raidLowZoneProperties != null)
+                    {
+                        CreatureTemplate raidCreatureTemplate = spawnPool.GetMostRareCreatureTemplate();
+                        foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
+                        {
+                            int raidCreatureGUID = IDGenerationTool.GenerateID("CreatureGUID", "spawnraidlow", spawnInstance.ID.ToString());
+                            string comment = string.Concat(raidCreatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", raidCreatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID, ", Low Raid Instance");
+                            CreateCreatureAndRelatedSQLEntriesForMap(raidCreatureGUID, raidCreatureTemplate, spawnInstance, spawnPool.SpawnGroup, comment,
+                                raidLowZoneProperties.DBCMapIDRaidLow, Convert.ToInt32(raidLowZoneProperties.InstanceResetTimeInSecRaidLow));
+                            if (spawnPool.LinkedSpawnGameEvent != null)
+                                gameEventCreatureSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, raidCreatureGUID, true);
+                            if (spawnPool.LinkedDespawnGameEvent != null)
+                                gameEventCreatureSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, raidCreatureGUID, false);
+                        }
+                    }
+                }
             }
 
             // Priest of Discord teleportation
@@ -801,6 +825,50 @@ namespace EQWOWConverter
                 }
             }
 
+            // Raid instance teleportation (raid coordinators), one gossip menu per coordinator creature
+            Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
+            Dictionary<int, int> raidCoordinatorGossipMenuIDsByCreatureTemplateWOWID = new Dictionary<int, int>();
+            Dictionary<int, List<CreatureRaidTeleport>> raidTeleportsByCreatureTemplateWOWID = new Dictionary<int, List<CreatureRaidTeleport>>();
+            foreach (var raidTeleportRowsByCreatureTemplateWOWID in CreatureRaidTeleport.GetRaidTeleportsByCreatureTemplateWOWID())
+            {
+                // Only teleports whose destination raid instance is actually generated get menu options
+                List<CreatureRaidTeleport> validRaidTeleports = new List<CreatureRaidTeleport>();
+                foreach (CreatureRaidTeleport raidTeleport in raidTeleportRowsByCreatureTemplateWOWID.Value)
+                {
+                    if (zonePropertiesByShortName.ContainsKey(raidTeleport.DestZoneShortName) == false)
+                    {
+                        Logger.WriteError("CreatureRaidTeleports.csv row for creature template '", raidTeleport.CreatureTemplateWOWID.ToString(), "' references unknown zone short name '", raidTeleport.DestZoneShortName, "', so it is skipped");
+                        continue;
+                    }
+                    if (zonePropertiesByShortName[raidTeleport.DestZoneShortName].ShouldGenerateInstanceRaidLow() == false)
+                        continue;
+                    validRaidTeleports.Add(raidTeleport);
+                }
+                if (validRaidTeleports.Count == 0)
+                    continue;
+
+                // Base menu
+                int coordinatorCreatureTemplateWOWID = raidTeleportRowsByCreatureTemplateWOWID.Key;
+                int raidMenuBroadcastTextID = IDGenerationTool.GenerateID("BroadcastTextID", "raidcoordinatormenu", coordinatorCreatureTemplateWOWID.ToString());
+                broadcastTextSQL.AddRow(raidMenuBroadcastTextID, Configuration.CREATURE_RAID_COORDINATOR_GOSSIP_TEXT, Configuration.CREATURE_RAID_COORDINATOR_GOSSIP_TEXT);
+                int raidMenuNPCTextID = IDGenerationTool.GenerateID("NPCTextID", "raidcoordinatormenu", coordinatorCreatureTemplateWOWID.ToString());
+                npcTextSQL.AddRow(raidMenuNPCTextID, Configuration.CREATURE_RAID_COORDINATOR_GOSSIP_TEXT, raidMenuBroadcastTextID);
+                int raidCoordinatorGossipMenuID = IDGenerationTool.GenerateID("GossipMenuID", "raidcoordinator", coordinatorCreatureTemplateWOWID.ToString());
+                gossipMenuSQL.AddRow(raidCoordinatorGossipMenuID, raidMenuNPCTextID);
+
+                // Teleport options
+                foreach (CreatureRaidTeleport raidTeleport in validRaidTeleports)
+                {
+                    int optionBroadcastTextID = IDGenerationTool.GenerateID("BroadcastTextID", "raidcoordinatoroption", coordinatorCreatureTemplateWOWID.ToString(), raidTeleport.GossipMenuOptionID.ToString());
+                    broadcastTextSQL.AddRow(optionBroadcastTextID, raidTeleport.OptionText, raidTeleport.OptionText);
+                    gossipMenuOptionSQL.AddRow(raidCoordinatorGossipMenuID, raidTeleport.GossipMenuOptionID, 0, raidTeleport.OptionText, optionBroadcastTextID, 1, 1, 0);
+                }
+
+                // Save
+                raidCoordinatorGossipMenuIDsByCreatureTemplateWOWID.Add(coordinatorCreatureTemplateWOWID, raidCoordinatorGossipMenuID);
+                raidTeleportsByCreatureTemplateWOWID.Add(coordinatorCreatureTemplateWOWID, validRaidTeleports);
+            }
+
             // Creature Templates
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
             List<CreatureVendorItem> reagentVendorItems = CreatureVendorItem.GetCreatureReagentItems();
@@ -888,6 +956,21 @@ namespace EQWOWConverter
                         string comment = string.Concat("EQ teleport player to Planes ('", curTeleportLocation.MenuItemText, "')");
                         smartScriptsSQL.AddRowForMenuOptionTriggeredTeleport(creatureTemplate.WOWCreatureTemplateID, planesTeleporterGossipMenuID, planesTeleportLocationByGossipMenuOptionID.Key,
                             mapID, curTeleportLocation.XPosition, curTeleportLocation.YPosition, curTeleportLocation.ZPosition, curTeleportLocation.Orientation, comment);
+                    }
+                }
+
+                // If there are any raid instance teleports
+                if (creatureTemplate.IsRaidCoordinator == true && raidCoordinatorGossipMenuIDsByCreatureTemplateWOWID.ContainsKey(creatureTemplate.WOWCreatureTemplateID) == true)
+                {
+                    creatureTemplate.HasSmartScript = true;
+                    creatureTemplate.GossipMenuID = raidCoordinatorGossipMenuIDsByCreatureTemplateWOWID[creatureTemplate.WOWCreatureTemplateID];
+                    foreach (CreatureRaidTeleport raidTeleport in raidTeleportsByCreatureTemplateWOWID[creatureTemplate.WOWCreatureTemplateID])
+                    {
+                        // The destination is always the raid instance copy of the zone, and entering still requires a raid group
+                        ZoneProperties raidDestZoneProperties = zonePropertiesByShortName[raidTeleport.DestZoneShortName];
+                        string comment = string.Concat("EQ teleport player to raid instance ('", raidTeleport.OptionText, "')");
+                        smartScriptsSQL.AddRowForMenuOptionTriggeredTeleport(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.GossipMenuID, raidTeleport.GossipMenuOptionID,
+                            raidDestZoneProperties.DBCMapIDRaidLow, raidTeleport.DestXPosition, raidTeleport.DestYPosition, raidTeleport.DestZPosition, raidTeleport.DestOrientation, comment);
                     }
                 }
 
@@ -1283,8 +1366,21 @@ namespace EQWOWConverter
             }
         }
 
+        private static ZoneProperties? GetInstanceRaidLowZoneProperties(CreatureSpawnInstance spawnInstance)
+        {
+            ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(spawnInstance.ZoneShortName);
+            if (zoneProperties.ShouldGenerateInstanceRaidLow() == false)
+                return null;
+            return zoneProperties;
+        }
+
         private static Dictionary<int, HashSet<int>> alreadySavedCustomWaypointGridIDsByMapID = new Dictionary<int, HashSet<int>>(); // Ensure only 1 of each waypoint set is saved
         private void CreateCreatureAndRelatedSQLEntries(int creatureGUID, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance, CreatureSpawnGroup spawnGroup, string comment, int respawnTimeOverrideInSec = 0)
+        {
+            CreateCreatureAndRelatedSQLEntriesForMap(creatureGUID, creatureTemplate, spawnInstance, spawnGroup, comment, spawnInstance.MapID, respawnTimeOverrideInSec);
+        }
+
+        private void CreateCreatureAndRelatedSQLEntriesForMap(int creatureGUID, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance, CreatureSpawnGroup spawnGroup, string comment, int mapID, int respawnTimeOverrideInSec = 0)
         {
             int respawnTimeInSec;
             if (respawnTimeOverrideInSec > 0)
@@ -1302,10 +1398,10 @@ namespace EQWOWConverter
                 if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                     creatureTemplate.SubName = spawnInstance.ID + " Roams";
                 creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, spawnInstance.SpawnStandState, creatureAddonAuras);
-                modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
-                    true, spawnGroup.RoamMinX, spawnGroup.RoamMaxX, spawnGroup.RoamMinY, spawnGroup.RoamMaxY, spawnGroup.RoamMinZ, spawnGroup.RoamMaxZ, spawnGroup.RoamMinDelayInMS, 
+                modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, mapID, spawnInstance.GetPathGrid().GridID,
+                    true, spawnGroup.RoamMinX, spawnGroup.RoamMaxX, spawnGroup.RoamMinY, spawnGroup.RoamMaxY, spawnGroup.RoamMinZ, spawnGroup.RoamMaxZ, spawnGroup.RoamMinDelayInMS,
                     spawnGroup.RoamMaxDelayInMS);
-                creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
+                creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, mapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
                     spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, respawnTimeInSec, comment, true);
             }
             else if (pathEntries.Count > 0 && wanderType != CreaturePathGridWanderType.None)
@@ -1316,20 +1412,20 @@ namespace EQWOWConverter
                     || wanderType == CreaturePathGridWanderType.GridRandomPath)
                 {
                     creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, spawnInstance.SpawnStandState, creatureAddonAuras);
-                    if (alreadySavedCustomWaypointGridIDsByMapID.ContainsKey(spawnInstance.MapID) == false)
-                        alreadySavedCustomWaypointGridIDsByMapID.Add(spawnInstance.MapID, new HashSet<int>());
-                    if (alreadySavedCustomWaypointGridIDsByMapID[spawnInstance.MapID].Contains(pathEntries[0].GridID) == false)
+                    if (alreadySavedCustomWaypointGridIDsByMapID.ContainsKey(mapID) == false)
+                        alreadySavedCustomWaypointGridIDsByMapID.Add(mapID, new HashSet<int>());
+                    if (alreadySavedCustomWaypointGridIDsByMapID[mapID].Contains(pathEntries[0].GridID) == false)
                     {
                         for (int i = 0; i < pathEntries.Count; i++)
                         {
                             CreaturePathGridEntry entry = pathEntries[i];
-                            modEverquestCreatureWaypointSQL.AddRow(spawnInstance.MapID, entry.GridID, entry.Number, entry.NodeX, entry.NodeY, entry.NodeZ, entry.PauseInSec);
+                            modEverquestCreatureWaypointSQL.AddRow(mapID, entry.GridID, entry.Number, entry.NodeX, entry.NodeY, entry.NodeZ, entry.PauseInSec);
                         }
-                        alreadySavedCustomWaypointGridIDsByMapID[spawnInstance.MapID].Add(pathEntries[0].GridID);
+                        alreadySavedCustomWaypointGridIDsByMapID[mapID].Add(pathEntries[0].GridID);
                     }
-                    modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
+                    modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, mapID, spawnInstance.GetPathGrid().GridID,
                         false, 0, 0, 0, 0, 0, 0, 0, 0, -1, spawnInstance.GetPathGrid().DisableGroundContour);
-                    creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
+                    creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, mapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
                         spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, respawnTimeInSec, comment, true);
                 }
                 else
@@ -1384,7 +1480,7 @@ namespace EQWOWConverter
                                 // Duplicate last node for a despawn event
                                 CreaturePathGridEntry lastEntryCopy = pathEntries[pathEntries.Count - 1];
                                 waypointDataSQL.AddRow(waypointGUID, pointID + 1, lastEntryCopy.NodeX, lastEntryCopy.NodeY, lastEntryCopy.NodeZ, 0);
-                                modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, spawnInstance.MapID, spawnInstance.GetPathGrid().GridID,
+                                modEverquestCreatureInstanceSQL.AddRow(creatureGUID, wanderType, spawnInstance.GetPathGrid().PauseType, mapID, spawnInstance.GetPathGrid().GridID,
                                     false, 0, 0, 0, 0, 0, 0, 0, 0, pointID + 1, spawnInstance.GetPathGrid().DisableGroundContour);
                                 useModScript = true;
                             } break;
@@ -1398,7 +1494,7 @@ namespace EQWOWConverter
                         creatureTemplate.SubName = spawnInstance.ID + " WP " + pathEntries[0].GridID;
 
                     movementType = CreatureMovementType.Path;
-                    creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
+                    creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, mapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
                         spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, respawnTimeInSec, comment, useModScript);
                 }
             }
@@ -1407,7 +1503,7 @@ namespace EQWOWConverter
                 if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                     creatureTemplate.SubName = spawnInstance.ID + " Immobile";
                 creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID, spawnInstance.SpawnStandState, creatureAddonAuras);
-                creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
+                creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, mapID, spawnInstance.AreaID, spawnInstance.AreaID, spawnInstance.SpawnXPosition,
                     spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType, respawnTimeInSec, comment, false);
             }
         }
@@ -2472,6 +2568,31 @@ namespace EQWOWConverter
                 modEverquestZoneSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.AllowBind, zone.ZoneProperties.ExpansionID,
                     zone.ZoneProperties.MaxAgroZDistance);
 
+                // Raid instance version of the zone, a mirror of the base zone but never allow binding
+                if (zone.ZoneProperties.ShouldGenerateInstanceRaidLow() == true)
+                {
+                    instanceTemplateSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow);
+                    gameTeleSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, zone.ShortName + "raid", zone.ZoneProperties.TelePosition.X,
+                        zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
+                    modEverquestZoneSafePointSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, zone.ZoneProperties.SafePosition);
+                    modEverquestZoneSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, false, zone.ZoneProperties.ExpansionID,
+                        zone.ZoneProperties.MaxAgroZDistance);
+                    lfgDungeonTemplateSQL.AddRow(zone.ZoneProperties.DBCLFGDungeonsIDRaidLow, zone.DescriptiveName, zone.ZoneProperties.TelePosition.X,
+                        zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
+
+                    // Raid cleared achievement
+                    AchievementData? raidLowAchievement = AchievementData.GetInstanceClearAchievement(zone.ShortName, "RaidLow");
+                    if (raidLowAchievement != null)
+                    {
+                        foreach (CreatureTemplate criteriaCreatureTemplate in raidLowAchievement.CriteriaCreatureTemplates)
+                        {
+                            int criteriaID = IDGenerationTool.GenerateID("AchievementCriteriaID", "instanceclear", raidLowAchievement.AchievementID.ToString(),
+                                criteriaCreatureTemplate.WOWCreatureTemplateID.ToString());
+                            achievementCriteriaDataSQL.AddRow(criteriaID, AchievementCriteriaDataSQL.DATA_TYPE_MAP_ID, zone.ZoneProperties.DBCMapIDRaidLow, 0);
+                        }
+                    }
+                }
+
                 // Database viewer needs zone-to-continent mapping and names
                 if (Configuration.DATABASEVIEWER_ENABLE == true)
                 {
@@ -2617,6 +2738,7 @@ namespace EQWOWConverter
         private void OutputSQLScriptsToDisk()
         {
             // World
+            achievementCriteriaDataSQL.SaveToDisk("achievement_criteria_data", SQLFileType.World);
             achievementRewardSQL.SaveToDisk("achievement_reward", SQLFileType.World);
             areaTriggerSQL.SaveToDisk("areatrigger", SQLFileType.World);
             areaTriggerTeleportSQL.SaveToDisk("areatrigger_teleport", SQLFileType.World);
@@ -2656,6 +2778,7 @@ namespace EQWOWConverter
             instanceTemplateSQL.SaveToDisk("instance_template", SQLFileType.World);
             itemLootTemplateSQL.SaveToDisk("item_loot_template", SQLFileType.World);
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
+            lfgDungeonTemplateSQL.SaveToDisk("lfg_dungeon_template", SQLFileType.World);
             modEverquestClassMapSQL.SaveToDisk("mod_everquest_classmap", SQLFileType.World);
             modEverquestCreatureSQL.SaveToDisk("mod_everquest_creature", SQLFileType.World);
             modEverquestCreatureInstanceSQL.SaveToDisk("mod_everquest_creature_instance", SQLFileType.World);

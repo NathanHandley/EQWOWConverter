@@ -1,0 +1,16 @@
+AchievementID|ParentCategoryID|AchievementType|Name|Description|Points|IconSpellEQID|IconItemEQID|ZoneShortName|Data1|Data2|Data3
+5100|15100|InstanceClear|Conqueror of Plane of Sky|Defeat Eye of Veeshan in Plane of Sky.|10|-1|145|airplane|RaidLow|50865|
+5101|15100|InstanceClear|Conqueror of Plane of Fear|Defeat Cazic Thule in Plane of Fear.|10|-1|145|fearplane|RaidLow|50912|
+5102|15102|InstanceClear|Conqueror of Plane of Growth|Defeat Tunare in Plane of Growth.|10|-1|145|growthplane|RaidLow|55300|
+5103|15100|InstanceClear|Conqueror of Plane of Hate|Defeat Innoruuk in Plane of Hate.|10|-1|145|hateplane|RaidLow|51196|
+5104|15102|InstanceClear|Conqueror of Kael Drakkal|Defeat King Tormax and The Avatar of War in Kael Drakkal.|10|-1|145|kael|RaidLow|53779|53808
+5105|15102|InstanceClear|Conqueror of Plane of Mischief|Defeat Bristlebane in Plane of Mischief.|10|-1|145|mischiefplane|RaidLow|55162|
+5106|15102|InstanceClear|Conqueror of Dragon Necropolis|Defeat Zlandicar in Dragon Necropolis.|10|-1|145|necropolis|RaidLow|54893|
+5107|15100|InstanceClear|Conqueror of Permafrost Caverns|Defeat Lady Vox in Permafrost Caverns.|10|-1|145|permafrost|RaidLow|50968|
+5108|15101|InstanceClear|Conqueror of Old Sebilis|Defeat Trakanon in Old Sebilis.|10|-1|145|sebilis|RaidLow|52112|
+5109|15102|InstanceClear|Conqueror of Skyshrine|Defeat Lord Yelinak in Skyshrine.|10|-1|145|skyshrine|RaidLow|54146|
+5110|15102|InstanceClear|Conqueror of Sleeper's Tomb|Defeat The Sleeper (Karafyrm) in Sleeper's Tomb.|10|-1|145|sleeper|RaidLow|55818|
+5111|15100|InstanceClear|Conqueror of Nagafen's Lair|Defeat Lord Nagafen in Nagafen's Lair.|10|-1|145|soldungb|RaidLow|47803|
+5112|15102|InstanceClear|Conqueror of Temple of Veeshan|Defeat Valak'Aerr in Temple of Veeshan.|10|-1|145|templeveeshan|RaidLow|55045|
+5113|15102|InstanceClear|Conqueror of Icewell Keep|Defeat Dain Frostreaver IV in Icewell Keep.|10|-1|145|thurgadinb|RaidLow|55381|
+5114|15101|InstanceClear|Conqueror of Veeshan's Peak|Defeat Phara Dar in Veeshan's Peak.|10|-1|145|veeshan|RaidLow|53282|

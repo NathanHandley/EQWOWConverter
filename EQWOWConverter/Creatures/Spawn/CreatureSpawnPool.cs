@@ -53,6 +53,24 @@ namespace EQWOWConverter.Creatures
             CreatureSpawnInstances.Add(creatureSpawnInstance);
         }
 
+        public CreatureTemplate GetMostRareCreatureTemplate()
+        {
+            CreatureTemplate mostRareTemplate = CreatureTemplates[0];
+            int mostRareChance = 0;
+            for (int i = 0; i < CreatureTemplates.Count; i++)
+            {
+                int chance = i < CreatureTemplateChances.Count ? CreatureTemplateChances[i] : 0;
+                if (chance <= 0)
+                    continue;
+                if (mostRareChance <= 0 || chance < mostRareChance)
+                {
+                    mostRareChance = chance;
+                    mostRareTemplate = CreatureTemplates[i];
+                }
+            }
+            return mostRareTemplate;
+        }
+
         public bool DoChancesAddTo100()
         {
             int totalChance = 0;

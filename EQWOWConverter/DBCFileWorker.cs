@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Achievements;
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.GameObjects;
@@ -32,6 +33,8 @@ namespace EQWOWConverter
     internal class DBCFileWorker
     {
         private AchievementDBC achievementDBC = new AchievementDBC();
+        private AchievementCategoryDBC achievementCategoryDBC = new AchievementCategoryDBC();
+        private AchievementCriteriaDBC achievementCriteriaDBC = new AchievementCriteriaDBC();
         private AreaTableDBC areaTableDBC = new AreaTableDBC();
         private AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
         private CharStartOutfitDBC charStartOutfitDBC = new CharStartOutfitDBC();
@@ -50,6 +53,7 @@ namespace EQWOWConverter
         private ItemDBC itemDBC = new ItemDBC();
         private ItemDisplayInfoDBC itemDisplayInfoDBC = new ItemDisplayInfoDBC();
         private LFGDungeonGroupDBC lfgDungeonGroupDBC = new LFGDungeonGroupDBC();
+        private LFGDungeonsDBC lfgDungeonsDBC = new LFGDungeonsDBC();
         private LightDBC lightDBC = new LightDBC();
         private LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
         private LightIntBandDBC lightIntBandDBC = new LightIntBandDBC();
@@ -205,6 +209,8 @@ namespace EQWOWConverter
 
             // Load the files
             achievementDBC.LoadFromDisk(dbcInputFolder, "Achievement.dbc");
+            achievementCategoryDBC.LoadFromDisk(dbcInputFolder, "Achievement_Category.dbc");
+            achievementCriteriaDBC.LoadFromDisk(dbcInputFolder, "Achievement_Criteria.dbc");
             areaTableDBC.LoadFromDisk(dbcInputFolder, "AreaTable.dbc");
             areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
             charStartOutfitDBC.LoadFromDisk(dbcInputFolder, "CharStartOutfit.dbc");
@@ -223,6 +229,7 @@ namespace EQWOWConverter
             itemDBC.LoadFromDisk(dbcInputFolder, "Item.dbc");
             itemDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "ItemDisplayInfo.dbc");
             lfgDungeonGroupDBC.LoadFromDisk(dbcInputFolder, "LFGDungeonGroup.dbc");
+            lfgDungeonsDBC.LoadFromDisk(dbcInputFolder, "LFGDungeons.dbc");
             lightDBC.LoadFromDisk(dbcInputFolder, "Light.dbc");
             lightFloatBandDBC.LoadFromDisk(dbcInputFolder, "LightFloatBand.dbc");
             lightIntBandDBC.LoadFromDisk(dbcInputFolder, "LightIntBand.dbc");
@@ -394,6 +401,7 @@ namespace EQWOWConverter
                 worldMapAreaDBC.AddRow(continent.DBCWorldMapAreaID, continent.DBCMapID, 0, mapFolderName, 1, -1, 1, -1, 0);
                 zoneContinentsByContinentType.Add(continent.ContinentType, continent);
             }
+            HashSet<int> usedAchievementCategoryIDs = new HashSet<int>();
             foreach (Zone zone in zones)
             {
                 ZoneProperties zoneProperties = zone.ZoneProperties;
@@ -418,6 +426,40 @@ namespace EQWOWConverter
 
                 // Map Difficulty
                 mapDifficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
+
+                // Raid instance version(s) of the zone
+                if (zoneProperties.ShouldGenerateInstanceRaidLow() == true)
+                {
+                    // Map and difficulty (raid size + instance reset time)
+                    mapDBC.AddRow(zoneProperties.DBCMapIDRaidLow, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.LoadingScreenID, 2, Configuration.DUNGEON_RAID_LOW_MAX_PLAYERS);
+                    mapDifficultyDBC.AddRow(zoneProperties.DBCMapIDRaidLow, zoneProperties.DBCMapDifficultyIDRaidLow, Convert.ToInt32(zoneProperties.InstanceResetTimeInSecRaidLow), Configuration.DUNGEON_RAID_LOW_MAX_PLAYERS);
+
+                    // Raid browser list entry
+                    lfgDungeonsDBC.AddRow(zoneProperties.DBCLFGDungeonsIDRaidLow, zone.DescriptiveName, zoneProperties.RaidLevelLow, zoneProperties.SuggestedMaxLevelWorld,
+                        zoneProperties.RaidLevelLow, zoneProperties.SuggestedMaxLevelWorld, zoneProperties.DBCMapIDRaidLow, true, Configuration.DBCID_LFGDUNGEONGROUP_RAIDS_ID);
+
+                    // Light rows are map-keyed, so the instance map needs its own rows referencing the same light parameters generated above
+                    lightDBC.AddRow(zoneProperties.DBCMapIDRaidLow, zoneProperties.ZonewideEnvironmentProperties, string.Concat(zone.ShortName, "~raidlow~zonewide"));
+                    for (int areaLightIndex = 0; areaLightIndex < zoneProperties.AreaLightZoneEnvironmentProperties.Count; areaLightIndex++)
+                        lightDBC.AddRow(zoneProperties.DBCMapIDRaidLow, zoneProperties.AreaLightZoneEnvironmentProperties[areaLightIndex], string.Concat(zone.ShortName, "~raidlow~arealight", areaLightIndex.ToString()));
+
+                    // Raid cleared achievement, with a kill criteria checklist entry for every raid boss (rendered like "Pest Control")
+                    AchievementData? raidLowAchievement = AchievementData.GetInstanceClearAchievement(zone.ShortName, "RaidLow");
+                    if (raidLowAchievement != null)
+                    {
+                        achievementDBC.AddRowForInstanceClear(raidLowAchievement.AchievementID, raidLowAchievement.Name, raidLowAchievement.Description,
+                            raidLowAchievement.ParentCategoryID, raidLowAchievement.Points, zoneProperties.DBCMapIDRaidLow, raidLowAchievement.GetIconDBCID());
+                        usedAchievementCategoryIDs.Add(raidLowAchievement.ParentCategoryID);
+                        for (int criteriaIndex = 0; criteriaIndex < raidLowAchievement.CriteriaCreatureTemplates.Count; criteriaIndex++)
+                        {
+                            CreatureTemplate criteriaCreatureTemplate = raidLowAchievement.CriteriaCreatureTemplates[criteriaIndex];
+                            int criteriaID = IDGenerationTool.GenerateID("AchievementCriteriaID", "instanceclear", raidLowAchievement.AchievementID.ToString(),
+                                criteriaCreatureTemplate.WOWCreatureTemplateID.ToString());
+                            achievementCriteriaDBC.AddRowForKillCreature(criteriaID, raidLowAchievement.AchievementID,
+                                criteriaCreatureTemplate.WOWCreatureTemplateID, criteriaCreatureTemplate.Name, criteriaIndex);
+                        }
+                    }
+                }
 
                 // Sound Ambience
                 foreach (ZoneAreaAmbientSound zoneAreaAmbient in zone.ZoneAreaAmbientSounds)
@@ -900,9 +942,36 @@ namespace EQWOWConverter
             totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_PERCUSSION), "Percussion Instrument", curTotemCategoryID, 0x8);
             totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_ALL), "All Instruments", curTotemCategoryID, 0xF);
 
+            // Achievement categories referenced by generated achievements, pulling in parent categories defined in the same file (stock parents already exist)
+            SortedDictionary<int, AchievementCategory> achievementCategoriesByID = AchievementCategory.GetAchievementCategoriesByID();
+            List<int> usedAchievementCategoryIDsToWalk = new List<int>(usedAchievementCategoryIDs);
+            foreach (int usedCategoryID in usedAchievementCategoryIDsToWalk)
+            {
+                int curCategoryID = usedCategoryID;
+                while (achievementCategoriesByID.ContainsKey(curCategoryID) == true)
+                {
+                    int parentCategoryID = achievementCategoriesByID[curCategoryID].ParentCategoryID;
+                    if (achievementCategoriesByID.ContainsKey(parentCategoryID) == false || usedAchievementCategoryIDs.Contains(parentCategoryID) == true)
+                        break;
+                    usedAchievementCategoryIDs.Add(parentCategoryID);
+                    curCategoryID = parentCategoryID;
+                }
+            }
+            foreach (var achievementCategoryByID in achievementCategoriesByID)
+            {
+                if (usedAchievementCategoryIDs.Contains(achievementCategoryByID.Key) == false)
+                    continue;
+                AchievementCategory achievementCategory = achievementCategoryByID.Value;
+                achievementCategoryDBC.AddRow(achievementCategory.CategoryID, achievementCategory.ParentCategoryID, achievementCategory.Name, achievementCategory.UIOrder);
+            }
+
             // Save the files
             achievementDBC.SaveToDisk(dbcOutputClientFolder);
             achievementDBC.SaveToDisk(dbcOutputServerFolder);
+            achievementCategoryDBC.SaveToDisk(dbcOutputClientFolder);
+            achievementCategoryDBC.SaveToDisk(dbcOutputServerFolder);
+            achievementCriteriaDBC.SaveToDisk(dbcOutputClientFolder);
+            achievementCriteriaDBC.SaveToDisk(dbcOutputServerFolder);
             areaTableDBC.SaveToDisk(dbcOutputClientFolder);
             areaTableDBC.SaveToDisk(dbcOutputServerFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputClientFolder);
@@ -937,6 +1006,8 @@ namespace EQWOWConverter
             itemDBC.SaveToDisk(dbcOutputServerFolder);
             lfgDungeonGroupDBC.SaveToDisk(dbcOutputClientFolder);
             lfgDungeonGroupDBC.SaveToDisk(dbcOutputServerFolder);
+            lfgDungeonsDBC.SaveToDisk(dbcOutputClientFolder);
+            lfgDungeonsDBC.SaveToDisk(dbcOutputServerFolder);
             itemDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
             itemDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
             lightDBC.SaveToDisk(dbcOutputClientFolder);

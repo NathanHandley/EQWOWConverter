@@ -18,12 +18,12 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class MapDBC : DBCFile
     {
-        public void AddRow(int id, string directory, string mapName, int areaTableID, int loadingScreenID)
+        public void AddRow(int id, string directory, string mapName, int areaTableID, int loadingScreenID, int instanceType = 0, int maxPlayers = 0)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // MapID / Primary Key
             newRow.AddString(directory);
-            newRow.AddInt32(0); // Instance Type (0 - None, 1 - Party, 2 - Raid, 3 - PVP, 4 - Arena)
+            newRow.AddInt32(instanceType); // Instance Type (0 - None, 1 - Party, 2 - Raid, 3 - PVP, 4 - Arena)
             newRow.AddPackedFlags(0); // Flags
             newRow.AddPackedFlags(0); // PVP
             newRow.AddStringLang(mapName);
@@ -38,7 +38,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(-1); // TimeOfDayOverride - This is -1 for everywhere except Orgimmar and Dalaran
             newRow.AddInt32(0); // ExpansionID (0 - Vanilla, 1 - BC, 2 - WOTLK)
             newRow.AddInt32(0); // RaidOffset (?)
-            newRow.AddInt32(0); // Max Players (0 if no max?)
+            newRow.AddInt32(maxPlayers); // Max Players (0 if no max?)
 
             // Set sorting row
             newRow.SortValue1 = id; // MapID

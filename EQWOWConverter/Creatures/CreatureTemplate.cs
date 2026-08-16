@@ -74,11 +74,13 @@ namespace EQWOWConverter.Creatures
         public bool IsNorrathPriestOfDiscord = false;
         public bool IsAzerothPriestOfDiscord = false;
         public bool IsPlaneTeleporter = false;
+        public bool IsRaidCoordinator = false;
         public ClassWOWType ClassTrainerType = ClassWOWType.None;
         public TradeskillType TradeskillTrainerType = TradeskillType.None;
         public int GossipMenuID = 0;
         public bool IsNonNPC = false;
         public bool IsUnattackable = false;
+        public bool BindsRaidInstanceOnKill = false; // Killing it inside a raid instance permanently locks everyone in the map to that instance
         public string SpawnZones = string.Empty;
         public bool IsQuestGiver = false;
         public bool HasGossipReactions = false;
@@ -905,6 +907,11 @@ namespace EQWOWConverter.Creatures
                     {
                         creatureTemplate.IsPlaneTeleporter = true;
                         creatureTemplate.SubName = "Bridger of Planes";
+                    } break;
+                case 110: // Raid Instance Coordinator (teleports players into raid instances)
+                    {
+                        creatureTemplate.IsRaidCoordinator = true;
+                        creatureTemplate.SubName = "Raid Instance Coordinator";
                     } break;
                 default:
                     {   

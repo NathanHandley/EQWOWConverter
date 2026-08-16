@@ -18,15 +18,15 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class MapDifficultyDBC : DBCFile
     {
-        public void AddRow(int mapID, int mapDifficultyID)
+        public void AddRow(int mapID, int mapDifficultyID, int raidDurationInSec = 0, int maxPlayers = 0)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(mapDifficultyID);
             newRow.AddInt32(mapID);
             newRow.AddInt32(0); // Difficulty, not 100% sure what this should be
             newRow.AddStringLang(""); // Rejection Message
-            newRow.AddInt32(0); // Raid Duration
-            newRow.AddInt32(0); // Max Players
+            newRow.AddInt32(raidDurationInSec); // Raid Duration (instance reset time)
+            newRow.AddInt32(maxPlayers); // Max Players
             newRow.AddString(""); // Difficulty String (?)
 
             // Set the sort

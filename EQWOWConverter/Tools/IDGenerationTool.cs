@@ -68,6 +68,7 @@ namespace EQWOWConverter
                 return;
 
             // DBC IDs
+            Initialize("AchievementCriteriaID", Configuration.DBCID_ACHIEVEMENTCRITERIA_ID_START, Configuration.DBCID_ACHIEVEMENTCRITERIA_ID_END);
             Initialize("AreaBit", Configuration.DBCID_AREATABLE_AREABIT_BLOCK_1_START, Configuration.DBCID_AREATABLE_AREABIT_BLOCK_1_END,
                 Configuration.DBCID_AREATABLE_AREABIT_BLOCK_2_START, Configuration.DBCID_AREATABLE_AREABIT_BLOCK_2_END,
                 Configuration.DBCID_AREATABLE_AREABIT_BLOCK_3_START, Configuration.DBCID_AREATABLE_AREABIT_BLOCK_3_END);
@@ -78,6 +79,7 @@ namespace EQWOWConverter
             Initialize("FootstepTerrainLookupID", Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_ID_START, int.MaxValue);
             Initialize("GameObjectDisplayInfoID", Configuration.DBCID_GAMEOBJECTDISPLAYINFO_ID_START, int.MaxValue);
             Initialize("ItemDisplayInfoID", Configuration.DBCID_ITEMDISPLAYINFO_START, int.MaxValue);
+            Initialize("LFGDungeonsID", Configuration.DBCID_LFGDUNGEONS_ID_START, int.MaxValue);
             Initialize("LightID", Configuration.DBCID_LIGHT_ID_START, int.MaxValue);
             Initialize("LightParamsID", Configuration.DBCID_LIGHTPARAMS_ID_START, int.MaxValue);
             Initialize("LockID", Configuration.DBCID_LOCK_ID_START, int.MaxValue);

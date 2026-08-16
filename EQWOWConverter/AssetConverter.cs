@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Achievements;
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.Events;
@@ -288,6 +289,9 @@ namespace EQWOWConverter
             // Note: Should be one of the last things so that the spells are only valid ones
             Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID(); // Manage this better since spell templates is pulled above
             ConvertCreatureSpellAI(ref creatureTemplates, spellTemplatesByEQID);
+
+            // Creature templates are needed for achievement kill criteria (must be before DBC and SQL generation)
+            AchievementData.PopulateCriteriaCreatureTemplates();
 
             // Create the DBC files
             dbcFileWorker.CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
@@ -3504,12 +3508,12 @@ namespace EQWOWConverter
                     zoneLinkBlockSB.Append(displayMapBoxWidth);
                     zoneLinkBlockSB.Append(", h=");
                     zoneLinkBlockSB.Append(displayMapBoxHeight);
-                    if (linkedZoneProperties.SuggestedMaxLevel != 0 && linkedZoneProperties.SuggestedMaxLevel != 0 && Configuration.WORLDMAP_SHOW_SUGGESTED_LEVELS_ON_LINKED_MAPS == true)
+                    if (linkedZoneProperties.SuggestedMaxLevelWorld != 0 && linkedZoneProperties.SuggestedMaxLevelWorld != 0 && Configuration.WORLDMAP_SHOW_SUGGESTED_LEVELS_ON_LINKED_MAPS == true)
                     {
                         zoneLinkBlockSB.Append(", sugLevelMin=");
-                        zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMinLevel);
+                        zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMinLevelWorld);
                         zoneLinkBlockSB.Append(", sugLevelMax=");
-                        zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMaxLevel);
+                        zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMaxLevelWorld);
                     }
                     zoneLinkBlockSB.AppendLine("},");
                     addedBoxes++;
@@ -3572,12 +3576,12 @@ namespace EQWOWConverter
                     if (zonePropertiesByShortName.ContainsKey(mapLinkBox.LinkedZoneShortName) == true && Configuration.WORLDMAP_SHOW_SUGGESTED_LEVELS_ON_LINKED_MAPS == true)
                     {
                         ZoneProperties linkedZoneProperties = zonePropertiesByShortName[mapLinkBox.LinkedZoneShortName];
-                        if (linkedZoneProperties.SuggestedMaxLevel != 0 && linkedZoneProperties.SuggestedMaxLevel != 0)
+                        if (linkedZoneProperties.SuggestedMaxLevelWorld != 0 && linkedZoneProperties.SuggestedMaxLevelWorld != 0)
                         {
                             zoneLinkBlockSB.Append(", sugLevelMin=");
-                            zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMinLevel);
+                            zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMinLevelWorld);
                             zoneLinkBlockSB.Append(", sugLevelMax=");
-                            zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMaxLevel);
+                            zoneLinkBlockSB.Append(linkedZoneProperties.SuggestedMaxLevelWorld);
                         }
                     }
                     zoneLinkBlockSB.AppendLine("},");
