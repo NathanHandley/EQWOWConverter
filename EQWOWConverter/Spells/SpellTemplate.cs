@@ -1037,7 +1037,7 @@ namespace EQWOWConverter.Spells
                 case 3: return 16; // EQ Cold => WOW Frost
                 case 4: return 8; // EQ Poison => WOW Nature
                 case 5: return 32; // EQ Disease => WOW Shadow
-                default: return 1; // Physical by default
+                default: return 2; // EQ Unresistable => WOW Holy, which has no resist stat; Physical (1) would zero spell crit chance in Unit::SpellDoneCritChance
             }
         }
 
