@@ -123,6 +123,7 @@ namespace EQWOWConverter
         private ReferenceLootTemplateSQL referenceLootTemplateSQL = new ReferenceLootTemplateSQL();
         private SkillFishingBaseLevelSQL skillFishingBaseLevelSQL = new SkillFishingBaseLevelSQL();
         private SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
+        private SpellAreaSQL spellAreaSQL = new SpellAreaSQL();
         private SpellBonusDataSQL spellBonusDataSQL = new SpellBonusDataSQL();
         private SpellCustomAttrSQL spellCustomAttrSQL = new SpellCustomAttrSQL();
         private SpellGroupSQL spellGroupSQL = new SpellGroupSQL();
@@ -2591,6 +2592,14 @@ namespace EQWOWConverter
                 int instanceRaidLowMapID = zone.ZoneProperties.ShouldGenerateInstanceRaidLow() ? zone.ZoneProperties.DBCMapIDRaidLow : 0;
                 modEverquestZoneSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.AllowBind, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, instanceRaidLowMapID);
 
+                // Zones with bodies that can be unreachable by foot need a flying mount as a ghost, and this automatically covers instanced versions
+                if (zone.ZoneProperties.ForceFlyingGhost == true)
+                {
+                    spellAreaSQL.AddRowsForFlyingGhostArea(Convert.ToInt32(zone.DefaultArea.DBCAreaTableID));
+                    foreach (ZoneArea subArea in zone.ZoneProperties.SubZoneAreas)
+                        spellAreaSQL.AddRowsForFlyingGhostArea(Convert.ToInt32(subArea.DBCAreaTableID));
+                }
+
                 // Raid instance version of the zone, a mirror of the base zone but never allow binding
                 if (zone.ZoneProperties.ShouldGenerateInstanceRaidLow() == true)
                 {
@@ -2916,6 +2925,7 @@ namespace EQWOWConverter
             referenceLootTemplateSQL.SaveToDisk("reference_loot_template", SQLFileType.World);
             skillFishingBaseLevelSQL.SaveToDisk("skill_fishing_base_level", SQLFileType.World);
             smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
+            spellAreaSQL.SaveToDisk("spell_area", SQLFileType.World);
             spellBonusDataSQL.SaveToDisk("spell_bonus_data", SQLFileType.World);
             spellCustomAttrSQL.SaveToDisk("spell_custom_attr", SQLFileType.World);
             spellGroupSQL.SaveToDisk("spell_group", SQLFileType.World);
