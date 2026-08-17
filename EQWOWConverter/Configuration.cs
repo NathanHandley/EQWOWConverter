@@ -1340,6 +1340,9 @@ namespace EQWOWConverter
         // Generated block inside the WorldSafeLocs range, used for graveyard copies that live on raid instance maps
         public static int DBCID_WORLDSAFELOCS_ID_GENERATED_START = 2001;
 
+        // Generated IDs for WorldMapArea.dbc.  Zones use the hand assigned WorldMapAreaID column in ZoneProperties.csv but these are for instance copies
+        public static int DBCID_WORLDMAPAREA_ID_GENERATED_START = 1000;
+
         // Specific rows in WMOAreaTable.dbc
         public static int DBCID_WMOAREATABLE_ID_START = 52000;
 

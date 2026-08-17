@@ -3469,7 +3469,6 @@ namespace EQWOWConverter
                 
                 // Start a link config section
                 StringBuilder zoneLinkBlockSB = new StringBuilder();
-                zoneLinkBlockSB.AppendLine(string.Concat("[", zone.ZoneProperties.DBCWorldMapAreaID, "] = {"));
 
                 // Append a click-up continent if it exists
                 if (zoneContinentsByContinentType.ContainsKey(zone.ZoneProperties.Continent) == true)
@@ -3530,7 +3529,15 @@ namespace EQWOWConverter
                 if (addedBoxes > 0 || zoneContinentsByContinentType.ContainsKey(zone.ZoneProperties.Continent) == true)
                 {
                     zoneLinkBlockSB.AppendLine("},");
+                    outputLinksFileTextSB.AppendLine(string.Concat("[", zone.ZoneProperties.DBCWorldMapAreaID, "] = {"));
                     outputLinksFileTextSB.Append(zoneLinkBlockSB.ToString());
+
+                    // The raid instance copy of the zone shows the same map, so it gets the same zoom out and links
+                    if (zone.ZoneProperties.ShouldGenerateInstanceRaidLow() == true)
+                    {
+                        outputLinksFileTextSB.AppendLine(string.Concat("[", zone.ZoneProperties.DBCWorldMapAreaIDRaidLow, "] = {"));
+                        outputLinksFileTextSB.Append(zoneLinkBlockSB.ToString());
+                    }
                 }
             }
 

@@ -117,6 +117,7 @@ namespace EQWOWConverter.Zones
         public int DBCMapDifficultyID;
         public int DBCMapDifficultyIDRaidLow;
         public int DBCWorldMapAreaID;
+        public int DBCWorldMapAreaIDRaidLow = 0;
         public bool HasInstanceRaidLow = false;
         public UInt32 InstanceResetTimeInSecRaidLow = 0;
         public int DBCLFGDungeonsIDRaidLow = 0;
@@ -1055,6 +1056,7 @@ namespace EQWOWConverter.Zones
                     if (zoneProperties.InstanceResetTimeInSecRaidLow == 0)
                         Logger.WriteError("ZoneProperties for zone '" + shortName + "' has HasInstanceRaidLow set but no InstanceResetTimeInSecRaidLow, so raid instance creatures will respawn instantly");
                     zoneProperties.DBCLFGDungeonsIDRaidLow = IDGenerationTool.GenerateID("LFGDungeonsID", "raidlow", shortName);
+                    zoneProperties.DBCWorldMapAreaIDRaidLow = IDGenerationTool.GenerateID("WorldMapAreaID", "raidlow", shortName);
                 }
                 zoneProperties.DescriptiveName = propertiesRow["DescriptiveName"];
                 zoneProperties.TelePosition.X = float.Parse(propertiesRow["TeleX"]) * Configuration.GENERATE_WORLD_SCALE;

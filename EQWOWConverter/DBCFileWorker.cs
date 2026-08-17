@@ -509,6 +509,11 @@ namespace EQWOWConverter
                         parentWorldMapID = zoneContinentsByContinentType[zoneProperties.Continent].DBCWorldMapAreaID;
                     worldMapAreaDBC.AddRow(zoneProperties.DBCWorldMapAreaID, zoneProperties.DBCMapID, Convert.ToInt32(zoneProperties.DefaultZoneArea.DBCAreaTableID), mapFolderName,
                         zoneProperties.DisplayMapMainLeft, zoneProperties.DisplayMapMainRight, zoneProperties.DisplayMapMainTop, zoneProperties.DisplayMapMainBottom, parentWorldMapID);
+
+                    // The world map is looked up by map ID, so the raid instance copy needs its own row.  It's otherwise identical to the open world one
+                    if (zoneProperties.ShouldGenerateInstanceRaidLow() == true)
+                        worldMapAreaDBC.AddRow(zoneProperties.DBCWorldMapAreaIDRaidLow, zoneProperties.DBCMapIDRaidLow, Convert.ToInt32(zoneProperties.DefaultZoneArea.DBCAreaTableID), mapFolderName,
+                            zoneProperties.DisplayMapMainLeft, zoneProperties.DisplayMapMainRight, zoneProperties.DisplayMapMainTop, zoneProperties.DisplayMapMainBottom, parentWorldMapID);
                 }
 
                 // WMOAreaTable (Header than groups)
