@@ -2637,6 +2637,19 @@ namespace EQWOWConverter
                     // into it instead of into the open world copy of the zone
                     if (targetZoneProperties.ShouldGenerateInstanceRaidLow() == true)
                         areaTriggerScriptsSQL.AddRow(areaTriggerID, Configuration.CONFIGONLY_SQL_AREATRIGGER_SCRIPTNAME_ZONE_LINE);
+
+                    // Copy of the zone line for the raid instance version of this zone 
+                    if (zone.ZoneProperties.ShouldGenerateInstanceRaidLow() == true)
+                    {
+                        int raidLowAreaTriggerID = zoneLine.AreaTriggerIDRaidLow;
+                        areaTriggerSQL.AddRow(raidLowAreaTriggerID, zone.ZoneProperties.DBCMapIDRaidLow, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
+                            zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
+                        int raidLowTargetMapID = targetMapId;
+                        if (zoneLine.TargetZoneShortName.ToLower().Trim() == zone.ShortName.ToLower().Trim())
+                            raidLowTargetMapID = zone.ZoneProperties.DBCMapIDRaidLow;
+                        areaTriggerTeleportSQL.AddRow(raidLowAreaTriggerID, string.Concat(descriptiveName, " RaidLow"), raidLowTargetMapID,
+                            targetPositionX, targetPositionY, targetPositionZ, targetOrientation);
+                    }
                 }
             }
             mapIDsByShortName = new Dictionary<string, int>();

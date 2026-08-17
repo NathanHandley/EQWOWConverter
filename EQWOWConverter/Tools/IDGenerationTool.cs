@@ -69,6 +69,7 @@ namespace EQWOWConverter
 
             // DBC IDs
             Initialize("AchievementCriteriaID", Configuration.DBCID_ACHIEVEMENTCRITERIA_ID_START, Configuration.DBCID_ACHIEVEMENTCRITERIA_ID_END);
+            Initialize("AreaTriggerID", Configuration.DBCID_AREATRIGGER_ID_GENERATED_START, Configuration.DBCID_AREATRIGGER_ID_END);
             Initialize("AreaBit", Configuration.DBCID_AREATABLE_AREABIT_BLOCK_1_START, Configuration.DBCID_AREATABLE_AREABIT_BLOCK_1_END,
                 Configuration.DBCID_AREATABLE_AREABIT_BLOCK_2_START, Configuration.DBCID_AREATABLE_AREABIT_BLOCK_2_END,
                 Configuration.DBCID_AREATABLE_AREABIT_BLOCK_3_START, Configuration.DBCID_AREATABLE_AREABIT_BLOCK_3_END);

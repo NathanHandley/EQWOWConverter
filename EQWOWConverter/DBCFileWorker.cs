@@ -411,10 +411,15 @@ namespace EQWOWConverter
                 foreach (ZoneArea subArea in zoneProperties.SubZoneAreas)
                     areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), zoneProperties.DBCMapID, Convert.ToInt32(subArea.DBCParentAreaTableID), subArea.AreaMusic, subArea.AreaAmbientSound, subArea.DisplayName, zoneProperties.IsRestingZoneWide, subArea.DoShowBreath, zoneProperties.DuelingAllowed);
 
-                // AreaTrigger
+                // AreaTrigger (the raid instance copy of a zone needs its own trigger boxes, since they are keyed by map)
                 foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
+                {
                     areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
+                    if (zoneProperties.ShouldGenerateInstanceRaidLow() == true)
+                        areaTriggerDBC.AddRow(zoneLine.AreaTriggerIDRaidLow, zoneProperties.DBCMapIDRaidLow, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
+                            zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
+                }
 
                 // Light Tables
                 AddLightData(zoneProperties.DBCMapID, zoneProperties.ZonewideEnvironmentProperties, string.Concat(zone.ShortName, "~zonewide"));

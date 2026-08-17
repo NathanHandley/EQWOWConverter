@@ -1193,7 +1193,10 @@ namespace EQWOWConverter
         // IDs for AreaTrigger.DBC. These will be generated in ascending order by MapID, and referenced in SQL scripts
         // for teleports as well any other area-based triggers. Defined in ZoneLineBoxes.csv
         public static int DBCID_AREATRIGGER_ID_START = 6500;
-        public static int DBCID_AREATRIGGER_ID_END = 8500;
+        public static int DBCID_AREATRIGGER_ID_END = 9500;
+
+        // Generated block inside the AreaTrigger range, used for the copies of zone lines that live on raid instance maps
+        public static int DBCID_AREATRIGGER_ID_GENERATED_START = 9000;
 
         // IDs for CreatureDisplayInfo.dbc
         public static int DBCID_CREATUREDISPLAYINFO_ID_START = 34000;

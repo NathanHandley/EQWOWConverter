@@ -25,6 +25,20 @@ namespace EQWOWConverter.Zones
         private static readonly object ZoneLineBoxesLock = new object();
 
         public int AreaTriggerID;
+
+        private int AreaTriggerIDRaidLowCached = 0;
+
+        // Zone lines inside a zone that has a raid instance copy are duplicated onto that instance map, since area triggers are keyed by map
+        public int AreaTriggerIDRaidLow
+        {
+            get
+            {
+                if (AreaTriggerIDRaidLowCached == 0)
+                    AreaTriggerIDRaidLowCached = IDGenerationTool.GenerateID("AreaTriggerID", "raidlow", AreaTriggerID.ToString());
+                return AreaTriggerIDRaidLowCached;
+            }
+        }
+
         public string TargetZoneShortName = string.Empty;
         public Vector3 TargetZonePosition = new Vector3();
         public float TargetZoneOrientation = 0f;
