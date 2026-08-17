@@ -62,7 +62,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("InventoryType", Convert.ToInt32(itemTemplate.InventoryType));
             newRow.AddInt("AllowableClass", -1);
             newRow.AddInt("AllowableRace", -1);
-            newRow.AddInt("ItemLevel", 500);
+            newRow.AddInt("ItemLevel", Math.Clamp(itemTemplate.ItemLevel, 1, 300)); // Above 300 there's no DurabilityCosts.dbc row, which breaks repairing
             newRow.AddInt("RequiredLevel", requiredLevel);
             newRow.AddInt("RequiredSkill", 0);
             newRow.AddInt("RequiredSkillRank", 0);
@@ -202,7 +202,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RandomSuffix", 0);
             newRow.AddInt("block", itemTemplate.Block);
             newRow.AddInt("itemset", 0);
-            newRow.AddInt("MaxDurability", 0);
+            newRow.AddInt("MaxDurability", itemTemplate.MaxDurability);
             newRow.AddInt("area", 0);
             newRow.AddInt("Map", 0);
             newRow.AddInt("BagFamily", itemTemplate.ClassID == 13 ? 256 : 0); // Keys go into the key ring bag family

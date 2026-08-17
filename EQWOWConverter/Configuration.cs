@@ -690,6 +690,15 @@ namespace EQWOWConverter
         // Maximum amount something can sell to a vendor for
         public static int ITEMS_MAX_SELL_PRICE_IN_COPPER = 100000;
 
+        // If true, worn armor, shields and weapons take durability damage and must be repaired at a vendor
+        public static bool ITEMS_DURABILITY_ENABLED = true;
+
+        // Multiplier applied to every generated durability value
+        public static float ITEMS_DURABILITY_MULTIPLIER = 1f;
+
+        // Item level is what WOW uses to price a durability point when repairing
+        public static int ITEMS_ITEM_LEVEL_MINIMUM = 10;
+
         // How much to multiple the slot size of a bag in EQ.  EQ allows for 2x the number bags of WOW (not including starter)
         public static int ITEMS_BAG_SLOT_MULTIPLIER = 2;
 
@@ -1861,6 +1870,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS", ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS, "If true, any item that is clickable item that also has a spell will be replaced with a container item that contains both the equippable item as well as a non-equipable version that can be clicked from inventory.");
             OutputVariableToConfig("ITEMS_STATS_LOW_BIAS_WEIGHT", ITEMS_STATS_LOW_BIAS_WEIGHT, "This is how much 'weight' the lower stat has when converting EQ to WoW stats, with values closer to 1 leaning towards the lower stat, and further from 1 leaning towards the higher stat.");
             OutputVariableToConfig("ITEMS_MAX_SELL_PRICE_IN_COPPER", ITEMS_MAX_SELL_PRICE_IN_COPPER, "Maximum amount something can sell to a vendor for");
+            OutputVariableToConfig("ITEMS_DURABILITY_ENABLED", ITEMS_DURABILITY_ENABLED, "If true, worn armor, shields and weapons take durability damage and must be repaired at a vendor");
+            OutputVariableToConfig("ITEMS_DURABILITY_MULTIPLIER", ITEMS_DURABILITY_MULTIPLIER, "Multiplier applied to every generated durability value");
+            OutputVariableToConfig("ITEMS_ITEM_LEVEL_MINIMUM", ITEMS_ITEM_LEVEL_MINIMUM, "Item level is what WOW uses to price a durability point when repairing");
             OutputVariableToConfig("ITEMS_BAG_SLOT_MULTIPLIER", ITEMS_BAG_SLOT_MULTIPLIER, "How much to multiple the slot size of a bag in EQ.  EQ allows for 2x the number bags of WOW (not including starter)");
             OutputVariableToConfig("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT, "When ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED is true, this is how much to increase bag size by");
             OutputVariableToConfig("ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID", ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID, "This is the icon ID that is used for multi-item containers that contain more than one item");
@@ -2382,6 +2394,9 @@ namespace EQWOWConverter
             ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS = ReadVariableFromConfigString("ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS", configValuesByVariableName, ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS);
             ITEMS_STATS_LOW_BIAS_WEIGHT = ReadVariableFromConfigString("ITEMS_STATS_LOW_BIAS_WEIGHT", configValuesByVariableName, ITEMS_STATS_LOW_BIAS_WEIGHT);
             ITEMS_MAX_SELL_PRICE_IN_COPPER = ReadVariableFromConfigString("ITEMS_MAX_SELL_PRICE_IN_COPPER", configValuesByVariableName, ITEMS_MAX_SELL_PRICE_IN_COPPER);
+            ITEMS_DURABILITY_ENABLED = ReadVariableFromConfigString("ITEMS_DURABILITY_ENABLED", configValuesByVariableName, ITEMS_DURABILITY_ENABLED);
+            ITEMS_DURABILITY_MULTIPLIER = ReadVariableFromConfigString("ITEMS_DURABILITY_MULTIPLIER", configValuesByVariableName, ITEMS_DURABILITY_MULTIPLIER);
+            ITEMS_ITEM_LEVEL_MINIMUM = ReadVariableFromConfigString("ITEMS_ITEM_LEVEL_MINIMUM", configValuesByVariableName, ITEMS_ITEM_LEVEL_MINIMUM);
             ITEMS_BAG_SLOT_MULTIPLIER = ReadVariableFromConfigString("ITEMS_BAG_SLOT_MULTIPLIER", configValuesByVariableName, ITEMS_BAG_SLOT_MULTIPLIER);
             ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED = ReadVariableFromConfigString("ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED", configValuesByVariableName, ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED);
             ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT = ReadVariableFromConfigString("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", configValuesByVariableName, ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT);

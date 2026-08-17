@@ -186,6 +186,8 @@ namespace EQWOWConverter.Items
         public int IconID = 0;
         public int TotemDBCID = 0;
         public int RequiredLevel = 0;
+        public int ItemLevel = 1;
+        public int MaxDurability = 0;
         public bool IsRogueOnlyPoison = false;
         public string EQItemDisplayFileName = string.Empty;
         public ItemTemplate? ParentItemTemplate = null;
@@ -477,6 +479,10 @@ namespace EQWOWConverter.Items
         {
             itemTemplate.StatValues.Clear();
 
+            // Item level (used by WOW to price repairs, and while it tracks how strong the item is, EQ isn't easy to calculate ilevel from so it'll be kinda wrong at times)
+            itemTemplate.ItemLevel = CalculateItemLevel(itemSlot, classID, eqArmorClass, eqStrength, eqAgility, eqCharisma, eqDexterity, eqIntelligence, eqStamina, eqWisdom, 
+                eqHp, eqMana, eqResistPoison, eqResistMagic, eqResistDisease, eqResistFire, eqResistCold, damage, delay);
+
             // Armor Class (can't process negatives for armor)
             if (eqArmorClass > 0)
                 itemTemplate.Armor = Math.Max(Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Ac", eqArmorClass)), 0);
@@ -687,6 +693,203 @@ namespace EQWOWConverter.Items
                 return ItemWOWQuality.Uncommon;
             else
                 return ItemWOWQuality.Common;
+        }
+
+        // DurabilityCosts.dbc (which prices a durability point when repairing) only holds rows 1 through 300
+        private const int MAX_LOOKUPABLE_ITEM_LEVEL = 300;
+
+        // Base durability per armor slot, ordered as cloth, leather, mail, plate.  These are the values WOW itself uses, which are a flat amount per (material, slot) with no item level component
+        private static readonly int[] ArmorDurabilityHead = new int[] { 45, 50, 60, 70 };
+        private static readonly int[] ArmorDurabilityShoulder = new int[] { 45, 50, 60, 70 };
+        private static readonly int[] ArmorDurabilityChest = new int[] { 70, 85, 100, 115 };
+        private static readonly int[] ArmorDurabilityWaist = new int[] { 25, 30, 35, 40 };
+        private static readonly int[] ArmorDurabilityLegs = new int[] { 55, 65, 75, 85 };
+        private static readonly int[] ArmorDurabilityFeet = new int[] { 35, 45, 50, 55 };
+        private static readonly int[] ArmorDurabilityWrists = new int[] { 25, 30, 35, 40 };
+        private static readonly int[] ArmorDurabilityHands = new int[] { 25, 30, 35, 40 };
+        private const int ARMOR_DURABILITY_SHIELD = 85;
+
+        private static string GetStatBaselineSlotName(ItemWOWInventoryType itemSlot)
+        {
+            switch (itemSlot)
+            {
+                case ItemWOWInventoryType.Robe: return "chest";
+                case ItemWOWInventoryType.MainHand: return "onehand";
+                case ItemWOWInventoryType.RangedRight: return "ranged";
+                default: return itemSlot.ToString().ToLower();
+            }
+        }
+
+        // TODO: Consider merging above into one method
+        private static float GetNormalizedEQStatTier(ItemWOWInventoryType itemSlot, string statName, float eqStatValue)
+        {
+            if (StatBaselinesBySlotAndStat.Count() == 0)
+                PopulateStatBaselinesBySlot();
+
+            string slotNameLower = GetStatBaselineSlotName(itemSlot);
+            if (StatBaselinesBySlotAndStat.ContainsKey(slotNameLower) == false)
+                return 0;
+            Dictionary<string, float> statsForSlot = StatBaselinesBySlotAndStat[slotNameLower];
+
+            string statNameLower = statName.Trim().ToLower();
+            string statNameEqLow = statNameLower + "eqlow";
+            string statNameEqHigh = statNameLower + "eqhigh";
+            if (statsForSlot.ContainsKey(statNameEqLow) == false || statsForSlot.ContainsKey(statNameEqHigh) == false)
+                return 0;
+
+            float statEqLow = statsForSlot[statNameEqLow];
+            float statEqHigh = statsForSlot[statNameEqHigh];
+            if (statEqLow < 0 || statEqHigh <= statEqLow)
+                return 0;
+            if (eqStatValue <= statEqLow)
+                return 0;
+            if (eqStatValue >= statEqHigh)
+                return 1;
+            return (eqStatValue - statEqLow) / (statEqHigh - statEqLow);
+        }
+
+        // How many stats (or resists) at the top of their slot baseline an item needs before its stats alone count as top tier
+        // EQ spreads item power across small stat and resist blocks, so no single one of them ever reaches its baseline high on its own
+        private const float ITEM_LEVEL_STAT_TIER_DIVISOR = 2.5f;
+        private const float ITEM_LEVEL_RESIST_TIER_DIVISOR = 3f;
+
+        private static int CalculateItemLevel(ItemWOWInventoryType itemSlot, int classID, int eqArmorClass, int eqStrength, int eqAgility, int eqCharisma, int eqDexterity, int eqIntelligence, 
+            int eqStamina, int eqWisdom, int eqHp, int eqMana, int eqResistPoison, int eqResistMagic, int eqResistDisease, int eqResistFire, int eqResistCold, int damage, int delay)
+        {
+            // Armor and damage set the base tier
+            float baseTier = 0;
+            if (eqArmorClass > 0)
+                baseTier = GetNormalizedEQStatTier(itemSlot, "Ac", eqArmorClass);
+            if ((classID == 2 || classID == 6) && IsWeaponInEQ(damage, delay) == true)
+            {
+                float eqDPS = Convert.ToSingle(damage) / (Convert.ToSingle(delay) / 1000f);
+                baseTier = MathF.Max(baseTier, GetNormalizedEQStatTier(itemSlot, "Dps", eqDPS));
+            }
+
+            // Stats and resists raise it
+            float statTierSum = 0;
+            statTierSum += GetNormalizedEQStatTier(itemSlot, "Str", eqStrength);
+            statTierSum += GetNormalizedEQStatTier(itemSlot, "Sta", eqStamina);
+            statTierSum += GetNormalizedEQStatTier(itemSlot, "Agi", eqAgility);
+            statTierSum += GetNormalizedEQStatTier(itemSlot, "Agi", eqDexterity);
+            statTierSum += GetNormalizedEQStatTier(itemSlot, "Int", eqIntelligence);
+            statTierSum += GetNormalizedEQStatTier(itemSlot, "Spr", eqWisdom);
+            statTierSum += GetNormalizedEQStatTier(itemSlot, "HitRating", eqCharisma);
+            statTierSum += GetNormalizedEQStatTier(itemSlot, "HP", eqHp);
+            statTierSum += GetNormalizedEQStatTier(itemSlot, "MP", eqMana);
+            float resistTierSum = 0;
+            resistTierSum += GetNormalizedEQStatTier(itemSlot, "Res", eqResistPoison);
+            resistTierSum += GetNormalizedEQStatTier(itemSlot, "Res", eqResistMagic);
+            resistTierSum += GetNormalizedEQStatTier(itemSlot, "Res", eqResistDisease);
+            resistTierSum += GetNormalizedEQStatTier(itemSlot, "Res", eqResistFire);
+            resistTierSum += GetNormalizedEQStatTier(itemSlot, "Res", eqResistCold);
+            float bonusTier = MathF.Min((statTierSum / ITEM_LEVEL_STAT_TIER_DIVISOR) + (resistTierSum / ITEM_LEVEL_RESIST_TIER_DIVISOR), 1f);
+
+            // Combine as individual so neither one alone can cap the item out
+            float combinedTier = 1f - ((1f - baseTier) * (1f - bonusTier));
+
+            int itemLevelCap = Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == true ? 80 : 60;
+            int itemLevelFloor = Math.Clamp(Configuration.ITEMS_ITEM_LEVEL_MINIMUM, 1, itemLevelCap);
+            int itemLevel = itemLevelFloor + Convert.ToInt32(MathF.Round(combinedTier * (itemLevelCap - itemLevelFloor)));
+            return Math.Clamp(itemLevel, 1, MAX_LOOKUPABLE_ITEM_LEVEL);
+        }
+
+        private static int GetBaseArmorDurability(ItemWOWInventoryType inventoryType, int subClassID)
+        {
+            ItemWOWArmorSubclassType armorSubclassType = (ItemWOWArmorSubclassType)subClassID;
+            if (armorSubclassType == ItemWOWArmorSubclassType.Shield)
+            {
+                if (inventoryType == ItemWOWInventoryType.Shield)
+                    return ARMOR_DURABILITY_SHIELD;
+                return 0;
+            }
+
+            int materialIndex;
+            switch (armorSubclassType)
+            {
+                case ItemWOWArmorSubclassType.Cloth: materialIndex = 0; break;
+                case ItemWOWArmorSubclassType.Leather: materialIndex = 1; break;
+                case ItemWOWArmorSubclassType.Mail: materialIndex = 2; break;
+                case ItemWOWArmorSubclassType.Plate: materialIndex = 3; break;
+                default: return 0; // Misc (no durability)
+            }
+
+            switch (inventoryType)
+            {
+                case ItemWOWInventoryType.Head: return ArmorDurabilityHead[materialIndex];
+                case ItemWOWInventoryType.Shoulder: return ArmorDurabilityShoulder[materialIndex];
+                case ItemWOWInventoryType.Chest: return ArmorDurabilityChest[materialIndex];
+                case ItemWOWInventoryType.Robe: return ArmorDurabilityChest[materialIndex];
+                case ItemWOWInventoryType.Waist: return ArmorDurabilityWaist[materialIndex];
+                case ItemWOWInventoryType.Legs: return ArmorDurabilityLegs[materialIndex];
+                case ItemWOWInventoryType.Feet: return ArmorDurabilityFeet[materialIndex];
+                case ItemWOWInventoryType.Wrists: return ArmorDurabilityWrists[materialIndex];
+                case ItemWOWInventoryType.Hands: return ArmorDurabilityHands[materialIndex];
+                default: return 0; // Neck / Cloak / Ring / Tricket / Shirt / Tabard / Offhand should have no durability
+            }
+        }
+
+        private static int GetBaseWeaponDurability(int subClassID)
+        {
+            switch ((ItemWOWWeaponSubclassType)subClassID)
+            {
+                case ItemWOWWeaponSubclassType.AxeOneHand:
+                case ItemWOWWeaponSubclassType.MaceOneHand:
+                case ItemWOWWeaponSubclassType.SwordOneHand: return 75;
+                case ItemWOWWeaponSubclassType.AxeTwoHand:
+                case ItemWOWWeaponSubclassType.MaceTwoHand:
+                case ItemWOWWeaponSubclassType.Polearm:
+                case ItemWOWWeaponSubclassType.SwordTwoHand:
+                case ItemWOWWeaponSubclassType.Spear:
+                case ItemWOWWeaponSubclassType.Staff: return 85;
+                case ItemWOWWeaponSubclassType.Bow:
+                case ItemWOWWeaponSubclassType.Gun:
+                case ItemWOWWeaponSubclassType.Crossbow: return 65;
+                case ItemWOWWeaponSubclassType.Dagger:
+                case ItemWOWWeaponSubclassType.FistWeapon:
+                case ItemWOWWeaponSubclassType.FishingPole:
+                case ItemWOWWeaponSubclassType.Wand: return 55;
+                default: return 0; // None for thrown and misc
+            }
+        }
+
+        private static float GetDurabilityQualityMultiplier(ItemWOWQuality quality)
+        {
+            switch (quality)
+            {
+                case ItemWOWQuality.Rare: return 1.15f;
+                case ItemWOWQuality.Epic: return 1.4f;
+                case ItemWOWQuality.Legendary: return 1.65f;
+                case ItemWOWQuality.Artifact: return 1.65f;
+                default: return 1f; // Poor, common, uncommon and heirloom all share the base value in WoW
+            }
+        }
+
+        // Note: Must be called after the class, subclass, inventory type and quality are all finalized
+        public void PopulateMaxDurability()
+        {
+            MaxDurability = 0;
+            if (Configuration.ITEMS_DURABILITY_ENABLED == false)
+                return;
+            if (InventoryType == ItemWOWInventoryType.NoEquip)
+                return;
+
+            // A stacked item has no room to hold a per-item durability value
+            if (StackSize > 1)
+                return;
+
+            int baseDurability = 0;
+            if (ClassID == 2)
+                baseDurability = GetBaseWeaponDurability(SubClassID);
+            else if (ClassID == 4)
+                baseDurability = GetBaseArmorDurability(InventoryType, SubClassID);
+            if (baseDurability <= 0)
+                return;
+
+            // Like WoW, keep durability on a multiple of five
+            float scaledDurability = baseDurability * GetDurabilityQualityMultiplier(Quality) * Configuration.ITEMS_DURABILITY_MULTIPLIER;
+            int roundedDurability = Convert.ToInt32(MathF.Round(scaledDurability / 5f)) * 5;
+            MaxDurability = Math.Max(roundedDurability, 5);
         }
 
         private enum WeaponIconImpliedType
@@ -2054,6 +2257,9 @@ namespace EQWOWConverter.Items
                 itemsToAdd.Add(newItemTemplate);
                 foreach (ItemTemplate itemTemplate in itemsToAdd)
                 {
+                    // Durability depends on the finalized class, subclass, inventory type and quality
+                    itemTemplate.PopulateMaxDurability();
+
                     if (ItemTemplatesByEQDBID.ContainsKey(itemTemplate.EQItemID))
                     {
                         Logger.WriteError("Items list via file '" + itemsFileName + "' has an duplicate row with EQItemID '" + itemTemplate.EQItemID + "'");
