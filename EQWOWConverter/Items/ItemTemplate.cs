@@ -631,6 +631,10 @@ namespace EQWOWConverter.Items
                 // Note: Using AC as the scale for shield since there's no other anchor
                 if (classID == 4 && subClassID == 6) // Shields only
                     itemTemplate.Block = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "BlockValue", eqArmorClass));
+
+                // Defense is added to plate armor (or shields) that have stamina (unless 'all')
+                if ((eqStamina > 0 && (classID == 4 || subClassID == 4)) && classMask < 32767)
+                    itemTemplate.StatValues.Add((ItemWOWStatType.DefenseSkillRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "DefenseRating", eqStamina))));
             }
 
             // HP

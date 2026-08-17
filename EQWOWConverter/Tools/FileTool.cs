@@ -260,11 +260,51 @@ namespace EQWOWConverter
             return inputRows;
         }
 
+        private static List<string> ReadAllRowsWithMultiLineQuotedValuesJoined(string fileName)
+        {
+            // Blank lines can't be dropped up front, since one may sit inside a quoted value as a paragraph break
+            List<string> rawLines = ReadAllStringLinesFromFile(fileName, false, false);
+            List<string> joinedRows = new List<string>();
+            StringBuilder curRowSB = new StringBuilder();
+            bool isInsideQuotedValue = false;
+            foreach (string rawLine in rawLines)
+            {
+                if (isInsideQuotedValue == true)
+                    curRowSB.Append("\n"); // Only the line feed, since carriage returns show as garbage in client-facing text
+                curRowSB.Append(rawLine);
+
+                // An odd number of double quotes on a line opens (or closes) a value that continues onto the next line, and doubled-up quotes stay even
+                int quoteCount = 0;
+                foreach (char curChar in rawLine)
+                {
+                    if (curChar == '"')
+                        quoteCount++;
+                }
+                if (quoteCount % 2 == 1)
+                    isInsideQuotedValue = !isInsideQuotedValue;
+                if (isInsideQuotedValue == true)
+                    continue;
+
+                string completedRow = curRowSB.ToString();
+                curRowSB.Clear();
+                if (completedRow.Trim().Length > 0)
+                    joinedRows.Add(completedRow);
+            }
+            if (isInsideQuotedValue == true)
+            {
+                Logger.WriteError("File '" + fileName + "' has an unclosed double quote, so everything after it was read as a single row");
+                string completedRow = curRowSB.ToString();
+                if (completedRow.Trim().Length > 0)
+                    joinedRows.Add(completedRow);
+            }
+            return joinedRows;
+        }
+
         public static List<Dictionary<string, string>> ReadAllRowsFromFileWithHeader(string fileName, string delimeter)
         {
             // Get the rows
             List<Dictionary<string, string>> returnRows = new List<Dictionary<string, string>>();
-            List<string> rows = ReadAllStringLinesFromFile(fileName, false, true);
+            List<string> rows = ReadAllRowsWithMultiLineQuotedValuesJoined(fileName);
 
             // For each row, create a blocked return set
             bool isHeader = true;
