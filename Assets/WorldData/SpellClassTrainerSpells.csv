@@ -1048,6 +1048,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|8235|Windfury Weapon|Rank 2|12000|0|0|40|0
 7|8737|Mail||12000|0|0|40|0
 7|10447|Flame Shock|Rank 4|12000|0|0|40|0
+7|51730|Earthliving Weapon|Rank 1|7000|0|0|30|0
 7|51988|Earthliving Weapon|Rank 2|12000|0|0|40|51730
 7|66843|Call of the Ancestors||700|0|0|40|0
 7|52134|Water Shield|Rank 4|12000|0|0|41|0
