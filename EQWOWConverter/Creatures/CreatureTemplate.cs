@@ -914,6 +914,10 @@ namespace EQWOWConverter.Creatures
                         creatureTemplate.IsRaidCoordinator = true;
                         creatureTemplate.SubName = "Raid Instance Coordinator";
                     } break;
+                case 111: // Mask Seller (sells the racial guise illusion items)
+                    {
+                        creatureTemplate.SubName = "Mask Seller";
+                    } break;
                 default:
                     {   
                         // Do nothing

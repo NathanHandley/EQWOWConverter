@@ -8588,3 +8588,5 @@ id|zone|name|spawn_limit|min_x|max_x|min_y|max_y|min_z|max_z|delay|mindelay|desp
 1000020|lavastorm|lavastorm_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
 1000021|everfrost|everfrost_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
 1000022|feerrott|feerrott_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
+1000023|ecommons|ecommons_mask_seller|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
+1000024|tutorial|tutorial_mask_seller|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1

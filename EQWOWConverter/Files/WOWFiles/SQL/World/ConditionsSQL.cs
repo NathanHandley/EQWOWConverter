@@ -122,6 +122,27 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
+        public void AddRowForVendorItemReputationRestriction(int creatureTemplateID, int itemID, int wowFactionID, int reputationRankMask, string comment, int elseGroupID = 0)
+        {
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("SourceTypeOrReferenceId", 23); // CONDITION_SOURCE_TYPE_NPC_VENDOR
+            newRow.AddInt("SourceGroup", creatureTemplateID);
+            newRow.AddInt("SourceEntry", itemID);
+            newRow.AddInt("SourceId", 0);
+            newRow.AddInt("ElseGroup", elseGroupID); // Each else group is an alternative, so meeting any one of them is enough
+            newRow.AddInt("ConditionTypeOrReference", 5); // CONDITION_REPUTATION_RANK
+            newRow.AddInt("ConditionTarget", 0);
+            newRow.AddInt("ConditionValue1", wowFactionID);
+            newRow.AddInt("ConditionValue2", reputationRankMask);
+            newRow.AddInt("ConditionValue3", 0);
+            newRow.AddInt("NegativeCondition", 0);
+            newRow.AddInt("ErrorType", 0);
+            newRow.AddInt("ErrorTextId", 0);
+            newRow.AddString("ScriptName", 64, string.Empty);
+            newRow.AddString("Comment", 255, "EQ " + comment);
+            Rows.Add(newRow);
+        }
+
         public void AddSmartScriptRestrictionIfAura(int smartScriptEntryOrGUID, int smartScriptID, int smartScriptSourceType, int auraSpellID, string comment, bool negativeCondition = false)
         {
             SQLRow newRow = new SQLRow();

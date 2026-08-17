@@ -876,6 +876,7 @@ namespace EQWOWConverter
             // Creature Templates
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
             List<CreatureVendorItem> reagentVendorItems = CreatureVendorItem.GetCreatureReagentItems();
+            Dictionary<(int, int), List<CreatureVendorItemRequiredReputation>> vendorItemRequiredReputations = CreatureVendorItemRequiredReputation.GetRequiredReputationsByMerchantIDAndWOWItemID();
             // Distinct crowd-control immunity masks get a shared creature_immunities row so the table stays tiny
             Dictionary<long, int> creatureImmunitiesIdByMask = new Dictionary<long, int>();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
@@ -1043,6 +1044,7 @@ namespace EQWOWConverter
                             if (vendorItem.WOWItemID != -1)
                             {
                                 npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, vendorItem.WOWItemID, curSlotNum);
+                                AddVendorItemReputationRestrictions(creatureTemplate, vendorItem.WOWItemID, vendorItemRequiredReputations);
                                 curSlotNum++;
                             }
                             else
@@ -1058,6 +1060,7 @@ namespace EQWOWConverter
                                 if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQScrollSpellID) == false)
                                 {
                                     npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, itemTemplate.WOWEntryID, curSlotNum);
+                                    AddVendorItemReputationRestrictions(creatureTemplate, itemTemplate.WOWEntryID, vendorItemRequiredReputations);
                                     curSlotNum++;
                                 }
                                 else
@@ -1066,6 +1069,7 @@ namespace EQWOWConverter
                                     foreach (var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByEQClassType)
                                     {
                                         npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, scrollPropertiesByClassType.Value.WOWItemTemplateID, curSlotNum);
+                                        AddVendorItemReputationRestrictions(creatureTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID, vendorItemRequiredReputations);
                                         curSlotNum++;
                                     }
                                 }
@@ -1345,6 +1349,24 @@ namespace EQWOWConverter
                 for (int k = 0; k < counts[i]; k++)
                     assigned.Add(templates[i]);
             return assigned;
+        }
+
+        // Gates a vendor item behind reputation standing.  Every requirement for the same item is written into its own else group
+        private void AddVendorItemReputationRestrictions(CreatureTemplate creatureTemplate, int wowItemID, Dictionary<(int, int), List<CreatureVendorItemRequiredReputation>> requiredReputationsByMerchantIDAndWOWItemID)
+        {
+            (int, int) requiredReputationKey = (creatureTemplate.MerchantID, wowItemID);
+            if (requiredReputationsByMerchantIDAndWOWItemID.ContainsKey(requiredReputationKey) == false)
+                return;
+
+            int curElseGroupID = 0;
+            foreach (CreatureVendorItemRequiredReputation requiredReputation in requiredReputationsByMerchantIDAndWOWItemID[requiredReputationKey])
+            {
+                string comment = string.Concat("Vendor Reputation Requirement ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID,
+                    ") item ", wowItemID, " faction ", requiredReputation.RequiredWOWFactionID);
+                conditionsSQL.AddRowForVendorItemReputationRestriction(creatureTemplate.WOWCreatureTemplateID, wowItemID,
+                    requiredReputation.RequiredWOWFactionID, requiredReputation.GetRequiredReputationRankMask(), comment, curElseGroupID);
+                curElseGroupID++;
+            }
         }
 
         private static int GetCreatureRespawnTimeInSeconds(CreatureTemplate creatureTemplate, CreatureSpawnInstance? spawnInstance = null)
