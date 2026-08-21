@@ -33,7 +33,8 @@ namespace EQWOWConverter.WOWFiles
             return (effectiveCollisionHeight - CAMERA_PIVOT_CEILING_SUBTRACT) * CAMERA_PIVOT_CEILING_MULTIPLIER;
         }
 
-        public void AddRow(CreatureModelTemplate creatureModelTemplate, string modelName)
+
+        public void AddRow(CreatureModelTemplate creatureModelTemplate, string modelName, int modelDataID, int creatureSoundDataID)
         {
             // Some models need to have the model scale stay 1 if it's a player-cast illusion, to avoid overly big/tiny horses 
             float dbcModelScale = creatureModelTemplate.ModelTemplateScale;
@@ -45,7 +46,7 @@ namespace EQWOWConverter.WOWFiles
             }
 
             DBCRow newRow = new DBCRow();
-            newRow.AddInt32(creatureModelTemplate.DBCCreatureModelDataID); // ID
+            newRow.AddInt32(modelDataID); // ID
             newRow.AddPackedFlags(0); // Flags,0x40: ?, 0x80: Can Form Mount, 0x10000: Has Wheels
             newRow.AddString(modelName); // Model Path ("Creature\....mdx), always ending in mdx
             newRow.AddInt32(1); // SizeClass (Big models are ~4, most 1)
@@ -58,7 +59,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // FoleyMaterialID, always 0
             newRow.AddInt32(0); // FootstepShakeSize, references CameraShakes.dbc
             newRow.AddInt32(0); // DeathThudShakeSize, references CameraShakes.dbc
-            newRow.AddInt32(creatureModelTemplate.DBCCreatureSoundDataID); // SoundID, references CreatureSoundData.dbc
+            newRow.AddInt32(creatureSoundDataID); // SoundID, references CreatureSoundData.dbc
             float collisionScaleCompensation = Configuration.GENERATE_EQUIPMENT_SCALE / Configuration.GENERATE_CREATURE_SCALE;
             newRow.AddFloat(0.6944f * collisionScaleCompensation * bakedGeometryScale); // CollisionWidth
             newRow.AddFloat(2.083f * collisionScaleCompensation * bakedGeometryScale); // CollisionHeight

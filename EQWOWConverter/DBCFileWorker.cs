@@ -342,7 +342,7 @@ namespace EQWOWConverter
                 }
 
                 string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
-                creatureModelDataDBC.AddRow(creatureModelTemplate, relativeModelPath);
+                creatureModelDataDBC.AddRow(creatureModelTemplate, relativeModelPath, creatureModelTemplate.DBCCreatureModelDataID, creatureModelTemplate.DBCCreatureSoundDataID);
                 if (creatureModelTemplate.Race.SoundWalkingName.Trim().Length > 0 && creatureModelTemplate.IsCompanionPetVersion == false)
                 {
                     // For illusion versions, use the stock walking sound
@@ -350,9 +350,11 @@ namespace EQWOWConverter
                     if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true && creatureModelTemplate.FaceIndex == CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX)
                         creatureFootstepID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_DEFAULT;
                     
-                    // Player illusion forms stay quiet while idle, so they get no fidget sounds
-                    bool playFidgetSounds = creatureModelTemplate.IsIllusionFormVersion == false && creatureModelTemplate.FaceIndex != CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX;
-                    creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, creatureModelTemplate.Race, creatureFootstepID, playFidgetSounds);
+                    // Player illusion forms and summoned pets stay quiet while idle, so they get no fidget sounds
+                    creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, creatureModelTemplate.Race, creatureFootstepID, creatureModelTemplate.DoPlayFidgetSounds());
+
+                    // Tamed (hunter) pets wear the display of a world creature, so tameable races also carry a display that is identical except for having no fidget sounds
+                    if (creatureModelTemplate.DoGenerateSilentTamedPetVersion() == true)
                 }
             }
             string creatureSoundsDirectory = "Sound\\Creature\\Everquest";

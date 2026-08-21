@@ -88,6 +88,7 @@ namespace EQWOWConverter
         private ModEverquestCreatureEmoteSQL modEverquestCreatureEmoteSQL = new ModEverquestCreatureEmoteSQL();
         private ModEverquestCreatureKillSpawnSQL modEverquestCreatureKillSpawnSQL = new ModEverquestCreatureKillSpawnSQL();
         private ModEverquestCreatureMovementSoundSQL modEverquestCreatureMovementSoundSQL = new ModEverquestCreatureMovementSoundSQL();
+        private ModEverquestPetSilentDisplaySQL modEverquestPetSilentDisplaySQL = new ModEverquestPetSilentDisplaySQL();
         private ModEverquestCreatureSpawnPointSQL modEverquestCreatureSpawnPointSQL = new ModEverquestCreatureSpawnPointSQL();
         private ModEverquestCreatureWaypointSQL modEverquestCreatureWaypointSQL = new ModEverquestCreatureWaypointSQL();
         private ModEverquestFactionSQL modEverquestFactionSQL = new ModEverquestFactionSQL();
@@ -1277,6 +1278,15 @@ namespace EQWOWConverter
                     && creatureModelTemplate.IsCompanionPetVersion == false)
                 {
                     AddCreatureMovementSoundRowIfNeeded(creatureModelTemplate, creatureModelTemplate.DBCCreatureDisplayID);
+                }
+
+                // Silent fidget versions
+                if (creatureModelTemplate.DoGenerateSilentTamedPetVersion() == true)
+                {
+                    creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCSilentTamedPetCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
+                    modEverquestPetSilentDisplaySQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, creatureModelTemplate.DBCSilentTamedPetCreatureDisplayID);
+                    if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true)
+                        AddCreatureMovementSoundRowIfNeeded(creatureModelTemplate, creatureModelTemplate.DBCSilentTamedPetCreatureDisplayID);
                 }
             }
             
@@ -2945,6 +2955,7 @@ namespace EQWOWConverter
             modEverquestCreatureEmoteSQL.SaveToDisk("mod_everquest_creature_emote", SQLFileType.World);
             modEverquestCreatureKillSpawnSQL.SaveToDisk("mod_everquest_creature_kill_spawn", SQLFileType.World);
             modEverquestCreatureMovementSoundSQL.SaveToDisk("mod_everquest_creature_movement_sound", SQLFileType.World);
+            modEverquestPetSilentDisplaySQL.SaveToDisk("mod_everquest_pet_silent_display", SQLFileType.World);
             modEverquestCreatureSpawnPointSQL.SaveToDisk("mod_everquest_creature_spawn_point", SQLFileType.World);
             modEverquestCreatureWaypointSQL.SaveToDisk("mod_everquest_creature_waypoint", SQLFileType.World);
             modEverquestFactionSQL.SaveToDisk("mod_everquest_faction", SQLFileType.World);
