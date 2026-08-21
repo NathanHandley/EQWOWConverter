@@ -186,6 +186,13 @@ namespace EQWOWConverter
         public static float GENERATE_CREATURE_CLICKBOX_ADDED_SIZE = 0.2f;
         public static float GENERATE_CREATURE_CLICKBOX_MIN_SIZE = 0.5f;
 
+        // If true, the resting pose of the death animation is added to the creature's 'clickable area'
+        public static bool GENERATE_CREATURE_CLICKBOX_INCLUDE_DEATH_POSE = true;
+
+        // Smallest a creature's "clickable area' may measure per axis in actual world units
+        public static float GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE = 0.5f;
+        public static float GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE_MAX_MULTIPLIER = 1.5f;
+
         // Values needed to make the dressing room and companion pet in-game cameras look right
         public static float GENERATE_CHARACTER_INFO_CAMERA_DISTANCE_PER_RADIUS = 3.133f;
         public static float GENERATE_CHARACTER_INFO_CAMERA_TARGET_HEIGHT_RATIO = 0.928f;
@@ -1709,6 +1716,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER", GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER, "Modifiers for the 'clickable area' around creatures", false);
             OutputVariableToConfig("GENERATE_CREATURE_CLICKBOX_ADDED_SIZE", GENERATE_CREATURE_CLICKBOX_ADDED_SIZE, "", false);
             OutputVariableToConfig("GENERATE_CREATURE_CLICKBOX_MIN_SIZE", GENERATE_CREATURE_CLICKBOX_MIN_SIZE, "");
+            OutputVariableToConfig("GENERATE_CREATURE_CLICKBOX_INCLUDE_DEATH_POSE", GENERATE_CREATURE_CLICKBOX_INCLUDE_DEATH_POSE, "If true, the resting pose of the death animation is added to the creature's 'clickable area'");
+            OutputVariableToConfig("GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE", GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE, "Smallest a creature's \"clickable area' may measure per axis in actual world units", false);
+            OutputVariableToConfig("GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE_MAX_MULTIPLIER", GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE_MAX_MULTIPLIER, "");
             OutputVariableToConfig("GENERATE_CHARACTER_INFO_CAMERA_DISTANCE_PER_RADIUS", GENERATE_CHARACTER_INFO_CAMERA_DISTANCE_PER_RADIUS, "Values needed to make the dressing room and companion pet in-game cameras look right", false);
             OutputVariableToConfig("GENERATE_CHARACTER_INFO_CAMERA_TARGET_HEIGHT_RATIO", GENERATE_CHARACTER_INFO_CAMERA_TARGET_HEIGHT_RATIO, "", false);
             OutputVariableToConfig("GENERATE_CHARACTER_INFO_CAMERA_TILT", GENERATE_CHARACTER_INFO_CAMERA_TILT, "");
@@ -2174,6 +2184,9 @@ namespace EQWOWConverter
             GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER = ReadVariableFromConfigString("GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER", configValuesByVariableName, GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER);
             GENERATE_CREATURE_CLICKBOX_ADDED_SIZE = ReadVariableFromConfigString("GENERATE_CREATURE_CLICKBOX_ADDED_SIZE", configValuesByVariableName, GENERATE_CREATURE_CLICKBOX_ADDED_SIZE);
             GENERATE_CREATURE_CLICKBOX_MIN_SIZE = ReadVariableFromConfigString("GENERATE_CREATURE_CLICKBOX_MIN_SIZE", configValuesByVariableName, GENERATE_CREATURE_CLICKBOX_MIN_SIZE);
+            GENERATE_CREATURE_CLICKBOX_INCLUDE_DEATH_POSE = ReadVariableFromConfigString("GENERATE_CREATURE_CLICKBOX_INCLUDE_DEATH_POSE", configValuesByVariableName, GENERATE_CREATURE_CLICKBOX_INCLUDE_DEATH_POSE);
+            GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE = ReadVariableFromConfigString("GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE", configValuesByVariableName, GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE);
+            GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE_MAX_MULTIPLIER = ReadVariableFromConfigString("GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE_MAX_MULTIPLIER", configValuesByVariableName, GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE_MAX_MULTIPLIER);
             GENERATE_CHARACTER_INFO_CAMERA_DISTANCE_PER_RADIUS = ReadVariableFromConfigString("GENERATE_CHARACTER_INFO_CAMERA_DISTANCE_PER_RADIUS", configValuesByVariableName, GENERATE_CHARACTER_INFO_CAMERA_DISTANCE_PER_RADIUS);
             GENERATE_CHARACTER_INFO_CAMERA_TARGET_HEIGHT_RATIO = ReadVariableFromConfigString("GENERATE_CHARACTER_INFO_CAMERA_TARGET_HEIGHT_RATIO", configValuesByVariableName, GENERATE_CHARACTER_INFO_CAMERA_TARGET_HEIGHT_RATIO);
             GENERATE_CHARACTER_INFO_CAMERA_TILT = ReadVariableFromConfigString("GENERATE_CHARACTER_INFO_CAMERA_TILT", configValuesByVariableName, GENERATE_CHARACTER_INFO_CAMERA_TILT);

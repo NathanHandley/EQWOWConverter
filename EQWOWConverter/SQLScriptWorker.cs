@@ -1030,7 +1030,7 @@ namespace EQWOWConverter
 
                 // Create the records
                 // This scale ensures that creature held equipment is the right size
-                float scale = creatureTemplate.Size * creatureTemplate.Race.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
+                float scale = creatureTemplate.GetWorldSpawnScale();
 
                 // Companion pets normalize to a uniform world height
                 if (creatureTemplate.IsCompanionPet == true && creatureTemplate.ModelTemplate.ModelStandingHeight > Configuration.GENERATE_FLOAT_EPSILON)

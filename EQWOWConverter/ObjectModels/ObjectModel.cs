@@ -274,7 +274,39 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
-            InteractionBoundingBox = BoundingBox.GetExpandedBox(standPoseBoundingBox, Configuration.GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER, Configuration.GENERATE_CREATURE_CLICKBOX_ADDED_SIZE, Configuration.GENERATE_CREATURE_CLICKBOX_MIN_SIZE);
+            // A corpse leaves the standing silhouette behind, and a creature whose stand pose hovers lands entirely below it, so the box has to cover where the body actually settles
+            BoundingBox clickGeometryBoundingBox = new BoundingBox(standPoseBoundingBox);
+            if (Configuration.GENERATE_CREATURE_CLICKBOX_INCLUDE_DEATH_POSE == true)
+            {
+                MeshData deathPoseMesh;
+                if (TryGetMeshDataAtEndOfPose(out deathPoseMesh, EQAnimationType.d05Death) == true)
+                {
+                    BoundingBox deathPoseBoundingBox = BoundingBox.GenerateBoxFromVectors(deathPoseMesh.Vertices, 0);
+                    if (IsBoundingBoxMeasurable(deathPoseBoundingBox) == true && IsDeathPoseBoundingBoxSane(standPoseBoundingBox, deathPoseBoundingBox) == true)
+                    {
+                        List<BoundingBox> posedBoundingBoxes = new List<BoundingBox>();
+                        posedBoundingBoxes.Add(standPoseBoundingBox);
+                        posedBoundingBoxes.Add(deathPoseBoundingBox);
+                        clickGeometryBoundingBox = BoundingBox.GenerateBoxFromBoxes(posedBoundingBoxes);
+                    }
+                    else
+                        Logger.WriteDebug("Death pose extents for creature model '", Name, "' were unusable, so the click box is stand pose only");
+                }
+            }
+
+            if (Properties.CreatureModelTemplate != null)
+                InteractionBoundingBox = Properties.CreatureModelTemplate.GenerateClickBoundingBox(clickGeometryBoundingBox);
+            else
+                InteractionBoundingBox = BoundingBox.GetExpandedBox(clickGeometryBoundingBox, Configuration.GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER, Configuration.GENERATE_CREATURE_CLICKBOX_ADDED_SIZE, Configuration.GENERATE_CREATURE_CLICKBOX_MIN_SIZE);
+        }
+
+        private static bool IsDeathPoseBoundingBoxSane(BoundingBox standPoseBoundingBox, BoundingBox deathPoseBoundingBox)
+        {
+            float standPoseLargestAxis = Math.Max(standPoseBoundingBox.GetXDistance(), Math.Max(standPoseBoundingBox.GetYDistance(), standPoseBoundingBox.GetZDistance()));
+            float deathPoseLargestAxis = Math.Max(deathPoseBoundingBox.GetXDistance(), Math.Max(deathPoseBoundingBox.GetYDistance(), deathPoseBoundingBox.GetZDistance()));
+            if (standPoseLargestAxis <= Configuration.GENERATE_FLOAT_EPSILON)
+                return false;
+            return deathPoseLargestAxis <= (standPoseLargestAxis * 10f); // Max axis growth beyond stand pose
         }
 
         private static bool IsBoundingBoxMeasurable(BoundingBox boundingBox)
@@ -3033,7 +3065,40 @@ namespace EQWOWConverter.ObjectModels
                 return new MeshData(MeshData);
             }
 
-            List<System.Numerics.Matrix4x4> absoluteBoneMatrices = BuildAbsoluteBoneMatricesForAnimation(useAnimIndex, ignoreMultiframeBoneVertices);
+            return GetMeshDataForAnimationIndex(useAnimIndex, ignoreMultiframeBoneVertices, false);
+        }
+
+        public bool TryGetMeshDataAtEndOfPose(out MeshData posedMeshData, params EQAnimationType[] eqAnimationTypes)
+        {
+            posedMeshData = new MeshData();
+            if (IsSkeletal == false)
+                return false;
+            int useAnimIndex = GetFirstAnimationIndexForEQAnimationTypes(eqAnimationTypes);
+            if (useAnimIndex == -1)
+                return false;
+            if (DoesAnimationHaveBoneKeyFrames(useAnimIndex) == false)
+                return false;
+            posedMeshData = GetMeshDataForAnimationIndex(useAnimIndex, false, true);
+            return true;
+        }
+
+        private bool DoesAnimationHaveBoneKeyFrames(int useAnimIndex)
+        {
+            foreach (ObjectModelBone bone in ModelBones)
+            {
+                if (useAnimIndex < bone.TranslationTrack.Values.Count && bone.TranslationTrack.Values[useAnimIndex].Values.Count > 0)
+                    return true;
+                if (useAnimIndex < bone.RotationTrack.Values.Count && bone.RotationTrack.Values[useAnimIndex].Values.Count > 0)
+                    return true;
+                if (useAnimIndex < bone.ScaleTrack.Values.Count && bone.ScaleTrack.Values[useAnimIndex].Values.Count > 0)
+                    return true;
+            }
+            return false;
+        }
+
+        private MeshData GetMeshDataForAnimationIndex(int useAnimIndex, bool ignoreMultiframeBoneVertices, bool useLastFrameOfAnimation)
+        {
+            List<System.Numerics.Matrix4x4> absoluteBoneMatrices = BuildAbsoluteBoneMatricesForAnimation(useAnimIndex, ignoreMultiframeBoneVertices, useLastFrameOfAnimation);
 
             // Apply transformations to all vertices / normals
             MeshData posedMeshData = new MeshData(MeshData);
@@ -3059,7 +3124,7 @@ namespace EQWOWConverter.ObjectModels
             return posedMeshData;
         }
 
-        private List<System.Numerics.Matrix4x4> BuildAbsoluteBoneMatricesForAnimation(int useAnimIndex, bool ignoreMultiframeBoneVertices)
+        private List<System.Numerics.Matrix4x4> BuildAbsoluteBoneMatricesForAnimation(int useAnimIndex, bool ignoreMultiframeBoneVertices, bool useLastFrameOfAnimation)
         {
             // Extract local transforms for every bone the selected animation
             List<System.Numerics.Vector3> curAnimTranslations = new List<System.Numerics.Vector3>(ModelBones.Count);
@@ -3077,7 +3142,7 @@ namespace EQWOWConverter.ObjectModels
                 if (useAnimIndex < translationTrack.Values.Count && translationTrack.Values[useAnimIndex].Values.Count > 0)
                 {
                     if (ignoreMultiframeBoneVertices == false || translationTrack.Values[useAnimIndex].Values.Count == 1)
-                        translation = translationTrack.Values[useAnimIndex].Values[0];
+                        translation = translationTrack.Values[useAnimIndex].Values[GetFrameIndexForTrack(translationTrack.Values[useAnimIndex].Values.Count, useLastFrameOfAnimation)];
                 }
 
                 // Rotation track
@@ -3086,7 +3151,7 @@ namespace EQWOWConverter.ObjectModels
                 {
                     if (ignoreMultiframeBoneVertices == false || rotationTrack.Values[useAnimIndex].Values.Count == 1)
                     {
-                        QuaternionShort qs = rotationTrack.Values[useAnimIndex].Values[0];
+                        QuaternionShort qs = rotationTrack.Values[useAnimIndex].Values[GetFrameIndexForTrack(rotationTrack.Values[useAnimIndex].Values.Count, useLastFrameOfAnimation)];
                         rotation = new System.Numerics.Quaternion(qs.X, qs.Y, qs.Z, qs.W);
                         rotation = System.Numerics.Quaternion.Normalize(rotation);
                     }
@@ -3097,7 +3162,7 @@ namespace EQWOWConverter.ObjectModels
                 if (useAnimIndex < scaleTrack.Values.Count && scaleTrack.Values[useAnimIndex].Values.Count > 0)
                 {
                     if (ignoreMultiframeBoneVertices == false || scaleTrack.Values[useAnimIndex].Values.Count == 1)
-                        scale = scaleTrack.Values[useAnimIndex].Values[0];
+                        scale = scaleTrack.Values[useAnimIndex].Values[GetFrameIndexForTrack(scaleTrack.Values[useAnimIndex].Values.Count, useLastFrameOfAnimation)];
                 }
 
                 curAnimTranslations.Add(new System.Numerics.Vector3(translation.X, translation.Y, translation.Z));
@@ -3133,6 +3198,13 @@ namespace EQWOWConverter.ObjectModels
             }
 
             return absoluteBoneMatrices;
+        }
+
+        private static int GetFrameIndexForTrack(int frameCount, bool useLastFrameOfAnimation)
+        {
+            if (useLastFrameOfAnimation == true && frameCount > 1)
+                return frameCount - 1;
+            return 0;
         }
 
         public int AddTextureAndReturnID(string textureFileNameNoExt)

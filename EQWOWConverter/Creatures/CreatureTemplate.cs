@@ -158,6 +158,11 @@ namespace EQWOWConverter.Creatures
             return false;
         }
 
+        public float GetWorldSpawnScale()
+        {
+            return Size * Race.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
+        }
+
         public bool CanBePickpocketed()
         {
             if (EQBodyType != 1) // Humanoid

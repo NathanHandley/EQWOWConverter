@@ -43,6 +43,8 @@ namespace EQWOWConverter.Creatures
         public bool IsPetVersion = false;
         public float ModelStandingHeight = 0; // Z extent of the stand-posed geometry in final (rendered) model space
         public BoundingBox ModelStandingGeometryBox = new BoundingBox();
+        public BoundingBox ModelClickBoundingBox = new BoundingBox(); // The finished clickable box that went into the M2
+        public float SmallestCreatureWorldSpawnScale = 0f; // Smallest world scale any creature spawns this model at, 0 when no creature template uses it
         public float ModelCameraAnchorHeight = 0;
 
         public int DBCCreatureModelDataID;
@@ -176,6 +178,35 @@ namespace EQWOWConverter.Creatures
             return DoUseOwnModelFiles() == true && ModelTemplateScale > Configuration.GENERATE_FLOAT_EPSILON;
         }
 
+        public float GetDBCModelScale()
+        {
+            if (DoBakeModelTemplateScaleIntoGeometry() == true)
+                return 1f;
+            return ModelTemplateScale;
+        }
+
+        public float GetSmallestWorldScaleForClickBox()
+        {
+            if (SmallestCreatureWorldSpawnScale <= Configuration.GENERATE_FLOAT_EPSILON)
+                return 0f;
+            return GetDBCModelScale() * SmallestCreatureWorldSpawnScale;
+        }
+
+        public BoundingBox GenerateClickBoundingBox(BoundingBox geometryBoundingBox)
+        {
+            BoundingBox clickBoundingBox = BoundingBox.GetExpandedBox(geometryBoundingBox, Configuration.GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER,
+                Configuration.GENERATE_CREATURE_CLICKBOX_ADDED_SIZE, Configuration.GENERATE_CREATURE_CLICKBOX_MIN_SIZE);
+
+            // Tiny creatures shrink the box along with the model, so enforce the floor in world units and convert it back into model space
+            float worldScale = GetSmallestWorldScaleForClickBox();
+            if (Configuration.GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE > Configuration.GENERATE_FLOAT_EPSILON && worldScale > Configuration.GENERATE_FLOAT_EPSILON)
+            {
+                float minSizeInModelSpace = Configuration.GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE / worldScale;
+                clickBoundingBox.ExpandToMinimumSizeWithGrowthCap(minSizeInModelSpace, Configuration.GENERATE_CREATURE_CLICKBOX_MIN_WORLD_SIZE_MAX_MULTIPLIER);
+            }
+            return clickBoundingBox;
+        }
+
         public bool DoSuppressHeldItemAttachments()
         {
             return Race.CanHoldVisualItems == false;
@@ -280,6 +311,17 @@ namespace EQWOWConverter.Creatures
                     creatureTemplate.ColorTintID, creatureTemplate.ModelTemplateScale, creatureTemplate.IsCompanionPet, creatureTemplate.IsIllusionForm,
                     creatureTemplate.IsPet);
                 creatureTemplate.ModelTemplate = curModelTemplate;
+
+                // Track how small this model ever spawns, since the click box has to stay usable for the smallest creature having it
+                if (creatureTemplate.IsCompanionPet == false)
+                {
+                    float creatureWorldSpawnScale = creatureTemplate.GetWorldSpawnScale();
+                    if (creatureWorldSpawnScale > Configuration.GENERATE_FLOAT_EPSILON &&
+                        (curModelTemplate.SmallestCreatureWorldSpawnScale <= Configuration.GENERATE_FLOAT_EPSILON || creatureWorldSpawnScale < curModelTemplate.SmallestCreatureWorldSpawnScale))
+                    {
+                        curModelTemplate.SmallestCreatureWorldSpawnScale = creatureWorldSpawnScale;
+                    }
+                }
             }
         }
 
@@ -321,6 +363,7 @@ namespace EQWOWConverter.Creatures
             // GeometryBoundingBox is the stand-posed vertices in the same space the client renders
             ModelStandingHeight = curObject.GeometryBoundingBox.TopCorner.Z - curObject.GeometryBoundingBox.BottomCorner.Z;
             ModelStandingGeometryBox = new BoundingBox(curObject.GeometryBoundingBox);
+            ModelClickBoundingBox = new BoundingBox(curObject.InteractionBoundingBox);
             ModelCameraAnchorHeight = curObject.GetAnchorAttachmentPositionModelSpace(ObjectModelAttachmentType.MouthBreath).Z;
             StringBuilder nameSB = new StringBuilder();
             nameSB.Append(Race.Name);

@@ -65,12 +65,11 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(2.083f * collisionScaleCompensation * bakedGeometryScale); // CollisionHeight
             newRow.AddFloat(0); // MountHeight
             // Clickable boundary box
-            BoundingBox geometryBox = creatureModelTemplate.ModelStandingGeometryBox;
-            bool hasGeometryBox = geometryBox.GetXDistance() > Configuration.GENERATE_FLOAT_EPSILON || geometryBox.GetYDistance() > Configuration.GENERATE_FLOAT_EPSILON || geometryBox.GetZDistance() > Configuration.GENERATE_FLOAT_EPSILON;
+            BoundingBox clickBox = creatureModelTemplate.ModelClickBoundingBox;
+            bool hasGeometryBox = clickBox.GetXDistance() > Configuration.GENERATE_FLOAT_EPSILON || clickBox.GetYDistance() > Configuration.GENERATE_FLOAT_EPSILON || clickBox.GetZDistance() > Configuration.GENERATE_FLOAT_EPSILON;
             float geoBoxMinX, geoBoxMinY, geoBoxMinZ, geoBoxMaxX, geoBoxMaxY, geoBoxMaxZ;
             if (hasGeometryBox == true)
             {
-                BoundingBox clickBox = BoundingBox.GetExpandedBox(geometryBox, Configuration.GENERATE_CREATURE_CLICKBOX_SIZE_MULTIPLIER, Configuration.GENERATE_CREATURE_CLICKBOX_ADDED_SIZE, Configuration.GENERATE_CREATURE_CLICKBOX_MIN_SIZE);
                 geoBoxMinX = clickBox.BottomCorner.X;
                 geoBoxMinY = clickBox.BottomCorner.Y;
                 geoBoxMinZ = clickBox.BottomCorner.Z;

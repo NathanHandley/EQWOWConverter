@@ -348,6 +348,28 @@ namespace EQWOWConverter.Common
             }
         }
 
+        public void ExpandToMinimumSizeWithGrowthCap(float minSize, float maxGrowthMultiplier)
+        {
+            ExpandAxisToMinimumSizeWithGrowthCap(minSize, maxGrowthMultiplier, ref BottomCorner.X, ref TopCorner.X);
+            ExpandAxisToMinimumSizeWithGrowthCap(minSize, maxGrowthMultiplier, ref BottomCorner.Y, ref TopCorner.Y);
+            ExpandAxisToMinimumSizeWithGrowthCap(minSize, maxGrowthMultiplier, ref BottomCorner.Z, ref TopCorner.Z);
+        }
+
+        private static void ExpandAxisToMinimumSizeWithGrowthCap(float minSize, float maxGrowthMultiplier, ref float axisMin, ref float axisMax)
+        {
+            float axisSize = axisMax - axisMin;
+            if (axisSize >= minSize)
+                return;
+            float allowedSize = minSize;
+            if (maxGrowthMultiplier > 0 && axisSize > Configuration.GENERATE_FLOAT_EPSILON)
+                allowedSize = Math.Min(minSize, axisSize * maxGrowthMultiplier);
+            if (axisSize >= allowedSize)
+                return;
+            float amountToAdd = (allowedSize - axisSize) * 0.5f;
+            axisMax += amountToAdd;
+            axisMin -= amountToAdd;
+        }
+
         public bool DoesIntersectBox(BoundingBox other, float edgePad)
         {
             // It's an intersection if either box contains the other
