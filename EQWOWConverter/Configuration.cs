@@ -1102,7 +1102,7 @@ namespace EQWOWConverter
         public static string ACHIEVEMENT_EQ_ADVENTURER_NAME = "Everquest Adventurer";
 
         // The description of the everquest adventurer feat of strength achievement
-        public static string ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION = "Awarded to accounts that have had at least one character reach max level (up to 60) having only ever adventured through Everquest content.";
+        public static string ACHIEVEMENT_EQ_ADVENTURER_DESCRIPTION = "Awarded to accounts that have had at least one character reach level 50 having only ever adventured through Everquest content.";
 
         // Which EQ item icon to use for the everquest adventurer feat of strength achievement and aura
         public static int ACHIEVEMENT_EQ_ADVENTURER_ITEM_ICON_EQ_ID = 145;
