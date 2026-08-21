@@ -686,10 +686,11 @@ namespace EQWOWConverter.Items
             }
         }
 
-        private static ItemWOWQuality CalculateQuality(List<(ItemWOWStatType, int)> statValues, int eqResistPoison, 
+        private static ItemWOWQuality CalculateQuality(int eqAgility, int eqCharisma, int eqDexterity, int eqIntelligence, int eqStamina, int eqStrength, int eqWisdom, int eqHP, int eqMana, int eqResistPoison,
             int eqResistMagic, int eqResistDisease, int eqResistFire, int eqResistCold, bool hasSpellEffect)
         {
-            if (statValues.Count > 0 || eqResistPoison > 0 || eqResistMagic > 0 || eqResistDisease > 0 || eqResistCold > 0 || eqResistFire > 0 || hasSpellEffect == true)
+            if (eqAgility > 0 || eqCharisma > 0 || eqDexterity > 0 || eqIntelligence > 0 || eqStamina > 0 || eqStrength > 0 || eqWisdom > 0 || eqHP > 0 || eqMana > 0 || eqResistPoison > 0 || 
+                eqResistMagic > 0 || eqResistDisease > 0 || eqResistCold > 0 || eqResistFire > 0 || hasSpellEffect == true)
                 return ItemWOWQuality.Uncommon;
             else
                 return ItemWOWQuality.Common;
@@ -2177,24 +2178,24 @@ namespace EQWOWConverter.Items
 
                 // Calculate stats
                 int qualityOverride = int.Parse(columns["override_quality"]);
-                int agility = int.Parse(columns["aagi"]);
-                int armorClass = int.Parse(columns["ac"]);
-                int charisma = int.Parse(columns["acha"]);
-                int dexterity = int.Parse(columns["adex"]);
-                int intelligence = int.Parse(columns["aint"]);
-                int stamina = int.Parse(columns["asta"]);
-                int strength = int.Parse(columns["astr"]);
-                int wisdom = int.Parse(columns["awis"]);
-                int hp = int.Parse(columns["hp"]);
-                int mana = int.Parse(columns["mana"]);
-                int resistMagic = int.Parse(columns["resistmagic"]);
-                int resistDisease = int.Parse(columns["resistdisease"]);
-                int resistPoison = int.Parse(columns["resistpoison"]);
-                int resistCold = int.Parse(columns["resistcold"]);
-                int resistFire = int.Parse(columns["resistfire"]);
+                int eqAgility = int.Parse(columns["aagi"]);
+                int eqArmorClass = int.Parse(columns["ac"]);
+                int eqCharisma = int.Parse(columns["acha"]);
+                int eqDexterity = int.Parse(columns["adex"]);
+                int eqIntelligence = int.Parse(columns["aint"]);
+                int eqStamina = int.Parse(columns["asta"]);
+                int eqStrength = int.Parse(columns["astr"]);
+                int eqWisdom = int.Parse(columns["awis"]);
+                int eqHP = int.Parse(columns["hp"]);
+                int eqMana = int.Parse(columns["mana"]);
+                int eqResistMagic = int.Parse(columns["resistmagic"]);
+                int eqResistDisease = int.Parse(columns["resistdisease"]);
+                int eqResistPoison = int.Parse(columns["resistpoison"]);
+                int eqResistCold = int.Parse(columns["resistcold"]);
+                int eqResistFire = int.Parse(columns["resistfire"]);
                 PopulateStats(ref newItemTemplate, newItemTemplate.InventoryType, newItemTemplate.ClassID, newItemTemplate.SubClassID,
-                    newItemTemplate.EQClassMask, armorClass, strength, agility, charisma, dexterity, intelligence, stamina, wisdom, hp, 
-                    mana, resistPoison, resistMagic, resistDisease, resistFire, resistCold, damage, delay, qualityOverride);
+                    newItemTemplate.EQClassMask, eqArmorClass, eqStrength, eqAgility, eqCharisma, eqDexterity, eqIntelligence, eqStamina, eqWisdom, eqHP, 
+                    eqMana, eqResistPoison, eqResistMagic, eqResistDisease, eqResistFire, eqResistCold, damage, delay, qualityOverride);
 
                 // Convert all back slot items to cloth
                 if (newItemTemplate.InventoryType == ItemWOWInventoryType.Back && newItemTemplate.ClassID == 4)
@@ -2220,7 +2221,7 @@ namespace EQWOWConverter.Items
                 if (qualityOverride == -1)
                 {
                     bool hasSpellEffect = (newItemTemplate.EQWornEffectSpellID > 0 || newItemTemplate.WOWWornEffectSpellID > 0 || newItemTemplate.EQCombatProcSpellEffectID > 0);
-                    newItemTemplate.Quality = CalculateQuality(newItemTemplate.StatValues, resistPoison, resistMagic, resistDisease, resistFire, resistCold, hasSpellEffect);
+                    newItemTemplate.Quality = CalculateQuality(eqAgility, eqCharisma, eqDexterity, eqIntelligence, eqStamina, eqStrength, eqWisdom, eqHP, eqMana, eqResistPoison, eqResistMagic, eqResistDisease, eqResistFire, eqResistCold, hasSpellEffect);
                 }
                 else
                     newItemTemplate.Quality = (ItemWOWQuality)qualityOverride;
@@ -2234,8 +2235,8 @@ namespace EQWOWConverter.Items
                     if (slotshiftWOWID > 0)
                         newItemTemplate.SlotshiftWOWIDsBySlot.Add(slotshiftInventoryType, slotshiftWOWID);
                 }
-                List<ItemTemplate> slotshiftVariantItems = CreateSlotshiftVariantItems(newItemTemplate, armorClass, strength, agility, charisma, dexterity, intelligence, stamina, 
-                    wisdom, hp, mana, resistPoison, resistMagic, resistDisease, resistFire, resistCold, damage, delay, qualityOverride);
+                List<ItemTemplate> slotshiftVariantItems = CreateSlotshiftVariantItems(newItemTemplate, eqArmorClass, eqStrength, eqAgility, eqCharisma, eqDexterity, eqIntelligence, eqStamina, 
+                    eqWisdom, eqHP, eqMana, eqResistPoison, eqResistMagic, eqResistDisease, eqResistFire, eqResistCold, damage, delay, qualityOverride);
 
                 List<ItemTemplate> itemsToAdd = new List<ItemTemplate>();
                 itemsToAdd.AddRange(slotshiftVariantItems);
