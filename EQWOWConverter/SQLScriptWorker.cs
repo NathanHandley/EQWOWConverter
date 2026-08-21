@@ -1905,6 +1905,16 @@ namespace EQWOWConverter
                     if (Configuration.CREATURE_PICKPOCKET_LOOT_ENABLED == true && eqClassProperties.EQClass == ClassEQType.Rogue)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 921, 7);  // Pick Pocket
 
+                    // Lay on Hands (Existing WoW version)
+                    if (eqClassProperties.EQClass == ClassEQType.Paladin)
+                    {
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 633, 1); // Lay on Hands Rank 1
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 2800, 30); // Lay on Hands Rank 2
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 10310, 50); // Lay on Hands Rank 3
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 27154, 69); // Lay on Hands Rank 4
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 48788, 78); // Lay on Hands Rank 5
+                    }
+
                     // Piercing Backstab
                     if (Configuration.COMBATSKILL_PIERCINGBACKSTAB_ENABLED == true && Configuration.COMBATSKILL_PIERCINGBACKSTAB_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.Rogue)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_PIERCINGBACKSTAB_SPELL_ID, Configuration.COMBATSKILL_PIERCINGBACKSTAB_LEARN_LEVEL);
