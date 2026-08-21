@@ -268,7 +268,79 @@ namespace EQWOWConverter.WOWFiles
             for (int i = 0; i < 4; i++)
                 row.SourceRawBytes[DESCRIPTION_LANG_FIELD_BYTE_OFFSET + i] = newStringOffsetBytes[i];
         }
-        
+
+        private static readonly int MAX_LEVEL_FIELD_BYTE_OFFSET = 148;                    // MaxLevel (field 37)
+        private static readonly int BASE_LEVEL_FIELD_BYTE_OFFSET = 152;                   // BaseLevel (field 38)
+        private static readonly int SPELL_LEVEL_FIELD_BYTE_OFFSET = 156;                  // SpellLevel (field 39)
+        private static readonly int EFFECT_REAL_POINTS_PER_LEVEL_FIELD_BYTE_OFFSET = 308; // EffectRealPointsPerLevel1 (field 77)
+        private static readonly int EFFECT_BASE_POINTS_FIELD_BYTE_OFFSET = 320;           // EffectBasePoints1 (field 80)
+
+        private int GetInt32FromSourceRow(DBCRow row, int byteOffset)
+        {
+            return row.SourceRawBytes[byteOffset] | (row.SourceRawBytes[byteOffset + 1] << 8)
+                | (row.SourceRawBytes[byteOffset + 2] << 16) | (row.SourceRawBytes[byteOffset + 3] << 24);
+        }
+
+        private void SetInt32OnSourceRow(DBCRow row, int byteOffset, int value)
+        {
+            byte[] valueBytes = BitConverter.GetBytes(value);
+            for (int i = 0; i < 4; i++)
+                row.SourceRawBytes[byteOffset + i] = valueBytes[i];
+        }
+
+        private void SetFloatOnSourceRow(DBCRow row, int byteOffset, float value)
+        {
+            byte[] valueBytes = BitConverter.GetBytes(value);
+            for (int i = 0; i < 4; i++)
+                row.SourceRawBytes[byteOffset + i] = valueBytes[i];
+        }
+
+        // Converts flat (non-scaling) spell effects into one that ramps with caster levels, intended for DKs who start at level 1
+        public void SetEffectToScaleUpToOriginalSpellLevel(int spellID, int effectIndex)
+        {
+            
+            if (SourceRowsBySpellID.ContainsKey(spellID) == false)
+            {
+                Logger.WriteError("SpellDBC could not scale spell ID '", spellID.ToString(), "' since no source row has that ID");
+                return;
+            }
+            if (effectIndex < 0 || effectIndex > 2)
+            {
+                Logger.WriteError("SpellDBC could not scale spell ID '", spellID.ToString(), "' since effect index '", effectIndex.ToString(), "' is out of range");
+                return;
+            }
+            DBCRow row = SourceRowsBySpellID[spellID];
+
+            // The level this spell was originally usable at is the anchor that the ramp has to land on
+            int originalBaseLevel = GetInt32FromSourceRow(row, BASE_LEVEL_FIELD_BYTE_OFFSET);
+            int originalSpellLevel = GetInt32FromSourceRow(row, SPELL_LEVEL_FIELD_BYTE_OFFSET);
+            int originalLevel = Math.Max(originalBaseLevel, originalSpellLevel);
+            if (originalLevel <= 1)
+            {
+                Logger.WriteError("SpellDBC could not scale spell ID '", spellID.ToString(), "' since its original level was '", originalLevel.ToString(), "'");
+                return;
+            }
+
+            int basePointsByteOffset = EFFECT_BASE_POINTS_FIELD_BYTE_OFFSET + (effectIndex * 4);
+            int realPointsPerLevelByteOffset = EFFECT_REAL_POINTS_PER_LEVEL_FIELD_BYTE_OFFSET + (effectIndex * 4);
+            int originalBasePoints = GetInt32FromSourceRow(row, basePointsByteOffset);
+            if (originalBasePoints <= 0)
+            {
+                Logger.WriteError("SpellDBC could not scale spell ID '", spellID.ToString(), "' effect index '", effectIndex.ToString(),
+                    "' since its base points were '", originalBasePoints.ToString(), "'");
+                return;
+            }
+
+            // The half point keeps float truncation from landing a point short of the original value at the original level
+            float realPointsPerLevel = (Convert.ToSingle(originalBasePoints) + 0.5f) / Convert.ToSingle(originalLevel);
+            SetInt32OnSourceRow(row, MAX_LEVEL_FIELD_BYTE_OFFSET, originalLevel);
+            SetInt32OnSourceRow(row, BASE_LEVEL_FIELD_BYTE_OFFSET, 0);
+            SetInt32OnSourceRow(row, SPELL_LEVEL_FIELD_BYTE_OFFSET, 0);
+            SetInt32OnSourceRow(row, basePointsByteOffset, 0);
+            SetFloatOnSourceRow(row, realPointsPerLevelByteOffset, realPointsPerLevel);
+            Logger.WriteDebug(string.Concat("SpellDBC scaled spell ID '", spellID.ToString(), "' effect index '", effectIndex.ToString(), "' to ramp from level 1 up to '", originalBasePoints.ToString(), "' at level '", originalLevel.ToString(), "'"));
+        }
+
         private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool doHideFromDisplay, bool preventClickOff, bool isWornEquipEffect)
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura

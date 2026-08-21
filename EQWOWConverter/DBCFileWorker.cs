@@ -286,6 +286,10 @@ namespace EQWOWConverter
                     spellDBC.AppendToDescriptionOfSpellID(talentInteraction.SpellID, addendumText);
             }
 
+            // Death knights that level from 1 get their abilities spread out across 1-55, so the abilities need to scale accordingly
+            if (Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true)
+                ScaleDeathKnightAbilityDamageForLowLevelPlay();
+
             // Achievements
             if (Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true)
                 achievementDBC.AddRowForFeatOfStrength(Configuration.DBCID_ACHIEVEMENT_ID_START, Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_NAME,
@@ -355,6 +359,15 @@ namespace EQWOWConverter
 
                     // Tamed (hunter) pets wear the display of a world creature, so tameable races also carry a display that is identical except for having no fidget sounds
                     if (creatureModelTemplate.DoGenerateSilentTamedPetVersion() == true)
+                    {
+                        creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCSilentTamedPetCreatureSoundDataID, creatureModelTemplate.Race, creatureFootstepID, false);
+                        creatureModelDataDBC.AddRow(creatureModelTemplate, relativeModelPath, creatureModelTemplate.DBCSilentTamedPetCreatureModelDataID, creatureModelTemplate.DBCSilentTamedPetCreatureSoundDataID);
+                        string silentTextureVariation1;
+                        string silentTextureVariation2;
+                        string silentTextureVariation3;
+                        GetCreatureTextureVariations(creatureModelTemplate.FaceHeadPieceTextureNames, out silentTextureVariation1, out silentTextureVariation2, out silentTextureVariation3);
+                        creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCSilentTamedPetCreatureDisplayID, creatureModelTemplate.DBCSilentTamedPetCreatureModelDataID, silentTextureVariation1, silentTextureVariation2, silentTextureVariation3);
+                    }
                 }
             }
             string creatureSoundsDirectory = "Sound\\Creature\\Everquest";
@@ -1101,6 +1114,23 @@ namespace EQWOWConverter
             zoneMusicDBC.SaveToDisk(dbcOutputServerFolder);
 
             Logger.WriteDebug("Creating DBC Files complete");
+        }
+
+        private void ScaleDeathKnightAbilityDamageForLowLevelPlay()
+        {
+            // Trainer taught abilities that were pulled below level 55
+            spellDBC.SetEffectToScaleUpToOriginalSpellLevel(45902, 0); // Blood Strike (flat portion, the weapon percent is effect 2)
+            spellDBC.SetEffectToScaleUpToOriginalSpellLevel(45462, 0); // Plague Strike (flat portion)
+            spellDBC.SetEffectToScaleUpToOriginalSpellLevel(45477, 0); // Icy Touch (frost damage)
+            spellDBC.SetEffectToScaleUpToOriginalSpellLevel(47541, 0); // Death Coil (shadow damage, read by spell_dk_death_coil)
+            spellDBC.SetEffectToScaleUpToOriginalSpellLevel(49998, 0); // Death Strike (flat portion, the heal is a percent of max health)
+            spellDBC.SetEffectToScaleUpToOriginalSpellLevel(48721, 0); // Blood Boil (shadow damage)
+            spellDBC.SetEffectToScaleUpToOriginalSpellLevel(43265, 0); // Death and Decay (damage per second)
+
+            // Talent granted abilities, which become reachable at level 49 once talent points start at level 10
+            spellDBC.SetEffectToScaleUpToOriginalSpellLevel(55050, 0); // Heart Strike (blood tier 8)
+            spellDBC.SetEffectToScaleUpToOriginalSpellLevel(55090, 0); // Scourge Strike (unholy tier 8)
+            spellDBC.SetEffectToScaleUpToOriginalSpellLevel(49143, 0); // Frost Strike (frost tier 8)
         }
 
         private static void GetCreatureTextureVariations(List<string> textureNames, out string textureVariation1,
