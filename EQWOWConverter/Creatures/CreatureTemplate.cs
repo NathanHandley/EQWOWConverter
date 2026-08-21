@@ -369,6 +369,7 @@ namespace EQWOWConverter.Creatures
                     if (newCreatureTemplate.IsRidingTrainer == true && Configuration.CREATURE_RIDING_TRAINERS_ENABLED == false)
                         continue;
                     newCreatureTemplate.CreatureSpellListID = int.Parse(columns["creaturespelllistid"]);
+                    newCreatureTemplate.BindsRaidInstanceOnKill = columns["bind_instance_on_kill"].Trim() == "1";
 
                     // Scaled Stats
                     newCreatureTemplate.HPMod = GetStatOrMod("hp", newCreatureTemplate.Level, float.Parse(columns["hp"]), CreatureStatModType.RelativeMod, float.Parse(columns["hp_multi_override"]));
