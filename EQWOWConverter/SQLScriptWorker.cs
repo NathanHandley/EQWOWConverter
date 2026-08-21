@@ -95,6 +95,7 @@ namespace EQWOWConverter
         private ModEverquestIllusionDisplaySQL modEverquestIllusionDisplaySQL = new ModEverquestIllusionDisplaySQL();
         private ModEverquestIllusionFaceSQL modEverquestIllusionFaceSQL = new ModEverquestIllusionFaceSQL();
         private ModEverquestItemTemplateSQL modEverquestItemTemplateSQL = new ModEverquestItemTemplateSQL();
+        private ModEverquestItemWoWToEQSwapSQL modEverquestItemWoWToEQSwapSQL = new ModEverquestItemWoWToEQSwapSQL();
         private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
         private ModEverquestPlayerCreateInfoSQL modEverquestPlayerCreateInfoSQL = new ModEverquestPlayerCreateInfoSQL();
         private ModEverquestPlayerAutoLearnSkillsSQL modEverquestPlayerAutoLearnSkillsSQL = new ModEverquestPlayerAutoLearnSkillsSQL();
@@ -192,6 +193,9 @@ namespace EQWOWConverter
             // Items
             PopulateItemData(itemLootTemplatesByCreatureTemplateID, creatureLootEntriesByCreatureTemplateID, pickpocketLootTemplatesByCreatureTemplateID,
                 spellTemplatesByEQID);
+
+            // Item candidates for "make WoW look like EQ gear" command
+            PopulateItemWoWToEQSwapData();
 
             // Illusion appearance displays
             PopulateIllusionDisplayData(creatureModelTemplates);
@@ -1713,6 +1717,46 @@ namespace EQWOWConverter
             }
         }
 
+        private void PopulateItemWoWToEQSwapData()
+        {
+            SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
+
+            HashSet<string> addedRowKeys = new HashSet<string>();
+            int noDisplayInfoRowCount = 0;
+            foreach (ItemWoWToEQSwap swap in ItemWoWToEQSwap.GetAllItemWoWToEQSwaps())
+            {
+                if (itemTemplatesByWOWEntryID.ContainsKey(swap.WOWItemTemplateID) == false)
+                {
+                    Logger.WriteError("PopulateItemWoWToEQSwapData skipped a row because no item template could be found with wowid '", swap.WOWItemTemplateID.ToString(), "'");
+                    continue;
+                }
+                ItemTemplate swapItemTemplate = itemTemplatesByWOWEntryID[swap.WOWItemTemplateID];
+
+                // The mod swaps by item template ID
+                int itemDisplayID = 0;
+                if (swapItemTemplate.ItemDisplayInfo == null)
+                    noDisplayInfoRowCount++;
+                else
+                    itemDisplayID = swapItemTemplate.ItemDisplayInfo.ItemDisplayInfoDBCID;
+
+                int eqClassID = PlayerEQClassProperties.GetServerEQClassIDFromEQClassType(swap.EQClass);
+                if (eqClassID == 0)
+                {
+                    Logger.WriteError("PopulateItemWoWToEQSwapData skipped a row because EQ class '", swap.EQClass.ToString(), "' had no server EQ class ID");
+                    continue;
+                }
+
+                string rowKey = string.Concat((int)swap.InventoryType, "|", swap.ClassID, "|", swap.SubClassID, "|", eqClassID, "|", swap.WOWItemTemplateID);
+                if (addedRowKeys.Contains(rowKey) == true)
+                    continue;
+                addedRowKeys.Add(rowKey);
+                modEverquestItemWoWToEQSwapSQL.AddRow((int)swap.InventoryType, swap.ClassID, swap.SubClassID, eqClassID,
+                    swap.WOWItemTemplateID, itemDisplayID);
+            }
+            if (noDisplayInfoRowCount > 0)
+                Logger.WriteError("PopulateItemWoWToEQSwapData wrote ", noDisplayInfoRowCount.ToString(), " rows with a display ID of zero, since those item templates had no item display info generated");
+        }
+
         private void PopulateForageData()
         {
             foreach (ForageZoneItem forageZoneItem in ForageZoneItem.GetAllZoneItems())
@@ -2897,6 +2941,7 @@ namespace EQWOWConverter
             modEverquestIllusionDisplaySQL.SaveToDisk("mod_everquest_illusion_display", SQLFileType.World);
             modEverquestIllusionFaceSQL.SaveToDisk("mod_everquest_illusion_face", SQLFileType.World);
             modEverquestItemTemplateSQL.SaveToDisk("mod_everquest_item_template", SQLFileType.World);
+            modEverquestItemWoWToEQSwapSQL.SaveToDisk("mod_everquest_item_wow_to_eq_swap", SQLFileType.World);
             modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);
             modEverquestPlayerCreateInfoSQL.SaveToDisk("mod_everquest_playercreateinfo", SQLFileType.World);
             modEverquestPlayerAutoLearnSkillsSQL.SaveToDisk("mod_everquest_playerautolearnskills", SQLFileType.World);
