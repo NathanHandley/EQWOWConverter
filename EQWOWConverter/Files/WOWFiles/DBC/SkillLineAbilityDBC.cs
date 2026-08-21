@@ -119,6 +119,10 @@ namespace EQWOWConverter.WOWFiles
                 row.SourceRawBytes.Clear();
             }
 
+            // Fill in the racial abilities that blizzard class-gated, as needed
+            if (Configuration.PLAYER_ADD_MISSING_ALL_CLASS_RACIAL_ABILITIES == true)
+                AddMissingRacialAbilityClasses();
+
             // Update default learned DK abilities, as needed
             if (Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true)
             {
@@ -135,6 +139,41 @@ namespace EQWOWConverter.WOWFiles
                     }
                 }
             }
+        }
+
+        private void AddMissingRacialAbilityClasses()
+        {
+            // class masks: Warrior 1, Paladin 2, Hunter 4, Rogue 8, Priest 16, DeathKnight 32, Shaman 64, Mage 128, Warlock 256, Druid 1024
+            Dictionary<int, int> classMaskAdditionsBySpellID = new Dictionary<int, int>();
+            classMaskAdditionsBySpellID.Add(33697, 1170); // Orc 'Blood Fury' (attack power + spell damage) -> Paladin, Priest, Mage, Druid
+            classMaskAdditionsBySpellID.Add(21009, 450);  // Night Elf 'Elusiveness' -> Paladin, Shaman, Mage, Warlock
+            classMaskAdditionsBySpellID.Add(28730, 1);    // Blood Elf 'Arcane Torrent' (mana) -> Warrior
+            classMaskAdditionsBySpellID.Add(59540, 1288); // Draenei 'Shadow Resistance' -> Rogue, Warlock, Druid
+            classMaskAdditionsBySpellID.Add(59547, 1288); // Draenei 'Gift of the Naaru' -> Rogue, Warlock, Druid
+            classMaskAdditionsBySpellID.Add(28878, 1288); // Draenei 'Heroic Presence' -> Rogue, Warlock, Druid
+            HashSet<int> racialSkillLineIDs = new HashSet<int>() { 101, 124, 125, 126, 220, 733, 753, 754, 756, 760 };
+
+            HashSet<int> updatedSpellIDs = new HashSet<int>();
+            foreach (DBCRow row in Rows)
+            {
+                DBCRow.DBCFieldInt32 skillLineField = (DBCRow.DBCFieldInt32)row.AddedFields[1];
+                if (racialSkillLineIDs.Contains(skillLineField.Value) == false)
+                    continue;
+                DBCRow.DBCFieldInt32 spellField = (DBCRow.DBCFieldInt32)row.AddedFields[2];
+                if (classMaskAdditionsBySpellID.ContainsKey(spellField.Value) == false)
+                    continue;
+                updatedSpellIDs.Add(spellField.Value);
+
+                // A ClassMask of 0 already means 'every class', so leave it alone
+                DBCRow.DBCFieldInt32 classMaskField = (DBCRow.DBCFieldInt32)row.AddedFields[4];
+                if (classMaskField.Value == 0)
+                    continue;
+                classMaskField.Value |= classMaskAdditionsBySpellID[spellField.Value];
+            }
+
+            foreach (var classMaskAdditionBySpellID in classMaskAdditionsBySpellID)
+                if (updatedSpellIDs.Contains(classMaskAdditionBySpellID.Key) == false)
+                    Logger.WriteError(string.Concat("SkillLineAbilityDBC could not find a racial ability row for spell ID '", classMaskAdditionBySpellID.Key.ToString(), "' when filling in the missing all-class racial abilities"));
         }
     }
 }
