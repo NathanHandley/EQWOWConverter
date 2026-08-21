@@ -2605,6 +2605,65 @@ namespace EQWOWConverter
             return bashSpellTemplate;
         }
 
+        private SpellTemplate BuildHarmTouchSpellTemplate(int wowSpellID, bool isCreatureCast)
+        {
+            int harmTouchIconID = Configuration.COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID;
+            if (harmTouchIconID < 0 || harmTouchIconID > 22)
+            {
+                Logger.WriteError("COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID value must be 0-22. Setting to 3");
+                harmTouchIconID = 3;
+            }
+
+            // Creatures deal the damage over time instead of all at once, but the total damage dealt is the same
+            bool dealDamageOverTime = isCreatureCast && Configuration.SPELLS_CONVERT_TO_DOT_ENABLED;
+
+            SpellTemplate harmTouchSpellTemplate = new SpellTemplate();
+            harmTouchSpellTemplate.Name = "Harm Touch";
+            harmTouchSpellTemplate.WOWSpellID = wowSpellID;
+            harmTouchSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            if (dealDamageOverTime == true)
+                harmTouchSpellTemplate.Description = string.Concat("Touches the target with deathly energy, inflicting heavy shadow damage over ",
+                    (Configuration.SPELLS_CONVERT_TO_DOT_DURATION_IN_MS / 1000).ToString(), " seconds. Can only be used rarely.");
+            else
+                harmTouchSpellTemplate.Description = "Touches the target with deathly energy, inflicting heavy shadow damage. Can only be used rarely.";
+            harmTouchSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(harmTouchIconID);
+            harmTouchSpellTemplate.CastTimeInMS = 0;
+            harmTouchSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS);
+            harmTouchSpellTemplate.SpellRange = Configuration.COMBATSKILL_HARMTOUCH_RANGE;
+            harmTouchSpellTemplate.SchoolMask = 32; // Shadow
+            harmTouchSpellTemplate.DefenseType = 1; // Magic
+            harmTouchSpellTemplate.NeverMisses = true;
+            harmTouchSpellTemplate.EQSpellVisualEffectIndex = 8;
+            harmTouchSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(harmTouchSpellTemplate.EQSpellVisualEffectIndex, SpellVisualType.Detrimental).SpellVisualDBCID);
+            harmTouchSpellTemplate.TriggersGlobalCooldown = false;
+            harmTouchSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+            harmTouchSpellTemplate.SkillLine = 0;
+            if (dealDamageOverTime == true)
+            {
+                int harmTouchTickCount = SpellTemplate.GetConvertToDoTTickCount();
+                harmTouchSpellTemplate.ConvertDirectDamageToDoT = true;
+                harmTouchSpellTemplate.AuraDuration.SetFixedDuration(Configuration.SPELLS_CONVERT_TO_DOT_DURATION_IN_MS);
+                harmTouchSpellTemplate.AuraDescription = "Suffering shadow damage.";
+                int harmTouchDamagePerTick = Math.Max(Configuration.COMBATSKILL_HARMTOUCH_BASE_DAMAGE / harmTouchTickCount, 1);
+                SpellEffectWOW harmTouchDamageEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.PeriodicDamage,
+                    Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000, 0, 1, harmTouchDamagePerTick, 0, 0);
+                harmTouchDamageEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL / Convert.ToSingle(harmTouchTickCount);
+                harmTouchDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+                harmTouchDamageEffect.ActionDescription = "strikes";
+                harmTouchDamageEffect.AuraDescription = "suffering shadow damage";
+                harmTouchSpellTemplate.WOWSpellEffects.Add(harmTouchDamageEffect);
+            }
+            else
+            {
+                SpellEffectWOW harmTouchDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_HARMTOUCH_BASE_DAMAGE, 0, 0);
+                harmTouchDamageEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL;
+                harmTouchDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+                harmTouchDamageEffect.ActionDescription = "strikes";
+                harmTouchSpellTemplate.WOWSpellEffects.Add(harmTouchDamageEffect);
+            }
+            return harmTouchSpellTemplate;
+        }
+
         private SpellTemplate BuildAgileFighterCombatAuraSpellTemplate(string name, int wowSpellID, int spellIconEQID, int fallbackSpellIconEQID, int physicalDamagePercent,
             int criticalStrikePercent, int dodgePercent, string equipmentConditionText)
         {
@@ -3091,35 +3150,10 @@ namespace EQWOWConverter
             // Harm Touch
             if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true)
             {
-                int harmTouchIconID = Configuration.COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID;
-                if (harmTouchIconID < 0 || harmTouchIconID > 22)
-                {
-                    Logger.WriteError("COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID value must be 0-22. Setting to 3");
-                    harmTouchIconID = 3;
-                }
-                SpellTemplate harmTouchSpellTemplate = new SpellTemplate();
-                harmTouchSpellTemplate.Name = "Harm Touch";
-                harmTouchSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID;
-                harmTouchSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
-                harmTouchSpellTemplate.Description = "Touches the target with deathly energy, inflicting heavy shadow damage. Can only be used rarely.";
-                harmTouchSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(harmTouchIconID);
-                harmTouchSpellTemplate.CastTimeInMS = 0;
-                harmTouchSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS);
-                harmTouchSpellTemplate.SpellRange = Configuration.COMBATSKILL_HARMTOUCH_RANGE;
-                harmTouchSpellTemplate.SchoolMask = 32; // Shadow
-                harmTouchSpellTemplate.DefenseType = 1; // Magic
-                harmTouchSpellTemplate.NeverMisses = true;
-                harmTouchSpellTemplate.EQSpellVisualEffectIndex = 8;
-                harmTouchSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(harmTouchSpellTemplate.EQSpellVisualEffectIndex, SpellVisualType.Detrimental).SpellVisualDBCID);
-                harmTouchSpellTemplate.TriggersGlobalCooldown = false;
-                harmTouchSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
-                harmTouchSpellTemplate.SkillLine = 0;
-                SpellEffectWOW harmTouchDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_HARMTOUCH_BASE_DAMAGE, 0, 0);
-                harmTouchDamageEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL;
-                harmTouchDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
-                harmTouchDamageEffect.ActionDescription = "strikes";
-                harmTouchSpellTemplate.WOWSpellEffects.Add(harmTouchDamageEffect);
+                SpellTemplate harmTouchSpellTemplate = BuildHarmTouchSpellTemplate(Configuration.COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID, false);
                 spellTemplates.Add(harmTouchSpellTemplate);
+                SpellTemplate harmTouchCreatureSpellTemplate = BuildHarmTouchSpellTemplate(Configuration.COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID, true);
+                spellTemplates.Add(harmTouchCreatureSpellTemplate);
             }
 
             // Lay on Hands

@@ -1126,7 +1126,8 @@ namespace EQWOWConverter
 
                         string comment = string.Concat("EQ In Combat ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
                         smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID,
-                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment, eventChance, curSpellTemplate.IsSelfCenteredAreaBreath);
+                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment, eventChance, curSpellTemplate.IsSelfCenteredAreaBreath,
+                            curSpellTemplate.ConvertDirectDamageToDoT);
                     }
 
                     // Add spell events for every in-combat self buff entry (cast on self, not the victim)
@@ -1207,9 +1208,9 @@ namespace EQWOWConverter
                 // Assign Harm Touch to creatures
                 if (creatureTemplate.UsesHarmTouch == true && creatureTemplate.IsPet == false)
                 {
-                    string comment = string.Concat("EQ Harm Touch ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast Harm Touch (", Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID, ")");
+                    string comment = string.Concat("EQ Harm Touch ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast Harm Touch (", Configuration.COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID, ")");
                     smartScriptsSQL.AddRowForCreatureTemplateAttackSpellCastOnVictimNoResetOnLeaveCombat(creatureTemplate.WOWCreatureTemplateID,
-                        Configuration.COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS, Configuration.COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS, Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID, comment);
+                        Configuration.COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS, Configuration.COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS, Configuration.COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID, comment);
                 }
 
                 // Assign Lay on Hands to creatures
@@ -1253,7 +1254,7 @@ namespace EQWOWConverter
                     // Assign Harm Touch to pets (are there any?)
                     if (creatureTemplate.UsesHarmTouch == true)
                     {
-                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID);
+                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, Configuration.COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID);
                         curIndex++;
                     }
 
@@ -1890,7 +1891,7 @@ namespace EQWOWConverter
 
                     // Harm Touch
                     if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true && Configuration.COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.ShadowKnight)
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_HARMTOUCH_SPELL_ID, 1);
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID, 1);
 
                     // Stealth (Existing WoW version)
                     if (eqClassProperties.EQClass == ClassEQType.Rogue)

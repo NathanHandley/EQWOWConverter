@@ -787,6 +787,10 @@ namespace EQWOWConverter
         // How much to modify the duration of non-bard crowd control spells
         public static float SPELLS_CROWD_CONTROL_DURATION_MOD = 0.5f;
 
+        // If true, spells marked "convert_to_dot" in SpellTemplates.csv spread the damage over the duration
+        public static bool SPELLS_CONVERT_TO_DOT_ENABLED = true;
+        public static int SPELLS_CONVERT_TO_DOT_DURATION_IN_MS = 30000;
+
         // The most that a movement speed reduction can slow a target, and -100 fully stops movement (EQ-like for spells such as Torpor) and is the lowest valid value
         public static int SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE = -100;
 
@@ -1005,7 +1009,8 @@ namespace EQWOWConverter
         // Harm Touch is a shadowknight ability (a long-cooldown direct damage "touch"). Also granted to player Death Knights. HP is ~2.5x higher in WoW
         public static bool COMBATSKILL_HARMTOUCH_ENABLED = true;
         public static bool COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE = true;
-        public static int COMBATSKILL_HARMTOUCH_SPELL_ID = 86909;
+        public static int COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID = 86909;
+        public static int COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID = 86923;
         public static int COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID = 3;
         public static int COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL = 1;
         public static int COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS = 2400000;
@@ -1901,6 +1906,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS", SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS, "Any spell (player cast or item clicky) with a cast time below this becomes instant (0 ms)");
             OutputVariableToConfig("SPELLS_DOT_TIME_DURATION_MOD", SPELLS_DOT_TIME_DURATION_MOD, "How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)");
             OutputVariableToConfig("SPELLS_CROWD_CONTROL_DURATION_MOD", SPELLS_CROWD_CONTROL_DURATION_MOD, "How much to modify the duration of non-bard crowd control spells");
+            OutputVariableToConfig("SPELLS_CONVERT_TO_DOT_ENABLED", SPELLS_CONVERT_TO_DOT_ENABLED, "If true, spells marked \"convert_to_dot\" in SpellTemplates.csv spread the damage over the duration", false);
+            OutputVariableToConfig("SPELLS_CONVERT_TO_DOT_DURATION_IN_MS", SPELLS_CONVERT_TO_DOT_DURATION_IN_MS, "");
             OutputVariableToConfig("SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE", SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE, "The most that a movement speed reduction can slow a target, and -100 fully stops movement (EQ-like for spells such as Torpor) and is the lowest valid value");
             OutputVariableToConfig("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", SPELL_PERIODIC_SECONDS_PER_TICK_WOW, "Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier");
             OutputVariableToConfig("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS, "This is 'added time' in the periodic tick that comes from bard casters.");
@@ -2008,7 +2015,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_PIERCINGBACKSTAB_MAX_SCALING_LEVEL", COMBATSKILL_PIERCINGBACKSTAB_MAX_SCALING_LEVEL, "", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_ENABLED", COMBATSKILL_HARMTOUCH_ENABLED, "Harm Touch is a shadowknight ability (a long-cooldown direct damage \"touch\"). Also granted to player Death Knights. HP is ~2.5x higher in WoW", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE", COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE, "", false);
-            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_SPELL_ID", COMBATSKILL_HARMTOUCH_SPELL_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID", COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID", COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID", COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL", COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL, "", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS", COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS, "", false);
@@ -2430,6 +2438,8 @@ namespace EQWOWConverter
             SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS = ReadVariableFromConfigString("SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS", configValuesByVariableName, SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS);
             SPELLS_DOT_TIME_DURATION_MOD = ReadVariableFromConfigString("SPELLS_DOT_TIME_DURATION_MOD", configValuesByVariableName, SPELLS_DOT_TIME_DURATION_MOD);
             SPELLS_CROWD_CONTROL_DURATION_MOD = ReadVariableFromConfigString("SPELLS_CROWD_CONTROL_DURATION_MOD", configValuesByVariableName, SPELLS_CROWD_CONTROL_DURATION_MOD);
+            SPELLS_CONVERT_TO_DOT_ENABLED = ReadVariableFromConfigString("SPELLS_CONVERT_TO_DOT_ENABLED", configValuesByVariableName, SPELLS_CONVERT_TO_DOT_ENABLED);
+            SPELLS_CONVERT_TO_DOT_DURATION_IN_MS = ReadVariableFromConfigString("SPELLS_CONVERT_TO_DOT_DURATION_IN_MS", configValuesByVariableName, SPELLS_CONVERT_TO_DOT_DURATION_IN_MS);
             SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE = ReadVariableFromConfigString("SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE", configValuesByVariableName, SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE);
             SPELL_PERIODIC_SECONDS_PER_TICK_EQ = ReadVariableFromConfigString("SPELL_PERIODIC_SECONDS_PER_TICK_EQ", configValuesByVariableName, SPELL_PERIODIC_SECONDS_PER_TICK_EQ);
             SPELL_PERIODIC_SECONDS_PER_TICK_WOW = ReadVariableFromConfigString("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", configValuesByVariableName, SPELL_PERIODIC_SECONDS_PER_TICK_WOW);
@@ -2540,7 +2550,8 @@ namespace EQWOWConverter
             COMBATSKILL_PIERCINGBACKSTAB_MAX_SCALING_LEVEL = ReadVariableFromConfigString("COMBATSKILL_PIERCINGBACKSTAB_MAX_SCALING_LEVEL", configValuesByVariableName, COMBATSKILL_PIERCINGBACKSTAB_MAX_SCALING_LEVEL);
             COMBATSKILL_HARMTOUCH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_ENABLED", configValuesByVariableName, COMBATSKILL_HARMTOUCH_ENABLED);
             COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE);
-            COMBATSKILL_HARMTOUCH_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_SPELL_ID", configValuesByVariableName, COMBATSKILL_HARMTOUCH_SPELL_ID);
+            COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID", configValuesByVariableName, COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID);
+            COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID", configValuesByVariableName, COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID);
             COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID);
             COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL", configValuesByVariableName, COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL);
             COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS", configValuesByVariableName, COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS);

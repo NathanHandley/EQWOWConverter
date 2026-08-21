@@ -117,7 +117,7 @@ namespace EQWOWConverter.Spells
 
         public float GetEffectAmountFloatValueByLevel(int inputEffectBasePoints, int inputEffectMaxPoints, int spellInfluencingLevel, int unitInfluencingLevel,
             SpellEQBaseValueFormulaType eqFormula, int spellCastTimeInMS, string valueScalingFormulaName, SpellEffectWOWConversionScaleType conversionScaleType,
-            float periodicValueMultiplier = 1f, int castTimeBeforeModsInMS = 0)
+            float periodicValueMultiplier = 1f, int castTimeBeforeModsInMS = 0, float postConversionMultiplier = 1f)
         {
             // Only work with positive values
             bool effectBasePointsWasNegative = false;
@@ -187,6 +187,10 @@ namespace EQWOWConverter.Spells
                 calculatedEffectPointsFloat = MathF.Max(afterValue, 1f);
             }
 
+            // Split the converted amount up, if needed (used when a direct amount is spread across periodic ticks)
+            if (postConversionMultiplier != 1f)
+                calculatedEffectPointsFloat = MathF.Max(calculatedEffectPointsFloat * postConversionMultiplier, 1f);
+
             // Reverse the sign, if needed
             if (effectBasePointsWasNegative == true)
                 calculatedEffectPointsFloat *= -1;
@@ -195,7 +199,7 @@ namespace EQWOWConverter.Spells
 
         public void SetEffectAmountValues(int effectBasePoints, int effectMaxPoints, int spellLevel, SpellEQBaseValueFormulaType eqFormula,
             int spellCastTimeInMS, string valueScalingFormulaName, SpellEffectWOWConversionScaleType conversionScaleType,
-            float periodicValueMultiplier = 1f, int castTimeBeforeModsInMS = 0)
+            float periodicValueMultiplier = 1f, int castTimeBeforeModsInMS = 0, float postConversionMultiplier = 1f)
         {
             // Normalize the formula name
             valueScalingFormulaName = valueScalingFormulaName.ToLower().Trim();
@@ -209,7 +213,7 @@ namespace EQWOWConverter.Spells
             if (eqFormula == SpellEQBaseValueFormulaType.BaseValue || eqFormula == SpellEQBaseValueFormulaType.BaseDivideBy100 || eqFormula == SpellEQBaseValueFormulaType.UnknownUseBaseOrMaxWhicheverHigher || Configuration.SPELL_EFFECT_USE_DYNAMIC_EFFECT_VALUES == false)
             {
                 EffectBasePoints = Convert.ToInt32(GetEffectAmountFloatValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
-                    valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS));
+                    valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS, postConversionMultiplier));
                 CalcEffectLowLevelValue = EffectBasePoints;
                 CalcEffectLowLevel = spellLevel;
                 CalcEffectHighLevelValue = EffectBasePoints;
@@ -219,10 +223,10 @@ namespace EQWOWConverter.Spells
             {
                 // Compared as floats since integer rounding can erase some small level scaling
                 float calcMaxPointsFloat = GetEffectAmountFloatValueByLevel(effectMaxPoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
-                    valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS);
+                    valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS, postConversionMultiplier);
                 int endCalcLevel = Configuration.SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL;
                 float lowValueFloat = GetEffectAmountFloatValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, spellLevel, eqFormula, spellCastTimeInMS,
-                    valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS);
+                    valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS, postConversionMultiplier);
                 EffectBasePoints = Convert.ToInt32(lowValueFloat);
                 CalcEffectLowLevelValue = EffectBasePoints;
                 CalcEffectLowLevel = spellLevel;
@@ -241,7 +245,7 @@ namespace EQWOWConverter.Spells
                     {
                         CalcEffectHighLevel = curCalcLevel;
                         highValueFloat = GetEffectAmountFloatValueByLevel(effectBasePoints, effectMaxPoints, spellLevel, curCalcLevel, eqFormula, spellCastTimeInMS,
-                            valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS);
+                            valueScalingFormulaName, conversionScaleType, periodicValueMultiplier, castTimeBeforeModsInMS, postConversionMultiplier);
                         if (highValueFloat == calcMaxPointsFloat)
                             curCalcLevel = endCalcLevel + 1;
                     }

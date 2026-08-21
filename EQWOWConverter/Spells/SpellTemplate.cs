@@ -237,6 +237,7 @@ namespace EQWOWConverter.Spells
         public int EQBuffDurationFormula = 0;
         public SpellDuration AuraDuration = new SpellDuration();
         public float PeriodicDamageDurationCompensationMod = 1f;
+        public bool ConvertDirectDamageToDoT = false;
         public List<int> SpellGroupStackingIDs = new List<int>();
         public List<int> WornSpellGroupStackingIDs = new List<int>(); // Worn auras only stack-compete with other worn auras, so they get separate groups
         private List<int> AuraStackEffectKeys = new List<int>();
@@ -573,6 +574,13 @@ namespace EQWOWConverter.Spells
                 if (newSpellTemplate.EQBuffDurationFormula != 0 || newSpellTemplate.IsModelSizeChangeSpell == true)
                     newSpellTemplate.AuraDuration.CalculateAndSetAuraDuration(newSpellTemplate.MinimumPlayerLearnLevel, newSpellTemplate.EQBuffDurationFormula,
                         newSpellTemplate.EQBuffDurationInTicks, newSpellTemplate.IsModelSizeChangeSpell);
+
+                // Spells flagged to deal their direct damage over time get a fixed aura duration to spread that damage across
+                if (Configuration.SPELLS_CONVERT_TO_DOT_ENABLED == true && int.Parse(columns["convert_to_dot"]) > 0 && newSpellTemplate.HasDirectDamageEffectToConvertToDoT() == true)
+                {
+                    newSpellTemplate.ConvertDirectDamageToDoT = true;
+                    newSpellTemplate.AuraDuration.SetFixedDuration(Configuration.SPELLS_CONVERT_TO_DOT_DURATION_IN_MS);
+                }
 
                 // Focus / Bard / skill properties
                 int skillID = int.Parse(columns["skill"]);
@@ -1389,6 +1397,23 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        public static int GetConvertToDoTTickCount()
+        {
+            int tickPeriodInMS = Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW * 1000;
+            if (tickPeriodInMS <= 0)
+                return 1;
+            return Math.Max(Configuration.SPELLS_CONVERT_TO_DOT_DURATION_IN_MS / tickPeriodInMS, 1);
+        }
+
+        private bool HasDirectDamageEffectToConvertToDoT()
+        {
+            foreach (SpellEffectEQ eqEffect in EQSpellEffects)
+                if ((eqEffect.EQEffectType == SpellEQEffectType.CurrentHitPoints || eqEffect.EQEffectType == SpellEQEffectType.CurrentHitPointsOnce)
+                    && eqEffect.EQBaseValue < 0)
+                    return true;
+            return false;
+        }
+
         private static void ApplyDurationModsToDoTAndCrowdControlDurations(ref SpellTemplate spellTemplate)
         {
             // Stun durations are defined in the the 'effect value', so they must be modified here
@@ -1398,6 +1423,10 @@ namespace EQWOWConverter.Spells
                     if (eqEffect.EQEffectType == SpellEQEffectType.Stun && eqEffect.EQBaseValue > 1)
                         eqEffect.EQBaseValue = Convert.ToInt32(Convert.ToSingle(eqEffect.EQBaseValue) * Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD);
             }
+
+            // Converted direct damage is spread across an exact configured duration, so it doesn't take the DoT duration mod
+            if (spellTemplate.ConvertDirectDamageToDoT == true)
+                return;
 
             if (spellTemplate.AuraDuration.IsInfinite == true || spellTemplate.AuraDuration.MaxDurationInMS <= 0)
                 return;
@@ -1882,7 +1911,31 @@ namespace EQWOWConverter.Spells
                                 }
 
                                 int preFormulaEffectAmount = Math.Abs(eqEffect.EQBaseValue);
-                                if (hasSpellDuration == false || eqEffect.EQEffectType == SpellEQEffectType.CurrentHitPointsOnce)
+                                if (spellTemplate.ConvertDirectDamageToDoT == true && eqEffect.EQBaseValue < 0)
+                                {
+                                    // The direct damage is dealt over time instead, with the full amount split evenly across the ticks
+                                    int convertToDoTTickCount = GetConvertToDoTTickCount();
+                                    SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                    newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicDamage;
+                                    newSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
+                                    newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType,
+                                        spellCastTimeInMS, "DamageDirectDPS", SpellEffectWOWConversionScaleType.CastTime, castTimeBeforeModsInMS: spellTemplate.CastTimeBeforeModsInMS,
+                                        postConversionMultiplier: 1f / Convert.ToSingle(convertToDoTTickCount));
+                                    if (elementalSchoolName.Length > 0)
+                                    {
+                                        newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                        newSpellEffectWOW.SetAuraDescription("suffering", false, " ", string.Concat(" ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds"));
+                                    }
+                                    else
+                                    {
+                                        newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                        newSpellEffectWOW.SetAuraDescription("suffering", false, " ", string.Concat(" damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds"));
+                                    }
+                                    spellTemplate.InfluencedBySpellPower = true;
+                                    newSpellEffects.Add(newSpellEffectWOW);
+                                }
+                                else if (hasSpellDuration == false || eqEffect.EQEffectType == SpellEQEffectType.CurrentHitPointsOnce)
                                 {
                                     SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
