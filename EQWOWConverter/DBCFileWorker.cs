@@ -334,7 +334,7 @@ namespace EQWOWConverter
                 string textureVariation3;
                 GetCreatureTextureVariations(creatureModelTemplate.FaceHeadPieceTextureNames, out textureVariation1, out textureVariation2, out textureVariation3);
                 creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCCreatureDisplayID, creatureModelTemplate.DBCCreatureModelDataID,
-                    textureVariation1, textureVariation2, textureVariation3);
+                    creatureModelTemplate.GetDBCDisplayScale(), textureVariation1, textureVariation2, textureVariation3);
 
                 // Selectable illusion face displays share the model of the base display, swapping in the per-face textures
                 foreach (var faceDisplayIDByFaceIndex in creatureModelTemplate.IllusionFaceDisplayIDsByFaceIndex)
@@ -342,7 +342,7 @@ namespace EQWOWConverter
                     GetCreatureTextureVariations(creatureModelTemplate.IllusionFaceTextureVariationsByFaceIndex[faceDisplayIDByFaceIndex.Key],
                         out textureVariation1, out textureVariation2, out textureVariation3);
                     creatureDisplayInfoDBC.AddRow(faceDisplayIDByFaceIndex.Value, creatureModelTemplate.DBCCreatureModelDataID,
-                        textureVariation1, textureVariation2, textureVariation3);
+                        creatureModelTemplate.GetDBCDisplayScale(), textureVariation1, textureVariation2, textureVariation3);
                 }
 
                 string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
@@ -366,7 +366,8 @@ namespace EQWOWConverter
                         string silentTextureVariation2;
                         string silentTextureVariation3;
                         GetCreatureTextureVariations(creatureModelTemplate.FaceHeadPieceTextureNames, out silentTextureVariation1, out silentTextureVariation2, out silentTextureVariation3);
-                        creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCSilentTamedPetCreatureDisplayID, creatureModelTemplate.DBCSilentTamedPetCreatureModelDataID, silentTextureVariation1, silentTextureVariation2, silentTextureVariation3);
+                        creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCSilentTamedPetCreatureDisplayID, creatureModelTemplate.DBCSilentTamedPetCreatureModelDataID,
+                            creatureModelTemplate.GetDBCDisplayScale(), silentTextureVariation1, silentTextureVariation2, silentTextureVariation3);
                     }
                 }
             }

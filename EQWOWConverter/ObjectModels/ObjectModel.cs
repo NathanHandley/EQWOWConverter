@@ -232,9 +232,8 @@ namespace EQWOWConverter.ObjectModels
                 float lift = Properties.CreatureModelTemplate.Race.Lift * Configuration.GENERATE_EQUIPMENT_SCALE * Properties.AdditionalScaleMultiplier;
                 if (Properties.CreatureModelTemplate.Race.BoundaryRadiusOverride > 0)
                 {
-                    float bakedModelTemplateScale = GetBakedModelTemplateScale();
-                    float halfHeight = (Properties.CreatureModelTemplate.Race.BoundaryHeightOverride / 2) * bakedModelTemplateScale;
-                    float radius = Properties.CreatureModelTemplate.Race.BoundaryRadiusOverride * bakedModelTemplateScale;
+                    float halfHeight = Properties.CreatureModelTemplate.Race.BoundaryHeightOverride / 2;
+                    float radius = Properties.CreatureModelTemplate.Race.BoundaryRadiusOverride;
                     //animation.BoundingRadius = radius;
                     InteractionBoundingBox.TopCorner.X = radius;
                     InteractionBoundingBox.TopCorner.Y = radius;
@@ -1702,9 +1701,8 @@ namespace EQWOWConverter.ObjectModels
             PortraitCameraPosition = headLocation;
             if (Properties.CreatureModelTemplate != null)
             {
-                float bakedModelTemplateScale = GetBakedModelTemplateScale();
-                PortraitCameraPosition += Properties.CreatureModelTemplate.Race.CameraPositionMod * bakedModelTemplateScale;
-                PortraitCameraTargetPosition += Properties.CreatureModelTemplate.Race.CameraTargetPositionMod * bakedModelTemplateScale;
+                PortraitCameraPosition += Properties.CreatureModelTemplate.Race.CameraPositionMod;
+                PortraitCameraTargetPosition += Properties.CreatureModelTemplate.Race.CameraTargetPositionMod;
             }
         }
 
@@ -1772,13 +1770,6 @@ namespace EQWOWConverter.ObjectModels
             GeometryBoundingBox = BoundingBox.GenerateBoxFromVectors(posedVertexPositions, 0);
         }
 
-        private float GetBakedModelTemplateScale()
-        {
-            if (Properties.CreatureModelTemplate != null && Properties.CreatureModelTemplate.DoBakeModelTemplateScaleIntoGeometry() == true)
-                return Properties.CreatureModelTemplate.ModelTemplateScale;
-            return 1f;
-        }
-
         private float GetScaleAmount()
         {
             float scaleAmount = Properties.ModelScalePreWorldScale * Configuration.GENERATE_WORLD_SCALE;
@@ -1819,8 +1810,7 @@ namespace EQWOWConverter.ObjectModels
                         newAnimation.AnimationType = animationType;
 
                         // Movement animations play at a rate of unitMoveSpeed / (MoveSpeed * renderScale), so compensate for the model template scale to be more EQ-like
-                        if (newAnimation.MoveSpeed > 0 && Properties.CreatureModelTemplate != null && Properties.CreatureModelTemplate.ModelTemplateScale > Configuration.GENERATE_FLOAT_EPSILON
-                            && Properties.CreatureModelTemplate.DoBakeModelTemplateScaleIntoGeometry() == false)
+                        if (newAnimation.MoveSpeed > 0 && Properties.CreatureModelTemplate != null && Properties.CreatureModelTemplate.ModelTemplateScale > Configuration.GENERATE_FLOAT_EPSILON)
                         {
                             newAnimation.MoveSpeed /= Properties.CreatureModelTemplate.ModelTemplateScale;
                         }
@@ -2114,8 +2104,7 @@ namespace EQWOWConverter.ObjectModels
             CreatureRace? race = null;
             if (Properties.CreatureModelTemplate != null)
             {
-                if (Properties.CreatureModelTemplate.DoBakeModelTemplateScaleIntoGeometry() == false)
-                    renderScale = Properties.CreatureModelTemplate.ModelTemplateScale;
+                renderScale = Properties.CreatureModelTemplate.GetDBCDisplayScale();
                 race = Properties.CreatureModelTemplate.Race;
             }
 

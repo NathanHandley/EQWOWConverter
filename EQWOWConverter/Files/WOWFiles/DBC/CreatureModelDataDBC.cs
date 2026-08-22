@@ -36,21 +36,12 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRow(CreatureModelTemplate creatureModelTemplate, string modelName, int modelDataID, int creatureSoundDataID)
         {
-            // Some models need to have the model scale stay 1 if it's a player-cast illusion, to avoid overly big/tiny horses 
-            float dbcModelScale = creatureModelTemplate.ModelTemplateScale;
-            float bakedGeometryScale = 1f;
-            if (creatureModelTemplate.DoBakeModelTemplateScaleIntoGeometry() == true)
-            {
-                bakedGeometryScale = creatureModelTemplate.ModelTemplateScale;
-                dbcModelScale = 1f;
-            }
-
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(modelDataID); // ID
             newRow.AddPackedFlags(0); // Flags,0x40: ?, 0x80: Can Form Mount, 0x10000: Has Wheels
             newRow.AddString(modelName); // Model Path ("Creature\....mdx), always ending in mdx
             newRow.AddInt32(1); // SizeClass (Big models are ~4, most 1)
-            newRow.AddFloat(dbcModelScale); // ModelScale
+            newRow.AddFloat(1); // ModelScale (always 1 since a model template's size lives in CreatureDisplayInfo (see CreatureModelTemplate.GetDBCDisplayScale))
             newRow.AddInt32(1); // BloodID (UnitBloodLevels.dbc)
             newRow.AddInt32(-1); // FootprintTextureID, -1 is none and references FootprintTextures.dbc
             newRow.AddFloat(18); // FootprintTextureLength, almost always 18
@@ -61,8 +52,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // DeathThudShakeSize, references CameraShakes.dbc
             newRow.AddInt32(creatureSoundDataID); // SoundID, references CreatureSoundData.dbc
             float collisionScaleCompensation = Configuration.GENERATE_EQUIPMENT_SCALE / Configuration.GENERATE_CREATURE_SCALE;
-            newRow.AddFloat(0.6944f * collisionScaleCompensation * bakedGeometryScale); // CollisionWidth
-            newRow.AddFloat(2.083f * collisionScaleCompensation * bakedGeometryScale); // CollisionHeight
+            newRow.AddFloat(0.6944f * collisionScaleCompensation); // CollisionWidth
+            newRow.AddFloat(2.083f * collisionScaleCompensation); // CollisionHeight
             newRow.AddFloat(0); // MountHeight
             // Clickable boundary box
             BoundingBox clickBox = creatureModelTemplate.ModelClickBoundingBox;
@@ -79,7 +70,7 @@ namespace EQWOWConverter.WOWFiles
             }
             else
             {
-                float inradius = creatureModelTemplate.Race.GeoboxInradius * bakedGeometryScale;
+                float inradius = creatureModelTemplate.Race.GeoboxInradius;
                 geoBoxMinX = geoBoxMinY = geoBoxMinZ = -1 * inradius;
                 geoBoxMaxX = geoBoxMaxY = geoBoxMaxZ = inradius;
             }

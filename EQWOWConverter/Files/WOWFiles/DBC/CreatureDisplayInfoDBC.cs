@@ -18,14 +18,14 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class CreatureDisplayInfoDBC : DBCFile
     {
-        public void AddRow(int id, int displayID, string textureVariation1 = "", string textureVariation2 = "", string textureVariation3 = "")
+        public void AddRow(int id, int displayID, float modelScale, string textureVariation1 = "", string textureVariation2 = "", string textureVariation3 = "")
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID
             newRow.AddInt32(displayID); // CreatureModelData.ID
             newRow.AddInt32(0); // CreatureSoundData.ID
             newRow.AddInt32(0); // CreatureDisplayInfoExtra.ID
-            newRow.AddFloat(1); // Model Scale
+            newRow.AddFloat(modelScale); // Model Scale
             newRow.AddInt32(255); // Opacity (255 opaque, 0 transparent)
             newRow.AddString(textureVariation1); // Texture1 (texture for 1st geoset)
             newRow.AddString(textureVariation2); // Texture2 (texture for 2nd geoset)

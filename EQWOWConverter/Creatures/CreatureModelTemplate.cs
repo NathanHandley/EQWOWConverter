@@ -173,14 +173,10 @@ namespace EQWOWConverter.Creatures
             return true;
         }
 
-        public bool DoBakeModelTemplateScaleIntoGeometry()
+        public float GetDBCDisplayScale()
         {
-            return DoUseOwnModelFiles() == true && ModelTemplateScale > Configuration.GENERATE_FLOAT_EPSILON;
-        }
-
-        public float GetDBCModelScale()
-        {
-            if (DoBakeModelTemplateScaleIntoGeometry() == true)
+            // Client grows/shrinks unit's attached models by object scale and CreatureDisplayINfo scale.
+            if (ModelTemplateScale <= Configuration.GENERATE_FLOAT_EPSILON)
                 return 1f;
             return ModelTemplateScale;
         }
@@ -189,7 +185,7 @@ namespace EQWOWConverter.Creatures
         {
             if (SmallestCreatureWorldSpawnScale <= Configuration.GENERATE_FLOAT_EPSILON)
                 return 0f;
-            return GetDBCModelScale() * SmallestCreatureWorldSpawnScale;
+            return GetDBCDisplayScale() * SmallestCreatureWorldSpawnScale;
         }
 
         public BoundingBox GenerateClickBoundingBox(BoundingBox geometryBoundingBox)
@@ -277,22 +273,6 @@ namespace EQWOWConverter.Creatures
                         newModelTemplate.DBCCreatureModelDataID.ToString(), "' twice (isPetVersion of '", isPetVersion.ToString(), "'), so pet versions need their own ID context"));
                 }
 
-                // Baked models write template scale into geometry
-                if (newModelTemplate.DoBakeModelTemplateScaleIntoGeometry() == true)
-                {
-                    string newModelFileName = newModelTemplate.GenerateFileName();
-                    foreach (CreatureModelTemplate existingModelTemplate in AllTemplatesByRaceID[creatureRace.ID])
-                    {
-                        if (existingModelTemplate.DoBakeModelTemplateScaleIntoGeometry() == false)
-                            continue;
-                        if (existingModelTemplate.GenerateFileName() != newModelFileName)
-                            continue;
-                        if (Math.Abs(existingModelTemplate.ModelTemplateScale - modelTemplateScale) <= Configuration.GENERATE_FLOAT_EPSILON)
-                            continue;
-                        Logger.WriteError(string.Concat("Creature model template '", newModelFileName, "' would be written twice with different baked scales (", existingModelTemplate.ModelTemplateScale.ToString(), " and ", modelTemplateScale.ToString(), "), so one of them will render at the wrong size"));
-                    }
-                }
-
                 AllTemplatesByRaceID[creatureRace.ID].Add(newModelTemplate);
                 return newModelTemplate;
             }
@@ -356,8 +336,6 @@ namespace EQWOWConverter.Creatures
             objectProperties.CreatureModelTemplate = this;
             objectProperties.ModelScalePreWorldScale = Race.ModelScale;
             objectProperties.ModelLiftPreWorldScale = lift;
-            if (DoBakeModelTemplateScaleIntoGeometry() == true)
-                objectProperties.AdditionalScaleMultiplier *= ModelTemplateScale;
             ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Creature);
             curObject.LoadEQObjectFromFile(charactersFolderRoot, skeletonName);
             // GeometryBoundingBox is the stand-posed vertices in the same space the client renders
