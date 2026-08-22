@@ -573,6 +573,8 @@ namespace EQWOWConverter.Items
                 IsPackedClassMask(ClassEQType.Wizard, classMask) ||
                 IsPackedClassMask(ClassEQType.Magician, classMask) ||
                 IsPackedClassMask(ClassEQType.Necromancer, classMask) ||
+                IsPackedClassMask(ClassEQType.ShadowKnight, classMask) ||
+                IsPackedClassMask(ClassEQType.Ranger, classMask) ||
                 IsPackedClassMask(ClassEQType.Enchanter, classMask))
             {
                 ItemWOWWeaponSubclassType subClass = (ItemWOWWeaponSubclassType)subClassID;
