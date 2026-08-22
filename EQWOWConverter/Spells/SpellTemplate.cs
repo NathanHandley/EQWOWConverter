@@ -1831,7 +1831,7 @@ namespace EQWOWConverter.Spells
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
-                                newSpellEffectWOW.EffectMiscValueA = 1; // Strength
+                                newSpellEffectWOW.EffectMiscValueA = 1; // Agility
                                 if (eqEffect.EQBaseValue >= 0)
                                 {
                                     Logger.WriteError("Unimplemented agility leach aura effect for EQSpellID of ", spellTemplate.EQSpellID.ToString());
