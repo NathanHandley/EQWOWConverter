@@ -1368,7 +1368,7 @@ namespace EQWOWConverter.Items
         }
 
         private static void PopulateItemClassSpecificProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask,
-            int iconID, int damage, int castTime, BookText? bookText, int baitPotency)
+            int iconID, int damage, int castTime, BookText? bookText, int baitPotency, int bagSlots)
         {
             bool allowBothHands = false;
             if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) &&
@@ -1448,8 +1448,15 @@ namespace EQWOWConverter.Items
                         }
                         else
                         {
+                            // If it has slots, it's still a bag
+                            if (bagSlots > 0)
+                            {
+                                itemTemplate.ClassID = 1;
+                                itemTemplate.SubClassID = 0;
+                                itemTemplate.InventoryType = ItemWOWInventoryType.Bag;
+                            }
                             // If it has damage, it's a weapon
-                            if (damage > 0)
+                            else if (damage > 0)
                             {
                                 // 1 Hand Slash => 1h Sword or Axe
                                 itemTemplate.ClassID = 2;
@@ -2077,12 +2084,13 @@ namespace EQWOWConverter.Items
                 // Equippable Properties
                 int itemType = int.Parse(columns["itemtype"]);
                 int bagType = int.Parse(columns["bagtype"]);
+                newItemTemplate.BagSlots = int.Parse(columns["bagslots"]) * Configuration.ITEMS_BAG_SLOT_MULTIPLIER;
                 newItemTemplate.FishingBaitPotency = int.Parse(columns["bait_potency"]);
                 newItemTemplate.EQClassMask = int.Parse(columns["classes"]);
                 newItemTemplate.EQSlotMask = int.Parse(columns["slots"]);
                 newItemTemplate.CastTime = int.Parse(columns["casttime"]);
                 PopulateItemClassSpecificProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID,
-                    damage, newItemTemplate.CastTime, newItemTemplate.BookTextReference, newItemTemplate.FishingBaitPotency);
+                    damage, newItemTemplate.CastTime, newItemTemplate.BookTextReference, newItemTemplate.FishingBaitPotency, newItemTemplate.BagSlots);
                 int overrideItemClassID = int.Parse(columns["override_item_class_id"]);
                 if (overrideItemClassID >= 0)
                     newItemTemplate.ClassID = overrideItemClassID;
@@ -2112,7 +2120,6 @@ namespace EQWOWConverter.Items
                 }
 
                 // Bag properties
-                newItemTemplate.BagSlots = int.Parse(columns["bagslots"]) * Configuration.ITEMS_BAG_SLOT_MULTIPLIER;
                 if (newItemTemplate.BagSlots > 0 && newItemTemplate.ClassID == 2 && newItemTemplate.SubClassID == 14) // Remove slots for EQ tradeskill containers
                     newItemTemplate.BagSlots = 0;
                 if (newItemTemplate.BagSlots > 0 && Configuration.ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED == true)
