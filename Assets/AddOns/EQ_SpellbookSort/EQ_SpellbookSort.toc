@@ -1,0 +1,7 @@
+## Interface: 30300
+## Title: EQ Spellbook Sort
+## Notes: Stores the per-character manual sorting layout used by the Norrath tab of the spellbook
+## SavedVariablesPerCharacter: EQ_SpellbookSortDB
+## Version: 1.0
+
+EQ_SpellbookSort.lua

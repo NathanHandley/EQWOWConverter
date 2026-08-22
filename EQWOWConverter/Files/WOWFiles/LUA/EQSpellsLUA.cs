@@ -81,6 +81,18 @@ namespace EQWOWConverter.WOWFiles
             sb.AppendLine("{ id = Percussion,  name = \"Percussion\",  icon = \"Interface\\\\Icons\\\\inv_eq_percussion\" },");
             sb.AppendLine("{ id = Combat,      name = \"Combat\",      icon = \"Interface\\\\Icons\\\\inv_eq_combat\" },");
             sb.AppendLine("}");
+            sb.AppendLine("");
+
+            // Icons offered when a player makes their own spellbook tab
+            sb.AppendLine("EQ_SPELL_TAB_ICONS = {");
+            SortedDictionary<int, string> spellIconNamesByIndex = GetSpellTabIconNamesByIndex();
+            foreach (KeyValuePair<int, string> spellIconNameByIndex in spellIconNamesByIndex)
+            {
+                sb.Append("\"Interface\\\\Icons\\\\");
+                sb.Append(spellIconNameByIndex.Value);
+                sb.AppendLine("\",");
+            }
+            sb.AppendLine("}");
 
             // Write it
             string outputFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Interface", "FrameXML");
@@ -90,6 +102,32 @@ namespace EQWOWConverter.WOWFiles
             if (File.Exists(outputFileFullPath) == true)
                 File.Delete(outputFileFullPath);
             File.WriteAllText(outputFileFullPath, sb.ToString());
+        }
+
+        private static SortedDictionary<int, string> GetSpellTabIconNamesByIndex()
+        {
+            SortedDictionary<int, string> iconNamesByIndex = new SortedDictionary<int, string>();
+            string spellIconFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellicons");
+            if (Directory.Exists(spellIconFolder) == false)
+            {
+                Logger.WriteError("Could not build the spellbook tab icon list, as no folder was at '" + spellIconFolder + "'");
+                return iconNamesByIndex;
+            }
+            string[] spellIconFilePaths = Directory.GetFiles(spellIconFolder, "*.blp");
+            foreach (string spellIconFilePath in spellIconFilePaths)
+            {
+                string iconName = Path.GetFileNameWithoutExtension(spellIconFilePath);
+                int lastUnderscoreIndex = iconName.LastIndexOf('_');
+                if (lastUnderscoreIndex == -1 || lastUnderscoreIndex == iconName.Length - 1)
+                    continue;
+                int iconIndex;
+                if (int.TryParse(iconName.Substring(lastUnderscoreIndex + 1), out iconIndex) == false)
+                    continue;
+                if (iconNamesByIndex.ContainsKey(iconIndex) == true)
+                    continue;
+                iconNamesByIndex.Add(iconIndex, iconName);
+            }
+            return iconNamesByIndex;
         }
     }
 }

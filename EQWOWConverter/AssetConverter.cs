@@ -335,6 +335,13 @@ namespace EQWOWConverter
                     Directory.Delete(targetTrackingAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceTrackingAddOnFolder, targetTrackingAddOnFolder, true, true);
 
+                // Copy the spellbook sorting addon into the prep location
+                string sourceSpellbookSortAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_SpellbookSort");
+                string targetSpellbookSortAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_SpellbookSort");
+                if (Directory.Exists(targetSpellbookSortAddOnFolder) == true)
+                    Directory.Delete(targetSpellbookSortAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceSpellbookSortAddOnFolder, targetSpellbookSortAddOnFolder, true, true);
+
                 // Create or update the MPQs
                 CreateOrUpdateMainPatchMPQ();
                 if (Configuration.GENERATE_WORLDMAPS == true)
@@ -4218,6 +4225,11 @@ namespace EQWOWConverter
                 if (Directory.Exists(targetTrackingAddOnFolder) == true)
                     Directory.Delete(targetTrackingAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceTrackingAddOnFolder, targetTrackingAddOnFolder, true, true);
+                string sourceSpellbookSortAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_SpellbookSort");
+                string targetSpellbookSortAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_SpellbookSort");
+                if (Directory.Exists(targetSpellbookSortAddOnFolder) == true)
+                    Directory.Delete(targetSpellbookSortAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceSpellbookSortAddOnFolder, targetSpellbookSortAddOnFolder, true, true);
             }
 
             Logger.WriteDebug("Deploying to client complete");
