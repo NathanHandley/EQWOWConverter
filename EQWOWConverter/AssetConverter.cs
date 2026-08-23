@@ -321,6 +321,13 @@ namespace EQWOWConverter
                     Directory.Delete(targetItemTooltipsAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceItemTooltipsAddOnFolder, targetItemTooltipsAddOnFolder, true, true);
 
+                // Copy the spell tooltip addon into the prep location
+                string sourceSpellTooltipsAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_SpellTooltips");
+                string targetSpellTooltipsAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_SpellTooltips");
+                if (Directory.Exists(targetSpellTooltipsAddOnFolder) == true)
+                    Directory.Delete(targetSpellTooltipsAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceSpellTooltipsAddOnFolder, targetSpellTooltipsAddOnFolder, true, true);
+
                 // Copy the character stats addon into the prep location
                 string sourceCharacterStatsAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_CharacterStats");
                 string targetCharacterStatsAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_CharacterStats");
@@ -4308,6 +4315,11 @@ namespace EQWOWConverter
                 if (Directory.Exists(targetItemToolTipAddOnFolder) == true)
                     Directory.Delete(targetItemToolTipAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceItemToolTipAddOnFolder, targetItemToolTipAddOnFolder, true, true);
+                string sourceSpellTooltipsAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_SpellTooltips");
+                string targetSpellTooltipsAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_SpellTooltips");
+                if (Directory.Exists(targetSpellTooltipsAddOnFolder) == true)
+                    Directory.Delete(targetSpellTooltipsAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceSpellTooltipsAddOnFolder, targetSpellTooltipsAddOnFolder, true, true);
                 string sourceCharacterStatsAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_CharacterStats");
                 string targetCharacterStatsAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_CharacterStats");
                 if (Directory.Exists(targetCharacterStatsAddOnFolder) == true)

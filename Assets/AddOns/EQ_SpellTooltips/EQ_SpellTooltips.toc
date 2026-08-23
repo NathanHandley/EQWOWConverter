@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: EQ Spell Tooltips
+## Notes: Shows what your current spell power adds to an EQ spell, using the coefficient stamped on the spell's tooltip
+## Version: 1.0
+
+EQ_SpellTooltips.lua

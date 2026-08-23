@@ -853,6 +853,94 @@ namespace EQWOWConverter.Spells
             return highestTickPeriodMS;
         }
 
+        public string GetSpellPowerCoefficientTooltipTextForBlock(SpellEffectBlock effectBlock)
+        {
+            if (Configuration.SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP == false)
+                return string.Empty;
+            if (InfluencedBySpellPower == false)
+                return string.Empty;
+
+            bool hasDirect = BlockHasDirectSpellPowerEffect(effectBlock);
+            bool hasPeriodic = GetLongestSpellPowerPeriodicTickInMSForBlock(effectBlock) > 0;
+            if (hasDirect == false && hasPeriodic == false)
+                return string.Empty;
+
+            float directCoefficient;
+            float dotCoefficient;
+            CalculateSpellPowerCoefficientsForBlock(effectBlock, out directCoefficient, out dotCoefficient);
+
+            StringBuilder textSB = new StringBuilder("Spell power coefficient: ");
+            if (hasDirect == true)
+                textSB.Append(GetSpellPowerCoefficientPercentText(directCoefficient));
+            if (hasDirect == true && hasPeriodic == true)
+                textSB.Append(", ");
+            if (hasPeriodic == true)
+            {
+                textSB.Append(GetSpellPowerCoefficientPercentText(dotCoefficient));
+                textSB.Append(" per tick");
+            }
+            textSB.Append(" (");
+            if (BlockHasDamageSpellPowerEffect(effectBlock) == true)
+                textSB.Append(GetSpellPowerSchoolName());
+            else
+                textSB.Append("healing");
+            textSB.Append(")");
+            return textSB.ToString();
+        }
+
+        private static string GetSpellPowerCoefficientPercentText(float coefficient)
+        {
+            return string.Concat((coefficient * 100f).ToString("0.#"), "%");
+        }
+
+        private string GetSpellPowerSchoolName()
+        {
+            switch (SchoolMask)
+            {
+                case 2: return "Holy";
+                case 4: return "Fire";
+                case 8: return "Nature";
+                case 16: return "Frost";
+                case 32: return "Shadow";
+                case 64: return "Arcane";
+                default: return "Physical";
+            }
+        }
+
+        private static bool BlockHasDirectSpellPowerEffect(SpellEffectBlock effectBlock)
+        {
+            foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
+            {
+                if (spellEffect.EffectAuraType != SpellWOWAuraType.None)
+                    continue;
+                if (spellEffect.EffectType == SpellWOWEffectType.SchoolDamage)
+                    return true;
+                if (spellEffect.EffectType == SpellWOWEffectType.Heal)
+                    return true;
+                if (spellEffect.EffectType == SpellWOWEffectType.HealthLeech)
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool BlockHasDamageSpellPowerEffect(SpellEffectBlock effectBlock)
+        {
+            foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
+            {
+                if (spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamage)
+                    return true;
+                if (spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicLeech)
+                    return true;
+                if (spellEffect.EffectAuraType != SpellWOWAuraType.None)
+                    continue;
+                if (spellEffect.EffectType == SpellWOWEffectType.SchoolDamage)
+                    return true;
+                if (spellEffect.EffectType == SpellWOWEffectType.HealthLeech)
+                    return true;
+            }
+            return false;
+        }
+
         private static bool IsSpellPowerPeriodicAuraType(SpellWOWAuraType auraType)
         {
             if (auraType == SpellWOWAuraType.PeriodicDamage)

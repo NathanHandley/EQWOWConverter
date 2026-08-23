@@ -954,6 +954,8 @@ namespace EQWOWConverter
         public static float SPELL_SPELL_POWER_LOW_LEVEL_MOD = 0.25f;
         // The level to phase out this new mod (linear from level 1)
         public static int SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL = 40;
+        // If true, spells that scale with spell power get text added to the spell description
+        public static bool SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP = true;
 
         // Minimum level to enforce buff constraints against low level players, with 0 being off. 50 is EQ-like (according to TAKP)
         public static int SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD = 50;
@@ -2004,6 +2006,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_SPELL_POWER_AOE_MULTIPLIER", SPELL_SPELL_POWER_AOE_MULTIPLIER, "Area spells influence at a reduced rate (this is WoW-like)");
             OutputVariableToConfig("SPELL_SPELL_POWER_LOW_LEVEL_MOD", SPELL_SPELL_POWER_LOW_LEVEL_MOD, "Additional mod that reduces spell power influence on low-level spells (1 = disabled)");
             OutputVariableToConfig("SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL", SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL, "The level to phase out this new mod (linear from level 1)");
+            OutputVariableToConfig("SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP", SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP, "If true, spells that scale with spell power get text added to the spell description");
             OutputVariableToConfig("SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD", SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD, "Minimum level to enforce buff constraints against low level players, with 0 being off. 50 is EQ-like (according to TAKP)");
             OutputVariableToConfig("SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT", SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT, "Default level to block stuns on creatures (EQ-like)");
             OutputVariableToConfig("SPELL_SUMMON_CASTER_AURA_SPELL_ID", SPELL_SUMMON_CASTER_AURA_SPELL_ID, "Summoner dummy spell ID used to prevent creatures from summoning more creatures");
