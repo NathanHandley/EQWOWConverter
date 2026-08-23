@@ -667,6 +667,10 @@ namespace EQWOWConverter
         public static bool CREATURE_PICKPOCKET_LOOT_ENABLED = true;
         // The odds that a pick attempt will yield an item
         public static float CREATURE_PICKPOCKET_LOOT_TOTAL_CHANCE = 35.0f;
+        // If lockpicking junkboxes can be pick pocketed off of EQ creatures
+        public static bool CREATURE_PICKPOCKET_JUNKBOX_ENABLED = true;
+        // The odds that a pick attempt will also yield a junkbox.  This rolls on its own, so it never displaces other pick pocket loot.
+        public static float CREATURE_PICKPOCKET_JUNKBOX_CHANCE = 35.0f;
 
         //=====================================================================
         // Items
@@ -723,6 +727,12 @@ namespace EQWOWConverter
 
         // This is the "Opening" spell already used in WOTLK, which items that act as keys use to unlock objects
         public static int ITEMS_KEY_OPENING_SPELL_ID = 3366;
+
+        // The odds that an opened pick pocket junkbox holds one poison making material (the rest of the time it is coin only)
+        public static float ITEMS_PICKPOCKET_JUNKBOX_MATERIAL_TOTAL_CHANCE = 50.0f;
+        // Coin (in copper) inside a pick pocket junkbox, scaled by the middle creature level of the junkbox's level band
+        public static int ITEMS_PICKPOCKET_JUNKBOX_COIN_MIN_PER_LEVEL = 2;
+        public static int ITEMS_PICKPOCKET_JUNKBOX_COIN_MAX_PER_LEVEL = 20;
 
         // Arrows reuse existing WOW models, and the specific model is defined here
         public static string ITEM_ARROW_MODEL_NAME = "ArrowFlight_01.mdx";
@@ -1437,6 +1447,7 @@ namespace EQWOWConverter
         // - Quest Template multi-item reward containers IDs range 116000 - 116202
         // - Tradeskill multi-item creation containers IDs range 117000 - 117349
         // - Guise illusion consumable items range 118000 - 118012
+        // - Pick Pocket junkbox items range 115000 - 115005
         // - Switched Slot items have IDs 120000 - 121000
         // - Companion Pet Items have IDs 123000 - 124000
         public static int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;
@@ -1882,6 +1893,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_COMPANION_PETS_MODEL_HEIGHT", CREATURE_COMPANION_PETS_MODEL_HEIGHT, "");
             OutputVariableToConfig("CREATURE_PICKPOCKET_LOOT_ENABLED", CREATURE_PICKPOCKET_LOOT_ENABLED, "If Pick Pocket should be enabled for EQ Humanoids", false);
             OutputVariableToConfig("CREATURE_PICKPOCKET_LOOT_TOTAL_CHANCE", CREATURE_PICKPOCKET_LOOT_TOTAL_CHANCE, "The odds that a pick attempt will yield an item");
+            OutputVariableToConfig("CREATURE_PICKPOCKET_JUNKBOX_ENABLED", CREATURE_PICKPOCKET_JUNKBOX_ENABLED, "If lockpicking junkboxes can be pick pocketed off of EQ creatures", false);
+            OutputVariableToConfig("CREATURE_PICKPOCKET_JUNKBOX_CHANCE", CREATURE_PICKPOCKET_JUNKBOX_CHANCE, "The odds that a pick attempt will also yield a junkbox, which rolls on its own so it never displaces other pick pocket loot");
             OutputVariableToConfig("ITEMS_USE_ALTERNATE_STATS", ITEMS_USE_ALTERNATE_STATS, "If true, this uses alternate stats for items that have been tweaked for balance reasons");
             OutputVariableToConfig("ITEMS_WEAPON_DELAY_REDUCTION_AMT", ITEMS_WEAPON_DELAY_REDUCTION_AMT, "This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;");
             OutputVariableToConfig("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", ITEMS_WEAPON_EFFECT_PPM_BASE_RATE, "This is the base PPM (Procs Per Minute) used for weapon proc weapons");
@@ -1897,6 +1910,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT, "When ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED is true, this is how much to increase bag size by");
             OutputVariableToConfig("ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID", ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID, "This is the icon ID that is used for multi-item containers that contain more than one item");
             OutputVariableToConfig("ITEMS_KEY_OPENING_SPELL_ID", ITEMS_KEY_OPENING_SPELL_ID, "This is the \"Opening\" spell already used in WOTLK, which items that act as keys use to unlock objects");
+            OutputVariableToConfig("ITEMS_PICKPOCKET_JUNKBOX_MATERIAL_TOTAL_CHANCE", ITEMS_PICKPOCKET_JUNKBOX_MATERIAL_TOTAL_CHANCE, "The odds that an opened pick pocket junkbox holds one poison making material (the rest of the time it is coin only)");
+            OutputVariableToConfig("ITEMS_PICKPOCKET_JUNKBOX_COIN_MIN_PER_LEVEL", ITEMS_PICKPOCKET_JUNKBOX_COIN_MIN_PER_LEVEL, "Coin (in copper) inside a pick pocket junkbox, scaled by the middle creature level of the junkbox's level band", false);
+            OutputVariableToConfig("ITEMS_PICKPOCKET_JUNKBOX_COIN_MAX_PER_LEVEL", ITEMS_PICKPOCKET_JUNKBOX_COIN_MAX_PER_LEVEL, "");
             OutputVariableToConfig("ITEM_ARROW_MODEL_NAME", ITEM_ARROW_MODEL_NAME, "Arrows reuse existing WOW models, and the specific model is defined here", false);
             OutputVariableToConfig("ITEM_ARROW_TEXTURE_NAME", ITEM_ARROW_TEXTURE_NAME, "");
             OutputVariableToConfig("ITEMS_FISHING_BAIT_POTENCY_TIER_1_SPELL_ID", ITEMS_FISHING_BAIT_POTENCY_TIER_1_SPELL_ID, "Spell IDs for the +fishing effect of bait", false);
@@ -2412,6 +2428,8 @@ namespace EQWOWConverter
             CREATURE_COMPANION_PETS_MODEL_HEIGHT = ReadVariableFromConfigString("CREATURE_COMPANION_PETS_MODEL_HEIGHT", configValuesByVariableName, CREATURE_COMPANION_PETS_MODEL_HEIGHT);
             CREATURE_PICKPOCKET_LOOT_ENABLED = ReadVariableFromConfigString("CREATURE_PICKPOCKET_LOOT_ENABLED", configValuesByVariableName, CREATURE_PICKPOCKET_LOOT_ENABLED);
             CREATURE_PICKPOCKET_LOOT_TOTAL_CHANCE = ReadVariableFromConfigString("CREATURE_PICKPOCKET_LOOT_TOTAL_CHANCE", configValuesByVariableName, CREATURE_PICKPOCKET_LOOT_TOTAL_CHANCE);
+            CREATURE_PICKPOCKET_JUNKBOX_ENABLED = ReadVariableFromConfigString("CREATURE_PICKPOCKET_JUNKBOX_ENABLED", configValuesByVariableName, CREATURE_PICKPOCKET_JUNKBOX_ENABLED);
+            CREATURE_PICKPOCKET_JUNKBOX_CHANCE = ReadVariableFromConfigString("CREATURE_PICKPOCKET_JUNKBOX_CHANCE", configValuesByVariableName, CREATURE_PICKPOCKET_JUNKBOX_CHANCE);
 
             ITEMS_USE_ALTERNATE_STATS = ReadVariableFromConfigString("ITEMS_USE_ALTERNATE_STATS", configValuesByVariableName, ITEMS_USE_ALTERNATE_STATS);
             ITEMS_WEAPON_DELAY_REDUCTION_AMT = ReadVariableFromConfigString("ITEMS_WEAPON_DELAY_REDUCTION_AMT", configValuesByVariableName, ITEMS_WEAPON_DELAY_REDUCTION_AMT);
@@ -2429,6 +2447,9 @@ namespace EQWOWConverter
             ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT = ReadVariableFromConfigString("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", configValuesByVariableName, ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT);
             ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID = ReadVariableFromConfigString("ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID", configValuesByVariableName, ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID);
             ITEMS_KEY_OPENING_SPELL_ID = ReadVariableFromConfigString("ITEMS_KEY_OPENING_SPELL_ID", configValuesByVariableName, ITEMS_KEY_OPENING_SPELL_ID);
+            ITEMS_PICKPOCKET_JUNKBOX_MATERIAL_TOTAL_CHANCE = ReadVariableFromConfigString("ITEMS_PICKPOCKET_JUNKBOX_MATERIAL_TOTAL_CHANCE", configValuesByVariableName, ITEMS_PICKPOCKET_JUNKBOX_MATERIAL_TOTAL_CHANCE);
+            ITEMS_PICKPOCKET_JUNKBOX_COIN_MIN_PER_LEVEL = ReadVariableFromConfigString("ITEMS_PICKPOCKET_JUNKBOX_COIN_MIN_PER_LEVEL", configValuesByVariableName, ITEMS_PICKPOCKET_JUNKBOX_COIN_MIN_PER_LEVEL);
+            ITEMS_PICKPOCKET_JUNKBOX_COIN_MAX_PER_LEVEL = ReadVariableFromConfigString("ITEMS_PICKPOCKET_JUNKBOX_COIN_MAX_PER_LEVEL", configValuesByVariableName, ITEMS_PICKPOCKET_JUNKBOX_COIN_MAX_PER_LEVEL);
             ITEM_ARROW_MODEL_NAME = ReadVariableFromConfigString("ITEM_ARROW_MODEL_NAME", configValuesByVariableName, ITEM_ARROW_MODEL_NAME);
             ITEM_ARROW_TEXTURE_NAME = ReadVariableFromConfigString("ITEM_ARROW_TEXTURE_NAME", configValuesByVariableName, ITEM_ARROW_TEXTURE_NAME);
             ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID = ReadVariableFromConfigString("ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID", configValuesByVariableName, ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID);

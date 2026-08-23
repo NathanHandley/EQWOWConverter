@@ -323,6 +323,17 @@ namespace EQWOWConverter
                 }
             }
 
+            // Locks for the pick pocket junkboxes
+            foreach (ItemPickpocketJunkbox junkbox in ItemPickpocketJunkbox.GetJunkboxes())
+            {
+                if (junkbox.LockDBCID == 0)
+                    continue;
+                if (addedLockDBCIDs.Contains(junkbox.LockDBCID) == true)
+                    continue;
+                lockDBC.AddRowForItemKeysAndPickLock(junkbox.LockDBCID, 0, 0, junkbox.PickLockSkillRequired);
+                addedLockDBCIDs.Add(junkbox.LockDBCID);
+            }
+
             // Creatures
             Dictionary<string, int> creatureFootstepIDBySoundNames = new Dictionary<string, int>();
             int curCreatureFootstepID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START;

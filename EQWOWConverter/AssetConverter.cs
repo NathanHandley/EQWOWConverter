@@ -1840,6 +1840,9 @@ namespace EQWOWConverter
             pickpocketLootTemplatesByCreatureTemplateID = new Dictionary<int, List<ItemLootTemplate>>();
             Dictionary<int, ItemLootDrop> itemLootDropsByEQID = ItemLootDrop.GetItemLootDropsByEQID();
             Dictionary<int, ItemLootTable> itemLootTablesByEQID = ItemLootTable.GetItemLootTablesByEQID();
+            bool doPickpocketJunkboxes = Configuration.CREATURE_PICKPOCKET_LOOT_ENABLED == true && Configuration.CREATURE_PICKPOCKET_JUNKBOX_ENABLED == true;
+            if (doPickpocketJunkboxes == true)
+                doPickpocketJunkboxes = ConvertPickpocketJunkboxes(itemTemplatesByEQDBID);
             bool doCompanionPetDrops = Configuration.CREATURE_COMPANION_PETS_DROPS_ENABLED == true && CreatureCompanionPet.GetEnabledCompanionPetsByID().Count > 0;
             foreach(CreatureTemplate creatureTemplate in creatureTemplates)
             {
@@ -2007,19 +2010,109 @@ namespace EQWOWConverter
                     creatureTemplate.WOWLootID = creatureTemplate.WOWCreatureTemplateID;
                 }
 
+                List<ItemLootTemplate> pickpocketLootTemplates = new List<ItemLootTemplate>();
                 if (pickpocketCandidates.Count > 0)
                 {
                     Dictionary<int, float> pickpocketWeightByItemID = ResolvePickpocketWeights(pickpocketCandidates, creatureEquipSlotCounts);
-                    List<ItemLootTemplate> pickpocketLootTemplates = BuildPickpocketLootTemplates(creatureTemplate, pickpocketWeightByItemID, catalogCommentByItemID);
-                    if (pickpocketLootTemplates.Count > 0)
-                    {
-                        pickpocketLootTemplatesByCreatureTemplateID.Add(creatureTemplate.WOWCreatureTemplateID, pickpocketLootTemplates);
-                        creatureTemplate.WOWPickpocketLootID = creatureTemplate.WOWCreatureTemplateID;
-                    }
+                    pickpocketLootTemplates = BuildPickpocketLootTemplates(creatureTemplate, pickpocketWeightByItemID, catalogCommentByItemID);
+                }
+                if (doPickpocketJunkboxes == true && canBePickpocketed == true)
+                {
+                    ItemLootTemplate? junkboxLootTemplate = BuildJunkboxPickpocketLootTemplate(creatureTemplate);
+                    if (junkboxLootTemplate != null)
+                        pickpocketLootTemplates.Add(junkboxLootTemplate);
+                }
+                if (pickpocketLootTemplates.Count > 0)
+                {
+                    pickpocketLootTemplatesByCreatureTemplateID.Add(creatureTemplate.WOWCreatureTemplateID, pickpocketLootTemplates);
+                    creatureTemplate.WOWPickpocketLootID = creatureTemplate.WOWCreatureTemplateID;
                 }
             }
 
             Logger.WriteInfo("Item and loot conversion complete.");
+        }
+
+        private bool ConvertPickpocketJunkboxes(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
+        {
+            Logger.WriteInfo("Creating pick pocket junkboxes...");
+
+            float materialTotalChance = Math.Clamp(Configuration.ITEMS_PICKPOCKET_JUNKBOX_MATERIAL_TOTAL_CHANCE, 0f, 100f);
+            bool anyJunkboxesCreated = false;
+            foreach (ItemPickpocketJunkbox junkbox in ItemPickpocketJunkbox.GetJunkboxes())
+            {
+                if (itemTemplatesByEQDBID.ContainsKey(junkbox.EQItemID) == false)
+                {
+                    Logger.WriteError("Pick pocket junkbox with eq item id '", junkbox.EQItemID.ToString(), "' had no row in ItemTemplates.csv, so it was skipped");
+                    continue;
+                }
+                ItemTemplate junkboxItemTemplate = itemTemplatesByEQDBID[junkbox.EQItemID];
+                junkbox.ItemTemplate = junkboxItemTemplate;
+                junkbox.AssignLockDBCID();
+                junkboxItemTemplate.LockDBCID = junkbox.LockDBCID;
+                junkboxItemTemplate.CanBeOpened = true;
+                junkboxItemTemplate.MinMoneyLootInCopper = junkbox.GetMinMoneyLootInCopper();
+                junkboxItemTemplate.MaxMoneyLootInCopper = junkbox.GetMaxMoneyLootInCopper();
+                junkboxItemTemplate.Description = "The lock must be picked before this can be opened.";
+                anyJunkboxesCreated = true;
+
+                // All of the materials share one loot group, so at most one comes out and the group total is the odds of getting any at all
+                if (materialTotalChance <= 0)
+                    continue;
+                int totalWeight = 0;
+                foreach (ItemPickpocketJunkbox.JunkboxContentItem contentItem in junkbox.ContentItems)
+                    if (itemTemplatesByEQDBID.ContainsKey(contentItem.EQItemID) == true)
+                        totalWeight += contentItem.Weight;
+                if (totalWeight <= 0)
+                {
+                    Logger.WriteError("Pick pocket junkbox named '", junkboxItemTemplate.Name, "' had no valid materials, so it will only hold coin");
+                    continue;
+                }
+                foreach (ItemPickpocketJunkbox.JunkboxContentItem contentItem in junkbox.ContentItems)
+                {
+                    if (itemTemplatesByEQDBID.ContainsKey(contentItem.EQItemID) == false)
+                    {
+                        Logger.WriteDebug("Pick pocket junkbox named '", junkboxItemTemplate.Name, "' referenced eq item id '", contentItem.EQItemID.ToString(), "', but that item did not exist. Skipping.");
+                        continue;
+                    }
+                    ItemTemplate contentItemTemplate = itemTemplatesByEQDBID[contentItem.EQItemID];
+                    contentItemTemplate.IsInJunkbox = true;
+
+                    // A zero chance treats each row as "equal chance" in a group, so never let it round to zero
+                    float itemChance = MathF.Round((Convert.ToSingle(contentItem.Weight) / Convert.ToSingle(totalWeight)) * materialTotalChance, 4);
+                    ItemTemplate.ContainedItem containedItem = new ItemTemplate.ContainedItem();
+                    containedItem.itemTemplateIDWOW = contentItemTemplate.WOWEntryID;
+                    containedItem.parentItemTemplateIDWOW = contentItemTemplate.WOWEntryID;
+                    containedItem.chance = MathF.Max(itemChance, 0.0001f);
+                    containedItem.count = 1;
+                    containedItem.group = 1;
+                    junkboxItemTemplate.ContainedItems.Add(containedItem);
+                }
+            }
+
+            Logger.WriteInfo("Creating pick pocket junkboxes complete.");
+            return anyJunkboxesCreated;
+        }
+
+        private ItemLootTemplate? BuildJunkboxPickpocketLootTemplate(CreatureTemplate creatureTemplate)
+        {
+            // Any creature inside a level band can carry that band's junkbox, so tier off the middle of the creature's own level range
+            int creatureLevel = (creatureTemplate.Level + creatureTemplate.MaxLevel) / 2;
+            ItemPickpocketJunkbox? junkbox = ItemPickpocketJunkbox.GetJunkboxForCreatureLevel(creatureLevel);
+            if (junkbox == null || junkbox.ItemTemplate == null)
+                return null;
+            float junkboxChance = Math.Clamp(Configuration.CREATURE_PICKPOCKET_JUNKBOX_CHANCE, 0f, 100f);
+            if (junkboxChance <= 0)
+                return null;
+
+            ItemLootTemplate junkboxLootTemplate = new ItemLootTemplate();
+            junkboxLootTemplate.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
+            junkboxLootTemplate.ItemTemplateEntryID = junkbox.ItemTemplate.WOWEntryID;
+            junkboxLootTemplate.Chance = junkboxChance;
+            junkboxLootTemplate.GroupID = 0; // Group zero rolls on its own, so this adds to the creature's other pick pocket loot instead of competing with it
+            junkboxLootTemplate.MinCount = 1;
+            junkboxLootTemplate.MaxCount = 1;
+            junkboxLootTemplate.Comment = string.Concat(creatureTemplate.Name, " - ", junkbox.ItemTemplate.Name);
+            return junkboxLootTemplate;
         }
 
         private class PickpocketCandidate

@@ -179,6 +179,10 @@ namespace EQWOWConverter.Items
         public bool IsFoundInGameObject = false;
         public bool IsFromGroundSpawnChest = false;
         public bool IsGameObjectKey = false; // Opens some locked game object
+        public bool IsInJunkbox = false;
+        public int LockDBCID = 0; // "ID" from Lock.dbc, for items that must be unlocked before they can be opened
+        public int MinMoneyLootInCopper = 0;
+        public int MaxMoneyLootInCopper = 0;
         public bool IsAlwaysGenerated = false;
         public bool IsForaged = false;
         public bool IsFished = false;
@@ -250,6 +254,8 @@ namespace EQWOWConverter.Items
             if (IsForaged == true)
                 return true;
             if (IsFished == true)
+                return true;
+            if (IsInJunkbox == true)
                 return true;
             if (ParentItemTemplate != null)
                 return ParentItemTemplate.IsPlayerObtainable();

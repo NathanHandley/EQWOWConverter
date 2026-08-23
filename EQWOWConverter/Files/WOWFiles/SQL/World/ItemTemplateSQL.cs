@@ -195,7 +195,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("LanguageID", 0);
             newRow.AddInt("PageMaterial", 0);
             newRow.AddInt("startquest", 0);
-            newRow.AddInt("lockid", 0);
+            newRow.AddInt("lockid", itemTemplate.LockDBCID); // "ID" from Lock.dbc
             newRow.AddInt("Material", itemTemplate.WOWItemMaterialType);
             newRow.AddInt("sheath", itemTemplate.SheatheType);
             newRow.AddInt("RandomProperty", 0);
@@ -223,8 +223,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("ScriptName", 64, itemTemplate.ScriptName);
             newRow.AddInt("DisenchantID", 0);
             newRow.AddInt("FoodType", itemTemplate.FoodType); // For pets: 1 - Meat, 2 - Fish, 3 - Cheese, 4 - Bread, 5 - Fungus, 6 - fruit, 7 - Raw Meat, 8 - Raw Fish
-            newRow.AddInt("minMoneyLoot", 0);
-            newRow.AddInt("maxMoneyLoot", 0);
+            newRow.AddInt("minMoneyLoot", itemTemplate.MinMoneyLootInCopper);
+            newRow.AddInt("maxMoneyLoot", itemTemplate.MaxMoneyLootInCopper);
             newRow.AddInt("flagsCustom", 0);
             newRow.AddInt("VerifiedBuild", 12340);
             Rows.Add(newRow);
