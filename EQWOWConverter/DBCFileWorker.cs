@@ -438,13 +438,16 @@ namespace EQWOWConverter
                 foreach (ZoneArea subArea in zoneProperties.SubZoneAreas)
                     areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), zoneProperties.DBCMapID, Convert.ToInt32(subArea.DBCParentAreaTableID), subArea.AreaMusic, subArea.AreaAmbientSound, subArea.DisplayName, zoneProperties.IsRestingZoneWide, subArea.DoShowBreath, zoneProperties.DuelingAllowed);
 
-                // AreaTrigger (the raid instance copy of a zone needs its own trigger boxes, since they are keyed by map)
+                // AreaTrigger (the instance copies of a zone needs its own trigger boxes, since they are keyed by map)
                 foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
                 {
                     areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
                     if (zoneProperties.ShouldGenerateInstanceRaidLow() == true)
                         areaTriggerDBC.AddRow(zoneLine.AreaTriggerIDRaidLow, zoneProperties.DBCMapIDRaidLow, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
+                            zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
+                    if (zoneProperties.ShouldGenerateInstanceDungeon() == true)
+                        areaTriggerDBC.AddRow(zoneLine.AreaTriggerIDDungeon, zoneProperties.DBCMapIDDungeon, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                             zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
                 }
 
@@ -496,6 +499,22 @@ namespace EQWOWConverter
                     }
                 }
 
+                // Instanced dungeon version of the zone, an exact mirror of the open world copy that behaves like a WoW normal dungeon
+                if (zoneProperties.ShouldGenerateInstanceDungeon() == true)
+                {
+                    // The instance copy is named apart from the open world copy of the zone, so it's clear which version a player is in
+                    string dungeonDescriptiveName = string.Concat(zone.DescriptiveName, Configuration.CONFIGONLY_DUNGEON_NAME_SUFFIX);
+
+                    // Map and difficulty.  Instance type 1 (party) with a zero reset time is what makes this a normal dungeon, which means no saved lockout and a bind that "Reset all instances" can always release
+                    mapDBC.AddRow(zoneProperties.DBCMapIDDungeon, "EQ_" + zone.ShortName, dungeonDescriptiveName, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.LoadingScreenID, 1, Configuration.DUNGEON_INSTANCE_MAX_PLAYERS);
+                    mapDifficultyDBC.AddRow(zoneProperties.DBCMapIDDungeon, zoneProperties.DBCMapDifficultyIDDungeon, 0, Configuration.DUNGEON_INSTANCE_MAX_PLAYERS);
+
+                    // Light rows are map-keyed, so the instance map needs its own rows referencing the same light parameters generated above
+                    lightDBC.AddRow(zoneProperties.DBCMapIDDungeon, zoneProperties.ZonewideEnvironmentProperties, string.Concat(zone.ShortName, "~dungeon~zonewide"));
+                    for (int areaLightIndex = 0; areaLightIndex < zoneProperties.AreaLightZoneEnvironmentProperties.Count; areaLightIndex++)
+                        lightDBC.AddRow(zoneProperties.DBCMapIDDungeon, zoneProperties.AreaLightZoneEnvironmentProperties[areaLightIndex], string.Concat(zone.ShortName, "~dungeon~arealight", areaLightIndex.ToString()));
+                }
+
                 // Sound Ambience
                 foreach (ZoneAreaAmbientSound zoneAreaAmbient in zone.ZoneAreaAmbientSounds)
                 {
@@ -545,6 +564,9 @@ namespace EQWOWConverter
                     // The world map is looked up by map ID, so the raid instance copy needs its own row.  It's otherwise identical to the open world one
                     if (zoneProperties.ShouldGenerateInstanceRaidLow() == true)
                         worldMapAreaDBC.AddRow(zoneProperties.DBCWorldMapAreaIDRaidLow, zoneProperties.DBCMapIDRaidLow, Convert.ToInt32(zoneProperties.DefaultZoneArea.DBCAreaTableID), mapFolderName,
+                            zoneProperties.DisplayMapMainLeft, zoneProperties.DisplayMapMainRight, zoneProperties.DisplayMapMainTop, zoneProperties.DisplayMapMainBottom, parentWorldMapID);
+                    if (zoneProperties.ShouldGenerateInstanceDungeon() == true)
+                        worldMapAreaDBC.AddRow(zoneProperties.DBCWorldMapAreaIDDungeon, zoneProperties.DBCMapIDDungeon, Convert.ToInt32(zoneProperties.DefaultZoneArea.DBCAreaTableID), mapFolderName,
                             zoneProperties.DisplayMapMainLeft, zoneProperties.DisplayMapMainRight, zoneProperties.DisplayMapMainTop, zoneProperties.DisplayMapMainBottom, parentWorldMapID);
                 }
 
@@ -615,6 +637,8 @@ namespace EQWOWConverter
                     // A zone that contains a graveyard also gets a copy of it inside its raid instance version
                     if (graveyardZoneProperties.ShouldGenerateInstanceRaidLow() == true)
                         worldSafeLocsDBC.AddRowForInstanceRaidLow(graveyard, graveyardZoneProperties.DBCMapIDRaidLow);
+                    if (graveyardZoneProperties.ShouldGenerateInstanceDungeon() == true)
+                        worldSafeLocsDBC.AddRowForInstanceDungeon(graveyard, graveyardZoneProperties.DBCMapIDDungeon);
                 }
             }
 

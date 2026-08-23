@@ -48,5 +48,17 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("Comment", 255, graveyard.DescriptionRaidLow);
             Rows.Add(newRow);
         }
+
+        public void AddRowForInstanceDungeon(ZonePropertiesGraveyard graveyard, int dungeonMapID)
+        {
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("ID", graveyard.WorldSafeLocsDBCIDDungeon);
+            newRow.AddInt("Map", dungeonMapID);
+            newRow.AddFloat("x", MathF.Round(graveyard.RespawnX, 6));
+            newRow.AddFloat("y", MathF.Round(graveyard.RespawnY, 6));
+            newRow.AddFloat("z", MathF.Round(graveyard.RespawnZ, 6));
+            newRow.AddString("Comment", 255, graveyard.DescriptionDungeon);
+            Rows.Add(newRow);
+        }
     }
 }

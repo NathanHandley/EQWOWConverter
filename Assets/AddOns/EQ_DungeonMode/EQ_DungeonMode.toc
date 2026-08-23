@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: EQ Dungeon Mode
+## Notes: Adds a "Dungeon Mode" option to the right click menu on your portrait, switching between the shared world and instanced versions of EverQuest dungeons
+## Version: 1.0
+
+EQ_DungeonMode.lua

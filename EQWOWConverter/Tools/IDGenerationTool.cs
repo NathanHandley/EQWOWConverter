@@ -114,7 +114,8 @@ namespace EQWOWConverter
             if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                 Initialize("CreatureGUID", Configuration.CONFIGONLY_SQL_CREATURE_GUID_DEBUG_LOW, Configuration.SQL_CREATURE_GUID_HIGH);
             else
-                Initialize("CreatureGUID", Configuration.SQL_CREATURE_GUID_LOW, Configuration.SQL_CREATURE_GUID_HIGH);
+                Initialize("CreatureGUID", Configuration.SQL_CREATURE_GUID_LOW, Configuration.SQL_CREATURE_GUID_HIGH,
+                    Configuration.SQL_CREATURE_GUID_BLOCK2_LOW, Configuration.SQL_CREATURE_GUID_BLOCK2_HIGH);
             Initialize("CreatureImmunitiesID", Configuration.SQL_CREATUREIMMUNITIES_ID_START, Configuration.SQL_CREATUREIMMUNITIES_ID_END);
             Initialize("CreatureTemplateID", Configuration.SQL_CREATURETEMPLATE_GENERATED_START_ID, Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH);
             Initialize("GameEventID", Configuration.SQL_GAME_EVENTS_ID_START, Configuration.SQL_GAME_EVENTS_ID_END);

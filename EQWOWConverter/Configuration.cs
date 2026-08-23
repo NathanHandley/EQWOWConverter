@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 74;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 77;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -325,6 +325,10 @@ namespace EQWOWConverter
         // Low Raid (pre-61+) dungeon instances
         public static bool DUNGEON_RAID_LOW_INSTANCES_ENABLED = true;
         public static int DUNGEON_RAID_LOW_MAX_PLAYERS = 40;
+
+        // Instanced versions of EQ dungeons
+        public static bool DUNGEON_INSTANCES_ENABLED = true;
+        public static int DUNGEON_INSTANCE_MAX_PLAYERS = 40;
 
         //=====================================================================
         // World Maps (and Minimaps)
@@ -1404,9 +1408,11 @@ namespace EQWOWConverter
         public static int SQL_BROADCASTTEXT_ID_START = 80000;
         public static int SQL_BROADCASTTEXT_ID_END = 99999;
 
-        // Record identifier for the creature sql table, need at least 31k
+        // Record identifier for the creature sql table
         public static int SQL_CREATURE_GUID_LOW = 310000;
         public static int SQL_CREATURE_GUID_HIGH = 399999;
+        public static int SQL_CREATURE_GUID_BLOCK2_LOW = 430000;
+        public static int SQL_CREATURE_GUID_BLOCK2_HIGH = 699999;
 
         // Record identifier for for creature_immunities
         public static int SQL_CREATUREIMMUNITIES_ID_START = 4000;
@@ -1648,6 +1654,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("DUNGEON_FINDER_ENABLED", DUNGEON_FINDER_ENABLED, "Used for instanced versions of EQ dungeons", false);
             OutputVariableToConfig("DUNGEON_RAID_LOW_INSTANCES_ENABLED", DUNGEON_RAID_LOW_INSTANCES_ENABLED, "Low Raid (pre-61+) dungeon instances", false);
             OutputVariableToConfig("DUNGEON_RAID_LOW_MAX_PLAYERS", DUNGEON_RAID_LOW_MAX_PLAYERS, "");
+            OutputVariableToConfig("DUNGEON_INSTANCES_ENABLED", DUNGEON_INSTANCES_ENABLED, "Instanced versions of EQ dungeons", false);
+            OutputVariableToConfig("DUNGEON_INSTANCE_MAX_PLAYERS", DUNGEON_INSTANCE_MAX_PLAYERS, "");
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED", ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED, "If true, a feat of strength achievement is awarded to characters on accounts created before ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_NAME", ACHIEVEMENT_LEGACY_ACCOUNT_NAME, "", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION", ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION, "", false);
@@ -2253,6 +2261,8 @@ namespace EQWOWConverter
             DUNGEON_FINDER_ENABLED = ReadVariableFromConfigString("DUNGEON_FINDER_ENABLED", configValuesByVariableName, DUNGEON_FINDER_ENABLED);
             DUNGEON_RAID_LOW_INSTANCES_ENABLED = ReadVariableFromConfigString("DUNGEON_RAID_LOW_INSTANCES_ENABLED", configValuesByVariableName, DUNGEON_RAID_LOW_INSTANCES_ENABLED);
             DUNGEON_RAID_LOW_MAX_PLAYERS = ReadVariableFromConfigString("DUNGEON_RAID_LOW_MAX_PLAYERS", configValuesByVariableName, DUNGEON_RAID_LOW_MAX_PLAYERS);
+            DUNGEON_INSTANCES_ENABLED = ReadVariableFromConfigString("DUNGEON_INSTANCES_ENABLED", configValuesByVariableName, DUNGEON_INSTANCES_ENABLED);
+            DUNGEON_INSTANCE_MAX_PLAYERS = ReadVariableFromConfigString("DUNGEON_INSTANCE_MAX_PLAYERS", configValuesByVariableName, DUNGEON_INSTANCE_MAX_PLAYERS);
 
             ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED);
             ACHIEVEMENT_LEGACY_ACCOUNT_NAME = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_NAME", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_NAME);

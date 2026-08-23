@@ -75,9 +75,11 @@ namespace EQWOWConverter.GameObjects
         public ObjectModel? ObjectModel = null;
         public int GameObjectGUID;
         public int GameObjectGUIDRaidLow = 0;
+        public int GameObjectGUIDDungeon = 0;
         public int GameObjectTemplateEntryID;
         public int TriggerGameObjectGUID = 0;
         public int TriggerGameObjectGUIDRaidLow = 0;
+        public int TriggerGameObjectGUIDDungeon = 0;
         public int TriggerGameObjectTemplateEntryID = 0;
         public int GameObjectDisplayInfoID = -1;
         public Sound? OpenSound = null;
@@ -347,8 +349,12 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.Scale = float.Parse(gameObjectsRow["size"]) / 100f;
                 newGameObject.GameObjectGUID = IDGenerationTool.GenerateID("GameObjectGUID", "gameobject", newGameObject.ID.ToString());
                 if (gameObjectType != GameObjectType.NonInteract && gameObjectType != GameObjectType.Emitter)
+                {
                     if (zonePropertiesByShortName[zoneShortName].ShouldGenerateInstanceRaidLow() == true)
                         newGameObject.GameObjectGUIDRaidLow = IDGenerationTool.GenerateID("GameObjectGUID", "gameobjectraidlow", newGameObject.ID.ToString());
+                    if (zonePropertiesByShortName[zoneShortName].ShouldGenerateInstanceDungeon() == true)
+                        newGameObject.GameObjectGUIDDungeon = IDGenerationTool.GenerateID("GameObjectGUID", "gameobjectdungeon", newGameObject.ID.ToString());
+                }
                 newGameObject.ModelIsInEquipmentFolder = modelIsInEquipmentFolder;
                 string tradeskillFocusTypeString = gameObjectsRow["tradeskill_focus"].Trim().ToLower();
                 switch (tradeskillFocusTypeString)
@@ -433,6 +439,7 @@ namespace EQWOWConverter.GameObjects
                 {
                     gameObject.TriggerGameObjectGUID = interactiveGameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectGUID;
                     gameObject.TriggerGameObjectGUIDRaidLow = interactiveGameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectGUIDRaidLow;
+                    gameObject.TriggerGameObjectGUIDDungeon = interactiveGameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectGUIDDungeon;
                     gameObject.TriggerGameObjectTemplateEntryID = interactiveGameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectTemplateEntryID;
                 }
             }

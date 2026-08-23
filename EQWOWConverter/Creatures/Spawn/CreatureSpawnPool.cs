@@ -40,6 +40,25 @@ namespace EQWOWConverter.Creatures
             CreatureTemplateChances.Add(chance);
         }
 
+        public CreatureSpawnPool? CreateCopyWithoutRaidCreatures()
+        {
+            CreatureSpawnPool filteredSpawnPool = new CreatureSpawnPool(SpawnGroup);
+            filteredSpawnPool.SpawnLimit = SpawnLimit;
+            filteredSpawnPool.LinkedSpawnGameEvent = LinkedSpawnGameEvent;
+            filteredSpawnPool.LinkedDespawnGameEvent = LinkedDespawnGameEvent;
+            filteredSpawnPool.CreatureSpawnInstances = new List<CreatureSpawnInstance>(CreatureSpawnInstances);
+            for (int i = 0; i < CreatureTemplates.Count; i++)
+            {
+                if (CreatureTemplates[i].IsRaidCreature() == true)
+                    continue;
+                int chance = i < CreatureTemplateChances.Count ? CreatureTemplateChances[i] : 0;
+                filteredSpawnPool.AddCreatureTemplate(CreatureTemplates[i], chance);
+            }
+            if (filteredSpawnPool.CreatureTemplates.Count == 0)
+                return null;
+            return filteredSpawnPool;
+        }
+
         public int GetMaxSpawnCount()
         {
             if (SpawnLimit == 0)

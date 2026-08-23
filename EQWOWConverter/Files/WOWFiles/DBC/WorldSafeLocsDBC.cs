@@ -43,5 +43,17 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddStringLang(graveyard.DescriptionRaidLow); // Description
             Rows.Add(newRow);
         }
+
+        public void AddRowForInstanceDungeon(ZonePropertiesGraveyard graveyard, int dungeonMapID)
+        {
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt32(graveyard.WorldSafeLocsDBCIDDungeon); // ID
+            newRow.AddInt32(dungeonMapID); // Continent (MapID)
+            newRow.AddFloat(MathF.Round(graveyard.RespawnX, 6)); // X
+            newRow.AddFloat(MathF.Round(graveyard.RespawnY, 6)); // Y
+            newRow.AddFloat(MathF.Round(graveyard.RespawnZ, 6)); // Z
+            newRow.AddStringLang(graveyard.DescriptionDungeon); // Description
+            Rows.Add(newRow);
+        }
     }
 }

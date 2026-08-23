@@ -55,6 +55,23 @@ namespace EQWOWConverter.Zones
             get { return string.Concat(Description, Configuration.CONFIGONLY_DUNGEON_NAME_SUFFIX); }
         }
 
+        private int WorldSafeLocsDBCIDDungeonCached = 0;
+
+        public int WorldSafeLocsDBCIDDungeon
+        {
+            get
+            {
+                if (WorldSafeLocsDBCIDDungeonCached == 0)
+                    WorldSafeLocsDBCIDDungeonCached = IDGenerationTool.GenerateID("WorldSafeLocsID", "dungeon", ID.ToString());
+                return WorldSafeLocsDBCIDDungeonCached;
+            }
+        }
+
+        public string DescriptionDungeon
+        {
+            get { return string.Concat(Description, Configuration.CONFIGONLY_DUNGEON_NAME_SUFFIX); }
+        }
+
         public static ZonePropertiesGraveyard GetGraveyardByID(int ID)
         {
             if (GraveyardsByID.Count == 0)

@@ -25,7 +25,8 @@ namespace EQWOWConverter.WOWFiles
             StringBuilder sb = new StringBuilder();
             if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
                 sb.AppendLine("DELETE FROM game_event_creature WHERE `guid` >= " + Configuration.CONFIGONLY_SQL_CREATURE_GUID_DEBUG_LOW.ToString() + " AND `guid` <= " + Configuration.CONFIGONLY_SQL_CREATURE_GUID_DEBUG_HIGH + ";");
-            sb.Append("DELETE FROM game_event_creature WHERE `guid` >= " + Configuration.SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.SQL_CREATURE_GUID_HIGH + ";");
+            sb.AppendLine("DELETE FROM game_event_creature WHERE `guid` >= " + Configuration.SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.SQL_CREATURE_GUID_HIGH + ";");
+            sb.Append("DELETE FROM game_event_creature WHERE `guid` >= " + Configuration.SQL_CREATURE_GUID_BLOCK2_LOW.ToString() + " AND `guid` <= " + Configuration.SQL_CREATURE_GUID_BLOCK2_HIGH + ";");
             return sb.ToString();
         }
 

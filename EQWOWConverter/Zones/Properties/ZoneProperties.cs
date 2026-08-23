@@ -121,6 +121,10 @@ namespace EQWOWConverter.Zones
         public bool HasInstanceRaidLow = false;
         public UInt32 InstanceResetTimeInSecRaidLow = 0;
         public int DBCLFGDungeonsIDRaidLow = 0;
+        public int DBCMapIDDungeon;
+        public int DBCMapDifficultyIDDungeon;
+        public int DBCWorldMapAreaIDDungeon = 0;
+        public bool HasDungeonInstance = false;
         public UInt32 DBCWMOID;
         public string ShortName = string.Empty;
         public string DescriptiveName = string.Empty;
@@ -180,6 +184,13 @@ namespace EQWOWConverter.Zones
             if (Configuration.DUNGEON_RAID_LOW_INSTANCES_ENABLED == false)
                 return false;
             return HasInstanceRaidLow;
+        }
+
+        public bool ShouldGenerateInstanceDungeon()
+        {
+            if (Configuration.DUNGEON_INSTANCES_ENABLED == false)
+                return false;
+            return HasDungeonInstance;
         }
 
         public static HashSet<string> GetMusicNames()
@@ -1058,6 +1069,17 @@ namespace EQWOWConverter.Zones
                         Logger.WriteError("ZoneProperties for zone '" + shortName + "' has HasInstanceRaidLow set but no InstanceResetTimeInSecRaidLow, so raid instance creatures will respawn instantly");
                     zoneProperties.DBCLFGDungeonsIDRaidLow = IDGenerationTool.GenerateID("LFGDungeonsID", "raidlow", shortName);
                     zoneProperties.DBCWorldMapAreaIDRaidLow = IDGenerationTool.GenerateID("WorldMapAreaID", "raidlow", shortName);
+                }
+                zoneProperties.DBCMapIDDungeon = int.Parse(propertiesRow["WOWMapIDDungeon"]);
+                zoneProperties.DBCMapDifficultyIDDungeon = int.Parse(propertiesRow["WOWMapDifficultyIDDungeon"]);
+                zoneProperties.HasDungeonInstance = propertiesRow["HasDungeonInstance"].Trim() == "1" ? true : false;
+                if (zoneProperties.HasDungeonInstance == true)
+                {
+                    if (zoneProperties.DBCMapIDDungeon <= 0)
+                        Logger.WriteError("ZoneProperties for zone '" + shortName + "' has HasDungeonInstance set but no valid WOWMapIDDungeon, so the dungeon instance will not work");
+                    if (zoneProperties.DBCMapDifficultyIDDungeon <= 0)
+                        Logger.WriteError("ZoneProperties for zone '" + shortName + "' has HasDungeonInstance set but no valid WOWMapDifficultyIDDungeon, so the dungeon instance will not work");
+                    zoneProperties.DBCWorldMapAreaIDDungeon = IDGenerationTool.GenerateID("WorldMapAreaID", "dungeon", shortName);
                 }
                 zoneProperties.DescriptiveName = propertiesRow["DescriptiveName"];
                 zoneProperties.TelePosition.X = float.Parse(propertiesRow["TeleX"]) * Configuration.GENERATE_WORLD_SCALE;

@@ -38,6 +38,18 @@ namespace EQWOWConverter.Zones
             }
         }
 
+        private int AreaTriggerIDDungeonCached = 0;
+
+        public int AreaTriggerIDDungeon
+        {
+            get
+            {
+                if (AreaTriggerIDDungeonCached == 0)
+                    AreaTriggerIDDungeonCached = IDGenerationTool.GenerateID("AreaTriggerID", "dungeon", AreaTriggerID.ToString());
+                return AreaTriggerIDDungeonCached;
+            }
+        }
+
         public string TargetZoneShortName = string.Empty;
         public Vector3 TargetZonePosition = new Vector3();
         public float TargetZoneOrientation = 0f;

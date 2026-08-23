@@ -502,145 +502,29 @@ namespace EQWOWConverter
             // Creature and Creature Spawn Pools
             foreach (CreatureSpawnPool spawnPool in creatureSpawnPools)
             {
-                bool isSingleInstance = spawnPool.CreatureSpawnInstances.Count == 1;
-                bool isSingleCreatureTemplate = spawnPool.CreatureTemplates.Count == 1;
+                // The open world copy of the zone, where a map ID override of zero keeps each spawn point on the map it already belongs to
+                CreateSpawnPoolSQLEntriesForMap(spawnPool, 0, string.Empty, string.Empty);
 
-                // No pool needed, single instance
-                if (isSingleInstance == true && isSingleCreatureTemplate == true)
+                // Instanced dungeon versions of the zone mirror the open world copy, so the whole pool structure (pools, chances, spawn limits, respawn times, waypoints and game event links) is generated a second time
+                // against the instance map.  The one difference is that raid creatures of every tier are left out, so a pool with nothing but raid candidates contributes no spawns there at all
+                if (spawnPool.CreatureSpawnInstances.Count > 0 && spawnPool.CreatureTemplates.Count > 0 && mapIDsByShortName.ContainsKey(spawnPool.CreatureSpawnInstances[0].ZoneShortName) == true)
                 {
-                    CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[0];
-                    CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
-                    int creatureSQLGUID = IDGenerationTool.GenerateID("CreatureGUID", "spawn", spawnInstance.ID.ToString(), creatureTemplate.EQCreatureTemplateID.ToString());
-                    string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                    CreateCreatureAndRelatedSQLEntries(creatureSQLGUID, creatureTemplate, spawnInstance, spawnPool.SpawnGroup, comment);
-                    if (spawnPool.LinkedSpawnGameEvent != null)
-                        gameEventCreatureSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, creatureSQLGUID, true);
-                    if (spawnPool.LinkedDespawnGameEvent != null)
-                        gameEventCreatureSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, creatureSQLGUID, false);
-                }
-
-                // Pool required (more than one spawn point and/or more than one candidate creature)
-                else
-                {
-                    List<string> poolNames = new List<string>();
-                    foreach (CreatureTemplate template in spawnPool.CreatureTemplates)
-                        if (poolNames.Contains(template.Name) == false)
-                            poolNames.Add(template.Name);
-                    string poolDescription = "(" + spawnPool.SpawnGroup.ID + ")";
-                    foreach (string name in poolNames)
-                        poolDescription += ", " + name;
-
-                    // Identify which spawn pools need a real cap
-                    bool hasRealSpawnCap = spawnPool.SpawnLimit > 0 && spawnPool.SpawnLimit < spawnPool.CreatureSpawnInstances.Count;
-
-                    // Cycle groups (capped, with near-instant EQ respawn times, like the Trakanon's Teeth forager/hunter cycles) get every point-and-candidate combination as a plain spawn so any candidate can appear at any point.
-                    bool isCycleSpawnGroup = hasRealSpawnCap;
-                    if (isCycleSpawnGroup == true)
-                        foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
-                            if (spawnInstance.RespawnTimeInSeconds <= 0 || spawnInstance.RespawnTimeInSeconds > Configuration.CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC)
-                                isCycleSpawnGroup = false;
-                    if (isCycleSpawnGroup == true)
+                    ZoneProperties? dungeonZoneProperties = GetInstanceDungeonZoneProperties(spawnPool.CreatureSpawnInstances[0]);
+                    if (dungeonZoneProperties != null)
                     {
-                        foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
-                        {
-                            for (int i = 0; i < spawnPool.CreatureTemplates.Count; i++)
-                            {
-                                CreatureTemplate template = spawnPool.CreatureTemplates[i];
-                                int chance = spawnPool.CreatureTemplateChances[i];
-                                int guid = IDGenerationTool.GenerateID("CreatureGUID", "spawn", spawnInstance.ID.ToString(), template.EQCreatureTemplateID.ToString(), i.ToString());
-                                modEverquestCreatureSpawnPointSQL.AddRow(guid, spawnInstance.MapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, spawnPool.SpawnLimit,
-                                    spawnInstance.RespawnTimeInSeconds, chance);
-                                string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                                CreateCreatureAndRelatedSQLEntries(guid, template, spawnInstance, spawnPool.SpawnGroup, comment, Configuration.CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC);
-                                if (spawnPool.LinkedSpawnGameEvent != null)
-                                    gameEventCreatureSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, guid, true);
-                                if (spawnPool.LinkedDespawnGameEvent != null)
-                                    gameEventCreatureSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, guid, false);
-                            }
-                        }
-                    }
-                    else if (hasRealSpawnCap == true)
-                    {
-                        int poolID = IDGenerationTool.GenerateID("PoolTemplateID", "cappedpool", spawnPool.SpawnGroup.ID.ToString());
-                        poolTemplateSQL.AddRow(poolID, poolDescription, spawnPool.SpawnLimit);
-                        if (spawnPool.LinkedSpawnGameEvent != null)
-                            gameEventPoolSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, poolID, true);
-                        if (spawnPool.LinkedDespawnGameEvent != null)
-                            gameEventPoolSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, poolID, false);
-
-                        // Trick the chance system to enforce a cap
-                        List<CreatureTemplate> pointTemplates = DistributeCandidatesAcrossSpawnPoints(
-                            spawnPool.CreatureTemplates, spawnPool.CreatureTemplateChances, spawnPool.CreatureSpawnInstances.Count);
-                        for (int spawnInstanceIndex = 0; spawnInstanceIndex < spawnPool.CreatureSpawnInstances.Count; spawnInstanceIndex++)
-                        {
-                            CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[spawnInstanceIndex];
-                            CreatureTemplate creatureTemplate = pointTemplates[spawnInstanceIndex];
-                            int creatureGUID = IDGenerationTool.GenerateID("CreatureGUID", "spawn", spawnInstance.ID.ToString(), creatureTemplate.EQCreatureTemplateID.ToString());
-                            poolCreatureSQL.AddRow(creatureGUID, poolID, 0, creatureTemplate.Name);
-                            modEverquestCreatureSpawnPointSQL.AddRow(creatureGUID, spawnInstance.MapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, spawnPool.SpawnLimit, 0, 0);
-                            string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                            CreateCreatureAndRelatedSQLEntries(creatureGUID, creatureTemplate, spawnInstance, spawnPool.SpawnGroup, comment);
-                        }
-                    }
-                    // If there is no cap, have one weighted pool per spawn point
-                    else if (isSingleCreatureTemplate == true)
-                    {
-                        CreatureTemplate template = spawnPool.CreatureTemplates[0];
-                        foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
-                        {
-                            int creatureSQLGUID = IDGenerationTool.GenerateID("CreatureGUID", "spawn", spawnInstance.ID.ToString(), template.EQCreatureTemplateID.ToString());
-                            string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                            CreateCreatureAndRelatedSQLEntries(creatureSQLGUID, template, spawnInstance, spawnPool.SpawnGroup, comment);
-                            if (spawnPool.LinkedSpawnGameEvent != null)
-                                gameEventCreatureSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, creatureSQLGUID, true);
-                            if (spawnPool.LinkedDespawnGameEvent != null)
-                                gameEventCreatureSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, creatureSQLGUID, false);
-                        }
-                    }
-                    // Multiple candidate creatures per spawn point, so use one pool per spawn with full weighted list
-                    else
-                    {
-                        foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
-                        {
-                            int poolID = IDGenerationTool.GenerateID("PoolTemplateID", "weightedpool", spawnPool.SpawnGroup.ID.ToString(), spawnInstance.ID.ToString());
-                            poolTemplateSQL.AddRow(poolID, poolDescription, 1);
-                            if (spawnPool.LinkedSpawnGameEvent != null)
-                                gameEventPoolSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, poolID, true);
-                            if (spawnPool.LinkedDespawnGameEvent != null)
-                                gameEventPoolSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, poolID, false);
-                            for (int i = 0; i < spawnPool.CreatureTemplates.Count; i++)
-                            {
-                                CreatureTemplate template = spawnPool.CreatureTemplates[i];
-                                int chance = spawnPool.CreatureTemplateChances[i];
-                                int guid = IDGenerationTool.GenerateID("CreatureGUID", "spawn", spawnInstance.ID.ToString(), template.EQCreatureTemplateID.ToString(), i.ToString());
-                                poolCreatureSQL.AddRow(guid, poolID, chance, template.Name);
-                                modEverquestCreatureSpawnPointSQL.AddRow(guid, spawnInstance.MapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, 0, 0, 0);
-                                string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
-                                CreateCreatureAndRelatedSQLEntries(guid, template, spawnInstance, spawnPool.SpawnGroup, comment);
-                            }
-                        }
+                        CreatureSpawnPool? dungeonSpawnPool = spawnPool.CreateCopyWithoutRaidCreatures();
+                        if (dungeonSpawnPool != null)
+                            CreateSpawnPoolSQLEntriesForMap(dungeonSpawnPool, dungeonZoneProperties.DBCMapIDDungeon, "dungeon", ", Dungeon Instance");
                     }
                 }
 
-                // Raid instance versions copy the zone's spawn as static spawn points and never repop, so collapse pools to their most rare
+                // Raid instance versions of the zone spawn exactly like the open world copy (full pools, chances, respawn times, waypoints and game event links).  The single difference is that named raid creatures
+                // stay dead for the whole lockout, which is done by giving raid boss and raid mini boss spawns a respawn time of the instance reset time
                 if (spawnPool.CreatureSpawnInstances.Count > 0 && spawnPool.CreatureTemplates.Count > 0 && mapIDsByShortName.ContainsKey(spawnPool.CreatureSpawnInstances[0].ZoneShortName) == true)
                 {
                     ZoneProperties? raidLowZoneProperties = GetInstanceRaidLowZoneProperties(spawnPool.CreatureSpawnInstances[0]);
                     if (raidLowZoneProperties != null)
-                    {
-                        CreatureTemplate raidCreatureTemplate = spawnPool.GetMostRareCreatureTemplate();
-                        foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
-                        {
-                            int raidCreatureGUID = IDGenerationTool.GenerateID("CreatureGUID", "spawnraidlow", spawnInstance.ID.ToString());
-                            string comment = string.Concat(raidCreatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", raidCreatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID, ", Low Raid Instance");
-                            CreateCreatureAndRelatedSQLEntriesForMap(raidCreatureGUID, raidCreatureTemplate, spawnInstance, spawnPool.SpawnGroup, comment,
-                                raidLowZoneProperties.DBCMapIDRaidLow, Convert.ToInt32(raidLowZoneProperties.InstanceResetTimeInSecRaidLow));
-                            if (spawnPool.LinkedSpawnGameEvent != null)
-                                gameEventCreatureSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, raidCreatureGUID, true);
-                            if (spawnPool.LinkedDespawnGameEvent != null)
-                                gameEventCreatureSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, raidCreatureGUID, false);
-                        }
-                    }
+                        CreateSpawnPoolSQLEntriesForMap(spawnPool, raidLowZoneProperties.DBCMapIDRaidLow, "raidlow", ", Low Raid Instance", Convert.ToInt32(raidLowZoneProperties.InstanceResetTimeInSecRaidLow));
                 }
             }
 
@@ -1404,6 +1288,141 @@ namespace EQWOWConverter
             }
         }
 
+        private static int GetSpawnPointMapID(CreatureSpawnInstance spawnInstance, int mapIDOverride)
+        {
+            if (mapIDOverride > 0)
+                return mapIDOverride;
+            return spawnInstance.MapID;
+        }
+
+        private void CreateSpawnPoolSQLEntriesForMap(CreatureSpawnPool spawnPool, int mapIDOverride, string idContext, string commentSuffix, int raidBossTierRespawnTimeInSec = 0)
+        {
+            bool isSingleInstance = spawnPool.CreatureSpawnInstances.Count == 1;
+            bool isSingleCreatureTemplate = spawnPool.CreatureTemplates.Count == 1;
+
+            // No pool needed, single instance
+            if (isSingleInstance == true && isSingleCreatureTemplate == true)
+            {
+                CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[0];
+                CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
+                int mapID = GetSpawnPointMapID(spawnInstance, mapIDOverride);
+                int creatureSQLGUID = IDGenerationTool.GenerateID("CreatureGUID", string.Concat("spawn", idContext), spawnInstance.ID.ToString(), creatureTemplate.EQCreatureTemplateID.ToString());
+                string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID, commentSuffix);
+                CreateCreatureAndRelatedSQLEntriesForMap(creatureSQLGUID, creatureTemplate, spawnInstance, spawnPool.SpawnGroup, comment, mapID, 0, raidBossTierRespawnTimeInSec);
+                if (spawnPool.LinkedSpawnGameEvent != null)
+                    gameEventCreatureSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, creatureSQLGUID, true);
+                if (spawnPool.LinkedDespawnGameEvent != null)
+                    gameEventCreatureSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, creatureSQLGUID, false);
+            }
+
+            // Pool required (more than one spawn point and/or more than one candidate creature)
+            else
+            {
+                List<string> poolNames = new List<string>();
+                foreach (CreatureTemplate template in spawnPool.CreatureTemplates)
+                    if (poolNames.Contains(template.Name) == false)
+                        poolNames.Add(template.Name);
+                string poolDescription = "(" + spawnPool.SpawnGroup.ID + ")";
+                foreach (string name in poolNames)
+                    poolDescription += ", " + name;
+
+                // Identify which spawn pools need a real cap
+                bool hasRealSpawnCap = spawnPool.SpawnLimit > 0 && spawnPool.SpawnLimit < spawnPool.CreatureSpawnInstances.Count;
+
+                // Cycle groups (capped, with near-instant EQ respawn times, like the Trakanon's Teeth forager/hunter cycles) get every point-and-candidate combination as a plain spawn so any candidate can appear at any point.
+                bool isCycleSpawnGroup = hasRealSpawnCap;
+                if (isCycleSpawnGroup == true)
+                    foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
+                        if (spawnInstance.RespawnTimeInSeconds <= 0 || spawnInstance.RespawnTimeInSeconds > Configuration.CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC)
+                            isCycleSpawnGroup = false;
+                if (isCycleSpawnGroup == true)
+                {
+                    foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
+                    {
+                        int mapID = GetSpawnPointMapID(spawnInstance, mapIDOverride);
+                        for (int i = 0; i < spawnPool.CreatureTemplates.Count; i++)
+                        {
+                            CreatureTemplate template = spawnPool.CreatureTemplates[i];
+                            int chance = spawnPool.CreatureTemplateChances[i];
+                            int guid = IDGenerationTool.GenerateID("CreatureGUID", string.Concat("spawn", idContext), spawnInstance.ID.ToString(), template.EQCreatureTemplateID.ToString(), i.ToString());
+                            modEverquestCreatureSpawnPointSQL.AddRow(guid, mapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, spawnPool.SpawnLimit,
+                                spawnInstance.RespawnTimeInSeconds, chance);
+                            string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID, commentSuffix);
+                            CreateCreatureAndRelatedSQLEntriesForMap(guid, template, spawnInstance, spawnPool.SpawnGroup, comment, mapID, Configuration.CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC, raidBossTierRespawnTimeInSec);
+                            if (spawnPool.LinkedSpawnGameEvent != null)
+                                gameEventCreatureSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, guid, true);
+                            if (spawnPool.LinkedDespawnGameEvent != null)
+                                gameEventCreatureSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, guid, false);
+                        }
+                    }
+                }
+                else if (hasRealSpawnCap == true)
+                {
+                    int poolID = IDGenerationTool.GenerateID("PoolTemplateID", string.Concat("cappedpool", idContext), spawnPool.SpawnGroup.ID.ToString());
+                    poolTemplateSQL.AddRow(poolID, poolDescription, spawnPool.SpawnLimit);
+                    if (spawnPool.LinkedSpawnGameEvent != null)
+                        gameEventPoolSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, poolID, true);
+                    if (spawnPool.LinkedDespawnGameEvent != null)
+                        gameEventPoolSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, poolID, false);
+
+                    // Trick the chance system to enforce a cap
+                    List<CreatureTemplate> pointTemplates = DistributeCandidatesAcrossSpawnPoints(
+                        spawnPool.CreatureTemplates, spawnPool.CreatureTemplateChances, spawnPool.CreatureSpawnInstances.Count);
+                    for (int spawnInstanceIndex = 0; spawnInstanceIndex < spawnPool.CreatureSpawnInstances.Count; spawnInstanceIndex++)
+                    {
+                        CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[spawnInstanceIndex];
+                        CreatureTemplate creatureTemplate = pointTemplates[spawnInstanceIndex];
+                        int mapID = GetSpawnPointMapID(spawnInstance, mapIDOverride);
+                        int creatureGUID = IDGenerationTool.GenerateID("CreatureGUID", string.Concat("spawn", idContext), spawnInstance.ID.ToString(), creatureTemplate.EQCreatureTemplateID.ToString());
+                        poolCreatureSQL.AddRow(creatureGUID, poolID, 0, creatureTemplate.Name);
+                        modEverquestCreatureSpawnPointSQL.AddRow(creatureGUID, mapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, spawnPool.SpawnLimit, 0, 0);
+                        string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID, commentSuffix);
+                        CreateCreatureAndRelatedSQLEntriesForMap(creatureGUID, creatureTemplate, spawnInstance, spawnPool.SpawnGroup, comment, mapID, 0, raidBossTierRespawnTimeInSec);
+                    }
+                }
+                // If there is no cap, have one weighted pool per spawn point
+                else if (isSingleCreatureTemplate == true)
+                {
+                    CreatureTemplate template = spawnPool.CreatureTemplates[0];
+                    foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
+                    {
+                        int mapID = GetSpawnPointMapID(spawnInstance, mapIDOverride);
+                        int creatureSQLGUID = IDGenerationTool.GenerateID("CreatureGUID", string.Concat("spawn", idContext), spawnInstance.ID.ToString(), template.EQCreatureTemplateID.ToString());
+                        string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID, commentSuffix);
+                        CreateCreatureAndRelatedSQLEntriesForMap(creatureSQLGUID, template, spawnInstance, spawnPool.SpawnGroup, comment, mapID, 0, raidBossTierRespawnTimeInSec);
+                        if (spawnPool.LinkedSpawnGameEvent != null)
+                            gameEventCreatureSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, creatureSQLGUID, true);
+                        if (spawnPool.LinkedDespawnGameEvent != null)
+                            gameEventCreatureSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, creatureSQLGUID, false);
+                    }
+                }
+                // Multiple candidate creatures per spawn point, so use one pool per spawn with full weighted list
+                else
+                {
+                    foreach (CreatureSpawnInstance spawnInstance in spawnPool.CreatureSpawnInstances)
+                    {
+                        int mapID = GetSpawnPointMapID(spawnInstance, mapIDOverride);
+                        int poolID = IDGenerationTool.GenerateID("PoolTemplateID", string.Concat("weightedpool", idContext), spawnPool.SpawnGroup.ID.ToString(), spawnInstance.ID.ToString());
+                        poolTemplateSQL.AddRow(poolID, poolDescription, 1);
+                        if (spawnPool.LinkedSpawnGameEvent != null)
+                            gameEventPoolSQL.AddRow(spawnPool.LinkedSpawnGameEvent.GameEventsSQLID, poolID, true);
+                        if (spawnPool.LinkedDespawnGameEvent != null)
+                            gameEventPoolSQL.AddRow(spawnPool.LinkedDespawnGameEvent.GameEventsSQLID, poolID, false);
+                        for (int i = 0; i < spawnPool.CreatureTemplates.Count; i++)
+                        {
+                            CreatureTemplate template = spawnPool.CreatureTemplates[i];
+                            int chance = spawnPool.CreatureTemplateChances[i];
+                            int guid = IDGenerationTool.GenerateID("CreatureGUID", string.Concat("spawn", idContext), spawnInstance.ID.ToString(), template.EQCreatureTemplateID.ToString(), i.ToString());
+                            poolCreatureSQL.AddRow(guid, poolID, chance, template.Name);
+                            modEverquestCreatureSpawnPointSQL.AddRow(guid, mapID, spawnInstance.ID, spawnPool.SpawnGroup.ID, 0, 0, 0);
+                            string comment = string.Concat(template.Name, " - EQ Group: ", spawnPool.SpawnGroup.ID, ", EQ NPC ID: ", template.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID, commentSuffix);
+                            CreateCreatureAndRelatedSQLEntriesForMap(guid, template, spawnInstance, spawnPool.SpawnGroup, comment, mapID, 0, raidBossTierRespawnTimeInSec);
+                        }
+                    }
+                }
+            }
+        }
+
         private static ZoneProperties? GetInstanceRaidLowZoneProperties(CreatureSpawnInstance spawnInstance)
         {
             ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(spawnInstance.ZoneShortName);
@@ -1412,16 +1431,22 @@ namespace EQWOWConverter
             return zoneProperties;
         }
 
-        private static Dictionary<int, HashSet<int>> alreadySavedCustomWaypointGridIDsByMapID = new Dictionary<int, HashSet<int>>(); // Ensure only 1 of each waypoint set is saved
-        private void CreateCreatureAndRelatedSQLEntries(int creatureGUID, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance, CreatureSpawnGroup spawnGroup, string comment, int respawnTimeOverrideInSec = 0)
+        private static ZoneProperties? GetInstanceDungeonZoneProperties(CreatureSpawnInstance spawnInstance)
         {
-            CreateCreatureAndRelatedSQLEntriesForMap(creatureGUID, creatureTemplate, spawnInstance, spawnGroup, comment, spawnInstance.MapID, respawnTimeOverrideInSec);
+            ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(spawnInstance.ZoneShortName);
+            if (zoneProperties.ShouldGenerateInstanceDungeon() == false)
+                return null;
         }
 
-        private void CreateCreatureAndRelatedSQLEntriesForMap(int creatureGUID, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance, CreatureSpawnGroup spawnGroup, string comment, int mapID, int respawnTimeOverrideInSec = 0)
+        private static Dictionary<int, HashSet<int>> alreadySavedCustomWaypointGridIDsByMapID = new Dictionary<int, HashSet<int>>(); // Ensure only 1 of each waypoint set is saved
+        private void CreateCreatureAndRelatedSQLEntriesForMap(int creatureGUID, CreatureTemplate creatureTemplate, CreatureSpawnInstance spawnInstance, CreatureSpawnGroup spawnGroup, string comment, int mapID,
+            int respawnTimeOverrideInSec = 0, int raidBossTierRespawnTimeInSec = 0)
         {
+            // A raid instance keeps its named raid creatures dead for the whole lockout, and this wins over any other respawn rule for them
             int respawnTimeInSec;
-            if (respawnTimeOverrideInSec > 0)
+            if (raidBossTierRespawnTimeInSec > 0 && creatureTemplate.IsRaidBossTierCreature() == true)
+                respawnTimeInSec = raidBossTierRespawnTimeInSec;
+            else if (respawnTimeOverrideInSec > 0)
                 respawnTimeInSec = respawnTimeOverrideInSec;
             else
                 respawnTimeInSec = GetCreatureRespawnTimeInSeconds(creatureTemplate, spawnInstance);
@@ -2652,10 +2677,11 @@ namespace EQWOWConverter
                 // Zone safe point (used by the mod for in-zone succor teleports)
                 modEverquestZoneSafePointSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.SafePosition);
 
-                // Zone rules (used by the mod for zone-level behavior like bind restrictions and z agro limits).  The raid instance map
-                // is stored on the open world row, since that's what the mod looks up when a player walks a zone line into this zone
+                // Zone rules (used by the mod for zone-level behavior like bind restrictions and z agro limits).  The instance maps
+                // are stored on the open world row, since that's what the mod looks up when a player walks a zone line into this zone
                 int instanceRaidLowMapID = zone.ZoneProperties.ShouldGenerateInstanceRaidLow() ? zone.ZoneProperties.DBCMapIDRaidLow : 0;
-                modEverquestZoneSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.AllowBind, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, instanceRaidLowMapID);
+                int instanceDungeonMapID = zone.ZoneProperties.ShouldGenerateInstanceDungeon() ? zone.ZoneProperties.DBCMapIDDungeon : 0;
+                modEverquestZoneSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.AllowBind, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, instanceRaidLowMapID, instanceDungeonMapID);
 
                 // Zones with bodies that can be unreachable by foot need a flying mount as a ghost, and this automatically covers instanced versions
                 if (zone.ZoneProperties.ForceFlyingGhost == true)
@@ -2673,7 +2699,7 @@ namespace EQWOWConverter
                     gameTeleSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, zone.ShortName + "raid", zone.ZoneProperties.TelePosition.X,
                         zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
                     modEverquestZoneSafePointSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, zone.ZoneProperties.SafePosition);
-                    modEverquestZoneSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, false, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, 0);
+                    modEverquestZoneSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, false, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, 0, 0);
                     lfgDungeonTemplateSQL.AddRow(zone.ZoneProperties.DBCLFGDungeonsIDRaidLow, raidLowDescriptiveName, zone.ZoneProperties.TelePosition.X,
                         zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
 
@@ -2688,6 +2714,16 @@ namespace EQWOWConverter
                             achievementCriteriaDataSQL.AddRow(criteriaID, AchievementCriteriaDataSQL.DATA_TYPE_MAP_ID, zone.ZoneProperties.DBCMapIDRaidLow, 0);
                         }
                     }
+                }
+
+                // Instanced dungeon version of the zone, a mirror of the base zone but never allow binding since the instance is temporary.  Don't add to dungeon finder
+                if (zone.ZoneProperties.ShouldGenerateInstanceDungeon() == true)
+                {
+                    instanceTemplateSQL.AddRow(zone.ZoneProperties.DBCMapIDDungeon);
+                    gameTeleSQL.AddRow(zone.ZoneProperties.DBCMapIDDungeon, zone.ShortName + "dungeon", zone.ZoneProperties.TelePosition.X,
+                        zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
+                    modEverquestZoneSafePointSQL.AddRow(zone.ZoneProperties.DBCMapIDDungeon, zone.ZoneProperties.SafePosition);
+                    modEverquestZoneSQL.AddRow(zone.ZoneProperties.DBCMapIDDungeon, false, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, 0, 0);
                 }
 
                 // Database viewer needs zone-to-continent mapping and names
@@ -2729,9 +2765,9 @@ namespace EQWOWConverter
                     float targetOrientation = zoneLine.TargetZoneOrientation;
                     areaTriggerTeleportSQL.AddRow(areaTriggerID, descriptiveName, targetMapId, targetPositionX, targetPositionY, targetPositionZ, targetOrientation);
 
-                    // Zone lines into a zone that has a raid instance copy are scripted, so the mod can route a player who still has a corpse or a raid inside that instance back
-                    // into it instead of into the open world copy of the zone
-                    if (targetZoneProperties.ShouldGenerateInstanceRaidLow() == true)
+                    // Zone lines into a zone that has an instance copy are scripted, so the mod can route the player into that instance instead of into the open world copy of the zone,
+                    // back into a raid instance they still have a corpse or a raid inside of, or into a dungeon instance whenever the character's Dungeon Mode is set to instanced
+                    if (targetZoneProperties.ShouldGenerateInstanceRaidLow() == true || targetZoneProperties.ShouldGenerateInstanceDungeon() == true)
                         areaTriggerScriptsSQL.AddRow(areaTriggerID, Configuration.CONFIGONLY_SQL_AREATRIGGER_SCRIPTNAME_ZONE_LINE);
 
                     // Copy of the zone line for the raid instance version of this zone 
@@ -2745,6 +2781,23 @@ namespace EQWOWConverter
                             raidLowTargetMapID = zone.ZoneProperties.DBCMapIDRaidLow;
                         areaTriggerTeleportSQL.AddRow(raidLowAreaTriggerID, string.Concat(descriptiveName, " RaidLow"), raidLowTargetMapID,
                             targetPositionX, targetPositionY, targetPositionZ, targetOrientation);
+                    }
+
+                    // Copy of the zone line for the dungeon instance version of this zone.  The teleport itself always points at the open world copy of the target zone, which is what
+                    // walking out of an instance should do, and the script row below sends the player into the target zone's own dungeon instance instead when they have Dungeon Mode
+                    // set to instanced, that is what lets one dungeon instance lead into another
+                    if (zone.ZoneProperties.ShouldGenerateInstanceDungeon() == true)
+                    {
+                        int dungeonAreaTriggerID = zoneLine.AreaTriggerIDDungeon;
+                        areaTriggerSQL.AddRow(dungeonAreaTriggerID, zone.ZoneProperties.DBCMapIDDungeon, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
+                            zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
+                        int dungeonTargetMapID = targetMapId;
+                        if (zoneLine.TargetZoneShortName.ToLower().Trim() == zone.ShortName.ToLower().Trim())
+                            dungeonTargetMapID = zone.ZoneProperties.DBCMapIDDungeon;
+                        areaTriggerTeleportSQL.AddRow(dungeonAreaTriggerID, string.Concat(descriptiveName, " Dungeon"), dungeonTargetMapID,
+                            targetPositionX, targetPositionY, targetPositionZ, targetOrientation);
+                        if (targetZoneProperties.ShouldGenerateInstanceDungeon() == true && dungeonTargetMapID != zone.ZoneProperties.DBCMapIDDungeon)
+                            areaTriggerScriptsSQL.AddRow(dungeonAreaTriggerID, Configuration.CONFIGONLY_SQL_AREATRIGGER_SCRIPTNAME_ZONE_LINE);
                     }
                 }
             }
@@ -2786,6 +2839,17 @@ namespace EQWOWConverter
                         graveyardZoneSQL.AddRowForInstanceRaidLow(graveyard, zoneAreaID);
                         int raidLowSpiritHealerGUID = IDGenerationTool.GenerateID("CreatureGUID", "spirithealerraidlow", graveyard.WorldSafeLocsDBCID.ToString());
                         creatureSQL.AddRow(raidLowSpiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, raidLowMapID, zoneAreaID, zoneAreaID,
+                            graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 300, string.Empty, false);
+                    }
+
+                    // And the same for the dungeon instance version of the zone
+                    if (curZoneProperties.ShouldGenerateInstanceDungeon() == true)
+                    {
+                        int dungeonMapID = curZoneProperties.DBCMapIDDungeon;
+                        gameGraveyardSQL.AddRowForInstanceDungeon(graveyard, dungeonMapID);
+                        graveyardZoneSQL.AddRowForInstanceDungeon(graveyard, zoneAreaID);
+                        int dungeonSpiritHealerGUID = IDGenerationTool.GenerateID("CreatureGUID", "spirithealerdungeon", graveyard.WorldSafeLocsDBCID.ToString());
+                        creatureSQL.AddRow(dungeonSpiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, dungeonMapID, zoneAreaID, zoneAreaID,
                             graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 300, string.Empty, false);
                     }
                 }
@@ -2863,11 +2927,8 @@ namespace EQWOWConverter
                         if (gameObjectZoneProperties.ShouldGenerateInstanceRaidLow() == true && gameObject.GameObjectGUIDRaidLow != 0)
                         {
                             int raidMapID = gameObjectZoneProperties.DBCMapIDRaidLow;
-                            int raidSpawnTimeInSec = spawnTimeInSec;
-                            if (gameObject.ObjectType == GameObjects.GameObjectType.Chest)
-                                raidSpawnTimeInSec = Convert.ToInt32(gameObjectZoneProperties.InstanceResetTimeInSecRaidLow);
                             string raidComment = string.Concat(comment, " RaidLow");
-                            gameObjectSQL.AddRow(gameObject.GameObjectGUIDRaidLow, gameObject.GameObjectTemplateEntryID, raidMapID, areaID, gameObject.Position, gameObject.Orientation, gameObject.InteractiveRotation, raidSpawnTimeInSec, raidComment);
+                            gameObjectSQL.AddRow(gameObject.GameObjectGUIDRaidLow, gameObject.GameObjectTemplateEntryID, raidMapID, areaID, gameObject.Position, gameObject.Orientation, gameObject.InteractiveRotation, spawnTimeInSec, raidComment);
                             if (gameObject.EQIncline != 0)
                                 gameObjectAddonSQL.AddRow(gameObject.GameObjectGUIDRaidLow);
 
@@ -2894,6 +2955,46 @@ namespace EQWOWConverter
                                         gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
                                 else
                                     smartScriptsSQL.AddRowForGameObjectTriggeredTeleport(-gameObject.GameObjectGUIDRaidLow, raidDestinationMapID, gameObject.DestinationPosition.X,
+                                        gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
+                            }
+                        }
+
+                        // And the same duplication onto the dungeon instance map, which is an exact mirror of the open world spawn including its respawn timer
+                        if (gameObjectZoneProperties.ShouldGenerateInstanceDungeon() == true && gameObject.GameObjectGUIDDungeon != 0)
+                        {
+                            int dungeonMapID = gameObjectZoneProperties.DBCMapIDDungeon;
+                            string dungeonComment = string.Concat(comment, " Dungeon");
+                            gameObjectSQL.AddRow(gameObject.GameObjectGUIDDungeon, gameObject.GameObjectTemplateEntryID, dungeonMapID, areaID, gameObject.Position, gameObject.Orientation, gameObject.InteractiveRotation, spawnTimeInSec, dungeonComment);
+                            if (gameObject.EQIncline != 0)
+                                gameObjectAddonSQL.AddRow(gameObject.GameObjectGUIDDungeon);
+
+                            // Dungeon copies share the base map's GO templates, so smart scripts must be attached per-guid (negative ID) which makes the needed dungeon copy run
+                            if (gameObject.TriggerGameObjectGUID != 0)
+                            {
+                                if (gameObject.TriggerGameObjectGUIDDungeon == 0)
+                                    Logger.WriteError("GameObject with GUID ", gameObject.GameObjectGUID.ToString(), " has a trigger chain, but the trigger target has no dungeon instance copy so the dungeon chain is skipped");
+                                else
+                                {
+                                    string scriptComment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUIDDungeon, " Chain Activates GUID ", gameObject.TriggerGameObjectGUIDDungeon, " Dungeon");
+                                    smartScriptsSQL.AddRowForGameObjectStateTriggerEvent(-gameObject.GameObjectGUIDDungeon, gameObject.TriggerGameObjectGUIDDungeon, gameObject.TriggerGameObjectTemplateEntryID, scriptComment);
+                                }
+                            }
+                            else if (gameObject.ObjectType == GameObjects.GameObjectType.Teleport)
+                            {
+                                // Teleports that stay inside the zone must stay inside the dungeon instance, and one that crosses into another zone with its own dungeon instance lands in that zone's instance,
+                                // matching how zone lines chain from one dungeon instance into the next
+                                string destinationZoneShortName = gameObject.DestinationZoneShortName.ToLower().Trim();
+                                int dungeonDestinationMapID = gameObject.DestinationMapID;
+                                if (destinationZoneShortName == gameObjectByShortName.Key)
+                                    dungeonDestinationMapID = dungeonMapID;
+                                else if (zonePropertiesByShortName.ContainsKey(destinationZoneShortName) == true && zonePropertiesByShortName[destinationZoneShortName].ShouldGenerateInstanceDungeon() == true)
+                                    dungeonDestinationMapID = zonePropertiesByShortName[destinationZoneShortName].DBCMapIDDungeon;
+                                string scriptComment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUIDDungeon, " Teleports to ", gameObject.DestinationZoneShortName, " Dungeon");
+                                if (gameObject.LockDBCID != 0)
+                                    smartScriptsSQL.AddRowForGameObjectTriggeredTeleportOnActivate(-gameObject.GameObjectGUIDDungeon, dungeonDestinationMapID, gameObject.DestinationPosition.X,
+                                        gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
+                                else
+                                    smartScriptsSQL.AddRowForGameObjectTriggeredTeleport(-gameObject.GameObjectGUIDDungeon, dungeonDestinationMapID, gameObject.DestinationPosition.X,
                                         gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
                             }
                         }

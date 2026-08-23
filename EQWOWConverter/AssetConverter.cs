@@ -349,6 +349,13 @@ namespace EQWOWConverter
                     Directory.Delete(targetSpellbookSortAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceSpellbookSortAddOnFolder, targetSpellbookSortAddOnFolder, true, true);
 
+                // Copy the dungeon mode addon into the prep location
+                string sourceDungeonModeAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_DungeonMode");
+                string targetDungeonModeAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_DungeonMode");
+                if (Directory.Exists(targetDungeonModeAddOnFolder) == true)
+                    Directory.Delete(targetDungeonModeAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceDungeonModeAddOnFolder, targetDungeonModeAddOnFolder, true, true);
+
                 // Create or update the MPQs
                 CreateOrUpdateMainPatchMPQ();
                 if (Configuration.GENERATE_WORLDMAPS == true)
@@ -3679,6 +3686,13 @@ namespace EQWOWConverter
                         outputLinksFileTextSB.AppendLine(string.Concat("[", zone.ZoneProperties.DBCWorldMapAreaIDRaidLow, "] = {"));
                         outputLinksFileTextSB.Append(zoneLinkBlockSB.ToString());
                     }
+
+                    // And the same for the dungeon instance copy
+                    if (zone.ZoneProperties.ShouldGenerateInstanceDungeon() == true)
+                    {
+                        outputLinksFileTextSB.AppendLine(string.Concat("[", zone.ZoneProperties.DBCWorldMapAreaIDDungeon, "] = {"));
+                        outputLinksFileTextSB.Append(zoneLinkBlockSB.ToString());
+                    }
                 }
             }
 
@@ -4335,6 +4349,11 @@ namespace EQWOWConverter
                 if (Directory.Exists(targetSpellbookSortAddOnFolder) == true)
                     Directory.Delete(targetSpellbookSortAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceSpellbookSortAddOnFolder, targetSpellbookSortAddOnFolder, true, true);
+                string sourceDungeonModeAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_DungeonMode");
+                string targetDungeonModeAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_DungeonMode");
+                if (Directory.Exists(targetDungeonModeAddOnFolder) == true)
+                    Directory.Delete(targetDungeonModeAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceDungeonModeAddOnFolder, targetDungeonModeAddOnFolder, true, true);
             }
 
             Logger.WriteDebug("Deploying to client complete");

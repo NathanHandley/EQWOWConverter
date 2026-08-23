@@ -44,5 +44,15 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("Comment", graveyard.DescriptionRaidLow);
             Rows.Add(newRow);
         }
+
+        public void AddRowForInstanceDungeon(ZonePropertiesGraveyard graveyard, int zoneAreaID)
+        {
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("ID", graveyard.WorldSafeLocsDBCIDDungeon);
+            newRow.AddInt("GhostZone", zoneAreaID);
+            newRow.AddFloat("Faction", 0); // 0 = Any, 67 = Horde, 469 = Alliance
+            newRow.AddString("Comment", graveyard.DescriptionDungeon);
+            Rows.Add(newRow);
+        }
     }
 }

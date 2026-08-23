@@ -197,6 +197,16 @@ namespace EQWOWConverter.Creatures
             return IsUndeadBodyTypeForInvisVsUndead() == false || SeesInvisibleUndead == true;
         }
 
+        public bool IsRaidCreature()
+        {
+            return DifficultyType == CreatureDifficultyType.RaidTrash || DifficultyType == CreatureDifficultyType.RaidBoss || DifficultyType == CreatureDifficultyType.RaidMiniBoss;
+        }
+
+        public bool IsRaidBossTierCreature()
+        {
+            return DifficultyType == CreatureDifficultyType.RaidBoss || DifficultyType == CreatureDifficultyType.RaidMiniBoss;
+        }
+
         public static Dictionary<int, CreatureTemplate> GetCreatureTemplateListByEQID()
         {
             if (CreatureTemplateListByEQID.Count == 0)

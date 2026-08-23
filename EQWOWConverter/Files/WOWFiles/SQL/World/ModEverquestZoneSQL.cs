@@ -30,11 +30,12 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`ExpansionID` INT(10) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`MaxAgroZDistance` FLOAT NOT NULL DEFAULT '-1', ");
             stringBuilder.AppendLine("`InstanceRaidLowMapID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`InstanceDungeonMapID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`MapID`) USING BTREE); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int mapID, bool allowBind, int expansionID, float maxAgroZDistance, int instanceRaidLowMapID)
+        public void AddRow(int mapID, bool allowBind, int expansionID, float maxAgroZDistance, int instanceRaidLowMapID, int instanceDungeonMapID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("MapID", mapID);
@@ -42,6 +43,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("ExpansionID", expansionID);
             newRow.AddFloat("MaxAgroZDistance", maxAgroZDistance);
             newRow.AddInt("InstanceRaidLowMapID", instanceRaidLowMapID);
+            newRow.AddInt("InstanceDungeonMapID", instanceDungeonMapID);
             Rows.Add(newRow);
         }
     }

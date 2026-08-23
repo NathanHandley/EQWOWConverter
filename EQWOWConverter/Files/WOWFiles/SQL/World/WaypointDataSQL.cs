@@ -31,7 +31,10 @@ namespace EQWOWConverter.WOWFiles
             }
             int idLow = Configuration.SQL_CREATURE_GUID_LOW * 1000;
             int idHigh = Configuration.SQL_CREATURE_GUID_HIGH * 1000;
-            sb.Append("DELETE FROM waypoint_data WHERE `id` >= " + idLow.ToString() + " AND `id` <= " + idHigh + ";");
+            sb.AppendLine("DELETE FROM waypoint_data WHERE `id` >= " + idLow.ToString() + " AND `id` <= " + idHigh + ";");
+            int idLowBlock2 = Configuration.SQL_CREATURE_GUID_BLOCK2_LOW * 1000;
+            int idHighBlock2 = Configuration.SQL_CREATURE_GUID_BLOCK2_HIGH * 1000;
+            sb.Append("DELETE FROM waypoint_data WHERE `id` >= " + idLowBlock2.ToString() + " AND `id` <= " + idHighBlock2 + ";");
             return sb.ToString();
         }
 

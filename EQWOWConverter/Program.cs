@@ -216,6 +216,7 @@ internal class Program
             }
             Logger.WriteInfo("- DUNGEON_FINDER_ENABLED is set to ", Configuration.DUNGEON_FINDER_ENABLED.ToString());
             Logger.WriteInfo(" - DUNGEON_RAID_LOW_INSTANCES_ENABLED is set to ", Configuration.DUNGEON_RAID_LOW_INSTANCES_ENABLED.ToString());
+            Logger.WriteInfo("- DUNGEON_INSTANCES_ENABLED is set to ", Configuration.DUNGEON_INSTANCES_ENABLED.ToString());
             Logger.WriteInfo("- GENERATE_NON_PLAYER_OBTAINABLE_ITEMS is set to ", Configuration.GENERATE_NON_PLAYER_OBTAINABLE_ITEMS.ToString());
             Logger.WriteInfo("- PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED is set to ", Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED.ToString());
             Logger.WriteInfo("- SPELLS_LEARNABLE_FROM_ITEMS_ENABLED is set to ", Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED.ToString());
