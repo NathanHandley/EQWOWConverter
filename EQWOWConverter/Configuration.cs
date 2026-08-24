@@ -554,6 +554,15 @@ namespace EQWOWConverter
         // If true, creature pets will have the same scaling as set above
         public static bool CREATURE_PET_ALLOW_STAT_MOD_SCALING = false;
 
+        // If true, player-summoned pets pull their combat stats from the power tiers in SpellPetPowerTierLevelStats.csv (pet_levelstats)
+        public static bool CREATURE_PET_USE_POWER_TIER_LEVEL_STATS = true;
+
+        // The swing time (in ms) that the power tier damage values are balanced against, so slower/faster EQ pets keep the same damage per second
+        public static int CREATURE_PET_POWER_TIER_REFERENCE_ATTACK_TIME_IN_MS = 2000;
+
+        // The highest level to generate power tier pet stats for (must be at or above the server max player level)
+        public static int CREATURE_PET_POWER_TIER_MAX_LEVEL = 80;
+
         // The value to name the everquest parent reputation item as
         public static string CREATURE_FACTION_ROOT_NAME = "EverQuest";
 
@@ -1849,6 +1858,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE", CREATURE_RANK_ELITE_CALC_FROM_HP_MOD_TRIPLINE, "Creatures that cross these thresholds will be elite if not given another rank", false);
             OutputVariableToConfig("CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE", CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE, "");
             OutputVariableToConfig("CREATURE_PET_ALLOW_STAT_MOD_SCALING", CREATURE_PET_ALLOW_STAT_MOD_SCALING, "If true, creature pets will have the same scaling as set above");
+            OutputVariableToConfig("CREATURE_PET_USE_POWER_TIER_LEVEL_STATS", CREATURE_PET_USE_POWER_TIER_LEVEL_STATS, "If true, player-summoned pets pull their combat stats from the power tiers in SpellPetPowerTierLevelStats.csv (the pet_levelstats table), which are modeled on the warlock pets");
+            OutputVariableToConfig("CREATURE_PET_POWER_TIER_REFERENCE_ATTACK_TIME_IN_MS", CREATURE_PET_POWER_TIER_REFERENCE_ATTACK_TIME_IN_MS, "The swing time (in ms) that the power tier damage values are balanced against, so slower or faster EQ pets keep the same damage per second", false);
+            OutputVariableToConfig("CREATURE_PET_POWER_TIER_MAX_LEVEL", CREATURE_PET_POWER_TIER_MAX_LEVEL, "The highest level to generate power tier pet stats for (must be at or above the server max player level)");
             OutputVariableToConfig("CREATURE_FACTION_ROOT_NAME", CREATURE_FACTION_ROOT_NAME, "The value to name the everquest parent reputation item as");
             OutputVariableToConfig("CREATURE_FACTION_TEMPLATE_DEFAULT", CREATURE_FACTION_TEMPLATE_DEFAULT, "The default faction values to use if none can be mapped.  Using the 'neutral' record for now.", false);
             OutputVariableToConfig("CREATURE_FACTION_DEFAULT", CREATURE_FACTION_DEFAULT, "");
@@ -2383,6 +2395,9 @@ namespace EQWOWConverter
             CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE = ReadVariableFromConfigString("CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE", configValuesByVariableName, CREATURE_RANK_ELITE_CALC_FROM_DMG_MOD_TRIPLINE);
 
             CREATURE_PET_ALLOW_STAT_MOD_SCALING = ReadVariableFromConfigString("CREATURE_PET_ALLOW_STAT_MOD_SCALING", configValuesByVariableName, CREATURE_PET_ALLOW_STAT_MOD_SCALING);
+            CREATURE_PET_USE_POWER_TIER_LEVEL_STATS = ReadVariableFromConfigString("CREATURE_PET_USE_POWER_TIER_LEVEL_STATS", configValuesByVariableName, CREATURE_PET_USE_POWER_TIER_LEVEL_STATS);
+            CREATURE_PET_POWER_TIER_REFERENCE_ATTACK_TIME_IN_MS = ReadVariableFromConfigString("CREATURE_PET_POWER_TIER_REFERENCE_ATTACK_TIME_IN_MS", configValuesByVariableName, CREATURE_PET_POWER_TIER_REFERENCE_ATTACK_TIME_IN_MS);
+            CREATURE_PET_POWER_TIER_MAX_LEVEL = ReadVariableFromConfigString("CREATURE_PET_POWER_TIER_MAX_LEVEL", configValuesByVariableName, CREATURE_PET_POWER_TIER_MAX_LEVEL);
             CREATURE_FACTION_ROOT_NAME = ReadVariableFromConfigString("CREATURE_FACTION_ROOT_NAME", configValuesByVariableName, CREATURE_FACTION_ROOT_NAME);
             CREATURE_FACTION_TEMPLATE_DEFAULT = ReadVariableFromConfigString("CREATURE_FACTION_TEMPLATE_DEFAULT", configValuesByVariableName, CREATURE_FACTION_TEMPLATE_DEFAULT);
             CREATURE_FACTION_DEFAULT = ReadVariableFromConfigString("CREATURE_FACTION_DEFAULT", configValuesByVariableName, CREATURE_FACTION_DEFAULT);
@@ -2562,6 +2577,7 @@ namespace EQWOWConverter
             SPELL_SPELL_POWER_AOE_MULTIPLIER = ReadVariableFromConfigString("SPELL_SPELL_POWER_AOE_MULTIPLIER", configValuesByVariableName, SPELL_SPELL_POWER_AOE_MULTIPLIER);
             SPELL_SPELL_POWER_LOW_LEVEL_MOD = ReadVariableFromConfigString("SPELL_SPELL_POWER_LOW_LEVEL_MOD", configValuesByVariableName, SPELL_SPELL_POWER_LOW_LEVEL_MOD);
             SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL = ReadVariableFromConfigString("SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL", configValuesByVariableName, SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL);
+            SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP = ReadVariableFromConfigString("SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP", configValuesByVariableName, SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP);
             SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD = ReadVariableFromConfigString("SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD", configValuesByVariableName, SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD);
             SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT = ReadVariableFromConfigString("SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT", configValuesByVariableName, SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT);
             SPELL_SUMMON_CASTER_AURA_SPELL_ID = ReadVariableFromConfigString("SPELL_SUMMON_CASTER_AURA_SPELL_ID", configValuesByVariableName, SPELL_SUMMON_CASTER_AURA_SPELL_ID);

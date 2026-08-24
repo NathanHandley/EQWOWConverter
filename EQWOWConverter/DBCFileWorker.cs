@@ -164,7 +164,19 @@ namespace EQWOWConverter
                 {
                     // Don't hide the chain spells if there's an aura under the non-aura
                     bool hideFromDisplay = (i != 0) && (curEffectBlock.ForceVisibleSplitAura == false);
-                    spellDBC.AddRow(curEffectBlock, actionDescription, auraDescription, spellTemplate, hideFromDisplay, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
+
+                    // Worn effects never get spell_bonus_data, so only cast blocks show the coefficient.  It goes last, in its own paragraph.
+                    string blockActionDescription = actionDescription;
+                    string spellPowerCoefficientText = spellTemplate.GetSpellPowerCoefficientTooltipTextForBlock(curEffectBlock);
+                    if (spellPowerCoefficientText.Length > 0)
+                    {
+                        if (blockActionDescription.Length > 0)
+                            blockActionDescription = string.Concat(blockActionDescription, "\n\n", spellPowerCoefficientText);
+                        else
+                            blockActionDescription = spellPowerCoefficientText;
+                    }
+
+                    spellDBC.AddRow(curEffectBlock, blockActionDescription, auraDescription, spellTemplate, hideFromDisplay, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
                         curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, false, isUsableWhileSilenced);
                 }
                 else

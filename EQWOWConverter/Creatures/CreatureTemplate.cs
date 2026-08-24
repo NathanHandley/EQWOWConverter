@@ -126,6 +126,7 @@ namespace EQWOWConverter.Creatures
         public bool SeesInvisibleUndead = false;
         public bool SeesStealth = false;
         public bool IsPet = false;
+        public string PetPowerTierName = string.Empty;
         public bool IsCompanionPet = false;
         public bool IsIllusionForm = false; 
         public float ModelTemplateScale = 1.0f; // Used for form changes
@@ -176,6 +177,9 @@ namespace EQWOWConverter.Creatures
 
         public bool IsTameable()
         {
+            // Summoned and companion pets never spawn in the world, so nothing about them should read as a tameable beast
+            if (IsPet == true || IsCompanionPet == true)
+                return false;
             if (Race.WOWCreatureType == 1) // beast
                 return true;
             else
@@ -184,6 +188,8 @@ namespace EQWOWConverter.Creatures
 
         public bool IsExoticTameable()
         {
+            if (IsPet == true || IsCompanionPet == true)
+                return false;
             return Race.IsExoticTame;
         }
 

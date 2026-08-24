@@ -113,6 +113,7 @@ namespace EQWOWConverter
         private NPCTextSQL npcTextSQL = new NPCTextSQL();
         private NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
         private PageTextSQL pageTextSQL = new PageTextSQL();
+        private PetLevelStatsSQL petLevelStatsSQL = new PetLevelStatsSQL();
         private PetNameGenerationSQL petNameGenerationSQL = new PetNameGenerationSQL();
         private PickpocketingLootTemplateSQL pickpocketingLootTemplateSQL = new PickpocketingLootTemplateSQL();
         private PlayerClassStatsSQL playerClassStatsSQL = new PlayerClassStatsSQL();
@@ -1109,6 +1110,10 @@ namespace EQWOWConverter
                 // Creature spell associations for pet creatures
                 if (creatureTemplate.IsPet == true)
                 {
+                    // Combat stats for pet creatures come from their power tier, and not the creature's own EQ stats
+                    if (Configuration.CREATURE_PET_USE_POWER_TIER_LEVEL_STATS == true)
+                        petLevelStatsSQL.AddRowsForCreatureTemplate(creatureTemplate);
+
                     int curIndex = 0;
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesOutOfCombatBuff)
                     {
@@ -1436,6 +1441,7 @@ namespace EQWOWConverter
             ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(spawnInstance.ZoneShortName);
             if (zoneProperties.ShouldGenerateInstanceDungeon() == false)
                 return null;
+            return zoneProperties;
         }
 
         private static Dictionary<int, HashSet<int>> alreadySavedCustomWaypointGridIDsByMapID = new Dictionary<int, HashSet<int>>(); // Ensure only 1 of each waypoint set is saved
@@ -2666,9 +2672,6 @@ namespace EQWOWConverter
 
             foreach (Zone zone in zones)
             {
-                // Instance list
-                instanceTemplateSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID));
-
                 // Teleport scripts to safe positions (add a record for both descriptive and short name if they are different)
                 gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.DescriptiveNameOnlyLetters, zone.ZoneProperties.TelePosition.X, zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
                 if (zone.DescriptiveNameOnlyLetters.ToLower() != zone.ShortName.ToLower())
@@ -3081,6 +3084,7 @@ namespace EQWOWConverter
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
             pageTextSQL.SaveToDisk("page_text", SQLFileType.World);
+            petLevelStatsSQL.SaveToDisk("pet_levelstats", SQLFileType.World);
             petNameGenerationSQL.SaveToDisk("pet_name_generation", SQLFileType.World);
             pickpocketingLootTemplateSQL.SaveToDisk("pickpocketing_loot_template", SQLFileType.World);
             playerClassStatsSQL.SaveToDisk("player_class_stats", SQLFileType.World);

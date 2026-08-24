@@ -3370,6 +3370,7 @@ namespace EQWOWConverter.Spells
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].ModelTemplateScale = creatureRace.Height * creatureRace.SpawnSizeMod
                                     * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;
+                                creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].PetPowerTierName = spellPet.PowerTierName;
                             } break;
                         case SpellEQEffectType.Illusion:
                             {
