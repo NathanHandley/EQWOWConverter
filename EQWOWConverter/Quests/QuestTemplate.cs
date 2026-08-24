@@ -153,6 +153,44 @@ namespace EQWOWConverter.Quests
             NumOfObjectiveItemsAddedToText++;
         }
 
+        private static void PopulateReactionPositionFromColumns(QuestReaction reaction, Dictionary<string, string> columns)
+        {
+            string positionXString = columns["PositionX"];
+            if (positionXString == "playerX")
+                reaction.UsePlayerX = true;
+            else if (positionXString == "npcX")
+                reaction.UseNpcX = true;
+            else
+                reaction.PositionX = ParseTool.ParseFloat(positionXString, 0);
+            string positionYString = columns["PositionY"];
+            if (positionYString == "playerY")
+                reaction.UsePlayerY = true;
+            else if (positionYString == "npcY")
+                reaction.UseNpcY = true;
+            else
+                reaction.PositionY = ParseTool.ParseFloat(positionYString, 0);
+            string positionZString = columns["PositionZ"];
+            if (positionZString == "playerZ")
+                reaction.UsePlayerZ = true;
+            else if (positionZString == "npcZ")
+                reaction.UseNpcZ = true;
+            else
+                reaction.PositionZ = ParseTool.ParseFloat(positionZString, 0);
+            string headingString = columns["Heading"];
+            if (headingString == "playerHeading")
+                reaction.UsePlayerHeading = true;
+            else if (headingString == "npcHeading")
+                reaction.UseNpcHeading = true;
+            else
+                reaction.EQHeading = ParseTool.ParseFloat(headingString, 0);
+            string addedXString = columns["AddedX"];
+            if (addedXString.Length > 0)
+                reaction.AddedX = ParseTool.ParseFloat(addedXString, 0);
+            string addedYString = columns["AddedY"];
+            if (addedYString.Length > 0)
+                reaction.AddedY = ParseTool.ParseFloat(addedYString, 0);
+        }
+
         private static void PopulateQuestTemplates()
         {
             // Load the reactions
@@ -160,6 +198,7 @@ namespace EQWOWConverter.Quests
             Logger.WriteDebug(string.Concat("Loading quest reactions via file '", questReactionsFile, "'"));
             Dictionary<int, List<QuestReaction>> reactionsByQuestID = new Dictionary<int, List<QuestReaction>>();
             List<Dictionary<string, string>> reactionRows = FileTool.ReadAllRowsFromFileWithHeader(questReactionsFile, "|");
+            HashSet<int> questIDsAlreadyWalking = new HashSet<int>();
             foreach (Dictionary<string, string> columns in reactionRows)
             {
                 QuestReaction reaction = new QuestReaction();
@@ -195,69 +234,27 @@ namespace EQWOWConverter.Quests
                         {
                             reaction.ReactionType = QuestReactionType.Spawn;
                             reaction.CreatureEQID = int.Parse(reactionValue1);
-                            string reactionValue2 = columns["PositionX"];
-                            if (reactionValue2 == "playerX")
-                                reaction.UsePlayerX = true;
-                            else
-                                reaction.PositionX = ParseTool.ParseFloat(reactionValue2, 0);
-                            string reactionValue3 = columns["PositionY"];
-                            if (reactionValue3 == "playerY")
-                                reaction.UsePlayerY = true;
-                            else
-                                reaction.PositionY = ParseTool.ParseFloat(reactionValue3, 0);
-                            string reactionValue4 = columns["PositionZ"];
-                            if (reactionValue4 == "playerZ")
-                                reaction.UsePlayerZ = true;
-                            else
-                                reaction.PositionZ = ParseTool.ParseFloat(reactionValue4, 0);
-                            string reactionValue5 = columns["Heading"];
-                            if (reactionValue5 == "playerHeading")
-                                reaction.UsePlayerHeading = true;
-                            else
-                                reaction.EQHeading = ParseTool.ParseFloat(reactionValue5, 0);
-                            string reactionValue6 = columns["AddedX"];
-                            if (reactionValue6.Length > 0)
-                                reaction.AddedX = ParseTool.ParseFloat(reactionValue6, 0);
-                            string reactionValue7 = columns["AddedY"];
-                            if (reactionValue7.Length > 0)
-                                reaction.AddedY = ParseTool.ParseFloat(reactionValue7, 0);
+                            PopulateReactionPositionFromColumns(reaction, columns);
                         } break;
                     case "spawnunique":
                         {
                             reaction.ReactionType = QuestReactionType.SpawnUnique;
                             reaction.CreatureEQID = int.Parse(reactionValue1);
-                            string reactionValue2 = columns["PositionX"];
-                            if (reactionValue2 == "playerX")
-                                reaction.UsePlayerX = true;
-                            else
-                                reaction.PositionX = ParseTool.ParseFloat(reactionValue2, 0);
-                            string reactionValue3 = columns["PositionY"];
-                            if (reactionValue3 == "playerY")
-                                reaction.UsePlayerY = true;
-                            else
-                                reaction.PositionY = ParseTool.ParseFloat(reactionValue3, 0);
-                            string reactionValue4 = columns["PositionZ"];
-                            if (reactionValue4 == "playerZ")
-                                reaction.UsePlayerZ = true;
-                            else
-                                reaction.PositionZ = ParseTool.ParseFloat(reactionValue4, 0);
-                            string reactionValue5 = columns["Heading"];
-                            if (reactionValue5 == "playerHeading")
-                                reaction.UsePlayerHeading = true;
-                            else
-                                reaction.EQHeading = ParseTool.ParseFloat(reactionValue5, 0);
-                            string reactionValue6 = columns["AddedX"];
-                            if (reactionValue6.Length > 0)
-                                reaction.AddedX = ParseTool.ParseFloat(reactionValue6, 0);
-                            string reactionValue7 = columns["AddedY"];
-                            if (reactionValue7.Length > 0)
-                                reaction.AddedY = ParseTool.ParseFloat(reactionValue7, 0);
+                            PopulateReactionPositionFromColumns(reaction, columns);
                         }
                         break;
                     case "yell":
                         {
                             reaction.ReactionType = QuestReactionType.Yell;
                             reaction.ReactionValue = reactionValue1;
+                        }
+                        break;
+                    case "walkto": // Creature walks to the position, and any reactions after this one fire when it arrives
+                        {
+                            reaction.ReactionType = QuestReactionType.WalkTo;
+                            reaction.CreatureIsSelf = true;
+                            reaction.MovementIsRun = reactionValue1 == "run";
+                            PopulateReactionPositionFromColumns(reaction, columns);
                         }
                         break;
                     case "killspawn": // Spawned when the questgiver is killed after completing the quest
@@ -294,6 +291,11 @@ namespace EQWOWConverter.Quests
                     float modHeading = reaction.EQHeading / (256f / 360f);
                     reaction.WOWOrientation = modHeading * Convert.ToSingle(Math.PI / 180);
                 }
+
+                // Rows that follow a walkto for the same quest are deferred until the creature reaches the destination
+                reaction.FiresOnArrival = questIDsAlreadyWalking.Contains(questID);
+                if (reaction.ReactionType == QuestReactionType.WalkTo)
+                    questIDsAlreadyWalking.Add(questID);
 
                 if (reactionsByQuestID.ContainsKey(questID) == false)
                     reactionsByQuestID.Add(questID, new List<QuestReaction>());

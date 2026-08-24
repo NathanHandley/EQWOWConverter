@@ -1,4 +1,4 @@
-//  Author: Nathan Handley (nathanhandley@protonmail.com)
+﻿//  Author: Nathan Handley (nathanhandley@protonmail.com)
 //  Copyright (c) 2026 Nathan Handley
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -51,6 +51,8 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`PositionZ` FLOAT NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`Orientation` FLOAT NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`DelayInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`MovementIsRun` TINYINT(3) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`FiresOnArrival` TINYINT(3) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY(`ID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -81,6 +83,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("PositionZ", gossipReaction.PositionZ);
             newRow.AddFloat("Orientation", gossipReaction.WOWOrientation);
             newRow.AddInt("DelayInMS", gossipReaction.DelayInMS);
+            newRow.AddInt("MovementIsRun", gossipReaction.MovementIsRun == false ? 0 : 1);
+            newRow.AddInt("FiresOnArrival", gossipReaction.FiresOnArrival == false ? 0 : 1);
             Rows.Add(newRow);
 
             CUR_ID++;

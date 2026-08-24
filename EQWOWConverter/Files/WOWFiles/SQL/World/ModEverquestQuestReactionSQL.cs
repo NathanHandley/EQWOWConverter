@@ -44,6 +44,13 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`CreatureTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`QuestgiverCreatureTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`DelayInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`SayText` VARCHAR(512) NOT NULL DEFAULT '', ");
+            stringBuilder.AppendLine("`UseNpcX` TINYINT(3) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`UseNpcY` TINYINT(3) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`UseNpcZ` TINYINT(3) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`UseNpcOrientation` TINYINT(3) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`MovementIsRun` TINYINT(3) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`FiresOnArrival` TINYINT(3) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY(`ID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -67,6 +74,13 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("CreatureTemplateID", questReaction.CreatureWOWID);
             newRow.AddInt("QuestgiverCreatureTemplateID", questgiverCreatureTemplateID);
             newRow.AddInt("DelayInMS", questReaction.DelayInMS);
+            newRow.AddString("SayText", 512, questReaction.ReactionValue);
+            newRow.AddInt("UseNpcX", questReaction.UseNpcX == false ? 0 : 1);
+            newRow.AddInt("UseNpcY", questReaction.UseNpcY == false ? 0 : 1);
+            newRow.AddInt("UseNpcZ", questReaction.UseNpcZ == false ? 0 : 1);
+            newRow.AddInt("UseNpcOrientation", questReaction.UseNpcHeading == false ? 0 : 1);
+            newRow.AddInt("MovementIsRun", questReaction.MovementIsRun == false ? 0 : 1);
+            newRow.AddInt("FiresOnArrival", questReaction.FiresOnArrival == false ? 0 : 1);
             Rows.Add(newRow);
 
             CUR_ID++;

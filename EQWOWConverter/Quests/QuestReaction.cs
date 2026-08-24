@@ -35,5 +35,11 @@ namespace EQWOWConverter.Quests
         public int CreatureEQID = 0;
         public int CreatureWOWID = 0;
         public int DelayInMS = 0;
+        public bool UseNpcX = false;
+        public bool UseNpcY = false;
+        public bool UseNpcZ = false;
+        public bool UseNpcHeading = false;
+        public bool MovementIsRun = false;
+        public bool FiresOnArrival = false;
     }
 }

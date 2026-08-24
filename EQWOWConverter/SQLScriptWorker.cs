@@ -2167,8 +2167,9 @@ namespace EQWOWConverter
 
                     foreach (QuestReaction reaction in questTemplate.Reactions)
                     {
-                        // Reward say/yell/emote actions
-                        if (reaction.ReactionType == QuestReactionType.Emote || reaction.ReactionType == QuestReactionType.Say || reaction.ReactionType == QuestReactionType.Yell)
+                        // Reward say/yell/emote actions.  Ones deferred until a walkto arrives are handled by the mod instead, since a smart script quest-complete event would fire them the moment the quest turns in
+                        bool reactionIsText = reaction.ReactionType == QuestReactionType.Emote || reaction.ReactionType == QuestReactionType.Say || reaction.ReactionType == QuestReactionType.Yell;
+                        if (reactionIsText == true && reaction.FiresOnArrival == false)
                         {
                             // Creature Text
                             int creatureTextGroupID = 0;
@@ -2205,8 +2206,8 @@ namespace EQWOWConverter
                             smartScriptsSQL.AddRowForQuestCompleteTalkEvent(creatureTemplateID, creatureTextGroupID + 1, repeatQuestID, comment);
                         }
 
-                        // Attack/Spawn/Despawn/KillSpawn actions
-                        if (reaction.ReactionType == QuestReactionType.AttackPlayer || reaction.ReactionType == QuestReactionType.Despawn || reaction.ReactionType == QuestReactionType.Spawn || reaction.ReactionType == QuestReactionType.SpawnUnique || reaction.ReactionType == QuestReactionType.KillSpawn)
+                        // Attack/Spawn/Despawn/KillSpawn/WalkTo actions, plus any text the mod has to hold until a walkto arrives
+                        if (reaction.ReactionType == QuestReactionType.AttackPlayer || reaction.ReactionType == QuestReactionType.Despawn || reaction.ReactionType == QuestReactionType.Spawn || reaction.ReactionType == QuestReactionType.SpawnUnique || reaction.ReactionType == QuestReactionType.KillSpawn || reaction.ReactionType == QuestReactionType.WalkTo || (reactionIsText == true && reaction.FiresOnArrival == true))
                         {
                             if (reaction.CreatureEQID > 0)
                             {

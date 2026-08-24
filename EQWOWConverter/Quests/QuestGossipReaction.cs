@@ -1,4 +1,4 @@
-//  Author: Nathan Handley (nathanhandley@protonmail.com)
+﻿//  Author: Nathan Handley (nathanhandley@protonmail.com)
 //  Copyright (c) 2026 Nathan Handley
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -46,6 +46,8 @@ namespace EQWOWConverter.Quests
         public bool CreatureIsSelf = false;
         public int CreatureEQID = 0;
         public int DelayInMS = 0;
+        public bool MovementIsRun = false;
+        public bool FiresOnArrival = false;
 
         public static List<QuestGossipReaction> GetGossipReactions()
         {
@@ -65,6 +67,7 @@ namespace EQWOWConverter.Quests
                 return;
             }
             List<Dictionary<string, string>> reactionRows = FileTool.ReadAllRowsFromFileWithHeader(gossipReactionsFile, "|");
+            HashSet<(string, string, int)> optionsAlreadyWalking = new HashSet<(string, string, int)>();
             foreach (Dictionary<string, string> columns in reactionRows)
             {
                 QuestGossipReaction reaction = new QuestGossipReaction();
@@ -117,6 +120,13 @@ namespace EQWOWConverter.Quests
                             reaction.CreatureEQID = int.Parse(reactionValue1);
                             PopulateReactionPositionFromColumns(reaction, columns);
                         } break;
+                    case "walkto":
+                        {
+                            reaction.ReactionType = QuestReactionType.WalkTo;
+                            reaction.CreatureIsSelf = true;
+                            reaction.MovementIsRun = reactionValue1 == "run";
+                            PopulateReactionPositionFromColumns(reaction, columns);
+                        } break;
                     default:
                         {
                             Logger.WriteError(string.Concat("Unhandled gossip reaction type of '", reactionTypeString, "'"));
@@ -141,6 +151,12 @@ namespace EQWOWConverter.Quests
                     float modHeading = reaction.EQHeading / (256f / 360f);
                     reaction.WOWOrientation = modHeading * Convert.ToSingle(Math.PI / 180);
                 }
+
+                // Rows that follow a walkto for the same menu option are deferred until the creature reaches the destination
+                (string, string, int) optionKey = (reaction.ZoneShortName, reaction.CreatureName, reaction.OptionID);
+                reaction.FiresOnArrival = optionsAlreadyWalking.Contains(optionKey);
+                if (reaction.ReactionType == QuestReactionType.WalkTo)
+                    optionsAlreadyWalking.Add(optionKey);
 
                 GossipReactions.Add(reaction);
             }
