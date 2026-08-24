@@ -1,0 +1,15 @@
+id|zone|primary_eq_creature_template_id|other_eq_creature_template_id_1|other_eq_creature_template_id_2|other_eq_creature_template_id_3|other_eq_creature_template_id_4|check_interval_ms|comment
+1|airplane|71042|71081|71082|||2000|Cilin Spellsinger - Plane of Sky bard quest room
+2|airplane|71052|71080|71083|||2000|Josin Faithbringer - Plane of Sky cleric quest room
+3|airplane|71043|71099|71086|||2000|Strandar Pinemist - Plane of Sky druid quest room
+4|airplane|71049|71085|71104|||2000|Enchanter Jolas - Plane of Sky enchanter quest room
+5|airplane|71050|71088|71094|||2000|Magus Frinon - Plane of Sky magician quest room
+6|airplane|71046|71097|71096|||2000|Holwin - Plane of Sky monk quest room
+7|airplane|71053|71074|71084|||2000|Drakis Bloodcaster - Plane of Sky necromancer quest room
+8|airplane|71037|71089|71077|||2000|Dason Goldblade - Plane of Sky paladin quest room
+9|airplane|71054|71095|71090|||2000|Ranger Spirit - Plane of Sky ranger quest room
+10|airplane|71051|71061|71068|||2000|Thalik Silenthand - Plane of Sky rogue quest room
+11|airplane|71048|71063|71098|||2000|Sarkis Ebonblade - Plane of Sky shadow knight quest room
+12|airplane|71044|71087|71093|||2000|Medicine Man Veetra - Plane of Sky shaman quest room
+13|airplane|71045|71067|71064|||2000|Torgon Blademaster - Plane of Sky warrior quest room
+14|airplane|71047|71092|71079|||2000|Wizard Schrock - Plane of Sky wizard quest room

@@ -87,6 +87,7 @@ namespace EQWOWConverter
         private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
         private ModEverquestCreatureEmoteSQL modEverquestCreatureEmoteSQL = new ModEverquestCreatureEmoteSQL();
         private ModEverquestCreatureKillSpawnSQL modEverquestCreatureKillSpawnSQL = new ModEverquestCreatureKillSpawnSQL();
+        private ModEverquestCreaturePresenceGroupSQL modEverquestCreaturePresenceGroupSQL = new ModEverquestCreaturePresenceGroupSQL();
         private ModEverquestCreatureMovementSoundSQL modEverquestCreatureMovementSoundSQL = new ModEverquestCreatureMovementSoundSQL();
         private ModEverquestPetSilentDisplaySQL modEverquestPetSilentDisplaySQL = new ModEverquestPetSilentDisplaySQL();
         private ModEverquestCreatureSpawnPointSQL modEverquestCreatureSpawnPointSQL = new ModEverquestCreatureSpawnPointSQL();
@@ -187,6 +188,7 @@ namespace EQWOWConverter
 
             // Kill-triggered spawns
             PopulateCreatureKillSpawnData(mapIDsByShortName);
+            PopulateCreaturePresenceGroupData(mapIDsByShortName);
 
             // Game Events
             foreach (GameEvent gameEvent in gameEvents)
@@ -494,6 +496,46 @@ namespace EQWOWConverter
                     killSpawn.ZPosition, killSpawn.Orientation, killSpawn.DelayMinMS, killSpawn.DelayMaxMS, onlyIfNotAliveWOWID,
                     string.Join(",", requireDeadWOWIDs), string.Join(",", requireAliveWOWIDs), killSpawn.AddToHateList,
                     killSpawn.TriggerMinLevel, killSpawn.TriggerMaxLevel, killSpawn.RespawnTimeInSec, killSpawn.Comment);
+            }
+        }
+
+        private void PopulateCreaturePresenceGroupData(Dictionary<string, int> mapIDsByShortName)
+        {
+            Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
+            foreach (CreaturePresenceGroup presenceGroup in CreaturePresenceGroup.GetPresenceGroupList())
+            {
+                if (mapIDsByShortName.ContainsKey(presenceGroup.ZoneShortName) == false)
+                {
+                    Logger.WriteDebug("Skipping creature presence group '" + presenceGroup.ID + "' since zone '" + presenceGroup.ZoneShortName + "' has no map");
+                    continue;
+                }
+                if (creatureTemplatesByEQID.ContainsKey(presenceGroup.PrimaryEQCreatureTemplateID) == false)
+                {
+                    Logger.WriteError("Skipping creature presence group '" + presenceGroup.ID + "' since primary creature '" + presenceGroup.PrimaryEQCreatureTemplateID + "' has no template");
+                    continue;
+                }
+                List<int> otherWOWIDs = new List<int>();
+                foreach (int eqID in presenceGroup.OtherEQCreatureTemplateIDs)
+                {
+                    if (creatureTemplatesByEQID.ContainsKey(eqID) == false)
+                    {
+                        Logger.WriteError("Creature presence group '" + presenceGroup.ID + "' names creature '" + eqID + "', which has no template");
+                        continue;
+                    }
+                    otherWOWIDs.Add(creatureTemplatesByEQID[eqID].WOWCreatureTemplateID);
+                }
+                if (otherWOWIDs.Count > CreaturePresenceGroup.MAX_OTHER_CREATURE_TEMPLATES)
+                {
+                    Logger.WriteError("Creature presence group '" + presenceGroup.ID + "' names more than " + CreaturePresenceGroup.MAX_OTHER_CREATURE_TEMPLATES + " other creature templates, so the extras are dropped");
+                    otherWOWIDs.RemoveRange(CreaturePresenceGroup.MAX_OTHER_CREATURE_TEMPLATES, otherWOWIDs.Count - CreaturePresenceGroup.MAX_OTHER_CREATURE_TEMPLATES);
+                }
+                if (otherWOWIDs.Count == 0)
+                {
+                    Logger.WriteError("Skipping creature presence group '" + presenceGroup.ID + "' since none of its other creatures have templates, which would keep the primary up permanently");
+                    continue;
+                }
+                modEverquestCreaturePresenceGroupSQL.AddRow(presenceGroup.ID, mapIDsByShortName[presenceGroup.ZoneShortName], creatureTemplatesByEQID[presenceGroup.PrimaryEQCreatureTemplateID].WOWCreatureTemplateID,
+                    otherWOWIDs, presenceGroup.CheckIntervalMS, presenceGroup.Comment);
             }
         }
 
@@ -3063,6 +3105,7 @@ namespace EQWOWConverter
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
             modEverquestCreatureEmoteSQL.SaveToDisk("mod_everquest_creature_emote", SQLFileType.World);
             modEverquestCreatureKillSpawnSQL.SaveToDisk("mod_everquest_creature_kill_spawn", SQLFileType.World);
+            modEverquestCreaturePresenceGroupSQL.SaveToDisk("mod_everquest_creature_presence_group", SQLFileType.World);
             modEverquestCreatureMovementSoundSQL.SaveToDisk("mod_everquest_creature_movement_sound", SQLFileType.World);
             modEverquestPetSilentDisplaySQL.SaveToDisk("mod_everquest_pet_silent_display", SQLFileType.World);
             modEverquestCreatureSpawnPointSQL.SaveToDisk("mod_everquest_creature_spawn_point", SQLFileType.World);

@@ -122,6 +122,8 @@ namespace EQWOWConverter.WOWFiles
             }
             if (creatureTemplate.BindsRaidInstanceOnKill == true)
                 extraFlags |= 1;   // 0x00000001 = CREATURE_FLAG_EXTRA_INSTANCE_BIND (kill permanently locks raid members to the instance, does nothing in non-instanced maps)
+            if (CreaturePresenceGroup.IsCreatureInAPresenceGroup(creatureTemplate.EQCreatureTemplateID) == true)
+                extraFlags |= 64;  // 0x00000040 = CREATURE_FLAG_EXTRA_NO_XP (prevent exp exploit farming)
 
             // Create the row
             SQLRow newRow = new SQLRow();
