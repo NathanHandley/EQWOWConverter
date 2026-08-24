@@ -298,9 +298,9 @@ namespace EQWOWConverter
                     spellDBC.AppendToDescriptionOfSpellID(talentInteraction.SpellID, addendumText);
             }
 
-            // Death knights that level from 1 get their abilities spread out across 1-55, so the abilities need to scale accordingly
+            // Death knights that level from 1 get their abilities spread out across 1-55, so damage has to scale and level gates have to drop
             if (Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true)
-                ScaleDeathKnightAbilityDamageForLowLevelPlay();
+                AdjustDeathKnightSpellsForLowLevelPlay();
 
             // Achievements
             if (Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true)
@@ -1164,7 +1164,7 @@ namespace EQWOWConverter
             Logger.WriteDebug("Creating DBC Files complete");
         }
 
-        private void ScaleDeathKnightAbilityDamageForLowLevelPlay()
+        private void AdjustDeathKnightSpellsForLowLevelPlay()
         {
             // Trainer taught abilities that were pulled below level 55
             spellDBC.SetEffectToScaleUpToOriginalSpellLevel(45902, 0); // Blood Strike (flat portion, the weapon percent is effect 2)
@@ -1179,6 +1179,9 @@ namespace EQWOWConverter
             spellDBC.SetEffectToScaleUpToOriginalSpellLevel(55050, 0); // Heart Strike (blood tier 8)
             spellDBC.SetEffectToScaleUpToOriginalSpellLevel(55090, 0); // Scourge Strike (unholy tier 8)
             spellDBC.SetEffectToScaleUpToOriginalSpellLevel(49143, 0); // Frost Strike (frost tier 8)
+
+            // Runeforging is handed out at character creation, and both of the runes that come free with the skill (Razorice and Cinderglacier) are usable right away
+            spellDBC.SetMinimumUseLevelForSpellID(53428, 1); // Runeforging
         }
 
         private static void GetCreatureTextureVariations(List<string> textureNames, out string textureVariation1,

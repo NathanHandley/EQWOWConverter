@@ -260105,3 +260105,5 @@ BroadcastTextID|gossipgreeting~airplane~Neasin_Leornic|82331
 NPCTextID|gossipgreeting~airplane~Neasin_Leornic|80078
 BroadcastTextID|gossipgreeting~airplane~Abec_Ianor|82332
 NPCTextID|gossipgreeting~airplane~Abec_Ianor|80079
+SpellID|basesplit~93489~1|100770
+SpellID|basesplit~93549~1|100771
