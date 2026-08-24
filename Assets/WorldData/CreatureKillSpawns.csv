@@ -29,7 +29,7 @@ id|zone|trigger_eq_npc_id|action|target_eq_npc_id|chance|alt_group|alt_id|alt_we
 28|airplane|71072|spawn|71058|100|0|0|0|1|0|0|0|0|0|0|0|||0|0|0|-1|-1|death|0|Bazzt_Zzzt
 29|airplane|71075|spawn|71058|100|0|0|0|1|0|0|0|0|0|0|0|||0|0|0|-1|-1|death|0|Keeper_of_Souls
 30|airplane|71076|spawn|71058|100|0|0|0|1|0|0|0|0|0|0|0|||0|0|0|-1|-1|death|0|#Sister_of_the_Spire
-31|airplane|71100|spawn|71075|100|0|0|0|0|720|-1484|146|8|2880000|4800000|71075|||0|0|0|-1|-1|death|0|Keeper_of_Souls via Key_Master timer
+31|airplane|71100|spawn|71075|100|0|0|0|0|720|-1484|146|8|180000|180000|71075|||0|0|0|-1|-1|death|0|Keeper_of_Souls via Key_Master timer
 32|airplane|71101|spawn|71072|100|0|0|0|1|0|0|0|0|0|0|0|||0|0|0|-1|-1|death|0|Bzzzt
 33|airplane|71103|spawn|71102|100|0|0|0|1|0|0|0|0|0|0|0|||0|0|0|-1|-1|death|0|71103
 34|airplane|71105|spawn|71107|100|0|0|0|1|0|0|0|0|0|0|0|||0|0|0|-1|-1|death|0|71105
