@@ -420,6 +420,8 @@ namespace EQWOWConverter
                 footstepTerrainLookupDBC.AddRow(footstepIDBySoundID.Value, footstepIDBySoundID.Key);
 
             // Dungeon Finder Specific
+            if (Configuration.DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS == true)
+                lfgDungeonsDBC.RemoveNonSeasonalDungeonFinderRows();
             if (Configuration.DUNGEON_FINDER_ENABLED == true)
             {
                 lfgDungeonGroupDBC.AddRow(Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_ID, "EverQuest", Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID, false);

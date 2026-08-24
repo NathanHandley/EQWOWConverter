@@ -79,6 +79,7 @@ namespace EQWOWConverter
         private InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
         private ItemLootTemplateSQL itemLootTemplateSQL = new ItemLootTemplateSQL();
         private ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
+        private LfgDungeonRewardsSQL lfgDungeonRewardsSQL = new LfgDungeonRewardsSQL();
         private LfgDungeonTemplateSQL lfgDungeonTemplateSQL = new LfgDungeonTemplateSQL();
         private ModEverquestClassMapSQL modEverquestClassMapSQL = new ModEverquestClassMapSQL();
         private ModEverquestCreatureSQL modEverquestCreatureSQL = new ModEverquestCreatureSQL();
@@ -3107,6 +3108,8 @@ namespace EQWOWConverter
             instanceTemplateSQL.SaveToDisk("instance_template", SQLFileType.World);
             itemLootTemplateSQL.SaveToDisk("item_loot_template", SQLFileType.World);
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
+            if (LFGDungeonsDBC.RemovedDungeonFinderIDs.Count > 0)
+                lfgDungeonRewardsSQL.SaveToDisk("lfg_dungeon_rewards", SQLFileType.World);
             lfgDungeonTemplateSQL.SaveToDisk("lfg_dungeon_template", SQLFileType.World);
             modEverquestClassMapSQL.SaveToDisk("mod_everquest_classmap", SQLFileType.World);
             modEverquestCreatureSQL.SaveToDisk("mod_everquest_creature", SQLFileType.World);

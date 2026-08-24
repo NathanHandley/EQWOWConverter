@@ -18,6 +18,39 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class LFGDungeonsDBC : DBCFile
     {
+        // TypeID values for rows that show in the dungeon finder (raid browser rows are TypeID 2, and TypeID 4 is the unused zone list)
+        private static readonly int TYPEID_DUNGEON = 1;
+        private static readonly int TYPEID_HEROIC = 5;
+        private static readonly int TYPEID_RANDOM = 6;
+
+        // Flag on rows tied to a world event (Headless Horseman, Ahune, etc), which the server uses to gate them behind an active holiday
+        private static readonly int FLAG_SEASONAL = 0x4;
+
+        // Rows pulled by RemoveNonSeasonalDungeonFinderRows, so the world database rows that point at them can be deleted as well
+        public static List<int> RemovedDungeonFinderIDs = new List<int>();
+
+        public void RemoveNonSeasonalDungeonFinderRows()
+        {
+            RemovedDungeonFinderIDs.Clear();
+            List<DBCRow> keptRows = new List<DBCRow>();
+            foreach (DBCRow row in Rows)
+            {
+                int id = ((DBCRow.DBCFieldInt32)row.AddedFields[0]).Value;
+                int flags = ((DBCRow.DBCFieldInt32)row.AddedFields[9]).Value;
+                int typeID = ((DBCRow.DBCFieldInt32)row.AddedFields[10]).Value;
+                bool isDungeonFinderRow = (typeID == TYPEID_DUNGEON || typeID == TYPEID_HEROIC || typeID == TYPEID_RANDOM);
+                if (isDungeonFinderRow == true && (flags & FLAG_SEASONAL) == 0)
+                {
+                    RemovedDungeonFinderIDs.Add(id);
+                    continue;
+                }
+                keptRows.Add(row);
+            }
+            Rows.Clear();
+            Rows.AddRange(keptRows);
+            Logger.WriteDebug(string.Concat("Removed ", RemovedDungeonFinderIDs.Count.ToString(), " non-seasonal dungeon finder rows from LFGDungeons.dbc"));
+        }
+
         public void AddRow(int id, string name, int minLevel, int targetLevel, int targetLevelMin, int targetLevelMax, int mapID, bool isRaid, int groupID)
         {
             DBCRow newRow = new DBCRow();

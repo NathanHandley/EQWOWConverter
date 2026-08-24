@@ -322,6 +322,9 @@ namespace EQWOWConverter
         // If true, dungeon finder can be used for special versions of EQ dungeons
         public static bool DUNGEON_FINDER_ENABLED = true;
 
+        // If true, the stock WoW dungeon finder entries (except seasonal) are removed
+        public static bool DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS = true;
+
         // Low Raid (pre-61+) dungeon instances
         public static bool DUNGEON_RAID_LOW_INSTANCES_ENABLED = true;
         public static int DUNGEON_RAID_LOW_MAX_PLAYERS = 40;
@@ -1669,6 +1672,7 @@ namespace EQWOWConverter
             OutputTextLineToConfig("# If true, the per-class stat game tables (gtChanceToSpellCrit and related) have their zeroed-out class rows (Warrior, Rogue, DeathKnight)");
             OutputVariableToConfig("PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID", PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID, "Warrior, Rogue, and DeathKnight are missing spell stat data, and this is the donor class ID to fill it with");
             OutputVariableToConfig("DUNGEON_FINDER_ENABLED", DUNGEON_FINDER_ENABLED, "Used for instanced versions of EQ dungeons", false);
+            OutputVariableToConfig("DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS", DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS, "If true, the stock WoW dungeon finder entries (except seasonal) are removed", false);
             OutputVariableToConfig("DUNGEON_RAID_LOW_INSTANCES_ENABLED", DUNGEON_RAID_LOW_INSTANCES_ENABLED, "Low Raid (pre-61+) dungeon instances", false);
             OutputVariableToConfig("DUNGEON_RAID_LOW_MAX_PLAYERS", DUNGEON_RAID_LOW_MAX_PLAYERS, "");
             OutputVariableToConfig("DUNGEON_INSTANCES_ENABLED", DUNGEON_INSTANCES_ENABLED, "Instanced versions of EQ dungeons", false);
@@ -2283,6 +2287,7 @@ namespace EQWOWConverter
             ZONE_FLYING_ALLOWED = ReadVariableFromConfigString("ZONE_FLYING_ALLOWED", configValuesByVariableName, ZONE_FLYING_ALLOWED);
 
             DUNGEON_FINDER_ENABLED = ReadVariableFromConfigString("DUNGEON_FINDER_ENABLED", configValuesByVariableName, DUNGEON_FINDER_ENABLED);
+            DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS = ReadVariableFromConfigString("DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS", configValuesByVariableName, DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS);
             DUNGEON_RAID_LOW_INSTANCES_ENABLED = ReadVariableFromConfigString("DUNGEON_RAID_LOW_INSTANCES_ENABLED", configValuesByVariableName, DUNGEON_RAID_LOW_INSTANCES_ENABLED);
             DUNGEON_RAID_LOW_MAX_PLAYERS = ReadVariableFromConfigString("DUNGEON_RAID_LOW_MAX_PLAYERS", configValuesByVariableName, DUNGEON_RAID_LOW_MAX_PLAYERS);
             DUNGEON_INSTANCES_ENABLED = ReadVariableFromConfigString("DUNGEON_INSTANCES_ENABLED", configValuesByVariableName, DUNGEON_INSTANCES_ENABLED);

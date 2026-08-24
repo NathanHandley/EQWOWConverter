@@ -20,7 +20,13 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return string.Concat("DELETE FROM `lfg_dungeon_template` WHERE `dungeonId` >= ", Configuration.DBCID_LFGDUNGEONS_ID_START, ";");
+            string deleteSQL = string.Concat("DELETE FROM `lfg_dungeon_template` WHERE `dungeonId` >= ", Configuration.DBCID_LFGDUNGEONS_ID_START, ";");
+
+            // Entrance rows pointing at dungeon finder entries that were pulled out of LFGDungeons.dbc would only generate load errors on the server
+            if (LFGDungeonsDBC.RemovedDungeonFinderIDs.Count > 0)
+                deleteSQL = string.Concat(deleteSQL, Environment.NewLine, "DELETE FROM `lfg_dungeon_template` WHERE `dungeonId` IN (", string.Join(",", LFGDungeonsDBC.RemovedDungeonFinderIDs), ");");
+
+            return deleteSQL;
         }
 
         public void AddRow(int dungeonID, string name, float positionX, float positionY, float positionZ, float orientation)
