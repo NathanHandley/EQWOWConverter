@@ -2548,7 +2548,7 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 32250|steamfont|Yendar_Starpyre|say|I say, this is indeed a challenge. This is written in what I'm sure is the language of the High Priesthood of Innoruuk. I've often wished I could read this, but I have never had the key to unlock the language. Take this for now.|||||||
 32251|steamfont|Yendar_Starpyre|despawn|self|||||||
 32251|steamfont|Yendar_Starpyre|say|My, this is quite a large list! Yes, I can use the names and dates recorded here to help me understand the script. It should be a simple matter now. A moment, please. Aha, yes, there we go. Translated as best I can! I do hope you're not involved in what is described here, as it is quite fiendish. Oi! You, woman! Give that back!  $N, that woman there took your letter! I think I should leave you to discuss it with her. Best of luck!.|||||||
-32251|steamfont|Yendar_Starpyre|spawnunique|56172|playerX|playerY|playerZ|playerHeading|10|-10|
+32251|steamfont|Yendar_Starpyre|spawnunique|56172|playerX|playerY|playerZ|playerHeading|||
 32252|stonebrunt|#Giang_Yin|say|Freeing long imprisoned spirits is a noble cause. Your hammer has our blessing to free the souls from their crystalline shadow tombs.|||||||
 32253|stonebrunt|#Old_Ghostback|say|Freeing long imprisoned spirits is a noble cause. Your hammer has our blessing to free the souls from their crystalline shadow tombs.|||||||
 32254|stonebrunt|#Prowler_of_the_Jungle|say|Freeing long imprisoned spirits is a noble cause. Your hammer has our blessing to free the souls from their crystalline shadow tombs.|||||||
