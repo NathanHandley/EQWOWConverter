@@ -233,6 +233,10 @@ namespace EQWOWConverter.Spells
             }
         }
         public int EQAOERange = 0; // This is used as a data field for illusions
+        public int EQAEDurationInMS = 0; // How long an EQ "rain" spell keeps landing at the spot it was aimed at
+        public int RainWaveCount = 0; // How many times a rain spell lands in total, where 0 or 1 means the spell isn't a rain
+        public int RainWaveIntervalInMS = 0;
+        public bool IsRainWaveSpell = false; // A generated single-target copy of a rain, cast on each unit in the cloud once per wave
         public int EQBuffDurationInTicks = 0;
         public int EQBuffDurationFormula = 0;
         public SpellDuration AuraDuration = new SpellDuration();
@@ -528,6 +532,7 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.Name = columns["name"];
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.EQAOERange = int.Parse(columns["aoerange"]);
+                newSpellTemplate.EQAEDurationInMS = int.Parse(columns["AEDuration"]);
                 newSpellTemplate.SpellRadius = Convert.ToInt32(Convert.ToSingle(newSpellTemplate.EQAOERange) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.Category = 0; // Temp / TODO: Figure out how/what to set here
                 newSpellTemplate.RecourseLinkEQSpellID = int.Parse(columns["RecourseLink"]);
@@ -3608,6 +3613,107 @@ namespace EQWOWConverter.Spells
                     spellTemplate.ChainedSpellTemplates.Add(effectGeneratedSpellTemplate);
                 }
             }
+
+            GenerateRainWaveSpellsIfRainSpell(ref spellTemplate, isDetrimental, ref effectGeneratedSpellTemplates);
+        }
+
+        private static void GenerateRainWaveSpellsIfRainSpell(ref SpellTemplate spellTemplate, bool isDetrimental, ref List<SpellTemplate> effectGeneratedSpellTemplates)
+        {
+            if (Configuration.SPELLS_RAIN_ENABLED == false)
+                return;
+
+            // TAKP IsRainSpell.  Sentinel and Sanctuary are the only spells with an AEDuration of 360000 and neither is a rain
+            if (isDetrimental == false || spellTemplate.EQTargetType != SpellEQTargetType.TargetedAreaOfEffect)
+                return;
+            if (spellTemplate.IsSelfCenteredAreaBreath == true || spellTemplate.WOWSpellEffects.Count == 0)
+                return;
+            if (spellTemplate.EQAEDurationInMS <= 2000 || spellTemplate.EQAEDurationInMS >= 360000)
+                return;
+            int waveIntervalInMS = Configuration.SPELLS_RAIN_WAVE_INTERVAL_IN_MS;
+            if (waveIntervalInMS <= 0)
+            {
+                Logger.WriteError("SPELLS_RAIN_WAVE_INTERVAL_IN_MS must be greater than zero, so no rain waves were generated");
+                return;
+            }
+            int followUpWaveCount = (spellTemplate.EQAEDurationInMS / waveIntervalInMS) - 1;
+            if (followUpWaveCount <= 0)
+                return;
+
+            // The wave spell is a single target copy of the rain, cast onto each unit that the cloud is sitting on
+            SpellTemplate waveSpellTemplate = new SpellTemplate();
+            waveSpellTemplate.Name = string.Concat(spellTemplate.Name, " Wave");
+            waveSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "rainwave", spellTemplate.EQSpellID.ToString());
+            waveSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+            waveSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+            waveSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
+            waveSpellTemplate.SpellVisualID2 = spellTemplate.SpellVisualID2;
+            waveSpellTemplate.SchoolMask = spellTemplate.SchoolMask;
+            waveSpellTemplate.DispelType = spellTemplate.DispelType;
+            waveSpellTemplate.IsGoodEffect = spellTemplate.IsGoodEffect;
+            waveSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects; // Only read for stacking rules at this point, and a wave must stack the same way the first one does
+            waveSpellTemplate.SpellRange = spellTemplate.SpellRange + spellTemplate.SpellRadius;
+            waveSpellTemplate.MinimumPlayerLearnLevel = spellTemplate.MinimumPlayerLearnLevel;
+            waveSpellTemplate.InfluencedBySpellPower = spellTemplate.InfluencedBySpellPower;
+            waveSpellTemplate.CastTimeBeforeModsInMS = spellTemplate.CastTimeBeforeModsInMS;
+            waveSpellTemplate.CastTimeInMS = spellTemplate.CastTimeInMS;
+            waveSpellTemplate.IsUnresistable = spellTemplate.IsUnresistable;
+            waveSpellTemplate.NeverMisses = spellTemplate.NeverMisses;
+            waveSpellTemplate.NoPartialImmunity = spellTemplate.NoPartialImmunity;
+            waveSpellTemplate.ResistDiff = spellTemplate.ResistDiff;
+            waveSpellTemplate.MaxCreatureTargetLevel = spellTemplate.MaxCreatureTargetLevel;
+            waveSpellTemplate.DefenseType = spellTemplate.DefenseType;
+            waveSpellTemplate.PreventionType = spellTemplate.PreventionType;
+            waveSpellTemplate.AuraDuration = spellTemplate.AuraDuration;
+            waveSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+            waveSpellTemplate.TriggersGlobalCooldown = false;
+            waveSpellTemplate.IsRainWaveSpell = true;
+            foreach (SpellEffectWOW spellEffect in spellTemplate.WOWSpellEffects)
+            {
+                SpellEffectWOW waveSpellEffect = spellEffect.Clone();
+                waveSpellEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+                waveSpellEffect.ImplicitTargetB = SpellWOWTargetType.None;
+                waveSpellTemplate.WOWSpellEffects.Add(waveSpellEffect);
+            }
+
+            // The cloud spell is the beacon.  It stays hidden because the wave landing on a unit is what should show, not the cloud sitting on them
+            SpellTemplate cloudSpellTemplate = new SpellTemplate();
+            cloudSpellTemplate.Name = string.Concat(spellTemplate.Name, " Cloud");
+            cloudSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "raincloud", spellTemplate.EQSpellID.ToString());
+            cloudSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+            cloudSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+            cloudSpellTemplate.SchoolMask = spellTemplate.SchoolMask;
+            cloudSpellTemplate.SpellRange = spellTemplate.SpellRange;
+            cloudSpellTemplate.SpellRadius = spellTemplate.SpellRadius;
+            cloudSpellTemplate.DefenseType = spellTemplate.DefenseType;
+            cloudSpellTemplate.PreventionType = spellTemplate.PreventionType;
+            cloudSpellTemplate.IsUnresistable = true; // The cloud does nothing on its own, so a resist should never stop the waves from starting
+            cloudSpellTemplate.NeverMisses = true;
+            cloudSpellTemplate.GenerateNoThreat = true; // Threat comes from the waves
+            cloudSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+            cloudSpellTemplate.TriggersGlobalCooldown = false;
+            cloudSpellTemplate.ForceHiddenFromDisplay = true;
+            cloudSpellTemplate.ChainAppliesViaCastTrigger = true;
+
+            // Half a wave of padding so that the final wave always lands before the aura falls off
+            cloudSpellTemplate.AuraDuration = new SpellDuration();
+            cloudSpellTemplate.AuraDuration.SetFixedDuration((followUpWaveCount * waveIntervalInMS) + (waveIntervalInMS / 2));
+
+            SpellEffectWOW cloudSpellEffect = new SpellEffectWOW();
+            cloudSpellEffect.EffectType = SpellWOWEffectType.PersistentAreaAura;
+            cloudSpellEffect.EffectAuraType = SpellWOWAuraType.PeriodicTriggerSpell;
+            cloudSpellEffect.EffectAuraPeriod = Convert.ToUInt32(waveIntervalInMS);
+            cloudSpellEffect.ImplicitTargetA = SpellWOWTargetType.DestinationTargetEnemy;
+            cloudSpellEffect.ImplicitTargetB = SpellWOWTargetType.DestinationDynamicObjectEnemy;
+            cloudSpellEffect.EffectRadiusIndex = Convert.ToUInt32(spellTemplate.SpellRadiusDBCID);
+            cloudSpellEffect.EffectTriggerSpell = waveSpellTemplate.WOWSpellID;
+            cloudSpellTemplate.WOWSpellEffects.Add(cloudSpellEffect);
+
+            spellTemplate.RainWaveCount = followUpWaveCount + 1;
+            spellTemplate.RainWaveIntervalInMS = waveIntervalInMS;
+
+            effectGeneratedSpellTemplates.Add(waveSpellTemplate);
+            effectGeneratedSpellTemplates.Add(cloudSpellTemplate);
+            spellTemplate.ChainedSpellTemplates.Add(cloudSpellTemplate);
         }
 
         private static void SetAuraStackRule(ref SpellTemplate spellTemplate, int eqSpellCategory, bool isBardSongAura, bool isDetrimental, bool isItemClickSpell)
@@ -3826,6 +3932,12 @@ namespace EQWOWConverter.Spells
                 descriptionSB.Append(" May break on direct damage.");
             if (spellTemplate.IsNegateIfCombat == true)
                 descriptionSB.Append(" Breaks if you cast a spell or attack.");
+            if (spellTemplate.RainWaveCount > 1)
+            {
+                float rainDurationInSeconds = Convert.ToSingle((spellTemplate.RainWaveCount - 1) * spellTemplate.RainWaveIntervalInMS) / 1000f;
+                descriptionSB.Append(string.Concat(" Rains down ", spellTemplate.RainWaveCount.ToString(), " times over ",
+                    rainDurationInSeconds.ToString("0.#"), " seconds where it lands."));
+            }
             int minimumTargetLevel = spellTemplate.GetMinimumTargetLevel();
             if (minimumTargetLevel > 0)
                 descriptionSB.Append(string.Concat(" Only works on players level ", minimumTargetLevel.ToString(), " or greater."));

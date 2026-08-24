@@ -824,6 +824,10 @@ namespace EQWOWConverter
         public static bool SPELLS_CONVERT_TO_DOT_ENABLED = true;
         public static int SPELLS_CONVERT_TO_DOT_DURATION_IN_MS = 30000;
 
+        // If true, EQ "rain" spells (targeted area of effect spells with an AEDuration) land their effect at the spot they were aimed at
+        public static bool SPELLS_RAIN_ENABLED = true;
+        public static int SPELLS_RAIN_WAVE_INTERVAL_IN_MS = 2500;
+
         // The most that a movement speed reduction can slow a target, and -100 fully stops movement (EQ-like for spells such as Torpor) and is the lowest valid value
         public static int SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE = -100;
 
@@ -1961,6 +1965,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_CROWD_CONTROL_DURATION_MOD", SPELLS_CROWD_CONTROL_DURATION_MOD, "How much to modify the duration of non-bard crowd control spells");
             OutputVariableToConfig("SPELLS_CONVERT_TO_DOT_ENABLED", SPELLS_CONVERT_TO_DOT_ENABLED, "If true, spells marked \"convert_to_dot\" in SpellTemplates.csv spread the damage over the duration", false);
             OutputVariableToConfig("SPELLS_CONVERT_TO_DOT_DURATION_IN_MS", SPELLS_CONVERT_TO_DOT_DURATION_IN_MS, "");
+            OutputVariableToConfig("SPELLS_RAIN_ENABLED", SPELLS_RAIN_ENABLED, "If true, EQ \"rain\" spells (targeted area of effect spells with an AEDuration) land their effect at the spot they were aimed at", false);
+            OutputVariableToConfig("SPELLS_RAIN_WAVE_INTERVAL_IN_MS", SPELLS_RAIN_WAVE_INTERVAL_IN_MS, "");
             OutputVariableToConfig("SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE", SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE, "The most that a movement speed reduction can slow a target, and -100 fully stops movement (EQ-like for spells such as Torpor) and is the lowest valid value");
             OutputVariableToConfig("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", SPELL_PERIODIC_SECONDS_PER_TICK_WOW, "Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier");
             OutputVariableToConfig("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS, "This is 'added time' in the periodic tick that comes from bard casters.");
@@ -2508,6 +2514,8 @@ namespace EQWOWConverter
             SPELLS_CROWD_CONTROL_DURATION_MOD = ReadVariableFromConfigString("SPELLS_CROWD_CONTROL_DURATION_MOD", configValuesByVariableName, SPELLS_CROWD_CONTROL_DURATION_MOD);
             SPELLS_CONVERT_TO_DOT_ENABLED = ReadVariableFromConfigString("SPELLS_CONVERT_TO_DOT_ENABLED", configValuesByVariableName, SPELLS_CONVERT_TO_DOT_ENABLED);
             SPELLS_CONVERT_TO_DOT_DURATION_IN_MS = ReadVariableFromConfigString("SPELLS_CONVERT_TO_DOT_DURATION_IN_MS", configValuesByVariableName, SPELLS_CONVERT_TO_DOT_DURATION_IN_MS);
+            SPELLS_RAIN_ENABLED = ReadVariableFromConfigString("SPELLS_RAIN_ENABLED", configValuesByVariableName, SPELLS_RAIN_ENABLED);
+            SPELLS_RAIN_WAVE_INTERVAL_IN_MS = ReadVariableFromConfigString("SPELLS_RAIN_WAVE_INTERVAL_IN_MS", configValuesByVariableName, SPELLS_RAIN_WAVE_INTERVAL_IN_MS);
             SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE = ReadVariableFromConfigString("SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE", configValuesByVariableName, SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE);
             SPELL_PERIODIC_SECONDS_PER_TICK_EQ = ReadVariableFromConfigString("SPELL_PERIODIC_SECONDS_PER_TICK_EQ", configValuesByVariableName, SPELL_PERIODIC_SECONDS_PER_TICK_EQ);
             SPELL_PERIODIC_SECONDS_PER_TICK_WOW = ReadVariableFromConfigString("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", configValuesByVariableName, SPELL_PERIODIC_SECONDS_PER_TICK_WOW);

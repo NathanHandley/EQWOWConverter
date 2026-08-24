@@ -24,6 +24,7 @@ namespace EQWOWConverter.Spells
         UnitTargetEnemy = 6,
         UnitSourceAreaEnemy = 15,
         UnitDestinationAreaEnemy = 16,
+        DestinationDynamicObjectEnemy = 28,
         DestinationDatabaseForTeleport = 17,
         DestinationCaster = 18,
         UnitCasterAreaParty = 20,
@@ -34,6 +35,7 @@ namespace EQWOWConverter.Spells
         DestinationCasterSummon = 32,
         UnitDestinationAreaParty = 34,
         UnitTargetParty = 35,
+        DestinationTargetEnemy = 53,
         DestinationTargetAny = 63
     }
 }

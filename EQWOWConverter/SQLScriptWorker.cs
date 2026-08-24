@@ -2367,6 +2367,10 @@ namespace EQWOWConverter
             if (spellTemplate.IsPlayerCasterOnlySpell == true)
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_PlayerCasterOnlySpellScript");
 
+            // A rain's follow-up waves are single-target casts, so the core never applies its area damage split to them (see the script)
+            if (spellTemplate.IsRainWaveSpell == true && commentFragment != " (Worn)")
+                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_RainWaveAreaCapSpellScript");
+
             // Pet (but avoid duplicates)
             if (spellTemplate.SummonSpellPet != null && PetSpellIDsAdded.Contains(spellEffectBlocks[0].WOWSpellID) == false)
             {
