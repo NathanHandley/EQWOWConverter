@@ -286,6 +286,7 @@ namespace EQWOWConverter.Spells
         public int WeaponSpellItemEnchantmentDBCID = 0;
         public int WeaponItemEnchantProcSpellID = 0;
         public string WeaponItemEnchantSpellName = string.Empty;
+        public float WeaponItemEnchantProcsPerMinute = 0f; // Written to spell_enchant_proc_data, which is what actually drives the proc rate
         public UInt32 ProcChance = 101;
         public bool IsTransferEffectType = false;
         public int RecourseLinkEQSpellID = 0;
@@ -1003,13 +1004,16 @@ namespace EQWOWConverter.Spells
                 }
                 SpellTemplate procSpellTemplate = SpellTemplatesByEQID[procSpellEQID];
 
+                // Work out how often it should proc based on what the poison actually does
+                float procsPerMinute = GetRoguePoisonProcsPerMinute(procSpellTemplate);
+
                 // Generate a description
                 StringBuilder descriptionSB = new StringBuilder();
                 descriptionSB.Append("Coats a weapon with poison that lasts for ");
                 descriptionSB.Append(GetTimeTextFromSeconds(Configuration.SPELL_ENCHANT_ROGUE_POISON_ENCHANT_DURATION_ON_WEAPON_TIME_IN_SECONDS));
-                descriptionSB.Append(" with each strike having a ");
-                descriptionSB.Append(Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE);
-                descriptionSB.Append("% chance of applying the following: ");
+                descriptionSB.Append(", striking about ");
+                descriptionSB.Append(procsPerMinute.ToString("0.##"));
+                descriptionSB.Append(" times per minute regardless of weapon speed, applying the following: ");
                 descriptionSB.Append(procSpellTemplate.Description);
 
                 // Generate an enchant ID
@@ -1023,14 +1027,43 @@ namespace EQWOWConverter.Spells
                 enchantSpell.WeaponSpellItemEnchantmentDBCID = enchantID;
                 enchantSpell.WeaponItemEnchantProcSpellID = procSpellTemplate.WOWSpellID;
                 enchantSpell.WeaponItemEnchantSpellName = itemName;
+                enchantSpell.WeaponItemEnchantProcsPerMinute = procsPerMinute;
                 enchantSpell.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.EnchantItemTemporary, 0, 0, 0, 1, 0, enchantID, 0));
-                enchantSpell.ProcChance = Convert.ToUInt32(Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE);
                 enchantSpell.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(procSpellTemplate.SpellIconID);
                 enchantSpell.SpellVisualID1 = Convert.ToUInt32(Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_APPLYING_VISUAL_ID);
                 enchantSpell.CastTimeInMS = Configuration.SPELL_ENCHANT_ROGUE_POISON_APPLY_TIME_IN_MS;
 
                 enchantSpellTemplate = enchantSpell;
             }
+        }
+
+        private static float GetRoguePoisonProcsPerMinute(SpellTemplate procSpellTemplate)
+        {
+            bool hasDuration = procSpellTemplate.AuraDuration.MaxDurationInMS > 0 || procSpellTemplate.AuraDuration.IsInfinite == true;
+            bool hasDamageOverTime = false;
+            bool hasDirectDamage = false;
+            foreach (SpellEffectEQ eqEffect in procSpellTemplate.EQSpellEffects)
+            {
+                // Positive hit point values are heals, and no poison should be one
+                if (eqEffect.EQBaseValue >= 0)
+                    continue;
+                if (eqEffect.EQEffectType == SpellEQEffectType.CurrentHitPointsOnce)
+                    hasDirectDamage = true;
+                else if (eqEffect.EQEffectType == SpellEQEffectType.CurrentHitPoints)
+                {
+                    if (hasDuration == true)
+                        hasDamageOverTime = true;
+                    else
+                        hasDirectDamage = true;
+                }
+            }
+
+            // A poison that does both (like Injected Poison) leans on the damage over time portion, so it groups with those
+            if (hasDamageOverTime == true)
+                return Configuration.SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME;
+            if (hasDirectDamage == true)
+                return Configuration.SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE;
+            return Configuration.SPELLS_ENCHANT_ROGUE_POISON_PPM_UTILITY;
         }
 
         public static void GenerateFocusSpellIfNotCreated(string itemName, int itemIconID, ItemFocusType focusType, int focusValue, out SpellTemplate? focusSpellTemplate,
@@ -1609,7 +1642,14 @@ namespace EQWOWConverter.Spells
                     case 115: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddSixTimesLevelMinusSpellLevel; break;
                     case 116: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddEightTimesLevelMinusSpellLevel; break;
                     case 121: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddLevelDivideThree; break;
-                    default: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.UnknownUseBaseOrMaxWhicheverHigher; break;
+                    default:
+                        {
+                            // In EQ, a formula from 1 to 99 means "base + (level * the formula number)", so the formula is carried as itself and read back out as the per-level multiplier.  Anything else really is unknown
+                            if (formulaRaw >= 1 && formulaRaw <= 99)
+                                curEffect.EQBaseValueFormulaType = (SpellEQBaseValueFormulaType)formulaRaw;
+                            else
+                                curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.UnknownUseBaseOrMaxWhicheverHigher;
+                        } break;
                 }
                 curEffect.EQFormulaTypeValue = formulaRaw;
             }

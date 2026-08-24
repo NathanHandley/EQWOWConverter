@@ -104,7 +104,7 @@ namespace EQWOWConverter
         public static string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
 
         // Client files must match this between the server and the client, separate from "CONFIGONLY_CORE_MOD_VERSION"
-        public static int DEPLOY_CLIENT_DATA_VERSION = 1;
+        public static int DEPLOY_CLIENT_DATA_VERSION = 4;
         public static string DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE = "Your EverQuest client data is out of date. Please run the launcher to update, then log back in.";
 
         // ====================================================================
@@ -869,8 +869,12 @@ namespace EQWOWConverter
         // All spell properties
         public static int SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = 16000;
 
+        // How often a rogue poison procs, in procs per minute (normalized against weapon speed by the core)
+        public static float SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE = 2f;
+        public static float SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME = 8f;
+        public static float SPELLS_ENCHANT_ROGUE_POISON_PPM_UTILITY = 12f;
+
         // How often weapon procs occur
-        public static int SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE = 25;
         public static int SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE = 25;
 
         // How long rogue poisons stay on the weapons
@@ -1977,8 +1981,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED", SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED, "How far outward (yards per second) a 'toss up' shoves the target, which must stay above zero or creatures won't be thrown at all");
             OutputVariableToConfig("SPELLS_LEARNABLE_FROM_ITEMS_ENABLED", SPELLS_LEARNABLE_FROM_ITEMS_ENABLED, "If true, you can learn spells from items");
             OutputVariableToConfig("SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS", SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS, "All spell properties");
-            OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE", SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE, "How often weapon procs occur", false);
-            OutputVariableToConfig("SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE", SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE, "");
+            OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE", SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE, "How often a rogue poison procs, in procs per minute (normalized against weapon speed by the core)", false);
+            OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME", SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME, "", false);
+            OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_PPM_UTILITY", SPELLS_ENCHANT_ROGUE_POISON_PPM_UTILITY, "");
+            OutputVariableToConfig("SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE", SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE, "How often weapon procs occur");
             OutputVariableToConfig("SPELL_ENCHANT_ROGUE_POISON_ENCHANT_DURATION_ON_WEAPON_TIME_IN_SECONDS", SPELL_ENCHANT_ROGUE_POISON_ENCHANT_DURATION_ON_WEAPON_TIME_IN_SECONDS, "How long rogue poisons stay on the weapons");
             OutputVariableToConfig("SPELL_ENCHANT_ROGUE_POISON_APPLY_TIME_IN_MS", SPELL_ENCHANT_ROGUE_POISON_APPLY_TIME_IN_MS, "How long it takes to apply rogue poison");
             OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_APPLYING_VISUAL_ID", SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_APPLYING_VISUAL_ID, "What to show when a rogue has a poison, 0 will disable it (and be more EQ like)", false);
@@ -2530,7 +2536,9 @@ namespace EQWOWConverter
             SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED);
             SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = ReadVariableFromConfigString("SPELLS_LEARNABLE_FROM_ITEMS_ENABLED", configValuesByVariableName, SPELLS_LEARNABLE_FROM_ITEMS_ENABLED);
             SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = ReadVariableFromConfigString("SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS", configValuesByVariableName, SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS);
-            SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE = ReadVariableFromConfigString("SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE", configValuesByVariableName, SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE);
+            SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE = ReadVariableFromConfigString("SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE", configValuesByVariableName, SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE);
+            SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME = ReadVariableFromConfigString("SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME", configValuesByVariableName, SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME);
+            SPELLS_ENCHANT_ROGUE_POISON_PPM_UTILITY = ReadVariableFromConfigString("SPELLS_ENCHANT_ROGUE_POISON_PPM_UTILITY", configValuesByVariableName, SPELLS_ENCHANT_ROGUE_POISON_PPM_UTILITY);
             SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE = ReadVariableFromConfigString("SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE", configValuesByVariableName, SPELLS_ENCHANT_SPELL_IMBUE_PROC_CHANGE);
             SPELL_ENCHANT_ROGUE_POISON_ENCHANT_DURATION_ON_WEAPON_TIME_IN_SECONDS = ReadVariableFromConfigString("SPELL_ENCHANT_ROGUE_POISON_ENCHANT_DURATION_ON_WEAPON_TIME_IN_SECONDS", configValuesByVariableName, SPELL_ENCHANT_ROGUE_POISON_ENCHANT_DURATION_ON_WEAPON_TIME_IN_SECONDS);
             SPELL_ENCHANT_ROGUE_POISON_APPLY_TIME_IN_MS = ReadVariableFromConfigString("SPELL_ENCHANT_ROGUE_POISON_APPLY_TIME_IN_MS", configValuesByVariableName, SPELL_ENCHANT_ROGUE_POISON_APPLY_TIME_IN_MS);

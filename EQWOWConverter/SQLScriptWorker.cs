@@ -130,6 +130,7 @@ namespace EQWOWConverter
         private SpellAreaSQL spellAreaSQL = new SpellAreaSQL();
         private SpellBonusDataSQL spellBonusDataSQL = new SpellBonusDataSQL();
         private SpellCustomAttrSQL spellCustomAttrSQL = new SpellCustomAttrSQL();
+        private SpellEnchantProcDataSQL spellEnchantProcDataSQL = new SpellEnchantProcDataSQL();
         private SpellGroupSQL spellGroupSQL = new SpellGroupSQL();
         private SpellProcSQL spellProcSQL = new SpellProcSQL();
         private ModEverquestTalentExclusionSQL modEverquestTalentExclusionSQL = new ModEverquestTalentExclusionSQL();
@@ -2478,6 +2479,10 @@ namespace EQWOWConverter
                 for (int i = 0; i < spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count; i++)
                     AddSpellDataBlock(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[i], " (Clicky)", spellTemplate.ClickySpellParatemers[i].FixedLevel);
 
+                // Rogue poison weapon enchants proc on a procs-per-minute rate, which only comes from this table (the enchant's own chance field is left at zero)
+                if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0 && spellTemplate.WeaponItemEnchantProcsPerMinute > 0)
+                    spellEnchantProcDataSQL.AddRowForRogueWeaponProc(spellTemplate.WeaponSpellItemEnchantmentDBCID, spellTemplate.WeaponItemEnchantProcsPerMinute);
+
                 // Stack rules
                 foreach (int spellGroupStackingID in spellTemplate.SpellGroupStackingIDs)
                 {
@@ -3148,6 +3153,7 @@ namespace EQWOWConverter
             spellAreaSQL.SaveToDisk("spell_area", SQLFileType.World);
             spellBonusDataSQL.SaveToDisk("spell_bonus_data", SQLFileType.World);
             spellCustomAttrSQL.SaveToDisk("spell_custom_attr", SQLFileType.World);
+            spellEnchantProcDataSQL.SaveToDisk("spell_enchant_proc_data", SQLFileType.World);
             spellGroupSQL.SaveToDisk("spell_group", SQLFileType.World);
             spellProcSQL.SaveToDisk("spell_proc", SQLFileType.World); // spell_ex44
             modEverquestTalentExclusionSQL.SaveToDisk("mod_everquest_talent_exclusion", SQLFileType.World); // spell_ex44

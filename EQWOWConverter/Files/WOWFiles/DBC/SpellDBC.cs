@@ -341,6 +341,25 @@ namespace EQWOWConverter.WOWFiles
             Logger.WriteDebug(string.Concat("SpellDBC scaled spell ID '", spellID.ToString(), "' effect index '", effectIndex.ToString(), "' to ramp from level 1 up to '", originalBasePoints.ToString(), "' at level '", originalLevel.ToString(), "'"));
         }
 
+        // Drops the level a spell can be used at, which both the client and the trainer UI read out of the spell's own level fields
+        public void SetMinimumUseLevelForSpellID(int spellID, int minimumUseLevel)
+        {
+            if (SourceRowsBySpellID.ContainsKey(spellID) == false)
+            {
+                Logger.WriteError("SpellDBC could not set the minimum use level of spell ID '", spellID.ToString(), "' since no source row has that ID");
+                return;
+            }
+            if (minimumUseLevel < 1 || minimumUseLevel > Configuration.SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL)
+            {
+                Logger.WriteError("SpellDBC could not set the minimum use level of spell ID '", spellID.ToString(), "' since level '", minimumUseLevel.ToString(), "' is out of range");
+                return;
+            }
+            DBCRow row = SourceRowsBySpellID[spellID];
+            SetInt32OnSourceRow(row, BASE_LEVEL_FIELD_BYTE_OFFSET, minimumUseLevel);
+            SetInt32OnSourceRow(row, SPELL_LEVEL_FIELD_BYTE_OFFSET, minimumUseLevel);
+            Logger.WriteDebug(string.Concat("SpellDBC set the minimum use level of spell ID '", spellID.ToString(), "' to '", minimumUseLevel.ToString(), "'"));
+        }
+
         private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool doHideFromDisplay, bool preventClickOff, bool isWornEquipEffect)
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura

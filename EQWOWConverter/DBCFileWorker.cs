@@ -872,7 +872,7 @@ namespace EQWOWConverter
                 if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
                 {
                     spellItemEnchantmentDBC.AddRowForRogueWeaponProc(spellTemplate.WeaponSpellItemEnchantmentDBCID, spellTemplate.WeaponItemEnchantProcSpellID,
-                        Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_PROC_CHANCE, spellTemplate.WeaponItemEnchantSpellName);
+                        spellTemplate.WeaponItemEnchantSpellName);
                 }
 
                 // Pets

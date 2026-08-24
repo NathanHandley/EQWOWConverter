@@ -149,7 +149,15 @@ namespace EQWOWConverter.Spells
                 case SpellEQBaseValueFormulaType.BaseAddFifteenTimesLevelMinusSpellLevel: calculatedEffectBasePoints += 15 * (unitInfluencingLevel - spellInfluencingLevel); break;
                 case SpellEQBaseValueFormulaType.BaseAddTwelveTimesLevelMinusSpellLevel: calculatedEffectBasePoints += 15 * (unitInfluencingLevel - spellInfluencingLevel); break;
                 case SpellEQBaseValueFormulaType.BaseAddTwentyTimesLevelMinusSpellLevel: calculatedEffectBasePoints += 20 * (unitInfluencingLevel - spellInfluencingLevel); break;
-                default: calculatedEffectBasePoints = Math.Max(inputEffectBasePoints, inputEffectMaxPoints); break;
+                default:
+                    {
+                        // A formula from 1 to 99 is carried as itself, and EQ reads the formula number as the per-level multiplier (the max below caps it)
+                        int formulaRaw = (int)eqFormula;
+                        if (formulaRaw >= 1 && formulaRaw <= 99)
+                            calculatedEffectBasePoints += unitInfluencingLevel * formulaRaw;
+                        else
+                            calculatedEffectBasePoints = Math.Max(inputEffectBasePoints, inputEffectMaxPoints);
+                    } break;
             }
 
             // Enforce a maximum if it's set

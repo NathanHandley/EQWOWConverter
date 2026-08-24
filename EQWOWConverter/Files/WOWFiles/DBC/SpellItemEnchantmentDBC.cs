@@ -18,7 +18,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellItemEnchantmentDBC : DBCFile
     {
-        public void AddRowForRogueWeaponProc(int id, int spellID, int procRate, string name)
+        public void AddRowForRogueWeaponProc(int id, int spellID, string name)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID
@@ -26,10 +26,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(1); // Effect1 (Comes from SpellDispelType.dbc, and 1 means MAGIC)
             newRow.AddInt32(0); // Effect2
             newRow.AddInt32(0); // Effect3
-            newRow.AddInt32(procRate); // EffectPointsMin1
+            newRow.AddInt32(0); // EffectPointsMin1
             newRow.AddInt32(0); // EffectPointsMin2
             newRow.AddInt32(0); // EffectPointsMin3
-            newRow.AddInt32(procRate); // EffectPointsMax1
+            newRow.AddInt32(0); // EffectPointsMax1
             newRow.AddInt32(0); // EffectPointsMax2
             newRow.AddInt32(0); // EffectPointsMax3
             newRow.AddInt32(spellID); // EffectArg1

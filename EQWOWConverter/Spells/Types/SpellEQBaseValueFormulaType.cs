@@ -14,14 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+// Note: Any raw formula from 1 to 99 (except the 60 below) has no enum member, and is instead carried as itself by casting the raw formula number into this type
+// EQ treats those as "base + (level * the formula number)", so the number is the per-level multiplier and there's no way to name them all
+
 namespace EQWOWConverter.Spells
 {
     internal enum SpellEQBaseValueFormulaType : int
     {
         UnknownUseBaseOrMaxWhicheverHigher = 0,
         BaseValue = 100,
-
-        //BaseAddLevelTimesMultiplier = 1,
         BaseDivideBy100 = 60,
         BaseAddLevel = 102,
         BaseAddLevelTimesTwo = 103,
