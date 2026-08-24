@@ -63,7 +63,8 @@ namespace EQWOWConverter.Items
             ("wowid_feet", ItemWOWInventoryType.Feet),
             ("wowid_finger", ItemWOWInventoryType.Finger),
             ("wowid_trinket", ItemWOWInventoryType.Trinket),
-            ("wowid_ranged", ItemWOWInventoryType.Ranged)
+            ("wowid_ranged", ItemWOWInventoryType.Ranged),
+            ("wowid_mainhand", ItemWOWInventoryType.MainHand)
         };
 
         // Sound-only spell visual shared by all slotshift spells
@@ -1117,6 +1118,8 @@ namespace EQWOWConverter.Items
                 return ItemWOWInventoryType.Ranged;
             if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask))
                 return ItemWOWInventoryType.MainHand;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Secondary, slotMask))
+                return ItemWOWInventoryType.HeldInOffHand;
             return ItemWOWInventoryType.NoEquip;
         }
 
@@ -1145,7 +1148,7 @@ namespace EQWOWConverter.Items
             return damage != 0 && delay != 0;
         }
 
-        private static bool IsSlotshiftWearableInInventoryType(int slotMask, ItemWOWInventoryType inventoryType)
+        private static bool IsSlotshiftWearableInInventoryType(int slotMask, ItemWOWInventoryType baseInventoryType, ItemWOWInventoryType inventoryType)
         {
             switch (inventoryType)
             {
@@ -1162,6 +1165,11 @@ namespace EQWOWConverter.Items
                 case ItemWOWInventoryType.Finger: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ring1, slotMask) || IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ring2, slotMask);
                 case ItemWOWInventoryType.Trinket: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ear1, slotMask) || IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ear2, slotMask);
                 case ItemWOWInventoryType.Ranged: return IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ranged, slotMask);
+
+                // Held off hand items (non-weapon) that fit the primary hand in EQ shift into the main hand, since WoW has no slot that reaches both
+                case ItemWOWInventoryType.MainHand: return baseInventoryType == ItemWOWInventoryType.HeldInOffHand &&
+                    IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask);
+
                 default: return false;
             }
         }
@@ -1202,7 +1210,7 @@ namespace EQWOWConverter.Items
             {
                 if (inventoryType == baseInventoryType)
                     continue;
-                if (IsSlotshiftWearableInInventoryType(itemTemplate.EQSlotMask, inventoryType) == true)
+                if (IsSlotshiftWearableInInventoryType(itemTemplate.EQSlotMask, baseInventoryType, inventoryType) == true)
                     targetInventoryTypes.Add(inventoryType);
             }
             return targetInventoryTypes;
@@ -1250,11 +1258,19 @@ namespace EQWOWConverter.Items
                 variantItemTemplate.ParentItemTemplate = baseItemTemplate;
                 variantItemTemplate.StarterVersionItemTemplateID = -1;
                 variantItemTemplate.InventoryType = targetInventoryType;
+                ItemWOWInventoryType statBudgetInventoryType = targetInventoryType;
                 if (targetInventoryType == ItemWOWInventoryType.Ranged)
                 {
                     // Rangeable non-weapons convert as misc weapons, matching other rangeable held items
                     variantItemTemplate.ClassID = 2;
                     variantItemTemplate.SubClassID = 14;
+                }
+                else if (targetInventoryType == ItemWOWInventoryType.MainHand)
+                {
+                    // The main hand version is the same held item in the other hand, so it isn't worn armor and it budgets its stats off the off hand slot
+                    variantItemTemplate.ClassID = 4;
+                    variantItemTemplate.SubClassID = Convert.ToInt32(ItemWOWArmorSubclassType.Misc);
+                    statBudgetInventoryType = ItemWOWInventoryType.HeldInOffHand;
                 }
                 else
                 {
@@ -1275,7 +1291,7 @@ namespace EQWOWConverter.Items
                 variantItemTemplate.FireResist = 0;
                 variantItemTemplate.NatureResist = 0;
                 variantItemTemplate.Block = 0;
-                PopulateStats(ref variantItemTemplate, targetInventoryType, variantItemTemplate.ClassID, variantItemTemplate.SubClassID,
+                PopulateStats(ref variantItemTemplate, statBudgetInventoryType, variantItemTemplate.ClassID, variantItemTemplate.SubClassID,
                     baseItemTemplate.EQClassMask, eqArmorClass, eqStrength, eqAgility, eqCharisma, eqDexterity, eqIntelligence,
                     eqStamina, eqWisdom, eqHp, eqMana, eqResistPoison, eqResistMagic, eqResistDisease, eqResistFire, eqResistCold,
                     damage, delay, qualityOverride);
@@ -1374,7 +1390,7 @@ namespace EQWOWConverter.Items
         }
 
         private static void PopulateItemClassSpecificProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask,
-            int iconID, int damage, int castTime, BookText? bookText, int baitPotency, int bagSlots)
+            int iconID, int damage, int delay, int castTime, BookText? bookText, int baitPotency, int bagSlots)
         {
             bool allowBothHands = false;
             if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) &&
@@ -1894,7 +1910,22 @@ namespace EQWOWConverter.Items
                     } break;
             }
 
+            MoveNonCombatHandItemToOffHand(ref itemTemplate, damage, delay);
             CalculateAndSetSheatheType(ref itemTemplate);
+        }
+
+        private static void MoveNonCombatHandItemToOffHand(ref ItemTemplate itemTemplate, int damage, int delay)
+        {
+            // Anything that swings in EQ stays in the hand slot it converted into, and fishing needs a main hand fishing pole since the fishing spell requires it
+            bool isCombatHandItem = IsWeaponInEQ(damage, delay) == true || (itemTemplate.ClassID == 2 && itemTemplate.SubClassID == Convert.ToInt32(ItemWOWWeaponSubclassType.FishingPole));
+
+            // One hand items already reach both hands for any class that dual wields (instruments), so leave those alone
+            if (isCombatHandItem == false && (itemTemplate.InventoryType == ItemWOWInventoryType.MainHand || itemTemplate.InventoryType == ItemWOWInventoryType.OffHandWeapon))
+                itemTemplate.InventoryType = ItemWOWInventoryType.HeldInOffHand;
+
+            // A held item isn't worn armor, so it shouldn't carry an armor material subclass
+            if (itemTemplate.InventoryType == ItemWOWInventoryType.HeldInOffHand && itemTemplate.ClassID == 4)
+                itemTemplate.SubClassID = Convert.ToInt32(ItemWOWArmorSubclassType.Misc);
         }
 
         private static void CalculateAndSetSheatheType(ref ItemTemplate itemTemplate)
@@ -2096,7 +2127,7 @@ namespace EQWOWConverter.Items
                 newItemTemplate.EQSlotMask = int.Parse(columns["slots"]);
                 newItemTemplate.CastTime = int.Parse(columns["casttime"]);
                 PopulateItemClassSpecificProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID,
-                    damage, newItemTemplate.CastTime, newItemTemplate.BookTextReference, newItemTemplate.FishingBaitPotency, newItemTemplate.BagSlots);
+                    damage, delay, newItemTemplate.CastTime, newItemTemplate.BookTextReference, newItemTemplate.FishingBaitPotency, newItemTemplate.BagSlots);
                 int overrideItemClassID = int.Parse(columns["override_item_class_id"]);
                 if (overrideItemClassID >= 0)
                     newItemTemplate.ClassID = overrideItemClassID;

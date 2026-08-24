@@ -4744,6 +4744,7 @@ namespace EQWOWConverter
                 case ItemWOWInventoryType.Shield: return "off hand (as a shield)";
                 case ItemWOWInventoryType.Ranged: return "ranged";
                 case ItemWOWInventoryType.HeldInOffHand: return "off hand (as a held item)";
+                case ItemWOWInventoryType.MainHand: return "main hand";
                 default: return inventoryType.ToString().ToLower();
             }
         }
