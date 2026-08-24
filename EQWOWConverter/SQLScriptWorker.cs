@@ -562,13 +562,18 @@ namespace EQWOWConverter
                     }
                 }
 
-                // Raid instance versions of the zone spawn exactly like the open world copy (full pools, chances, respawn times, waypoints and game event links).  The single difference is that named raid creatures
-                // stay dead for the whole lockout, which is done by giving raid boss and raid mini boss spawns a respawn time of the instance reset time
+                // Raid instance versions of the zone mirror the open world copy (full pools, chances, respawn times, waypoints and game event links) with two differences.  Only raid creatures of any tier are
+                // spawned there, so a pool with no raid candidates contributes no spawns at all, and named raid creatures stay dead for the whole lockout by giving raid boss and raid mini boss spawns a
+                // respawn time of the instance reset time
                 if (spawnPool.CreatureSpawnInstances.Count > 0 && spawnPool.CreatureTemplates.Count > 0 && mapIDsByShortName.ContainsKey(spawnPool.CreatureSpawnInstances[0].ZoneShortName) == true)
                 {
                     ZoneProperties? raidLowZoneProperties = GetInstanceRaidLowZoneProperties(spawnPool.CreatureSpawnInstances[0]);
                     if (raidLowZoneProperties != null)
-                        CreateSpawnPoolSQLEntriesForMap(spawnPool, raidLowZoneProperties.DBCMapIDRaidLow, "raidlow", ", Low Raid Instance", Convert.ToInt32(raidLowZoneProperties.InstanceResetTimeInSecRaidLow));
+                    {
+                        CreatureSpawnPool? raidLowSpawnPool = spawnPool.CreateCopyWithOnlyRaidCreatures();
+                        if (raidLowSpawnPool != null)
+                            CreateSpawnPoolSQLEntriesForMap(raidLowSpawnPool, raidLowZoneProperties.DBCMapIDRaidLow, "raidlow", ", Low Raid Instance", Convert.ToInt32(raidLowZoneProperties.InstanceResetTimeInSecRaidLow));
+                    }
                 }
             }
 
