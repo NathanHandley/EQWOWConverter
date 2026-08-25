@@ -1184,6 +1184,18 @@ namespace EQWOWConverter
 
             // Runeforging is handed out at character creation, and both of the runes that come free with the skill (Razorice and Cinderglacier) are usable right away
             spellDBC.SetMinimumUseLevelForSpellID(53428, 1); // Runeforging
+
+            // Every runeforge enchant refuses weapons under item level 40, so relase that
+            spellDBC.RemoveItemLevelRequirementForSpellID(53323); // Rune of Swordshattering
+            spellDBC.RemoveItemLevelRequirementForSpellID(53331); // Rune of Lichbane
+            spellDBC.RemoveItemLevelRequirementForSpellID(53341); // Rune of Cinderglacier
+            spellDBC.RemoveItemLevelRequirementForSpellID(53342); // Rune of Spellshattering
+            spellDBC.RemoveItemLevelRequirementForSpellID(53343); // Rune of Razorice
+            spellDBC.RemoveItemLevelRequirementForSpellID(53344); // Rune of the Fallen Crusader
+            spellDBC.RemoveItemLevelRequirementForSpellID(54446); // Rune of Swordbreaking
+            spellDBC.RemoveItemLevelRequirementForSpellID(54447); // Rune of Spellbreaking
+            spellDBC.RemoveItemLevelRequirementForSpellID(62158); // Rune of the Stoneskin Gargoyle
+            spellDBC.RemoveItemLevelRequirementForSpellID(70164); // Rune of the Nerubian Carapace
         }
 
         private static void GetCreatureTextureVariations(List<string> textureNames, out string textureVariation1,

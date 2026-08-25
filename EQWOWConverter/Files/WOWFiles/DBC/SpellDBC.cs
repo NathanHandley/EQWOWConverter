@@ -360,6 +360,18 @@ namespace EQWOWConverter.WOWFiles
             Logger.WriteDebug(string.Concat("SpellDBC set the minimum use level of spell ID '", spellID.ToString(), "' to '", minimumUseLevel.ToString(), "'"));
         }
 
+        public void RemoveItemLevelRequirementForSpellID(int spellID)
+        {
+            if (SourceRowsBySpellID.ContainsKey(spellID) == false)
+            {
+                Logger.WriteError("SpellDBC could not remove the item level requirement of spell ID '", spellID.ToString(), "' since no source row has that ID");
+                return;
+            }
+            DBCRow row = SourceRowsBySpellID[spellID];
+            SetInt32OnSourceRow(row, BASE_LEVEL_FIELD_BYTE_OFFSET, 0);
+            Logger.WriteDebug(string.Concat("SpellDBC removed the item level requirement of spell ID '", spellID.ToString(), "'"));
+        }
+
         private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool doHideFromDisplay, bool preventClickOff, bool isWornEquipEffect)
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
