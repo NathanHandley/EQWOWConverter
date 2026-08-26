@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: EQ Auction Realm Filter
+## Notes: Adds a "Realm Filter" window to the auction house, choosing Norrath (EverQuest), Azeroth (World of Warcraft) or both per auction category and subcategory
+## Version: 1.0
+
+EQ_AuctionFilter.lua

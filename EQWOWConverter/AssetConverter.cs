@@ -356,6 +356,13 @@ namespace EQWOWConverter
                     Directory.Delete(targetDungeonModeAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceDungeonModeAddOnFolder, targetDungeonModeAddOnFolder, true, true);
 
+                // Copy the auction realm filter addon into the prep location
+                string sourceAuctionFilterAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_AuctionFilter");
+                string targetAuctionFilterAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_AuctionFilter");
+                if (Directory.Exists(targetAuctionFilterAddOnFolder) == true)
+                    Directory.Delete(targetAuctionFilterAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceAuctionFilterAddOnFolder, targetAuctionFilterAddOnFolder, true, true);
+
                 // Create or update the MPQs
                 CreateOrUpdateMainPatchMPQ();
                 if (Configuration.GENERATE_WORLDMAPS == true)
@@ -4354,6 +4361,11 @@ namespace EQWOWConverter
                 if (Directory.Exists(targetDungeonModeAddOnFolder) == true)
                     Directory.Delete(targetDungeonModeAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceDungeonModeAddOnFolder, targetDungeonModeAddOnFolder, true, true);
+                string sourceAuctionFilterAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_AuctionFilter");
+                string targetAuctionFilterAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_AuctionFilter");
+                if (Directory.Exists(targetAuctionFilterAddOnFolder) == true)
+                    Directory.Delete(targetAuctionFilterAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceAuctionFilterAddOnFolder, targetAuctionFilterAddOnFolder, true, true);
             }
 
             Logger.WriteDebug("Deploying to client complete");
