@@ -1162,6 +1162,18 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        // Spells generated to carry a parent spell's effects (bard song pulses, illusion forms, extracted stuns, chained blocks)
+        public void CopySpellResolutionPropertiesFrom(SpellTemplate parentSpellTemplate)
+        {
+            SchoolMask = parentSpellTemplate.SchoolMask;
+            DispelType = parentSpellTemplate.DispelType;
+            DefenseType = parentSpellTemplate.DefenseType;
+            PreventionType = parentSpellTemplate.PreventionType;
+            IsUnresistable = parentSpellTemplate.IsUnresistable;
+            NeverMisses = parentSpellTemplate.NeverMisses;
+            ResistDiff = parentSpellTemplate.ResistDiff;
+        }
+
         private static UInt32 GetSchoolMaskForResistType(int eqResistType)
         {
             switch (eqResistType)
@@ -1749,6 +1761,7 @@ namespace EQWOWConverter.Spells
             // Generate the effect spell, and move many of the properties over to it
             SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
             effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Effect");
+            effectGeneratedSpellTemplate.CopySpellResolutionPropertiesFrom(spellTemplate);
             effectGeneratedSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "bardsongeffect", spellTemplate.EQSpellID.ToString());
             effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
             effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
@@ -2142,6 +2155,8 @@ namespace EQWOWConverter.Spells
                                 // Residual buff that regenerates 1 mana per tick and blocks another complete heal until it wears off
                                 SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
                                 effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Residual");
+                                effectGeneratedSpellTemplate.CopySpellResolutionPropertiesFrom(spellTemplate);
+                                effectGeneratedSpellTemplate.NeverMisses = true; // The parent already rolled to hit
                                 effectGeneratedSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "completehealresidual", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                 effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
@@ -2652,6 +2667,8 @@ namespace EQWOWConverter.Spells
                                 // Stuns become their own spell since the stun duration can differ from a parent aura duration
                                 SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
                                 effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Stunning Effect");
+                                effectGeneratedSpellTemplate.CopySpellResolutionPropertiesFrom(spellTemplate);
+                                effectGeneratedSpellTemplate.NeverMisses = true; // The parent already rolled to hit
                                 effectGeneratedSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "stun", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                 effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
@@ -3448,6 +3465,8 @@ namespace EQWOWConverter.Spells
                                 // Male form
                                 SpellTemplate maleFormSpellTemplate = new SpellTemplate();
                                 maleFormSpellTemplate.Name = string.Concat(spellTemplate.Name);
+                                maleFormSpellTemplate.CopySpellResolutionPropertiesFrom(spellTemplate);
+                                maleFormSpellTemplate.NeverMisses = true; // The parent already rolled to hit
                                 maleFormSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "maleform", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                 maleFormSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 maleFormSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
@@ -3495,6 +3514,8 @@ namespace EQWOWConverter.Spells
                                 // Female form
                                 SpellTemplate femaleFormSpellTemplate = new SpellTemplate();
                                 femaleFormSpellTemplate.Name = string.Concat(spellTemplate.Name);
+                                femaleFormSpellTemplate.CopySpellResolutionPropertiesFrom(spellTemplate);
+                                femaleFormSpellTemplate.NeverMisses = true; // The parent already rolled to hit
                                 femaleFormSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "femaleform", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                 femaleFormSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 femaleFormSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
@@ -3628,7 +3649,8 @@ namespace EQWOWConverter.Spells
                     effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                     effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
                     effectGeneratedSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
-                    effectGeneratedSpellTemplate.SchoolMask = spellTemplate.SchoolMask;
+                    effectGeneratedSpellTemplate.CopySpellResolutionPropertiesFrom(spellTemplate);
+                    effectGeneratedSpellTemplate.NeverMisses = true; // The parent already rolled to hit
                     effectGeneratedSpellTemplate.SpellRange = spellTemplate.SpellRange;
                     effectGeneratedSpellTemplate.InfluencedBySpellPower = spellTemplate.InfluencedBySpellPower;
                     effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;

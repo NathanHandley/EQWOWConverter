@@ -2285,22 +2285,22 @@ namespace EQWOWConverter
             }
         }
 
-        private void AddSpellChain(SpellTemplate baseSpellTemplate, SpellEffectBlock triggerBlock, int chainedSpellID, string chainedSpellName, bool forceHitTrigger = false)
+        private void AddSpellChain(SpellTemplate baseSpellTemplate, SpellEffectBlock triggerBlock, SpellEffectBlock chainedBlock, bool forceHitTrigger = false)
         {
-            bool triggerBlockHasAura = false;
-            foreach (SpellEffectWOW triggerEffect in triggerBlock.SpellEffects)
-            {
-                if (triggerEffect.IsAuraType() == true)
-                {
-                    triggerBlockHasAura = true;
-                    break;
-                }
-            }
-
-            if (forceHitTrigger == false && baseSpellTemplate.AuraDuration.MaxDurationInMS > 0 && triggerBlockHasAura == true)
-                spellLinkedSpellSQL.AddRowForAuraTrigger(triggerBlock.WOWSpellID, chainedSpellID, chainedSpellName);
+            bool triggerBlockHasAura = DoesBlockHaveAuraEffect(triggerBlock);
+            bool chainedBlockHasAura = DoesBlockHaveAuraEffect(chainedBlock);
+            if (forceHitTrigger == false && baseSpellTemplate.AuraDuration.MaxDurationInMS > 0 && triggerBlockHasAura == true && chainedBlockHasAura == true)
+                spellLinkedSpellSQL.AddRowForAuraTrigger(triggerBlock.WOWSpellID, chainedBlock.WOWSpellID, chainedBlock.SpellName);
             else
-                spellLinkedSpellSQL.AddRowForHitTrigger(triggerBlock.WOWSpellID, chainedSpellID, chainedSpellName);
+                spellLinkedSpellSQL.AddRowForHitTrigger(triggerBlock.WOWSpellID, chainedBlock.WOWSpellID, chainedBlock.SpellName);
+        }
+
+        private static bool DoesBlockHaveAuraEffect(SpellEffectBlock spellEffectBlock)
+        {
+            foreach (SpellEffectWOW blockEffect in spellEffectBlock.SpellEffects)
+                if (blockEffect.IsAuraType() == true)
+                    return true;
+            return false;
         }
 
         // Recasting a spell should refresh it instead of stack-competing with itself, so every cast group member also gets a single-member
@@ -2395,7 +2395,7 @@ namespace EQWOWConverter
 
                 // Additional effects beyond the first
                 if (i > 0)
-                    AddSpellChain(spellTemplate, spellEffectBlocks[0], curEffectBlock.WOWSpellID, curEffectBlock.SpellName);
+                    AddSpellChain(spellTemplate, spellEffectBlocks[0], curEffectBlock);
             }
 
             // Scripts
@@ -2534,13 +2534,14 @@ namespace EQWOWConverter
                         continue;
                     }
                     bool forceHitTrigger = chainedSpellTemplate.ChainAppliesViaHitTrigger;
-                    AddSpellChain(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0], chainedSpellID, chainedSpellName, forceHitTrigger);
+                    SpellEffectBlock chainedBlock = chainedGroupedBaseSpellEffectBlocksForOutput[0];
+                    AddSpellChain(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0], chainedBlock, forceHitTrigger);
                     foreach (List<SpellEffectBlock> wornSpellEffectBlocks in spellTemplate.ItemWornSpellEffectBlockSets)
-                        AddSpellChain(spellTemplate, wornSpellEffectBlocks[0], chainedSpellID, chainedSpellName, forceHitTrigger);
+                        AddSpellChain(spellTemplate, wornSpellEffectBlocks[0], chainedBlock, forceHitTrigger);
                     if (spellTemplate.WOWSpellIDProcAndGoodEffect > 0)
-                        AddSpellChain(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput[0], chainedSpellID, chainedSpellName, forceHitTrigger);
+                        AddSpellChain(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput[0], chainedBlock, forceHitTrigger);
                     for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
-                        AddSpellChain(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyIndex][0], chainedSpellID, chainedSpellName, forceHitTrigger);
+                        AddSpellChain(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyIndex][0], chainedBlock, forceHitTrigger);
                 }
             }
             foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)
