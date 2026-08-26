@@ -371,6 +371,16 @@ namespace EQWOWConverter
                 }
 
                 string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
+
+                // Races that render as a zone object (Minor Illusion, Tree) never build a creature model of their own, so their display points straight at the static doodad
+                if (creatureModelTemplate.Race.IllusionObjectModelName.Length > 0)
+                {
+                    relativeModelPath = GetStaticDoodadRelativeModelPath(creatureModelTemplate.Race.IllusionObjectModelName);
+                    if (ObjectModel.StaticObjectModelsByName.ContainsKey(creatureModelTemplate.Race.IllusionObjectModelName) == true)
+                        creatureModelTemplate.ModelClickBoundingBox = new BoundingBox(ObjectModel.StaticObjectModelsByName[creatureModelTemplate.Race.IllusionObjectModelName].InteractionBoundingBox);
+                    else
+                        Logger.WriteError("Creature race ", creatureModelTemplate.Race.Name, " has an IllusionObjectModel of ", creatureModelTemplate.Race.IllusionObjectModelName, " but no static object model with that name was generated");
+                }
                 creatureModelDataDBC.AddRow(creatureModelTemplate, relativeModelPath, creatureModelTemplate.DBCCreatureModelDataID, creatureModelTemplate.DBCCreatureSoundDataID);
                 if (creatureModelTemplate.Race.SoundWalkingName.Trim().Length > 0 && creatureModelTemplate.IsCompanionPetVersion == false)
                 {
@@ -396,6 +406,29 @@ namespace EQWOWConverter
                     }
                 }
             }
+            // Zone objects that the object based illusions (Minor Illusion, Illusion: Tree) can turn a player into.  These are placed doodads rather than creatures, so they get
+            // display and model data rows of their own that point at the shared static doodad model, and no creature_model_info row
+            HashSet<int> addedIllusionObjectModelDataIDs = new HashSet<int>();
+            foreach (ZoneObjectIllusionDisplay illusionObjectDisplay in ZoneObjectIllusionRegistry.GetDisplays())
+            {
+                if (ObjectModel.StaticObjectModelsByName.ContainsKey(illusionObjectDisplay.ObjectModelName) == false)
+                {
+                    Logger.WriteError("Illusion object display could not be generated since there is no static object model named ", illusionObjectDisplay.ObjectModelName);
+                    continue;
+                }
+                ObjectModel illusionObjectModel = ObjectModel.StaticObjectModelsByName[illusionObjectDisplay.ObjectModelName];
+
+                // The placed size of the object is on the display, which leaves the object scale (and with it bounding radius and combat reach) of the illusioned player alone
+                creatureDisplayInfoDBC.AddRow(illusionObjectDisplay.DBCCreatureDisplayID, illusionObjectDisplay.DBCCreatureModelDataID, illusionObjectDisplay.Scale);
+
+                // Every size of the same object shares one model data row
+                if (addedIllusionObjectModelDataIDs.Contains(illusionObjectDisplay.DBCCreatureModelDataID) == true)
+                    continue;
+                addedIllusionObjectModelDataIDs.Add(illusionObjectDisplay.DBCCreatureModelDataID);
+                creatureModelDataDBC.AddRowForStaticObjectModel(illusionObjectDisplay.DBCCreatureModelDataID, GetStaticDoodadRelativeModelPath(illusionObjectDisplay.ObjectModelName),
+                    illusionObjectModel.InteractionBoundingBox);
+            }
+
             string creatureSoundsDirectory = "Sound\\Creature\\Everquest";
             foreach (var soundByName in CreatureRace.SoundsBySoundNameAndDistance)
                 foreach (var soundByDistance in soundByName.Value)
@@ -1200,6 +1233,11 @@ namespace EQWOWConverter
             spellDBC.RemoveItemLevelRequirementForSpellID(54447); // Rune of Spellbreaking
             spellDBC.RemoveItemLevelRequirementForSpellID(62158); // Rune of the Stoneskin Gargoyle
             spellDBC.RemoveItemLevelRequirementForSpellID(70164); // Rune of the Nerubian Carapace
+        }
+
+        private static string GetStaticDoodadRelativeModelPath(string objectModelName)
+        {
+            return string.Concat("World\\Everquest\\StaticDoodads\\", objectModelName, "\\", objectModelName, ".mdx");
         }
 
         private static void GetCreatureTextureVariations(List<string> textureNames, out string textureVariation1,

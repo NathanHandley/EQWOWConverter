@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 78;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 80;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -104,7 +104,7 @@ namespace EQWOWConverter
         public static string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
 
         // Client files must match this between the server and the client, separate from "CONFIGONLY_CORE_MOD_VERSION"
-        public static int DEPLOY_CLIENT_DATA_VERSION = 4;
+        public static int DEPLOY_CLIENT_DATA_VERSION = 5;
         public static string DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE = "Your EverQuest client data is out of date. Please run the launcher to update, then log back in.";
 
         // ====================================================================
@@ -1016,6 +1016,13 @@ namespace EQWOWConverter
         // Permanent aura placed on newly created characters, lost by doing non-EQ content (see ACHIEVEMENT_EQ_ADVENTURER_ENABLED)
         public static int SPELL_EQ_ADVENTURER_AURA_SPELL_ID = 86916;
 
+        // How far (in EQ units) Minor Illusion and Tree will look for a zone object to turn the caster into, where zero or less means anywhere in the zone
+        public static float SPELL_ILLUSION_OBJECT_MAX_DISTANCE = 200f;
+        public static float SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE = 0f;
+
+        // Placed object sizes snap to this step before becoming display rows, since the EQ zone data places the same object at many sizes (0.1 through 10) and each distinct size costs a CreatureDisplayInfo row
+        // 0.25 lands at roughly 5000 display rows across the ~1800 object models
+        public static float SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE = 0.25f;
         // EQ has no "daze" snare when a creature melee-hits a player from behind so this can disable it (in EQ zones only)
         public static bool COMBAT_DAZE_IN_EQ_ZONES_ENABLED = true;
 
@@ -2064,6 +2071,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", SPELL_INVIS_VS_UNDEAD_INVIS_TYPE, "WoW invisibility group (InvisibilityType) reserved for EQ 'invis vs undead' (0 = general invis, 1 should be unused)");
             OutputVariableToConfig("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID, "Custom detect aura granted to everything that should see through 'invis vs undead' (non-undead + see_invis_undead undead)");
             OutputVariableToConfig("SPELL_RESIST_ADJUSTMENT_SPELL_ID", SPELL_RESIST_ADJUSTMENT_SPELL_ID, "Hidden short-duration aura the mod applies to a caster during a cast to shift the spell hit roll by the EQ ResistDiff amount");
+            OutputVariableToConfig("SPELL_ILLUSION_OBJECT_MAX_DISTANCE", SPELL_ILLUSION_OBJECT_MAX_DISTANCE, "How far (in EQ units) Minor Illusion and Tree will look for a zone object to turn the caster into, where zero or less means anywhere in the zone", false);
+            OutputVariableToConfig("SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE", SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE, "", false);
+            OutputVariableToConfig("SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE", SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE, "Step that placed object sizes snap to for the object illusions. Smaller is more exact but costs more CreatureDisplayInfo rows", false);
             OutputVariableToConfig("COMBAT_DAZE_IN_EQ_ZONES_ENABLED", COMBAT_DAZE_IN_EQ_ZONES_ENABLED, "EQ has no \"daze\" snare when a creature melee-hits a player from behind so this can disable it (in EQ zones only)");
             OutputVariableToConfig("COMBATSKILL_BASH_ENABLED", COMBATSKILL_BASH_ENABLED, "Bash skills in EQ are either from warrior/cleric/paladin/shadowknight or those that use warrior skills", false);
             OutputVariableToConfig("COMBATSKILL_BASH_PLAYER_LEARNABLE", COMBATSKILL_BASH_PLAYER_LEARNABLE, "Whether classes that have Bash learn it as players (from level 1)", false);
@@ -2624,6 +2634,9 @@ namespace EQWOWConverter
             SPELL_INVIS_VS_UNDEAD_INVIS_TYPE = ReadVariableFromConfigString("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", configValuesByVariableName, SPELL_INVIS_VS_UNDEAD_INVIS_TYPE);
             SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID);
             SPELL_RESIST_ADJUSTMENT_SPELL_ID = ReadVariableFromConfigString("SPELL_RESIST_ADJUSTMENT_SPELL_ID", configValuesByVariableName, SPELL_RESIST_ADJUSTMENT_SPELL_ID);
+            SPELL_ILLUSION_OBJECT_MAX_DISTANCE = ReadVariableFromConfigString("SPELL_ILLUSION_OBJECT_MAX_DISTANCE", configValuesByVariableName, SPELL_ILLUSION_OBJECT_MAX_DISTANCE);
+            SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE = ReadVariableFromConfigString("SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE", configValuesByVariableName, SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE);
+            SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE = ReadVariableFromConfigString("SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE", configValuesByVariableName, SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE);
             COMBAT_DAZE_IN_EQ_ZONES_ENABLED = ReadVariableFromConfigString("COMBAT_DAZE_IN_EQ_ZONES_ENABLED", configValuesByVariableName, COMBAT_DAZE_IN_EQ_ZONES_ENABLED);
             COMBATSKILL_BASH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_BASH_ENABLED", configValuesByVariableName, COMBATSKILL_BASH_ENABLED);
             COMBATSKILL_BASH_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_BASH_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_BASH_PLAYER_LEARNABLE);

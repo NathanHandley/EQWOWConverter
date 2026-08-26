@@ -34,6 +34,44 @@ namespace EQWOWConverter.WOWFiles
         }
 
 
+        public void AddRowForStaticObjectModel(int modelDataID, string modelName, BoundingBox clickBoundingBox)
+        {
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt32(modelDataID); // ID
+            newRow.AddPackedFlags(0); // Flags
+            newRow.AddString(modelName); // Model Path
+            newRow.AddInt32(1); // SizeClass
+            newRow.AddFloat(1); // ModelScale (the object models are already built at world scale)
+            newRow.AddInt32(1); // BloodID
+            newRow.AddInt32(-1); // FootprintTextureID
+            newRow.AddFloat(18); // FootprintTextureLength
+            newRow.AddFloat(12); // FootprintTextureWidth
+            newRow.AddFloat(1); // FootprintParticleScale
+            newRow.AddInt32(0); // FoleyMaterialID
+            newRow.AddInt32(0); // FootstepShakeSize
+            newRow.AddInt32(0); // DeathThudShakeSize
+            newRow.AddInt32(0); // SoundID, objects are silent
+            float collisionScaleCompensation = Configuration.GENERATE_EQUIPMENT_SCALE / Configuration.GENERATE_CREATURE_SCALE;
+            newRow.AddFloat(0.6944f * collisionScaleCompensation); // CollisionWidth
+            newRow.AddFloat(2.083f * collisionScaleCompensation); // CollisionHeight
+            newRow.AddFloat(0); // MountHeight
+            newRow.AddFloat(clickBoundingBox.BottomCorner.X); // GeoBoxMinX
+            newRow.AddFloat(clickBoundingBox.BottomCorner.Y); // GeoBoxMinY
+            newRow.AddFloat(clickBoundingBox.BottomCorner.Z); // GeoBoxMinZ
+            newRow.AddFloat(clickBoundingBox.TopCorner.X); // GeoBoxMaxX
+            newRow.AddFloat(clickBoundingBox.TopCorner.Y); // GeoBoxMaxY
+            newRow.AddFloat(clickBoundingBox.TopCorner.Z); // GeoBoxMaxZ
+            newRow.AddFloat(1); // WorldEffectScale
+            newRow.AddFloat(1); // AttachedEffectScale
+            newRow.AddFloat(0); // MissileCollisionRadius
+            newRow.AddFloat(0); // MissileCollisionPush
+            newRow.AddFloat(0); // MissileCollisionRaise
+            Rows.Add(newRow);
+
+            // Sort by ID
+            newRow.SortValue1 = modelDataID;
+        }
+
         public void AddRow(CreatureModelTemplate creatureModelTemplate, string modelName, int modelDataID, int creatureSoundDataID)
         {
             DBCRow newRow = new DBCRow();

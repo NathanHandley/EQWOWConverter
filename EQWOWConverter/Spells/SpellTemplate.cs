@@ -359,6 +359,7 @@ namespace EQWOWConverter.Spells
         public int ModFactionRepValue = 0;
         public CreatureFactionAlignmentType IllusionFormFactionAlignment = CreatureFactionAlignmentType.None;
         public int IllusionFormEQRaceID = 0;
+        public CreatureIllusionObjectClassType IllusionObjectClass = CreatureIllusionObjectClassType.None;
         public bool CanMountWhileInForm = false;
         public bool AllowSpellPowerToInfluence = false;
         public bool InfluencedBySpellPower = false;
@@ -3640,7 +3641,16 @@ namespace EQWOWConverter.Spells
                                     continue;
                                 }
                                 maleFormSpellTemplate.CanMountWhileInForm = creatureRaceMale.CanMount;
+
+                                // EQ races like Minor Illusion and Tree have no creature model of their own.  The EQ client rendered them as the nearest zone object, so the
+                                // form carries the object class and the mod swaps in the display of a real nearby object when the aura lands (the race's own model is the fallback)
+                                CreatureIllusionObjectClassType illusionObjectClass = creatureRaceMale.IllusionObjectClass;
+                                spellTemplate.IllusionObjectClass = illusionObjectClass;
+
+                                // Object forms render the object at its natural world size instead of a race-scaled creature
                                 float scaleMale = creatureRaceMale.Height * creatureRaceMale.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
+                                if (illusionObjectClass != CreatureIllusionObjectClassType.None)
+                                    scaleMale = 1f;
                                 CreatureTemplate maleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(maleFormSpellTemplate.Name, creatureRaceMale, creatureRaceMale.Gender, 0, textureID, 0, 0, scaleMale, wowFactionTemplateID, maleFormSpellTemplate.WOWSpellID);
                                 maleCreatureTemplate.IsIllusionForm = true;
                                 maleFormSpellEffectWOW.EffectMiscValueA = maleCreatureTemplate.WOWCreatureTemplateID;
@@ -3650,6 +3660,11 @@ namespace EQWOWConverter.Spells
                                     textParticle = "an";
                                 maleFormSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", textParticle, " ", raceName);
                                 maleFormSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
+                                if (illusionObjectClass != CreatureIllusionObjectClassType.None)
+                                {
+                                    maleFormSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", GetIllusionObjectDescriptionText(illusionObjectClass));
+                                    maleFormSpellEffectWOW.AuraDescription = string.Concat("appear as ", GetIllusionObjectDescriptionText(illusionObjectClass));
+                                }
                                 maleFormSpellTemplate.WOWSpellEffects.Add(maleFormSpellEffectWOW);
                                 maleFormSpellTemplate.AuraDuration = spellTemplate.AuraDuration;
                                 if (spellTemplate.IsCosmeticOnlyIllusion == true)
@@ -3661,6 +3676,7 @@ namespace EQWOWConverter.Spells
                                 }
                                 maleFormSpellTemplate.IllusionFormFactionAlignment = illusionFactionAlignment;
                                 maleFormSpellTemplate.IllusionFormEQRaceID = eqEffect.EQBaseValue;
+                                maleFormSpellTemplate.IllusionObjectClass = illusionObjectClass;
                                 maleFormSpellTemplate.IllusionSpellParent = spellTemplate;
                                 spellTemplate.MaleFormSpellTemplateID = maleFormSpellTemplate.WOWSpellID;
                                 effectGeneratedSpellTemplates.Add(maleFormSpellTemplate);
@@ -3690,6 +3706,8 @@ namespace EQWOWConverter.Spells
                                 }
                                 femaleFormSpellTemplate.CanMountWhileInForm = creatureRaceFemale.CanMount;
                                 float scaleFemale = creatureRaceFemale.Height * creatureRaceFemale.SpawnSizeMod * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
+                                if (illusionObjectClass != CreatureIllusionObjectClassType.None)
+                                    scaleFemale = 1f;
                                 CreatureTemplate femaleCreatureTemplate = CreatureTemplate.GenerateCreatureTemplate(femaleFormSpellTemplate.Name, creatureRaceFemale, creatureRaceFemale.Gender, 0, textureID, 0, 0, scaleFemale, wowFactionTemplateID, femaleFormSpellTemplate.WOWSpellID);
                                 femaleCreatureTemplate.IsIllusionForm = true;
                                 femaleFormSpellEffectWOW.EffectMiscValueA = femaleCreatureTemplate.WOWCreatureTemplateID;
@@ -3699,6 +3717,11 @@ namespace EQWOWConverter.Spells
                                     textParticle = "an";
                                 femaleFormSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", textParticle, " ", raceName);
                                 femaleFormSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
+                                if (illusionObjectClass != CreatureIllusionObjectClassType.None)
+                                {
+                                    femaleFormSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", GetIllusionObjectDescriptionText(illusionObjectClass));
+                                    femaleFormSpellEffectWOW.AuraDescription = string.Concat("appear as ", GetIllusionObjectDescriptionText(illusionObjectClass));
+                                }
                                 femaleFormSpellTemplate.WOWSpellEffects.Add(femaleFormSpellEffectWOW);
                                 femaleFormSpellTemplate.AuraDuration = spellTemplate.AuraDuration;
                                 if (spellTemplate.IsCosmeticOnlyIllusion == true)
@@ -3723,6 +3746,11 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.IllusionParent;
                                 newSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", textParticle, " ", raceName);
                                 newSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
+                                if (illusionObjectClass != CreatureIllusionObjectClassType.None)
+                                {
+                                    newSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", GetIllusionObjectDescriptionText(illusionObjectClass));
+                                    newSpellEffectWOW.AuraDescription = string.Concat("appear as ", GetIllusionObjectDescriptionText(illusionObjectClass));
+                                }
                                 newSpellEffects.Add(newSpellEffectWOW);
                                 spellTemplate.IsllusionSpellParent = true;
                             } break;
@@ -4106,6 +4134,16 @@ namespace EQWOWConverter.Spells
 
                 // Aura Description
                 spellTemplate.AuraDescription = string.Concat(spellTemplate.AuraDescription, "\n\n", concurrentString);
+            }
+        }
+
+        private static string GetIllusionObjectDescriptionText(CreatureIllusionObjectClassType illusionObjectClass)
+        {
+            switch (illusionObjectClass)
+            {
+                case CreatureIllusionObjectClassType.Tree: return "a tree near you";
+                case CreatureIllusionObjectClassType.AnyObject: return "an object near you";
+                default: return string.Empty;
             }
         }
 

@@ -97,6 +97,7 @@ namespace EQWOWConverter
         private ModEverquestForageZoneItemsSQL modEverquestForageZoneItemsSQL = new ModEverquestForageZoneItemsSQL();
         private ModEverquestIllusionDisplaySQL modEverquestIllusionDisplaySQL = new ModEverquestIllusionDisplaySQL();
         private ModEverquestIllusionFaceSQL modEverquestIllusionFaceSQL = new ModEverquestIllusionFaceSQL();
+        private ModEverquestIllusionObjectSQL modEverquestIllusionObjectSQL = new ModEverquestIllusionObjectSQL();
         private ModEverquestItemTemplateSQL modEverquestItemTemplateSQL = new ModEverquestItemTemplateSQL();
         private ModEverquestItemWoWToEQSwapSQL modEverquestItemWoWToEQSwapSQL = new ModEverquestItemWoWToEQSwapSQL();
         private ModEverquestPetSQL modEverquestPetSQL = new ModEverquestPetSQL();
@@ -306,6 +307,8 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("AgileFighterCombatExpertSpellID", Configuration.AGILEFIGHTER_ENABLED == true ? Configuration.AGILEFIGHTER_COMBATEXPERT_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("RaidBossRespawnVarianceInSec", Configuration.CREATURE_RAID_BOSS_VARIANCE_IN_SEC.ToString());
             modEverquestSystemConfigsSQL.AddRow("RaidMiniBossRespawnVarianceInSec", Configuration.CREATURE_RAID_MINI_BOSS_VARIANCE_IN_SEC.ToString());
+            modEverquestSystemConfigsSQL.AddRow("IllusionObjectMaxDistance", (Configuration.SPELL_ILLUSION_OBJECT_MAX_DISTANCE * Configuration.GENERATE_WORLD_SCALE).ToString());
+            modEverquestSystemConfigsSQL.AddRow("IllusionObjectTreeMaxDistance", (Configuration.SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE * Configuration.GENERATE_WORLD_SCALE).ToString());
         }
 
         private void PopulateGameTableData()
@@ -1806,6 +1809,16 @@ namespace EQWOWConverter
                     creatureModelInfoSQL.AddRow(faceDisplayIDByFaceIndex.Value, Convert.ToInt32(creatureModelTemplate.GenderType));
                 }
             }
+
+            // Every placed zone object, so the object based illusions (Minor Illusion, Illusion: Tree) can turn a player into whatever is nearest them.  Only the open world
+            // map copy is written, since the mod resolves instance copies back to the open world map before looking a position up
+            int illusionObjectRowID = 1;
+            foreach (ZoneObjectIllusionPlacement placement in ZoneObjectIllusionRegistry.GetPlacements())
+            {
+                modEverquestIllusionObjectSQL.AddRow(illusionObjectRowID, placement.MapID, placement.Position, placement.Display.DBCCreatureDisplayID,
+                    placement.Display.IsTree, placement.Display.ObjectModelName);
+                illusionObjectRowID++;
+            }
         }
 
         private void PopulateItemWoWToEQSwapData()
@@ -2316,7 +2329,8 @@ namespace EQWOWConverter
         }
 
         HashSet<int> PetSpellIDsAdded = new HashSet<int>();
-        private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, string commentFragment, int clickyFixedLevel = 0)
+        private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, string commentFragment, int clickyFixedLevel = 0,
+            bool isCreatureCastVersion = false)
         {
             if (spellEffectBlocks.Count == 0 ||  spellEffectBlocks[0].WOWSpellID <= 0)
                 return;
@@ -2329,7 +2343,7 @@ namespace EQWOWConverter
                 int blockEQHasteVersion = 0;
                 foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
                     blockEQHasteVersion = Math.Max(blockEQHasteVersion, blockEffect.EQHasteVersion);
-                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion, isCreatureCastVariant);
+                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion, isCreatureCastVersion);
 
                 // Spell power
                 if (spellTemplate.InfluencedBySpellPower == true && commentFragment != " (Worn)")
@@ -3140,6 +3154,7 @@ namespace EQWOWConverter
             modEverquestForageZoneItemsSQL.SaveToDisk("mod_everquest_forage_zone_items", SQLFileType.World);
             modEverquestIllusionDisplaySQL.SaveToDisk("mod_everquest_illusion_display", SQLFileType.World);
             modEverquestIllusionFaceSQL.SaveToDisk("mod_everquest_illusion_face", SQLFileType.World);
+            modEverquestIllusionObjectSQL.SaveToDisk("mod_everquest_illusion_object", SQLFileType.World);
             modEverquestItemTemplateSQL.SaveToDisk("mod_everquest_item_template", SQLFileType.World);
             modEverquestItemWoWToEQSwapSQL.SaveToDisk("mod_everquest_item_wow_to_eq_swap", SQLFileType.World);
             modEverquestPetSQL.SaveToDisk("mod_everquest_pet", SQLFileType.World);

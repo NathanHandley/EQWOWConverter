@@ -52,13 +52,17 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`ModFactionRepValue` INT(10) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`IllusionFormAlignment` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`IllusionFormEQRaceID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`IllusionObjectClass` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`PersistOnClassChange` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(SpellTemplate spellTemplate, int spellID, bool isWorn, int clickyFixedLevel, int blockEQHasteVersion)
+        public void AddRow(SpellTemplate spellTemplate, int spellID, bool isWorn, int clickyFixedLevel, int blockEQHasteVersion, bool isCreatureCastVersion = false)
         {
+            // Creature-cast copies keep the aura duration from before any player-only modifications
+            SpellDuration auraDuration = isCreatureCastVersion == true ? spellTemplate.CreatureCastAuraDuration : spellTemplate.AuraDuration;
+
             SQLRow newRow = new SQLRow();
             newRow.AddInt("SpellID", spellID);
             newRow.AddString("SpellName", 255, spellTemplate.Name);
@@ -72,7 +76,7 @@ namespace EQWOWConverter.WOWFiles
             }
             else if (clickyFixedLevel > 0)
             {
-                int fixedDurationInMS = spellTemplate.AuraDuration.GetBuffDurationForLevel(clickyFixedLevel);
+                int fixedDurationInMS = auraDuration.GetBuffDurationForLevel(clickyFixedLevel);
                 newRow.AddInt("AuraDurationBaseInMS", fixedDurationInMS);
                 newRow.AddInt("AuraDurationAddPerLevelInMS", 0);
                 newRow.AddInt("AuraDurationMaxInMS", fixedDurationInMS);
@@ -81,15 +85,16 @@ namespace EQWOWConverter.WOWFiles
             }
             else
             {
-                newRow.AddInt("AuraDurationBaseInMS", spellTemplate.AuraDuration.BaseDurationInMS);
-                newRow.AddInt("AuraDurationAddPerLevelInMS", spellTemplate.AuraDuration.DurationInMSPerLevel);
-                newRow.AddInt("AuraDurationMaxInMS", spellTemplate.AuraDuration.MaxDurationInMS);
-                newRow.AddInt("AuraDurationCalcMinLevel", spellTemplate.AuraDuration.MinLevel);
-                newRow.AddInt("AuraDurationCalcMaxLevel", spellTemplate.AuraDuration.MaxLevel);
+                newRow.AddInt("AuraDurationBaseInMS", auraDuration.BaseDurationInMS);
+                newRow.AddInt("AuraDurationAddPerLevelInMS", auraDuration.DurationInMSPerLevel);
+                newRow.AddInt("AuraDurationMaxInMS", auraDuration.MaxDurationInMS);
+                newRow.AddInt("AuraDurationCalcMinLevel", auraDuration.MinLevel);
+                newRow.AddInt("AuraDurationCalcMaxLevel", auraDuration.MaxLevel);
             }
 
+            // A creature-cast spell's recourse lands on the creature caster, so it uses the recourse's creature-cast copy when one exists
             if (spellTemplate.RecourseLinkSpellTemplate != null)
-                newRow.AddInt("RecourseSpellID", spellTemplate.RecourseLinkSpellTemplate.WOWSpellID);
+                newRow.AddInt("RecourseSpellID", isCreatureCastVersion == true ? spellTemplate.RecourseLinkSpellTemplate.GetWOWSpellIDForCreatureCast() : spellTemplate.RecourseLinkSpellTemplate.WOWSpellID);
             else
                 newRow.AddInt("RecourseSpellID", 0);
             newRow.AddInt("SpellIDCastOnMeleeAttacker", spellTemplate.WOWSpellIDCastOnMeleeAttacker);
@@ -125,6 +130,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("ModFactionRepValue", isWorn == true ? 0 : spellTemplate.ModFactionRepValue);
             newRow.AddInt("IllusionFormAlignment", (int)spellTemplate.IllusionFormFactionAlignment);
             newRow.AddInt("IllusionFormEQRaceID", spellTemplate.IllusionFormEQRaceID);
+            newRow.AddInt("IllusionObjectClass", (int)spellTemplate.IllusionObjectClass);
             newRow.AddInt("PersistOnClassChange", spellTemplate.PersistOnClassChange ? 1 : 0);
             Rows.Add(newRow);
         }

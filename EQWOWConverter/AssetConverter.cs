@@ -293,6 +293,10 @@ namespace EQWOWConverter
             // Creature templates are needed for achievement kill criteria (must be before DBC and SQL generation)
             AchievementData.PopulateCriteriaCreatureTemplates();
 
+            // Capture every placed zone object so the object based illusions (Minor Illusion, Illusion: Tree) can find the nearest one at cast time
+            // Note: Must be before DBC and SQL generation
+            ZoneObjectIllusionRegistry.PopulatePlacementsFromZones(zones);
+
             // Create the DBC files
             dbcFileWorker.CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
 
@@ -1773,8 +1777,9 @@ namespace EQWOWConverter
                     CreatureSpellEntry curEntry = allValidSpellEntries[i];
                     SpellTemplate spellTemplate = spellTemplatesByEQID[allValidSpellEntries[i].EQSpellID];
                     int originalRecastDelayInMS = allValidSpellEntries[i].OriginalRecastDelayInMS;
-                    curEntry.CalculatedMinimumDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, spellTemplate.AuraDuration.GetBuffDurationForLevel(creatureTemplate.Level)), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
-                    curEntry.BuffDurationInMS = spellTemplate.AuraDuration.GetBuffDurationForLevel(creatureTemplate.Level);
+                    // Creatures cast with the unmodified (pre player-only modification) aura durations
+                    curEntry.CalculatedMinimumDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, spellTemplate.CreatureCastAuraDuration.GetBuffDurationForLevel(creatureTemplate.Level)), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
+                    curEntry.BuffDurationInMS = spellTemplate.CreatureCastAuraDuration.GetBuffDurationForLevel(creatureTemplate.Level);
                     allValidSpellEntries[i] = curEntry;
                 }
 
