@@ -817,10 +817,18 @@ namespace EQWOWConverter
         // Any spell (player cast or item clicky) with a cast time below this becomes instant (0 ms)
         public static int SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS = 200;
 
+        // Player-learnable single-target and group beneficial buffs have their cast time capped to this (creature casts keep their unmodified cast time on a creature-cast spell copy).  0 to disable
+        public static int SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS = 1500;
+
+        // Player-learnable beneficial buffs whose unmodified maximum duration is at least SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS get a fixed (non level scaling) duration
+        public static int SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS = 180000;
+        public static int SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS = 1800000;
+        public static int SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS = 3600000;
+
         // How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)
         public static float SPELLS_DOT_TIME_DURATION_MOD = 0.5f;
 
-        // How much to modify the duration of non-bard crowd control spells
+        // How much to modify the duration of creature-cast non-bard crowd control spells (player casts always keep the full EQ duration)
         public static float SPELLS_CROWD_CONTROL_DURATION_MOD = 0.5f;
 
         // If true, spells marked "convert_to_dot" in SpellTemplates.csv spread the damage over the duration
@@ -1343,6 +1351,7 @@ namespace EQWOWConverter
         // - SpellIDs 98000 - 98358 reserved for 'worn' effects (effects that always take effect when worn, defined in ItemTemplate.csv)
         // - SpellIDs 98500 - 120000 used for 'generated spell IDs'
         // - SpellIDs 120001 - 120366 reserved for companion pets (defined in CompanionPetsMap.csv)
+        // - SpellIDs 122000 - 125841 reserved for creature-cast spell copies (defined in SpellTemplates.csv under wow_creature_cast_id, always base wow_id + 30000)
         public static int DBCID_SPELL_ID_START = 86900;
         public static int DBCID_SPELL_ID_GENERATED_START = 98500;
         public static int DBCID_SPELL_ID_GENERATED_END = 120000;
@@ -1969,8 +1978,12 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS", SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS, "Cast times are never reduced below this by SPELLS_CAST_TIME_MOD (spells already at or below it keep their original cast time)", false);
             OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS", SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS, "");
             OutputVariableToConfig("SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS", SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS, "Any spell (player cast or item clicky) with a cast time below this becomes instant (0 ms)");
+            OutputVariableToConfig("SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS", SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS, "Player-learnable single-target and group beneficial buffs have their cast time capped to this (creature casts keep their unmodified cast time on a creature-cast spell copy).  0 to disable");
+            OutputVariableToConfig("SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS", SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS, "Player-learnable beneficial buffs whose unmodified maximum duration is at least this get a fixed (non level scaling) duration of the single target or group amount below (creature casts keep their unmodified durations on a creature-cast spell copy)", false);
+            OutputVariableToConfig("SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS", SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS, "", false);
+            OutputVariableToConfig("SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS", SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS, "");
             OutputVariableToConfig("SPELLS_DOT_TIME_DURATION_MOD", SPELLS_DOT_TIME_DURATION_MOD, "How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)");
-            OutputVariableToConfig("SPELLS_CROWD_CONTROL_DURATION_MOD", SPELLS_CROWD_CONTROL_DURATION_MOD, "How much to modify the duration of non-bard crowd control spells");
+            OutputVariableToConfig("SPELLS_CROWD_CONTROL_DURATION_MOD", SPELLS_CROWD_CONTROL_DURATION_MOD, "How much to modify the duration of creature-cast non-bard crowd control spells (player casts always keep the full EQ duration)");
             OutputVariableToConfig("SPELLS_CONVERT_TO_DOT_ENABLED", SPELLS_CONVERT_TO_DOT_ENABLED, "If true, spells marked \"convert_to_dot\" in SpellTemplates.csv spread the damage over the duration", false);
             OutputVariableToConfig("SPELLS_CONVERT_TO_DOT_DURATION_IN_MS", SPELLS_CONVERT_TO_DOT_DURATION_IN_MS, "");
             OutputVariableToConfig("SPELLS_RAIN_ENABLED", SPELLS_RAIN_ENABLED, "If true, EQ \"rain\" spells (targeted area of effect spells with an AEDuration) land their effect at the spot they were aimed at", false);
@@ -2521,6 +2534,10 @@ namespace EQWOWConverter
             SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS = ReadVariableFromConfigString("SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS", configValuesByVariableName, SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS);
             SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS = ReadVariableFromConfigString("SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS", configValuesByVariableName, SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS);
             SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS = ReadVariableFromConfigString("SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS", configValuesByVariableName, SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS);
+            SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS = ReadVariableFromConfigString("SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS", configValuesByVariableName, SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS);
+            SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS = ReadVariableFromConfigString("SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS", configValuesByVariableName, SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS);
+            SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS = ReadVariableFromConfigString("SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS", configValuesByVariableName, SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS);
+            SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS = ReadVariableFromConfigString("SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS", configValuesByVariableName, SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS);
             SPELLS_DOT_TIME_DURATION_MOD = ReadVariableFromConfigString("SPELLS_DOT_TIME_DURATION_MOD", configValuesByVariableName, SPELLS_DOT_TIME_DURATION_MOD);
             SPELLS_CROWD_CONTROL_DURATION_MOD = ReadVariableFromConfigString("SPELLS_CROWD_CONTROL_DURATION_MOD", configValuesByVariableName, SPELLS_CROWD_CONTROL_DURATION_MOD);
             SPELLS_CONVERT_TO_DOT_ENABLED = ReadVariableFromConfigString("SPELLS_CONVERT_TO_DOT_ENABLED", configValuesByVariableName, SPELLS_CONVERT_TO_DOT_ENABLED);

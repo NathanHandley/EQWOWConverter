@@ -1046,9 +1046,9 @@ namespace EQWOWConverter
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesHeal)
                     {
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
-                        string comment = string.Concat("EQ Heal ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
+                        string comment = string.Concat("EQ Heal ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.GetWOWSpellIDForCreatureCast(), ")");
                         smartScriptsSQL.AddRowForCreatureTemplateInCombatHealCast(creatureTemplate.WOWCreatureTemplateID,
-                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, curSpellTemplate.SpellRange, comment);
+                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.GetWOWSpellIDForCreatureCast(), curSpellTemplate.SpellRange, comment);
                     }
 
                     // Add spell events for every combat entry
@@ -1059,9 +1059,9 @@ namespace EQWOWConverter
                         // Gates detrimental casts behind per-type rolls and honor priority order (lower number = preferred)
                         int eventChance = CreatureSpellEntry.GetCombatSpellEventChance(creatureSpellEntry.TypeFlags, creatureSpellEntry.Priority);
 
-                        string comment = string.Concat("EQ In Combat ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
+                        string comment = string.Concat("EQ In Combat ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.GetWOWSpellIDForCreatureCast(), ")");
                         smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID,
-                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment, eventChance, curSpellTemplate.IsSelfCenteredAreaBreath,
+                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.GetWOWSpellIDForCreatureCast(), comment, eventChance, curSpellTemplate.IsSelfCenteredAreaBreath,
                             curSpellTemplate.ConvertDirectDamageToDoT);
                     }
 
@@ -1069,9 +1069,9 @@ namespace EQWOWConverter
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesInCombatBuff)
                     {
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
-                        string comment = string.Concat("EQ In Combat Self Buff ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
+                        string comment = string.Concat("EQ In Combat Self Buff ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.GetWOWSpellIDForCreatureCast(), ")");
                         smartScriptsSQL.AddRowForCreatureTemplateInCombatSelfBuffCast(creatureTemplate.WOWCreatureTemplateID,
-                            creatureSpellEntry.CalculatedMinimumDelayInMS, Configuration.CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE, curSpellTemplate.WOWSpellID, comment);
+                            creatureSpellEntry.CalculatedMinimumDelayInMS, Configuration.CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE, curSpellTemplate.GetWOWSpellIDForCreatureCast(), comment);
                     }
 
                     // Add escape spells
@@ -1080,9 +1080,9 @@ namespace EQWOWConverter
                         foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesEscape)
                         {
                             SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
-                            string comment = string.Concat("EQ Escape ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
+                            string comment = string.Concat("EQ Escape ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.GetWOWSpellIDForCreatureCast(), ")");
                             smartScriptsSQL.AddRowForCreatureTemplateEscapeSelfCast(creatureTemplate.WOWCreatureTemplateID, Configuration.CREATURE_SPELL_ESCAPE_HEALTH_TRIGGER_PCT, Configuration.CREATURE_SPELL_ESCAPE_CAST_CHANCE,
-                                Configuration.CREATURE_SPELL_ESCAPE_RECAST_DELAY_IN_MS, curSpellTemplate.WOWSpellID, comment);
+                                Configuration.CREATURE_SPELL_ESCAPE_RECAST_DELAY_IN_MS, curSpellTemplate.GetWOWSpellIDForCreatureCast(), comment);
                         }
                     }
 
@@ -1094,7 +1094,7 @@ namespace EQWOWConverter
                         foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesOutOfCombatSummons)
                         {
                             SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
-                            spellTemplateIDs.Add(curSpellTemplate.WOWSpellID);
+                            spellTemplateIDs.Add(curSpellTemplate.GetWOWSpellIDForCreatureCast());
                         }
                         string timedActionListComment = string.Concat("EQ Out of Combat Summon ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") casting one of ", spellTemplateIDs.Count, " summon spells");
                         smartScriptsSQL.AddRowsForCreatureTimedActionListOfOutOfCombatSpells(creatureTemplate.WOWCreatureTemplateID, spellTemplateIDs, timedActionListComment);
@@ -1106,13 +1106,13 @@ namespace EQWOWConverter
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesOutOfCombatBuff)
                     {
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
-                        string comment = string.Concat("EQ Out of Combat Buffs ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
+                        string comment = string.Concat("EQ Out of Combat Buffs ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.GetWOWSpellIDForCreatureCast(), ")");
                         smartScriptsSQL.AddRowForCreatureTemplateOutOfCombatBuffCastSelf(creatureTemplate.WOWCreatureTemplateID,
-                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment);
+                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.GetWOWSpellIDForCreatureCast(), comment);
                         if (curSpellTemplate.RemoveAuraWhenCasterCreatureInitsAgro == true)
                         {
-                            string removeAuraComment = string.Concat("EQ Out of Combat Buffs ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") remove aura ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ") when agro on the player");
-                            smartScriptsSQL.AddRowForCreatureTemplateRemoveSpellAuraOnAgro(creatureTemplate.WOWCreatureTemplateID, curSpellTemplate.WOWSpellID, removeAuraComment);
+                            string removeAuraComment = string.Concat("EQ Out of Combat Buffs ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") remove aura ", curSpellTemplate.Name, " (", curSpellTemplate.GetWOWSpellIDForCreatureCast(), ") when agro on the player");
+                            smartScriptsSQL.AddRowForCreatureTemplateRemoveSpellAuraOnAgro(creatureTemplate.WOWCreatureTemplateID, curSpellTemplate.GetWOWSpellIDForCreatureCast(), removeAuraComment);
                         }
                     }
 
@@ -1120,9 +1120,9 @@ namespace EQWOWConverter
                     foreach (var eqSpellIDAndProcChance in creatureTemplate.AttackEQSpellIDAndProcChance)
                     {
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[eqSpellIDAndProcChance.Item1];
-                        string comment = string.Concat("EQ Attack Proc ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
+                        string comment = string.Concat("EQ Attack Proc ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.GetWOWSpellIDForCreatureCast(), ")");
                         smartScriptsSQL.AddRowForCreatureTemplateApplySpellOnDamageDone(creatureTemplate.WOWCreatureTemplateID, eqSpellIDAndProcChance.Item2,
-                            curSpellTemplate.WOWSpellID, Configuration.CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS, comment);
+                            curSpellTemplate.GetWOWSpellIDForCreatureCast(), Configuration.CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS, comment);
                     }
 
                     // Summons need to add an aura to the caster
@@ -1167,19 +1167,19 @@ namespace EQWOWConverter
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesOutOfCombatBuff)
                     {
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
-                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, curSpellTemplate.WOWSpellID);
+                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, curSpellTemplate.GetWOWSpellIDForCreatureCast());
                         curIndex++;
                     }
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesHeal)
                     {
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
-                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, curSpellTemplate.WOWSpellID);
+                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, curSpellTemplate.GetWOWSpellIDForCreatureCast());
                         curIndex++;
                     }
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesCombat)
                     {
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
-                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, curSpellTemplate.WOWSpellID);
+                        creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, curSpellTemplate.GetWOWSpellIDForCreatureCast());
                         curIndex++;
                     }
 
@@ -2329,7 +2329,7 @@ namespace EQWOWConverter
                 int blockEQHasteVersion = 0;
                 foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
                     blockEQHasteVersion = Math.Max(blockEQHasteVersion, blockEffect.EQHasteVersion);
-                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion);
+                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion, isCreatureCastVariant);
 
                 // Spell power
                 if (spellTemplate.InfluencedBySpellPower == true && commentFragment != " (Worn)")
@@ -2479,6 +2479,8 @@ namespace EQWOWConverter
             {
                 // Core Spell Data
                 AddSpellDataBlock(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput, "");
+                if (spellTemplate.NeedsCreatureCastVersion == true)
+                    AddSpellDataBlock(spellTemplate, spellTemplate.GroupedCreatureCastSpellEffectBlocksForOutput, " (Creature)", 0, true);
                 foreach (List<SpellEffectBlock> wornSpellEffectBlocks in spellTemplate.ItemWornSpellEffectBlockSets)
                     AddSpellDataBlock(spellTemplate, wornSpellEffectBlocks, " (Worn)");
                 AddSpellDataBlock(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput, " (Proc)");
@@ -2493,6 +2495,8 @@ namespace EQWOWConverter
                 foreach (int spellGroupStackingID in spellTemplate.SpellGroupStackingIDs)
                 {
                     AddCastSpellGroupMember(spellGroupStackingID, spellTemplate.WOWSpellID);
+                    if (spellTemplate.NeedsCreatureCastVersion == true)
+                        AddCastSpellGroupMember(spellGroupStackingID, spellTemplate.WOWSpellIDCreatureCast);
                     if (spellTemplate.WOWSpellIDProcAndGoodEffect != -1)
                         AddCastSpellGroupMember(spellGroupStackingID, spellTemplate.WOWSpellIDProcAndGoodEffect);
                     for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
@@ -2512,6 +2516,8 @@ namespace EQWOWConverter
                         List<SpellEffectBlock> groupedBaseSpellEffectBlocksForOutput = spellTemplate.GroupedBaseSpellEffectBlocksForOutput;
                         SpellEffectWOW curEffect = groupedBaseSpellEffectBlocksForOutput[0].SpellEffects[i];
                         spellTargetPositionSQL.AddRow(groupedBaseSpellEffectBlocksForOutput[0].WOWSpellID, i, curEffect.TeleMapID, curEffect.TelePosition, curEffect.TeleOrientation);
+                        if (spellTemplate.NeedsCreatureCastVersion == true)
+                            spellTargetPositionSQL.AddRow(spellTemplate.GroupedCreatureCastSpellEffectBlocksForOutput[0].WOWSpellID, i, curEffect.TeleMapID, curEffect.TelePosition, curEffect.TeleOrientation);
                         // Skip worm
                         // Skip good proc
                         for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
@@ -2525,10 +2531,14 @@ namespace EQWOWConverter
                     List<SpellEffectBlock> chainedGroupedBaseSpellEffectBlocksForOutput = chainedSpellTemplate.GroupedBaseSpellEffectBlocksForOutput;
                     int chainedSpellID = chainedGroupedBaseSpellEffectBlocksForOutput[0].WOWSpellID;
                     string chainedSpellName = chainedGroupedBaseSpellEffectBlocksForOutput[0].SpellName;
+                    // A creature's cast chains into the chained spell's creature-cast copy when one exists
+                    SpellEffectBlock chainedBlockForCreatureCast = chainedSpellTemplate.NeedsCreatureCastVersion == true ? chainedSpellTemplate.GroupedCreatureCastSpellEffectBlocksForOutput[0] : chainedGroupedBaseSpellEffectBlocksForOutput[0];
                     if (chainedSpellTemplate.ChainAppliesViaCastTrigger == true)
                     {
                         // Cast triggers fire on any cast, so only chain them off blocks a unit deliberately casts (worn spells 'cast' on equip)
                         spellLinkedSpellSQL.AddRowForCastTrigger(spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0].WOWSpellID, chainedSpellID, chainedSpellName);
+                        if (spellTemplate.NeedsCreatureCastVersion == true)
+                            spellLinkedSpellSQL.AddRowForCastTrigger(spellTemplate.GroupedCreatureCastSpellEffectBlocksForOutput[0].WOWSpellID, chainedBlockForCreatureCast.WOWSpellID, chainedSpellName);
                         for (int clickyIndex = 0; clickyIndex < spellTemplate.ClickySpellParatemers.Count; clickyIndex++)
                             spellLinkedSpellSQL.AddRowForCastTrigger(spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[clickyIndex][0].WOWSpellID, chainedSpellID, chainedSpellName);
                         continue;
@@ -2536,6 +2546,8 @@ namespace EQWOWConverter
                     bool forceHitTrigger = chainedSpellTemplate.ChainAppliesViaHitTrigger;
                     SpellEffectBlock chainedBlock = chainedGroupedBaseSpellEffectBlocksForOutput[0];
                     AddSpellChain(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0], chainedBlock, forceHitTrigger);
+                    if (spellTemplate.NeedsCreatureCastVersion == true)
+                        AddSpellChain(spellTemplate, spellTemplate.GroupedCreatureCastSpellEffectBlocksForOutput[0], chainedBlockForCreatureCast, forceHitTrigger);
                     foreach (List<SpellEffectBlock> wornSpellEffectBlocks in spellTemplate.ItemWornSpellEffectBlockSets)
                         AddSpellChain(spellTemplate, wornSpellEffectBlocks[0], chainedBlock, forceHitTrigger);
                     if (spellTemplate.WOWSpellIDProcAndGoodEffect > 0)

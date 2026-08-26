@@ -148,7 +148,8 @@ namespace EQWOWConverter
             Logger.WriteDebug("Extracting client DBC files complete");
         }
 
-        private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, int castTimeDBCID, bool isWorn, bool isUsableWhileSilenced)
+        private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, int castTimeDBCID, bool isWorn, bool isUsableWhileSilenced,
+            bool isCreatureCastVersion = false)
         {
             if (spellEffectBlocks.Count == 0 || spellEffectBlocks[0].WOWSpellID <= 0)
                 return;
@@ -177,7 +178,7 @@ namespace EQWOWConverter
                     }
 
                     spellDBC.AddRow(curEffectBlock, blockActionDescription, auraDescription, spellTemplate, hideFromDisplay, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
-                        curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, false, isUsableWhileSilenced);
+                        curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, false, isUsableWhileSilenced, isCreatureCastVersion);
                 }
                 else
                 {
@@ -190,9 +191,10 @@ namespace EQWOWConverter
                 }
             }
 
-            // Skill-bound spells
-            if (spellTemplate.SkillLine != 0)
-                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", spellTemplate.SkillLine.ToString(), spellEffectBlocks[0].WOWSpellID.ToString()), spellTemplate, spellEffectBlocks[0].WOWSpellID, 0);
+            // Skill-bound spells (creature-cast copies never join a skill line, as players can't learn them)
+            if (spellTemplate.SkillLine != 0 && isCreatureCastVersion == false)
+                skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", spellTemplate.SkillLine.ToString(), spellEffectBlocks[0].WOWSpellID.ToString()), spellTemplate, spellEffectBlocks[0].WOWSpellID,
+                    spellTemplate.SkillLineAcquireMethod);
         }
 
         public void CreateDBCFiles(List<Zone> zones, List<CreatureModelTemplate> creatureModelTemplates, List<SpellTemplate> spellTemplates)
@@ -863,6 +865,8 @@ namespace EQWOWConverter
             {
                 // Block-specific data
                 AddSpellDataBlock(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput, spellTemplate.SpellCastTimeDBCID, false, false);
+                if (spellTemplate.NeedsCreatureCastVersion == true)
+                    AddSpellDataBlock(spellTemplate, spellTemplate.GroupedCreatureCastSpellEffectBlocksForOutput, spellTemplate.CreatureCastSpellCastTimeDBCID, false, false, true);
                 foreach (List<SpellEffectBlock> wornSpellEffectBlocks in spellTemplate.ItemWornSpellEffectBlockSets)
                     AddSpellDataBlock(spellTemplate, wornSpellEffectBlocks, 1, true, false);
                 AddSpellDataBlock(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput, 1, false, false);

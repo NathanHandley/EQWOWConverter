@@ -267,6 +267,11 @@ namespace EQWOWConverter.Spells
         public List<SpellEffectEQ> EQSpellEffects = new List<SpellEffectEQ>();
         public List<SpellEffectWOW> WOWSpellEffects = new List<SpellEffectWOW>();
         public UInt32 ManaCost = 0;
+        public int WOWSpellIDCreatureCast = 0;
+        public bool NeedsCreatureCastVersion = false; // True when creatures can cast this spell and the player version differ
+        public int CreatureCastTimeInMS = 0;
+        public int CreatureCastSpellCastTimeDBCID = 1;
+        public SpellDuration CreatureCastAuraDuration = new SpellDuration();
         public SpellEQTargetType EQTargetType = SpellEQTargetType.Single;
         public bool IsSelfCenteredAreaBreath = false; // Dragon breath
         public bool CanTargetBothFriendlyAndEnemy = false;
@@ -390,6 +395,18 @@ namespace EQWOWConverter.Spells
                 // WOWSpellIDProcAndGoodEffect can be assigned after the base blocks were generated, so build the good proc blocks if they are needed and missing
                 GenerateMissingGoodProcOutputEffectBlocks();
                 return _GroupedGoodProcSpellEffectBlocksForOutput;
+            }
+        }
+        private List<SpellEffectBlock> _GroupedCreatureCastSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
+        public List<SpellEffectBlock> GroupedCreatureCastSpellEffectBlocksForOutput
+        {
+            get
+            {
+                if (NeedsCreatureCastVersion == false)
+                    return _GroupedCreatureCastSpellEffectBlocksForOutput;
+                if (_GroupedCreatureCastSpellEffectBlocksForOutput.Count == 0)
+                    GenerateCreatureCastOutputEffectBlocks();
+                return _GroupedCreatureCastSpellEffectBlocksForOutput;
             }
         }
         private List<List<SpellEffectBlock>> _GroupedClickySpellEffectBlocksForOutputBySpellParameters = new List<List<SpellEffectBlock>>();
@@ -530,6 +547,7 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.EQSpellID = int.Parse(columns["eq_id"]);
                 newSpellTemplate.WOWSpellID = int.Parse(columns["wow_id"]);
                 newSpellTemplate.WOWSpellIDProcAndGoodEffect = int.Parse(columns["wow_good_proc_id"]);
+                newSpellTemplate.WOWSpellIDCreatureCast = int.Parse(columns["wow_creature_cast_id"]);
                 newSpellTemplate.Name = columns["name"];
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.EQAOERange = int.Parse(columns["aoerange"]);
@@ -653,7 +671,7 @@ namespace EQWOWConverter.Spells
 
                 // Modify DoT and crowd control durations for non-bard sounds
                 if (isDetrimental == true && newSpellTemplate.IsBardSongAura == false)
-                    ApplyDurationModsToDoTAndCrowdControlDurations(ref newSpellTemplate);
+                    ApplyDurationModToDoTDurations(ref newSpellTemplate);
 
                 // Get targets and convert the spell effects
                 List<SpellTemplate> effectGeneratedSpellTemplates = new List<SpellTemplate>();
@@ -679,6 +697,12 @@ namespace EQWOWConverter.Spells
                 // Scale mana cost to follow any change in total direct healing/damage caused by the cast time mod
                 ApplyManaCostScalingForDirectOutputChange(ref newSpellTemplate);
 
+                // Capture the unmodified (creature-accurate) values, then apply any player-only modifications on top of them
+                newSpellTemplate.CaptureCreatureCastBaseline();
+                ApplyPlayerOnlySpellModifications(ref newSpellTemplate);
+                if (isDetrimental == true && newSpellTemplate.IsBardSongAura == false)
+                    newSpellTemplate.ApplyCreatureOnlyCrowdControlDurationMod();
+
                 // Stacking rules.  Note that bard songs should stack with nearly all other non-Bard songs
                 bool isItemClickSpell = itemClickSpellEQIDs.Contains(newSpellTemplate.EQSpellID);
                 if (newSpellTemplate.IsBardSongAura == false)
@@ -692,7 +716,13 @@ namespace EQWOWConverter.Spells
                 // Add it, and any effect generated ones
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
                 foreach (SpellTemplate effectGeneratedSpellTemplate in effectGeneratedSpellTemplates)
+                {
+                    // Effect-generated spells never receive player-only modifications, so their baseline is just their current values
+                    effectGeneratedSpellTemplate.CaptureCreatureCastBaseline();
+                    if (isDetrimental == true && newSpellTemplate.IsBardSongAura == false)
+                        effectGeneratedSpellTemplate.ApplyCreatureOnlyCrowdControlDurationMod();
                     SpellTemplatesByEQID.Add(effectGeneratedSpellTemplate.EQSpellID, effectGeneratedSpellTemplate);
+                }
             }
 
             // Set any post load grooming
@@ -755,6 +785,9 @@ namespace EQWOWConverter.Spells
             foreach (SpellTemplate spellTemplate in SpellTemplatesByEQID.Values)
                 if (spellTemplate.IsllusionSpellParent == true)
                     spellTemplate.WOWSpellEffects.RemoveAll(IsNonDummySpellEffect);
+
+            // Creatures cast through separate spell copies whenever the player version diverged from the unmodified conversion
+            MarkSpellTemplatesNeedingCreatureCastVersions();
         }
 
         private static bool IsNonDummySpellEffect(SpellEffectWOW spellEffect)
@@ -1552,15 +1585,10 @@ namespace EQWOWConverter.Spells
             return false;
         }
 
-        private static void ApplyDurationModsToDoTAndCrowdControlDurations(ref SpellTemplate spellTemplate)
+        private static void ApplyDurationModToDoTDurations(ref SpellTemplate spellTemplate)
         {
-            // Stun durations are defined in the the 'effect value', so they must be modified here
-            if (Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD != 1f)
-            {
-                foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
-                    if (eqEffect.EQEffectType == SpellEQEffectType.Stun && eqEffect.EQBaseValue > 1)
-                        eqEffect.EQBaseValue = Convert.ToInt32(Convert.ToSingle(eqEffect.EQBaseValue) * Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD);
-            }
+            if (Configuration.SPELLS_DOT_TIME_DURATION_MOD == 1f)
+                return;
 
             // Converted direct damage is spread across an exact configured duration, so it doesn't take the DoT duration mod
             if (spellTemplate.ConvertDirectDamageToDoT == true)
@@ -1568,35 +1596,54 @@ namespace EQWOWConverter.Spells
 
             if (spellTemplate.AuraDuration.IsInfinite == true || spellTemplate.AuraDuration.MaxDurationInMS <= 0)
                 return;
-            bool hasPeriodicDamage = false;
-            bool hasCrowdControl = false;
-            foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
-            {
+            if (spellTemplate.HasPeriodicDamageEQEffect() == false)
+                return;
+
+            // Round up to the next periodic tick, otherwise we'll drop the last tick in rounding sometimes
+            int tickPeriodInMS = Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW * 1000;
+            int maxDurationBeforeModInMS = spellTemplate.AuraDuration.MaxDurationInMS;
+            spellTemplate.AuraDuration.ScaleDuration(Configuration.SPELLS_DOT_TIME_DURATION_MOD, tickPeriodInMS);
+            spellTemplate.PeriodicDamageDurationCompensationMod = Convert.ToSingle(maxDurationBeforeModInMS) / Convert.ToSingle(spellTemplate.AuraDuration.MaxDurationInMS);
+        }
+
+        private bool HasPeriodicDamageEQEffect()
+        {
+            foreach (SpellEffectEQ eqEffect in EQSpellEffects)
                 if (eqEffect.EQEffectType == SpellEQEffectType.CurrentHitPoints && eqEffect.EQBaseValue < 0)
-                    hasPeriodicDamage = true;
-                else if (eqEffect.EQEffectType == SpellEQEffectType.Charm || eqEffect.EQEffectType == SpellEQEffectType.Fear ||
+                    return true;
+            return false;
+        }
+
+        public void ApplyCreatureOnlyCrowdControlDurationMod()
+        {
+            if (Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD == 1f)
+                return;
+            if (CreatureCastAuraDuration.IsInfinite == true || CreatureCastAuraDuration.MaxDurationInMS <= 0)
+                return;
+
+            // A generated stun chain spell carries the EQ stun duration ('effect value') as its own aura duration
+            if (IsGeneratedStunEffectSpell == true)
+            {
+                CreatureCastAuraDuration.ScaleDuration(Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD, 0);
+                return;
+            }
+
+            // Converted direct damage is spread across an exact configured duration, so it doesn't take a duration mod
+            if (ConvertDirectDamageToDoT == true)
+                return;
+
+            bool hasCrowdControl = false;
+            foreach (SpellEffectEQ eqEffect in EQSpellEffects)
+                if (eqEffect.EQEffectType == SpellEQEffectType.Charm || eqEffect.EQEffectType == SpellEQEffectType.Fear ||
                         eqEffect.EQEffectType == SpellEQEffectType.Mez || eqEffect.EQEffectType == SpellEQEffectType.Root)
                     hasCrowdControl = true;
-            }
+            if (hasCrowdControl == false)
+                return;
 
-            // DoT gets priority over crowd control mods in order to keep the relative damage output the same
-            if (hasPeriodicDamage == true)
-            {
-                if (Configuration.SPELLS_DOT_TIME_DURATION_MOD == 1f)
-                    return;
+            if (HasPeriodicDamageEQEffect() == true)
+                return;
 
-                // Round up to the next periodic tick, otherwise we'll drop the last tick in rounding sometimes
-                int tickPeriodInMS = Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW * 1000;
-                int maxDurationBeforeModInMS = spellTemplate.AuraDuration.MaxDurationInMS;
-                spellTemplate.AuraDuration.ScaleDuration(Configuration.SPELLS_DOT_TIME_DURATION_MOD, tickPeriodInMS);
-                spellTemplate.PeriodicDamageDurationCompensationMod = Convert.ToSingle(maxDurationBeforeModInMS) / Convert.ToSingle(spellTemplate.AuraDuration.MaxDurationInMS);
-            }
-            else if (hasCrowdControl == true)
-            {
-                if (Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD == 1f)
-                    return;
-                spellTemplate.AuraDuration.ScaleDuration(Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD, 0);
-            }
+            CreatureCastAuraDuration.ScaleDuration(Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD, 0);
         }
 
         private static void ApplyManaCostScalingForDirectOutputChange(ref SpellTemplate spellTemplate)
@@ -1625,6 +1672,111 @@ namespace EQWOWConverter.Spells
             // Total direct output scaled by the same ratio the direct amounts did (see SpellEffectWOW cast time scaling)
             float outputMod = Convert.ToSingle(spellTemplate.CastTimeInMS) / Convert.ToSingle(spellTemplate.CastTimeBeforeModsInMS);
             spellTemplate.ManaCost = Convert.ToUInt32(Math.Max(1.0, Math.Round(Convert.ToDouble(spellTemplate.ManaCost) * outputMod)));
+        }
+
+        public void CaptureCreatureCastBaseline()
+        {
+            CreatureCastTimeInMS = CastTimeInMS;
+            CreatureCastSpellCastTimeDBCID = SpellCastTimeDBCID;
+            CreatureCastAuraDuration = AuraDuration;
+            CreatureCastManaCost = ManaCost;
+        }
+
+        private static void ApplyPlayerOnlySpellModifications(ref SpellTemplate spellTemplate)
+        {
+            // Only spells players can learn are modifieds
+            if (spellTemplate.MinimumPlayerLearnLevel <= 0)
+                return;
+
+            // 'Buffs' here are non-bard beneficial spells with a finite aura duration aimed at a single (including self and pet) or group target
+            bool isGroupTarget = spellTemplate.EQTargetType == SpellEQTargetType.GroupV1 || spellTemplate.EQTargetType == SpellEQTargetType.GroupV2;
+            bool isSingleTarget = spellTemplate.EQTargetType == SpellEQTargetType.Single || spellTemplate.EQTargetType == SpellEQTargetType.Self ||
+                spellTemplate.EQTargetType == SpellEQTargetType.Pet || spellTemplate.EQTargetType == SpellEQTargetType.LineOfSight;
+            bool isBuff = spellTemplate.IsGoodEffect == true && spellTemplate.IsBardSongAura == false && spellTemplate.AuraDuration.IsInfinite == false &&
+                spellTemplate.AuraDuration.MaxDurationInMS > 0 && (isGroupTarget == true || isSingleTarget == true);
+
+            // Buff cast time cap (never raises a faster cast, and effect values were already generated so they don't rescale)
+            if (isBuff == true && Configuration.SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS > 0 && spellTemplate.CastTimeInMS > Configuration.SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS)
+                spellTemplate.CastTimeInMS = Configuration.SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS;
+
+            // Long buffs become a fixed duration that doesn't scale with level
+            if (isBuff == true && Configuration.SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS > 0 &&
+                spellTemplate.AuraDuration.MaxDurationInMS >= Configuration.SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS)
+            {
+                if (isGroupTarget == true && Configuration.SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS > 0)
+                    spellTemplate.AuraDuration.SetFixedDuration(Configuration.SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS);
+                else if (isGroupTarget == false && Configuration.SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS > 0)
+                    spellTemplate.AuraDuration.SetFixedDuration(Configuration.SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS);
+            }
+
+        }
+
+        private static void MarkSpellTemplatesNeedingCreatureCastVersions()
+        {
+            // Gather every EQ spell ID castable by a creature through spell list entries and attack procs
+            HashSet<int> creatureCastableEQSpellIDs = new HashSet<int>();
+            foreach (List<CreatureSpellEntry> creatureSpellEntries in CreatureSpellEntry.GetCreatureSpellEntriesByListID().Values)
+                foreach (CreatureSpellEntry creatureSpellEntry in creatureSpellEntries)
+                    creatureCastableEQSpellIDs.Add(creatureSpellEntry.EQSpellID);
+            foreach (CreatureSpellList creatureSpellList in CreatureSpellList.GetCreatureSpellLists())
+                if (creatureSpellList.AttackProcID > 0)
+                    creatureCastableEQSpellIDs.Add(creatureSpellList.AttackProcID);
+
+            // Spells cast as a result of a creature's cast (recourse, proc links, chains) are creature-cast as well
+            Queue<int> unexpandedEQSpellIDs = new Queue<int>(creatureCastableEQSpellIDs);
+            while (unexpandedEQSpellIDs.Count > 0)
+            {
+                int curEQSpellID = unexpandedEQSpellIDs.Dequeue();
+                if (SpellTemplatesByEQID.ContainsKey(curEQSpellID) == false)
+                    continue;
+                SpellTemplate curSpellTemplate = SpellTemplatesByEQID[curEQSpellID];
+                List<int> linkedEQSpellIDs = new List<int>();
+                if (curSpellTemplate.RecourseLinkEQSpellID != 0)
+                    linkedEQSpellIDs.Add(curSpellTemplate.RecourseLinkEQSpellID);
+                if (curSpellTemplate.ProcLinkEQSpellID != 0)
+                    linkedEQSpellIDs.Add(curSpellTemplate.ProcLinkEQSpellID);
+                foreach (SpellTemplate chainedSpellTemplate in curSpellTemplate.ChainedSpellTemplates)
+                    linkedEQSpellIDs.Add(chainedSpellTemplate.EQSpellID);
+                foreach (int linkedEQSpellID in linkedEQSpellIDs)
+                    if (creatureCastableEQSpellIDs.Add(linkedEQSpellID) == true)
+                        unexpandedEQSpellIDs.Enqueue(linkedEQSpellID);
+            }
+
+            // Only spells that actually diverged from the unmodified conversion need a creature-cast copy
+            foreach (int creatureCastableEQSpellID in creatureCastableEQSpellIDs)
+            {
+                if (SpellTemplatesByEQID.ContainsKey(creatureCastableEQSpellID) == false)
+                    continue;
+                SpellTemplate spellTemplate = SpellTemplatesByEQID[creatureCastableEQSpellID];
+                if (spellTemplate.WOWSpellIDCreatureCast <= 0)
+                    continue;
+                if (spellTemplate.CastTimeInMS != spellTemplate.CreatureCastTimeInMS || spellTemplate.ManaCostPercentage != 0 ||
+                    spellTemplate.ManaCost != spellTemplate.CreatureCastManaCost || spellTemplate.AuraDuration != spellTemplate.CreatureCastAuraDuration)
+                    spellTemplate.NeedsCreatureCastVersion = true;
+            }
+
+            // A creature's cast only reaches a chained spell's creature-cast copy through a creature-cast copy of the parent, so the need for one flows up the chain
+            bool foundNewCreatureCastVariant = true;
+            while (foundNewCreatureCastVariant == true)
+            {
+                foundNewCreatureCastVariant = false;
+                foreach (int creatureCastableEQSpellID in creatureCastableEQSpellIDs)
+                {
+                    if (SpellTemplatesByEQID.ContainsKey(creatureCastableEQSpellID) == false)
+                        continue;
+                    SpellTemplate spellTemplate = SpellTemplatesByEQID[creatureCastableEQSpellID];
+                    if (spellTemplate.WOWSpellIDCreatureCast <= 0 || spellTemplate.NeedsCreatureCastVersion == true)
+                        continue;
+                    foreach (SpellTemplate chainedSpellTemplate in spellTemplate.ChainedSpellTemplates)
+                    {
+                        if (chainedSpellTemplate.NeedsCreatureCastVersion == false)
+                            continue;
+                        spellTemplate.NeedsCreatureCastVersion = true;
+                        foundNewCreatureCastVariant = true;
+                        break;
+                    }
+                }
+            }
         }
 
         private static void PopulateEQSpellEffect(ref SpellTemplate spellTemplate, int slotID, Dictionary<string, string> rowColumns)
@@ -2670,6 +2822,10 @@ namespace EQWOWConverter.Spells
                                 effectGeneratedSpellTemplate.CopySpellResolutionPropertiesFrom(spellTemplate);
                                 effectGeneratedSpellTemplate.NeverMisses = true; // The parent already rolled to hit
                                 effectGeneratedSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "stun", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
+
+                                // The stun duration is a crowd control duration, which is reduced for creature casts only, so this chain spell needs its own creature-cast copy
+                                effectGeneratedSpellTemplate.WOWSpellIDCreatureCast = IDGenerationTool.GenerateID("SpellID", "stuncreaturecast", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
+                                effectGeneratedSpellTemplate.IsGeneratedStunEffectSpell = true;
                                 effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
                                 effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
@@ -4260,6 +4416,29 @@ namespace EQWOWConverter.Spells
             // Good proc and clicky spells each need copies of the base blocks
             GenerateMissingGoodProcOutputEffectBlocks();
             GenerateMissingClickyOutputEffectBlocks();
+        }
+
+        private void GenerateCreatureCastOutputEffectBlocks()
+        {
+            foreach (SpellEffectBlock baseEffectBlock in GroupedBaseSpellEffectBlocksForOutput)
+            {
+                SpellEffectBlock creatureCastEffectBlock = new SpellEffectBlock();
+                if (_GroupedCreatureCastSpellEffectBlocksForOutput.Count == 0)
+                    creatureCastEffectBlock.WOWSpellID = WOWSpellIDCreatureCast;
+                else
+                    creatureCastEffectBlock.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "creaturecastsplit", WOWSpellIDCreatureCast.ToString(), _GroupedCreatureCastSpellEffectBlocksForOutput.Count.ToString());
+                creatureCastEffectBlock.SpellName = baseEffectBlock.SpellName;
+                creatureCastEffectBlock.ForceVisibleSplitAura = baseEffectBlock.ForceVisibleSplitAura;
+                creatureCastEffectBlock.SpellEffects = baseEffectBlock.SpellEffects;
+                _GroupedCreatureCastSpellEffectBlocksForOutput.Add(creatureCastEffectBlock);
+            }
+        }
+
+        public int GetWOWSpellIDForCreatureCast()
+        {
+            if (NeedsCreatureCastVersion == false)
+                return WOWSpellID;
+            return WOWSpellIDCreatureCast;
         }
 
         private void GenerateMissingGoodProcOutputEffectBlocks()

@@ -21,7 +21,7 @@ namespace EQWOWConverter.WOWFiles
     internal class SpellDBC : DBCFile
     {
         public void AddRow(SpellEffectBlock effectBlock, string spellDescription, string auraDescription, SpellTemplate spellTemplate, bool doHideFromDisplay, bool overrideDurationToInfinite,
-            bool preventClickOff, int maximumSpellLevel, bool isToggleAura, int castTimeDBCID, bool isWornEquipEffect, bool isUsableWhileSilenced)
+            bool preventClickOff, int maximumSpellLevel, bool isToggleAura, int castTimeDBCID, bool isWornEquipEffect, bool isUsableWhileSilenced, bool isCreatureCastVersion = false)
         {
             if (effectBlock.SpellEffects.Count != 3)
             {
@@ -460,7 +460,7 @@ namespace EQWOWConverter.WOWFiles
             if (spellTemplate.AlwaysPersist == true || spellTemplate.PersistThroughDeath == true)
                 attributeFlags |= 1048576; // SPELL_ATTR3_ALLOW_AURA_WHILE_DEAD
             if (spellTemplate.IsUnresistable == true)
-                attributeFlags |= 536870912; // SPELL_ATTR3_ALWAYS_HIT
+                attributeFlags |= 262144; // SPELL_ATTR3_ALWAYS_HIT (0x00040000).  Note that 0x20000000 is SPELL_ATTR3_IGNORE_CASTER_MODIFIERS, which silently drops every caster spell mod
             if (spellTemplate.RequiresMainHandWeapon == true)
                 attributeFlags |= 1024; // SPELL_ATTR3_REQUIRES_MAIN_HAND_WEAPON (0x400)
             return attributeFlags;
