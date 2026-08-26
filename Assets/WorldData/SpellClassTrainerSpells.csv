@@ -577,7 +577,9 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 4|26839|Garrote|Rank 7|50000|0|0|61|0
 4|26861|Sinister Strike|Rank 9|50000|0|0|62|0
 4|26889|Vanish|Rank 3|59000|0|0|62|0
+4|32645|Envenom|Rank 1|59000|0|0|62|0
 4|26865|Eviscerate|Rank 10|140000|0|0|64|0
+4|26679|Deadly Throw|Rank 1|72000|0|0|64|0
 4|27448|Feint|Rank 6|72000|0|0|64|0
 4|27441|Ambush|Rank 7|80000|0|0|66|0
 4|31224|Cloak of Shadows||89000|0|0|66|0
@@ -671,6 +673,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|976|Shadow Protection|Rank 1|10000|0|0|30|0
 5|1004|Smite|Rank 5|10000|0|0|30|0
 5|6065|Power Word: Shield|Rank 5|10000|0|0|30|0
+5|14752|Divine Spirit|Rank 1|600|0|0|30|0
 5|15263|Holy Fire|Rank 3|10000|0|0|30|0
 5|552|Abolish Disease||11000|0|0|32|0
 5|6077|Renew|Rank 5|11000|0|0|32|0
@@ -1175,6 +1178,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|49272|Healing Wave|Rank 13|180000|0|0|75|0
 7|49280|Lightning Shield|Rank 10|180000|0|0|75|0
 7|49283|Earth Shield|Rank 4|9000|0|0|75|32594
+7|51505|Lava Burst|Rank 1|180000|0|0|75|0
 7|57622|Strength of Earth Totem|Rank 7|180000|0|0|75|0
 7|58581|Stoneclaw Totem|Rank 9|180000|0|0|75|0
 7|58652|Flametongue Totem|Rank 7|180000|0|0|75|0
