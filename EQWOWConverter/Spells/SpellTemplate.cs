@@ -180,6 +180,7 @@ namespace EQWOWConverter.Spells
         public string Description = string.Empty;
         public string AuraDescription = string.Empty;
         public UInt32 Category = 1;
+        public UInt32 MaxStackAmount = 0;
         public UInt32 CategoryRecoveryTimeInMS = 0; // When non-zero (with a shared Category), spells in the same category share a cooldown
         public UInt32 ChannelInterruptFlags = 0;
         public int SpellIconID = 0;
@@ -372,6 +373,7 @@ namespace EQWOWConverter.Spells
         public bool AllowCastWhileSitting = false;
         public bool DoNotBreakStealthOrInvisibility = false;
         public bool AllowCastWhileCasting = false;
+        public bool AppliesCompleteHealExhaustion = false;
 
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput
@@ -789,6 +791,26 @@ namespace EQWOWConverter.Spells
 
             // Creatures cast through separate spell copies whenever the player version diverged from the unmodified conversion
             MarkSpellTemplatesNeedingCreatureCastVersions();
+
+            // Complete Heal Exhaustion needs Complete Healing reachable by a spell mod, which in WoW means a matching SpellFamily
+            MarkCompleteHealForExhaustionDebuff();
+        }
+
+        private static void MarkCompleteHealForExhaustionDebuff()
+        {
+            if (Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED == false)
+                return;
+            if (SpellTemplatesByEQID.ContainsKey(Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID) == false)
+            {
+                Logger.WriteError("Could not enable Complete Heal Exhaustion since eq spell id ", Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID.ToString(), " did not exist");
+                return;
+            }
+
+            // The private family + flag is what the debuff's SPELLMOD_COST aura matches against, and the script is what stacks the debuff when a cast finishes
+            SpellTemplate completeHealSpellTemplate = SpellTemplatesByEQID[Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID];
+            completeHealSpellTemplate.SpellFamilyID = Convert.ToUInt32(Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
+            completeHealSpellTemplate.SpellFamilyFlags3 = Configuration.SPELL_EQ_COMPLETE_HEAL_SPELL_FAMILY_FLAG;
+            completeHealSpellTemplate.AppliesCompleteHealExhaustion = true;
         }
 
         private static bool IsNonDummySpellEffect(SpellEffectWOW spellEffect)
@@ -3733,6 +3755,7 @@ namespace EQWOWConverter.Spells
                                 }
                                 femaleFormSpellTemplate.IllusionFormFactionAlignment = illusionFactionAlignment;
                                 femaleFormSpellTemplate.IllusionFormEQRaceID = eqEffect.EQBaseValue;
+                                femaleFormSpellTemplate.IllusionObjectClass = illusionObjectClass;
                                 spellTemplate.FemaleFormSpellTemplateID = femaleFormSpellTemplate.WOWSpellID;
                                 femaleFormSpellTemplate.IllusionSpellParent = spellTemplate;
                                 effectGeneratedSpellTemplates.Add(femaleFormSpellTemplate);

@@ -39,6 +39,9 @@ namespace EQWOWConverter.Spells
         public int EffectMiscValueA = 0;
         public int EffectMiscValueB = 0;
         public int EffectTriggerSpell = 0;
+        public UInt32 EffectSpellClassMask1 = 0;
+        public UInt32 EffectSpellClassMask2 = 0;
+        public UInt32 EffectSpellClassMask3 = 0;
         public string ActionDescription = string.Empty;
         public string AuraDescription = string.Empty;
         public int CalcEffectLowLevelValue = 0;
@@ -90,6 +93,9 @@ namespace EQWOWConverter.Spells
                 EffectMiscValueA = this.EffectMiscValueA,
                 EffectMiscValueB = this.EffectMiscValueB,
                 EffectTriggerSpell = this.EffectTriggerSpell,
+                EffectSpellClassMask1 = this.EffectSpellClassMask1,
+                EffectSpellClassMask2 = this.EffectSpellClassMask2,
+                EffectSpellClassMask3 = this.EffectSpellClassMask3,
                 ActionDescription = this.ActionDescription,
                 AuraDescription = this.AuraDescription,
                 AuraDescriptionHasDeferredAmount = this.AuraDescriptionHasDeferredAmount,

@@ -38,6 +38,8 @@ namespace EQWOWConverter.Creatures
         public bool CanHoldVisualItems = false;
         public bool CanHoldVisualShields = false;
         public bool CanShowEquipInIllusion = false;
+        public string IllusionObjectModelName = string.Empty;
+        public CreatureIllusionObjectClassType IllusionObjectClass = CreatureIllusionObjectClassType.None;
         public bool CanMount = false;
         public float MountSitXAddedOffset = 0;
         public float MountSitYAddedOffset = 0;
@@ -288,6 +290,14 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.CanHoldVisualItems = columns["CanHoldVisualItems"].Trim() == "1";
                 newCreatureRace.CanHoldVisualShields = columns["CanHoldVisualShields"].Trim() == "1";
                 newCreatureRace.CanShowEquipInIllusion = columns["CanShowEquipInIllusion"].Trim() == "1";
+                newCreatureRace.IllusionObjectModelName = columns["IllusionObjectModel"].Trim().ToLower();
+                switch (columns["IllusionObjectClass"].Trim().ToLower())
+                {
+                    case "": newCreatureRace.IllusionObjectClass = CreatureIllusionObjectClassType.None; break;
+                    case "any": newCreatureRace.IllusionObjectClass = CreatureIllusionObjectClassType.AnyObject; break;
+                    case "tree": newCreatureRace.IllusionObjectClass = CreatureIllusionObjectClassType.Tree; break;
+                    default: Logger.WriteError("Unhandled IllusionObjectClass value of '", columns["IllusionObjectClass"], "' for creature race ID ", newCreatureRace.ID.ToString()); break;
+                }
                 newCreatureRace.CanMount = columns["CanMount"].Trim() == "1";
                 newCreatureRace.MountSitXAddedOffset = float.Parse(columns["MountSitXAddedOffset"]);
                 newCreatureRace.MountSitYAddedOffset = float.Parse(columns["MountSitYAddedOffset"]);

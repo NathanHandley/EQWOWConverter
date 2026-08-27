@@ -168,6 +168,19 @@ namespace EQWOWConverter
 
                     // Worn effects never get spell_bonus_data, so only cast blocks show the coefficient.  It goes last, in its own paragraph.
                     string blockActionDescription = actionDescription;
+
+                    // Complete Heal Exhaustion
+                    if (spellTemplate.AppliesCompleteHealExhaustion == true && curEffectBlock.WOWSpellID == spellTemplate.WOWSpellID)
+                    {
+                        string exhaustionText = string.Concat(Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_NAME, ": +",
+                            Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK.ToString(), "% mana cost per stack");
+                        if (blockActionDescription.Length > 0)
+                            blockActionDescription = string.Concat(blockActionDescription, "\n\n", exhaustionText);
+                        else
+                            blockActionDescription = exhaustionText;
+                    }
+
+                    // Worn effects never get spell_bonus_data, so only cast blocks show the coefficient.  It goes last, in its own paragraph.
                     string spellPowerCoefficientText = spellTemplate.GetSpellPowerCoefficientTooltipTextForBlock(curEffectBlock);
                     if (spellPowerCoefficientText.Length > 0)
                     {

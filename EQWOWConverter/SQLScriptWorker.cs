@@ -307,6 +307,8 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("AgileFighterCombatExpertSpellID", Configuration.AGILEFIGHTER_ENABLED == true ? Configuration.AGILEFIGHTER_COMBATEXPERT_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("RaidBossRespawnVarianceInSec", Configuration.CREATURE_RAID_BOSS_VARIANCE_IN_SEC.ToString());
             modEverquestSystemConfigsSQL.AddRow("RaidMiniBossRespawnVarianceInSec", Configuration.CREATURE_RAID_MINI_BOSS_VARIANCE_IN_SEC.ToString());
+            modEverquestSystemConfigsSQL.AddRow("CompleteHealExhaustionSpellID", Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED == true ? Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID.ToString() : "0");
+            modEverquestSystemConfigsSQL.AddRow("CompleteHealExhaustionManaCostPercentPerStack", Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK.ToString());
             modEverquestSystemConfigsSQL.AddRow("IllusionObjectMaxDistance", (Configuration.SPELL_ILLUSION_OBJECT_MAX_DISTANCE * Configuration.GENERATE_WORLD_SCALE).ToString());
             modEverquestSystemConfigsSQL.AddRow("IllusionObjectTreeMaxDistance", (Configuration.SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE * Configuration.GENERATE_WORLD_SCALE).ToString());
         }
@@ -2430,6 +2432,8 @@ namespace EQWOWConverter
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_ResistDiffSpellScript");
             if (spellTemplate.IsPlayerCasterOnlySpell == true)
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_PlayerCasterOnlySpellScript");
+            if (spellTemplate.AppliesCompleteHealExhaustion == true && commentFragment == string.Empty) // commentFragment check stops item clicks and creature-cast exempt, find better way?
+                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_CompleteHealSpellScript");
 
             // A rain's follow-up waves are single-target casts, so the core never applies its area damage split to them (see the script)
             if (spellTemplate.IsRainWaveSpell == true && commentFragment != " (Worn)")

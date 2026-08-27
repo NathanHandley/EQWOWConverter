@@ -1016,6 +1016,16 @@ namespace EQWOWConverter
         // Permanent aura placed on newly created characters, lost by doing non-EQ content (see ACHIEVEMENT_EQ_ADVENTURER_ENABLED)
         public static int SPELL_EQ_ADVENTURER_AURA_SPELL_ID = 86916;
 
+        // "Complete Heal Exhaustion" is a stacking debuff that makes the spell cost more mana
+        public static bool SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED = true;
+        public static int SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID = 13;
+        public static int SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID = 86924;
+        public static string SPELL_COMPLETE_HEAL_EXHAUSTION_NAME = "Complete Heal Exhaustion";
+        public static int SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID = 22;
+        public static int SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS = 15000;
+        public static int SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS = 5;
+        public static int SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK = 100;
+
         // How far (in EQ units) Minor Illusion and Tree will look for a zone object to turn the caster into, where zero or less means anywhere in the zone
         public static float SPELL_ILLUSION_OBJECT_MAX_DISTANCE = 200f;
         public static float SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE = 0f;
@@ -2071,6 +2081,13 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", SPELL_INVIS_VS_UNDEAD_INVIS_TYPE, "WoW invisibility group (InvisibilityType) reserved for EQ 'invis vs undead' (0 = general invis, 1 should be unused)");
             OutputVariableToConfig("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID, "Custom detect aura granted to everything that should see through 'invis vs undead' (non-undead + see_invis_undead undead)");
             OutputVariableToConfig("SPELL_RESIST_ADJUSTMENT_SPELL_ID", SPELL_RESIST_ADJUSTMENT_SPELL_ID, "Hidden short-duration aura the mod applies to a caster during a cast to shift the spell hit roll by the EQ ResistDiff amount");
+            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED", SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED, "\"Complete Heal Exhaustion\" is a stacking debuff that makes the spell cost more mana");
+            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID", SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID, "", false);
+            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID", SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID, "", false);
+            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID", SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS", SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS, "", false);
+            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS", SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS, "", false);
+            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK", SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK, "", false);
             OutputVariableToConfig("SPELL_ILLUSION_OBJECT_MAX_DISTANCE", SPELL_ILLUSION_OBJECT_MAX_DISTANCE, "How far (in EQ units) Minor Illusion and Tree will look for a zone object to turn the caster into, where zero or less means anywhere in the zone", false);
             OutputVariableToConfig("SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE", SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE, "", false);
             OutputVariableToConfig("SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE", SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE, "Step that placed object sizes snap to for the object illusions. Smaller is more exact but costs more CreatureDisplayInfo rows", false);
@@ -2634,6 +2651,13 @@ namespace EQWOWConverter
             SPELL_INVIS_VS_UNDEAD_INVIS_TYPE = ReadVariableFromConfigString("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", configValuesByVariableName, SPELL_INVIS_VS_UNDEAD_INVIS_TYPE);
             SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID);
             SPELL_RESIST_ADJUSTMENT_SPELL_ID = ReadVariableFromConfigString("SPELL_RESIST_ADJUSTMENT_SPELL_ID", configValuesByVariableName, SPELL_RESIST_ADJUSTMENT_SPELL_ID);
+            SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED);
+            SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID);
+            SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID);
+            SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID);
+            SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS);
+            SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS);
+            SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK);
             SPELL_ILLUSION_OBJECT_MAX_DISTANCE = ReadVariableFromConfigString("SPELL_ILLUSION_OBJECT_MAX_DISTANCE", configValuesByVariableName, SPELL_ILLUSION_OBJECT_MAX_DISTANCE);
             SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE = ReadVariableFromConfigString("SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE", configValuesByVariableName, SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE);
             SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE = ReadVariableFromConfigString("SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE", configValuesByVariableName, SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE);

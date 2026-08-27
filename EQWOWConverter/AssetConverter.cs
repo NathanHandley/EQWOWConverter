@@ -3054,6 +3054,44 @@ namespace EQWOWConverter
             resistAdjustmentSpellTemplate.ForceHiddenFromDisplay = true;
             spellTemplates.Add(resistAdjustmentSpellTemplate);
 
+            // Complete Heal Exhaustion (debuff stacked on the caster every time they finish a direct cast of Complete Heal, making the next ones cost more)
+            if (Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED == true)
+            {
+                int completeHealExhaustionIconID = Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID;
+                if (completeHealExhaustionIconID < 0 || completeHealExhaustionIconID > 22)
+                {
+                    Logger.WriteError("Invalid Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID, value must be 0-22. Setting to 22");
+                    completeHealExhaustionIconID = 22;
+                }
+                string completeHealExhaustionDescription = string.Concat("Weariness from channeling a complete heal. Each stack adds ",
+                    Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK.ToString(), "% to what Complete Healing costs to cast, up to ",
+                    Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS.ToString(), " stacks.");
+                SpellTemplate completeHealExhaustionSpellTemplate = new SpellTemplate();
+                completeHealExhaustionSpellTemplate.Name = Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_NAME;
+                completeHealExhaustionSpellTemplate.WOWSpellID = Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID;
+                completeHealExhaustionSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                completeHealExhaustionSpellTemplate.Description = completeHealExhaustionDescription;
+                completeHealExhaustionSpellTemplate.AuraDescription = completeHealExhaustionDescription;
+                completeHealExhaustionSpellTemplate.AuraDuration = new SpellDuration();
+                completeHealExhaustionSpellTemplate.AuraDuration.SetFixedDuration(Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS);
+                completeHealExhaustionSpellTemplate.MaxStackAmount = Convert.ToUInt32(Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS);
+                // EffectMiscValueA 14 = SPELLMOD_COST, and the base points are the added percent for a single stack
+                SpellEffectWOW completeHealExhaustionEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.AddPctModifier, 0, 0, 0, Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK, 14, 0);
+                completeHealExhaustionEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                completeHealExhaustionEffect.EffectSpellClassMask3 = Configuration.SPELL_EQ_COMPLETE_HEAL_SPELL_FAMILY_FLAG;
+                completeHealExhaustionSpellTemplate.WOWSpellEffects.Add(completeHealExhaustionEffect);
+                completeHealExhaustionSpellTemplate.SpellFamilyID = Convert.ToUInt32(Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
+                completeHealExhaustionSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(completeHealExhaustionIconID);
+                completeHealExhaustionSpellTemplate.CastTimeInMS = 0;
+                completeHealExhaustionSpellTemplate.RecoveryTimeInMS = 0;
+                completeHealExhaustionSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+                completeHealExhaustionSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
+                completeHealExhaustionSpellTemplate.TriggersGlobalCooldown = false;
+                completeHealExhaustionSpellTemplate.ForceAsDebuff = true;
+                completeHealExhaustionSpellTemplate.PreventAuraClickOff = true;
+                spellTemplates.Add(completeHealExhaustionSpellTemplate);
+            }
+
             // Agile Fighter (EQ Monk passive which will grant eiter Combat Master or Combat Expert depending on the gear)
             if (Configuration.AGILEFIGHTER_ENABLED == true)
             {

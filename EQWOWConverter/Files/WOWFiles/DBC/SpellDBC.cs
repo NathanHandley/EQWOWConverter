@@ -104,7 +104,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellRangeDBCID)); // RangeIndex (SpellRange.ID)
             newRow.AddFloat(0); // Speed
             newRow.AddUInt32(0); // ModalNextSpell
-            newRow.AddUInt32(0); // CumulativeAura
+            newRow.AddUInt32(spellTemplate.MaxStackAmount); // CumulativeAura (StackAmount)
             newRow.AddUInt32(0); // Totem1
             newRow.AddUInt32(0); // Totem2
             for (int i = 0; i < 8; i++)
@@ -159,15 +159,13 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0); // EffectPointsPerCombo1
             newRow.AddFloat(0); // EffectPointsPerCombo2
             newRow.AddFloat(0); // EffectPointsPerCombo3
-            newRow.AddUInt32(0); // EffectSpellClassMaskA1
-            newRow.AddUInt32(0); // EffectSpellClassMaskA2
-            newRow.AddUInt32(0); // EffectSpellClassMaskA3
-            newRow.AddUInt32(0); // EffectSpellClassMaskB1
-            newRow.AddUInt32(0); // EffectSpellClassMaskB2
-            newRow.AddUInt32(0); // EffectSpellClassMaskB3
-            newRow.AddUInt32(0); // EffectSpellClassMaskC1
-            newRow.AddUInt32(0); // EffectSpellClassMaskC2
-            newRow.AddUInt32(0); // EffectSpellClassMaskC2
+            // EffectSpellClassMask is a flag96 per effect (the A/B/C in the DBC field names is the effect, not the word), so all three words of the first effect come first
+            foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
+            {
+                newRow.AddUInt32(spellEffect.EffectSpellClassMask1); // EffectSpellClassMaskA1, EffectSpellClassMaskB1, EffectSpellClassMaskC1
+                newRow.AddUInt32(spellEffect.EffectSpellClassMask2); // EffectSpellClassMaskA2, EffectSpellClassMaskB2, EffectSpellClassMaskC2
+                newRow.AddUInt32(spellEffect.EffectSpellClassMask3); // EffectSpellClassMaskA3, EffectSpellClassMaskB3, EffectSpellClassMaskC3
+            }
             newRow.AddUInt32(spellTemplate.SpellVisualID1); // SpellVisualID1
             newRow.AddUInt32(spellTemplate.SpellVisualID2); // SpellVisualID2
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellIconID)); // SpellIconID
