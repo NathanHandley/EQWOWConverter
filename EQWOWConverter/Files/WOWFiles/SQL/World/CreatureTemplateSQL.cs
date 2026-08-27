@@ -211,7 +211,10 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddFloat("HealthModifier", 1);
             newRow.AddFloat("ManaModifier", 1);
             newRow.AddFloat("ArmorModifier", 1);
-            newRow.AddFloat("ExperienceModifier", creatureTemplate.ExperiencMultiplier);
+            if (creatureTemplate.IsPet == true)
+                newRow.AddFloat("ExperienceModifier", 0);  // No EXP for summoned creatures
+            else
+                newRow.AddFloat("ExperienceModifier", creatureTemplate.ExperienceMultiplier);
             newRow.AddInt("RacialLeader", 0);
 			newRow.AddInt("movementId", 0);
             newRow.AddInt("RegenHealth", 1);

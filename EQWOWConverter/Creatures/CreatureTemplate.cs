@@ -133,7 +133,7 @@ namespace EQWOWConverter.Creatures
         public float CompanionPetSizeMod = 1.0f;
         public bool IsStableMaster = false;
         public bool IsReagentVendor = false;
-        public float ExperiencMultiplier = 1;
+        public float ExperienceMultiplier = 1;
         public float AgroSocialDistanceMod = 1.0f;
 
         private static int CURRENT_CREATURE_EQID = 200000;
