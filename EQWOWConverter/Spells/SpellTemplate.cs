@@ -277,6 +277,7 @@ namespace EQWOWConverter.Spells
         public int CreatureCastTimeInMS = 0;
         public int CreatureCastSpellCastTimeDBCID = 1;
         public SpellDuration CreatureCastAuraDuration = new SpellDuration();
+        public bool IsGeneratedStunEffectSpell = false; 
         public SpellEQTargetType EQTargetType = SpellEQTargetType.Single;
         public bool IsSelfCenteredAreaBreath = false; // Dragon breath
         public bool CanTargetBothFriendlyAndEnemy = false;
@@ -1419,13 +1420,17 @@ namespace EQWOWConverter.Spells
                         spellTemplate.TargetCreatureType = 32; // Undead, 0x0020
                         if (isDetrimental == true)
                         {
+                            spellTemplate.TargetCreatureType = 32; // Undead, 0x0020
                             spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetEnemy);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single undead enemy";
                         }
                         else
                         {
+                            // These are the necromancer pet heals (Mend Bones, Renew Bones, ...), and a summoned pet is the only friendly undead that shows up in practice
+                            // Summoned pets are undead for the skeleton lines and demons for everything else (see CreatureTemplate.GetPetWOWCreatureTypeID), so allow both creature types
+                            spellTemplate.TargetCreatureType = 32 + 4; // Undead 0x0020 and Demon 0x0004
                             spellWOWTargetTypes.Add(SpellWOWTargetType.UnitTargetAlly); // "lull" and heal undead put into this for now
-                            spellTemplate.TargetDescriptionTextFragment = "Targets a single undead friendly unit";
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single undead or summoned friendly unit";
                         }
                     }
                     break;

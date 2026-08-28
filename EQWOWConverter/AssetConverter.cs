@@ -3260,7 +3260,7 @@ namespace EQWOWConverter
             }
 
             // Bash
-            int bashAndSlamSpellCategoryID = IDGenerationTool.GenerateID("SpellCategoryID", "bashslam"); // Used for linking cooldown between bash and slam
+            int bashAndSlamSpellCategoryID = SpellCategoryDBC.GenerateDBCID("bashslam"); // Used for linking cooldown between bash and slam
             if (Configuration.COMBATSKILL_BASH_ENABLED == true)
             {
                 int bashForbearanceSpellID = 0;
@@ -3479,7 +3479,7 @@ namespace EQWOWConverter
                 feignDeathSpellTemplate.CastTimeInMS = 0; // Instant, matching the TAKP monk skill
                 feignDeathSpellTemplate.SchoolMask = 1; // Physical
                 feignDeathSpellTemplate.TriggersGlobalCooldown = false;
-                feignDeathSpellTemplate.Category = Convert.ToUInt32(IDGenerationTool.GenerateID("SpellCategoryID", "feigndeath"));
+                feignDeathSpellTemplate.Category = Convert.ToUInt32(SpellCategoryDBC.GenerateDBCID("feigndeath"));
                 feignDeathSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS);
                 feignDeathSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
                 feignDeathSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;

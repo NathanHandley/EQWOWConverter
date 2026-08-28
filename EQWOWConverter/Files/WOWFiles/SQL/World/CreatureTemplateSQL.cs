@@ -174,7 +174,6 @@ namespace EQWOWConverter.WOWFiles
             else
                 newRow.AddInt("family", creatureTemplate.Race.WOWCreatureFamily);
             if (creatureTemplate.IsPet == true)
-                newRow.AddInt("type", 3); // Note: If the pet isn't a demon, the name won't generate randomly (for random name types).  If undead the name will be random, but will not heed if resummoned.
                 newRow.AddInt("type", creatureTemplate.GetPetWOWCreatureTypeID()); // Demon, or undead for the undead races.  Only those two are safe
             else if (creatureTemplate.IsCompanionPet == true)
                 newRow.AddInt("type", 12); // Non-Combat Pet, like the stock wow companion pets
