@@ -247,6 +247,10 @@ namespace EQWOWConverter.Tradeskills
                                 continue;
                             }
                             recipe.CombinerWOWItemIDs.Add(itemTemplatesByEQDBID[containerItemEQID].WOWEntryID);
+
+                            // In EQ a "replace container" combine consumes the container and hands back a changed version of it as one of the produced items
+                            if (recipe.DoReplaceContainer == true)
+                                AddContainerAsConsumedReagent(recipe, itemTemplatesByEQDBID[containerItemEQID].WOWEntryID);
                         }
                     }
                     if (itemLookupFailed == true)
@@ -459,6 +463,22 @@ namespace EQWOWConverter.Tradeskills
                 return GetLinearInterpolatedValue(requiredSkillRank, 200, 300, Configuration.TRADESKILL_LEARN_COST_AT_200, Configuration.TRADESKILL_LEARN_COST_AT_300);
             else
                 return GetLinearInterpolatedValue(requiredSkillRank, 300, 450, Configuration.TRADESKILL_LEARN_COST_AT_300, Configuration.TRADESKILL_LEARN_COST_AT_450);
+        }
+
+        private static void AddContainerAsConsumedReagent(TradeskillRecipe recipe, int containerWOWItemID)
+        {
+            if (recipe.ComponentItemCountsByWOWItemID.ContainsKey(containerWOWItemID) == true)
+            {
+                Logger.WriteDebug(string.Concat("Recipe '", recipe.EQID, "' replaces its container, but the container is already a component so it will not be added again"));
+                return;
+            }
+            if (recipe.ComponentItemCountsByWOWItemID.Count >= Configuration.TRADESKILL_MAX_REAGENT_COUNT)
+            {
+                Logger.WriteError(string.Concat("Recipe '", recipe.EQID, "' replaces its container, but it already has ", recipe.ComponentItemCountsByWOWItemID.Count,
+                    " components and a spell can only hold ", Configuration.TRADESKILL_MAX_REAGENT_COUNT, " reagents, so the container will not be consumed"));
+                return;
+            }
+            recipe.ComponentItemCountsByWOWItemID.Add(containerWOWItemID, 1);
         }
 
         public string GetGeneratedDescription(SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)

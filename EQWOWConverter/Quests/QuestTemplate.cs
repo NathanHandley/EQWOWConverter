@@ -72,21 +72,22 @@ namespace EQWOWConverter.Quests
 
         private static int ConvertEQFactionValueToWoW(int eqFactionValue)
         {
-            switch (eqFactionValue)
-            {
-                case -500:  return -3000;   // EQ Dubious => WOW Unfriendly
-                case -100:  return -3000;   // EQ Apprehensive => WOW Unfriendly
-                case 0:     return 0;       // EQ Indifferent => WOW Neutral
-                case 100:   return 3000;    // EQ Amiable => WOW Friendly
-                case 500:   return 9000;    // EQ Kindly => WOW Honored
-                case 750:   return 21000;   // EQ Warmly => WOW Revered
-                case 1100:  return 42000;   // EQ Ally => WOW Exalted
-                default:
-                    {
-                        Logger.WriteError(string.Concat("Could not convert EQ faction value to WOW faction value as unhandled faction value of '", eqFactionValue, "' was provided"));
-                        return 0;
-                    }
-            }
+            if (eqFactionValue <= -500)
+                return -3000; // EQ Dubious => WOW Unfriendly
+            else if (eqFactionValue <= -100)
+                return -3000; // EQ Apprehensive => WOW Unfriendly
+            else if (eqFactionValue <= 0)
+                return 0; // EQ Indifferent => WOW Neutral
+            else if (eqFactionValue <= 100)
+                return 3000; // EQ Amiable => WOW Friendly
+            else if (eqFactionValue <= 500)
+                return 9000; // EQ Kindly => WOW Honored
+            else if (eqFactionValue <= 750)
+                return 21000; // EQ Warmly => WOW Revered
+            else if (eqFactionValue <= 1100)
+                return 42000; // EQ Ally => WOW Exalted
+            else
+                return 42000; // Higher should just be WOW Exalted
         }
 
         public bool AreRequiredItemsPlayerObtainable(SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
@@ -255,6 +256,13 @@ namespace EQWOWConverter.Quests
                             reaction.CreatureIsSelf = true;
                             reaction.MovementIsRun = reactionValue1 == "run";
                             PopulateReactionPositionFromColumns(reaction, columns);
+                        }
+                        break;
+                    case "castspell": // Cast on the player when the turn-in completes, for paid services like a healer's
+                        {
+                            reaction.ReactionType = QuestReactionType.CastSpell;
+                            reaction.CreatureIsSelf = true;
+                            reaction.SpellEQID = int.Parse(reactionValue1);
                         }
                         break;
                     case "killspawn": // Spawned when the questgiver is killed after completing the quest

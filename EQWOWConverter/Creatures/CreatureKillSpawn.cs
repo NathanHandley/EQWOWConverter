@@ -22,6 +22,8 @@ namespace EQWOWConverter.Creatures
         private static HashSet<int> SpawnedTargetEQCreatureTemplateIDs = new HashSet<int>();
         private static readonly object KillSpawnLock = new object();
 
+        public const int MAX_REQUIRE_DEAD_CREATURE_TEMPLATES = 3;
+
         public int ID;
         public string ZoneShortName = string.Empty;
         public int TriggerEQCreatureTemplateID;
@@ -134,8 +136,13 @@ namespace EQWOWConverter.Creatures
                 newKillSpawn.DelayMinMS = int.Parse(columns["delay_min_ms"]);
                 newKillSpawn.DelayMaxMS = int.Parse(columns["delay_max_ms"]);
                 newKillSpawn.OnlyIfNotAliveEQCreatureTemplateID = int.Parse(columns["only_if_not_alive"]);
-                foreach (string idString in columns["require_dead_eq_npc_ids"].Split(',', StringSplitOptions.RemoveEmptyEntries))
+                for (int i = 1; i <= MAX_REQUIRE_DEAD_CREATURE_TEMPLATES; i++)
+                {
+                    string idString = columns[string.Concat("require_dead_eq_npc_id_", i)].Trim();
+                    if (idString.Length == 0)
+                        continue;
                     newKillSpawn.RequireDeadEQCreatureTemplateIDs.Add(int.Parse(idString));
+                }
                 foreach (string idString in columns["require_alive_eq_npc_ids"].Split(',', StringSplitOptions.RemoveEmptyEntries))
                     newKillSpawn.RequireAliveEQCreatureTemplateIDs.Add(int.Parse(idString));
                 newKillSpawn.AddToHateList = columns["add_to_hate"].Trim() == "1";

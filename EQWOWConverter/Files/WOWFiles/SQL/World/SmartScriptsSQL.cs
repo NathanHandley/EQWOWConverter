@@ -90,6 +90,36 @@ namespace EQWOWConverter.WOWFiles
             );
         }
 
+        public void AddRowForQuestCompleteSpellCastEvent(int creatureTemplateID, int questID, int wowSpellID, string comment)
+        {
+            AddRow(creatureTemplateID,
+                0,          // SMART_SCRIPT_TYPE_CREATURE = 0
+                20,         // SMART_EVENT_REWARD_QUEST = 20
+                100,
+                questID,
+                0,
+                0,
+                0,
+                0,
+                0,
+                11,         // SMART_ACTION_CAST = 11
+                wowSpellID,
+                2,          // SMARTCAST_TRIGGERED
+                0,
+                0,
+                0,
+                0,
+                7,          // SMART_TARGET_ACTION_INVOKER
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment
+            );
+        }
+
         public void AddRowForGameObjectStateTriggerEvent(int sourceGameObjectTemplateID, int targetGameObjectGUID, int targetGameObjectEntryID, string comment)
         {
             AddRow(sourceGameObjectTemplateID, // Negative for GUID, Positive for Entry

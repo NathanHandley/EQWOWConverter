@@ -1249,6 +1249,9 @@ namespace EQWOWConverter
         // How long every tradeskill will take in milliseconds
         public static int TRADESKILL_CAST_TIME_IN_MS = 5000;
 
+        // How many reagents a spell can hold.  Fixed by the Spell.dbc layout, so this is not configurable
+        public const int TRADESKILL_MAX_REAGENT_COUNT = 8;
+
         // Tradeskill items that need a totem in TotemCategory.dbc will align under this
         public static int TRADESKILL_TOTEM_CATEGORY_START = 30;
 

@@ -1081,7 +1081,7 @@ namespace EQWOWConverter
                 // If there are any reactions related to talking, mark the template as using smart scripts
                 if (questTemplate.Reactions.Count > 0)
                     foreach (QuestReaction reaction in questTemplate.Reactions)
-                        if (reaction.ReactionType == QuestReactionType.Emote || reaction.ReactionType == QuestReactionType.Say || reaction.ReactionType == QuestReactionType.Yell)
+                        if (reaction.ReactionType == QuestReactionType.Emote || reaction.ReactionType == QuestReactionType.Say || reaction.ReactionType == QuestReactionType.Yell || reaction.ReactionType == QuestReactionType.CastSpell)
                             foreach (CreatureTemplate creatureTemplate in questgiverCreatureTemplates)
                                 creatureTemplate.HasSmartScript = true;
             }

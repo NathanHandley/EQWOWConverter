@@ -2271,6 +2271,21 @@ namespace EQWOWConverter
                             smartScriptsSQL.AddRowForQuestCompleteTalkEvent(creatureTemplateID, creatureTextGroupID + 1, repeatQuestID, comment);
                         }
 
+                        // When a reaction is the quest NPC casts a spell
+                        if (reaction.ReactionType == QuestReactionType.CastSpell)
+                        {
+                            if (spellTemplatesByEQID.ContainsKey(reaction.SpellEQID) == false)
+                            {
+                                Logger.WriteError(string.Concat("Quest ", questTemplate.QuestIDWOW.ToString(), " casts EQ spell ", reaction.SpellEQID.ToString(), " on completion, but no spell template has that ID"));
+                                continue;
+                            }
+                            SpellTemplate castSpellTemplate = spellTemplatesByEQID[reaction.SpellEQID];
+                            int castSpellID = castSpellTemplate.GetWOWSpellIDForCreatureCast();
+                            string castComment = string.Concat("EQ ", creatureTemplateByWOWID[creatureTemplateID].Name, " Quest Cast ", castSpellTemplate.Name, " (", castSpellID.ToString(), ")");
+                            smartScriptsSQL.AddRowForQuestCompleteSpellCastEvent(creatureTemplateID, firstQuestID, castSpellID, castComment);
+                            smartScriptsSQL.AddRowForQuestCompleteSpellCastEvent(creatureTemplateID, repeatQuestID, castSpellID, castComment);
+                        }
+
                         // Attack/Spawn/Despawn/KillSpawn/WalkTo actions, plus any text the mod has to hold until a walkto arrives
                         if (reaction.ReactionType == QuestReactionType.AttackPlayer || reaction.ReactionType == QuestReactionType.Despawn || reaction.ReactionType == QuestReactionType.Spawn || reaction.ReactionType == QuestReactionType.SpawnUnique || reaction.ReactionType == QuestReactionType.KillSpawn || reaction.ReactionType == QuestReactionType.WalkTo || (reactionIsText == true && reaction.FiresOnArrival == true))
                         {

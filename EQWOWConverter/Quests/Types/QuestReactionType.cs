@@ -27,6 +27,7 @@ namespace EQWOWConverter.Quests
         SpawnUnique = 6,
         Yell = 7,
         KillSpawn = 8,
-        WalkTo = 9
+        WalkTo = 9,
+        CastSpell = 10
     }
 }
