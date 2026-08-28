@@ -88,6 +88,7 @@ namespace EQWOWConverter.GameObjects
         public int CloseTimeInMS;
         public int MaxSpawnNum = 0; // Consider removing
         public int RespawnTimeInMS = 0;
+        public bool EventSpawnedOnly = false;
         public int ContainedEQItemID = 0;
         public ItemTemplate? ContainedItemTemplate = null;
         public int KeyItemEQID = 0;
@@ -378,6 +379,7 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.MaxSpawnNum = int.Parse(gameObjectsRow["max_spawn_allowed"]);
                 newGameObject.RespawnTimeInMS = int.Parse(gameObjectsRow["respawn_time"]);
                 newGameObject.ContainedEQItemID = int.Parse(gameObjectsRow["contained_item"]);
+                newGameObject.EventSpawnedOnly = gameObjectsRow["event_spawned"].Trim() == "1";
 
                 // Keys
                 if (gameObjectType == GameObjectType.Door || gameObjectType == GameObjectType.Teleport)

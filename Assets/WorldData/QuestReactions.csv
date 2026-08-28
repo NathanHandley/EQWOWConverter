@@ -475,7 +475,7 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 30469|dreadlands|Veltar|say|So you are finally ready for the final rung. Here it is, you shall receive mine for I quest for the fists of Cazic Thule no longer.|||||||
 30470|droga|an_Iksar_slave|emote|%s hands you a shackle and removes the coppernickel shackle so he may flee. He places your shackles on his wrists and darts into the darkness.|||||||
 30471|droga|an_angry_goblin|emote|%s howls in triumph! 'This is just what I needed! Skargus is mine now, wait until he finds out, just wait! His death is close at hand. Follow me and I'll take you to Skargus's chamber, you can wait there while I take this report to the chief!'|||||||
-30471|droga|an_angry_goblin|walkto|walk|239|1605.0001|-255.90623|0|||
+30471|droga|an_angry_goblin|walkgrid|99|||||||
 30471|droga|an_angry_goblin|spawnunique|81006|npcX|npcY|npcZ|125|||
 30471|droga|an_angry_goblin|yell|I have you now Skargus, you traitor! Even now I'm taking this report of slave-trading to the chief! Your days here are at an end!|||||||
 30471|droga|an_angry_goblin|despawn|self|||||||
@@ -506,9 +506,11 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 30484|eastkarana|Sionae|spawnunique|15167|-3657|300|-0.59543|183|||
 30485|eastkarana|Sir_Morgan|say|What a grand donation!! You must be a rich noble to be making such a donation. Here, I am but a simple warrior, but I found this lying on the highway to Highpass Hold. The lifeless corpse next to it had no more need of it.|||||||
 30486|eastkarana|Teloa|say|begins walking toward the gathering spot. 'Follow, friend.'|||||||
+30486|eastkarana|Teloa|walkgrid|12|||||||
 30486|eastkarana|Teloa|spawnunique|15153|-1529|-996|350.222748|130|||
 30486|eastkarana|Teloa|spawnunique|15150|-1529|-1090|351.873199|130|||
 30486|eastkarana|Teloa|spawnunique|15000|-1490|-1063|363.603973|130|||
+30486|eastkarana|Teloa|despawn|self|||||||1800000
 30487|eastkarana|Tenal_Redblade|say|So, you know my brother Kargek. He is weak and does not believe the legend that our family was chosen by Rallos Zek to bear the great scabbard. Yet he still holds it. Very well, I shall give you the first test since my 'dear' brother seems to have forgotten it. Travel to the fortress where the children of Rallos were first cursed by the Rathe and bring me the heart of one of the goblins who have made it their new home. Do not return without the heart of your foe and this war totem.|||||||
 30488|eastkarana|Tenal_Redblade|say|Very good, you have wreaked havoc on your foes in the ancient land of the giants. Rallos Zek must have guided your blade. (Tenal's voice is suddenly silenced and you feel as if your body is frozen. From Tenal's lips issues a voice that is not his own.) 'Bring this mortal the scales of the children of Veeshan. The red and green as well as my war totem. I will guide your blade.' Your movement returns as Tenal falls to the ground, gasping for breath.|||||||
 30489|eastkarana|Tenal_Redblade|emote|%s looks at you oddly as you hand him the scales. 'What are..? 'You have done well, mortal, and you will be rewarded if you are truly brave. Travel to the Plane of Hatred and slay the ancient bard who lives there. Do not return without his hand and this mark or you will never be a true warlord.' Tenal drops to the ground as the last words leave his lips.'|||||||
@@ -655,6 +657,9 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 30599|erudsxing|Abe_the_Abandoned|emote|%s removes a quiver slung across his shoulder and solemnly hands it to you without a word.|||||||
 30600|erudsxing|Ooglyn|say|Ahhh, tank you, now me can...OH LOOK!! DA SIGN!!!! Oh, sorry you missed it. The sign show you where to wait for da test. Follow me...I like you so I take you there. We goin for a swim,  $N!|||||||
 30600|erudsxing|Ooglyn|say|Ok shaman, let us be off.|||||||
+30600|erudsxing|Ooglyn|walkgrid|4|||||||
+30600|erudsxing|Ooglyn|spawnunique|98046|-1586|4196|-280|181|||
+30600|erudsxing|Ooglyn|despawn|self|||||||60000
 30601|erudsxing|Yelesom_Paust|say|Gans sent you to check on me did he? Well you can tell my dear brother that the surveying has been halted. One of those furballs has stolen my tools, making my job impossible. Kerrans, kobolds, gnolls, we're constantly under siege by these primitives. Anyway, perhaps you could help me?|||||||
 30602|erudsxing|Yelesom_Paust|say|Thank you for recovering my tools, please take this to my brother for your reward.|||||||
 30603|everfrost|Arnis_McLish|say|Mmmm.. Thank you stranger. I feel a lot warmer now. You should now go and find Megan O'Reilly.|||||||
@@ -881,7 +886,9 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 30799|freporte|Zhem_Xecia|say|I see your mission was a success. Take this Rough Dismal Flail and refine it in forge with a sharpening stone. It may take you several attempts if you are unfamiliar with the process. Once that is done take the Refined Dismal Flail and a Giant Rattlesnake Skin to Jerra Renlock. She will put the finishing touches on your new weapon.|||||||
 30800|freportn|a_minnow|emote|%s darts into the jar, or just darted past it!! The Knights of Truth do not tolerate people attempting to catch these fish!!|||||||
 30801|freportn|Bondl_Felligan|say|WOW, thanks! This must be worth a fortune! I could drink for a month after sellin' this to one of them fool merchants. I'm going to see how much I can get for it right now!|||||||
-30801|freportn|Bondl_Felligan|spawnunique|8117|66|62|28.00001|254|||
+30801|freportn|Bondl_Felligan|walkgrid|13:0-18|||||||
+30801|freportn|Bondl_Felligan|say|What!? You don't approve of me buyin' some drinks with this gem? Who the heck are you to offer me a gift and order me what to do with it? Is this some kinda conditional kindness? Well? Are you gonna let me buy some booze with this or not?|||||||
+30801|freportn|Bondl_Felligan|walkgrid|13:18-36|||||||120000
 30802|freportn|Caskin_Marsheart|say|Welcome to the guild. here's your guild tunic. Now. let's get to work.|||||||
 30803|freportn|Celsar_Vestagon|say|If you require the binding of wounds you should speak with Palious Jartan in the temple. He will be glad to help you.|||||||
 30804|freportn|Celsar_Vestagon|say|You have done well. The Marr Minnow shall have a greater chance of flourishing. Please take this as a reward.|||||||
@@ -1771,6 +1778,8 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 31573|overthere|Alchemist_Granika|spawn|93004|2794|2280|-53.093319|190|||
 31573|overthere|Alchemist_Granika|spawn|93004|2698|2280|-53.093319|190|||
 31573|overthere|Alchemist_Granika|spawn|93005|2698|2240|-53.093319|190|||
+31573|overthere|Alchemist_Granika|walkgrid|4|||||||
+31573|overthere|Alchemist_Granika|despawn|self|||||||8000
 31574|overthere|an_undead_foreman|emote|%s an undead foreman places the gem deep within his hollow eye socket. He pulls a giant sledgehammer from thin air and hands it to you.|||||||
 31574|overthere|an_undead_foreman|say|Here!! You shall be assigned to the lower decks of the Scaled Trident.|||||||
 31575|overthere|Astral_Projection|emote|%s looks up and down.|||||||
@@ -3319,3 +3328,6 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 33368|soltemple|Romar_Sunto|say|I will gladly lend you this coin pouch - put all 10 antique silver coins into it and combine them into the Coin of Tash.|||||||
 33369|wakening|Lieutenant_Krofer|say|Very well. We've decided to attack the small Sifaye village northeast of here and I want you to coordinate the attack. I will send you into Kael Drakkel with a request for troop assistance. After the squad is assembled you will lead them to the staging point where you will oversee the battle. Here is the request. Take it to Drioc in the city and return here with the troops.|||||||
 33370|qeynos|Hansl_Bigroon|emote|%s picks up a discarded item from the ground and says 'Don't people have enough respect for our grand city to not throw things onto the streets?!'|||||||
+30385|cauldron|Captain_Klunga|spawnobject|4637|||||||
+30385|cauldron|Captain_Klunga|walkgrid|2|||||||
+30385|cauldron|Captain_Klunga|despawn|self|||||||3600000

@@ -270180,3 +270180,16 @@ BroadcastTextID|questreaction~54139~14|82741
 BroadcastTextID|questreaction~51414~10|82742
 BroadcastTextID|questreaction~54660~10|82743
 BroadcastTextID|questreaction~45251~2|82744
+SkillLineAbilityID|811~86942|32834
+GameObjectGUID|gameobject~4636|314978
+GameObjectGUID|gameobject~4637|314979
+BroadcastTextID|gossipgreeting~everfrost~Snowflake|82745
+NPCTextID|gossipgreeting~everfrost~Snowflake|80083
+BroadcastTextID|gossipgreeting~freporte~Lyda_Nasin|82746
+NPCTextID|gossipgreeting~freporte~Lyda_Nasin|80084
+BroadcastTextID|gossipgreeting~freportw~Pandos_Flintside|82747
+NPCTextID|gossipgreeting~freportw~Pandos_Flintside|80085
+BroadcastTextID|gossipgreeting~oot~Sentry_Xyrin|82748
+NPCTextID|gossipgreeting~oot~Sentry_Xyrin|80086
+BroadcastTextID|gossipgreeting~paineel~Sejako_Mujan|82749
+NPCTextID|gossipgreeting~paineel~Sejako_Mujan|80087

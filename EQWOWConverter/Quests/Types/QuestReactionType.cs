@@ -28,6 +28,8 @@ namespace EQWOWConverter.Quests
         Yell = 7,
         KillSpawn = 8,
         WalkTo = 9,
-        CastSpell = 10
+        CastSpell = 10,
+        WalkGrid = 11,
+        SpawnObject = 12
     }
 }

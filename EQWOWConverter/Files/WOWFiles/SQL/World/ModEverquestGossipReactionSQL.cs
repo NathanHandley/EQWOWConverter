@@ -52,6 +52,14 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`Orientation` FLOAT NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`DelayInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`MovementIsRun` TINYINT(3) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`GameObjectEntryID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`GameObjectLifetimeSec` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`PathListID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`RequiredQuestID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`RequiredNearX` FLOAT NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`RequiredNearY` FLOAT NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`RequiredNearZ` FLOAT NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`RequiredNearDistance` FLOAT NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`FiresOnArrival` TINYINT(3) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY(`ID`) USING BTREE ); ");
             return stringBuilder.ToString();
@@ -84,6 +92,14 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("Orientation", gossipReaction.WOWOrientation);
             newRow.AddInt("DelayInMS", gossipReaction.DelayInMS);
             newRow.AddInt("MovementIsRun", gossipReaction.MovementIsRun == false ? 0 : 1);
+            newRow.AddInt("GameObjectEntryID", gossipReaction.GameObjectEntryID);
+            newRow.AddInt("GameObjectLifetimeSec", gossipReaction.GameObjectLifetimeSec);
+            newRow.AddInt("PathListID", gossipReaction.PathListID);
+            newRow.AddInt("RequiredQuestID", gossipReaction.RequiredQuestID);
+            newRow.AddFloat("RequiredNearX", gossipReaction.RequiredNearX);
+            newRow.AddFloat("RequiredNearY", gossipReaction.RequiredNearY);
+            newRow.AddFloat("RequiredNearZ", gossipReaction.RequiredNearZ);
+            newRow.AddFloat("RequiredNearDistance", gossipReaction.RequiredNearDistance);
             newRow.AddInt("FiresOnArrival", gossipReaction.FiresOnArrival == false ? 0 : 1);
             Rows.Add(newRow);
 

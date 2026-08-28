@@ -47,6 +47,20 @@ namespace EQWOWConverter.Quests
         public int CreatureEQID = 0;
         public int DelayInMS = 0;
         public bool MovementIsRun = false;
+        public int PathGridID = -1;
+        public int PathGridStartNode = -1;
+        public int PathGridEndNode = -1;
+        public int PathListID = 0;
+        public int GameObjectID = -1;
+        public int GameObjectEntryID = 0;
+        public int GameObjectLifetimeSec = 0;
+        public int RequiredQuestID = 0;
+        public int RequiredAtGridID = -1;
+        public int RequiredAtGridNode = -1;
+        public float RequiredNearX = 0;
+        public float RequiredNearY = 0;
+        public float RequiredNearZ = 0;
+        public float RequiredNearDistance = 0;
         public bool FiresOnArrival = false;
 
         public static List<QuestGossipReaction> GetGossipReactions()
@@ -120,6 +134,30 @@ namespace EQWOWConverter.Quests
                             reaction.CreatureEQID = int.Parse(reactionValue1);
                             PopulateReactionPositionFromColumns(reaction, columns);
                         } break;
+                    case "spawnobject":
+                        {
+                            reaction.ReactionType = QuestReactionType.SpawnObject;
+                            reaction.CreatureIsSelf = true;
+                            reaction.GameObjectID = int.Parse(reactionValue1);
+                        }
+                        break;
+                    case "walkgrid":
+                        {
+                            reaction.ReactionType = QuestReactionType.WalkGrid;
+                            reaction.CreatureIsSelf = true;
+                            int gridID;
+                            int startNode;
+                            int endNode;
+                            if (QuestReaction.TryParseWalkGridValue(reactionValue1, out gridID, out startNode, out endNode) == false)
+                            {
+                                Logger.WriteError(string.Concat("Unreadable walkgrid value of '", reactionValue1, "'"));
+                                continue;
+                            }
+                            reaction.PathGridID = gridID;
+                            reaction.PathGridStartNode = startNode;
+                            reaction.PathGridEndNode = endNode;
+                        }
+                        break;
                     case "walkto":
                         {
                             reaction.ReactionType = QuestReactionType.WalkTo;
@@ -138,6 +176,25 @@ namespace EQWOWConverter.Quests
                 if (delayString.Length > 0)
                     reaction.DelayInMS = int.Parse(delayString);
 
+                // An option can be held back until the player has finished a quest, and until the creature is standing on a particular path grid node
+                string requiredQuestString = columns["required_quest_wowid"].Trim();
+                if (requiredQuestString.Length > 0)
+                    reaction.RequiredQuestID = int.Parse(requiredQuestString);
+                string requiredNodeString = columns["required_at_grid_node"].Trim();
+                if (requiredNodeString.Length > 0)
+                {
+                    string[] gridAndNode = requiredNodeString.Split(':');
+                    int requiredGridID;
+                    int requiredNodeNumber;
+                    if (gridAndNode.Length != 2 || int.TryParse(gridAndNode[0].Trim(), out requiredGridID) == false || int.TryParse(gridAndNode[1].Trim(), out requiredNodeNumber) == false)
+                        Logger.WriteError(string.Concat("Unreadable required_at_grid_node value of '", requiredNodeString, "'"));
+                    else
+                    {
+                        reaction.RequiredAtGridID = requiredGridID;
+                        reaction.RequiredAtGridNode = requiredNodeNumber;
+                    }
+                }
+
                 // Scale positions for wow world scale
                 reaction.PositionX *= Configuration.GENERATE_WORLD_SCALE;
                 reaction.PositionY *= Configuration.GENERATE_WORLD_SCALE;
@@ -155,7 +212,7 @@ namespace EQWOWConverter.Quests
                 // Rows that follow a walkto for the same menu option are deferred until the creature reaches the destination
                 (string, string, int) optionKey = (reaction.ZoneShortName, reaction.CreatureName, reaction.OptionID);
                 reaction.FiresOnArrival = optionsAlreadyWalking.Contains(optionKey);
-                if (reaction.ReactionType == QuestReactionType.WalkTo)
+                if (reaction.ReactionType == QuestReactionType.WalkTo || reaction.ReactionType == QuestReactionType.WalkGrid)
                     optionsAlreadyWalking.Add(optionKey);
 
                 GossipReactions.Add(reaction);

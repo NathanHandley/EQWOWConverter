@@ -50,6 +50,9 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`UseNpcZ` TINYINT(3) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`UseNpcOrientation` TINYINT(3) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`MovementIsRun` TINYINT(3) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`GameObjectEntryID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`GameObjectLifetimeSec` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`PathListID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`FiresOnArrival` TINYINT(3) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY(`ID`) USING BTREE ); ");
             return stringBuilder.ToString();
@@ -80,6 +83,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("UseNpcZ", questReaction.UseNpcZ == false ? 0 : 1);
             newRow.AddInt("UseNpcOrientation", questReaction.UseNpcHeading == false ? 0 : 1);
             newRow.AddInt("MovementIsRun", questReaction.MovementIsRun == false ? 0 : 1);
+            newRow.AddInt("GameObjectEntryID", questReaction.GameObjectEntryID);
+            newRow.AddInt("GameObjectLifetimeSec", questReaction.GameObjectLifetimeSec);
+            newRow.AddInt("PathListID", questReaction.PathListID);
             newRow.AddInt("FiresOnArrival", questReaction.FiresOnArrival == false ? 0 : 1);
             Rows.Add(newRow);
 

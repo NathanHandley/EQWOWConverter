@@ -420,6 +420,59 @@ namespace EQWOWConverter
                         }
                         if (gossipReaction.CreatureIsSelf == true)
                             targetCreatureTemplateID = gossipCreatureTemplate.WOWCreatureTemplateID;
+                        if (gossipReaction.RequiredAtGridID != -1 && gossipReaction.RequiredNearDistance == 0)
+                        {
+                            bool foundRequiredNode = false;
+                            foreach (CreaturePathGridEntry gridEntry in GetPathGridEntries(zoneShortName, gossipReaction.RequiredAtGridID))
+                            {
+                                if (gridEntry.Number != gossipReaction.RequiredAtGridNode)
+                                    continue;
+                                gossipReaction.RequiredNearX = gridEntry.NodeX;
+                                gossipReaction.RequiredNearY = gridEntry.NodeY;
+                                gossipReaction.RequiredNearZ = gridEntry.NodeZ;
+                                gossipReaction.RequiredNearDistance = Configuration.QUESTS_GOSSIP_REQUIRED_NEAR_DISTANCE;
+                                foundRequiredNode = true;
+                                break;
+                            }
+                            if (foundRequiredNode == false)
+                                Logger.WriteError(string.Concat("Gossip for creature '", creatureName, "' requires standing on node ", gossipReaction.RequiredAtGridNode.ToString(), " of path grid ", gossipReaction.RequiredAtGridID.ToString(),
+                                    " in zone '", zoneShortName, "', but that node does not exist"));
+                        }
+                        if (gossipReaction.ReactionType == QuestReactionType.SpawnObject && gossipReaction.GameObjectEntryID == 0)
+                        {
+                            int objectEntryID;
+                            float objectX;
+                            float objectY;
+                            float objectZ;
+                            int objectLifetimeSec;
+                            if (TryResolveReactionGameObject(gossipReaction.GameObjectID, out objectEntryID, out objectX, out objectY, out objectZ, out objectLifetimeSec) == false)
+                            {
+                                Logger.WriteError(string.Concat("Gossip for creature '", creatureName, "' drops game object ", gossipReaction.GameObjectID.ToString(), ", which is not in GameObjects.csv"));
+                                continue;
+                            }
+                            gossipReaction.GameObjectEntryID = objectEntryID;
+                            gossipReaction.GameObjectLifetimeSec = objectLifetimeSec;
+                            gossipReaction.PositionX = objectX;
+                            gossipReaction.PositionY = objectY;
+                            gossipReaction.PositionZ = objectZ;
+                        }
+                        if (gossipReaction.ReactionType == QuestReactionType.WalkGrid && gossipReaction.PathListID == 0)
+                        {
+                            int pathListID;
+                            float lastNodeX;
+                            float lastNodeY;
+                            float lastNodeZ;
+                            if (TryBuildReactionPathList(zoneShortName, gossipReaction.PathGridID, gossipReaction.PathGridStartNode,
+                                gossipReaction.PathGridEndNode, out pathListID, out lastNodeX, out lastNodeY, out lastNodeZ) == false)
+                            {
+                                Logger.WriteError(string.Concat("Gossip for creature '", creatureName, "' walks path grid ", gossipReaction.PathGridID.ToString(), " of zone '", zoneShortName, "', but that grid has no usable nodes"));
+                                continue;
+                            }
+                            gossipReaction.PathListID = pathListID;
+                            gossipReaction.PositionX = lastNodeX;
+                            gossipReaction.PositionY = lastNodeY;
+                            gossipReaction.PositionZ = lastNodeZ;
+                        }
                         modEverquestGossipReactionSQL.AddRow(gossipCreatureTemplate.WOWCreatureTemplateID, menuNPCTextID, gossipReaction, targetCreatureTemplateID);
                     }
                 }
@@ -2194,6 +2247,99 @@ namespace EQWOWConverter
             }
         }
 
+        // Reaction walks follow the zone's real EQ path grid instead of a straight line
+        private Dictionary<string, List<CreaturePathGridEntry>> PathGridEntriesByZoneAndGridID = new Dictionary<string, List<CreaturePathGridEntry>>();
+        private Dictionary<string, int> ReactionPathListIDsByGridKey = new Dictionary<string, int>();
+        private int NextReactionPathListID = Configuration.SQL_REACTION_PATH_LIST_ID_START;
+        private Dictionary<int, GameObjects.GameObject> EventSpawnGameObjectsByID = new Dictionary<int, GameObjects.GameObject>();
+
+        private bool TryResolveReactionGameObject(int gameObjectID, out int entryID, out float x, out float y, out float z, out int lifetimeSec)
+        {
+            entryID = 0;
+            x = 0;
+            y = 0;
+            z = 0;
+            lifetimeSec = 0;
+            if (EventSpawnGameObjectsByID.Count == 0)
+                foreach (KeyValuePair<string, List<GameObjects.GameObject>> zoneObjects in GameObjects.GameObject.GetNonDoodadGameObjectsByZoneShortNames())
+                    foreach (GameObjects.GameObject zoneObject in zoneObjects.Value)
+                        if (EventSpawnGameObjectsByID.ContainsKey(zoneObject.ID) == false)
+                            EventSpawnGameObjectsByID.Add(zoneObject.ID, zoneObject);
+            if (EventSpawnGameObjectsByID.ContainsKey(gameObjectID) == false)
+                return false;
+            GameObjects.GameObject reactionObject = EventSpawnGameObjectsByID[gameObjectID];
+            entryID = reactionObject.GameObjectTemplateEntryID;
+            x = reactionObject.Position.X;
+            y = reactionObject.Position.Y;
+            z = reactionObject.Position.Z;
+            lifetimeSec = reactionObject.RespawnTimeInMS / 1000;
+            return true;
+        }
+
+        private List<CreaturePathGridEntry> GetPathGridEntries(string zoneShortName, int gridID)
+        {
+            if (PathGridEntriesByZoneAndGridID.Count == 0)
+            {
+                foreach (CreaturePathGridEntry gridEntry in CreaturePathGridEntry.GetInitialPathGridEntries())
+                {
+                    string entryKey = string.Concat(gridEntry.ZoneShortName.ToLower(), "|", gridEntry.GridID.ToString());
+                    if (PathGridEntriesByZoneAndGridID.ContainsKey(entryKey) == false)
+                        PathGridEntriesByZoneAndGridID.Add(entryKey, new List<CreaturePathGridEntry>());
+                    PathGridEntriesByZoneAndGridID[entryKey].Add(gridEntry);
+                }
+                foreach (KeyValuePair<string, List<CreaturePathGridEntry>> gridEntryList in PathGridEntriesByZoneAndGridID)
+                    gridEntryList.Value.Sort();
+            }
+            string lookupKey = string.Concat(zoneShortName.ToLower(), "|", gridID.ToString());
+            if (PathGridEntriesByZoneAndGridID.ContainsKey(lookupKey) == false)
+                return new List<CreaturePathGridEntry>();
+            return PathGridEntriesByZoneAndGridID[lookupKey];
+        }
+
+        private bool TryBuildReactionPathList(string zoneShortName, int gridID, int startNode, int endNode, out int pathListID,
+            out float lastNodeX, out float lastNodeY, out float lastNodeZ)
+        {
+            pathListID = 0;
+            lastNodeX = 0;
+            lastNodeY = 0;
+            lastNodeZ = 0;
+
+            // A slice given high to low walks the grid backwards, which is how a one way path gets undone
+            bool walkBackwards = startNode != -1 && endNode != -1 && startNode > endNode;
+            int lowNode = walkBackwards == true ? endNode : startNode;
+            int highNode = walkBackwards == true ? startNode : endNode;
+            List<CreaturePathGridEntry> walkedEntries = new List<CreaturePathGridEntry>();
+            foreach (CreaturePathGridEntry gridEntry in GetPathGridEntries(zoneShortName, gridID))
+            {
+                if (lowNode != -1 && gridEntry.Number < lowNode)
+                    continue;
+                if (highNode != -1 && gridEntry.Number > highNode)
+                    continue;
+                walkedEntries.Add(gridEntry);
+            }
+            if (walkBackwards == true)
+                walkedEntries.Reverse();
+            if (walkedEntries.Count < 2)
+                return false;
+            lastNodeX = walkedEntries[walkedEntries.Count - 1].NodeX;
+            lastNodeY = walkedEntries[walkedEntries.Count - 1].NodeY;
+            lastNodeZ = walkedEntries[walkedEntries.Count - 1].NodeZ;
+
+            string gridKey = string.Concat(zoneShortName.ToLower(), "|", gridID.ToString(), "|", startNode.ToString(), "|", endNode.ToString());
+            if (ReactionPathListIDsByGridKey.ContainsKey(gridKey) == true)
+            {
+                pathListID = ReactionPathListIDsByGridKey[gridKey];
+                return true;
+            }
+            pathListID = NextReactionPathListID;
+            NextReactionPathListID++;
+            ReactionPathListIDsByGridKey.Add(gridKey, pathListID);
+            for (int i = 0; i < walkedEntries.Count; i++)
+                modEverquestCreatureWaypointSQL.AddRow(0, pathListID, i, walkedEntries[i].NodeX, walkedEntries[i].NodeY,
+                    walkedEntries[i].NodeZ, walkedEntries[i].PauseInSec);
+            return true;
+        }
+
         private void PopulateQuestData(List<QuestTemplate> questTemplates, SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
         {
             Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
@@ -2293,8 +2439,48 @@ namespace EQWOWConverter
                             smartScriptsSQL.AddRowForQuestCompleteSpellCastEvent(creatureTemplateID, repeatQuestID, castSpellID, castComment);
                         }
 
-                        // Attack/Spawn/Despawn/KillSpawn/WalkTo actions, plus any text the mod has to hold until a walkto arrives
-                        if (reaction.ReactionType == QuestReactionType.AttackPlayer || reaction.ReactionType == QuestReactionType.Despawn || reaction.ReactionType == QuestReactionType.Spawn || reaction.ReactionType == QuestReactionType.SpawnUnique || reaction.ReactionType == QuestReactionType.KillSpawn || reaction.ReactionType == QuestReactionType.WalkTo || (reactionIsText == true && reaction.FiresOnArrival == true))
+                        // A grid walk needs its node list written out and the reaction pointed at it
+                        if (reaction.ReactionType == QuestReactionType.WalkGrid && reaction.PathListID == 0)
+                        {
+                            int pathListID;
+                            float lastNodeX;
+                            float lastNodeY;
+                            float lastNodeZ;
+                            if (TryBuildReactionPathList(questTemplate.ZoneShortName, reaction.PathGridID, reaction.PathGridStartNode,
+                                reaction.PathGridEndNode, out pathListID, out lastNodeX, out lastNodeY, out lastNodeZ) == false)
+                            {
+                                Logger.WriteError(string.Concat("Quest ", questTemplate.QuestIDWOW.ToString(), " walks path grid ",
+                                    reaction.PathGridID.ToString(), " of zone '", questTemplate.ZoneShortName, "', but that grid has no usable nodes"));
+                                continue;
+                            }
+                            reaction.PathListID = pathListID;
+                            reaction.PositionX = lastNodeX;
+                            reaction.PositionY = lastNodeY;
+                            reaction.PositionZ = lastNodeZ;
+                        }
+
+                        // A dropped ground object needs the template it summons and where it lands
+                        if (reaction.ReactionType == QuestReactionType.SpawnObject && reaction.GameObjectEntryID == 0)
+                        {
+                            int objectEntryID;
+                            float objectX;
+                            float objectY;
+                            float objectZ;
+                            int objectLifetimeSec;
+                            if (TryResolveReactionGameObject(reaction.GameObjectID, out objectEntryID, out objectX, out objectY, out objectZ, out objectLifetimeSec) == false)
+                            {
+                                Logger.WriteError(string.Concat("Quest ", questTemplate.QuestIDWOW.ToString(), " drops game object ", reaction.GameObjectID.ToString(), ", which is not in GameObjects.csv"));
+                                continue;
+                            }
+                            reaction.GameObjectEntryID = objectEntryID;
+                            reaction.GameObjectLifetimeSec = objectLifetimeSec;
+                            reaction.PositionX = objectX;
+                            reaction.PositionY = objectY;
+                            reaction.PositionZ = objectZ;
+                        }
+
+                        // Attack/Spawn/Despawn/KillSpawn/WalkTo/WalkGrid actions, plus any text the mod has to hold until a walk arrives
+                        if (reaction.ReactionType == QuestReactionType.AttackPlayer || reaction.ReactionType == QuestReactionType.Despawn || reaction.ReactionType == QuestReactionType.Spawn || reaction.ReactionType == QuestReactionType.SpawnUnique || reaction.ReactionType == QuestReactionType.KillSpawn || reaction.ReactionType == QuestReactionType.WalkTo || reaction.ReactionType == QuestReactionType.WalkGrid || reaction.ReactionType == QuestReactionType.SpawnObject || (reactionIsText == true && reaction.FiresOnArrival == true))
                         {
                             if (reaction.CreatureEQID > 0)
                             {
@@ -3030,7 +3216,8 @@ namespace EQWOWConverter
                         int spawnTimeInSec = gameObject.RespawnTimeInMS / 1000;
                         if (Configuration.OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER == true)
                             spawnTimeInSec = Configuration.OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC;
-                        gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, gameObject.InteractiveRotation, spawnTimeInSec, comment);
+                        if (gameObject.EventSpawnedOnly == false)
+                            gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, gameObject.InteractiveRotation, spawnTimeInSec, comment);
                         gameObjectTemplateSQL.AddRowForGameObject(name, gameObject);
                         gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateEntryID, gameObject.LockDBCID != 0);
                         if (gameObject.EQIncline != 0)

@@ -258,6 +258,30 @@ namespace EQWOWConverter.Quests
                             PopulateReactionPositionFromColumns(reaction, columns);
                         }
                         break;
+                    case "spawnobject": // Drops a ground object
+                        {
+                            reaction.ReactionType = QuestReactionType.SpawnObject;
+                            reaction.CreatureIsSelf = true;
+                            reaction.GameObjectID = int.Parse(reactionValue1);
+                        }
+                        break;
+                    case "walkgrid":
+                        {
+                            reaction.ReactionType = QuestReactionType.WalkGrid;
+                            reaction.CreatureIsSelf = true;
+                            int gridID;
+                            int startNode;
+                            int endNode;
+                            if (QuestReaction.TryParseWalkGridValue(reactionValue1, out gridID, out startNode, out endNode) == false)
+                            {
+                                Logger.WriteError(string.Concat("Unreadable walkgrid value of '", reactionValue1, "'"));
+                                continue;
+                            }
+                            reaction.PathGridID = gridID;
+                            reaction.PathGridStartNode = startNode;
+                            reaction.PathGridEndNode = endNode;
+                        }
+                        break;
                     case "castspell": // Cast on the player when the turn-in completes, for paid services like a healer's
                         {
                             reaction.ReactionType = QuestReactionType.CastSpell;
@@ -302,7 +326,7 @@ namespace EQWOWConverter.Quests
 
                 // Rows that follow a walkto for the same quest are deferred until the creature reaches the destination
                 reaction.FiresOnArrival = questIDsAlreadyWalking.Contains(questID);
-                if (reaction.ReactionType == QuestReactionType.WalkTo)
+                if (reaction.ReactionType == QuestReactionType.WalkTo || reaction.ReactionType == QuestReactionType.WalkGrid)
                     questIDsAlreadyWalking.Add(questID);
 
                 if (reactionsByQuestID.ContainsKey(questID) == false)
