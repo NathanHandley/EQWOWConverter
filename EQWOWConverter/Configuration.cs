@@ -528,13 +528,13 @@ namespace EQWOWConverter
         // - "RANGEINTENSITY" is the amount of 'swing' differences in stats come out to be
         public static float CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD = 0.2f;
         public static float CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD = 3f;
-        public static int CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL = 30;
+        public static int CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL = 60;
         public static float CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD = 1.0f;
         public static float CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD = 3.0f;
         public static int CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL = 63;
         public static float CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD = 0f;
         public static float CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD = 0.5f;
-        public static int CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL = 30;
+        public static int CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL = 60;
         public static float CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVEL1_MOD = 1.0f;
         public static float CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD = 2.0f;
         public static int CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL = 63;
@@ -1105,7 +1105,7 @@ namespace EQWOWConverter
         public static int COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID = 86923;
         public static int COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID = 3;
         public static int COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL = 1;
-        public static int COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS = 2400000;
+        public static int COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS = 1200000;
         public static int COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS = 1000;
         public static int COMBATSKILL_HARMTOUCH_BASE_DAMAGE = 50; // 20 is EQ normal, but HP is 2.5x higher in WoW (generally)
         public static float COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL = 20.0f; // 8 is EQ normal, but HP is 2.5x higher in WoW (generally)
