@@ -367,6 +367,14 @@ namespace EQWOWConverter
                     Directory.Delete(targetAuctionFilterAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceAuctionFilterAddOnFolder, targetAuctionFilterAddOnFolder, true, true);
 
+                // Copy the tradeskill realm filter addon into the prep location, then write the ID ranges it filters by
+                string sourceTradeskillFilterAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_TradeskillFilter");
+                string targetTradeskillFilterAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_TradeskillFilter");
+                if (Directory.Exists(targetTradeskillFilterAddOnFolder) == true)
+                    Directory.Delete(targetTradeskillFilterAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceTradeskillFilterAddOnFolder, targetTradeskillFilterAddOnFolder, true, true);
+                EQTradeskillFilterLUA.Generate(targetTradeskillFilterAddOnFolder);
+
                 // Create or update the MPQs
                 CreateOrUpdateMainPatchMPQ();
                 if (Configuration.GENERATE_WORLDMAPS == true)
@@ -4409,6 +4417,11 @@ namespace EQWOWConverter
                 if (Directory.Exists(targetAuctionFilterAddOnFolder) == true)
                     Directory.Delete(targetAuctionFilterAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceAuctionFilterAddOnFolder, targetAuctionFilterAddOnFolder, true, true);
+                string sourceTradeskillFilterAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_TradeskillFilter");
+                string targetTradeskillFilterAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_TradeskillFilter");
+                if (Directory.Exists(targetTradeskillFilterAddOnFolder) == true)
+                    Directory.Delete(targetTradeskillFilterAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceTradeskillFilterAddOnFolder, targetTradeskillFilterAddOnFolder, true, true);
             }
 
             Logger.WriteDebug("Deploying to client complete");

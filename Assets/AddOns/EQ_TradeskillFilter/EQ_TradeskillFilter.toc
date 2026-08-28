@@ -1,0 +1,8 @@
+## Interface: 30300
+## Title: EQ Tradeskill Realm Filter
+## Notes: Adds Norrath / Azeroth / Both tabs to the trade skill window, filtering the recipe list down to the world a recipe came from
+## SavedVariables: EQ_TradeskillFilterDB
+## Version: 1.0
+
+EQ_TradeskillFilterData.lua
+EQ_TradeskillFilter.lua
