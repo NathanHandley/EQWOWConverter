@@ -126,7 +126,9 @@ namespace EQWOWConverter.Creatures
         public bool SeesInvisibleUndead = false;
         public bool SeesStealth = false;
         public bool IsPet = false;
-        public string PetPowerTierName = string.Empty;
+        public string PetTypeName = string.Empty;
+        public bool PetHasSingleTaunt = false;
+        public bool PetHasMultiTaunt = false;
         public bool IsCompanionPet = false;
         public bool IsIllusionForm = false; 
         public float ModelTemplateScale = 1.0f; // Used for form changes
@@ -157,6 +159,28 @@ namespace EQWOWConverter.Creatures
             if (IsRidingTrainer == true)
                 return true;
             return false;
+        }
+
+        public int GetPetWOWCreatureTypeID()
+        {
+            if (IsPet == false)
+                return 0;
+            if (Race.WOWCreatureType == 6) // Undead
+                return 6;
+            return 3; // Demon
+        }
+
+        public int GetPetCreatureFamilyID()
+        {
+            if (IsPet == false || Configuration.SPELL_PET_TAUNT_ENABLED == false)
+                return 0;
+            if (PetHasSingleTaunt == true && PetHasMultiTaunt == true)
+                return Configuration.DBCID_CREATUREFAMILY_PET_TAUNT_BOTH_ID;
+            if (PetHasSingleTaunt == true)
+                return Configuration.DBCID_CREATUREFAMILY_PET_TAUNT_SINGLE_ID;
+            if (PetHasMultiTaunt == true)
+                return Configuration.DBCID_CREATUREFAMILY_PET_TAUNT_MULTI_ID;
+            return 0;
         }
 
         public float GetWorldSpawnScale()
@@ -561,7 +585,7 @@ namespace EQWOWConverter.Creatures
                     // Level-specific properties
                     if (creatureLevelPropertiesByLevel.ContainsKey(newCreatureTemplate.Level) == true)
                     {
-                        newCreatureTemplate.ExperiencMultiplier = creatureLevelPropertiesByLevel[newCreatureTemplate.Level].ExperienceMod;
+                        newCreatureTemplate.ExperienceMultiplier = creatureLevelPropertiesByLevel[newCreatureTemplate.Level].ExperienceMod;
                     }
 
                     // Must be a unique record

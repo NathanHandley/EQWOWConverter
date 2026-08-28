@@ -89,7 +89,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // ProcCharges
             newRow.AddUInt32(Convert.ToUInt32(maximumSpellLevel)); // MaxLevel
             newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // BaseLevel
-            newRow.AddUInt32(0); // SpellLevel (Always make this 0, or else it breaks spell power calculations for some reason)
+            newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.SpellLevel))); // SpellLevel (has to stay 0 for anything that scales with spell power, like pet taunt ranks)
             if (overrideDurationToInfinite == true)
                 newRow.AddUInt32(21); // DurationIndex (SpellDuration.dbc id) - 21 is infinite (auras use it)
             else if (spellTemplate.AuraDuration.MaxDurationInMS == 0)
@@ -175,7 +175,7 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddUInt32(0); // ActiveIconID
             newRow.AddUInt32(0); // SpellPriority
             newRow.AddStringLang(effectBlock.SpellName); // Name_Lang
-            newRow.AddStringLang(""); // NameSubtext_Lang
+            newRow.AddStringLang(spellTemplate.RankName); // NameSubtext_Lang
             newRow.AddStringLang(spellDescription); // Description_Lang
             newRow.AddStringLang(auraDescription); // AuraDescription_Lang
             newRow.AddUInt32(0); // ManaCostPct
@@ -190,10 +190,10 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddUInt32(0); // StartRecoveryTime
             }
             newRow.AddUInt32(0); // MaxTargetLevel
-            newRow.AddUInt32(0); // SpellClassSet
-            newRow.AddUInt32(0); // SpellClassMask1
-            newRow.AddUInt32(0); // SpellClassMask2
-            newRow.AddUInt32(0); // SpellClassMask3
+            newRow.AddUInt32(spellTemplate.SpellFamilyID); // SpellClassSet
+            newRow.AddUInt32(spellTemplate.SpellFamilyFlags1); // SpellClassMask1
+            newRow.AddUInt32(spellTemplate.SpellFamilyFlags2); // SpellClassMask2
+            newRow.AddUInt32(spellTemplate.SpellFamilyFlags3); // SpellClassMask3
             newRow.AddUInt32(0); // MaxTargets
             newRow.AddUInt32(spellTemplate.DefenseType); // DefenseType
             if (isUsableWhileSilenced == true)

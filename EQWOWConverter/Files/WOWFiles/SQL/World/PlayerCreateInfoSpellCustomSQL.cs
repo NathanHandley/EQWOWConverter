@@ -20,7 +20,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM playercreateinfo_spell_custom WHERE `Spell` >= " + Configuration.DBCID_SPELL_ID_START.ToString() + " AND `Spell` <= " + Configuration.DBCID_SPELL_ID_GENERATED_START + ";";
+            return "DELETE FROM playercreateinfo_spell_custom WHERE `Spell` >= " + Configuration.DBCID_SPELL_ID_START.ToString() + " AND `Spell` <= " + Configuration.DBCID_SPELL_ID_END + ";";
         }
 
         public void AddRow(int spellID, string note)

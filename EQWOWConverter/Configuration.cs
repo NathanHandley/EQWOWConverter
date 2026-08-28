@@ -1026,6 +1026,17 @@ namespace EQWOWConverter
         public static int SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS = 5;
         public static int SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK = 100;
 
+        // "Taunt" and "Area Taunt" are clones of the warlock Voidwalker's Torment and Suffering spell lines, granted to summoned pets flagged in SpellPets.csv
+        public static bool SPELL_PET_TAUNT_ENABLED = true;
+        public static int SPELL_PET_TAUNT_SPELL_ID_START = 86925; // Eight sequential ranks, so 86925 - 86932
+        public static int SPELL_PET_TAUNT_SPELL_ICON_EQ_ID = 4;
+        public static int SPELL_PET_AREATAUNT_SPELL_ID_START = 86933; // Eight sequential ranks, so 86933 - 86940
+        public static int SPELL_PET_AREATAUNT_SPELL_ICON_EQ_ID = 4;
+        public static int SPELL_PET_TAUNT_COOLDOWN_IN_MS = 5000;
+        public static int SPELL_PET_AREATAUNT_COOLDOWN_IN_MS = 120000;
+        public static int SPELL_PET_AREATAUNT_RADIUS_IN_YARDS = 10;
+        public static int SPELL_PET_TAUNT_SPELL_VISUAL_ID = 71; // The (existing) SpellVisual.dbc row used by stock Torment and Suffering
+
         // How far (in EQ units) Minor Illusion and Tree will look for a zone object to turn the caster into, where zero or less means anywhere in the zone
         public static float SPELL_ILLUSION_OBJECT_MAX_DISTANCE = 200f;
         public static float SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE = 0f;
@@ -1033,6 +1044,13 @@ namespace EQWOWConverter
         // Placed object sizes snap to this step before becoming display rows, since the EQ zone data places the same object at many sizes (0.1 through 10) and each distinct size costs a CreatureDisplayInfo row
         // 0.25 lands at roughly 5000 display rows across the ~1800 object models
         public static float SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE = 0.25f;
+
+        // Private SpellFamilyName (Spell.dbc "SpellClassSet") used to aim a spell mod aura at a specific converted spell
+        public static int SPELL_EQ_PRIVATE_SPELL_FAMILY_ID = 14;
+
+        // SpellFamilyFlags bit given to Complete Healing so the exhaustion debuff's mana cost mod can find it.  Word 3 bits 22-30 are set by no spell in the stock client data (neither as family flags nor as a spell mod's EffectSpellClassMask), so this bit can never pull a WoW spell into the mod
+        public static UInt32 SPELL_EQ_COMPLETE_HEAL_SPELL_FAMILY_FLAG = 0x00400000;
+
         // EQ has no "daze" snare when a creature melee-hits a player from behind so this can disable it (in EQ zones only)
         public static bool COMBAT_DAZE_IN_EQ_ZONES_ENABLED = true;
 
@@ -1342,6 +1360,12 @@ namespace EQWOWConverter
         // ID for SkillLine.dbc
         public static int DBCID_SKILLLINE_ID_START = 810;
 
+        // IDs for the custom pet families in CreatureFamily.dbc, which only exist so AzerothCore's pet levelup path can find the pet taunt skill lines.
+        // Blizzard's highest row is 46, and the creature_template `family` column is a SIGNED tinyint, so these must be above 46 and no higher than 127
+        public static int DBCID_CREATUREFAMILY_PET_TAUNT_SINGLE_ID = 100;
+        public static int DBCID_CREATUREFAMILY_PET_TAUNT_MULTI_ID = 101;
+        public static int DBCID_CREATUREFAMILY_PET_TAUNT_BOTH_ID = 102;
+
         // ID for skill line abilities found in SkillLineAbility.dbc
         public static int DBCID_SKILLLINEABILITY_ID_START = 25000;
 
@@ -1358,8 +1382,8 @@ namespace EQWOWConverter
         public static int DBCID_SOUNDAMBIENCE_ID_START = 600;
 
         // ID for spells found in Spell.dbc
-        // - Manually created spells reserve IDs from 86900 to 86999 and all are defined in the config
-        // - Recipes reserve IDs 87000 to 91362
+        // - Manually created spells reserve IDs from 86900 to 86999 and all are defined in the config (86925-86940 are the eight Taunt and eight Area Taunt pet ranks)
+        // - Recipes reserve IDs 87000 to 91367 (91368 to 91999 is free for more)
         // - Converted spells IDs start at 92000 and base spells range to 95840 (95828 - 95840 are the custom "Guise" illusion spells)
         // - SpellIDs 96000 - 96099 currently unused
         // - SpellIDs 96100 - 96199 reserved for 'coat' effects that come from rogue poisons, triggering another spell
@@ -2088,9 +2112,19 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS", SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS, "", false);
             OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS", SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS, "", false);
             OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK", SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK, "", false);
+            OutputVariableToConfig("SPELL_PET_TAUNT_ENABLED", SPELL_PET_TAUNT_ENABLED, "\"Taunt\" and \"Area Taunt\" are clones of the warlock Voidwalker's Torment and Suffering spell lines, granted to summoned pets flagged in SpellPets.csv");
+            OutputVariableToConfig("SPELL_PET_TAUNT_SPELL_ID_START", SPELL_PET_TAUNT_SPELL_ID_START, "First of the eight sequential spell IDs used by the Taunt ranks", false);
+            OutputVariableToConfig("SPELL_PET_TAUNT_SPELL_ICON_EQ_ID", SPELL_PET_TAUNT_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("SPELL_PET_AREATAUNT_SPELL_ID_START", SPELL_PET_AREATAUNT_SPELL_ID_START, "First of the eight sequential spell IDs used by the Area Taunt ranks", false);
+            OutputVariableToConfig("SPELL_PET_AREATAUNT_SPELL_ICON_EQ_ID", SPELL_PET_AREATAUNT_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("SPELL_PET_TAUNT_COOLDOWN_IN_MS", SPELL_PET_TAUNT_COOLDOWN_IN_MS, "", false);
+            OutputVariableToConfig("SPELL_PET_AREATAUNT_COOLDOWN_IN_MS", SPELL_PET_AREATAUNT_COOLDOWN_IN_MS, "", false);
+            OutputVariableToConfig("SPELL_PET_AREATAUNT_RADIUS_IN_YARDS", SPELL_PET_AREATAUNT_RADIUS_IN_YARDS, "", false);
+            OutputVariableToConfig("SPELL_PET_TAUNT_SPELL_VISUAL_ID", SPELL_PET_TAUNT_SPELL_VISUAL_ID, "SpellVisual.dbc row played by both taunts, defaulting to the one stock Torment and Suffering use", false);
             OutputVariableToConfig("SPELL_ILLUSION_OBJECT_MAX_DISTANCE", SPELL_ILLUSION_OBJECT_MAX_DISTANCE, "How far (in EQ units) Minor Illusion and Tree will look for a zone object to turn the caster into, where zero or less means anywhere in the zone", false);
             OutputVariableToConfig("SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE", SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE, "", false);
             OutputVariableToConfig("SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE", SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE, "Step that placed object sizes snap to for the object illusions. Smaller is more exact but costs more CreatureDisplayInfo rows", false);
+            OutputVariableToConfig("SPELL_EQ_PRIVATE_SPELL_FAMILY_ID", SPELL_EQ_PRIVATE_SPELL_FAMILY_ID, "Private SpellFamilyName (Spell.dbc \"SpellClassSet\") used to aim a spell mod aura at a specific converted spell", false);
             OutputVariableToConfig("COMBAT_DAZE_IN_EQ_ZONES_ENABLED", COMBAT_DAZE_IN_EQ_ZONES_ENABLED, "EQ has no \"daze\" snare when a creature melee-hits a player from behind so this can disable it (in EQ zones only)");
             OutputVariableToConfig("COMBATSKILL_BASH_ENABLED", COMBATSKILL_BASH_ENABLED, "Bash skills in EQ are either from warrior/cleric/paladin/shadowknight or those that use warrior skills", false);
             OutputVariableToConfig("COMBATSKILL_BASH_PLAYER_LEARNABLE", COMBATSKILL_BASH_PLAYER_LEARNABLE, "Whether classes that have Bash learn it as players (from level 1)", false);
@@ -2658,9 +2692,19 @@ namespace EQWOWConverter
             SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS);
             SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS);
             SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK);
+            SPELL_PET_TAUNT_ENABLED = ReadVariableFromConfigString("SPELL_PET_TAUNT_ENABLED", configValuesByVariableName, SPELL_PET_TAUNT_ENABLED);
+            SPELL_PET_TAUNT_SPELL_ID_START = ReadVariableFromConfigString("SPELL_PET_TAUNT_SPELL_ID_START", configValuesByVariableName, SPELL_PET_TAUNT_SPELL_ID_START);
+            SPELL_PET_TAUNT_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("SPELL_PET_TAUNT_SPELL_ICON_EQ_ID", configValuesByVariableName, SPELL_PET_TAUNT_SPELL_ICON_EQ_ID);
+            SPELL_PET_AREATAUNT_SPELL_ID_START = ReadVariableFromConfigString("SPELL_PET_AREATAUNT_SPELL_ID_START", configValuesByVariableName, SPELL_PET_AREATAUNT_SPELL_ID_START);
+            SPELL_PET_AREATAUNT_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("SPELL_PET_AREATAUNT_SPELL_ICON_EQ_ID", configValuesByVariableName, SPELL_PET_AREATAUNT_SPELL_ICON_EQ_ID);
+            SPELL_PET_TAUNT_COOLDOWN_IN_MS = ReadVariableFromConfigString("SPELL_PET_TAUNT_COOLDOWN_IN_MS", configValuesByVariableName, SPELL_PET_TAUNT_COOLDOWN_IN_MS);
+            SPELL_PET_AREATAUNT_COOLDOWN_IN_MS = ReadVariableFromConfigString("SPELL_PET_AREATAUNT_COOLDOWN_IN_MS", configValuesByVariableName, SPELL_PET_AREATAUNT_COOLDOWN_IN_MS);
+            SPELL_PET_AREATAUNT_RADIUS_IN_YARDS = ReadVariableFromConfigString("SPELL_PET_AREATAUNT_RADIUS_IN_YARDS", configValuesByVariableName, SPELL_PET_AREATAUNT_RADIUS_IN_YARDS);
+            SPELL_PET_TAUNT_SPELL_VISUAL_ID = ReadVariableFromConfigString("SPELL_PET_TAUNT_SPELL_VISUAL_ID", configValuesByVariableName, SPELL_PET_TAUNT_SPELL_VISUAL_ID);
             SPELL_ILLUSION_OBJECT_MAX_DISTANCE = ReadVariableFromConfigString("SPELL_ILLUSION_OBJECT_MAX_DISTANCE", configValuesByVariableName, SPELL_ILLUSION_OBJECT_MAX_DISTANCE);
             SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE = ReadVariableFromConfigString("SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE", configValuesByVariableName, SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE);
             SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE = ReadVariableFromConfigString("SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE", configValuesByVariableName, SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE);
+            SPELL_EQ_PRIVATE_SPELL_FAMILY_ID = ReadVariableFromConfigString("SPELL_EQ_PRIVATE_SPELL_FAMILY_ID", configValuesByVariableName, SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
             COMBAT_DAZE_IN_EQ_ZONES_ENABLED = ReadVariableFromConfigString("COMBAT_DAZE_IN_EQ_ZONES_ENABLED", configValuesByVariableName, COMBAT_DAZE_IN_EQ_ZONES_ENABLED);
             COMBATSKILL_BASH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_BASH_ENABLED", configValuesByVariableName, COMBATSKILL_BASH_ENABLED);
             COMBATSKILL_BASH_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_BASH_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_BASH_PLAYER_LEARNABLE);

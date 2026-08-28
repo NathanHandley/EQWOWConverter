@@ -29,7 +29,7 @@ namespace EQWOWConverter.Spells
         public int MainhandItemIDWOW = 0;
         public int OffhandItemIDWOW = 0;
         public bool MonsterFlag = false;
-        public string PowerTierName = string.Empty;
+        public string PetTypeName = string.Empty;
 
         public static SpellPet? GetSpellPetByTypeName(string typeName)
         {
@@ -72,7 +72,7 @@ namespace EQWOWConverter.Spells
                 spellPet.NamingType = (SpellPetNamingType)Convert.ToInt32(columns["petnaming"]);
                 spellPet.MainhandItemIDWOW = int.Parse(columns["itemIDWOW_main"]);
                 spellPet.OffhandItemIDWOW = int.Parse(columns["itemIDWOW_off"]);
-                spellPet.PowerTierName = columns["powertier"].Trim();
+                spellPet.PetTypeName = columns["pettype"].Trim();
                 SpellPetsByTypeName.Add(spellPet.TypeName, spellPet);
             }
             Logger.WriteDebug(string.Concat("Loading spell pets complete"));

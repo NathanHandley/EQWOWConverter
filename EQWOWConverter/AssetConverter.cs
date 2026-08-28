@@ -2739,6 +2739,96 @@ namespace EQWOWConverter
             return bashSpellTemplate;
         }
 
+        private SpellTemplate BuildPetTauntSpellTemplate(SpellPetTauntRank tauntRank, bool isMultiTarget)
+        {
+            // Both taunts are rank-for-rank clones of the Voidwalker's Torment (single target) and Suffering (area) lines
+            int tauntSpellIconID = isMultiTarget ? Configuration.SPELL_PET_AREATAUNT_SPELL_ICON_EQ_ID : Configuration.SPELL_PET_TAUNT_SPELL_ICON_EQ_ID;
+            if (tauntSpellIconID < 0 || tauntSpellIconID > 22)
+            {
+                if (isMultiTarget == true)
+                {
+                    Logger.WriteError("SPELL_PET_AREATAUNT_SPELL_ICON_EQ_ID value must be 0-22. Setting to 4");
+                    tauntSpellIconID = 4;
+                }
+                else
+                {
+                    Logger.WriteError("SPELL_PET_TAUNT_SPELL_ICON_EQ_ID value must be 0-22. Setting to 20");
+                    tauntSpellIconID = 20;
+                }
+            }
+
+            SpellTemplate tauntSpellTemplate = new SpellTemplate();
+            tauntSpellTemplate.Name = isMultiTarget ? "Area Taunt" : "Taunt";
+            tauntSpellTemplate.RankName = string.Concat("Rank ", tauntRank.Rank.ToString());
+            tauntSpellTemplate.WOWSpellID = tauntRank.WOWSpellID;
+            tauntSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            tauntSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(tauntSpellIconID);
+            tauntSpellTemplate.CastTimeInMS = 0;
+            tauntSpellTemplate.RecoveryTimeInMS = 0;
+            tauntSpellTemplate.Category = Convert.ToUInt32(isMultiTarget ? SpellPetTaunt.GetMultiTauntSpellCategoryID() : SpellPetTaunt.GetSingleTauntSpellCategoryID());
+
+            // Every rank of a line shares the line's cooldown, the way the Voidwalker's ranks do
+            tauntSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(isMultiTarget ? Configuration.SPELL_PET_AREATAUNT_COOLDOWN_IN_MS : Configuration.SPELL_PET_TAUNT_COOLDOWN_IN_MS);
+            tauntSpellTemplate.ManaCost = Convert.ToUInt32(tauntRank.ManaCost);
+            tauntSpellTemplate.SchoolMask = 32; // Shadow
+            tauntSpellTemplate.DefenseType = 1; // Magic
+            tauntSpellTemplate.PreventionType = 1; // Silence
+            tauntSpellTemplate.TriggersGlobalCooldown = true;
+            tauntSpellTemplate.SpellVisualID1 = Convert.ToUInt32(Configuration.SPELL_PET_TAUNT_SPELL_VISUAL_ID);
+            tauntSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+
+            // The skill line is what carries a rank onto a pet, so every rank has to be learned as soon as the family's skill line is
+            tauntSpellTemplate.SkillLine = isMultiTarget ? SpellPetTaunt.GetMultiTauntSkillLineID() : SpellPetTaunt.GetSingleTauntSkillLineID();
+            tauntSpellTemplate.SkillLineAcquireMethod = 2;
+            tauntSpellTemplate.SpellLevel = tauntRank.LearnLevel;
+            tauntSpellTemplate.MinimumPlayerLearnLevel = tauntRank.LearnLevel;
+
+            SpellEffectWOW tauntThreatEffect = new SpellEffectWOW(SpellWOWEffectType.Threat, SpellWOWAuraType.None, 0, 0, 1, tauntRank.ThreatAmount - 1, 0, 0);
+            tauntThreatEffect.EffectRealPointsPerLevel = tauntRank.ThreatAmountPerLevel;
+            tauntThreatEffect.CalcEffectLowLevelValue = tauntRank.ThreatAmount;
+            tauntThreatEffect.CalcEffectLowLevel = tauntRank.LearnLevel;
+            tauntThreatEffect.CalcEffectHighLevel = tauntRank.MaxScalingLevel;
+            tauntThreatEffect.CalcEffectHighLevelValue = tauntRank.ThreatAmount +
+                Convert.ToInt32(MathF.Round(tauntRank.ThreatAmountPerLevel * Convert.ToSingle(tauntRank.MaxScalingLevel - tauntRank.LearnLevel)));
+            if (isMultiTarget == true)
+            {
+                tauntSpellTemplate.SpellRadius = Configuration.SPELL_PET_AREATAUNT_RADIUS_IN_YARDS;
+                tauntThreatEffect.EffectRadiusIndex = Convert.ToUInt32(tauntSpellTemplate.SpellRadiusDBCID);
+                tauntThreatEffect.ImplicitTargetA = SpellWOWTargetType.SourceCaster;
+                tauntThreatEffect.ImplicitTargetB = SpellWOWTargetType.UnitSourceAreaEnemy;
+                tauntSpellTemplate.Description = string.Concat("Taunts all enemies within ", Configuration.SPELL_PET_AREATAUNT_RADIUS_IN_YARDS.ToString(), " yards, increasing the chance that they will attack your pet.");
+            }
+            else
+            {
+                tauntSpellTemplate.SetSpellRangeToMeleeRange();
+                tauntThreatEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+                tauntSpellTemplate.Description = "Taunts the target, increasing the chance that it will attack your pet.";
+            }
+            tauntSpellTemplate.WOWSpellEffects.Add(tauntThreatEffect);
+
+            // Only the later Suffering ranks landed a hit chance debuff alongside the taunt
+            if (tauntRank.HitChanceReductionPercent > 0)
+            {
+                tauntSpellTemplate.DispelType = 1; // Magic
+                tauntSpellTemplate.ForceAsDebuff = true;
+                tauntSpellTemplate.AuraDuration = new SpellDuration();
+                tauntSpellTemplate.AuraDuration.SetFixedDuration(SpellPetTaunt.HIT_CHANCE_REDUCTION_DURATION_IN_MS);
+                tauntSpellTemplate.Description = string.Concat(tauntSpellTemplate.Description, " Also reduces their chance to hit by ",
+                    tauntRank.HitChanceReductionPercent.ToString(), "% for ", (SpellPetTaunt.HIT_CHANCE_REDUCTION_DURATION_IN_MS / 1000).ToString(), " seconds.");
+                tauntSpellTemplate.AuraDescription = string.Concat("Chance to hit reduced by ", tauntRank.HitChanceReductionPercent.ToString(), "%.");
+
+                SpellEffectWOW tauntHitChanceEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModHitChance, 0, 0, 1,
+                    -tauntRank.HitChanceReductionPercent - 1, 0, 0);
+                tauntHitChanceEffect.EffectRadiusIndex = Convert.ToUInt32(tauntSpellTemplate.SpellRadiusDBCID);
+                tauntHitChanceEffect.ImplicitTargetA = SpellWOWTargetType.SourceCaster;
+                tauntHitChanceEffect.ImplicitTargetB = SpellWOWTargetType.UnitSourceAreaEnemy;
+                tauntHitChanceEffect.CalcEffectHighLevel = tauntRank.MaxScalingLevel; // Keeps both effects in one block, since blocks group on this
+                tauntSpellTemplate.WOWSpellEffects.Add(tauntHitChanceEffect);
+            }
+
+            return tauntSpellTemplate;
+        }
+
         private SpellTemplate BuildHarmTouchSpellTemplate(int wowSpellID, bool isCreatureCast)
         {
             int harmTouchIconID = Configuration.COMBATSKILL_HARMTOUCH_SPELL_ICON_EQ_ID;
@@ -3317,6 +3407,15 @@ namespace EQWOWConverter
                 piercingBackstabDamageEffect.ActionDescription = "backstabs";
                 piercingBackstabSpellTemplate.WOWSpellEffects.Add(piercingBackstabDamageEffect);
                 spellTemplates.Add(piercingBackstabSpellTemplate);
+            }
+
+            // Taunt and Area Taunt, which summoned pets of a taunting type pick up rank by rank through their creature family (see PetTypes.csv)
+            if (Configuration.SPELL_PET_TAUNT_ENABLED == true)
+            {
+                foreach (SpellPetTauntRank tauntRank in SpellPetTaunt.GetSingleTauntRanks())
+                    spellTemplates.Add(BuildPetTauntSpellTemplate(tauntRank, false));
+                foreach (SpellPetTauntRank tauntRank in SpellPetTaunt.GetMultiTauntRanks())
+                    spellTemplates.Add(BuildPetTauntSpellTemplate(tauntRank, true));
             }
 
             // Harm Touch

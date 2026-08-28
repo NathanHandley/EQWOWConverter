@@ -1,5 +1,5 @@
-﻿//  Author: Nathan Handley (nathanhandley@protonmail.com)
-//  Copyright (c) 2025 Nathan Handley
+//  Author: Nathan Handley (nathanhandley@protonmail.com)
+//  Copyright (c) 2026 Nathan Handley
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,26 +16,19 @@
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class CreatureTemplateSpellSQL : SQLFile
+    internal class SpellRanksSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM creature_template_spell WHERE `Spell` >= " + Configuration.DBCID_SPELL_ID_START.ToString() + " AND `Spell` <= " + Configuration.DBCID_SPELL_ID_END + ";";
+            return "DELETE FROM spell_ranks WHERE `first_spell_id` >= " + Configuration.DBCID_SPELL_ID_START.ToString() + " AND `first_spell_id` <= " + Configuration.DBCID_SPELL_ID_END + ";";
         }
 
-        public void AddRow(int creatureID, int index, int spellID)
+        public void AddRow(int firstSpellID, int spellID, int rank)
         {
-            if (index > 7)
-            {
-                Logger.WriteDebug("Spell ID ", spellID.ToString(), " skipped in adding to pet bar for creatureID ", creatureID.ToString(), " due to the index being > 7");
-                return;
-            }
-
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("CreatureID", creatureID);
-            newRow.AddInt("Index", index);
-            newRow.AddInt("Spell", spellID);
-            newRow.AddInt("VerifiedBuild", 12340);
+            newRow.AddInt("first_spell_id", firstSpellID);
+            newRow.AddInt("spell_id", spellID);
+            newRow.AddInt("rank", rank);
             Rows.Add(newRow);
         }
     }

@@ -33,12 +33,12 @@ namespace EQWOWConverter.WOWFiles
             // Multiple spells can summon the same pet creature, so only the first pass generates the rows
             if (AddedCreatureTemplateIDs.Contains(creatureTemplate.WOWCreatureTemplateID) == true)
                 return;
-            if (creatureTemplate.PetPowerTierName.Length == 0)
+            if (creatureTemplate.PetTypeName.Length == 0)
             {
-                Logger.WriteError("Pet creature template ", creatureTemplate.WOWCreatureTemplateID.ToString(), " (", creatureTemplate.Name, ") has no pet power tier, so no pet level stats were generated");
+                Logger.WriteError("Pet creature template ", creatureTemplate.WOWCreatureTemplateID.ToString(), " (", creatureTemplate.Name, ") has no pet type, so no pet level stats were generated");
                 return;
             }
-            SortedDictionary<int, SpellPetPowerTierLevelStats>? statsByLevel = SpellPetPowerTierLevelStats.GetStatsByLevelForTierName(creatureTemplate.PetPowerTierName);
+            SortedDictionary<int, SpellPetPowerTierLevelStats>? statsByLevel = SpellPetPowerTierLevelStats.GetStatsByLevelForTypeName(creatureTemplate.PetTypeName);
             if (statsByLevel == null)
                 return;
             AddedCreatureTemplateIDs.Add(creatureTemplate.WOWCreatureTemplateID);

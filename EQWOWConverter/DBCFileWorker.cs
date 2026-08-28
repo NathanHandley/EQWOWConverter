@@ -39,6 +39,7 @@ namespace EQWOWConverter
         private AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
         private CharStartOutfitDBC charStartOutfitDBC = new CharStartOutfitDBC();
         private CreatureDisplayInfoDBC creatureDisplayInfoDBC = new CreatureDisplayInfoDBC();
+        private CreatureFamilyDBC creatureFamilyDBC = new CreatureFamilyDBC();
         private CreatureDisplayInfoExtraDBC creatureDisplayInfoExtraDBC = new CreatureDisplayInfoExtraDBC();
         private CreatureModelDataDBC creatureModelDataDBC = new CreatureModelDataDBC();
         private CreatureSoundDataDBC creatureSoundDataDBC = new CreatureSoundDataDBC();
@@ -166,7 +167,6 @@ namespace EQWOWConverter
                     // Don't hide the chain spells if there's an aura under the non-aura
                     bool hideFromDisplay = (i != 0) && (curEffectBlock.ForceVisibleSplitAura == false);
 
-                    // Worn effects never get spell_bonus_data, so only cast blocks show the coefficient.  It goes last, in its own paragraph.
                     string blockActionDescription = actionDescription;
 
                     // Complete Heal Exhaustion
@@ -243,6 +243,7 @@ namespace EQWOWConverter
             charStartOutfitDBC.LoadFromDisk(dbcInputFolder, "CharStartOutfit.dbc");
             creatureDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfo.dbc");
             creatureDisplayInfoExtraDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfoExtra.dbc");
+            creatureFamilyDBC.LoadFromDisk(dbcInputFolder, "CreatureFamily.dbc");
             creatureModelDataDBC.LoadFromDisk(dbcInputFolder, "CreatureModelData.dbc");
             creatureSoundDataDBC.LoadFromDisk(dbcInputFolder, "CreatureSoundData.dbc");
             factionDBC.LoadFromDisk(dbcInputFolder, "Faction.dbc");
@@ -828,6 +829,18 @@ namespace EQWOWConverter
                 skillRaceClassInfoDBC.AddRow(skillLineIDBySkillCategory.Value, new List<ClassWOWType>() { ClassWOWType.All });
             }
 
+            // Pet taunt skill lines and the families that point at them
+            if (Configuration.SPELL_PET_TAUNT_ENABLED == true)
+            {
+                int singleTauntSkillLineID = SpellPetTaunt.GetSingleTauntSkillLineID();
+                int multiTauntSkillLineID = SpellPetTaunt.GetMultiTauntSkillLineID();
+                skillLineDBC.AddRow(singleTauntSkillLineID, "Pet - Taunt", 1);
+                skillLineDBC.AddRow(multiTauntSkillLineID, "Pet - Area Taunt", 1);
+                creatureFamilyDBC.AddRowForPetSkillLines(Configuration.DBCID_CREATUREFAMILY_PET_TAUNT_SINGLE_ID, "Pet", singleTauntSkillLineID, 0);
+                creatureFamilyDBC.AddRowForPetSkillLines(Configuration.DBCID_CREATUREFAMILY_PET_TAUNT_MULTI_ID, "Pet", multiTauntSkillLineID, 0);
+                creatureFamilyDBC.AddRowForPetSkillLines(Configuration.DBCID_CREATUREFAMILY_PET_TAUNT_BOTH_ID, "Pet", singleTauntSkillLineID, multiTauntSkillLineID);
+            }
+
             // Skills
             List<ClassWOWType> wowClassTypes = new List<ClassWOWType>();
             wowClassTypes.Add(ClassWOWType.All);
@@ -1114,6 +1127,8 @@ namespace EQWOWConverter
             creatureDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
             creatureDisplayInfoExtraDBC.SaveToDisk(dbcOutputClientFolder);
             creatureDisplayInfoExtraDBC.SaveToDisk(dbcOutputServerFolder);
+            creatureFamilyDBC.SaveToDisk(dbcOutputClientFolder);
+            creatureFamilyDBC.SaveToDisk(dbcOutputServerFolder);
             creatureModelDataDBC.SaveToDisk(dbcOutputClientFolder);
             creatureModelDataDBC.SaveToDisk(dbcOutputServerFolder);
             creatureSoundDataDBC.SaveToDisk(dbcOutputClientFolder);

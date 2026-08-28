@@ -19,9 +19,9 @@ namespace EQWOWConverter.Spells
     internal class SpellPetPowerTierLevelStats
     {
         private static readonly object SpellPetPowerTierLock = new object();
-        private static Dictionary<string, SortedDictionary<int, SpellPetPowerTierLevelStats>> StatsByTierNameAndLevel = new Dictionary<string, SortedDictionary<int, SpellPetPowerTierLevelStats>>();
+        private static Dictionary<string, SortedDictionary<int, SpellPetPowerTierLevelStats>> StatsByTypeNameAndLevel = new Dictionary<string, SortedDictionary<int, SpellPetPowerTierLevelStats>>();
 
-        public string TierName = string.Empty;
+        public string TypeName = string.Empty;
         public int Level = 0;
         public int Health = 0;
         public int Mana = 0;
@@ -34,15 +34,15 @@ namespace EQWOWConverter.Spells
         public int MinDamage = 0;
         public int MaxDamage = 0;
 
-        public static SortedDictionary<int, SpellPetPowerTierLevelStats>? GetStatsByLevelForTierName(string tierName)
+        public static SortedDictionary<int, SpellPetPowerTierLevelStats>? GetStatsByLevelForTypeName(string typeName)
         {
             lock (SpellPetPowerTierLock)
             {
-                if (StatsByTierNameAndLevel.Count == 0)
+                if (StatsByTypeNameAndLevel.Count == 0)
                     LoadSpellPetPowerTierData();
-                if (StatsByTierNameAndLevel.ContainsKey(tierName) == true)
-                    return StatsByTierNameAndLevel[tierName];
-                Logger.WriteError("Could not find a spell pet power tier with name '", tierName, "'");
+                if (StatsByTypeNameAndLevel.ContainsKey(typeName) == true)
+                    return StatsByTypeNameAndLevel[typeName];
+                Logger.WriteError("Could not find a spell pet power tier with name '", typeName, "'");
                 return null;
             }
         }
@@ -55,7 +55,7 @@ namespace EQWOWConverter.Spells
             foreach (Dictionary<string, string> columns in powerTierRows)
             {
                 SpellPetPowerTierLevelStats levelStats = new SpellPetPowerTierLevelStats();
-                levelStats.TierName = columns["tier"];
+                levelStats.TypeName = columns["type"];
                 levelStats.Level = Convert.ToInt32(columns["level"]);
                 levelStats.Health = Convert.ToInt32(columns["hp"]);
                 levelStats.Mana = Convert.ToInt32(columns["mana"]);
@@ -67,14 +67,14 @@ namespace EQWOWConverter.Spells
                 levelStats.Spirit = Convert.ToInt32(columns["spi"]);
                 levelStats.MinDamage = Convert.ToInt32(columns["min_dmg"]);
                 levelStats.MaxDamage = Convert.ToInt32(columns["max_dmg"]);
-                if (StatsByTierNameAndLevel.ContainsKey(levelStats.TierName) == false)
-                    StatsByTierNameAndLevel.Add(levelStats.TierName, new SortedDictionary<int, SpellPetPowerTierLevelStats>());
-                if (StatsByTierNameAndLevel[levelStats.TierName].ContainsKey(levelStats.Level) == true)
+                if (StatsByTypeNameAndLevel.ContainsKey(levelStats.TypeName) == false)
+                    StatsByTypeNameAndLevel.Add(levelStats.TypeName, new SortedDictionary<int, SpellPetPowerTierLevelStats>());
+                if (StatsByTypeNameAndLevel[levelStats.TypeName].ContainsKey(levelStats.Level) == true)
                 {
-                    Logger.WriteError("Spell pet power tier '", levelStats.TierName, "' has more than one row for level ", levelStats.Level.ToString());
+                    Logger.WriteError("Spell pet power tier '", levelStats.TypeName, "' has more than one row for level ", levelStats.Level.ToString());
                     continue;
                 }
-                StatsByTierNameAndLevel[levelStats.TierName].Add(levelStats.Level, levelStats);
+                StatsByTypeNameAndLevel[levelStats.TypeName].Add(levelStats.Level, levelStats);
             }
             Logger.WriteDebug("Loading spell pet power tier level stats complete");
         }

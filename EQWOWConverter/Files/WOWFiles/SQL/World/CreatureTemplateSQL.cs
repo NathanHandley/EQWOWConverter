@@ -170,11 +170,12 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("unit_flags2", 2048); // Most have 2048 here, TODO Look into it
             newRow.AddInt("dynamicflags", 0);
             if (creatureTemplate.IsPet == true)
-                newRow.AddInt("family", 0); // Force these to be 'demon' for now
+                newRow.AddInt("family", creatureTemplate.GetPetCreatureFamilyID());
             else
                 newRow.AddInt("family", creatureTemplate.Race.WOWCreatureFamily);
             if (creatureTemplate.IsPet == true)
                 newRow.AddInt("type", 3); // Note: If the pet isn't a demon, the name won't generate randomly (for random name types).  If undead the name will be random, but will not heed if resummoned.
+                newRow.AddInt("type", creatureTemplate.GetPetWOWCreatureTypeID()); // Demon, or undead for the undead races.  Only those two are safe
             else if (creatureTemplate.IsCompanionPet == true)
                 newRow.AddInt("type", 12); // Non-Combat Pet, like the stock wow companion pets
             else

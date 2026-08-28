@@ -58,6 +58,17 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
+        public static int GenerateDBCID(params string[] contextKeyParts)
+        {
+            lock (ID_LOCK)
+            {
+                int generatedID = IDGenerationTool.GenerateID("SpellCategoryID", contextKeyParts);
+                if (GeneratedDBCIDs.Contains(generatedID) == false)
+                    GeneratedDBCIDs.Add(generatedID);
+                return generatedID;
+            }
+        }
+
         public static List<int> GetAllGeneratedDBCIDs()
         {
             lock (ID_LOCK)

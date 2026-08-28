@@ -251,8 +251,12 @@ namespace EQWOWConverter.Spells
         public int EQSpellVisualEffectIndex = 0;
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
+        public string SummonedPetTypeName = string.Empty;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
         public int MinimumPlayerLearnLevel = -1;
+        public int SpellLevel = 0; // Spell.dbc "SpellLevel", which has to stay zero for anything using spell power (see SpellDBC) but drives what level a pet learns a rank at
+        public string RankName = string.Empty;
+        public int SkillLineAcquireMethod = 0; // 0 = learn by trainer, 1 = learned on skill value, 2 = learned on skill learn
         public bool HasEffectBaseFormulaUsingSpellLevel = false;
         public int RequiredAreaIDs = -1;
         public bool IsGoodEffect = false;
@@ -373,6 +377,10 @@ namespace EQWOWConverter.Spells
         public bool AllowCastWhileSitting = false;
         public bool DoNotBreakStealthOrInvisibility = false;
         public bool AllowCastWhileCasting = false;
+        public UInt32 SpellFamilyID = 0;
+        public UInt32 SpellFamilyFlags1 = 0;
+        public UInt32 SpellFamilyFlags2 = 0;
+        public UInt32 SpellFamilyFlags3 = 0;
         public bool AppliesCompleteHealExhaustion = false;
 
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
@@ -3611,7 +3619,16 @@ namespace EQWOWConverter.Spells
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].ModelTemplateScale = creatureRace.Height * creatureRace.SpawnSizeMod
                                     * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;
-                                creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].PetPowerTierName = spellPet.PowerTierName;
+                                creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].PetTypeName = spellPet.PetTypeName;
+
+                                // Everything a pet gets purely for being its type (currently just the taunts)
+                                spellTemplate.SummonedPetTypeName = spellPet.PetTypeName;
+                                SpellPetType? spellPetType = SpellPetType.GetSpellPetTypeByTypeName(spellPet.PetTypeName);
+                                if (spellPetType != null)
+                                {
+                                    creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].PetHasSingleTaunt = spellPetType.HasSingleTaunt;
+                                    creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].PetHasMultiTaunt = spellPetType.HasMultiTaunt;
+                                }
                             } break;
                         case SpellEQEffectType.Illusion:
                             {
@@ -4222,6 +4239,8 @@ namespace EQWOWConverter.Spells
                 descriptionSB.Append(string.Concat(" Only works on players level ", minimumTargetLevel.ToString(), " or greater."));
             if (spellTemplate.IsCosmeticOnlyIllusion == true)
                 descriptionSB.Append(" Will not alter faction standing with any groups.");
+            if (spellTemplate.SummonedPetTypeName.Length > 0)
+                descriptionSB.Append(string.Concat(" This is a ", spellTemplate.SummonedPetTypeName, " type pet."));
 
             // Capitalize Norrath
             descriptionSB.Replace("norrath", "Norrath");

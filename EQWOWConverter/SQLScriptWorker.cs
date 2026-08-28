@@ -139,6 +139,7 @@ namespace EQWOWConverter
         private ModEverquestTalentAlignmentSQL modEverquestTalentAlignmentSQL = new ModEverquestTalentAlignmentSQL();
         private SpellGroupStackRulesSQL spellGroupStackRulesSQL = new SpellGroupStackRulesSQL();
         private SpellLinkedSpellSQL spellLinkedSpellSQL = new SpellLinkedSpellSQL();
+        private SpellRanksSQL spellRanksSQL = new SpellRanksSQL();
         private SpellScriptNamesSQL spellScriptNamesSQL = new SpellScriptNamesSQL();
         private SpellTargetPositionSQL spellTargetPositionSQL = new SpellTargetPositionSQL();
         private TrainerSQL trainerSQL = new TrainerSQL();
@@ -2462,6 +2463,13 @@ namespace EQWOWConverter
             // Drop the spell family check on the talents that proc off any spell of their class (lets school alignment determine)
             spellProcSQL.AddFamilyWideProcOverrideRows();
 
+            // Without a rank chain the core treats the eight Taunt (and eight Area Taunt) ranks as unrelated spells, so a pet learning a higher rank would keep every lower one on its bar
+            if (Configuration.SPELL_PET_TAUNT_ENABLED == true)
+            {
+                AddSpellRankChainRows(SpellPetTaunt.GetSingleTauntRanks());
+                AddSpellRankChainRows(SpellPetTaunt.GetMultiTauntRanks());
+            }
+
             // Talents whose spell filtering lives inside a stock script (or that need an EverQuest path a data row can't express) get the mod's script versions,
             // which keep the WOW behavior and add the EverQuest spells
             if (Configuration.SPELL_WOW_TALENT_INTERACTION_ENABLED == true)
@@ -2576,6 +2584,15 @@ namespace EQWOWConverter
             }
             foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)
                 spellGroupStackRulesSQL.AddRow(spellGroupStackRuleByGroup.Key, spellGroupStackRuleByGroup.Value);
+        }
+
+        private void AddSpellRankChainRows(List<SpellPetTauntRank> tauntRanks)
+        {
+            if (tauntRanks.Count == 0)
+                return;
+            int firstSpellID = tauntRanks[0].WOWSpellID;
+            foreach (SpellPetTauntRank tauntRank in tauntRanks)
+                spellRanksSQL.AddRow(firstSpellID, tauntRank.WOWSpellID, tauntRank.Rank);
         }
 
         private void PopulateTrainerData(List<CreatureTemplate> creatureTemplates)
@@ -3196,6 +3213,7 @@ namespace EQWOWConverter
             spellEnchantProcDataSQL.SaveToDisk("spell_enchant_proc_data", SQLFileType.World);
             spellGroupSQL.SaveToDisk("spell_group", SQLFileType.World);
             spellProcSQL.SaveToDisk("spell_proc", SQLFileType.World); // spell_ex44
+            spellRanksSQL.SaveToDisk("spell_ranks", SQLFileType.World);
             modEverquestTalentExclusionSQL.SaveToDisk("mod_everquest_talent_exclusion", SQLFileType.World); // spell_ex44
             modEverquestTalentAlignmentSQL.SaveToDisk("mod_everquest_talent_alignment", SQLFileType.World); // spell_ex44
             spellGroupStackRulesSQL.SaveToDisk("spell_group_stack_rules", SQLFileType.World);
