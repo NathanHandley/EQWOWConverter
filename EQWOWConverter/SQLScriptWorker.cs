@@ -960,12 +960,18 @@ namespace EQWOWConverter
                     }
                 }
 
-                // See invis/stealth
-                if (creatureTemplate.SeesInvisible == true || creatureTemplate.SeesStealth == true)
+                // See invis
+                if (creatureTemplate.SeesInvisible == true)
                 {
-                    string seeComment = string.Concat("EQ See Invisibility/Stealth ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ")");
-                    smartScriptsSQL.AddRowForCreatureTemplateApplyAuraOnSpawn(creatureTemplate.WOWCreatureTemplateID,
-                        Configuration.SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID, seeComment);
+                    string seeInvisComment = string.Concat("EQ See Invisibility ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ")");
+                    smartScriptsSQL.AddRowForCreatureTemplateApplyAuraOnSpawn(creatureTemplate.WOWCreatureTemplateID, Configuration.SPELL_CREATURE_SEE_INVIS_DETECT_SPELL_ID, seeInvisComment);
+                }
+
+                // See stealth
+                if (creatureTemplate.SeesStealth == true)
+                {
+                    string seeStealthComment = string.Concat("EQ See Stealth ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ")");
+                    smartScriptsSQL.AddRowForCreatureTemplateApplyAuraOnSpawn(creatureTemplate.WOWCreatureTemplateID,  Configuration.SPELL_CREATURE_SEE_STEALTH_DETECT_SPELL_ID, seeStealthComment);
                 }
 
                 // Create the records
@@ -2191,6 +2197,7 @@ namespace EQWOWConverter
         private void PopulateQuestData(List<QuestTemplate> questTemplates, SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
         {
             Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
+            Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
             Dictionary<int, int> creatureTextGroupIDsByCreatureTemplateID = new Dictionary<int, int>();
             foreach (QuestTemplate questTemplate in questTemplates)
             {

@@ -517,8 +517,8 @@ namespace EQWOWConverter.Creatures
                         newCreatureTemplate.SeesInvisibleUndead = true;
 
                     // See stealth
-                    if ((columns.ContainsKey("see_sneak") && int.TryParse(columns["see_sneak"], out int seeSneakValue) && seeSneakValue > 0) ||
-                        (columns.ContainsKey("see_improved_hide") && int.TryParse(columns["see_improved_hide"], out int seeImprovedHideValue) && seeImprovedHideValue > 0))
+                    if (((columns.ContainsKey("see_sneak") && int.TryParse(columns["see_sneak"], out int seeSneakValue) && seeSneakValue > 0) ||
+                         (columns.ContainsKey("see_improved_hide") && int.TryParse(columns["see_improved_hide"], out int seeImprovedHideValue) && seeImprovedHideValue > 0)))
                     {
                         newCreatureTemplate.SeesStealth = true;
                         newCreatureTemplate.HasSmartScript = true;

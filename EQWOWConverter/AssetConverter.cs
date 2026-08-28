@@ -3109,6 +3109,50 @@ namespace EQWOWConverter
                 spellTemplates.Add(reducedManaRegenSpellTemplate);
             }
 
+            // Detect Invisibility (Creature arua)
+            SpellTemplate seeInvisibilityDetectSpellTemplate = new SpellTemplate();
+            seeInvisibilityDetectSpellTemplate.Name = "Detect Invisibility";
+            seeInvisibilityDetectSpellTemplate.WOWSpellID = Configuration.SPELL_CREATURE_SEE_INVIS_DETECT_SPELL_ID;
+            seeInvisibilityDetectSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            seeInvisibilityDetectSpellTemplate.Description = "Grants the ability to see those who are invisible.";
+            seeInvisibilityDetectSpellTemplate.AuraDescription = "Able to see through invisibility.";
+            seeInvisibilityDetectSpellTemplate.AuraDuration = new SpellDuration();
+            seeInvisibilityDetectSpellTemplate.AuraDuration.IsInfinite = true;
+            // EffectMiscValueA = invisibility group (0 = general invis), base points = detect strength (mirrors stock detect aura 18950's 99999)
+            seeInvisibilityDetectSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModInvisibilityDetect, 0, 0, 0, 99999, 0, 0));
+            seeInvisibilityDetectSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            seeInvisibilityDetectSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(2);
+            seeInvisibilityDetectSpellTemplate.CastTimeInMS = 0;
+            seeInvisibilityDetectSpellTemplate.RecoveryTimeInMS = 0;
+            seeInvisibilityDetectSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+            seeInvisibilityDetectSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
+            seeInvisibilityDetectSpellTemplate.AlwaysPersist = true;
+            seeInvisibilityDetectSpellTemplate.TriggersGlobalCooldown = false;
+            seeInvisibilityDetectSpellTemplate.ForceHiddenFromDisplay = true;
+            spellTemplates.Add(seeInvisibilityDetectSpellTemplate);
+
+            // Detect Stealth (Creature aura)
+            SpellTemplate seeStealthDetectSpellTemplate = new SpellTemplate();
+            seeStealthDetectSpellTemplate.Name = "Detect Stealth";
+            seeStealthDetectSpellTemplate.WOWSpellID = Configuration.SPELL_CREATURE_SEE_STEALTH_DETECT_SPELL_ID;
+            seeStealthDetectSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            seeStealthDetectSpellTemplate.Description = "Grants the ability to see those who are stealthed.";
+            seeStealthDetectSpellTemplate.AuraDescription = "Able to see through stealth.";
+            seeStealthDetectSpellTemplate.AuraDuration = new SpellDuration();
+            seeStealthDetectSpellTemplate.AuraDuration.IsInfinite = true;
+            // EffectMiscValueA = stealth group (0 = general stealth), base points = detect strength (mirrors stock detect aura 18950's 99999)
+            seeStealthDetectSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModStealthDetect, 0, 0, 0, 99999, 0, 0));
+            seeStealthDetectSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            seeStealthDetectSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(2);
+            seeStealthDetectSpellTemplate.CastTimeInMS = 0;
+            seeStealthDetectSpellTemplate.RecoveryTimeInMS = 0;
+            seeStealthDetectSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+            seeStealthDetectSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
+            seeStealthDetectSpellTemplate.AlwaysPersist = true;
+            seeStealthDetectSpellTemplate.TriggersGlobalCooldown = false;
+            seeStealthDetectSpellTemplate.ForceHiddenFromDisplay = true;
+            spellTemplates.Add(seeStealthDetectSpellTemplate);
+
             // Detect Invis vs Undead
             // Note: To make "Invisibility vs Undead" work, this aura is applied to anything that can see through it
             SpellTemplate invisVsUndeadDetectSpellTemplate = new SpellTemplate();

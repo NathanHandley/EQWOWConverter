@@ -1001,8 +1001,11 @@ namespace EQWOWConverter
         // Hidden passive aura used to reduce creature mana regeneration (see CREATURE_MANA_REGEN_PERCENT)
         public static int SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID = 86907;
 
-        // This is the ID used to detect invis and stealth, and already exists in AzerothCore
-        public static int SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID = 18950;
+        // Hidden detect aura granted to creatures flagged as seeing invisibility
+        public static int SPELL_CREATURE_SEE_INVIS_DETECT_SPELL_ID = 86941;
+
+        // Hidden detect aura granted to creatures flagged as seeing stealth
+        public static int SPELL_CREATURE_SEE_STEALTH_DETECT_SPELL_ID = 86942;
 
         // WoW invisibility group (InvisibilityType) reserved for EQ "invis vs undead" (0 = general invis, 1 should be unused)
         public static int SPELL_INVIS_VS_UNDEAD_INVIS_TYPE = 1;
@@ -2104,7 +2107,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT", SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT, "Default level to block stuns on creatures (EQ-like)");
             OutputVariableToConfig("SPELL_SUMMON_CASTER_AURA_SPELL_ID", SPELL_SUMMON_CASTER_AURA_SPELL_ID, "Summoner dummy spell ID used to prevent creatures from summoning more creatures");
             OutputVariableToConfig("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID, "Hidden passive aura used to reduce creature mana regeneration (see CREATURE_MANA_REGEN_PERCENT)");
-            OutputVariableToConfig("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID, "This is the ID used to detect invis and stealth, and already exists in AzerothCore");
+            OutputVariableToConfig("SPELL_CREATURE_SEE_INVIS_DETECT_SPELL_ID", SPELL_CREATURE_SEE_INVIS_DETECT_SPELL_ID, "Hidden detect aura granted to creatures flagged as seeing invisibility");
+            OutputVariableToConfig("SPELL_CREATURE_SEE_STEALTH_DETECT_SPELL_ID", SPELL_CREATURE_SEE_STEALTH_DETECT_SPELL_ID, "Hidden detect aura granted to creatures flagged as seeing stealth");
             OutputVariableToConfig("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", SPELL_INVIS_VS_UNDEAD_INVIS_TYPE, "WoW invisibility group (InvisibilityType) reserved for EQ 'invis vs undead' (0 = general invis, 1 should be unused)");
             OutputVariableToConfig("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID, "Custom detect aura granted to everything that should see through 'invis vs undead' (non-undead + see_invis_undead undead)");
             OutputVariableToConfig("SPELL_RESIST_ADJUSTMENT_SPELL_ID", SPELL_RESIST_ADJUSTMENT_SPELL_ID, "Hidden short-duration aura the mod applies to a caster during a cast to shift the spell hit roll by the EQ ResistDiff amount");
@@ -2684,7 +2688,8 @@ namespace EQWOWConverter
             SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT = ReadVariableFromConfigString("SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT", configValuesByVariableName, SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT);
             SPELL_SUMMON_CASTER_AURA_SPELL_ID = ReadVariableFromConfigString("SPELL_SUMMON_CASTER_AURA_SPELL_ID", configValuesByVariableName, SPELL_SUMMON_CASTER_AURA_SPELL_ID);
             SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID);
-            SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_SEE_INVIS_AND_STEALTH_SPELL_ID);
+            SPELL_CREATURE_SEE_INVIS_DETECT_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_SEE_INVIS_DETECT_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_SEE_INVIS_DETECT_SPELL_ID);
+            SPELL_CREATURE_SEE_STEALTH_DETECT_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_SEE_STEALTH_DETECT_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_SEE_STEALTH_DETECT_SPELL_ID);
             SPELL_INVIS_VS_UNDEAD_INVIS_TYPE = ReadVariableFromConfigString("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", configValuesByVariableName, SPELL_INVIS_VS_UNDEAD_INVIS_TYPE);
             SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID);
             SPELL_RESIST_ADJUSTMENT_SPELL_ID = ReadVariableFromConfigString("SPELL_RESIST_ADJUSTMENT_SPELL_ID", configValuesByVariableName, SPELL_RESIST_ADJUSTMENT_SPELL_ID);
