@@ -50,6 +50,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`WildRampageDamagePct` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`AttackRoundTimeInMS` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`DifficultyType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`GossipIsOnlyFromHailText` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`CreatureTemplateID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -59,7 +60,7 @@ namespace EQWOWConverter.WOWFiles
             float agroSocialDistanceMod, bool enrageEnabled, int enrageHPPct, int enrageDurationInMS, int enrageCooldownInMS,
             bool flurryEnabled, int flurryChancePct, bool rampageEnabled, int rampageChancePct, int rampageRange, int rampageDamagePct,
             bool wildRampageEnabled, int wildRampageChancePct, int wildRampageMaxTargets, int wildRampageDamagePct, int attackRoundTimeInMS,
-            int difficultyType)
+            int difficultyType, bool gossipIsOnlyFromHailText)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatureTemplateID", creatureTemplateID);
@@ -87,6 +88,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("WildRampageDamagePct", wildRampageDamagePct);
             newRow.AddInt("AttackRoundTimeInMS", attackRoundTimeInMS);
             newRow.AddInt("DifficultyType", difficultyType);
+            newRow.AddInt("GossipIsOnlyFromHailText", gossipIsOnlyFromHailText == true ? 1 : 0);
             Rows.Add(newRow);
         }
     }

@@ -51,6 +51,7 @@ namespace EQWOWConverter.Quests
         // TODO: Required Class
         public string RequestText = string.Empty;
         public string RequestObjectiveText = string.Empty;
+        public string DescriptionText = string.Empty;
         public int AreaID = 0;
         public List<QuestReaction> Reactions = new List<QuestReaction>();
         private int NumOfObjectiveItemsAddedToText = 0;
@@ -395,7 +396,7 @@ namespace EQWOWConverter.Quests
                 string questName = columns["quest_name"];
                 string firstRewardItem = columns["reward_item1_name"];
                 newQuestTemplate.Name = GetOrGenerateName(questName, newQuestTemplate.QuestgiverName, newQuestTemplate.QuestIDWOW, firstRewardItem, newQuestTemplate.RewardItems);
-                //newQuestTemplate.RequestText = columns["request_text"]; Ignoring for now
+                newQuestTemplate.DescriptionText = columns["request_text"];
                 if (reactionsByQuestID.ContainsKey(newQuestTemplate.QuestIDWOW))
                 {
                     foreach (QuestReaction reaction in reactionsByQuestID[newQuestTemplate.QuestIDWOW])

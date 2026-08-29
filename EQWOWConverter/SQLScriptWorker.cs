@@ -113,6 +113,7 @@ namespace EQWOWConverter
         private ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
         private ModEverquestQuestReactionSQL modEverquestQuestReactionSQL = new ModEverquestQuestReactionSQL();
         private ModEverquestGossipReactionSQL modEverquestGossipReactionSQL = new ModEverquestGossipReactionSQL();
+        private Dictionary<(string, string), string> hailTextsByZoneAndCreatureName = new Dictionary<(string, string), string>();
         private NPCTextSQL npcTextSQL = new NPCTextSQL();
         private NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
         private PageTextSQL pageTextSQL = new PageTextSQL();
@@ -179,6 +180,9 @@ namespace EQWOWConverter
 
             // Trainer Abilities (Class and Profession)
             PopulateTrainerData(creatureTemplates);
+
+            // Hail ('hello' window) text, before the gossip reactions so a creature's greeting can fall back to it
+            PopulateCreatureHailTextData();
 
             // Talk-triggered (gossip) reactions, before creature data so the gossip flags are set prior to creature_template rows generating
             PopulateCreatureGossipData();
@@ -368,6 +372,41 @@ namespace EQWOWConverter
                     Configuration.ACHIEVEMENT_EQ_ADVENTURER_NAME, Configuration.ACHIEVEMENT_EQ_ADVENTURER_MAIL_BODY_TEXT);
         }
 
+        private void PopulateCreatureHailTextData()
+        {
+            foreach (CreatureHailText hailText in CreatureHailText.GetHailTexts())
+            {
+                List<CreatureTemplate> hailCreatureTemplates = CreatureTemplate.GetCreatureTemplatesForSpawnZonesAndName(hailText.ZoneShortName, hailText.CreatureName);
+                if (hailCreatureTemplates.Count == 0)
+                {
+                    Logger.WriteDebug(string.Concat("Skipping hail text with zone '", hailText.ZoneShortName, "' and name '", hailText.CreatureName, "' as no creature template could be found"));
+                    continue;
+                }
+                (string, string) key = (hailText.ZoneShortName, hailText.CreatureName);
+                if (hailTextsByZoneAndCreatureName.ContainsKey(key) == false)
+                    hailTextsByZoneAndCreatureName.Add(key, hailText.Text);
+
+                // Text shown when the creature is talked to, which is the closest analog to saying 'Hail' in EQ
+                // NOTE: no faction remapping happens here on purpose.  Unlike a quest, a merchant or a trainer role, a hail response only opens a text window, so it must not make an otherwise hostile creature talkable.
+                int hailBroadcastTextID = IDGenerationTool.GenerateID("BroadcastTextID", "hailtext", hailText.ZoneShortName, hailText.CreatureName);
+                broadcastTextSQL.AddRow(hailBroadcastTextID, hailText.Text, hailText.Text);
+                int hailNPCTextID = IDGenerationTool.GenerateID("NPCTextID", "hailtext", hailText.ZoneShortName, hailText.CreatureName);
+                npcTextSQL.AddRow(hailNPCTextID, hailText.Text, hailBroadcastTextID);
+                int hailGossipMenuID = IDGenerationTool.GenerateID("GossipMenuID", "hailtext", hailText.ZoneShortName, hailText.CreatureName);
+                gossipMenuSQL.AddRow(hailGossipMenuID, hailNPCTextID);
+
+                foreach (CreatureTemplate hailCreatureTemplate in hailCreatureTemplates)
+                {
+                    hailCreatureTemplate.HasHailText = true;
+
+                    // A creature that already earned a menu of its own (a trainer, for example) keeps it
+                    hailCreatureTemplate.HailTextGossipMenuID = hailGossipMenuID;
+                    if (hailCreatureTemplate.GossipMenuID == 0)
+                        hailCreatureTemplate.GossipMenuID = hailGossipMenuID;
+                }
+            }
+        }
+
         private void PopulateCreatureGossipData()
         {
             Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
@@ -396,6 +435,8 @@ namespace EQWOWConverter
 
                 // Greeting text shown when the gossip window opens
                 string menuText = gossipReactions[0].MenuText;
+                if (menuText.Length == 0 && hailTextsByZoneAndCreatureName.ContainsKey(gossipReactionsForCreature.Key) == true)
+                    menuText = hailTextsByZoneAndCreatureName[gossipReactionsForCreature.Key];
                 if (menuText.Length == 0)
                     menuText = "Greetings, $N.";
                 int menuBroadcastTextID = IDGenerationTool.GenerateID("BroadcastTextID", "gossipgreeting", zoneShortName, creatureName);
@@ -992,7 +1033,8 @@ namespace EQWOWConverter
                     creatureTemplate.EnrageCooldownInMS, creatureTemplate.HasFlurryAbility, creatureTemplate.FlurryChancePercent, creatureTemplate.HasRampageAbility,
                     creatureTemplate.RampageChancePercent, rampageRangeWOW, creatureTemplate.RampageDamagePercent, creatureTemplate.HasWildRampageAbility,
                     creatureTemplate.WildRampageChancePercent, creatureTemplate.WildRampageMaxTargets, creatureTemplate.WildRampageDamagePercent,
-                    creatureTemplate.EQAttackRoundTimeInMS, Convert.ToInt32(creatureTemplate.DifficultyType));
+                    creatureTemplate.EQAttackRoundTimeInMS, Convert.ToInt32(creatureTemplate.DifficultyType),
+                    creatureTemplate.IsGossipOnlyFromHailText());
 
                 // Determine the display id
                 int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;

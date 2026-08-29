@@ -106,7 +106,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("AllowableRaces", 0);
             newRow.AddString("LogTitle", questName);
             newRow.AddString("LogDescription", GenerateQuestDescription(questTemplate));
-            newRow.AddString("QuestDescription", string.Empty);
+            newRow.AddString("QuestDescription", GenerateQuestOfferText(questTemplate));
             newRow.AddString("AreaDescription", string.Empty);
             newRow.AddString("QuestCompletionLog", GenerateQuestDescription(questTemplate));
             newRow.AddInt("RequiredNpcOrGo1", 0);
@@ -158,6 +158,15 @@ namespace EQWOWConverter.WOWFiles
                 return questTemplate.RequestText;
             else
                 return "I am looking for some things, can you help?";
+        }
+
+        private string GenerateQuestOfferText(QuestTemplate questTemplate)
+        {
+            // The EQ keyword dialog that led up to the quest, when the extractor found any
+            if (questTemplate.DescriptionText.Length > 0)
+                return questTemplate.DescriptionText;
+            else
+                return string.Empty;
         }
     }
 }

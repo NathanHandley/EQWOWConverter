@@ -84,6 +84,8 @@ namespace EQWOWConverter.Creatures
         public string SpawnZones = string.Empty;
         public bool IsQuestGiver = false;
         public bool HasGossipReactions = false;
+        public bool HasHailText = false;
+        public int HailTextGossipMenuID = 0;
         public int SpawnLimit = 0;
         public bool HasSmartScript = false;
         public int DefaultEmoteID = 0;
@@ -159,6 +161,34 @@ namespace EQWOWConverter.Creatures
             if (IsRidingTrainer == true)
                 return true;
             return false;
+        }
+
+        public bool HasDirectRightClickRole()
+        {
+            if (MerchantID != 0)
+                return true;
+            if (IsReagentVendor == true)
+                return true;
+            if (IsBanker == true)
+                return true;
+            if (IsStableMaster == true)
+                return true;
+            return false;
+        }
+
+        public bool IsGossipOnlyFromHailText()
+        {
+            if (HasHailText == false)
+                return false;
+            if (HasDirectRightClickRole() == true)
+                return false;
+            if (HasGossipReactions == true)
+                return false;
+            if (HasHailedEmote == true)
+                return false;
+            if (GossipMenuID != HailTextGossipMenuID) // A trainer, teleporter or raid coordinator menu took the slot
+                return false;
+            return true;
         }
 
         public int GetPetWOWCreatureTypeID()
