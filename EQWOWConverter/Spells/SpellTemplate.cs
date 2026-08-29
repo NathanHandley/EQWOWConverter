@@ -4277,6 +4277,25 @@ namespace EQWOWConverter.Spells
                 // Aura Description
                 spellTemplate.AuraDescription = string.Concat(spellTemplate.AuraDescription, "\n\n", concurrentString);
             }
+
+            // Object illusion forms and levitation crash the client when they are up together, so neither can ever land on the other
+            if (spellTemplate.IllusionObjectClass != CreatureIllusionObjectClassType.None)
+            {
+                string levitationActionString = "Cannot be cast while levitating, and levitation cannot be applied while in the form.";
+                string levitationAuraString = "Levitation cannot be applied while in this form.";
+
+                // Action Description
+                if (spellTemplate.Description.Length == 0)
+                    spellTemplate.Description = levitationActionString;
+                else
+                    spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\n", levitationActionString);
+
+                // Aura Description
+                if (spellTemplate.AuraDescription.Length == 0)
+                    spellTemplate.AuraDescription = levitationAuraString;
+                else
+                    spellTemplate.AuraDescription = string.Concat(spellTemplate.AuraDescription, "\n\n", levitationAuraString);
+            }
         }
 
         private static string GetIllusionObjectDescriptionText(CreatureIllusionObjectClassType illusionObjectClass)
