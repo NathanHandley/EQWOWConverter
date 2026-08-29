@@ -2998,7 +2998,8 @@ namespace EQWOWConverter
                 // are stored on the open world row, since that's what the mod looks up when a player walks a zone line into this zone
                 int instanceRaidLowMapID = zone.ZoneProperties.ShouldGenerateInstanceRaidLow() ? zone.ZoneProperties.DBCMapIDRaidLow : 0;
                 int instanceDungeonMapID = zone.ZoneProperties.ShouldGenerateInstanceDungeon() ? zone.ZoneProperties.DBCMapIDDungeon : 0;
-                modEverquestZoneSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.AllowBind, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, instanceRaidLowMapID, instanceDungeonMapID);
+                modEverquestZoneSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ZoneProperties.AllowBind, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, instanceRaidLowMapID, instanceDungeonMapID,
+                    zone.ZoneProperties.RequiredKeyWOWItemID);
 
                 // Zones with bodies that can be unreachable by foot need a flying mount as a ghost, and this automatically covers instanced versions
                 if (zone.ZoneProperties.ForceFlyingGhost == true)
@@ -3016,7 +3017,7 @@ namespace EQWOWConverter
                     gameTeleSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, zone.ShortName + "raid", zone.ZoneProperties.TelePosition.X,
                         zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
                     modEverquestZoneSafePointSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, zone.ZoneProperties.SafePosition);
-                    modEverquestZoneSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, false, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, 0, 0);
+                    modEverquestZoneSQL.AddRow(zone.ZoneProperties.DBCMapIDRaidLow, false, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, 0, 0, zone.ZoneProperties.RequiredKeyWOWItemID);
                     lfgDungeonTemplateSQL.AddRow(zone.ZoneProperties.DBCLFGDungeonsIDRaidLow, raidLowDescriptiveName, zone.ZoneProperties.TelePosition.X,
                         zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
 
@@ -3040,7 +3041,7 @@ namespace EQWOWConverter
                     gameTeleSQL.AddRow(zone.ZoneProperties.DBCMapIDDungeon, zone.ShortName + "dungeon", zone.ZoneProperties.TelePosition.X,
                         zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
                     modEverquestZoneSafePointSQL.AddRow(zone.ZoneProperties.DBCMapIDDungeon, zone.ZoneProperties.SafePosition);
-                    modEverquestZoneSQL.AddRow(zone.ZoneProperties.DBCMapIDDungeon, false, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, 0, 0);
+                    modEverquestZoneSQL.AddRow(zone.ZoneProperties.DBCMapIDDungeon, false, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, 0, 0, zone.ZoneProperties.RequiredKeyWOWItemID);
                 }
 
                 // Database viewer needs zone-to-continent mapping and names

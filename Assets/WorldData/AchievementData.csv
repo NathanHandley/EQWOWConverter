@@ -15,3 +15,5 @@ AchievementID|ParentCategoryID|AchievementType|Name|Description|Points|IconSpell
 5114|15101|InstanceClear|Conqueror of Veeshan's Peak|Defeat Phara Dar in Veeshan's Peak.|10|-1|145|veeshan|RaidLow|53282|
 5115|15100|InstanceClear|Conqueror of The Hole|Defeat Master Yael in The Hole.|10|-1|145|hole|RaidLow|48233|
 5116|15100|InstanceClear|Conqueror of Kedge Keep|Defeat Phinigel Autropos in Kedge Keep.|10|-1|145|kedge|RaidLow|50335|
+5117|15101|InstanceClear|Conqueror of Chardok|Defeat Overking Bathezid in Chardok.|10|-1|145|chardok|RaidLow|52871|
+5118|15101|InstanceClear|Conqueror of Karnor's Castle|Defeat Venril Sathir in Karnor's Castle.|10|-1|145|karnor|RaidLow|52778|

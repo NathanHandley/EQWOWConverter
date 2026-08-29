@@ -148,6 +148,7 @@ namespace EQWOWConverter.Zones
         public bool IsRestingZoneWide = false;
         public bool AllowBind = true;
         public bool DuelingAllowed = true;
+        public int RequiredKeyWOWItemID = 0;
         public bool ForceFlyingGhost = false;
         public int RainChanceWinter = 0;
         public int RainChanceSpring = 0;
@@ -1094,6 +1095,7 @@ namespace EQWOWConverter.Zones
                 zoneProperties.IsRestingZoneWide = propertiesRow["RestZoneWide"].Trim() == "1" ? true : false;
                 zoneProperties.AllowBind = propertiesRow["AllowBind"].Trim() == "1" ? true : false;
                 zoneProperties.DuelingAllowed = propertiesRow["DuelingAllowed"].Trim() == "1" ? true : false;
+                zoneProperties.RequiredKeyWOWItemID = int.Parse(propertiesRow["RequiredKey"]);
                 zoneProperties.ForceFlyingGhost = propertiesRow["ForceFlyingGhost"].Trim() == "1" ? true : false;
                 zoneProperties.CollisionMinZ = float.Parse(propertiesRow["CollisionGeometryMinZ"]);
                 zoneProperties.CollisionMaxZ = float.Parse(propertiesRow["CollisionGeometryMaxZ"]);
