@@ -270193,3 +270193,11 @@ BroadcastTextID|gossipgreeting~oot~Sentry_Xyrin|82748
 NPCTextID|gossipgreeting~oot~Sentry_Xyrin|80086
 BroadcastTextID|gossipgreeting~paineel~Sejako_Mujan|82749
 NPCTextID|gossipgreeting~paineel~Sejako_Mujan|80087
+SpellCastTimeID|2600|289
+SpellCastTimeID|4200|290
+SpellCastTimeID|4300|291
+SpellCastTimeID|4900|292
+SpellCastTimeID|4600|293
+SpellCastTimeID|4100|294
+SpellCastTimeID|4800|295
+SpellCastTimeID|4400|296

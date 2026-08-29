@@ -811,11 +811,14 @@ namespace EQWOWConverter
         public static float SPELLS_RANGE_MULTIPLIER = 0.3333f;
 
         // How much to modify cast time of EverQuest spells when converting, with direct heal/damage amounts and mana cost also modifying
-        public static float SPELLS_CAST_TIME_MOD = 0.5f;
+        public static float SPELLS_CAST_TIME_MOD = 0.7f;
 
         // Cast times are never reduced below this by SPELLS_CAST_TIME_MOD (spells already at or below it keep their original cast time)
         public static int SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS = 1500;
         public static int SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS = 2500;
+
+        // Cast times are capped at this after SPELLS_CAST_TIME_MOD so the slow EQ tail stays inside WOW pacing (0 disables the cap)
+        public static int SPELLS_CAST_TIME_REDUCTION_CEILING_IN_MS = 5000;
 
         // Any spell (player cast or item clicky) with a cast time below this becomes instant (0 ms)
         public static int SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS = 200;
@@ -832,9 +835,11 @@ namespace EQWOWConverter
         public static bool SPELLS_MANA_COST_PERCENT_ENABLED = true;
         public static int SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE = 100;
         public static int SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL = 30;
-        public static float SPELLS_MANA_COST_PERCENT_MOD = 1.0f;
+        public static float SPELLS_MANA_COST_PERCENT_MOD = 1.25f;
+        public static float SPELLS_MANA_COST_PERCENT_HEAL_MOD = 2.4f;
+        public static float SPELLS_MANA_COST_PERCENT_PERIODIC_MOD = 2.0f;
         public static int SPELLS_MANA_COST_PERCENT_MIN = 1;
-        public static int SPELLS_MANA_COST_PERCENT_MAX = 50;
+        public static int SPELLS_MANA_COST_PERCENT_MAX = 60;
 
         // How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)
         public static float SPELLS_DOT_TIME_DURATION_MOD = 0.5f;
@@ -2039,6 +2044,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_CAST_TIME_MOD", SPELLS_CAST_TIME_MOD, "How much to modify cast time of EverQuest spells when converting, with direct heal/damage amounts and mana cost also modifying");
             OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS", SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS, "Cast times are never reduced below this by SPELLS_CAST_TIME_MOD (spells already at or below it keep their original cast time)", false);
             OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS", SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS, "");
+            OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_CEILING_IN_MS", SPELLS_CAST_TIME_REDUCTION_CEILING_IN_MS, "Cast times are capped at this after SPELLS_CAST_TIME_MOD so the slow EQ tail stays inside WOW pacing (0 disables the cap)");
             OutputVariableToConfig("SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS", SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS, "Any spell (player cast or item clicky) with a cast time below this becomes instant (0 ms)");
             OutputVariableToConfig("SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS", SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS, "Player-learnable single-target and group beneficial buffs have their cast time capped to this (creature casts keep their unmodified cast time on a creature-cast spell copy).  0 to disable");
             OutputVariableToConfig("SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS", SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS, "Player-learnable beneficial buffs whose unmodified maximum duration is at least this get a fixed (non level scaling) duration of the single target or group amount below (creature casts keep their unmodified durations on a creature-cast spell copy)", false);
@@ -2048,6 +2054,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE", SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL", SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_MOD", SPELLS_MANA_COST_PERCENT_MOD, "", false);
+            OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_HEAL_MOD", SPELLS_MANA_COST_PERCENT_HEAL_MOD, "", false);
+            OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_PERIODIC_MOD", SPELLS_MANA_COST_PERCENT_PERIODIC_MOD, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_MIN", SPELLS_MANA_COST_PERCENT_MIN, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_MAX", SPELLS_MANA_COST_PERCENT_MAX, "");
             OutputVariableToConfig("SPELLS_DOT_TIME_DURATION_MOD", SPELLS_DOT_TIME_DURATION_MOD, "How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)");
@@ -2623,6 +2631,7 @@ namespace EQWOWConverter
             SPELLS_CAST_TIME_MOD = ReadVariableFromConfigString("SPELLS_CAST_TIME_MOD", configValuesByVariableName, SPELLS_CAST_TIME_MOD);
             SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS = ReadVariableFromConfigString("SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS", configValuesByVariableName, SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS);
             SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS = ReadVariableFromConfigString("SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS", configValuesByVariableName, SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS);
+            SPELLS_CAST_TIME_REDUCTION_CEILING_IN_MS = ReadVariableFromConfigString("SPELLS_CAST_TIME_REDUCTION_CEILING_IN_MS", configValuesByVariableName, SPELLS_CAST_TIME_REDUCTION_CEILING_IN_MS);
             SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS = ReadVariableFromConfigString("SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS", configValuesByVariableName, SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS);
             SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS = ReadVariableFromConfigString("SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS", configValuesByVariableName, SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS);
             SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS = ReadVariableFromConfigString("SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS", configValuesByVariableName, SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS);
@@ -2632,6 +2641,8 @@ namespace EQWOWConverter
             SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE);
             SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL);
             SPELLS_MANA_COST_PERCENT_MOD = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_MOD", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_MOD);
+            SPELLS_MANA_COST_PERCENT_HEAL_MOD = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_HEAL_MOD", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_HEAL_MOD);
+            SPELLS_MANA_COST_PERCENT_PERIODIC_MOD = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_PERIODIC_MOD", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_PERIODIC_MOD);
             SPELLS_MANA_COST_PERCENT_MIN = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_MIN", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_MIN);
             SPELLS_MANA_COST_PERCENT_MAX = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_MAX", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_MAX);
             SPELLS_DOT_TIME_DURATION_MOD = ReadVariableFromConfigString("SPELLS_DOT_TIME_DURATION_MOD", configValuesByVariableName, SPELLS_DOT_TIME_DURATION_MOD);

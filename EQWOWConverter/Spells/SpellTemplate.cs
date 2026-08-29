@@ -540,6 +540,10 @@ namespace EQWOWConverter.Spells
                 configuredFloorInMS = Math.Max(configuredFloorInMS, Configuration.SPELLS_CAST_TIME_REDUCTION_FLOOR_OFFENSIVE_DISPELLS_IN_MS);
             float castTimeReductionFloor = Math.Min(castTimeInMS, configuredFloorInMS);
             castTime = Math.Max(castTime, castTimeReductionFloor);
+
+            // Cap the slow tail so converted casts stay inside WOW pacing
+            if (Configuration.SPELLS_CAST_TIME_REDUCTION_CEILING_IN_MS > 0)
+                castTime = Math.Min(castTime, Convert.ToSingle(Configuration.SPELLS_CAST_TIME_REDUCTION_CEILING_IN_MS));
             return (int)Math.Ceiling(castTime / 100f) * 100; // Round up for cleaner cast times
         }
 
@@ -1777,10 +1781,67 @@ namespace EQWOWConverter.Spells
                 float eqManaPoolAtLearnLevel = Convert.ToSingle(Configuration.SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE) +
                     (Convert.ToSingle(Configuration.SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL) * Convert.ToSingle(spellTemplate.MinimumPlayerLearnLevel));
                 float percentCost = (Convert.ToSingle(spellTemplate.ManaCost) / eqManaPoolAtLearnLevel) * 100f * Configuration.SPELLS_MANA_COST_PERCENT_MOD;
+
+                // Heal and periodic (DoT/HoT) spells pay category surcharges so mana-per-point of output lands near the WOW class spell norms
+                bool dominantOutputIsHeal;
+                bool dominantOutputIsPeriodic;
+                CalculateManaCostOutputDominance(spellTemplate, out dominantOutputIsHeal, out dominantOutputIsPeriodic);
+                if (dominantOutputIsHeal == true)
+                    percentCost *= Configuration.SPELLS_MANA_COST_PERCENT_HEAL_MOD;
+                if (dominantOutputIsPeriodic == true)
+                    percentCost *= Configuration.SPELLS_MANA_COST_PERCENT_PERIODIC_MOD;
+
                 int clampedPercentCost = Math.Clamp(Convert.ToInt32(Math.Round(percentCost)), Configuration.SPELLS_MANA_COST_PERCENT_MIN, Configuration.SPELLS_MANA_COST_PERCENT_MAX);
                 spellTemplate.ManaCostPercentage = Convert.ToUInt32(clampedPercentCost);
                 spellTemplate.ManaCost = 0;
             }
+        }
+
+        private static void CalculateManaCostOutputDominance(SpellTemplate spellTemplate, out bool dominantOutputIsHeal, out bool dominantOutputIsPeriodic)
+        {
+            float directDamageTotal = 0;
+            float directHealTotal = 0;
+            float periodicDamageTotal = 0;
+            float periodicHealTotal = 0;
+            float auraDurationInMS = Convert.ToSingle(spellTemplate.AuraDuration.MaxDurationInMS);
+            foreach (SpellEffectWOW wowEffect in spellTemplate.WOWSpellEffects)
+            {
+                float effectAmount = Convert.ToSingle(Math.Abs(wowEffect.EffectBasePoints)) + (Convert.ToSingle(Math.Abs(wowEffect.EffectDieSides)) * 0.5f);
+                if (wowEffect.EffectAuraType == SpellWOWAuraType.None)
+                {
+                    if (wowEffect.EffectType == SpellWOWEffectType.Heal)
+                        directHealTotal += effectAmount;
+                    else if (wowEffect.EffectType == SpellWOWEffectType.SchoolDamage || wowEffect.EffectType == SpellWOWEffectType.HealthLeech)
+                        directDamageTotal += effectAmount;
+                }
+                else if (wowEffect.EffectAuraPeriod > 0 && auraDurationInMS > 0)
+                {
+                    float tickCount = auraDurationInMS / Convert.ToSingle(wowEffect.EffectAuraPeriod);
+                    if (wowEffect.EffectAuraType == SpellWOWAuraType.PeriodicHeal)
+                        periodicHealTotal += effectAmount * tickCount;
+                    else if (wowEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamage || wowEffect.EffectAuraType == SpellWOWAuraType.PeriodicLeech ||
+                        wowEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamagePercent)
+                    {
+                        // Self-inflicted DoTs (lich-style HP-to-mana engines) aren't offensive output, so they take no surcharge
+                        if (wowEffect.ImplicitTargetA != SpellWOWTargetType.UnitCaster)
+                            periodicDamageTotal += effectAmount * tickCount;
+                    }
+                }
+            }
+
+            dominantOutputIsHeal = false;
+            dominantOutputIsPeriodic = false;
+            float healTotal = directHealTotal + periodicHealTotal;
+            float damageTotal = directDamageTotal + periodicDamageTotal;
+            if (healTotal <= 0 && damageTotal <= 0)
+                return;
+            if (healTotal > damageTotal)
+            {
+                dominantOutputIsHeal = true;
+                dominantOutputIsPeriodic = periodicHealTotal > directHealTotal;
+            }
+            else
+                dominantOutputIsPeriodic = periodicDamageTotal > directDamageTotal;
         }
 
         private static void MarkSpellTemplatesNeedingCreatureCastVersions()
