@@ -97,7 +97,10 @@ namespace EQWOWConverter.WOWFiles
             else
                 newRow.AddUInt32(Convert.ToUInt32(Configuration.DBCID_SPELLDURATION_AURA_ID)); // DurationIndex (SpellDuration.dbc id) -- Note: This will get overwritten by mod_everquest_spell SQL table
             newRow.AddInt32(0); // PowerType
-            newRow.AddUInt32(spellTemplate.ManaCost); // ManaCost
+            if (isCreatureCastVersion == true)
+                newRow.AddUInt32(spellTemplate.CreatureCastManaCost); // ManaCost (creature-cast copies keep the unmodified flat cost)
+            else
+                newRow.AddUInt32(spellTemplate.ManaCost); // ManaCost
             newRow.AddUInt32(0); // ManaCostPerLevel
             newRow.AddUInt32(0); // ManaPerSecond
             newRow.AddUInt32(0); // ManaPerSecondPerLevel
@@ -178,7 +181,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddStringLang(spellTemplate.RankName); // NameSubtext_Lang
             newRow.AddStringLang(spellDescription); // Description_Lang
             newRow.AddStringLang(auraDescription); // AuraDescription_Lang
-            newRow.AddUInt32(0); // ManaCostPct
+            if (isCreatureCastVersion == true)
+                newRow.AddUInt32(0); // ManaCostPct (creature-cast copies keep the unmodified flat cost)
+            else
+                newRow.AddUInt32(spellTemplate.ManaCostPercentage); // ManaCostPct
             if (spellTemplate.TriggersGlobalCooldown == true)
             {
                 newRow.AddUInt32(133); // StartRecoveryCategory

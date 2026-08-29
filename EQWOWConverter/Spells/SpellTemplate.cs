@@ -272,11 +272,13 @@ namespace EQWOWConverter.Spells
         public List<SpellEffectEQ> EQSpellEffects = new List<SpellEffectEQ>();
         public List<SpellEffectWOW> WOWSpellEffects = new List<SpellEffectWOW>();
         public UInt32 ManaCost = 0;
+        public UInt32 ManaCostPercentage = 0; // When > 0, the player cost is this percent of base mana instead of the flat ManaCost
         public int WOWSpellIDCreatureCast = 0;
         public bool NeedsCreatureCastVersion = false; // True when creatures can cast this spell and the player version differ
         public int CreatureCastTimeInMS = 0;
         public int CreatureCastSpellCastTimeDBCID = 1;
         public SpellDuration CreatureCastAuraDuration = new SpellDuration();
+        public UInt32 CreatureCastManaCost = 0; // Flat mana cost before the percent-of-base-mana conversion, used by the creature-cast copy
         public bool IsGeneratedStunEffectSpell = false; 
         public SpellEQTargetType EQTargetType = SpellEQTargetType.Single;
         public bool IsSelfCenteredAreaBreath = false; // Dragon breath
@@ -1442,7 +1444,6 @@ namespace EQWOWConverter.Spells
                     break;
                 case SpellEQTargetType.Undead:
                     {
-                        spellTemplate.TargetCreatureType = 32; // Undead, 0x0020
                         if (isDetrimental == true)
                         {
                             spellTemplate.TargetCreatureType = 32; // Undead, 0x0020
@@ -1770,6 +1771,16 @@ namespace EQWOWConverter.Spells
                     spellTemplate.AuraDuration.SetFixedDuration(Configuration.SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS);
             }
 
+            // Flat EQ mana cost becomes a WOW-style percent of base mana, sized by what fraction of a typical EQ caster mana pool the flat cost was at the spell's lowest learn level
+            if (Configuration.SPELLS_MANA_COST_PERCENT_ENABLED == true && spellTemplate.ManaCost > 0)
+            {
+                float eqManaPoolAtLearnLevel = Convert.ToSingle(Configuration.SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE) +
+                    (Convert.ToSingle(Configuration.SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL) * Convert.ToSingle(spellTemplate.MinimumPlayerLearnLevel));
+                float percentCost = (Convert.ToSingle(spellTemplate.ManaCost) / eqManaPoolAtLearnLevel) * 100f * Configuration.SPELLS_MANA_COST_PERCENT_MOD;
+                int clampedPercentCost = Math.Clamp(Convert.ToInt32(Math.Round(percentCost)), Configuration.SPELLS_MANA_COST_PERCENT_MIN, Configuration.SPELLS_MANA_COST_PERCENT_MAX);
+                spellTemplate.ManaCostPercentage = Convert.ToUInt32(clampedPercentCost);
+                spellTemplate.ManaCost = 0;
+            }
         }
 
         private static void MarkSpellTemplatesNeedingCreatureCastVersions()

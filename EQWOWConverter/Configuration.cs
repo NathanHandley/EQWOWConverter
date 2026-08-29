@@ -828,6 +828,14 @@ namespace EQWOWConverter
         public static int SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS = 1800000;
         public static int SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS = 3600000;
 
+        // If true, player-learnable spells with a mana cost have it converted from the flat EQ mana cost into a WOW-style "% of base mana" cost
+        public static bool SPELLS_MANA_COST_PERCENT_ENABLED = true;
+        public static int SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE = 100;
+        public static int SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL = 30;
+        public static float SPELLS_MANA_COST_PERCENT_MOD = 1.0f;
+        public static int SPELLS_MANA_COST_PERCENT_MIN = 1;
+        public static int SPELLS_MANA_COST_PERCENT_MAX = 50;
+
         // How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)
         public static float SPELLS_DOT_TIME_DURATION_MOD = 0.5f;
 
@@ -2036,6 +2044,12 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS", SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS, "Player-learnable beneficial buffs whose unmodified maximum duration is at least this get a fixed (non level scaling) duration of the single target or group amount below (creature casts keep their unmodified durations on a creature-cast spell copy)", false);
             OutputVariableToConfig("SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS", SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS, "", false);
             OutputVariableToConfig("SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS", SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS, "");
+            OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_ENABLED", SPELLS_MANA_COST_PERCENT_ENABLED, "If true, player-learnable spells with a mana cost have it converted from the flat EQ mana cost into a WOW-style \"% of base mana\" cost", false);
+            OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE", SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE, "", false);
+            OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL", SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL, "", false);
+            OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_MOD", SPELLS_MANA_COST_PERCENT_MOD, "", false);
+            OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_MIN", SPELLS_MANA_COST_PERCENT_MIN, "", false);
+            OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_MAX", SPELLS_MANA_COST_PERCENT_MAX, "");
             OutputVariableToConfig("SPELLS_DOT_TIME_DURATION_MOD", SPELLS_DOT_TIME_DURATION_MOD, "How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)");
             OutputVariableToConfig("SPELLS_CROWD_CONTROL_DURATION_MOD", SPELLS_CROWD_CONTROL_DURATION_MOD, "How much to modify the duration of creature-cast non-bard crowd control spells (player casts always keep the full EQ duration)");
             OutputVariableToConfig("SPELLS_CONVERT_TO_DOT_ENABLED", SPELLS_CONVERT_TO_DOT_ENABLED, "If true, spells marked \"convert_to_dot\" in SpellTemplates.csv spread the damage over the duration", false);
@@ -2614,6 +2628,12 @@ namespace EQWOWConverter
             SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS = ReadVariableFromConfigString("SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS", configValuesByVariableName, SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS);
             SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS = ReadVariableFromConfigString("SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS", configValuesByVariableName, SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS);
             SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS = ReadVariableFromConfigString("SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS", configValuesByVariableName, SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS);
+            SPELLS_MANA_COST_PERCENT_ENABLED = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_ENABLED", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_ENABLED);
+            SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE);
+            SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL);
+            SPELLS_MANA_COST_PERCENT_MOD = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_MOD", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_MOD);
+            SPELLS_MANA_COST_PERCENT_MIN = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_MIN", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_MIN);
+            SPELLS_MANA_COST_PERCENT_MAX = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_MAX", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_MAX);
             SPELLS_DOT_TIME_DURATION_MOD = ReadVariableFromConfigString("SPELLS_DOT_TIME_DURATION_MOD", configValuesByVariableName, SPELLS_DOT_TIME_DURATION_MOD);
             SPELLS_CROWD_CONTROL_DURATION_MOD = ReadVariableFromConfigString("SPELLS_CROWD_CONTROL_DURATION_MOD", configValuesByVariableName, SPELLS_CROWD_CONTROL_DURATION_MOD);
             SPELLS_CONVERT_TO_DOT_ENABLED = ReadVariableFromConfigString("SPELLS_CONVERT_TO_DOT_ENABLED", configValuesByVariableName, SPELLS_CONVERT_TO_DOT_ENABLED);
