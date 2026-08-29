@@ -457,6 +457,31 @@ namespace EQWOWConverter.Spells
             return false;
         }
 
+        public bool IsExemptFromPlayerBuffNormalization()
+        {
+            foreach (SpellEffectEQ eqEffect in EQSpellEffects)
+            {
+                switch (eqEffect.EQEffectType)
+                {
+                    case SpellEQEffectType.Gate:
+                    case SpellEQEffectType.InvisibilityUnstable:
+                    case SpellEQEffectType.Invisibility:
+                    case SpellEQEffectType.InvisVsUndead:
+                    case SpellEQEffectType.InvisVsUndead2:
+                    case SpellEQEffectType.FeignDeath:
+                    case SpellEQEffectType.Illusion:
+                    case SpellEQEffectType.BindSight:
+                    case SpellEQEffectType.Stun:
+                    case SpellEQEffectType.Root:
+                    case SpellEQEffectType.Silence:
+                    case SpellEQEffectType.Mez:
+                    case SpellEQEffectType.ModelSize: return true;
+                    default: break;
+                }
+            }
+            return false;
+        }
+
         public bool HasPetSummonEffect()
         {
             foreach (SpellEffectEQ eqEffect in EQSpellEffects)
@@ -1729,7 +1754,7 @@ namespace EQWOWConverter.Spells
             bool isSingleTarget = spellTemplate.EQTargetType == SpellEQTargetType.Single || spellTemplate.EQTargetType == SpellEQTargetType.Self ||
                 spellTemplate.EQTargetType == SpellEQTargetType.Pet || spellTemplate.EQTargetType == SpellEQTargetType.LineOfSight;
             bool isBuff = spellTemplate.IsGoodEffect == true && spellTemplate.IsBardSongAura == false && spellTemplate.AuraDuration.IsInfinite == false &&
-                spellTemplate.AuraDuration.MaxDurationInMS > 0 && (isGroupTarget == true || isSingleTarget == true);
+                spellTemplate.AuraDuration.MaxDurationInMS > 0 && (isGroupTarget == true || isSingleTarget == true) && spellTemplate.IsExemptFromPlayerBuffNormalization() == false;
 
             // Buff cast time cap (never raises a faster cast, and effect values were already generated so they don't rescale)
             if (isBuff == true && Configuration.SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS > 0 && spellTemplate.CastTimeInMS > Configuration.SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS)
