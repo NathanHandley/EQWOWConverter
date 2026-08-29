@@ -2,3 +2,5 @@ type|HasSingleTaunt|HasMultiTaunt
 powerful|1|1
 attacker|1|0
 defender|1|1
+spirit|1|0
+animation|0|0
