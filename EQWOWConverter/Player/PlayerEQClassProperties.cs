@@ -40,6 +40,7 @@ namespace EQWOWConverter.Player
         public bool HasDagger = false;
         public bool HasBow = false;
         public bool HasThrown = false;
+        public List<int> StartSpellScrollEQItemIDs = new List<int>();
 
         public static Dictionary<ClassEQType, PlayerEQClassProperties> GetAllEQClassPropertiesByEQClass()
         {
@@ -114,6 +115,14 @@ namespace EQWOWConverter.Player
                 classProperties.HasDagger = columns["Dagger"].Trim() == "1";
                 classProperties.HasBow = columns["Bow"].Trim() == "1";
                 classProperties.HasThrown = columns["Thrown"].Trim() == "1";
+
+                // Spell scrolls handed out to a caster class when the class is first taken on, matching what EQ hands new characters
+                foreach (string startSpellScrollEQItemIDText in columns["Start_Spell_Scroll_EQItemIDs"].Split(",", StringSplitOptions.RemoveEmptyEntries))
+                {
+                    int startSpellScrollEQItemID = int.Parse(startSpellScrollEQItemIDText.Trim());
+                    if (startSpellScrollEQItemID > 0)
+                        classProperties.StartSpellScrollEQItemIDs.Add(startSpellScrollEQItemID);
+                }
 
                 if (EQClassPropertiesByEQClass.ContainsKey(eqClass) == true)
                     Logger.WriteError("In PlayerEQClassProperties attempted to add more than one ", eqClass.ToString());

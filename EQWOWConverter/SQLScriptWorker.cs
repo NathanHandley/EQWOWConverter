@@ -104,6 +104,7 @@ namespace EQWOWConverter
         private ModEverquestPlayerCreateInfoSQL modEverquestPlayerCreateInfoSQL = new ModEverquestPlayerCreateInfoSQL();
         private ModEverquestPlayerAutoLearnSkillsSQL modEverquestPlayerAutoLearnSkillsSQL = new ModEverquestPlayerAutoLearnSkillsSQL();
         private ModEverquestPlayerAutoLearnSpellsSQL modEverquestPlayerAutoLearnSpellsSQL = new ModEverquestPlayerAutoLearnSpellsSQL();
+        private ModEverquestPlayerClassStartItemsSQL modEverquestPlayerClassStartItemsSQL = new ModEverquestPlayerClassStartItemsSQL();
         private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
         private ModEverquestSystemConfigsSQL modEverquestSystemConfigsSQL = new ModEverquestSystemConfigsSQL();
         private ModEverquestTransportTriggerSQL modEverquestTransportTriggerSQL = new ModEverquestTransportTriggerSQL();
@@ -2062,6 +2063,38 @@ namespace EQWOWConverter
 
             // Item Adds, Spell and Skill Learns - By EQ Class
             Dictionary<ClassEQType, PlayerEQClassProperties> eqClassPropertiesByEQClass = PlayerEQClassProperties.GetAllEQClassPropertiesByEQClass();
+
+            // Spell scrolls handed to a caster the first time they take on the class, matching what EQ gives a new character of that class
+            Dictionary<int, SpellTemplate> spellTemplatesByEQIDForStartScrolls = SpellTemplate.GetSpellTemplatesByEQID();
+            SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBIDForStartScrolls = ItemTemplate.GetItemTemplatesByEQDBIDs();
+            foreach (PlayerEQClassProperties eqClassProperties in eqClassPropertiesByEQClass.Values)
+            {
+                foreach (int startSpellScrollEQItemID in eqClassProperties.StartSpellScrollEQItemIDs)
+                {
+                    if (itemTemplatesByEQDBIDForStartScrolls.ContainsKey(startSpellScrollEQItemID) == false)
+                    {
+                        Logger.WriteError("Class '", eqClassProperties.EQClass.ToString(), "' has a start spell scroll with EQ item ID '", startSpellScrollEQItemID.ToString(), "' which did not exist as an item");
+                        continue;
+                    }
+                    ItemTemplate startSpellScrollItemTemplate = itemTemplatesByEQDBIDForStartScrolls[startSpellScrollEQItemID];
+
+                    // A learnable scroll is split into one item per class that can learn it, so the class-specific version is what gets handed out
+                    if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQIDForStartScrolls.ContainsKey(startSpellScrollItemTemplate.EQScrollSpellID) == false)
+                    {
+                        modEverquestPlayerClassStartItemsSQL.AddRow(eqClassProperties.EQClass, startSpellScrollItemTemplate.WOWEntryID);
+                        continue;
+                    }
+                    SpellTemplate startSpellScrollSpellTemplate = spellTemplatesByEQIDForStartScrolls[startSpellScrollItemTemplate.EQScrollSpellID];
+                    if (startSpellScrollSpellTemplate.LearnScrollPropertiesByEQClassType.ContainsKey(eqClassProperties.EQClass) == false)
+                    {
+                        Logger.WriteError("Class '", eqClassProperties.EQClass.ToString(), "' has a start spell scroll with EQ item ID '", startSpellScrollEQItemID.ToString(), "' whose spell that class cannot learn");
+                        continue;
+                    }
+                    modEverquestPlayerClassStartItemsSQL.AddRow(eqClassProperties.EQClass, startSpellScrollSpellTemplate.LearnScrollPropertiesByEQClassType[eqClassProperties.EQClass].WOWItemTemplateID);
+                }
+            }
+
+            // Item Adds, Spell and Skill Learns - By EQ Class
             foreach (PlayerEQClassProperties eqClassProperties in eqClassPropertiesByEQClass.Values)
             {
                 foreach (RaceType raceType in Enum.GetValues(typeof(RaceType)))
@@ -3434,6 +3467,7 @@ namespace EQWOWConverter
             modEverquestPlayerCreateInfoSQL.SaveToDisk("mod_everquest_playercreateinfo", SQLFileType.World);
             modEverquestPlayerAutoLearnSkillsSQL.SaveToDisk("mod_everquest_playerautolearnskills", SQLFileType.World);
             modEverquestPlayerAutoLearnSpellsSQL.SaveToDisk("mod_everquest_playerautolearnspells", SQLFileType.World);
+            modEverquestPlayerClassStartItemsSQL.SaveToDisk("mod_everquest_playerclassstartitems", SQLFileType.World);
             modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
             modEverquestSystemConfigsSQL.SaveToDisk("mod_everquest_systemconfigs", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
