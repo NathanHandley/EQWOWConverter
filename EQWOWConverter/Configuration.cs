@@ -841,6 +841,10 @@ namespace EQWOWConverter
         public static int SPELLS_MANA_COST_PERCENT_MIN = 1;
         public static int SPELLS_MANA_COST_PERCENT_MAX = 60;
 
+        // Player-cast single target and group buffs (the same set the buff cast time cap and duration floor use) never cost more than this percent of base mana.  0 to disable
+        public static int SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE = 10;
+        public static int SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_GROUP = 20;
+
         // How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)
         public static float SPELLS_DOT_TIME_DURATION_MOD = 0.5f;
 
@@ -2058,6 +2062,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_PERIODIC_MOD", SPELLS_MANA_COST_PERCENT_PERIODIC_MOD, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_MIN", SPELLS_MANA_COST_PERCENT_MIN, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_MAX", SPELLS_MANA_COST_PERCENT_MAX, "");
+            OutputVariableToConfig("SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE", SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE, "Player-cast single target and group buffs (the same set the buff cast time cap and duration floor use) never cost more than this percent of base mana.  0 to disable", false);
+            OutputVariableToConfig("SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_GROUP", SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_GROUP, "");
             OutputVariableToConfig("SPELLS_DOT_TIME_DURATION_MOD", SPELLS_DOT_TIME_DURATION_MOD, "How much to modify the duration of non-bard DoTs on a target (rounds up to the next wow tick, and per-tick damage rises to keep total damage about the same)");
             OutputVariableToConfig("SPELLS_CROWD_CONTROL_DURATION_MOD", SPELLS_CROWD_CONTROL_DURATION_MOD, "How much to modify the duration of creature-cast non-bard crowd control spells (player casts always keep the full EQ duration)");
             OutputVariableToConfig("SPELLS_CONVERT_TO_DOT_ENABLED", SPELLS_CONVERT_TO_DOT_ENABLED, "If true, spells marked \"convert_to_dot\" in SpellTemplates.csv spread the damage over the duration", false);
@@ -2645,6 +2651,8 @@ namespace EQWOWConverter
             SPELLS_MANA_COST_PERCENT_PERIODIC_MOD = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_PERIODIC_MOD", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_PERIODIC_MOD);
             SPELLS_MANA_COST_PERCENT_MIN = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_MIN", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_MIN);
             SPELLS_MANA_COST_PERCENT_MAX = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_MAX", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_MAX);
+            SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE = ReadVariableFromConfigString("SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE", configValuesByVariableName, SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE);
+            SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_GROUP = ReadVariableFromConfigString("SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_GROUP", configValuesByVariableName, SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_GROUP);
             SPELLS_DOT_TIME_DURATION_MOD = ReadVariableFromConfigString("SPELLS_DOT_TIME_DURATION_MOD", configValuesByVariableName, SPELLS_DOT_TIME_DURATION_MOD);
             SPELLS_CROWD_CONTROL_DURATION_MOD = ReadVariableFromConfigString("SPELLS_CROWD_CONTROL_DURATION_MOD", configValuesByVariableName, SPELLS_CROWD_CONTROL_DURATION_MOD);
             SPELLS_CONVERT_TO_DOT_ENABLED = ReadVariableFromConfigString("SPELLS_CONVERT_TO_DOT_ENABLED", configValuesByVariableName, SPELLS_CONVERT_TO_DOT_ENABLED);

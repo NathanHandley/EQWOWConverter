@@ -1808,7 +1808,18 @@ namespace EQWOWConverter.Spells
                 if (dominantOutputIsPeriodic == true)
                     percentCost *= Configuration.SPELLS_MANA_COST_PERCENT_PERIODIC_MOD;
 
-                int clampedPercentCost = Math.Clamp(Convert.ToInt32(Math.Round(percentCost)), Configuration.SPELLS_MANA_COST_PERCENT_MIN, Configuration.SPELLS_MANA_COST_PERCENT_MAX);
+                // Player-cast buffs pay no more than their own (lower) ceiling, since they are cast constantly and out of combat
+                int maxPercentCost = Configuration.SPELLS_MANA_COST_PERCENT_MAX;
+                if (isBuff == true)
+                {
+                    if (isGroupTarget == true && Configuration.SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_GROUP > 0)
+                        maxPercentCost = Math.Min(maxPercentCost, Configuration.SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_GROUP);
+                    else if (isGroupTarget == false && Configuration.SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE > 0)
+                        maxPercentCost = Math.Min(maxPercentCost, Configuration.SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE);
+                }
+                maxPercentCost = Math.Max(maxPercentCost, Configuration.SPELLS_MANA_COST_PERCENT_MIN);
+
+                int clampedPercentCost = Math.Clamp(Convert.ToInt32(Math.Round(percentCost)), Configuration.SPELLS_MANA_COST_PERCENT_MIN, maxPercentCost);
                 spellTemplate.ManaCostPercentage = Convert.ToUInt32(clampedPercentCost);
                 spellTemplate.ManaCost = 0;
             }
