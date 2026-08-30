@@ -22,6 +22,10 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class QuestTemplateSQL : SQLFile
     {
+        // Hard limits in the 3.3.5a client
+        private const int CLIENT_QUEST_TITLE_MAX_BYTES = 500;
+        private const int CLIENT_QUEST_TEXT_MAX_BYTES = 2900;
+
         public override string DeleteRowSQL()
         {
             return "DELETE FROM quest_template WHERE `ID` >= " + Configuration.SQL_QUEST_TEMPLATE_ID_START.ToString() + " AND `ID` <= " + Configuration.SQL_QUEST_TEMPLATE_ID_END + ";";
@@ -104,11 +108,11 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RewardFactionOverride5", 0);
             newRow.AddInt("TimeAllowed", 0);
             newRow.AddInt("AllowableRaces", 0);
-            newRow.AddString("LogTitle", questName);
-            newRow.AddString("LogDescription", GenerateQuestDescription(questTemplate));
-            newRow.AddString("QuestDescription", GenerateQuestOfferText(questTemplate));
+            newRow.AddString("LogTitle", TruncateToClientBytes(questName, CLIENT_QUEST_TITLE_MAX_BYTES));
+            newRow.AddString("LogDescription", TruncateToClientBytes(GenerateQuestDescription(questTemplate), CLIENT_QUEST_TEXT_MAX_BYTES));
+            newRow.AddString("QuestDescription", TruncateToClientBytes(GenerateQuestOfferText(questTemplate), CLIENT_QUEST_TEXT_MAX_BYTES));
             newRow.AddString("AreaDescription", string.Empty);
-            newRow.AddString("QuestCompletionLog", GenerateQuestDescription(questTemplate));
+            newRow.AddString("QuestCompletionLog", TruncateToClientBytes(GenerateQuestDescription(questTemplate), CLIENT_QUEST_TEXT_MAX_BYTES));
             newRow.AddInt("RequiredNpcOrGo1", 0);
             newRow.AddInt("RequiredNpcOrGo2", 0);
             newRow.AddInt("RequiredNpcOrGo3", 0);
@@ -147,11 +151,6 @@ namespace EQWOWConverter.WOWFiles
             return flags;
         }
 
-        private string GenerateQuestObjectives(QuestTemplate questTemplate)
-        {
-            return "Test Log Description";
-        }
-
         private string GenerateQuestDescription(QuestTemplate questTemplate)
         {
             if (questTemplate.RequestText.Length > 0)
@@ -167,6 +166,45 @@ namespace EQWOWConverter.WOWFiles
                 return questTemplate.DescriptionText;
             else
                 return string.Empty;
+        }
+
+        private static string TruncateToClientBytes(string text, int maxBytes)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+
+            if (System.Text.Encoding.UTF8.GetByteCount(text) <= maxBytes)
+                return text;
+
+            const string ellipsis = "...";
+            int budget = maxBytes - ellipsis.Length;
+
+            // Take whole characters until the next one would exceed the byte budget, so a multi-byte UTF-8 glyph is never split.
+            int charCount = 0;
+            int byteCount = 0;
+            while (charCount < text.Length)
+            {
+                int glyphChars = char.IsSurrogatePair(text, charCount) ? 2 : 1;
+                int glyphBytes = System.Text.Encoding.UTF8.GetByteCount(text.Substring(charCount, glyphChars));
+                if (byteCount + glyphBytes > budget)
+                    break;
+                byteCount += glyphBytes;
+                charCount += glyphChars;
+            }
+            string cut = text.Substring(0, charCount);
+
+            // Prefer to end on a sentence boundary, else a word boundary.
+            int lastSentence = cut.LastIndexOfAny(new char[] { '.', '!', '?' });
+            if (lastSentence >= budget / 2)
+                cut = cut.Substring(0, lastSentence + 1);
+            else
+            {
+                int lastSpace = cut.LastIndexOf(' ');
+                if (lastSpace >= budget / 2)
+                    cut = cut.Substring(0, lastSpace);
+            }
+
+            return cut.TrimEnd() + ellipsis;
         }
     }
 }
