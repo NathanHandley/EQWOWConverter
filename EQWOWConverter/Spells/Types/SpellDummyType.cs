@@ -40,5 +40,7 @@ namespace EQWOWConverter.Spells
         Succor = 18,
         Track = 19,
         SummonPC = 20,
+        RemoveDamageShield = 21,
+        HealMeleeAttackers = 22,
     }
 }

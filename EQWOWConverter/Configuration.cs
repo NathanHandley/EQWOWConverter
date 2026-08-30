@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 83;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 84;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -806,6 +806,14 @@ namespace EQWOWConverter
         // IDs for special spells that need an exact match of ID between this and mod-everquest
         public static int SPELLS_GATECUSTOM_SPELLDBC_ID = 86900;
         public static int SPELLS_BINDCUSTOM_SPELLDBC_ID = 86901;
+
+        // Mark of Karn is made to be the same as the WOW paladin spell "Judgement of Light" mechanically for the heal effect part
+        public static int SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID = 20185;
+        public static float SPELLS_JUDGEMENTOFLIGHT_PROCS_PER_MINUTE = 15f;
+        public static int SPELLS_JUDGEMENTOFLIGHT_PROC_FLAGS = 139944; // Every "taken" proc flag, copied straight out of the Judgement of Light spell record
+        public static int SPELLS_JUDGEMENTOFLIGHT_PROC_SPELL_TYPE_MASK = 1; // PROC_SPELL_TYPE_DAMAGE, so only damage taken can proc it
+        public static int SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH = 2;
+        public static int SPELLS_HEALMELEEATTACKERS_EQ_SPELL_ID = 1548; // Mark of Karn
 
         // How much to multiply the EQ range value for WoW
         public static float SPELLS_RANGE_MULTIPLIER = 0.3333f;
@@ -2042,8 +2050,14 @@ namespace EQWOWConverter
             OutputVariableToConfig("QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD", QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD, "If true, the repeat version of a quest awards no experience when every item it requires as a hand-in can be bought from a vendor");
             OutputVariableToConfig("QUESTS_GOSSIP_REQUIRED_NEAR_DISTANCE", QUESTS_GOSSIP_REQUIRED_NEAR_DISTANCE, "How close a creature has to be to the path grid node a gossip option requires it to be standing on");
             OutputVariableToConfig("SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL", SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL, "This is how high (WOW side) stats will be be scaled to.  This should almost always be set to the server max level configuration.");
-            OutputVariableToConfig("SPELLS_GATECUSTOM_SPELLDBC_ID", SPELLS_GATECUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest");
-            OutputVariableToConfig("SPELLS_BINDCUSTOM_SPELLDBC_ID", SPELLS_BINDCUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest");
+            OutputVariableToConfig("SPELLS_GATECUSTOM_SPELLDBC_ID", SPELLS_GATECUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest", false);
+            OutputVariableToConfig("SPELLS_BINDCUSTOM_SPELLDBC_ID", SPELLS_BINDCUSTOM_SPELLDBC_ID, "");
+            OutputVariableToConfig("SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID", SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID, "Mark of Karn is made to be the same as the WOW paladin spell \"Judgement of Light\" mechanically for the heal effect part", false);
+            OutputVariableToConfig("SPELLS_JUDGEMENTOFLIGHT_PROCS_PER_MINUTE", SPELLS_JUDGEMENTOFLIGHT_PROCS_PER_MINUTE, "", false);
+            OutputVariableToConfig("SPELLS_JUDGEMENTOFLIGHT_PROC_FLAGS", SPELLS_JUDGEMENTOFLIGHT_PROC_FLAGS, "", false);
+            OutputVariableToConfig("SPELLS_JUDGEMENTOFLIGHT_PROC_SPELL_TYPE_MASK", SPELLS_JUDGEMENTOFLIGHT_PROC_SPELL_TYPE_MASK, "", false);
+            OutputVariableToConfig("SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH", SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH, "", false);
+            OutputVariableToConfig("SPELLS_HEALMELEEATTACKERS_EQ_SPELL_ID", SPELLS_HEALMELEEATTACKERS_EQ_SPELL_ID, "");
             OutputVariableToConfig("SPELLS_RANGE_MULTIPLIER", SPELLS_RANGE_MULTIPLIER, "How much to multiply the EQ range value for WoW");
             OutputVariableToConfig("SPELLS_CAST_TIME_MOD", SPELLS_CAST_TIME_MOD, "How much to modify cast time of EverQuest spells when converting, with direct heal/damage amounts and mana cost also modifying");
             OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS", SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS, "Cast times are never reduced below this by SPELLS_CAST_TIME_MOD (spells already at or below it keep their original cast time)", false);
@@ -2633,6 +2647,14 @@ namespace EQWOWConverter
             SPELLS_GATE_TETHER_ENABLED = ReadVariableFromConfigString("SPELLS_GATE_TETHER_ENABLED", configValuesByVariableName, SPELLS_GATE_TETHER_ENABLED);
             SPELLS_GATECUSTOM_SPELLDBC_ID = ReadVariableFromConfigString("SPELLS_GATECUSTOM_SPELLDBC_ID", configValuesByVariableName, SPELLS_GATECUSTOM_SPELLDBC_ID);
             SPELLS_BINDCUSTOM_SPELLDBC_ID = ReadVariableFromConfigString("SPELLS_BINDCUSTOM_SPELLDBC_ID", configValuesByVariableName, SPELLS_BINDCUSTOM_SPELLDBC_ID);
+
+            SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID = ReadVariableFromConfigString("SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID", configValuesByVariableName, SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID);
+            SPELLS_JUDGEMENTOFLIGHT_PROCS_PER_MINUTE = ReadVariableFromConfigString("SPELLS_JUDGEMENTOFLIGHT_PROCS_PER_MINUTE", configValuesByVariableName, SPELLS_JUDGEMENTOFLIGHT_PROCS_PER_MINUTE);
+            SPELLS_JUDGEMENTOFLIGHT_PROC_FLAGS = ReadVariableFromConfigString("SPELLS_JUDGEMENTOFLIGHT_PROC_FLAGS", configValuesByVariableName, SPELLS_JUDGEMENTOFLIGHT_PROC_FLAGS);
+            SPELLS_JUDGEMENTOFLIGHT_PROC_SPELL_TYPE_MASK = ReadVariableFromConfigString("SPELLS_JUDGEMENTOFLIGHT_PROC_SPELL_TYPE_MASK", configValuesByVariableName, SPELLS_JUDGEMENTOFLIGHT_PROC_SPELL_TYPE_MASK);
+            SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH = ReadVariableFromConfigString("SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH", configValuesByVariableName, SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH);
+            SPELLS_HEALMELEEATTACKERS_EQ_SPELL_ID = ReadVariableFromConfigString("SPELLS_HEALMELEEATTACKERS_EQ_SPELL_ID", configValuesByVariableName, SPELLS_HEALMELEEATTACKERS_EQ_SPELL_ID);
+
             SPELLS_RANGE_MULTIPLIER = ReadVariableFromConfigString("SPELLS_RANGE_MULTIPLIER", configValuesByVariableName, SPELLS_RANGE_MULTIPLIER);
             SPELLS_CAST_TIME_MOD = ReadVariableFromConfigString("SPELLS_CAST_TIME_MOD", configValuesByVariableName, SPELLS_CAST_TIME_MOD);
             SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS = ReadVariableFromConfigString("SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS", configValuesByVariableName, SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS);

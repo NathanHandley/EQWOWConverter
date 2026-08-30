@@ -311,6 +311,8 @@ namespace EQWOWConverter.Spells
         public bool IsPlayerCasterOnlySpell = false; // Attaches the spell script that discards caster-targeted effects when the caster is not a player (TAKP NPC casters never self-hit)
         public int ProcLinkEQSpellID = 0;
         public int WOWSpellIDCastOnMeleeAttacker = 0;
+        public bool RemovesTargetDamageShield = false;
+        public bool HealsMeleeAttackersLikeJudgementOfLight = false;
         public int ExcludeTargetAuraSpellID = 0; // If the target has this aura, the spell refuses to apply
         public bool HideCaster = false;
         public bool TriggersGlobalCooldown = true;
@@ -3514,30 +3516,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 if (eqEffect.EQBaseValue > 0)
                                 {
-                                    // Create a healing spell for this
-                                    SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
-                                    effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Heal Effect");
-                                    effectGeneratedSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "heal", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
-                                    effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
-                                    effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
-                                    effectGeneratedSpellTemplate.SpellVisualID1 = 5560; // Lesser Heal visual, like Judgement of Light
-                                    effectGeneratedSpellTemplate.SchoolMask = 2; // Holy
-                                    effectGeneratedSpellTemplate.HideCaster = true;
-                                    effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
-                                    effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
-                                    SpellEffectEQ healEQEffect = new SpellEffectEQ();
-                                    healEQEffect.EQEffectType = SpellEQEffectType.CurrentHitPoints;
-                                    healEQEffect.EQBaseValue = eqEffect.EQBaseValue;
-                                    healEQEffect.EQBaseValueFormulaType = eqEffect.EQBaseValueFormulaType;
-                                    healEQEffect.EQFormulaTypeValue = eqEffect.EQFormulaTypeValue;
-                                    healEQEffect.EQLimitValue = eqEffect.EQLimitValue;
-                                    healEQEffect.EQMaxValue = eqEffect.EQMaxValue;
-                                    effectGeneratedSpellTemplate.EQSpellEffects.Add(healEQEffect);
-                                    effectGeneratedSpellTemplates.Add(effectGeneratedSpellTemplate);
-                                    ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, new SpellDuration(), 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.UnitTargetAny },
-                                        0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, ref creatureTemplatesByEQID, ref effectGeneratedSpellTemplates);
-
-                                    // Proc effect for the heal
+                                    // EQ damage shield amounts are negative, so a positive one lowers the target's damage shield rather than granting one
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
                                     newSpellEffectWOW.ActionDescription = string.Concat("applies a shield that heals melee attackers for ", effectGeneratedSpellTemplate.WOWSpellEffects[0].GetFormattedEffectActionString(false));
                                     // Rendered immediately: the amount is measured on the child heal effect but stored here, so it cannot be deferred.

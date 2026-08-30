@@ -30,7 +30,7 @@ namespace EQWOWConverter.WOWFiles
             return string.Concat("DELETE FROM spell_proc WHERE `SpellId` IN (", string.Join(",", spellIDStrings), ");");
         }
 
-        public void AddRow(int spellID, int schoolMask, int spellFamilyName, int procFlags, int spellTypeMask, int spellPhaseMask, int hitMask, int attributesMask, int cooldown)
+        public void AddRow(int spellID, int schoolMask, int spellFamilyName, int procFlags, int spellTypeMask, int spellPhaseMask, int hitMask, int attributesMask, int cooldown, float procsPerMinute = 0)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("SpellId", spellID);
@@ -45,7 +45,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("HitMask", hitMask);
             newRow.AddInt("AttributesMask", attributesMask);
             newRow.AddInt("DisableEffectsMask", 0);
-            newRow.AddFloat("ProcsPerMinute", 0);
+            newRow.AddFloat("ProcsPerMinute", procsPerMinute);
             newRow.AddFloat("Chance", 0);
             newRow.AddInt("Cooldown", cooldown);
             newRow.AddInt("Charges", 0);

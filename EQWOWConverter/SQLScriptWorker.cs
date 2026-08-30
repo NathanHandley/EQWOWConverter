@@ -2061,7 +2061,6 @@ namespace EQWOWConverter
             if (Configuration.COMBATSKILL_PIERCINGBACKSTAB_ENABLED == true)
                 spellCustomAttrSQL.AddRow(Configuration.COMBATSKILL_PIERCINGBACKSTAB_SPELL_ID, 131072); // 0x00020000 (SPELL_ATTR0_CU_REQ_CASTER_BEHIND_TARGET)
 
-            // Item Adds, Spell and Skill Learns - By EQ Class
             Dictionary<ClassEQType, PlayerEQClassProperties> eqClassPropertiesByEQClass = PlayerEQClassProperties.GetAllEQClassPropertiesByEQClass();
 
             // Spell scrolls handed to a caster the first time they take on the class, matching what EQ gives a new character of that class
@@ -2614,6 +2613,18 @@ namespace EQWOWConverter
             spellGroupSQL.AddRow(spellGroupStackingID, -wowSpellID);
         }
 
+        // Judgement of Light and the EQ marks that copy it are the same effect, so one caster cannot have both on a target at once
+        int JudgementOfLightExclusiveSpellGroupID = 0;
+        private void AddJudgementOfLightExclusiveGroupMember(int wowSpellID)
+        {
+            if (JudgementOfLightExclusiveSpellGroupID == 0)
+            {
+                JudgementOfLightExclusiveSpellGroupID = SpellTemplate.GetOrCreateNamedSpellGroupID("judgementoflight", 2); // SPELL_GROUP_STACK_RULE_EXCLUSIVE_FROM_SAME_CASTER
+                spellGroupSQL.AddRow(JudgementOfLightExclusiveSpellGroupID, Configuration.SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID);
+            }
+            AddCastSpellGroupMember(JudgementOfLightExclusiveSpellGroupID, wowSpellID);
+        }
+
         HashSet<int> PetSpellIDsAdded = new HashSet<int>();
         private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, string commentFragment, int clickyFixedLevel = 0,
             bool isCreatureCastVersion = false, bool isClickyVersion = false)
@@ -2718,6 +2729,19 @@ namespace EQWOWConverter
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_PlayerCasterOnlySpellScript");
             if (spellTemplate.AppliesCompleteHealExhaustion == true && commentFragment == string.Empty) // commentFragment check stops item clicks and creature-cast exempt, find better way?
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_CompleteHealSpellScript");
+
+            // WOW has no effect that takes a damage shield away, so the strip is done by a script when the aura lands
+            if (spellTemplate.RemovesTargetDamageShield == true)
+                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_RemoveDamageShieldAuraScript");
+
+            // Marks that heal melee attackers are Judgement of Light in everything but name, so they take that spell's proc row and cannot stack with it
+            if (spellTemplate.HealsMeleeAttackersLikeJudgementOfLight == true)
+            {
+                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_HealMeleeAttackersAuraScript");
+                spellProcSQL.AddRow(spellEffectBlocks[0].WOWSpellID, 0, 0, Configuration.SPELLS_JUDGEMENTOFLIGHT_PROC_FLAGS, Configuration.SPELLS_JUDGEMENTOFLIGHT_PROC_SPELL_TYPE_MASK,
+                    0, 0, 0, 0, Configuration.SPELLS_JUDGEMENTOFLIGHT_PROCS_PER_MINUTE);
+                AddJudgementOfLightExclusiveGroupMember(spellEffectBlocks[0].WOWSpellID);
+            }
 
             // A rain's follow-up waves are single-target casts, so the core never applies its area damage split to them (see the script)
             if (spellTemplate.IsRainWaveSpell == true && commentFragment != " (Worn)")
