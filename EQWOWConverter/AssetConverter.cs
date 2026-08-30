@@ -1070,8 +1070,7 @@ namespace EQWOWConverter
                         questTemplate.QuestgiverWOWFactionID = CreatureFaction.GetWOWFactionIDForEQFactionID(creatureTemplate.EQFactionID);
 
                     // If this quest giver is aligned to an otherwise otherwise only-attackable reputation, realign to "Norrath Settlers)
-                    if (creatureTemplate.WOWFactionTemplateID == 2300 || creatureTemplate.WOWFactionTemplateID == 2301 || creatureTemplate.WOWFactionTemplateID == 2302 || creatureTemplate.WOWFactionTemplateID == 2337)
-                        creatureTemplate.WOWFactionTemplateID = 2313;
+                    creatureTemplate.RemapOnlyAttackableFactionToInteractive();
                 }
 
                 // To avoid exploits in broken quests, clear exp if there are no components to hand-in

@@ -108,10 +108,12 @@ namespace EQWOWConverter.WOWFiles
                 npcFlags |= 1;     // 0x00000001 = Has Gossip Menu
             if (creatureTemplate.CanAssist == true)
                 typeFlags |= 4096;   // 0x00001000 = CREATURE_TYPE_FLAG_CAN_ASSIST
+            bool isHiddenNonNPC = creatureTemplate.IsNonNPC == true && creatureTemplate.IsInteractive() == false;
             int unitFlags = 0;
             if (creatureTemplate.IsNonNPC == true)
             {
-                unitFlags |= 33554432; // 0x02000000 = UNIT_FLAG_NOT_SELECTABLE
+                if (isHiddenNonNPC == true)
+                    unitFlags |= 33554432; // 0x02000000 = UNIT_FLAG_NOT_SELECTABLE
                 unitFlags |= 512; // 0x00000200 = UNIT_FLAG_IMMUNE_TO_NPC (disable combat assistance w/NPCs)
                 unitFlags |= 256; // 0x00000100 = UNIT_FLAG_IMMUNE_TO_PC (disable combat assistance w/Player)
             }
@@ -120,7 +122,8 @@ namespace EQWOWConverter.WOWFiles
             int extraFlags = 0;
             if (creatureTemplate.IsNonNPC == true)
             {
-                extraFlags |= 128; // 0x00000080 = CREATURE_FLAG_EXTRA_TRIGGER (invis to players)
+                if (isHiddenNonNPC == true)
+                    extraFlags |= 128; // 0x00000080 = CREATURE_FLAG_EXTRA_TRIGGER (invis to players)
                 extraFlags |= 2;   // 0x00000002 = CREATURE_FLAG_EXTRA_CIVILIAN (ignore agro / faction)
             }
             if (creatureTemplate.BindsRaidInstanceOnKill == true)

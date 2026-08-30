@@ -448,6 +448,9 @@ namespace EQWOWConverter
                 foreach (CreatureTemplate gossipCreatureTemplate in gossipCreatureTemplates)
                 {
                     gossipCreatureTemplate.HasGossipReactions = true;
+
+                    // A gossip menu is a talkable role like a quest or a merchant, so an otherwise only-attackable creature is must turn "Norrath Settlers"
+                    gossipCreatureTemplate.RemapOnlyAttackableFactionToInteractive();
                     foreach (QuestGossipReaction gossipReaction in gossipReactions)
                     {
                         int targetCreatureTemplateID = 0;
@@ -1039,8 +1042,8 @@ namespace EQWOWConverter
 
                 // Determine the display id
                 int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;
-                if (creatureTemplate.IsNonNPC == true)
-                    displayID = 11686; // Dranei totem
+                if (creatureTemplate.IsNonNPC == true && creatureTemplate.IsInteractive() == false)
+                    displayID = 11686; // Invisible Stalker
 
                 // Crowd control immunities
                 if (creatureTemplate.MechanicImmuneMask != 0)

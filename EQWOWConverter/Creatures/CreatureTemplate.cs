@@ -146,6 +146,8 @@ namespace EQWOWConverter.Creatures
         {
             if (IsQuestGiver == true)
                 return true;
+            if (HasGossipReactions == true)
+                return true;
             if (IsBanker == true)
                 return true;
             if (MerchantID != 0)
@@ -174,6 +176,12 @@ namespace EQWOWConverter.Creatures
             if (IsStableMaster == true)
                 return true;
             return false;
+        }
+
+        public void RemapOnlyAttackableFactionToInteractive()
+        {
+            if (WOWFactionTemplateID == 2300 || WOWFactionTemplateID == 2301 || WOWFactionTemplateID == 2302 || WOWFactionTemplateID == 2337)
+                WOWFactionTemplateID = Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE;
         }
 
         public bool IsGossipOnlyFromHailText()
