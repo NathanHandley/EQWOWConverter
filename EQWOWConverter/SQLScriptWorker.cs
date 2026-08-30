@@ -2583,7 +2583,7 @@ namespace EQWOWConverter
 
         HashSet<int> PetSpellIDsAdded = new HashSet<int>();
         private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, string commentFragment, int clickyFixedLevel = 0,
-            bool isCreatureCastVersion = false)
+            bool isCreatureCastVersion = false, bool isClickyVersion = false)
         {
             if (spellEffectBlocks.Count == 0 ||  spellEffectBlocks[0].WOWSpellID <= 0)
                 return;
@@ -2596,7 +2596,7 @@ namespace EQWOWConverter
                 int blockEQHasteVersion = 0;
                 foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
                     blockEQHasteVersion = Math.Max(blockEQHasteVersion, blockEffect.EQHasteVersion);
-                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion, isCreatureCastVersion);
+                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion, isCreatureCastVersion, isClickyVersion);
 
                 // Spell power
                 if (spellTemplate.InfluencedBySpellPower == true && commentFragment != " (Worn)")
@@ -2761,7 +2761,7 @@ namespace EQWOWConverter
                     AddSpellDataBlock(spellTemplate, wornSpellEffectBlocks, " (Worn)");
                 AddSpellDataBlock(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput, " (Proc)");
                 for (int i = 0; i < spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count; i++)
-                    AddSpellDataBlock(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[i], " (Clicky)", spellTemplate.ClickySpellParatemers[i].FixedLevel);
+                    AddSpellDataBlock(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[i], " (Clicky)", spellTemplate.ClickySpellParatemers[i].FixedLevel, false, true);
 
                 // Rogue poison weapon enchants proc on a procs-per-minute rate, which only comes from this table (the enchant's own chance field is left at zero)
                 if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0 && spellTemplate.WeaponItemEnchantProcsPerMinute > 0)

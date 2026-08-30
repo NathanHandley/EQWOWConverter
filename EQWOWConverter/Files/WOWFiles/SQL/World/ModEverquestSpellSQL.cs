@@ -58,10 +58,15 @@ namespace EQWOWConverter.WOWFiles
             return stringBuilder.ToString();
         }
 
-        public void AddRow(SpellTemplate spellTemplate, int spellID, bool isWorn, int clickyFixedLevel, int blockEQHasteVersion, bool isCreatureCastVersion = false)
+        public void AddRow(SpellTemplate spellTemplate, int spellID, bool isWorn, int clickyFixedLevel, int blockEQHasteVersion, bool isCreatureCastVersion = false,
+            bool isClickyVersion = false)
         {
-            // Creature-cast copies keep the aura duration from before any player-only modifications
-            SpellDuration auraDuration = isCreatureCastVersion == true ? spellTemplate.CreatureCastAuraDuration : spellTemplate.AuraDuration;
+            // Creature-cast copies keep the aura duration from before any player-only modifications, and item clickies keep the one from before the player buff duration floor
+            SpellDuration auraDuration = spellTemplate.AuraDuration;
+            if (isCreatureCastVersion == true)
+                auraDuration = spellTemplate.CreatureCastAuraDuration;
+            else if (isClickyVersion == true)
+                auraDuration = spellTemplate.GetAuraDurationForClicky();
 
             SQLRow newRow = new SQLRow();
             newRow.AddInt("SpellID", spellID);

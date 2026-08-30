@@ -241,6 +241,7 @@ namespace EQWOWConverter.Spells
         public int EQBuffDurationInTicks = 0;
         public int EQBuffDurationFormula = 0;
         public SpellDuration AuraDuration = new SpellDuration();
+        private SpellDuration? AuraDurationBeforePlayerBuffDurationFloor = null; // Set only when the player buff duration floor moved the duration
         public float PeriodicDamageDurationCompensationMod = 1f;
         public bool ConvertDirectDamageToDoT = false;
         public List<int> SpellGroupStackingIDs = new List<int>();
@@ -1740,6 +1741,20 @@ namespace EQWOWConverter.Spells
             spellTemplate.ManaCost = Convert.ToUInt32(Math.Max(1.0, Math.Round(Convert.ToDouble(spellTemplate.ManaCost) * outputMod)));
         }
 
+        public SpellDuration GetAuraDurationForClicky()
+        {
+            if (AuraDurationBeforePlayerBuffDurationFloor == null)
+                return AuraDuration;
+            return AuraDurationBeforePlayerBuffDurationFloor.Value;
+        }
+
+        public bool DoesClickyAuraDurationDifferFromCastAuraDuration()
+        {
+            if (AuraDurationBeforePlayerBuffDurationFloor == null)
+                return false;
+            return AuraDurationBeforePlayerBuffDurationFloor.Value != AuraDuration;
+        }
+
         public void CaptureCreatureCastBaseline()
         {
             CreatureCastTimeInMS = CastTimeInMS;
@@ -1769,6 +1784,8 @@ namespace EQWOWConverter.Spells
             if (isBuff == true && Configuration.SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS > 0 &&
                 spellTemplate.AuraDuration.MaxDurationInMS >= Configuration.SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS)
             {
+                // Item clickies of this spell keep the duration they had before the floor
+                spellTemplate.AuraDurationBeforePlayerBuffDurationFloor = spellTemplate.AuraDuration;
                 if (isGroupTarget == true)
                     spellTemplate.AuraDuration.RaiseDurationToMinimum(Configuration.SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS);
                 else
@@ -4705,6 +4722,9 @@ namespace EQWOWConverter.Spells
                 }
                 _GroupedClickySpellEffectBlocksForOutputBySpellParameters.Add(clickyBlocks);
 
+                // Item clickies are never subject to the player buff duration floor, so their tooltips use the pre-floor duration
+                SpellDuration clickyAuraDuration = GetAuraDurationForClicky();
+
                 // Fixed level clickies (tiered potions) don't scale, so make fixed descriptions like fixed worn items get
                 if (clickyEffectsForDescription.Count > 0)
                 {
@@ -4722,9 +4742,26 @@ namespace EQWOWConverter.Spells
                             actionDescriptionSB.Append(TargetDescriptionTextFragment);
                             actionDescriptionSB.Append(".");
                         }
-                        int fixedDurationInMS = AuraDuration.GetBuffDurationForLevel(clickySpellParameters.FixedLevel);
-                        actionDescriptionSB.Append(GetTimeDurationStringFromMSWithLeadingSpace(fixedDurationInMS, AuraDuration.GetTimeTextForDurationInMS(fixedDurationInMS)));
+                        int fixedDurationInMS = clickyAuraDuration.GetBuffDurationForLevel(clickySpellParameters.FixedLevel);
+                        actionDescriptionSB.Append(GetTimeDurationStringFromMSWithLeadingSpace(fixedDurationInMS, clickyAuraDuration.GetTimeTextForDurationInMS(fixedDurationInMS)));
                         firstClickyBlock.ActionDescriptionOverride = actionDescriptionSB.ToString();
+                    }
+                }
+
+                // Any other clicky that kept a pre-floor duration needs the cast description's duration text swapped out for it
+                else if (DoesClickyAuraDurationDifferFromCastAuraDuration() == true)
+                {
+                    string castDurationText = GetTimeDurationStringFromMSWithLeadingSpace(AuraDuration.MaxDurationInMS, AuraDuration.GetTimeText());
+                    if (castDurationText.Length > 0)
+                    {
+                        // Only the first occurrence belongs to this spell (recourse and proc link text follows it)
+                        int castDurationTextIndex = Description.IndexOf(castDurationText);
+                        if (castDurationTextIndex >= 0)
+                        {
+                            string clickyDurationText = GetTimeDurationStringFromMSWithLeadingSpace(clickyAuraDuration.MaxDurationInMS, clickyAuraDuration.GetTimeText());
+                            clickyBlocks[0].ActionDescriptionOverride = string.Concat(Description.AsSpan(0, castDurationTextIndex), clickyDurationText,
+                                Description.AsSpan(castDurationTextIndex + castDurationText.Length));
+                        }
                     }
                 }
             }
