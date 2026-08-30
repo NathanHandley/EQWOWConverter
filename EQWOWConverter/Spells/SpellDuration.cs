@@ -51,6 +51,24 @@ namespace EQWOWConverter.Spells
             MaxLevel = 0;
         }
 
+        public void RaiseDurationToMinimum(int minimumDurationInMS)
+        {
+            if (IsInfinite == true || minimumDurationInMS <= 0)
+                return;
+            if (MaxDurationInMS <= minimumDurationInMS)
+            {
+                SetFixedDuration(minimumDurationInMS);
+                return;
+            }
+            if (BaseDurationInMS >= minimumDurationInMS)
+                return;
+            BaseDurationInMS = minimumDurationInMS;
+            if (MaxLevel > MinLevel)
+                DurationInMSPerLevel = (MaxDurationInMS - BaseDurationInMS) / (MaxLevel - MinLevel);
+            else
+                DurationInMSPerLevel = 0;
+        }
+
         public void ScaleDuration(float durationMod, int roundUpToNextMultipleOfMSAmount)
         {
             if (IsInfinite == true)

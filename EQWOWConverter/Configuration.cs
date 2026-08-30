@@ -826,7 +826,7 @@ namespace EQWOWConverter
         // Player-learnable single-target and group beneficial buffs have their cast time capped to this (creature casts keep their unmodified cast time on a creature-cast spell copy).  0 to disable
         public static int SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS = 1500;
 
-        // Player-learnable beneficial buffs whose unmodified maximum duration is at least SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS get a fixed (non level scaling) duration
+        // Player-learnable beneficial buffs whose unmodified maximum duration is at least SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS are raised up to at least the single target or group duration below
         public static int SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS = 180000;
         public static int SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS = 1800000;
         public static int SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS = 3600000;
@@ -2047,7 +2047,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_CEILING_IN_MS", SPELLS_CAST_TIME_REDUCTION_CEILING_IN_MS, "Cast times are capped at this after SPELLS_CAST_TIME_MOD so the slow EQ tail stays inside WOW pacing (0 disables the cap)");
             OutputVariableToConfig("SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS", SPELLS_MINIMUM_NON_INSTANT_CAST_TIME_IN_MS, "Any spell (player cast or item clicky) with a cast time below this becomes instant (0 ms)");
             OutputVariableToConfig("SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS", SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS, "Player-learnable single-target and group beneficial buffs have their cast time capped to this (creature casts keep their unmodified cast time on a creature-cast spell copy).  0 to disable");
-            OutputVariableToConfig("SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS", SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS, "Player-learnable beneficial buffs whose unmodified maximum duration is at least this get a fixed (non level scaling) duration of the single target or group amount below (creature casts keep their unmodified durations on a creature-cast spell copy)", false);
+            OutputVariableToConfig("SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS", SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS, "Player-learnable beneficial buffs whose unmodified maximum duration is at least SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS are raised up to at least the single target or group duration below", false);
             OutputVariableToConfig("SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS", SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS, "", false);
             OutputVariableToConfig("SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS", SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS, "");
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_ENABLED", SPELLS_MANA_COST_PERCENT_ENABLED, "If true, player-learnable spells with a mana cost have it converted from the flat EQ mana cost into a WOW-style \"% of base mana\" cost", false);

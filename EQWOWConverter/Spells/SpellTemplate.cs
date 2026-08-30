@@ -1765,14 +1765,14 @@ namespace EQWOWConverter.Spells
             if (isBuff == true && Configuration.SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS > 0 && spellTemplate.CastTimeInMS > Configuration.SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS)
                 spellTemplate.CastTimeInMS = Configuration.SPELLS_PLAYER_BUFF_CAST_TIME_MAX_IN_MS;
 
-            // Long buffs become a fixed duration that doesn't scale with level
+            // Long buffs get raised up to a minimum duration, and any that already last longer keep their original (level scaling) duration
             if (isBuff == true && Configuration.SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS > 0 &&
                 spellTemplate.AuraDuration.MaxDurationInMS >= Configuration.SPELLS_PLAYER_BUFF_DURATION_NORMALIZATION_MIN_ORIGINAL_MAX_IN_MS)
             {
-                if (isGroupTarget == true && Configuration.SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS > 0)
-                    spellTemplate.AuraDuration.SetFixedDuration(Configuration.SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS);
-                else if (isGroupTarget == false && Configuration.SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS > 0)
-                    spellTemplate.AuraDuration.SetFixedDuration(Configuration.SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS);
+                if (isGroupTarget == true)
+                    spellTemplate.AuraDuration.RaiseDurationToMinimum(Configuration.SPELLS_PLAYER_BUFF_DURATION_GROUP_IN_MS);
+                else
+                    spellTemplate.AuraDuration.RaiseDurationToMinimum(Configuration.SPELLS_PLAYER_BUFF_DURATION_SINGLE_TARGET_IN_MS);
             }
 
             // Flat EQ mana cost becomes a WOW-style percent of base mana, sized by what fraction of a typical EQ caster mana pool the flat cost was at the spell's lowest learn level
