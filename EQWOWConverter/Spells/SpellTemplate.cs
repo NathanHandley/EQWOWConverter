@@ -3518,10 +3518,52 @@ namespace EQWOWConverter.Spells
                                 {
                                     // EQ damage shield amounts are negative, so a positive one lowers the target's damage shield rather than granting one
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
-                                    newSpellEffectWOW.ActionDescription = string.Concat("applies a shield that heals melee attackers for ", effectGeneratedSpellTemplate.WOWSpellEffects[0].GetFormattedEffectActionString(false));
-                                    // Rendered immediately: the amount is measured on the child heal effect but stored here, so it cannot be deferred.
-                                    newSpellEffectWOW.AuraDescription = string.Concat("healing melee attackers", effectGeneratedSpellTemplate.WOWSpellEffects[0].GetFormattedEffectAuraString(false, " for ", ""));
-                                    spellTemplate.WOWSpellIDCastOnMeleeAttacker = effectGeneratedSpellTemplate.WOWSpellID;
+                                    newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.RemoveDamageShield;
+                                    newSpellEffectWOW.ActionDescription = "strips the damage shield off of the target";
+                                    newSpellEffectWOW.AuraDescription = "unable to hold a damage shield";
+                                    spellTemplate.RemovesTargetDamageShield = true;
+
+                                    // Mark of Karn also marks the target so that anyone meleeing it is healed, which is what the WOW paladin's Judgement of Light does, so it borrows
+                                    if (spellTemplate.EQSpellID == Configuration.SPELLS_HEALMELEEATTACKERS_EQ_SPELL_ID)
+                                    {
+                                        // Create a healing spell for this
+                                        SpellTemplate effectGeneratedSpellTemplate = new SpellTemplate();
+                                        effectGeneratedSpellTemplate.Name = string.Concat(spellTemplate.Name, " Heal Effect");
+                                        effectGeneratedSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "heal", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
+                                        effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
+                                        effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                                        effectGeneratedSpellTemplate.SpellVisualID1 = 5560; // Lesser Heal visual, like Judgement of Light
+                                        effectGeneratedSpellTemplate.SchoolMask = 2; // Holy
+                                        effectGeneratedSpellTemplate.HideCaster = true;
+                                        effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                                        effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
+                                        SpellEffectEQ healEQEffect = new SpellEffectEQ();
+                                        healEQEffect.EQEffectType = SpellEQEffectType.CurrentHitPoints;
+                                        healEQEffect.EQBaseValue = eqEffect.EQBaseValue;
+                                        healEQEffect.EQBaseValueFormulaType = eqEffect.EQBaseValueFormulaType;
+                                        healEQEffect.EQFormulaTypeValue = eqEffect.EQFormulaTypeValue;
+                                        healEQEffect.EQLimitValue = eqEffect.EQLimitValue;
+                                        healEQEffect.EQMaxValue = eqEffect.EQMaxValue;
+                                        effectGeneratedSpellTemplate.EQSpellEffects.Add(healEQEffect);
+                                        effectGeneratedSpellTemplates.Add(effectGeneratedSpellTemplate);
+                                        ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, new SpellDuration(), 0, new List<SpellWOWTargetType>() { SpellWOWTargetType.UnitTargetAny },
+                                            0, itemTemplatesByEQDBID, false, string.Empty, zonePropertiesByShortName, ref creatureTemplatesByEQID, ref effectGeneratedSpellTemplates);
+
+                                        // The proc hands the heal its own amount (a share of the attacker's maximum health), so nothing else may scale it
+                                        effectGeneratedSpellTemplate.InfluencedBySpellPower = false;
+                                        spellTemplate.WOWSpellIDCastOnMeleeAttacker = effectGeneratedSpellTemplate.WOWSpellID;
+                                        spellTemplate.HealsMeleeAttackersLikeJudgementOfLight = true;
+
+                                        // Update the aura proc
+                                        SpellEffectWOW healMeleeAttackersEffectWOW = new SpellEffectWOW();
+                                        healMeleeAttackersEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                        healMeleeAttackersEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
+                                        healMeleeAttackersEffectWOW.EffectMiscValueA = (int)SpellDummyType.HealMeleeAttackers;
+                                        healMeleeAttackersEffectWOW.EffectBasePoints = Configuration.SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH;
+                                        healMeleeAttackersEffectWOW.ActionDescription = string.Concat("marks the target so that melee attacks against it heal the attacker for ", Configuration.SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH.ToString(), "% of their maximum health");
+                                        healMeleeAttackersEffectWOW.AuraDescription = string.Concat("healing melee attackers for ", Configuration.SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH.ToString(), "% of their maximum health");
+                                        newSpellEffects.Add(healMeleeAttackersEffectWOW);
+                                    }
                                 }
                                 else
                                 {
@@ -4141,6 +4183,14 @@ namespace EQWOWConverter.Spells
                 spellTemplate.AuraStackEffectKeys.Add(effectStackKey);
             }
             spellTemplate.AuraStackKeyFlagBits = (isBardSongAura ? 2 : 0) + (isDetrimental ? 1 : 0);
+        }
+
+        // A stack group that is not built out of EQ effect keys, for the handful of places an EQ spell has to stack-compete with a stock WOW spell
+        public static int GetOrCreateNamedSpellGroupID(string groupKey, int stackRule)
+        {
+            int groupStackingID = IDGenerationTool.GenerateID("SpellGroupID", groupKey);
+            SpellGroupStackRuleByGroup[groupStackingID] = stackRule;
+            return groupStackingID;
         }
 
         private static int GetOrCreateSpellGroupID(int compositeKey)
