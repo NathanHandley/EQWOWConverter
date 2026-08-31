@@ -276298,3 +276298,5 @@ BroadcastTextID|hailtext~westwastes~The_Dragon_Sage|84759
 NPCTextID|hailtext~westwastes~The_Dragon_Sage|82093
 GossipMenuID|hailtext~westwastes~The_Dragon_Sage|64026
 SpellGroupID|judgementoflight|1781
+BroadcastTextID|questreaction~52511~2|84760
+BroadcastTextID|questreaction~54672~6|84761

@@ -3331,3 +3331,4 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 30385|cauldron|Captain_Klunga|spawnobject|4637|||||||
 30385|cauldron|Captain_Klunga|walkgrid|2|||||||
 30385|cauldron|Captain_Klunga|despawn|self|||||||3600000
+33371|timorous|Alrik_Farsight|emote|%s grins happily. 'Excellent! Was he pleased with the artifact? Oh, that's not even worth answering. I'm sure he was. He's always happy with the things I send him. That's why he honored me with this position of esteem, searching for useful and powerful items in this newly discovered land.'|||||||
