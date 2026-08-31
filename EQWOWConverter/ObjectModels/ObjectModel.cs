@@ -1448,6 +1448,9 @@ namespace EQWOWConverter.ObjectModels
                         FindAndSetAnimationForType(AnimationType.ReadySpellOmni);
                         FindAndSetAnimationForType(AnimationType.SpellCastOmni);
                         FindAndSetAnimationForType(AnimationType.SpellCastDirected);
+                        FindAndSetAnimationForType(AnimationType.ChannelCastDirected);
+                        FindAndSetAnimationForType(AnimationType.ChannelCastOmni);
+                        FindAndSetAnimationForType(AnimationType.SpellPrecast); // The fallback for both channel types, and the behavior target of FlySpellPrecast
                         FindAndSetAnimationForType(AnimationType.Hover);
                         FindAndSetAnimationForType(AnimationType.SitGround);
                         FindAndSetAnimationForType(AnimationType.SitGroundUp);

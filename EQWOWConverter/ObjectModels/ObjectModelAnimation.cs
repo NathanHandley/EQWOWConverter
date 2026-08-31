@@ -61,6 +61,8 @@ namespace EQWOWConverter.ObjectModels
                     case AnimationType.SwimLeft: Loop = true; break;
                     case AnimationType.SwimRight: Loop = true; break;
                     case AnimationType.Hover: Loop = true; break;
+                    case AnimationType.ChannelCastDirected: Loop = true; break;
+                    case AnimationType.ChannelCastOmni: Loop = true; break;
                     case AnimationType.StealthWalk: Loop = true; break;
                     case AnimationType.ShipMoving: Loop = true; break;
                     case AnimationType.ShipStop: Loop = true; break;
@@ -416,6 +418,21 @@ namespace EQWOWConverter.ObjectModels
                     }
                     break;
                 case AnimationType.SpellCastOmni:
+                    {
+                        returnTypes.Add(EQAnimationType.t05CastLoopArms);
+                        returnTypes.Add(EQAnimationType.t04CastPullBack);
+                        returnTypes.Add(EQAnimationType.t06CastPushForward);
+                    }
+                    break;
+                case AnimationType.ChannelCastDirected:
+                    {
+                        // Channels hold for the whole cast, so the looping arm raise reads best
+                        returnTypes.Add(EQAnimationType.t05CastLoopArms);
+                        returnTypes.Add(EQAnimationType.t06CastPushForward);
+                        returnTypes.Add(EQAnimationType.t04CastPullBack);
+                    }
+                    break;
+                case AnimationType.ChannelCastOmni:
                     {
                         returnTypes.Add(EQAnimationType.t05CastLoopArms);
                         returnTypes.Add(EQAnimationType.t04CastPullBack);
