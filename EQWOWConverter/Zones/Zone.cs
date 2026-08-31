@@ -591,6 +591,15 @@ namespace EQWOWConverter.Zones
                 collisionMeshData.Normals[face.V3] += normal;
             }
 
+            // Remove any collision-only discarded geometry
+            foreach (BoundingBox discardBox in ZoneProperties.DiscardGeometryBoxesCollisionOnly)
+            {
+                MeshData discardedCollisionMeshData;
+                MeshData keptCollisionMeshData;
+                MeshData.GetSplitMeshDataWithClipping(collisionMeshData, discardBox, out discardedCollisionMeshData, out keptCollisionMeshData);
+                collisionMeshData = keptCollisionMeshData;
+            }
+
             // Constrain the minimum collision area, if set
             if (ZoneProperties.CollisionMinZ != 0)
             {

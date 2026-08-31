@@ -163,6 +163,7 @@ namespace EQWOWConverter.Zones
         public List<BoundingBox> DiscardGeometryBoxes = new List<BoundingBox>();
         public List<BoundingBox> DiscardObjectGeometryBoxesMapGenOnly = new List<BoundingBox>();
         public List<BoundingBox> DiscardGeometryBoxesObjectsOnly = new List<BoundingBox>();
+        public List<BoundingBox> DiscardGeometryBoxesCollisionOnly = new List<BoundingBox>();
         public float DisplayMapMainLeft = 0;
         public float DisplayMapMainRight = 0;
         public float DisplayMapMainTop = 0;
@@ -1121,6 +1122,7 @@ namespace EQWOWConverter.Zones
                             case "all": zoneProperties.DiscardGeometryBoxes.Add(postScaleBox); break;
                             case "mapgenonly": zoneProperties.DiscardObjectGeometryBoxesMapGenOnly.Add(postScaleBox); break;
                             case "objectsonly": zoneProperties.DiscardGeometryBoxesObjectsOnly.Add(postScaleBox); break;
+                            case "collision": zoneProperties.DiscardGeometryBoxesCollisionOnly.Add(postScaleBox); break;
                             default:
                                 {
                                     Logger.WriteError("Invalid discarded geometry box type of '", discardedGeometryBox.TypeString.Trim().ToLower(), "' for zone '", shortName, "' ");
