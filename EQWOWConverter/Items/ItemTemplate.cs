@@ -656,9 +656,17 @@ namespace EQWOWConverter.Items
             if (eqHp != 0)
             itemTemplate.StatValues.Add((ItemWOWStatType.Health, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Hp", eqHp))));
 
-            // Mana
+            // Mana & MP5
             if (eqMana != 0)
-                itemTemplate.StatValues.Add((ItemWOWStatType.Mana, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Mp", eqMana))));
+            {
+                int wowMana = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Mp", eqMana));
+                itemTemplate.StatValues.Add((ItemWOWStatType.Mana, wowMana));
+
+                // MP5 is directly based on Mana
+                int calcMP5 = Convert.ToInt32(float.Floor((float)wowMana * Configuration.ITEM_STATS_MANA_TO_MP5_MOD));
+                if (calcMP5 > 0)
+                    itemTemplate.StatValues.Add((ItemWOWStatType.ManaRegeneration, Math.Min(Configuration.ITEM_STATS_MANA_TO_MP5_MAX, calcMP5)));
+            }
 
             // Resist Arcane
             // Note: Magic resist is being mapped to Arcane
