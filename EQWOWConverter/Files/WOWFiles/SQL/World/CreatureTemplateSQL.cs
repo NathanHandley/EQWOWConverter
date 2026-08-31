@@ -110,7 +110,7 @@ namespace EQWOWConverter.WOWFiles
                 typeFlags |= 4096;   // 0x00001000 = CREATURE_TYPE_FLAG_CAN_ASSIST
             bool isHiddenNonNPC = creatureTemplate.IsNonNPC == true && creatureTemplate.IsInteractive() == false;
             int unitFlags = 0;
-            if (creatureTemplate.IsNonNPC == true)
+            if (creatureTemplate.IsNonNPC == true || creatureTemplate.IsBanker == true)
             {
                 if (isHiddenNonNPC == true)
                     unitFlags |= 33554432; // 0x02000000 = UNIT_FLAG_NOT_SELECTABLE
@@ -150,6 +150,8 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("faction", Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL);
             else if (creatureTemplate.WOWCreatureTemplateID == Configuration.GENERATE_PRIST_OF_DISCORD_WORLD_TRANSPORTATION_CREATURE_TEMPLATE_ID)
                 newRow.AddInt("faction", 35); // This is a 'friendly with all' rep
+            else if (creatureTemplate.IsBanker == true)
+                newRow.AddInt("faction", 35); // Bankers are always friendly to everyone, even in cities hostile to the player
             else
                 newRow.AddInt("faction", creatureTemplate.WOWFactionTemplateID); // References FactionTemplate.dbc
             newRow.AddInt("npcflag", npcFlags);
