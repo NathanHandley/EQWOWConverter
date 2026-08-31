@@ -1322,6 +1322,11 @@ namespace EQWOWConverter.ObjectModels
                 CreateEventOrAttachmentBone("fd2"); // PlayFidgetSound2
                 CreateEventOrAttachmentBone("fsd"); // HandleFootfallAnimEvent
                 CreateEventOrAttachmentBone("hit"); // PlayWoundAnimKit
+                CreateEventOrAttachmentBone("bwr"); // BowRelease (where a fired arrow comes from)
+                CreateEventOrAttachmentBone("csl"); // Combat Spell Left Hand (thrown weapons leave from these)
+                CreateEventOrAttachmentBone("csr"); // Combat Spell Right Hand
+                CreateEventOrAttachmentBone("chd"); // Combat Head
+                CreateEventOrAttachmentBone("cch"); // Combat Chest
 
                 // Set any key bones
                 SetKeyBone(KeyBoneType.Jaw);
@@ -2077,6 +2082,10 @@ namespace EQWOWConverter.ObjectModels
                     {
                         returnValue = GetFirstBoneIndexForEQBoneNames("l_point", "pe", "root");
                     } break;
+                case ObjectModelAttachmentType.HandArrow:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("l_point", "ch", "root");
+                    } break;
                 case ObjectModelAttachmentType.HandRight_ItemVisual1:
                 case ObjectModelAttachmentType.SpellRightHand:
                 case ObjectModelAttachmentType.LargeWeaponRight:
@@ -2207,6 +2216,31 @@ namespace EQWOWConverter.ObjectModels
                         // For now, let's just use root
                         // TODO: Use something other than root?
                         int parentBoneID = GetFirstBoneIndexForEQBoneNames("root");
+                        ObjectModelBone eventBone = new ObjectModelBone(newBoneName, Convert.ToInt16(parentBoneID));
+                        ModelBones.Add(eventBone);
+                    } break;
+                case "bwr": // Bow release, on the hand holding the bow
+                case "csl": // Combat spell left hand
+                    {
+                        int parentBoneID = GetFirstBoneIndexForEQBoneNames("l_point", "ch", "root");
+                        ObjectModelBone eventBone = new ObjectModelBone(newBoneName, Convert.ToInt16(parentBoneID));
+                        ModelBones.Add(eventBone);
+                    } break;
+                case "csr": // Combat spell right hand, which is the hand a thrown weapon leaves
+                    {
+                        int parentBoneID = GetFirstBoneIndexForEQBoneNames("r_point", "ch", "root");
+                        ObjectModelBone eventBone = new ObjectModelBone(newBoneName, Convert.ToInt16(parentBoneID));
+                        ModelBones.Add(eventBone);
+                    } break;
+                case "chd": // Combat head
+                    {
+                        int parentBoneID = GetFirstBoneIndexForEQBoneNames("head_point", "he", "ch", "root");
+                        ObjectModelBone eventBone = new ObjectModelBone(newBoneName, Convert.ToInt16(parentBoneID));
+                        ModelBones.Add(eventBone);
+                    } break;
+                case "cch": // Combat chest
+                    {
+                        int parentBoneID = GetFirstBoneIndexForEQBoneNames("ch", "pe", "root");
                         ObjectModelBone eventBone = new ObjectModelBone(newBoneName, Convert.ToInt16(parentBoneID));
                         ModelBones.Add(eventBone);
                     } break;

@@ -211,8 +211,8 @@ namespace EQWOWConverter.WOWFiles
 
         private void SetSkeletonAttachments(ObjectModel wowObjectModel)
         {
-            // Blank out the attachment list (through 'chest')
-            for (int i = 0; i < 35; i++)
+            // Blank out the attachment list (through 'hand arrow')
+            for (int i = 0; i <= Convert.ToInt32(ObjectModelAttachmentType.HandArrow); i++)
                 AttachmentIndicesLookup.Add(new M2Int16(-1));
 
             // Races that can't hold visible items leave off the item attachments, since a model with no attach point for a weapon or shield won't have the wearer's equipped items drawn on it
@@ -245,6 +245,7 @@ namespace EQWOWConverter.WOWFiles
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.Chest);            
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ElbowRight_ItemVisual3);
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ElbowLeft_ItemVisual4);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HandArrow);
         }
 
         private void SetSkeletonAttachment(ObjectModel wowObjectModel, ObjectModelAttachmentType attachmentType)
@@ -339,6 +340,25 @@ namespace EQWOWConverter.WOWFiles
                 M2Event playWound = new M2Event();
                 playWound.PopulateAsPlayWoundAnimKitHIT(wowObjectModel);
                 Events.AddElement(playWound);            
+
+                // BowRelease ($BWR)
+                M2Event bowRelease = new M2Event();
+                bowRelease.PopulateAsBowReleaseBWR(wowObjectModel);
+                Events.AddElement(bowRelease);
+
+                // Thrown weapon launch points ($CSL / $CSR / $CHD / $CCH)
+                M2Event combatSpellLeftHand = new M2Event();
+                combatSpellLeftHand.PopulateAsCombatSpellLeftHandCSL(wowObjectModel);
+                Events.AddElement(combatSpellLeftHand);
+                M2Event combatSpellRightHand = new M2Event();
+                combatSpellRightHand.PopulateAsCombatSpellRightHandCSR(wowObjectModel);
+                Events.AddElement(combatSpellRightHand);
+                M2Event combatHead = new M2Event();
+                combatHead.PopulateAsCombatHeadCHD(wowObjectModel);
+                Events.AddElement(combatHead);
+                M2Event combatChest = new M2Event();
+                combatChest.PopulateAsCombatChestCCH(wowObjectModel);
+                Events.AddElement(combatChest);
 
                 if (wowObjectModel.NumOfFidgetSounds > 0)
                 {

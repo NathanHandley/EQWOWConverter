@@ -2031,7 +2031,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEMS_STATS_LOW_BIAS_WEIGHT", ITEMS_STATS_LOW_BIAS_WEIGHT, "This is how much 'weight' the lower stat has when converting EQ to WoW stats, with values closer to 1 leaning towards the lower stat, and further from 1 leaning towards the higher stat.");
             OutputVariableToConfig("ITEMS_MAX_SELL_PRICE_IN_COPPER", ITEMS_MAX_SELL_PRICE_IN_COPPER, "Maximum amount something can sell to a vendor for");
             OutputVariableToConfig("ITEM_STATS_MANA_TO_MP5_MOD", ITEM_STATS_MANA_TO_MP5_MOD, "How much to multiply item +mana by to calculate added MP5", false);
-            OutputVariableToConfig("ITEM_STATS_MANA_TO_MP5_MAX", ITEM_STATS_MANA_TO_MP5_MAX, "")
+            OutputVariableToConfig("ITEM_STATS_MANA_TO_MP5_MAX", ITEM_STATS_MANA_TO_MP5_MAX, "");
             OutputVariableToConfig("ITEMS_DURABILITY_ENABLED", ITEMS_DURABILITY_ENABLED, "If true, worn armor, shields and weapons take durability damage and must be repaired at a vendor");
             OutputVariableToConfig("ITEMS_DURABILITY_MULTIPLIER", ITEMS_DURABILITY_MULTIPLIER, "Multiplier applied to every generated durability value");
             OutputVariableToConfig("ITEMS_ITEM_LEVEL_MINIMUM", ITEMS_ITEM_LEVEL_MINIMUM, "Item level is what WOW uses to price a durability point when repairing");

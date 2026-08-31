@@ -173,6 +173,62 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
+        public void PopulateAsBowReleaseBWR(ObjectModel wowObjectModel)
+        {
+            Identifier = "$BWR";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("bwr", "l_point", "ch", "root"));
+            SetTimestampsForAnimationTypes(wowObjectModel, AnimationType.AttackBow, AnimationType.AttackRifle);
+        }
+
+        public void PopulateAsCombatSpellLeftHandCSL(ObjectModel wowObjectModel)
+        {
+            Identifier = "$CSL";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("csl", "l_point", "ch", "root"));
+            SetTimestampsForAnimationTypes(wowObjectModel, AnimationType.AttackThrown);
+        }
+
+        public void PopulateAsCombatSpellRightHandCSR(ObjectModel wowObjectModel)
+        {
+            Identifier = "$CSR";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("csr", "r_point", "ch", "root"));
+            SetTimestampsForAnimationTypes(wowObjectModel, AnimationType.AttackThrown);
+        }
+
+        public void PopulateAsCombatHeadCHD(ObjectModel wowObjectModel)
+        {
+            Identifier = "$CHD";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("chd", "head_point", "he", "ch", "root"));
+            SetTimestampsForAnimationTypes(wowObjectModel, AnimationType.AttackThrown);
+        }
+
+        public void PopulateAsCombatChestCCH(ObjectModel wowObjectModel)
+        {
+            Identifier = "$CCH";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("cch", "ch", "pe", "root"));
+            SetTimestampsForAnimationTypes(wowObjectModel, AnimationType.AttackThrown);
+        }
+
+        private void SetTimestampsForAnimationTypes(ObjectModel wowObjectModel, params AnimationType[] animationTypes)
+        {
+            HashSet<Int16> animationIndexes = new HashSet<Int16>();
+            foreach (AnimationType animationType in animationTypes)
+            {
+                int lookupIndex = Convert.ToInt32(animationType);
+                if (lookupIndex >= wowObjectModel.AnimationLookups.Count)
+                    continue;
+                Int16 animationIndex = wowObjectModel.AnimationLookups[lookupIndex];
+                if (animationIndex >= 0)
+                    animationIndexes.Add(animationIndex);
+            }
+
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
+            {
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+                if (animationIndexes.Contains(Convert.ToInt16(i)))
+                    Timestamps[i].AddTimestamp(0);
+            }
+        }
+
         public void PopulateAsPlayWoundAnimKitHIT(ObjectModel wowObjectModel)
         {
             Identifier = "$HIT";
