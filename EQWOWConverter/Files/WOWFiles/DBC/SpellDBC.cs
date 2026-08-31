@@ -273,6 +273,7 @@ namespace EQWOWConverter.WOWFiles
                 row.SourceRawBytes[DESCRIPTION_LANG_FIELD_BYTE_OFFSET + i] = newStringOffsetBytes[i];
         }
 
+        private static readonly int EQUIPPED_ITEM_SUBCLASS_FIELD_BYTE_OFFSET = 276;       // EquippedItemSubclass (field 69)
         private static readonly int MAX_LEVEL_FIELD_BYTE_OFFSET = 148;                    // MaxLevel (field 37)
         private static readonly int BASE_LEVEL_FIELD_BYTE_OFFSET = 152;                   // BaseLevel (field 38)
         private static readonly int SPELL_LEVEL_FIELD_BYTE_OFFSET = 156;                  // SpellLevel (field 39)
@@ -374,6 +375,19 @@ namespace EQWOWConverter.WOWFiles
             DBCRow row = SourceRowsBySpellID[spellID];
             SetInt32OnSourceRow(row, BASE_LEVEL_FIELD_BYTE_OFFSET, 0);
             Logger.WriteDebug(string.Concat("SpellDBC removed the item level requirement of spell ID '", spellID.ToString(), "'"));
+        }
+
+        // Opens a spell up to every weapon subclass, leaving the item class and inventory type requirements alone (0 means "any subclass")
+        public void RemoveEquippedItemSubClassRequirementForSpellID(int spellID)
+        {
+            if (SourceRowsBySpellID.ContainsKey(spellID) == false)
+            {
+                Logger.WriteError("SpellDBC could not remove the equipped item subclass requirement of spell ID '", spellID.ToString(), "' since no source row has that ID");
+                return;
+            }
+            DBCRow row = SourceRowsBySpellID[spellID];
+            SetInt32OnSourceRow(row, EQUIPPED_ITEM_SUBCLASS_FIELD_BYTE_OFFSET, 0);
+            Logger.WriteDebug(string.Concat("SpellDBC removed the equipped item subclass requirement of spell ID '", spellID.ToString(), "'"));
         }
 
         private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool doHideFromDisplay, bool preventClickOff, bool isWornEquipEffect)

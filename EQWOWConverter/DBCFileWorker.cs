@@ -318,6 +318,9 @@ namespace EQWOWConverter
             if (Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true)
                 AdjustDeathKnightSpellsForLowLevelPlay();
 
+            // EQ classes use weapons WoW Shaman don't, so windfury needs to work for all weapon types
+            AdjustWindfuryForAllWeaponTypes();
+
             // Achievements
             if (Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true)
                 achievementDBC.AddRowForFeatOfStrength(Configuration.DBCID_ACHIEVEMENT_ID_START, Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_NAME,
@@ -1232,6 +1235,12 @@ namespace EQWOWConverter
             zoneMusicDBC.SaveToDisk(dbcOutputServerFolder);
 
             Logger.WriteDebug("Creating DBC Files complete");
+        }
+
+        private void AdjustWindfuryForAllWeaponTypes()
+        {
+            spellDBC.RemoveEquippedItemSubClassRequirementForSpellID(25504); // Windfury Attack (main hand)
+            spellDBC.RemoveEquippedItemSubClassRequirementForSpellID(33750); // Windfury Attack (off hand)
         }
 
         private void AdjustDeathKnightSpellsForLowLevelPlay()
