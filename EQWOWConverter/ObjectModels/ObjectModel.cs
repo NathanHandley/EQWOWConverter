@@ -1432,6 +1432,15 @@ namespace EQWOWConverter.ObjectModels
                         FindAndSetAnimationForType(AnimationType.AttackBow);
                         FindAndSetAnimationForType(AnimationType.ReadyRifle);
                         FindAndSetAnimationForType(AnimationType.FireBow);
+                        FindAndSetAnimationForType(AnimationType.ReadyBow);
+                        FindAndSetAnimationForType(AnimationType.LoadBow);
+                        FindAndSetAnimationForType(AnimationType.HoldBow);
+                        FindAndSetAnimationForType(AnimationType.LoadRifle);
+                        FindAndSetAnimationForType(AnimationType.HoldRifle);
+                        FindAndSetAnimationForType(AnimationType.AttackThrown);
+                        FindAndSetAnimationForType(AnimationType.ReadyThrown);
+                        FindAndSetAnimationForType(AnimationType.HoldThrown);
+                        FindAndSetAnimationForType(AnimationType.LoadThrown);
                         FindAndSetAnimationForType(AnimationType.Walk);
                         FindAndSetAnimationForType(AnimationType.Walkbackwards);
                         FindAndSetAnimationForType(AnimationType.Run);

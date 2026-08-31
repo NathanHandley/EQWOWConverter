@@ -507,7 +507,25 @@ namespace EQWOWConverter.ObjectModels
                     break;
                 case AnimationType.AttackBow:
                     {
-                        returnTypes.Add(EQAnimationType.p01StandPassive);
+                        returnTypes.Add(EQAnimationType.c09AttackBow);
+                    }
+                    break;
+                case AnimationType.AttackThrown:
+                    {
+                        returnTypes.Add(EQAnimationType.c05AttackMain1H);
+                        returnTypes.Add(EQAnimationType.c08AttackUnarmed);
+                        returnTypes.Add(EQAnimationType.c09AttackBow);
+                    }
+                    break;
+                case AnimationType.LoadBow: // Fallthrough
+                case AnimationType.HoldBow: // Fallthrough
+                case AnimationType.LoadRifle: // Fallthrough
+                case AnimationType.HoldRifle: // Fallthrough
+                case AnimationType.ReadyThrown: // Fallthrough
+                case AnimationType.HoldThrown: // Fallthrough
+                case AnimationType.LoadThrown:
+                    {
+                        returnTypes.AddRange(GetFallbackStandEQAnimationTypes());
                     }
                     break;
                 case AnimationType.FireBow:
