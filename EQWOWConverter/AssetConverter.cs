@@ -3352,9 +3352,12 @@ namespace EQWOWConverter
                 spellTemplates.Add(bashSpellTemplate);
 
                 // Creature Bash
-                SpellVisual.GetOrCreateSoundDBCID("swing"); // TODO: This too
-                SpellTemplate bashCreatureSpellTemplate = BuildBashSpellTemplate(Configuration.COMBATSKILL_BASH_CREATURE_SPELL_ID, SpellTemplate.BashCreatureSpellVisualID, bashAndSlamSpellCategoryID, bashForbearanceSpellID);
-                spellTemplates.Add(bashCreatureSpellTemplate);
+                if (Configuration.COMBATSKILL_BASH_CREATURE_ENABLED == true || Configuration.COMBATSKILL_BASH_PET_ENABLED == true)
+                {
+                    SpellVisual.GetOrCreateSoundDBCID("swing"); // TODO: This too
+                    SpellTemplate bashCreatureSpellTemplate = BuildBashSpellTemplate(Configuration.COMBATSKILL_BASH_CREATURE_SPELL_ID, SpellTemplate.BashCreatureSpellVisualID, bashAndSlamSpellCategoryID, bashForbearanceSpellID);
+                    spellTemplates.Add(bashCreatureSpellTemplate);
+                }
             }
 
             // Slam

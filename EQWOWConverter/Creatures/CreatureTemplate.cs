@@ -487,7 +487,8 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.UsesBash = DetermineCreatureUsesBash(newCreatureTemplate.EQClass, newCreatureTemplate.Level, specialAbilitiesRaw);
                     newCreatureTemplate.UsesHarmTouch = DetermineCreatureUsesHarmTouch(newCreatureTemplate.EQClass, newCreatureTemplate.Level);
                     newCreatureTemplate.UsesLayOnHands = DetermineCreatureUsesLayOnHands(newCreatureTemplate.EQClass, newCreatureTemplate.Level);
-                    if (newCreatureTemplate.UsesBash == true || newCreatureTemplate.UsesHarmTouch == true || newCreatureTemplate.UsesLayOnHands == true)
+                    bool usesBashViaSmartScript = newCreatureTemplate.UsesBash == true && Configuration.COMBATSKILL_BASH_CREATURE_ENABLED == true;
+                    if (usesBashViaSmartScript == true || newCreatureTemplate.UsesHarmTouch == true || newCreatureTemplate.UsesLayOnHands == true)
                         newCreatureTemplate.HasSmartScript = true;
 
                     // "bow+arrow" enabled shooting is calc'ed by the server, so only catch the special ability "ranged attack"
@@ -645,6 +646,8 @@ namespace EQWOWConverter.Creatures
         private static bool DetermineCreatureUsesBash(int eqClass, int level, string specialAbilitiesRaw)
         {
             if (Configuration.COMBATSKILL_BASH_ENABLED == false)
+                return false;
+            if (Configuration.COMBATSKILL_BASH_CREATURE_ENABLED == false && Configuration.COMBATSKILL_BASH_PET_ENABLED == false)
                 return false;
             if (level < Configuration.COMBATSKILL_BASH_CREATURE_MIN_LEVEL)
                 return false;

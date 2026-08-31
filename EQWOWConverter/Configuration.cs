@@ -1091,6 +1091,8 @@ namespace EQWOWConverter
         // Bash skills in EQ are either from warrior/cleric/paladin/shadowknight or those that use warrior skills
         public static bool COMBATSKILL_BASH_ENABLED = true;
         public static bool COMBATSKILL_BASH_PLAYER_LEARNABLE = true;
+        public static bool COMBATSKILL_BASH_CREATURE_ENABLED = false;
+        public static bool COMBATSKILL_BASH_PET_ENABLED = true;
         public static int COMBATSKILL_BASH_SPELL_ID = 86908;
         public static int COMBATSKILL_BASH_CREATURE_SPELL_ID = 86917;
         public static int COMBATSKILL_BASH_SPELL_ICON_EQ_ID = 11;
@@ -2184,6 +2186,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBAT_DAZE_IN_EQ_ZONES_ENABLED", COMBAT_DAZE_IN_EQ_ZONES_ENABLED, "EQ has no \"daze\" snare when a creature melee-hits a player from behind so this can disable it (in EQ zones only)");
             OutputVariableToConfig("COMBATSKILL_BASH_ENABLED", COMBATSKILL_BASH_ENABLED, "Bash skills in EQ are either from warrior/cleric/paladin/shadowknight or those that use warrior skills", false);
             OutputVariableToConfig("COMBATSKILL_BASH_PLAYER_LEARNABLE", COMBATSKILL_BASH_PLAYER_LEARNABLE, "Whether classes that have Bash learn it as players (from level 1)", false);
+            OutputVariableToConfig("COMBATSKILL_BASH_CREATURE_ENABLED", COMBATSKILL_BASH_CREATURE_ENABLED, "Whether world creatures (anything that is not a summoned pet) that have Bash use it at all", false);
+            OutputVariableToConfig("COMBATSKILL_BASH_PET_ENABLED", COMBATSKILL_BASH_PET_ENABLED, "Whether summoned pets that have Bash use it at all", false);
             OutputVariableToConfig("COMBATSKILL_BASH_SPELL_ID", COMBATSKILL_BASH_SPELL_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_CREATURE_SPELL_ID", COMBATSKILL_BASH_CREATURE_SPELL_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_BASH_SPELL_ICON_EQ_ID", COMBATSKILL_BASH_SPELL_ICON_EQ_ID, "", false);
@@ -2785,6 +2789,8 @@ namespace EQWOWConverter
             COMBAT_DAZE_IN_EQ_ZONES_ENABLED = ReadVariableFromConfigString("COMBAT_DAZE_IN_EQ_ZONES_ENABLED", configValuesByVariableName, COMBAT_DAZE_IN_EQ_ZONES_ENABLED);
             COMBATSKILL_BASH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_BASH_ENABLED", configValuesByVariableName, COMBATSKILL_BASH_ENABLED);
             COMBATSKILL_BASH_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_BASH_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_BASH_PLAYER_LEARNABLE);
+            COMBATSKILL_BASH_CREATURE_ENABLED = ReadVariableFromConfigString("COMBATSKILL_BASH_CREATURE_ENABLED", configValuesByVariableName, COMBATSKILL_BASH_CREATURE_ENABLED);
+            COMBATSKILL_BASH_PET_ENABLED = ReadVariableFromConfigString("COMBATSKILL_BASH_PET_ENABLED", configValuesByVariableName, COMBATSKILL_BASH_PET_ENABLED);
             COMBATSKILL_BASH_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_SPELL_ID", configValuesByVariableName, COMBATSKILL_BASH_SPELL_ID);
             COMBATSKILL_BASH_CREATURE_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_CREATURE_SPELL_ID", configValuesByVariableName, COMBATSKILL_BASH_CREATURE_SPELL_ID);
             COMBATSKILL_BASH_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_BASH_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_BASH_SPELL_ICON_EQ_ID);

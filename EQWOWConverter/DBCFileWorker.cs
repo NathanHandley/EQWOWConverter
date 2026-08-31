@@ -801,8 +801,11 @@ namespace EQWOWConverter
             {
                 spellVisualDBC.AddRow(SpellTemplate.BashSpellVisualID, 0, SpellTemplate.BashSpellVisualKitID, 0, 0);
                 spellVisualKitDBC.AddRow(SpellTemplate.BashSpellVisualKitID, Convert.ToInt32(AnimationType.ShieldBash), SpellVisual.GetOrCreateSoundDBCID("bashshld"), 0, 0, 0, 0);
-                spellVisualDBC.AddRow(SpellTemplate.BashCreatureSpellVisualID, 0, SpellTemplate.BashCreatureSpellVisualKitID, 0, 0);
-                spellVisualKitDBC.AddRow(SpellTemplate.BashCreatureSpellVisualKitID, Convert.ToInt32(AnimationType.ShieldBash), SpellVisual.GetOrCreateSoundDBCID("swing"), 0, 0, 0, 0);
+                if (Configuration.COMBATSKILL_BASH_CREATURE_ENABLED == true || Configuration.COMBATSKILL_BASH_PET_ENABLED == true)
+                {
+                    spellVisualDBC.AddRow(SpellTemplate.BashCreatureSpellVisualID, 0, SpellTemplate.BashCreatureSpellVisualKitID, 0, 0);
+                    spellVisualKitDBC.AddRow(SpellTemplate.BashCreatureSpellVisualKitID, Convert.ToInt32(AnimationType.ShieldBash), SpellVisual.GetOrCreateSoundDBCID("swing"), 0, 0, 0, 0);
+                }
             }
             if (Configuration.COMBATSKILL_SLAM_ENABLED == true)
             {
