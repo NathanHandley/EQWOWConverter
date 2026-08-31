@@ -23,6 +23,9 @@ local EQTRACK_PREFIX = "EQTRACK";
 local NUM_VISIBLE_ROWS = 14;
 local ROW_HEIGHT = 18;
 
+local SORT_COLUMN_NAME = "name";
+local SORT_COLUMN_DISTANCE = "distance";
+
 local trackEntries = {};        -- Committed list shown in the window: { guid, level, distance, name }
 local pendingEntries = {};      -- Entries accumulating between the "H" header and "F" footer messages
 local receivingList = false;
@@ -30,13 +33,18 @@ local maxTrackDistance = 0;
 local selectedIndex = 0;
 local trackedGuid = nil;        -- Guid string of the creature currently being tracked (nil when none)
 local rows = {};
+local sortColumn = SORT_COLUMN_DISTANCE;    -- The server builds the list nearest first, so start on that
+local sortAscending = true;
+
+-- Assigned down in the list section, but the column headers below need to call it
+local EQTracking_UpdateList;
 
 -- ===================================================================================
 -- Window
 -- ===================================================================================
 
 local EQTrackingFrame = CreateFrame("Frame", "EQTrackingFrame", UIParent);
-EQTrackingFrame:SetSize(340, 360);
+EQTrackingFrame:SetSize(340, 384);
 EQTrackingFrame:SetPoint("CENTER", UIParent, "CENTER", 200, 60);
 EQTrackingFrame:SetBackdrop({
 	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
@@ -62,15 +70,147 @@ local closeButton = CreateFrame("Button", "EQTrackingFrameCloseButton", EQTracki
 closeButton:SetPoint("TOPRIGHT", EQTrackingFrame, "TOPRIGHT", -6, -8);
 
 local emptyText = EQTrackingFrame:CreateFontString("EQTrackingFrameEmptyText", "ARTWORK", "GameFontDisable");
-emptyText:SetPoint("TOP", EQTrackingFrame, "TOP", 0, -60);
+emptyText:SetPoint("TOP", EQTrackingFrame, "TOP", 0, -90);
 emptyText:SetText("Nothing is within tracking range.");
 emptyText:Hide();
+
+-- ===================================================================================
+-- Sorting
+-- ===================================================================================
+
+-- Sorts on the active column and falls back to the other one, so creatures that tie keep a stable order
+-- from one refresh to the next.  Only the primary key follows the ascending/descending choice.
+local function EQTracking_CompareEntries(leftEntry, rightEntry)
+	local leftName = string.lower(leftEntry.name);
+	local rightName = string.lower(rightEntry.name);
+	local isLess;
+	if ( sortColumn == SORT_COLUMN_NAME ) then
+		if ( leftName ~= rightName ) then
+			isLess = leftName < rightName;
+		elseif ( leftEntry.distance ~= rightEntry.distance ) then
+			return leftEntry.distance < rightEntry.distance;
+		else
+			return leftEntry.guid < rightEntry.guid;
+		end
+	else
+		if ( leftEntry.distance ~= rightEntry.distance ) then
+			isLess = leftEntry.distance < rightEntry.distance;
+		elseif ( leftName ~= rightName ) then
+			return leftName < rightName;
+		else
+			return leftEntry.guid < rightEntry.guid;
+		end
+	end
+	if ( sortAscending ) then
+		return isLess;
+	end
+	return not isLess;
+end
+
+-- Re-orders the committed list in place, keeping the highlight on whichever creature was selected
+local function EQTracking_SortEntries()
+	local selectedGuid = nil;
+	if ( trackEntries[selectedIndex] ) then
+		selectedGuid = trackEntries[selectedIndex].guid;
+	end
+	table.sort(trackEntries, EQTracking_CompareEntries);
+	selectedIndex = 0;
+	if ( selectedGuid ) then
+		for entryIndex = 1, #trackEntries do
+			if ( trackEntries[entryIndex].guid == selectedGuid ) then
+				selectedIndex = entryIndex;
+				break;
+			end
+		end
+	end
+	if ( selectedIndex == 0 and #trackEntries > 0 ) then
+		selectedIndex = 1;
+	end
+end
+
+-- FauxScrollFrame_SetOffset on its own leaves the scroll bar thumb behind, so drive it from the bar
+local function EQTracking_ScrollToTop()
+	EQTrackingFrameScrollFrameScrollBar:SetValue(0);
+	FauxScrollFrame_SetOffset(EQTrackingFrameScrollFrame, 0);
+end
+
+-- ===================================================================================
+-- Column headers (click to sort on that column, click it again to reverse the order)
+-- ===================================================================================
+
+local nameHeader = CreateFrame("Button", "EQTrackingFrameNameHeader", EQTrackingFrame, "WhoFrameColumnHeaderTemplate");
+nameHeader:SetPoint("TOPLEFT", EQTrackingFrame, "TOPLEFT", 20, -38);
+nameHeader:SetText("Name");
+WhoFrameColumn_SetWidth(nameHeader, 200);
+nameHeader.sortColumn = SORT_COLUMN_NAME;
+
+local distanceHeader = CreateFrame("Button", "EQTrackingFrameDistanceHeader", EQTrackingFrame, "WhoFrameColumnHeaderTemplate");
+distanceHeader:SetPoint("TOPLEFT", EQTrackingFrame, "TOPLEFT", 220, -38);
+distanceHeader:SetText("Distance");
+WhoFrameColumn_SetWidth(distanceHeader, 80);
+distanceHeader.sortColumn = SORT_COLUMN_DISTANCE;
+
+-- The distances themselves are right aligned numbers, so right align their header over them to match
+local distanceHeaderText = distanceHeader:GetFontString();
+distanceHeaderText:ClearAllPoints();
+distanceHeaderText:SetPoint("RIGHT", distanceHeader, "RIGHT", -4, 0);
+
+-- The same 9x8 slice of the sort arrow that the auction house column headers use
+local nameHeaderArrow = nameHeader:CreateTexture(nil, "OVERLAY");
+nameHeaderArrow:SetTexture("Interface\\Buttons\\UI-SortArrow");
+nameHeaderArrow:SetSize(9, 8);
+nameHeaderArrow:SetPoint("LEFT", nameHeader:GetFontString(), "RIGHT", 3, -2);
+nameHeaderArrow:Hide();
+
+local distanceHeaderArrow = distanceHeader:CreateTexture(nil, "OVERLAY");
+distanceHeaderArrow:SetTexture("Interface\\Buttons\\UI-SortArrow");
+distanceHeaderArrow:SetSize(9, 8);
+distanceHeaderArrow:SetPoint("RIGHT", distanceHeaderText, "LEFT", -3, -2);
+distanceHeaderArrow:Hide();
+
+local function EQTracking_UpdateHeaderArrows()
+	local activeArrow, inactiveArrow;
+	if ( sortColumn == SORT_COLUMN_NAME ) then
+		activeArrow = nameHeaderArrow;
+		inactiveArrow = distanceHeaderArrow;
+	else
+		activeArrow = distanceHeaderArrow;
+		inactiveArrow = nameHeaderArrow;
+	end
+	inactiveArrow:Hide();
+	-- Unflipped for ascending and flipped vertically for descending, matching the auction house arrows
+	if ( sortAscending ) then
+		activeArrow:SetTexCoord(0, 0.5625, 0, 1.0);
+	else
+		activeArrow:SetTexCoord(0, 0.5625, 1.0, 0);
+	end
+	activeArrow:Show();
+end
+
+local function EQTracking_Header_OnClick(self)
+	if ( self.sortColumn == sortColumn ) then
+		sortAscending = not sortAscending;
+	else
+		sortColumn = self.sortColumn;
+		sortAscending = true;
+	end
+	-- This replaces the template's own OnClick (which drives the /who window), so replay its sound
+	PlaySound("igMainMenuOptionCheckBoxOn");
+	EQTracking_UpdateHeaderArrows();
+	EQTracking_SortEntries();
+	EQTracking_ScrollToTop();
+	EQTracking_UpdateList();
+end
+
+nameHeader:SetScript("OnClick", EQTracking_Header_OnClick);
+distanceHeader:SetScript("OnClick", EQTracking_Header_OnClick);
+EQTracking_UpdateHeaderArrows();
 
 -- ===================================================================================
 -- List rows (recycled buttons over a faux scroll frame)
 -- ===================================================================================
 
-local function EQTracking_UpdateList()
+EQTracking_UpdateList = function()
 	local scrollFrame = EQTrackingFrameScrollFrame;
 	FauxScrollFrame_Update(scrollFrame, #trackEntries, NUM_VISIBLE_ROWS, ROW_HEIGHT);
 	local offset = FauxScrollFrame_GetOffset(scrollFrame);
@@ -135,8 +275,8 @@ local function EQTracking_Row_OnDoubleClick(self)
 end
 
 local scrollFrame = CreateFrame("ScrollFrame", "EQTrackingFrameScrollFrame", EQTrackingFrame, "FauxScrollFrameTemplate");
-scrollFrame:SetPoint("TOPLEFT", EQTrackingFrame, "TOPLEFT", 16, -36);
-scrollFrame:SetPoint("BOTTOMRIGHT", EQTrackingFrame, "BOTTOMRIGHT", -38, 54);
+scrollFrame:SetPoint("TOPLEFT", EQTrackingFrame, "TOPLEFT", 16, -62);
+scrollFrame:SetPoint("BOTTOMRIGHT", EQTrackingFrame, "BOTTOMRIGHT", -38, 70);
 scrollFrame:SetScript("OnVerticalScroll", function(self, offset)
 	FauxScrollFrame_OnVerticalScroll(self, offset, ROW_HEIGHT, EQTracking_UpdateList);
 end);
@@ -145,7 +285,7 @@ for rowIndex = 1, NUM_VISIBLE_ROWS do
 	local row = CreateFrame("Button", "EQTrackingFrameRow" .. rowIndex, EQTrackingFrame);
 	row:SetSize(280, ROW_HEIGHT);
 	if ( rowIndex == 1 ) then
-		row:SetPoint("TOPLEFT", EQTrackingFrame, "TOPLEFT", 20, -38);
+		row:SetPoint("TOPLEFT", EQTrackingFrame, "TOPLEFT", 20, -62);
 	else
 		row:SetPoint("TOPLEFT", rows[rowIndex - 1], "BOTTOMLEFT", 0, 0);
 	end
@@ -160,11 +300,11 @@ for rowIndex = 1, NUM_VISIBLE_ROWS do
 
 	row.nameText = row:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall");
 	row.nameText:SetPoint("LEFT", row, "LEFT", 16, 0);
-	row.nameText:SetPoint("RIGHT", row, "RIGHT", -48, 0);
+	row.nameText:SetPoint("RIGHT", row, "RIGHT", -84, 0);
 	row.nameText:SetJustifyH("LEFT");
 
 	row.distanceText = row:CreateFontString(nil, "ARTWORK", "GameFontDisableSmall");
-	row.distanceText:SetPoint("RIGHT", row, "RIGHT", -2, 0);
+	row.distanceText:SetPoint("RIGHT", row, "RIGHT", -4, 0);
 	row.distanceText:SetJustifyH("RIGHT");
 
 	row:SetScript("OnClick", EQTracking_Row_OnClick);
@@ -235,13 +375,15 @@ local function EQTracking_HandlePayload(payload)
 			receivingList = false;
 			trackEntries = pendingEntries;
 			pendingEntries = {};
-			selectedIndex = 1;
+			-- A fresh list starts on its first row, whichever column the player is sorted by
+			selectedIndex = 0;
+			EQTracking_SortEntries();
 			if ( maxTrackDistance > 0 ) then
 				titleText:SetText("Tracking  (" .. maxTrackDistance .. " yd)");
 			else
 				titleText:SetText("Tracking");
 			end
-			FauxScrollFrame_SetOffset(EQTrackingFrameScrollFrame, 0);
+			EQTracking_ScrollToTop();
 			EQTracking_UpdateList();
 			EQTrackingFrame:Show();
 		elseif ( kind == "T" ) then
