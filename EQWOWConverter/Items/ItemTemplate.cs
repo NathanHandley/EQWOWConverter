@@ -2195,6 +2195,10 @@ namespace EQWOWConverter.Items
                 }
                 newItemTemplate.FoodType = int.Parse(columns["foodtype"]);
 
+                // Make spell scrolls stack
+                if (newItemTemplate.DoesTeachSpell == true && newItemTemplate.EQScrollSpellID > 0)
+                    newItemTemplate.StackSize = int.Max(Configuration.SPELLS_LEARNABLE_FROM_ITEMS_SCROLL_STACK_SIZE, 1);
+
                 // Adjust stack size and price for arrows
                 if (newItemTemplate.ClassID == 6 && newItemTemplate.SubClassID == 2)
                 {

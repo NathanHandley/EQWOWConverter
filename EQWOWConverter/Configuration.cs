@@ -912,6 +912,9 @@ namespace EQWOWConverter
         // If true, you can learn spells from items
         public static bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
 
+        // How many spell scrolls can be stacked
+        public static int SPELLS_LEARNABLE_FROM_ITEMS_SCROLL_STACK_SIZE = 20;
+
         // All spell properties
         public static int SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = 16000;
 
@@ -2114,6 +2117,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX", SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX, "The fastest a 'toss up' can throw a target upward, and going above 23.7 will start causing fall damage on landing");
             OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED", SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED, "How far outward (yards per second) a 'toss up' shoves the target, which must stay above zero or creatures won't be thrown at all");
             OutputVariableToConfig("SPELLS_LEARNABLE_FROM_ITEMS_ENABLED", SPELLS_LEARNABLE_FROM_ITEMS_ENABLED, "If true, you can learn spells from items");
+            OutputVariableToConfig("SPELLS_LEARNABLE_FROM_ITEMS_SCROLL_STACK_SIZE", SPELLS_LEARNABLE_FROM_ITEMS_SCROLL_STACK_SIZE, "How many spell scrolls can be stacked");
             OutputVariableToConfig("SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS", SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS, "All spell properties");
             OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE", SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE, "How often a rogue poison procs, in procs per minute (normalized against weapon speed by the core)", false);
             OutputVariableToConfig("SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME", SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME, "", false);
@@ -2727,6 +2731,7 @@ namespace EQWOWConverter
             SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX);
             SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED);
             SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = ReadVariableFromConfigString("SPELLS_LEARNABLE_FROM_ITEMS_ENABLED", configValuesByVariableName, SPELLS_LEARNABLE_FROM_ITEMS_ENABLED);
+            SPELLS_LEARNABLE_FROM_ITEMS_SCROLL_STACK_SIZE = ReadVariableFromConfigString("SPELLS_LEARNABLE_FROM_ITEMS_SCROLL_STACK_SIZE", configValuesByVariableName, SPELLS_LEARNABLE_FROM_ITEMS_SCROLL_STACK_SIZE);
             SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = ReadVariableFromConfigString("SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS", configValuesByVariableName, SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS);
             SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE = ReadVariableFromConfigString("SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE", configValuesByVariableName, SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE);
             SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME = ReadVariableFromConfigString("SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME", configValuesByVariableName, SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME);
