@@ -748,6 +748,9 @@ namespace EQWOWConverter
         // This is the "Opening" spell already used in WOTLK, which items that act as keys use to unlock objects
         public static int ITEMS_KEY_OPENING_SPELL_ID = 3366;
 
+        // If true, any keys in ItemKeyExceptions.csv have related restrictions removed and they are no longer keys
+        public static bool ITEMS_LOCK_KEY_DISABLED_EXCEPTIONS_ENABLED = true;
+
         // The odds that an opened pick pocket junkbox holds one poison making material (the rest of the time it is coin only)
         public static float ITEMS_PICKPOCKET_JUNKBOX_MATERIAL_TOTAL_CHANCE = 50.0f;
         // Coin (in copper) inside a pick pocket junkbox, scaled by the middle creature level of the junkbox's level band
@@ -1801,6 +1804,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER", OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER, "If true, a fixed respawn timer will be used for 'ground objects', and if false then the EQ respawn timers will be used");
             OutputVariableToConfig("OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC", OBJECT_GAMEOBJECT_CHEST_FIXED_RESPAWN_TIME_IN_SEC, "If OBJECT_GAMEOBJECT_CHEST_USE_FIXED_RESPAWN_TIMER is true, then this is how many seconds will elapse before the ground objects respawn");
             OutputVariableToConfig("OBJECT_GAMEOBJECT_UNLOCK_WHEN_NO_OBTAINABLE_KEY", OBJECT_GAMEOBJECT_UNLOCK_WHEN_NO_OBTAINABLE_KEY, "If true, locked doors and teleports will have their locks removed if no player-obtainable key can open them");
+            OutputVariableToConfig("ITEMS_LOCK_KEY_DISABLED_EXCEPTIONS_ENABLED", ITEMS_LOCK_KEY_DISABLED_EXCEPTIONS_ENABLED, "If true, any keys in ItemKeyExceptions.csv have related restrictions removed and they are no longer keys");
             OutputVariableToConfig("AUDIO_USE_ALTERNATE_TRACKS", AUDIO_USE_ALTERNATE_TRACKS, "If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience");
             OutputVariableToConfig("SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR", SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR, "If this is true, use the level as defined in everquest for summoned pets as well as the control behavior. (Highly advisable to leave False)");
             OutputVariableToConfig("SPELLS_GATE_TETHER_ENABLED", SPELLS_GATE_TETHER_ENABLED, "If true, the player can return to their gate point by clicking off the buff (within 30 minutes)");
@@ -2650,6 +2654,7 @@ namespace EQWOWConverter
             ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT = ReadVariableFromConfigString("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", configValuesByVariableName, ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT);
             ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID = ReadVariableFromConfigString("ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID", configValuesByVariableName, ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID);
             ITEMS_KEY_OPENING_SPELL_ID = ReadVariableFromConfigString("ITEMS_KEY_OPENING_SPELL_ID", configValuesByVariableName, ITEMS_KEY_OPENING_SPELL_ID);
+            ITEMS_LOCK_KEY_DISABLED_EXCEPTIONS_ENABLED = ReadVariableFromConfigString("ITEMS_LOCK_KEY_DISABLED_EXCEPTIONS_ENABLED", configValuesByVariableName, ITEMS_LOCK_KEY_DISABLED_EXCEPTIONS_ENABLED);
             ITEMS_PICKPOCKET_JUNKBOX_MATERIAL_TOTAL_CHANCE = ReadVariableFromConfigString("ITEMS_PICKPOCKET_JUNKBOX_MATERIAL_TOTAL_CHANCE", configValuesByVariableName, ITEMS_PICKPOCKET_JUNKBOX_MATERIAL_TOTAL_CHANCE);
             ITEMS_PICKPOCKET_JUNKBOX_COIN_MIN_PER_LEVEL = ReadVariableFromConfigString("ITEMS_PICKPOCKET_JUNKBOX_COIN_MIN_PER_LEVEL", configValuesByVariableName, ITEMS_PICKPOCKET_JUNKBOX_COIN_MIN_PER_LEVEL);
             ITEMS_PICKPOCKET_JUNKBOX_COIN_MAX_PER_LEVEL = ReadVariableFromConfigString("ITEMS_PICKPOCKET_JUNKBOX_COIN_MAX_PER_LEVEL", configValuesByVariableName, ITEMS_PICKPOCKET_JUNKBOX_COIN_MAX_PER_LEVEL);

@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Items;
 
 namespace EQWOWConverter.Zones
 {
@@ -1097,6 +1098,12 @@ namespace EQWOWConverter.Zones
                 zoneProperties.AllowBind = propertiesRow["AllowBind"].Trim() == "1" ? true : false;
                 zoneProperties.DuelingAllowed = propertiesRow["DuelingAllowed"].Trim() == "1" ? true : false;
                 zoneProperties.RequiredKeyWOWItemID = int.Parse(propertiesRow["RequiredKey"]);
+                if (ItemKeyException.IsKeyDisabled(zoneProperties.RequiredKeyWOWItemID) == true)
+                {
+                    // A disabled key can't gate the zone, its instances, or a summon into it
+                    Logger.WriteDebug(string.Concat("ZoneProperties for zone '", shortName, "' had a required key of '", zoneProperties.RequiredKeyWOWItemID.ToString(), "' which is a disabled key, so the requirement was removed"));
+                    zoneProperties.RequiredKeyWOWItemID = 0;
+                }
                 zoneProperties.ForceFlyingGhost = propertiesRow["ForceFlyingGhost"].Trim() == "1" ? true : false;
                 zoneProperties.CollisionMinZ = float.Parse(propertiesRow["CollisionGeometryMinZ"]);
                 zoneProperties.CollisionMaxZ = float.Parse(propertiesRow["CollisionGeometryMaxZ"]);

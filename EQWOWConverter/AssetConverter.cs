@@ -172,6 +172,23 @@ namespace EQWOWConverter
                 {
                     foreach (GameObject keyedGameObject in gameObjectsByZone.Value)
                     {
+                        // Keys on the disabled key exception list never open anything, so drop them before they bind (the door keeps any lockpick requirement it had, and loses its lock entirely if it had no other key)
+                        if (IsGameObjectKeyDisabled(keyedGameObject.KeyItemEQID, itemTemplatesByEQDBID) == true)
+                        {
+                            Logger.WriteDebug("Keyed game object with ID '", keyedGameObject.ID.ToString(), "' has a key item ID of '", keyedGameObject.KeyItemEQID.ToString(), "' which is a disabled key, so it will not lock the object");
+                            keyedGameObject.KeyItemEQID = 0;
+                        }
+                        if (IsGameObjectKeyDisabled(keyedGameObject.AltKeyItemEQID, itemTemplatesByEQDBID) == true)
+                        {
+                            Logger.WriteDebug("Keyed game object with ID '", keyedGameObject.ID.ToString(), "' has an alt key item ID of '", keyedGameObject.AltKeyItemEQID.ToString(), "' which is a disabled key, so it will not lock the object");
+                            keyedGameObject.AltKeyItemEQID = 0;
+                        }
+                        if (keyedGameObject.KeyItemEQID == 0 && keyedGameObject.AltKeyItemEQID > 0)
+                        {
+                            keyedGameObject.KeyItemEQID = keyedGameObject.AltKeyItemEQID;
+                            keyedGameObject.AltKeyItemEQID = 0;
+                        }
+
                         if (keyedGameObject.KeyItemEQID > 0 && itemTemplatesByEQDBID.ContainsKey(keyedGameObject.KeyItemEQID) == false)
                             Logger.WriteDebug("Keyed game object with ID '", keyedGameObject.ID.ToString(), "' has a key item ID of '", keyedGameObject.KeyItemEQID.ToString(), "' which did not exist as an item, so no key will open it");
                         else if (keyedGameObject.KeyItemEQID > 0)
@@ -5023,6 +5040,15 @@ namespace EQWOWConverter
                 case ItemWOWInventoryType.MainHand: return "main hand";
                 default: return inventoryType.ToString().ToLower();
             }
+        }
+
+        private bool IsGameObjectKeyDisabled(int keyItemEQID, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
+        {
+            if (keyItemEQID <= 0)
+                return false;
+            if (itemTemplatesByEQDBID.ContainsKey(keyItemEQID) == false)
+                return false;
+            return ItemKeyException.IsKeyDisabled(itemTemplatesByEQDBID[keyItemEQID].WOWEntryID);
         }
 
         public void RemoveLocksFromGameObjectsWithNoObtainableKey()
