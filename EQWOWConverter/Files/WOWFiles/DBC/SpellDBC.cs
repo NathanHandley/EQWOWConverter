@@ -477,6 +477,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 524288; // SPELL_ATTR2_ALLOW_WHILE_NOT_SHAPESHIFTED (0x00080000)
             if (spellTemplate.IgnoreLineOfSight == true)
                 attributeFlags |= 4; // SPELL_ATTR2_IGNORE_LINE_OF_SIGHT (0x00000004)
+            if (spellTemplate.CannotCrit == true)
+                attributeFlags |= 536870912; // SPELL_ATTR2_CANT_CRIT (0x20000000)
             return attributeFlags;
         }
 

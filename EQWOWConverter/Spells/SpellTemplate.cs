@@ -294,6 +294,7 @@ namespace EQWOWConverter.Spells
         public int MaxCreatureTargetLevel = 0; // 0 = no limit
         public bool IsUnresistable = false;
         public bool NeverMisses = false; // Skips the hit/miss roll but still respects immunities (unlike IsUnresistable)
+        public bool CannotCrit = false;
         public int ResistDiff = 0; // EQ resist roll modifier, negative lands more often
         public UInt32 DefenseType = 0; // 0 None, 1 Magic, 2 Melee, 3 Ranged
         public UInt32 PreventionType = 0; // 0 None, 1 Silence, 2 Pacify, 4 No Actions
@@ -775,6 +776,9 @@ namespace EQWOWConverter.Spells
             foreach (int eqSpellID in SpellTemplatesByEQID.Keys)
             {
                 SpellTemplate spellTemplate = SpellTemplatesByEQID[eqSpellID];
+
+                // Damage a spell deals to its own caster never crits
+                spellTemplate.SetCannotCritIfDamagesCaster();
 
                 // Pull recourse spell template
                 SpellTemplate? recourseSpellTemplate = null;
@@ -1270,6 +1274,7 @@ namespace EQWOWConverter.Spells
             PreventionType = parentSpellTemplate.PreventionType;
             IsUnresistable = parentSpellTemplate.IsUnresistable;
             NeverMisses = parentSpellTemplate.NeverMisses;
+            CannotCrit = parentSpellTemplate.CannotCrit;
             ResistDiff = parentSpellTemplate.ResistDiff;
         }
 
@@ -1673,6 +1678,28 @@ namespace EQWOWConverter.Spells
             int maxDurationBeforeModInMS = spellTemplate.AuraDuration.MaxDurationInMS;
             spellTemplate.AuraDuration.ScaleDuration(Configuration.SPELLS_DOT_TIME_DURATION_MOD, tickPeriodInMS);
             spellTemplate.PeriodicDamageDurationCompensationMod = Convert.ToSingle(maxDurationBeforeModInMS) / Convert.ToSingle(spellTemplate.AuraDuration.MaxDurationInMS);
+        }
+
+        private void SetCannotCritIfDamagesCaster()
+        {
+            // EQ has no critical hits on damage a caster inflicts on itself, so spells that trade life for mana (Cannibalize and friends) or hand life to a target must not roll a crit and double that self damage
+            foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
+            {
+                if (spellEffect.ImplicitTargetA != SpellWOWTargetType.UnitCaster)
+                    continue;
+                bool isDamageEffect = false;
+                if (spellEffect.EffectType == SpellWOWEffectType.SchoolDamage || spellEffect.EffectType == SpellWOWEffectType.HealthLeech)
+                    isDamageEffect = true;
+                else if (spellEffect.EffectType == SpellWOWEffectType.ApplyAura &&
+                    (spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamage || spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamagePercent
+                    || spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicLeech))
+                    isDamageEffect = true;
+                if (isDamageEffect == false)
+                    continue;
+                CannotCrit = true;
+                Logger.WriteDebug(string.Concat("Spell '", Name, "' (eqid ", EQSpellID.ToString(), ") damages its own caster, so it can not crit"));
+                return;
+            }
         }
 
         private bool HasPeriodicDamageEQEffect()
