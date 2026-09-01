@@ -375,6 +375,13 @@ namespace EQWOWConverter
                 FileTool.CopyDirectoryAndContents(sourceTradeskillFilterAddOnFolder, targetTradeskillFilterAddOnFolder, true, true);
                 EQTradeskillFilterLUA.Generate(targetTradeskillFilterAddOnFolder);
 
+                // Copy the mentorship addon into the prep location
+                string sourceMentorshipAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_Mentorship");
+                string targetMentorshipAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_Mentorship");
+                if (Directory.Exists(targetMentorshipAddOnFolder) == true)
+                    Directory.Delete(targetMentorshipAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceMentorshipAddOnFolder, targetMentorshipAddOnFolder, true, true);
+
                 // Copy the interface options page addon into the prep location
                 string sourceOptionsAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_Options");
                 string targetOptionsAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_Options");
@@ -2933,6 +2940,36 @@ namespace EQWOWConverter
             return combatAuraSpellTemplate;
         }
 
+        private SpellTemplate BuildMentorshipAuraSpellTemplate(string name, int wowSpellID, int spellIconEQID, string description, string auraDescription)
+        {
+            int mentorshipSpellIconID = spellIconEQID;
+            if (mentorshipSpellIconID < 0 || mentorshipSpellIconID > 22)
+            {
+                Logger.WriteError(string.Concat("Invalid spell icon id for '", name, "', value must be 0-22. Setting to 0"));
+                mentorshipSpellIconID = 0;
+            }
+            SpellTemplate mentorshipSpellTemplate = new SpellTemplate();
+            mentorshipSpellTemplate.Name = name;
+            mentorshipSpellTemplate.WOWSpellID = wowSpellID;
+            mentorshipSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            mentorshipSpellTemplate.Description = description;
+            mentorshipSpellTemplate.AuraDescription = auraDescription;
+            mentorshipSpellTemplate.AuraDuration = new SpellDuration();
+            mentorshipSpellTemplate.AuraDuration.IsInfinite = true;
+            mentorshipSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
+            mentorshipSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            mentorshipSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(mentorshipSpellIconID);
+            mentorshipSpellTemplate.CastTimeInMS = 0;
+            mentorshipSpellTemplate.RecoveryTimeInMS = 0;
+            mentorshipSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+            mentorshipSpellTemplate.SkillLine = 0; // Don't show in the spellbook, since the mod is the only thing that applies it
+            mentorshipSpellTemplate.AlwaysPersist = true;
+            mentorshipSpellTemplate.CannotBeStolen = true;
+            mentorshipSpellTemplate.AuraStaysOnSecondaryClassSwitch = true;
+            mentorshipSpellTemplate.TriggersGlobalCooldown = false;
+            return mentorshipSpellTemplate;
+        }
+
         public void GenerateCustomSpells(ref List<SpellTemplate> spellTemplates)
         {
             // Custom Gate
@@ -3307,6 +3344,15 @@ namespace EQWOWConverter
                 eqAdventurerSpellTemplate.AuraStaysOnSecondaryClassSwitch = true;
                 eqAdventurerSpellTemplate.TriggersGlobalCooldown = false;
                 spellTemplates.Add(eqAdventurerSpellTemplate);
+            }
+
+            // Mentorship
+            if (Configuration.MENTORSHIP_ENABLED == true)
+            {
+                spellTemplates.Add(BuildMentorshipAuraSpellTemplate(Configuration.MENTORSHIP_MENTOR_AURA_NAME, Configuration.MENTORSHIP_MENTOR_AURA_SPELL_ID, Configuration.MENTORSHIP_MENTOR_AURA_SPELL_ICON_EQ_ID,
+                    "Standing beside a lesser adventurer, at a fraction of your true power.", "Mentoring a lower level ally, one level above them. You earn no experience, and you lose none when you die. Your own level is waiting for you when this ends."));
+                spellTemplates.Add(BuildMentorshipAuraSpellTemplate(Configuration.MENTORSHIP_APPRENTICE_AURA_NAME, Configuration.MENTORSHIP_APPRENTICE_AURA_SPELL_ID, Configuration.MENTORSHIP_APPRENTICE_AURA_SPELL_ICON_EQ_ID,
+                    "Carried far beyond your own experience by a greater adventurer.", "Apprenticed to a higher level ally, one level below them. Everything they earn is banked for you, and paid out at your own level when this ends. You lose no experience when you die."));
             }
 
             // Bash
@@ -4574,6 +4620,11 @@ namespace EQWOWConverter
                 if (Directory.Exists(targetTradeskillFilterAddOnFolder) == true)
                     Directory.Delete(targetTradeskillFilterAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceTradeskillFilterAddOnFolder, targetTradeskillFilterAddOnFolder, true, true);
+                string sourceMentorshipAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_Mentorship");
+                string targetMentorshipAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_Mentorship");
+                if (Directory.Exists(targetMentorshipAddOnFolder) == true)
+                    Directory.Delete(targetMentorshipAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceMentorshipAddOnFolder, targetMentorshipAddOnFolder, true, true);
                 string sourceOptionsAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_Options");
                 string targetOptionsAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_Options");
                 if (Directory.Exists(targetOptionsAddOnFolder) == true)

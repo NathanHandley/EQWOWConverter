@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: EQ Mentorship
+## Notes: Adds "Mentor" and "Apprentice" entries to the right click menu on a targeted group member, tethering the two of you so one stands at a level beside the other
+## Version: 1.0
+
+EQ_Mentorship.lua
