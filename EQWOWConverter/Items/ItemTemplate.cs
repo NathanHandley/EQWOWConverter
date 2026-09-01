@@ -615,6 +615,15 @@ namespace EQWOWConverter.Items
                     }
                 }
 
+                // If there is only INT or only WIS, grant Spell Haste
+                if ((eqWisdom > 0 && eqIntelligence == 0) || (eqIntelligence > 0 && eqWisdom == 0))
+                {
+                    int spellHasteSourceStat = Math.Max(eqWisdom, eqIntelligence);
+                    int calculatedSpellHaste = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "SpellHasteRating", spellHasteSourceStat));
+                    if (calculatedSpellHaste > 0)
+                        itemTemplate.StatValues.Add((ItemWOWStatType.SpellHasteRating, calculatedSpellHaste));
+                }
+
                 // If there is WIS but no INT, grant some INT (comes last to avoid it having influence on derived stats)
                 if (eqWisdom > 0 && eqIntelligence == 0)
                 {

@@ -30,7 +30,7 @@ namespace EQWOWConverter.Items
         ParryRating = 14,
         BlockRating = 15,
         SpellHitRating = 18,
-        SpellHasteRating = 30, // Double check that this works
+        SpellHasteRating = 30,
         HitRating = 31,
         CritRating = 32,
         HasteRating = 36,
