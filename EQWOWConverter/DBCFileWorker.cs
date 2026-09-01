@@ -320,6 +320,8 @@ namespace EQWOWConverter
 
             // EQ classes use weapons WoW Shaman don't, so windfury needs to work for all weapon types
             AdjustWindfuryForAllWeaponTypes();
+            // EQ classes use weapons WoW Shaman don't, so the weapon-gated shaman abilities need to work for all weapon types
+            AdjustShamanWeaponAbilitiesForAllWeaponTypes();
 
             // Achievements
             if (Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true)
@@ -1237,10 +1239,24 @@ namespace EQWOWConverter
             Logger.WriteDebug("Creating DBC Files complete");
         }
 
-        private void AdjustWindfuryForAllWeaponTypes()
+        private void AdjustRacialAbilitiesForAllRaceClassCombinations()
         {
+            // Troll 'Berserking' is flagged as unusable while shapeshifted, which makes the client drop a troll druid out of bear or cat form (and a troll shaman out of ghost wolf) just to fire off a haste racial
+            spellDBC.RemoveAttributesForSpellID(26297, 65536); // Berserking, SPELL_ATTR0_NOT_SHAPESHIFTED (0x00010000)
+        }
+
+        private void AdjustShamanWeaponAbilitiesForAllWeaponTypes()
+        {
+            // Windfury's extra swings come from triggered attack spells, and those (not the buff) are what refuse swords and polearms
             spellDBC.RemoveEquippedItemSubClassRequirementForSpellID(25504); // Windfury Attack (main hand)
             spellDBC.RemoveEquippedItemSubClassRequirementForSpellID(33750); // Windfury Attack (off hand)
+
+            // Maelstrom Weapon is limited by the talent aura itself and no rank of it allows one hand swords or polearms
+            spellDBC.RemoveEquippedItemSubClassRequirementForSpellID(51528); // Maelstrom Weapon (rank 1)
+            spellDBC.RemoveEquippedItemSubClassRequirementForSpellID(51529); // Maelstrom Weapon (rank 2)
+            spellDBC.RemoveEquippedItemSubClassRequirementForSpellID(51530); // Maelstrom Weapon (rank 3)
+            spellDBC.RemoveEquippedItemSubClassRequirementForSpellID(51531); // Maelstrom Weapon (rank 4)
+            spellDBC.RemoveEquippedItemSubClassRequirementForSpellID(51532); // Maelstrom Weapon (rank 5)
         }
 
         private void AdjustDeathKnightSpellsForLowLevelPlay()

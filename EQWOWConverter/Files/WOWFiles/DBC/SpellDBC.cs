@@ -273,6 +273,7 @@ namespace EQWOWConverter.WOWFiles
                 row.SourceRawBytes[DESCRIPTION_LANG_FIELD_BYTE_OFFSET + i] = newStringOffsetBytes[i];
         }
 
+        private static readonly int ATTRIBUTES_FIELD_BYTE_OFFSET = 16;                    // Attributes (field 4)
         private static readonly int EQUIPPED_ITEM_SUBCLASS_FIELD_BYTE_OFFSET = 276;       // EquippedItemSubclass (field 69)
         private static readonly int MAX_LEVEL_FIELD_BYTE_OFFSET = 148;                    // MaxLevel (field 37)
         private static readonly int BASE_LEVEL_FIELD_BYTE_OFFSET = 152;                   // BaseLevel (field 38)
@@ -375,6 +376,20 @@ namespace EQWOWConverter.WOWFiles
             DBCRow row = SourceRowsBySpellID[spellID];
             SetInt32OnSourceRow(row, BASE_LEVEL_FIELD_BYTE_OFFSET, 0);
             Logger.WriteDebug(string.Concat("SpellDBC removed the item level requirement of spell ID '", spellID.ToString(), "'"));
+        }
+
+        // Clears attribute bits off a stock spell, leaving every other attribute it carries in place
+        public void RemoveAttributesForSpellID(int spellID, int attributesToRemove)
+        {
+            if (SourceRowsBySpellID.ContainsKey(spellID) == false)
+            {
+                Logger.WriteError("SpellDBC could not remove attributes from spell ID '", spellID.ToString(), "' since no source row has that ID");
+                return;
+            }
+            DBCRow row = SourceRowsBySpellID[spellID];
+            int curAttributes = GetInt32FromSourceRow(row, ATTRIBUTES_FIELD_BYTE_OFFSET);
+            SetInt32OnSourceRow(row, ATTRIBUTES_FIELD_BYTE_OFFSET, curAttributes & ~attributesToRemove);
+            Logger.WriteDebug(string.Concat("SpellDBC removed attributes '", attributesToRemove.ToString(), "' from spell ID '", spellID.ToString(), "'"));
         }
 
         // Opens a spell up to every weapon subclass, leaving the item class and inventory type requirements alone (0 means "any subclass")
