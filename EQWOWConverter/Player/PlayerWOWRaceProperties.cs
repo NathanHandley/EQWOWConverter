@@ -28,6 +28,19 @@ namespace EQWOWConverter.Player
         public CreatureFactionAlignmentType Alignment = CreatureFactionAlignmentType.Neutral;
         public bool HasSlam = false;
 
+        public static bool IsAllianceRace(RaceType raceType)
+        {
+            switch (raceType)
+            {
+                case RaceType.Human:
+                case RaceType.Dwarf:
+                case RaceType.NightElf:
+                case RaceType.Gnome:
+                case RaceType.Draenei: return true;
+                default: return false;
+            }
+        }
+
         public static Dictionary<RaceType, PlayerWOWRaceProperties> GetAllWOWRacePropertiesByRaceType()
         {
             lock (READ_LOCK)

@@ -104,7 +104,7 @@ namespace EQWOWConverter
         public static string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
 
         // Client files must match this between the server and the client, separate from "CONFIGONLY_CORE_MOD_VERSION"
-        public static int DEPLOY_CLIENT_DATA_VERSION = 7;
+        public static int DEPLOY_CLIENT_DATA_VERSION = 8;
         public static string DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE = "Your EverQuest client data is out of date. Please run the launcher to update, then log back in.";
 
         // ====================================================================
@@ -220,10 +220,10 @@ namespace EQWOWConverter
         // Player
         //=====================================================================
         // If true, new players created will use the everquest start locations defined in PlayerClassRaceProperties
-        public static bool PLAYER_USE_EQ_START_LOCATION = false;
+        public static bool PLAYER_USE_EQ_START_LOCATION = true;
 
         // If true, players will start with an EQ item loadout instead of a WOW item loadout
-        public static bool PLAYER_USE_EQ_START_ITEMS = false;
+        public static bool PLAYER_USE_EQ_START_ITEMS = true;
 
         // If true, players start with a bind and gate spell regardless of class (with no costs)
         public static bool PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START = true;
@@ -246,9 +246,12 @@ namespace EQWOWConverter
         // If true, racial abilities restricted by class (originally) now apply to all classes. Useful for when all class/race combinations are enabled
         public static bool PLAYER_ADD_MISSING_ALL_CLASS_RACIAL_ABILITIES = true;
 
+        // If true, every race can be every class
+        public static bool PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS = true;
+
         // If true, DeathKnights will start at level 1 and not be locked to the starter area (and comes with runeforging)
         // Warning: This should only be done if you plan to use EQ start locations, otherwise you'll just be 'stuck' as a level 1 in a hard area
-        public static bool PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES = false;
+        public static bool PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES = true;
 
         // Warrior, Rogue, and DeathKnight are missing spell stat data, and this is the donor class ID to fill it with
         public static int PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID = 9;
@@ -1580,7 +1583,7 @@ namespace EQWOWConverter
         // - Class-Specific scroll IDs range 110500 - 112887
         // - Equipped Click Bag IDs range 113000 - 113932
         // - Equipped Click Essence IDs range 114000 - 114932
-        // - Quest Template multi-item reward containers IDs range 116000 - 116202
+        // - Quest Template multi-item reward containers IDs range 116000 - 116259
         // - Tradeskill multi-item creation containers IDs range 117000 - 117349
         // - Guise illusion consumable items range 118000 - 118012
         // - Pick Pocket junkbox items range 115000 - 115005
@@ -1777,6 +1780,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES, "");
             OutputTextLineToConfig("# If true, racial abilities that blizzard class-gated (since the race/class combo didn't exist in retail) are extended to the");
             OutputVariableToConfig("PLAYER_ADD_MISSING_ALL_CLASS_RACIAL_ABILITIES", PLAYER_ADD_MISSING_ALL_CLASS_RACIAL_ABILITIES, "If true, racial abilities restricted by class (originally) now apply to all classes. Useful for when all class/race combinations are enabled");
+            OutputVariableToConfig("PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS", PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS, "If true, every race can be every class");
             OutputTextLineToConfig("# If true, the per-class stat game tables (gtChanceToSpellCrit and related) have their zeroed-out class rows (Warrior, Rogue, DeathKnight)");
             OutputVariableToConfig("PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID", PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID, "Warrior, Rogue, and DeathKnight are missing spell stat data, and this is the donor class ID to fill it with");
             OutputVariableToConfig("DUNGEON_FINDER_ENABLED", DUNGEON_FINDER_ENABLED, "Used for instanced versions of EQ dungeons", false);
@@ -2427,6 +2431,7 @@ namespace EQWOWConverter
             PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_BOWS_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES);
             PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES = ReadVariableFromConfigString("PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES", configValuesByVariableName, PLAYER_SKILL_ENABLE_THROWN_ON_ALL_APPROPRIATE_EQ_ALIGNED_CLASSES);
             PLAYER_ADD_MISSING_ALL_CLASS_RACIAL_ABILITIES = ReadVariableFromConfigString("PLAYER_ADD_MISSING_ALL_CLASS_RACIAL_ABILITIES", configValuesByVariableName, PLAYER_ADD_MISSING_ALL_CLASS_RACIAL_ABILITIES);
+            PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS = ReadVariableFromConfigString("PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS", configValuesByVariableName, PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS);
             PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES = ReadVariableFromConfigString("PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES", configValuesByVariableName, PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES);
             PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID = ReadVariableFromConfigString("PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID", configValuesByVariableName, PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID);
 

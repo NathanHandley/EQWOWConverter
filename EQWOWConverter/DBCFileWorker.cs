@@ -37,6 +37,7 @@ namespace EQWOWConverter
         private AchievementCriteriaDBC achievementCriteriaDBC = new AchievementCriteriaDBC();
         private AreaTableDBC areaTableDBC = new AreaTableDBC();
         private AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
+        private CharBaseInfoDBC charBaseInfoDBC = new CharBaseInfoDBC();
         private CharStartOutfitDBC charStartOutfitDBC = new CharStartOutfitDBC();
         private CreatureDisplayInfoDBC creatureDisplayInfoDBC = new CreatureDisplayInfoDBC();
         private CreatureFamilyDBC creatureFamilyDBC = new CreatureFamilyDBC();
@@ -240,6 +241,7 @@ namespace EQWOWConverter
             achievementCriteriaDBC.LoadFromDisk(dbcInputFolder, "Achievement_Criteria.dbc");
             areaTableDBC.LoadFromDisk(dbcInputFolder, "AreaTable.dbc");
             areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
+            charBaseInfoDBC.LoadFromDisk(dbcInputFolder, "CharBaseInfo.dbc");
             charStartOutfitDBC.LoadFromDisk(dbcInputFolder, "CharStartOutfit.dbc");
             creatureDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfo.dbc");
             creatureDisplayInfoExtraDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfoExtra.dbc");
@@ -318,10 +320,15 @@ namespace EQWOWConverter
             if (Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true)
                 AdjustDeathKnightSpellsForLowLevelPlay();
 
-            // EQ classes use weapons WoW Shaman don't, so windfury needs to work for all weapon types
-            AdjustWindfuryForAllWeaponTypes();
             // EQ classes use weapons WoW Shaman don't, so the weapon-gated shaman abilities need to work for all weapon types
             AdjustShamanWeaponAbilitiesForAllWeaponTypes();
+
+            // Enable all race/class combos if configured to do so
+            if (Configuration.PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS == true)
+            {
+                charBaseInfoDBC.AddMissingRaceClassCombinations();
+                AdjustRacialAbilitiesForAllRaceClassCombinations();
+            }
 
             // Achievements
             if (Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true)
@@ -1129,6 +1136,8 @@ namespace EQWOWConverter
             areaTableDBC.SaveToDisk(dbcOutputServerFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputClientFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputServerFolder);
+            charBaseInfoDBC.SaveToDisk(dbcOutputClientFolder);
+            charBaseInfoDBC.SaveToDisk(dbcOutputServerFolder); // May not be needed on the server...
             charStartOutfitDBC.SaveToDisk(dbcOutputClientFolder);
             charStartOutfitDBC.SaveToDisk(dbcOutputServerFolder);
             creatureDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);

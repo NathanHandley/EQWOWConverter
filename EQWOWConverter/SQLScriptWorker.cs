@@ -122,6 +122,10 @@ namespace EQWOWConverter
         private PetNameGenerationSQL petNameGenerationSQL = new PetNameGenerationSQL();
         private PickpocketingLootTemplateSQL pickpocketingLootTemplateSQL = new PickpocketingLootTemplateSQL();
         private PlayerClassStatsSQL playerClassStatsSQL = new PlayerClassStatsSQL();
+        private PlayerCreateInfoSQL playerCreateInfoSQL = new PlayerCreateInfoSQL();
+        private PlayerCreateInfoActionSQL playerCreateInfoActionSQL = new PlayerCreateInfoActionSQL();
+        private PlayerShapeshiftModelSQL playerShapeshiftModelSQL = new PlayerShapeshiftModelSQL();
+        private PlayerTotemModelSQL playerTotemModelSQL = new PlayerTotemModelSQL();
         private PlayerCreateInfoSpellCustomSQL playerCreateInfoSpellCustomSQL = new PlayerCreateInfoSpellCustomSQL();
         private PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
         private PoolPoolSQL poolPoolSQL = new PoolPoolSQL(); // Consider delete
@@ -2055,7 +2059,22 @@ namespace EQWOWConverter
                     modEverquestPlayerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[startZoneShortName],
                         areaIDsByShortName[startZoneShortName], classRaceProperties.Value.StartPositionX, classRaceProperties.Value.StartPositionY,
                         classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation, classRaceProperties.Value.IssuedIllusionItemWOWID);
+
+                    // The core will not create a character for a race and class pairing that has no playercreateinfo row
+                    if (Configuration.PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS == true)
+                        playerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[startZoneShortName],
+                            areaIDsByShortName[startZoneShortName], classRaceProperties.Value.StartPositionX, classRaceProperties.Value.StartPositionY,
+                            classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation);
                 }
+            }
+
+            if (Configuration.PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS == true)
+            {
+                // Without EQ start locations there is nothing to write out, so the new pairings borrow a start location the race already has instead
+                playerCreateInfoSQL.FillGapsFromExistingRows = (Configuration.PLAYER_USE_EQ_START_LOCATION == false || zones.Count == 0);
+
+                playerTotemModelSQL.AddRowsForRacesWithoutStockModels();
+                playerShapeshiftModelSQL.AddRowsForRacesWithoutStockModels();
             }
 
             // Class map
@@ -3513,6 +3532,13 @@ namespace EQWOWConverter
             petNameGenerationSQL.SaveToDisk("pet_name_generation", SQLFileType.World);
             pickpocketingLootTemplateSQL.SaveToDisk("pickpocketing_loot_template", SQLFileType.World);
             playerClassStatsSQL.SaveToDisk("player_class_stats", SQLFileType.World);
+            if (Configuration.PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS == true)
+            {
+                playerCreateInfoSQL.SaveToDisk("playercreateinfo", SQLFileType.World);
+                playerCreateInfoActionSQL.SaveToDisk("playercreateinfo_action", SQLFileType.World);
+                playerShapeshiftModelSQL.SaveToDisk("player_shapeshift_model", SQLFileType.World);
+                playerTotemModelSQL.SaveToDisk("player_totem_model", SQLFileType.World);
+            }
             playerCreateInfoSpellCustomSQL.SaveToDisk("playercreateinfo_spell_custom", SQLFileType.World);
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
