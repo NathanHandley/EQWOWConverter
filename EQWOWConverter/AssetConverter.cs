@@ -968,6 +968,9 @@ namespace EQWOWConverter
                 // If needed, split out rewards based on class-specific versions.  Divide the chances accordingly
                 bool hasRandomReward = false;
                 List<QuestTemplate.QuestItemReference> expandedQuestRewardItems = new List<QuestTemplate.QuestItemReference>();
+                List<ClassEQType> firstRewardClassTypes = new List<ClassEQType>();
+                List<ClassEQType> sharedRewardClassTypes = new List<ClassEQType>();
+                bool hasSharedRewardClassTypes = false;
                 foreach(QuestTemplate.QuestItemReference questRewardItemReference in questTemplate.RewardItems)
                 {
                     if (itemTemplatesByWOWEntryID.ContainsKey(questRewardItemReference.itemIDWOW) == false)
@@ -977,6 +980,21 @@ namespace EQWOWConverter
                         break;
                     }
                     ItemTemplate questRewardItem = itemTemplatesByWOWEntryID[questRewardItemReference.itemIDWOW];
+
+                    // Capture what classes the rewards are for, since that identifies which class-specific version of a required spell scroll this quest wants
+                    if (questRewardItem.AllowedClassTypesEQ.Contains(ClassEQType.All) == false && questRewardItem.AllowedClassTypesEQ.Count > 0)
+                    {
+                        if (firstRewardClassTypes.Count == 0)
+                            firstRewardClassTypes = new List<ClassEQType>(questRewardItem.AllowedClassTypesEQ);
+                        if (hasSharedRewardClassTypes == false)
+                        {
+                            sharedRewardClassTypes = new List<ClassEQType>(questRewardItem.AllowedClassTypesEQ);
+                            hasSharedRewardClassTypes = true;
+                        }
+                        else
+                            sharedRewardClassTypes = sharedRewardClassTypes.Intersect(questRewardItem.AllowedClassTypesEQ).ToList();
+                    }
+
                     if (questRewardItem.ClassSpecificItemVersionsByEQClassID.Count > 0)
                     {
                         foreach (int classSpecificItemIDWOW in questRewardItem.ClassSpecificItemVersionsByEQClassID.Values)
@@ -1042,29 +1060,22 @@ namespace EQWOWConverter
                     ItemTemplate requiredItemTemplate = itemTemplatesByWOWEntryID[itemReference.itemIDWOW];
                     if (requiredItemTemplate.ClassSpecificItemVersionsByEQClassID.Count > 0)
                     {
-                        if (questTemplate.RewardItems.Count > 0)
+                        // If the rewards are class specific, use those as the class reference.  Prefer the class that every reward shares (a spell scroll trade hands out four scrolls for one class, but some of them may also be usable by a second class)
+                        List<ClassEQType> rewardClassTypes = sharedRewardClassTypes.Count > 0 ? sharedRewardClassTypes : firstRewardClassTypes;
+                        bool matchFound = false;
+                        foreach (var classSpecificItem in requiredItemTemplate.ClassSpecificItemVersionsByEQClassID)
                         {
-                            // If the first reward is class specific, use that as the class reference.
-                            ItemTemplate firstRewardItemTemplate = itemTemplatesByWOWEntryID[questTemplate.RewardItems[0].itemIDWOW];
-                            bool matchFound = false;
-                            foreach (var classSpecificItem in requiredItemTemplate.ClassSpecificItemVersionsByEQClassID)
+                            if (rewardClassTypes.Contains(classSpecificItem.Key) == true)
                             {
-                                if (firstRewardItemTemplate.AllowedClassTypesEQ.Contains(classSpecificItem.Key) == true)
-                                {
-                                    itemReference.itemIDWOW = classSpecificItem.Value;
-                                    matchFound = true;
-                                    break;
-                                }
+                                itemReference.itemIDWOW = classSpecificItem.Value;
+                                matchFound = true;
+                                break;
                             }
-                            if (matchFound == false)
-                                itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByEQClassID.First().Value;
-                            else
-                                itemReference.itemIDParentWOW = requiredItemTemplate.WOWEntryID;
                         }
-                        else
-                        {
+                        if (matchFound == false)
                             itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByEQClassID.First().Value;
-                        }
+                        else
+                            itemReference.itemIDParentWOW = requiredItemTemplate.WOWEntryID;
                     }
                     else
                     {
