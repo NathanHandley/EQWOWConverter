@@ -1063,15 +1063,6 @@ namespace EQWOWConverter
         // Permanent aura placed on newly created characters, lost by doing non-EQ content (see ACHIEVEMENT_EQ_ADVENTURER_ENABLED)
         public static int SPELL_EQ_ADVENTURER_AURA_SPELL_ID = 86916;
 
-        // "Mentorship" tethers two grouped characters together allowing characters far apart to be able to play together on a semi-even footing
-        public static bool MENTORSHIP_ENABLED = true;
-        public static int MENTORSHIP_MENTOR_AURA_SPELL_ID = 86943;
-        public static int MENTORSHIP_APPRENTICE_AURA_SPELL_ID = 86944;
-        public static string MENTORSHIP_MENTOR_AURA_NAME = "Mentor";
-        public static string MENTORSHIP_APPRENTICE_AURA_NAME = "Apprentice";
-        public static int MENTORSHIP_MENTOR_AURA_SPELL_ICON_EQ_ID = 9;
-        public static int MENTORSHIP_APPRENTICE_AURA_SPELL_ICON_EQ_ID = 18;
-
         // "Complete Heal Exhaustion" is a stacking debuff that makes the spell cost more mana
         public static bool SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED = true;
         public static int SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID = 13;
@@ -1109,6 +1100,25 @@ namespace EQWOWConverter
 
         // EQ has no "daze" snare when a creature melee-hits a player from behind so this can disable it (in EQ zones only)
         public static bool COMBAT_DAZE_IN_EQ_ZONES_ENABLED = true;
+
+        //=====================================================================
+        // Mentorship
+        //=====================================================================
+        // "Mentorship" tethers two grouped characters together allowing characters far apart to be able to play together on a semi-even footing
+        public static bool MENTORSHIP_ENABLED = true;
+        public static int MENTORSHIP_MENTOR_AURA_SPELL_ID = 86943;
+        public static int MENTORSHIP_APPRENTICE_AURA_SPELL_ID = 86944;
+        public static string MENTORSHIP_MENTOR_AURA_NAME = "Mentor";
+        public static string MENTORSHIP_APPRENTICE_AURA_NAME = "Apprentice";
+        public static int MENTORSHIP_MENTOR_AURA_SPELL_ICON_EQ_ID = 9;
+        public static int MENTORSHIP_APPRENTICE_AURA_SPELL_ICON_EQ_ID = 18;
+
+        //=====================================================================
+        // Auction
+        //=====================================================================
+        // What 'deposit' and 'cut' the auction house should have
+        public static int AUCTION_HOUSE_BLACKWATER_DEPOSIT_PERCENT = 5;
+        public static int AUCTION_HOUSE_BLACKWATER_CONSIGNMENT_PERCENT = 5;
 
         //=====================================================================
         // Combat Skills (adjacent to spells)
@@ -2195,13 +2205,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID, "Custom detect aura granted to everything that should see through 'invis vs undead' (non-undead + see_invis_undead undead)");
             OutputVariableToConfig("SPELL_RESIST_ADJUSTMENT_SPELL_ID", SPELL_RESIST_ADJUSTMENT_SPELL_ID, "Hidden short-duration aura the mod applies to a caster during a cast to shift the spell hit roll by the EQ ResistDiff amount");
             OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED", SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED, "\"Complete Heal Exhaustion\" is a stacking debuff that makes the spell cost more mana");
-            OutputVariableToConfig("MENTORSHIP_ENABLED", MENTORSHIP_ENABLED, "\"Mentorship\" tethers two grouped characters together allowing characters far apart to be able to play together on a semi-even footing", false);
-            OutputVariableToConfig("MENTORSHIP_MENTOR_AURA_SPELL_ID", MENTORSHIP_MENTOR_AURA_SPELL_ID, "", false);
-            OutputVariableToConfig("MENTORSHIP_APPRENTICE_AURA_SPELL_ID", MENTORSHIP_APPRENTICE_AURA_SPELL_ID, "", false);
-            OutputVariableToConfig("MENTORSHIP_MENTOR_AURA_NAME", MENTORSHIP_MENTOR_AURA_NAME, "", false);
-            OutputVariableToConfig("MENTORSHIP_APPRENTICE_AURA_NAME", MENTORSHIP_APPRENTICE_AURA_NAME, "", false);
-            OutputVariableToConfig("MENTORSHIP_MENTOR_AURA_SPELL_ICON_EQ_ID", MENTORSHIP_MENTOR_AURA_SPELL_ICON_EQ_ID, "", false);
-            OutputVariableToConfig("MENTORSHIP_APPRENTICE_AURA_SPELL_ICON_EQ_ID", MENTORSHIP_APPRENTICE_AURA_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID", SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID, "", false);
             OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID", SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID, "", false);
             OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID", SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID, "", false);
@@ -2222,6 +2225,15 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE", SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE, "Step that placed object sizes snap to for the object illusions. Smaller is more exact but costs more CreatureDisplayInfo rows", false);
             OutputVariableToConfig("SPELL_EQ_PRIVATE_SPELL_FAMILY_ID", SPELL_EQ_PRIVATE_SPELL_FAMILY_ID, "Private SpellFamilyName (Spell.dbc \"SpellClassSet\") used to aim a spell mod aura at a specific converted spell", false);
             OutputVariableToConfig("COMBAT_DAZE_IN_EQ_ZONES_ENABLED", COMBAT_DAZE_IN_EQ_ZONES_ENABLED, "EQ has no \"daze\" snare when a creature melee-hits a player from behind so this can disable it (in EQ zones only)");
+            OutputVariableToConfig("MENTORSHIP_ENABLED", MENTORSHIP_ENABLED, "\"Mentorship\" tethers two grouped characters together allowing characters far apart to be able to play together on a semi-even footing", false);
+            OutputVariableToConfig("MENTORSHIP_MENTOR_AURA_SPELL_ID", MENTORSHIP_MENTOR_AURA_SPELL_ID, "", false);
+            OutputVariableToConfig("MENTORSHIP_APPRENTICE_AURA_SPELL_ID", MENTORSHIP_APPRENTICE_AURA_SPELL_ID, "", false);
+            OutputVariableToConfig("MENTORSHIP_MENTOR_AURA_NAME", MENTORSHIP_MENTOR_AURA_NAME, "", false);
+            OutputVariableToConfig("MENTORSHIP_APPRENTICE_AURA_NAME", MENTORSHIP_APPRENTICE_AURA_NAME, "", false);
+            OutputVariableToConfig("MENTORSHIP_MENTOR_AURA_SPELL_ICON_EQ_ID", MENTORSHIP_MENTOR_AURA_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("MENTORSHIP_APPRENTICE_AURA_SPELL_ICON_EQ_ID", MENTORSHIP_APPRENTICE_AURA_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("AUCTION_HOUSE_BLACKWATER_DEPOSIT_PERCENT", AUCTION_HOUSE_BLACKWATER_DEPOSIT_PERCENT, "What 'deposit' and 'cut' the auction house should have", false);
+            OutputVariableToConfig("AUCTION_HOUSE_BLACKWATER_CONSIGNMENT_PERCENT", AUCTION_HOUSE_BLACKWATER_CONSIGNMENT_PERCENT, "");
             OutputVariableToConfig("COMBATSKILL_BASH_ENABLED", COMBATSKILL_BASH_ENABLED, "Bash skills in EQ are either from warrior/cleric/paladin/shadowknight or those that use warrior skills", false);
             OutputVariableToConfig("COMBATSKILL_BASH_PLAYER_LEARNABLE", COMBATSKILL_BASH_PLAYER_LEARNABLE, "Whether classes that have Bash learn it as players (from level 1)", false);
             OutputVariableToConfig("COMBATSKILL_BASH_CREATURE_ENABLED", COMBATSKILL_BASH_CREATURE_ENABLED, "Whether world creatures (anything that is not a summoned pet) that have Bash use it at all", false);
@@ -2811,13 +2823,6 @@ namespace EQWOWConverter
             SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID);
             SPELL_RESIST_ADJUSTMENT_SPELL_ID = ReadVariableFromConfigString("SPELL_RESIST_ADJUSTMENT_SPELL_ID", configValuesByVariableName, SPELL_RESIST_ADJUSTMENT_SPELL_ID);
             SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED);
-            MENTORSHIP_ENABLED = ReadVariableFromConfigString("MENTORSHIP_ENABLED", configValuesByVariableName, MENTORSHIP_ENABLED);
-            MENTORSHIP_MENTOR_AURA_SPELL_ID = ReadVariableFromConfigString("MENTORSHIP_MENTOR_AURA_SPELL_ID", configValuesByVariableName, MENTORSHIP_MENTOR_AURA_SPELL_ID);
-            MENTORSHIP_APPRENTICE_AURA_SPELL_ID = ReadVariableFromConfigString("MENTORSHIP_APPRENTICE_AURA_SPELL_ID", configValuesByVariableName, MENTORSHIP_APPRENTICE_AURA_SPELL_ID);
-            MENTORSHIP_MENTOR_AURA_NAME = ReadVariableFromConfigString("MENTORSHIP_MENTOR_AURA_NAME", configValuesByVariableName, MENTORSHIP_MENTOR_AURA_NAME);
-            MENTORSHIP_APPRENTICE_AURA_NAME = ReadVariableFromConfigString("MENTORSHIP_APPRENTICE_AURA_NAME", configValuesByVariableName, MENTORSHIP_APPRENTICE_AURA_NAME);
-            MENTORSHIP_MENTOR_AURA_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("MENTORSHIP_MENTOR_AURA_SPELL_ICON_EQ_ID", configValuesByVariableName, MENTORSHIP_MENTOR_AURA_SPELL_ICON_EQ_ID);
-            MENTORSHIP_APPRENTICE_AURA_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("MENTORSHIP_APPRENTICE_AURA_SPELL_ICON_EQ_ID", configValuesByVariableName, MENTORSHIP_APPRENTICE_AURA_SPELL_ICON_EQ_ID);
             SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID);
             SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID);
             SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID);
@@ -2838,6 +2843,15 @@ namespace EQWOWConverter
             SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE = ReadVariableFromConfigString("SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE", configValuesByVariableName, SPELL_ILLUSION_OBJECT_SCALE_STEP_SIZE);
             SPELL_EQ_PRIVATE_SPELL_FAMILY_ID = ReadVariableFromConfigString("SPELL_EQ_PRIVATE_SPELL_FAMILY_ID", configValuesByVariableName, SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
             COMBAT_DAZE_IN_EQ_ZONES_ENABLED = ReadVariableFromConfigString("COMBAT_DAZE_IN_EQ_ZONES_ENABLED", configValuesByVariableName, COMBAT_DAZE_IN_EQ_ZONES_ENABLED);
+            MENTORSHIP_ENABLED = ReadVariableFromConfigString("MENTORSHIP_ENABLED", configValuesByVariableName, MENTORSHIP_ENABLED);
+            MENTORSHIP_MENTOR_AURA_SPELL_ID = ReadVariableFromConfigString("MENTORSHIP_MENTOR_AURA_SPELL_ID", configValuesByVariableName, MENTORSHIP_MENTOR_AURA_SPELL_ID);
+            MENTORSHIP_APPRENTICE_AURA_SPELL_ID = ReadVariableFromConfigString("MENTORSHIP_APPRENTICE_AURA_SPELL_ID", configValuesByVariableName, MENTORSHIP_APPRENTICE_AURA_SPELL_ID);
+            MENTORSHIP_MENTOR_AURA_NAME = ReadVariableFromConfigString("MENTORSHIP_MENTOR_AURA_NAME", configValuesByVariableName, MENTORSHIP_MENTOR_AURA_NAME);
+            MENTORSHIP_APPRENTICE_AURA_NAME = ReadVariableFromConfigString("MENTORSHIP_APPRENTICE_AURA_NAME", configValuesByVariableName, MENTORSHIP_APPRENTICE_AURA_NAME);
+            MENTORSHIP_MENTOR_AURA_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("MENTORSHIP_MENTOR_AURA_SPELL_ICON_EQ_ID", configValuesByVariableName, MENTORSHIP_MENTOR_AURA_SPELL_ICON_EQ_ID);
+            MENTORSHIP_APPRENTICE_AURA_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("MENTORSHIP_APPRENTICE_AURA_SPELL_ICON_EQ_ID", configValuesByVariableName, MENTORSHIP_APPRENTICE_AURA_SPELL_ICON_EQ_ID);
+            AUCTION_HOUSE_BLACKWATER_DEPOSIT_PERCENT = ReadVariableFromConfigString("AUCTION_HOUSE_BLACKWATER_DEPOSIT_PERCENT", configValuesByVariableName, AUCTION_HOUSE_BLACKWATER_DEPOSIT_PERCENT);
+            AUCTION_HOUSE_BLACKWATER_CONSIGNMENT_PERCENT = ReadVariableFromConfigString("AUCTION_HOUSE_BLACKWATER_CONSIGNMENT_PERCENT", configValuesByVariableName, AUCTION_HOUSE_BLACKWATER_CONSIGNMENT_PERCENT);
             COMBATSKILL_BASH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_BASH_ENABLED", configValuesByVariableName, COMBATSKILL_BASH_ENABLED);
             COMBATSKILL_BASH_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_BASH_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_BASH_PLAYER_LEARNABLE);
             COMBATSKILL_BASH_CREATURE_ENABLED = ReadVariableFromConfigString("COMBATSKILL_BASH_CREATURE_ENABLED", configValuesByVariableName, COMBATSKILL_BASH_CREATURE_ENABLED);

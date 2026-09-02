@@ -37,6 +37,7 @@ namespace EQWOWConverter
         private AchievementCriteriaDBC achievementCriteriaDBC = new AchievementCriteriaDBC();
         private AreaTableDBC areaTableDBC = new AreaTableDBC();
         private AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
+        private AuctionHouseDBC auctionHouseDBC = new AuctionHouseDBC();
         private CharBaseInfoDBC charBaseInfoDBC = new CharBaseInfoDBC();
         private CharStartOutfitDBC charStartOutfitDBC = new CharStartOutfitDBC();
         private CreatureDisplayInfoDBC creatureDisplayInfoDBC = new CreatureDisplayInfoDBC();
@@ -241,6 +242,7 @@ namespace EQWOWConverter
             achievementCriteriaDBC.LoadFromDisk(dbcInputFolder, "Achievement_Criteria.dbc");
             areaTableDBC.LoadFromDisk(dbcInputFolder, "AreaTable.dbc");
             areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
+            auctionHouseDBC.LoadFromDisk(dbcInputFolder, "AuctionHouse.dbc");
             charBaseInfoDBC.LoadFromDisk(dbcInputFolder, "CharBaseInfo.dbc");
             charStartOutfitDBC.LoadFromDisk(dbcInputFolder, "CharStartOutfit.dbc");
             creatureDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfo.dbc");
@@ -479,6 +481,10 @@ namespace EQWOWConverter
             // Footstep Terrain Lookup (for creatures)
             foreach (var footstepIDBySoundID in CreatureRace.FootstepIDBySoundID)
                 footstepTerrainLookupDBC.AddRow(footstepIDBySoundID.Value, footstepIDBySoundID.Key);
+
+            // Blackwater (neutral) auction house rates
+            auctionHouseDBC.SetDepositAndCutPercent(AuctionHouseDBC.HOUSE_ID_BLACKWATER, Configuration.AUCTION_HOUSE_BLACKWATER_DEPOSIT_PERCENT,
+                Configuration.AUCTION_HOUSE_BLACKWATER_CONSIGNMENT_PERCENT);
 
             // Dungeon Finder Specific
             if (Configuration.DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS == true)
@@ -1136,6 +1142,8 @@ namespace EQWOWConverter
             areaTableDBC.SaveToDisk(dbcOutputServerFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputClientFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputServerFolder);
+            auctionHouseDBC.SaveToDisk(dbcOutputClientFolder);
+            auctionHouseDBC.SaveToDisk(dbcOutputServerFolder);
             charBaseInfoDBC.SaveToDisk(dbcOutputClientFolder);
             charBaseInfoDBC.SaveToDisk(dbcOutputServerFolder); // May not be needed on the server...
             charStartOutfitDBC.SaveToDisk(dbcOutputClientFolder);
