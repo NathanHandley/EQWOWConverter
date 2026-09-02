@@ -32,6 +32,10 @@ namespace EQWOWConverter
 {
     internal class DBCFileWorker
     {
+        private static readonly int SKILLLINE_CATEGORY_ID_CLASS = 7; // SkillLine.dbc CategoryID that holds the class skill lines
+        private static readonly int SKILLLINE_ID_INTERNAL = 769;     // Test and internal spells, filed under the class category
+        private static readonly int SKILLLINE_ID_MOUNTS = 777;       // Mounts, also filed under the class category
+
         private AchievementDBC achievementDBC = new AchievementDBC();
         private AchievementCategoryDBC achievementCategoryDBC = new AchievementCategoryDBC();
         private AchievementCriteriaDBC achievementCriteriaDBC = new AchievementCriteriaDBC();
@@ -152,7 +156,7 @@ namespace EQWOWConverter
         }
 
         private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, int castTimeDBCID, bool isWorn, bool isUsableWhileSilenced,
-            bool isCreatureCastVersion = false)
+            bool isCreatureCastVersion = false, bool isPlayerLearnedSpell = false)
         {
             if (spellEffectBlocks.Count == 0 || spellEffectBlocks[0].WOWSpellID <= 0)
                 return;
@@ -192,8 +196,10 @@ namespace EQWOWConverter
                             blockActionDescription = spellPowerCoefficientText;
                     }
 
+                    // Only the first block is the one the player actually casts (and the only one that joins a skill line below), so it is the only one that hands its movement interrupt over to the mod
+                    bool isPlayerLearnedClassSpell = isPlayerLearnedSpell == true && i == 0 && spellTemplate.SkillLine != 0;
                     spellDBC.AddRow(curEffectBlock, blockActionDescription, auraDescription, spellTemplate, hideFromDisplay, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
-                        curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, false, isUsableWhileSilenced, isCreatureCastVersion);
+                        curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, false, isUsableWhileSilenced, isCreatureCastVersion, isPlayerLearnedClassSpell);
                 }
                 else
                 {
@@ -944,7 +950,7 @@ namespace EQWOWConverter
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
                 // Block-specific data
-                AddSpellDataBlock(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput, spellTemplate.SpellCastTimeDBCID, false, false);
+                AddSpellDataBlock(spellTemplate, spellTemplate.GroupedBaseSpellEffectBlocksForOutput, spellTemplate.SpellCastTimeDBCID, false, false, false, true);
                 if (spellTemplate.NeedsCreatureCastVersion == true)
                     AddSpellDataBlock(spellTemplate, spellTemplate.GroupedCreatureCastSpellEffectBlocksForOutput, spellTemplate.CreatureCastSpellCastTimeDBCID, false, false, true);
                 foreach (List<SpellEffectBlock> wornSpellEffectBlocks in spellTemplate.ItemWornSpellEffectBlockSets)
@@ -968,6 +974,17 @@ namespace EQWOWConverter
             }
             foreach (var spellCastTimeDBCIDByCastTime in SpellTemplate.SpellCastTimeDBCIDsByCastTime)
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
+
+            // If enabled, even the stock WoW class spells (and talents) lose their movement interrupt the same way EQ spells do but this does not apply to racials, item clickies, etc
+            if (Configuration.SPELL_MOVEMENT_CAST_ENABLED == true)
+            {
+                HashSet<int> classSkillLineIDs = skillLineDBC.GetSkillLineIDsForCategory(SKILLLINE_CATEGORY_ID_CLASS);
+                classSkillLineIDs.Remove(SKILLLINE_ID_INTERNAL);
+                classSkillLineIDs.Remove(SKILLLINE_ID_MOUNTS);
+                HashSet<int> classSkillLineSpellIDs = skillLineAbilityDBC.GetSpellIDsForSkillLines(classSkillLineIDs);
+                int movedStockSpellCount = spellDBC.ClearMovementInterruptForStockClassSpells(classSkillLineSpellIDs, spellCastTimesDBC.GetBaseCastTimeInMSByDBCID());
+                Logger.WriteDebug(string.Concat("SpellDBC handed the movement interrupt of ", movedStockSpellCount.ToString(), " stock class spells over to mod-everquest's casting slow"));
+            }
             foreach (int spellCategoryDBCID in SpellCategoryDBC.GetAllGeneratedDBCIDs())
                 spellCategoryDBC.AddRow(spellCategoryDBCID);
             foreach (var spellRangeDBCIDByRange in SpellTemplate.SpellRangeDBCIDsBySpellRange)

@@ -82,6 +82,21 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
+        public HashSet<int> GetSpellIDsForSkillLines(HashSet<int> skillLineIDs)
+        {
+            HashSet<int> spellIDs = new HashSet<int>();
+            foreach (DBCRow row in Rows)
+            {
+                if (row.AddedFields.Count < 3)
+                    continue;
+                if (row.AddedFields[1] is not DBCRow.DBCFieldInt32 skillLineField || row.AddedFields[2] is not DBCRow.DBCFieldInt32 spellField)
+                    continue;
+                if (skillLineIDs.Contains(skillLineField.Value) == true)
+                    spellIDs.Add(spellField.Value);
+            }
+            return spellIDs;
+        }
+
         protected override void OnPostLoadDataFromDisk()
         {
             // Convert any raw data rows to actual data rows (which should be all of them)

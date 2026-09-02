@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 85;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 87;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -104,7 +104,7 @@ namespace EQWOWConverter
         public static string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
 
         // Client files must match this between the server and the client, separate from "CONFIGONLY_CORE_MOD_VERSION"
-        public static int DEPLOY_CLIENT_DATA_VERSION = 8;
+        public static int DEPLOY_CLIENT_DATA_VERSION = 10;
         public static string DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE = "Your EverQuest client data is out of date. Please run the launcher to update, then log back in.";
 
         // ====================================================================
@@ -1072,6 +1072,17 @@ namespace EQWOWConverter
         public static int SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS = 15000;
         public static int SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS = 5;
         public static int SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK = 100;
+
+        // If enabled, all non-channeled WoW and EQ learnable spells can be used while casting
+        public static bool SPELL_MOVEMENT_CAST_ENABLED = true;
+
+        // If enabled, casting while moving will cause a movement speed debuff until the cast completes
+        public static bool SPELL_MOVEMENT_CAST_SNARE_ENABLED = true;
+        public static int SPELL_MOVEMENT_CAST_SNARE_SPELL_ID = 86945;
+        public static string SPELL_MOVEMENT_CAST_SNARE_NAME = "Casting on the Move";
+        public static int SPELL_MOVEMENT_CAST_SNARE_SPEED_PERCENT = 75;
+        public static int SPELL_MOVEMENT_CAST_SNARE_SPELL_ICON_EQ_ID = 17;
+        public static int SPELL_MOVEMENT_CAST_SNARE_MAX_DURATION_IN_MS = 100000;
 
         // "Taunt" and "Area Taunt" are clones of the warlock Voidwalker's Torment and Suffering spell lines, granted to summoned pets flagged in SpellPets.csv
         public static bool SPELL_PET_TAUNT_ENABLED = true;
@@ -2210,7 +2221,14 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID", SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS", SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS, "", false);
             OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS", SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS, "", false);
-            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK", SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK, "", false);
+            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK", SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK, "");
+            OutputVariableToConfig("SPELL_MOVEMENT_CAST_ENABLED", SPELL_MOVEMENT_CAST_ENABLED, "If enabled, all non-channeled WoW and EQ learnable spells can be used while casting");
+            OutputVariableToConfig("SPELL_MOVEMENT_CAST_SNARE_ENABLED", SPELL_MOVEMENT_CAST_SNARE_ENABLED, "");
+            OutputVariableToConfig("SPELL_MOVEMENT_CAST_SNARE_SPELL_ID", SPELL_MOVEMENT_CAST_SNARE_SPELL_ID, "", false);
+            OutputVariableToConfig("SPELL_MOVEMENT_CAST_SNARE_NAME", SPELL_MOVEMENT_CAST_SNARE_NAME, "", false);
+            OutputVariableToConfig("SPELL_MOVEMENT_CAST_SNARE_SPEED_PERCENT", SPELL_MOVEMENT_CAST_SNARE_SPEED_PERCENT, "", false);
+            OutputVariableToConfig("SPELL_MOVEMENT_CAST_SNARE_SPELL_ICON_EQ_ID", SPELL_MOVEMENT_CAST_SNARE_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("SPELL_MOVEMENT_CAST_SNARE_MAX_DURATION_IN_MS", SPELL_MOVEMENT_CAST_SNARE_MAX_DURATION_IN_MS, "");
             OutputVariableToConfig("SPELL_PET_TAUNT_ENABLED", SPELL_PET_TAUNT_ENABLED, "\"Taunt\" and \"Area Taunt\" are clones of the warlock Voidwalker's Torment and Suffering spell lines, granted to summoned pets flagged in SpellPets.csv");
             OutputVariableToConfig("SPELL_PET_TAUNT_SPELL_ID_START", SPELL_PET_TAUNT_SPELL_ID_START, "First of the eight sequential spell IDs used by the Taunt ranks", false);
             OutputVariableToConfig("SPELL_PET_TAUNT_SPELL_ICON_EQ_ID", SPELL_PET_TAUNT_SPELL_ICON_EQ_ID, "", false);
@@ -2829,6 +2847,13 @@ namespace EQWOWConverter
             SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS);
             SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS);
             SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK);
+            SPELL_MOVEMENT_CAST_ENABLED = ReadVariableFromConfigString("SPELL_MOVEMENT_CAST_ENABLED", configValuesByVariableName, SPELL_MOVEMENT_CAST_ENABLED);
+            SPELL_MOVEMENT_CAST_SNARE_ENABLED = ReadVariableFromConfigString("SPELL_MOVEMENT_CAST_SNARE_ENABLED", configValuesByVariableName, SPELL_MOVEMENT_CAST_SNARE_ENABLED);
+            SPELL_MOVEMENT_CAST_SNARE_SPELL_ID = ReadVariableFromConfigString("SPELL_MOVEMENT_CAST_SNARE_SPELL_ID", configValuesByVariableName, SPELL_MOVEMENT_CAST_SNARE_SPELL_ID);
+            SPELL_MOVEMENT_CAST_SNARE_NAME = ReadVariableFromConfigString("SPELL_MOVEMENT_CAST_SNARE_NAME", configValuesByVariableName, SPELL_MOVEMENT_CAST_SNARE_NAME);
+            SPELL_MOVEMENT_CAST_SNARE_SPEED_PERCENT = ReadVariableFromConfigString("SPELL_MOVEMENT_CAST_SNARE_SPEED_PERCENT", configValuesByVariableName, SPELL_MOVEMENT_CAST_SNARE_SPEED_PERCENT);
+            SPELL_MOVEMENT_CAST_SNARE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("SPELL_MOVEMENT_CAST_SNARE_SPELL_ICON_EQ_ID", configValuesByVariableName, SPELL_MOVEMENT_CAST_SNARE_SPELL_ICON_EQ_ID);
+            SPELL_MOVEMENT_CAST_SNARE_MAX_DURATION_IN_MS = ReadVariableFromConfigString("SPELL_MOVEMENT_CAST_SNARE_MAX_DURATION_IN_MS", configValuesByVariableName, SPELL_MOVEMENT_CAST_SNARE_MAX_DURATION_IN_MS);
             SPELL_PET_TAUNT_ENABLED = ReadVariableFromConfigString("SPELL_PET_TAUNT_ENABLED", configValuesByVariableName, SPELL_PET_TAUNT_ENABLED);
             SPELL_PET_TAUNT_SPELL_ID_START = ReadVariableFromConfigString("SPELL_PET_TAUNT_SPELL_ID_START", configValuesByVariableName, SPELL_PET_TAUNT_SPELL_ID_START);
             SPELL_PET_TAUNT_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("SPELL_PET_TAUNT_SPELL_ICON_EQ_ID", configValuesByVariableName, SPELL_PET_TAUNT_SPELL_ICON_EQ_ID);

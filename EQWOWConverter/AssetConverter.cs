@@ -3315,6 +3315,47 @@ namespace EQWOWConverter
                 spellTemplates.Add(completeHealExhaustionSpellTemplate);
             }
 
+            // Casting on the Move
+            if (Configuration.SPELL_MOVEMENT_CAST_ENABLED == true && Configuration.SPELL_MOVEMENT_CAST_SNARE_ENABLED == true)
+            {
+                int movementCastSnareIconID = Configuration.SPELL_MOVEMENT_CAST_SNARE_SPELL_ICON_EQ_ID;
+                if (movementCastSnareIconID < 0 || movementCastSnareIconID > 22)
+                {
+                    Logger.WriteError("Invalid Configuration.SPELL_MOVEMENT_CAST_SNARE_SPELL_ICON_EQ_ID, value must be 0-22. Setting to 17");
+                    movementCastSnareIconID = 17;
+                }
+                int movementCastSnareSpeedPercent = Configuration.SPELL_MOVEMENT_CAST_SNARE_SPEED_PERCENT;
+                if (movementCastSnareSpeedPercent < 1 || movementCastSnareSpeedPercent > 100)
+                {
+                    Logger.WriteError("Invalid Configuration.SPELL_MOVEMENT_CAST_SNARE_SPEED_PERCENT, value must be 1-100. Setting to 75");
+                    movementCastSnareSpeedPercent = 75;
+                }
+                string movementCastSnareDescription = string.Concat("Splitting your attention between your feet and your spell. Movement speed is reduced to ", movementCastSnareSpeedPercent.ToString(), "% while you keep moving through a cast, and it lifts as soon as the cast ends.");
+                SpellTemplate movementCastSnareSpellTemplate = new SpellTemplate();
+                movementCastSnareSpellTemplate.Name = Configuration.SPELL_MOVEMENT_CAST_SNARE_NAME;
+                movementCastSnareSpellTemplate.WOWSpellID = Configuration.SPELL_MOVEMENT_CAST_SNARE_SPELL_ID;
+                movementCastSnareSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                movementCastSnareSpellTemplate.Description = movementCastSnareDescription;
+                movementCastSnareSpellTemplate.AuraDescription = movementCastSnareDescription;
+                movementCastSnareSpellTemplate.AuraDuration = new SpellDuration();
+                movementCastSnareSpellTemplate.AuraDuration.SetFixedDuration(Configuration.SPELL_MOVEMENT_CAST_SNARE_MAX_DURATION_IN_MS);
+                SpellEffectWOW movementCastSnareEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModDecreaseSpeed, 0, 0, 0, -(100 - movementCastSnareSpeedPercent), 0, 0);
+                movementCastSnareEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                movementCastSnareEffect.ActionDescription = movementCastSnareDescription;
+                movementCastSnareEffect.AuraDescription = movementCastSnareDescription;
+                movementCastSnareSpellTemplate.WOWSpellEffects.Add(movementCastSnareEffect);
+                movementCastSnareSpellTemplate.SpellFamilyID = Convert.ToUInt32(Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
+                movementCastSnareSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(movementCastSnareIconID);
+                movementCastSnareSpellTemplate.CastTimeInMS = 0;
+                movementCastSnareSpellTemplate.RecoveryTimeInMS = 0;
+                movementCastSnareSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+                movementCastSnareSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
+                movementCastSnareSpellTemplate.TriggersGlobalCooldown = false;
+                movementCastSnareSpellTemplate.ForceAsDebuff = true;
+                movementCastSnareSpellTemplate.PreventAuraClickOff = true;
+                spellTemplates.Add(movementCastSnareSpellTemplate);
+            }
+
             // Agile Fighter (EQ Monk passive which will grant eiter Combat Master or Combat Expert depending on the gear)
             if (Configuration.AGILEFIGHTER_ENABLED == true)
             {

@@ -21,12 +21,21 @@ namespace EQWOWConverter.WOWFiles
     internal class SpellDBC : DBCFile
     {
         public void AddRow(SpellEffectBlock effectBlock, string spellDescription, string auraDescription, SpellTemplate spellTemplate, bool doHideFromDisplay, bool overrideDurationToInfinite,
-            bool preventClickOff, int maximumSpellLevel, bool isToggleAura, int castTimeDBCID, bool isWornEquipEffect, bool isUsableWhileSilenced, bool isCreatureCastVersion = false)
+            bool preventClickOff, int maximumSpellLevel, bool isToggleAura, int castTimeDBCID, bool isWornEquipEffect, bool isUsableWhileSilenced, bool isCreatureCastVersion = false,
+            bool isPlayerLearnedClassSpell = false)
         {
             if (effectBlock.SpellEffects.Count != 3)
             {
                 Logger.WriteError("Failed to add row to SpelLDBC for spellID ", effectBlock.WOWSpellID.ToString(), " since there were not exactly three spellEffects");
                 return;
+            }
+
+            // Player learned class spells with a cast time can have the 'move breaks the cast' rule removed
+            bool moveMovementInterruptToMod = false;
+            if (Configuration.SPELL_MOVEMENT_CAST_ENABLED == true && isPlayerLearnedClassSpell == true && spellTemplate.InterruptOnMovement == true && spellTemplate.IsChanneled == false && spellTemplate.CastTimeInMS > 0)
+            {
+                moveMovementInterruptToMod = true;
+                MovementCastSpellRegistry.RegisterMovementCastSnaredSpellID(effectBlock.WOWSpellID);
             }
 
             // Don't show the summon aura
@@ -81,7 +90,7 @@ namespace EQWOWConverter.WOWFiles
             else
                 newRow.AddUInt32(spellTemplate.RecoveryTimeInMS); // RecoveryTime
             newRow.AddUInt32(spellTemplate.CategoryRecoveryTimeInMS); // CategoryRecoveryTime
-            newRow.AddUInt32(GetInterruptFlags(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType));
+            newRow.AddUInt32(GetInterruptFlags(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, moveMovementInterruptToMod));
             newRow.AddUInt32(GetAuraInterruptFlags(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AuraInterruptFlags
             newRow.AddUInt32(spellTemplate.ChannelInterruptFlags); // ChannelInterruptFlags
             newRow.AddUInt32(GetProcFlags(spellTemplate)); // ProcTypeMask
@@ -274,6 +283,10 @@ namespace EQWOWConverter.WOWFiles
         }
 
         private static readonly int ATTRIBUTES_FIELD_BYTE_OFFSET = 16;                    // Attributes (field 4)
+        private static readonly int ATTRIBUTES_EX_FIELD_BYTE_OFFSET = 20;                 // AttributesEx (field 5)
+        private static readonly int CASTING_TIME_INDEX_FIELD_BYTE_OFFSET = 112;           // CastingTimeIndex (field 28)
+        private static readonly int INTERRUPT_FLAGS_FIELD_BYTE_OFFSET = 124;              // InterruptFlags (field 31)
+        private static readonly int EFFECT_APPLY_AURA_NAME_FIELD_BYTE_OFFSET = 380;       // EffectApplyAuraName1 (field 95)
         private static readonly int EQUIPPED_ITEM_SUBCLASS_FIELD_BYTE_OFFSET = 276;       // EquippedItemSubclass (field 69)
         private static readonly int MAX_LEVEL_FIELD_BYTE_OFFSET = 148;                    // MaxLevel (field 37)
         private static readonly int BASE_LEVEL_FIELD_BYTE_OFFSET = 152;                   // BaseLevel (field 38)
@@ -390,6 +403,43 @@ namespace EQWOWConverter.WOWFiles
             int curAttributes = GetInt32FromSourceRow(row, ATTRIBUTES_FIELD_BYTE_OFFSET);
             SetInt32OnSourceRow(row, ATTRIBUTES_FIELD_BYTE_OFFSET, curAttributes & ~attributesToRemove);
             Logger.WriteDebug(string.Concat("SpellDBC removed attributes '", attributesToRemove.ToString(), "' from spell ID '", spellID.ToString(), "'"));
+        }
+
+        public int ClearMovementInterruptForStockClassSpells(HashSet<int> spellIDs, Dictionary<int, int> baseCastTimeInMSByCastTimeDBCID)
+        {
+            const int SPELL_ATTR1_IS_CHANNELED = 4;
+            const int SPELL_INTERRUPT_FLAG_MOVEMENT = 1;
+            const int SPELL_AURA_MOUNTED = 78;
+
+            int movedSpellCount = 0;
+            foreach (int spellID in spellIDs)
+            {
+                if (SourceRowsBySpellID.ContainsKey(spellID) == false)
+                    continue;
+                DBCRow row = SourceRowsBySpellID[spellID];
+
+                int interruptFlags = GetInt32FromSourceRow(row, INTERRUPT_FLAGS_FIELD_BYTE_OFFSET);
+                if ((interruptFlags & SPELL_INTERRUPT_FLAG_MOVEMENT) == 0)
+                    continue;
+                if ((GetInt32FromSourceRow(row, ATTRIBUTES_EX_FIELD_BYTE_OFFSET) & SPELL_ATTR1_IS_CHANNELED) != 0)
+                    continue;
+                int castTimeDBCID = GetInt32FromSourceRow(row, CASTING_TIME_INDEX_FIELD_BYTE_OFFSET);
+                if (baseCastTimeInMSByCastTimeDBCID.ContainsKey(castTimeDBCID) == false || baseCastTimeInMSByCastTimeDBCID[castTimeDBCID] <= 0)
+                    continue;
+
+                // Mounts sit on a class skill line and summoning one at a run is not what "cast your class spells while moving" is meant to cover
+                bool isMountSpell = false;
+                for (int effectIndex = 0; effectIndex < 3; effectIndex++)
+                    if (GetInt32FromSourceRow(row, EFFECT_APPLY_AURA_NAME_FIELD_BYTE_OFFSET + (effectIndex * 4)) == SPELL_AURA_MOUNTED)
+                        isMountSpell = true;
+                if (isMountSpell == true)
+                    continue;
+
+                SetInt32OnSourceRow(row, INTERRUPT_FLAGS_FIELD_BYTE_OFFSET, interruptFlags & ~SPELL_INTERRUPT_FLAG_MOVEMENT);
+                MovementCastSpellRegistry.RegisterMovementCastSnaredSpellID(spellID);
+                movedSpellCount++;
+            }
+            return movedSpellCount;
         }
 
         // Opens a spell up to every weapon subclass, leaving the item class and inventory type requirements alone (0 means "any subclass")
@@ -573,13 +623,13 @@ namespace EQWOWConverter.WOWFiles
             return procFlags;
         }
 
-        public UInt32 GetInterruptFlags(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
+        public UInt32 GetInterruptFlags(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool moveMovementInterruptToMod = false)
         {
             if (auraType == SpellWOWAuraType.Phase)
                 return 0;
-            
+
             UInt32 interruptFlags = 0;
-            if (spellTemplate.InterruptOnMovement == true)
+            if (spellTemplate.InterruptOnMovement == true && moveMovementInterruptToMod == false)
                 interruptFlags |= 1;
             if (spellTemplate.InterruptOnPushback == true)
                 interruptFlags |= 2;

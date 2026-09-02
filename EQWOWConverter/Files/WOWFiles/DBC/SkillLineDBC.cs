@@ -69,6 +69,21 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
+        public HashSet<int> GetSkillLineIDsForCategory(int categoryID)
+        {
+            HashSet<int> skillLineIDs = new HashSet<int>();
+            foreach (DBCRow row in Rows)
+            {
+                if (row.AddedFields.Count < 2)
+                    continue;
+                if (row.AddedFields[0] is not DBCRow.DBCFieldInt32 idField || row.AddedFields[1] is not DBCRow.DBCFieldInt32 categoryField)
+                    continue;
+                if (categoryField.Value == categoryID)
+                    skillLineIDs.Add(idField.Value);
+            }
+            return skillLineIDs;
+        }
+
         public static int GetIDForSkillCatagory(SpellEQSkillCategory skillCategory)
         {
             return GetAllSkillLineIDsBySkillCategory()[skillCategory];

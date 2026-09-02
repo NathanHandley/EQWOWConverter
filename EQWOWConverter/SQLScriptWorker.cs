@@ -106,6 +106,7 @@ namespace EQWOWConverter
         private ModEverquestPlayerAutoLearnSpellsSQL modEverquestPlayerAutoLearnSpellsSQL = new ModEverquestPlayerAutoLearnSpellsSQL();
         private ModEverquestPlayerClassStartItemsSQL modEverquestPlayerClassStartItemsSQL = new ModEverquestPlayerClassStartItemsSQL();
         private ModEverquestSpellSQL modEverquestSpellSQL = new ModEverquestSpellSQL();
+        private ModEverquestSpellMovementCastSnareSQL modEverquestSpellMovementCastSnareSQL = new ModEverquestSpellMovementCastSnareSQL();
         private ModEverquestSystemConfigsSQL modEverquestSystemConfigsSQL = new ModEverquestSystemConfigsSQL();
         private ModEverquestTransportTriggerSQL modEverquestTransportTriggerSQL = new ModEverquestTransportTriggerSQL();
         private ModEverquestZoneSafePointSQL modEverquestZoneSafePointSQL = new ModEverquestZoneSafePointSQL();
@@ -320,6 +321,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("RaidBossRespawnVarianceInSec", Configuration.CREATURE_RAID_BOSS_VARIANCE_IN_SEC.ToString());
             modEverquestSystemConfigsSQL.AddRow("RaidMiniBossRespawnVarianceInSec", Configuration.CREATURE_RAID_MINI_BOSS_VARIANCE_IN_SEC.ToString());
             modEverquestSystemConfigsSQL.AddRow("CompleteHealExhaustionSpellID", Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED == true ? Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID.ToString() : "0");
+            modEverquestSystemConfigsSQL.AddRow("MovementCastSnareSpellID", Configuration.SPELL_MOVEMENT_CAST_ENABLED == true && Configuration.SPELL_MOVEMENT_CAST_SNARE_ENABLED == true ? Configuration.SPELL_MOVEMENT_CAST_SNARE_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("CompleteHealExhaustionManaCostPercentPerStack", Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK.ToString());
             modEverquestSystemConfigsSQL.AddRow("IllusionObjectMaxDistance", (Configuration.SPELL_ILLUSION_OBJECT_MAX_DISTANCE * Configuration.GENERATE_WORLD_SCALE).ToString());
             modEverquestSystemConfigsSQL.AddRow("IllusionObjectTreeMaxDistance", (Configuration.SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE * Configuration.GENERATE_WORLD_SCALE).ToString());
@@ -2831,6 +2833,10 @@ namespace EQWOWConverter
                         (int)talentInteraction.Restriction, talentInteraction.MaxBaseCastTimeInMS);
             }
 
+            // Every spell whose "moving breaks the cast" flag was taken out of Spell.dbc during dbc generation, so that the mod knows which casts should slow the caster while they move through them
+            foreach (int movementCastSnaredSpellID in MovementCastSpellRegistry.GetMovementCastSnaredSpellIDs())
+                modEverquestSpellMovementCastSnareSQL.AddRow(movementCastSnaredSpellID);
+
             // Spell split data
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
@@ -3517,6 +3523,7 @@ namespace EQWOWConverter
             modEverquestPlayerAutoLearnSpellsSQL.SaveToDisk("mod_everquest_playerautolearnspells", SQLFileType.World);
             modEverquestPlayerClassStartItemsSQL.SaveToDisk("mod_everquest_playerclassstartitems", SQLFileType.World);
             modEverquestSpellSQL.SaveToDisk("mod_everquest_spell", SQLFileType.World);
+            modEverquestSpellMovementCastSnareSQL.SaveToDisk("mod_everquest_spell_movement_cast_snare", SQLFileType.World);
             modEverquestSystemConfigsSQL.SaveToDisk("mod_everquest_systemconfigs", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
             modEverquestTransportTriggerSQL.SaveToDisk("mod_everquest_transport_trigger", SQLFileType.World);
