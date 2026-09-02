@@ -86,6 +86,15 @@ namespace EQWOWConverter
             else
                 Logger.WriteInfo("- Note: DBC File Extraction is set to false in the Configuration");
 
+            // Extract interface files (GlueXML and FrameXML)
+            if (Configuration.GENERATE_EXTRACT_INTERFACE_FILES == true)
+            {
+                InterfaceFileWorker interfaceFileWorker = new InterfaceFileWorker();
+                interfaceFileWorker.ExtractClientInterfaceFiles();
+            }
+            else
+                Logger.WriteInfo("- Note: Interface File Extraction is set to false in the Configuration");
+
             // Extract minimap metadata
             if (Configuration.GENERATE_WORLDMAPS == true)
                 ExtractMinimapMD5TranslateFile();

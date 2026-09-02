@@ -141,8 +141,11 @@ namespace EQWOWConverter
         public static int GENERATE_EQ_EXPANSION_ID_TRADESKILLS = 2;
         public static int GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS = 1;
 
-        // If true, DBC files are extracted every time.
+        // If true, DBC files are extracted every time
         public static bool GENERATE_EXTRACT_DBC_FILES = true;
+
+        // If true, interface files are extracted every time
+        public static bool GENERATE_EXTRACT_INTERFACE_FILES = true;
 
         // If true, then objects are generated
         public static bool GENERATE_OBJECTS = true;
@@ -1854,7 +1857,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("GENERATE_EQ_EXPANSION_ID_TRANSPORTS", GENERATE_EQ_EXPANSION_ID_TRANSPORTS, "", false);
             OutputVariableToConfig("GENERATE_EQ_EXPANSION_ID_TRADESKILLS", GENERATE_EQ_EXPANSION_ID_TRADESKILLS, "", false);
             OutputVariableToConfig("GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS", GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS, "");
-            OutputVariableToConfig("GENERATE_EXTRACT_DBC_FILES", GENERATE_EXTRACT_DBC_FILES, "If true, DBC files are extracted every time.");
+            OutputVariableToConfig("GENERATE_EXTRACT_DBC_FILES", GENERATE_EXTRACT_DBC_FILES, "If true, DBC files are extracted every time");
+            OutputVariableToConfig("GENERATE_EXTRACT_INTERFACE_FILES", GENERATE_EXTRACT_INTERFACE_FILES, "If true, interface files are extracted every time");
             OutputVariableToConfig("GENERATE_OBJECTS", GENERATE_OBJECTS, "If true, then objects are generated");
             OutputVariableToConfig("GENERATE_CREATURES_AND_SPAWNS", GENERATE_CREATURES_AND_SPAWNS, "If true, then creatures are generated");
             OutputVariableToConfig("GENERATE_PLAYER_ARMOR_GRAPHICS", GENERATE_PLAYER_ARMOR_GRAPHICS, "If true, then item armor player graphics are generated (and if set in [PATH_ASSETS_FOLDER]\\CustomTextures\\item\\texturecomponents)");
@@ -2390,6 +2394,7 @@ namespace EQWOWConverter
             GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS = ReadVariableFromConfigString("GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS", configValuesByVariableName, GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS);
 
             GENERATE_EXTRACT_DBC_FILES = ReadVariableFromConfigString("GENERATE_EXTRACT_DBC_FILES", configValuesByVariableName, GENERATE_EXTRACT_DBC_FILES);
+            GENERATE_EXTRACT_INTERFACE_FILES = ReadVariableFromConfigString("GENERATE_EXTRACT_INTERFACE_FILES", configValuesByVariableName, GENERATE_EXTRACT_INTERFACE_FILES);
             GENERATE_OBJECTS = ReadVariableFromConfigString("GENERATE_OBJECTS", configValuesByVariableName, GENERATE_OBJECTS);
             GENERATE_CREATURES_AND_SPAWNS = ReadVariableFromConfigString("GENERATE_CREATURES_AND_SPAWNS", configValuesByVariableName, GENERATE_CREATURES_AND_SPAWNS);
             GENERATE_PLAYER_ARMOR_GRAPHICS = ReadVariableFromConfigString("GENERATE_PLAYER_ARMOR_GRAPHICS", configValuesByVariableName, GENERATE_PLAYER_ARMOR_GRAPHICS);
