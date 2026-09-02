@@ -87,11 +87,9 @@ namespace EQWOWConverter
                 Logger.WriteInfo("- Note: DBC File Extraction is set to false in the Configuration");
 
             // Extract interface files (GlueXML and FrameXML)
+            InterfaceFileWorker interfaceFileWorker = new InterfaceFileWorker();
             if (Configuration.GENERATE_EXTRACT_INTERFACE_FILES == true)
-            {
-                InterfaceFileWorker interfaceFileWorker = new InterfaceFileWorker();
                 interfaceFileWorker.ExtractClientInterfaceFiles();
-            }
             else
                 Logger.WriteInfo("- Note: Interface File Extraction is set to false in the Configuration");
 
@@ -343,6 +341,9 @@ namespace EQWOWConverter
 
                 // Write the client data version so the client can report it for the server's version check
                 EQVersionLUA.Generate();
+
+                // Build the FrameXML and GlueXML files (stock files with the EQ changes applied, plus the custom EQ files)
+                interfaceFileWorker.GenerateInterfaceFiles();
 
                 // Copy the item tooltip addon into the prep location
                 string sourceItemTooltipsAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_ItemTooltips");

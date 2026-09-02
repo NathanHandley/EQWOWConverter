@@ -23,6 +23,9 @@ namespace EQWOWConverter
         // Only these subfolders of the client's Interface folder are pulled out
         private static readonly string[] INTERFACE_SUBFOLDERS_TO_EXTRACT = { "GlueXML", "FrameXML" };
 
+        // Subfolders of Assets\CustomTextures\interface that go into the patch under Interface\<subfolder>
+        private static readonly string[] INTERFACE_TEXTURE_SUBFOLDERS_TO_COPY = { "ICONS", "PlayerFrame", "TargetingFrame" };
+
         public void ExtractClientInterfaceFiles()
         {
             string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
@@ -85,6 +88,189 @@ namespace EQWOWConverter
             process.WaitForExit();
 
             Logger.WriteDebug("Extracting client interface files complete");
+        }
+
+        public void GenerateInterfaceFiles()
+        {
+            string stockInterfaceFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "ExportedInterfaceFiles");
+            string customInterfaceFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomInterface");
+            string actionsFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "InterfaceGenActions.csv");
+            string outputInterfaceFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Interface");
+            GenerateInterfaceFiles(stockInterfaceFolder, customInterfaceFolder, actionsFileName, outputInterfaceFolder);
+
+            // Textures the generated interface files reference
+            string customTexturesFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "interface");
+            foreach (string textureSubfolder in INTERFACE_TEXTURE_SUBFOLDERS_TO_COPY)
+            {
+                string sourceFolder = Path.Combine(customTexturesFolder, textureSubfolder);
+                if (Directory.Exists(sourceFolder) == false)
+                {
+                    Logger.WriteError("Custom interface texture folder '" + sourceFolder + "' did not exist, so nothing was copied from it");
+                    continue;
+                }
+                string targetFolder = Path.Combine(outputInterfaceFolder, textureSubfolder);
+                if (Directory.Exists(targetFolder) == false)
+                    Directory.CreateDirectory(targetFolder);
+                Logger.WriteDebug("Copying custom interface textures from '" + sourceFolder + "'");
+                foreach (string sourceFileName in Directory.GetFiles(sourceFolder))
+                    FileTool.CopyFile(sourceFileName, Path.Combine(targetFolder, Path.GetFileName(sourceFileName)));
+            }
+        }
+
+        public void GenerateInterfaceFiles(string stockInterfaceFolder, string customInterfaceFolder, string actionsFileName, string outputInterfaceFolder)
+        {
+            Logger.WriteInfo("Generating client interface files...");
+
+            if (Directory.Exists(stockInterfaceFolder) == false)
+            {
+                Logger.WriteError("Failed to generate interface files, as '" + stockInterfaceFolder + "' did not exist (is GENERATE_EXTRACT_INTERFACE_FILES false?)");
+                return;
+            }
+
+            // Files that are this project's own get copied as-is
+            foreach (string interfaceSubfolder in INTERFACE_SUBFOLDERS_TO_EXTRACT)
+            {
+                string customSubfolder = Path.Combine(customInterfaceFolder, interfaceSubfolder);
+                if (Directory.Exists(customSubfolder) == false)
+                    continue;
+                string outputSubfolder = Path.Combine(outputInterfaceFolder, interfaceSubfolder);
+                if (Directory.Exists(outputSubfolder) == false)
+                    Directory.CreateDirectory(outputSubfolder);
+                foreach (string customFileName in Directory.GetFiles(customSubfolder))
+                {
+                    Logger.WriteDebug("Copying custom interface file '" + customFileName + "'");
+                    File.Copy(customFileName, Path.Combine(outputSubfolder, Path.GetFileName(customFileName)), true);
+                }
+            }
+
+            // Stock files with changes get rebuilt from the actions.  The Data column is code and comes last, so it may hold the delimiter and unpaired double quotes, which the reader has to be told to allow for
+            Dictionary<string, List<Dictionary<string, string>>> actionsByRelativeFileName = new Dictionary<string, List<Dictionary<string, string>>>();
+            if (File.Exists(actionsFileName) == false)
+                Logger.WriteError("Interface actions file '" + actionsFileName + "' did not exist, so no stock interface files will be changed");
+            else
+            {
+                foreach (Dictionary<string, string> columns in FileTool.ReadAllRowsFromFileWithHeader(actionsFileName, "|", false, true))
+                {
+                    string relativeFileName = Path.Combine(columns["Folder"], columns["File"]);
+                    if (actionsByRelativeFileName.ContainsKey(relativeFileName) == false)
+                        actionsByRelativeFileName.Add(relativeFileName, new List<Dictionary<string, string>>());
+                    actionsByRelativeFileName[relativeFileName].Add(columns);
+                }
+            }
+            foreach (var actionsForFile in actionsByRelativeFileName)
+            {
+                string stockFileName = Path.Combine(stockInterfaceFolder, actionsForFile.Key);
+                string outputFileName = Path.Combine(outputInterfaceFolder, actionsForFile.Key);
+                if (File.Exists(stockFileName) == false)
+                {
+                    Logger.WriteError("Could not generate interface file '" + actionsForFile.Key + "', as the stock file '" + stockFileName + "' did not exist");
+                    continue;
+                }
+                string? outputFolder = Path.GetDirectoryName(outputFileName);
+                if (string.IsNullOrEmpty(outputFolder) == false && Directory.Exists(outputFolder) == false)
+                    Directory.CreateDirectory(outputFolder);
+                Logger.WriteDebug("Generating interface file '" + actionsForFile.Key + "' from the stock file and " + actionsForFile.Value.Count + " actions");
+                ApplyInterfaceGenActions(stockFileName, outputFileName, actionsForFile.Value);
+            }
+
+            Logger.WriteDebug("Generating client interface files complete");
+        }
+
+        private void ApplyInterfaceGenActions(string stockFileName, string outputFileName, List<Dictionary<string, string>> actions)
+        {
+            string[] stockLines = File.ReadAllText(stockFileName, Encoding.UTF8).Split("\r\n");
+            int lineCount = stockLines.Length;
+
+            HashSet<int> deletedLineNumbers = new HashSet<int>();
+            Dictionary<int, string> replacementsByLineNumber = new Dictionary<int, string>();
+            Dictionary<int, SortedDictionary<int, string>> insertsByStepByAfterLineNumber = new Dictionary<int, SortedDictionary<int, string>>();
+            foreach (Dictionary<string, string> action in actions)
+            {
+                string step = action["Step"];
+                string line = action["Line"];
+                string data = action["Data"];
+                switch (action["Action"].ToLower())
+                {
+                    case "delete":
+                        {
+                            int startLine;
+                            int endLine;
+                            string[] rangeParts = line.Split('-', 2);
+                            if (int.TryParse(rangeParts[0], out startLine) == false || (rangeParts.Length == 2 && int.TryParse(rangeParts[1], out endLine) == false))
+                            {
+                                Logger.WriteError("Interface action step " + step + " has an invalid delete line '" + line + "', skipping it");
+                                continue;
+                            }
+                            if (rangeParts.Length == 1)
+                                endLine = startLine;
+                            else
+                                endLine = int.Parse(rangeParts[1]);
+                            if (startLine < 1 || endLine > lineCount || startLine > endLine)
+                            {
+                                Logger.WriteError("Interface action step " + step + " deletes lines " + line + " which is outside 1-" + lineCount + " of the stock file, skipping it");
+                                continue;
+                            }
+                            for (int lineNumber = startLine; lineNumber <= endLine; lineNumber++)
+                                deletedLineNumbers.Add(lineNumber);
+                        } break;
+                    case "replace":
+                        {
+                            int lineNumber;
+                            if (int.TryParse(line, out lineNumber) == false || lineNumber < 1 || lineNumber > lineCount)
+                            {
+                                Logger.WriteError("Interface action step " + step + " replaces line '" + line + "' which is outside 1-" + lineCount + " of the stock file, skipping it");
+                                continue;
+                            }
+                            replacementsByLineNumber[lineNumber] = data;
+                        } break;
+                    case "insertafter":
+                        {
+                            int lineNumber;
+                            int stepNumber;
+                            if (int.TryParse(line, out lineNumber) == false || lineNumber < 0 || lineNumber > lineCount)
+                            {
+                                Logger.WriteError("Interface action step " + step + " inserts after line '" + line + "' which is outside 0-" + lineCount + " of the stock file, skipping it");
+                                continue;
+                            }
+                            if (int.TryParse(step, out stepNumber) == false)
+                            {
+                                Logger.WriteError("Interface action step '" + step + "' is not a number, skipping it");
+                                continue;
+                            }
+                            if (insertsByStepByAfterLineNumber.ContainsKey(lineNumber) == false)
+                                insertsByStepByAfterLineNumber.Add(lineNumber, new SortedDictionary<int, string>());
+                            insertsByStepByAfterLineNumber[lineNumber][stepNumber] = data;
+                        } break;
+                    case "copy": break; // The stock file ships as-is.  Listing it is what gets it written, nothing needs changing
+                    default:
+                        {
+                            Logger.WriteError("Interface action step " + step + " has an unknown action '" + action["Action"] + "', skipping it");
+                        } break;
+                }
+            }
+            foreach (int deletedLineNumber in deletedLineNumbers)
+                if (replacementsByLineNumber.ContainsKey(deletedLineNumber) == true)
+                    Logger.WriteError("Interface actions for '" + stockFileName + "' both delete and replace line " + deletedLineNumber + ", the delete wins");
+
+            List<string> outputLines = new List<string>();
+            if (insertsByStepByAfterLineNumber.ContainsKey(0) == true)
+                outputLines.AddRange(insertsByStepByAfterLineNumber[0].Values);
+            for (int i = 0; i < lineCount; i++)
+            {
+                int lineNumber = i + 1;
+                if (deletedLineNumbers.Contains(lineNumber) == true)
+                {
+                    // Dropped
+                }
+                else if (replacementsByLineNumber.ContainsKey(lineNumber) == true)
+                    outputLines.Add(replacementsByLineNumber[lineNumber]);
+                else
+                    outputLines.Add(stockLines[i]);
+                if (insertsByStepByAfterLineNumber.ContainsKey(lineNumber) == true)
+                    outputLines.AddRange(insertsByStepByAfterLineNumber[lineNumber].Values);
+            }
+
+            File.WriteAllText(outputFileName, string.Join("\r\n", outputLines), new UTF8Encoding(false));
         }
     }
 }

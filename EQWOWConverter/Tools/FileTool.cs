@@ -300,18 +300,26 @@ namespace EQWOWConverter
             return joinedRows;
         }
 
-        public static List<Dictionary<string, string>> ReadAllRowsFromFileWithHeader(string fileName, string delimeter)
+        public static List<Dictionary<string, string>> ReadAllRowsFromFileWithHeader(string fileName, string delimeter, bool joinMultiLineQuotedValues = true, bool lastColumnTakesRemainder = false)
         {
             // Get the rows
             List<Dictionary<string, string>> returnRows = new List<Dictionary<string, string>>();
-            List<string> rows = ReadAllRowsWithMultiLineQuotedValuesJoined(fileName);
+            List<string> rows;
+            if (joinMultiLineQuotedValues == true)
+                rows = ReadAllRowsWithMultiLineQuotedValuesJoined(fileName);
+            else
+                rows = ReadAllStringLinesFromFile(fileName, false, true);
 
             // For each row, create a blocked return set
             bool isHeader = true;
             List<string> columnNames = new List<string>();
             foreach(string row in rows)
             {
-                string[] rowBlocks = row.Split(delimeter);
+                string[] rowBlocks;
+                if (lastColumnTakesRemainder == true && isHeader == false)
+                    rowBlocks = row.Split(delimeter, columnNames.Count);
+                else
+                    rowBlocks = row.Split(delimeter);
                 if (isHeader == true)
                 {
                     foreach(string block in rowBlocks)
