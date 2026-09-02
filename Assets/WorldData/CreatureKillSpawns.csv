@@ -437,18 +437,14 @@ id|zone|trigger_eq_npc_id|action|target_eq_npc_id|chance|alt_group|alt_id|alt_we
 436|warrens|101029|spawn|101006|100|0|0|0|0|713|-866|-36.999962|260|0|0|101006|||||0|0|0|-1|-1|death|0|a_rabid_kobold
 437|warrens|101029|spawn|101006|100|0|0|0|0|577|-473|-77.968742|200|0|0|101006|||||0|0|0|-1|-1|death|0|a_rabid_kobold
 438|warrens|101029|spawn|101006|100|0|0|0|0|506|-1019|-81.968582|60|0|0|101006|||||0|0|0|-1|-1|death|0|a_rabid_kobold
-439|sleeper|128090|despawn|128094|100|90|1|1|0|0|0|0|0|25000|25000|0|128091|128092|128093||0|0|0|-1|-1|death|0|Kerafyrm awakening via Nanzata - sleeping form departs (1 in 5, EQ was 1 in 33)
-440|sleeper|128090|spawn|1000031|100|90|1|1|0|-2373|-1481|-1056|260|25000|25000|1000031|128091|128092|128093||0|0|0|-1|-1|death|0|Kerafyrm awakening via Nanzata - awakened form rises (1 in 5, EQ was 1 in 33)
-441|sleeper|128090|despawn|1000031|100|90|2|4|0|0|0|0|0|0|0|0|128094|||128094|0|0|0|-1|-1|death|0|Kerafyrm awakening via Nanzata - failed roll arm (contradictory requirements so it never fires)
-442|sleeper|128091|despawn|128094|100|90|1|1|0|0|0|0|0|25000|25000|0|128090|128092|128093||0|0|0|-1|-1|death|0|Kerafyrm awakening via Ventani - sleeping form departs (1 in 5, EQ was 1 in 33)
-443|sleeper|128091|spawn|1000031|100|90|1|1|0|-2373|-1481|-1056|260|25000|25000|1000031|128090|128092|128093||0|0|0|-1|-1|death|0|Kerafyrm awakening via Ventani - awakened form rises (1 in 5, EQ was 1 in 33)
-444|sleeper|128091|despawn|1000031|100|90|2|4|0|0|0|0|0|0|0|0|128094|||128094|0|0|0|-1|-1|death|0|Kerafyrm awakening via Ventani - failed roll arm (contradictory requirements so it never fires)
-445|sleeper|128092|despawn|128094|100|90|1|1|0|0|0|0|0|25000|25000|0|128090|128091|128093||0|0|0|-1|-1|death|0|Kerafyrm awakening via Tukaarak - sleeping form departs (1 in 5, EQ was 1 in 33)
-446|sleeper|128092|spawn|1000031|100|90|1|1|0|-2373|-1481|-1056|260|25000|25000|1000031|128090|128091|128093||0|0|0|-1|-1|death|0|Kerafyrm awakening via Tukaarak - awakened form rises (1 in 5, EQ was 1 in 33)
-447|sleeper|128092|despawn|1000031|100|90|2|4|0|0|0|0|0|0|0|0|128094|||128094|0|0|0|-1|-1|death|0|Kerafyrm awakening via Tukaarak - failed roll arm (contradictory requirements so it never fires)
-448|sleeper|128093|despawn|128094|100|90|1|1|0|0|0|0|0|25000|25000|0|128090|128091|128092||0|0|0|-1|-1|death|0|Kerafyrm awakening via Hraashna - sleeping form departs (1 in 5, EQ was 1 in 33)
-449|sleeper|128093|spawn|1000031|100|90|1|1|0|-2373|-1481|-1056|260|25000|25000|1000031|128090|128091|128092||0|0|0|-1|-1|death|0|Kerafyrm awakening via Hraashna - awakened form rises (1 in 5, EQ was 1 in 33)
-450|sleeper|128093|despawn|1000031|100|90|2|4|0|0|0|0|0|0|0|0|128094|||128094|0|0|0|-1|-1|death|0|Kerafyrm awakening via Hraashna - failed roll arm (contradictory requirements so it never fires)
+439|sleeper|128090|despawn|128094|100|0|0|0|0|0|0|0|0|25000|25000|0|128091|128092|128093||0|0|0|-1|-1|death|0|Kerafyrm awakening via Nanzata - sleeping form departs (always, EQ was 1 in 33)
+440|sleeper|128090|spawn|1000031|100|0|0|0|0|-2373|-1481|-1056|260|25000|25000|1000031|128091|128092|128093||0|0|0|-1|-1|death|0|Kerafyrm awakening via Nanzata - awakened form rises (always, EQ was 1 in 33)
+442|sleeper|128091|despawn|128094|100|0|0|0|0|0|0|0|0|25000|25000|0|128090|128092|128093||0|0|0|-1|-1|death|0|Kerafyrm awakening via Ventani - sleeping form departs (always, EQ was 1 in 33)
+443|sleeper|128091|spawn|1000031|100|0|0|0|0|-2373|-1481|-1056|260|25000|25000|1000031|128090|128092|128093||0|0|0|-1|-1|death|0|Kerafyrm awakening via Ventani - awakened form rises (always, EQ was 1 in 33)
+445|sleeper|128092|despawn|128094|100|0|0|0|0|0|0|0|0|25000|25000|0|128090|128091|128093||0|0|0|-1|-1|death|0|Kerafyrm awakening via Tukaarak - sleeping form departs (always, EQ was 1 in 33)
+446|sleeper|128092|spawn|1000031|100|0|0|0|0|-2373|-1481|-1056|260|25000|25000|1000031|128090|128091|128093||0|0|0|-1|-1|death|0|Kerafyrm awakening via Tukaarak - awakened form rises (always, EQ was 1 in 33)
+448|sleeper|128093|despawn|128094|100|0|0|0|0|0|0|0|0|25000|25000|0|128090|128091|128092||0|0|0|-1|-1|death|0|Kerafyrm awakening via Hraashna - sleeping form departs (always, EQ was 1 in 33)
+449|sleeper|128093|spawn|1000031|100|0|0|0|0|-2373|-1481|-1056|260|25000|25000|1000031|128090|128091|128092||0|0|0|-1|-1|death|0|Kerafyrm awakening via Hraashna - awakened form rises (always, EQ was 1 in 33)
 451|sleeper|1000031|respawntarget|128094|100|0|0|0|0|0|0|0|0|0|0|0|||||0|0|0|-1|-1|death|-1|sleeping Kerafyrm returns after the awakened form is slain
 452|sleeper|1000031|despawn|1000031|100|0|0|0|0|0|0|0|0|7200000|0|0|||||0|0|0|-1|-1|ooctimer|0|awakened Kerafyrm departs after 2 unbothered hours
 453|sleeper|1000031|respawntarget|128094|100|0|0|0|0|0|0|0|0|7200000|0|0|||||0|0|0|-1|-1|ooctimer|1200|sleeping Kerafyrm returns after the awakened form departs
