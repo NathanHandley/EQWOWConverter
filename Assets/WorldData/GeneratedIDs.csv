@@ -276375,3 +276375,7 @@ BroadcastTextID|questreaction~52330~0|84814
 BroadcastTextID|questreaction~52330~2|84815
 BroadcastTextID|questreaction~52330~4|84816
 BroadcastTextID|questreaction~52330~6|84817
+LockID|junkbox~50|3081
+LockID|junkbox~100|3082
+LockID|junkbox~150|3083
+LockID|junkbox~200|3084

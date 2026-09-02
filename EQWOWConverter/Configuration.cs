@@ -1599,7 +1599,7 @@ namespace EQWOWConverter
         // - Quest Template multi-item reward containers IDs range 116000 - 116259
         // - Tradeskill multi-item creation containers IDs range 117000 - 117349
         // - Guise illusion consumable items range 118000 - 118012
-        // - Pick Pocket junkbox items range 115000 - 115005
+        // - Pick Pocket junkbox items range 115000 - 115007
         // - Switched Slot items have IDs 120000 - 121000
         // - Companion Pet Items have IDs 123000 - 124000
         public static int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;

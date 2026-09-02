@@ -30,8 +30,10 @@ namespace EQWOWConverter.Items
             new List<(int, int, int, int)>()
         {
             (40038, 1, 1, 15),    // Battered Norrath Junkbox
-            (40039, 70, 16, 30),  // Worn Norrath Junkbox
-            (40040, 175, 31, 45), // Sturdy Norrath Junkbox
+            (40039, 50, 16, 20),  // Worn Norrath Junkbox
+            (40044, 100, 21, 25), // Dented Norrath Junkbox
+            (40045, 150, 26, 35), // Dusty Junkbox
+            (40040, 200, 36, 45), // Sturdy Norrath Junkbox
             (40041, 250, 46, 60), // Heavy Norrath Junkbox
             (40042, 300, 61, 70), // Strong Norrath Junkbox
             (40043, 350, 71, 80)  // Reinforced Junkbox

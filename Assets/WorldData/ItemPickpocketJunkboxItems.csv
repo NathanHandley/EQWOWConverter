@@ -1,40 +1,40 @@
 junkbox_eq_itemid|junkbox_name|eq_itemid|item_name|eq_trivial|weight|min_expansion|max_expansion
-40038|Battered Norrath Junkbox|13260|Giant Wasp Venom Sac|16|1|-1|-1
-40038|Battered Norrath Junkbox|13374|Froglok Poison Gland|16|1|-1|-1
 40038|Battered Norrath Junkbox|14017|A Snake Venom Sac|16|1|-1|-1
+40038|Battered Norrath Junkbox|13374|Froglok Poison Gland|16|1|-1|-1
+40038|Battered Norrath Junkbox|13260|Giant Wasp Venom Sac|16|1|-1|-1
 40038|Battered Norrath Junkbox|16965|Poison Vial|16|1|-1|-1
 40038|Battered Norrath Junkbox|16980|Suspension|16|1|-1|-1
 40038|Battered Norrath Junkbox|16983|Urticating Hairs|16|1|-1|-1
 40038|Battered Norrath Junkbox|14018|A Spider Venom Sac|17|1|-1|-1
+40038|Battered Norrath Junkbox|16984|Asp Poison Sac|24|1|-1|-1
 40038|Battered Norrath Junkbox|16826|Coyotetail|24|1|-1|-1
 40038|Battered Norrath Junkbox|16966|Lined Poison Vial|24|1|-1|-1
-40038|Battered Norrath Junkbox|16984|Asp Poison Sac|24|1|-1|-1
-40038|Battered Norrath Junkbox|16827|Thorny Ergot|32|1|-1|-1
-40038|Battered Norrath Junkbox|16842|Delphinium|32|1|-1|-1
-40038|Battered Norrath Junkbox|16981|Constrict Suspension|32|1|-1|-1
 40038|Battered Norrath Junkbox|16985|Basilisk Eye Stalk|32|1|-1|-1
+40038|Battered Norrath Junkbox|16981|Constrict Suspension|32|1|-1|-1
+40038|Battered Norrath Junkbox|16842|Delphinium|32|1|-1|-1
+40038|Battered Norrath Junkbox|16827|Thorny Ergot|32|1|-1|-1
 40038|Battered Norrath Junkbox|16817|Grave Mold|40|1|-1|-1
 40039|Worn Norrath Junkbox|16986|Crystallized Marrow|42|1|-1|-1
 40039|Worn Norrath Junkbox|16987|Cyclamine Corm|48|1|-1|-1
 40039|Worn Norrath Junkbox|16988|Putrid Bile|56|1|-1|-1
-40039|Worn Norrath Junkbox|16837|Vampire Bat Saliva|66|1|-1|-1
 40039|Worn Norrath Junkbox|16989|Ichor|66|1|-1|-1
-40039|Worn Norrath Junkbox|13085|Chunk of Meat|76|1|-1|-1
-40039|Worn Norrath Junkbox|16820|Red Hellebore|76|1|-1|-1
-40039|Worn Norrath Junkbox|16828|Dogbane|76|1|-1|-1
-40039|Worn Norrath Junkbox|16834|Ground Garlic|76|1|-1|-1
-40039|Worn Norrath Junkbox|16990|Embalming Dust|76|1|-1|-1
-40039|Worn Norrath Junkbox|16839|Succulent Sap|87|1|-1|-1
-40039|Worn Norrath Junkbox|16991|Ashroot|87|1|-1|-1
-40039|Worn Norrath Junkbox|16992|Alocasia Root|98|1|-1|-1
-40039|Worn Norrath Junkbox|16816|Muddite Mud|108|1|-1|-1
-40039|Worn Norrath Junkbox|16993|Lactera|108|1|-1|-1
-40040|Sturdy Norrath Junkbox|16994|Whore's Bane|119|1|-1|-1
-40040|Sturdy Norrath Junkbox|16967|Sealed Poison Vial|130|1|-1|-1
-40040|Sturdy Norrath Junkbox|16995|Gelsemium Root|130|1|-1|-1
-40040|Sturdy Norrath Junkbox|16843|Bundle of Wormwood|140|1|-1|-1
-40040|Sturdy Norrath Junkbox|16979|Darkbone Marrow|140|1|-1|-1
-40040|Sturdy Norrath Junkbox|16996|Gelsemium Petals|140|1|-1|-1
+40039|Worn Norrath Junkbox|16837|Vampire Bat Saliva|66|1|-1|-1
+40044|Dented Norrath Junkbox|13085|Chunk of Meat|76|1|-1|-1
+40044|Dented Norrath Junkbox|16828|Dogbane|76|1|-1|-1
+40044|Dented Norrath Junkbox|16990|Embalming Dust|76|1|-1|-1
+40044|Dented Norrath Junkbox|16834|Ground Garlic|76|1|-1|-1
+40044|Dented Norrath Junkbox|16820|Red Hellebore|76|1|-1|-1
+40044|Dented Norrath Junkbox|16991|Ashroot|87|1|-1|-1
+40044|Dented Norrath Junkbox|16839|Succulent Sap|87|1|-1|-1
+40044|Dented Norrath Junkbox|16992|Alocasia Root|98|1|-1|-1
+40045|Dusty Junkbox|16993|Lactera|108|1|-1|-1
+40045|Dusty Junkbox|16816|Muddite Mud|108|1|-1|-1
+40045|Dusty Junkbox|16994|Whore's Bane|119|1|-1|-1
+40045|Dusty Junkbox|16995|Gelsemium Root|130|1|-1|-1
+40045|Dusty Junkbox|16967|Sealed Poison Vial|130|1|-1|-1
+40045|Dusty Junkbox|16843|Bundle of Wormwood|140|1|-1|-1
+40045|Dusty Junkbox|16979|Darkbone Marrow|140|1|-1|-1
+40045|Dusty Junkbox|16996|Gelsemium Petals|140|1|-1|-1
 40040|Sturdy Norrath Junkbox|16997|Asmag Weed|151|1|-1|-1
 40040|Sturdy Norrath Junkbox|16835|Ash Hornet Venom|162|1|-1|-1
 40040|Sturdy Norrath Junkbox|16836|Cinder Hornet Pollen|162|1|-1|-1
@@ -42,30 +42,30 @@ junkbox_eq_itemid|junkbox_name|eq_itemid|item_name|eq_trivial|weight|min_expansi
 40040|Sturdy Norrath Junkbox|16829|Castorbean|172|1|-1|-1
 40040|Sturdy Norrath Junkbox|16833|Hounds Tongue|172|1|-1|-1
 40040|Sturdy Norrath Junkbox|16999|King's Thorn|172|1|-1|-1
-40041|Heavy Norrath Junkbox|16550|Soot Hemlock|183|1|-1|-1
 40041|Heavy Norrath Junkbox|16823|Crystal Nightshade|183|1|-1|-1
+40041|Heavy Norrath Junkbox|16550|Soot Hemlock|183|1|-1|-1
 40041|Heavy Norrath Junkbox|10299|Burned Out Lightstone|194|1|-1|-1
-40041|Heavy Norrath Junkbox|16551|Wolves Bane|194|1|-1|-1
 40041|Heavy Norrath Junkbox|16982|Larent Suspension|194|1|-1|-1
-40041|Heavy Norrath Junkbox|16552|White Hellebore|204|1|-1|-1
+40041|Heavy Norrath Junkbox|16551|Wolves Bane|194|1|-1|-1
 40041|Heavy Norrath Junkbox|16838|Heartsting Venom Sack|204|1|-1|-1
+40041|Heavy Norrath Junkbox|16552|White Hellebore|204|1|-1|-1
 40041|Heavy Norrath Junkbox|16553|Lead Peroxide|215|1|-1|-1
-40041|Heavy Norrath Junkbox|16558|White Lead|215|1|-1|-1
 40041|Heavy Norrath Junkbox|16821|Quicksilver|215|1|-1|-1
+40041|Heavy Norrath Junkbox|16558|White Lead|215|1|-1|-1
 40041|Heavy Norrath Junkbox|16554|Frosty Datura|226|1|-1|-1
-40042|Strong Norrath Junkbox|16555|Tares Lichen|236|1|-1|-1
 40042|Strong Norrath Junkbox|16822|Snowfall Algae|236|1|-1|-1
+40042|Strong Norrath Junkbox|16555|Tares Lichen|236|1|-1|-1
 40042|Strong Norrath Junkbox|16831|Wood Rose|236|1|-1|-1
 40042|Strong Norrath Junkbox|16556|Black Henbane|247|1|-1|-1
-40042|Strong Norrath Junkbox|16559|Death Cap|247|1|-1|-1
 40042|Strong Norrath Junkbox|16818|Chromadrac Wing|247|1|-1|-1
+40042|Strong Norrath Junkbox|16559|Death Cap|247|1|-1|-1
 40042|Strong Norrath Junkbox|16819|Skyash Bile|247|1|-1|-1
-40042|Strong Norrath Junkbox|16557|Snowcap Amanita|258|1|-1|-1
 40042|Strong Norrath Junkbox|16832|Snakes Head Iris|258|1|-1|-1
-40042|Strong Norrath Junkbox|12105|Pixie Dust|268|1|-1|-1
-40042|Strong Norrath Junkbox|16824|Iron Sulphide|268|1|-1|-1
-40042|Strong Norrath Junkbox|16825|Emeraldberry Cyanide|268|1|-1|-1
+40042|Strong Norrath Junkbox|16557|Snowcap Amanita|258|1|-1|-1
 40042|Strong Norrath Junkbox|16830|Amanita Phalloide|268|1|-1|-1
+40042|Strong Norrath Junkbox|16825|Emeraldberry Cyanide|268|1|-1|-1
+40042|Strong Norrath Junkbox|16824|Iron Sulphide|268|1|-1|-1
+40042|Strong Norrath Junkbox|12105|Pixie Dust|268|1|-1|-1
 40042|Strong Norrath Junkbox|16971|Creeper Ivy|275|1|-1|-1
 40042|Strong Norrath Junkbox|16975|Ethereal Suspension|275|1|-1|-1
 40043|Reinforced Junkbox|16898|Ivory Poppy|282|1|-1|-1
