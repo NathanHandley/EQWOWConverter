@@ -2221,8 +2221,7 @@ namespace EQWOWConverter.Items
                 {
                     float dps = Convert.ToSingle(damage) / (Convert.ToSingle(delay) / 1000);
                     float calcDps = GetConvertedEqToWowStat(newItemTemplate.InventoryType, "dps", dps);
-                    float calcDelay = Convert.ToSingle(delay) * (1 - Configuration.ITEMS_WEAPON_DELAY_REDUCTION_AMT);
-                    float calcDamage = calcDps * (calcDelay / 1000);
+                    float calcDamage = calcDps * (Convert.ToSingle(delay) / 1000);
                     if (newItemTemplate.ClassID == 6) // Ammo doesn't factor delay in damage
                         calcDamage = calcDps;
                     if (calcDps != 0)
@@ -2231,11 +2230,11 @@ namespace EQWOWConverter.Items
                         newItemTemplate.WeaponMinDamage = Convert.ToInt32(Math.Round(calcDamage * 0.8f));
                         newItemTemplate.WeaponMaxDamage = Convert.ToInt32(Math.Round(calcDamage * 1.2f));
 
-                        // Scale the delay, or if arrow just set it
+                        // Use the EQ delay as-is, or if arrow just set it
                         if (newItemTemplate.ClassID == 6 && newItemTemplate.SubClassID == 2)
                             newItemTemplate.WeaponDelay = 3000;
                         else if (delay > 0)
-                            newItemTemplate.WeaponDelay = Convert.ToInt32(Math.Round(calcDelay));
+                            newItemTemplate.WeaponDelay = delay;
                     }
                 }
 

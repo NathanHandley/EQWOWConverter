@@ -703,9 +703,6 @@ namespace EQWOWConverter
         // If true, this uses alternate stats for items that have been tweaked for balance reasons
         public static bool ITEMS_USE_ALTERNATE_STATS = true;
         
-        // This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;
-        public static float ITEMS_WEAPON_DELAY_REDUCTION_AMT = 0.2f;
-
         // This is the base PPM (Procs Per Minute) used for weapon proc weapons
         public static float ITEMS_WEAPON_EFFECT_PPM_BASE_RATE = 2f;
 
@@ -2179,7 +2176,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_PICKPOCKET_JUNKBOX_ENABLED", CREATURE_PICKPOCKET_JUNKBOX_ENABLED, "If lockpicking junkboxes can be pick pocketed off of EQ creatures", false);
             OutputVariableToConfig("CREATURE_PICKPOCKET_JUNKBOX_CHANCE", CREATURE_PICKPOCKET_JUNKBOX_CHANCE, "The odds that a pick attempt will also yield a junkbox, which rolls on its own so it never displaces other pick pocket loot");
             OutputVariableToConfig("ITEMS_USE_ALTERNATE_STATS", ITEMS_USE_ALTERNATE_STATS, "If true, this uses alternate stats for items that have been tweaked for balance reasons");
-            OutputVariableToConfig("ITEMS_WEAPON_DELAY_REDUCTION_AMT", ITEMS_WEAPON_DELAY_REDUCTION_AMT, "This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;");
             OutputVariableToConfig("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", ITEMS_WEAPON_EFFECT_PPM_BASE_RATE, "This is the base PPM (Procs Per Minute) used for weapon proc weapons");
             OutputVariableToConfig("ITEMS_SHOW_WORN_EFFECT_AURA_ICON", ITEMS_SHOW_WORN_EFFECT_AURA_ICON, "If true, gear that has a worn effect will show as a buff on the character");
             OutputVariableToConfig("ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS", ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS, "If true, any item that is clickable item that also has a spell will be replaced with a container item that contains both the equippable item as well as a non-equipable version that can be clicked from inventory.");
@@ -2875,7 +2871,6 @@ namespace EQWOWConverter
             CREATURE_PICKPOCKET_JUNKBOX_CHANCE = ReadVariableFromConfigString("CREATURE_PICKPOCKET_JUNKBOX_CHANCE", configValuesByVariableName, CREATURE_PICKPOCKET_JUNKBOX_CHANCE);
 
             ITEMS_USE_ALTERNATE_STATS = ReadVariableFromConfigString("ITEMS_USE_ALTERNATE_STATS", configValuesByVariableName, ITEMS_USE_ALTERNATE_STATS);
-            ITEMS_WEAPON_DELAY_REDUCTION_AMT = ReadVariableFromConfigString("ITEMS_WEAPON_DELAY_REDUCTION_AMT", configValuesByVariableName, ITEMS_WEAPON_DELAY_REDUCTION_AMT);
             ITEMS_WEAPON_EFFECT_PPM_BASE_RATE = ReadVariableFromConfigString("ITEMS_WEAPON_EFFECT_PPM_BASE_RATE", configValuesByVariableName, ITEMS_WEAPON_EFFECT_PPM_BASE_RATE);
             ITEMS_SHOW_WORN_EFFECT_AURA_ICON = ReadVariableFromConfigString("ITEMS_SHOW_WORN_EFFECT_AURA_ICON", configValuesByVariableName, ITEMS_SHOW_WORN_EFFECT_AURA_ICON);
             ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS = ReadVariableFromConfigString("ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS", configValuesByVariableName, ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS);
