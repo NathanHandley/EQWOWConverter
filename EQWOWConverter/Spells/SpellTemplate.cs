@@ -4485,10 +4485,42 @@ namespace EQWOWConverter.Spells
             if (spellTemplate.SummonedPetTypeName.Length > 0)
                 descriptionSB.Append(string.Concat(" This is a ", spellTemplate.SummonedPetTypeName, " type pet."));
 
+            // Raw attack power buffs and armor reductions never add together, so say so on the tooltip (see the mod's attack power tracking and the WOW "Major Armor Debuffs" spell group)
+            if (DoesSpellTemplateHaveHighestOnlyAttackPowerBuffEffect(spellTemplate) == true)
+                descriptionSB.Append(" Only the highest attack power effect will take effect on the target.");
+            if (DoesSpellTemplateHaveHighestOnlyAttackPowerReductionEffect(spellTemplate) == true)
+                descriptionSB.Append(" Only the highest attack power reduction effect will take effect on the target.");
+            if (DoesSpellTemplateHaveHighestOnlyArmorReductionEffect(spellTemplate) == true)
+                descriptionSB.Append(" Only the highest armor reduction effect will take effect on the target.");
+
             // Capitalize Norrath
             descriptionSB.Replace("norrath", "Norrath");
 
             return descriptionSB.ToString();
+        }
+
+        private static bool DoesSpellTemplateHaveHighestOnlyAttackPowerBuffEffect(SpellTemplate spellTemplate)
+        {
+            foreach (SpellEffectWOW spellEffectWOW in spellTemplate.WOWSpellEffects)
+                if (spellEffectWOW.EffectAuraType == SpellWOWAuraType.ModAttackPower && spellEffectWOW.CalcEffectLowLevelValue > 0)
+                    return true;
+            return false;
+        }
+
+        private static bool DoesSpellTemplateHaveHighestOnlyAttackPowerReductionEffect(SpellTemplate spellTemplate)
+        {
+            foreach (SpellEffectWOW spellEffectWOW in spellTemplate.WOWSpellEffects)
+                if (spellEffectWOW.EffectAuraType == SpellWOWAuraType.ModAttackPower && spellEffectWOW.CalcEffectLowLevelValue < 0)
+                    return true;
+            return false;
+        }
+
+        private static bool DoesSpellTemplateHaveHighestOnlyArmorReductionEffect(SpellTemplate spellTemplate)
+        {
+            foreach (SpellEffectWOW spellEffectWOW in spellTemplate.WOWSpellEffects)
+                if (spellEffectWOW.EffectAuraType == SpellWOWAuraType.ModResistancePct && spellEffectWOW.EffectMiscValueA == 1 && spellEffectWOW.CalcEffectLowLevelValue < 0)
+                    return true;
+            return false;
         }
 
         private static string GenerateAuraDescription(SpellTemplate spellTemplate)
