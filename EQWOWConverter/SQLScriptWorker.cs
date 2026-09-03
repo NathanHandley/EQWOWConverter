@@ -317,6 +317,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("ResistAdjustmentSpellID", Configuration.SPELL_RESIST_ADJUSTMENT_SPELL_ID.ToString());
             foreach (KeyValuePair<string, string> classAuraSystemConfigRow in SpellClassAuras.GetSystemConfigRows())
                 modEverquestSystemConfigsSQL.AddRow(classAuraSystemConfigRow.Key, classAuraSystemConfigRow.Value);
+            modEverquestSystemConfigsSQL.AddRow("SlowBossEffectivenessMod", Configuration.SPELL_SLOW_BOSS_EFFECTINESS_MOD.ToString(System.Globalization.CultureInfo.InvariantCulture));
             modEverquestSystemConfigsSQL.AddRow("RaidBossRespawnVarianceInSec", Configuration.CREATURE_RAID_BOSS_VARIANCE_IN_SEC.ToString());
             modEverquestSystemConfigsSQL.AddRow("RaidMiniBossRespawnVarianceInSec", Configuration.CREATURE_RAID_MINI_BOSS_VARIANCE_IN_SEC.ToString());
             modEverquestSystemConfigsSQL.AddRow("CompleteHealExhaustionSpellID", Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED == true ? Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID.ToString() : "0");

@@ -2158,6 +2158,26 @@ namespace EQWOWConverter.Spells
             effectGeneratedSpellTemplates.Add(effectGeneratedSpellTemplate);
         }
 
+        private static string GetSlowBossActionTextSuffix(SpellEffectWOW spellEffect)
+        {
+            if (Configuration.SPELL_SLOW_BOSS_EFFECTINESS_MOD >= 1f)
+                return string.Empty;
+
+            // A level banded slow would spell out a whole second band, which reads badly, so it only gets the generic callout
+            if (spellEffect.CalcEffectLowLevelValue != spellEffect.CalcEffectHighLevelValue)
+                return " (reduced on bosses)";
+            return string.Concat(" (", spellEffect.GetFormattedEffectActionString(true, Configuration.SPELL_SLOW_BOSS_EFFECTINESS_MOD), " on bosses)");
+        }
+
+        private static string GetSlowBossAuraTextSuffix(SpellEffectWOW spellEffect)
+        {
+            if (Configuration.SPELL_SLOW_BOSS_EFFECTINESS_MOD >= 1f)
+                return string.Empty;
+            if (spellEffect.CalcEffectLowLevelValue != spellEffect.CalcEffectHighLevelValue)
+                return " (reduced on bosses)";
+            return string.Concat(" (", SpellEffectWOW.GetMultipliedEffectAmount(spellEffect.CalcEffectLowLevelValue, Configuration.SPELL_SLOW_BOSS_EFFECTINESS_MOD).ToString(), "% on bosses)");
+        }
+
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, SpellDuration auraDuration, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID,
             bool isDetrimental, string teleportZoneOrPetTypeName, Dictionary<string, ZoneProperties> zonePropertiesByShortName, 
@@ -2880,10 +2900,14 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModMeleeHaste;
 
                                 // Baseline for attack speed is 100, so above that is increase and below that is decrease.  A max of 0 means "no max", so leave it 0
+                                int attackSpeedEQBaseValue = eqEffect.EQBaseValue - 100;
                                 int attackSpeedEQMaxValue = eqEffect.EQMaxValue;
                                 if (attackSpeedEQMaxValue != 0)
                                     attackSpeedEQMaxValue -= 100;
-                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue - 100, attackSpeedEQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "", SpellEffectWOWConversionScaleType.None);
+
+                                // EQ haste and slow both go too hard in WoW, so scale them down.  This has to be applied after the EQ formula and its max, since most attack speed effects add a per-level term to a tiny base
+                                float attackSpeedMod = attackSpeedEQBaseValue >= 0 ? Configuration.SPELL_HASTE_MOD : Configuration.SPELL_SLOW_MOD;
+                                newSpellEffectWOW.SetEffectAmountValues(attackSpeedEQBaseValue, attackSpeedEQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "", SpellEffectWOWConversionScaleType.None, 1f, 0, attackSpeedMod);
                                 if (newSpellEffectWOW.EffectBasePoints >= 0)
                                 {
                                     newSpellEffectWOW.EQHasteVersion = eqEffect.EQEffectType == SpellEQEffectType.AttackSpeed2 ? 2 : 1;
@@ -2892,8 +2916,9 @@ namespace EQWOWConverter.Spells
                                 }
                                 else
                                 {
-                                    newSpellEffectWOW.ActionDescription = string.Concat("decrease attack speed by ", newSpellEffectWOW.GetFormattedEffectActionString(true));
-                                    newSpellEffectWOW.SetAuraDescription("attack speed decreased", true, " by ", "");
+                                    // Slows land weaker on bosses at runtime
+                                    newSpellEffectWOW.ActionDescription = string.Concat("decrease attack speed by ", newSpellEffectWOW.GetFormattedEffectActionString(true), GetSlowBossActionTextSuffix(newSpellEffectWOW));
+                                    newSpellEffectWOW.SetAuraDescription("attack speed decreased", true, " by ", GetSlowBossAuraTextSuffix(newSpellEffectWOW));
                                     newSpellEffectWOW.EffectMechanic = SpellMechanicType.Slowed;
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);

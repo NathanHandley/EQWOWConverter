@@ -918,6 +918,13 @@ namespace EQWOWConverter
         // The percent chance that a feign death spell cast fails
         public static int SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT = 5;
 
+        // Additional mod values for adjusting the haste and slow effects whereas "1" is EQ-like, but it goes too hard in WoW to keep it that
+        public static float SPELL_HASTE_MOD = 0.5f;
+        public static float SPELL_SLOW_MOD = 0.5f;
+
+        // Bosses need a reduced effect on slow, so this is the effectiveness of slows on AFTER SPELL_SLOW_MOD is taken into account.
+        public static float SPELL_SLOW_BOSS_EFFECTINESS_MOD = 0.5f;
+
         // If true, you can learn spells from items
         public static bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
 
@@ -2250,6 +2257,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS, "This is 'added time' in the periodic tick that comes from bard casters.");
             OutputVariableToConfig("SPELL_RECOVERY_TIME_MINIMUM_IN_MS", SPELL_RECOVERY_TIME_MINIMUM_IN_MS, "This is the minimum allowable recovery time any spell can have, which any smaller will become zero");
             OutputVariableToConfig("SPELL_WOW_TALENT_INTERACTION_ENABLED", SPELL_WOW_TALENT_INTERACTION_ENABLED, "Enables or Disables talent interaction with EQ spells");
+            OutputVariableToConfig("SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT", SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT, "The percent chance that a feign death spell cast fails");
+            OutputVariableToConfig("SPELL_HASTE_MOD", SPELL_HASTE_MOD, "Additional mod values for adjusting the haste and slow effects whereas \"1\" is EQ-like, but it goes too hard in WoW to keep it that", false);
+            OutputVariableToConfig("SPELL_SLOW_MOD", SPELL_SLOW_MOD, "");
+            OutputVariableToConfig("SPELL_SLOW_BOSS_EFFECTINESS_MOD", SPELL_SLOW_BOSS_EFFECTINESS_MOD, "Bosses need a reduced effect on slow, so this is the effectiveness of slows on AFTER SPELL_SLOW_MOD is taken into account");
             OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD", SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD, "What to multiply the EQ 'toss up' effect value by to get how fast (yards per second) the target is thrown into the air");
             OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX", SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX, "The fastest a 'toss up' can throw a target upward, and going above 23.7 will start causing fall damage on landing");
             OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED", SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED, "How far outward (yards per second) a 'toss up' shoves the target, which must stay above zero or creatures won't be thrown at all");
@@ -2956,6 +2967,9 @@ namespace EQWOWConverter
             SPELL_RECOVERY_TIME_MINIMUM_IN_MS = ReadVariableFromConfigString("SPELL_RECOVERY_TIME_MINIMUM_IN_MS", configValuesByVariableName, SPELL_RECOVERY_TIME_MINIMUM_IN_MS);
             SPELL_WOW_TALENT_INTERACTION_ENABLED = ReadVariableFromConfigString("SPELL_WOW_TALENT_INTERACTION_ENABLED", configValuesByVariableName, SPELL_WOW_TALENT_INTERACTION_ENABLED);
             SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT = ReadVariableFromConfigString("SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT", configValuesByVariableName, SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT);
+            SPELL_HASTE_MOD = ReadVariableFromConfigString("SPELL_HASTE_MOD", configValuesByVariableName, SPELL_HASTE_MOD);
+            SPELL_SLOW_MOD = ReadVariableFromConfigString("SPELL_SLOW_MOD", configValuesByVariableName, SPELL_SLOW_MOD);
+            SPELL_SLOW_BOSS_EFFECTINESS_MOD = ReadVariableFromConfigString("SPELL_SLOW_BOSS_EFFECTINESS_MOD", configValuesByVariableName, SPELL_SLOW_BOSS_EFFECTINESS_MOD);
             SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD);
             SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX);
             SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED);

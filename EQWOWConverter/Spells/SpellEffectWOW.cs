@@ -390,12 +390,28 @@ namespace EQWOWConverter.Spells
             return calculatedValue;
         }
 
+        public static int GetMultipliedEffectAmount(int effectAmount, float valueMultiplier)
+        {
+            int amount = Math.Abs(effectAmount);
+            if (valueMultiplier == 1f || amount == 0)
+                return amount;
+            int multipliedAmount = Convert.ToInt32(MathF.Round(Convert.ToSingle(amount) * valueMultiplier, MidpointRounding.AwayFromZero));
+            if (multipliedAmount == 0)
+                multipliedAmount = 1;
+            return multipliedAmount;
+        }
+
         public string GetFormattedEffectActionString(bool addPercentSymbol)
+        {
+            return GetFormattedEffectActionString(addPercentSymbol, 1f);
+        }
+
+        public string GetFormattedEffectActionString(bool addPercentSymbol, float valueMultiplier)
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            int lowValue = Math.Abs(CalcEffectLowLevelValue);
-            int highValue = Math.Abs(CalcEffectHighLevelValue);
+            int lowValue = GetMultipliedEffectAmount(CalcEffectLowLevelValue, valueMultiplier);
+            int highValue = GetMultipliedEffectAmount(CalcEffectHighLevelValue, valueMultiplier);
 
             // Simple return, no level difference
             if (lowValue == highValue)
