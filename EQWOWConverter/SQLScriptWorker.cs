@@ -2652,6 +2652,17 @@ namespace EQWOWConverter
             AddCastSpellGroupMember(JudgementOfLightExclusiveSpellGroupID, wowSpellID);
         }
 
+        int MajorArmorDebuffSubgroupID = 0;
+        private void AddMajorArmorDebuffGroupMember(int wowSpellID)
+        {
+            if (MajorArmorDebuffSubgroupID == 0)
+            {
+                MajorArmorDebuffSubgroupID = SpellTemplate.GetOrCreateNamedSubgroupSpellGroupID("majorarmordebuff");
+                spellGroupSQL.AddRow(Configuration.SPELLS_MAJOR_ARMOR_DEBUFF_WOW_SPELL_GROUP_ID, -MajorArmorDebuffSubgroupID);
+            }
+            spellGroupSQL.AddRow(MajorArmorDebuffSubgroupID, wowSpellID);
+        }
+
         HashSet<int> PetSpellIDsAdded = new HashSet<int>();
         private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, string commentFragment, int clickyFixedLevel = 0,
             bool isCreatureCastVersion = false, bool isClickyVersion = false)
@@ -2726,6 +2737,19 @@ namespace EQWOWConverter
                         if (blockEffect.EffectAuraType == SpellWOWAuraType.ModFear)
                         {
                             spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_ImprovedFearAuraScript");
+                            break;
+                        }
+                    }
+                }
+
+                // Any block cutting armor by a percent is a major armor debuff, the same category the stock WOW armor debuffs are in
+                if (commentFragment != " (Worn)")
+                {
+                    foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
+                    {
+                        if (blockEffect.EffectAuraType == SpellWOWAuraType.ModResistancePct && blockEffect.EffectMiscValueA == 1 && blockEffect.CalcEffectLowLevelValue < 0)
+                        {
+                            AddMajorArmorDebuffGroupMember(curEffectBlock.WOWSpellID);
                             break;
                         }
                     }

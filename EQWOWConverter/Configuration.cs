@@ -825,6 +825,12 @@ namespace EQWOWConverter
         public static int SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH = 2;
         public static int SPELLS_HEALMELEEATTACKERS_EQ_SPELL_ID = 1548; // Mark of Karn
 
+        // The stock "Major Armor Debuffs" spell_group (Sunder Armor, Expose Armor, Acid Spit) that EQ armor debuffs join, from the base world database
+        public static int SPELLS_MAJOR_ARMOR_DEBUFF_WOW_SPELL_GROUP_ID = 1015;
+
+        // Ceiling on the percent an armor debuff can strip, with 20% being the current WoW maximum
+        public static int SPELLS_ARMOR_DEBUFF_MAX_PERCENT = 20;
+
         // How much to multiply the EQ range value for WoW
         public static float SPELLS_RANGE_MULTIPLIER = 0.3333f;
 
@@ -2217,6 +2223,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_JUDGEMENTOFLIGHT_PROC_SPELL_TYPE_MASK", SPELLS_JUDGEMENTOFLIGHT_PROC_SPELL_TYPE_MASK, "", false);
             OutputVariableToConfig("SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH", SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH, "", false);
             OutputVariableToConfig("SPELLS_HEALMELEEATTACKERS_EQ_SPELL_ID", SPELLS_HEALMELEEATTACKERS_EQ_SPELL_ID, "");
+            OutputVariableToConfig("SPELLS_MAJOR_ARMOR_DEBUFF_WOW_SPELL_GROUP_ID", SPELLS_MAJOR_ARMOR_DEBUFF_WOW_SPELL_GROUP_ID, "The stock \"Major Armor Debuffs\" spell_group (Sunder Armor, Expose Armor, Acid Spit) that EQ armor debuffs join, from the base world database");
+            OutputVariableToConfig("SPELLS_ARMOR_DEBUFF_MAX_PERCENT", SPELLS_ARMOR_DEBUFF_MAX_PERCENT, "Ceiling on the percent an armor debuff can strip, with 20% being the current WoW maximum");
             OutputVariableToConfig("SPELLS_RANGE_MULTIPLIER", SPELLS_RANGE_MULTIPLIER, "How much to multiply the EQ range value for WoW");
             OutputVariableToConfig("SPELLS_CAST_TIME_MOD", SPELLS_CAST_TIME_MOD, "How much to modify cast time of EverQuest spells when converting, with direct heal/damage amounts and mana cost also modifying");
             OutputVariableToConfig("SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS", SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS, "Cast times are never reduced below this by SPELLS_CAST_TIME_MOD (spells already at or below it keep their original cast time)", false);
@@ -2920,6 +2928,8 @@ namespace EQWOWConverter
             SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH = ReadVariableFromConfigString("SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH", configValuesByVariableName, SPELLS_JUDGEMENTOFLIGHT_HEAL_PERCENT_OF_MAX_HEALTH);
             SPELLS_HEALMELEEATTACKERS_EQ_SPELL_ID = ReadVariableFromConfigString("SPELLS_HEALMELEEATTACKERS_EQ_SPELL_ID", configValuesByVariableName, SPELLS_HEALMELEEATTACKERS_EQ_SPELL_ID);
 
+            SPELLS_MAJOR_ARMOR_DEBUFF_WOW_SPELL_GROUP_ID = ReadVariableFromConfigString("SPELLS_MAJOR_ARMOR_DEBUFF_WOW_SPELL_GROUP_ID", configValuesByVariableName, SPELLS_MAJOR_ARMOR_DEBUFF_WOW_SPELL_GROUP_ID);
+            SPELLS_ARMOR_DEBUFF_MAX_PERCENT = ReadVariableFromConfigString("SPELLS_ARMOR_DEBUFF_MAX_PERCENT", configValuesByVariableName, SPELLS_ARMOR_DEBUFF_MAX_PERCENT);
             SPELLS_RANGE_MULTIPLIER = ReadVariableFromConfigString("SPELLS_RANGE_MULTIPLIER", configValuesByVariableName, SPELLS_RANGE_MULTIPLIER);
             SPELLS_CAST_TIME_MOD = ReadVariableFromConfigString("SPELLS_CAST_TIME_MOD", configValuesByVariableName, SPELLS_CAST_TIME_MOD);
             SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS = ReadVariableFromConfigString("SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS", configValuesByVariableName, SPELLS_CAST_TIME_REDUCTION_FLOOR_IN_MS);

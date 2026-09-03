@@ -2365,7 +2365,8 @@ namespace EQWOWConverter.Spells
                                     continue;
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
-                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
+                                // EQ reduces armor by a flat AC amount, but WOW armor debuffs are a percentage (see the ArmorClassDebuff baseline), so this is a percent aura
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistancePct;
                                 newSpellEffectWOW.EffectMiscValueA = 1; // Armor
                                 if (eqEffect.EQBaseValue >= 0)
                                 {
@@ -2374,8 +2375,9 @@ namespace EQWOWConverter.Spells
                                 }
 
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ArmorClassDebuff", SpellEffectWOWConversionScaleType.None);
-                                newSpellEffectWOW.ActionDescription = string.Concat("steal ", newSpellEffectWOW.GetFormattedEffectActionString(false), " armor from the target");
-                                newSpellEffectWOW.SetAuraDescription("", false, "", "armor stolen by the caster");
+                                newSpellEffectWOW.ClampEffectAmountMagnitude(Configuration.SPELLS_ARMOR_DEBUFF_MAX_PERCENT);
+                                newSpellEffectWOW.ActionDescription = string.Concat("steal ", newSpellEffectWOW.GetFormattedEffectActionString(true), " armor from the target");
+                                newSpellEffectWOW.SetAuraDescription("", true, "", " armor stolen by the caster");
                                 newSpellEffects.Add(newSpellEffectWOW);
 
                                 // Make a second for the buff on the caster
@@ -2608,19 +2610,22 @@ namespace EQWOWConverter.Spells
                                     continue;
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
-                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
                                 newSpellEffectWOW.EffectMiscValueA = 1; // Armor
                                 if (eqEffect.EQBaseValue >= 0)
                                 {
+                                    newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
                                     newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ArmorClassBuff", SpellEffectWOWConversionScaleType.None);
                                     newSpellEffectWOW.ActionDescription = string.Concat("increase armor by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
                                     newSpellEffectWOW.SetAuraDescription("armor increased", false, " by ", "");
                                 }
                                 else
                                 {
+                                    // WOW armor debuffs are a percent reduction (Sunder Armor, Expose Armor, Acid Spit) instead of the flat AC that EQ uses, which is what the ArmorClassDebuff baseline converts into
+                                    newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistancePct;
                                     newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ArmorClassDebuff", SpellEffectWOWConversionScaleType.None);
-                                    newSpellEffectWOW.ActionDescription = string.Concat("decrease armor by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
-                                    newSpellEffectWOW.SetAuraDescription("armor decreased", false, " by ", "");
+                                    newSpellEffectWOW.ClampEffectAmountMagnitude(Configuration.SPELLS_ARMOR_DEBUFF_MAX_PERCENT);
+                                    newSpellEffectWOW.ActionDescription = string.Concat("decrease armor by ", newSpellEffectWOW.GetFormattedEffectActionString(true));
+                                    newSpellEffectWOW.SetAuraDescription("armor decreased", true, " by ", "");
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
@@ -4237,6 +4242,12 @@ namespace EQWOWConverter.Spells
                 spellTemplate.AuraStackEffectKeys.Add(effectStackKey);
             }
             spellTemplate.AuraStackKeyFlagBits = (isBardSongAura ? 2 : 0) + (isDetrimental ? 1 : 0);
+        }
+
+        // A stack group that only exists to be listed as a nested subgroup inside a stock WOW spell group, so it deliberately carries no stack rule of its own
+        public static int GetOrCreateNamedSubgroupSpellGroupID(string groupKey)
+        {
+            return IDGenerationTool.GenerateID("SpellGroupID", groupKey);
         }
 
         // A stack group that is not built out of EQ effect keys, for the handful of places an EQ spell has to stack-compete with a stock WOW spell

@@ -280,6 +280,19 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        public void ClampEffectAmountMagnitude(int maxMagnitude)
+        {
+            if (maxMagnitude <= 0)
+                return;
+            CalcEffectLowLevelValue = Math.Clamp(CalcEffectLowLevelValue, -maxMagnitude, maxMagnitude);
+            CalcEffectHighLevelValue = Math.Clamp(CalcEffectHighLevelValue, -maxMagnitude, maxMagnitude);
+            EffectBasePoints = CalcEffectLowLevelValue;
+            if (CalcEffectHighLevel > CalcEffectLowLevel)
+                EffectRealPointsPerLevel = (Convert.ToSingle(CalcEffectHighLevelValue) - Convert.ToSingle(CalcEffectLowLevelValue)) / Convert.ToSingle(CalcEffectHighLevel - CalcEffectLowLevel);
+            else
+                EffectRealPointsPerLevel = 0;
+        }
+
         public bool IsAuraType()
         {
             if (EffectType == SpellWOWEffectType.ApplyAura)
