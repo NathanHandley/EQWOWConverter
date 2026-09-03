@@ -259,6 +259,9 @@ namespace EQWOWConverter
         // Warrior, Rogue, and DeathKnight are missing spell stat data, and this is the donor class ID to fill it with
         public static int PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID = 9;
 
+        // Class to fill mana for Warrior, Rogue, and DeathKnight (2 is a Paladin)
+        public static int PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID = 2;
+
         //=====================================================================
         // Zone General
         //=====================================================================
@@ -1807,6 +1810,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS", PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS, "If true, every race can be every class");
             OutputTextLineToConfig("# If true, the per-class stat game tables (gtChanceToSpellCrit and related) have their zeroed-out class rows (Warrior, Rogue, DeathKnight)");
             OutputVariableToConfig("PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID", PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID, "Warrior, Rogue, and DeathKnight are missing spell stat data, and this is the donor class ID to fill it with");
+            OutputVariableToConfig("PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID", PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID, "Class to fill mana for Warrior, Rogue, and DeathKnight (2 is a Paladin)");
             OutputVariableToConfig("DUNGEON_FINDER_ENABLED", DUNGEON_FINDER_ENABLED, "Used for instanced versions of EQ dungeons", false);
             OutputVariableToConfig("DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS", DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS, "If true, the stock WoW dungeon finder entries (except seasonal) are removed", false);
             OutputVariableToConfig("DUNGEON_RAID_LOW_INSTANCES_ENABLED", DUNGEON_RAID_LOW_INSTANCES_ENABLED, "Low Raid (pre-61+) dungeon instances", false);
@@ -2469,6 +2473,7 @@ namespace EQWOWConverter
             PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS = ReadVariableFromConfigString("PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS", configValuesByVariableName, PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS);
             PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES = ReadVariableFromConfigString("PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES", configValuesByVariableName, PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES);
             PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID = ReadVariableFromConfigString("PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID", configValuesByVariableName, PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID);
+            PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID = ReadVariableFromConfigString("PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID", configValuesByVariableName, PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID);
 
             ZONE_SHOW_STATIC_GEOMETRY = ReadVariableFromConfigString("ZONE_SHOW_STATIC_GEOMETRY", configValuesByVariableName, ZONE_SHOW_STATIC_GEOMETRY);
             ZONE_MAX_FACES_PER_WMOGROUP = ReadVariableFromConfigString("ZONE_MAX_FACES_PER_WMOGROUP", configValuesByVariableName, ZONE_MAX_FACES_PER_WMOGROUP);

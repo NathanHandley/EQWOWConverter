@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using System.Text;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -22,7 +23,17 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM player_class_stats WHERE `Class` = 6 AND `Level` < 55;"; // Remove any pre-55 DeathKnight stats
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("DELETE FROM player_class_stats WHERE `Class` = 6 AND `Level` < 55;"); // Remove any pre-55 DeathKnight stats
+
+            // Give mana to Warrior, Rogue, and DK
+            if (Configuration.PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID > 0)
+            {
+                stringBuilder.Append("UPDATE `player_class_stats` AS `target` JOIN `player_class_stats` AS `donor` ON `donor`.`Class` = ");
+                stringBuilder.Append(Configuration.PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID);
+                stringBuilder.AppendLine(" AND `donor`.`Level` = `target`.`Level` SET `target`.`BaseMana` = `donor`.`BaseMana` WHERE `target`.`BaseMana` = 0 AND `donor`.`BaseMana` > 0;");
+            }
+            return stringBuilder.ToString();
         }
 
         public void AddRow(ClassWOWType classType, int level, int baseHP, int baseMana, int strength, int agility, int stamina, int intellect, int spirit)
