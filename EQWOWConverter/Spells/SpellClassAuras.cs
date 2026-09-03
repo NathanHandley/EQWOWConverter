@@ -24,9 +24,10 @@ namespace EQWOWConverter.Spells
         // Proc flags (AzerothCore SpellMgr.h)
         private const int PROC_FLAG_DONE_MELEE_AUTO_ATTACK = 0x00000004;
         private const int PROC_FLAG_DONE_RANGED_AUTO_ATTACK = 0x00000040;
+        private const int PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS = 0x00000100;
         private const int PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS = 0x00000010;
         private const int PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS = 0x00000400;
-        private const int PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG = 0x00000800;
+        private const int PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG = 0x00001000;
         private const int PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS = 0x00004000;
         private const int PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG = 0x00010000;
         private const int PROC_SPELL_TYPE_DAMAGE = 0x1;
@@ -126,8 +127,7 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraEnchanterFocusManaThresholdPercent", Configuration.CLASSAURA_ENCHANTER_FOCUS_MANA_THRESHOLD_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraBardInstrumentMeleeAutoAttackDamagePercent", Configuration.CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraMonkSelfHealCastTimeReductionPercent", Configuration.CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT.ToString()));
-            rows.Add(new KeyValuePair<string, string>("ClassAuraRangerRicochetChancePercent", Configuration.CLASSAURA_RANGER_RICOCHET_CHANCE_PERCENT.ToString()));
-            rows.Add(new KeyValuePair<string, string>("ClassAuraRangerRicochetRange", Configuration.CLASSAURA_RANGER_RICOCHET_RANGE.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraRangerTackShotDamagePercentPerStack", Configuration.CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinHealSelfPercent", Configuration.CLASSAURA_PALADIN_HEAL_SELF_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinUndeadDemonDoubleDamageChancePercent", Configuration.CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraWarriorTripleAttackChancePercent", Configuration.CLASSAURA_WARRIOR_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT.ToString()));
@@ -139,7 +139,6 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraClericCadenceReductionPercent", Configuration.CLASSAURA_CLERIC_CADENCE_REDUCTION_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidDirectHealRegenPercent", Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidDirectHealRegenTickCount", GetDruidRegenTickCount().ToString()));
-            rows.Add(new KeyValuePair<string, string>("ClassAuraDruidDamageShieldPercent", Configuration.CLASSAURA_DRUID_DAMAGE_SHIELD_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidImpairedTargetDamagePercent", Configuration.CLASSAURA_DRUID_IMPAIRED_TARGET_DAMAGE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraShamanDotExtendChancePercent", Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraShamanDotExtendInMS", Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS.ToString()));
@@ -168,7 +167,7 @@ namespace EQWOWConverter.Spells
                 case ClassAuraSpellType.RangerPassive:
                 case ClassAuraSpellType.RangerAura:
                 case ClassAuraSpellType.RangerSpeed:
-                case ClassAuraSpellType.RangerRicochet:
+                case ClassAuraSpellType.RangerTackShot:
                     return Configuration.CLASSAURA_RANGER_ENABLED;
                 case ClassAuraSpellType.RoguePassive:
                 case ClassAuraSpellType.RogueAura:
@@ -348,7 +347,7 @@ namespace EQWOWConverter.Spells
         {
             int icon = Configuration.CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID;
             string description = string.Concat("Regenerates ", Pct(Configuration.CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT), " of maximum mana every ",
-                Seconds(Configuration.CLASSAURA_ENCHANTER_MANA_REGEN_INTERVAL_IN_MS), ". Spell damage is increased by ", Pct(Configuration.CLASSAURA_ENCHANTER_FOCUS_SPELL_DAMAGE_PERCENT),
+                Seconds(Configuration.CLASSAURA_ENCHANTER_MANA_REGEN_INTERVAL_IN_MS), ". Spell damage and healing are increased by ", Pct(Configuration.CLASSAURA_ENCHANTER_FOCUS_SPELL_DAMAGE_AND_HEALING_PERCENT),
                 " while mana is at ", Pct(Configuration.CLASSAURA_ENCHANTER_FOCUS_MANA_THRESHOLD_PERCENT), " or more.");
             spellTemplates.Add(BuildPassiveTemplate("Mind of Clarity", ClassAuraSpellType.EnchanterPassive, icon, description));
 
@@ -357,10 +356,11 @@ namespace EQWOWConverter.Spells
                 Convert.ToUInt32(Math.Max(1000, Configuration.CLASSAURA_ENCHANTER_MANA_REGEN_INTERVAL_IN_MS))));
             spellTemplates.Add(BuildPermanentAuraTemplate("Mind of Clarity (Enchanter)", ClassAuraSpellType.EnchanterAura, icon, description, auraEffects));
 
-            string focusDescription = string.Concat("Spell damage increased by ", Pct(Configuration.CLASSAURA_ENCHANTER_FOCUS_SPELL_DAMAGE_PERCENT), " while mana stays at ",
+            string focusDescription = string.Concat("Spell damage and healing increased by ", Pct(Configuration.CLASSAURA_ENCHANTER_FOCUS_SPELL_DAMAGE_AND_HEALING_PERCENT), " while mana stays at ",
                 Pct(Configuration.CLASSAURA_ENCHANTER_FOCUS_MANA_THRESHOLD_PERCENT), " or more.");
             List<SpellEffectWOW> focusEffects = new List<SpellEffectWOW>();
-            focusEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDamagePercentDone, Configuration.CLASSAURA_ENCHANTER_FOCUS_SPELL_DAMAGE_PERCENT, SCHOOL_MASK_MAGIC, SpellWOWTargetType.UnitCaster));
+            focusEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDamagePercentDone, Configuration.CLASSAURA_ENCHANTER_FOCUS_SPELL_DAMAGE_AND_HEALING_PERCENT, SCHOOL_MASK_MAGIC, SpellWOWTargetType.UnitCaster));
+            focusEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModHealingDonePercent, Configuration.CLASSAURA_ENCHANTER_FOCUS_SPELL_DAMAGE_AND_HEALING_PERCENT, 0, SpellWOWTargetType.UnitCaster));
             spellTemplates.Add(BuildPermanentAuraTemplate("Clarity of Thought", ClassAuraSpellType.EnchanterFocus, icon, focusDescription, focusEffects));
         }
 
@@ -414,14 +414,17 @@ namespace EQWOWConverter.Spells
             int icon = Configuration.CLASSAURA_RANGER_SPELL_ICON_EQ_ID;
             string description = string.Concat("Each of your melee attacks and Auto Shots raises your movement speed by ", Pct(Configuration.CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK), " for ",
                 Seconds(Configuration.CLASSAURA_RANGER_ATTACK_SPEED_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_RANGER_ATTACK_SPEED_MAX_STACKS.ToString(),
-                " times and stacking with other speed effects. Auto Shot has a ", Pct(Configuration.CLASSAURA_RANGER_RICOCHET_CHANCE_PERCENT), " chance to ricochet to another target within ",
-                Configuration.CLASSAURA_RANGER_RICOCHET_RANGE.ToString(), " yards, causing no threat.");
+                " times and stacking with other speed effects. Each ranged attack, ranged ability, and offensive spell tacks its target for ", Seconds(Configuration.CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS),
+                ", raising the damage it takes from you and your pet by ", Pct(Configuration.CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK), " per stack, up to ",
+                Configuration.CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS.ToString(), " stacks. The bonus is doubled while the target moves.");
             spellTemplates.Add(BuildPassiveTemplate("Swift Reactions", ClassAuraSpellType.RangerPassive, icon, description));
         
             SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Swift Reactions (Ranger)", ClassAuraSpellType.RangerAura, icon, description, new List<SpellEffectWOW>());
             auraSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraRangerAuraScript";
-            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK | PROC_FLAG_DONE_RANGED_AUTO_ATTACK, PROC_SPELL_TYPE_DAMAGE, PROC_SPELL_PHASE_HIT,
-                PROC_HIT_NORMAL | PROC_HIT_CRITICAL, 0, 0);
+            // Melee and ranged autoattacks feed the stride; ranged autoattacks (bow, gun, thrown), ranged abilities and harmful spells tack the target.
+            // The script sorts the two out by the proc's type mask.  No spell type filter, since the flags already exclude heals
+            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK | PROC_FLAG_DONE_RANGED_AUTO_ATTACK | PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS
+                | PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG, 0, PROC_SPELL_PHASE_HIT, PROC_HIT_NORMAL | PROC_HIT_CRITICAL, 0, 0);
             spellTemplates.Add(auraSpellTemplate);
 
             // ModSpeedAlways multiplies on top of every other movement speed source instead of competing with the highest one
@@ -431,17 +434,13 @@ namespace EQWOWConverter.Spells
             spellTemplates.Add(BuildStackingAuraTemplate("Quickened Stride", ClassAuraSpellType.RangerSpeed, icon, speedDescription, speedEffects,
                 Configuration.CLASSAURA_RANGER_ATTACK_SPEED_MAX_STACKS, Configuration.CLASSAURA_RANGER_ATTACK_SPEED_DURATION_IN_MS, false));
 
-            // The ricochet damage is delivered by the mod with this spell as the combat log source, so only its threat and school matter here
-            SpellTemplate ricochetSpellTemplate = BuildBaseTemplate("Ricochet", ClassAuraSpellType.RangerRicochet, icon, "A shot that bounced off its target into another.", string.Empty);
-            SpellEffectWOW ricochetEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0);
-            ricochetEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
-            ricochetSpellTemplate.WOWSpellEffects.Add(ricochetEffect);
-            ricochetSpellTemplate.SpellRange = 45;
-            ricochetSpellTemplate.GenerateNoThreat = true;
-            ricochetSpellTemplate.NeverMisses = true;
-            ricochetSpellTemplate.CannotCrit = true;
-            ricochetSpellTemplate.IgnoreLineOfSight = true;
-            spellTemplates.Add(ricochetSpellTemplate);
+            // Debuff on the target increasing damage by the hunter and pet, increasing if creature is in motion
+            string tackShotDescription = string.Concat("Takes ", Pct(Configuration.CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK),
+                " more damage per stack from the ranger who tacked it and that ranger's pet, doubled while moving.");
+            List<SpellEffectWOW> tackShotEffects = new List<SpellEffectWOW>();
+            tackShotEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitTargetEnemy));
+            spellTemplates.Add(BuildStackingAuraTemplate("Tack Shot", ClassAuraSpellType.RangerTackShot, icon, tackShotDescription, tackShotEffects,
+                Configuration.CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS, Configuration.CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS, true));
         }
 
         private static void AddRogueSpells(List<SpellTemplate> spellTemplates)
@@ -449,22 +448,23 @@ namespace EQWOWConverter.Spells
             int icon = Configuration.CLASSAURA_ROGUE_SPELL_ICON_EQ_ID;
             string description = string.Concat("Critical strike chance increased by ", Pct(Configuration.CLASSAURA_ROGUE_CRITICAL_STRIKE_PERCENT), ". Each landed attack raises all damage dealt by ",
                 Pct(Configuration.CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK), " for ", Seconds(Configuration.CLASSAURA_ROGUE_EXPLOIT_DURATION_IN_MS), ", stacking up to ",
-                Configuration.CLASSAURA_ROGUE_EXPLOIT_MAX_STACKS.ToString(), " times. A miss, dodge, or parry removes every stack.");
+                Configuration.CLASSAURA_ROGUE_EXPLOIT_MAX_STACKS.ToString(), " times. A miss, dodge, or parry removes half of the stacks.");
             spellTemplates.Add(BuildPassiveTemplate("Master Exploiter", ClassAuraSpellType.RoguePassive, icon, description));
 
-            // ModCritPct feeds melee, ranged and spell crit alike.  The proc row fires the script on every attack outcome it needs to see
+            // All attacks can increase damage output to the target
             List<SpellEffectWOW> auraEffects = new List<SpellEffectWOW>();
             auraEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModCritPct, Configuration.CLASSAURA_ROGUE_CRITICAL_STRIKE_PERCENT, 0, SpellWOWTargetType.UnitCaster));
             SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Master Exploiter (Rogue)", ClassAuraSpellType.RogueAura, icon, description, auraEffects);
             auraSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraRogueAuraScript";
-            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK, 0, 0,
+            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK | PROC_FLAG_DONE_RANGED_AUTO_ATTACK | PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS
+                | PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS | PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG, 0, PROC_SPELL_PHASE_HIT,
                 PROC_HIT_NORMAL | PROC_HIT_CRITICAL | PROC_HIT_MISS | PROC_HIT_DODGE | PROC_HIT_PARRY | PROC_HIT_BLOCK | PROC_HIT_ABSORB, 0, 0);
             spellTemplates.Add(auraSpellTemplate);
 
-            string exploitDescription = string.Concat("Damage dealt increased by ", Pct(Configuration.CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK), " per stack. Lost on a miss, dodge, or parry.");
+            string exploitDescription = string.Concat("Damage dealt increased by ", Pct(Configuration.CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK), " per stack. A miss, dodge, or parry removes half of the stacks.");
             List<SpellEffectWOW> exploitEffects = new List<SpellEffectWOW>();
             exploitEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDamagePercentDone, Configuration.CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK, SCHOOL_MASK_ALL, SpellWOWTargetType.UnitCaster));
-            spellTemplates.Add(BuildStackingAuraTemplate("Exploited Opening", ClassAuraSpellType.RogueExploit, icon, exploitDescription, exploitEffects,
+            spellTemplates.Add(BuildStackingAuraTemplate("Exploitive Momentum", ClassAuraSpellType.RogueExploit, icon, exploitDescription, exploitEffects,
                 Configuration.CLASSAURA_ROGUE_EXPLOIT_MAX_STACKS, Configuration.CLASSAURA_ROGUE_EXPLOIT_DURATION_IN_MS, false));
         }
 
@@ -651,8 +651,7 @@ namespace EQWOWConverter.Spells
         {
             int icon = Configuration.CLASSAURA_DRUID_SPELL_ICON_EQ_ID;
             string description = string.Concat("Your direct heals leave a regeneration that heals ", Pct(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT), " of the amount over ",
-                Seconds(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS), ". Your damage shields deal ", Pct(Configuration.CLASSAURA_DRUID_DAMAGE_SHIELD_PERCENT),
-                " more damage. Your direct damage spells deal ", Pct(Configuration.CLASSAURA_DRUID_IMPAIRED_TARGET_DAMAGE_PERCENT),
+                Seconds(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS), ". Your direct damage spells deal ", Pct(Configuration.CLASSAURA_DRUID_IMPAIRED_TARGET_DAMAGE_PERCENT),
                 " more to targets that are snared, rooted, or suffering from your damage over time spells.");
             spellTemplates.Add(BuildPassiveTemplate("Skin of the Wild", ClassAuraSpellType.DruidPassive, icon, description));
 
@@ -663,7 +662,7 @@ namespace EQWOWConverter.Spells
             spellTemplates.Add(auraSpellTemplate);
 
             // Per-tick amount is handed in by the mod at cast time.  Unlike every other class aura effect, this one stacks per druid (the mod leaves it out of its one-copy-per-target rule), so three druids can each have their own regrowth on the same target
-            SpellTemplate regrowthSpellTemplate = BuildBaseTemplate("Wild Regrowth", ClassAuraSpellType.DruidRegrowth, icon,
+            SpellTemplate regrowthSpellTemplate = BuildBaseTemplate("Nature's Echo", ClassAuraSpellType.DruidRegrowth, icon,
                 string.Concat("Regenerating health over ", Seconds(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS), "."),
                 string.Concat("Regenerating health over ", Seconds(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS), "."));
             regrowthSpellTemplate.AuraDuration.SetFixedDuration(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS);
@@ -678,8 +677,8 @@ namespace EQWOWConverter.Spells
         private static void AddShamanSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Targets you slow take ", Pct(Configuration.CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT), " more damage from all sources and deal ",
-                Pct(Configuration.CLASSAURA_SHAMAN_SLOWED_DAMAGE_DONE_REDUCTION_PERCENT), " less. Your autoattacks have a ", Pct(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT),
+            string description = string.Concat("Targets you slow take ", Pct(Configuration.CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT), " more damage from all sources. Your autoattacks have a ",
+                Pct(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT),
                 " chance to extend any of your damage over time effects on the target by ", Seconds(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS),
                 ". Healing an ally grants them ", Pct(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK), " increased strength, agility, stamina, intellect, and spirit for ",
                 Seconds(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS.ToString(), " times.");
@@ -693,11 +692,9 @@ namespace EQWOWConverter.Spells
             spellTemplates.Add(auraSpellTemplate);
 
             // One shared copy per target however many shamans slow it, living as long as the longest qualifying slow (the mod manages the duration)
-            string slowMarkDescription = string.Concat("Takes ", Pct(Configuration.CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT), " more damage from all sources and deals ",
-                Pct(Configuration.CLASSAURA_SHAMAN_SLOWED_DAMAGE_DONE_REDUCTION_PERCENT), " less.");
+            string slowMarkDescription = string.Concat("Takes ", Pct(Configuration.CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT), " more damage from all sources.");
             List<SpellEffectWOW> slowMarkEffects = new List<SpellEffectWOW>();
             slowMarkEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDamagePercentTaken, Configuration.CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT, SCHOOL_MASK_ALL, SpellWOWTargetType.UnitTargetEnemy));
-            slowMarkEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDamagePercentDone, -Configuration.CLASSAURA_SHAMAN_SLOWED_DAMAGE_DONE_REDUCTION_PERCENT, SCHOOL_MASK_ALL, SpellWOWTargetType.UnitTargetEnemy));
             spellTemplates.Add(BuildStackingAuraTemplate("Spirit's Burden", ClassAuraSpellType.ShamanSlowMark, icon, slowMarkDescription, slowMarkEffects, 1, 3600000, true));
 
             // Stacks pool across every shaman healing the target (one shared aura), so the cap holds no matter how many shamans are healing

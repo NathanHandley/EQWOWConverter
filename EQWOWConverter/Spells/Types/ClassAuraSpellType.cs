@@ -31,7 +31,7 @@ namespace EQWOWConverter.Spells
         RangerPassive = 10,
         RangerAura = 11,
         RangerSpeed = 12,
-        RangerRicochet = 13,
+        RangerTackShot = 13,
         RoguePassive = 14,
         RogueAura = 15,
         RogueExploit = 16,
