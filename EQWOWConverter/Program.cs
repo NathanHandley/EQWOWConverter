@@ -210,6 +210,8 @@ internal class Program
                 Logger.WriteInfo("- PLAYER_USE_EQ_START_ITEMS is true, so player start items will be changed");
             if (Configuration.PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS == true)
                 Logger.WriteInfo("- PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS is true, so every race can be every class");
+            if (Configuration.PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID > 0)
+                Logger.WriteInfo(string.Concat("- PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID is ", Configuration.PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID, ", so classes with no base mana (Warrior, Rogue, DeathKnight) get that class's mana curve"));
             if (Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true)
             {
                 Logger.WriteInfo("- PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES is true, so DKs will start at level 1");

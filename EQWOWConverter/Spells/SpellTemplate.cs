@@ -389,6 +389,8 @@ namespace EQWOWConverter.Spells
         public UInt32 SpellFamilyFlags2 = 0;
         public UInt32 SpellFamilyFlags3 = 0;
         public bool AppliesCompleteHealExhaustion = false;
+        public string AttachedAuraScriptName = string.Empty; // spell_script_names row written for the base block (class aura scripts)
+        public SpellProcRow? ProcRow = null; // spell_proc row written for the base block, so the core proc system drives the attached script
 
         private List<SpellEffectBlock> _GroupedBaseSpellEffectBlocksForOutput = new List<SpellEffectBlock>();
         public List<SpellEffectBlock> GroupedBaseSpellEffectBlocksForOutput

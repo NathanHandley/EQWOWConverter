@@ -2939,45 +2939,6 @@ namespace EQWOWConverter
             return harmTouchSpellTemplate;
         }
 
-        private SpellTemplate BuildAgileFighterCombatAuraSpellTemplate(string name, int wowSpellID, int spellIconEQID, int fallbackSpellIconEQID, int physicalDamagePercent,
-            int criticalStrikePercent, int dodgePercent, string equipmentConditionText)
-        {
-            int combatAuraSpellIconID = spellIconEQID;
-            if (combatAuraSpellIconID < 0 || combatAuraSpellIconID > 22)
-            {
-                Logger.WriteError(string.Concat("Invalid spell icon id for '", name, "', value must be 0-22. Setting to ", fallbackSpellIconEQID.ToString()));
-                combatAuraSpellIconID = fallbackSpellIconEQID;
-            }
-            string combatAuraEffectText = string.Concat("Increases physical damage dealt by ", physicalDamagePercent.ToString(), "%, critical strike chance by ",
-                criticalStrikePercent.ToString(), "%, and chance to dodge by ", dodgePercent.ToString(), "%.");
-            SpellTemplate combatAuraSpellTemplate = new SpellTemplate();
-            combatAuraSpellTemplate.Name = name;
-            combatAuraSpellTemplate.WOWSpellID = wowSpellID;
-            combatAuraSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
-            combatAuraSpellTemplate.Description = string.Concat(combatAuraEffectText, " Granted by Agile Fighter while ", equipmentConditionText, ".");
-            combatAuraSpellTemplate.AuraDescription = string.Concat(combatAuraEffectText, " Lasts as long as ", equipmentConditionText, ".");
-            combatAuraSpellTemplate.AuraDuration = new SpellDuration();
-            combatAuraSpellTemplate.AuraDuration.IsInfinite = true;
-            SpellEffectWOW combatAuraDamageEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModDamagePercentDone, 0, 0, 0, physicalDamagePercent, 1, 0);
-            combatAuraDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
-            combatAuraSpellTemplate.WOWSpellEffects.Add(combatAuraDamageEffect);
-            SpellEffectWOW combatAuraCritEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModWeaponCritPercent, 0, 0, 0, criticalStrikePercent, 0, 0);
-            combatAuraCritEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
-            combatAuraSpellTemplate.WOWSpellEffects.Add(combatAuraCritEffect);
-            SpellEffectWOW combatAuraDodgeEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModDodgePercent, 0, 0, 0, dodgePercent, 0, 0);
-            combatAuraDodgeEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
-            combatAuraSpellTemplate.WOWSpellEffects.Add(combatAuraDodgeEffect);
-            combatAuraSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(combatAuraSpellIconID);
-            combatAuraSpellTemplate.CastTimeInMS = 0;
-            combatAuraSpellTemplate.RecoveryTimeInMS = 0;
-            combatAuraSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
-            combatAuraSpellTemplate.SkillLine = 0; // Don't show in spellbook since the mod assigns it
-            combatAuraSpellTemplate.AlwaysPersist = true;
-            combatAuraSpellTemplate.CannotBeStolen = true;
-            combatAuraSpellTemplate.TriggersGlobalCooldown = false;
-            return combatAuraSpellTemplate;
-        }
-
         private SpellTemplate BuildMentorshipAuraSpellTemplate(string name, int wowSpellID, int spellIconEQID, string description, string auraDescription)
         {
             int mentorshipSpellIconID = spellIconEQID;
@@ -3330,7 +3291,7 @@ namespace EQWOWConverter
                     Logger.WriteError("Invalid Configuration.SPELL_MOVEMENT_CAST_SNARE_SPEED_PERCENT, value must be 1-100. Setting to 75");
                     movementCastSnareSpeedPercent = 75;
                 }
-                string movementCastSnareDescription = string.Concat("Splitting your attention between your feet and your spell. Movement speed is reduced to ", movementCastSnareSpeedPercent.ToString(), "% while you keep moving through a cast, and it lifts as soon as the cast ends.");
+                string movementCastSnareDescription = string.Concat("Splitting your attention between your feet and your spell. Movement speed is held to ", movementCastSnareSpeedPercent.ToString(), "% of normal while you keep moving through a cast, no faster no matter what is speeding you up, and it lifts as soon as the cast ends.");
                 SpellTemplate movementCastSnareSpellTemplate = new SpellTemplate();
                 movementCastSnareSpellTemplate.Name = Configuration.SPELL_MOVEMENT_CAST_SNARE_NAME;
                 movementCastSnareSpellTemplate.WOWSpellID = Configuration.SPELL_MOVEMENT_CAST_SNARE_SPELL_ID;
@@ -3344,6 +3305,11 @@ namespace EQWOWConverter
                 movementCastSnareEffect.ActionDescription = movementCastSnareDescription;
                 movementCastSnareEffect.AuraDescription = movementCastSnareDescription;
                 movementCastSnareSpellTemplate.WOWSpellEffects.Add(movementCastSnareEffect);
+                SpellEffectWOW movementCastSnareSpeedCapEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.UseNormalMovementSpeed, 0, 0, 0, Configuration.SPELL_MOVEMENT_CAST_SNARE_NORMAL_RUN_SPEED, 0, 0);
+                movementCastSnareSpeedCapEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                movementCastSnareSpeedCapEffect.ActionDescription = movementCastSnareDescription;
+                movementCastSnareSpeedCapEffect.AuraDescription = movementCastSnareDescription;
+                movementCastSnareSpellTemplate.WOWSpellEffects.Add(movementCastSnareSpeedCapEffect);
                 movementCastSnareSpellTemplate.SpellFamilyID = Convert.ToUInt32(Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
                 movementCastSnareSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(movementCastSnareIconID);
                 movementCastSnareSpellTemplate.CastTimeInMS = 0;
@@ -3356,49 +3322,8 @@ namespace EQWOWConverter
                 spellTemplates.Add(movementCastSnareSpellTemplate);
             }
 
-            // Agile Fighter (EQ Monk passive which will grant eiter Combat Master or Combat Expert depending on the gear)
-            if (Configuration.AGILEFIGHTER_ENABLED == true)
-            {
-                int agileFighterSpellIconID = Configuration.AGILEFIGHTER_SPELL_ICON_EQ_ID;
-                if (agileFighterSpellIconID < 0 || agileFighterSpellIconID > 22)
-                {
-                    Logger.WriteError("Invalid Configuration.AGILEFIGHTER_SPELL_ICON_EQ_ID, value must be 0-22. Setting to 9");
-                    agileFighterSpellIconID = 9;
-                }
-                string agileFighterDescription = string.Concat("Training in unarmored combat. While wearing cloth or less and using no shield you gain Combat Master (",
-                    Configuration.AGILEFIGHTER_COMBATMASTER_PHYSICAL_DAMAGE_PERCENT.ToString(), "% physical damage, ",
-                    Configuration.AGILEFIGHTER_COMBATMASTER_CRITICAL_STRIKE_PERCENT.ToString(), "% critical strike, ",
-                    Configuration.AGILEFIGHTER_COMBATMASTER_DODGE_PERCENT.ToString(), "% dodge). Alternatively while wearing leather or less and using no shield you instead gain Combat Expert (",
-                    Configuration.AGILEFIGHTER_COMBATEXPERT_PHYSICAL_DAMAGE_PERCENT.ToString(), "% physical damage, ",
-                    Configuration.AGILEFIGHTER_COMBATEXPERT_CRITICAL_STRIKE_PERCENT.ToString(), "% critical strike, ",
-                    Configuration.AGILEFIGHTER_COMBATEXPERT_DODGE_PERCENT.ToString(), "% dodge).");
-                SpellTemplate agileFighterSpellTemplate = new SpellTemplate();
-                agileFighterSpellTemplate.Name = "Agile Fighter";
-                agileFighterSpellTemplate.WOWSpellID = Configuration.AGILEFIGHTER_SPELL_ID;
-                agileFighterSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
-                agileFighterSpellTemplate.Description = agileFighterDescription;
-                agileFighterSpellTemplate.AuraDescription = agileFighterDescription;
-                agileFighterSpellTemplate.AuraDuration = new SpellDuration();
-                agileFighterSpellTemplate.AuraDuration.IsInfinite = true;
-                agileFighterSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
-                agileFighterSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
-                agileFighterSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(agileFighterSpellIconID);
-                agileFighterSpellTemplate.CastTimeInMS = 0;
-                agileFighterSpellTemplate.RecoveryTimeInMS = 0;
-                agileFighterSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
-                agileFighterSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
-                agileFighterSpellTemplate.IsPassiveAbility = true;
-                agileFighterSpellTemplate.AlwaysPersist = true;
-                agileFighterSpellTemplate.CannotBeStolen = true;
-                agileFighterSpellTemplate.TriggersGlobalCooldown = false;
-                spellTemplates.Add(agileFighterSpellTemplate);
-                spellTemplates.Add(BuildAgileFighterCombatAuraSpellTemplate("Combat Master", Configuration.AGILEFIGHTER_COMBATMASTER_SPELL_ID, Configuration.AGILEFIGHTER_COMBATMASTER_SPELL_ICON_EQ_ID, 9,
-                    Configuration.AGILEFIGHTER_COMBATMASTER_PHYSICAL_DAMAGE_PERCENT, Configuration.AGILEFIGHTER_COMBATMASTER_CRITICAL_STRIKE_PERCENT, Configuration.AGILEFIGHTER_COMBATMASTER_DODGE_PERCENT,
-                    "no leather, mail, or plate armor is worn and no shield is equipped"));
-                spellTemplates.Add(BuildAgileFighterCombatAuraSpellTemplate("Combat Expert", Configuration.AGILEFIGHTER_COMBATEXPERT_SPELL_ID, Configuration.AGILEFIGHTER_COMBATEXPERT_SPELL_ICON_EQ_ID, 18,
-                    Configuration.AGILEFIGHTER_COMBATEXPERT_PHYSICAL_DAMAGE_PERCENT, Configuration.AGILEFIGHTER_COMBATEXPERT_CRITICAL_STRIKE_PERCENT, Configuration.AGILEFIGHTER_COMBATEXPERT_DODGE_PERCENT,
-                    "no mail or plate armor is worn and no shield is equipped"));
-            }
+            // EQ Class Auras
+            SpellClassAuras.AddSpellTemplates(spellTemplates);
 
             // Everquest Adventurer (permanent aura on new characters, removed by the mod when the player does non-EQ content)
             if (Configuration.ACHIEVEMENT_EQ_ADVENTURER_ENABLED == true)

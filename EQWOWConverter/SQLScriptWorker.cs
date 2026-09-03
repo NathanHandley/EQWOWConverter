@@ -315,9 +315,8 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("WorldScale", Configuration.GENERATE_WORLD_SCALE.ToString());
             modEverquestSystemConfigsSQL.AddRow("RangedAttackSpellID", Configuration.COMBATSKILL_RANGED_ENABLED == true ? Configuration.COMBATSKILL_RANGED_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("ResistAdjustmentSpellID", Configuration.SPELL_RESIST_ADJUSTMENT_SPELL_ID.ToString());
-            modEverquestSystemConfigsSQL.AddRow("AgileFighterSpellID", Configuration.AGILEFIGHTER_ENABLED == true ? Configuration.AGILEFIGHTER_SPELL_ID.ToString() : "0");
-            modEverquestSystemConfigsSQL.AddRow("AgileFighterCombatMasterSpellID", Configuration.AGILEFIGHTER_ENABLED == true ? Configuration.AGILEFIGHTER_COMBATMASTER_SPELL_ID.ToString() : "0");
-            modEverquestSystemConfigsSQL.AddRow("AgileFighterCombatExpertSpellID", Configuration.AGILEFIGHTER_ENABLED == true ? Configuration.AGILEFIGHTER_COMBATEXPERT_SPELL_ID.ToString() : "0");
+            foreach (KeyValuePair<string, string> classAuraSystemConfigRow in SpellClassAuras.GetSystemConfigRows())
+                modEverquestSystemConfigsSQL.AddRow(classAuraSystemConfigRow.Key, classAuraSystemConfigRow.Value);
             modEverquestSystemConfigsSQL.AddRow("RaidBossRespawnVarianceInSec", Configuration.CREATURE_RAID_BOSS_VARIANCE_IN_SEC.ToString());
             modEverquestSystemConfigsSQL.AddRow("RaidMiniBossRespawnVarianceInSec", Configuration.CREATURE_RAID_MINI_BOSS_VARIANCE_IN_SEC.ToString());
             modEverquestSystemConfigsSQL.AddRow("CompleteHealExhaustionSpellID", Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED == true ? Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID.ToString() : "0");
@@ -2150,9 +2149,10 @@ namespace EQWOWConverter
                     if (Configuration.COMBATSKILL_FEIGNDEATH_ENABLED == true && Configuration.COMBATSKILL_FEIGNDEATH_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.Monk)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_FEIGNDEATH_SPELL_ID, 1);
 
-                    // Agile Fighter
-                    if (Configuration.AGILEFIGHTER_ENABLED == true && eqClassProperties.EQClass == ClassEQType.Monk)
-                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.AGILEFIGHTER_SPELL_ID, 1);
+                    // EQ Class Aura passive
+                    int classAuraPassiveSpellID = SpellClassAuras.GetPassiveSpellIDForClass(eqClassProperties.EQClass);
+                    if (classAuraPassiveSpellID != 0)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, classAuraPassiveSpellID, 1);
 
                     // Harm Touch
                     if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true && Configuration.COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.ShadowKnight)
@@ -2768,6 +2768,13 @@ namespace EQWOWConverter
                     0, 0, 0, 0, Configuration.SPELLS_JUDGEMENTOFLIGHT_PROCS_PER_MINUTE);
                 AddJudgementOfLightExclusiveGroupMember(spellEffectBlocks[0].WOWSpellID);
             }
+
+            // Custom spells (the EQ class auras) that bind a script and a proc row to their base block
+            if (spellTemplate.AttachedAuraScriptName != string.Empty && commentFragment == string.Empty)
+                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, spellTemplate.AttachedAuraScriptName);
+            if (spellTemplate.ProcRow != null && commentFragment == string.Empty)
+                spellProcSQL.AddRow(spellEffectBlocks[0].WOWSpellID, 0, 0, spellTemplate.ProcRow.ProcFlags, spellTemplate.ProcRow.SpellTypeMask, spellTemplate.ProcRow.SpellPhaseMask,
+                    spellTemplate.ProcRow.HitMask, spellTemplate.ProcRow.AttributesMask, spellTemplate.ProcRow.CooldownInMS, 0, spellTemplate.ProcRow.ChancePercent);
 
             // A rain's follow-up waves are single-target casts, so the core never applies its area damage split to them (see the script)
             if (spellTemplate.IsRainWaveSpell == true && commentFragment != " (Worn)")
