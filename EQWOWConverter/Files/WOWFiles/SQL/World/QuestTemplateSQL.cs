@@ -43,7 +43,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("SuggestedGroupNum", 0);
             newRow.AddInt("RequiredFactionId1", questTemplate.QuestgiverWOWFactionID);
             newRow.AddInt("RequiredFactionId2", 0);
-            newRow.AddInt("RequiredFactionValue1", questTemplate.MinimumQuestgiverFactionValue);
+            newRow.AddInt("RequiredFactionValue1", QuestTemplate.GetReputationValueForRank(questTemplate.MinimumQuestgiverFactionRank));
             newRow.AddInt("RequiredFactionValue2", 0);
             newRow.AddInt("RewardNextQuest", 0);
             newRow.AddInt("RewardXPDifficulty", disableExperience == true ? 0 : QuestExperience.GetRewardXPDifficulty(questTemplate.QuestLevel, questTemplate.RewardExperienceEQ));

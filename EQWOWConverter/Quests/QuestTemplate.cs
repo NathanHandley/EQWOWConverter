@@ -40,7 +40,7 @@ namespace EQWOWConverter.Quests
         public List<int> QuestgiverWOWCreatureTemplateIDs = new List<int>();
         public bool HasMinimumFactionRequirement = false;
         public int QuestgiverWOWFactionID = 0;
-        public int MinimumQuestgiverFactionValue = 0;
+        public int MinimumQuestgiverFactionRank = 0;
         public int QuestLevel = -1;
         public int RequiredMoneyInCopper = 0;
         public List<QuestItemReference> RequiredItems = new List<QuestItemReference>();
@@ -71,24 +71,39 @@ namespace EQWOWConverter.Quests
             }
         }
 
-        private static int ConvertEQFactionValueToWoW(int eqFactionValue)
+        private static int ConvertEQFactionValueToWoWReputationRank(int eqFactionValue)
         {
+            // Ranks instead of values is needed for alliance spells
             if (eqFactionValue <= -500)
-                return -3000; // EQ Dubious => WOW Unfriendly
+                return 2; // EQ Dubious => WOW Unfriendly
             else if (eqFactionValue <= -100)
-                return -3000; // EQ Apprehensive => WOW Unfriendly
+                return 2; // EQ Apprehensive => WOW Unfriendly
             else if (eqFactionValue <= 0)
-                return 0; // EQ Indifferent => WOW Neutral
+                return 3; // EQ Indifferent => WOW Neutral
             else if (eqFactionValue <= 100)
-                return 3000; // EQ Amiable => WOW Friendly
+                return 4; // EQ Amiable => WOW Friendly
             else if (eqFactionValue <= 500)
-                return 9000; // EQ Kindly => WOW Honored
+                return 5; // EQ Kindly => WOW Honored
             else if (eqFactionValue <= 750)
-                return 21000; // EQ Warmly => WOW Revered
+                return 6; // EQ Warmly => WOW Revered
             else if (eqFactionValue <= 1100)
-                return 42000; // EQ Ally => WOW Exalted
+                return 7; // EQ Ally => WOW Exalted
             else
-                return 42000; // Higher should just be WOW Exalted
+                return 7; // Higher should just be WOW Exalted
+        }
+
+        public static int GetReputationValueForRank(int reputationRank)
+        {
+            switch (reputationRank)
+            {
+                case 2: return -3000; // Unfriendly
+                case 3: return 0; // Neutral
+                case 4: return 3000; // Friendly
+                case 5: return 9000; // Honored
+                case 6: return 21000; // Revered
+                case 7: return 42000; // Exalted
+                default: return 0;
+            }
         }
 
         public bool AreRequiredItemsPlayerObtainable(SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
@@ -357,7 +372,7 @@ namespace EQWOWConverter.Quests
                 else
                     newQuestTemplate.QuestLevel = int.Parse(columns["level60"]);
                 int minRep = int.Parse(columns["req_repmin"]);
-                newQuestTemplate.MinimumQuestgiverFactionValue = minRep == -1 ? 0 : ConvertEQFactionValueToWoW(minRep);
+                newQuestTemplate.MinimumQuestgiverFactionRank = minRep == -1 ? 0 : ConvertEQFactionValueToWoWReputationRank(minRep);
                 newQuestTemplate.HasMinimumFactionRequirement = minRep == -1 ? false : true;
                 newQuestTemplate.RequiredMoneyInCopper = int.Parse(columns["req_copper"]);
                 for (int i = 1; i <= 6; i++)

@@ -113,6 +113,7 @@ namespace EQWOWConverter
         private ModEverquestZoneSQL modEverquestZoneSQL = new ModEverquestZoneSQL();
         private ModEverquestViewerZoneSQL modEverquestViewerZoneSQL = new ModEverquestViewerZoneSQL();
         private ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
+        private ModEverquestQuestFactionRequirementSQL modEverquestQuestFactionRequirementSQL = new ModEverquestQuestFactionRequirementSQL();
         private ModEverquestQuestReactionSQL modEverquestQuestReactionSQL = new ModEverquestQuestReactionSQL();
         private ModEverquestGossipReactionSQL modEverquestGossipReactionSQL = new ModEverquestGossipReactionSQL();
         private Dictionary<(string, string), string> hailTextsByZoneAndCreatureName = new Dictionary<(string, string), string>();
@@ -2607,6 +2608,13 @@ namespace EQWOWConverter
                     modEverquestQuestCompleteReputationSQL.AddRow(firstQuestID, completionReputation);
                     modEverquestQuestCompleteReputationSQL.AddRow(repeatQuestID, completionReputation);
                 }
+
+                // Minimum questgiver standing, which the mod enforces against the questgiver's reaction so temporary faction adjustments (alliance spells, illusions) count
+                if (questTemplate.HasMinimumFactionRequirement == true && questTemplate.QuestgiverWOWFactionID != 0)
+                {
+                    modEverquestQuestFactionRequirementSQL.AddRow(firstQuestID, questTemplate.QuestgiverWOWFactionID, questTemplate.MinimumQuestgiverFactionRank);
+                    modEverquestQuestFactionRequirementSQL.AddRow(repeatQuestID, questTemplate.QuestgiverWOWFactionID, questTemplate.MinimumQuestgiverFactionRank);
+                }
             }
         }
 
@@ -3558,6 +3566,7 @@ namespace EQWOWConverter
             modEverquestSpellMovementCastSnareSQL.SaveToDisk("mod_everquest_spell_movement_cast_snare", SQLFileType.World);
             modEverquestSystemConfigsSQL.SaveToDisk("mod_everquest_systemconfigs", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
+            modEverquestQuestFactionRequirementSQL.SaveToDisk("mod_everquest_quest_faction_requirement", SQLFileType.World);
             modEverquestTransportTriggerSQL.SaveToDisk("mod_everquest_transport_trigger", SQLFileType.World);
             modEverquestZoneSafePointSQL.SaveToDisk("mod_everquest_zone_safe_point", SQLFileType.World);
             modEverquestZoneSQL.SaveToDisk("mod_everquest_zone", SQLFileType.World);
