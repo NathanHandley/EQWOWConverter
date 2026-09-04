@@ -126,6 +126,7 @@ namespace EQWOWConverter
         private PlayerClassStatsSQL playerClassStatsSQL = new PlayerClassStatsSQL();
         private PlayerCreateInfoSQL playerCreateInfoSQL = new PlayerCreateInfoSQL();
         private PlayerCreateInfoActionSQL playerCreateInfoActionSQL = new PlayerCreateInfoActionSQL();
+        private PlayerCreateInfoSkillsSQL playerCreateInfoSkillsSQL = new PlayerCreateInfoSkillsSQL();
         private PlayerShapeshiftModelSQL playerShapeshiftModelSQL = new PlayerShapeshiftModelSQL();
         private PlayerTotemModelSQL playerTotemModelSQL = new PlayerTotemModelSQL();
         private PlayerCreateInfoSpellCustomSQL playerCreateInfoSpellCustomSQL = new PlayerCreateInfoSpellCustomSQL();
@@ -3584,6 +3585,7 @@ namespace EQWOWConverter
             {
                 playerCreateInfoSQL.SaveToDisk("playercreateinfo", SQLFileType.World);
                 playerCreateInfoActionSQL.SaveToDisk("playercreateinfo_action", SQLFileType.World);
+                playerCreateInfoSkillsSQL.SaveToDisk("playercreateinfo_skills", SQLFileType.World);
                 playerShapeshiftModelSQL.SaveToDisk("player_shapeshift_model", SQLFileType.World);
                 playerTotemModelSQL.SaveToDisk("player_totem_model", SQLFileType.World);
             }

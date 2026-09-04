@@ -943,6 +943,14 @@ namespace EQWOWConverter
                 skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", "176", "2764"), 176, 2764, 2);
             }
 
+            // Guns / Crossbows / Wands have no EQ counterpart, but catch them anyway since WoW is available
+            if (Configuration.PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS == true)
+            {
+                skillRaceClassInfoDBC.AddRow(46, wowClassTypes); // Guns
+                skillRaceClassInfoDBC.AddRow(226, wowClassTypes); // Crossbows
+                skillRaceClassInfoDBC.AddRow(228, wowClassTypes); // Wands
+            }
+
             // Spells
             for (int i = 0; i < 23; i++)
                 spellIconDBC.AddSpellIconRow(i);
