@@ -360,11 +360,13 @@ namespace EQWOWConverter.Creatures
                 }
             }
 
-            // Allow disable of friendly creatures attacking KOS
+            // Needed so scripted attackers reach their target
             if (Configuration.CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED == false)
             {
                 foreach (CreatureFaction creatureFaction in CreatureFactionsByWOWFactionID.Values)
                 {
+                    if (creatureFaction.FactionID == Configuration.CREATURE_FACTION_SCRIPTED_ASSAILANT_FACTION_ID)
+                        continue;
                     creatureFaction.EnemyFaction1 = 0;
                     creatureFaction.EnemyFaction2 = 0;
                     creatureFaction.EnemyFaction3 = 0;

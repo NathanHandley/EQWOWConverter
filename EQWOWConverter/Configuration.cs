@@ -592,6 +592,9 @@ namespace EQWOWConverter
         // If true, factions that defend friendly players always attack KOS factions
         public static bool CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED = false;
 
+        // This is a swapped-to faction used by scripted npc-to-npc attack events
+        public static int CREATURE_FACTION_SCRIPTED_ASSAILANT_FACTION_ID = 1238;
+
         // What to multiple the EverQuest reputation rewards by.  WOW is approx 20-30x that of EQ in band.
         public static int CREATURE_REP_REWARD_MULTIPLIER = 20;
 
@@ -2137,6 +2140,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_FACTION_SHOW_ALL", CREATURE_FACTION_SHOW_ALL, "If set to true, all factions will show up for EverQuest in the faction list immediately");
             OutputVariableToConfig("CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED", CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED, "If true, factions that defend friendly players always attack KOS factions");
             OutputVariableToConfig("CREATURE_REP_REWARD_MULTIPLIER", CREATURE_REP_REWARD_MULTIPLIER, "What to multiple the EverQuest reputation rewards by.  WOW is approx 20-30x that of EQ in band.");
+            OutputVariableToConfig("CREATURE_FACTION_SCRIPTED_ASSAILANT_FACTION_ID", CREATURE_FACTION_SCRIPTED_ASSAILANT_FACTION_ID, "This is a swapped-to faction used by scripted npc-to-npc attack events");
             OutputVariableToConfig("CREATURE_GOSSIP_NPC_TEXT_ID", CREATURE_GOSSIP_NPC_TEXT_ID, "ID for the menu text (328 exists already and is just \"Greetings, $n\")");
             OutputTextLineToConfig("# ID for the menu broadcast texts");
             OutputVariableToConfig("CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID", CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID, "Pre-exists, \"I would like to train.\"", false);
@@ -2831,6 +2835,7 @@ namespace EQWOWConverter
             CREATURE_FACTION_SHOW_ALL = ReadVariableFromConfigString("CREATURE_FACTION_SHOW_ALL", configValuesByVariableName, CREATURE_FACTION_SHOW_ALL);
             CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED = ReadVariableFromConfigString("CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED", configValuesByVariableName, CREATURE_FACTION_ATTACK_ALWAYS_KOS_ON_SIGHT_ENABLED);
             CREATURE_REP_REWARD_MULTIPLIER = ReadVariableFromConfigString("CREATURE_REP_REWARD_MULTIPLIER", configValuesByVariableName, CREATURE_REP_REWARD_MULTIPLIER);
+            CREATURE_FACTION_SCRIPTED_ASSAILANT_FACTION_ID = ReadVariableFromConfigString("CREATURE_FACTION_SCRIPTED_ASSAILANT_FACTION_ID", configValuesByVariableName, CREATURE_FACTION_SCRIPTED_ASSAILANT_FACTION_ID);
             CREATURE_GOSSIP_NPC_TEXT_ID = ReadVariableFromConfigString("CREATURE_GOSSIP_NPC_TEXT_ID", configValuesByVariableName, CREATURE_GOSSIP_NPC_TEXT_ID);
             CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID = ReadVariableFromConfigString("CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID", configValuesByVariableName, CREATURE_GOSSIP_TRAIN_BROADCAST_TEXT_ID);
             CREATURE_GOSSIP_UNLEARN_BROADCAST_TEXT_ID = ReadVariableFromConfigString("CREATURE_GOSSIP_UNLEARN_BROADCAST_TEXT_ID", configValuesByVariableName, CREATURE_GOSSIP_UNLEARN_BROADCAST_TEXT_ID);

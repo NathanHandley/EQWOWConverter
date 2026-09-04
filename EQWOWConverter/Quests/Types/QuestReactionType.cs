@@ -30,6 +30,7 @@ namespace EQWOWConverter.Quests
         WalkTo = 9,
         CastSpell = 10,
         WalkGrid = 11,
-        SpawnObject = 12
+        SpawnObject = 12,
+        AttackNpc = 13
     }
 }

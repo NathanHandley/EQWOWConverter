@@ -99,6 +99,11 @@ namespace EQWOWConverter.Quests
                             reaction.ReactionType = QuestReactionType.AttackPlayer;
                             reaction.CreatureIsSelf = true;
                         } break;
+                    case "attacknpc":
+                        {
+                            reaction.ReactionType = QuestReactionType.AttackNpc;
+                            reaction.CreatureEQID = int.Parse(reactionValue1);
+                        } break;
                     case "despawn":
                         {
                             reaction.ReactionType = QuestReactionType.Despawn;

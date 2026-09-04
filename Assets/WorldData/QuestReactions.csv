@@ -510,6 +510,9 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 30486|eastkarana|Teloa|spawnunique|15153|-1529|-996|350.222748|130|||
 30486|eastkarana|Teloa|spawnunique|15150|-1529|-1090|351.873199|130|||
 30486|eastkarana|Teloa|spawnunique|15000|-1490|-1063|363.603973|130|||
+30486|eastkarana|Teloa|attacknpc|15153|||||||
+30486|eastkarana|Teloa|attacknpc|15150|||||||
+30486|eastkarana|Teloa|attacknpc|15000|||||||
 30486|eastkarana|Teloa|despawn|self|||||||1800000
 30487|eastkarana|Tenal_Redblade|say|So, you know my brother Kargek. He is weak and does not believe the legend that our family was chosen by Rallos Zek to bear the great scabbard. Yet he still holds it. Very well, I shall give you the first test since my 'dear' brother seems to have forgotten it. Travel to the fortress where the children of Rallos were first cursed by the Rathe and bring me the heart of one of the goblins who have made it their new home. Do not return without the heart of your foe and this war totem.|||||||
 30488|eastkarana|Tenal_Redblade|say|Very good, you have wreaked havoc on your foes in the ancient land of the giants. Rallos Zek must have guided your blade. (Tenal's voice is suddenly silenced and you feel as if your body is frozen. From Tenal's lips issues a voice that is not his own.) 'Bring this mortal the scales of the children of Veeshan. The red and green as well as my war totem. I will guide your blade.' Your movement returns as Tenal falls to the ground, gasping for breath.|||||||

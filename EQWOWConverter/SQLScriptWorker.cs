@@ -2584,7 +2584,7 @@ namespace EQWOWConverter
                         }
 
                         // Attack/Spawn/Despawn/KillSpawn/WalkTo/WalkGrid actions, plus any text the mod has to hold until a walk arrives
-                        if (reaction.ReactionType == QuestReactionType.AttackPlayer || reaction.ReactionType == QuestReactionType.Despawn || reaction.ReactionType == QuestReactionType.Spawn || reaction.ReactionType == QuestReactionType.SpawnUnique || reaction.ReactionType == QuestReactionType.KillSpawn || reaction.ReactionType == QuestReactionType.WalkTo || reaction.ReactionType == QuestReactionType.WalkGrid || reaction.ReactionType == QuestReactionType.SpawnObject || (reactionIsText == true && reaction.FiresOnArrival == true))
+                        if (reaction.ReactionType == QuestReactionType.AttackPlayer || reaction.ReactionType == QuestReactionType.AttackNpc || reaction.ReactionType == QuestReactionType.Despawn || reaction.ReactionType == QuestReactionType.Spawn || reaction.ReactionType == QuestReactionType.SpawnUnique || reaction.ReactionType == QuestReactionType.KillSpawn || reaction.ReactionType == QuestReactionType.WalkTo || reaction.ReactionType == QuestReactionType.WalkGrid || reaction.ReactionType == QuestReactionType.SpawnObject || (reactionIsText == true && reaction.FiresOnArrival == true))
                         {
                             if (reaction.CreatureEQID > 0)
                             {

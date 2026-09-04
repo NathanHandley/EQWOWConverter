@@ -471,3 +471,6 @@ id|zone|trigger_eq_npc_id|action|target_eq_npc_id|chance|alt_group|alt_id|alt_we
 474|charasis|105021|despawn|105183|100|0|0|0|0|0|0|0|0|60000|60000|0|||||0|0|0|-1|-1|ooctimer|0|Venril_Sathir transforms - an Arisen Priest replaced
 475|charasis|105021|despawn|105184|100|0|0|0|0|0|0|0|0|60000|60000|0|||||0|0|0|-1|-1|ooctimer|0|Venril_Sathir transforms - an Arisen Necromancer replaced
 476|charasis|105021|despawn|105185|100|0|0|0|0|0|0|0|0|60000|60000|0|||||0|0|0|-1|-1|ooctimer|0|Venril_Sathir transforms - an Arisen Acolyte replaced
+477|eastkarana|15153|despawn|15153|100|0|0|0|0|0|0|0|0|300000|300000|0|||||0|0|0|-1|-1|ooctimer|0|Dark Elf Corruptor depops 300s after the Teloa ambush goes unfought
+478|eastkarana|15150|despawn|15150|100|0|0|0|0|0|0|0|0|600000|600000|0|||||0|0|0|-1|-1|ooctimer|0|Dark Elf Reaver depops 600s after the Teloa ambush goes unfought
+479|eastkarana|15000|despawn|15000|100|0|0|0|0|0|0|0|0|600000|600000|0|||||0|0|0|-1|-1|ooctimer|0|Dark Elf Reaver depops 600s after the Teloa ambush goes unfought

@@ -36,3 +36,4 @@ FactionID|FactionTemplateID|ReputationIndex|Name|BaseAlignment|BaseRepOverride|B
 1235|2311|101|The Coldain|None|-2500|-1|-1|-1|-1|0|0|0|Stout and battle-hardened dwarves of Thurgadin. Unyielding in their devotion to Brell, they fight to survive in the frozen wastes.|0|0|0|0|0|0|0|"Takeover ""Wintersaber Conversion"""
 1236|2310|100|Claws of Veeshan|None|-3500|-1|-1|-1|-1|0|0|0|The ancient dragons of Velious, wise and wrathful. They guard their secrets and lands with primal fury.|0|0|0|0|0|0|0|"Takeover ""Tranquillen Conversion"""
 1237|2337|-1|EQ Creature KOS No Flee|None|-42000|-1|-1|-1|-1|0|0|0||1|0|1|0|0|0|0|Aggressive undead
+1238|2338|-1|EQ Scripted Assailant|None|-42000|-1|-1|-1|-1|0|0|0||1|0|0|1233|0|0|0|Used only for scripted events where creatures need to fight each other due to scripts
