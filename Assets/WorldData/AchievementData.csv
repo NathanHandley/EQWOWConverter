@@ -17,3 +17,8 @@ AchievementID|ParentCategoryID|AchievementType|Name|Description|Points|IconSpell
 5116|15100|InstanceClear|Conqueror of Kedge Keep|Defeat Phinigel Autropos in Kedge Keep.|10|-1|145|kedge|RaidLow|50335|
 5117|15101|InstanceClear|Conqueror of Chardok|Defeat Overking Bathezid in Chardok.|10|-1|145|chardok|RaidLow|52871|
 5118|15101|InstanceClear|Conqueror of Karnor's Castle|Defeat Venril Sathir in Karnor's Castle.|10|-1|145|karnor|RaidLow|52778|
+5119|15101|InstanceClear|Conqueror of Howling Stones|Defeat Drusella Sathir in Howling Stones.|10|-1|145|charasis|RaidLow|53072|
+5120|15101|InstanceClear|Conqueror of The Dreadlands|Defeat Gorenaire in The Dreadlands.|10|-1|145|dreadlands|RaidLow|51924|
+5121|15101|InstanceClear|Conqueror of the Emerald Jungle|Defeat Severilous in the Emerald Jungle.|10|-1|145|emeraldjungle|RaidLow|52383|
+5122|15101|InstanceClear|Conqueror of the Skyfire Mountains|Defeat Talendor in the Skyfire Mountains.|10|-1|145|skyfire|RaidLow|52193|
+5123|15101|InstanceClear|Conqueror of Timorous Deep|Defeat Faydedar in Timorous Deep.|10|-1|145|timorous|RaidLow|52534|

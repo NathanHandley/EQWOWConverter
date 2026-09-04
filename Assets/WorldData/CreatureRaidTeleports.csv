@@ -10,3 +10,8 @@ CreatureTemplateWOWID|GossipMenuOptionID|OptionText|DestZoneShortName|DestX|Dest
 55827|0|Send me to Karnor's Castle (Instance).|karnor|-76.902702|-553.389648|14.000050|4.712389
 55828|0|Send me to Old Sebilis (Instance).|sebilis|-1328.624146|220.485626|-179.937393|4.712389
 55829|0|Send me to Veeshan's Peak (Instance).|veeshan|34.907459|1679.515381|24.000111|0
+55827|1|Send me to The Dreadlands (Instance).|dreadlands|228.056717|5894.872559|1181.344727|3.14159
+55829|1|Send me to the Skyfire Mountains (Instance).|skyfire|2417.916992|2809.953857|-87.715927|5.497787
+55830|0|Send me to Howling Stones (Instance).|charasis|278.765259|-357.058014|18.000059|4.712389
+55831|0|Send me to the Emerald Jungle (Instance).|emeraldjungle|1694.485718|2571.218750|-344.468628|0
+55832|0|Send me to Timorous Deep (Instance).|timorous|-12257.290039|4371.698730|-7.485570|3.14159
