@@ -276554,3 +276554,7 @@ BroadcastTextID|raidcoordinatormenu~55832|84824
 NPCTextID|raidcoordinatormenu~55832|82096
 GossipMenuID|raidcoordinator~55832|64029
 BroadcastTextID|raidcoordinatoroption~55832~0|84825
+SkillRaceClassInfoID|46~-1|1041
+SkillRaceClassInfoID|226~-1|1042
+SkillRaceClassInfoID|228~-1|1043
+BroadcastTextID|questreaction~52787~0|84826

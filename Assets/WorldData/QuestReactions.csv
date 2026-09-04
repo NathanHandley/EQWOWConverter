@@ -1418,10 +1418,10 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 31279|karnor|Spirit_of_Venril_Sathir|attackplayer||||||||
 31279|karnor|Spirit_of_Venril_Sathir|despawn|self|||||||
 31279|karnor|Spirit_of_Venril_Sathir|say|I am alive! My thanks to you,  $N. And now I will aid you in your quest for preserving the forests of norrath. Your carcass will help nurture the soils of the wilderness.|||||||
-31279|karnor|Spirit_of_Venril_Sathir|spawn|102021|playerX|playerY|playerZ|playerHeading|||
+31279|karnor|Spirit_of_Venril_Sathir|spawnunique|102021|playerX|playerY|playerZ|playerHeading|||
 31280|karnor|Venril_Sathirs_remains|despawn|self|||||||
 31280|karnor|Venril_Sathirs_remains|emote|%s grasps the glowing sphere of fireflies from your hands. Tendrils of mystical energy begin to flow forth from the swarm of glowing insects like tiny fingers. The glowing tendrils begin to reach into the ribcage of the rotting remains of Venril Sathir, coalescing into the form of an iksar ghost.|||||||
-31280|karnor|Venril_Sathirs_remains|spawn|102019|playerX|playerY|playerZ|playerHeading|||
+31280|karnor|Venril_Sathirs_remains|spawnunique|102019|playerX|playerY|playerZ|playerHeading|||
 31281|kerraridge|Allix|say|Ajrah! Raaarrr! Ajrah Leaf! Allix destined to be mighty saiar now! Allix unsure how to thank you. Here, take this. Is my most treasured tunic.|||||||
 31282|kerraridge|a_banished_kerran|say|Ashen Order!!  Prrr.. My order.  I have been expecting one of us.  Prrr.. Help me rejoin my native land.  Take this box.  Combine all the remains of Thipt within the box and return it to me.  This shall aid me in my redemption.|||||||
 31283|kerraridge|a_banished_kerran|say|Prrr.. Thank you brother of Ashen. I can now spend my time upon this island in peace, until my penance is serrrved. He dabs his paw into the mud and places it upon a tattered parchment. Take this message to Puab. Farrrwell.|||||||

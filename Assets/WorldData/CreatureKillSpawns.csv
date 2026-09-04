@@ -460,3 +460,14 @@ id|zone|trigger_eq_npc_id|action|target_eq_npc_id|chance|alt_group|alt_id|alt_we
 463|steamfont|56105|spawn|56178|100|0|0|0|0|-700|30|-113.209396|62|180000|180000|56178|||||0|0|0|-1|-1|ooctimer|0|Cargo_Clockwork highway ambush
 464|steamfont|56105|spawn|56179|100|0|0|0|0|-732|95|-112.063828|240|180000|180000|56179|||||0|0|0|-1|-1|ooctimer|0|Cargo_Clockwork highway ambush
 465|steamfont|56105|spawn|56180|100|0|0|0|0|-615|53|-111.731483|113|180000|180000|56180|||||0|0|0|-1|-1|ooctimer|0|Cargo_Clockwork highway ambush
+466|karnor|102019|despawn|102019|100|0|0|0|0|0|0|0|0|1800000|1800000|0|||||0|0|0|-1|-1|ooctimer|0|Spirit_of_Venril_Sathir departs after 30 minutes, matching its TAKP depop timer
+467|karnor|102021|despawn|102021|100|0|0|0|0|0|0|0|0|3600000|3600000|0|||||0|0|0|-1|-1|ooctimer|0|triggered #Venril_Sathir departs after 1 hour, matching its TAKP depop timer
+468|charasis|105021|spawn|105022|100|0|0|0|0|-658|-13|4|100|60000|60000|105022|||||0|0|0|-1|-1|ooctimer|0|Venril_Sathir transforms - #an Arisen Disciple rises
+469|charasis|105021|spawn|105023|100|0|0|0|0|-658|13|4|160|60000|60000|105023|||||0|0|0|-1|-1|ooctimer|0|Venril_Sathir transforms - #an Arisen Priest rises
+470|charasis|105021|spawn|105024|100|0|0|0|0|-690|13|4|228|60000|60000|105024|||||0|0|0|-1|-1|ooctimer|0|Venril_Sathir transforms - #an Arisen Necromancer rises
+471|charasis|105021|spawn|105025|100|0|0|0|0|-690|-13|4|34|60000|60000|105025|||||0|0|0|-1|-1|ooctimer|0|Venril_Sathir transforms - #an Arisen Acolyte rises
+472|charasis|105021|despawn|105004|100|0|0|0|0|0|0|0|0|60000|60000|0|||||0|0|0|-1|-1|ooctimer|0|Venril_Sathir transforms - Rile_Sathir departs
+473|charasis|105021|despawn|105186|100|0|0|0|0|0|0|0|0|60000|60000|0|||||0|0|0|-1|-1|ooctimer|0|Venril_Sathir transforms - an Arisen Disciple replaced
+474|charasis|105021|despawn|105183|100|0|0|0|0|0|0|0|0|60000|60000|0|||||0|0|0|-1|-1|ooctimer|0|Venril_Sathir transforms - an Arisen Priest replaced
+475|charasis|105021|despawn|105184|100|0|0|0|0|0|0|0|0|60000|60000|0|||||0|0|0|-1|-1|ooctimer|0|Venril_Sathir transforms - an Arisen Necromancer replaced
+476|charasis|105021|despawn|105185|100|0|0|0|0|0|0|0|0|60000|60000|0|||||0|0|0|-1|-1|ooctimer|0|Venril_Sathir transforms - an Arisen Acolyte replaced

@@ -1084,8 +1084,9 @@ namespace EQWOWConverter
                         }
                         if (matchFound == false)
                             itemReference.itemIDWOW = requiredItemTemplate.ClassSpecificItemVersionsByEQClassID.First().Value;
-                        else
-                            itemReference.itemIDParentWOW = requiredItemTemplate.WOWEntryID;
+
+                        // Parent must exist for class-specific rows so that quests work
+                        itemReference.itemIDParentWOW = requiredItemTemplate.WOWEntryID;
                     }
                     else
                     {
