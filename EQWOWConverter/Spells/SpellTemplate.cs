@@ -256,6 +256,7 @@ namespace EQWOWConverter.Spells
         public string SummonedPetTypeName = string.Empty;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
         public int MinimumPlayerLearnLevel = -1;
+        public int SpellPowerLevelFromLinkedParent = -1;
         public int SpellLevel = 0; // Spell.dbc "SpellLevel", which has to stay zero for anything using spell power (see SpellDBC) but drives what level a pet learns a rank at
         public string RankName = string.Empty;
         public int SkillLineAcquireMethod = 0; // 0 = learn by trainer, 1 = learned on skill value, 2 = learned on skill learn
@@ -793,6 +794,10 @@ namespace EQWOWConverter.Spells
                     {
                         recourseSpellTemplate = SpellTemplatesByEQID[spellTemplate.RecourseLinkEQSpellID];
                         spellTemplate.RecourseLinkSpellTemplate = recourseSpellTemplate;
+
+                        // Add spellpower to the linked recourse
+                        if (recourseSpellTemplate.MinimumPlayerLearnLevel < 1 && spellTemplate.MinimumPlayerLearnLevel > recourseSpellTemplate.SpellPowerLevelFromLinkedParent)
+                            recourseSpellTemplate.SpellPowerLevelFromLinkedParent = spellTemplate.MinimumPlayerLearnLevel;
                     }
                 }
 
@@ -954,8 +959,9 @@ namespace EQWOWConverter.Spells
             if (levelOneMod == 1.0f || phaseoutLevel <= 1)
                 return 1.0f;
 
-            // Use the spell's lowest learn level as its level (unknown levels are treated as level 1)
             int spellLevel = MinimumPlayerLearnLevel;
+            if (spellLevel < 1) // Recourse effects have no learn level, so use parent
+                spellLevel = SpellPowerLevelFromLinkedParent;
             if (spellLevel < 1)
                 spellLevel = 1;
 
