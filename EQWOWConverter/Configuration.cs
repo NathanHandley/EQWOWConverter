@@ -1283,7 +1283,7 @@ namespace EQWOWConverter
         public static int CLASSAURA_PALADIN_SPELL_ICON_EQ_ID = 11;
         public static int CLASSAURA_PALADIN_BLOCK_PERCENT = 5;
         public static int CLASSAURA_PALADIN_HEAL_SELF_PERCENT = 15;
-        public static int CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT = 25;
+        public static int CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT = 20;
 
         // Shadow Knight "Spellsword"
         public static bool CLASSAURA_SHADOWKNIGHT_ENABLED = true;
