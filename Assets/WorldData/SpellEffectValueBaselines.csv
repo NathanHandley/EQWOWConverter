@@ -9,7 +9,7 @@ ManaUpOverTimeMPS|0.167|1.83|2|7.92|22
 ManaDownOvertimeMPS|0|0|0|0|0
 ArmorClassBuff|15|90|8|685|0
 ArmorClassDebuff|3|33|4|20|0
-AttackBuff|10|100|25|688|0
+AttackBuff|10|100|25|290|0
 AttackDebuff|0|0|0|0|0
 MaxHPBuff|10|150|50|510|2255
 MaxManaToIntBuff|1|250|1|50|0
