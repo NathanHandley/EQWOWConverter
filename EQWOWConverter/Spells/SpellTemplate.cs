@@ -989,6 +989,14 @@ namespace EQWOWConverter.Spells
             return (MinimumPlayerLearnLevel / 2) + 15;
         }
 
+        public string GetMinimumTargetLevelDescriptionText()
+        {
+            int minimumTargetLevel = GetMinimumTargetLevel();
+            if (minimumTargetLevel <= 0)
+                return string.Empty;
+            return string.Concat(" Only works on players level ", minimumTargetLevel.ToString(), " or greater.");
+        }
+
         private static int GetLongestSpellPowerPeriodicTickInMSForBlock(SpellEffectBlock effectBlock)
         {
             int highestTickPeriodMS = 0;
@@ -4552,9 +4560,7 @@ namespace EQWOWConverter.Spells
                 descriptionSB.Append(string.Concat(" Rains down ", spellTemplate.RainWaveCount.ToString(), " times over ",
                     rainDurationInSeconds.ToString("0.#"), " seconds where it lands."));
             }
-            int minimumTargetLevel = spellTemplate.GetMinimumTargetLevel();
-            if (minimumTargetLevel > 0)
-                descriptionSB.Append(string.Concat(" Only works on players level ", minimumTargetLevel.ToString(), " or greater."));
+            descriptionSB.Append(spellTemplate.GetMinimumTargetLevelDescriptionText());
             if (spellTemplate.IsCosmeticOnlyIllusion == true)
                 descriptionSB.Append(" Will not alter faction standing with any groups.");
             if (spellTemplate.SummonedPetTypeName.Length > 0)

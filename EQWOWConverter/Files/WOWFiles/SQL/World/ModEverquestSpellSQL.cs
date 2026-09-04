@@ -113,8 +113,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("StunUsesBashKickChance", spellTemplate.StunUsesBashKickChance ? 1 : 0);
             newRow.AddInt("SpellIDCastOnTargetWhenStunLands", spellTemplate.SpellIDCastOnTargetWhenStunLands);
             newRow.AddInt("AuraStaysOnSecondaryClassSwitch", spellTemplate.AuraStaysOnSecondaryClassSwitch ? 1 : 0);
-            if (isWorn == true)
-                newRow.AddInt("MinTargetLevel", 0); // Worn effects have no target level restriction in EQ
+            if (isWorn == true || isClickyVersion == true)
+                newRow.AddInt("MinTargetLevel", 0); // Worn effects and item clickies have no target level restriction in EQ
             else
                 newRow.AddInt("MinTargetLevel", spellTemplate.GetMinimumTargetLevel());
             newRow.AddInt("MaxCreatureTargetLevel", isWorn == true ? 0 : spellTemplate.MaxCreatureTargetLevel);

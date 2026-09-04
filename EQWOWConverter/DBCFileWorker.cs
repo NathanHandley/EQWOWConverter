@@ -175,6 +175,14 @@ namespace EQWOWConverter
 
                     string blockActionDescription = actionDescription;
 
+                    // An item clicky is never blocked by the buff level restriction, so its copy of the description must not claim one
+                    if (isClickyVersion == true)
+                    {
+                        string minimumTargetLevelText = spellTemplate.GetMinimumTargetLevelDescriptionText();
+                        if (minimumTargetLevelText.Length > 0)
+                            blockActionDescription = blockActionDescription.Replace(minimumTargetLevelText, string.Empty);
+                    }
+
                     // Intense Healing Exhaustion
                     if (spellTemplate.AppliesIntenseHealingExhaustion == true && curEffectBlock.WOWSpellID == spellTemplate.WOWSpellID)
                     {

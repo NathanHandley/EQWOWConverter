@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 93;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 94;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1048,7 +1048,7 @@ namespace EQWOWConverter
         public static bool SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP = true;
 
         // Minimum level to enforce buff constraints against low level players, with 0 being off. 50 is EQ-like (according to TAKP)
-        public static int SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD = 50;
+        public static int SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD = 0;
 
         // Default level to block stuns on creatures (EQ-like)
         public static int SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT = 55;

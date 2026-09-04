@@ -287,6 +287,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("ClientDataVersion", Configuration.DEPLOY_CLIENT_DATA_VERSION.ToString());
             modEverquestSystemConfigsSQL.AddRow("ClientDataVersionMismatchMessage", Configuration.DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE);
             modEverquestSystemConfigsSQL.AddRow("BardMaxConcurrentSongs", Configuration.SPELL_MAX_CONCURRENT_BARD_SONGS.ToString());
+            modEverquestSystemConfigsSQL.AddRow("BuffLevelRestrictionsEnabled", Configuration.SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD > 0 ? "1" : "0");
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMin", Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString());
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMax", Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH.ToString());
             modEverquestSystemConfigsSQL.AddRow("DazeEnabledInEQZones", Configuration.COMBAT_DAZE_IN_EQ_ZONES_ENABLED == true ? "1" : "0");
