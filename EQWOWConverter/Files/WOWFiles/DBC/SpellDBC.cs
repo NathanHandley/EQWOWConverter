@@ -22,7 +22,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public void AddRow(SpellEffectBlock effectBlock, string spellDescription, string auraDescription, SpellTemplate spellTemplate, bool doHideFromDisplay, bool overrideDurationToInfinite,
             bool preventClickOff, int maximumSpellLevel, bool isToggleAura, int castTimeDBCID, bool isWornEquipEffect, bool isUsableWhileSilenced, bool isCreatureCastVersion = false,
-            bool isPlayerLearnedClassSpell = false)
+            bool isPlayerLearnedClassSpell = false, bool isClickyVersion = false)
         {
             if (effectBlock.SpellEffects.Count != 3)
             {
@@ -85,7 +85,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // ExcludeCasterAuraSpell
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.ExcludeTargetAuraSpellID)); // ExcludeTargetAuraSpell
             newRow.AddUInt32(Convert.ToUInt32(castTimeDBCID)); // CastingTimeIndex   
-            if (spellTemplate.RecoveryTimeInMS < Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS)
+            if (isCreatureCastVersion == false && isClickyVersion == false && spellTemplate.IsPlayerCooldownDisabledByConfig() == true)
+                newRow.AddUInt32(0); // RecoveryTime (damage / heal cooldowns disabled by config)
+            else if (spellTemplate.RecoveryTimeInMS < Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS)
                 newRow.AddUInt32(0); // RecoveryTime
             else
                 newRow.AddUInt32(spellTemplate.RecoveryTimeInMS); // RecoveryTime

@@ -249,6 +249,7 @@ namespace EQWOWConverter.Spells
         private List<int> AuraStackEffectKeys = new List<int>();
         private int AuraStackKeyFlagBits = 0;
         public UInt32 RecoveryTimeInMS = 0; // Note that this may be zero for a player but not a creature.  See Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS
+        public bool HasCustomCooldown = false;
         public int EQSpellVisualEffectIndex = 0;
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
@@ -1031,6 +1032,42 @@ namespace EQWOWConverter.Spells
                 if (spellEffect.EffectType == SpellWOWEffectType.HealthLeech)
                     return true;
             }
+            return false;
+        }
+
+        public bool IsPlayerCooldownDisabledByConfig()
+        {
+            if (HasCustomCooldown == true)
+                return false;
+            if (Configuration.SPELL_DISABLE_COOLDOWN_ON_DAMAGE_SPELLS == false && Configuration.SPELL_DISABLE_COOLDOWN_ON_HEAL_SPELLS == false)
+                return false;
+
+            bool hasDamageOutput = false;
+            bool hasHealOutput = false;
+            foreach (SpellEffectWOW wowEffect in WOWSpellEffects)
+            {
+                if (wowEffect.EffectAuraType == SpellWOWAuraType.None)
+                {
+                    if (wowEffect.EffectType == SpellWOWEffectType.Heal)
+                        hasHealOutput = true;
+                    else if (wowEffect.EffectType == SpellWOWEffectType.SchoolDamage || wowEffect.EffectType == SpellWOWEffectType.HealthLeech)
+                        hasDamageOutput = true;
+                }
+                else if (wowEffect.EffectAuraType == SpellWOWAuraType.PeriodicHeal)
+                    hasHealOutput = true;
+                else if (wowEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamage || wowEffect.EffectAuraType == SpellWOWAuraType.PeriodicLeech ||
+                    wowEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamagePercent)
+                {
+                    // Self-inflicted DoTs (lich-style HP-to-mana engines) are buffs, not offensive output
+                    if (wowEffect.ImplicitTargetA != SpellWOWTargetType.UnitCaster)
+                        hasDamageOutput = true;
+                }
+            }
+
+            if (Configuration.SPELL_DISABLE_COOLDOWN_ON_DAMAGE_SPELLS == true && hasDamageOutput == true)
+                return true;
+            if (Configuration.SPELL_DISABLE_COOLDOWN_ON_HEAL_SPELLS == true && hasHealOutput == true)
+                return true;
             return false;
         }
 

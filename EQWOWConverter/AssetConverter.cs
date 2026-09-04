@@ -2757,6 +2757,7 @@ namespace EQWOWConverter
             bashSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS);
             bashSpellTemplate.Category = Convert.ToUInt32(bashAndSlamSpellCategoryID);
             bashSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS); // Shared cooldown with Slam
+            bashSpellTemplate.HasCustomCooldown = true;
             bashSpellTemplate.SetSpellRangeToMeleeRange();
             bashSpellTemplate.SchoolMask = 1; // Physical
             bashSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)
@@ -2820,6 +2821,7 @@ namespace EQWOWConverter
 
             // Every rank of a line shares the line's cooldown, the way the Voidwalker's ranks do
             tauntSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(isMultiTarget ? Configuration.SPELL_PET_AREATAUNT_COOLDOWN_IN_MS : Configuration.SPELL_PET_TAUNT_COOLDOWN_IN_MS);
+            tauntSpellTemplate.HasCustomCooldown = true;
             tauntSpellTemplate.ManaCost = Convert.ToUInt32(tauntRank.ManaCost);
             tauntSpellTemplate.SchoolMask = 32; // Shadow
             tauntSpellTemplate.DefenseType = 1; // Magic
@@ -2904,6 +2906,7 @@ namespace EQWOWConverter
             harmTouchSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(harmTouchIconID);
             harmTouchSpellTemplate.CastTimeInMS = 0;
             harmTouchSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS);
+            harmTouchSpellTemplate.HasCustomCooldown = true;
             harmTouchSpellTemplate.SpellRange = Configuration.COMBATSKILL_HARMTOUCH_RANGE;
             harmTouchSpellTemplate.SchoolMask = 32; // Shadow
             harmTouchSpellTemplate.DefenseType = 1; // Magic
@@ -2990,6 +2993,7 @@ namespace EQWOWConverter
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
             gateSpellTemplate.RecoveryTimeInMS = 8000;
+            gateSpellTemplate.HasCustomCooldown = true;
             gateSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             gateSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(9, SpellVisualType.Beneficial).SpellVisualDBCID); // Gate
             gateSpellTemplate.PlayerLearnableByClassTrainer = true;
@@ -3007,6 +3011,7 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(21);
             bindAffinitySelfSpellTemplate.CastTimeInMS = 6000;
             bindAffinitySelfSpellTemplate.RecoveryTimeInMS = 12000;
+            bindAffinitySelfSpellTemplate.HasCustomCooldown = true;
             bindAffinitySelfSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(14, SpellVisualType.Beneficial).SpellVisualDBCID); // Bind
             bindAffinitySelfSpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySelfSpellTemplate.AllowCastInCombat = false;
@@ -3072,6 +3077,7 @@ namespace EQWOWConverter
             forageSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(forageSpellIconID);
             forageSpellTemplate.CastTimeInMS = 0;
             forageSpellTemplate.RecoveryTimeInMS = 100000; // 100 seconds
+            forageSpellTemplate.HasCustomCooldown = true;
             forageSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
             forageSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
             forageSpellTemplate.TriggersGlobalCooldown = false;
@@ -3094,6 +3100,7 @@ namespace EQWOWConverter
             trackingSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(trackingSpellIconID);
             trackingSpellTemplate.CastTimeInMS = 0;
             trackingSpellTemplate.RecoveryTimeInMS = 2000; // Matches the mod's per-player scan throttle (EQ_TRACKING_SCAN_MIN_INTERVAL_MS)
+            trackingSpellTemplate.HasCustomCooldown = true;
             trackingSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
             trackingSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
             trackingSpellTemplate.TriggersGlobalCooldown = false;
@@ -3430,6 +3437,7 @@ namespace EQWOWConverter
                 slamSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS);
                 slamSpellTemplate.Category = Convert.ToUInt32(bashAndSlamSpellCategoryID);
                 slamSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_BASH_COOLDOWN_IN_MS);
+                slamSpellTemplate.HasCustomCooldown = true;
                 slamSpellTemplate.SetSpellRangeToMeleeRange();
                 slamSpellTemplate.SchoolMask = 1; // Physical
                 slamSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)
@@ -3486,6 +3494,7 @@ namespace EQWOWConverter
                 piercingBackstabSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_PIERCINGBACKSTAB_COOLDOWN_IN_MS);
                 piercingBackstabSpellTemplate.Category = Convert.ToUInt32(bashAndSlamSpellCategoryID); // Shared cooldown with Bash and Slam
                 piercingBackstabSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_PIERCINGBACKSTAB_COOLDOWN_IN_MS);
+                piercingBackstabSpellTemplate.HasCustomCooldown = true;
                 piercingBackstabSpellTemplate.SetSpellRangeToMeleeRange();
                 piercingBackstabSpellTemplate.SchoolMask = 1; // Physical
                 piercingBackstabSpellTemplate.DefenseType = 2; // Melee (can miss/dodged/parried/blocked like a melee attack)
@@ -3547,6 +3556,7 @@ namespace EQWOWConverter
                 layOnHandsSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(layOnHandsIconID);
                 layOnHandsSpellTemplate.CastTimeInMS = 0;
                 layOnHandsSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_LAYONHANDS_COOLDOWN_IN_MS);
+                layOnHandsSpellTemplate.HasCustomCooldown = true;
                 layOnHandsSpellTemplate.SchoolMask = 2; // Holy
                 layOnHandsSpellTemplate.IsGoodEffect = true;
                 layOnHandsSpellTemplate.EQSpellVisualEffectIndex = 1;
@@ -3584,6 +3594,7 @@ namespace EQWOWConverter
                 feignDeathSpellTemplate.TriggersGlobalCooldown = false;
                 feignDeathSpellTemplate.Category = Convert.ToUInt32(SpellCategoryDBC.GenerateDBCID("feigndeath"));
                 feignDeathSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS);
+                feignDeathSpellTemplate.HasCustomCooldown = true;
                 feignDeathSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
                 feignDeathSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
                 feignDeathSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);

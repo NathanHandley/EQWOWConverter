@@ -156,7 +156,7 @@ namespace EQWOWConverter
         }
 
         private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, int castTimeDBCID, bool isWorn, bool isUsableWhileSilenced,
-            bool isCreatureCastVersion = false, bool isPlayerLearnedSpell = false)
+            bool isCreatureCastVersion = false, bool isPlayerLearnedSpell = false, bool isClickyVersion = false)
         {
             if (spellEffectBlocks.Count == 0 || spellEffectBlocks[0].WOWSpellID <= 0)
                 return;
@@ -199,7 +199,8 @@ namespace EQWOWConverter
                     // Only the first block is the one the player actually casts (and the only one that joins a skill line below), so it is the only one that hands its movement interrupt over to the mod
                     bool isPlayerLearnedClassSpell = isPlayerLearnedSpell == true && i == 0 && spellTemplate.SkillLine != 0;
                     spellDBC.AddRow(curEffectBlock, blockActionDescription, auraDescription, spellTemplate, hideFromDisplay, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
-                        curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, false, isUsableWhileSilenced, isCreatureCastVersion, isPlayerLearnedClassSpell);
+                        curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, false, isUsableWhileSilenced, isCreatureCastVersion, isPlayerLearnedClassSpell,
+                        isClickyVersion);
                 }
                 else
                 {
@@ -958,7 +959,7 @@ namespace EQWOWConverter
                 AddSpellDataBlock(spellTemplate, spellTemplate.GroupedGoodProcSpellEffectBlocksForOutput, 1, false, false);
                 for (int i = 0; i < spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters.Count; i++)
                     AddSpellDataBlock(spellTemplate, spellTemplate.GroupedClickySpellEffectBlocksForOutputBySpellParameters[i], spellTemplate.ClickySpellParatemers[i].SpellCastTimeDBCID, false,
-                        spellTemplate.ClickySpellParatemers[i].IsUsableWhileSilenced);
+                        spellTemplate.ClickySpellParatemers[i].IsUsableWhileSilenced, false, false, true);
 
                 // Add the enchantment, if there is one
                 if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)

@@ -907,10 +907,14 @@ namespace EQWOWConverter
         // from neutral (0 -> 3000 Friendly), matching the EQ indifferent (0) -> amiable (100) jump.
         public static int SPELL_MOD_FACTION_REP_MULTIPLIER = 30;
 
-        // This is the minimum allowable recovery time any spell can have, which any smaller will become zero
-        // and only subjected to the global cooldown of 1.5 seconds.  This is only enforced on the raw spell
-        // records and not the SpellTemplate, to ensure cast repeats are correct for creatures
+        // Minimum recovery time for any spells to avoid cooldown issues for creatures
         public static int SPELL_RECOVERY_TIME_MINIMUM_IN_MS = 3501;
+
+        // When true, offensive player spells (from the spellbook) no longer have a cooldown unless a custom spell like Bash
+        public static bool SPELL_DISABLE_COOLDOWN_ON_DAMAGE_SPELLS = true;
+
+        // When true, healing player spells (From the spellbook) no longer have a cooldown
+        public static bool SPELL_DISABLE_COOLDOWN_ON_HEAL_SPELLS = true;
 
         // Enables / Disables talent interaction with EQ spells
         public static bool SPELL_WOW_TALENT_INTERACTION_ENABLED = true;
@@ -2255,6 +2259,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", SPELL_PERIODIC_SECONDS_PER_TICK_WOW, "Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier");
             OutputVariableToConfig("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS, "This is 'added time' in the periodic tick that comes from bard casters.");
             OutputVariableToConfig("SPELL_RECOVERY_TIME_MINIMUM_IN_MS", SPELL_RECOVERY_TIME_MINIMUM_IN_MS, "This is the minimum allowable recovery time any spell can have, which any smaller will become zero");
+            OutputVariableToConfig("SPELL_DISABLE_COOLDOWN_ON_DAMAGE_SPELLS", SPELL_DISABLE_COOLDOWN_ON_DAMAGE_SPELLS, "When true, offensive player spells (from the spellbook) no longer have a cooldown unless a custom spell like Bash");
+            OutputVariableToConfig("SPELL_DISABLE_COOLDOWN_ON_HEAL_SPELLS", SPELL_DISABLE_COOLDOWN_ON_HEAL_SPELLS, "When true, healing player spells (From the spellbook) no longer have a cooldown");
             OutputVariableToConfig("SPELL_WOW_TALENT_INTERACTION_ENABLED", SPELL_WOW_TALENT_INTERACTION_ENABLED, "Enables or Disables talent interaction with EQ spells");
             OutputVariableToConfig("SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT", SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT, "The percent chance that a feign death spell cast fails");
             OutputVariableToConfig("SPELL_HASTE_MOD", SPELL_HASTE_MOD, "Additional mod values for adjusting the haste and slow effects whereas \"1\" is EQ-like, but it goes too hard in WoW to keep it that", false);
@@ -2963,6 +2969,8 @@ namespace EQWOWConverter
             SPELL_MAX_CONCURRENT_BARD_SONGS = ReadVariableFromConfigString("SPELL_MAX_CONCURRENT_BARD_SONGS", configValuesByVariableName, SPELL_MAX_CONCURRENT_BARD_SONGS);
             SPELL_MOD_FACTION_REP_MULTIPLIER = ReadVariableFromConfigString("SPELL_MOD_FACTION_REP_MULTIPLIER", configValuesByVariableName, SPELL_MOD_FACTION_REP_MULTIPLIER);
             SPELL_RECOVERY_TIME_MINIMUM_IN_MS = ReadVariableFromConfigString("SPELL_RECOVERY_TIME_MINIMUM_IN_MS", configValuesByVariableName, SPELL_RECOVERY_TIME_MINIMUM_IN_MS);
+            SPELL_DISABLE_COOLDOWN_ON_DAMAGE_SPELLS = ReadVariableFromConfigString("SPELL_DISABLE_COOLDOWN_ON_DAMAGE_SPELLS", configValuesByVariableName, SPELL_DISABLE_COOLDOWN_ON_DAMAGE_SPELLS);
+            SPELL_DISABLE_COOLDOWN_ON_HEAL_SPELLS = ReadVariableFromConfigString("SPELL_DISABLE_COOLDOWN_ON_HEAL_SPELLS", configValuesByVariableName, SPELL_DISABLE_COOLDOWN_ON_HEAL_SPELLS);
             SPELL_WOW_TALENT_INTERACTION_ENABLED = ReadVariableFromConfigString("SPELL_WOW_TALENT_INTERACTION_ENABLED", configValuesByVariableName, SPELL_WOW_TALENT_INTERACTION_ENABLED);
             SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT = ReadVariableFromConfigString("SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT", configValuesByVariableName, SPELL_FEIGN_DEATH_FAIL_CHANCE_PERCENT);
             SPELL_HASTE_MOD = ReadVariableFromConfigString("SPELL_HASTE_MOD", configValuesByVariableName, SPELL_HASTE_MOD);
