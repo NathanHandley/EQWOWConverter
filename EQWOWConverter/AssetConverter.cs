@@ -3245,42 +3245,43 @@ namespace EQWOWConverter
             resistAdjustmentSpellTemplate.ForceHiddenFromDisplay = true;
             spellTemplates.Add(resistAdjustmentSpellTemplate);
 
-            // Complete Heal Exhaustion (debuff stacked on the caster every time they finish a direct cast of Complete Heal, making the next ones cost more)
-            if (Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED == true)
+            // Intense Healing Exhaustion (debuff stacked on the caster every time they finish a direct cast of an intense healing spell, making the next ones cost more)
+            if (Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED == true)
             {
-                int completeHealExhaustionIconID = Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID;
-                if (completeHealExhaustionIconID < 0 || completeHealExhaustionIconID > 22)
+                int intenseHealingExhaustionIconID = Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ICON_EQ_ID;
+                if (intenseHealingExhaustionIconID < 0 || intenseHealingExhaustionIconID > 22)
                 {
-                    Logger.WriteError("Invalid Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID, value must be 0-22. Setting to 22");
-                    completeHealExhaustionIconID = 22;
+                    Logger.WriteError("Invalid Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ICON_EQ_ID, value must be 0-22. Setting to 22");
+                    intenseHealingExhaustionIconID = 22;
                 }
-                string completeHealExhaustionDescription = string.Concat("Weariness from channeling a complete heal. Each stack adds ",
-                    Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK.ToString(), "% to what Complete Healing costs to cast, up to ",
-                    Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS.ToString(), " stacks.");
-                SpellTemplate completeHealExhaustionSpellTemplate = new SpellTemplate();
-                completeHealExhaustionSpellTemplate.Name = Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_NAME;
-                completeHealExhaustionSpellTemplate.WOWSpellID = Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID;
-                completeHealExhaustionSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
-                completeHealExhaustionSpellTemplate.Description = completeHealExhaustionDescription;
-                completeHealExhaustionSpellTemplate.AuraDescription = completeHealExhaustionDescription;
-                completeHealExhaustionSpellTemplate.AuraDuration = new SpellDuration();
-                completeHealExhaustionSpellTemplate.AuraDuration.SetFixedDuration(Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS);
-                completeHealExhaustionSpellTemplate.MaxStackAmount = Convert.ToUInt32(Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS);
+                string intenseHealingExhaustionDescription = string.Concat("Weariness from channeling an intense heal. Each stack adds ",
+                    Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_MANA_COST_PERCENT_PER_STACK.ToString(), "% to the mana cost of ",
+                    SpellTemplate.GetIntenseHealingExhaustionSpellNamesText(), ", up to ",
+                    Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_MAX_STACKS.ToString(), " stacks.");
+                SpellTemplate intenseHealingExhaustionSpellTemplate = new SpellTemplate();
+                intenseHealingExhaustionSpellTemplate.Name = Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_NAME;
+                intenseHealingExhaustionSpellTemplate.WOWSpellID = Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ID;
+                intenseHealingExhaustionSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                intenseHealingExhaustionSpellTemplate.Description = intenseHealingExhaustionDescription;
+                intenseHealingExhaustionSpellTemplate.AuraDescription = intenseHealingExhaustionDescription;
+                intenseHealingExhaustionSpellTemplate.AuraDuration = new SpellDuration();
+                intenseHealingExhaustionSpellTemplate.AuraDuration.SetFixedDuration(Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_DURATION_IN_MS);
+                intenseHealingExhaustionSpellTemplate.MaxStackAmount = Convert.ToUInt32(Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_MAX_STACKS);
                 // EffectMiscValueA 14 = SPELLMOD_COST, and the base points are the added percent for a single stack
-                SpellEffectWOW completeHealExhaustionEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.AddPctModifier, 0, 0, 0, Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK, 14, 0);
-                completeHealExhaustionEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
-                completeHealExhaustionEffect.EffectSpellClassMask3 = Configuration.SPELL_EQ_COMPLETE_HEAL_SPELL_FAMILY_FLAG;
-                completeHealExhaustionSpellTemplate.WOWSpellEffects.Add(completeHealExhaustionEffect);
-                completeHealExhaustionSpellTemplate.SpellFamilyID = Convert.ToUInt32(Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
-                completeHealExhaustionSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(completeHealExhaustionIconID);
-                completeHealExhaustionSpellTemplate.CastTimeInMS = 0;
-                completeHealExhaustionSpellTemplate.RecoveryTimeInMS = 0;
-                completeHealExhaustionSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
-                completeHealExhaustionSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
-                completeHealExhaustionSpellTemplate.TriggersGlobalCooldown = false;
-                completeHealExhaustionSpellTemplate.ForceAsDebuff = true;
-                completeHealExhaustionSpellTemplate.PreventAuraClickOff = true;
-                spellTemplates.Add(completeHealExhaustionSpellTemplate);
+                SpellEffectWOW intenseHealingExhaustionEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.AddPctModifier, 0, 0, 0, Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_MANA_COST_PERCENT_PER_STACK, 14, 0);
+                intenseHealingExhaustionEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                intenseHealingExhaustionEffect.EffectSpellClassMask3 = Configuration.SPELL_EQ_INTENSE_HEALING_SPELL_FAMILY_FLAG;
+                intenseHealingExhaustionSpellTemplate.WOWSpellEffects.Add(intenseHealingExhaustionEffect);
+                intenseHealingExhaustionSpellTemplate.SpellFamilyID = Convert.ToUInt32(Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
+                intenseHealingExhaustionSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(intenseHealingExhaustionIconID);
+                intenseHealingExhaustionSpellTemplate.CastTimeInMS = 0;
+                intenseHealingExhaustionSpellTemplate.RecoveryTimeInMS = 0;
+                intenseHealingExhaustionSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+                intenseHealingExhaustionSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
+                intenseHealingExhaustionSpellTemplate.TriggersGlobalCooldown = false;
+                intenseHealingExhaustionSpellTemplate.ForceAsDebuff = true;
+                intenseHealingExhaustionSpellTemplate.PreventAuraClickOff = true;
+                spellTemplates.Add(intenseHealingExhaustionSpellTemplate);
             }
 
             // Casting on the Move

@@ -389,7 +389,7 @@ namespace EQWOWConverter.Spells
         public UInt32 SpellFamilyFlags1 = 0;
         public UInt32 SpellFamilyFlags2 = 0;
         public UInt32 SpellFamilyFlags3 = 0;
-        public bool AppliesCompleteHealExhaustion = false;
+        public bool AppliesIntenseHealingExhaustion = false;
         public string AttachedAuraScriptName = string.Empty; // spell_script_names row written for the base block (class aura scripts)
         public SpellProcRow? ProcRow = null; // spell_proc row written for the base block, so the core proc system drives the attached script
 
@@ -842,25 +842,57 @@ namespace EQWOWConverter.Spells
             // Creatures cast through separate spell copies whenever the player version diverged from the unmodified conversion
             MarkSpellTemplatesNeedingCreatureCastVersions();
 
-            // Complete Heal Exhaustion needs Complete Healing reachable by a spell mod, which in WoW means a matching SpellFamily
-            MarkCompleteHealForExhaustionDebuff();
+            // Intense Healing Exhaustion needs its spells reachable by a spell mod, which in WoW means a matching SpellFamily
+            MarkIntenseHealingSpellsForExhaustionDebuff();
         }
 
-        private static void MarkCompleteHealForExhaustionDebuff()
+        public static List<int> GetIntenseHealingExhaustionEQSpellIDs()
         {
-            if (Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED == false)
-                return;
-            if (SpellTemplatesByEQID.ContainsKey(Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID) == false)
+            List<int> eqSpellIDs = new List<int>();
+            if (Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED == false)
+                return eqSpellIDs;
+            foreach (string eqSpellIDString in Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_EQ_SPELL_IDS.Split(',', StringSplitOptions.RemoveEmptyEntries))
             {
-                Logger.WriteError("Could not enable Complete Heal Exhaustion since eq spell id ", Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID.ToString(), " did not exist");
-                return;
+                int eqSpellID;
+                if (int.TryParse(eqSpellIDString.Trim(), out eqSpellID) == false)
+                {
+                    Logger.WriteError("Could not read '", eqSpellIDString.Trim(), "' in SPELL_INTENSE_HEALING_EXHAUSTION_EQ_SPELL_IDS as an eq spell id, so skipping it");
+                    continue;
+                }
+                eqSpellIDs.Add(eqSpellID);
             }
+            return eqSpellIDs;
+        }
 
-            // The private family + flag is what the debuff's SPELLMOD_COST aura matches against, and the script is what stacks the debuff when a cast finishes
-            SpellTemplate completeHealSpellTemplate = SpellTemplatesByEQID[Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID];
-            completeHealSpellTemplate.SpellFamilyID = Convert.ToUInt32(Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
-            completeHealSpellTemplate.SpellFamilyFlags3 = Configuration.SPELL_EQ_COMPLETE_HEAL_SPELL_FAMILY_FLAG;
-            completeHealSpellTemplate.AppliesCompleteHealExhaustion = true;
+        public static string GetIntenseHealingExhaustionSpellNamesText()
+        {
+            List<string> spellNames = new List<string>();
+            foreach (int eqSpellID in GetIntenseHealingExhaustionEQSpellIDs())
+                if (SpellTemplatesByEQID.ContainsKey(eqSpellID) == true)
+                    spellNames.Add(SpellTemplatesByEQID[eqSpellID].Name);
+            if (spellNames.Count == 0)
+                return "an intense healing spell";
+            if (spellNames.Count == 1)
+                return spellNames[0];
+            return string.Concat(string.Join(", ", spellNames.GetRange(0, spellNames.Count - 1)), " and ", spellNames[spellNames.Count - 1]);
+        }
+
+        private static void MarkIntenseHealingSpellsForExhaustionDebuff()
+        {
+            foreach (int eqSpellID in GetIntenseHealingExhaustionEQSpellIDs())
+            {
+                if (SpellTemplatesByEQID.ContainsKey(eqSpellID) == false)
+                {
+                    Logger.WriteError("Could not enable Intense Healing Exhaustion for eq spell id ", eqSpellID.ToString(), " since that spell did not exist");
+                    continue;
+                }
+
+                // The private family + flag is what the debuff's SPELLMOD_COST aura matches against, and the script is what stacks the debuff when a cast finishes
+                SpellTemplate intenseHealingSpellTemplate = SpellTemplatesByEQID[eqSpellID];
+                intenseHealingSpellTemplate.SpellFamilyID = Convert.ToUInt32(Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
+                intenseHealingSpellTemplate.SpellFamilyFlags3 = Configuration.SPELL_EQ_INTENSE_HEALING_SPELL_FAMILY_FLAG;
+                intenseHealingSpellTemplate.AppliesIntenseHealingExhaustion = true;
+            }
         }
 
         private static bool IsNonDummySpellEffect(SpellEffectWOW spellEffect)

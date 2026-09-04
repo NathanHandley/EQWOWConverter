@@ -321,9 +321,9 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("SlowBossEffectivenessMod", Configuration.SPELL_SLOW_BOSS_EFFECTINESS_MOD.ToString(System.Globalization.CultureInfo.InvariantCulture));
             modEverquestSystemConfigsSQL.AddRow("RaidBossRespawnVarianceInSec", Configuration.CREATURE_RAID_BOSS_VARIANCE_IN_SEC.ToString());
             modEverquestSystemConfigsSQL.AddRow("RaidMiniBossRespawnVarianceInSec", Configuration.CREATURE_RAID_MINI_BOSS_VARIANCE_IN_SEC.ToString());
-            modEverquestSystemConfigsSQL.AddRow("CompleteHealExhaustionSpellID", Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED == true ? Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID.ToString() : "0");
+            modEverquestSystemConfigsSQL.AddRow("IntenseHealingExhaustionSpellID", Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED == true ? Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("MovementCastSnareSpellID", Configuration.SPELL_MOVEMENT_CAST_ENABLED == true && Configuration.SPELL_MOVEMENT_CAST_SNARE_ENABLED == true ? Configuration.SPELL_MOVEMENT_CAST_SNARE_SPELL_ID.ToString() : "0");
-            modEverquestSystemConfigsSQL.AddRow("CompleteHealExhaustionManaCostPercentPerStack", Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK.ToString());
+            modEverquestSystemConfigsSQL.AddRow("IntenseHealingExhaustionManaCostPercentPerStack", Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_MANA_COST_PERCENT_PER_STACK.ToString());
             modEverquestSystemConfigsSQL.AddRow("IllusionObjectMaxDistance", (Configuration.SPELL_ILLUSION_OBJECT_MAX_DISTANCE * Configuration.GENERATE_WORLD_SCALE).ToString());
             modEverquestSystemConfigsSQL.AddRow("IllusionObjectTreeMaxDistance", (Configuration.SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE * Configuration.GENERATE_WORLD_SCALE).ToString());
         }
@@ -2786,8 +2786,8 @@ namespace EQWOWConverter
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_ResistDiffSpellScript");
             if (spellTemplate.IsPlayerCasterOnlySpell == true)
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_PlayerCasterOnlySpellScript");
-            if (spellTemplate.AppliesCompleteHealExhaustion == true && commentFragment == string.Empty) // commentFragment check stops item clicks and creature-cast exempt, find better way?
-                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_CompleteHealSpellScript");
+            if (spellTemplate.AppliesIntenseHealingExhaustion == true && commentFragment == string.Empty) // commentFragment check stops item clicks and creature-cast exempt, find better way?
+                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_IntenseHealingSpellScript");
 
             // WOW has no effect that takes a damage shield away, so the strip is done by a script when the aura lands
             if (spellTemplate.RemovesTargetDamageShield == true)

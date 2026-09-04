@@ -27,16 +27,17 @@
 local COEFFICIENT_LABEL = "Spell power coefficient:";
 
 -- The mana cost half of this addon exists because the client will not apply the server's cost modifier
--- to what it prints.  Complete Heal Exhaustion is a stacking debuff carrying a SPELLMOD_COST aura, and
+-- to what it prints.  Intense Healing Exhaustion is a stacking debuff carrying a SPELLMOD_COST aura, and
 -- the server does charge the multiplied cost, but the client ignores the SMSG_SET_PCT_SPELL_MODIFIER it
--- is sent (the spell sits in a private SpellFamily that does not match the caster's class family) and
+-- is sent (the spells sit in a private SpellFamily that does not match the caster's class family) and
 -- keeps printing the base number.  So the converter stamps the per-stack rate onto the caster's tooltip
 -- in a fixed shape and the cost printed here is corrected from the stack count on the player:
 --
---   Complete Heal Exhaustion: +100% mana cost per stack
+--   Intense Healing Exhaustion: +100% mana cost per stack
 --
 -- Nothing about the aura name or the rate is hardcoded below -- both are read out of that line, so
--- retuning SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK needs no addon change.  This only
+-- retuning SPELL_INTENSE_HEALING_EXHAUSTION_MANA_COST_PERCENT_PER_STACK needs no addon change, and neither
+-- does adding another spell to the debuff, since the stamp lands on every spell it applies to.  This only
 -- corrects printed text: the client still decides on its own whether a button looks affordable, so a
 -- cast it thinks you can pay for can still be refused by the server when you are low on mana.
 

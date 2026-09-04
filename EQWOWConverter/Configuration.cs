@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 92;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 93;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1077,15 +1077,15 @@ namespace EQWOWConverter
         // Permanent aura placed on newly created characters, lost by doing non-EQ content (see ACHIEVEMENT_EQ_ADVENTURER_ENABLED)
         public static int SPELL_EQ_ADVENTURER_AURA_SPELL_ID = 86916;
 
-        // "Complete Heal Exhaustion" is a stacking debuff that makes the spell cost more mana
-        public static bool SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED = true;
-        public static int SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID = 13;
-        public static int SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID = 86924;
-        public static string SPELL_COMPLETE_HEAL_EXHAUSTION_NAME = "Complete Heal Exhaustion";
-        public static int SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID = 22;
-        public static int SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS = 15000;
-        public static int SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS = 5;
-        public static int SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK = 100;
+        // "Intense Healing Exhaustion" is a stacking debuff that makes every spell that triggers it cost more mana
+        public static bool SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED = true;
+        public static string SPELL_INTENSE_HEALING_EXHAUSTION_EQ_SPELL_IDS = "13,1523"; // Complete Healing, Word of Redemption
+        public static int SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ID = 86924;
+        public static string SPELL_INTENSE_HEALING_EXHAUSTION_NAME = "Intense Healing Exhaustion";
+        public static int SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ICON_EQ_ID = 10;
+        public static int SPELL_INTENSE_HEALING_EXHAUSTION_DURATION_IN_MS = 15000;
+        public static int SPELL_INTENSE_HEALING_EXHAUSTION_MAX_STACKS = 5;
+        public static int SPELL_INTENSE_HEALING_EXHAUSTION_MANA_COST_PERCENT_PER_STACK = 100;
 
         // If enabled, all non-channeled WoW and EQ learnable spells can be used while casting
         public static bool SPELL_MOVEMENT_CAST_ENABLED = true;
@@ -1121,8 +1121,8 @@ namespace EQWOWConverter
         // Private SpellFamilyName (Spell.dbc "SpellClassSet") used to aim a spell mod aura at a specific converted spell
         public static int SPELL_EQ_PRIVATE_SPELL_FAMILY_ID = 14;
 
-        // SpellFamilyFlags bit given to Complete Healing so the exhaustion debuff's mana cost mod can find it.  Word 3 bits 22-30 are set by no spell in the stock client data (neither as family flags nor as a spell mod's EffectSpellClassMask), so this bit can never pull a WoW spell into the mod
-        public static UInt32 SPELL_EQ_COMPLETE_HEAL_SPELL_FAMILY_FLAG = 0x00400000;
+        // SpellFamilyFlags bit given to every intense healing spell so the exhaustion debuff's mana cost mod can find them.  Word 3 bits 22-30 are set by no spell in the stock client data (neither as family flags nor as a spell mod's EffectSpellClassMask), so this bit can never pull a WoW spell into the mod
+        public static UInt32 SPELL_EQ_INTENSE_HEALING_SPELL_FAMILY_FLAG = 0x00400000;
 
         // EQ has no "daze" snare when a creature melee-hits a player from behind so this can disable it (in EQ zones only)
         public static bool COMBAT_DAZE_IN_EQ_ZONES_ENABLED = true;
@@ -2339,13 +2339,13 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", SPELL_INVIS_VS_UNDEAD_INVIS_TYPE, "WoW invisibility group (InvisibilityType) reserved for EQ 'invis vs undead' (0 = general invis, 1 should be unused)");
             OutputVariableToConfig("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID, "Custom detect aura granted to everything that should see through 'invis vs undead' (non-undead + see_invis_undead undead)");
             OutputVariableToConfig("SPELL_RESIST_ADJUSTMENT_SPELL_ID", SPELL_RESIST_ADJUSTMENT_SPELL_ID, "Hidden short-duration aura the mod applies to a caster during a cast to shift the spell hit roll by the EQ ResistDiff amount");
-            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED", SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED, "\"Complete Heal Exhaustion\" is a stacking debuff that makes the spell cost more mana");
-            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID", SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID, "", false);
-            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID", SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID, "", false);
-            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID", SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID, "", false);
-            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS", SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS, "", false);
-            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS", SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS, "", false);
-            OutputVariableToConfig("SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK", SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK, "");
+            OutputVariableToConfig("SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED", SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED, "\"Intense Healing Exhaustion\" is a stacking debuff that makes every spell that triggers it cost more mana");
+            OutputVariableToConfig("SPELL_INTENSE_HEALING_EXHAUSTION_EQ_SPELL_IDS", SPELL_INTENSE_HEALING_EXHAUSTION_EQ_SPELL_IDS, "Comma separated eq spell ids that stack the debuff and pay its increased mana cost", false);
+            OutputVariableToConfig("SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ID", SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ID, "", false);
+            OutputVariableToConfig("SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ICON_EQ_ID", SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("SPELL_INTENSE_HEALING_EXHAUSTION_DURATION_IN_MS", SPELL_INTENSE_HEALING_EXHAUSTION_DURATION_IN_MS, "", false);
+            OutputVariableToConfig("SPELL_INTENSE_HEALING_EXHAUSTION_MAX_STACKS", SPELL_INTENSE_HEALING_EXHAUSTION_MAX_STACKS, "", false);
+            OutputVariableToConfig("SPELL_INTENSE_HEALING_EXHAUSTION_MANA_COST_PERCENT_PER_STACK", SPELL_INTENSE_HEALING_EXHAUSTION_MANA_COST_PERCENT_PER_STACK, "");
             OutputVariableToConfig("SPELL_MOVEMENT_CAST_ENABLED", SPELL_MOVEMENT_CAST_ENABLED, "If enabled, all non-channeled WoW and EQ learnable spells can be used while casting");
             OutputVariableToConfig("SPELL_MOVEMENT_CAST_SNARE_ENABLED", SPELL_MOVEMENT_CAST_SNARE_ENABLED, "");
             OutputVariableToConfig("SPELL_MOVEMENT_CAST_SNARE_SPELL_ID", SPELL_MOVEMENT_CAST_SNARE_SPELL_ID, "", false);
@@ -3049,13 +3049,13 @@ namespace EQWOWConverter
             SPELL_INVIS_VS_UNDEAD_INVIS_TYPE = ReadVariableFromConfigString("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", configValuesByVariableName, SPELL_INVIS_VS_UNDEAD_INVIS_TYPE);
             SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID);
             SPELL_RESIST_ADJUSTMENT_SPELL_ID = ReadVariableFromConfigString("SPELL_RESIST_ADJUSTMENT_SPELL_ID", configValuesByVariableName, SPELL_RESIST_ADJUSTMENT_SPELL_ID);
-            SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_ENABLED);
-            SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_EQ_SPELL_ID);
-            SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ID);
-            SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_SPELL_ICON_EQ_ID);
-            SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_DURATION_IN_MS);
-            SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_MAX_STACKS);
-            SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK = ReadVariableFromConfigString("SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK", configValuesByVariableName, SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK);
+            SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED = ReadVariableFromConfigString("SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED", configValuesByVariableName, SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED);
+            SPELL_INTENSE_HEALING_EXHAUSTION_EQ_SPELL_IDS = ReadVariableFromConfigString("SPELL_INTENSE_HEALING_EXHAUSTION_EQ_SPELL_IDS", configValuesByVariableName, SPELL_INTENSE_HEALING_EXHAUSTION_EQ_SPELL_IDS);
+            SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ID = ReadVariableFromConfigString("SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ID", configValuesByVariableName, SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ID);
+            SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ICON_EQ_ID", configValuesByVariableName, SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ICON_EQ_ID);
+            SPELL_INTENSE_HEALING_EXHAUSTION_DURATION_IN_MS = ReadVariableFromConfigString("SPELL_INTENSE_HEALING_EXHAUSTION_DURATION_IN_MS", configValuesByVariableName, SPELL_INTENSE_HEALING_EXHAUSTION_DURATION_IN_MS);
+            SPELL_INTENSE_HEALING_EXHAUSTION_MAX_STACKS = ReadVariableFromConfigString("SPELL_INTENSE_HEALING_EXHAUSTION_MAX_STACKS", configValuesByVariableName, SPELL_INTENSE_HEALING_EXHAUSTION_MAX_STACKS);
+            SPELL_INTENSE_HEALING_EXHAUSTION_MANA_COST_PERCENT_PER_STACK = ReadVariableFromConfigString("SPELL_INTENSE_HEALING_EXHAUSTION_MANA_COST_PERCENT_PER_STACK", configValuesByVariableName, SPELL_INTENSE_HEALING_EXHAUSTION_MANA_COST_PERCENT_PER_STACK);
             SPELL_MOVEMENT_CAST_ENABLED = ReadVariableFromConfigString("SPELL_MOVEMENT_CAST_ENABLED", configValuesByVariableName, SPELL_MOVEMENT_CAST_ENABLED);
             SPELL_MOVEMENT_CAST_SNARE_ENABLED = ReadVariableFromConfigString("SPELL_MOVEMENT_CAST_SNARE_ENABLED", configValuesByVariableName, SPELL_MOVEMENT_CAST_SNARE_ENABLED);
             SPELL_MOVEMENT_CAST_SNARE_SPELL_ID = ReadVariableFromConfigString("SPELL_MOVEMENT_CAST_SNARE_SPELL_ID", configValuesByVariableName, SPELL_MOVEMENT_CAST_SNARE_SPELL_ID);

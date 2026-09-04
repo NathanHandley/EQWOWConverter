@@ -175,11 +175,11 @@ namespace EQWOWConverter
 
                     string blockActionDescription = actionDescription;
 
-                    // Complete Heal Exhaustion
-                    if (spellTemplate.AppliesCompleteHealExhaustion == true && curEffectBlock.WOWSpellID == spellTemplate.WOWSpellID)
+                    // Intense Healing Exhaustion
+                    if (spellTemplate.AppliesIntenseHealingExhaustion == true && curEffectBlock.WOWSpellID == spellTemplate.WOWSpellID)
                     {
-                        string exhaustionText = string.Concat(Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_NAME, ": +",
-                            Configuration.SPELL_COMPLETE_HEAL_EXHAUSTION_MANA_COST_PERCENT_PER_STACK.ToString(), "% mana cost per stack");
+                        string exhaustionText = string.Concat(Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_NAME, ": +",
+                            Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_MANA_COST_PERCENT_PER_STACK.ToString(), "% mana cost per stack");
                         if (blockActionDescription.Length > 0)
                             blockActionDescription = string.Concat(blockActionDescription, "\n\n", exhaustionText);
                         else
