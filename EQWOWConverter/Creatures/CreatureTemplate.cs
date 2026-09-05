@@ -199,11 +199,31 @@ namespace EQWOWConverter.Creatures
             return true;
         }
 
+        // 0: None, 1: Beast, 2: Dragonkin, 3: Demon, 4: Elemental, 5: Giant, 6: Undead, 7: Humanoid, 8: Critter, 9: Mechanical, 10: Non-Specified, 11: Totem, 12: Non-Combat Pet, 13: Gas Cloud
+        public int GetWOWCreatureTypeID()
+        {
+            if (IsPet == true)
+                return GetPetWOWCreatureTypeID();
+            if (IsCompanionPet == true)
+                return 12; // Non-Combat Pet, like the stock wow companion pets
+
+            // An undead EQ body type (what EQ itself tests for slay undead and undead-only spells) always reads as undead, otherwise use the race properties
+            if (IsUndeadBodyType() == true)
+                return 6;
+            if (Race.ID == 27 && TextureID == 0) // Froglok Ghoul race, but non-undead
+                return 7;
+            if (Race.ID == 39 && TextureID == 3) // Undead gnolls with undead graphics
+                return 6;
+            if (Race.ID == 41 && TextureID == 1) // Undead gorilla with undead graphics
+                return 6;
+            return Race.WOWCreatureType;
+        }
+
         public int GetPetWOWCreatureTypeID()
         {
             if (IsPet == false)
                 return 0;
-            if (Race.WOWCreatureType == 6) // Undead
+            if (IsUndeadBodyType() == true || Race.WOWCreatureType == 6) // Undead
                 return 6;
             return 3; // Demon
         }
@@ -242,7 +262,7 @@ namespace EQWOWConverter.Creatures
             // Summoned and companion pets never spawn in the world, so nothing about them should read as a tameable beast
             if (IsPet == true || IsCompanionPet == true)
                 return false;
-            if (Race.WOWCreatureType == 1) // beast
+            if (GetWOWCreatureTypeID() == 1) // beast, so an undead animal (typed by its body type) is never tameable
                 return true;
             else
                 return false;
@@ -255,14 +275,14 @@ namespace EQWOWConverter.Creatures
             return Race.IsExoticTame;
         }
 
-        public bool IsUndeadBodyTypeForInvisVsUndead()
+        public bool IsUndeadBodyType()
         {
             return EQBodyType == 3 || EQBodyType == 8 || EQBodyType == 12;
         }
 
         public bool CanSeeThroughInvisVsUndead()
         {
-            return IsUndeadBodyTypeForInvisVsUndead() == false || SeesInvisibleUndead == true;
+            return IsUndeadBodyType() == false || SeesInvisibleUndead == true;
         }
 
         public bool IsRaidCreature()
