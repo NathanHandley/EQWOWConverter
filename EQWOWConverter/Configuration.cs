@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 94;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 97;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1239,7 +1239,7 @@ namespace EQWOWConverter
         // If true, every EQ class (primary or secondary) grants a permanent aura with class specific effects
         public static bool CLASSAURA_ENABLED = true;
 
-        // First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96047 as of writing)
+        // First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96050 as of writing)
         public static int CLASSAURA_SPELL_ID_START = 96000;
 
         // Enchanter "Mind of Clarity"
@@ -1258,9 +1258,9 @@ namespace EQWOWConverter
         // Monk "Agile Fighter"
         public static bool CLASSAURA_MONK_ENABLED = true;
         public static int CLASSAURA_MONK_SPELL_ICON_EQ_ID = 9;
-        public static int CLASSAURA_MONK_LIGHT_ARMOR_HASTE_PERCENT = 12;
+        public static int CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT = 10;
+        public static int CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT = 50;
         public static int CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT = 5;
-        public static int CLASSAURA_MONK_HEAVY_ARMOR_HASTE_PERCENT = 6;
         public static int CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT = 50;
 
         // Ranger "Swift Reactions"
@@ -1291,17 +1291,17 @@ namespace EQWOWConverter
         // Shadow Knight "Spellsword"
         public static bool CLASSAURA_SHADOWKNIGHT_ENABLED = true;
         public static int CLASSAURA_SHADOWKNIGHT_SPELL_ICON_EQ_ID = 3;
-        public static int CLASSAURA_SHADOWKNIGHT_PARRY_PERCENT = 5;
+        public static int CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT = 30;
         public static int CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS = 15000;
-        public static int CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS = 25000;
+        public static int CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS = 15000;
 
         // Warrior "Warmaster"
         public static bool CLASSAURA_WARRIOR_ENABLED = true;
         public static int CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID = 18;
-        public static int CLASSAURA_WARRIOR_MAX_HEALTH_PERCENT = 10;
-        public static int CLASSAURA_WARRIOR_DODGE_PERCENT = 5;
-        public static int CLASSAURA_WARRIOR_DOUBLE_ATTACK_CHANCE_PERCENT = 10;
-        public static int CLASSAURA_WARRIOR_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT = 50;
+        public static int CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT = 5;
+        public static int CLASSAURA_WARRIOR_UNASSAILED_DELAY_IN_MS = 20000;
+        public static int CLASSAURA_WARRIOR_UNASSAILED_DAMAGE_PERCENT = 10;
+        public static int CLASSAURA_WARRIOR_RIPOSTE_SPELL_VISUAL_ID = 3799; // SpellVisual.dbc id of the WoW Riposte ability (spell 14251)
 
         // Wizard "Unshaken Channeler"
         public static bool CLASSAURA_WIZARD_ENABLED = true;
@@ -1318,14 +1318,14 @@ namespace EQWOWConverter
         public static int CLASSAURA_MAGICIAN_PET_STRIKE_SPELL_DAMAGE_PERCENT_PER_STACK = 2;
         public static int CLASSAURA_MAGICIAN_PET_STRIKE_MAX_STACKS = 5;
         public static int CLASSAURA_MAGICIAN_PET_STRIKE_DURATION_IN_MS = 20000;
-        public static int CLASSAURA_MAGICIAN_OWNER_CRIT_PET_DAMAGE_PERCENT_PER_STACK = 3;
-        public static int CLASSAURA_MAGICIAN_OWNER_CRIT_MAX_STACKS = 10;
-        public static int CLASSAURA_MAGICIAN_OWNER_CRIT_DURATION_IN_MS = 20000;
+        public static int CLASSAURA_MAGICIAN_OWNER_CRIT_PET_DAMAGE_PERCENT_PER_STACK = 5;
+        public static int CLASSAURA_MAGICIAN_OWNER_CRIT_MAX_STACKS = 6;
+        public static int CLASSAURA_MAGICIAN_OWNER_CRIT_DURATION_IN_MS = 30000;
 
         // Necromancer "Grave Pact"
         public static bool CLASSAURA_NECROMANCER_ENABLED = true;
         public static int CLASSAURA_NECROMANCER_SPELL_ICON_EQ_ID = 7;
-        public static int CLASSAURA_NECROMANCER_DEBUFF_TRANSFER_COOLDOWN_IN_MS = 15000;
+        public static int CLASSAURA_NECROMANCER_DEBUFF_TRANSFER_COOLDOWN_IN_MS = 20000;
         public static int CLASSAURA_NECROMANCER_MARK_DIRECT_DAMAGE_PERCENT_PER_STACK = 1;
         public static int CLASSAURA_NECROMANCER_MARK_DOT_DAMAGE_PERCENT_PER_STACK = 2;
         public static int CLASSAURA_NECROMANCER_MARK_MAX_STACKS = 10;
@@ -1334,25 +1334,28 @@ namespace EQWOWConverter
         // Cleric "Sacred Cadence"
         public static bool CLASSAURA_CLERIC_ENABLED = true;
         public static int CLASSAURA_CLERIC_SPELL_ICON_EQ_ID = 10;
-        public static int CLASSAURA_CLERIC_CADENCE_REDUCTION_PERCENT = 33;
+        public static int CLASSAURA_CLERIC_CADENCE_REDUCTION_PERCENT = 25;
         public static int CLASSAURA_CLERIC_CADENCE_MAX_STACKS = 3;
         public static int CLASSAURA_CLERIC_CADENCE_DURATION_IN_MS = 30000;
-        public static int CLASSAURA_CLERIC_HEAL_HASTE_PERCENT_PER_STACK = 1;
+        public static int CLASSAURA_CLERIC_HEAL_HASTE_PERCENT_PER_STACK = 2;
         public static int CLASSAURA_CLERIC_HEAL_HASTE_MAX_STACKS = 5;
         public static int CLASSAURA_CLERIC_HEAL_HASTE_DURATION_IN_MS = 20000;
 
         // Druid "Skin of the Wild"
         public static bool CLASSAURA_DRUID_ENABLED = true;
         public static int CLASSAURA_DRUID_SPELL_ICON_EQ_ID = 16;
-        public static int CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT = 20;
+        public static int CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT = 15;
         public static int CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS = 8000;
         public static int CLASSAURA_DRUID_DIRECT_HEAL_REGEN_TICK_INTERVAL_IN_MS = 2000;
         public static int CLASSAURA_DRUID_IMPAIRED_TARGET_DAMAGE_PERCENT = 10;
+        public static int CLASSAURA_DRUID_EXPOSURE_DAMAGE_PERCENT_PER_STACK = 1;
+        public static int CLASSAURA_DRUID_EXPOSURE_MAX_STACKS = 5;
+        public static int CLASSAURA_DRUID_EXPOSURE_DURATION_IN_MS = 30000;
 
         // Shaman "Spirit Channeler"
         public static bool CLASSAURA_SHAMAN_ENABLED = true;
         public static int CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID = 21;
-        public static int CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT = 5;
+        public static int CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT = 3;
         public static int CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT = 33;
         public static int CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS = 3000;
         public static int CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK = 1;
@@ -2452,7 +2455,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ, "Creatures in this level range will never enrage (taken from TAKP's mob_ai.cpp CheckEnrage), with 0 in both disabling this suppression", false);
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ, "");
             OutputVariableToConfig("CLASSAURA_ENABLED", CLASSAURA_ENABLED, "Every EQ class (primary or secondary) grants a permanent aura with class specific effects. Values here bake into Spell.dbc, so a change needs a converter regen and DBC deploy", false);
-            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96047 as of writing)", false);
+            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96050 as of writing)", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_ENABLED", CLASSAURA_ENCHANTER_ENABLED, "Enchanter \"Mind of Clarity\": regenerates a percent of maximum mana on an interval, and spell damage and healing are increased while mana is at or above a threshold", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID", CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT", CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT, "", false);
@@ -2464,9 +2467,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT", CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_MONK_ENABLED", CLASSAURA_MONK_ENABLED, "Monk", false);
             OutputVariableToConfig("CLASSAURA_MONK_SPELL_ICON_EQ_ID", CLASSAURA_MONK_SPELL_ICON_EQ_ID, "", false);
-            OutputVariableToConfig("CLASSAURA_MONK_LIGHT_ARMOR_HASTE_PERCENT", CLASSAURA_MONK_LIGHT_ARMOR_HASTE_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT", CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT", CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT", CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT, "", false);
-            OutputVariableToConfig("CLASSAURA_MONK_HEAVY_ARMOR_HASTE_PERCENT", CLASSAURA_MONK_HEAVY_ARMOR_HASTE_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT", CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_RANGER_ENABLED", CLASSAURA_RANGER_ENABLED, "Ranger", false);
             OutputVariableToConfig("CLASSAURA_RANGER_SPELL_ICON_EQ_ID", CLASSAURA_RANGER_SPELL_ICON_EQ_ID, "", false);
@@ -2489,15 +2492,15 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT", CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_ENABLED", CLASSAURA_SHADOWKNIGHT_ENABLED, "Shadow Knight", false);
             OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_SPELL_ICON_EQ_ID", CLASSAURA_SHADOWKNIGHT_SPELL_ICON_EQ_ID, "", false);
-            OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_PARRY_PERCENT", CLASSAURA_SHADOWKNIGHT_PARRY_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT", CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS", CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS", CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_WARRIOR_ENABLED", CLASSAURA_WARRIOR_ENABLED, "Warrior", false);
             OutputVariableToConfig("CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID", CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID, "", false);
-            OutputVariableToConfig("CLASSAURA_WARRIOR_MAX_HEALTH_PERCENT", CLASSAURA_WARRIOR_MAX_HEALTH_PERCENT, "", false);
-            OutputVariableToConfig("CLASSAURA_WARRIOR_DODGE_PERCENT", CLASSAURA_WARRIOR_DODGE_PERCENT, "", false);
-            OutputVariableToConfig("CLASSAURA_WARRIOR_DOUBLE_ATTACK_CHANCE_PERCENT", CLASSAURA_WARRIOR_DOUBLE_ATTACK_CHANCE_PERCENT, "", false);
-            OutputVariableToConfig("CLASSAURA_WARRIOR_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT", CLASSAURA_WARRIOR_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT, "Chance a double attack also becomes a triple attack", false);
+            OutputVariableToConfig("CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT", CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_WARRIOR_UNASSAILED_DELAY_IN_MS", CLASSAURA_WARRIOR_UNASSAILED_DELAY_IN_MS, "", false);
+            OutputVariableToConfig("CLASSAURA_WARRIOR_UNASSAILED_DAMAGE_PERCENT", CLASSAURA_WARRIOR_UNASSAILED_DAMAGE_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_WARRIOR_RIPOSTE_SPELL_VISUAL_ID", CLASSAURA_WARRIOR_RIPOSTE_SPELL_VISUAL_ID, "", false);
             OutputVariableToConfig("CLASSAURA_WIZARD_ENABLED", CLASSAURA_WIZARD_ENABLED, "Wizard", false);
             OutputVariableToConfig("CLASSAURA_WIZARD_SPELL_ICON_EQ_ID", CLASSAURA_WIZARD_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK", CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK, "", false);
@@ -2534,6 +2537,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS", CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_DRUID_DIRECT_HEAL_REGEN_TICK_INTERVAL_IN_MS", CLASSAURA_DRUID_DIRECT_HEAL_REGEN_TICK_INTERVAL_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_DRUID_IMPAIRED_TARGET_DAMAGE_PERCENT", CLASSAURA_DRUID_IMPAIRED_TARGET_DAMAGE_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_DRUID_EXPOSURE_DAMAGE_PERCENT_PER_STACK", CLASSAURA_DRUID_EXPOSURE_DAMAGE_PERCENT_PER_STACK, "", false);
+            OutputVariableToConfig("CLASSAURA_DRUID_EXPOSURE_MAX_STACKS", CLASSAURA_DRUID_EXPOSURE_MAX_STACKS, "", false);
+            OutputVariableToConfig("CLASSAURA_DRUID_EXPOSURE_DURATION_IN_MS", CLASSAURA_DRUID_EXPOSURE_DURATION_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_SHAMAN_ENABLED", CLASSAURA_SHAMAN_ENABLED, "Shaman", false);
             OutputVariableToConfig("CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID", CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT", CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT, "", false);
@@ -3174,9 +3180,9 @@ namespace EQWOWConverter
             CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT = ReadVariableFromConfigString("CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT", configValuesByVariableName, CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT);
             CLASSAURA_MONK_ENABLED = ReadVariableFromConfigString("CLASSAURA_MONK_ENABLED", configValuesByVariableName, CLASSAURA_MONK_ENABLED);
             CLASSAURA_MONK_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_MONK_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_MONK_SPELL_ICON_EQ_ID);
-            CLASSAURA_MONK_LIGHT_ARMOR_HASTE_PERCENT = ReadVariableFromConfigString("CLASSAURA_MONK_LIGHT_ARMOR_HASTE_PERCENT", configValuesByVariableName, CLASSAURA_MONK_LIGHT_ARMOR_HASTE_PERCENT);
+            CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT = ReadVariableFromConfigString("CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT", configValuesByVariableName, CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT);
+            CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT = ReadVariableFromConfigString("CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT", configValuesByVariableName, CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT);
             CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT = ReadVariableFromConfigString("CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT", configValuesByVariableName, CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT);
-            CLASSAURA_MONK_HEAVY_ARMOR_HASTE_PERCENT = ReadVariableFromConfigString("CLASSAURA_MONK_HEAVY_ARMOR_HASTE_PERCENT", configValuesByVariableName, CLASSAURA_MONK_HEAVY_ARMOR_HASTE_PERCENT);
             CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT = ReadVariableFromConfigString("CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT", configValuesByVariableName, CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT);
             CLASSAURA_RANGER_ENABLED = ReadVariableFromConfigString("CLASSAURA_RANGER_ENABLED", configValuesByVariableName, CLASSAURA_RANGER_ENABLED);
             CLASSAURA_RANGER_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_RANGER_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_RANGER_SPELL_ICON_EQ_ID);
@@ -3199,15 +3205,15 @@ namespace EQWOWConverter
             CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT = ReadVariableFromConfigString("CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT", configValuesByVariableName, CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT);
             CLASSAURA_SHADOWKNIGHT_ENABLED = ReadVariableFromConfigString("CLASSAURA_SHADOWKNIGHT_ENABLED", configValuesByVariableName, CLASSAURA_SHADOWKNIGHT_ENABLED);
             CLASSAURA_SHADOWKNIGHT_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_SHADOWKNIGHT_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_SHADOWKNIGHT_SPELL_ICON_EQ_ID);
-            CLASSAURA_SHADOWKNIGHT_PARRY_PERCENT = ReadVariableFromConfigString("CLASSAURA_SHADOWKNIGHT_PARRY_PERCENT", configValuesByVariableName, CLASSAURA_SHADOWKNIGHT_PARRY_PERCENT);
+            CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT = ReadVariableFromConfigString("CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT", configValuesByVariableName, CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT);
             CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS);
             CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS = ReadVariableFromConfigString("CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS", configValuesByVariableName, CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS);
             CLASSAURA_WARRIOR_ENABLED = ReadVariableFromConfigString("CLASSAURA_WARRIOR_ENABLED", configValuesByVariableName, CLASSAURA_WARRIOR_ENABLED);
             CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID);
-            CLASSAURA_WARRIOR_MAX_HEALTH_PERCENT = ReadVariableFromConfigString("CLASSAURA_WARRIOR_MAX_HEALTH_PERCENT", configValuesByVariableName, CLASSAURA_WARRIOR_MAX_HEALTH_PERCENT);
-            CLASSAURA_WARRIOR_DODGE_PERCENT = ReadVariableFromConfigString("CLASSAURA_WARRIOR_DODGE_PERCENT", configValuesByVariableName, CLASSAURA_WARRIOR_DODGE_PERCENT);
-            CLASSAURA_WARRIOR_DOUBLE_ATTACK_CHANCE_PERCENT = ReadVariableFromConfigString("CLASSAURA_WARRIOR_DOUBLE_ATTACK_CHANCE_PERCENT", configValuesByVariableName, CLASSAURA_WARRIOR_DOUBLE_ATTACK_CHANCE_PERCENT);
-            CLASSAURA_WARRIOR_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT = ReadVariableFromConfigString("CLASSAURA_WARRIOR_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT", configValuesByVariableName, CLASSAURA_WARRIOR_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT);
+            CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT = ReadVariableFromConfigString("CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT", configValuesByVariableName, CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT);
+            CLASSAURA_WARRIOR_UNASSAILED_DELAY_IN_MS = ReadVariableFromConfigString("CLASSAURA_WARRIOR_UNASSAILED_DELAY_IN_MS", configValuesByVariableName, CLASSAURA_WARRIOR_UNASSAILED_DELAY_IN_MS);
+            CLASSAURA_WARRIOR_UNASSAILED_DAMAGE_PERCENT = ReadVariableFromConfigString("CLASSAURA_WARRIOR_UNASSAILED_DAMAGE_PERCENT", configValuesByVariableName, CLASSAURA_WARRIOR_UNASSAILED_DAMAGE_PERCENT);
+            CLASSAURA_WARRIOR_RIPOSTE_SPELL_VISUAL_ID = ReadVariableFromConfigString("CLASSAURA_WARRIOR_RIPOSTE_SPELL_VISUAL_ID", configValuesByVariableName, CLASSAURA_WARRIOR_RIPOSTE_SPELL_VISUAL_ID);
             CLASSAURA_WIZARD_ENABLED = ReadVariableFromConfigString("CLASSAURA_WIZARD_ENABLED", configValuesByVariableName, CLASSAURA_WIZARD_ENABLED);
             CLASSAURA_WIZARD_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_WIZARD_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_WIZARD_SPELL_ICON_EQ_ID);
             CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK);
@@ -3244,6 +3250,9 @@ namespace EQWOWConverter
             CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS);
             CLASSAURA_DRUID_DIRECT_HEAL_REGEN_TICK_INTERVAL_IN_MS = ReadVariableFromConfigString("CLASSAURA_DRUID_DIRECT_HEAL_REGEN_TICK_INTERVAL_IN_MS", configValuesByVariableName, CLASSAURA_DRUID_DIRECT_HEAL_REGEN_TICK_INTERVAL_IN_MS);
             CLASSAURA_DRUID_IMPAIRED_TARGET_DAMAGE_PERCENT = ReadVariableFromConfigString("CLASSAURA_DRUID_IMPAIRED_TARGET_DAMAGE_PERCENT", configValuesByVariableName, CLASSAURA_DRUID_IMPAIRED_TARGET_DAMAGE_PERCENT);
+            CLASSAURA_DRUID_EXPOSURE_DAMAGE_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_DRUID_EXPOSURE_DAMAGE_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_DRUID_EXPOSURE_DAMAGE_PERCENT_PER_STACK);
+            CLASSAURA_DRUID_EXPOSURE_MAX_STACKS = ReadVariableFromConfigString("CLASSAURA_DRUID_EXPOSURE_MAX_STACKS", configValuesByVariableName, CLASSAURA_DRUID_EXPOSURE_MAX_STACKS);
+            CLASSAURA_DRUID_EXPOSURE_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_DRUID_EXPOSURE_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_DRUID_EXPOSURE_DURATION_IN_MS);
             CLASSAURA_SHAMAN_ENABLED = ReadVariableFromConfigString("CLASSAURA_SHAMAN_ENABLED", configValuesByVariableName, CLASSAURA_SHAMAN_ENABLED);
             CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID);
             CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT = ReadVariableFromConfigString("CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT", configValuesByVariableName, CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT);

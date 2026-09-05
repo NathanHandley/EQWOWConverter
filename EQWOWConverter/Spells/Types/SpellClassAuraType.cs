@@ -16,7 +16,7 @@
 
 namespace EQWOWConverter.Spells
 {
-    internal enum ClassAuraSpellType : int
+    internal enum SpellClassAuraType : int
     {
         EnchanterPassive = 0,
         EnchanterAura = 1,
@@ -66,6 +66,9 @@ namespace EQWOWConverter.Spells
         ShamanSlowMark = 45,
         ShamanVigor = 46,
         CastSpeedHelper = 47,
-        Count = 48
+        DruidExposure = 48,
+        WarriorUnassailed = 49,
+        WarriorRiposte = 50,
+        Count = 51
     }
 }
