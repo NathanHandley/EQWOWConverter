@@ -212,6 +212,13 @@ namespace EQWOWConverter
         // If true, a creature shows up in the EC tunnel that can teleport you to airplane and hateplane
         public static bool GENERANE_ENABLE_PLANES_TELEPORTATION = true;
 
+        // Creature templates whose model and size back the Norrath druid form options that a WoW druid can pick between (see DruidFormOption)
+        public static int GENERATE_DRUID_FORM_NORRATH_GRIZZLY_CREATURE_TEMPLATE_ID = 46716;
+        public static int GENERATE_DRUID_FORM_NORRATH_PANTHER_CREATURE_TEMPLATE_ID = 54632;
+        public static int GENERATE_DRUID_FORM_NORRATH_SABERTOOTH_CREATURE_TEMPLATE_ID = 52325;
+        public static int GENERATE_DRUID_FORM_NORRATH_LEOPARD_CREATURE_TEMPLATE_ID = 52637;
+        public static int GENERATE_DRUID_FORM_NORRATH_TREANT_CREATURE_TEMPLATE_ID = 49582;
+
         // If false, equipment is balanced to max level 60 and original levels are used. If true, use adjusted levels and zones/equip is balanced to 80
         // with Classic through 60, Kunark through 70, and Velious through 80. Zones will also have a smoother level curve if set to true (NYI)
         public static bool GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 = false;
@@ -1647,6 +1654,12 @@ namespace EQWOWConverter
 
         // ID for the (existing) SpellVisual.dbc row used by stock rogue Backstab
         public static int DBCID_SPELLVISUAL_BACKSTAB_ID = 155;
+
+        // IDs for the (existing) CreatureDisplayInfo.dbc rows of the stock WoW druid forms
+        public static int DBCID_CREATUREDISPLAYINFO_DRUID_BEAR_ALLIANCE_ID = 2281;
+        public static int DBCID_CREATUREDISPLAYINFO_DRUID_BEAR_HORDE_ID = 2289;
+        public static int DBCID_CREATUREDISPLAYINFO_DRUID_CAT_ALLIANCE_ID = 892;
+        public static int DBCID_CREATUREDISPLAYINFO_DRUID_CAT_HORDE_ID = 8571;
 
         // IDs for the (existing) Spell.dbc rows of the shapeshift forms that EQ spells are allowed to be cast in
         public static int DBCID_SPELL_MOONKIN_FORM_ID = 24858;

@@ -33,6 +33,100 @@ local DEFAULT_SHOW_CLASS_AURA_ICONS = true;
 local DEFAULT_SHOW_DISPEL_MESSAGE = false;
 local DEFAULT_DISPEL_COLOR = 0xFFAA00;
 
+-- What each druid shapeshift form can be turned into.  The values are the option IDs the server and the converter use, and the
+-- keywords are what ".eqdruidform" takes, so a click here is exactly the command a player could have typed.  Bear and cat have
+-- no "default" entry of their own: the server stores the faction's own look as the default and hands it back already resolved
+local DRUID_FORM_MENUS = {
+	{
+		settingKey = "druidFormBear",
+		formKeyword = "bear",
+		column = 1,
+		label = "Bear form",
+		tooltip = "What your Bear Form and Dire Bear Form look like.  Same as .eqdruidform bear",
+		choices = {
+			{ value = 1, keyword = "alliance", text = "Alliance Bear" },
+			{ value = 2, keyword = "horde", text = "Horde Bear" },
+			{ value = 3, keyword = "grizzly", text = "Norrath Grizzly" },
+		},
+	},
+	{
+		settingKey = "druidFormCat",
+		formKeyword = "cat",
+		column = 1,
+		label = "Cat form",
+		tooltip = "What your Cat Form looks like.  Same as .eqdruidform cat",
+		choices = {
+			{ value = 1, keyword = "alliance", text = "Alliance Cat" },
+			{ value = 2, keyword = "horde", text = "Horde Cat" },
+			{ value = 3, keyword = "panther", text = "Norrath Panther" },
+			{ value = 4, keyword = "sabertooth", text = "Norrath Sabertooth" },
+		},
+	},
+	{
+		settingKey = "druidFormTravel",
+		formKeyword = "travel",
+		column = 1,
+		label = "Travel form",
+		tooltip = "What your Travel Form looks like.  Same as .eqdruidform travel",
+		choices = {
+			{ value = 0, keyword = "cheetah", text = "Azeroth Cheetah" },
+			{ value = 1, keyword = "leopard", text = "Norrath Leopard" },
+		},
+	},
+	{
+		settingKey = "druidFormTree",
+		formKeyword = "tree",
+		column = 2,
+		label = "Tree of Life form",
+		tooltip = "What your Tree of Life form looks like.  Same as .eqdruidform tree",
+		choices = {
+			{ value = 0, keyword = "azeroth", text = "Azeroth Treant" },
+			{ value = 1, keyword = "norrath", text = "Norrath Treant" },
+		},
+	},
+	{
+		settingKey = "druidFormMoonkin",
+		formKeyword = "moonkin",
+		column = 2,
+		label = "Moonkin form",
+		tooltip = "Turning this off leaves you looking like yourself while in Moonkin Form.  Same as .eqdruidform moonkin",
+		choices = {
+			{ value = 0, keyword = "on", text = "Moonkin (default)" },
+			{ value = 1, keyword = "off", text = "No form graphic" },
+		},
+	},
+};
+
+local function EQ_Options_IsPlayerADruid()
+	local _, classFileName = UnitClass("player");
+	return classFileName == "DRUID";
+end
+
+-- The bear and cat look a character gets when they have never picked one, which is their own faction's
+local function EQ_Options_GetDefaultFactionFormValue()
+	if ( UnitFactionGroup("player") == "Horde" ) then
+		return 2;
+	end
+	return 1;
+end
+
+local function EQ_Options_GetDefaultDruidFormValue(settingKey)
+	if ( settingKey == "druidFormBear" or settingKey == "druidFormCat" ) then
+		return EQ_Options_GetDefaultFactionFormValue();
+	end
+	return 0;
+end
+
+-- A value the server sent that this addon has no entry for (an option added on a newer server) falls back to the first choice
+local function EQ_Options_GetDruidFormChoice(menu, value)
+	for _, choice in ipairs(menu.choices) do
+		if ( choice.value == value ) then
+			return choice;
+		end
+	end
+	return menu.choices[1];
+end
+
 -- What the server last told us this character is set to
 local serverValues = {
 	faceID = DEFAULT_FACE_ID,
@@ -42,6 +136,11 @@ local serverValues = {
 	hailWindow = DEFAULT_HAIL_WINDOW,
 	showDispelMessage = DEFAULT_SHOW_DISPEL_MESSAGE,
 	dispelColor = DEFAULT_DISPEL_COLOR,
+	druidFormBear = 1,
+	druidFormCat = 1,
+	druidFormTravel = 0,
+	druidFormTree = 0,
+	druidFormMoonkin = 0,
 };
 
 -- What the widgets are currently showing, which only reaches the server (or the saved variables) on Okay
@@ -106,6 +205,9 @@ local function EQ_Options_CopyServerValuesToPending()
 	pendingValues.showClassAuraIcons = EQ_Options_GetClientSettings().showClassAuraIcons;
 	pendingValues.showDispelMessage = serverValues.showDispelMessage;
 	pendingValues.dispelColor = serverValues.dispelColor;
+	for _, menu in ipairs(DRUID_FORM_MENUS) do
+		pendingValues[menu.settingKey] = serverValues[menu.settingKey];
+	end
 end
 
 EQ_Options_CopyServerValuesToPending();
@@ -118,8 +220,38 @@ local panel = CreateFrame("Frame", "EQOptionsPanel", InterfaceOptionsFramePanelC
 panel.name = "EverQuest";
 panel:Hide();
 
-local titleText = panel:CreateFontString("EQOptionsPanelTitle", "ARTWORK", "GameFontNormalLarge");
-titleText:SetPoint("TOPLEFT", panel, "TOPLEFT", 16, -16);
+-- The Interface Options panel is a fixed 413 x 428 (InterfaceOptionsFrame.xml sizes it off the category list), which is
+-- not quite enough for these settings plus the druid form dropdowns.  So everything below lives in a scroll frame and
+-- the page scrolls rather than running off the bottom, which also leaves room for whatever gets added next.
+local EQ_OPTIONS_SCROLLBAR_WIDTH = 26;
+local EQ_OPTIONS_CONTENT_HEIGHT = 480;
+
+local scrollFrame = CreateFrame("ScrollFrame", "EQOptionsScrollFrame", panel, "UIPanelScrollFrameTemplate");
+scrollFrame:SetPoint("TOPLEFT", panel, "TOPLEFT", 0, 0);
+scrollFrame:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -EQ_OPTIONS_SCROLLBAR_WIDTH, 4);
+
+-- Every widget hangs off this rather than off the panel, so they all move together when the page is scrolled
+local content = CreateFrame("Frame", "EQOptionsScrollChild", scrollFrame);
+content:SetWidth(1);
+content:SetHeight(EQ_OPTIONS_CONTENT_HEIGHT);
+scrollFrame:SetScrollChild(content);
+
+-- The scroll frame has no width until the options window sizes the panel, so the child is matched to it on the way in
+local function EQ_Options_UpdateScrollChildWidth()
+	local scrollWidth = scrollFrame:GetWidth();
+	if ( scrollWidth ~= nil and scrollWidth > 0 ) then
+		content:SetWidth(scrollWidth);
+	end
+end
+panel:SetScript("OnShow", EQ_Options_UpdateScrollChildWidth);
+
+-- The panel is anchored to the container before it is shown, but a frame sized only by its anchors resolves late, so the
+-- size change is followed as well rather than trusting the one reading taken in OnShow
+scrollFrame:SetScript("OnSizeChanged", EQ_Options_UpdateScrollChildWidth);
+EQ_Options_UpdateScrollChildWidth();
+
+local titleText = content:CreateFontString("EQOptionsPanelTitle", "ARTWORK", "GameFontNormalLarge");
+titleText:SetPoint("TOPLEFT", content, "TOPLEFT", 16, -16);
 titleText:SetText("EverQuest");
 
 local function EQ_Options_Widget_OnEnter(self)
@@ -141,7 +273,7 @@ end
 -- Check buttons -------------------------------------------------------------------
 
 local function EQ_Options_CreateCheckButton(name, anchorTo, offsetY, labelText, tooltipDescription)
-	local checkButton = CreateFrame("CheckButton", name, panel, "OptionsCheckButtonTemplate");
+	local checkButton = CreateFrame("CheckButton", name, content, "OptionsCheckButtonTemplate");
 	checkButton:SetPoint("TOPLEFT", anchorTo, "BOTTOMLEFT", 0, offsetY);
 	local checkButtonText = _G[name .. "Text"];
 	if ( checkButtonText ~= nil ) then
@@ -201,13 +333,13 @@ local dispelMessageCheckButton = EQ_Options_CreateCheckButton("EQOptionsDispelMe
 
 -- Dispel message color ------------------------------------------------------------
 
-local dispelColorLabel = panel:CreateFontString("EQOptionsDispelColorLabel", "ARTWORK", "GameFontNormal");
+local dispelColorLabel = content:CreateFontString("EQOptionsDispelColorLabel", "ARTWORK", "GameFontNormal");
 dispelColorLabel:SetPoint("TOPLEFT", dispelMessageCheckButton, "BOTTOMLEFT", 30, -8);
 dispelColorLabel:SetText("Message color");
 
 -- Built the same way the chat settings build theirs: a white square behind the stock swatch art, which is
 -- what actually carries the color by way of its vertex color
-local dispelColorSwatch = CreateFrame("Button", "EQOptionsDispelColorSwatch", panel);
+local dispelColorSwatch = CreateFrame("Button", "EQOptionsDispelColorSwatch", content);
 dispelColorSwatch:SetSize(16, 16);
 dispelColorSwatch:SetPoint("LEFT", dispelColorLabel, "RIGHT", 10, 0);
 dispelColorSwatch.eqTooltipTitle = "Message color";
@@ -222,7 +354,7 @@ dispelColorSwatchBg:SetTexture(1, 1, 1);
 
 dispelColorSwatch:SetNormalTexture("Interface\\ChatFrame\\ChatFrameColorSwatch");
 
-local dispelColorSample = panel:CreateFontString("EQOptionsDispelColorSample", "ARTWORK", "GameFontNormal");
+local dispelColorSample = content:CreateFontString("EQOptionsDispelColorSample", "ARTWORK", "GameFontNormal");
 dispelColorSample:SetPoint("LEFT", dispelColorSwatch, "RIGHT", 12, 0);
 dispelColorSample:SetText("Your Spell has been dispelled.");
 
@@ -276,7 +408,7 @@ end);
 
 -- Illusion face -------------------------------------------------------------------
 
-local faceSlider = CreateFrame("Slider", "EQOptionsFaceSlider", panel, "OptionsSliderTemplate");
+local faceSlider = CreateFrame("Slider", "EQOptionsFaceSlider", content, "OptionsSliderTemplate");
 faceSlider:SetPoint("TOPLEFT", dispelColorLabel, "BOTTOMLEFT", 0, -36);
 faceSlider:SetWidth(240);
 faceSlider:SetMinMaxValues(0, 1);
@@ -295,9 +427,110 @@ faceSlider:SetScript("OnValueChanged", function(self, value)
 	_G["EQOptionsFaceSliderText"]:SetText("Illusion face: " .. faceID);
 end);
 
-local waitingText = panel:CreateFontString("EQOptionsWaitingText", "ARTWORK", "GameFontRedSmall");
+-- Druid form looks ----------------------------------------------------------------
+
+-- These go under everything else, in two columns, and the whole block is simply absent for anyone who is not a
+-- WoW druid and so has no shapeshift forms to dress.  The gap below the slider clears the waiting-on-the-server line
+local DRUID_FORM_COLUMN_WIDTH = 140;
+local DRUID_FORM_COLUMN_SPACING = 190;
+
+local druidFormHeader = content:CreateFontString("EQOptionsDruidFormHeader", "ARTWORK", "GameFontNormal");
+druidFormHeader:SetPoint("TOPLEFT", faceSlider, "BOTTOMLEFT", -30, -34);
+druidFormHeader:SetText("Druid form looks");
+
+local druidFormDropDowns = {};
+
+-- UIDropDownMenu_AddButton copies only a fixed set of fields from the info table onto the button it builds, so a
+-- custom key put on the info table is simply gone by the time this runs.  arg1 is one of the fields that does carry
+-- over, and UIDropDownMenuButton_OnClick passes it as the second argument
+local function EQ_Options_DruidFormDropDown_OnClick(self, dropDown)
+	if ( dropDown == nil ) then
+		return;
+	end
+	pendingValues[dropDown.eqMenu.settingKey] = self.value;
+	UIDropDownMenu_SetSelectedValue(dropDown, self.value);
+	UIDropDownMenu_SetText(dropDown, EQ_Options_GetDruidFormChoice(dropDown.eqMenu, self.value).text);
+end
+
+local function EQ_Options_DruidFormDropDown_Initialize(self)
+	for _, choice in ipairs(self.eqMenu.choices) do
+		local info = UIDropDownMenu_CreateInfo();
+		info.text = choice.text;
+		info.value = choice.value;
+		info.func = EQ_Options_DruidFormDropDown_OnClick;
+		info.arg1 = self;
+		info.checked = (pendingValues[self.eqMenu.settingKey] == choice.value);
+		UIDropDownMenu_AddButton(info);
+	end
+end
+
+-- The last dropdown placed in each column, which the next one in that column hangs off of
+local previousDruidFormAnchorByColumn = {};
+for menuIndex, menu in ipairs(DRUID_FORM_MENUS) do
+	local dropDownName = "EQOptionsDruidForm" .. menu.formKeyword .. "DropDown";
+	local dropDown = CreateFrame("Frame", dropDownName, content, "UIDropDownMenuTemplate");
+	-- The -16 undoes the dropdown template's own left padding, so the box lines up with the settings above it
+	local previousInColumn = previousDruidFormAnchorByColumn[menu.column];
+	if ( previousInColumn == nil ) then
+		dropDown:SetPoint("TOPLEFT", druidFormHeader, "BOTTOMLEFT", -16 + ((menu.column - 1) * DRUID_FORM_COLUMN_SPACING), -20);
+	else
+		dropDown:SetPoint("TOPLEFT", previousInColumn, "BOTTOMLEFT", 0, -12);
+	end
+	previousDruidFormAnchorByColumn[menu.column] = dropDown;
+	dropDown.eqMenu = menu;
+
+	local dropDownLabel = content:CreateFontString(dropDownName .. "Label", "ARTWORK", "GameFontNormalSmall");
+	dropDownLabel:SetPoint("BOTTOMLEFT", dropDown, "TOPLEFT", 20, 2);
+	dropDownLabel:SetText(menu.label);
+
+	-- The dropdown itself swallows mouse events, so the tooltip hangs off the button inside it that the player actually points at
+	local dropDownButton = _G[dropDownName .. "Button"];
+	if ( dropDownButton ~= nil ) then
+		dropDownButton.eqTooltipTitle = menu.label;
+		dropDownButton.eqTooltipDescription = menu.tooltip;
+		dropDownButton:HookScript("OnEnter", EQ_Options_Widget_OnEnter);
+		dropDownButton:HookScript("OnLeave", EQ_Options_Widget_OnLeave);
+	end
+
+	UIDropDownMenu_SetWidth(dropDown, DRUID_FORM_COLUMN_WIDTH);
+
+	-- UIDropDownMenuTemplate anchors $parentText with a y offset of 2, which leaves the selection sitting slightly
+	-- above the middle of the box.  Re-anchoring it at 0 centers it
+	local dropDownText = _G[dropDownName .. "Text"];
+	local dropDownRight = _G[dropDownName .. "Right"];
+	if ( dropDownText ~= nil and dropDownRight ~= nil ) then
+		dropDownText:ClearAllPoints();
+		dropDownText:SetPoint("RIGHT", dropDownRight, "RIGHT", -43, 0);
+	end
+	UIDropDownMenu_Initialize(dropDown, EQ_Options_DruidFormDropDown_Initialize);
+	druidFormDropDowns[menuIndex] = dropDown;
+	dropDown.eqLabel = dropDownLabel;
+end
+
+local function EQ_Options_RefreshDruidFormPanel()
+	local isDruid = EQ_Options_IsPlayerADruid();
+	if ( isDruid == true ) then
+		druidFormHeader:Show();
+	else
+		druidFormHeader:Hide();
+	end
+	for _, dropDown in ipairs(druidFormDropDowns) do
+		if ( isDruid == true ) then
+			local value = pendingValues[dropDown.eqMenu.settingKey];
+			UIDropDownMenu_SetSelectedValue(dropDown, value);
+			UIDropDownMenu_SetText(dropDown, EQ_Options_GetDruidFormChoice(dropDown.eqMenu, value).text);
+			dropDown:Show();
+			dropDown.eqLabel:Show();
+		else
+			dropDown:Hide();
+			dropDown.eqLabel:Hide();
+		end
+	end
+end
+
+local waitingText = content:CreateFontString("EQOptionsWaitingText", "ARTWORK", "GameFontRedSmall");
 waitingText:SetPoint("TOPLEFT", faceSlider, "BOTTOMLEFT", 0, -14);
-waitingText:SetWidth(380);
+waitingText:SetWidth(330);
 waitingText:SetJustifyH("LEFT");
 waitingText:SetText("Waiting on the server for this character's current settings.");
 waitingText:Hide();
@@ -314,6 +547,7 @@ local function EQ_Options_RefreshPanel()
 	dispelMessageCheckButton:SetChecked(pendingValues.showDispelMessage);
 	EQ_Options_RefreshDispelColorDisplay();
 	EQ_Options_RefreshDispelColorEnabled();
+	EQ_Options_RefreshDruidFormPanel();
 
 	-- A server that reported no illusion faces at all leaves nothing to pick between
 	local maxFaceID = serverValues.maxFaceID;
@@ -377,6 +611,14 @@ function panel.okay()
 	if ( pendingValues.faceID ~= serverValues.faceID ) then
 		EQ_Options_SendCommand(".eqface " .. pendingValues.faceID);
 	end
+	if ( EQ_Options_IsPlayerADruid() == true ) then
+		for _, menu in ipairs(DRUID_FORM_MENUS) do
+			local pendingValue = pendingValues[menu.settingKey];
+			if ( pendingValue ~= serverValues[menu.settingKey] ) then
+				EQ_Options_SendCommand(".eqdruidform " .. menu.formKeyword .. " " .. EQ_Options_GetDruidFormChoice(menu, pendingValue).keyword);
+			end
+		end
+	end
 
 	-- Nothing is written here.  The server echoes the accepted values back under EQOPTIONS, and that is what
 	-- moves serverValues forward, so a command the server turned down leaves the page showing the truth
@@ -396,6 +638,9 @@ function panel.default()
 	pendingValues.showClassAuraIcons = DEFAULT_SHOW_CLASS_AURA_ICONS;
 	pendingValues.showDispelMessage = DEFAULT_SHOW_DISPEL_MESSAGE;
 	pendingValues.dispelColor = DEFAULT_DISPEL_COLOR;
+	for _, menu in ipairs(DRUID_FORM_MENUS) do
+		pendingValues[menu.settingKey] = EQ_Options_GetDefaultDruidFormValue(menu.settingKey);
+	end
 	defaultsJustApplied = true;
 	EQ_Options_RefreshPanel();
 end
@@ -521,6 +766,15 @@ function EQ_Options_HandlePayload(payload)
 	serverValues.hailWindow = (fields[5] == "1");
 	serverValues.showDispelMessage = (fields[6] == "1");
 	serverValues.dispelColor = tonumber(fields[7], 16) or DEFAULT_DISPEL_COLOR;
+
+	-- A server from before the druid form settings existed sends only the first seven fields, so those keep their defaults
+	for menuIndex, menu in ipairs(DRUID_FORM_MENUS) do
+		local value = tonumber(fields[7 + menuIndex]);
+		if ( value == nil ) then
+			value = EQ_Options_GetDefaultDruidFormValue(menu.settingKey);
+		end
+		serverValues[menu.settingKey] = value;
+	end
 	haveServerValues = true;
 
 	-- A push that lands while the page is open is the server's answer to something that was just done there,

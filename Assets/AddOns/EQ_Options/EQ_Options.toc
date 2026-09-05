@@ -1,7 +1,7 @@
 ## Interface: 30300
 ## Title: EQ Options
 ## Notes: Adds an "EverQuest" page to the Interface Options window for the per character EverQuest settings that are otherwise typed as chat commands
-## Version: 1.1
+## Version: 1.4
 ## SavedVariablesPerCharacter: EQ_OptionsDB
 
 EQ_Options.lua

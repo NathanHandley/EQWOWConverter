@@ -276574,3 +276574,6 @@ AreaTriggerID|dungeon~8333|9139
 AreaTriggerID|raidlow~8334|9140
 AreaTriggerID|dungeon~8334|9141
 SpellRadiusID|6|106
+CreatureModelDataID|tamedpetsilent~64~2~0~0~0~0~1|10184
+CreatureDisplayInfoID|tamedpetsilent~64~2~0~0~0~0~1|63603
+CreatureSoundDataID|tamedpetsilent~64~2~0~0~0~0~1|7703

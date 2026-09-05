@@ -92,6 +92,7 @@ namespace EQWOWConverter
         private ModEverquestCreaturePresenceGroupSQL modEverquestCreaturePresenceGroupSQL = new ModEverquestCreaturePresenceGroupSQL();
         private ModEverquestCreatureMovementSoundSQL modEverquestCreatureMovementSoundSQL = new ModEverquestCreatureMovementSoundSQL();
         private ModEverquestPetSilentDisplaySQL modEverquestPetSilentDisplaySQL = new ModEverquestPetSilentDisplaySQL();
+        private ModEverquestDruidFormDisplaySQL modEverquestDruidFormDisplaySQL = new ModEverquestDruidFormDisplaySQL();
         private ModEverquestCreatureSpawnPointSQL modEverquestCreatureSpawnPointSQL = new ModEverquestCreatureSpawnPointSQL();
         private ModEverquestCreatureWaypointSQL modEverquestCreatureWaypointSQL = new ModEverquestCreatureWaypointSQL();
         private ModEverquestFactionSQL modEverquestFactionSQL = new ModEverquestFactionSQL();
@@ -1350,6 +1351,33 @@ namespace EQWOWConverter
                     if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true)
                         AddCreatureMovementSoundRowIfNeeded(creatureModelTemplate, creatureModelTemplate.DBCSilentTamedPetCreatureDisplayID);
                 }
+            }
+
+            Dictionary<int, CreatureTemplate> creatureTemplatesByWOWIDForDruidForms = CreatureTemplate.GetCreatureTemplateListByWOWID();
+            foreach (CreatureDruidFormOption druidFormOption in CreatureDruidFormOption.GetOptions())
+            {
+                if (druidFormOption.CreatureTemplateID == 0)
+                {
+                    modEverquestDruidFormDisplaySQL.AddRow(Convert.ToInt32(druidFormOption.FormType), druidFormOption.OptionID, druidFormOption.WOWDisplayID, 1f);
+                    continue;
+                }
+                if (creatureTemplatesByWOWIDForDruidForms.ContainsKey(druidFormOption.CreatureTemplateID) == false)
+                {
+                    Logger.WriteError(string.Concat("Druid form option ", druidFormOption.OptionID.ToString(), " of form type ", druidFormOption.FormType.ToString(),
+                        " names creature template ID ", druidFormOption.CreatureTemplateID.ToString(), " which does not exist, so that option will be unselectable"));
+                    continue;
+                }
+                CreatureTemplate druidFormCreatureTemplate = creatureTemplatesByWOWIDForDruidForms[druidFormOption.CreatureTemplateID];
+                if (druidFormCreatureTemplate.ModelTemplate == null)
+                {
+                    Logger.WriteError(string.Concat("Druid form option ", druidFormOption.OptionID.ToString(), " of form type ", druidFormOption.FormType.ToString(),
+                        " names creature template ID ", druidFormOption.CreatureTemplateID.ToString(), " which has no model template, so that option will be unselectable"));
+                    continue;
+                }
+
+                // A race with no walking sound writes no CreatureSoundData row at all and so already has nothing to silence
+                int druidFormDisplayID = druidFormCreatureTemplate.ModelTemplate.DoGenerateSilentTamedPetVersion() == true ? druidFormCreatureTemplate.ModelTemplate.DBCSilentTamedPetCreatureDisplayID : druidFormCreatureTemplate.ModelTemplate.DBCCreatureDisplayID;
+                modEverquestDruidFormDisplaySQL.AddRow(Convert.ToInt32(druidFormOption.FormType), druidFormOption.OptionID, druidFormDisplayID, druidFormCreatureTemplate.GetWorldSpawnScale());
             }
             
             // Azeroth creatures for teleports
@@ -3606,6 +3634,7 @@ namespace EQWOWConverter
             modEverquestCreaturePresenceGroupSQL.SaveToDisk("mod_everquest_creature_presence_group", SQLFileType.World);
             modEverquestCreatureMovementSoundSQL.SaveToDisk("mod_everquest_creature_movement_sound", SQLFileType.World);
             modEverquestPetSilentDisplaySQL.SaveToDisk("mod_everquest_pet_silent_display", SQLFileType.World);
+            modEverquestDruidFormDisplaySQL.SaveToDisk("mod_everquest_druid_form_display", SQLFileType.World);
             modEverquestCreatureSpawnPointSQL.SaveToDisk("mod_everquest_creature_spawn_point", SQLFileType.World);
             modEverquestCreatureWaypointSQL.SaveToDisk("mod_everquest_creature_waypoint", SQLFileType.World);
             modEverquestFactionSQL.SaveToDisk("mod_everquest_faction", SQLFileType.World);

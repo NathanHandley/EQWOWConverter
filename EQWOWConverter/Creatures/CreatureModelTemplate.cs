@@ -163,6 +163,23 @@ namespace EQWOWConverter.Creatures
             return DBCSilentTamedPetCreatureDisplayID != 0;
         }
 
+        public void EnsureSilentFidgetAltIDsGenerated()
+        {
+            if (DBCSilentTamedPetCreatureDisplayID != 0)
+                return;
+            if (IsCompanionPetVersion == true)
+                return;
+            if (Race.SoundWalkingName.Trim().Length == 0)
+                return;
+
+            string raceIDString = Race.ID.ToString();
+            string genderIDString = Convert.ToInt32(GenderType).ToString();
+            string scaleString = ModelTemplateScale.ToString(CultureInfo.InvariantCulture);
+            DBCSilentTamedPetCreatureModelDataID = IDGenerationTool.GenerateID("CreatureModelDataID", "tamedpetsilent", raceIDString, genderIDString, HelmTextureIndex.ToString(), TextureIndex.ToString(), FaceIndex.ToString(), ColorTintID.ToString(), scaleString);
+            DBCSilentTamedPetCreatureDisplayID = IDGenerationTool.GenerateID("CreatureDisplayInfoID", "tamedpetsilent", raceIDString, genderIDString, HelmTextureIndex.ToString(), TextureIndex.ToString(), FaceIndex.ToString(), ColorTintID.ToString(), scaleString);
+            DBCSilentTamedPetCreatureSoundDataID = IDGenerationTool.GenerateID("CreatureSoundDataID", "tamedpetsilent", raceIDString, genderIDString, HelmTextureIndex.ToString(), TextureIndex.ToString(), FaceIndex.ToString(), ColorTintID.ToString(), scaleString);
+        }
+
         public bool DoPlayFidgetSounds()
         {
             // Forms that a player controls (illusions and summoned pets) stay quiet while idle
@@ -282,6 +299,7 @@ namespace EQWOWConverter.Creatures
         {
             // Clear the old list
             AllTemplatesByRaceID.Clear();
+            HashSet<int> druidFormCreatureTemplateIDs = CreatureDruidFormOption.GetCreatureTemplateIDs();
 
             // Generate model templates in response to creature templates
             foreach(CreatureTemplate creatureTemplate in creatureTemplates)
@@ -291,6 +309,10 @@ namespace EQWOWConverter.Creatures
                     creatureTemplate.ColorTintID, creatureTemplate.ModelTemplateScale, creatureTemplate.IsCompanionPet, creatureTemplate.IsIllusionForm,
                     creatureTemplate.IsPet);
                 creatureTemplate.ModelTemplate = curModelTemplate;
+
+                // A druid in one of the Norrath forms wears this creature's display, and a player worn form plays no fidget sounds
+                if (druidFormCreatureTemplateIDs.Contains(creatureTemplate.WOWCreatureTemplateID) == true)
+                    curModelTemplate.EnsureSilentFidgetAltIDsGenerated();
 
                 // Track how small this model ever spawns, since the click box has to stay usable for the smallest creature having it
                 if (creatureTemplate.IsCompanionPet == false)
