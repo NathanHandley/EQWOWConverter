@@ -346,6 +346,10 @@ namespace EQWOWConverter
             if (Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true)
                 AdjustDeathKnightSpellsForLowLevelPlay();
 
+            // A few stock class abilities were first taught above level 60, which puts them out of reach on a level 60 capped server
+            if (Configuration.PLAYER_REDUCE_CORE_POST_60_ABILITIES_TO_60 == true)
+                AdjustCorePost60AbilitiesToLevel60();
+
             // EQ classes use weapons WoW Shaman don't, so the weapon-gated shaman abilities need to work for all weapon types
             AdjustShamanWeaponAbilitiesForAllWeaponTypes();
 
@@ -1317,6 +1321,12 @@ namespace EQWOWConverter
             spellDBC.RemoveEquippedItemSubClassRequirementForSpellID(51530); // Maelstrom Weapon (rank 3)
             spellDBC.RemoveEquippedItemSubClassRequirementForSpellID(51531); // Maelstrom Weapon (rank 4)
             spellDBC.RemoveEquippedItemSubClassRequirementForSpellID(51532); // Maelstrom Weapon (rank 5)
+        }
+
+        private void AdjustCorePost60AbilitiesToLevel60()
+        {
+            foreach (int spellID in SpellCorePostSixtyAbility.GetReducedFirstRankSpellIDs())
+                spellDBC.SetMinimumUseLevelForSpellID(spellID, SpellCorePostSixtyAbility.REDUCED_TO_LEVEL);
         }
 
         private void AdjustDeathKnightSpellsForLowLevelPlay()

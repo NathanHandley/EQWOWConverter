@@ -219,6 +219,8 @@ internal class Program
                 if (Configuration.PLAYER_USE_EQ_START_LOCATION == false)
                     Logger.WriteWarning("- Having PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES = true and PLAYER_USE_EQ_START_LOCATION = false will cause DKs to get 'stuck' at creation");
             }
+            if (Configuration.PLAYER_REDUCE_CORE_POST_60_ABILITIES_TO_60 == true)
+                Logger.WriteInfo("- PLAYER_REDUCE_CORE_POST_60_ABILITIES_TO_60 is true, so the first rank of the stock class abilities taught above level 60 moves to 60");
             Logger.WriteInfo("- DUNGEON_FINDER_ENABLED is set to ", Configuration.DUNGEON_FINDER_ENABLED.ToString());
             Logger.WriteInfo(" - DUNGEON_RAID_LOW_INSTANCES_ENABLED is set to ", Configuration.DUNGEON_RAID_LOW_INSTANCES_ENABLED.ToString());
             Logger.WriteInfo("- DUNGEON_INSTANCES_ENABLED is set to ", Configuration.DUNGEON_INSTANCES_ENABLED.ToString());

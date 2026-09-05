@@ -26,6 +26,12 @@ namespace EQWOWConverter.WOWFiles
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("DELETE FROM `trainer_spell` WHERE `TrainerId` >= " + Configuration.SQL_TRAINER_ID_START.ToString() + " AND `TrainerId` <= " + Configuration.SQL_TRAINER_ID_END + ";");
+            if (Configuration.PLAYER_REDUCE_CORE_POST_60_ABILITIES_TO_60 == true)
+            {
+                stringBuilder.Append("UPDATE `trainer_spell` SET `ReqLevel` = " + SpellCorePostSixtyAbility.REDUCED_TO_LEVEL.ToString());
+                stringBuilder.Append(" WHERE `SpellId` IN (" + string.Join(",", SpellCorePostSixtyAbility.GetReducedFirstRankSpellIDs()) + ")");
+                stringBuilder.AppendLine(" AND `ReqLevel` > " + SpellCorePostSixtyAbility.REDUCED_TO_LEVEL.ToString() + ";");
+            }
             return stringBuilder.ToString();
         }
 

@@ -120,6 +120,11 @@ namespace EQWOWConverter.Spells
                     curTrainerClassAbility.ReqSkillRank = int.Parse(columns["ReqSkillRank"]);
                     curTrainerClassAbility.ReqLevel = int.Parse(columns["ReqLevel"]);
                     curTrainerClassAbility.ReqSpellID = int.Parse(columns["ReqSpellID"]);
+
+                    // A level 60 capped server can never reach the abilities that were first taught above 60, so those get sold at 60 instead
+                    if (Configuration.PLAYER_REDUCE_CORE_POST_60_ABILITIES_TO_60 == true && curTrainerClassAbility.ReqLevel > SpellCorePostSixtyAbility.REDUCED_TO_LEVEL && SpellCorePostSixtyAbility.IsReducedFirstRankSpellID(curTrainerClassAbility.SpellID) == true)
+                        curTrainerClassAbility.ReqLevel = SpellCorePostSixtyAbility.REDUCED_TO_LEVEL;
+
                     if (ClassTrainerAbilitiesByClassType.ContainsKey(curTrainerClassAbility.ClassType) == false)
                         ClassTrainerAbilitiesByClassType.Add(curTrainerClassAbility.ClassType, new List<SpellTrainerAbility>());
                     ClassTrainerAbilitiesByClassType[curTrainerClassAbility.ClassType].Add(curTrainerClassAbility);

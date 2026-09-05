@@ -256,6 +256,9 @@ namespace EQWOWConverter
         // Warning: This should only be done if you plan to use EQ start locations, otherwise you'll just be 'stuck' as a level 1 in a hard area
         public static bool PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES = true;
 
+        // If true, the first rank of the stock WOW class abilities that were taught above level 60 is pulled down to level 60
+        public static bool PLAYER_REDUCE_CORE_POST_60_ABILITIES_TO_60 = true;
+
         // Warrior, Rogue, and DeathKnight are missing spell stat data, and this is the donor class ID to fill it with
         public static int PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID = 9;
 
@@ -1944,6 +1947,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START", PLAYER_ADD_CUSTOM_BIND_AND_GATE_ON_START, "If true, players start with a bind and gate spell regardless of class (with no costs)");
             OutputTextLineToConfig("# If true, DeathKnights will start at level 1 and not be locked to the starter area (and comes with runeforging)");
             OutputVariableToConfig("PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES", PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES, "Warning: This should only be done if you plan to use EQ start locations, otherwise you'll just be 'stuck' as a level 1 in a hard area");
+            OutputVariableToConfig("PLAYER_REDUCE_CORE_POST_60_ABILITIES_TO_60", PLAYER_REDUCE_CORE_POST_60_ABILITIES_TO_60, "If true, the first rank of the stock WOW class abilities that were taught above level 60 is pulled down to level 60");
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_SHIELDS_ON_ALL_CLASSES, "If true, all wow classes will gain access to the related skills from level 1, per class alignments in PlayerClassMappings.csv", false);
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_ALIGNED_ARMOR_TYPE_ON_ALL_CLASSES, "", false);
             OutputVariableToConfig("PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES", PLAYER_SKILL_ENABLE_ALIGNED_MELEE_WEAPON_SKILLS_ON_ALL_CLASSES, "", false);
@@ -2715,6 +2719,7 @@ namespace EQWOWConverter
             PLAYER_ADD_MISSING_ALL_CLASS_RACIAL_ABILITIES = ReadVariableFromConfigString("PLAYER_ADD_MISSING_ALL_CLASS_RACIAL_ABILITIES", configValuesByVariableName, PLAYER_ADD_MISSING_ALL_CLASS_RACIAL_ABILITIES);
             PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS = ReadVariableFromConfigString("PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS", configValuesByVariableName, PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS);
             PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES = ReadVariableFromConfigString("PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES", configValuesByVariableName, PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES);
+            PLAYER_REDUCE_CORE_POST_60_ABILITIES_TO_60 = ReadVariableFromConfigString("PLAYER_REDUCE_CORE_POST_60_ABILITIES_TO_60", configValuesByVariableName, PLAYER_REDUCE_CORE_POST_60_ABILITIES_TO_60);
             PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID = ReadVariableFromConfigString("PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID", configValuesByVariableName, PLAYER_STAT_GAMETABLE_FILL_DONOR_CLASS_ID);
             PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID = ReadVariableFromConfigString("PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID", configValuesByVariableName, PLAYER_STAT_BASEMANA_FILL_DONOR_CLASS_ID);
 
