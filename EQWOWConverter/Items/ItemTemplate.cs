@@ -523,6 +523,28 @@ namespace EQWOWConverter.Items
             return calculatedStat;
         }
 
+
+        private static float GetConvertedStatInArmorTypeContext(ItemWOWInventoryType itemSlot, string statName, float eqStatValue, int classID, int subClassID)
+        {
+            float chosenValue = -1;
+            if (classID == 4 && subClassID == (int)ItemWOWArmorSubclassType.Cloth)
+                chosenValue = GetConvertedEqToWowStat(itemSlot, string.Concat(statName, "Cloth"), eqStatValue);
+            else if (classID == 4 && subClassID == (int)ItemWOWArmorSubclassType.Leather)
+                chosenValue = GetConvertedEqToWowStat(itemSlot, string.Concat(statName, "Leather"), eqStatValue);
+            else if (classID == 4 && subClassID == (int)ItemWOWArmorSubclassType.Mail)
+                chosenValue = GetConvertedEqToWowStat(itemSlot, string.Concat(statName, "Mail"), eqStatValue);
+            else if (classID == 4 && subClassID == (int)ItemWOWArmorSubclassType.Plate)
+                chosenValue = GetConvertedEqToWowStat(itemSlot, string.Concat(statName, "Plate"), eqStatValue);
+            else
+                chosenValue = GetConvertedEqToWowStat(itemSlot, string.Concat(statName, "NonArmor"), eqStatValue);
+
+            // Fallback
+            if (chosenValue < -0.99f && chosenValue > -1.01f)
+                chosenValue = GetConvertedEqToWowStat(itemSlot, string.Concat(statName, "NonArmor"), eqStatValue);
+            
+            return chosenValue;
+        }
+
         private static void PopulateStats(ref ItemTemplate itemTemplate, ItemWOWInventoryType itemSlot, int classID, int subClassID, 
             int classMask, int eqArmorClass, int eqStrength, int eqAgility, int eqCharisma, int eqDexterity, int eqIntelligence, 
             int eqStamina, int eqWisdom, int eqHp, int eqMana, int eqResistPoison, int eqResistMagic, int eqResistDisease, int eqResistFire, 
@@ -534,19 +556,19 @@ namespace EQWOWConverter.Items
             itemTemplate.ItemLevel = CalculateItemLevel(itemSlot, classID, eqArmorClass, eqStrength, eqAgility, eqCharisma, eqDexterity, eqIntelligence, eqStamina, eqWisdom, 
                 eqHp, eqMana, eqResistPoison, eqResistMagic, eqResistDisease, eqResistFire, eqResistCold, damage, delay);
 
-            // Armor Class (can't process negatives for armor)
+            // Armor Class
             if (eqArmorClass > 0)
-                itemTemplate.Armor = Math.Max(Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Ac", eqArmorClass)), 0);
+                itemTemplate.Armor = Math.Min((int)GetConvertedStatInArmorTypeContext(itemSlot, "Ac", eqArmorClass, classID, subClassID), 0);
 
             // In the case of all stats being > 0 and all set the same, use the highest of the types and spread out
             if (eqStrength > 0 && (eqStrength == eqAgility && eqStrength == eqCharisma && eqStrength == eqDexterity &&
                 eqStrength == eqIntelligence && eqStrength == eqStamina && eqStrength == eqWisdom))
             {
                 // Skip Stamina, since that's always higher in WoW values
-                float highestValue = GetConvertedEqToWowStat(itemSlot, "Str", eqStrength);
-                highestValue = MathF.Max(highestValue, GetConvertedEqToWowStat(itemSlot, "Agi", eqAgility));
-                highestValue = MathF.Max(highestValue, GetConvertedEqToWowStat(itemSlot, "Int", eqIntelligence));
-                highestValue = MathF.Max(highestValue, GetConvertedEqToWowStat(itemSlot, "Spr", eqWisdom));
+                float highestValue = MathF.Min(GetConvertedStatInArmorTypeContext(itemSlot, "Str", eqStrength, classID, subClassID), 0);
+                highestValue = MathF.Max(highestValue, GetConvertedStatInArmorTypeContext(itemSlot, "Agi", eqAgility, classID, subClassID));
+                highestValue = MathF.Max(highestValue, GetConvertedStatInArmorTypeContext(itemSlot, "Int", eqIntelligence, classID, subClassID));
+                highestValue = MathF.Max(highestValue, GetConvertedStatInArmorTypeContext(itemSlot, "Spr", eqWisdom, classID, subClassID));
                 itemTemplate.StatValues.Add((ItemWOWStatType.Strength, Convert.ToInt32(highestValue)));
                 itemTemplate.StatValues.Add((ItemWOWStatType.Stamina, Convert.ToInt32(highestValue)));
                 itemTemplate.StatValues.Add((ItemWOWStatType.Agility, Convert.ToInt32(highestValue)));
@@ -556,28 +578,53 @@ namespace EQWOWConverter.Items
             // Otherwise, assign each directly
             else
             {
-                // Strength
-                if (eqStrength != 0)
-                    itemTemplate.StatValues.Add((ItemWOWStatType.Strength, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Str", eqStrength))));
-
-                // Agility
-                // Note: The highest between Dex or Agl is used
-                if (eqDexterity != 0 || eqAgility != 0)
+                // Determine if this should have non-caster or caster stats on it at all
+                int highestNonCasterStatValue = Math.Max(eqStrength, Math.Max(eqAgility, eqDexterity));
+                bool allowNonCasterStats = (highestNonCasterStatValue > 0);
+                int highestCasterStatValue = Math.Max(eqIntelligence, eqWisdom);
+                bool allowCasterStats = (highestCasterStatValue > 0);
+                if (allowNonCasterStats == true && allowCasterStats == true)
                 {
-                    int pickedStat = Math.Max(eqDexterity, eqAgility);
-                    if (pickedStat == 0) // One is zero, one is below zero
-                        pickedStat = Math.Min(eqDexterity, eqAgility);
-                    itemTemplate.StatValues.Add((ItemWOWStatType.Agility, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Agi", pickedStat))));
+                    // Drop 'minor' amounts of the opposing type
+                    if ((float)highestNonCasterStatValue * Configuration.ITEM_STATS_MAX_DROPOUT_PROPORTION > (float)highestCasterStatValue)
+                        allowCasterStats = false;
+                    else if ((float)highestCasterStatValue * Configuration.ITEM_STATS_MAX_DROPOUT_PROPORTION > (float)highestNonCasterStatValue)
+                        allowNonCasterStats = false;
                 }
 
-                // Intelligence
-                if (eqIntelligence != 0)
-                    itemTemplate.StatValues.Add((ItemWOWStatType.Intellect, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Int", eqIntelligence))));
+                // Non-caster stats
+                if (allowNonCasterStats == true)
+                {
+                    // Strength
+                    if (eqStrength != 0)
+                        itemTemplate.StatValues.Add((ItemWOWStatType.Strength, (int)GetConvertedStatInArmorTypeContext(itemSlot, "Str", eqStrength, classID, subClassID)));
 
-                // Spirit
-                // Note: This is converted from "Wisdom"
-                if (eqWisdom != 0)
-                    itemTemplate.StatValues.Add((ItemWOWStatType.Spirit, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Spr", eqWisdom))));
+                    // Agility
+                    // Note: The highest between Dex or Agl is used
+                    if (eqDexterity != 0 || eqAgility != 0)
+                    {
+                        int pickedStat = Math.Max(eqDexterity, eqAgility);
+                        if (pickedStat == 0) // One is zero, one is below zero
+                            pickedStat = Math.Min(eqDexterity, eqAgility);
+                        itemTemplate.StatValues.Add((ItemWOWStatType.Agility, (int)GetConvertedStatInArmorTypeContext(itemSlot, "Agi", pickedStat, classID, subClassID)));
+                    }
+                }
+
+                // Caster stats
+                if (allowCasterStats == true)
+                {
+                    // Intelligence
+                    if (eqIntelligence != 0)
+                        itemTemplate.StatValues.Add((ItemWOWStatType.Intellect, (int)GetConvertedStatInArmorTypeContext(itemSlot, "Int", eqIntelligence, classID, subClassID)));
+
+                    // Spirit
+                    if (eqWisdom != 0)
+                        itemTemplate.StatValues.Add((ItemWOWStatType.Spirit, (int)GetConvertedStatInArmorTypeContext(itemSlot, "Spr", eqWisdom, classID, subClassID)));
+                }
+
+                
+
+
 
                 // Hit (Charisma)
                 // Note: Charisma is being mapped to "hit", and it can't be less than zero
@@ -650,9 +697,22 @@ namespace EQWOWConverter.Items
                 // Armor
                 else
                 {
+                    // Spell Power only allowed on certain items if there is no strength
+                    int strAllowedCasterMask = Convert.ToInt32(ClassEQType.Wizard) | Convert.ToInt32(ClassEQType.Magician) | Convert.ToInt32(ClassEQType.Cleric) |
+                        Convert.ToInt32(ClassEQType.Necromancer) | Convert.ToInt32(ClassEQType.Enchanter) | Convert.ToInt32(ClassEQType.Druid);
+                    bool blockSpellPowerForStrength = false;
+                    if (eqStrength > 0)
+                    {
+                        // A mask of zero or 'all' means every class can wear it
+                        if (classMask <= 0 || classMask >= 32767)
+                            blockSpellPowerForStrength = true;
+                        else if ((classMask & ~strAllowedCasterMask) != 0)
+                            blockSpellPowerForStrength = true;
+                    }
+
                     // Use the higher of wisdom or int to determine amount
                     int higherOfIntAndWis = Math.Max(eqWisdom, eqIntelligence);
-                    if (higherOfIntAndWis > 0)
+                    if (higherOfIntAndWis > 0 && blockSpellPowerForStrength == false)
                     {
                         float spellPower = GetConvertedEqToWowStat(itemSlot, "SpellPwr", higherOfIntAndWis);
                         itemTemplate.StatValues.Add((ItemWOWStatType.SpellPower, Convert.ToInt32(spellPower)));
@@ -2282,7 +2342,11 @@ namespace EQWOWConverter.Items
                     }
                 }
 
-                // Calculate stats
+                // Convert all back slot items to cloth
+                if (newItemTemplate.InventoryType == ItemWOWInventoryType.Back && newItemTemplate.ClassID == 4)
+                    newItemTemplate.SubClassID = Convert.ToInt32(ItemWOWArmorSubclassType.Cloth);
+
+                // Calculate stats (must come after armor subclass)
                 int qualityOverride = int.Parse(columns["override_quality"]);
                 int eqAgility = int.Parse(columns["aagi"]);
                 int eqArmorClass = int.Parse(columns["ac"]);
@@ -2302,10 +2366,6 @@ namespace EQWOWConverter.Items
                 PopulateStats(ref newItemTemplate, newItemTemplate.InventoryType, newItemTemplate.ClassID, newItemTemplate.SubClassID,
                     newItemTemplate.EQClassMask, eqArmorClass, eqStrength, eqAgility, eqCharisma, eqDexterity, eqIntelligence, eqStamina, eqWisdom, eqHP, 
                     eqMana, eqResistPoison, eqResistMagic, eqResistDisease, eqResistFire, eqResistCold, damage, delay, qualityOverride);
-
-                // Convert all back slot items to cloth
-                if (newItemTemplate.InventoryType == ItemWOWInventoryType.Back && newItemTemplate.ClassID == 4)
-                    newItemTemplate.SubClassID = Convert.ToInt32(ItemWOWArmorSubclassType.Cloth);
 
                 // Set non-combat held items as non-weapon to avoid offhand punching while holding it
                 // Fishing needs the weapon class, since the fishing spell requires it
