@@ -17,15 +17,19 @@
 -- Adds an "EverQuest" page to the Interface Options window covering the per character settings that are
 -- otherwise only reachable as typed chat commands (".eqface", ".eqshowbardpulse", ".eqhidewowgear",
 -- ".eqhailwindow" and ".eqdispelmessage").  The server (mod-everquest) owns every one of these, so this page
--- never stores anything itself: it shows what the server last pushed under the EQOPTIONS prefix, and clicking
+-- never stores them itself: it shows what the server last pushed under the EQOPTIONS prefix, and clicking
 -- Okay runs the same chat commands a player would have typed.  Only settings that actually changed are sent,
 -- so opening the page and closing it again is silent.
+--
+-- The one exception is the class aura icon setting, which is purely a matter of what this client draws and so
+-- lives in this addon's per character saved variables (EQ_OptionsDB) and never touches the server.
 local EQOPTIONS_PREFIX = "EQOPTIONS";
 
 local DEFAULT_FACE_ID = 0;
 local DEFAULT_SHOW_BARD_PULSE = true;
 local DEFAULT_HIDE_WOW_GEAR = false;
 local DEFAULT_HAIL_WINDOW = false;
+local DEFAULT_SHOW_CLASS_AURA_ICONS = true;
 local DEFAULT_SHOW_DISPEL_MESSAGE = false;
 local DEFAULT_DISPEL_COLOR = 0xFFAA00;
 
@@ -40,8 +44,24 @@ local serverValues = {
 	dispelColor = DEFAULT_DISPEL_COLOR,
 };
 
--- What the widgets are currently showing, which only reaches the server on Okay
+-- What the widgets are currently showing, which only reaches the server (or the saved variables) on Okay
 local pendingValues = {};
+
+-- ===================================================================================
+-- Client side settings (saved per character, never sent to the server)
+-- ===================================================================================
+
+-- The saved table may not exist yet (first run, or before the client has loaded saved variables), so it is
+-- filled in on demand.  Whatever the client loads later replaces an empty table made here, which is fine
+local function EQ_Options_GetClientSettings()
+	if ( EQ_OptionsDB == nil ) then
+		EQ_OptionsDB = {};
+	end
+	if ( EQ_OptionsDB.showClassAuraIcons == nil ) then
+		EQ_OptionsDB.showClassAuraIcons = DEFAULT_SHOW_CLASS_AURA_ICONS;
+	end
+	return EQ_OptionsDB;
+end
 
 local haveServerValues = false;
 
@@ -83,6 +103,7 @@ local function EQ_Options_CopyServerValuesToPending()
 	pendingValues.showBardPulse = serverValues.showBardPulse;
 	pendingValues.hideWoWGear = serverValues.hideWoWGear;
 	pendingValues.hailWindow = serverValues.hailWindow;
+	pendingValues.showClassAuraIcons = EQ_Options_GetClientSettings().showClassAuraIcons;
 	pendingValues.showDispelMessage = serverValues.showDispelMessage;
 	pendingValues.dispelColor = serverValues.dispelColor;
 end
@@ -166,7 +187,15 @@ hailWindowCheckButton:SetScript("OnClick", function(self)
 	pendingValues.hailWindow = (self:GetChecked() and true or false);
 end);
 
-local dispelMessageCheckButton = EQ_Options_CreateCheckButton("EQOptionsDispelMessageCheckButton", hailWindowCheckButton, -4,
+local classAuraIconsCheckButton = EQ_Options_CreateCheckButton("EQOptionsClassAuraIconsCheckButton", hailWindowCheckButton, -4,
+	"Show class aura icons on the buff bar",
+	"Each of your EverQuest classes keeps one permanent buff icon, named after the class, that explains its aura.  Turn this off to hide those icons on your buff bar.  The auras keep working, and the situational buffs they grant (Chi Surge, Burdened Agility and the like) always show.  This one is saved on this computer for this character.");
+classAuraIconsCheckButton:SetScript("OnClick", function(self)
+	EQ_Options_PlayCheckButtonSound(self);
+	pendingValues.showClassAuraIcons = (self:GetChecked() and true or false);
+end);
+
+local dispelMessageCheckButton = EQ_Options_CreateCheckButton("EQOptionsDispelMessageCheckButton", classAuraIconsCheckButton, -4,
 	"Announce spells dispelled from me",
 	"Prints a chat line naming each of your spells that a dispel strips off of you.  Same as .eqdispelmessage");
 
@@ -281,6 +310,7 @@ local function EQ_Options_RefreshPanel()
 	bardPulseCheckButton:SetChecked(pendingValues.showBardPulse);
 	hideWoWGearCheckButton:SetChecked(pendingValues.hideWoWGear);
 	hailWindowCheckButton:SetChecked(pendingValues.hailWindow);
+	classAuraIconsCheckButton:SetChecked(pendingValues.showClassAuraIcons);
 	dispelMessageCheckButton:SetChecked(pendingValues.showDispelMessage);
 	EQ_Options_RefreshDispelColorDisplay();
 	EQ_Options_RefreshDispelColorEnabled();
@@ -317,6 +347,13 @@ local function EQ_Options_SendCommand(commandText)
 end
 
 function panel.okay()
+	-- The client side setting applies on its own, whether or not the server has answered yet
+	local clientSettings = EQ_Options_GetClientSettings();
+	if ( pendingValues.showClassAuraIcons ~= clientSettings.showClassAuraIcons ) then
+		clientSettings.showClassAuraIcons = pendingValues.showClassAuraIcons;
+		BuffFrame_Update();
+	end
+
 	-- Without the server's values there is nothing to compare against, so nothing can be known to have changed
 	if ( haveServerValues == false ) then
 		return;
@@ -356,6 +393,7 @@ function panel.default()
 	pendingValues.showBardPulse = DEFAULT_SHOW_BARD_PULSE;
 	pendingValues.hideWoWGear = DEFAULT_HIDE_WOW_GEAR;
 	pendingValues.hailWindow = DEFAULT_HAIL_WINDOW;
+	pendingValues.showClassAuraIcons = DEFAULT_SHOW_CLASS_AURA_ICONS;
 	pendingValues.showDispelMessage = DEFAULT_SHOW_DISPEL_MESSAGE;
 	pendingValues.dispelColor = DEFAULT_DISPEL_COLOR;
 	defaultsJustApplied = true;
@@ -372,6 +410,92 @@ function panel.refresh()
 end
 
 InterfaceOptions_AddCategory(panel);
+
+-- ===================================================================================
+-- Hiding the primary class aura icons on the buff bar
+-- ===================================================================================
+
+-- Every EverQuest class's primary aura is named "<Aura name> (<Class name>)", and that suffix is what marks it.  The
+-- situational auras under it (Chi Surge, Burdened Agility, Troubadour's Tempo, ...) carry no such suffix and always show
+local EQ_CLASS_AURA_CLASS_NAMES = {
+	["Enchanter"] = true, ["Bard"] = true, ["Monk"] = true, ["Ranger"] = true, ["Rogue"] = true, ["Paladin"] = true,
+	["Shadow Knight"] = true, ["Warrior"] = true, ["Wizard"] = true, ["Magician"] = true, ["Necromancer"] = true,
+	["Cleric"] = true, ["Druid"] = true, ["Shaman"] = true,
+};
+
+local function EQ_Options_IsPrimaryClassAuraName(auraName)
+	if ( auraName == nil ) then
+		return false;
+	end
+	local className = string.match(auraName, "%((.-)%)$");
+	if ( className == nil ) then
+		return false;
+	end
+	return EQ_CLASS_AURA_CLASS_NAMES[className] == true;
+end
+
+-- The stock AuraButton_Update shows the button for every buff it finds; this runs right after it and hides the ones that
+-- are primary class auras when the setting is off.  The button stays created and counted, it is only not drawn
+hooksecurefunc("AuraButton_Update", function(buttonName, index, filter)
+	if ( filter ~= "HELPFUL" ) then
+		return;
+	end
+	if ( EQ_Options_GetClientSettings().showClassAuraIcons == true ) then
+		return;
+	end
+	local buff = _G[buttonName .. index];
+	if ( buff == nil or not buff:IsShown() ) then
+		return;
+	end
+	local auraName = UnitAura(PlayerFrame.unit, index, filter);
+	if ( EQ_Options_IsPrimaryClassAuraName(auraName) ) then
+		buff:Hide();
+	end
+end);
+
+-- The stock BuffFrame_UpdateAllBuffAnchors chains every counted button off the previous one, hidden or not, which would
+-- leave a gap where a hidden icon sits.  This runs right after it and lays the shown buttons out again with the hidden
+-- ones skipped, following the same row and spacing rules
+hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", function()
+	if ( EQ_Options_GetClientSettings().showClassAuraIcons == true ) then
+		return;
+	end
+	local previousBuff, aboveBuff;
+	local numBuffs = 0;
+	local slack = BuffFrame.numEnchants;
+	if ( BuffFrame.numConsolidated > 0 ) then
+		slack = slack + 1;
+	end
+	for i = 1, BUFF_ACTUAL_DISPLAY do
+		local buff = _G["BuffButton" .. i];
+		if ( buff ~= nil and not buff.consolidated and buff:IsShown() ) then
+			numBuffs = numBuffs + 1;
+			local rowIndex = numBuffs + slack;
+			buff:ClearAllPoints();
+			if ( (rowIndex > 1) and (mod(rowIndex, BUFFS_PER_ROW) == 1) ) then
+				if ( rowIndex == BUFFS_PER_ROW + 1 ) then
+					buff:SetPoint("TOP", ConsolidatedBuffs, "BOTTOM", 0, -BUFF_ROW_SPACING);
+				else
+					buff:SetPoint("TOP", aboveBuff, "BOTTOM", 0, -BUFF_ROW_SPACING);
+				end
+				aboveBuff = buff;
+			elseif ( rowIndex == 1 ) then
+				buff:SetPoint("TOPRIGHT", BuffFrame, "TOPRIGHT", 0, 0);
+			else
+				if ( numBuffs == 1 ) then
+					if ( BuffFrame.numEnchants > 0 ) then
+						buff:SetPoint("TOPRIGHT", "TemporaryEnchantFrame", "TOPLEFT", -5, 0);
+					else
+						buff:SetPoint("TOPRIGHT", ConsolidatedBuffs, "TOPLEFT", -5, 0);
+					end
+				else
+					buff:SetPoint("RIGHT", previousBuff, "LEFT", -5, 0);
+				end
+			end
+			previousBuff = buff;
+		end
+	end
+end);
 
 -- ===================================================================================
 -- Server state
