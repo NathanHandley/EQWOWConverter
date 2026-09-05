@@ -195,7 +195,7 @@ namespace EQWOWConverter
                     }
 
                     // Worn effects never get spell_bonus_data, so only cast blocks show the coefficient.  It goes last, in its own paragraph.
-                    string spellPowerCoefficientText = spellTemplate.GetSpellPowerCoefficientTooltipTextForBlock(curEffectBlock);
+                    string spellPowerCoefficientText = spellTemplate.GetSpellPowerCoefficientTooltipTextForBlock(curEffectBlock, i);
                     if (spellPowerCoefficientText.Length > 0)
                     {
                         if (blockActionDescription.Length > 0)

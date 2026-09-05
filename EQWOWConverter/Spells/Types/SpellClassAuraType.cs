@@ -69,6 +69,11 @@ namespace EQWOWConverter.Spells
         DruidExposure = 48,
         WarriorUnassailed = 49,
         WarriorRiposte = 50,
-        Count = 51
+        BardVigor = 51,
+        MonkChiSurge = 52,
+        PaladinDeflection = 53,
+        RogueLuckyStrike = 54,
+        RogueLuckyStrikeHelper = 55,
+        Count = 56
     }
 }

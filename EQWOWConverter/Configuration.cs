@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 97;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 99;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -104,7 +104,7 @@ namespace EQWOWConverter
         public static string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
 
         // Client files must match this between the server and the client, separate from "CONFIGONLY_CORE_MOD_VERSION"
-        public static int DEPLOY_CLIENT_DATA_VERSION = 10;
+        public static int DEPLOY_CLIENT_DATA_VERSION = 11;
         public static string DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE = "Your EverQuest client data is out of date. Please run the launcher to update, then log back in.";
 
         // ====================================================================
@@ -796,6 +796,8 @@ namespace EQWOWConverter
 
         // If true, the repeat version of a quest awards no experience when every item it requires as a hand-in can be bought from a vendor
         public static bool QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD = true;
+        // If true, an item with no source other than being the reward of another quest counts as freely restockable (the two quests could be cycled)
+        public static bool QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_QUEST_REWARDED = true;
 
         // How close a creature has to be to the path grid node a gossip option requires it to be standing on
         public static float QUESTS_GOSSIP_REQUIRED_NEAR_DISTANCE = 10f;
@@ -1049,6 +1051,8 @@ namespace EQWOWConverter
         public static int SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL = 40;
         // If true, spells that scale with spell power get text added to the spell description
         public static bool SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP = true;
+        // Make EQ spells that are like WoW's life tap work the same for having spell power only impact mana gain by setting this to 0.5
+        public static float SPELL_SPELL_POWER_LIFE_FOR_MANA_MANA_GAIN_COEFFICIENT = 0.5f;
 
         // Minimum level to enforce buff constraints against low level players, with 0 being off. 50 is EQ-like (according to TAKP)
         public static int SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD = 0;
@@ -1189,7 +1193,7 @@ namespace EQWOWConverter
         public static int COMBATSKILL_PIERCINGBACKSTAB_LEARN_LEVEL = 10;
         public static int COMBATSKILL_PIERCINGBACKSTAB_COOLDOWN_IN_MS = 10000;
         public static int COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_LEARN_LEVEL = 300;
-        public static int COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_MAX_LEVEL = 600;
+        public static int COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_MAX_LEVEL = 450;
         public static int COMBATSKILL_PIERCINGBACKSTAB_MAX_SCALING_LEVEL = 40;
 
         // Harm Touch is a shadowknight ability (a long-cooldown direct damage "touch"). Also granted to player Death Knights. HP is ~2.5x higher in WoW
@@ -1239,7 +1243,7 @@ namespace EQWOWConverter
         // If true, every EQ class (primary or secondary) grants a permanent aura with class specific effects
         public static bool CLASSAURA_ENABLED = true;
 
-        // First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96050 as of writing)
+        // First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96055 as of writing)
         public static int CLASSAURA_SPELL_ID_START = 96000;
 
         // Enchanter "Mind of Clarity"
@@ -1254,14 +1258,19 @@ namespace EQWOWConverter
         public static bool CLASSAURA_BARD_ENABLED = true;
         public static int CLASSAURA_BARD_SPELL_ICON_EQ_ID = 18;
         public static int CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT = 33;
+        public static int CLASSAURA_BARD_VIGOR_HASTE_PERCENT = 33;
+        public static int CLASSAURA_BARD_VIGOR_DURATION_IN_MS = 9000;
 
         // Monk "Agile Fighter"
         public static bool CLASSAURA_MONK_ENABLED = true;
         public static int CLASSAURA_MONK_SPELL_ICON_EQ_ID = 9;
+        public static int CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID = 10;
         public static int CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT = 10;
         public static int CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT = 50;
         public static int CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT = 5;
-        public static int CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT = 50;
+        public static int CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT = 50;
+        public static int CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS = 5000;
+        public static int CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS = 10000;
 
         // Ranger "Swift Reactions"
         public static bool CLASSAURA_RANGER_ENABLED = true;
@@ -1276,7 +1285,9 @@ namespace EQWOWConverter
         // Rogue "Master Exploiter"
         public static bool CLASSAURA_ROGUE_ENABLED = true;
         public static int CLASSAURA_ROGUE_SPELL_ICON_EQ_ID = 2;
-        public static int CLASSAURA_ROGUE_CRITICAL_STRIKE_PERCENT = 5;
+        public static int CLASSAURA_ROGUE_LUCKY_STRIKE_SPELL_ICON_EQ_ID = 2;
+        public static int CLASSAURA_ROGUE_LUCKY_STRIKE_CRIT_PERCENT = 100;
+        public static int CLASSAURA_ROGUE_LUCKY_STRIKE_COOLDOWN_IN_MS = 8000;
         public static int CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK = 1;
         public static int CLASSAURA_ROGUE_EXPLOIT_MAX_STACKS = 10;
         public static int CLASSAURA_ROGUE_EXPLOIT_DURATION_IN_MS = 20000;
@@ -1285,8 +1296,12 @@ namespace EQWOWConverter
         public static bool CLASSAURA_PALADIN_ENABLED = true;
         public static int CLASSAURA_PALADIN_SPELL_ICON_EQ_ID = 11;
         public static int CLASSAURA_PALADIN_BLOCK_PERCENT = 5;
+        public static int CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT = 15;
+        public static int CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS = 6;
+        public static int CLASSAURA_PALADIN_BLOCK_DEFLECTION_SPELL_VISUAL_ID = 5562;
+        public static int CLASSAURA_PALADIN_HEAL_SPELL_VISUAL_ID = 5560;
         public static int CLASSAURA_PALADIN_HEAL_SELF_PERCENT = 15;
-        public static int CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT = 20;
+        public static int CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT = 15;
 
         // Shadow Knight "Spellsword"
         public static bool CLASSAURA_SHADOWKNIGHT_ENABLED = true;
@@ -1308,7 +1323,7 @@ namespace EQWOWConverter
         public static int CLASSAURA_WIZARD_SPELL_ICON_EQ_ID = 15;
         public static int CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK = 2;
         public static int CLASSAURA_WIZARD_FOCUS_MAX_STACKS = 7;
-        public static int CLASSAURA_WIZARD_FOCUS_DURATION_IN_MS = 15000;
+        public static int CLASSAURA_WIZARD_FOCUS_DURATION_IN_MS = 20000;
         public static int CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT = 1;
         public static int CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS = 1000;
 
@@ -1899,11 +1914,14 @@ namespace EQWOWConverter
                 File.Delete(CONFIGONLY_CONFIGURATION_FILE_NAME);
 
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
-            OutputTextLineToConfig("# | 1. Manditory Path Settings (Set these before it will work)                |");
+            OutputTextLineToConfig("# | 1. Manditory Path Settings (Set most of these before it will work)        |");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputBlankLineToConfig();
             OutputVariableToConfig("PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER", FileTool.RemoveRelativePathIfExists(PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER), "Location of the installed everquest trilogy client (this must have the eqgame.exe file in it)", true);
             OutputVariableToConfig("PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER", FileTool.RemoveRelativePathIfExists(PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER), "Location of the installed enUS version of World of Warcaft client (this must have the wow.exe in it)", true);
+            OutputVariableToConfig("PATH_TOOLS_FOLDER", FileTool.RemoveRelativePathIfExists(PATH_TOOLS_FOLDER), "The root of the tools directory (comes with this source code in a folder)");
+            OutputVariableToConfig("PATH_ASSETS_FOLDER", FileTool.RemoveRelativePathIfExists(PATH_ASSETS_FOLDER), "The root of the assets directory (comes with this source code in a folder)");
+            OutputVariableToConfig("PATH_WORKING_FOLDER", FileTool.RemoveRelativePathIfExists(PATH_WORKING_FOLDER), "The root folder where temporary folders and file will be generated (ensure at least 10GB of space is available in this location)");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputTextLineToConfig("# | 2. Deployment Settings (Highly suggested to set to make install easier)   |");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
@@ -1988,9 +2006,6 @@ namespace EQWOWConverter
             OutputTextLineToConfig("# | Other Settings (Tuning or Debugging, typically ignore)                    |");
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputBlankLineToConfig();
-            OutputVariableToConfig("PATH_TOOLS_FOLDER", FileTool.RemoveRelativePathIfExists(PATH_TOOLS_FOLDER), "The root of the tools directory (comes with this source code in a folder)");
-            OutputVariableToConfig("PATH_ASSETS_FOLDER", FileTool.RemoveRelativePathIfExists(PATH_ASSETS_FOLDER), "The root of the assets directory (comes with this source code in a folder)");
-            OutputVariableToConfig("PATH_WORKING_FOLDER", FileTool.RemoveRelativePathIfExists(PATH_WORKING_FOLDER), "The root folder where temporary folders and file will be generated (ensure at least 10GB of space is available in this location)");
             OutputVariableToConfig("PATCH_CLIENT_DATA_ID", PATCH_CLIENT_DATA_ID, "ID to append to the end of the /Data/ patch file (such as the \"4\" in \"patch-4.mpq). Make it uniquely new.");
             OutputVariableToConfig("PATCH_CLIENT_DATA_LOC_ID", PATCH_CLIENT_DATA_LOC_ID, "ID to append to the localized patch file in /Data/<locale> (such as the \"5\" in patch-enUS-5.mpq). Make it uniquely new.");
             OutputVariableToConfig("PATCH_LOCALIZATION_STRING", PATCH_LOCALIZATION_STRING, "What language to generate things as");
@@ -2229,7 +2244,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID", ITEMS_MONK_EPIC_GLOVES_IT159_SPELL_ID, "Spell ID for the visual effect from Monk's epic weapon (Celestial Fists)");
             OutputVariableToConfig("QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID", QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID, "This is the icon ID that is used for quest rewards that contain more than one random item");
             OutputVariableToConfig("QUESTS_EXP_EQ_REWARD_LEVEL_FRACTION_CAP", QUESTS_EXP_EQ_REWARD_LEVEL_FRACTION_CAP, "The largest fraction of a level's experience that a single quest turn-in could award in EQ, used when converting EQ quest experience rewards into WOW reward experience tiers (TAKP caps quest exp at 25%)");
-            OutputVariableToConfig("QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD", QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD, "If true, the repeat version of a quest awards no experience when every item it requires as a hand-in can be bought from a vendor");
+            OutputVariableToConfig("QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD", QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD, "The repeat version of a quest awards no experience when every item it requires as a hand-in can be freely restocked.  If true, an item that can be bought from a vendor counts as freely restockable");
+            OutputVariableToConfig("QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_QUEST_REWARDED", QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_QUEST_REWARDED, "The repeat version of a quest awards no experience when every item it requires as a hand-in can be freely restocked.  If true, an item with no source other than being the reward of another quest counts as freely restockable");
             OutputVariableToConfig("QUESTS_GOSSIP_REQUIRED_NEAR_DISTANCE", QUESTS_GOSSIP_REQUIRED_NEAR_DISTANCE, "How close a creature has to be to the path grid node a gossip option requires it to be standing on");
             OutputVariableToConfig("SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL", SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL, "This is how high (WOW side) stats will be be scaled to.  This should almost always be set to the server max level configuration.");
             OutputVariableToConfig("SPELLS_GATECUSTOM_SPELLDBC_ID", SPELLS_GATECUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest", false);
@@ -2343,6 +2359,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_SPELL_POWER_LOW_LEVEL_MOD", SPELL_SPELL_POWER_LOW_LEVEL_MOD, "Additional mod that reduces spell power influence on low-level spells (1 = disabled)");
             OutputVariableToConfig("SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL", SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL, "The level to phase out this new mod (linear from level 1)");
             OutputVariableToConfig("SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP", SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP, "If true, spells that scale with spell power get text added to the spell description");
+            OutputVariableToConfig("SPELL_SPELL_POWER_LIFE_FOR_MANA_MANA_GAIN_COEFFICIENT", SPELL_SPELL_POWER_LIFE_FOR_MANA_MANA_GAIN_COEFFICIENT, "Make EQ spells that are like WoW's life tap work the same for having spell power only impact mana gain by setting this to 0.5");
             OutputVariableToConfig("SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD", SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD, "Minimum level to enforce buff constraints against low level players, with 0 being off. 50 is EQ-like (according to TAKP)");
             OutputVariableToConfig("SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT", SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT, "Default level to block stuns on creatures (EQ-like)");
             OutputVariableToConfig("SPELL_SUMMON_CASTER_AURA_SPELL_ID", SPELL_SUMMON_CASTER_AURA_SPELL_ID, "Summoner dummy spell ID used to prevent creatures from summoning more creatures");
@@ -2455,7 +2472,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ, "Creatures in this level range will never enrage (taken from TAKP's mob_ai.cpp CheckEnrage), with 0 in both disabling this suppression", false);
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ, "");
             OutputVariableToConfig("CLASSAURA_ENABLED", CLASSAURA_ENABLED, "Every EQ class (primary or secondary) grants a permanent aura with class specific effects. Values here bake into Spell.dbc, so a change needs a converter regen and DBC deploy", false);
-            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96050 as of writing)", false);
+            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96055 as of writing)", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_ENABLED", CLASSAURA_ENCHANTER_ENABLED, "Enchanter \"Mind of Clarity\": regenerates a percent of maximum mana on an interval, and spell damage and healing are increased while mana is at or above a threshold", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID", CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT", CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT, "", false);
@@ -2465,12 +2482,17 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_BARD_ENABLED", CLASSAURA_BARD_ENABLED, "Bard", false);
             OutputVariableToConfig("CLASSAURA_BARD_SPELL_ICON_EQ_ID", CLASSAURA_BARD_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT", CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_BARD_VIGOR_HASTE_PERCENT", CLASSAURA_BARD_VIGOR_HASTE_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_BARD_VIGOR_DURATION_IN_MS", CLASSAURA_BARD_VIGOR_DURATION_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_MONK_ENABLED", CLASSAURA_MONK_ENABLED, "Monk", false);
             OutputVariableToConfig("CLASSAURA_MONK_SPELL_ICON_EQ_ID", CLASSAURA_MONK_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID", CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT", CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT", CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT", CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT, "", false);
-            OutputVariableToConfig("CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT", CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT", CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS", CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS, "", false);
+            OutputVariableToConfig("CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS", CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_RANGER_ENABLED", CLASSAURA_RANGER_ENABLED, "Ranger", false);
             OutputVariableToConfig("CLASSAURA_RANGER_SPELL_ICON_EQ_ID", CLASSAURA_RANGER_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK", CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK, "", false);
@@ -2481,13 +2503,19 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS", CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_ROGUE_ENABLED", CLASSAURA_ROGUE_ENABLED, "Rogue", false);
             OutputVariableToConfig("CLASSAURA_ROGUE_SPELL_ICON_EQ_ID", CLASSAURA_ROGUE_SPELL_ICON_EQ_ID, "", false);
-            OutputVariableToConfig("CLASSAURA_ROGUE_CRITICAL_STRIKE_PERCENT", CLASSAURA_ROGUE_CRITICAL_STRIKE_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_ROGUE_LUCKY_STRIKE_SPELL_ICON_EQ_ID", CLASSAURA_ROGUE_LUCKY_STRIKE_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("CLASSAURA_ROGUE_LUCKY_STRIKE_CRIT_PERCENT", CLASSAURA_ROGUE_LUCKY_STRIKE_CRIT_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_ROGUE_LUCKY_STRIKE_COOLDOWN_IN_MS", CLASSAURA_ROGUE_LUCKY_STRIKE_COOLDOWN_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK", CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK, "", false);
             OutputVariableToConfig("CLASSAURA_ROGUE_EXPLOIT_MAX_STACKS", CLASSAURA_ROGUE_EXPLOIT_MAX_STACKS, "", false);
             OutputVariableToConfig("CLASSAURA_ROGUE_EXPLOIT_DURATION_IN_MS", CLASSAURA_ROGUE_EXPLOIT_DURATION_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_PALADIN_ENABLED", CLASSAURA_PALADIN_ENABLED, "Paladin", false);
             OutputVariableToConfig("CLASSAURA_PALADIN_SPELL_ICON_EQ_ID", CLASSAURA_PALADIN_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_PALADIN_BLOCK_PERCENT", CLASSAURA_PALADIN_BLOCK_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT", CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS", CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS, "", false);
+            OutputVariableToConfig("CLASSAURA_PALADIN_BLOCK_DEFLECTION_SPELL_VISUAL_ID", CLASSAURA_PALADIN_BLOCK_DEFLECTION_SPELL_VISUAL_ID, "", false);
+            OutputVariableToConfig("CLASSAURA_PALADIN_HEAL_SPELL_VISUAL_ID", CLASSAURA_PALADIN_HEAL_SPELL_VISUAL_ID, "", false);
             OutputVariableToConfig("CLASSAURA_PALADIN_HEAL_SELF_PERCENT", CLASSAURA_PALADIN_HEAL_SELF_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT", CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_ENABLED", CLASSAURA_SHADOWKNIGHT_ENABLED, "Shadow Knight", false);
@@ -2936,6 +2964,7 @@ namespace EQWOWConverter
             QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID = ReadVariableFromConfigString("QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID", configValuesByVariableName, QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID);
             QUESTS_EXP_EQ_REWARD_LEVEL_FRACTION_CAP = ReadVariableFromConfigString("QUESTS_EXP_EQ_REWARD_LEVEL_FRACTION_CAP", configValuesByVariableName, QUESTS_EXP_EQ_REWARD_LEVEL_FRACTION_CAP);
             QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD = ReadVariableFromConfigString("QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD", configValuesByVariableName, QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD);
+            QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_QUEST_REWARDED = ReadVariableFromConfigString("QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_QUEST_REWARDED", configValuesByVariableName, QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_QUEST_REWARDED);
             QUESTS_GOSSIP_REQUIRED_NEAR_DISTANCE = ReadVariableFromConfigString("QUESTS_GOSSIP_REQUIRED_NEAR_DISTANCE", configValuesByVariableName, QUESTS_GOSSIP_REQUIRED_NEAR_DISTANCE);
 
             SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR = ReadVariableFromConfigString("SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR", configValuesByVariableName, SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR);
@@ -3057,6 +3086,7 @@ namespace EQWOWConverter
             SPELL_SPELL_POWER_LOW_LEVEL_MOD = ReadVariableFromConfigString("SPELL_SPELL_POWER_LOW_LEVEL_MOD", configValuesByVariableName, SPELL_SPELL_POWER_LOW_LEVEL_MOD);
             SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL = ReadVariableFromConfigString("SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL", configValuesByVariableName, SPELL_SPELL_POWER_LOW_LEVEL_MOD_PHASEOUT_LEVEL);
             SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP = ReadVariableFromConfigString("SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP", configValuesByVariableName, SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP);
+            SPELL_SPELL_POWER_LIFE_FOR_MANA_MANA_GAIN_COEFFICIENT = ReadVariableFromConfigString("SPELL_SPELL_POWER_LIFE_FOR_MANA_MANA_GAIN_COEFFICIENT", configValuesByVariableName, SPELL_SPELL_POWER_LIFE_FOR_MANA_MANA_GAIN_COEFFICIENT);
             SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD = ReadVariableFromConfigString("SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD", configValuesByVariableName, SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD);
             SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT = ReadVariableFromConfigString("SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT", configValuesByVariableName, SPELL_STUN_MAX_CREATURE_TARGET_LEVEL_DEFAULT);
             SPELL_SUMMON_CASTER_AURA_SPELL_ID = ReadVariableFromConfigString("SPELL_SUMMON_CASTER_AURA_SPELL_ID", configValuesByVariableName, SPELL_SUMMON_CASTER_AURA_SPELL_ID);
@@ -3178,12 +3208,17 @@ namespace EQWOWConverter
             CLASSAURA_BARD_ENABLED = ReadVariableFromConfigString("CLASSAURA_BARD_ENABLED", configValuesByVariableName, CLASSAURA_BARD_ENABLED);
             CLASSAURA_BARD_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_BARD_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_BARD_SPELL_ICON_EQ_ID);
             CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT = ReadVariableFromConfigString("CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT", configValuesByVariableName, CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT);
+            CLASSAURA_BARD_VIGOR_HASTE_PERCENT = ReadVariableFromConfigString("CLASSAURA_BARD_VIGOR_HASTE_PERCENT", configValuesByVariableName, CLASSAURA_BARD_VIGOR_HASTE_PERCENT);
+            CLASSAURA_BARD_VIGOR_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_BARD_VIGOR_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_BARD_VIGOR_DURATION_IN_MS);
             CLASSAURA_MONK_ENABLED = ReadVariableFromConfigString("CLASSAURA_MONK_ENABLED", configValuesByVariableName, CLASSAURA_MONK_ENABLED);
             CLASSAURA_MONK_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_MONK_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_MONK_SPELL_ICON_EQ_ID);
+            CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID);
             CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT = ReadVariableFromConfigString("CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT", configValuesByVariableName, CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT);
             CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT = ReadVariableFromConfigString("CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT", configValuesByVariableName, CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT);
             CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT = ReadVariableFromConfigString("CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT", configValuesByVariableName, CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT);
-            CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT = ReadVariableFromConfigString("CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT", configValuesByVariableName, CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT);
+            CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT = ReadVariableFromConfigString("CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT", configValuesByVariableName, CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT);
+            CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS = ReadVariableFromConfigString("CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS", configValuesByVariableName, CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS);
+            CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS = ReadVariableFromConfigString("CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS", configValuesByVariableName, CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS);
             CLASSAURA_RANGER_ENABLED = ReadVariableFromConfigString("CLASSAURA_RANGER_ENABLED", configValuesByVariableName, CLASSAURA_RANGER_ENABLED);
             CLASSAURA_RANGER_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_RANGER_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_RANGER_SPELL_ICON_EQ_ID);
             CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK);
@@ -3194,13 +3229,19 @@ namespace EQWOWConverter
             CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS);
             CLASSAURA_ROGUE_ENABLED = ReadVariableFromConfigString("CLASSAURA_ROGUE_ENABLED", configValuesByVariableName, CLASSAURA_ROGUE_ENABLED);
             CLASSAURA_ROGUE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_ROGUE_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_ROGUE_SPELL_ICON_EQ_ID);
-            CLASSAURA_ROGUE_CRITICAL_STRIKE_PERCENT = ReadVariableFromConfigString("CLASSAURA_ROGUE_CRITICAL_STRIKE_PERCENT", configValuesByVariableName, CLASSAURA_ROGUE_CRITICAL_STRIKE_PERCENT);
+            CLASSAURA_ROGUE_LUCKY_STRIKE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_ROGUE_LUCKY_STRIKE_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_ROGUE_LUCKY_STRIKE_SPELL_ICON_EQ_ID);
+            CLASSAURA_ROGUE_LUCKY_STRIKE_CRIT_PERCENT = ReadVariableFromConfigString("CLASSAURA_ROGUE_LUCKY_STRIKE_CRIT_PERCENT", configValuesByVariableName, CLASSAURA_ROGUE_LUCKY_STRIKE_CRIT_PERCENT);
+            CLASSAURA_ROGUE_LUCKY_STRIKE_COOLDOWN_IN_MS = ReadVariableFromConfigString("CLASSAURA_ROGUE_LUCKY_STRIKE_COOLDOWN_IN_MS", configValuesByVariableName, CLASSAURA_ROGUE_LUCKY_STRIKE_COOLDOWN_IN_MS);
             CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK);
             CLASSAURA_ROGUE_EXPLOIT_MAX_STACKS = ReadVariableFromConfigString("CLASSAURA_ROGUE_EXPLOIT_MAX_STACKS", configValuesByVariableName, CLASSAURA_ROGUE_EXPLOIT_MAX_STACKS);
             CLASSAURA_ROGUE_EXPLOIT_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_ROGUE_EXPLOIT_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_ROGUE_EXPLOIT_DURATION_IN_MS);
             CLASSAURA_PALADIN_ENABLED = ReadVariableFromConfigString("CLASSAURA_PALADIN_ENABLED", configValuesByVariableName, CLASSAURA_PALADIN_ENABLED);
             CLASSAURA_PALADIN_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_PALADIN_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_PALADIN_SPELL_ICON_EQ_ID);
             CLASSAURA_PALADIN_BLOCK_PERCENT = ReadVariableFromConfigString("CLASSAURA_PALADIN_BLOCK_PERCENT", configValuesByVariableName, CLASSAURA_PALADIN_BLOCK_PERCENT);
+            CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT = ReadVariableFromConfigString("CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT", configValuesByVariableName, CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT);
+            CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS = ReadVariableFromConfigString("CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS", configValuesByVariableName, CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS);
+            CLASSAURA_PALADIN_BLOCK_DEFLECTION_SPELL_VISUAL_ID = ReadVariableFromConfigString("CLASSAURA_PALADIN_BLOCK_DEFLECTION_SPELL_VISUAL_ID", configValuesByVariableName, CLASSAURA_PALADIN_BLOCK_DEFLECTION_SPELL_VISUAL_ID);
+            CLASSAURA_PALADIN_HEAL_SPELL_VISUAL_ID = ReadVariableFromConfigString("CLASSAURA_PALADIN_HEAL_SPELL_VISUAL_ID", configValuesByVariableName, CLASSAURA_PALADIN_HEAL_SPELL_VISUAL_ID);
             CLASSAURA_PALADIN_HEAL_SELF_PERCENT = ReadVariableFromConfigString("CLASSAURA_PALADIN_HEAL_SELF_PERCENT", configValuesByVariableName, CLASSAURA_PALADIN_HEAL_SELF_PERCENT);
             CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT = ReadVariableFromConfigString("CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT", configValuesByVariableName, CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT);
             CLASSAURA_SHADOWKNIGHT_ENABLED = ReadVariableFromConfigString("CLASSAURA_SHADOWKNIGHT_ENABLED", configValuesByVariableName, CLASSAURA_SHADOWKNIGHT_ENABLED);

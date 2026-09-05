@@ -19,6 +19,15 @@
 -- schools normally all read the same, but keying off the real school keeps school-specific WoW gear
 -- honest.
 --
+-- Life-for-mana spells (Cannibalize, Lich/Demi Lich, ...) carry the word "mana" in the same line:
+--
+--   Spell power coefficient: 50% mana (Shadow)
+--   Spell power coefficient: 20% mana per tick (Shadow)
+--
+-- Those work the way WoW's Life Tap does -- the mana handed back grows with shadow spell power while
+-- the life it costs stays flat -- so the percentage still multiplies a damage school, but what it adds
+-- is mana.  The life half deliberately carries no coefficient at all, which is why it never appears here.
+--
 -- Where it shows: anywhere the client fires OnTooltipSetSpell -- the spellbook, action bars, the pet
 -- bar, and spell links in chat.  Buff/debuff tooltips use the spell's aura description instead, which
 -- carries no coefficient, so those are left alone.
@@ -57,8 +66,8 @@ local SCHOOL_INDEX = {
 
 local LINE_COLOR_R, LINE_COLOR_G, LINE_COLOR_B = 0.4, 0.8, 1.0;
 
--- Pulls the coefficients out of a stamped tooltip line.  Returns directPercent, perTickPercent, tag,
--- any of which is nil when the spell has no such half.
+-- Pulls the coefficients out of a stamped tooltip line.  Returns directPercent, perTickPercent, tag and
+-- whether the line restores mana; any of the first three is nil when the spell has no such half.
 local function EQSpellTooltips_ParseCoefficients(text)
 	-- The whole spell description arrives as one font string with embedded newlines, so isolate the
 	-- stamped paragraph before matching percentages (a description can carry numbers of its own)
@@ -80,12 +89,18 @@ local function EQSpellTooltips_ParseCoefficients(text)
 	if ( not directPercent and not perTickPercent ) then
 		return nil;
 	end
-	return directPercent, perTickPercent, tag;
+	-- A life-for-mana spell stamps only its mana half, so one check over the whole segment settles the noun
+	local isMana = segment:find("mana", 1, true) ~= nil;
+	return directPercent, perTickPercent, tag, isMana;
 end
 
 -- The spell power the stamped percentages multiply against, matching what the core uses
--- (Unit::SpellBaseDamageBonusDone for a school, Unit::SpellBaseHealingBonusDone for healing)
-local function EQSpellTooltips_GetSpellPower(tag)
+-- (Unit::SpellBaseDamageBonusDone for a school, Unit::SpellBaseHealingBonusDone for healing).  A mana
+-- line reads the same school stat the mod script does, it just hands out mana with it instead of damage
+local function EQSpellTooltips_GetSpellPower(tag, isMana)
+	if ( isMana ) then
+		return GetSpellBonusDamage(SCHOOL_INDEX[tag] or 6) or 0, "mana";
+	end
 	if ( tag == "healing" ) then
 		return GetSpellBonusHealing() or 0, "healing";
 	end
@@ -235,9 +250,9 @@ local function EQSpellTooltips_AddSpellPowerLine(tooltip)
 		local fontString = _G[name .. "TextLeft" .. i];
 		local text = fontString and fontString:GetText();
 		if ( text and text:find(COEFFICIENT_LABEL, 1, true) ) then
-			local directPercent, perTickPercent, tag = EQSpellTooltips_ParseCoefficients(text);
+			local directPercent, perTickPercent, tag, isMana = EQSpellTooltips_ParseCoefficients(text);
 			if ( directPercent or perTickPercent ) then
-				local spellPower, noun = EQSpellTooltips_GetSpellPower(tag);
+				local spellPower, noun = EQSpellTooltips_GetSpellPower(tag, isMana);
 				local addedText = EQSpellTooltips_BuildAddedText(spellPower, directPercent, perTickPercent, noun);
 				-- Flag before showing: Show() re-enters this through the OnShow hook below
 				tooltip.eqSpellPowerLineAdded = true;

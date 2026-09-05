@@ -54,12 +54,14 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`IllusionFormEQRaceID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`IllusionObjectClass` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`PersistOnClassChange` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`ManaGainSpellPowerCoefficient` FLOAT NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`DamageIsFixed` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(SpellTemplate spellTemplate, int spellID, bool isWorn, int clickyFixedLevel, int blockEQHasteVersion, bool isCreatureCastVersion = false,
-            bool isClickyVersion = false)
+        public void AddRow(SpellTemplate spellTemplate, int spellID, bool isWorn, int clickyFixedLevel, int blockEQHasteVersion, float manaGainSpellPowerCoefficient,
+            bool isCreatureCastVersion = false, bool isClickyVersion = false)
         {
             // Creature-cast copies keep the aura duration from before any player-only modifications, and item clickies keep the one from before the player buff duration floor
             SpellDuration auraDuration = spellTemplate.AuraDuration;
@@ -137,6 +139,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("IllusionFormEQRaceID", spellTemplate.IllusionFormEQRaceID);
             newRow.AddInt("IllusionObjectClass", (int)spellTemplate.IllusionObjectClass);
             newRow.AddInt("PersistOnClassChange", spellTemplate.PersistOnClassChange ? 1 : 0);
+            newRow.AddFloat("ManaGainSpellPowerCoefficient", manaGainSpellPowerCoefficient);
+            newRow.AddInt("DamageIsFixed", (spellTemplate.DamageIsFixed == true && isWorn == false) ? 1 : 0);
             Rows.Add(newRow);
         }
     }

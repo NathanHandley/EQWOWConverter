@@ -263,6 +263,50 @@ namespace EQWOWConverter.Items
             return false;
         }
 
+        public bool IsOnlyObtainableFromQuestReward()
+        {
+            if (HasNonQuestRewardSource() == true)
+                return false;
+            if (IsRewardedFromQuest == true)
+                return true;
+
+            // Class-specific and essence variants use the source item availability
+            if (ParentItemTemplate != null)
+                return ParentItemTemplate.IsOnlyObtainableFromQuestReward();
+            return false;
+        }
+
+        private bool HasNonQuestRewardSource()
+        {
+            if (IsExistingItemAlready == true)
+                return true;
+            if (IsGivenAsStartItem == true)
+                return true;
+            if (IsDroppedByCreature == true)
+                return true;
+            if (IsSoldByVendor == true)
+                return true;
+            if (NumOfTradeskillsThatCreateIt > 0)
+                return true;
+            if (IsCreatedBySpell == true)
+                return true;
+            if (IsFoundInGameObject == true)
+                return true;
+            if (IsFromGroundSpawnChest == true)
+                return true;
+            if (IsAlwaysGenerated == true)
+                return true;
+            if (IsForaged == true)
+                return true;
+            if (IsFished == true)
+                return true;
+            if (IsInJunkbox == true)
+                return true;
+            if (ParentItemTemplate != null)
+                return ParentItemTemplate.HasNonQuestRewardSource();
+            return false;
+        }
+
         // Logic taken from TAKP's ItemInstance::IsTieredPotion
         public bool IsTieredPotion()
         {

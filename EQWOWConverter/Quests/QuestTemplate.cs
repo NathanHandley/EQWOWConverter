@@ -123,9 +123,14 @@ namespace EQWOWConverter.Quests
             return true;
         }
 
-        public bool AreAllRequiredItemsVendorPurchasable(SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
+        public bool AreAllRequiredItemsFreelyRenewable(SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID,
+            bool countVendorSold, bool countQuestRewarded, out bool anyAreVendorSold, out bool anyAreQuestRewarded)
         {
+            anyAreVendorSold = false;
+            anyAreQuestRewarded = false;
             if (RequiredItems.Count == 0)
+                return false;
+            if (countVendorSold == false && countQuestRewarded == false)
                 return false;
 
             foreach (QuestItemReference requiredItem in RequiredItems)
@@ -136,11 +141,26 @@ namespace EQWOWConverter.Quests
                 else if (itemTemplatesByWOWEntryID.ContainsKey(requiredItem.itemIDParentWOW) == true)
                     requiredItemTemplate = itemTemplatesByWOWEntryID[requiredItem.itemIDParentWOW];
 
-                // Unknown items can't be confirmed as vendor sold, so consider them too just in case
+                // Unknown items can't be confirmed as renewable, so leave the experience alone
                 if (requiredItemTemplate == null)
+                {
+                    anyAreVendorSold = false;
+                    anyAreQuestRewarded = false;
                     return false;
-                if (IsItemVendorPurchasable(requiredItemTemplate) == false)
+                }
+
+                bool isVendorSold = countVendorSold == true && IsItemVendorPurchasable(requiredItemTemplate) == true;
+                bool isQuestRewarded = countQuestRewarded == true && requiredItemTemplate.IsOnlyObtainableFromQuestReward() == true;
+                if (isVendorSold == false && isQuestRewarded == false)
+                {
+                    anyAreVendorSold = false;
+                    anyAreQuestRewarded = false;
                     return false;
+                }
+                if (isVendorSold == true)
+                    anyAreVendorSold = true;
+                if (isQuestRewarded == true)
+                    anyAreQuestRewarded = true;
             }
             return true;
         }

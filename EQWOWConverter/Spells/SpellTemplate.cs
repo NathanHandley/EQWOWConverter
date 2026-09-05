@@ -377,6 +377,10 @@ namespace EQWOWConverter.Spells
         public bool CanMountWhileInForm = false;
         public bool AllowSpellPowerToInfluence = false;
         public bool InfluencedBySpellPower = false;
+        public bool IsLifeForManaSpell = false;
+        public bool DamageIsFixed = false;
+        public float ManaGainSpellPowerTooltipCoefficient = 0f;
+        public bool ManaGainSpellPowerIsPeriodic = false;
         public int EquippedItemClass = -1;
         public int EquippedItemSubClassMask = 0;
         public int EquippedItemInventoryTypeMask = 0;
@@ -914,6 +918,10 @@ namespace EQWOWConverter.Spells
                 SetActionAndAuraDescriptions(ref spellTemplate, recourseSpellTemplate, procLinkSpellTemplate);
             }
 
+            // Spells that buy mana with the caster's own life scale like Life Tap does (mana gain only)
+            foreach (SpellTemplate spellTemplate in SpellTemplatesByEQID.Values)
+                spellTemplate.SetLifeForManaSpellPowerHandling();
+
             // Pull out all but the dummy to avoid too many icons showing for illusions
             foreach (SpellTemplate spellTemplate in SpellTemplatesByEQID.Values)
                 if (spellTemplate.IsllusionSpellParent == true)
@@ -1086,10 +1094,17 @@ namespace EQWOWConverter.Spells
             return highestTickPeriodMS;
         }
 
-        public string GetSpellPowerCoefficientTooltipTextForBlock(SpellEffectBlock effectBlock)
+        public string GetSpellPowerCoefficientTooltipTextForBlock(SpellEffectBlock effectBlock, int blockIndex)
         {
             if (Configuration.SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP == false)
                 return string.Empty;
+            if (IsLifeForManaSpell == true)
+            {
+                // Only the first block is the one the player casts and reads, and it is rarely the block the mana effect ended up in
+                if (blockIndex != 0)
+                    return string.Empty;
+                return GetManaGainSpellPowerCoefficientTooltipText();
+            }
             if (InfluencedBySpellPower == false)
                 return string.Empty;
 
@@ -1117,6 +1132,23 @@ namespace EQWOWConverter.Spells
                 textSB.Append(GetSpellPowerSchoolName());
             else
                 textSB.Append("healing");
+            textSB.Append(")");
+            return textSB.ToString();
+        }
+
+        private string GetManaGainSpellPowerCoefficientTooltipText()
+        {
+            float manaCoefficient = ManaGainSpellPowerTooltipCoefficient;
+            if (manaCoefficient <= 0f)
+                return string.Empty;
+
+            StringBuilder textSB = new StringBuilder("Spell power coefficient: ");
+            textSB.Append(GetSpellPowerCoefficientPercentText(manaCoefficient));
+            textSB.Append(" mana");
+            if (ManaGainSpellPowerIsPeriodic == true)
+                textSB.Append(" per tick");
+            textSB.Append(" (");
+            textSB.Append("Shadow"); // Always shadow regardless of the spell's own school, matching WOW's Life Tap (and what the mod script reads)
             textSB.Append(")");
             return textSB.ToString();
         }
@@ -1190,6 +1222,18 @@ namespace EQWOWConverter.Spells
             if (Configuration.SPELL_DISABLE_COOLDOWN_ON_HEAL_SPELLS == true && hasHealOutput == true)
                 return true;
             return false;
+        }
+
+        public UInt32 GetCooldownDisabledRecoveryTimeInMS()
+        {
+            if (RainWaveCount <= 1 || RainWaveIntervalInMS <= 0)
+                return 0;
+            if (RecoveryTimeInMS < Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS)
+                return 0;
+            UInt32 rainWavePlayoutTimeInMS = Convert.ToUInt32((RainWaveCount - 1) * RainWaveIntervalInMS);
+            if (rainWavePlayoutTimeInMS < RecoveryTimeInMS)
+                return rainWavePlayoutTimeInMS;
+            return RecoveryTimeInMS;
         }
 
         private static bool BlockHasDamageSpellPowerEffect(SpellEffectBlock effectBlock)
@@ -1838,6 +1882,73 @@ namespace EQWOWConverter.Spells
             int maxDurationBeforeModInMS = spellTemplate.AuraDuration.MaxDurationInMS;
             spellTemplate.AuraDuration.ScaleDuration(Configuration.SPELLS_DOT_TIME_DURATION_MOD, tickPeriodInMS);
             spellTemplate.PeriodicDamageDurationCompensationMod = Convert.ToSingle(maxDurationBeforeModInMS) / Convert.ToSingle(spellTemplate.AuraDuration.MaxDurationInMS);
+        }
+
+        private void SetLifeForManaSpellPowerHandling()
+        {
+            // WOW's Life Tap trades health for mana, and only the mana half moves with spell power
+            bool hasCasterManaGain = false;
+            bool hasCasterHealthLoss = false;
+            foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
+            {
+                if (spellEffect.ImplicitTargetA != SpellWOWTargetType.UnitCaster)
+                    continue;
+                if (spellEffect.EffectAuraType == SpellWOWAuraType.None)
+                {
+                    if (spellEffect.EffectType == SpellWOWEffectType.Energize && spellEffect.EffectMiscValueA == 0) // Power Type = Mana
+                        hasCasterManaGain = true;
+                    else if (spellEffect.EffectType == SpellWOWEffectType.SchoolDamage || spellEffect.EffectType == SpellWOWEffectType.HealthLeech)
+                        hasCasterHealthLoss = true;
+                }
+                else if (spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicEnergize && spellEffect.EffectMiscValueA == 0) // Power Type = Mana
+                    hasCasterManaGain = true;
+                else if (spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamage || spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamagePercent
+                    || spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicLeech)
+                    hasCasterHealthLoss = true;
+            }
+            if (hasCasterManaGain == false || hasCasterHealthLoss == false)
+                return;
+
+            IsLifeForManaSpell = true;
+            DamageIsFixed = true;
+            ManaGainSpellPowerTooltipCoefficient = GetManaGainSpellPowerCoefficientForEffects(WOWSpellEffects, out ManaGainSpellPowerIsPeriodic);
+            InfluencedBySpellPower = false;
+            Logger.WriteDebug(string.Concat("Spell '", Name, "' (eqid ", EQSpellID.ToString(), ") trades the caster's life for mana, so only its mana gain scales with spell power"));
+        }
+
+        public float GetManaGainSpellPowerCoefficientForBlock(SpellEffectBlock effectBlock)
+        {
+            if (IsLifeForManaSpell == false)
+                return 0f;
+            bool isPeriodic;
+            return GetManaGainSpellPowerCoefficientForEffects(effectBlock.SpellEffects, out isPeriodic);
+        }
+
+        private static float GetManaGainSpellPowerCoefficientForEffects(List<SpellEffectWOW> spellEffects, out bool isPeriodic)
+        {
+            isPeriodic = false;
+            float coefficient = Configuration.SPELL_SPELL_POWER_LIFE_FOR_MANA_MANA_GAIN_COEFFICIENT;
+            if (coefficient <= 0f)
+                return 0f;
+
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+            {
+                if (spellEffect.ImplicitTargetA != SpellWOWTargetType.UnitCaster)
+                    continue;
+                if (spellEffect.EffectMiscValueA != 0) // Power Type = Mana
+                    continue;
+                if (spellEffect.EffectAuraType == SpellWOWAuraType.None && spellEffect.EffectType == SpellWOWEffectType.Energize)
+                    return coefficient;
+                if (spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicEnergize)
+                {
+                    int tickPeriodInMS = Convert.ToInt32(spellEffect.EffectAuraPeriod);
+                    if (tickPeriodInMS <= 0 || Configuration.SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS <= 0)
+                        return 0f;
+                    isPeriodic = true;
+                    return coefficient * (Convert.ToSingle(tickPeriodInMS) / Convert.ToSingle(Configuration.SPELL_SPELL_POWER_DOT_FULL_DURATION_IN_MS));
+                }
+            }
+            return 0f;
         }
 
         private void SetCannotCritIfDamagesCaster()

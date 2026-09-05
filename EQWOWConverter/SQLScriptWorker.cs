@@ -2464,12 +2464,22 @@ namespace EQWOWConverter
 
                 // If every hand-in item can be bought from a vendor then the repeat version shouldn't give experience (if set)
                 bool disableRepeatExperience = false;
-                if (Configuration.QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD == true && questTemplate.RewardExperienceEQ > 0)
+                if (questTemplate.RewardExperienceEQ > 0)
                 {
-                    if (questTemplate.AreAllRequiredItemsVendorPurchasable(itemTemplatesByWOWEntryID) == true)
+                    bool anyAreVendorSold;
+                    bool anyAreQuestRewarded;
+                    if (questTemplate.AreAllRequiredItemsFreelyRenewable(itemTemplatesByWOWEntryID,
+                        Configuration.QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_VENDOR_SOLD,
+                        Configuration.QUESTS_EXP_DISABLED_ON_REPEAT_IF_REQUIRED_ITEMS_QUEST_REWARDED,
+                        out anyAreVendorSold, out anyAreQuestRewarded) == true)
                     {
                         disableRepeatExperience = true;
-                        Logger.WriteDebug(string.Concat("Quest '", questTemplate.Name, "' (", questTemplate.QuestIDWOW, ") had experience disabled on the repeat version since all of the required hand-in items are sold by vendors"));
+                        string renewableReason = "are sold by vendors";
+                        if (anyAreVendorSold == true && anyAreQuestRewarded == true)
+                            renewableReason = "are sold by vendors or only come from other quest rewards";
+                        else if (anyAreQuestRewarded == true)
+                            renewableReason = "only come from other quest rewards";
+                        Logger.WriteDebug(string.Concat("Quest '", questTemplate.Name, "' (", questTemplate.QuestIDWOW, ") had experience disabled on the repeat version since all of the required hand-in items ", renewableReason));
                     }
                 }
 
@@ -2688,7 +2698,13 @@ namespace EQWOWConverter
                 int blockEQHasteVersion = 0;
                 foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
                     blockEQHasteVersion = Math.Max(blockEQHasteVersion, blockEffect.EQHasteVersion);
-                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion, isCreatureCastVersion, isClickyVersion);
+                // A life-for-mana spell (Cannibalize, Lich, etc) never gets a spell_bonus_data row, so the core leaves its self-damage flat
+                float manaGainSpellPowerCoefficient = 0f;
+                if (commentFragment != " (Worn)")
+                    manaGainSpellPowerCoefficient = spellTemplate.GetManaGainSpellPowerCoefficientForBlock(curEffectBlock);
+                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion, manaGainSpellPowerCoefficient, isCreatureCastVersion, isClickyVersion);
+                if (manaGainSpellPowerCoefficient > 0f)
+                    spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_ManaGainSpellPowerSpellScript");
 
                 // Spell power
                 if (spellTemplate.InfluencedBySpellPower == true && commentFragment != " (Worn)")

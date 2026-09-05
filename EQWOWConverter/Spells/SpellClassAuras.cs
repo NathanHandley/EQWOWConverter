@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.WOWFiles;
+using System;
 
 namespace EQWOWConverter.Spells
 {
@@ -23,6 +24,10 @@ namespace EQWOWConverter.Spells
     {
         // Proc flags (AzerothCore SpellMgr.h)
         private const int PROC_FLAG_DONE_MELEE_AUTO_ATTACK = 0x00000004;
+        private const int PROC_FLAG_TAKEN_MELEE_AUTO_ATTACK = 0x00000008;
+        private const int PROC_FLAG_TAKEN_SPELL_MELEE_DMG_CLASS = 0x00000020;
+        private const int PROC_FLAG_TAKEN_RANGED_AUTO_ATTACK = 0x00000080;
+        private const int PROC_FLAG_TAKEN_SPELL_RANGED_DMG_CLASS = 0x00000200;
         private const int PROC_FLAG_DONE_RANGED_AUTO_ATTACK = 0x00000040;
         private const int PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS = 0x00000100;
         private const int PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS = 0x00000010;
@@ -32,6 +37,7 @@ namespace EQWOWConverter.Spells
         private const int PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG = 0x00010000;
         private const int PROC_SPELL_TYPE_DAMAGE = 0x1;
         private const int PROC_SPELL_TYPE_HEAL = 0x2;
+        private const int PROC_SPELL_TYPE_NO_DMG_HEAL = 0x4;
         private const int PROC_SPELL_PHASE_HIT = 0x2;
         private const int PROC_HIT_NORMAL = 0x1;
         private const int PROC_HIT_CRITICAL = 0x2;
@@ -40,17 +46,16 @@ namespace EQWOWConverter.Spells
         private const int PROC_HIT_PARRY = 0x20;
         private const int PROC_HIT_BLOCK = 0x40;
         private const int PROC_HIT_ABSORB = 0x400;
+        private const int PROC_HIT_FULL_BLOCK = 0x2000;
 
         // Spell school masks
         private const int SCHOOL_MASK_PHYSICAL = 1;
+        private const int SCHOOL_MASK_HOLY = 2;
         private const int SCHOOL_MASK_MAGIC = 126; // Every non-physical school
         private const int SCHOOL_MASK_ALL = 127;
         private const int SCHOOL_MASK_FIRE_COLD_NATURE = 28; // Fire (4), nature (8) and frost (16)
 
         // Mechanics (AzerothCore SharedDefines.h)
-        private const int MECHANIC_ROOT = 7;
-        private const int MECHANIC_SNARE = 11;
-        private const int MECHANIC_DAZE = 27;
 
         // ModTotalStatPercentage misc value that covers every stat (what Blessing of Kings uses)
         private const int STAT_ALL = -1;
@@ -127,7 +132,11 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraPrivateSpellFamilyID", Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraEnchanterFocusManaThresholdPercent", Configuration.CLASSAURA_ENCHANTER_FOCUS_MANA_THRESHOLD_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraBardInstrumentMeleeAutoAttackDamagePercent", Configuration.CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT.ToString()));
-            rows.Add(new KeyValuePair<string, string>("ClassAuraMonkSelfHealCastTimeReductionPercent", Configuration.CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraMonkChiSurgeCastTimeReductionPercent", Configuration.CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraMonkChiSurgeMaxBaseCastTimeInMS", Configuration.CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraMonkChiSurgeReturnInMS", Configuration.CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraRogueLuckyStrikeCritPercent", Configuration.CLASSAURA_ROGUE_LUCKY_STRIKE_CRIT_PERCENT.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraRogueLuckyStrikeCooldownInMS", Configuration.CLASSAURA_ROGUE_LUCKY_STRIKE_COOLDOWN_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraMonkDoubleToTripleAttackChancePercent", Configuration.CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraRangerTackShotDamagePercentPerStack", Configuration.CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinHealSelfPercent", Configuration.CLASSAURA_PALADIN_HEAL_SELF_PERCENT.ToString()));
@@ -140,6 +149,7 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerMarkDirectDamagePercentPerStack", Configuration.CLASSAURA_NECROMANCER_MARK_DIRECT_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerMarkDotDamagePercentPerStack", Configuration.CLASSAURA_NECROMANCER_MARK_DOT_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraClericCadenceReductionPercent", Configuration.CLASSAURA_CLERIC_CADENCE_REDUCTION_PERCENT.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinBlockDeflectionDamagePercent", Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidDirectHealRegenPercent", Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidDirectHealRegenTickCount", GetDruidRegenTickCount().ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidImpairedTargetDamagePercent", Configuration.CLASSAURA_DRUID_IMPAIRED_TARGET_DAMAGE_PERCENT.ToString()));
@@ -161,11 +171,13 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.BardPassive:
                 case SpellClassAuraType.BardAura:
                 case SpellClassAuraType.BardInstrument:
+                case SpellClassAuraType.BardVigor:
                     return Configuration.CLASSAURA_BARD_ENABLED;
                 case SpellClassAuraType.MonkPassive:
                 case SpellClassAuraType.MonkAura:
                 case SpellClassAuraType.MonkLightArmor:
                 case SpellClassAuraType.MonkHeavyArmor:
+                case SpellClassAuraType.MonkChiSurge:
                     return Configuration.CLASSAURA_MONK_ENABLED;
                 case SpellClassAuraType.RangerPassive:
                 case SpellClassAuraType.RangerAura:
@@ -175,10 +187,13 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.RoguePassive:
                 case SpellClassAuraType.RogueAura:
                 case SpellClassAuraType.RogueExploit:
+                case SpellClassAuraType.RogueLuckyStrike:
+                case SpellClassAuraType.RogueLuckyStrikeHelper:
                     return Configuration.CLASSAURA_ROGUE_ENABLED;
                 case SpellClassAuraType.PaladinPassive:
                 case SpellClassAuraType.PaladinAura:
                 case SpellClassAuraType.PaladinHeal:
+                case SpellClassAuraType.PaladinDeflection:
                     return Configuration.CLASSAURA_PALADIN_ENABLED;
                 case SpellClassAuraType.ShadowKnightPassive:
                 case SpellClassAuraType.ShadowKnightAura:
@@ -373,37 +388,49 @@ namespace EQWOWConverter.Spells
         private static void AddBardSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_BARD_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Immune to snares, roots, and dazes. Melee autoattacks deal ", Pct(Configuration.CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT),
-                " more damage while holding a weapon in one hand and an instrument in the other.");
+            string description = string.Concat("Melee autoattacks deal ", Pct(Configuration.CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT),
+                " more damage while holding a weapon in one hand and an instrument in the other. Successfully playing a song grants you ",
+                Pct(Configuration.CLASSAURA_BARD_VIGOR_HASTE_PERCENT), " haste to melee, ranged, and spells for ", Seconds(Configuration.CLASSAURA_BARD_VIGOR_DURATION_IN_MS),
+                ". This haste does not count against the haste cap. Song cast times cannot be changed by haste or slow effects.");
             spellTemplates.Add(BuildPassiveTemplate("Dexteritous Troubadour", SpellClassAuraType.BardPassive, icon, description));
 
-            List<SpellEffectWOW> auraEffects = new List<SpellEffectWOW>();
-            auraEffects.Add(BuildAuraEffect(SpellWOWAuraType.MechanicImmunity, 0, MECHANIC_SNARE, SpellWOWTargetType.UnitCaster));
-            auraEffects.Add(BuildAuraEffect(SpellWOWAuraType.MechanicImmunity, 0, MECHANIC_ROOT, SpellWOWTargetType.UnitCaster));
-            auraEffects.Add(BuildAuraEffect(SpellWOWAuraType.MechanicImmunity, 0, MECHANIC_DAZE, SpellWOWTargetType.UnitCaster));
-            spellTemplates.Add(BuildPermanentAuraTemplate("Dexteritous Troubadour (Bard)", SpellClassAuraType.BardAura, icon, description, auraEffects));
+            // Both effects are driven by the mod (the instrument marker below and the vigor cast on a new song), so the aura itself carries nothing
+            spellTemplates.Add(BuildPermanentAuraTemplate("Dexteritous Troubadour (Bard)", SpellClassAuraType.BardAura, icon, description, new List<SpellEffectWOW>()));
 
             // Only a marker: the mod applies the bonus in its melee swing hook since a damage percent aura would also raise melee abilities and ranged shots
             string instrumentDescription = string.Concat("Melee autoattack damage increased by ", Pct(Configuration.CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT), " while holding a weapon and an instrument.");
             List<SpellEffectWOW> instrumentEffects = new List<SpellEffectWOW>();
             instrumentEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitCaster));
             spellTemplates.Add(BuildPermanentAuraTemplate("Troubadour's Tempo", SpellClassAuraType.BardInstrument, icon, instrumentDescription, instrumentEffects));
+
+            string vigorDescription = string.Concat("Haste increased by ", Pct(Configuration.CLASSAURA_BARD_VIGOR_HASTE_PERCENT), " for melee, ranged, and spells.");
+            List<SpellEffectWOW> vigorEffects = new List<SpellEffectWOW>();
+            vigorEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModMeleeRangedHaste, Configuration.CLASSAURA_BARD_VIGOR_HASTE_PERCENT, 0, SpellWOWTargetType.UnitCaster));
+            vigorEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModCastingSpeedNotStack, Configuration.CLASSAURA_BARD_VIGOR_HASTE_PERCENT, 0, SpellWOWTargetType.UnitCaster));
+            spellTemplates.Add(BuildStackingAuraTemplate("Virtuoso Vigor", SpellClassAuraType.BardVigor, icon, vigorDescription, vigorEffects, 1,
+                Configuration.CLASSAURA_BARD_VIGOR_DURATION_IN_MS, false));
         }
 
         private static void AddMonkSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_MONK_SPELL_ICON_EQ_ID;
-            string description = string.Concat("In cloth or leather with no shield: attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT),
+            string description = string.Concat("Chi Surge: any non-channeled spell with a base cast time under ", Seconds(Configuration.CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS),
+                " casts ", Pct(Configuration.CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT), " faster, and it returns ", Seconds(Configuration.CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS),
+                " after use. In cloth or leather: attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT),
                 " chance to strike twice, ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT), " of those strike a third time, and dodge is increased by ",
-                Pct(Configuration.CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT), ". In heavier armor or with a shield: attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT),
-                " chance to strike twice. Direct heals cast on yourself finish ", Pct(Configuration.CLASSAURA_MONK_SELF_HEAL_CAST_TIME_REDUCTION_PERCENT), " faster.");
+                Pct(Configuration.CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT), ". In heavier armor: attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT),
+                " chance to strike twice.");
             spellTemplates.Add(BuildPassiveTemplate("Agile Fighter", SpellClassAuraType.MonkPassive, icon, description));
             spellTemplates.Add(BuildPermanentAuraTemplate("Agile Fighter (Monk)", SpellClassAuraType.MonkAura, icon, description, new List<SpellEffectWOW>()));
+
+            string chiSurgeDescription = string.Concat("Your next non-channeled spell with a base cast time under ", Seconds(Configuration.CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS),
+                " casts ", Pct(Configuration.CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT), " faster. Adds together with a Sacred Focus charge spent on the same cast.");
+            spellTemplates.Add(BuildPermanentAuraTemplate("Chi Surge", SpellClassAuraType.MonkChiSurge, Configuration.CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID, chiSurgeDescription, new List<SpellEffectWOW>()));
 
             // Monk multi-strike
             string lightDescription = string.Concat("Attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT), " chance to strike twice, ",
                 Pct(Configuration.CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT), " of those strike a third time, and dodge is increased by ",
-                Pct(Configuration.CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT), " while wearing cloth or leather without a shield.");
+                Pct(Configuration.CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT), " while wearing cloth or leather.");
             List<SpellEffectWOW> lightEffects = new List<SpellEffectWOW>();
             lightEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDodgePercent, Configuration.CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT, 0, SpellWOWTargetType.UnitCaster));
             SpellTemplate lightSpellTemplate = BuildPermanentAuraTemplate("Unburdened Agility", SpellClassAuraType.MonkLightArmor, icon, lightDescription, lightEffects);
@@ -411,7 +438,7 @@ namespace EQWOWConverter.Spells
             lightSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK, 0, 0, 0, 0, Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT);
             spellTemplates.Add(lightSpellTemplate);
 
-            string heavyDescription = string.Concat("Attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT), " chance to strike twice while wearing mail, plate, or a shield.");
+            string heavyDescription = string.Concat("Attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT), " chance to strike twice while wearing mail or plate.");
             SpellTemplate heavySpellTemplate = BuildPermanentAuraTemplate("Burdened Agility", SpellClassAuraType.MonkHeavyArmor, icon, heavyDescription, new List<SpellEffectWOW>());
             heavySpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraMonkHeavyArmorAuraScript";
             heavySpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK, 0, 0, 0, 0, Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT);
@@ -455,20 +482,32 @@ namespace EQWOWConverter.Spells
         private static void AddRogueSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_ROGUE_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Critical strike chance increased by ", Pct(Configuration.CLASSAURA_ROGUE_CRITICAL_STRIKE_PERCENT), ". Each landed attack raises all damage dealt by ",
+            string description = string.Concat("Lucky Strike: your next ability or spell that would not have been a critical strike becomes one. Cannot occur more than once every ",
+                Seconds(Configuration.CLASSAURA_ROGUE_LUCKY_STRIKE_COOLDOWN_IN_MS), ". Autoattacks and Auto Shot are not affected. Each landed attack raises all damage dealt by ",
                 Pct(Configuration.CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK), " for ", Seconds(Configuration.CLASSAURA_ROGUE_EXPLOIT_DURATION_IN_MS), ", stacking up to ",
                 Configuration.CLASSAURA_ROGUE_EXPLOIT_MAX_STACKS.ToString(), " times. A miss, dodge, or parry removes half of the stacks.");
             spellTemplates.Add(BuildPassiveTemplate("Master Exploiter", SpellClassAuraType.RoguePassive, icon, description));
 
-            // All attacks can increase damage output to the target
-            List<SpellEffectWOW> auraEffects = new List<SpellEffectWOW>();
-            auraEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModCritPct, Configuration.CLASSAURA_ROGUE_CRITICAL_STRIKE_PERCENT, 0, SpellWOWTargetType.UnitCaster));
-            SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Master Exploiter (Rogue)", SpellClassAuraType.RogueAura, icon, description, auraEffects);
+            // Every attack feeds the momentum, and every critical (heals included, hence the positive flags) can spend the lucky strike; the script tells them apart
+            SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Master Exploiter (Rogue)", SpellClassAuraType.RogueAura, icon, description, new List<SpellEffectWOW>());
             auraSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraRogueAuraScript";
             auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK | PROC_FLAG_DONE_RANGED_AUTO_ATTACK | PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS
-                | PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS | PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG, 0, PROC_SPELL_PHASE_HIT,
+                | PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS | PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG
+                | PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS, 0, PROC_SPELL_PHASE_HIT,
                 PROC_HIT_NORMAL | PROC_HIT_CRITICAL | PROC_HIT_MISS | PROC_HIT_DODGE | PROC_HIT_PARRY | PROC_HIT_BLOCK | PROC_HIT_ABSORB, 0, 0);
             spellTemplates.Add(auraSpellTemplate);
+
+            string luckyDescription = "Your next ability or spell that would not have been a critical strike becomes one.";
+            List<SpellEffectWOW> luckyEffects = new List<SpellEffectWOW>();
+            luckyEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitCaster));
+            spellTemplates.Add(BuildPermanentAuraTemplate("Lucky Strike", SpellClassAuraType.RogueLuckyStrike, Configuration.CLASSAURA_ROGUE_LUCKY_STRIKE_SPELL_ICON_EQ_ID, luckyDescription, luckyEffects));
+
+            SpellTemplate luckyHelperSpellTemplate = BuildBaseTemplate("Lucky Strike Crit", SpellClassAuraType.RogueLuckyStrikeHelper, 0, "The lucky strike in progress.", "The lucky strike in progress.");
+            luckyHelperSpellTemplate.AuraDuration.SetFixedDuration(CAST_SPEED_HELPER_DURATION_IN_MS);
+            luckyHelperSpellTemplate.WOWSpellEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModSpellCritChanceSchool, Configuration.CLASSAURA_ROGUE_LUCKY_STRIKE_CRIT_PERCENT, SCHOOL_MASK_ALL, SpellWOWTargetType.UnitCaster));
+            luckyHelperSpellTemplate.ForceHiddenFromDisplay = true;
+            luckyHelperSpellTemplate.PreventAuraClickOff = true;
+            spellTemplates.Add(luckyHelperSpellTemplate);
 
             string exploitDescription = string.Concat("Damage dealt increased by ", Pct(Configuration.CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK), " per stack. A miss, dodge, or parry removes half of the stacks.");
             List<SpellEffectWOW> exploitEffects = new List<SpellEffectWOW>();
@@ -480,24 +519,41 @@ namespace EQWOWConverter.Spells
         private static void AddPaladinSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_PALADIN_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Block chance increased by ", Pct(Configuration.CLASSAURA_PALADIN_BLOCK_PERCENT), ". Your heals also heal you for ",
+            string description = string.Concat("Blessed Deflection: grants the block skill, block chance is increased by ", Pct(Configuration.CLASSAURA_PALADIN_BLOCK_PERCENT), ", and ",
+                Pct(Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT), " of the damage you block is dealt as Holy damage to all enemies within ",
+                Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS.ToString(), " yards. Your heals also heal you for ",
                 Pct(Configuration.CLASSAURA_PALADIN_HEAL_SELF_PERCENT), " of the amount. Your attacks, abilities, and spells against undead and demons have a ",
                 Pct(Configuration.CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT), " chance to deal double damage.");
             spellTemplates.Add(BuildPassiveTemplate("Champion of Light", SpellClassAuraType.PaladinPassive, icon, description));
 
-            // Proc on any direct or periodic heal the paladin lands
             List<SpellEffectWOW> auraEffects = new List<SpellEffectWOW>();
             auraEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModBlockPercent, Configuration.CLASSAURA_PALADIN_BLOCK_PERCENT, 0, SpellWOWTargetType.UnitCaster));
             SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Champion of Light (Paladin)", SpellClassAuraType.PaladinAura, icon, description, auraEffects);
             auraSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraPaladinAuraScript";
-            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS | 0x00040000, // 0x00040000 = PROC_FLAG_DONE_PERIODIC
-                PROC_SPELL_TYPE_HEAL, PROC_SPELL_PHASE_HIT, 0, 0, 0);
+            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS | 0x00040000 // 0x00040000 = PROC_FLAG_DONE_PERIODIC
+                | PROC_FLAG_TAKEN_MELEE_AUTO_ATTACK | PROC_FLAG_TAKEN_SPELL_MELEE_DMG_CLASS | PROC_FLAG_TAKEN_RANGED_AUTO_ATTACK | PROC_FLAG_TAKEN_SPELL_RANGED_DMG_CLASS,
+                PROC_SPELL_TYPE_DAMAGE | PROC_SPELL_TYPE_HEAL | PROC_SPELL_TYPE_NO_DMG_HEAL, PROC_SPELL_PHASE_HIT,
+                PROC_HIT_NORMAL | PROC_HIT_CRITICAL | PROC_HIT_BLOCK | PROC_HIT_FULL_BLOCK, 0, 0);
             spellTemplates.Add(auraSpellTemplate);
+
+            // Blessed Deflection
+            SpellTemplate deflectionSpellTemplate = BuildBaseTemplate("Blessed Deflection", SpellClassAuraType.PaladinDeflection, icon, "Holy damage turned back from a blocked attack.", string.Empty);
+            deflectionSpellTemplate.SchoolMask = SCHOOL_MASK_HOLY;
+            deflectionSpellTemplate.SpellRadius = Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS;
+            deflectionSpellTemplate.SpellVisualID1 = Convert.ToUInt32(Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_SPELL_VISUAL_ID);
+            SpellEffectWOW deflectionEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0);
+            deflectionEffect.ImplicitTargetA = SpellWOWTargetType.UnitSourceAreaEnemy;
+            deflectionEffect.EffectRadiusIndex = Convert.ToUInt32(deflectionSpellTemplate.SpellRadiusDBCID);
+            deflectionSpellTemplate.WOWSpellEffects.Add(deflectionEffect);
+            deflectionSpellTemplate.CannotCrit = true;
+            deflectionSpellTemplate.InfluencedBySpellPower = false;
+            spellTemplates.Add(deflectionSpellTemplate);
 
             SpellTemplate healSpellTemplate = BuildBaseTemplate("Light's Reward", SpellClassAuraType.PaladinHeal, icon, "Healed by the light you gave to another.", string.Empty);
             SpellEffectWOW healEffect = new SpellEffectWOW(SpellWOWEffectType.Heal, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0);
             healEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             healSpellTemplate.WOWSpellEffects.Add(healEffect);
+            healSpellTemplate.SpellVisualID1 = Convert.ToUInt32(Configuration.CLASSAURA_PALADIN_HEAL_SPELL_VISUAL_ID);
             healSpellTemplate.GenerateNoThreat = true;
             healSpellTemplate.CannotCrit = true;
             healSpellTemplate.InfluencedBySpellPower = false;
@@ -651,7 +707,7 @@ namespace EQWOWConverter.Spells
             spellTemplates.Add(BuildPassiveTemplate("Sacred Cadence", SpellClassAuraType.ClericPassive, icon, description));
             spellTemplates.Add(BuildPermanentAuraTemplate("Sacred Cadence (Cleric)", SpellClassAuraType.ClericAura, icon, description, new List<SpellEffectWOW>()));
 
-            string cadenceDescription = string.Concat("Each charge cuts the cast time and mana cost of the next single target heal by ", Pct(Configuration.CLASSAURA_CLERIC_CADENCE_REDUCTION_PERCENT), ".");
+            string cadenceDescription = string.Concat("Each charge cuts the cast time and mana cost of the next single target heal by ", Pct(Configuration.CLASSAURA_CLERIC_CADENCE_REDUCTION_PERCENT), ". The cast time cut adds together with Chi Surge.");
             List<SpellEffectWOW> cadenceEffects = new List<SpellEffectWOW>();
             cadenceEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitCaster));
             spellTemplates.Add(BuildStackingAuraTemplate("Sacred Focus", SpellClassAuraType.ClericCadence, icon, cadenceDescription, cadenceEffects,

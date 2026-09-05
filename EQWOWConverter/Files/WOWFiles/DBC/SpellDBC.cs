@@ -92,7 +92,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.ExcludeTargetAuraSpellID)); // ExcludeTargetAuraSpell
             newRow.AddUInt32(Convert.ToUInt32(castTimeDBCID)); // CastingTimeIndex   
             if (isCreatureCastVersion == false && isClickyVersion == false && spellTemplate.IsPlayerCooldownDisabledByConfig() == true)
-                newRow.AddUInt32(0); // RecoveryTime (damage / heal cooldowns disabled by config)
+                newRow.AddUInt32(spellTemplate.GetCooldownDisabledRecoveryTimeInMS()); // RecoveryTime
             else if (spellTemplate.RecoveryTimeInMS < Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS)
                 newRow.AddUInt32(0); // RecoveryTime
             else
@@ -556,6 +556,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 262144; // SPELL_ATTR3_ALWAYS_HIT (0x00040000).  Note that 0x20000000 is SPELL_ATTR3_IGNORE_CASTER_MODIFIERS, which silently drops every caster spell mod
             if (spellTemplate.RequiresMainHandWeapon == true)
                 attributeFlags |= 1024; // SPELL_ATTR3_REQUIRES_MAIN_HAND_WEAPON (0x400)
+            if (spellTemplate.DamageIsFixed == true)
+                attributeFlags |= 536870912; // SPELL_ATTR3_IGNORE_CASTER_MODIFIERS (0x20000000)
             return attributeFlags;
         }
 
@@ -575,6 +577,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 128; // SPELL_ATTR4_ALLOW_CAST_WHILE_CASTING (0x00000080)
             if (isToggleAura == true || spellTemplate.AlwaysPersist == true)
                 attributeFlags |= 1048576; // SPELL_ATTR4_AURA_NEVER_BOUNCES
+            if (spellTemplate.DamageIsFixed == true)
+                attributeFlags |= 256; // SPELL_ATTR4_IGNORE_DAMAGE_TAKEN_MODIFIERS (0x00000100)
             return attributeFlags;
         }
 
