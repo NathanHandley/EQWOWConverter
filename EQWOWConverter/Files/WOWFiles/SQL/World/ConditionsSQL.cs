@@ -35,6 +35,13 @@ namespace EQWOWConverter.WOWFiles
             foreach (RaceType raceType in raceTypes)
                 raceMask += (int)(Math.Pow(2, ((int)raceType - 1)));
 
+            // The core throws away a race condition with an empty mask, which silently turns the restriction off
+            if (raceMask == 0)
+            {
+                Logger.WriteError("Gossip menu option race restriction for menu '", gossipMenuID.ToString(), "' option '", gossipMenuOptionID.ToString(), "' had no races in it, so no condition row was written (comment was '", comment, "')");
+                return;
+            }
+
             SQLRow newRow = new SQLRow();
             newRow.AddInt("SourceTypeOrReferenceId", 15); // CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION
             newRow.AddInt("SourceGroup", gossipMenuID);

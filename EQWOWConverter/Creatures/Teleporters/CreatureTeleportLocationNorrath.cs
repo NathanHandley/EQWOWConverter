@@ -147,6 +147,7 @@ namespace EQWOWConverter.Creatures.Teleporters
                 {
                     case CreatureFactionAlignmentType.Good: GoodRaces.Add(raceProperties.WOWRaceType); break;
                     case CreatureFactionAlignmentType.Evil: EvilRaces.Add(raceProperties.WOWRaceType); break;
+                    case CreatureFactionAlignmentType.Neutral: NeutralRaces.Add(raceProperties.WOWRaceType); break;
                     default: break; // Do nothing
                 }
             }

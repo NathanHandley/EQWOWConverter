@@ -106,6 +106,10 @@ namespace EQWOWConverter.WOWFiles
                 numOfRoles += 2;
             if (numOfRoles > 1)
                 npcFlags |= 1;     // 0x00000001 = Has Gossip Menu
+
+            int gossipMenuID = creatureTemplate.GossipMenuID;
+            if ((npcFlags & 1) == 0)
+                gossipMenuID = 0;
             if (creatureTemplate.CanAssist == true)
                 typeFlags |= 4096;   // 0x00001000 = CREATURE_TYPE_FLAG_CAN_ASSIST
             bool isHiddenNonNPC = creatureTemplate.IsNonNPC == true && creatureTemplate.IsInteractive() == false;
@@ -142,7 +146,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("name", 100, creatureTemplate.Name);
             newRow.AddString("subname", 100, creatureTemplate.SubName);
             newRow.AddString("IconName", 100, iconName);
-            newRow.AddInt("gossip_menu_id", creatureTemplate.GossipMenuID);
+            newRow.AddInt("gossip_menu_id", gossipMenuID);
             newRow.AddInt("minlevel", creatureTemplate.Level);
             newRow.AddInt("maxlevel", creatureTemplate.MaxLevel);
             newRow.AddInt("exp", 0); // Which expansion to use (0 = classic)

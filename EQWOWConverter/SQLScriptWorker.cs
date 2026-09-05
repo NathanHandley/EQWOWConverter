@@ -76,6 +76,7 @@ namespace EQWOWConverter
         private GameTableDBCSQL gtChanceToSpellCritBaseDBCSQL = new GameTableDBCSQL("gtchancetospellcritbase_dbc");
         private GameTableDBCSQL gtChanceToSpellCritDBCSQL = new GameTableDBCSQL("gtchancetospellcrit_dbc");
         private GameTableDBCSQL gtRegenMPPerSptDBCSQL = new GameTableDBCSQL("gtregenmpperspt_dbc");
+        private InstanceEncountersSQL instanceEncountersSQL = new InstanceEncountersSQL();
         private InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
         private ItemLootTemplateSQL itemLootTemplateSQL = new ItemLootTemplateSQL();
         private ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
@@ -126,6 +127,7 @@ namespace EQWOWConverter
         private PlayerClassStatsSQL playerClassStatsSQL = new PlayerClassStatsSQL();
         private PlayerCreateInfoSQL playerCreateInfoSQL = new PlayerCreateInfoSQL();
         private PlayerCreateInfoActionSQL playerCreateInfoActionSQL = new PlayerCreateInfoActionSQL();
+        private PlayerCreateInfoItemSQL playerCreateInfoItemSQL = new PlayerCreateInfoItemSQL();
         private PlayerCreateInfoSkillsSQL playerCreateInfoSkillsSQL = new PlayerCreateInfoSkillsSQL();
         private PlayerShapeshiftModelSQL playerShapeshiftModelSQL = new PlayerShapeshiftModelSQL();
         private PlayerTotemModelSQL playerTotemModelSQL = new PlayerTotemModelSQL();
@@ -2704,7 +2706,23 @@ namespace EQWOWConverter
                     manaGainSpellPowerCoefficient = spellTemplate.GetManaGainSpellPowerCoefficientForBlock(curEffectBlock);
                 modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion, manaGainSpellPowerCoefficient, isCreatureCastVersion, isClickyVersion);
                 if (manaGainSpellPowerCoefficient > 0f)
-                    spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_ManaGainSpellPowerSpellScript");
+                {
+                    bool blockHasDirectEnergize = false;
+                    bool blockHasPeriodicEnergize = false;
+                    foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
+                    {
+                        if (blockEffect.EffectType == SpellWOWEffectType.Energize)
+                            blockHasDirectEnergize = true;
+                        if (blockEffect.IsAuraType() == true && blockEffect.EffectAuraType == SpellWOWAuraType.PeriodicEnergize)
+                            blockHasPeriodicEnergize = true;
+                    }
+                    if (blockHasDirectEnergize == true)
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_ManaGainSpellPowerSpellScript");
+                    if (blockHasPeriodicEnergize == true)
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_ManaGainSpellPowerAuraScript");
+                    if (blockHasDirectEnergize == false && blockHasPeriodicEnergize == false)
+                        Logger.WriteError("Spell '", spellTemplate.Name, "' (EQ ID '", spellTemplate.EQSpellID.ToString(), "') has a mana gain spell power coefficient on a block with no energize effect, so no script was attached");
+                }
 
                 // Spell power
                 if (spellTemplate.InfluencedBySpellPower == true && commentFragment != " (Worn)")
@@ -2807,9 +2825,29 @@ namespace EQWOWConverter
             if (spellTemplate.AppliesIntenseHealingExhaustion == true && commentFragment == string.Empty) // commentFragment check stops item clicks and creature-cast exempt, find better way?
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_IntenseHealingSpellScript");
 
-            // WOW has no effect that takes a damage shield away, so the strip is done by a script when the aura lands
             if (spellTemplate.RemovesTargetDamageShield == true)
-                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_RemoveDamageShieldAuraScript");
+            {
+                bool attachedRemoveDamageShieldScript = false;
+                foreach (SpellEffectBlock curEffectBlock in spellEffectBlocks)
+                {
+                    bool blockHasRemoveDamageShieldEffect = false;
+                    foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
+                    {
+                        if (blockEffect.EffectAuraType != SpellWOWAuraType.Dummy)
+                            continue;
+                        if (blockEffect.EffectMiscValueA != (int)SpellDummyType.RemoveDamageShield)
+                            continue;
+                        blockHasRemoveDamageShieldEffect = true;
+                        break;
+                    }
+                    if (blockHasRemoveDamageShieldEffect == false)
+                        continue;
+                    spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_RemoveDamageShieldAuraScript");
+                    attachedRemoveDamageShieldScript = true;
+                }
+                if (attachedRemoveDamageShieldScript == false)
+                    Logger.WriteError("Spell '", spellTemplate.Name, "' (EQ ID '", spellTemplate.EQSpellID.ToString(), "') strips damage shields, but no generated effect block held the dummy effect for it, so the script was not attached");
+            }
 
             // Marks that heal melee attackers are Judgement of Light in everything but name, so they take that spell's proc row and cannot stack with it
             if (spellTemplate.HealsMeleeAttackersLikeJudgementOfLight == true)
@@ -3550,6 +3588,8 @@ namespace EQWOWConverter
             gtChanceToSpellCritBaseDBCSQL.SaveToDisk("gtchancetospellcritbase_dbc", SQLFileType.World);
             gtChanceToSpellCritDBCSQL.SaveToDisk("gtchancetospellcrit_dbc", SQLFileType.World);
             gtRegenMPPerSptDBCSQL.SaveToDisk("gtregenmpperspt_dbc", SQLFileType.World);
+            if (LFGDungeonsDBC.RemovedDungeonFinderIDs.Count > 0)
+                instanceEncountersSQL.SaveToDisk("instance_encounters", SQLFileType.World);
             instanceTemplateSQL.SaveToDisk("instance_template", SQLFileType.World);
             itemLootTemplateSQL.SaveToDisk("item_loot_template", SQLFileType.World);
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
@@ -3606,6 +3646,8 @@ namespace EQWOWConverter
                 playerShapeshiftModelSQL.SaveToDisk("player_shapeshift_model", SQLFileType.World);
                 playerTotemModelSQL.SaveToDisk("player_totem_model", SQLFileType.World);
             }
+            if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
+                playerCreateInfoItemSQL.SaveToDisk("playercreateinfo_item", SQLFileType.World);
             playerCreateInfoSpellCustomSQL.SaveToDisk("playercreateinfo_spell_custom", SQLFileType.World);
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);

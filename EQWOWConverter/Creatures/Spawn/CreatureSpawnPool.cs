@@ -43,7 +43,7 @@ namespace EQWOWConverter.Creatures
 
         public CreatureSpawnPool? CreateCopyWithoutRaidCreatures()
         {
-            return CreateCopyWithFilteredCreatures(false, false);
+            return CreateCopyWithFilteredCreatures(false, true);
         }
 
         public CreatureSpawnPool? CreateCopyWithOnlyRaidCreatures()

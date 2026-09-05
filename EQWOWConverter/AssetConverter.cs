@@ -2088,6 +2088,10 @@ namespace EQWOWConverter
                             newItemLootTemplate.MinCount = effectiveDisplay.MinCount;
                             newItemLootTemplate.MaxCount = effectiveDisplay.MaxCount;
                         }
+
+                        // A row with no chance and no group is rejected by the core, so give something low to prevent that
+                        if (newItemLootTemplate.Chance <= 0f)
+                            newItemLootTemplate.Chance = 0.0001f;
                         itemLootTemplates.Add(newItemLootTemplate);
                     }
 
