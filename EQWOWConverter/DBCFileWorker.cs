@@ -333,6 +333,15 @@ namespace EQWOWConverter
                     spellDBC.AppendToDescriptionOfSpellID(talentInteraction.SpellID, addendumText);
             }
 
+            // Certain shapeshift forms allow certain spells/abilities
+            string moonkinFormAddendum = "EverQuest spells and abilities can be cast in this form, except for healing spells.";
+            string treeOfLifeFormAddendum = "EverQuest healing spells and buffs can be cast in this form, but EverQuest offensive spells cannot.";
+            string metamorphosisFormAddendum = "EverQuest spells and abilities can be used in this form without leaving it, except for healing spells.";
+            spellDBC.AppendToDescriptionOfSpellID(Configuration.DBCID_SPELL_MOONKIN_FORM_ID, string.Concat(talentAddendumColorPrefix, moonkinFormAddendum, talentAddendumColorSuffix));
+            spellDBC.AppendToDescriptionOfSpellID(Configuration.DBCID_SPELL_TREE_OF_LIFE_FORM_ID, string.Concat(talentAddendumColorPrefix, treeOfLifeFormAddendum, talentAddendumColorSuffix));
+            spellDBC.AppendToDescriptionOfSpellID(Configuration.DBCID_SPELL_METAMORPHOSIS_ID, string.Concat(talentAddendumColorPrefix, metamorphosisFormAddendum, talentAddendumColorSuffix));
+            spellDBC.AppendToDescriptionOfSpellID(Configuration.DBCID_SPELL_METAMORPHOSIS_TALENT_ID, string.Concat(talentAddendumColorPrefix, metamorphosisFormAddendum, talentAddendumColorSuffix));
+
             // Death knights that level from 1 get their abilities spread out across 1-55, so damage has to scale and level gates have to drop
             if (Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true)
                 AdjustDeathKnightSpellsForLowLevelPlay();

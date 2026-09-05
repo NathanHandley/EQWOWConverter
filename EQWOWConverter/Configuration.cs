@@ -1627,6 +1627,12 @@ namespace EQWOWConverter
         // ID for the (existing) SpellVisual.dbc row used by stock rogue Backstab
         public static int DBCID_SPELLVISUAL_BACKSTAB_ID = 155;
 
+        // IDs for the (existing) Spell.dbc rows of the shapeshift forms that EQ spells are allowed to be cast in
+        public static int DBCID_SPELL_MOONKIN_FORM_ID = 24858;
+        public static int DBCID_SPELL_TREE_OF_LIFE_FORM_ID = 33891;
+        public static int DBCID_SPELL_METAMORPHOSIS_ID = 47241;
+        public static int DBCID_SPELL_METAMORPHOSIS_TALENT_ID = 59672;
+
         // IDs for the SpellVisual line of DBC files
         public static int DBCID_SPELLVISUAL_ID_START = 17000;
         public static int DBCID_SPELLVISUALKIT_ID_START = 16000;

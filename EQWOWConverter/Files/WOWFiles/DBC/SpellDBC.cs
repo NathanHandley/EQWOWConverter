@@ -42,6 +42,15 @@ namespace EQWOWConverter.WOWFiles
             if (spellTemplate.WOWSpellID == Configuration.SPELL_SUMMON_CASTER_AURA_SPELL_ID)
                 doHideFromDisplay = true;
 
+            UInt64 shapeshiftMask = spellTemplate.GetAllowedShapeshiftFormMask();
+            UInt64 shapeshiftExcludeMask = spellTemplate.GetExcludedShapeshiftFormMask();
+            if (isWornEquipEffect == true && spellTemplate.AllowInShapeshift == false)
+            {
+                // Worn/equip effect auras are applied rather than cast, so they stay unrestricted by form the way they always were
+                shapeshiftMask = 0;
+                shapeshiftExcludeMask = 0;
+            }
+
             DBCRow newRow = new DBCRow();            
             newRow.AddInt32(effectBlock.WOWSpellID); // ID
             newRow.AddUInt32(spellTemplate.Category); // Category (SpellCategory.ID)
@@ -53,7 +62,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // Mechanic
             newRow.AddUInt32(GetAttributes(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, doHideFromDisplay, preventClickOff, isWornEquipEffect)); // Attributes
             newRow.AddUInt32(GetAttributesEx(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesEx
-            newRow.AddUInt32(GetAttributesExB(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExB
+            newRow.AddUInt32(GetAttributesExB(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, shapeshiftMask)); // AttributesExB
             newRow.AddUInt32(GetAttributesExC(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExC
             UInt32 attributesExD = GetAttributesExD(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, isToggleAura);
             if (isWornEquipEffect == true || spellTemplate.CannotBeStolen == true)
@@ -62,11 +71,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(GetAttributesExE(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExE
             newRow.AddUInt32(GetAttributesExF(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExF
             newRow.AddUInt32(GetAttributesExG(spellTemplate)); // AttributesExG
-            if (spellTemplate.AllowInShapeshift == true)
-                newRow.AddUInt64(0xFFFFFFFFFFFFFFFF); // ShapeshiftMask (all forms when allowed in shapeshift)
-            else
-                newRow.AddUInt64(0); // ShapeshiftMask (no forms when allowed in shapeshift)
-            newRow.AddUInt64(0); // ShapeshiftExclude
+            newRow.AddUInt64(shapeshiftMask); // ShapeshiftMask
+            newRow.AddUInt64(shapeshiftExcludeMask); // ShapeshiftExclude
             if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
                 newRow.AddUInt32(16); // Targets (Item Enchantment)
             else if (spellTemplate.CastOnCorpse == true)
@@ -516,7 +522,7 @@ namespace EQWOWConverter.WOWFiles
             return attributeFlags;
         }
 
-        private UInt32 GetAttributesExB(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
+        private UInt32 GetAttributesExB(SpellTemplate spellTemplate, SpellWOWAuraType auraType, UInt64 shapeshiftMask)
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 16385;
@@ -525,7 +531,7 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 8192; // 	SPELL_ATTR2_ENCHANT_OWN_ITEM_ONLY (0x00002000)
             if (spellTemplate.DoNotInterruptAutoActionsAndSwingTimers == true)
                 attributeFlags |= 131072; // SPELL_ATTR2_DO_NOT_RESET_COMBAT_TIMERS (0x00020000)
-            if (spellTemplate.AllowInShapeshift == true)
+            if (shapeshiftMask != 0)
                 attributeFlags |= 524288; // SPELL_ATTR2_ALLOW_WHILE_NOT_SHAPESHIFTED (0x00080000)
             if (spellTemplate.IgnoreLineOfSight == true)
                 attributeFlags |= 4; // SPELL_ATTR2_IGNORE_LINE_OF_SIGHT (0x00000004)

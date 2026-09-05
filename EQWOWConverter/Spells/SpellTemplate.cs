@@ -500,6 +500,81 @@ namespace EQWOWConverter.Spells
             return false;
         }
 
+        public bool IsOffensiveSpell()
+        {
+            if (IsGoodEffect == true)
+                return false;
+            foreach (SpellEffectWOW wowEffect in WOWSpellEffects)
+            {
+                if (IsEnemyTargetType(wowEffect.ImplicitTargetA) == true || IsEnemyTargetType(wowEffect.ImplicitTargetB) == true)
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool IsEnemyTargetType(SpellWOWTargetType targetType)
+        {
+            switch (targetType)
+            {
+                case SpellWOWTargetType.UnitTargetEnemy:
+                case SpellWOWTargetType.UnitSourceAreaEnemy:
+                case SpellWOWTargetType.UnitDestinationAreaEnemy:
+                case SpellWOWTargetType.DestinationDynamicObjectEnemy:
+                case SpellWOWTargetType.DestinationTargetEnemy: return true;
+                default: return false;
+            }
+        }
+
+        public bool IsHealingSpell()
+        {
+            if (IsOffensiveSpell() == true)
+                return false;
+            foreach (SpellEffectWOW wowEffect in WOWSpellEffects)
+            {
+                if (wowEffect.EffectAuraType == SpellWOWAuraType.None)
+                {
+                    if (wowEffect.EffectType == SpellWOWEffectType.Heal)
+                        return true;
+                }
+                else if (wowEffect.EffectAuraType == SpellWOWAuraType.PeriodicHeal)
+                    return true;
+            }
+            return false;
+        }
+
+        // Spell.dbc ShapeshiftMask / ShapeshiftExclude bits, which the client and core both read as (1 << (ShapeshiftForm - 1))
+        private const UInt64 SHAPESHIFT_FORM_MASK_ALL = 0xFFFFFFFFFFFFFFFF;
+        private const UInt64 SHAPESHIFT_FORM_MASK_TREE_OF_LIFE = 1ul << (2 - 1); // FORM_TREE, the druid Tree of Life form
+        private const UInt64 SHAPESHIFT_FORM_MASK_METAMORPHOSIS = 1ul << (22 - 1); // FORM_METAMORPHOSIS, the warlock demon form
+        private const UInt64 SHAPESHIFT_FORM_MASK_MOONKIN = 1ul << (31 - 1); // FORM_MOONKIN
+
+        public UInt64 GetAllowedShapeshiftFormMask()
+        {
+            // Custom abilities flagged usable in shapeshift (Bash, Slam, Piercing Backstab, Tracking) carry no form restriction at all
+            if (AllowInShapeshift == true)
+                return SHAPESHIFT_FORM_MASK_ALL;
+
+            // Moonkin Form and Metamorphosis take everything but healing, Tree of Life takes everything but offensive spells
+            UInt64 formMask = 0;
+            if (IsHealingSpell() == false)
+                formMask |= SHAPESHIFT_FORM_MASK_MOONKIN | SHAPESHIFT_FORM_MASK_METAMORPHOSIS;
+            if (IsOffensiveSpell() == false)
+                formMask |= SHAPESHIFT_FORM_MASK_TREE_OF_LIFE;
+            return formMask;
+        }
+
+        public UInt64 GetExcludedShapeshiftFormMask()
+        {
+            if (AllowInShapeshift == true)
+                return 0;
+            UInt64 formMask = 0;
+            if (IsHealingSpell() == true)
+                formMask |= SHAPESHIFT_FORM_MASK_MOONKIN | SHAPESHIFT_FORM_MASK_METAMORPHOSIS;
+            if (IsOffensiveSpell() == true)
+                formMask |= SHAPESHIFT_FORM_MASK_TREE_OF_LIFE;
+            return formMask;
+        }
+
         public UInt32 GetCounterBasedDispelType()
         {
             // Detrimental spells with a positive counter are cured by the counter regardless of resist type
