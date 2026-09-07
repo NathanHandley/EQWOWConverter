@@ -20,7 +20,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class AreaTableDBC : DBCFile
     {
-        public void AddRow(int id, int mapID, int parentAreaID, ZoneAreaMusic? areaMusic, ZoneAreaAmbientSound? areaSound, string areaName, bool isRestingArea, bool doShowBreath, bool duelingAllowed)
+        public void AddRow(int id, int mapID, int parentAreaID, ZoneAreaMusic? areaMusic, ZoneAreaAmbientSound? areaSound, string areaName, bool isRestingArea, bool doShowBreath, bool duelingAllowed, bool isSanctuary)
         {
             // AreaBit must always be unique
             int areaBit = IDGenerationTool.GenerateID("AreaBit", id.ToString());
@@ -50,6 +50,8 @@ namespace EQWOWConverter.WOWFiles
                 flags += 1; // AREA_FLAG_HasBreathParticles
             if (duelingAllowed == true)
                 flags += 64; // AREA_FLAG_AllowDueling
+            if (isSanctuary == true)
+                flags += 2048; // AREA_FLAG_Sanctuary
 
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id);

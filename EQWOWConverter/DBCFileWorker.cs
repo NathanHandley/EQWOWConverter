@@ -543,9 +543,9 @@ namespace EQWOWConverter
                 ZoneProperties zoneProperties = zone.ZoneProperties;
 
                 // AreaTable
-                areaTableDBC.AddRow(Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zoneProperties.DBCMapID, 0, zone.DefaultArea.AreaMusic, zone.DefaultArea.AreaAmbientSound, zone.DefaultArea.DisplayName, zoneProperties.IsRestingZoneWide, zone.DefaultArea.DoShowBreath, zoneProperties.DuelingAllowed);
+                areaTableDBC.AddRow(Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zoneProperties.DBCMapID, 0, zone.DefaultArea.AreaMusic, zone.DefaultArea.AreaAmbientSound, zone.DefaultArea.DisplayName, zoneProperties.IsRestingZoneWide, zone.DefaultArea.DoShowBreath, zoneProperties.DuelingAllowed, zoneProperties.IsSanctuary);
                 foreach (ZoneArea subArea in zoneProperties.SubZoneAreas)
-                    areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), zoneProperties.DBCMapID, Convert.ToInt32(subArea.DBCParentAreaTableID), subArea.AreaMusic, subArea.AreaAmbientSound, subArea.DisplayName, zoneProperties.IsRestingZoneWide, subArea.DoShowBreath, zoneProperties.DuelingAllowed);
+                    areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), zoneProperties.DBCMapID, Convert.ToInt32(subArea.DBCParentAreaTableID), subArea.AreaMusic, subArea.AreaAmbientSound, subArea.DisplayName, zoneProperties.IsRestingZoneWide, subArea.DoShowBreath, zoneProperties.DuelingAllowed, zoneProperties.IsSanctuary);
 
                 // AreaTrigger (the instance copies of a zone needs its own trigger boxes, since they are keyed by map)
                 foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
