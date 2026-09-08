@@ -219,6 +219,7 @@ namespace EQWOWConverter.ObjectModels
                         returnTypes.Add(EQAnimationType.c05AttackMain1H);
                         returnTypes.Add(EQAnimationType.c08AttackUnarmed);
                     } break;
+                case AnimationType.SpecialUnarmed: // Fallthrough
                 case AnimationType.AttackUnarmed:
                     {
                         returnTypes.Add(EQAnimationType.c08AttackUnarmed);
@@ -226,6 +227,7 @@ namespace EQWOWConverter.ObjectModels
                         returnTypes.Add(EQAnimationType.c02AttackPierce);
                     }
                     break;
+                case AnimationType.Special1H: // Fallthrough
                 case AnimationType.Attack1H:
                     {
                         returnTypes.Add(EQAnimationType.c05AttackMain1H);
@@ -233,6 +235,7 @@ namespace EQWOWConverter.ObjectModels
                         returnTypes.Add(EQAnimationType.c02AttackPierce);
                     }
                     break;
+                case AnimationType.Special2H: // Fallthrough
                 case AnimationType.Attack2H:
                     {
                         returnTypes.Add(EQAnimationType.c03Attack2H);
@@ -311,6 +314,12 @@ namespace EQWOWConverter.ObjectModels
                 case AnimationType.Kick:
                     {
                         returnTypes.Add(EQAnimationType.c01Kick);
+                    } break;
+                case AnimationType.DragonStomp:
+                    {
+                        returnTypes.Add(EQAnimationType.c01Kick);
+                        returnTypes.Add(EQAnimationType.c11RoundhouseKick);
+                        returnTypes.Add(EQAnimationType.c08AttackUnarmed);
                     } break;
                 case AnimationType.KneelStart:
                     {

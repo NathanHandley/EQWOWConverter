@@ -1496,10 +1496,17 @@ namespace EQWOWConverter.ObjectModels
                         FindAndSetAnimationForType(AnimationType.LootUp);
                         FindAndSetAnimationForType(AnimationType.Fall);
                         FindAndSetAnimationForType(AnimationType.ReadyUnarmed); // Fixed levitation + wolf form + in combat
+                        FindAndSetAnimationForType(AnimationType.Ready1H); // Same as ReadyUnarmed, but for a levitating illusion holding a weapon (illusions keep gear, unlike shapeshift forms)
+                        FindAndSetAnimationForType(AnimationType.Ready2H);
+                        FindAndSetAnimationForType(AnimationType.Ready2HL);
+                        FindAndSetAnimationForType(AnimationType.SpecialUnarmed); // The 'critical' attack animations, which the client plays in normal combat
+                        FindAndSetAnimationForType(AnimationType.Special1H);
+                        FindAndSetAnimationForType(AnimationType.Special2H);
 
                         // Spell visual kits force the caster to play animations via the kit sometimes (Call Pet playes EmoteShout, for example) and
                         // without these sequences, there is a slight crash/freeze when a unet is levitating or hovering
                         FindAndSetAnimationForType(AnimationType.Stop);
+                        FindAndSetAnimationForType(AnimationType.DragonStomp); // Needed for War Stomp
                         FindAndSetAnimationForType(AnimationType.StandWound);
                         FindAndSetAnimationForType(AnimationType.HandsClosed);
                         FindAndSetAnimationForType(AnimationType.Spell);
@@ -1639,14 +1646,13 @@ namespace EQWOWConverter.ObjectModels
             ModelAnimations[2].PlayFrequency = Convert.ToInt16(fidgetFrequencyEach);
             ModelAnimations[3].PlayFrequency = Convert.ToInt16(fidgetFrequencyEach);
 
-            // Chain the variations in a circle so the client's weighted roll walk can reach every variation no matter which one it starts from (a linear chain that ends in
-            // -1 dead-ends the walk once a fidget is playing, locking the creature into looping fidgets forever)
+            // Chains should not be a circle, but rather terminate with -1 otherwise it causes ~5.2 second freezeups in some rare situations
             for (int i = 0; i < 4; i++)
                 ModelAnimations[i].SubAnimationID = Convert.ToUInt16(i);
             ModelAnimations[0].NextAnimation = 1;
             ModelAnimations[1].NextAnimation = 2;
             ModelAnimations[2].NextAnimation = 3;
-            ModelAnimations[3].NextAnimation = 0;
+            ModelAnimations[3].NextAnimation = -1;
 
             // Adding the four stand variations left the stand animation lookup pointing at the last (fidget) variation, so point it back at the first calm stand so entering idle starts calm
             SetAnimationLookup(AnimationType.Stand, 0);
