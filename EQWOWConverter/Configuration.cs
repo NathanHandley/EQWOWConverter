@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 100;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 101;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -342,7 +342,7 @@ namespace EQWOWConverter
         public static bool DUNGEON_FINDER_ENABLED = true;
 
         // If true, the stock WoW dungeon finder entries (except seasonal) are removed
-        public static bool DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS = true;
+        public static bool DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS = false;
 
         // Low Raid (pre-61+) dungeon instances
         public static bool DUNGEON_RAID_LOW_INSTANCES_ENABLED = true;
@@ -351,6 +351,12 @@ namespace EQWOWConverter
         // Instanced versions of EQ dungeons
         public static bool DUNGEON_INSTANCES_ENABLED = true;
         public static int DUNGEON_INSTANCE_MAX_PLAYERS = 40;
+
+        // If true, the instanced versions of EQ dungeons (non-raid) are queueable in the dungeon finder
+        public static bool DUNGEON_FINDER_ADD_EQ_DUNGEON_INSTANCES = true;
+
+        // Highest EQ expansion whose dungeons are listed in the dungeon finder
+        public static int DUNGEON_FINDER_EQ_MAX_EXPANSION_ID = 1;
 
         //=====================================================================
         // World Maps (and Minimaps)
@@ -1564,9 +1570,13 @@ namespace EQWOWConverter
         // Start ID for item display info
         public static int DBCID_ITEMDISPLAYINFO_START = 86000;
 
-        // IDs for LFGDungeonGroup.dbc
-        public static int DBCID_LFGDUNGEONGROUP_DUNGEONS_ID = 15;
-        public static int DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID = 6;
+        // IDs for LFGDungeonGroup.dbc.  Stock rows are IDs 1-9 and 11, using order indexes 1-5 (dungeons) and 17-21 (raids and world events)
+        public static int DBCID_LFGDUNGEONGROUP_DUNGEONS_CLASSIC_ID = 15;
+        public static int DBCID_LFGDUNGEONGROUP_DUNGEONS_CLASSIC_ORDER_ID = 6;
+        public static int DBCID_LFGDUNGEONGROUP_DUNGEONS_KUNARK_ID = 17;
+        public static int DBCID_LFGDUNGEONGROUP_DUNGEONS_KUNARK_ORDER_ID = 7;
+        public static int DBCID_LFGDUNGEONGROUP_DUNGEONS_VELIOUS_ID = 18;
+        public static int DBCID_LFGDUNGEONGROUP_DUNGEONS_VELIOUS_ORDER_ID = 8;
         public static int DBCID_LFGDUNGEONGROUP_RAIDS_ID = 16;
         public static int DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID = 22;
 
@@ -1982,7 +1992,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("DUNGEON_RAID_LOW_MAX_PLAYERS", DUNGEON_RAID_LOW_MAX_PLAYERS, "");
             OutputVariableToConfig("DUNGEON_INSTANCES_ENABLED", DUNGEON_INSTANCES_ENABLED, "Instanced versions of EQ dungeons", false);
             OutputVariableToConfig("DUNGEON_INSTANCE_MAX_PLAYERS", DUNGEON_INSTANCE_MAX_PLAYERS, "");
-            OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED", ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED, "If true, a feat of strength achievement is awarded to characters on accounts created before ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE", false);
+            OutputVariableToConfig("DUNGEON_FINDER_ADD_EQ_DUNGEON_INSTANCES", DUNGEON_FINDER_ADD_EQ_DUNGEON_INSTANCES, "If true, the instanced versions of EQ dungeons (non-raid) are queueable in the dungeon finder", false);
+            OutputVariableToConfig("DUNGEON_FINDER_EQ_MAX_EXPANSION_ID", DUNGEON_FINDER_EQ_MAX_EXPANSION_ID, "Highest EQ expansion whose dungeons are listed in the dungeon finder (0: Classic, 1: Kunark, 2: Velious)", false);
+            OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED", ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED, "If true, a feat of strength achievement is awarded to characters on accounts created before ACHIEVEMENT_LEGACY_ACCOUNT_CREATED_BEFORE_DATE");
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_NAME", ACHIEVEMENT_LEGACY_ACCOUNT_NAME, "", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION", ACHIEVEMENT_LEGACY_ACCOUNT_DESCRIPTION, "", false);
             OutputVariableToConfig("ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID", ACHIEVEMENT_LEGACY_ACCOUNT_ITEM_ICON_EQ_ID, "", false);
@@ -2767,6 +2779,8 @@ namespace EQWOWConverter
             DUNGEON_RAID_LOW_MAX_PLAYERS = ReadVariableFromConfigString("DUNGEON_RAID_LOW_MAX_PLAYERS", configValuesByVariableName, DUNGEON_RAID_LOW_MAX_PLAYERS);
             DUNGEON_INSTANCES_ENABLED = ReadVariableFromConfigString("DUNGEON_INSTANCES_ENABLED", configValuesByVariableName, DUNGEON_INSTANCES_ENABLED);
             DUNGEON_INSTANCE_MAX_PLAYERS = ReadVariableFromConfigString("DUNGEON_INSTANCE_MAX_PLAYERS", configValuesByVariableName, DUNGEON_INSTANCE_MAX_PLAYERS);
+            DUNGEON_FINDER_ADD_EQ_DUNGEON_INSTANCES = ReadVariableFromConfigString("DUNGEON_FINDER_ADD_EQ_DUNGEON_INSTANCES", configValuesByVariableName, DUNGEON_FINDER_ADD_EQ_DUNGEON_INSTANCES);
+            DUNGEON_FINDER_EQ_MAX_EXPANSION_ID = ReadVariableFromConfigString("DUNGEON_FINDER_EQ_MAX_EXPANSION_ID", configValuesByVariableName, DUNGEON_FINDER_EQ_MAX_EXPANSION_ID);
 
             ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED);
             ACHIEVEMENT_LEGACY_ACCOUNT_NAME = ReadVariableFromConfigString("ACHIEVEMENT_LEGACY_ACCOUNT_NAME", configValuesByVariableName, ACHIEVEMENT_LEGACY_ACCOUNT_NAME);

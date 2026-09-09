@@ -125,6 +125,7 @@ namespace EQWOWConverter.Zones
         public int DBCMapIDDungeon;
         public int DBCMapDifficultyIDDungeon;
         public int DBCWorldMapAreaIDDungeon = 0;
+        public int DBCLFGDungeonsIDDungeon = 0;
         public bool HasDungeonInstance = false;
         public UInt32 DBCWMOID;
         public string ShortName = string.Empty;
@@ -134,6 +135,8 @@ namespace EQWOWConverter.Zones
         public Vector3 TelePosition = new Vector3();
         public float TeleOrientation = 0;
         public Vector3 SafePosition = new Vector3();
+        public Vector3 DungeonFinderPosition = new Vector3();
+        public float DungeonFinderOrientation = 0;
         public int ExpansionID = 0;
         public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();
         public List<ZoneLiquidGroup> LiquidGroups = new List<ZoneLiquidGroup>();
@@ -195,6 +198,19 @@ namespace EQWOWConverter.Zones
             if (Configuration.DUNGEON_INSTANCES_ENABLED == false)
                 return false;
             return HasDungeonInstance;
+        }
+
+        public bool ShouldAddInstanceDungeonToDungeonFinder()
+        {
+            if (Configuration.DUNGEON_FINDER_ENABLED == false)
+                return false;
+            if (Configuration.DUNGEON_FINDER_ADD_EQ_DUNGEON_INSTANCES == false)
+                return false;
+
+            // A dungeon past the configured expansion still gets its instance built, it just isn't offered in the finder
+            if (ExpansionID > Configuration.DUNGEON_FINDER_EQ_MAX_EXPANSION_ID)
+                return false;
+            return ShouldGenerateInstanceDungeon();
         }
 
         public static HashSet<string> GetMusicNames()
@@ -1084,12 +1100,17 @@ namespace EQWOWConverter.Zones
                     if (zoneProperties.DBCMapDifficultyIDDungeon <= 0)
                         Logger.WriteError("ZoneProperties for zone '" + shortName + "' has HasDungeonInstance set but no valid WOWMapDifficultyIDDungeon, so the dungeon instance will not work");
                     zoneProperties.DBCWorldMapAreaIDDungeon = IDGenerationTool.GenerateID("WorldMapAreaID", "dungeon", shortName);
+                    zoneProperties.DBCLFGDungeonsIDDungeon = IDGenerationTool.GenerateID("LFGDungeonsID", "dungeon", shortName);
                 }
                 zoneProperties.DescriptiveName = propertiesRow["DescriptiveName"];
                 zoneProperties.TelePosition.X = float.Parse(propertiesRow["TeleX"]) * Configuration.GENERATE_WORLD_SCALE;
                 zoneProperties.TelePosition.Y = float.Parse(propertiesRow["TeleY"]) * Configuration.GENERATE_WORLD_SCALE;
                 zoneProperties.TelePosition.Z = float.Parse(propertiesRow["TeleZ"]) * Configuration.GENERATE_WORLD_SCALE;
                 zoneProperties.TeleOrientation = float.Parse(propertiesRow["TeleOrientation"]);
+                zoneProperties.DungeonFinderPosition.X = float.Parse(propertiesRow["DungeonFinderX"]) * Configuration.GENERATE_WORLD_SCALE;
+                zoneProperties.DungeonFinderPosition.Y = float.Parse(propertiesRow["DungeonFinderY"]) * Configuration.GENERATE_WORLD_SCALE;
+                zoneProperties.DungeonFinderPosition.Z = float.Parse(propertiesRow["DungeonFinderZ"]) * Configuration.GENERATE_WORLD_SCALE;
+                zoneProperties.DungeonFinderOrientation = float.Parse(propertiesRow["DungeonFinderOrientation"]);
                 zoneProperties.SafePosition.X = float.Parse(propertiesRow["SafeX"]) * Configuration.GENERATE_WORLD_SCALE;
                 zoneProperties.SafePosition.Y = float.Parse(propertiesRow["SafeY"]) * Configuration.GENERATE_WORLD_SCALE;
                 zoneProperties.SafePosition.Z = float.Parse(propertiesRow["SafeZ"]) * Configuration.GENERATE_WORLD_SCALE;

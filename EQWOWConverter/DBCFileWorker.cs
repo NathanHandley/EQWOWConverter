@@ -523,7 +523,16 @@ namespace EQWOWConverter
                 lfgDungeonsDBC.RemoveNonSeasonalDungeonFinderRows();
             if (Configuration.DUNGEON_FINDER_ENABLED == true)
             {
-                lfgDungeonGroupDBC.AddRow(Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_ID, "EverQuest", Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_ORDER_ID, false);
+                // One dungeon finder category per EQ expansion, and only for expansions that will actually have dungeons under them
+                if (Configuration.DUNGEON_FINDER_ADD_EQ_DUNGEON_INSTANCES == true)
+                {
+                    if (Configuration.DUNGEON_FINDER_EQ_MAX_EXPANSION_ID >= 0)
+                        lfgDungeonGroupDBC.AddRow(Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_CLASSIC_ID, "EverQuest Classic", Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_CLASSIC_ORDER_ID, false);
+                    if (Configuration.DUNGEON_FINDER_EQ_MAX_EXPANSION_ID >= 1)
+                        lfgDungeonGroupDBC.AddRow(Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_KUNARK_ID, "EverQuest Ruins of Kunark", Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_KUNARK_ORDER_ID, false);
+                    if (Configuration.DUNGEON_FINDER_EQ_MAX_EXPANSION_ID >= 2)
+                        lfgDungeonGroupDBC.AddRow(Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_VELIOUS_ID, "EverQuest Scars of Velious", Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_VELIOUS_ORDER_ID, false);
+                }
                 lfgDungeonGroupDBC.AddRow(Configuration.DBCID_LFGDUNGEONGROUP_RAIDS_ID, "EverQuest Raid", Configuration.DBCID_LFGDUNGEONGROUP_RAIDS_ORDER_ID, true);
             }
 
@@ -626,6 +635,11 @@ namespace EQWOWConverter
                     lightDBC.AddRow(zoneProperties.DBCMapIDDungeon, zoneProperties.ZonewideEnvironmentProperties, string.Concat(zone.ShortName, "~dungeon~zonewide"));
                     for (int areaLightIndex = 0; areaLightIndex < zoneProperties.AreaLightZoneEnvironmentProperties.Count; areaLightIndex++)
                         lightDBC.AddRow(zoneProperties.DBCMapIDDungeon, zoneProperties.AreaLightZoneEnvironmentProperties[areaLightIndex], string.Concat(zone.ShortName, "~dungeon~arealight", areaLightIndex.ToString()));
+
+                    // Dungeon finder list entry, which lets a group queue for the instance instead of walking a zone line into it
+                    if (zoneProperties.ShouldAddInstanceDungeonToDungeonFinder() == true)
+                        lfgDungeonsDBC.AddRow(zoneProperties.DBCLFGDungeonsIDDungeon, dungeonDescriptiveName, zoneProperties.SuggestedMinLevelWorld, zoneProperties.SuggestedMaxLevelWorld,
+                            zoneProperties.SuggestedMinLevelWorld, zoneProperties.SuggestedMaxLevelWorld, zoneProperties.DBCMapIDDungeon, false, GetDungeonFinderGroupIDForExpansionID(zoneProperties.ExpansionID));
                 }
 
                 // Sound Ambience
@@ -1578,6 +1592,21 @@ namespace EQWOWConverter
                 textureVariation2 = textureNames[1];
             if (textureNames.Count >= 3)
                 textureVariation3 = textureNames[2];
+        }
+
+        private static int GetDungeonFinderGroupIDForExpansionID(int expansionID)
+        {
+            switch (expansionID)
+            {
+                case 0: return Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_CLASSIC_ID;
+                case 1: return Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_KUNARK_ID;
+                case 2: return Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_VELIOUS_ID;
+                default:
+                    {
+                        Logger.WriteError(string.Concat("No dungeon finder category exists for expansion ID '", expansionID.ToString(), "', so the classic category was used instead"));
+                        return Configuration.DBCID_LFGDUNGEONGROUP_DUNGEONS_CLASSIC_ID;
+                    }
+            }
         }
 
         private void AddLightData(int mapID, ZoneEnvironmentSettings zoneEnvironmentSettings, string lightContextKey)

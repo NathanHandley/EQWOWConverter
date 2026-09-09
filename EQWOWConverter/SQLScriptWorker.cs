@@ -3287,7 +3287,7 @@ namespace EQWOWConverter
                     }
                 }
 
-                // Instanced dungeon version of the zone, a mirror of the base zone but never allow binding since the instance is temporary.  Don't add to dungeon finder
+                // Instanced dungeon version of the zone, a mirror of the base zone but never allow binding since the instance is temporary
                 if (zone.ZoneProperties.ShouldGenerateInstanceDungeon() == true)
                 {
                     instanceTemplateSQL.AddRow(zone.ZoneProperties.DBCMapIDDungeon);
@@ -3295,6 +3295,14 @@ namespace EQWOWConverter
                         zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
                     modEverquestZoneSafePointSQL.AddRow(zone.ZoneProperties.DBCMapIDDungeon, zone.ZoneProperties.SafePosition);
                     modEverquestZoneSQL.AddRow(zone.ZoneProperties.DBCMapIDDungeon, false, zone.ZoneProperties.ExpansionID, zone.ZoneProperties.MaxAgroZDistance, 0, 0, zone.ZoneProperties.RequiredKeyWOWItemID);
+
+                    // Dungeon finder entrance position, which is what the server teleports a group to
+                    if (zone.ZoneProperties.ShouldAddInstanceDungeonToDungeonFinder() == true)
+                    {
+                        string dungeonDescriptiveName = string.Concat(zone.DescriptiveName, Configuration.CONFIGONLY_DUNGEON_NAME_SUFFIX);
+                        lfgDungeonTemplateSQL.AddRow(zone.ZoneProperties.DBCLFGDungeonsIDDungeon, dungeonDescriptiveName, zone.ZoneProperties.DungeonFinderPosition.X,
+                            zone.ZoneProperties.DungeonFinderPosition.Y, zone.ZoneProperties.DungeonFinderPosition.Z, zone.ZoneProperties.DungeonFinderOrientation);
+                    }
                 }
 
                 // Database viewer needs zone-to-continent mapping and names
