@@ -342,6 +342,10 @@ namespace EQWOWConverter
             spellDBC.AppendToDescriptionOfSpellID(Configuration.DBCID_SPELL_METAMORPHOSIS_ID, string.Concat(talentAddendumColorPrefix, metamorphosisFormAddendum, talentAddendumColorSuffix));
             spellDBC.AppendToDescriptionOfSpellID(Configuration.DBCID_SPELL_METAMORPHOSIS_TALENT_ID, string.Concat(talentAddendumColorPrefix, metamorphosisFormAddendum, talentAddendumColorSuffix));
 
+            // The stock WOW class spells carry the same spell power coefficient line the EQ spells do, so a player can compare the two and the tooltip addon can read either
+            if (Configuration.SPELL_SPELL_POWER_SHOW_COEFFICIENT_IN_TOOLTIP == true)
+                AddSpellPowerCoefficientTextToStockClassSpells();
+
             // Death knights that level from 1 get their abilities spread out across 1-55, so damage has to scale and level gates have to drop
             if (Configuration.PLAYER_DEATHKNIGHT_START_LIKE_OTHER_CLASSES == true)
                 AdjustDeathKnightSpellsForLowLevelPlay();
@@ -1327,6 +1331,202 @@ namespace EQWOWConverter
         {
             foreach (int spellID in SpellCorePostSixtyAbility.GetReducedFirstRankSpellIDs())
                 spellDBC.SetMinimumUseLevelForSpellID(spellID, SpellCorePostSixtyAbility.REDUCED_TO_LEVEL);
+        }
+
+
+        // Effect and aura numbers as Spell.dbc stores them, used when reading the stock WOW spell rows back out
+        private static readonly int SPELL_DAMAGE_CLASS_NONE = 0;
+        private static readonly HashSet<int> SPELL_EFFECT_IDS_THAT_APPLY_AN_AURA = new HashSet<int>() { 6, 27, 35, 65, 119, 128, 129, 130 };
+        private static readonly HashSet<int> SPELL_EFFECT_IDS_SCALED_AS_DIRECT_DAMAGE = new HashSet<int>() { 2, 9 };        // SchoolDamage, HealthLeech
+        private static readonly HashSet<int> SPELL_EFFECT_IDS_SCALED_AS_DIRECT_HEAL = new HashSet<int>() { 10, 32, 66 };    // Heal, HealMechanical, HealPct
+        private static readonly int SPELL_EFFECT_ID_POWER_DRAIN = 8;                                                        // Hands the caster mana, but scaled off a damage school (Dark Pact)
+        private static readonly HashSet<int> SPELL_EFFECT_IDS_THAT_TRIGGER_A_SPELL = new HashSet<int>() { 64, 142 };        // TriggerSpell, TriggerSpellWithValue
+        private static readonly HashSet<int> SPELL_AURA_IDS_SCALED_AS_PERIODIC_DAMAGE = new HashSet<int>() { 3, 53 };       // PeriodicDamage, PeriodicLeech
+        private static readonly int SPELL_AURA_ID_PERIODIC_HEAL = 8;
+        private static readonly int SPELL_AURA_ID_DAMAGE_SHIELD = 15;                                                       // Thorns and Retribution Aura, scaled as direct damage rather than per tick
+        private static readonly HashSet<int> SPELL_AURA_IDS_THAT_TRIGGER_A_SPELL = new HashSet<int>() { 23, 227 };          // PeriodicTriggerSpell, PeriodicTriggerSpellWithValue
+        private class StockSpellPowerCoefficients
+        {
+            public bool HasDirect = false;
+            public float DirectCoefficient = 0f;
+            public bool HasPerTick = false;
+            public float PerTickCoefficient = 0f;
+            public bool IsDamage = false;    // Otherwise it is healing, which reads a different stat on the player
+            public bool GrantsMana = false;  // Scaled off a damage school, but what it hands over is mana (the same shape the EQ life-for-mana spells use)
+            public UInt32 SchoolMask = 0;
+
+            public bool HasAny()
+            {
+                return HasDirect == true || HasPerTick == true;
+            }
+        }
+
+        private void AddSpellPowerCoefficientTextToStockClassSpells()
+        {
+            HashSet<int> classSkillLineIDs = skillLineDBC.GetSkillLineIDsForCategory(SKILLLINE_CATEGORY_ID_CLASS);
+            classSkillLineIDs.Remove(SKILLLINE_ID_INTERNAL);
+            classSkillLineIDs.Remove(SKILLLINE_ID_MOUNTS);
+            HashSet<int> classSkillLineSpellIDs = skillLineAbilityDBC.GetSpellIDsForSkillLines(classSkillLineIDs);
+            Dictionary<int, SpellStockBonusData> stockSpellBonusDataBySpellID = SpellStockBonusData.GetStockSpellBonusDataBySpellID();
+
+            // Sorted so the generated DBC comes out the same on every run
+            List<int> sortedClassSkillLineSpellIDs = new List<int>(classSkillLineSpellIDs);
+            sortedClassSkillLineSpellIDs.Sort();
+
+            int stampedSpellCount = 0;
+            foreach (int spellID in sortedClassSkillLineSpellIDs)
+            {
+                StockSpellPowerCoefficients coefficients = GetStockSpellPowerCoefficients(spellID, stockSpellBonusDataBySpellID, 1);
+                if (coefficients.HasAny() == false)
+                    continue;
+                spellDBC.AppendToDescriptionOfSpellID(spellID, GetSpellPowerCoefficientTooltipTextForStockSpell(coefficients));
+                stampedSpellCount++;
+            }
+            Logger.WriteDebug(string.Concat("Added a spell power coefficient line to ", stampedSpellCount.ToString(), " stock WOW class spells"));
+        }
+
+        private StockSpellPowerCoefficients GetStockSpellPowerCoefficients(int spellID, Dictionary<int, SpellStockBonusData> stockSpellBonusDataBySpellID,
+            int remainingTriggerFollowDepth)
+        {
+            StockSpellPowerCoefficients coefficients = new StockSpellPowerCoefficients();
+
+            int damageClass;
+            UInt32 schoolMask;
+            int[] effectTypes;
+            int[] effectAuraTypes;
+            float[] effectBonusMultipliers;
+            int[] effectTriggerSpellIDs;
+            if (spellDBC.TryGetStockSpellPowerFields(spellID, out damageClass, out schoolMask, out effectTypes, out effectAuraTypes, out effectBonusMultipliers,
+                out effectTriggerSpellIDs) == false)
+                return coefficients;
+            coefficients.SchoolMask = schoolMask;
+
+            bool hasStockBonusDataRow = stockSpellBonusDataBySpellID.ContainsKey(spellID);
+            if (hasStockBonusDataRow == true || damageClass != SPELL_DAMAGE_CLASS_NONE)
+            {
+                bool hasDirectEffect = false;
+                bool hasPerTickEffect = false;
+                for (int effectIndex = 0; effectIndex < 3; effectIndex++)
+                {
+                    int effectType = effectTypes[effectIndex];
+                    int auraType = effectAuraTypes[effectIndex];
+                    float effectBonusMultiplier = effectBonusMultipliers[effectIndex];
+
+                    if (SPELL_EFFECT_IDS_SCALED_AS_DIRECT_DAMAGE.Contains(effectType) == true)
+                    {
+                        hasDirectEffect = true;
+                        coefficients.IsDamage = true;
+                        coefficients.DirectCoefficient = MathF.Max(coefficients.DirectCoefficient, effectBonusMultiplier);
+                    }
+                    else if (SPELL_EFFECT_IDS_SCALED_AS_DIRECT_HEAL.Contains(effectType) == true)
+                    {
+                        hasDirectEffect = true;
+                        coefficients.DirectCoefficient = MathF.Max(coefficients.DirectCoefficient, effectBonusMultiplier);
+                    }
+                    else if (effectType == SPELL_EFFECT_ID_POWER_DRAIN)
+                    {
+                        hasDirectEffect = true;
+                        coefficients.GrantsMana = true;
+                        coefficients.DirectCoefficient = MathF.Max(coefficients.DirectCoefficient, effectBonusMultiplier);
+                    }
+                    else if (SPELL_EFFECT_IDS_THAT_APPLY_AN_AURA.Contains(effectType) == true)
+                    {
+                        if (SPELL_AURA_IDS_SCALED_AS_PERIODIC_DAMAGE.Contains(auraType) == true)
+                        {
+                            hasPerTickEffect = true;
+                            coefficients.IsDamage = true;
+                            coefficients.PerTickCoefficient = MathF.Max(coefficients.PerTickCoefficient, effectBonusMultiplier);
+                        }
+                        else if (auraType == SPELL_AURA_ID_PERIODIC_HEAL)
+                        {
+                            hasPerTickEffect = true;
+                            coefficients.PerTickCoefficient = MathF.Max(coefficients.PerTickCoefficient, effectBonusMultiplier);
+                        }
+                        else if (auraType == SPELL_AURA_ID_DAMAGE_SHIELD)
+                        {
+                            hasDirectEffect = true;
+                            coefficients.IsDamage = true;
+                            coefficients.DirectCoefficient = MathF.Max(coefficients.DirectCoefficient, effectBonusMultiplier);
+                        }
+                    }
+                }
+
+                coefficients.HasDirect = coefficients.DirectCoefficient > 0f;
+                coefficients.HasPerTick = coefficients.PerTickCoefficient > 0f;
+                if (hasStockBonusDataRow == true)
+                {
+                    // The row replaces whatever the DBC said, but it only speaks for the halves of the spell that actually exist
+                    SpellStockBonusData stockSpellBonusData = stockSpellBonusDataBySpellID[spellID];
+                    coefficients.DirectCoefficient = stockSpellBonusData.DirectBonus;
+                    coefficients.PerTickCoefficient = stockSpellBonusData.DotBonus;
+                    coefficients.HasDirect = hasDirectEffect == true && stockSpellBonusData.DirectBonus > 0f;
+                    coefficients.HasPerTick = hasPerTickEffect == true && stockSpellBonusData.DotBonus > 0f;
+                }
+
+                // A physical school ability (Execute, a hunter pet bite) can still carry a multiplier in the DBC, but no player ever has physical spell power, so quoting a coefficient against it would only mislead
+                if (coefficients.IsDamage == true && (schoolMask & ~(UInt32)1) == 0)
+                {
+                    coefficients.HasDirect = false;
+                    coefficients.HasPerTick = false;
+                }
+                if (coefficients.HasAny() == true)
+                    return coefficients;
+            }
+
+            if (remainingTriggerFollowDepth <= 0)
+                return coefficients;
+
+            for (int effectIndex = 0; effectIndex < 3; effectIndex++)
+            {
+                int triggeredSpellID = effectTriggerSpellIDs[effectIndex];
+                if (triggeredSpellID <= 0 || triggeredSpellID == spellID)
+                    continue;
+                bool triggersEveryTick = SPELL_EFFECT_IDS_THAT_APPLY_AN_AURA.Contains(effectTypes[effectIndex]) == true
+                    && SPELL_AURA_IDS_THAT_TRIGGER_A_SPELL.Contains(effectAuraTypes[effectIndex]) == true;
+                if (triggersEveryTick == false && SPELL_EFFECT_IDS_THAT_TRIGGER_A_SPELL.Contains(effectTypes[effectIndex]) == false)
+                    continue;
+
+                StockSpellPowerCoefficients triggeredCoefficients = GetStockSpellPowerCoefficients(triggeredSpellID, stockSpellBonusDataBySpellID,
+                    remainingTriggerFollowDepth - 1);
+                if (triggeredCoefficients.HasAny() == false)
+                    continue;
+
+                // The triggered spell is the one the core scales, so it also settles the school and whether this is damage, healing or mana
+                if (triggersEveryTick == true && triggeredCoefficients.HasDirect == true)
+                {
+                    triggeredCoefficients.PerTickCoefficient = MathF.Max(triggeredCoefficients.PerTickCoefficient, triggeredCoefficients.DirectCoefficient);
+                    triggeredCoefficients.HasPerTick = true;
+                    triggeredCoefficients.HasDirect = false;
+                }
+                return triggeredCoefficients;
+            }
+            return coefficients;
+        }
+
+        private static string GetSpellPowerCoefficientTooltipTextForStockSpell(StockSpellPowerCoefficients coefficients)
+        {
+            string manaText = coefficients.GrantsMana == true ? " mana" : string.Empty;
+            StringBuilder textSB = new StringBuilder("Spell power coefficient: ");
+            if (coefficients.HasDirect == true)
+            {
+                textSB.Append(SpellTemplate.GetSpellPowerCoefficientPercentText(coefficients.DirectCoefficient));
+                textSB.Append(manaText);
+            }
+            if (coefficients.HasDirect == true && coefficients.HasPerTick == true)
+                textSB.Append(", ");
+            if (coefficients.HasPerTick == true)
+            {
+                textSB.Append(SpellTemplate.GetSpellPowerCoefficientPercentText(coefficients.PerTickCoefficient));
+                textSB.Append(manaText);
+                textSB.Append(" per tick");
+            }
+            textSB.Append(" (");
+            if (coefficients.IsDamage == true || coefficients.GrantsMana == true)
+                textSB.Append(SpellTemplate.GetSpellPowerSchoolNameForSchoolMask(coefficients.SchoolMask));
+            else
+                textSB.Append("healing");
+            textSB.Append(")");
+            return textSB.ToString();
         }
 
         private void AdjustDeathKnightSpellsForLowLevelPlay()

@@ -301,6 +301,11 @@ namespace EQWOWConverter.WOWFiles
         private static readonly int SPELL_LEVEL_FIELD_BYTE_OFFSET = 156;                  // SpellLevel (field 39)
         private static readonly int EFFECT_REAL_POINTS_PER_LEVEL_FIELD_BYTE_OFFSET = 308; // EffectRealPointsPerLevel1 (field 77)
         private static readonly int EFFECT_BASE_POINTS_FIELD_BYTE_OFFSET = 320;           // EffectBasePoints1 (field 80)
+        private static readonly int EFFECT_FIELD_BYTE_OFFSET = 284;                       // Effect1 (field 71)
+        private static readonly int DEFENSE_TYPE_FIELD_BYTE_OFFSET = 852;                 // DefenseType, which is the core's DmgClass (field 213)
+        private static readonly int SCHOOL_MASK_FIELD_BYTE_OFFSET = 900;                  // SchoolMask (field 225)
+        private static readonly int EFFECT_BONUS_MULTIPLIER_FIELD_BYTE_OFFSET = 916;      // EffectBonusMultiplier1 (field 229)
+        private static readonly int EFFECT_TRIGGER_SPELL_FIELD_BYTE_OFFSET = 464;         // EffectTriggerSpell1 (field 116)
 
         private int GetInt32FromSourceRow(DBCRow row, int byteOffset)
         {
@@ -315,11 +320,42 @@ namespace EQWOWConverter.WOWFiles
                 row.SourceRawBytes[byteOffset + i] = valueBytes[i];
         }
 
+        private float GetFloatFromSourceRow(DBCRow row, int byteOffset)
+        {
+            return BitConverter.ToSingle(new byte[] { row.SourceRawBytes[byteOffset], row.SourceRawBytes[byteOffset + 1],
+                row.SourceRawBytes[byteOffset + 2], row.SourceRawBytes[byteOffset + 3] }, 0);
+        }
+
         private void SetFloatOnSourceRow(DBCRow row, int byteOffset, float value)
         {
             byte[] valueBytes = BitConverter.GetBytes(value);
             for (int i = 0; i < 4; i++)
                 row.SourceRawBytes[byteOffset + i] = valueBytes[i];
+        }
+
+        public bool TryGetStockSpellPowerFields(int spellID, out int damageClass, out UInt32 schoolMask, out int[] effectTypes, out int[] effectAuraTypes,
+            out float[] effectBonusMultipliers, out int[] effectTriggerSpellIDs)
+        {
+            damageClass = 0;
+            schoolMask = 0;
+            effectTypes = new int[3];
+            effectAuraTypes = new int[3];
+            effectBonusMultipliers = new float[3];
+            effectTriggerSpellIDs = new int[3];
+            if (SourceRowsBySpellID.ContainsKey(spellID) == false)
+                return false;
+            DBCRow row = SourceRowsBySpellID[spellID];
+
+            damageClass = GetInt32FromSourceRow(row, DEFENSE_TYPE_FIELD_BYTE_OFFSET);
+            schoolMask = Convert.ToUInt32(GetInt32FromSourceRow(row, SCHOOL_MASK_FIELD_BYTE_OFFSET));
+            for (int effectIndex = 0; effectIndex < 3; effectIndex++)
+            {
+                effectTypes[effectIndex] = GetInt32FromSourceRow(row, EFFECT_FIELD_BYTE_OFFSET + (effectIndex * 4));
+                effectAuraTypes[effectIndex] = GetInt32FromSourceRow(row, EFFECT_APPLY_AURA_NAME_FIELD_BYTE_OFFSET + (effectIndex * 4));
+                effectBonusMultipliers[effectIndex] = GetFloatFromSourceRow(row, EFFECT_BONUS_MULTIPLIER_FIELD_BYTE_OFFSET + (effectIndex * 4));
+                effectTriggerSpellIDs[effectIndex] = GetInt32FromSourceRow(row, EFFECT_TRIGGER_SPELL_FIELD_BYTE_OFFSET + (effectIndex * 4));
+            }
+            return true;
         }
 
         // Converts flat (non-scaling) spell effects into one that ramps with caster levels, intended for DKs who start at level 1

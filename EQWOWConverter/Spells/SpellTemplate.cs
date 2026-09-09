@@ -1153,23 +1153,25 @@ namespace EQWOWConverter.Spells
             return textSB.ToString();
         }
 
-        private static string GetSpellPowerCoefficientPercentText(float coefficient)
+        public static string GetSpellPowerCoefficientPercentText(float coefficient)
         {
             return string.Concat((coefficient * 100f).ToString("0.#"), "%");
         }
 
+        public static string GetSpellPowerSchoolNameForSchoolMask(UInt32 schoolMask)
+        {
+            if ((schoolMask & 64) != 0) return "Arcane";
+            if ((schoolMask & 32) != 0) return "Shadow";
+            if ((schoolMask & 16) != 0) return "Frost";
+            if ((schoolMask & 8) != 0) return "Nature";
+            if ((schoolMask & 4) != 0) return "Fire";
+            if ((schoolMask & 2) != 0) return "Holy";
+            return "Physical";
+        }
+
         private string GetSpellPowerSchoolName()
         {
-            switch (SchoolMask)
-            {
-                case 2: return "Holy";
-                case 4: return "Fire";
-                case 8: return "Nature";
-                case 16: return "Frost";
-                case 32: return "Shadow";
-                case 64: return "Arcane";
-                default: return "Physical";
-            }
+            return GetSpellPowerSchoolNameForSchoolMask(SchoolMask);
         }
 
         private static bool BlockHasDirectSpellPowerEffect(SpellEffectBlock effectBlock)
