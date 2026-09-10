@@ -269,6 +269,16 @@ namespace EQWOWConverter.Spells
             return spellIconEQID;
         }
 
+        private static int GetValidatedSpellItemIconID(int spellItemIconEQID, string spellName)
+        {
+            if (spellItemIconEQID < 0 || spellItemIconEQID > 750)
+            {
+                Logger.WriteError(string.Concat("Invalid class aura spell item icon id for '", spellName, "', value must be 0-750. Setting to 0"));
+                return 0;
+            }
+            return spellItemIconEQID;
+        }
+
         private static string Pct(int value)
         {
             return string.Concat(value.ToString(), "%");
@@ -279,7 +289,7 @@ namespace EQWOWConverter.Spells
             return string.Concat((durationInMS / 1000).ToString(), " seconds");
         }
 
-        private static SpellTemplate BuildBaseTemplate(string name, SpellClassAuraType spellType, int spellIconEQID, string description, string auraDescription)
+        private static SpellTemplate BuildBaseTemplate(string name, SpellClassAuraType spellType, int spellIconEQID, string description, string auraDescription, bool useSpellItemIcon = false)
         {
             SpellTemplate spellTemplate = new SpellTemplate();
             spellTemplate.Name = name;
@@ -287,7 +297,11 @@ namespace EQWOWConverter.Spells
             spellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
             spellTemplate.Description = description;
             spellTemplate.AuraDescription = auraDescription;
-            spellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(GetValidatedSpellIconID(spellIconEQID, name));
+            if (useSpellItemIcon == false)
+                spellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(GetValidatedSpellIconID(spellIconEQID, name));
+            else
+                spellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(GetValidatedSpellItemIconID(spellIconEQID, name));
+            //spellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellItemIconID(GetValidatedSpellItemIconID(spellIconEQID, name));
             spellTemplate.CastTimeInMS = 0;
             spellTemplate.RecoveryTimeInMS = 0;
             spellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
@@ -466,7 +480,7 @@ namespace EQWOWConverter.Spells
                 ", raising the damage it takes from you and your pet by ", Pct(Configuration.CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK), " per stack, up to ",
                 Configuration.CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS.ToString(), " stacks. The bonus is doubled while the target moves.");
             spellTemplates.Add(BuildPassiveTemplate("Swift Reactions", SpellClassAuraType.RangerPassive, icon, description));
-        
+
             SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Swift Reactions (Ranger)", SpellClassAuraType.RangerAura, icon, description, new List<SpellEffectWOW>());
             auraSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraRangerAuraScript";
 
@@ -480,8 +494,8 @@ namespace EQWOWConverter.Spells
             string quiverDescription = string.Concat("Toggle. While active, your ranged attacks and abilities no longer use up arrows or bullets. Each shot costs ", quiverManaCostText,
                 " instead, and keeps working even when you are out of mana.");
             string quiverAuraDescription = string.Concat("Arrows and bullets are not used up. Each shot costs ", quiverManaCostText, " instead.");
-            SpellTemplate quiverSpellTemplate = BuildBaseTemplate("Endless Quiver", SpellClassAuraType.RangerEndlessQuiver, Configuration.CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ICON_EQ_ID,
-                quiverDescription, quiverAuraDescription);
+            SpellTemplate quiverSpellTemplate = BuildBaseTemplate("Endless Quiver", SpellClassAuraType.RangerEndlessQuiver, Configuration.CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ITEM_ICON_EQ_ID,
+                quiverDescription, quiverAuraDescription, true);
             quiverSpellTemplate.AuraDuration.IsInfinite = true;
             quiverSpellTemplate.WOWSpellEffects.Add(BuildAuraEffect(SpellWOWAuraType.AbilityConsumeNoAmmo, 0, 0, SpellWOWTargetType.UnitCaster));
             quiverSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat); // Unlike the other class aura spells, this one is in the spellbook
