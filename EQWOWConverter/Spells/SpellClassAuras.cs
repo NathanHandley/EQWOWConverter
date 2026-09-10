@@ -414,7 +414,7 @@ namespace EQWOWConverter.Spells
         private static void AddMonkSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_MONK_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Chi Surge: any non-channeled spell with a base cast time under ", Seconds(Configuration.CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS),
+            string description = string.Concat("Chi Surge: any non-instant, non-channeled spell with a base cast time under ", Seconds(Configuration.CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS),
                 " casts ", Pct(Configuration.CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT), " faster, and it returns ", Seconds(Configuration.CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS),
                 " after use. In cloth or leather: attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT),
                 " chance to strike twice, ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT), " of those strike a third time, and dodge is increased by ",
@@ -423,7 +423,7 @@ namespace EQWOWConverter.Spells
             spellTemplates.Add(BuildPassiveTemplate("Agile Fighter", SpellClassAuraType.MonkPassive, icon, description));
             spellTemplates.Add(BuildPermanentAuraTemplate("Agile Fighter (Monk)", SpellClassAuraType.MonkAura, icon, description, new List<SpellEffectWOW>()));
 
-            string chiSurgeDescription = string.Concat("Your next non-channeled spell with a base cast time under ", Seconds(Configuration.CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS),
+            string chiSurgeDescription = string.Concat("Your next non-instant, non-channeled spell with a base cast time under ", Seconds(Configuration.CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS),
                 " casts ", Pct(Configuration.CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT), " faster. Adds together with a Sacred Focus charge spent on the same cast.");
             spellTemplates.Add(BuildPermanentAuraTemplate("Chi Surge", SpellClassAuraType.MonkChiSurge, Configuration.CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID, chiSurgeDescription, new List<SpellEffectWOW>()));
 
