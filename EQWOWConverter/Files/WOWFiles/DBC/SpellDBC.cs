@@ -573,6 +573,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 4; // SPELL_ATTR2_IGNORE_LINE_OF_SIGHT (0x00000004)
             if (spellTemplate.CannotCrit == true)
                 attributeFlags |= 536870912; // SPELL_ATTR2_CANT_CRIT (0x20000000)
+            if (spellTemplate.ShowOnShapeshiftBar == true)
+                attributeFlags |= 16; // SPELL_ATTR2_USE_SHAPESHIFT_BAR (0x00000010)
             return attributeFlags;
         }
 

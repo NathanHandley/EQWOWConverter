@@ -119,6 +119,17 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        public static int GetToggleSpellIDForClass(ClassEQType eqClass)
+        {
+            if (IsClassEnabled(eqClass) == false)
+                return 0;
+            switch (eqClass)
+            {
+                case ClassEQType.Ranger: return GetSpellID(SpellClassAuraType.RangerEndlessQuiver);
+                default: return 0;
+            }
+        }
+
         public static List<KeyValuePair<string, string>> GetSystemConfigRows()
         {
             List<KeyValuePair<string, string>> rows = new List<KeyValuePair<string, string>>();
@@ -139,6 +150,7 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraRogueLuckyStrikeCooldownInMS", Configuration.CLASSAURA_ROGUE_LUCKY_STRIKE_COOLDOWN_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraMonkDoubleToTripleAttackChancePercent", Configuration.CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraRangerTackShotDamagePercentPerStack", Configuration.CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraRangerEndlessQuiverBaseManaCostPercent", Configuration.CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinHealSelfPercent", Configuration.CLASSAURA_PALADIN_HEAL_SELF_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinUndeadDemonDoubleDamageChancePercent", Configuration.CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraWarriorRiposteChancePercent", Configuration.CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT.ToString()));
@@ -181,7 +193,7 @@ namespace EQWOWConverter.Spells
                     return Configuration.CLASSAURA_MONK_ENABLED;
                 case SpellClassAuraType.RangerPassive:
                 case SpellClassAuraType.RangerAura:
-                case SpellClassAuraType.RangerSpeed:
+                case SpellClassAuraType.RangerEndlessQuiver:
                 case SpellClassAuraType.RangerTackShot:
                     return Configuration.CLASSAURA_RANGER_ENABLED;
                 case SpellClassAuraType.RoguePassive:
@@ -448,27 +460,35 @@ namespace EQWOWConverter.Spells
         private static void AddRangerSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_RANGER_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Each of your melee attacks and Auto Shots raises your movement speed by ", Pct(Configuration.CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK), " for ",
-                Seconds(Configuration.CLASSAURA_RANGER_ATTACK_SPEED_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_RANGER_ATTACK_SPEED_MAX_STACKS.ToString(),
-                " times and stacking with other speed effects. Each ranged attack, ranged ability, and offensive spell tacks its target for ", Seconds(Configuration.CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS),
+            string description = string.Concat("Endless Quiver can be toggled on so your ranged attacks and abilities stop using up arrows and bullets, costing ",
+                Pct(Configuration.CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT), " of base mana per shot instead. Each ranged attack, ranged ability, and offensive spell tacks its target for ",
+                Seconds(Configuration.CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS),
                 ", raising the damage it takes from you and your pet by ", Pct(Configuration.CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK), " per stack, up to ",
                 Configuration.CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS.ToString(), " stacks. The bonus is doubled while the target moves.");
             spellTemplates.Add(BuildPassiveTemplate("Swift Reactions", SpellClassAuraType.RangerPassive, icon, description));
         
             SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Swift Reactions (Ranger)", SpellClassAuraType.RangerAura, icon, description, new List<SpellEffectWOW>());
             auraSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraRangerAuraScript";
-            // Melee and ranged autoattacks feed the stride; ranged autoattacks (bow, gun, thrown), ranged abilities and harmful spells tack the target.
-            // The script sorts the two out by the proc's type mask.  No spell type filter, since the flags already exclude heals
-            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK | PROC_FLAG_DONE_RANGED_AUTO_ATTACK | PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS
+
+            // Ranged autoattacks (bow, gun, thrown), ranged abilities and harmful spells tack the target.  No spell type filter, since the flags already exclude heals
+            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_RANGED_AUTO_ATTACK | PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS
                 | PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG, 0, PROC_SPELL_PHASE_HIT, PROC_HIT_NORMAL | PROC_HIT_CRITICAL, 0, 0);
             spellTemplates.Add(auraSpellTemplate);
 
-            // ModSpeedAlways multiplies on top of every other movement speed source instead of competing with the highest one
-            string speedDescription = string.Concat("Movement speed increased by ", Pct(Configuration.CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK), " per stack.");
-            List<SpellEffectWOW> speedEffects = new List<SpellEffectWOW>();
-            speedEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModSpeedAlways, Configuration.CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK, 0, SpellWOWTargetType.UnitCaster));
-            spellTemplates.Add(BuildStackingAuraTemplate("Quickened Stride", SpellClassAuraType.RangerSpeed, icon, speedDescription, speedEffects,
-                Configuration.CLASSAURA_RANGER_ATTACK_SPEED_MAX_STACKS, Configuration.CLASSAURA_RANGER_ATTACK_SPEED_DURATION_IN_MS, false));
+            // Endless Quiver (ammo saving but costs mana)
+            string quiverManaCostText = string.Concat(Pct(Configuration.CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT), " of base mana");
+            string quiverDescription = string.Concat("Toggle. While active, your ranged attacks and abilities no longer use up arrows or bullets. Each shot costs ", quiverManaCostText,
+                " instead, and keeps working even when you are out of mana.");
+            string quiverAuraDescription = string.Concat("Arrows and bullets are not used up. Each shot costs ", quiverManaCostText, " instead.");
+            SpellTemplate quiverSpellTemplate = BuildBaseTemplate("Endless Quiver", SpellClassAuraType.RangerEndlessQuiver, Configuration.CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ICON_EQ_ID,
+                quiverDescription, quiverAuraDescription);
+            quiverSpellTemplate.AuraDuration.IsInfinite = true;
+            quiverSpellTemplate.WOWSpellEffects.Add(BuildAuraEffect(SpellWOWAuraType.AbilityConsumeNoAmmo, 0, 0, SpellWOWTargetType.UnitCaster));
+            quiverSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat); // Unlike the other class aura spells, this one is in the spellbook
+            quiverSpellTemplate.IsToggleAura = true;
+            quiverSpellTemplate.ShowOnShapeshiftBar = true;
+            quiverSpellTemplate.PersistThroughDeath = true;
+            spellTemplates.Add(quiverSpellTemplate);
 
             // Debuff on the target increasing damage by the hunter and pet, increasing if creature is in motion
             string tackShotDescription = string.Concat("Takes ", Pct(Configuration.CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK),

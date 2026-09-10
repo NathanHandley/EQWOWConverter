@@ -30,7 +30,7 @@ namespace EQWOWConverter.Spells
         MonkHeavyArmor = 9,
         RangerPassive = 10,
         RangerAura = 11,
-        RangerSpeed = 12,
+        RangerEndlessQuiver = 12,
         RangerTackShot = 13,
         RoguePassive = 14,
         RogueAura = 15,

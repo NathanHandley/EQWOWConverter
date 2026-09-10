@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 101;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 102;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -104,7 +104,7 @@ namespace EQWOWConverter
         public static string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
 
         // Client files must match this between the server and the client, separate from "CONFIGONLY_CORE_MOD_VERSION"
-        public static int DEPLOY_CLIENT_DATA_VERSION = 11;
+        public static int DEPLOY_CLIENT_DATA_VERSION = 12;
         public static string DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE = "Your EverQuest client data is out of date. Please run the launcher to update, then log back in.";
 
         // ====================================================================
@@ -1295,9 +1295,8 @@ namespace EQWOWConverter
         // Ranger "Swift Reactions"
         public static bool CLASSAURA_RANGER_ENABLED = true;
         public static int CLASSAURA_RANGER_SPELL_ICON_EQ_ID = 1;
-        public static int CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK = 1;
-        public static int CLASSAURA_RANGER_ATTACK_SPEED_MAX_STACKS = 15;
-        public static int CLASSAURA_RANGER_ATTACK_SPEED_DURATION_IN_MS = 20000;
+        public static int CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ICON_EQ_ID = 1;
+        public static int CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT = 1;
         public static int CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK = 1;
         public static int CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS = 8;
         public static int CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS = 20000;
@@ -2529,9 +2528,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS", CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_RANGER_ENABLED", CLASSAURA_RANGER_ENABLED, "Ranger", false);
             OutputVariableToConfig("CLASSAURA_RANGER_SPELL_ICON_EQ_ID", CLASSAURA_RANGER_SPELL_ICON_EQ_ID, "", false);
-            OutputVariableToConfig("CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK", CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK, "", false);
-            OutputVariableToConfig("CLASSAURA_RANGER_ATTACK_SPEED_MAX_STACKS", CLASSAURA_RANGER_ATTACK_SPEED_MAX_STACKS, "", false);
-            OutputVariableToConfig("CLASSAURA_RANGER_ATTACK_SPEED_DURATION_IN_MS", CLASSAURA_RANGER_ATTACK_SPEED_DURATION_IN_MS, "", false);
+            OutputVariableToConfig("CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ICON_EQ_ID", CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT", CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK", CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK, "", false);
             OutputVariableToConfig("CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS", CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS, "", false);
             OutputVariableToConfig("CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS", CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS, "", false);
@@ -3259,9 +3257,8 @@ namespace EQWOWConverter
             CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS = ReadVariableFromConfigString("CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS", configValuesByVariableName, CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS);
             CLASSAURA_RANGER_ENABLED = ReadVariableFromConfigString("CLASSAURA_RANGER_ENABLED", configValuesByVariableName, CLASSAURA_RANGER_ENABLED);
             CLASSAURA_RANGER_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_RANGER_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_RANGER_SPELL_ICON_EQ_ID);
-            CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_RANGER_ATTACK_SPEED_PERCENT_PER_STACK);
-            CLASSAURA_RANGER_ATTACK_SPEED_MAX_STACKS = ReadVariableFromConfigString("CLASSAURA_RANGER_ATTACK_SPEED_MAX_STACKS", configValuesByVariableName, CLASSAURA_RANGER_ATTACK_SPEED_MAX_STACKS);
-            CLASSAURA_RANGER_ATTACK_SPEED_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_RANGER_ATTACK_SPEED_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_RANGER_ATTACK_SPEED_DURATION_IN_MS);
+            CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ICON_EQ_ID);
+            CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT = ReadVariableFromConfigString("CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT", configValuesByVariableName, CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT);
             CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK);
             CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS = ReadVariableFromConfigString("CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS", configValuesByVariableName, CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS);
             CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS);

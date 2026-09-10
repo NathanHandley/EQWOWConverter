@@ -2188,6 +2188,11 @@ namespace EQWOWConverter
                     if (classAuraPassiveSpellID != 0)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, classAuraPassiveSpellID, 1);
 
+                    // EQ Class Aura toggle
+                    int classAuraToggleSpellID = SpellClassAuras.GetToggleSpellIDForClass(eqClassProperties.EQClass);
+                    if (classAuraToggleSpellID != 0)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, classAuraToggleSpellID, 1);
+
                     // Harm Touch
                     if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true && Configuration.COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.ShadowKnight)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID, 1);

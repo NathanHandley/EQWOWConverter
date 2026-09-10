@@ -357,6 +357,7 @@ namespace EQWOWConverter.Spells
         public SpellFocusBoostType FocusBoostType = SpellFocusBoostType.None;
         public bool IsFocusBoostableEffect = false;
         public bool IsToggleAura = false;
+        public bool ShowOnShapeshiftBar = false; // Using this term because that's what the flag is called, but it's also where Paladin auras go as well as Warrior stances
         public int PeriodicAuraWOWSpellID = 0;
         public int PeriodicAuraSpellRadius = 0;
         public SpellFailableType FailableType = SpellFailableType.None;
