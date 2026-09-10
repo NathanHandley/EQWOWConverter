@@ -2732,7 +2732,19 @@ namespace EQWOWConverter
                 float manaGainSpellPowerCoefficient = 0f;
                 if (commentFragment != " (Worn)")
                     manaGainSpellPowerCoefficient = spellTemplate.GetManaGainSpellPowerCoefficientForBlock(curEffectBlock);
-                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion, manaGainSpellPowerCoefficient, isCreatureCastVersion, isClickyVersion);
+                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, curEffectBlock.SpellEffects, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion, manaGainSpellPowerCoefficient, isCreatureCastVersion, isClickyVersion);
+
+                // A block holding an effect from an EQ intensifying (Splurt family) formula needs the script that ramps its per-tick amount back out
+                if (commentFragment != " (Worn)")
+                {
+                    foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
+                    {
+                        if (blockEffect.IntensifyingRampStartMultiplier <= 0f)
+                            continue;
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_IntensifyingPeriodicAuraScript");
+                        break;
+                    }
+                }
                 if (manaGainSpellPowerCoefficient > 0f)
                 {
                     bool blockHasDirectEnergize = false;

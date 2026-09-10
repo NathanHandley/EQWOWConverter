@@ -180,6 +180,42 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        public static int GetEQBuffDurationInTicksForLevel(int level, int eqBuffDurationFormula, int maxBuffDurationInTicks)
+        {
+            if (level < 1)
+                level = 1;
+            if (eqBuffDurationFormula >= 200)
+                return eqBuffDurationFormula;
+
+            int calcTicks;
+            switch (eqBuffDurationFormula)
+            {
+                case 0: return 0;
+                case 1: calcTicks = level / 2; break;
+                case 2: calcTicks = level <= 1 ? 6 : (level / 2) + 5; break;
+                case 3: calcTicks = level * 30; break;
+                case 4: calcTicks = 50; break;
+                case 5: calcTicks = 2; break;
+                case 6: calcTicks = (level / 2) + 2; break;
+                case 7: calcTicks = level; break;
+                case 8: calcTicks = level + 10; break;
+                case 9: calcTicks = (level * 2) + 10; break;
+                case 10: calcTicks = (level * 3) + 10; break;
+                case 11: calcTicks = (level * 30) + 90; break;
+                case 12: calcTicks = Math.Max(level / 4, 1); break;
+                case 50: return 0xFFFE; // Permanent
+                default:
+                    {
+                        Logger.WriteError("GetEQBuffDurationInTicksForLevel had an unhandled eqBuffDurationFormula of ", eqBuffDurationFormula.ToString());
+                        return 0;
+                    }
+            }
+
+            if (maxBuffDurationInTicks > 0 && calcTicks >= maxBuffDurationInTicks)
+                return maxBuffDurationInTicks;
+            return Math.Max(calcTicks, 1);
+        }
+
         private int CalcAuraDurationInMSForLevel(int curLevel, int eqBuffDurationFormula)
         {
             // Different logic per formula

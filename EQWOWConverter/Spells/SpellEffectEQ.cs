@@ -29,5 +29,6 @@ namespace EQWOWConverter.Spells
         public int EQMaxValue = 0;
         public Vector3 EQTelePosition = new Vector3();
         public int EQTeleHeading = 0;
+        public float IntensifyingRampStartMultiplier = 0f;
     }
 }

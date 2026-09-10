@@ -56,12 +56,15 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`PersistOnClassChange` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`ManaGainSpellPowerCoefficient` FLOAT NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`DamageIsFixed` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`IntensifyingRampStartMultiplier1` FLOAT NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`IntensifyingRampStartMultiplier2` FLOAT NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`IntensifyingRampStartMultiplier3` FLOAT NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(SpellTemplate spellTemplate, int spellID, bool isWorn, int clickyFixedLevel, int blockEQHasteVersion, float manaGainSpellPowerCoefficient,
-            bool isCreatureCastVersion = false, bool isClickyVersion = false)
+        public void AddRow(SpellTemplate spellTemplate, int spellID, List<SpellEffectWOW> blockSpellEffects, bool isWorn, int clickyFixedLevel, int blockEQHasteVersion,
+            float manaGainSpellPowerCoefficient, bool isCreatureCastVersion = false, bool isClickyVersion = false)
         {
             // Creature-cast copies keep the aura duration from before any player-only modifications, and item clickies keep the one from before the player buff duration floor
             SpellDuration auraDuration = spellTemplate.AuraDuration;
@@ -141,6 +144,15 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("PersistOnClassChange", spellTemplate.PersistOnClassChange ? 1 : 0);
             newRow.AddFloat("ManaGainSpellPowerCoefficient", manaGainSpellPowerCoefficient);
             newRow.AddInt("DamageIsFixed", (spellTemplate.DamageIsFixed == true && isWorn == false) ? 1 : 0);
+
+            // Per-effect ramp for the EQ intensifying (Splurt family) formulas.  Worn effects never tick, so they never carry one
+            for (int effectIndex = 0; effectIndex < 3; effectIndex++)
+            {
+                float rampStartMultiplier = 0f;
+                if (isWorn == false && effectIndex < blockSpellEffects.Count)
+                    rampStartMultiplier = blockSpellEffects[effectIndex].IntensifyingRampStartMultiplier;
+                newRow.AddFloat(string.Concat("IntensifyingRampStartMultiplier", (effectIndex + 1).ToString()), rampStartMultiplier);
+            }
             Rows.Add(newRow);
         }
     }

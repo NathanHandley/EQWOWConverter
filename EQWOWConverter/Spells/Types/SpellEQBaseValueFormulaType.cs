@@ -28,8 +28,8 @@ namespace EQWOWConverter.Spells
         BaseAddLevelTimesTwo = 103,
         BaseAddLevelTimesThree = 104,
         BaseAddLevelTimesFour = 105,
-        BaseAddLevelDivideTwo = 107, // Base + Level / 2 (Same as 101)
-        BaseAddLevelDivideThree = 108, // (Same as 121)
+        BaseAddLevelDivideTwo = 101,
+        BaseAddLevelDivideThree = 121,
         BaseAddLevelDivideFour = 109,
         BaseAddLevelDivideFive = 110,
 
@@ -41,7 +41,13 @@ namespace EQWOWConverter.Spells
         BaseAddTwentyTimesLevelMinusSpellLevel = 118,
         
         BaseAddLevelDivideEight = 119,
-        //Splurt = 122, // What is this?
+
+        // These are used for "Splurt"
+        IntensifyingOnePerTick = 107,
+        IntensifyingTwoPerTick = 108,
+        IntensifyingFivePerTick = 120,
+        IntensifyingTwelvePerTick = 122,
+
         //RandomBetweenBaseAndMax = 123, never used on Velious and below
         //EffectMa = 203 // What is this? Unknown?
     }

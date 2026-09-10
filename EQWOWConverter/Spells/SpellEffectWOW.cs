@@ -52,6 +52,7 @@ namespace EQWOWConverter.Spells
         public float TeleOrientation;
         public int TeleMapID;
         public int EQHasteVersion = 0; // Positive attack speed effects only. 0 = not haste, 1 = v1 (spell/song/clicky/worn), 2 = v2 (bard-only "AttackSpeed2")
+        public float IntensifyingRampStartMultiplier = 0f; // 0 = no ramp
         private bool AuraDescriptionHasDeferredAmount = false;
         private string AuraDescriptionPrefix = string.Empty;
         private string AuraDescriptionSuffix = string.Empty;
@@ -110,8 +111,21 @@ namespace EQWOWConverter.Spells
                 TelePosition = new Vector3(this.TelePosition),
                 TeleOrientation = this.TeleOrientation,
                 TeleMapID = this.TeleMapID,
-                EQHasteVersion = this.EQHasteVersion
+                EQHasteVersion = this.EQHasteVersion,
+                IntensifyingRampStartMultiplier = this.IntensifyingRampStartMultiplier
             };
+        }
+
+        public static int GetIntensifyingStepPerTick(SpellEQBaseValueFormulaType eqFormula)
+        {
+            switch (eqFormula)
+            {
+                case SpellEQBaseValueFormulaType.IntensifyingOnePerTick: return 1;
+                case SpellEQBaseValueFormulaType.IntensifyingTwoPerTick: return 2;
+                case SpellEQBaseValueFormulaType.IntensifyingFivePerTick: return 5;
+                case SpellEQBaseValueFormulaType.IntensifyingTwelvePerTick: return 12;
+                default: return 0;
+            }
         }
 
         public void Invert()
@@ -155,6 +169,13 @@ namespace EQWOWConverter.Spells
                 case SpellEQBaseValueFormulaType.BaseAddFifteenTimesLevelMinusSpellLevel: calculatedEffectBasePoints += 15 * (unitInfluencingLevel - spellInfluencingLevel); break;
                 case SpellEQBaseValueFormulaType.BaseAddTwelveTimesLevelMinusSpellLevel: calculatedEffectBasePoints += 15 * (unitInfluencingLevel - spellInfluencingLevel); break;
                 case SpellEQBaseValueFormulaType.BaseAddTwentyTimesLevelMinusSpellLevel: calculatedEffectBasePoints += 20 * (unitInfluencingLevel - spellInfluencingLevel); break;
+
+                // A intensifying formula is resolved into a plain base value before the effects are converted (SpellTemplate.ResolveIntensifyingFormulaOnEQEffect)
+                case SpellEQBaseValueFormulaType.IntensifyingOnePerTick:
+                case SpellEQBaseValueFormulaType.IntensifyingTwoPerTick:
+                case SpellEQBaseValueFormulaType.IntensifyingFivePerTick:
+                case SpellEQBaseValueFormulaType.IntensifyingTwelvePerTick: break;
+
                 default:
                     {
                         // A formula from 1 to 99 is carried as itself, and EQ reads the formula number as the per-level multiplier (the max below caps it)

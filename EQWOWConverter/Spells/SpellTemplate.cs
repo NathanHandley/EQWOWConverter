@@ -2265,10 +2265,8 @@ namespace EQWOWConverter.Spells
                     curEffect.EQBaseValueFormulaType = (SpellEQBaseValueFormulaType)formulaRaw;
                 else switch (formulaRaw)
                 {
-                    case 101: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddLevelDivideTwo; break;
                     case 115: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddSixTimesLevelMinusSpellLevel; break;
                     case 116: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddEightTimesLevelMinusSpellLevel; break;
-                    case 121: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddLevelDivideThree; break;
                     default:
                         {
                             // In EQ, a formula from 1 to 99 means "base + (level * the formula number)", so the formula is carried as itself and read back out as the per-level multiplier.  Anything else really is unknown
@@ -2449,6 +2447,63 @@ namespace EQWOWConverter.Spells
             return string.Concat(" (", SpellEffectWOW.GetMultipliedEffectAmount(spellEffect.CalcEffectLowLevelValue, Configuration.SPELL_SLOW_BOSS_EFFECTINESS_MOD).ToString(), "% on bosses)");
         }
 
+        private static string GetIntensifyingRampDescriptionSuffix(float rampStartMultiplier)
+        {
+            if (rampStartMultiplier <= 0f || rampStartMultiplier == 1f)
+                return string.Empty;
+            if (rampStartMultiplier < 1f)
+                return " on average, growing stronger with every tick";
+            return " on average, growing weaker with every tick";
+        }
+
+        private static void ResolveIntensifyingFormulaOnEQEffect(SpellTemplate spellTemplate, SpellEffectEQ eqEffect, bool hasSpellDuration)
+        {
+            // EQ's "intensifying" formulas (107/108/120,122) or "Splurt" do not scale off level, rather the effect value moves by a fixed step every tick the effect
+            // WoW does not have this, so it's a static formula that is changed by the mod
+            int stepPerTick = SpellEffectWOW.GetIntensifyingStepPerTick(eqEffect.EQBaseValueFormulaType);
+            if (stepPerTick == 0)
+                return;
+            if (hasSpellDuration == false)
+                return;
+
+            // Steep of the ramp depends on how many ticks there were in EQ
+            int tickCountLevel = spellTemplate.MinimumPlayerLearnLevel;
+            if (tickCountLevel < 1)
+                tickCountLevel = Configuration.SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL;
+            int tickCount = SpellDuration.GetEQBuffDurationInTicksForLevel(tickCountLevel, spellTemplate.EQBuffDurationFormula,
+                spellTemplate.EQBuffDurationInTicks);
+            if (tickCount < 1)
+                return;
+
+            // EQ works the formula off the magnitude of the base value, then puts the sign back on with the same rule every other formula uses
+            int baseMagnitude = Math.Abs(eqEffect.EQBaseValue);
+            int upDownSign = (eqEffect.EQMaxValue != 0 && eqEffect.EQMaxValue < eqEffect.EQBaseValue) ? -1 : 1;
+            float firstTickValue = Convert.ToSingle(upDownSign * (baseMagnitude - stepPerTick));
+            float lastTickValue = Convert.ToSingle(upDownSign * (baseMagnitude - (stepPerTick * tickCount)));
+            float averageTickValue = (firstTickValue + lastTickValue) * 0.5f;
+
+            // A value that crosses zero partway through has no meaningful average to hang a ramp off of, so it falls back to the value it started at
+            if (averageTickValue == 0f || MathF.Sign(firstTickValue) != MathF.Sign(averageTickValue) || MathF.Sign(lastTickValue) != MathF.Sign(averageTickValue))
+            {
+                Logger.WriteDebug(string.Concat("Spell '", spellTemplate.Name, "' (eqid ", spellTemplate.EQSpellID.ToString(), ") effect slot ", eqEffect.EQEffectSlot.ToString(),
+                    " uses an intensifying formula whose value crosses zero across its ", tickCount.ToString(), " ticks, so it takes its first tick value instead of an average"));
+                averageTickValue = firstTickValue;
+            }
+
+            int averageEffectValue = Convert.ToInt32(MathF.Round(averageTickValue, MidpointRounding.AwayFromZero));
+            if (averageEffectValue == 0)
+                averageEffectValue = averageTickValue < 0f ? -1 : 1;
+
+            eqEffect.IntensifyingRampStartMultiplier = firstTickValue / averageTickValue;
+            eqEffect.EQBaseValue = averageEffectValue;
+            eqEffect.EQMaxValue = 0;
+            eqEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseValue;
+            eqEffect.EQFormulaTypeValue = Convert.ToInt32(SpellEQBaseValueFormulaType.BaseValue);
+            Logger.WriteDebug(string.Concat("Spell '", spellTemplate.Name, "' (eqid ", spellTemplate.EQSpellID.ToString(), ") effect slot ", eqEffect.EQEffectSlot.ToString(),
+                " intensifies by ", stepPerTick.ToString(), " across ", tickCount.ToString(), " EQ ticks, going from ", firstTickValue.ToString(), " to ",
+                lastTickValue.ToString(), " for an average of ", averageEffectValue.ToString()));
+        }
+
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, SpellDuration auraDuration, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID,
             bool isDetrimental, string teleportZoneOrPetTypeName, Dictionary<string, ZoneProperties> zonePropertiesByShortName, 
@@ -2460,13 +2515,8 @@ namespace EQWOWConverter.Spells
             List<SpellEffectWOW> newSpellEffects = new List<SpellEffectWOW>();
             foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
             {
-                // This is temporary logic until "Splurt" is implemented
-                // Re-enable "Greenmist Recourse" if another solution isn't found
-                if (eqEffect.EQFormulaTypeValue == 122 || eqEffect.EQFormulaTypeValue == 120) // 122 is splurt, 120 is something else though....
-                {
-                    if (isDetrimental)
-                        eqEffect.EQBaseValue *= -1;
-                }
+                // EQ's intensifying formulas move the effect value every tick, which WOW has no equivalent for, so they are resolved into a plain average value here and the mod plays the per-tick ramp back out around it
+                ResolveIntensifyingFormulaOnEQEffect(spellTemplate, eqEffect, hasSpellDuration);
 
                 if (spellTemplate.IsTransferEffectType == true)
                 {
@@ -2746,13 +2796,15 @@ namespace EQWOWConverter.Spells
                                     SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                     newSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
+                                    newSpellEffectWOW.IntensifyingRampStartMultiplier = eqEffect.IntensifyingRampStartMultiplier;
                                     spellTemplate.InfluencedBySpellPower = true;
+                                    string periodicRampText = GetIntensifyingRampDescriptionSuffix(eqEffect.IntensifyingRampStartMultiplier);
                                     if (eqEffect.EQBaseValue > 0)
                                     {
                                         newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "HealOverTimeHPS", SpellEffectWOWConversionScaleType.Periodic);
                                         newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicHeal;
-                                        newSpellEffectWOW.ActionDescription = string.Concat("regenerate ", newSpellEffectWOW.GetFormattedEffectActionString(false), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                        newSpellEffectWOW.SetAuraDescription("regenerating", false, " ", string.Concat(" health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds"));
+                                        newSpellEffectWOW.ActionDescription = string.Concat("regenerate ", newSpellEffectWOW.GetFormattedEffectActionString(false), " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds", periodicRampText);
+                                        newSpellEffectWOW.SetAuraDescription("regenerating", false, " ", string.Concat(" health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds", periodicRampText));
                                     }
                                     else
                                     {
@@ -2760,14 +2812,14 @@ namespace EQWOWConverter.Spells
                                         if (elementalSchoolName.Length > 0)
                                         {
                                             newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic, spellTemplate.PeriodicDamageDurationCompensationMod);
-                                            newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                            newSpellEffectWOW.SetAuraDescription("suffering", false, " ", string.Concat(" ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds"));
+                                            newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds", periodicRampText);
+                                            newSpellEffectWOW.SetAuraDescription("suffering", false, " ", string.Concat(" ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds", periodicRampText));
                                         }
                                         else
                                         {
                                             newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageOverTimeDPS", SpellEffectWOWConversionScaleType.Periodic, spellTemplate.PeriodicDamageDurationCompensationMod);
-                                            newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                            newSpellEffectWOW.SetAuraDescription("suffering", false, " ", string.Concat(" damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds"));
+                                            newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.GetFormattedEffectActionString(false), " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds", periodicRampText);
+                                            newSpellEffectWOW.SetAuraDescription("suffering", false, " ", string.Concat(" damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds", periodicRampText));
                                         }
                                     }
                                     newSpellEffects.Add(newSpellEffectWOW);
@@ -2857,20 +2909,22 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                     newSpellEffectWOW.EffectMiscValueA = 0; // Power Type = Mana
                                     newSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
+                                    newSpellEffectWOW.IntensifyingRampStartMultiplier = eqEffect.IntensifyingRampStartMultiplier;
+                                    string periodicRampText = GetIntensifyingRampDescriptionSuffix(eqEffect.IntensifyingRampStartMultiplier);
                                     if (eqEffect.EQBaseValue > 0)
                                     {
                                         newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicEnergize;
                                         newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ManaUpOverTimeMPS", SpellEffectWOWConversionScaleType.Periodic);
-                                        newSpellEffectWOW.ActionDescription = string.Concat("recover ", newSpellEffectWOW.GetFormattedEffectActionString(false), " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                        newSpellEffectWOW.SetAuraDescription("recovering", false, " ", string.Concat(" mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds"));
+                                        newSpellEffectWOW.ActionDescription = string.Concat("recover ", newSpellEffectWOW.GetFormattedEffectActionString(false), " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds", periodicRampText);
+                                        newSpellEffectWOW.SetAuraDescription("recovering", false, " ", string.Concat(" mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds", periodicRampText));
                                     }
                                     else
                                     {
                                         newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PowerBurn;
                                         newSpellEffectWOW.EffectMultipleValue = 0;
                                         newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "ManaDownOvertimeMPS", SpellEffectWOWConversionScaleType.Periodic);
-                                        newSpellEffectWOW.ActionDescription = string.Concat("reduce ", newSpellEffectWOW.GetFormattedEffectActionString(false), " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                        newSpellEffectWOW.SetAuraDescription("reducing", false, " ", string.Concat(" mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds"));
+                                        newSpellEffectWOW.ActionDescription = string.Concat("reduce ", newSpellEffectWOW.GetFormattedEffectActionString(false), " mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds", periodicRampText);
+                                        newSpellEffectWOW.SetAuraDescription("reducing", false, " ", string.Concat(" mana per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds", periodicRampText));
                                     }
                                     newSpellEffects.Add(newSpellEffectWOW);
                                 }
