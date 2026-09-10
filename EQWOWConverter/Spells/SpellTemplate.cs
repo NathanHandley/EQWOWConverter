@@ -264,6 +264,7 @@ namespace EQWOWConverter.Spells
         public int RequiredAreaIDs = -1;
         public bool IsGoodEffect = false;
         public UInt32 SchoolMask = 1;
+        public bool HasSchoolOverride = false;
         public UInt32 DispelType = 0;
         public UInt32 RequiredTotemID1 = 0;
         public UInt32 RequiredTotemID2 = 0;
@@ -326,6 +327,7 @@ namespace EQWOWConverter.Spells
         public bool ForceAsDebuff = false;
         public bool IsFarSight = false;
         public bool GenerateNoThreat = false;
+        public bool SuppressCasterProcs = false;
         public bool IgnoreTargetRequirements = false;
         public bool IgnoreLineOfSight = false;
         public bool ProcsOnMeleeAttacks = false;
@@ -782,6 +784,20 @@ namespace EQWOWConverter.Spells
                 else if (isDetrimental == true)
                     newSpellTemplate.ResistDiff = int.Parse(columns["ResistDiff"]);
                 newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
+
+                // A school override supersedes the school from the resist type (the resist type still drives resistability and dispel type)
+                string schoolOverride = columns["school_override"].Trim().ToLower();
+                if (schoolOverride.Length > 0)
+                {
+                    UInt32 overrideSchoolMask = GetSchoolMaskForSchoolOverride(schoolOverride);
+                    if (overrideSchoolMask == 0)
+                        Logger.WriteError("Spell template with eq_id ", newSpellTemplate.EQSpellID.ToString(), " has an unknown school_override of '", schoolOverride, "', so it keeps the school from its resist type");
+                    else
+                    {
+                        newSpellTemplate.SchoolMask = overrideSchoolMask;
+                        newSpellTemplate.HasSchoolOverride = true;
+                    }
+                }
                 newSpellTemplate.DispelType = GetDispelTypeForResistType(resistType, isDetrimental, newSpellTemplate.AuraDuration.MaxDurationInMS > 0);
                 if (isDetrimental == true && newSpellTemplate.AuraDuration.MaxDurationInMS > 0)
                 {
@@ -1497,6 +1513,20 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        private static UInt32 GetSchoolMaskForSchoolOverride(string schoolOverride)
+        {
+            switch (schoolOverride)
+            {
+                case "holy": return 2;
+                case "fire": return 4;
+                case "nature": return 8;
+                case "cold": return 16; // WOW Frost
+                case "shadow": return 32;
+                case "arcane": return 64;
+                default: return 0; // Unknown
+            }
+        }
+
         public static UInt32 GetDispelTypeForResistType(int eqResistType, bool isDetrimental, bool hasSpellDuration)
         {
             // TODO: Honor 'nodispel'?
@@ -1973,6 +2003,20 @@ namespace EQWOWConverter.Spells
                 Logger.WriteDebug(string.Concat("Spell '", Name, "' (eqid ", EQSpellID.ToString(), ") damages its own caster, so it can not crit"));
                 return;
             }
+        }
+
+        public bool DealsDamage()
+        {
+            // Any effect that lands damage on someone, including the caster (life-for-mana costs) and melee attackers (damage shields)
+            foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
+            {
+                if (spellEffect.EffectType == SpellWOWEffectType.SchoolDamage || spellEffect.EffectType == SpellWOWEffectType.HealthLeech)
+                    return true;
+                if (spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamage || spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamagePercent
+                    || spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicLeech || spellEffect.EffectAuraType == SpellWOWAuraType.DamageShield)
+                    return true;
+            }
+            return false;
         }
 
         private bool HasPeriodicDamageEQEffect()
@@ -3917,7 +3961,7 @@ namespace EQWOWConverter.Spells
                                         effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                         effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
                                         effectGeneratedSpellTemplate.SpellVisualID1 = 5560; // Lesser Heal visual, like Judgement of Light
-                                        effectGeneratedSpellTemplate.SchoolMask = 2; // Holy
+                                        effectGeneratedSpellTemplate.SchoolMask = spellTemplate.HasSchoolOverride == true ? spellTemplate.SchoolMask : 2; // Holy, unless the parent's school was overridden
                                         effectGeneratedSpellTemplate.HideCaster = true;
                                         effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
                                         effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
@@ -3935,6 +3979,12 @@ namespace EQWOWConverter.Spells
 
                                         // The proc hands the heal its own amount (a share of the attacker's maximum health), so nothing else may scale it
                                         effectGeneratedSpellTemplate.InfluencedBySpellPower = false;
+                                        effectGeneratedSpellTemplate.DamageIsFixed = true; // Keeps talent aligned spell mods and the mod's EQ heal talents off of it
+
+                                        // The rest of the Judgement of Light heal's (20267) attributes: no threat, no crit, and nothing procs off it (the core adds that last one in SpellInfoCorrections)
+                                        effectGeneratedSpellTemplate.GenerateNoThreat = true;
+                                        effectGeneratedSpellTemplate.CannotCrit = true;
+                                        effectGeneratedSpellTemplate.SuppressCasterProcs = true;
                                         spellTemplate.WOWSpellIDCastOnMeleeAttacker = effectGeneratedSpellTemplate.WOWSpellID;
                                         spellTemplate.HealsMeleeAttackersLikeJudgementOfLight = true;
 

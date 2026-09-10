@@ -100,7 +100,7 @@ namespace EQWOWConverter.WOWFiles
             AddRow(17116, 0, 0, 0, 7, 1, 0, 8, 0);   // Nature's Swiftness charge consumption
 
             // Death Knight
-            AddRow(49796, 16, 0, 0, 0, 4, 0, 8, 0);  // Deathchill charge consumption (frost cast that used the crit modifier)
+            AddRow(49796, 48, 0, 0, 0, 4, 0, 8, 0);  // Deathchill charge consumption (frost cast for WOW, frost or shadow for the EQ spells it reaches, that used the crit modifier)
             // (DK core script requires blood runes to be on cooldown, so this only widens which casts are considered, not when the talent is allowed to fire)
             AddRow(-49182, 0, 0, 0, 0, 1, 0, 0, 0);  // Blade Barrier (on cast)
 
@@ -109,8 +109,8 @@ namespace EQWOWConverter.WOWFiles
             AddRow(-32385, 0, 0, 0, 1, 2, 0, 0, 0);      // Shadow Embrace (damage hit; the mod's added script filters the spells)
             AddRow(-47195, 0, 0, 0, 1, 2, 0, 0, 0);      // Eradication (periodic damage tick; the mod's added script filters the spells)
             AddRow(18708, 0, 0, 0, 0, 1, 0, 8, 0);       // Fel Domination charge consumption (the summon cast that used the modifiers)
-            AddRow(17941, 104, 0, 65536, 1, 1, 0, 8, 0);  // Shadow Trance (Nightfall's instant Shadow Bolt buff; shadow, arcane and nature cover the EQ direct spells it reaches)
-            AddRow(34936, 108, 0, 65536, 1, 1, 0, 8, 0);  // Backlash's instant cast buff (fire and shadow for WOW, plus arcane and nature for the EQ direct spells it reaches)
+            AddRow(17941, 32, 0, 65536, 1, 1, 0, 8, 0);   // Shadow Trance (Nightfall's instant Shadow Bolt buff; shadow for both WOW and the EQ direct spells it reaches)
+            AddRow(34936, 36, 0, 65536, 1, 1, 0, 8, 0);   // Backlash's instant cast buff (fire and shadow for both WOW and the EQ direct spells it reaches)
 
             // Warrior (its own core script still excludes the extra-attack spells it generates)
             AddRow(12328, 0, 0, 0, 1, 2, 0, 2, 0);   // Sweeping Strikes (any damaging spell hit) - Example, Bash wouldn't work on other targets without this

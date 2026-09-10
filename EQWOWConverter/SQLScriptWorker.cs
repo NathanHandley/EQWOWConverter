@@ -2690,16 +2690,21 @@ namespace EQWOWConverter
             spellGroupSQL.AddRow(spellGroupStackingID, -wowSpellID);
         }
 
-        // Judgement of Light and the EQ marks that copy it are the same effect, so one caster cannot have both on a target at once
         int JudgementOfLightExclusiveSpellGroupID = 0;
+        int JudgementOfLightSubgroupID = 0;
+        int HealMeleeAttackersMarkSubgroupID = 0;
         private void AddJudgementOfLightExclusiveGroupMember(int wowSpellID)
         {
             if (JudgementOfLightExclusiveSpellGroupID == 0)
             {
-                JudgementOfLightExclusiveSpellGroupID = SpellTemplate.GetOrCreateNamedSpellGroupID("judgementoflight", 2); // SPELL_GROUP_STACK_RULE_EXCLUSIVE_FROM_SAME_CASTER
-                spellGroupSQL.AddRow(JudgementOfLightExclusiveSpellGroupID, Configuration.SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID);
+                JudgementOfLightExclusiveSpellGroupID = SpellTemplate.GetOrCreateNamedSpellGroupID("judgementoflight", 1); // SPELL_GROUP_STACK_RULE_EXCLUSIVE
+                JudgementOfLightSubgroupID = SpellTemplate.GetOrCreateNamedSubgroupSpellGroupID("judgementoflightself");
+                HealMeleeAttackersMarkSubgroupID = SpellTemplate.GetOrCreateNamedSubgroupSpellGroupID("healmeleeattackersmarks");
+                spellGroupSQL.AddRow(JudgementOfLightSubgroupID, Configuration.SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID);
+                spellGroupSQL.AddRow(JudgementOfLightExclusiveSpellGroupID, -JudgementOfLightSubgroupID);
+                spellGroupSQL.AddRow(JudgementOfLightExclusiveSpellGroupID, -HealMeleeAttackersMarkSubgroupID);
             }
-            AddCastSpellGroupMember(JudgementOfLightExclusiveSpellGroupID, wowSpellID);
+            spellGroupSQL.AddRow(HealMeleeAttackersMarkSubgroupID, wowSpellID);
         }
 
         int MajorArmorDebuffSubgroupID = 0;
@@ -2786,8 +2791,8 @@ namespace EQWOWConverter
                     }
                 }
 
-                // Any block dealing shadow damage gets the script that lets the priest Shadow Weaving talent proc off it
-                if ((spellTemplate.SchoolMask & 32) != 0 && commentFragment != " (Worn)")
+                // Any block dealing holy or shadow damage gets the script that lets the priest Shadow Weaving talent proc off it (priest talents align to Holy, the Cleric school, and Shadow)
+                if ((spellTemplate.SchoolMask & 34) != 0 && commentFragment != " (Worn)")
                 {
                     foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
                     {

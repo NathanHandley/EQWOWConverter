@@ -586,6 +586,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 65536; // SPELL_ATTR3_SUPPRESS_CASTER_PROCS
                 attributeFlags |= 131072; // SPELL_ATTR3_SUPPRESS_TARGET_PROCS
             }
+            if (spellTemplate.SuppressCasterProcs == true)
+                attributeFlags |= 65536; // SPELL_ATTR3_SUPPRESS_CASTER_PROCS
             if (spellTemplate.AlwaysPersist == true || spellTemplate.PersistThroughDeath == true)
                 attributeFlags |= 1048576; // SPELL_ATTR3_ALLOW_AURA_WHILE_DEAD
             if (spellTemplate.IsUnresistable == true)
@@ -608,6 +610,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 536870912; // SPELL_ATTR4_AURA_BOUNCE_FAILS_SPELL
             }
             if (spellTemplate.HideCaster == true)
+                attributeFlags |= 1; // SPELL_ATTR4_NO_CAST_LOG
+            if (spellTemplate.IsUnresistable == true && spellTemplate.SchoolMask != 2 && spellTemplate.DealsDamage() == true)
                 attributeFlags |= 1; // SPELL_ATTR4_NO_CAST_LOG
             if (spellTemplate.AllowCastWhileCasting == true)
                 attributeFlags |= 128; // SPELL_ATTR4_ALLOW_CAST_WHILE_CASTING (0x00000080)
