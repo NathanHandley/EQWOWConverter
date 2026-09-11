@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 103;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 104;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1215,6 +1215,8 @@ namespace EQWOWConverter
         public static int COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_LEARN_LEVEL = 300;
         public static int COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_MAX_LEVEL = 450;
         public static int COMBATSKILL_PIERCINGBACKSTAB_MAX_SCALING_LEVEL = 40;
+        public static bool COMBATSKILL_PIERCINGBACKSTAB_FERAL_ENABLED = true;
+        public static int COMBATSKILL_PIERCINGBACKSTAB_FERAL_SPELL_ID = 86947;
 
         // Harm Touch is a shadowknight ability (a long-cooldown direct damage "touch"). Also granted to player Death Knights. HP is ~2.5x higher in WoW
         public static bool COMBATSKILL_HARMTOUCH_ENABLED = true;
@@ -1676,6 +1678,9 @@ namespace EQWOWConverter
 
         // ID for the (existing) SpellVisual.dbc row used by stock rogue Backstab
         public static int DBCID_SPELLVISUAL_BACKSTAB_ID = 155;
+
+        // ID for the (existing) SpellVisual.dbc row used by stock druid Shred
+        public static int DBCID_SPELLVISUAL_SHRED_ID = 3950;
 
         // IDs for the (existing) CreatureDisplayInfo.dbc rows of the stock WoW druid forms
         public static int DBCID_CREATUREDISPLAYINFO_DRUID_BEAR_ALLIANCE_ID = 2281;
@@ -2482,6 +2487,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_LEARN_LEVEL", COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_LEARN_LEVEL, "", false);
             OutputVariableToConfig("COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_MAX_LEVEL", COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_MAX_LEVEL, "", false);
             OutputVariableToConfig("COMBATSKILL_PIERCINGBACKSTAB_MAX_SCALING_LEVEL", COMBATSKILL_PIERCINGBACKSTAB_MAX_SCALING_LEVEL, "", false);
+            OutputVariableToConfig("COMBATSKILL_PIERCINGBACKSTAB_FERAL_ENABLED", COMBATSKILL_PIERCINGBACKSTAB_FERAL_ENABLED, "", false);
+            OutputVariableToConfig("COMBATSKILL_PIERCINGBACKSTAB_FERAL_SPELL_ID", COMBATSKILL_PIERCINGBACKSTAB_FERAL_SPELL_ID, "");
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_ENABLED", COMBATSKILL_HARMTOUCH_ENABLED, "Harm Touch is a shadowknight ability (a long-cooldown direct damage \"touch\"). Also granted to player Death Knights. HP is ~2.5x higher in WoW", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE", COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE, "", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID", COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID, "", false);
@@ -3218,6 +3225,8 @@ namespace EQWOWConverter
             COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_LEARN_LEVEL = ReadVariableFromConfigString("COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_LEARN_LEVEL", configValuesByVariableName, COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_LEARN_LEVEL);
             COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_MAX_LEVEL = ReadVariableFromConfigString("COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_MAX_LEVEL", configValuesByVariableName, COMBATSKILL_PIERCINGBACKSTAB_WEAPON_DAMAGE_PERCENT_AT_MAX_LEVEL);
             COMBATSKILL_PIERCINGBACKSTAB_MAX_SCALING_LEVEL = ReadVariableFromConfigString("COMBATSKILL_PIERCINGBACKSTAB_MAX_SCALING_LEVEL", configValuesByVariableName, COMBATSKILL_PIERCINGBACKSTAB_MAX_SCALING_LEVEL);
+            COMBATSKILL_PIERCINGBACKSTAB_FERAL_ENABLED = ReadVariableFromConfigString("COMBATSKILL_PIERCINGBACKSTAB_FERAL_ENABLED", configValuesByVariableName, COMBATSKILL_PIERCINGBACKSTAB_FERAL_ENABLED);
+            COMBATSKILL_PIERCINGBACKSTAB_FERAL_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_PIERCINGBACKSTAB_FERAL_SPELL_ID", configValuesByVariableName, COMBATSKILL_PIERCINGBACKSTAB_FERAL_SPELL_ID);
             COMBATSKILL_HARMTOUCH_ENABLED = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_ENABLED", configValuesByVariableName, COMBATSKILL_HARMTOUCH_ENABLED);
             COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE);
             COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID", configValuesByVariableName, COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID);

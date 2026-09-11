@@ -390,6 +390,7 @@ namespace EQWOWConverter.Spells
         public bool RequiresMainHandWeapon = false;
         public bool UsesRangedWeaponSlot = false;
         public bool AllowInShapeshift = false;
+        public UInt64 OnlyInShapeshiftFormMask = 0;
         public bool AllowCastWhileSitting = false;
         public bool DoNotBreakStealthOrInvisibility = false;
         public bool AllowCastWhileCasting = false;
@@ -554,9 +555,17 @@ namespace EQWOWConverter.Spells
         private const UInt64 SHAPESHIFT_FORM_MASK_TREE_OF_LIFE = 1ul << (2 - 1); // FORM_TREE, the druid Tree of Life form
         private const UInt64 SHAPESHIFT_FORM_MASK_METAMORPHOSIS = 1ul << (22 - 1); // FORM_METAMORPHOSIS, the warlock demon form
         private const UInt64 SHAPESHIFT_FORM_MASK_MOONKIN = 1ul << (31 - 1); // FORM_MOONKIN
+        private const UInt64 SHAPESHIFT_FORM_MASK_CAT = 1ul << (1 - 1); // FORM_CAT
+        private const UInt64 SHAPESHIFT_FORM_MASK_BEAR = 1ul << (5 - 1); // FORM_BEAR
+        private const UInt64 SHAPESHIFT_FORM_MASK_DIRE_BEAR = 1ul << (8 - 1); // FORM_DIREBEAR
+        public const UInt64 SHAPESHIFT_FORM_MASK_FERAL = SHAPESHIFT_FORM_MASK_CAT | SHAPESHIFT_FORM_MASK_BEAR | SHAPESHIFT_FORM_MASK_DIRE_BEAR;
 
         public UInt64 GetAllowedShapeshiftFormMask()
         {
+            // Form-only abilities (Piercing Backstab (Feral)) are limited to exactly their forms
+            if (OnlyInShapeshiftFormMask != 0)
+                return OnlyInShapeshiftFormMask;
+
             // Custom abilities flagged usable in shapeshift (Bash, Slam, Piercing Backstab, Tracking) carry no form restriction at all
             if (AllowInShapeshift == true)
                 return SHAPESHIFT_FORM_MASK_ALL;
@@ -572,7 +581,7 @@ namespace EQWOWConverter.Spells
 
         public UInt64 GetExcludedShapeshiftFormMask()
         {
-            if (AllowInShapeshift == true)
+            if (AllowInShapeshift == true || OnlyInShapeshiftFormMask != 0)
                 return 0;
             UInt64 formMask = 0;
             if (IsHealingSpell() == true)

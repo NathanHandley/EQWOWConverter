@@ -2118,7 +2118,11 @@ namespace EQWOWConverter
 
             // Piercing Backstab requires the caster to be behind the target, which only exists as a server-side custom attribute (applied at startup from spell_custom_attr)
             if (Configuration.COMBATSKILL_PIERCINGBACKSTAB_ENABLED == true)
+            {
                 spellCustomAttrSQL.AddRow(Configuration.COMBATSKILL_PIERCINGBACKSTAB_SPELL_ID, 131072); // 0x00020000 (SPELL_ATTR0_CU_REQ_CASTER_BEHIND_TARGET)
+                if (Configuration.COMBATSKILL_PIERCINGBACKSTAB_FERAL_ENABLED == true)
+                    spellCustomAttrSQL.AddRow(Configuration.COMBATSKILL_PIERCINGBACKSTAB_FERAL_SPELL_ID, 131072); // 0x00020000 (SPELL_ATTR0_CU_REQ_CASTER_BEHIND_TARGET)
+            }
 
             Dictionary<ClassEQType, PlayerEQClassProperties> eqClassPropertiesByEQClass = PlayerEQClassProperties.GetAllEQClassPropertiesByEQClass();
 
@@ -2225,7 +2229,13 @@ namespace EQWOWConverter
 
                     // Piercing Backstab
                     if (Configuration.COMBATSKILL_PIERCINGBACKSTAB_ENABLED == true && Configuration.COMBATSKILL_PIERCINGBACKSTAB_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.Rogue)
+                    {
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_PIERCINGBACKSTAB_SPELL_ID, Configuration.COMBATSKILL_PIERCINGBACKSTAB_LEARN_LEVEL);
+
+                        // The feral version goes only to WoW Druids, on top of the regular one
+                        if (Configuration.COMBATSKILL_PIERCINGBACKSTAB_FERAL_ENABLED == true)
+                            modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_PIERCINGBACKSTAB_FERAL_SPELL_ID, Configuration.COMBATSKILL_PIERCINGBACKSTAB_LEARN_LEVEL, ClassWOWType.Druid);
+                    }
 
                     // Auto Shot (Existing WoW version)
                     if (eqClassProperties.EQClass == ClassEQType.Ranger)

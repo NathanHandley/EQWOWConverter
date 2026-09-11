@@ -517,7 +517,7 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 16; // SPELL_ATTR0_IS_ABILITY (0x00000010)
                 attributeFlags |= 32; // SPELL_ATTR0_IS_TRADESKILL (0x00000020)
             }
-            if (isWornEquipEffect == false && spellTemplate.AllowInShapeshift == false)
+            if (isWornEquipEffect == false && spellTemplate.AllowInShapeshift == false && spellTemplate.OnlyInShapeshiftFormMask == 0)
                 attributeFlags |= 65536; // SPELL_ATTR0_NOT_SHAPESHIFTED (0x00010000)
             if (spellTemplate.AllowCastWhileSitting == true)
                 attributeFlags |= 134217728; // SPELL_ATTR0_ALLOW_WHILE_SITTING (0x08000000)
@@ -567,7 +567,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 8192; // 	SPELL_ATTR2_ENCHANT_OWN_ITEM_ONLY (0x00002000)
             if (spellTemplate.DoNotInterruptAutoActionsAndSwingTimers == true)
                 attributeFlags |= 131072; // SPELL_ATTR2_DO_NOT_RESET_COMBAT_TIMERS (0x00020000)
-            if (shapeshiftMask != 0)
+            // Leaving this off a form mask makes the spell castable only in those forms (the way stock Shred and Maul work)
+            if (shapeshiftMask != 0 && spellTemplate.OnlyInShapeshiftFormMask == 0)
                 attributeFlags |= 524288; // SPELL_ATTR2_ALLOW_WHILE_NOT_SHAPESHIFTED (0x00080000)
             if (spellTemplate.IgnoreLineOfSight == true)
                 attributeFlags |= 4; // SPELL_ATTR2_IGNORE_LINE_OF_SIGHT (0x00000004)
