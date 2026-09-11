@@ -2085,6 +2085,8 @@ namespace EQWOWConverter.ObjectModels
                     } break;
                 case ObjectModelAttachmentType.HandLeft_ItemVisual2:
                 case ObjectModelAttachmentType.SpellLeftHand:
+                case ObjectModelAttachmentType.SheathOffHand: // Sheathed items stay in the hand, since EQ models have no back or hip sheath points
+                case ObjectModelAttachmentType.HipWeaponRight:
                     {
                         returnValue = GetFirstBoneIndexForEQBoneNames("l_point", "pe", "root");
                     } break;
@@ -2096,10 +2098,13 @@ namespace EQWOWConverter.ObjectModels
                 case ObjectModelAttachmentType.SpellRightHand:
                 case ObjectModelAttachmentType.LargeWeaponRight:
                 case ObjectModelAttachmentType.LargeWeaponLeft:// This seems questionable, but fixes swapping of hands for 2h weapons when casting
+                case ObjectModelAttachmentType.SheathMainHand:
+                case ObjectModelAttachmentType.HipWeaponLeft:
                     {
                         returnValue = GetFirstBoneIndexForEQBoneNames("r_point", "pe", "root");
                     } break;
                 case ObjectModelAttachmentType.Shield_MountMain_ItemVisual0:
+                case ObjectModelAttachmentType.SheathShield:
                     {
                         returnValue = GetFirstBoneIndexForEQBoneNames("shield_point", "fo_l", "fi_l", "l_point", "pe", "root");
                     } break;

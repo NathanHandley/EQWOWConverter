@@ -226,13 +226,20 @@ namespace EQWOWConverter.WOWFiles
 
             // Add the various attachments
             if (doSuppressHeldShieldAttachment == false)
+            {
                 SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.Shield_MountMain_ItemVisual0);
+                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.SheathShield);
+            }
             if (doSuppressHeldItemAttachments == false)
             {
                 SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HandRight_ItemVisual1);
                 SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HandLeft_ItemVisual2);
                 SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.LargeWeaponLeft);
                 SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.LargeWeaponRight);
+                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.SheathMainHand);
+                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.SheathOffHand);
+                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HipWeaponLeft);
+                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HipWeaponRight);
             }
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ChestBloodFront);
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ChestBloodBack);
