@@ -1260,6 +1260,18 @@ namespace EQWOWConverter.Items
             return damage != 0 && delay != 0;
         }
 
+        private static bool TryGetOneHandWeaponSubclassForTwoHand(int twoHandSubClassID, out ItemWOWWeaponSubclassType oneHandSubclass)
+        {
+            switch ((ItemWOWWeaponSubclassType)twoHandSubClassID)
+            {
+                case ItemWOWWeaponSubclassType.AxeTwoHand: oneHandSubclass = ItemWOWWeaponSubclassType.AxeOneHand; return true;
+                case ItemWOWWeaponSubclassType.MaceTwoHand: oneHandSubclass = ItemWOWWeaponSubclassType.MaceOneHand; return true;
+                case ItemWOWWeaponSubclassType.Staff: oneHandSubclass = ItemWOWWeaponSubclassType.MaceOneHand; return true;
+                case ItemWOWWeaponSubclassType.SwordTwoHand: oneHandSubclass = ItemWOWWeaponSubclassType.SwordOneHand; return true;
+                default: oneHandSubclass = ItemWOWWeaponSubclassType.Miscellaneous; return false; // Polearms and spears have no one hand version
+            }
+        }
+
         private static bool IsSlotshiftWearableInInventoryType(int slotMask, ItemWOWInventoryType baseInventoryType, ItemWOWInventoryType inventoryType)
         {
             switch (inventoryType)
@@ -1325,6 +1337,15 @@ namespace EQWOWConverter.Items
                 if (IsSlotshiftWearableInInventoryType(itemTemplate.EQSlotMask, baseInventoryType, inventoryType) == true)
                     targetInventoryTypes.Add(inventoryType);
             }
+
+            if (baseInventoryType == ItemWOWInventoryType.TwoHand && itemTemplate.ClassID == 2 && itemTemplate.SlotshiftWOWIDsBySlot.ContainsKey(ItemWOWInventoryType.MainHand) == true)
+            {
+                if (TryGetOneHandWeaponSubclassForTwoHand(itemTemplate.SubClassID, out _) == true)
+                    targetInventoryTypes.Add(ItemWOWInventoryType.MainHand);
+                else
+                    Logger.WriteError("Item '", itemTemplate.Name, "' (wowid '", itemTemplate.WOWEntryID.ToString(),
+                        "') has a 'wowid_mainhand' ID but its two hand weapon type has no one hand version, so it won't slotshift into the main hand");
+            }
             return targetInventoryTypes;
         }
 
@@ -1371,11 +1392,18 @@ namespace EQWOWConverter.Items
                 variantItemTemplate.StarterVersionItemTemplateID = -1;
                 variantItemTemplate.InventoryType = targetInventoryType;
                 ItemWOWInventoryType statBudgetInventoryType = targetInventoryType;
+                bool isOneHandVersionOfTwoHandWeapon = (targetInventoryType == ItemWOWInventoryType.MainHand && baseItemTemplate.InventoryType == ItemWOWInventoryType.TwoHand);
                 if (targetInventoryType == ItemWOWInventoryType.Ranged)
                 {
                     // Rangeable non-weapons convert as misc weapons, matching other rangeable held items
                     variantItemTemplate.ClassID = 2;
                     variantItemTemplate.SubClassID = 14;
+                }
+                else if (isOneHandVersionOfTwoHandWeapon == true)
+                {
+                    // A two hand weapon stays a weapon, becoming the one hand version of its weapon type
+                    TryGetOneHandWeaponSubclassForTwoHand(baseItemTemplate.SubClassID, out ItemWOWWeaponSubclassType oneHandSubclass);
+                    variantItemTemplate.SubClassID = Convert.ToInt32(oneHandSubclass);
                 }
                 else if (targetInventoryType == ItemWOWInventoryType.MainHand)
                 {
@@ -1408,6 +1436,14 @@ namespace EQWOWConverter.Items
                     eqStamina, eqWisdom, eqHp, eqMana, eqResistPoison, eqResistMagic, eqResistDisease, eqResistFire, eqResistCold,
                     damage, delay, qualityOverride);
                 variantItemTemplate.Quality = baseItemTemplate.Quality; // Keep quality consistent across the ring
+
+                // The one hand version of a two hand weapon swings at the same speed for a configurable share of the two hand damage
+                if (isOneHandVersionOfTwoHandWeapon == true)
+                {
+                    variantItemTemplate.WeaponMinDamage = Convert.ToInt32(Math.Round(baseItemTemplate.WeaponMinDamage * Configuration.ITEMS_SLOTSHIFT_TWOHAND_WEAPON_ONEHAND_DAMAGE_MOD));
+                    variantItemTemplate.WeaponMaxDamage = Convert.ToInt32(Math.Round(baseItemTemplate.WeaponMaxDamage * Configuration.ITEMS_SLOTSHIFT_TWOHAND_WEAPON_ONEHAND_DAMAGE_MOD));
+                    variantItemTemplate.WeaponDelay = baseItemTemplate.WeaponDelay;
+                }
                 CalculateAndSetSheatheType(ref variantItemTemplate);
                 variantItemTemplates.Add(variantItemTemplate);
             }

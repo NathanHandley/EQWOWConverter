@@ -756,6 +756,9 @@ namespace EQWOWConverter
         // Multiplier applied to every generated durability value
         public static float ITEMS_DURABILITY_MULTIPLIER = 1f;
 
+        // Multiplier applied to a two hand weapon's damage for its one hand slotshift version
+        public static float ITEMS_SLOTSHIFT_TWOHAND_WEAPON_ONEHAND_DAMAGE_MOD = 0.77f;
+
         // Item level is what WOW uses to price a durability point when repairing
         public static int ITEMS_ITEM_LEVEL_MINIMUM = 10;
 
@@ -2270,6 +2273,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEM_STATS_MANA_TO_MP5_MAX", ITEM_STATS_MANA_TO_MP5_MAX, "");
             OutputVariableToConfig("ITEMS_DURABILITY_ENABLED", ITEMS_DURABILITY_ENABLED, "If true, worn armor, shields and weapons take durability damage and must be repaired at a vendor");
             OutputVariableToConfig("ITEMS_DURABILITY_MULTIPLIER", ITEMS_DURABILITY_MULTIPLIER, "Multiplier applied to every generated durability value");
+            OutputVariableToConfig("ITEMS_SLOTSHIFT_TWOHAND_WEAPON_ONEHAND_DAMAGE_MOD", ITEMS_SLOTSHIFT_TWOHAND_WEAPON_ONEHAND_DAMAGE_MOD, "Multiplier applied to a two hand weapon's damage for its one hand slotshift version");
             OutputVariableToConfig("ITEMS_ITEM_LEVEL_MINIMUM", ITEMS_ITEM_LEVEL_MINIMUM, "Item level is what WOW uses to price a durability point when repairing");
             OutputVariableToConfig("ITEMS_BAG_SLOT_MULTIPLIER", ITEMS_BAG_SLOT_MULTIPLIER, "How much to multiple the slot size of a bag in EQ.  EQ allows for 2x the number bags of WOW (not including starter)");
             OutputVariableToConfig("ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT", ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT, "When ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED is true, this is how much to increase bag size by");
@@ -2998,6 +3002,7 @@ namespace EQWOWConverter
             ITEM_STATS_MANA_TO_MP5_MOD = ReadVariableFromConfigString("ITEM_STATS_MANA_TO_MP5_MOD", configValuesByVariableName, ITEM_STATS_MANA_TO_MP5_MOD);
             ITEM_STATS_MANA_TO_MP5_MAX = ReadVariableFromConfigString("ITEM_STATS_MANA_TO_MP5_MAX", configValuesByVariableName, ITEM_STATS_MANA_TO_MP5_MAX);
             ITEMS_DURABILITY_MULTIPLIER = ReadVariableFromConfigString("ITEMS_DURABILITY_MULTIPLIER", configValuesByVariableName, ITEMS_DURABILITY_MULTIPLIER);
+            ITEMS_SLOTSHIFT_TWOHAND_WEAPON_ONEHAND_DAMAGE_MOD = ReadVariableFromConfigString("ITEMS_SLOTSHIFT_TWOHAND_WEAPON_ONEHAND_DAMAGE_MOD", configValuesByVariableName, ITEMS_SLOTSHIFT_TWOHAND_WEAPON_ONEHAND_DAMAGE_MOD);
             ITEMS_ITEM_LEVEL_MINIMUM = ReadVariableFromConfigString("ITEMS_ITEM_LEVEL_MINIMUM", configValuesByVariableName, ITEMS_ITEM_LEVEL_MINIMUM);
             ITEMS_BAG_SLOT_MULTIPLIER = ReadVariableFromConfigString("ITEMS_BAG_SLOT_MULTIPLIER", configValuesByVariableName, ITEMS_BAG_SLOT_MULTIPLIER);
             ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED = ReadVariableFromConfigString("ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED", configValuesByVariableName, ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED);

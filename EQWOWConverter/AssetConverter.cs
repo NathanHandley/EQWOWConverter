@@ -5110,6 +5110,7 @@ namespace EQWOWConverter
                 case ItemWOWInventoryType.Ranged: return "ranged";
                 case ItemWOWInventoryType.HeldInOffHand: return "off hand (as a held item)";
                 case ItemWOWInventoryType.MainHand: return "main hand";
+                case ItemWOWInventoryType.TwoHand: return "main hand (as a two-hand weapon)";
                 default: return inventoryType.ToString().ToLower();
             }
         }
