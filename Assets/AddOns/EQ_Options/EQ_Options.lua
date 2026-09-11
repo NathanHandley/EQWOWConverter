@@ -15,7 +15,7 @@
 --  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -- Adds an "EverQuest" page to the Interface Options window covering the per character settings that are
--- otherwise only reachable as typed chat commands (".eqface", ".eqshowbardpulse", ".eqhidewowgear",
+-- otherwise only reachable as typed chat commands (".eqmovecast", ".eqface", ".eqshowbardpulse", ".eqhidewowgear",
 -- ".eqhailwindow" and ".eqdispelmessage").  The server (mod-everquest) owns every one of these, so this page
 -- never stores them itself: it shows what the server last pushed under the EQOPTIONS prefix, and clicking
 -- Okay runs the same chat commands a player would have typed.  Only settings that actually changed are sent,
@@ -25,6 +25,7 @@
 -- lives in this addon's per character saved variables (EQ_OptionsDB) and never touches the server.
 local EQOPTIONS_PREFIX = "EQOPTIONS";
 
+local DEFAULT_MOVE_WHILE_CASTING = true;
 local DEFAULT_FACE_ID = 0;
 local DEFAULT_SHOW_BARD_PULSE = true;
 local DEFAULT_HIDE_WOW_GEAR = false;
@@ -129,6 +130,7 @@ end
 
 -- What the server last told us this character is set to
 local serverValues = {
+	moveWhileCasting = DEFAULT_MOVE_WHILE_CASTING,
 	faceID = DEFAULT_FACE_ID,
 	maxFaceID = 0,
 	showBardPulse = DEFAULT_SHOW_BARD_PULSE,
@@ -198,6 +200,7 @@ local function EQ_Options_ColorToHex(color)
 end
 
 local function EQ_Options_CopyServerValuesToPending()
+	pendingValues.moveWhileCasting = serverValues.moveWhileCasting;
 	pendingValues.faceID = serverValues.faceID;
 	pendingValues.showBardPulse = serverValues.showBardPulse;
 	pendingValues.hideWoWGear = serverValues.hideWoWGear;
@@ -224,7 +227,7 @@ panel:Hide();
 -- not quite enough for these settings plus the druid form dropdowns.  So everything below lives in a scroll frame and
 -- the page scrolls rather than running off the bottom, which also leaves room for whatever gets added next.
 local EQ_OPTIONS_SCROLLBAR_WIDTH = 26;
-local EQ_OPTIONS_CONTENT_HEIGHT = 480;
+local EQ_OPTIONS_CONTENT_HEIGHT = 510;
 
 local scrollFrame = CreateFrame("ScrollFrame", "EQOptionsScrollFrame", panel, "UIPanelScrollFrameTemplate");
 scrollFrame:SetPoint("TOPLEFT", panel, "TOPLEFT", 0, 0);
@@ -295,7 +298,15 @@ local function EQ_Options_PlayCheckButtonSound(checkButton)
 	end
 end
 
-local bardPulseCheckButton = EQ_Options_CreateCheckButton("EQOptionsBardPulseCheckButton", titleText, -14,
+local moveWhileCastingCheckButton = EQ_Options_CreateCheckButton("EQOptionsMoveWhileCastingCheckButton", titleText, -14,
+	"Move while casting",
+	"Keep casting your spells while you move, though moving may slow you until the cast ends.  When this is off, moving breaks your casts the way it normally does.  Same as .eqmovecast");
+moveWhileCastingCheckButton:SetScript("OnClick", function(self)
+	EQ_Options_PlayCheckButtonSound(self);
+	pendingValues.moveWhileCasting = (self:GetChecked() and true or false);
+end);
+
+local bardPulseCheckButton = EQ_Options_CreateCheckButton("EQOptionsBardPulseCheckButton", moveWhileCastingCheckButton, -4,
 	"Show bard song pulse graphics",
 	"Bard songs re-cast themselves every few seconds.  When this is off the repeat casts are silent, and only the graphic where a song first starts is shown.  Same as .eqshowbardpulse");
 bardPulseCheckButton:SetScript("OnClick", function(self)
@@ -540,6 +551,7 @@ waitingText:Hide();
 -- ===================================================================================
 
 local function EQ_Options_RefreshPanel()
+	moveWhileCastingCheckButton:SetChecked(pendingValues.moveWhileCasting);
 	bardPulseCheckButton:SetChecked(pendingValues.showBardPulse);
 	hideWoWGearCheckButton:SetChecked(pendingValues.hideWoWGear);
 	hailWindowCheckButton:SetChecked(pendingValues.hailWindow);
@@ -593,6 +605,9 @@ function panel.okay()
 		return;
 	end
 
+	if ( pendingValues.moveWhileCasting ~= serverValues.moveWhileCasting ) then
+		EQ_Options_SendCommand(".eqmovecast " .. (pendingValues.moveWhileCasting == true and "on" or "off"));
+	end
 	if ( pendingValues.showBardPulse ~= serverValues.showBardPulse ) then
 		EQ_Options_SendCommand(".eqshowbardpulse " .. (pendingValues.showBardPulse == true and "on" or "off"));
 	end
@@ -631,6 +646,7 @@ function panel.cancel()
 end
 
 function panel.default()
+	pendingValues.moveWhileCasting = DEFAULT_MOVE_WHILE_CASTING;
 	pendingValues.faceID = DEFAULT_FACE_ID;
 	pendingValues.showBardPulse = DEFAULT_SHOW_BARD_PULSE;
 	pendingValues.hideWoWGear = DEFAULT_HIDE_WOW_GEAR;
@@ -774,6 +790,14 @@ function EQ_Options_HandlePayload(payload)
 			value = EQ_Options_GetDefaultDruidFormValue(menu.settingKey);
 		end
 		serverValues[menu.settingKey] = value;
+	end
+
+	-- Move while casting follows the druid form fields, and a server from before it existed does not send it, which reads as the default (on)
+	local moveWhileCastingField = fields[8 + #DRUID_FORM_MENUS];
+	if ( moveWhileCastingField == nil ) then
+		serverValues.moveWhileCasting = DEFAULT_MOVE_WHILE_CASTING;
+	else
+		serverValues.moveWhileCasting = (moveWhileCastingField == "1");
 	end
 	haveServerValues = true;
 
