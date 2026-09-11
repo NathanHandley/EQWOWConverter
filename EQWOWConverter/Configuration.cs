@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 102;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 103;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1246,6 +1246,15 @@ namespace EQWOWConverter
         public static int COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID = 7;
         public static int COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT = 5;
         public static int COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS = 1500;
+
+        // Mend is a monk ability (an instant self heal for a share of max health that nothing can increase, usable while stealthed, feigning death, invisible, silenced or shapeshifted)
+        public static bool COMBATSKILL_MEND_ENABLED = true;
+        public static bool COMBATSKILL_MEND_PLAYER_LEARNABLE = true;
+        public static int COMBATSKILL_MEND_SPELL_ID = 86946;
+        public static int COMBATSKILL_MEND_SPELL_ICON_EQ_ID = 10;
+        public static int COMBATSKILL_MEND_SPELL_VISUAL_ID = 5560; // Same visual as CLASSAURA_PALADIN_HEAL_SPELL_VISUAL_ID (Judgement of Light heal 20267, LesserHeal_Base impact)
+        public static int COMBATSKILL_MEND_COOLDOWN_IN_MS = 360000;
+        public static int COMBATSKILL_MEND_HEAL_PERCENT = 25;
 
         // Ranged attack in EQ zones is based on TAKP, and creatures will ranged attack if they have a bow + arrow or the creature has a special skill attribute
         public static bool COMBATSKILL_RANGED_ENABLED = true;
@@ -2498,6 +2507,13 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID", COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT", COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT, "", false);
             OutputVariableToConfig("COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS", COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS, "");
+            OutputVariableToConfig("COMBATSKILL_MEND_ENABLED", COMBATSKILL_MEND_ENABLED, "Mend is a monk ability (an instant self heal for a share of max health that nothing can increase, usable while stealthed, feigning death, invisible, silenced or shapeshifted)", false);
+            OutputVariableToConfig("COMBATSKILL_MEND_PLAYER_LEARNABLE", COMBATSKILL_MEND_PLAYER_LEARNABLE, "Whether classes that have Mend learn it as players (from level 1)", false);
+            OutputVariableToConfig("COMBATSKILL_MEND_SPELL_ID", COMBATSKILL_MEND_SPELL_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_MEND_SPELL_ICON_EQ_ID", COMBATSKILL_MEND_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_MEND_SPELL_VISUAL_ID", COMBATSKILL_MEND_SPELL_VISUAL_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_MEND_COOLDOWN_IN_MS", COMBATSKILL_MEND_COOLDOWN_IN_MS, "", false);
+            OutputVariableToConfig("COMBATSKILL_MEND_HEAL_PERCENT", COMBATSKILL_MEND_HEAL_PERCENT, "");
             OutputVariableToConfig("COMBATSKILL_RANGED_ENABLED", COMBATSKILL_RANGED_ENABLED, "Ranged attack in EQ zones is based on TAKP, and creatures will ranged attack if they have a bow + arrow or the creature has a special skill attribute", false);
             OutputVariableToConfig("COMBATSKILL_RANGED_SPELL_ID", COMBATSKILL_RANGED_SPELL_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_RANGED_SPELL_ICON_EQ_ID", COMBATSKILL_RANGED_SPELL_ICON_EQ_ID, "", false);
@@ -3227,6 +3243,13 @@ namespace EQWOWConverter
             COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_FEIGNDEATH_SPELL_ICON_EQ_ID);
             COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT = ReadVariableFromConfigString("COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT", configValuesByVariableName, COMBATSKILL_FEIGNDEATH_FAIL_CHANCE_PERCENT);
             COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS = ReadVariableFromConfigString("COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS", configValuesByVariableName, COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS);
+            COMBATSKILL_MEND_ENABLED = ReadVariableFromConfigString("COMBATSKILL_MEND_ENABLED", configValuesByVariableName, COMBATSKILL_MEND_ENABLED);
+            COMBATSKILL_MEND_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_MEND_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_MEND_PLAYER_LEARNABLE);
+            COMBATSKILL_MEND_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_MEND_SPELL_ID", configValuesByVariableName, COMBATSKILL_MEND_SPELL_ID);
+            COMBATSKILL_MEND_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_MEND_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_MEND_SPELL_ICON_EQ_ID);
+            COMBATSKILL_MEND_SPELL_VISUAL_ID = ReadVariableFromConfigString("COMBATSKILL_MEND_SPELL_VISUAL_ID", configValuesByVariableName, COMBATSKILL_MEND_SPELL_VISUAL_ID);
+            COMBATSKILL_MEND_COOLDOWN_IN_MS = ReadVariableFromConfigString("COMBATSKILL_MEND_COOLDOWN_IN_MS", configValuesByVariableName, COMBATSKILL_MEND_COOLDOWN_IN_MS);
+            COMBATSKILL_MEND_HEAL_PERCENT = ReadVariableFromConfigString("COMBATSKILL_MEND_HEAL_PERCENT", configValuesByVariableName, COMBATSKILL_MEND_HEAL_PERCENT);
             COMBATSKILL_RANGED_ENABLED = ReadVariableFromConfigString("COMBATSKILL_RANGED_ENABLED", configValuesByVariableName, COMBATSKILL_RANGED_ENABLED);
             COMBATSKILL_RANGED_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_RANGED_SPELL_ID", configValuesByVariableName, COMBATSKILL_RANGED_SPELL_ID);
             COMBATSKILL_RANGED_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_RANGED_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_RANGED_SPELL_ICON_EQ_ID);

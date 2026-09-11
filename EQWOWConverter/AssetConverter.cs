@@ -3622,6 +3622,54 @@ namespace EQWOWConverter
                 spellTemplates.Add(feignDeathSpellTemplate);
             }
 
+            // Mend (skill version)
+            if (Configuration.COMBATSKILL_MEND_ENABLED == true)
+            {
+                int mendIconID = Configuration.COMBATSKILL_MEND_SPELL_ICON_EQ_ID;
+                if (mendIconID < 0 || mendIconID > 22)
+                {
+                    Logger.WriteError("COMBATSKILL_MEND_SPELL_ICON_EQ_ID value must be 0-22. Setting to 10");
+                    mendIconID = 10;
+                }
+                int mendHealPercent = Configuration.COMBATSKILL_MEND_HEAL_PERCENT;
+                if (mendHealPercent < 1 || mendHealPercent > 100)
+                {
+                    Logger.WriteError("COMBATSKILL_MEND_HEAL_PERCENT value must be 1-100. Setting to 25");
+                    mendHealPercent = 25;
+                }
+                SpellTemplate mendSpellTemplate = new SpellTemplate();
+                mendSpellTemplate.Name = "Mend";
+                mendSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_MEND_SPELL_ID;
+                mendSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                mendSpellTemplate.Description = string.Concat("Mends your wounds, instantly restoring ", mendHealPercent.ToString(), "% of your maximum health. Can be used while stealthed or in faint death.");
+                mendSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(mendIconID);
+                mendSpellTemplate.CastTimeInMS = 0;
+                mendSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_MEND_COOLDOWN_IN_MS);
+                mendSpellTemplate.HasCustomCooldown = true;
+                mendSpellTemplate.SchoolMask = 1; // Physical
+                mendSpellTemplate.DefenseType = 0; // None, so no spell power or healing done bonus applies
+                mendSpellTemplate.PreventionType = 0; // None, so silence and spell school lockouts can't stop it
+                mendSpellTemplate.IsGoodEffect = true;
+                mendSpellTemplate.SpellVisualID1 = Convert.ToUInt32(Configuration.COMBATSKILL_MEND_SPELL_VISUAL_ID);
+                mendSpellTemplate.TriggersGlobalCooldown = false;
+                mendSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                mendSpellTemplate.AllowInShapeshift = true;
+                mendSpellTemplate.DoNotBreakStealthOrInvisibility = true; // Also keeps feign death up
+                mendSpellTemplate.GenerateNoThreat = true;
+                mendSpellTemplate.CannotCrit = true;
+                mendSpellTemplate.DamageIsFixed = true; // Avoids spell mods
+                mendSpellTemplate.SuppressCasterProcs = true; // No on-heal procs (class aura echoes and the like) can add to it
+                mendSpellTemplate.InfluencedBySpellPower = false;
+                mendSpellTemplate.AttachedAuraScriptName = "EverQuest_FixedPercentHealSpellScript"; // Healing taken increases still reach a heal in the core, so the mod caps it
+                mendSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
+                mendSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
+                SpellEffectWOW mendHealEffect = new SpellEffectWOW(SpellWOWEffectType.HealPct, SpellWOWAuraType.None, 0, 0, 1, mendHealPercent - 1, 0, 0);
+                mendHealEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                mendHealEffect.ActionDescription = "mends";
+                mendSpellTemplate.WOWSpellEffects.Add(mendHealEffect);
+                spellTemplates.Add(mendSpellTemplate);
+            }
+
             // Implementing creature ranged as a spell, and basing it on TAKP's NPC::RangedAttack
             if (Configuration.COMBATSKILL_RANGED_ENABLED == true)
             {

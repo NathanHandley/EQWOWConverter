@@ -2183,6 +2183,10 @@ namespace EQWOWConverter
                     if (Configuration.COMBATSKILL_FEIGNDEATH_ENABLED == true && Configuration.COMBATSKILL_FEIGNDEATH_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.Monk)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_FEIGNDEATH_SPELL_ID, 1);
 
+                    // Mend
+                    if (Configuration.COMBATSKILL_MEND_ENABLED == true && Configuration.COMBATSKILL_MEND_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.Monk)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_MEND_SPELL_ID, 1);
+
                     // EQ Class Aura passive
                     int classAuraPassiveSpellID = SpellClassAuras.GetPassiveSpellIDForClass(eqClassProperties.EQClass);
                     if (classAuraPassiveSpellID != 0)
