@@ -584,10 +584,7 @@ namespace EQWOWConverter.Creatures
 
                     // See invisibility.  Note that TAKP treats any see_invis above 1 as a percent chance rolled once per spawn (Mob::GetSeeInvisible), but we will deliberately makes it binary
                     if (columns.ContainsKey("see_invis") && int.TryParse(columns["see_invis"], out int seeInvisValue) && seeInvisValue > 0)
-                    {
                         newCreatureTemplate.SeesInvisible = true;
-                        newCreatureTemplate.HasSmartScript = true;
-                    }
 
                     // See invisibility versus undead
                     if (columns.ContainsKey("see_invis_undead") && int.TryParse(columns["see_invis_undead"], out int seeInvisUndeadValue) && seeInvisUndeadValue > 0)
@@ -596,10 +593,7 @@ namespace EQWOWConverter.Creatures
                     // See stealth
                     if (((columns.ContainsKey("see_sneak") && int.TryParse(columns["see_sneak"], out int seeSneakValue) && seeSneakValue > 0) ||
                          (columns.ContainsKey("see_improved_hide") && int.TryParse(columns["see_improved_hide"], out int seeImprovedHideValue) && seeImprovedHideValue > 0)))
-                    {
                         newCreatureTemplate.SeesStealth = true;
-                        newCreatureTemplate.HasSmartScript = true;
-                    }
 
                     // Special logic for a few variations of kobolds, which look wrong if not adjusted
                     int raceID = int.Parse(columns["race"]);

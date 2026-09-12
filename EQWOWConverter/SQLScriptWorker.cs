@@ -245,6 +245,15 @@ namespace EQWOWConverter
             if (Configuration.GENERATE_TRANSPORTS == true)
                 PopulateTransportSQLData(zones, mapIDsByShortName);
 
+            // Check for any potential SmartAI errors in the log
+            foreach (CreatureTemplate creatureTemplate in creatureTemplates)
+            {
+                if (creatureTemplate.HasSmartScript == false || creatureTemplate.IsPet == true || creatureTemplate.ModelTemplate == null)
+                    continue;
+                if (smartScriptsSQL.GetLastUniqueID(creatureTemplate.WOWCreatureTemplateID, 0) < 0)
+                    Logger.WriteWarning("Creature template '", creatureTemplate.Name, "' (", creatureTemplate.WOWCreatureTemplateID.ToString(), ") is flagged for SmartAI but received no smart_scripts rows, so the core will log it at startup");
+            }
+
             // Output them
             OutputSQLScriptsToDisk();
         }
