@@ -1290,7 +1290,7 @@ namespace EQWOWConverter
         public static int COMBATSKILL_MEND_SPELL_ICON_EQ_ID = 10;
         public static int COMBATSKILL_MEND_SPELL_VISUAL_ID = 5560; // Same visual as CLASSAURA_PALADIN_HEAL_SPELL_VISUAL_ID (Judgement of Light heal 20267, LesserHeal_Base impact)
         public static int COMBATSKILL_MEND_COOLDOWN_IN_MS = 360000;
-        public static int COMBATSKILL_MEND_HEAL_PERCENT = 25;
+        public static int COMBATSKILL_MEND_HEAL_PERCENT = 33;
 
         // Ranged attack in EQ zones is based on TAKP, and creatures will ranged attack if they have a bow + arrow or the creature has a special skill attribute
         public static bool COMBATSKILL_RANGED_ENABLED = true;
