@@ -8,7 +8,7 @@ id|zone|trigger_eq_npc_id|action|target_eq_npc_id|chance|alt_group|alt_id|alt_we
 7|airplane|71008|respawnself|0|100|0|0|0|0|0|0|0|0|2000|2000|0||||71022|0|0|0|-1|-1|death|0|spiroc ladder repop via vanquisher
 8|airplane|71010|respawnself|0|100|0|0|0|0|0|0|0|0|2000|2000|0||||71011|0|0|0|-1|-1|death|0|spiroc ladder repop via expulser
 9|airplane|71011|respawnself|0|100|0|0|0|0|0|0|0|0|2000|2000|0||||71020|0|0|0|-1|-1|death|0|spiroc ladder repop via vanquisher
-10|airplane|71012|respawnself|0|100|0|0|0|0|0|0|0|0|2000|2000|0||||71013|0|0|0|-1|-1|death|0|spiroc ladder repop via guardian
+10|airplane|71012|respawnself|0|100|0|0|0|0|0|0|0|0|60000|60000|0||||71013|0|0|0|-1|-1|death|0|spiroc ladder repop via guardian (60s so the corpse stays lootable)
 11|airplane|71012|spawn|71058|100|0|0|0|1|0|0|0|0|0|0|71058|||||0|0|0|-1|-1|death|0|Sirran_the_Lunatic
 12|airplane|71013|respawnself|0|100|0|0|0|0|0|0|0|0|2000|2000|0||||71014|0|0|0|-1|-1|death|0|spiroc ladder repop via walker
 13|airplane|71013|respawnself|0|100|0|0|0|0|0|0|0|0|2000|2000|0||||71007|0|0|0|-1|-1|death|0|spiroc ladder repop via banisher
