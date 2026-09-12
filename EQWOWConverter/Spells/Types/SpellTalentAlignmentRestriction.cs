@@ -29,6 +29,7 @@ namespace EQWOWConverter.Spells
         PeriodicDamage = 8,         // Spell has a damage over time effect
         Cure = 9,                   // Spell dispels, or cures poison / disease / curse
         StrengthDebuff = 10,        // The effect the modifier targets is a strength reduction
-        PetSummon = 11              // Spell summons a pet
+        PetSummon = 11,             // Spell summons a pet
+        WeaponPoison = 12           // Spell is the proc of an EQ rogue weapon poison
     }
 }

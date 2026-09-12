@@ -46,6 +46,7 @@ Note: The tooltip will not reflect the reduction in cast time and the global coo
 12834|Warrior|Deep Wounds|describe|0|0|0|0|none|0|Also triggers from your spell EverQuest critical strikes.
 13705|Rogue|Precision|describe|0|0|0|0|none|0|The spell hit chance also applies to your EverQuest spells.
 14082|Rogue|Dirty Deeds|exclude|0|0|0|0|none|0|Reduces the Energy cost of your Cheap Shot and Garrote abilities by $s1. Additionally, your special abilities cause 10% more damage against targets below 35% health.
+14113|Rogue|Improved Poisons|align|1|0|0|0|weapon_poison|0|The increased application frequency also applies to your EverQuest weapon poisons.
 14128|Rogue|Lethality|exclude|0|0|0|0|none|0|Increases the critical strike damage bonus of all combo point-generating abilities that do not require stealth by $s1%.
 14158|Rogue|Murder|describe|0|0|0|0|none|0|The damage increase also applies to your EverQuest spells.
 14177|Rogue|Cold Blood|exclude|0|0|0|0|none|0|Physical melee ability modifier that should not reach EverQuest spells.
@@ -94,7 +95,8 @@ Note: The tooltip will not reflect the reduction in cast time and the global coo
 16246|Shaman|Clearcasting|align|0|126|1|0|none|0|Also reduces the mana cost of your next 2 EverQuest damage spells by $s1%.
 16255|Shaman|Thundering Strikes|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells.
 16493|Warrior|Impale|exclude|0|0|0|0|none|0|Increases the critical strike damage bonus of your abilities by $s1%.
-16513|Rogue|Vile Poisons|exclude|0|0|0|0|none|0|Physical poison modifier that should not reach EverQuest spells.
+16513|Rogue|Vile Poisons|align|0|0|0|0|weapon_poison|0|The damage increase also applies to your EverQuest weapon poisons.
+16513|Rogue|Vile Poisons|align|1|0|0|0|weapon_poison|0|
 16578|Shaman|Lightning Mastery|align|0|8|1|0|none|0|"Also reduces the cast time of your EverQuest Nature damage spells by $/1000;S1 sec.
 
 Note: The tooltip will not reflect the reduction in cast time and the global cooldown (GCD) will not change."
@@ -189,6 +191,7 @@ Note: The tooltip will not reflect the reduction in cast time and the global coo
 30288|Warlock|Shadow and Flame|exclude|0|0|0|0|none|0|Spell power coefficient talents are not generalized to EverQuest spells.
 30672|Shaman|Elemental Precision|describe|0|0|0|0|none|0|This also applies to your EverQuest Fire, Frost and Nature spells.
 30812|Shaman|Mental Quickness|align|0|126|1|1|none|1|Also reduces the mana cost of your instant cast EverQuest spells by $s1%.
+31226|Rogue|Master Poisoner|describe|0|0|0|0|none|0|Your EverQuest weapon poisons also mark their target, increasing your critical hit chance against it.
 31234|Rogue|Find Weakness|exclude|0|0|0|0|none|0|Offensive ability damage increased by $s1%.
 31571|Mage|Arcane Potency|describe|0|0|0|0|none|0|Also increases the critical strike chance of your next EverQuest spell by $s1% after gaining Clearcasting or Presence of Mind.
 31579|Mage|Arcane Empowerment|describe|0|0|0|0|none|0|The spell damage increase also applies to your EverQuest spells.
@@ -276,6 +279,7 @@ Note: The tooltip will not reflect the reduction in cast time and the global coo
 51525|Shaman|Static Shock|describe|0|0|0|0|none|0|Also triggers from your EverQuest damaging spells.
 51554|Shaman|Blessing of the Eternals|describe|0|0|0|0|none|0|The critical strike chance also applies to your EverQuest spells.
 51560|Shaman|Improved Earth Shield|exclude|0|0|0|0|none|0|Shield charge effect modifier that does not map to EverQuest spells.
+51625|Rogue|Deadly Brew|describe|0|0|0|0|none|0|Your EverQuest weapon poisons can also apply Crippling Poison.
 51632|Rogue|Blood Spatter|exclude|0|0|0|0|none|0|Increases the damage caused by your Garrote and Rupture abilities by $s1%.
 51698|Rogue|Honor Among Thieves|describe|0|0|0|0|none|0|Also triggers from critical strikes with EverQuest spells.
 51708|Rogue|Slaughter from the Shadows|describe|0|0|0|0|none|0|The damage increase also applies to your EverQuest spells.

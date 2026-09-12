@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 104;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 105;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -967,8 +967,8 @@ namespace EQWOWConverter
         public static int SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = 16000;
 
         // How often a rogue poison procs, in procs per minute (normalized against weapon speed by the core)
-        public static float SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE = 2f;
-        public static float SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME = 8f;
+        public static float SPELLS_ENCHANT_ROGUE_POISON_PPM_DIRECT_DAMAGE = 6f;
+        public static float SPELLS_ENCHANT_ROGUE_POISON_PPM_DAMAGE_OVER_TIME = 5f;
         public static float SPELLS_ENCHANT_ROGUE_POISON_PPM_UTILITY = 12f;
 
         // How often weapon procs occur
@@ -1103,6 +1103,10 @@ namespace EQWOWConverter
 
         // Hidden short-duration aura the mod applies to a caster during a cast to shift the spell hit roll by the EQ ResistDiff amount
         public static int SPELL_RESIST_ADJUSTMENT_SPELL_ID = 86915;
+
+        // Hidden debuff that every EQ rogue weapon poison puts on what it hits, so that poison talents have a "poisoned" target to see
+        public static int SPELL_ROGUE_POISON_MARKER_SPELL_ID = 86919;
+        public static int SPELL_ROGUE_POISON_MARKER_DURATION_IN_MS = 15000;
 
         // Permanent aura placed on newly created characters, lost by doing non-EQ content (see ACHIEVEMENT_EQ_ADVENTURER_ENABLED)
         public static int SPELL_EQ_ADVENTURER_AURA_SPELL_ID = 86916;
@@ -2420,6 +2424,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", SPELL_INVIS_VS_UNDEAD_INVIS_TYPE, "WoW invisibility group (InvisibilityType) reserved for EQ 'invis vs undead' (0 = general invis, 1 should be unused)");
             OutputVariableToConfig("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID, "Custom detect aura granted to everything that should see through 'invis vs undead' (non-undead + see_invis_undead undead)");
             OutputVariableToConfig("SPELL_RESIST_ADJUSTMENT_SPELL_ID", SPELL_RESIST_ADJUSTMENT_SPELL_ID, "Hidden short-duration aura the mod applies to a caster during a cast to shift the spell hit roll by the EQ ResistDiff amount");
+            OutputVariableToConfig("SPELL_ROGUE_POISON_MARKER_SPELL_ID", SPELL_ROGUE_POISON_MARKER_SPELL_ID, "Hidden debuff that every EQ rogue weapon poison puts on what it hits, so that poison talents have a \"poisoned\" target to see", false);
+            OutputVariableToConfig("SPELL_ROGUE_POISON_MARKER_DURATION_IN_MS", SPELL_ROGUE_POISON_MARKER_DURATION_IN_MS, "");
             OutputVariableToConfig("SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED", SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED, "\"Intense Healing Exhaustion\" is a stacking debuff that makes every spell that triggers it cost more mana");
             OutputVariableToConfig("SPELL_INTENSE_HEALING_EXHAUSTION_EQ_SPELL_IDS", SPELL_INTENSE_HEALING_EXHAUSTION_EQ_SPELL_IDS, "Comma separated eq spell ids that stack the debuff and pay its increased mana cost", false);
             OutputVariableToConfig("SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ID", SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ID, "", false);
@@ -3160,6 +3166,8 @@ namespace EQWOWConverter
             SPELL_INVIS_VS_UNDEAD_INVIS_TYPE = ReadVariableFromConfigString("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", configValuesByVariableName, SPELL_INVIS_VS_UNDEAD_INVIS_TYPE);
             SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID);
             SPELL_RESIST_ADJUSTMENT_SPELL_ID = ReadVariableFromConfigString("SPELL_RESIST_ADJUSTMENT_SPELL_ID", configValuesByVariableName, SPELL_RESIST_ADJUSTMENT_SPELL_ID);
+            SPELL_ROGUE_POISON_MARKER_SPELL_ID = ReadVariableFromConfigString("SPELL_ROGUE_POISON_MARKER_SPELL_ID", configValuesByVariableName, SPELL_ROGUE_POISON_MARKER_SPELL_ID);
+            SPELL_ROGUE_POISON_MARKER_DURATION_IN_MS = ReadVariableFromConfigString("SPELL_ROGUE_POISON_MARKER_DURATION_IN_MS", configValuesByVariableName, SPELL_ROGUE_POISON_MARKER_DURATION_IN_MS);
             SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED = ReadVariableFromConfigString("SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED", configValuesByVariableName, SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED);
             SPELL_INTENSE_HEALING_EXHAUSTION_EQ_SPELL_IDS = ReadVariableFromConfigString("SPELL_INTENSE_HEALING_EXHAUSTION_EQ_SPELL_IDS", configValuesByVariableName, SPELL_INTENSE_HEALING_EXHAUSTION_EQ_SPELL_IDS);
             SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ID = ReadVariableFromConfigString("SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ID", configValuesByVariableName, SPELL_INTENSE_HEALING_EXHAUSTION_SPELL_ID);

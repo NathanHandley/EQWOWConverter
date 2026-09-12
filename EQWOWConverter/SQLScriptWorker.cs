@@ -321,6 +321,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("WorldScale", Configuration.GENERATE_WORLD_SCALE.ToString());
             modEverquestSystemConfigsSQL.AddRow("RangedAttackSpellID", Configuration.COMBATSKILL_RANGED_ENABLED == true ? Configuration.COMBATSKILL_RANGED_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("ResistAdjustmentSpellID", Configuration.SPELL_RESIST_ADJUSTMENT_SPELL_ID.ToString());
+            modEverquestSystemConfigsSQL.AddRow("RoguePoisonMarkerSpellID", Configuration.SPELL_ROGUE_POISON_MARKER_SPELL_ID.ToString());
             foreach (KeyValuePair<string, string> classAuraSystemConfigRow in SpellClassAuras.GetSystemConfigRows())
                 modEverquestSystemConfigsSQL.AddRow(classAuraSystemConfigRow.Key, classAuraSystemConfigRow.Value);
             modEverquestSystemConfigsSQL.AddRow("SlowBossEffectivenessMod", Configuration.SPELL_SLOW_BOSS_EFFECTINESS_MOD.ToString(System.Globalization.CultureInfo.InvariantCulture));
@@ -2763,6 +2764,7 @@ namespace EQWOWConverter
         }
 
         HashSet<int> PetSpellIDsAdded = new HashSet<int>();
+        HashSet<int>? RoguePoisonProcSpellWOWIDs = null;
         private void AddSpellDataBlock(SpellTemplate spellTemplate, List<SpellEffectBlock> spellEffectBlocks, string commentFragment, int clickyFixedLevel = 0,
             bool isCreatureCastVersion = false, bool isClickyVersion = false)
         {
@@ -2847,6 +2849,15 @@ namespace EQWOWConverter
                             break;
                         }
                     }
+                }
+
+                // The block that a rogue weapon poison procs gets the script that runs the rogue poison talents (the Master Poisoner mark and Deadly Brew's crippling poison)
+                if (commentFragment != " (Worn)")
+                {
+                    if (RoguePoisonProcSpellWOWIDs == null)
+                        RoguePoisonProcSpellWOWIDs = SpellTemplate.GetRoguePoisonProcSpellWOWIDs();
+                    if (RoguePoisonProcSpellWOWIDs.Contains(curEffectBlock.WOWSpellID) == true)
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_RoguePoisonSpellScript");
                 }
 
                 // Any block with a heal over time gets the script that lets the priest Empowered Renew talent add its up-front heal

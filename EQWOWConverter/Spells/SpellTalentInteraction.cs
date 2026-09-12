@@ -111,6 +111,7 @@ namespace EQWOWConverter.Spells
                     case "cure": newInteraction.Restriction = SpellTalentAlignmentRestriction.Cure; break;
                     case "strength_debuff": newInteraction.Restriction = SpellTalentAlignmentRestriction.StrengthDebuff; break;
                     case "pet_summon": newInteraction.Restriction = SpellTalentAlignmentRestriction.PetSummon; break;
+                    case "weapon_poison": newInteraction.Restriction = SpellTalentAlignmentRestriction.WeaponPoison; break;
                     default:
                     {
                         Logger.WriteError("SpellTalentInteractions row for spell_id '", newInteraction.SpellID.ToString(), "' had an invalid restriction of '", restrictionText, "'");
@@ -118,9 +119,9 @@ namespace EQWOWConverter.Spells
                     }
                 }
 
-                // Cures, strength debuffs and pet summons are neither damage nor healing, so only they may leave both flags off
+                // Cures, strength debuffs, pet summons and weapon poisons are neither damage nor healing, so only they may leave both flags off
                 bool restrictionCarriesItsOwnReach = newInteraction.Restriction == SpellTalentAlignmentRestriction.Cure || newInteraction.Restriction == SpellTalentAlignmentRestriction.StrengthDebuff
-                    || newInteraction.Restriction == SpellTalentAlignmentRestriction.PetSummon;
+                    || newInteraction.Restriction == SpellTalentAlignmentRestriction.PetSummon || newInteraction.Restriction == SpellTalentAlignmentRestriction.WeaponPoison;
                 if (restrictionCarriesItsOwnReach == false && newInteraction.AffectsDamage == false && newInteraction.AffectsHealing == false)
                 {
                     Logger.WriteError("SpellTalentInteractions align row for spell_id '", newInteraction.SpellID.ToString(), "' affects neither damage nor healing");

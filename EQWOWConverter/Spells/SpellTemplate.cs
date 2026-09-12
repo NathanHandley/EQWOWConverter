@@ -1320,6 +1320,16 @@ namespace EQWOWConverter.Spells
             return false;
         }
 
+        private static HashSet<int> RoguePoisonProcSpellWOWIDs = new HashSet<int>();
+
+        public static HashSet<int> GetRoguePoisonProcSpellWOWIDs()
+        {
+            lock (SpellTemplateLock)
+            {
+                return new HashSet<int>(RoguePoisonProcSpellWOWIDs);
+            }
+        }
+
         public static void GenerateItemEnchantSpellIfNotCreated(string itemName, int procSpellEQID, int enchantSpellWOWID, out SpellTemplate? enchantSpellTemplate)
         {
             lock (SpellTemplateLock)
@@ -1338,6 +1348,7 @@ namespace EQWOWConverter.Spells
                     return;
                 }
                 SpellTemplate procSpellTemplate = SpellTemplatesByEQID[procSpellEQID];
+                RoguePoisonProcSpellWOWIDs.Add(procSpellTemplate.WOWSpellID);
 
                 // Work out how often it should proc based on what the poison actually does
                 float procsPerMinute = GetRoguePoisonProcsPerMinute(procSpellTemplate);

@@ -3316,6 +3316,27 @@ namespace EQWOWConverter
             resistAdjustmentSpellTemplate.ForceHiddenFromDisplay = true;
             spellTemplates.Add(resistAdjustmentSpellTemplate);
 
+            // Poisoned (marks a target for Rogue talents to work)
+            SpellTemplate roguePoisonMarkerSpellTemplate = new SpellTemplate();
+            roguePoisonMarkerSpellTemplate.Name = "Poisoned";
+            roguePoisonMarkerSpellTemplate.WOWSpellID = Configuration.SPELL_ROGUE_POISON_MARKER_SPELL_ID;
+            roguePoisonMarkerSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            roguePoisonMarkerSpellTemplate.Description = "Marked as poisoned by a rogue's weapon.";
+            roguePoisonMarkerSpellTemplate.AuraDescription = "Poisoned by a rogue's weapon.";
+            roguePoisonMarkerSpellTemplate.AuraDuration = new SpellDuration();
+            roguePoisonMarkerSpellTemplate.AuraDuration.SetFixedDuration(Configuration.SPELL_ROGUE_POISON_MARKER_DURATION_IN_MS);
+            roguePoisonMarkerSpellTemplate.DispelType = 4; // POISON
+            roguePoisonMarkerSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModCritChanceForCaster, 0, 0, 0, 0, 0, 0));
+            roguePoisonMarkerSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+            roguePoisonMarkerSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
+            roguePoisonMarkerSpellTemplate.CastTimeInMS = 0;
+            roguePoisonMarkerSpellTemplate.RecoveryTimeInMS = 0;
+            roguePoisonMarkerSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+            roguePoisonMarkerSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
+            roguePoisonMarkerSpellTemplate.TriggersGlobalCooldown = false;
+            roguePoisonMarkerSpellTemplate.ForceHiddenFromDisplay = true;
+            spellTemplates.Add(roguePoisonMarkerSpellTemplate);
+
             // Intense Healing Exhaustion (debuff stacked on the caster every time they finish a direct cast of an intense healing spell, making the next ones cost more)
             if (Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED == true)
             {
