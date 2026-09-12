@@ -63,6 +63,7 @@ namespace EQWOWConverter.Creatures
         public int AttackTime = (int)Configuration.CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT;
         public CreatureWOWRankType Rank = CreatureWOWRankType.Normal;
         public CreatureDifficultyType DifficultyType = CreatureDifficultyType.Normal;
+        public int MinRespawnTimeInSec = -1; // -1 means no minimum
         public int EQFactionID = 0;
         public int EQNPCFactionID = 0;
         public int WOWFactionTemplateID = 0;
@@ -473,6 +474,7 @@ namespace EQWOWConverter.Creatures
                         continue;
                     newCreatureTemplate.CreatureSpellListID = int.Parse(columns["creaturespelllistid"]);
                     newCreatureTemplate.BindsRaidInstanceOnKill = columns["bind_instance_on_kill"].Trim() == "1";
+                    newCreatureTemplate.MinRespawnTimeInSec = int.Parse(columns["min_respawn_in_sec"]);
 
                     // Scaled Stats
                     newCreatureTemplate.HPMod = GetStatOrMod("hp", newCreatureTemplate.Level, float.Parse(columns["hp"]), CreatureStatModType.RelativeMod, float.Parse(columns["hp_multi_override"]));

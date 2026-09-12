@@ -610,6 +610,16 @@ namespace EQWOWConverter
                 foreach (int eqID in killSpawn.RequireAliveEQCreatureTemplateIDs)
                     if (creatureTemplatesByEQID.ContainsKey(eqID))
                         requireAliveWOWIDs.Add(creatureTemplatesByEQID[eqID].WOWCreatureTemplateID.ToString());
+
+                // Factor for a set minimum respawn time
+                int respawnTimeInSec = killSpawn.RespawnTimeInSec;
+                CreatureTemplate? respawnedCreatureTemplate = null;
+                if (killSpawn.ActionType == CreatureKillSpawnActionType.RespawnSelf)
+                    respawnedCreatureTemplate = creatureTemplatesByEQID[killSpawn.TriggerEQCreatureTemplateID];
+                else if (killSpawn.ActionType == CreatureKillSpawnActionType.RespawnTarget && killSpawn.TargetEQCreatureTemplateID > 0)
+                    respawnedCreatureTemplate = creatureTemplatesByEQID[killSpawn.TargetEQCreatureTemplateID];
+                if (respawnTimeInSec > 0 && respawnedCreatureTemplate != null && respawnedCreatureTemplate.MinRespawnTimeInSec > 0)
+                    respawnTimeInSec = Math.Max(respawnTimeInSec, respawnedCreatureTemplate.MinRespawnTimeInSec);
                 modEverquestCreatureKillSpawnSQL.AddRow(killSpawn.ID, creatureTemplatesByEQID[killSpawn.TriggerEQCreatureTemplateID].WOWCreatureTemplateID,
                     Convert.ToInt32(killSpawn.TriggerType), mapIDsByShortName[killSpawn.ZoneShortName], Convert.ToInt32(killSpawn.ActionType), targetWOWID, killSpawn.Chance,
                     killSpawn.AltGroup, killSpawn.AltID, killSpawn.AltWeight, killSpawn.SpawnAtCorpse, killSpawn.XPosition, killSpawn.YPosition,
@@ -1657,6 +1667,21 @@ namespace EQWOWConverter
                 respawnTimeInSec = respawnTimeOverrideInSec;
             else
                 respawnTimeInSec = GetCreatureRespawnTimeInSeconds(creatureTemplate, spawnInstance);
+
+            // A creature template can set a floor on its respawn time
+            if (creatureTemplate.MinRespawnTimeInSec > 0)
+            {
+                // Outside a raid instance the mod rolls boss tier respawns within a variance either side of this time
+                int minRespawnTimeInSec = creatureTemplate.MinRespawnTimeInSec;
+                if (raidBossTierRespawnTimeInSec <= 0)
+                {
+                    if (creatureTemplate.DifficultyType == CreatureDifficultyType.RaidBoss)
+                        minRespawnTimeInSec += Configuration.CREATURE_RAID_BOSS_VARIANCE_IN_SEC;
+                    else if (creatureTemplate.DifficultyType == CreatureDifficultyType.RaidMiniBoss)
+                        minRespawnTimeInSec += Configuration.CREATURE_RAID_MINI_BOSS_VARIANCE_IN_SEC;
+                }
+                respawnTimeInSec = Math.Max(respawnTimeInSec, minRespawnTimeInSec);
+            }
             List<CreaturePathGridEntry> pathEntries = spawnInstance.GetPathGridEntries();
             CreatureMovementType movementType = CreatureMovementType.None;
             CreaturePathGridWanderType wanderType = spawnInstance.GetPathGrid().WanderType;
