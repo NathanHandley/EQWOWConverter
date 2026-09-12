@@ -4287,10 +4287,17 @@ namespace EQWOWConverter
             Logger.WriteDebug("Hashing files staged in MPQReady to determine patch contents");
             Dictionary<string, string> currentFileHashesByRelativePath = ComputeMPQReadyFileHashes(mpqReadyFolder);
 
+            // Clear any prior delta file
+            string deltaPatchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
+            string outputDeltaPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, deltaPatchMPQName);
+            Logger.WriteDebug("Deleting old delta patch file if it exists");
+            if (File.Exists(outputDeltaPatchFileName) == true)
+                File.Delete(outputDeltaPatchFileName);
+
             // If set, create a delta-only file if there is a main patch and a manifest.  Note that this will NOT update either of those files
             if (Configuration.CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH == true && File.Exists(outputPatchFileName) == true && File.Exists(patchManifestFileName) == true)
             {
-                if (CreateDeltaOnlyMainPatchMPQ(mpqReadyFolder, patchManifestFileName, currentFileHashesByRelativePath) == false)
+                if (CreateDeltaOnlyMainPatchMPQ(outputDeltaPatchFileName, mpqReadyFolder, patchManifestFileName, currentFileHashesByRelativePath) == false)
                     Logger.WriteError("Delta-only main patch generation failed");
 
                 // Intentionally do NOT write the main patch manifest here as it must only reflect changes made to the main patch
@@ -4390,7 +4397,7 @@ namespace EQWOWConverter
             return RunMPQEditorScriptInBatches(scriptLines, workingGeneratedScriptsFolder, "mpqupdate", "Failed to update MPQ file.");
         }
 
-        private bool CreateDeltaOnlyMainPatchMPQ(string mpqReadyFolder, string patchManifestFileName,
+        private bool CreateDeltaOnlyMainPatchMPQ(string outputDeltaPatchFileName, string mpqReadyFolder, string patchManifestFileName,
             Dictionary<string, string> currentFileHashesByRelativePath)
         {
             Logger.WriteInfo("Building delta-only main patch MPQ...");
@@ -4414,13 +4421,6 @@ namespace EQWOWConverter
                 DeltaPatchSkippedForNoChanges = true;
                 return true;
             }
-
-            // Resolve the delta patch output path, and clear any prior delta patch of the same name
-            string deltaPatchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
-            string outputDeltaPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, deltaPatchMPQName);
-            Logger.WriteDebug("Deleting old delta patch file if it exists");
-            if (File.Exists(outputDeltaPatchFileName) == true)
-                File.Delete(outputDeltaPatchFileName);
 
             // Generate a script to build the delta patch from just the new/updated files
             Logger.WriteDebug("Generating script to generate the delta patch MPQ file");
