@@ -351,6 +351,7 @@ namespace EQWOWConverter.Spells
         public bool IsNegateIfCombat = false;
         public bool RemoveAuraWhenCasterCreatureInitsAgro = false;
         public bool PreventAuraClickOff = false;
+        public bool IgnoreImmunities = false;
         public bool AlwaysPersist = false; // Can't click off
         public bool PersistThroughDeath = false; // Can click off
         public bool IsCosmeticOnlyIllusion = false;
@@ -2942,6 +2943,9 @@ namespace EQWOWConverter.Spells
                                 effectGeneratedSpellTemplate.SpellRange = spellTemplate.SpellRange;
                                 effectGeneratedSpellTemplate.AuraDuration = new SpellDuration();
                                 effectGeneratedSpellTemplate.AuraDuration.SetFixedDuration(auraDuration.MaxDurationInMS);
+                                effectGeneratedSpellTemplate.ForceAsDebuff = true;
+                                effectGeneratedSpellTemplate.PreventAuraClickOff = true;
+                                effectGeneratedSpellTemplate.IgnoreImmunities = true;
 
                                 SpellEffectWOW residualSpellEffectWOW = new SpellEffectWOW();
                                 residualSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;

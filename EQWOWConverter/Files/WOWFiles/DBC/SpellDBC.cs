@@ -536,6 +536,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 2147483648; // SPELL_ATTR0_NO_AURA_CANCEL (0x80000000)
             if (spellTemplate.ForceAsDebuff == true)
                 attributeFlags |= 67108864; // SPELL_ATTR0_AURA_IS_DEBUFF (0x04000000)
+            if (spellTemplate.IgnoreImmunities == true)
+                attributeFlags |= 536870912; // SPELL_ATTR0_NO_IMMUNITIES (0x20000000)
             if (spellTemplate.UsesRangedWeaponSlot == true)
                 attributeFlags |= 2; // SPELL_ATTR0_USES_RANGED_SLOT (0x00000002) - makes the client render the arrow/bullet projectile
             if (spellTemplate.CanMountWhileInForm == true)
