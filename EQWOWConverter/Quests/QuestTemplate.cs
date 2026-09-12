@@ -392,10 +392,7 @@ namespace EQWOWConverter.Quests
                 newQuestTemplate.QuestIDWOW = int.Parse(columns["wow_questid"]);
                 newQuestTemplate.ZoneShortName = columns["zone_shortname"];
                 newQuestTemplate.QuestgiverName = columns["questgiver_name"];
-                if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == true)
-                    newQuestTemplate.QuestLevel = int.Parse(columns["level80"]);
-                else
-                    newQuestTemplate.QuestLevel = int.Parse(columns["level60"]);
+                newQuestTemplate.QuestLevel = int.Parse(columns["level"]);
                 int minRep = int.Parse(columns["req_repmin"]);
                 newQuestTemplate.MinimumQuestgiverFactionRank = minRep == -1 ? 0 : ConvertEQFactionValueToWoWReputationRank(minRep);
                 newQuestTemplate.HasMinimumFactionRequirement = minRep == -1 ? false : true;

@@ -406,13 +406,8 @@ namespace EQWOWConverter.Tradeskills
 
         private static void PopulateWOWSkillLevelsAndLine(TradeskillRecipe tradeskillRecipe)
         {
-            int maxSkillLevel = 450;
-            float conversionMod = Configuration.TRADESKILLS_CONVERSION_MOD_80;
-            if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == false)
-            {
-                maxSkillLevel = 300;
-                conversionMod = Configuration.TRADESKILLS_CONVERSION_MOD_60;
-            }
+            int maxSkillLevel = 300;
+            float conversionMod = Configuration.TRADESKILLS_CONVERSION_MOD;
 
             // Skill Line
             switch (tradeskillRecipe.Type)

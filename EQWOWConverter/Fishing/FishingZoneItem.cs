@@ -76,13 +76,8 @@ namespace EQWOWConverter.Fishing
             // Used to skip any unloaded zones
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
 
-            int maxSkillLevel = 450;
-            float conversionMod = Configuration.FISHING_SKILL_CONVERSION_MOD_80;
-            if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == false)
-            {
-                maxSkillLevel = 300;
-                conversionMod = Configuration.FISHING_SKILL_CONVERSION_MOD_60;
-            }
+            int maxSkillLevel = 300;
+            float conversionMod = Configuration.FISHING_SKILL_CONVERSION_MOD;
 
             // Load the list
             string zoneItemsListFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "FishingZoneItems.csv");

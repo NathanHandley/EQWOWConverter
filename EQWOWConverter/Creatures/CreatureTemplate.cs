@@ -437,18 +437,10 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.SpawnLimit = int.Parse(columns["spawn_limit"]);
                     newCreatureTemplate.NameNoFormat = namePreFormat;
                     newCreatureTemplate.SubName = columns["lastname"].Replace('_', ' ');
-                    if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == true)
-                    {
-                        newCreatureTemplate.Level = int.Max(int.Parse(columns["level80"]), 1);
-                        newCreatureTemplate.MaxLevel = int.Max(int.Parse(columns["level80"]), 1);
-                    }
-                    else
-                    {
-                        newCreatureTemplate.Level = int.Max(int.Parse(columns["level60"]), 1);
-                        newCreatureTemplate.MaxLevel = int.Parse(columns["maxlevel60"]);
-                        if (newCreatureTemplate.MaxLevel == 0)
-                            newCreatureTemplate.MaxLevel = newCreatureTemplate.Level;
-                    }
+                    newCreatureTemplate.Level = int.Max(int.Parse(columns["level"]), 1);
+                    newCreatureTemplate.MaxLevel = int.Parse(columns["maxlevel"]);
+                    if (newCreatureTemplate.MaxLevel == 0)
+                        newCreatureTemplate.MaxLevel = newCreatureTemplate.Level;
                     newCreatureTemplate.DefaultEmoteID = int.Max(int.Parse(columns["idle_emote_id"]), 0);
                     newCreatureTemplate.EQEmoteSetID = int.Max(int.Parse(columns["emoteid"]), 0);
                     newCreatureTemplate.EQBodyType = int.Parse(columns["bodytype"]);

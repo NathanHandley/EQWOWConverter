@@ -910,7 +910,7 @@ namespace EQWOWConverter.Items
             // Combine as individual so neither one alone can cap the item out
             float combinedTier = 1f - ((1f - baseTier) * (1f - bonusTier));
 
-            int itemLevelCap = Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == true ? 80 : 60;
+            int itemLevelCap = 60;
             int itemLevelFloor = Math.Clamp(Configuration.ITEMS_ITEM_LEVEL_MINIMUM, 1, itemLevelCap);
             int itemLevel = itemLevelFloor + Convert.ToInt32(MathF.Round(combinedTier * (itemLevelCap - itemLevelFloor)));
             return Math.Clamp(itemLevel, 1, MAX_LOOKUPABLE_ITEM_LEVEL);
@@ -2497,20 +2497,11 @@ namespace EQWOWConverter.Items
                     continue;
                 }
 
-                // Skip rows used for the other level balancing
-                if (rowBlocks.Length > 2)
-                {
-                    if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == true && rowBlocks[1].Trim() == "60")
-                        continue;
-                    else if (Configuration.GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 == false && rowBlocks[1].Trim() == "80")
-                        continue;
-                }
-
                 // Otherwise, load the stats
                 string slot = rowBlocks[0].Trim().ToLower();
                 StatBaselinesBySlotAndStat.Add(slot, new Dictionary<string, float>());
-                for (int i = 2; i < rowBlocks.Count(); i++)
-                    StatBaselinesBySlotAndStat[slot].Add(stats[i - 2], float.Parse(rowBlocks[i]));
+                for (int i = 1; i < rowBlocks.Count(); i++)
+                    StatBaselinesBySlotAndStat[slot].Add(stats[i - 1], float.Parse(rowBlocks[i]));
             }
         }
 

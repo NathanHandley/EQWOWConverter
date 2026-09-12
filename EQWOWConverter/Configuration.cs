@@ -219,10 +219,6 @@ namespace EQWOWConverter
         public static int GENERATE_DRUID_FORM_NORRATH_LEOPARD_CREATURE_TEMPLATE_ID = 52637;
         public static int GENERATE_DRUID_FORM_NORRATH_TREANT_CREATURE_TEMPLATE_ID = 49582;
 
-        // If false, equipment is balanced to max level 60 and original levels are used. If true, use adjusted levels and zones/equip is balanced to 80
-        // with Classic through 60, Kunark through 70, and Velious through 80. Zones will also have a smoother level curve if set to true (NYI)
-        public static bool GENERATE_REBALANCE_CONTENT_TO_LEVEL_80 = false;
-
         // If false, unobtainable items will not output to the database
         public static bool GENERATE_NON_PLAYER_OBTAINABLE_ITEMS = false;
 
@@ -1487,8 +1483,7 @@ namespace EQWOWConverter
         // Fishing
         //=====================================================================
         // How much to multiply the EQ fish catching skill requirement for WOW
-        public static float FISHING_SKILL_CONVERSION_MOD_60 = 0.8772f;
-        public static float FISHING_SKILL_CONVERSION_MOD_80 = 1.3432f;
+        public static float FISHING_SKILL_CONVERSION_MOD = 0.8772f;
 
         //=====================================================================
         // Forage
@@ -1512,8 +1507,7 @@ namespace EQWOWConverter
         // Tradeskills
         //=====================================================================
         // How much to multiply EQ skill requirements by to reach the same for WoW on conversion
-        public static float TRADESKILLS_CONVERSION_MOD_60 = 0.8772f;
-        public static float TRADESKILLS_CONVERSION_MOD_80 = 1.3432f;
+        public static float TRADESKILLS_CONVERSION_MOD = 0.8772f;
 
         // Max distance between Grey -> Green -> Yellow -> Red steps
         public static int TRADESKILLS_SKILL_TIER_DISTANCE_LOW = 10;
@@ -2688,14 +2682,12 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK", CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK, "", false);
             OutputVariableToConfig("CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS", CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS, "", false);
             OutputVariableToConfig("CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS", CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS, "");
-            OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_60", FISHING_SKILL_CONVERSION_MOD_60, "How much to multiply the EQ fish catching skill requirement for WOW", false);
-            OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD_80", FISHING_SKILL_CONVERSION_MOD_80, "");
+            OutputVariableToConfig("FISHING_SKILL_CONVERSION_MOD", FISHING_SKILL_CONVERSION_MOD, "How much to multiply the EQ fish catching skill requirement for WOW");
             OutputVariableToConfig("FORAGE_SPELL_ICON_EQ_ID", FORAGE_SPELL_ICON_EQ_ID, "Which eq spell icon to use for the Forage skill. Can be a value between 0-22");
             OutputVariableToConfig("FORAGE_SPELL_TEMPLATE_ID", FORAGE_SPELL_TEMPLATE_ID, "Spell id for the forage spell");
             OutputVariableToConfig("TRACKING_SPELL_ICON_EQ_ID", TRACKING_SPELL_ICON_EQ_ID, "Which eq spell icon to use for the Tracking ability. Can be a value between 0-22");
             OutputVariableToConfig("TRACKING_SPELL_TEMPLATE_ID", TRACKING_SPELL_TEMPLATE_ID, "Spell id for the tracking spell");
-            OutputVariableToConfig("TRADESKILLS_CONVERSION_MOD_60", TRADESKILLS_CONVERSION_MOD_60, "How much to multiply EQ skill requirements by to reach the same for WoW on conversion", false);
-            OutputVariableToConfig("TRADESKILLS_CONVERSION_MOD_80", TRADESKILLS_CONVERSION_MOD_80, "");
+            OutputVariableToConfig("TRADESKILLS_CONVERSION_MOD", TRADESKILLS_CONVERSION_MOD, "How much to multiply EQ skill requirements by to reach the same for WoW on conversion");
             OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_LOW", TRADESKILLS_SKILL_TIER_DISTANCE_LOW, "Max distance between Grey -> Green -> Yellow -> Red steps", false);
             OutputVariableToConfig("TRADESKILLS_SKILL_TIER_DISTANCE_HIGH", TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, "");
             OutputVariableToConfig("TRADESKILL_LEARN_COST_AT_1", TRADESKILL_LEARN_COST_AT_1, "The skill level of a tradeskill will be priced closest to the value for that WOW skill level", false);
@@ -3446,14 +3438,12 @@ namespace EQWOWConverter
             CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK);
             CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS = ReadVariableFromConfigString("CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS", configValuesByVariableName, CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS);
             CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS);
-            FISHING_SKILL_CONVERSION_MOD_60 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_60", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_60);
-            FISHING_SKILL_CONVERSION_MOD_80 = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD_80", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD_80);
+            FISHING_SKILL_CONVERSION_MOD = ReadVariableFromConfigString("FISHING_SKILL_CONVERSION_MOD", configValuesByVariableName, FISHING_SKILL_CONVERSION_MOD);
             FORAGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("FORAGE_SPELL_ICON_EQ_ID", configValuesByVariableName, FORAGE_SPELL_ICON_EQ_ID);
             FORAGE_SPELL_TEMPLATE_ID = ReadVariableFromConfigString("FORAGE_SPELL_TEMPLATE_ID", configValuesByVariableName, FORAGE_SPELL_TEMPLATE_ID);
             TRACKING_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("TRACKING_SPELL_ICON_EQ_ID", configValuesByVariableName, TRACKING_SPELL_ICON_EQ_ID);
             TRACKING_SPELL_TEMPLATE_ID = ReadVariableFromConfigString("TRACKING_SPELL_TEMPLATE_ID", configValuesByVariableName, TRACKING_SPELL_TEMPLATE_ID);
-            TRADESKILLS_CONVERSION_MOD_60 = ReadVariableFromConfigString("TRADESKILLS_CONVERSION_MOD_60", configValuesByVariableName, TRADESKILLS_CONVERSION_MOD_60);
-            TRADESKILLS_CONVERSION_MOD_80 = ReadVariableFromConfigString("TRADESKILLS_CONVERSION_MOD_80", configValuesByVariableName, TRADESKILLS_CONVERSION_MOD_80);
+            TRADESKILLS_CONVERSION_MOD = ReadVariableFromConfigString("TRADESKILLS_CONVERSION_MOD", configValuesByVariableName, TRADESKILLS_CONVERSION_MOD);
             TRADESKILLS_SKILL_TIER_DISTANCE_LOW = ReadVariableFromConfigString("TRADESKILLS_SKILL_TIER_DISTANCE_LOW", configValuesByVariableName, TRADESKILLS_SKILL_TIER_DISTANCE_LOW);
             TRADESKILLS_SKILL_TIER_DISTANCE_HIGH = ReadVariableFromConfigString("TRADESKILLS_SKILL_TIER_DISTANCE_HIGH", configValuesByVariableName, TRADESKILLS_SKILL_TIER_DISTANCE_HIGH);
             TRADESKILL_LEARN_COST_AT_1 = ReadVariableFromConfigString("TRADESKILL_LEARN_COST_AT_1", configValuesByVariableName, TRADESKILL_LEARN_COST_AT_1);
