@@ -286,6 +286,27 @@ namespace EQWOWConverter.Creatures
             return IsUndeadBodyType() == false || SeesInvisibleUndead == true;
         }
 
+        public string GetOnSpawnAuraSpellIDsString()
+        {
+            List<int> auraSpellIDs = new List<int>();
+
+            // Detect aura that lets everything which is not blinded by EQ "invis vs undead" still see through it
+            if (CanSeeThroughInvisVsUndead() == true)
+                auraSpellIDs.Add(Configuration.SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID);
+
+            // EQ "see invis" and "see sneak / see improved hide"
+            if (SeesInvisible == true)
+                auraSpellIDs.Add(Configuration.SPELL_CREATURE_SEE_INVIS_DETECT_SPELL_ID);
+            if (SeesStealth == true)
+                auraSpellIDs.Add(Configuration.SPELL_CREATURE_SEE_STEALTH_DETECT_SPELL_ID);
+
+            // Reduced mana regeneration for spell-casting creatures
+            if (CreatureSpellListID > 0 && Configuration.CREATURE_MANA_REGEN_PERCENT < 100)
+                auraSpellIDs.Add(Configuration.SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID);
+
+            return string.Join(" ", auraSpellIDs);
+        }
+
         public bool IsRaidCreature()
         {
             return DifficultyType == CreatureDifficultyType.RaidTrash || DifficultyType == CreatureDifficultyType.RaidBoss || DifficultyType == CreatureDifficultyType.RaidMiniBoss;
@@ -566,7 +587,7 @@ namespace EQWOWConverter.Creatures
                     if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 24) == true && HasSpecialAbilityEnabled(specialAbilitiesRaw, 35) == true)
                         newCreatureTemplate.IsUnattackable = true;
 
-                    // See invisibility
+                    // See invisibility.  Note that TAKP treats any see_invis above 1 as a percent chance rolled once per spawn (Mob::GetSeeInvisible), but we will deliberately makes it binary
                     if (columns.ContainsKey("see_invis") && int.TryParse(columns["see_invis"], out int seeInvisValue) && seeInvisValue > 0)
                     {
                         newCreatureTemplate.SeesInvisible = true;

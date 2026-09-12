@@ -626,7 +626,7 @@ namespace EQWOWConverter
                     killSpawn.AltGroup, killSpawn.AltID, killSpawn.AltWeight, killSpawn.SpawnAtCorpse, killSpawn.XPosition, killSpawn.YPosition,
                     killSpawn.ZPosition, killSpawn.Orientation, killSpawn.DelayMinMS, killSpawn.DelayMaxMS, onlyIfNotAliveWOWID,
                     string.Join(",", requireDeadWOWIDs), string.Join(",", requireAliveWOWIDs), killSpawn.AddToHateList,
-                    killSpawn.TriggerMinLevel, killSpawn.TriggerMaxLevel, killSpawn.RespawnTimeInSec, killSpawn.Comment);
+                    killSpawn.TriggerMinLevel, killSpawn.TriggerMaxLevel, respawnTimeInSec, killSpawn.Comment);
             }
         }
 
@@ -1084,20 +1084,6 @@ namespace EQWOWConverter
                     }
                 }
 
-                // See invis
-                if (creatureTemplate.SeesInvisible == true)
-                {
-                    string seeInvisComment = string.Concat("EQ See Invisibility ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ")");
-                    smartScriptsSQL.AddRowForCreatureTemplateApplyAuraOnSpawn(creatureTemplate.WOWCreatureTemplateID, Configuration.SPELL_CREATURE_SEE_INVIS_DETECT_SPELL_ID, seeInvisComment);
-                }
-
-                // See stealth
-                if (creatureTemplate.SeesStealth == true)
-                {
-                    string seeStealthComment = string.Concat("EQ See Stealth ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ")");
-                    smartScriptsSQL.AddRowForCreatureTemplateApplyAuraOnSpawn(creatureTemplate.WOWCreatureTemplateID,  Configuration.SPELL_CREATURE_SEE_STEALTH_DETECT_SPELL_ID, seeStealthComment);
-                }
-
                 // Create the records
                 // This scale ensures that creature held equipment is the right size
                 float scale = creatureTemplate.GetWorldSpawnScale();
@@ -1170,14 +1156,6 @@ namespace EQWOWConverter
                 // Spell scripts
                 if (creatureTemplate.CreatureSpellListID > 0)
                 {
-                    // Reduce mana regeneration on spell-casting creatures, if configured
-                    if (Configuration.CREATURE_MANA_REGEN_PERCENT < 100)
-                    {
-                        string manaRegenComment = string.Concat("EQ Reduce Mana Regen ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ")");
-                        smartScriptsSQL.AddRowForCreatureTemplateApplyAuraOnSpawn(creatureTemplate.WOWCreatureTemplateID,
-                            Configuration.SPELL_CREATURE_REDUCED_MANA_REGEN_SPELL_ID, manaRegenComment);
-                    }
-
                     // Add spell events for every heal entry
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesHeal)
                     {
@@ -1687,8 +1665,8 @@ namespace EQWOWConverter
             CreatureMovementType movementType = CreatureMovementType.None;
             CreaturePathGridWanderType wanderType = spawnInstance.GetPathGrid().WanderType;
 
-            // Grant the "invis vs undead" detect aura on spawn to anything that should see through it (non-undead + see_invis_undead)
-            string creatureAddonAuras = creatureTemplate.CanSeeThroughInvisVsUndead() == true ? Configuration.SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID.ToString() : "";
+            // Every permanent on-spawn aura (invis vs undead detect, see invis, see stealth, reduced mana regen) is granted here
+            string creatureAddonAuras = creatureTemplate.GetOnSpawnAuraSpellIDsString();
             if (spawnGroup.DoesRoam() == true)
             {
                 if (Configuration.CONFIGONLY_CREATURE_SPAWN_AND_WAYPOINT_DEBUG_MODE == true)
