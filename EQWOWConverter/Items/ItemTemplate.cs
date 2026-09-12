@@ -552,7 +552,7 @@ namespace EQWOWConverter.Items
         private static void PopulateStats(ref ItemTemplate itemTemplate, ItemWOWInventoryType itemSlot, int classID, int subClassID, 
             int classMask, int eqArmorClass, int eqStrength, int eqAgility, int eqCharisma, int eqDexterity, int eqIntelligence, 
             int eqStamina, int eqWisdom, int eqHp, int eqMana, int eqResistPoison, int eqResistMagic, int eqResistDisease, int eqResistFire, 
-            int eqResistCold, int damage, int delay, int qualityOverride)
+            int eqResistCold, int damage, int delay, int itemQuality)
         {
             itemTemplate.StatValues.Clear();
 
@@ -566,19 +566,20 @@ namespace EQWOWConverter.Items
 
             // Pre-determine if this should have non-caster or caster stats on it at all
             int highestNonCasterStatValue = Math.Max(Math.Abs(eqStrength), Math.Max(Math.Abs(eqAgility), Math.Abs(eqDexterity)));
-            bool allowNonCasterStats = (highestNonCasterStatValue > 0);
+            bool hasStrAgiDex = (highestNonCasterStatValue > 0);
             int highestCasterStatValue = Math.Max(Math.Abs(eqIntelligence), Math.Abs(eqWisdom));
-            bool allowCasterStats = (highestCasterStatValue > 0);
-            if (allowNonCasterStats == true && allowCasterStats == true)
+            bool hasWisOrInt = (highestCasterStatValue > 0);
+            if (hasStrAgiDex == true && hasWisOrInt == true)
             {
                 // Drop 'minor' amounts of the opposing type
                 if ((float)highestNonCasterStatValue * Configuration.ITEM_STATS_MAX_DROPOUT_PROPORTION > (float)highestCasterStatValue)
-                    allowCasterStats = false;
+                    hasWisOrInt = false;
                 else if ((float)highestCasterStatValue * Configuration.ITEM_STATS_MAX_DROPOUT_PROPORTION > (float)highestNonCasterStatValue)
-                    allowNonCasterStats = false;
+                    hasStrAgiDex = false;
             }
 
             // In the case of all stats being > 0 and all set the same, use the highest of the types and spread out
+            bool allEQStatsEqual = false;
             if (eqStrength > 0 && (eqStrength == eqAgility && eqStrength == eqCharisma && eqStrength == eqDexterity &&
                 eqStrength == eqIntelligence && eqStrength == eqStamina && eqStrength == eqWisdom))
             {
@@ -592,12 +593,13 @@ namespace EQWOWConverter.Items
                 itemTemplate.StatValues.Add((ItemWOWStatType.Agility, Convert.ToInt32(highestValue)));
                 itemTemplate.StatValues.Add((ItemWOWStatType.Intellect, Convert.ToInt32(highestValue)));
                 itemTemplate.StatValues.Add((ItemWOWStatType.Spirit, Convert.ToInt32(highestValue)));
+                allEQStatsEqual = true;
             }
             // Otherwise, assign each directly
             else
             {
                 // Non-caster stats
-                if (allowNonCasterStats == true)
+                if (hasStrAgiDex == true)
                 {
                     // Strength
                     if (eqStrength != 0)
@@ -615,7 +617,7 @@ namespace EQWOWConverter.Items
                 }
 
                 // Caster stats
-                if (allowCasterStats == true)
+                if (hasWisOrInt == true)
                 {
                     // Intelligence
                     if (eqIntelligence != 0)
@@ -636,7 +638,7 @@ namespace EQWOWConverter.Items
                 if (eqStamina != 0)
                     wowStamina = (int)GetConvertedStatInArmorTypeContext(itemSlot, "Sta", eqStamina, classID, subClassID);
                 // Add additional stamina based on AC, factoring for any existing stats
-                if (eqArmorClass > 0 && (qualityOverride > 1 || qualityOverride == -1))
+                if (eqArmorClass > 0 && (itemQuality > 1 || itemQuality == -1))
                 {
                     float additionalStaminaFromAC = GetConvertedEqToWowStat(itemSlot, "StaFromArmor", eqArmorClass);
                     int numOfOtherStats = 0;
@@ -662,9 +664,11 @@ namespace EQWOWConverter.Items
                     itemTemplate.StatValues.Add((ItemWOWStatType.Stamina, wowStamina));
             }
 
-            // Caster wearable item specific stats
-            if ((allowCasterStats == true || eqMana > 0) && (
-                classMask >= 32767 ||
+            // Caster specific stats
+            int intCasterClassMask = Convert.ToInt32(ClassEQType.Wizard) | Convert.ToInt32(ClassEQType.Necromancer) | Convert.ToInt32(ClassEQType.Magician) | Convert.ToInt32(ClassEQType.Enchanter);
+            bool isIntCasterOnlyClassMask = (classMask != 0 && (classMask & ~intCasterClassMask) == 0);
+            if ((hasWisOrInt == true || eqMana > 0 || isIntCasterOnlyClassMask == true) &&
+                (classMask >= 32767 ||
                 IsPackedClassMask(ClassEQType.Cleric, classMask) ||
                 IsPackedClassMask(ClassEQType.Paladin, classMask) ||
                 IsPackedClassMask(ClassEQType.Druid, classMask) ||
@@ -678,16 +682,10 @@ namespace EQWOWConverter.Items
             {
                 ItemWOWWeaponSubclassType subClass = (ItemWOWWeaponSubclassType)subClassID;
 
-                // Spell Power
-                // Weapons
-                if (classID == 2)
+                if (classID == 2) // Weapons
                 {
-                    // Either on generally caster weapons (Dagger / Staff / OneHand Mace), or if the weapon has spirit/int/mana
-                    if ((subClass == ItemWOWWeaponSubclassType.Dagger ||
-                         subClass == ItemWOWWeaponSubclassType.Staff ||
-                         subClass == ItemWOWWeaponSubclassType.MaceOneHand)
-                         ||
-                         (eqWisdom > 0 || eqIntelligence > 0 || eqMana > 0))
+                    // All satisfying weapons have spell power as long as they don't have all the same stats unless int caster only
+                    if (allEQStatsEqual == false || isIntCasterOnlyClassMask == true || eqMana > 0)
                     {
                         float dps = Convert.ToSingle(damage) / (Convert.ToSingle(delay) / 1000);
                         float spellPower = GetConvertedEqToWowStat(itemSlot, "SpellPwr", dps);
@@ -695,32 +693,31 @@ namespace EQWOWConverter.Items
                             itemTemplate.StatValues.Add((ItemWOWStatType.SpellPower, Convert.ToInt32(spellPower)));
                     }
                 }
-                // Armor
-                else
+                else // Armor
                 {
-                    // Use the higher of wisdom or int to determine amount
+                    // Spell power only if there is any int or wis not from +all stat, unless int caster only
                     int higherOfIntAndWis = Math.Max(eqWisdom, eqIntelligence);
-                    if (higherOfIntAndWis > 0)
+                    if (higherOfIntAndWis > 0 && (allEQStatsEqual == false || isIntCasterOnlyClassMask == true))
                     {
                         float spellPower = GetConvertedEqToWowStat(itemSlot, "SpellPwr", higherOfIntAndWis);
                         itemTemplate.StatValues.Add((ItemWOWStatType.SpellPower, Convert.ToInt32(spellPower)));
                     }
-                }
 
-                // If there is only INT or only WIS, grant Spell Haste
-                if ((eqWisdom > 0 && eqIntelligence == 0) || (eqIntelligence > 0 && eqWisdom == 0))
-                {
-                    int spellHasteSourceStat = Math.Max(eqWisdom, eqIntelligence);
-                    int calculatedSpellHaste = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "SpellHasteRating", spellHasteSourceStat));
-                    if (calculatedSpellHaste > 0)
-                        itemTemplate.StatValues.Add((ItemWOWStatType.SpellHasteRating, calculatedSpellHaste));
-                }
+                    // Spell Haste (only there is just int or wis but not both)
+                    if ((eqWisdom > 0 && eqIntelligence == 0) || (eqIntelligence > 0 && eqWisdom == 0))
+                    {
+                        int spellHasteSourceStat = Math.Max(eqWisdom, eqIntelligence);
+                        int calculatedSpellHaste = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "SpellHasteRating", spellHasteSourceStat));
+                        if (calculatedSpellHaste > 0)
+                            itemTemplate.StatValues.Add((ItemWOWStatType.SpellHasteRating, calculatedSpellHaste));
+                    }
 
-                // If there is WIS but no INT, grant some INT (comes last to avoid it having influence on derived stats)
-                if (eqWisdom > 0 && eqIntelligence == 0)
-                {
-                    int halfWisdom = (int)((double)(eqWisdom) * 0.5);
-                    itemTemplate.StatValues.Add((ItemWOWStatType.Intellect, Convert.ToInt32(GetConvertedStatInArmorTypeContext(itemSlot, "Int", halfWisdom, classID, subClassID))));
+                    // If there is WIS but no INT, grant some INT (comes last to avoid it having influence on derived stats)
+                    if (eqWisdom > 0 && eqIntelligence == 0)
+                    {
+                        int halfWisdom = (int)((double)(eqWisdom) * 0.5);
+                        itemTemplate.StatValues.Add((ItemWOWStatType.Intellect, Convert.ToInt32(GetConvertedStatInArmorTypeContext(itemSlot, "Int", halfWisdom, classID, subClassID))));
+                    }
                 }
             }
 
@@ -734,7 +731,7 @@ namespace EQWOWConverter.Items
                 IsPackedClassMask(ClassEQType.ShadowKnight, classMask) ||
                 IsPackedClassMask(ClassEQType.Warrior, classMask))
             {
-                if (allowNonCasterStats == true)
+                if (hasStrAgiDex == true && allEQStatsEqual == false)
                 {
                     // Expertise uses the lowest of agl and dex when both are there
                     if (eqAgility > 0 && eqDexterity > 0)
