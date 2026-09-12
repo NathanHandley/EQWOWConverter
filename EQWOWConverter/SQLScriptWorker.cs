@@ -37,6 +37,8 @@ namespace EQWOWConverter
 {
     internal class SQLScriptWorker
     {
+        private const int CREATURE_TEMPLATE_MAX_SPELL_SLOTS = 8;
+
         // World
         private AchievementCriteriaDataSQL achievementCriteriaDataSQL = new AchievementCriteriaDataSQL();
         private AchievementRewardSQL achievementRewardSQL = new AchievementRewardSQL();
@@ -1230,9 +1232,11 @@ namespace EQWOWConverter
                         }
                     }
 
-                    // Spell on Attack
+                    // Spell on Attack.  Pets are skipped here because they are always given PetAI and so never run a smart script at all
                     foreach (var eqSpellIDAndProcChance in creatureTemplate.AttackEQSpellIDAndProcChance)
                     {
+                        if (creatureTemplate.IsPet == true)
+                            break;
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[eqSpellIDAndProcChance.Item1];
                         string comment = string.Concat("EQ Attack Proc ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.GetWOWSpellIDForCreatureCast(), ")");
                         smartScriptsSQL.AddRowForCreatureTemplateApplySpellOnDamageDone(creatureTemplate.WOWCreatureTemplateID, eqSpellIDAndProcChance.Item2,
@@ -1317,6 +1321,21 @@ namespace EQWOWConverter
                         creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, Configuration.COMBATSKILL_LAYONHANDS_SPELL_ID);
                         curIndex++;
                     }
+
+                    // The EQ on-hit weapon proc, as a passive proc aura.  Pet::addSpell casts any passive it learns, so this works from a spell slot even though nothing ever casts it,
+                    // and it is the only way a pet can have the proc at all
+                    if (Configuration.SPELL_PET_ATTACK_PROC_ENABLED == true)
+                    {
+                        int attackProcPassiveSpellID = SpellPetAbility.GetAttackProcPassiveSpellIDForPet(creatureTemplate.WOWCreatureTemplateID);
+                        if (attackProcPassiveSpellID > 0)
+                        {
+                            creatureTemplateSpellSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, curIndex, attackProcPassiveSpellID);
+                            curIndex++;
+                        }
+                    }
+                    if (curIndex > CREATURE_TEMPLATE_MAX_SPELL_SLOTS)
+                        Logger.WriteError("Pet '", creatureTemplate.Name, "' (", creatureTemplate.WOWCreatureTemplateID.ToString(), ") needs ", curIndex.ToString(),
+                            " creature_template_spell slots but AzerothCore only loads ", CREATURE_TEMPLATE_MAX_SPELL_SLOTS.ToString(), ", so the extras will never be learned");
                 }
             }
 

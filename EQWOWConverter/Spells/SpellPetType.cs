@@ -24,6 +24,9 @@ namespace EQWOWConverter.Spells
         public string TypeName = string.Empty;
         public bool HasSingleTaunt = false;
         public bool HasMultiTaunt = false;
+        public bool HasFrenzy = false;
+        public float SpellDamageMultiplier = 1f;
+        public int TypeIndex = 0; // Row order in PetTypes.csv
 
         public static SpellPetType? GetSpellPetTypeByTypeName(string typeName)
         {
@@ -34,6 +37,38 @@ namespace EQWOWConverter.Spells
                 if (SpellPetTypesByTypeName.ContainsKey(typeName) == true)
                     return SpellPetTypesByTypeName[typeName];
                 Logger.WriteError("Could not find a pet type with name '", typeName, "'");
+                return null;
+            }
+        }
+
+        public int GetCreatureFamilyID()
+        {
+            return Configuration.DBCID_CREATUREFAMILY_PET_ID_START + TypeIndex;
+        }
+
+        public int GetSkillLineID()
+        {
+            return IDGenerationTool.GenerateID("SkillLineID", string.Concat("pettype", TypeName));
+        }
+
+        public int GetSpellDamagePassiveSpellID()
+        {
+            return Configuration.SPELL_PET_SPELL_DAMAGE_SPELL_ID_START + TypeIndex;
+        }
+
+        public int GetSpellDamageBonusPercent()
+        {
+            return Convert.ToInt32(MathF.Round((SpellDamageMultiplier - 1f) * 100f));
+        }
+
+        public static SpellPetType? GetSpellPetTypeByTypeNameOrNull(string typeName)
+        {
+            lock (SpellPetTypeLock)
+            {
+                if (SpellPetTypesByTypeName.Count == 0)
+                    LoadSpellPetTypeData();
+                if (SpellPetTypesByTypeName.ContainsKey(typeName) == true)
+                    return SpellPetTypesByTypeName[typeName];
                 return null;
             }
         }
@@ -59,6 +94,14 @@ namespace EQWOWConverter.Spells
                 petType.TypeName = columns["type"].Trim();
                 petType.HasSingleTaunt = columns["HasSingleTaunt"].Trim() == "1";
                 petType.HasMultiTaunt = columns["HasMultiTaunt"].Trim() == "1";
+                petType.HasFrenzy = columns["HasFrenzy"].Trim() == "1";
+                if (float.TryParse(columns["SpellDamageMultiplier"].Trim(), out float spellDamageMultiplier) == false || spellDamageMultiplier <= 0f)
+                {
+                    Logger.WriteError("Pet type '", petType.TypeName, "' has an invalid SpellDamageMultiplier of '", columns["SpellDamageMultiplier"], "', so 1 is being used instead");
+                    spellDamageMultiplier = 1f;
+                }
+                petType.SpellDamageMultiplier = spellDamageMultiplier;
+                petType.TypeIndex = SpellPetTypesByTypeName.Count;
                 if (SpellPetTypesByTypeName.ContainsKey(petType.TypeName) == true)
                 {
                     Logger.WriteError("Pet type '", petType.TypeName, "' has more than one row");
@@ -66,6 +109,11 @@ namespace EQWOWConverter.Spells
                 }
                 SpellPetTypesByTypeName.Add(petType.TypeName, petType);
             }
+
+            // creature_template.family is a single byte, so the generated family IDs have to stay inside it
+            int highestFamilyID = Configuration.DBCID_CREATUREFAMILY_PET_ID_START + SpellPetTypesByTypeName.Count - 1;
+            if (highestFamilyID > 255)
+                Logger.WriteError("PetTypes.csv produces creature family ID ", highestFamilyID.ToString(), " which will not fit in creature_template.family (max 255)");
             Logger.WriteDebug("Loading pet types complete");
         }
     }

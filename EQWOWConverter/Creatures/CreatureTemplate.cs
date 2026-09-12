@@ -130,8 +130,6 @@ namespace EQWOWConverter.Creatures
         public bool SeesStealth = false;
         public bool IsPet = false;
         public string PetTypeName = string.Empty;
-        public bool PetHasSingleTaunt = false;
-        public bool PetHasMultiTaunt = false;
         public bool IsCompanionPet = false;
         public bool IsIllusionForm = false; 
         public float ModelTemplateScale = 1.0f; // Used for form changes
@@ -231,15 +229,12 @@ namespace EQWOWConverter.Creatures
 
         public int GetPetCreatureFamilyID()
         {
-            if (IsPet == false || Configuration.SPELL_PET_TAUNT_ENABLED == false)
+            if (IsPet == false)
                 return 0;
-            if (PetHasSingleTaunt == true && PetHasMultiTaunt == true)
-                return Configuration.DBCID_CREATUREFAMILY_PET_TAUNT_BOTH_ID;
-            if (PetHasSingleTaunt == true)
-                return Configuration.DBCID_CREATUREFAMILY_PET_TAUNT_SINGLE_ID;
-            if (PetHasMultiTaunt == true)
-                return Configuration.DBCID_CREATUREFAMILY_PET_TAUNT_MULTI_ID;
-            return 0;
+            SpellPetType? petType = SpellPetType.GetSpellPetTypeByTypeNameOrNull(PetTypeName);
+            if (petType == null)
+                return 0;
+            return petType.GetCreatureFamilyID();
         }
 
         public float GetWorldSpawnScale()

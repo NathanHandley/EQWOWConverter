@@ -272,6 +272,7 @@ namespace EQWOWConverter.Spells
         public bool AllowCastInCombat = true;
         public List<Reagent> Reagents = new List<Reagent>();
         public int SkillLine = 0;
+        public List<int> AdditionalSkillLineIDs = new List<int>();
         public SpellEQSkillCategory EQSkillCategory = SpellEQSkillCategory.Unknown;
         public List<SpellEffectEQ> EQSpellEffects = new List<SpellEffectEQ>();
         public List<SpellEffectWOW> WOWSpellEffects = new List<SpellEffectWOW>();
@@ -1083,6 +1084,13 @@ namespace EQWOWConverter.Spells
             return levelOneMod + (phaseProgress * (1.0f - levelOneMod));
         }
 
+        public int GetEffectValueAnchorLevel()
+        {
+            if (MinimumPlayerLearnLevel < 0)
+                return 1;
+            return MinimumPlayerLearnLevel;
+        }
+
         public int GetMinimumTargetLevel()
         {
             // TAKP has the buff restriction of beneficial buffs above a level threshold can only land on players "(learn level / 2) + 15" or higher
@@ -1262,6 +1270,20 @@ namespace EQWOWConverter.Spells
             if (rainWavePlayoutTimeInMS < RecoveryTimeInMS)
                 return rainWavePlayoutTimeInMS;
             return RecoveryTimeInMS;
+        }
+
+        public UInt32 GetRecoveryTimeInMS(bool isPlayerCastVersion)
+        {
+            if (isPlayerCastVersion == true && IsPlayerCooldownDisabledByConfig() == true)
+                return GetCooldownDisabledRecoveryTimeInMS();
+            if (RecoveryTimeInMS < Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS)
+                return 0;
+            return RecoveryTimeInMS;
+        }
+
+        public bool DoesCreatureCastRecoveryTimeDifferFromPlayer()
+        {
+            return GetRecoveryTimeInMS(true) != GetRecoveryTimeInMS(false);
         }
 
         private static bool BlockHasDamageSpellPowerEffect(SpellEffectBlock effectBlock)
@@ -2279,7 +2301,8 @@ namespace EQWOWConverter.Spells
                 if (spellTemplate.WOWSpellIDCreatureCast <= 0)
                     continue;
                 if (spellTemplate.CastTimeInMS != spellTemplate.CreatureCastTimeInMS || spellTemplate.ManaCostPercentage != 0 ||
-                    spellTemplate.ManaCost != spellTemplate.CreatureCastManaCost || spellTemplate.AuraDuration != spellTemplate.CreatureCastAuraDuration)
+                    spellTemplate.ManaCost != spellTemplate.CreatureCastManaCost || spellTemplate.AuraDuration != spellTemplate.CreatureCastAuraDuration ||
+                    spellTemplate.DoesCreatureCastRecoveryTimeDifferFromPlayer() == true)
                     spellTemplate.NeedsCreatureCastVersion = true;
             }
 
@@ -4226,15 +4249,7 @@ namespace EQWOWConverter.Spells
                                     * (Configuration.GENERATE_CREATURE_SCALE / Configuration.GENERATE_EQUIPMENT_SCALE);
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].IsPet = true;
                                 creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].PetTypeName = spellPet.PetTypeName;
-
-                                // Everything a pet gets purely for being its type (currently just the taunts)
                                 spellTemplate.SummonedPetTypeName = spellPet.PetTypeName;
-                                SpellPetType? spellPetType = SpellPetType.GetSpellPetTypeByTypeName(spellPet.PetTypeName);
-                                if (spellPetType != null)
-                                {
-                                    creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].PetHasSingleTaunt = spellPetType.HasSingleTaunt;
-                                    creatureTemplatesByEQID[spellPet.EQCreatureTemplateID].PetHasMultiTaunt = spellPetType.HasMultiTaunt;
-                                }
                             } break;
                         case SpellEQEffectType.Illusion:
                             {

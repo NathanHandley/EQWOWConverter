@@ -93,16 +93,6 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        public static int GetSingleTauntSkillLineID()
-        {
-            return IDGenerationTool.GenerateID("SkillLineID", "pettaunt");
-        }
-
-        public static int GetMultiTauntSkillLineID()
-        {
-            return IDGenerationTool.GenerateID("SkillLineID", "petareataunt");
-        }
-
         public static int GetSingleTauntSpellCategoryID()
         {
             return SpellCategoryDBC.GenerateDBCID("pettaunt");

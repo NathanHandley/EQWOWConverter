@@ -49,9 +49,14 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRow(int id, SpellTemplate spellTemplate, int spellTemplateID, int acquireMethodID)
         {
+            AddRow(id, spellTemplate, spellTemplateID, acquireMethodID, spellTemplate.SkillLine);
+        }
+
+        public void AddRow(int id, SpellTemplate spellTemplate, int spellTemplateID, int acquireMethodID, int skillLineID)
+        {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID
-            newRow.AddInt32(spellTemplate.SkillLine); // SkillLine
+            newRow.AddInt32(skillLineID); // SkillLine
             newRow.AddInt32(spellTemplateID); // Spell
             newRow.AddInt32(0); // RaceMask
             newRow.AddInt32(0); // ClassMask
@@ -76,7 +81,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // CharacterPoints1
             newRow.AddInt32(0); // CharacterPoints2
 
-            newRow.SortValue1 = spellTemplate.SkillLine;
+            newRow.SortValue1 = skillLineID;
             newRow.SortValue2 = id;
             
             Rows.Add(newRow);

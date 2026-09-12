@@ -1,6 +1,6 @@
-type|HasSingleTaunt|HasMultiTaunt
-powerful|1|1
-attacker|1|0
-defender|1|1
-spirit|1|0
-animation|0|0
+type|HasSingleTaunt|HasMultiTaunt|HasFrenzy|SpellDamageMultiplier
+powerful|1|1|1|3.0
+attacker|1|0|0|1.0
+defender|1|1|0|1.0
+spirit|1|0|0|1.0
+animation|0|0|0|1.0

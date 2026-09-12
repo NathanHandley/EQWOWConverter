@@ -225,6 +225,18 @@ namespace EQWOWConverter
             if (spellTemplate.SkillLine != 0 && isCreatureCastVersion == false)
                 skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", spellTemplate.SkillLine.ToString(), spellEffectBlocks[0].WOWSpellID.ToString()), spellTemplate, spellEffectBlocks[0].WOWSpellID,
                     spellTemplate.SkillLineAcquireMethod);
+
+            // A pet ability that more than one pet type learns needs one row per type's skill line, since a creature family only has two skill line slots
+            if (isCreatureCastVersion == false)
+            {
+                foreach (int additionalSkillLineID in spellTemplate.AdditionalSkillLineIDs)
+                {
+                    if (additionalSkillLineID == 0 || additionalSkillLineID == spellTemplate.SkillLine)
+                        continue;
+                    skillLineAbilityDBC.AddRow(IDGenerationTool.GenerateID("SkillLineAbilityID", additionalSkillLineID.ToString(), spellEffectBlocks[0].WOWSpellID.ToString()), spellTemplate,
+                        spellEffectBlocks[0].WOWSpellID, spellTemplate.SkillLineAcquireMethod, additionalSkillLineID);
+                }
+            }
         }
 
         public void CreateDBCFiles(List<Zone> zones, List<CreatureModelTemplate> creatureModelTemplates, List<SpellTemplate> spellTemplates)
@@ -896,16 +908,11 @@ namespace EQWOWConverter
                 skillRaceClassInfoDBC.AddRow(skillLineIDBySkillCategory.Value, new List<ClassWOWType>() { ClassWOWType.All });
             }
 
-            // Pet taunt skill lines and the families that point at them
-            if (Configuration.SPELL_PET_TAUNT_ENABLED == true)
+            // One skill line and one creature family per pet type
+            foreach (SpellPetType petType in SpellPetType.GetAllSpellPetTypes())
             {
-                int singleTauntSkillLineID = SpellPetTaunt.GetSingleTauntSkillLineID();
-                int multiTauntSkillLineID = SpellPetTaunt.GetMultiTauntSkillLineID();
-                skillLineDBC.AddRow(singleTauntSkillLineID, "Pet - Taunt", 1);
-                skillLineDBC.AddRow(multiTauntSkillLineID, "Pet - Area Taunt", 1);
-                creatureFamilyDBC.AddRowForPetSkillLines(Configuration.DBCID_CREATUREFAMILY_PET_TAUNT_SINGLE_ID, "Pet", singleTauntSkillLineID, 0);
-                creatureFamilyDBC.AddRowForPetSkillLines(Configuration.DBCID_CREATUREFAMILY_PET_TAUNT_MULTI_ID, "Pet", multiTauntSkillLineID, 0);
-                creatureFamilyDBC.AddRowForPetSkillLines(Configuration.DBCID_CREATUREFAMILY_PET_TAUNT_BOTH_ID, "Pet", singleTauntSkillLineID, multiTauntSkillLineID);
+                skillLineDBC.AddRow(petType.GetSkillLineID(), string.Concat("Pet - ", petType.TypeName), 1);
+                creatureFamilyDBC.AddRowForPetSkillLines(petType.GetCreatureFamilyID(), "Pet", petType.GetSkillLineID(), 0);
             }
 
             // Skills

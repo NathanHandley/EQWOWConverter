@@ -1144,6 +1144,33 @@ namespace EQWOWConverter
         public static int SPELL_PET_AREATAUNT_RADIUS_IN_YARDS = 10;
         public static int SPELL_PET_TAUNT_SPELL_VISUAL_ID = 71; // The (existing) SpellVisual.dbc row used by stock Torment and Suffering
 
+        // "Avoidance" is a clone of the warlock pet passive (spell 32233) given to every EQ summoned pet
+        // "Pet Frenzy" is a clone of the Felguard's Demonic Frenzy (32850/32851) given to the pet types flagged with HasFrenzy in PetTypes.csv
+        public static bool SPELL_PET_AVOIDANCE_ENABLED = true;
+        public static int SPELL_PET_AVOIDANCE_SPELL_ID = 86950;
+        public static int SPELL_PET_AVOIDANCE_SPELL_ICON_EQ_ID = 11;
+        public static int SPELL_PET_AVOIDANCE_LEARN_LEVEL = 60;
+        public static int SPELL_PET_AVOIDANCE_DAMAGE_REDUCTION_PERCENT = 90;
+        public static bool SPELL_PET_FRENZY_ENABLED = true;
+        public static int SPELL_PET_FRENZY_SPELL_ID = 86951;
+        public static int SPELL_PET_FRENZY_BUFF_SPELL_ID = 86952;
+        public static int SPELL_PET_FRENZY_SPELL_ICON_EQ_ID = 9;
+        public static int SPELL_PET_FRENZY_LEARN_LEVEL = 56;
+        public static int SPELL_PET_FRENZY_ATTACK_POWER_PERCENT_PER_STACK = 5;
+        public static int SPELL_PET_FRENZY_MAX_STACKS = 10;
+        public static int SPELL_PET_FRENZY_DURATION_IN_MS = 10000;
+
+        // A hidden passive per pet type that scales that type's spell damage by the SpellDamageMultiplier column of PetTypes.csv.  It has to be an
+        // aura on the pet rather than a change to the spell values, because nearly every pet-cast EQ spell is also cast by ordinary creatures or
+        // learnable by players, so editing the spell itself would leak the multiplier well outside the pets
+        public static bool SPELL_PET_SPELL_DAMAGE_MULTIPLIER_ENABLED = true;
+        public static int SPELL_PET_SPELL_DAMAGE_SPELL_ID_START = 86960; // One sequential ID per row in PetTypes.csv, so 86960 - 86975
+
+        // EQ gives some pets an on-hit weapon proc (CreatureSpellLists.csv attack_proc / proc_chance).  Ordinary creatures get it as a SmartAI
+        // "damaged target" row, but a summoned pet always runs PetAI and never SmartAI, so pets need it as a real passive proc aura instead
+        public static bool SPELL_PET_ATTACK_PROC_ENABLED = true;
+        public static int SPELL_PET_ATTACK_PROC_SPELL_ID_START = 86980; // One sequential ID per distinct proc spell and chance pair, so 86980 - 86998
+
         // How far (in EQ units) Minor Illusion and Tree will look for a zone object to turn the caster into, where zero or less means anywhere in the zone
         public static float SPELL_ILLUSION_OBJECT_MAX_DISTANCE = 200f;
         public static float SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE = 0f;
@@ -1623,9 +1650,8 @@ namespace EQWOWConverter
 
         // IDs for the custom pet families in CreatureFamily.dbc, which only exist so AzerothCore's pet levelup path can find the pet taunt skill lines.
         // Blizzard's highest row is 46, and the creature_template `family` column is a SIGNED tinyint, so these must be above 46 and no higher than 127
-        public static int DBCID_CREATUREFAMILY_PET_TAUNT_SINGLE_ID = 100;
-        public static int DBCID_CREATUREFAMILY_PET_TAUNT_MULTI_ID = 101;
-        public static int DBCID_CREATUREFAMILY_PET_TAUNT_BOTH_ID = 102;
+        // One CreatureFamily.dbc row per row in PetTypes.csv, offset by the type's row order.  creature_template.family is a single byte, so these must stay under 256
+        public static int DBCID_CREATUREFAMILY_PET_ID_START = 100;
 
         // ID for skill line abilities found in SkillLineAbility.dbc
         public static int DBCID_SKILLLINEABILITY_ID_START = 25000;
@@ -1643,7 +1669,9 @@ namespace EQWOWConverter
         public static int DBCID_SOUNDAMBIENCE_ID_START = 600;
 
         // ID for spells found in Spell.dbc
-        // - Manually created spells reserve IDs from 86900 to 86999 and all are defined in the config (86925-86940 are the eight Taunt and eight Area Taunt pet ranks)
+        // - Manually created spells reserve IDs from 86900 to 86999 and all are defined in the config (86925-86940 are the eight Taunt and eight Area Taunt pet ranks,
+        //   86950-86952 are the pet Avoidance and Pet Frenzy clones, 86960-86975 are the per-pet-type spell damage passives, and
+        //   86980-86998 are the pet attack proc passives)
         // - Recipes reserve IDs 87000 to 91367 (91368 to 91999 is free for more)
         // - Converted spells IDs start at 92000 and base spells range to 95840 (95828 - 95840 are the custom "Guise" illusion spells)
         // - SpellIDs 96000 - 96099 reserved for the EQ class auras (CLASSAURA_SPELL_ID_START, see Spells/SpellClassAuras.cs)
@@ -2442,6 +2470,25 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_MOVEMENT_CAST_SNARE_MAX_DURATION_IN_MS", SPELL_MOVEMENT_CAST_SNARE_MAX_DURATION_IN_MS, "");
             OutputVariableToConfig("SPELL_MOVEMENT_CAST_SNARE_NORMAL_RUN_SPEED", SPELL_MOVEMENT_CAST_SNARE_NORMAL_RUN_SPEED, "", false);
             OutputVariableToConfig("SPELL_PET_TAUNT_ENABLED", SPELL_PET_TAUNT_ENABLED, "\"Taunt\" and \"Area Taunt\" are clones of the warlock Voidwalker's Torment and Suffering spell lines, granted to summoned pets flagged in SpellPets.csv");
+            OutputTextLineToConfig("\"Avoidance\" is a clone of the warlock pet passive (spell 32233) given to every EQ summoned pet");
+            OutputTextLineToConfig("\"Pet Frenzy\" is a clone of the Felguard's Demonic Frenzy (32850/32851) given to the pet types flagged with HasFrenzy in PetTypes.csv");
+            OutputVariableToConfig("SPELL_PET_AVOIDANCE_ENABLED", SPELL_PET_AVOIDANCE_ENABLED, "", false);
+            OutputVariableToConfig("SPELL_PET_AVOIDANCE_SPELL_ID", SPELL_PET_AVOIDANCE_SPELL_ID, "", false);
+            OutputVariableToConfig("SPELL_PET_AVOIDANCE_SPELL_ICON_EQ_ID", SPELL_PET_AVOIDANCE_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("SPELL_PET_AVOIDANCE_LEARN_LEVEL", SPELL_PET_AVOIDANCE_LEARN_LEVEL, "", false);
+            OutputVariableToConfig("SPELL_PET_AVOIDANCE_DAMAGE_REDUCTION_PERCENT", SPELL_PET_AVOIDANCE_DAMAGE_REDUCTION_PERCENT, "", false);
+            OutputVariableToConfig("SPELL_PET_FRENZY_ENABLED", SPELL_PET_FRENZY_ENABLED, "", false);
+            OutputVariableToConfig("SPELL_PET_FRENZY_SPELL_ID", SPELL_PET_FRENZY_SPELL_ID, "", false);
+            OutputVariableToConfig("SPELL_PET_FRENZY_BUFF_SPELL_ID", SPELL_PET_FRENZY_BUFF_SPELL_ID, "", false);
+            OutputVariableToConfig("SPELL_PET_FRENZY_SPELL_ICON_EQ_ID", SPELL_PET_FRENZY_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("SPELL_PET_FRENZY_LEARN_LEVEL", SPELL_PET_FRENZY_LEARN_LEVEL, "", false);
+            OutputVariableToConfig("SPELL_PET_FRENZY_ATTACK_POWER_PERCENT_PER_STACK", SPELL_PET_FRENZY_ATTACK_POWER_PERCENT_PER_STACK, "", false);
+            OutputVariableToConfig("SPELL_PET_FRENZY_MAX_STACKS", SPELL_PET_FRENZY_MAX_STACKS, "", false);
+            OutputVariableToConfig("SPELL_PET_FRENZY_DURATION_IN_MS", SPELL_PET_FRENZY_DURATION_IN_MS, "", false);
+            OutputVariableToConfig("SPELL_PET_SPELL_DAMAGE_MULTIPLIER_ENABLED", SPELL_PET_SPELL_DAMAGE_MULTIPLIER_ENABLED, "", false);
+            OutputVariableToConfig("SPELL_PET_SPELL_DAMAGE_SPELL_ID_START", SPELL_PET_SPELL_DAMAGE_SPELL_ID_START, "", false);
+            OutputVariableToConfig("SPELL_PET_ATTACK_PROC_ENABLED", SPELL_PET_ATTACK_PROC_ENABLED, "", false);
+            OutputVariableToConfig("SPELL_PET_ATTACK_PROC_SPELL_ID_START", SPELL_PET_ATTACK_PROC_SPELL_ID_START, "", false);
             OutputVariableToConfig("SPELL_PET_TAUNT_SPELL_ID_START", SPELL_PET_TAUNT_SPELL_ID_START, "First of the eight sequential spell IDs used by the Taunt ranks", false);
             OutputVariableToConfig("SPELL_PET_TAUNT_SPELL_ICON_EQ_ID", SPELL_PET_TAUNT_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("SPELL_PET_AREATAUNT_SPELL_ID_START", SPELL_PET_AREATAUNT_SPELL_ID_START, "First of the eight sequential spell IDs used by the Area Taunt ranks", false);
@@ -3184,6 +3231,23 @@ namespace EQWOWConverter
             SPELL_MOVEMENT_CAST_SNARE_MAX_DURATION_IN_MS = ReadVariableFromConfigString("SPELL_MOVEMENT_CAST_SNARE_MAX_DURATION_IN_MS", configValuesByVariableName, SPELL_MOVEMENT_CAST_SNARE_MAX_DURATION_IN_MS);
             SPELL_MOVEMENT_CAST_SNARE_NORMAL_RUN_SPEED = ReadVariableFromConfigString("SPELL_MOVEMENT_CAST_SNARE_NORMAL_RUN_SPEED", configValuesByVariableName, SPELL_MOVEMENT_CAST_SNARE_NORMAL_RUN_SPEED);
             SPELL_PET_TAUNT_ENABLED = ReadVariableFromConfigString("SPELL_PET_TAUNT_ENABLED", configValuesByVariableName, SPELL_PET_TAUNT_ENABLED);
+            SPELL_PET_AVOIDANCE_ENABLED = ReadVariableFromConfigString("SPELL_PET_AVOIDANCE_ENABLED", configValuesByVariableName, SPELL_PET_AVOIDANCE_ENABLED);
+            SPELL_PET_AVOIDANCE_SPELL_ID = ReadVariableFromConfigString("SPELL_PET_AVOIDANCE_SPELL_ID", configValuesByVariableName, SPELL_PET_AVOIDANCE_SPELL_ID);
+            SPELL_PET_AVOIDANCE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("SPELL_PET_AVOIDANCE_SPELL_ICON_EQ_ID", configValuesByVariableName, SPELL_PET_AVOIDANCE_SPELL_ICON_EQ_ID);
+            SPELL_PET_AVOIDANCE_LEARN_LEVEL = ReadVariableFromConfigString("SPELL_PET_AVOIDANCE_LEARN_LEVEL", configValuesByVariableName, SPELL_PET_AVOIDANCE_LEARN_LEVEL);
+            SPELL_PET_AVOIDANCE_DAMAGE_REDUCTION_PERCENT = ReadVariableFromConfigString("SPELL_PET_AVOIDANCE_DAMAGE_REDUCTION_PERCENT", configValuesByVariableName, SPELL_PET_AVOIDANCE_DAMAGE_REDUCTION_PERCENT);
+            SPELL_PET_FRENZY_ENABLED = ReadVariableFromConfigString("SPELL_PET_FRENZY_ENABLED", configValuesByVariableName, SPELL_PET_FRENZY_ENABLED);
+            SPELL_PET_FRENZY_SPELL_ID = ReadVariableFromConfigString("SPELL_PET_FRENZY_SPELL_ID", configValuesByVariableName, SPELL_PET_FRENZY_SPELL_ID);
+            SPELL_PET_FRENZY_BUFF_SPELL_ID = ReadVariableFromConfigString("SPELL_PET_FRENZY_BUFF_SPELL_ID", configValuesByVariableName, SPELL_PET_FRENZY_BUFF_SPELL_ID);
+            SPELL_PET_FRENZY_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("SPELL_PET_FRENZY_SPELL_ICON_EQ_ID", configValuesByVariableName, SPELL_PET_FRENZY_SPELL_ICON_EQ_ID);
+            SPELL_PET_FRENZY_LEARN_LEVEL = ReadVariableFromConfigString("SPELL_PET_FRENZY_LEARN_LEVEL", configValuesByVariableName, SPELL_PET_FRENZY_LEARN_LEVEL);
+            SPELL_PET_FRENZY_ATTACK_POWER_PERCENT_PER_STACK = ReadVariableFromConfigString("SPELL_PET_FRENZY_ATTACK_POWER_PERCENT_PER_STACK", configValuesByVariableName, SPELL_PET_FRENZY_ATTACK_POWER_PERCENT_PER_STACK);
+            SPELL_PET_FRENZY_MAX_STACKS = ReadVariableFromConfigString("SPELL_PET_FRENZY_MAX_STACKS", configValuesByVariableName, SPELL_PET_FRENZY_MAX_STACKS);
+            SPELL_PET_FRENZY_DURATION_IN_MS = ReadVariableFromConfigString("SPELL_PET_FRENZY_DURATION_IN_MS", configValuesByVariableName, SPELL_PET_FRENZY_DURATION_IN_MS);
+            SPELL_PET_SPELL_DAMAGE_MULTIPLIER_ENABLED = ReadVariableFromConfigString("SPELL_PET_SPELL_DAMAGE_MULTIPLIER_ENABLED", configValuesByVariableName, SPELL_PET_SPELL_DAMAGE_MULTIPLIER_ENABLED);
+            SPELL_PET_SPELL_DAMAGE_SPELL_ID_START = ReadVariableFromConfigString("SPELL_PET_SPELL_DAMAGE_SPELL_ID_START", configValuesByVariableName, SPELL_PET_SPELL_DAMAGE_SPELL_ID_START);
+            SPELL_PET_ATTACK_PROC_ENABLED = ReadVariableFromConfigString("SPELL_PET_ATTACK_PROC_ENABLED", configValuesByVariableName, SPELL_PET_ATTACK_PROC_ENABLED);
+            SPELL_PET_ATTACK_PROC_SPELL_ID_START = ReadVariableFromConfigString("SPELL_PET_ATTACK_PROC_SPELL_ID_START", configValuesByVariableName, SPELL_PET_ATTACK_PROC_SPELL_ID_START);
             SPELL_PET_TAUNT_SPELL_ID_START = ReadVariableFromConfigString("SPELL_PET_TAUNT_SPELL_ID_START", configValuesByVariableName, SPELL_PET_TAUNT_SPELL_ID_START);
             SPELL_PET_TAUNT_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("SPELL_PET_TAUNT_SPELL_ICON_EQ_ID", configValuesByVariableName, SPELL_PET_TAUNT_SPELL_ICON_EQ_ID);
             SPELL_PET_AREATAUNT_SPELL_ID_START = ReadVariableFromConfigString("SPELL_PET_AREATAUNT_SPELL_ID_START", configValuesByVariableName, SPELL_PET_AREATAUNT_SPELL_ID_START);

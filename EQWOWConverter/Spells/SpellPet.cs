@@ -73,6 +73,8 @@ namespace EQWOWConverter.Spells
                 spellPet.MainhandItemIDWOW = int.Parse(columns["itemIDWOW_main"]);
                 spellPet.OffhandItemIDWOW = int.Parse(columns["itemIDWOW_off"]);
                 spellPet.PetTypeName = columns["pettype"].Trim();
+                if (SpellPetType.GetSpellPetTypeByTypeNameOrNull(spellPet.PetTypeName) == null)
+                    Logger.WriteError("Spell pet '", spellPet.TypeName, "' names pet type '", spellPet.PetTypeName, "' which has no row in PetTypes.csv, so it gets no creature family and none of the abilities a pet type grants");
                 SpellPetsByTypeName.Add(spellPet.TypeName, spellPet);
             }
             Logger.WriteDebug(string.Concat("Loading spell pets complete"));

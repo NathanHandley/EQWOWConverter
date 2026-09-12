@@ -91,12 +91,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // ExcludeCasterAuraSpell
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.ExcludeTargetAuraSpellID)); // ExcludeTargetAuraSpell
             newRow.AddUInt32(Convert.ToUInt32(castTimeDBCID)); // CastingTimeIndex   
-            if (isCreatureCastVersion == false && isClickyVersion == false && spellTemplate.IsPlayerCooldownDisabledByConfig() == true)
-                newRow.AddUInt32(spellTemplate.GetCooldownDisabledRecoveryTimeInMS()); // RecoveryTime
-            else if (spellTemplate.RecoveryTimeInMS < Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS)
-                newRow.AddUInt32(0); // RecoveryTime
-            else
-                newRow.AddUInt32(spellTemplate.RecoveryTimeInMS); // RecoveryTime
+            newRow.AddUInt32(spellTemplate.GetRecoveryTimeInMS(isCreatureCastVersion == false && isClickyVersion == false)); // RecoveryTime
             newRow.AddUInt32(spellTemplate.CategoryRecoveryTimeInMS); // CategoryRecoveryTime
             newRow.AddUInt32(GetInterruptFlags(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, moveMovementInterruptToMod));
             newRow.AddUInt32(GetAuraInterruptFlags(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AuraInterruptFlags
@@ -105,7 +100,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(spellTemplate.ProcChance); // ProcChance
             newRow.AddUInt32(0); // ProcCharges
             newRow.AddUInt32(Convert.ToUInt32(maximumSpellLevel)); // MaxLevel
-            newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // BaseLevel
+            if (DoesEffectBlockScaleWithLevel(effectBlock) == true) // BaseLevel has to match the level that the effect values were calculated at
+                newRow.AddUInt32(Convert.ToUInt32(spellTemplate.GetEffectValueAnchorLevel())); // BaseLevel
+            else
+                newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // BaseLevel
             newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.SpellLevel))); // SpellLevel (has to stay 0 for anything that scales with spell power, like pet taunt ranks)
             if (overrideDurationToInfinite == true)
                 newRow.AddUInt32(21); // DurationIndex (SpellDuration.dbc id) - 21 is infinite (auras use it)
@@ -356,6 +354,19 @@ namespace EQWOWConverter.WOWFiles
                 effectTriggerSpellIDs[effectIndex] = GetInt32FromSourceRow(row, EFFECT_TRIGGER_SPELL_FIELD_BYTE_OFFSET + (effectIndex * 4));
             }
             return true;
+        }
+
+        private static bool DoesEffectBlockScaleWithLevel(SpellEffectBlock effectBlock)
+        {
+            foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
+            {
+                // Item enchant effects never scale, and the core reads BaseLevel as an item level restriction for them
+                if (spellEffect.EffectType == SpellWOWEffectType.EnchantItem || spellEffect.EffectType == SpellWOWEffectType.EnchantItemTemporary)
+                    return false;
+                if (spellEffect.EffectRealPointsPerLevel != 0)
+                    return true;
+            }
+            return false;
         }
 
         // Converts flat (non-scaling) spell effects into one that ramps with caster levels, intended for DKs who start at level 1

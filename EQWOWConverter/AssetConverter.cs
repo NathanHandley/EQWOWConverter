@@ -2835,8 +2835,9 @@ namespace EQWOWConverter
             tauntSpellTemplate.SpellVisualID1 = Convert.ToUInt32(Configuration.SPELL_PET_TAUNT_SPELL_VISUAL_ID);
             tauntSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
 
-            // The skill line is what carries a rank onto a pet, so every rank has to be learned as soon as the family's skill line is
-            tauntSpellTemplate.SkillLine = isMultiTarget ? SpellPetTaunt.GetMultiTauntSkillLineID() : SpellPetTaunt.GetSingleTauntSkillLineID();
+            // The skill line is what carries a rank onto a pet, so every rank has to be learned as soon as the family's skill line is, and it joins the skill line of every pet type flagged for this taunt in PetTypes.csv
+            List<SpellPetType> tauntPetTypes = SpellPetType.GetAllSpellPetTypes().Where(petType => (isMultiTarget == true ? petType.HasMultiTaunt : petType.HasSingleTaunt) == true).ToList();
+            SpellPetAbility.ApplySkillLines(tauntSpellTemplate, tauntPetTypes);
             tauntSpellTemplate.SkillLineAcquireMethod = 2;
             tauntSpellTemplate.SpellLevel = tauntRank.LearnLevel;
             tauntSpellTemplate.MinimumPlayerLearnLevel = tauntRank.LearnLevel;
@@ -3576,6 +3577,9 @@ namespace EQWOWConverter
                 foreach (SpellPetTauntRank tauntRank in SpellPetTaunt.GetMultiTauntRanks())
                     spellTemplates.Add(BuildPetTauntSpellTemplate(tauntRank, true));
             }
+
+            // Avoidance, Pet Frenzy and the per-type spell damage passives, all of which reach a pet through its pet type's creature family skill line
+            SpellPetAbility.AddSpellTemplates(spellTemplates);
 
             // Harm Touch
             if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true)
