@@ -512,6 +512,10 @@ namespace EQWOWConverter.Items
             // Set a floor on the stat value
             eqStatValue = MathF.Max(eqStatValue, statEqLow);
 
+            // Reduce any overflow beyond the maximum
+            if (eqStatValue > statEqHigh)
+                eqStatValue = statEqHigh + ((eqStatValue - statEqHigh) * Configuration.ITEM_STATS_OVERFLOW_MULTIPLIER);
+
             // Calculate the stat
             float normalizedModOfHigh = ((eqStatValue - statEqLow) / (statEqHigh - statEqLow));
             float calcBiasFactor = 1;

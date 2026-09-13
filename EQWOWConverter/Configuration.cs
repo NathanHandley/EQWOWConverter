@@ -743,6 +743,9 @@ namespace EQWOWConverter
         // then that's 50% and so if STR or DEX is < 50% of INT or WIS (and one of those is present) then the STR / DEX is dropped 
         public static float ITEM_STATS_MAX_DROPOUT_PROPORTION = 0.30f;
 
+        // Stats that are above the maximum of a range will have this value multiplied to the overage to avoid extremely high values
+        public static float ITEM_STATS_OVERFLOW_MULTIPLIER = 0.5f;
+
         // Maximum amount something can sell to a vendor for
         public static int ITEMS_MAX_SELL_PRICE_IN_COPPER = 100000;
 
@@ -2293,7 +2296,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("ITEMS_SHOW_WORN_EFFECT_AURA_ICON", ITEMS_SHOW_WORN_EFFECT_AURA_ICON, "If true, gear that has a worn effect will show as a buff on the character");
             OutputVariableToConfig("ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS", ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS, "If true, any item that is clickable item that also has a spell will be replaced with a container item that contains both the equippable item as well as a non-equipable version that can be clicked from inventory.");
             OutputVariableToConfig("ITEMS_STATS_LOW_BIAS_WEIGHT", ITEMS_STATS_LOW_BIAS_WEIGHT, "This is how much 'weight' the lower stat has when converting EQ to WoW stats, with values closer to 1 leaning towards the lower stat, and further from 1 leaning towards the higher stat.");
-            OutputVariableToConfig("ITEM_STATS_MAX_DROPOUT_PROPORTION", ITEM_STATS_MAX_DROPOUT_PROPORTION, "If non-caster or caster stats are a percent of less of the other than this, it's dropped.");
+            OutputVariableToConfig("ITEM_STATS_MAX_DROPOUT_PROPORTION", ITEM_STATS_MAX_DROPOUT_PROPORTION, "If non-caster or caster stats are a percent of less of the other than this, it's dropped");
+            OutputVariableToConfig("ITEM_STATS_OVERFLOW_MULTIPLIER", ITEM_STATS_OVERFLOW_MULTIPLIER, "Stats that are above the maximum of a range will have this value multiplied to the overage to avoid extremely high values");
             OutputVariableToConfig("ITEMS_MAX_SELL_PRICE_IN_COPPER", ITEMS_MAX_SELL_PRICE_IN_COPPER, "Maximum amount something can sell to a vendor for");
             OutputVariableToConfig("ITEM_STATS_MANA_TO_MP5_MOD", ITEM_STATS_MANA_TO_MP5_MOD, "How much to multiply item +mana by to calculate added MP5", false);
             OutputVariableToConfig("ITEM_STATS_MANA_TO_MP5_MAX", ITEM_STATS_MANA_TO_MP5_MAX, "");
@@ -3041,6 +3045,7 @@ namespace EQWOWConverter
             ITEMS_SHOW_WORN_EFFECT_AURA_ICON = ReadVariableFromConfigString("ITEMS_SHOW_WORN_EFFECT_AURA_ICON", configValuesByVariableName, ITEMS_SHOW_WORN_EFFECT_AURA_ICON);
             ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS = ReadVariableFromConfigString("ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS", configValuesByVariableName, ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS);
             ITEM_STATS_MAX_DROPOUT_PROPORTION = ReadVariableFromConfigString("ITEM_STATS_MAX_DROPOUT_PROPORTION", configValuesByVariableName, ITEM_STATS_MAX_DROPOUT_PROPORTION);
+            ITEM_STATS_OVERFLOW_MULTIPLIER = ReadVariableFromConfigString("ITEM_STATS_OVERFLOW_MULTIPLIER", configValuesByVariableName, ITEM_STATS_OVERFLOW_MULTIPLIER);
             ITEMS_STATS_LOW_BIAS_WEIGHT = ReadVariableFromConfigString("ITEMS_STATS_LOW_BIAS_WEIGHT", configValuesByVariableName, ITEMS_STATS_LOW_BIAS_WEIGHT);
             ITEMS_MAX_SELL_PRICE_IN_COPPER = ReadVariableFromConfigString("ITEMS_MAX_SELL_PRICE_IN_COPPER", configValuesByVariableName, ITEMS_MAX_SELL_PRICE_IN_COPPER);
             ITEMS_DURABILITY_ENABLED = ReadVariableFromConfigString("ITEMS_DURABILITY_ENABLED", configValuesByVariableName, ITEMS_DURABILITY_ENABLED);
