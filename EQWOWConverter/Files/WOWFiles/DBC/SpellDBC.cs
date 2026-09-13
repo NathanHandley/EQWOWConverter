@@ -22,7 +22,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public void AddRow(SpellEffectBlock effectBlock, string spellDescription, string auraDescription, SpellTemplate spellTemplate, bool doHideFromDisplay, bool overrideDurationToInfinite,
             bool preventClickOff, int maximumSpellLevel, bool isToggleAura, int castTimeDBCID, bool isWornEquipEffect, bool isUsableWhileSilenced, bool isCreatureCastVersion = false,
-            bool isPlayerLearnedClassSpell = false, bool isClickyVersion = false)
+            bool isPlayerLearnedClassSpell = false, bool isClickyVersion = false, bool isInstantClickyVersion = false)
         {
             if (effectBlock.SpellEffects.Count != 3)
             {
@@ -200,7 +200,7 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddUInt32(0); // ManaCostPct (creature-cast copies keep the unmodified flat cost)
             else
                 newRow.AddUInt32(spellTemplate.ManaCostPercentage); // ManaCostPct
-            if (spellTemplate.TriggersGlobalCooldown == true)
+            if (spellTemplate.TriggersGlobalCooldown == true && isInstantClickyVersion == false)
             {
                 newRow.AddUInt32(133); // StartRecoveryCategory
                 newRow.AddUInt32(1500); // StartRecoveryTime
