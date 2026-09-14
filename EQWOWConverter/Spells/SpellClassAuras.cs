@@ -564,7 +564,8 @@ namespace EQWOWConverter.Spells
             auraEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModBlockPercent, Configuration.CLASSAURA_PALADIN_BLOCK_PERCENT, 0, SpellWOWTargetType.UnitCaster));
             SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Champion of Light (Paladin)", SpellClassAuraType.PaladinAura, icon, description, auraEffects);
             auraSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraPaladinAuraScript";
-            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS | 0x00040000 // 0x00040000 = PROC_FLAG_DONE_PERIODIC
+            // Direct heals only (no PROC_FLAG_DONE_PERIODIC), so a heal over time tick never earns the reward
+            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS
                 | PROC_FLAG_TAKEN_MELEE_AUTO_ATTACK | PROC_FLAG_TAKEN_SPELL_MELEE_DMG_CLASS | PROC_FLAG_TAKEN_RANGED_AUTO_ATTACK | PROC_FLAG_TAKEN_SPELL_RANGED_DMG_CLASS,
                 PROC_SPELL_TYPE_DAMAGE | PROC_SPELL_TYPE_HEAL | PROC_SPELL_TYPE_NO_DMG_HEAL, PROC_SPELL_PHASE_HIT,
                 PROC_HIT_NORMAL | PROC_HIT_CRITICAL | PROC_HIT_BLOCK | PROC_HIT_FULL_BLOCK, 0, 0);
@@ -803,10 +804,10 @@ namespace EQWOWConverter.Spells
                 Seconds(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS.ToString(), " times.");
             spellTemplates.Add(BuildPassiveTemplate("Spirit Channeler", SpellClassAuraType.ShamanPassive, icon, description));
 
-            // Proc on any heal the shaman lands, which is what grants the vigor
+            // Proc on a direct heal the shaman lands, which is what grants the vigor (no PROC_FLAG_DONE_PERIODIC, so heal over time ticks never grant it)
             SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Spirit Channeler (Shaman)", SpellClassAuraType.ShamanAura, icon, description, new List<SpellEffectWOW>());
             auraSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraShamanAuraScript";
-            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS | 0x00040000, // 0x00040000 = PROC_FLAG_DONE_PERIODIC
+            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS,
                 PROC_SPELL_TYPE_HEAL, PROC_SPELL_PHASE_HIT, 0, 0, 0);
             spellTemplates.Add(auraSpellTemplate);
 
