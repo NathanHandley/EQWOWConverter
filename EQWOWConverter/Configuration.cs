@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 105;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 106;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1260,8 +1260,9 @@ namespace EQWOWConverter
         public static int COMBATSKILL_HARMTOUCH_CREATURE_MIN_LEVEL = 1;
         public static int COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS = 1200000;
         public static int COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS = 1000;
-        public static int COMBATSKILL_HARMTOUCH_BASE_DAMAGE = 50; // 20 is EQ normal, but HP is 2.5x higher in WoW (generally)
-        public static float COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL = 20.0f; // 8 is EQ normal, but HP is 2.5x higher in WoW (generally)
+        public static int COMBATSKILL_HARMTOUCH_BASE_DAMAGE = 50; // Creature version only. 20 is EQ normal, but HP is 2.5x higher in WoW (generally)
+        public static float COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL = 20.0f; // Creature version only. 8 is EQ normal, but HP is 2.5x higher in WoW (generally)
+        public static int COMBATSKILL_HARMTOUCH_PLAYER_PVP_DAMAGE_PERCENT = 50; // Player version deals the caster's max health, and this percent of that to players and what they own or charm
         public static int COMBATSKILL_HARMTOUCH_RANGE = 30;
 
         // Lay on Hands is a paladin ability (a long-cooldown large self heal used when badly hurt). HP is ~2.5x higher in WoW
@@ -2562,6 +2563,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS", COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS, "", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_BASE_DAMAGE", COMBATSKILL_HARMTOUCH_BASE_DAMAGE, "", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL", COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL, "", false);
+            OutputVariableToConfig("COMBATSKILL_HARMTOUCH_PLAYER_PVP_DAMAGE_PERCENT", COMBATSKILL_HARMTOUCH_PLAYER_PVP_DAMAGE_PERCENT, "", false);
             OutputVariableToConfig("COMBATSKILL_HARMTOUCH_RANGE", COMBATSKILL_HARMTOUCH_RANGE, "");
             OutputVariableToConfig("COMBATSKILL_LAYONHANDS_ENABLED", COMBATSKILL_LAYONHANDS_ENABLED, "Lay on Hands is a paladin ability (a long-cooldown large self heal used when badly hurt). HP is ~2.5x higher in WoW", false);
             OutputVariableToConfig("COMBATSKILL_LAYONHANDS_SPELL_ID", COMBATSKILL_LAYONHANDS_SPELL_ID, "", false);
@@ -3327,6 +3329,7 @@ namespace EQWOWConverter
             COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS", configValuesByVariableName, COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS);
             COMBATSKILL_HARMTOUCH_BASE_DAMAGE = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_BASE_DAMAGE", configValuesByVariableName, COMBATSKILL_HARMTOUCH_BASE_DAMAGE);
             COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL", configValuesByVariableName, COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL);
+            COMBATSKILL_HARMTOUCH_PLAYER_PVP_DAMAGE_PERCENT = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_PLAYER_PVP_DAMAGE_PERCENT", configValuesByVariableName, COMBATSKILL_HARMTOUCH_PLAYER_PVP_DAMAGE_PERCENT);
             COMBATSKILL_HARMTOUCH_RANGE = ReadVariableFromConfigString("COMBATSKILL_HARMTOUCH_RANGE", configValuesByVariableName, COMBATSKILL_HARMTOUCH_RANGE);
             COMBATSKILL_LAYONHANDS_ENABLED = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_ENABLED", configValuesByVariableName, COMBATSKILL_LAYONHANDS_ENABLED);
             COMBATSKILL_LAYONHANDS_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_LAYONHANDS_SPELL_ID", configValuesByVariableName, COMBATSKILL_LAYONHANDS_SPELL_ID);

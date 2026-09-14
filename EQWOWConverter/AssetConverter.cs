@@ -2982,8 +2982,11 @@ namespace EQWOWConverter
             if (dealDamageOverTime == true)
                 harmTouchSpellTemplate.Description = string.Concat("Touches the target with deathly energy, inflicting heavy shadow damage over ",
                     (Configuration.SPELLS_CONVERT_TO_DOT_DURATION_IN_MS / 1000).ToString(), " seconds. Can only be used rarely.");
-            else
+            else if (isCreatureCast == true)
                 harmTouchSpellTemplate.Description = "Touches the target with deathly energy, inflicting heavy shadow damage. Can only be used rarely.";
+            else
+                harmTouchSpellTemplate.Description = string.Concat("Touches the target with deathly energy, inflicting shadow damage equal to your maximum health, or ",
+                    Configuration.COMBATSKILL_HARMTOUCH_PLAYER_PVP_DAMAGE_PERCENT.ToString(), "% of it against players. Can only be used rarely.");
             harmTouchSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(harmTouchIconID);
             harmTouchSpellTemplate.CastTimeInMS = 0;
             harmTouchSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS);
@@ -3012,13 +3015,24 @@ namespace EQWOWConverter
                 harmTouchDamageEffect.AuraDescription = "suffering shadow damage";
                 harmTouchSpellTemplate.WOWSpellEffects.Add(harmTouchDamageEffect);
             }
-            else
+            else if (isCreatureCast == true)
             {
                 SpellEffectWOW harmTouchDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, Configuration.COMBATSKILL_HARMTOUCH_BASE_DAMAGE, 0, 0);
                 harmTouchDamageEffect.EffectRealPointsPerLevel = Configuration.COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL;
                 harmTouchDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
                 harmTouchDamageEffect.ActionDescription = "strikes";
                 harmTouchSpellTemplate.WOWSpellEffects.Add(harmTouchDamageEffect);
+            }
+            else
+            {
+                // The mod script replaces this placeholder damage with the caster's maximum health on hit, reduced against players
+                SpellEffectWOW harmTouchDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, 0, 0, 0);
+                harmTouchDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+                harmTouchDamageEffect.ActionDescription = "strikes";
+                harmTouchSpellTemplate.WOWSpellEffects.Add(harmTouchDamageEffect);
+                harmTouchSpellTemplate.DamageIsFixed = true; // Keeps damage taken modifiers and the mod's class aura damage adds off the health based amount
+                harmTouchSpellTemplate.CannotCrit = true;
+                harmTouchSpellTemplate.AttachedAuraScriptName = "EverQuest_HarmTouchSpellScript";
             }
             return harmTouchSpellTemplate;
         }

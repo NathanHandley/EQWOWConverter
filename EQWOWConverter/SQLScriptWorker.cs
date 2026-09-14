@@ -343,6 +343,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("IntenseHealingExhaustionManaCostPercentPerStack", Configuration.SPELL_INTENSE_HEALING_EXHAUSTION_MANA_COST_PERCENT_PER_STACK.ToString());
             modEverquestSystemConfigsSQL.AddRow("IllusionObjectMaxDistance", (Configuration.SPELL_ILLUSION_OBJECT_MAX_DISTANCE * Configuration.GENERATE_WORLD_SCALE).ToString());
             modEverquestSystemConfigsSQL.AddRow("IllusionObjectTreeMaxDistance", (Configuration.SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE * Configuration.GENERATE_WORLD_SCALE).ToString());
+            modEverquestSystemConfigsSQL.AddRow("HarmTouchPlayerPvPDamagePercent", Configuration.COMBATSKILL_HARMTOUCH_PLAYER_PVP_DAMAGE_PERCENT.ToString());
         }
 
         private void PopulateGameTableData()
