@@ -116,6 +116,22 @@ namespace EQWOWConverter.Creatures
             }
         }
 
+        public static bool CanPlayerGainReputationWithWOWFactionID(int wowFactionID)
+        {
+            if (CreatureFactionsByWOWFactionID.Count == 0)
+                PopulateFactionData();
+            if (CreatureFactionsByWOWFactionID.ContainsKey(wowFactionID) == false)
+                return false;
+
+            // No reputation index means no standing can be gained
+            CreatureFaction creatureFaction = CreatureFactionsByWOWFactionID[wowFactionID];
+            if (creatureFaction.ReputationIndex < 0)
+                return false;
+            if (creatureFaction.Name == Configuration.CREATURE_FACTION_ROOT_NAME)
+                return false;
+            return true;
+        }
+
         public static bool CanFactionAssistPlayer(int eqFactionID)
         {
             if (CreatureWOWFactionTemplateIDByEQFactionID.Count == 0)

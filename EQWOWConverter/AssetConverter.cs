@@ -1119,6 +1119,15 @@ namespace EQWOWConverter
                     creatureTemplate.RemapOnlyAttackableFactionToInteractive();
                 }
 
+                // Drop reputation requirements against factions that players can never gain reputation with (such as 'EQ Creature Neutral')
+                if (questTemplate.HasMinimumFactionRequirement == true && CreatureFaction.CanPlayerGainReputationWithWOWFactionID(questTemplate.QuestgiverWOWFactionID) == false)
+                {
+                    Logger.WriteDebug(string.Concat("Quest '", questTemplate.Name, "' (", questTemplate.QuestIDWOW, ") had a faction requirement against non-reputation faction '", questTemplate.QuestgiverWOWFactionID, "', so it was removed"));
+                    questTemplate.HasMinimumFactionRequirement = false;
+                    questTemplate.QuestgiverWOWFactionID = 0;
+                    questTemplate.MinimumQuestgiverFactionRank = 0;
+                }
+
                 // To avoid exploits in broken quests, clear exp if there are no components to hand-in
                 if (questTemplate.RewardExperienceEQ > 0 && (questTemplate.RequiredItems.Count == 0))
                     questTemplate.RewardExperienceEQ = 0;
