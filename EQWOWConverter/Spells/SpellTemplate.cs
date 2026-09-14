@@ -553,7 +553,7 @@ namespace EQWOWConverter.Spells
         }
 
         // Spell.dbc ShapeshiftMask / ShapeshiftExclude bits, which the client and core both read as (1 << (ShapeshiftForm - 1))
-        private const UInt64 SHAPESHIFT_FORM_MASK_ALL = 0xFFFFFFFFFFFFFFFF;
+        public const UInt64 SHAPESHIFT_FORM_MASK_ALL = 0xFFFFFFFFFFFFFFFF;
         private const UInt64 SHAPESHIFT_FORM_MASK_TREE_OF_LIFE = 1ul << (2 - 1); // FORM_TREE, the druid Tree of Life form
         private const UInt64 SHAPESHIFT_FORM_MASK_METAMORPHOSIS = 1ul << (22 - 1); // FORM_METAMORPHOSIS, the warlock demon form
         private const UInt64 SHAPESHIFT_FORM_MASK_MOONKIN = 1ul << (31 - 1); // FORM_MOONKIN
@@ -1394,6 +1394,7 @@ namespace EQWOWConverter.Spells
                 enchantSpell.WOWSpellID = enchantSpellWOWID;
                 enchantSpell.Description = descriptionSB.ToString();
                 enchantSpell.WeaponSpellItemEnchantmentDBCID = enchantID;
+                enchantSpell.AllowInShapeshift = true;
                 enchantSpell.WeaponItemEnchantProcSpellID = procSpellTemplate.WOWSpellID;
                 enchantSpell.WeaponItemEnchantSpellName = itemName;
                 enchantSpell.WeaponItemEnchantProcsPerMinute = procsPerMinute;

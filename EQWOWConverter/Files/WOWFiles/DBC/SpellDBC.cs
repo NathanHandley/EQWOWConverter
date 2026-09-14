@@ -44,7 +44,15 @@ namespace EQWOWConverter.WOWFiles
 
             UInt64 shapeshiftMask = spellTemplate.GetAllowedShapeshiftFormMask();
             UInt64 shapeshiftExcludeMask = spellTemplate.GetExcludedShapeshiftFormMask();
-            if (isWornEquipEffect == true && spellTemplate.AllowInShapeshift == false)
+            bool allowInAllShapeshiftForms = spellTemplate.AllowInShapeshift;
+            if (isClickyVersion == true)
+            {
+                // Item clicks work in every form (like wow trinkets)
+                shapeshiftMask = SpellTemplate.SHAPESHIFT_FORM_MASK_ALL;
+                shapeshiftExcludeMask = 0;
+                allowInAllShapeshiftForms = true;
+            }
+            else if (isWornEquipEffect == true && spellTemplate.AllowInShapeshift == false)
             {
                 // Worn/equip effect auras are applied rather than cast, so they stay unrestricted by form the way they always were
                 shapeshiftMask = 0;
@@ -60,7 +68,7 @@ namespace EQWOWConverter.WOWFiles
             else
                 newRow.AddUInt32(spellTemplate.DispelType); // DispelType
             newRow.AddUInt32(0); // Mechanic
-            newRow.AddUInt32(GetAttributes(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, doHideFromDisplay, preventClickOff, isWornEquipEffect)); // Attributes
+            newRow.AddUInt32(GetAttributes(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, doHideFromDisplay, preventClickOff, isWornEquipEffect, allowInAllShapeshiftForms)); // Attributes
             newRow.AddUInt32(GetAttributesEx(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesEx
             newRow.AddUInt32(GetAttributesExB(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType, shapeshiftMask)); // AttributesExB
             newRow.AddUInt32(GetAttributesExC(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExC
@@ -510,7 +518,7 @@ namespace EQWOWConverter.WOWFiles
             Logger.WriteDebug(string.Concat("SpellDBC removed the equipped item subclass requirement of spell ID '", spellID.ToString(), "'"));
         }
 
-        private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool doHideFromDisplay, bool preventClickOff, bool isWornEquipEffect)
+        private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool doHideFromDisplay, bool preventClickOff, bool isWornEquipEffect, bool allowInAllShapeshiftForms)
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 2843738496;
@@ -528,7 +536,7 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 16; // SPELL_ATTR0_IS_ABILITY (0x00000010)
                 attributeFlags |= 32; // SPELL_ATTR0_IS_TRADESKILL (0x00000020)
             }
-            if (isWornEquipEffect == false && spellTemplate.AllowInShapeshift == false && spellTemplate.OnlyInShapeshiftFormMask == 0)
+            if (isWornEquipEffect == false && allowInAllShapeshiftForms == false && spellTemplate.OnlyInShapeshiftFormMask == 0)
                 attributeFlags |= 65536; // SPELL_ATTR0_NOT_SHAPESHIFTED (0x00010000)
             if (spellTemplate.AllowCastWhileSitting == true)
                 attributeFlags |= 134217728; // SPELL_ATTR0_ALLOW_WHILE_SITTING (0x08000000)

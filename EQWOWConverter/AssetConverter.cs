@@ -3778,6 +3778,7 @@ namespace EQWOWConverter
                 if (recipe.Type == TradeskillType.None)
                 {
                     curSpellTemplate.Name = string.Concat("Create ", recipe.Name);
+                    curSpellTemplate.AllowInShapeshift = true;
 
                     // Attach the spell to every combiner item
                     foreach (int itemID in recipe.CombinerWOWItemIDs)
@@ -5105,6 +5106,7 @@ namespace EQWOWConverter
                 slotshiftSpellTemplate.SchoolMask = 1; // "Normal"
                 slotshiftSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(itemTemplate.IconID);
                 slotshiftSpellTemplate.AllowCastInCombat = false;
+                slotshiftSpellTemplate.AllowInShapeshift = true;
                 slotshiftSpellTemplate.SpellVisualID1 = Convert.ToUInt32(ItemTemplate.SlotshiftSpellVisualID);
                 SpellEffectWOW slotshiftCreateItemEffect = new SpellEffectWOW(SpellWOWEffectType.CreateItem, SpellWOWAuraType.None, 0, Convert.ToUInt32(slotshiftNextItemTemplate.WOWEntryID), 1, 0, 0, 0);
                 slotshiftCreateItemEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
