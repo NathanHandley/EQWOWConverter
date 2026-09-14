@@ -164,7 +164,10 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinBlockDeflectionDamagePercent", Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidDirectHealRegenPercent", Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidDirectHealRegenTickCount", GetDruidRegenTickCount().ToString()));
-            rows.Add(new KeyValuePair<string, string>("ClassAuraDruidImpairedTargetDamagePercent", Configuration.CLASSAURA_DRUID_IMPAIRED_TARGET_DAMAGE_PERCENT.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraDruidNaturesBalanceDamagePercentPerStack", Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DAMAGE_PERCENT_PER_STACK.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraDruidNaturesBalanceMinBaseCastTimeInMS", Configuration.CLASSAURA_DRUID_NATURES_BALANCE_MIN_BASE_CAST_TIME_IN_MS.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraDruidEntangleStrikeDamageTakenPercentPerStack", Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraDruidEntangleStrikeBehindDamagePercentPerStack", Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraShamanDotExtendChancePercent", Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraShamanDotExtendInMS", Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS.ToString()));
             return rows;
@@ -238,7 +241,10 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.DruidPassive:
                 case SpellClassAuraType.DruidAura:
                 case SpellClassAuraType.DruidRegrowth:
-                case SpellClassAuraType.DruidExposure:
+                case SpellClassAuraType.DruidNaturesBalanceFire:
+                case SpellClassAuraType.DruidNaturesBalanceCold:
+                case SpellClassAuraType.DruidNaturesBalanceNature:
+                case SpellClassAuraType.DruidEntangleStrike:
                     return Configuration.CLASSAURA_DRUID_ENABLED;
                 case SpellClassAuraType.ShamanPassive:
                 case SpellClassAuraType.ShamanAura:
@@ -287,6 +293,11 @@ namespace EQWOWConverter.Spells
         private static string Seconds(int durationInMS)
         {
             return string.Concat((durationInMS / 1000).ToString(), " seconds");
+        }
+
+        private static string SecondsWithFraction(int durationInMS)
+        {
+            return string.Concat(((float)durationInMS / 1000.0f).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture), " seconds");
         }
 
         private static SpellTemplate BuildBaseTemplate(string name, SpellClassAuraType spellType, int spellIconEQID, string description, string auraDescription, bool useSpellItemIcon = false)
@@ -761,16 +772,21 @@ namespace EQWOWConverter.Spells
         {
             int icon = Configuration.CLASSAURA_DRUID_SPELL_ICON_EQ_ID;
             string description = string.Concat("Your direct heals leave a regeneration that heals ", Pct(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT), " of the amount over ",
-                Seconds(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS), ". Your direct damage spells deal ", Pct(Configuration.CLASSAURA_DRUID_IMPAIRED_TARGET_DAMAGE_PERCENT),
-                " more to targets that are snared, rooted, or suffering from your damage over time spells. Your melee attacks, Auto Shots, and your pet's attacks expose the target, raising the fire, cold, and nature spell damage it takes by ",
-                Pct(Configuration.CLASSAURA_DRUID_EXPOSURE_DAMAGE_PERCENT_PER_STACK), " for ", Seconds(Configuration.CLASSAURA_DRUID_EXPOSURE_DURATION_IN_MS), ", stacking up to ",
-                Configuration.CLASSAURA_DRUID_EXPOSURE_MAX_STACKS.ToString(), " times. Every druid builds the same stacks.");
-            spellTemplates.Add(BuildPassiveTemplate("Skin of the Wild", SpellClassAuraType.DruidPassive, icon, description));
+                Seconds(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS), ". Nature's Balance: casting a fire, cold, or nature direct damage spell with a base cast time longer than ",
+                SecondsWithFraction(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_MIN_BASE_CAST_TIME_IN_MS), " builds a stack of that element for ",
+                Seconds(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DURATION_IN_MS), ", up to ", Configuration.CLASSAURA_DRUID_NATURES_BALANCE_MAX_STACKS.ToString(),
+                " stacks. Your next direct damage spell of a different element spends every stack at once, dealing ", Pct(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DAMAGE_PERCENT_PER_STACK),
+                " more damage for each stack spent. Entangle Strike: your landed melee and ranged attacks entangle the target for ",
+                Seconds(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_MAX_STACKS.ToString(),
+                " times. Each stack lowers the physical damage you and your pet take from that target by ", Pct(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK),
+                " and raises the melee damage you and your pet deal to it from behind by ", Pct(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK), ".");
+            spellTemplates.Add(BuildPassiveTemplate("One With Nature", SpellClassAuraType.DruidPassive, icon, description));
 
-            // Proc on the druid's direct heals only, not over time
-            SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Skin of the Wild (Druid)", SpellClassAuraType.DruidAura, icon, description, new List<SpellEffectWOW>());
+            // Direct heals leave the echo and landed physical attacks entangle, both of which the script tells apart (no PROC_FLAG_DONE_PERIODIC, so heal over time ticks never count)
+            SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("One With Nature (Druid)", SpellClassAuraType.DruidAura, icon, description, new List<SpellEffectWOW>());
             auraSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraDruidAuraScript";
-            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS | PROC_FLAG_DONE_MELEE_AUTO_ATTACK | PROC_FLAG_DONE_RANGED_AUTO_ATTACK,
+            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS | PROC_FLAG_DONE_MELEE_AUTO_ATTACK
+                | PROC_FLAG_DONE_RANGED_AUTO_ATTACK | PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS | PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS,
                 PROC_SPELL_TYPE_HEAL | PROC_SPELL_TYPE_DAMAGE, PROC_SPELL_PHASE_HIT, 0, 0, 0);
             spellTemplates.Add(auraSpellTemplate);
 
@@ -786,12 +802,29 @@ namespace EQWOWConverter.Spells
             regrowthSpellTemplate.GenerateNoThreat = true;
             spellTemplates.Add(regrowthSpellTemplate);
 
-            // One shared copy per target (the default class aura rule), so every druid hitting it builds the same stacks
-            string exposureDescription = string.Concat("Takes ", Pct(Configuration.CLASSAURA_DRUID_EXPOSURE_DAMAGE_PERCENT_PER_STACK), " more fire, cold, and nature spell damage per stack.");
-            List<SpellEffectWOW> exposureEffects = new List<SpellEffectWOW>();
-            exposureEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDamagePercentTaken, Configuration.CLASSAURA_DRUID_EXPOSURE_DAMAGE_PERCENT_PER_STACK, SCHOOL_MASK_FIRE_COLD_NATURE, SpellWOWTargetType.UnitTargetEnemy));
-            spellTemplates.Add(BuildStackingAuraTemplate("Nature Exposure", SpellClassAuraType.DruidExposure, icon, exposureDescription, exposureEffects,
-                Configuration.CLASSAURA_DRUID_EXPOSURE_MAX_STACKS, Configuration.CLASSAURA_DRUID_EXPOSURE_DURATION_IN_MS, true));
+            // One element at a time, since a spell of another element spends what is there before its own stack is built.
+            spellTemplates.Add(BuildNaturesBalanceTemplate("Nature's Balance (Fire)", SpellClassAuraType.DruidNaturesBalanceFire, Configuration.CLASSAURA_DRUID_NATURES_BALANCE_FIRE_SPELL_ICON_EQ_ID));
+            spellTemplates.Add(BuildNaturesBalanceTemplate("Nature's Balance (Cold)", SpellClassAuraType.DruidNaturesBalanceCold, Configuration.CLASSAURA_DRUID_NATURES_BALANCE_COLD_SPELL_ICON_EQ_ID));
+            spellTemplates.Add(BuildNaturesBalanceTemplate("Nature's Balance (Nature)", SpellClassAuraType.DruidNaturesBalanceNature, Configuration.CLASSAURA_DRUID_NATURES_BALANCE_NATURE_SPELL_ICON_EQ_ID));
+
+            // A per-druid copy on the target, since only the druid who entangled it and that druid's pet are affected
+            string entangleDescription = string.Concat("The druid who entangled it and that druid's pet take ",
+                Pct(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK), " less physical damage from it per stack, and deal ",
+                Pct(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK), " more melee damage to it from behind per stack.");
+            List<SpellEffectWOW> entangleEffects = new List<SpellEffectWOW>();
+            entangleEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitTargetEnemy));
+            spellTemplates.Add(BuildStackingAuraTemplate("Entangle Strike", SpellClassAuraType.DruidEntangleStrike, Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_SPELL_ICON_EQ_ID,
+                entangleDescription, entangleEffects, Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_MAX_STACKS, Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DURATION_IN_MS, true));
+        }
+
+        private static SpellTemplate BuildNaturesBalanceTemplate(string name, SpellClassAuraType spellType, int spellIconEQID)
+        {
+            string description = string.Concat("Your next direct damage spell of a different element spends every stack at once, dealing ",
+                Pct(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DAMAGE_PERCENT_PER_STACK), " more damage for each stack spent.");
+            List<SpellEffectWOW> effects = new List<SpellEffectWOW>();
+            effects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitCaster));
+            return BuildStackingAuraTemplate(name, spellType, spellIconEQID, description, effects,
+                Configuration.CLASSAURA_DRUID_NATURES_BALANCE_MAX_STACKS, Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DURATION_IN_MS, false);
         }
 
         private static void AddShamanSpells(List<SpellTemplate> spellTemplates)

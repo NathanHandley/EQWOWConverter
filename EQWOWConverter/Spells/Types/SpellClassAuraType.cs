@@ -66,7 +66,7 @@ namespace EQWOWConverter.Spells
         ShamanSlowMark = 45,
         ShamanVigor = 46,
         CastSpeedHelper = 47,
-        DruidExposure = 48,
+        DruidNaturesBalanceFire = 48,
         WarriorUnassailed = 49,
         WarriorRiposte = 50,
         BardVigor = 51,
@@ -74,6 +74,9 @@ namespace EQWOWConverter.Spells
         PaladinDeflection = 53,
         RogueLuckyStrike = 54,
         RogueLuckyStrikeHelper = 55,
-        Count = 56
+        DruidNaturesBalanceCold = 56,
+        DruidNaturesBalanceNature = 57,
+        DruidEntangleStrike = 58,
+        Count = 59
     }
 }
