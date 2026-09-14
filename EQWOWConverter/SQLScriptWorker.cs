@@ -2237,6 +2237,9 @@ namespace EQWOWConverter
                     if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true && Configuration.COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.ShadowKnight)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID, 1);
 
+                    // Block (Existing WoW version) for WoW Death Knights
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 107, 1, ClassWOWType.DeathKnight); // Block
+
                     // Stealth (Existing WoW version)
                     if (eqClassProperties.EQClass == ClassEQType.Rogue)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 1784, 1);  // Stealth
