@@ -424,7 +424,7 @@ namespace EQWOWConverter.Items
             }
         }
 
-        private static float GetConvertedEqToWowStat(ItemWOWInventoryType itemSlot, string statName, float eqStatValue, bool showError = true)
+        private static float GetConvertedEqToWowStat(ItemWOWInventoryType itemSlot, string statName, float eqStatValue, bool showError = true, bool clampMax = false)
         {
             // Normalize mainhand to onehand in this method for lookups
             if (itemSlot == ItemWOWInventoryType.MainHand)
@@ -514,7 +514,12 @@ namespace EQWOWConverter.Items
 
             // Reduce any overflow beyond the maximum
             if (eqStatValue > statEqHigh)
-                eqStatValue = statEqHigh + ((eqStatValue - statEqHigh) * Configuration.ITEM_STATS_OVERFLOW_MULTIPLIER);
+            {
+                if (clampMax == true)
+                    eqStatValue = statEqHigh;
+                else
+                    eqStatValue = statEqHigh + ((eqStatValue - statEqHigh) * Configuration.ITEM_STATS_OVERFLOW_MULTIPLIER);
+            }
 
             // Calculate the stat
             float normalizedModOfHigh = ((eqStatValue - statEqLow) / (statEqHigh - statEqLow));
@@ -746,16 +751,35 @@ namespace EQWOWConverter.Items
                             itemTemplate.StatValues.Add((ItemWOWStatType.ExpertiseRating, Convert.ToInt32(calculatedExpertise)));
                     }
                 }
-
-                // Block Value
-                // Note: Using AC as the scale for shield since there's no other anchor
-                if (classID == 4 && subClassID == 6) // Shields only
-                    itemTemplate.Block = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "BlockValue", eqArmorClass));
-
-                // Defense is added to plate armor (or shields) that have stamina (unless 'all')
-                if ((eqStamina > 0 && (classID == 4 || subClassID == 4)) && classMask < 32767)
-                    itemTemplate.StatValues.Add((ItemWOWStatType.DefenseSkillRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "DefenseRating", eqStamina))));
             }
+
+            // Defense is added to plate armor (or shields) that have stamina (unless 'all' or int casters only) and exclude all
+            bool isShield = (classID == 4 && subClassID == 6);
+            bool isPlate = (classID == 4 && subClassID == 4);
+            if (eqStamina > 0 && (isShield == true || isPlate == true) && classMask < 32767 && isIntCasterOnlyClassMask == false && allEQStatsEqual ==  false)
+                itemTemplate.StatValues.Add((ItemWOWStatType.DefenseSkillRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "DefenseRating", eqStamina))));
+
+            // Dodge Rating is added to leather/mail/plate that has AGL + STA (exclude all)
+            bool isLeatherOrHeavier = (classID == 4 && subClassID >= 2);
+            if (eqStamina > 0 && eqAgility > 0 && hasStrAgiDex == true && isLeatherOrHeavier == true && allEQStatsEqual == false)
+                itemTemplate.StatValues.Add((ItemWOWStatType.DodgeRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "DodgeRating", eqAgility, true, true))));
+
+            // Parry Rating is added to mail/plate armor that has DEX + STA (exclude all)
+            bool isMailOrHeavier = (classID == 4 && subClassID >= 3);
+            if (eqStamina > 0 && eqDexterity > 0 && hasStrAgiDex == true && isMailOrHeavier == true && allEQStatsEqual == false)
+                itemTemplate.StatValues.Add((ItemWOWStatType.ParryRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "ParryRating", eqDexterity, true, true))));
+
+            // Block rating on plate that has STR + DEX + STA (exclude all)
+            // Block value also based on this.  Value is based on strength, rating is based on dex
+            if (isPlate == true && eqStamina > 0 && eqDexterity > 0 && eqStrength > 0 && allEQStatsEqual == false)
+            {
+                itemTemplate.StatValues.Add((ItemWOWStatType.BlockRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "BlockRating", eqDexterity))));
+                itemTemplate.StatValues.Add((ItemWOWStatType.BlockValue, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "BlockValue", eqStrength, true, true))));
+            }
+
+            // Block Value on shields determined by armor class
+            if (isShield == true) // Shields only
+                itemTemplate.Block = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "BlockValue", eqArmorClass));
 
             // HP
             if (eqHp != 0)
