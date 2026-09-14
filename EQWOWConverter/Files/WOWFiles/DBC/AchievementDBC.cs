@@ -42,12 +42,12 @@ namespace EQWOWConverter.WOWFiles
         }
 
         // Minimum_Criteria of 0 means every criteria row referencing this achievement must complete
-        public void AddRowForInstanceClear(int achievementID, string name, string description, int categoryID, int points, int mapID, int iconDBCID)
+        public void AddRowForInstanceClear(int achievementID, string name, string description, int categoryID, int points, int iconDBCID)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(achievementID); // ID
             newRow.AddInt32(-1); // Faction (-1 = both factions)
-            newRow.AddInt32(mapID); // Instance_Id (the raid instance map)
+            newRow.AddInt32(-1); // Instance_Id (-1 = all maps, so kills in the open world zone count as well as in the raid instance)
             newRow.AddInt32(0); // Supercedes (previous achievement in a chain)
             newRow.AddStringLang(name); // Title
             newRow.AddStringLang(description); // Description

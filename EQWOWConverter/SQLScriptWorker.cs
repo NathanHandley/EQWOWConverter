@@ -3355,7 +3355,7 @@ namespace EQWOWConverter
                     lfgDungeonTemplateSQL.AddRow(zone.ZoneProperties.DBCLFGDungeonsIDRaidLow, raidLowDescriptiveName, zone.ZoneProperties.TelePosition.X,
                         zone.ZoneProperties.TelePosition.Y, zone.ZoneProperties.TelePosition.Z, zone.ZoneProperties.TeleOrientation);
 
-                    // Raid cleared achievement
+                    // Raid cleared achievement, which counts kills on any map so the open world zone and the raid instance both credit it
                     AchievementData? raidLowAchievement = AchievementData.GetInstanceClearAchievement(zone.ShortName, "RaidLow");
                     if (raidLowAchievement != null)
                     {
@@ -3363,7 +3363,7 @@ namespace EQWOWConverter
                         {
                             int criteriaID = IDGenerationTool.GenerateID("AchievementCriteriaID", "instanceclear", raidLowAchievement.AchievementID.ToString(),
                                 criteriaCreatureTemplate.WOWCreatureTemplateID.ToString());
-                            achievementCriteriaDataSQL.AddRow(criteriaID, AchievementCriteriaDataSQL.DATA_TYPE_MAP_ID, zone.ZoneProperties.DBCMapIDRaidLow, 0);
+                            achievementCriteriaDataSQL.AddRow(criteriaID, AchievementCriteriaDataSQL.DATA_TYPE_NONE, 0, 0);
                         }
                     }
                 }

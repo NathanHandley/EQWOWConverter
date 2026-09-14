@@ -18,6 +18,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class AchievementCriteriaDataSQL : SQLFile
     {
+        public static int DATA_TYPE_NONE = 0; // No extra requirement, but the row still has to exist
         public static int DATA_TYPE_MAP_ID = 20; // Criteria only progresses while the player is on value1's map
 
         public override string DeleteRowSQL()
