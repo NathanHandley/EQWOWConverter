@@ -1280,6 +1280,17 @@ namespace EQWOWConverter.Items
             }
         }
 
+        private static bool IsJewelryInventoryType(ItemWOWInventoryType inventoryType)
+        {
+            switch (inventoryType)
+            {
+                case ItemWOWInventoryType.Neck:
+                case ItemWOWInventoryType.Finger:
+                case ItemWOWInventoryType.Trinket: return true;
+                default: return false;
+            }
+        }
+
         private static bool IsWeaponInEQ(int damage, int delay)
         {
             return damage != 0 && delay != 0;
@@ -1436,6 +1447,11 @@ namespace EQWOWConverter.Items
                     variantItemTemplate.ClassID = 4;
                     variantItemTemplate.SubClassID = Convert.ToInt32(ItemWOWArmorSubclassType.Misc);
                     statBudgetInventoryType = ItemWOWInventoryType.HeldInOffHand;
+                }
+                else if (IsJewelryInventoryType(targetInventoryType) == true)
+                {
+                    variantItemTemplate.ClassID = 4;
+                    variantItemTemplate.SubClassID = Convert.ToInt32(ItemWOWArmorSubclassType.Misc);
                 }
                 else
                 {
@@ -2397,6 +2413,10 @@ namespace EQWOWConverter.Items
                 // Convert all back slot items to cloth
                 if (newItemTemplate.InventoryType == ItemWOWInventoryType.Back && newItemTemplate.ClassID == 4)
                     newItemTemplate.SubClassID = Convert.ToInt32(ItemWOWArmorSubclassType.Cloth);
+
+                // Jewelry has no armor material in WoW, so necks, rings and trinkets are always misc armor
+                if (IsJewelryInventoryType(newItemTemplate.InventoryType) == true && newItemTemplate.ClassID == 4)
+                    newItemTemplate.SubClassID = Convert.ToInt32(ItemWOWArmorSubclassType.Misc);
 
                 // Calculate stats (must come after armor subclass)
                 int qualityOverride = int.Parse(columns["override_quality"]);
