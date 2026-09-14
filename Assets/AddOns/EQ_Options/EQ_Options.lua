@@ -16,7 +16,7 @@
 
 -- Adds an "EverQuest" page to the Interface Options window covering the per character settings that are
 -- otherwise only reachable as typed chat commands (".eqmovecast", ".eqface", ".eqshowbardpulse", ".eqhidewowgear",
--- ".eqhailwindow" and ".eqdispelmessage").  The server (mod-everquest) owns every one of these, so this page
+-- ".eqhailwindow", ".eqdispelmessage" and ".eqmezbreakmessage").  The server (mod-everquest) owns every one of these, so this page
 -- never stores them itself: it shows what the server last pushed under the EQOPTIONS prefix, and clicking
 -- Okay runs the same chat commands a player would have typed.  Only settings that actually changed are sent,
 -- so opening the page and closing it again is silent.
@@ -33,6 +33,7 @@ local DEFAULT_HAIL_WINDOW = false;
 local DEFAULT_SHOW_CLASS_AURA_ICONS = true;
 local DEFAULT_SHOW_DISPEL_MESSAGE = false;
 local DEFAULT_DISPEL_COLOR = 0xFFAA00;
+local DEFAULT_SHOW_MEZ_BREAK_MESSAGE = true;
 
 -- What each druid shapeshift form can be turned into.  The values are the option IDs the server and the converter use, and the
 -- keywords are what ".eqdruidform" takes, so a click here is exactly the command a player could have typed.  Bear and cat have
@@ -138,6 +139,7 @@ local serverValues = {
 	hailWindow = DEFAULT_HAIL_WINDOW,
 	showDispelMessage = DEFAULT_SHOW_DISPEL_MESSAGE,
 	dispelColor = DEFAULT_DISPEL_COLOR,
+	showMezBreakMessage = DEFAULT_SHOW_MEZ_BREAK_MESSAGE,
 	druidFormBear = 1,
 	druidFormCat = 1,
 	druidFormTravel = 0,
@@ -208,6 +210,7 @@ local function EQ_Options_CopyServerValuesToPending()
 	pendingValues.showClassAuraIcons = EQ_Options_GetClientSettings().showClassAuraIcons;
 	pendingValues.showDispelMessage = serverValues.showDispelMessage;
 	pendingValues.dispelColor = serverValues.dispelColor;
+	pendingValues.showMezBreakMessage = serverValues.showMezBreakMessage;
 	for _, menu in ipairs(DRUID_FORM_MENUS) do
 		pendingValues[menu.settingKey] = serverValues[menu.settingKey];
 	end
@@ -227,7 +230,7 @@ panel:Hide();
 -- not quite enough for these settings plus the druid form dropdowns.  So everything below lives in a scroll frame and
 -- the page scrolls rather than running off the bottom, which also leaves room for whatever gets added next.
 local EQ_OPTIONS_SCROLLBAR_WIDTH = 26;
-local EQ_OPTIONS_CONTENT_HEIGHT = 510;
+local EQ_OPTIONS_CONTENT_HEIGHT = 540;
 
 local scrollFrame = CreateFrame("ScrollFrame", "EQOptionsScrollFrame", panel, "UIPanelScrollFrameTemplate");
 scrollFrame:SetPoint("TOPLEFT", panel, "TOPLEFT", 0, 0);
@@ -417,10 +420,21 @@ dispelColorSwatch:SetScript("OnClick", function()
 	OpenColorPicker(info);
 end);
 
+-- Mesmerize break message ---------------------------------------------------------
+
+-- Sits below the dispel message's color row, which is why it hangs off the dispel checkbox with room left for that row
+local mezBreakMessageCheckButton = EQ_Options_CreateCheckButton("EQOptionsMezBreakMessageCheckButton", dispelMessageCheckButton, -30,
+	"Announce who breaks my mesmerize",
+	"Prints a chat line naming whoever broke a mesmerize you cast, including when the mesmerized target broke it themselves.  Same as .eqmezbreakmessage");
+mezBreakMessageCheckButton:SetScript("OnClick", function(self)
+	EQ_Options_PlayCheckButtonSound(self);
+	pendingValues.showMezBreakMessage = (self:GetChecked() and true or false);
+end);
+
 -- Illusion face -------------------------------------------------------------------
 
 local faceSlider = CreateFrame("Slider", "EQOptionsFaceSlider", content, "OptionsSliderTemplate");
-faceSlider:SetPoint("TOPLEFT", dispelColorLabel, "BOTTOMLEFT", 0, -36);
+faceSlider:SetPoint("TOPLEFT", mezBreakMessageCheckButton, "BOTTOMLEFT", 30, -30);
 faceSlider:SetWidth(240);
 faceSlider:SetMinMaxValues(0, 1);
 faceSlider:SetValueStep(1);
@@ -559,6 +573,7 @@ local function EQ_Options_RefreshPanel()
 	dispelMessageCheckButton:SetChecked(pendingValues.showDispelMessage);
 	EQ_Options_RefreshDispelColorDisplay();
 	EQ_Options_RefreshDispelColorEnabled();
+	mezBreakMessageCheckButton:SetChecked(pendingValues.showMezBreakMessage);
 	EQ_Options_RefreshDruidFormPanel();
 
 	-- A server that reported no illusion faces at all leaves nothing to pick between
@@ -623,6 +638,9 @@ function panel.okay()
 	if ( pendingValues.dispelColor ~= serverValues.dispelColor ) then
 		EQ_Options_SendCommand(".eqdispelmessage color " .. EQ_Options_ColorToHex(pendingValues.dispelColor));
 	end
+	if ( pendingValues.showMezBreakMessage ~= serverValues.showMezBreakMessage ) then
+		EQ_Options_SendCommand(".eqmezbreakmessage " .. (pendingValues.showMezBreakMessage == true and "on" or "off"));
+	end
 	if ( pendingValues.faceID ~= serverValues.faceID ) then
 		EQ_Options_SendCommand(".eqface " .. pendingValues.faceID);
 	end
@@ -654,6 +672,7 @@ function panel.default()
 	pendingValues.showClassAuraIcons = DEFAULT_SHOW_CLASS_AURA_ICONS;
 	pendingValues.showDispelMessage = DEFAULT_SHOW_DISPEL_MESSAGE;
 	pendingValues.dispelColor = DEFAULT_DISPEL_COLOR;
+	pendingValues.showMezBreakMessage = DEFAULT_SHOW_MEZ_BREAK_MESSAGE;
 	for _, menu in ipairs(DRUID_FORM_MENUS) do
 		pendingValues[menu.settingKey] = EQ_Options_GetDefaultDruidFormValue(menu.settingKey);
 	end
@@ -798,6 +817,14 @@ function EQ_Options_HandlePayload(payload)
 		serverValues.moveWhileCasting = DEFAULT_MOVE_WHILE_CASTING;
 	else
 		serverValues.moveWhileCasting = (moveWhileCastingField == "1");
+	end
+
+	-- The mesmerize break message follows move while casting, and a server from before it existed does not send it, which reads as the default (on)
+	local mezBreakMessageField = fields[9 + #DRUID_FORM_MENUS];
+	if ( mezBreakMessageField == nil ) then
+		serverValues.showMezBreakMessage = DEFAULT_SHOW_MEZ_BREAK_MESSAGE;
+	else
+		serverValues.showMezBreakMessage = (mezBreakMessageField == "1");
 	end
 	haveServerValues = true;
 

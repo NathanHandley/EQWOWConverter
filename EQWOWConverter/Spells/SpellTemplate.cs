@@ -348,6 +348,7 @@ namespace EQWOWConverter.Spells
         public bool InterruptAuraOnMount = false;
         public bool InterruptAuraOnCast = false;
         public bool InterruptAuraOnTakeDamage = false;
+        public bool CancelsAutoAttack = false;
         public bool IsNegateIfCombat = false;
         public bool RemoveAuraWhenCasterCreatureInitsAgro = false;
         public bool PreventAuraClickOff = false;
@@ -4087,6 +4088,7 @@ namespace EQWOWConverter.Spells
                                 if (eqEffect.EQMaxValue > 0 && (spellTemplate.MaxCreatureTargetLevel == 0 || eqEffect.EQMaxValue < spellTemplate.MaxCreatureTargetLevel))
                                     spellTemplate.MaxCreatureTargetLevel = eqEffect.EQMaxValue;
                                 spellTemplate.InterruptAuraOnTakeDamage = true;
+                                spellTemplate.CancelsAutoAttack = true;
                                 spellTemplate.NoPartialImmunity = true;
 
                                 newSpellEffects.Add(newSpellEffectWOW);

@@ -550,6 +550,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 2; // SPELL_ATTR0_USES_RANGED_SLOT (0x00000002) - makes the client render the arrow/bullet projectile
             if (spellTemplate.CanMountWhileInForm == true)
                 attributeFlags |= 16777216; // SPELL_ATTR0_ALLOW_WHILE_MOUNTED (0x01000000) - lets Unit::IsInDisallowedMountForm pass for this transform
+            if (spellTemplate.CancelsAutoAttack == true)
+                attributeFlags |= 1048576; // SPELL_ATTR0_CANCELS_AUTO_ATTACK_COMBAT (0x00100000)
             return attributeFlags;
         }
 

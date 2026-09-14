@@ -2896,6 +2896,19 @@ namespace EQWOWConverter
                     }
                 }
 
+                // Any block applying a mesmerize gets the script that tells the mod who dispelled it, since the core names the dispeller nowhere else
+                if (commentFragment != " (Worn)")
+                {
+                    foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
+                    {
+                        if (blockEffect.EffectAuraType == SpellWOWAuraType.ModStun && blockEffect.EffectMechanic == SpellMechanicType.Incapacitated)
+                        {
+                            spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_MesmerizeAuraScript");
+                            break;
+                        }
+                    }
+                }
+
                 // Any block cutting armor by a percent is a major armor debuff, the same category the stock WOW armor debuffs are in
                 if (commentFragment != " (Worn)")
                 {
