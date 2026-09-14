@@ -1203,8 +1203,8 @@ namespace EQWOWConverter
         // Auction
         //=====================================================================
         // What 'deposit' and 'cut' the auction house should have
-        public static int AUCTION_HOUSE_BLACKWATER_DEPOSIT_PERCENT = 5;
-        public static int AUCTION_HOUSE_BLACKWATER_CONSIGNMENT_PERCENT = 5;
+        public static int AUCTION_HOUSE_BLACKWATER_DEPOSIT_PERCENT = 1;
+        public static int AUCTION_HOUSE_BLACKWATER_CONSIGNMENT_PERCENT = 1;
 
         //=====================================================================
         // Combat Skills (adjacent to spells)
