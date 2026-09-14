@@ -4172,14 +4172,17 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectMiscValueA = 127;
                                 newSpellEffects.Add(newSpellEffectWOW);
 
+                                // Pacify-silence applies both pacify and silence
                                 SpellEffectWOW newSpellEffectWOW2 = new SpellEffectWOW();
                                 newSpellEffectWOW2.EffectType = SpellWOWEffectType.ApplyAura;
-                                newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModPacify;
+                                newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModPacifySilence;
                                 newSpellEffects.Add(newSpellEffectWOW2);
 
+                                // A separate physical-only immunity is what makes the core drop battleground flags (like Divine Shield / Hand of Protection)
                                 SpellEffectWOW newSpellEffectWOW3 = new SpellEffectWOW();
-                                newSpellEffectWOW2.EffectType = SpellWOWEffectType.ApplyAura;
-                                newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModPacifySilence;
+                                newSpellEffectWOW3.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW3.EffectAuraType = SpellWOWAuraType.SchoolImmunity;
+                                newSpellEffectWOW3.EffectMiscValueA = 1;
                                 newSpellEffects.Add(newSpellEffectWOW3);
                             } break;
                         case SpellEQEffectType.WeaponProc:
