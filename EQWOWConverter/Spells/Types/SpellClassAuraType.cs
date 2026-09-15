@@ -63,11 +63,11 @@ namespace EQWOWConverter.Spells
         DruidRegrowth = 42,
         ShamanPassive = 43,
         ShamanAura = 44,
-        ShamanSlowMark = 45,
+        ShamanWarspirit = 45,
         ShamanVigor = 46,
         CastSpeedHelper = 47,
         DruidNaturesBalanceFire = 48,
-        WarriorUnassailed = 49,
+        WarriorUnrelentingAssault = 49,
         WarriorRiposte = 50,
         BardVigor = 51,
         MonkChiSurge = 52,
@@ -77,6 +77,7 @@ namespace EQWOWConverter.Spells
         DruidNaturesBalanceCold = 56,
         DruidNaturesBalanceNature = 57,
         DruidEntangleStrike = 58,
-        Count = 59
+        ShamanWarspiritVigor = 59,
+        Count = 60
     }
 }

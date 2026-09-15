@@ -620,7 +620,7 @@ namespace EQWOWConverter
                     if (raidLowAchievement != null)
                     {
                         achievementDBC.AddRowForInstanceClear(raidLowAchievement.AchievementID, raidLowAchievement.Name, raidLowAchievement.Description,
-                            raidLowAchievement.ParentCategoryID, raidLowAchievement.Points, zoneProperties.DBCMapIDRaidLow, raidLowAchievement.GetIconDBCID());
+                            raidLowAchievement.ParentCategoryID, raidLowAchievement.Points, raidLowAchievement.GetIconDBCID());
                         usedAchievementCategoryIDs.Add(raidLowAchievement.ParentCategoryID);
                         for (int criteriaIndex = 0; criteriaIndex < raidLowAchievement.CriteriaCreatureTemplates.Count; criteriaIndex++)
                         {

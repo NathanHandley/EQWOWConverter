@@ -16,7 +16,6 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.WOWFiles;
-using System;
 
 namespace EQWOWConverter.Spells
 {
@@ -31,6 +30,8 @@ namespace EQWOWConverter.Spells
         private const int PROC_FLAG_DONE_RANGED_AUTO_ATTACK = 0x00000040;
         private const int PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS = 0x00000100;
         private const int PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS = 0x00000010;
+        private const int PROC_FLAG_TAKEN_SPELL_NONE_DMG_CLASS_NEG = 0x00002000;
+        private const int PROC_FLAG_TAKEN_SPELL_MAGIC_DMG_CLASS_NEG = 0x00020000;
         private const int PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS = 0x00000400;
         private const int PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG = 0x00001000;
         private const int PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS = 0x00004000;
@@ -49,11 +50,9 @@ namespace EQWOWConverter.Spells
         private const int PROC_HIT_FULL_BLOCK = 0x2000;
 
         // Spell school masks
-        private const int SCHOOL_MASK_PHYSICAL = 1;
         private const int SCHOOL_MASK_HOLY = 2;
         private const int SCHOOL_MASK_MAGIC = 126; // Every non-physical school
         private const int SCHOOL_MASK_ALL = 127;
-        private const int SCHOOL_MASK_FIRE_COLD_NATURE = 28; // Fire (4), nature (8) and frost (16)
 
         // Mechanics (AzerothCore SharedDefines.h)
 
@@ -126,6 +125,7 @@ namespace EQWOWConverter.Spells
             switch (eqClass)
             {
                 case ClassEQType.Ranger: return GetSpellID(SpellClassAuraType.RangerEndlessQuiver);
+                case ClassEQType.Shaman: return GetSpellID(SpellClassAuraType.ShamanWarspirit);
                 default: return 0;
             }
         }
@@ -154,9 +154,10 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinHealSelfPercent", Configuration.CLASSAURA_PALADIN_HEAL_SELF_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinUndeadDemonDoubleDamageChancePercent", Configuration.CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraWarriorRiposteChancePercent", Configuration.CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT.ToString()));
-            rows.Add(new KeyValuePair<string, string>("ClassAuraWarriorUnassailedDelayInMS", Configuration.CLASSAURA_WARRIOR_UNASSAILED_DELAY_IN_MS.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraWarriorUnrelentingAssaultStackIntervalInMS", Configuration.CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_STACK_INTERVAL_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraWizardFocusStacksLostPerMovementEvent", Configuration.CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraWizardFocusMovementIntervalInMS", Configuration.CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraWizardFocusStillIntervalInMS", Configuration.CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerDebuffTransferCooldownInMS", Configuration.CLASSAURA_NECROMANCER_DEBUFF_TRANSFER_COOLDOWN_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerMarkDirectDamagePercentPerStack", Configuration.CLASSAURA_NECROMANCER_MARK_DIRECT_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerMarkDotDamagePercentPerStack", Configuration.CLASSAURA_NECROMANCER_MARK_DOT_DAMAGE_PERCENT_PER_STACK.ToString()));
@@ -216,7 +217,7 @@ namespace EQWOWConverter.Spells
                     return Configuration.CLASSAURA_SHADOWKNIGHT_ENABLED;
                 case SpellClassAuraType.WarriorPassive:
                 case SpellClassAuraType.WarriorAura:
-                case SpellClassAuraType.WarriorUnassailed:
+                case SpellClassAuraType.WarriorUnrelentingAssault:
                 case SpellClassAuraType.WarriorRiposte:
                     return Configuration.CLASSAURA_WARRIOR_ENABLED;
                 case SpellClassAuraType.WizardPassive:
@@ -248,8 +249,9 @@ namespace EQWOWConverter.Spells
                     return Configuration.CLASSAURA_DRUID_ENABLED;
                 case SpellClassAuraType.ShamanPassive:
                 case SpellClassAuraType.ShamanAura:
-                case SpellClassAuraType.ShamanSlowMark:
+                case SpellClassAuraType.ShamanWarspirit:
                 case SpellClassAuraType.ShamanVigor:
+                case SpellClassAuraType.ShamanWarspiritVigor:
                     return Configuration.CLASSAURA_SHAMAN_ENABLED;
                 case SpellClassAuraType.CastSpeedHelper:
                     return Configuration.CLASSAURA_MONK_ENABLED || Configuration.CLASSAURA_CLERIC_ENABLED;
@@ -633,18 +635,27 @@ namespace EQWOWConverter.Spells
         {
             int icon = Configuration.CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID;
             string description = string.Concat("Automatic Riposte: ", Pct(Configuration.CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT),
-                " of melee strikes against you are riposted, avoiding the blow and answering it with your main hand. Unassailed: after ",
-                Seconds(Configuration.CLASSAURA_WARRIOR_UNASSAILED_DELAY_IN_MS), " without being the target of a melee attack, you deal ",
-                Pct(Configuration.CLASSAURA_WARRIOR_UNASSAILED_DAMAGE_PERCENT), " more damage with every attack and spell. Any melee attack against you, landed or not, resets it.");
+                " of melee strikes against you are riposted, avoiding the blow and answering it with your main hand. Unrelenting Assault: every ",
+                Seconds(Configuration.CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_STACK_INTERVAL_IN_MS), " you gain a stack that raises the damage of every attack and spell by ",
+                Pct(Configuration.CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_DAMAGE_PERCENT_PER_STACK), ", up to ", Configuration.CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_MAX_STACKS.ToString(),
+                " stacks. Each melee, ranged, or single target spell attack that lands on you removes a stack, even when partially blocked. Misses, dodges, parries, full blocks, area attacks, and damage over time do not.");
             spellTemplates.Add(BuildPassiveTemplate("Warmaster", SpellClassAuraType.WarriorPassive, icon, description));
 
-            // Both abilities are driven by the mod (the riposte from the melee outcome roll, unassailed from a timer), so the aura itself carries nothing
-            spellTemplates.Add(BuildPermanentAuraTemplate("Warmaster (Warrior)", SpellClassAuraType.WarriorAura, icon, description, new List<SpellEffectWOW>()));
+            // The riposte comes from the melee outcome roll and the stacks from a timer, both in the mod.  A direct attack landing on the warrior takes a stack away (no PROC_FLAG_TAKEN_PERIODIC, so ticks never do)
+            SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Warmaster (Warrior)", SpellClassAuraType.WarriorAura, icon, description, new List<SpellEffectWOW>());
+            auraSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraWarriorAuraScript";
+            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_TAKEN_MELEE_AUTO_ATTACK | PROC_FLAG_TAKEN_SPELL_MELEE_DMG_CLASS | PROC_FLAG_TAKEN_RANGED_AUTO_ATTACK
+                | PROC_FLAG_TAKEN_SPELL_RANGED_DMG_CLASS | PROC_FLAG_TAKEN_SPELL_NONE_DMG_CLASS_NEG | PROC_FLAG_TAKEN_SPELL_MAGIC_DMG_CLASS_NEG,
+                PROC_SPELL_TYPE_DAMAGE, PROC_SPELL_PHASE_HIT, PROC_HIT_NORMAL | PROC_HIT_CRITICAL | PROC_HIT_ABSORB, 0, 0);
+            spellTemplates.Add(auraSpellTemplate);
 
-            string unassailedDescription = string.Concat("Damage dealt increased by ", Pct(Configuration.CLASSAURA_WARRIOR_UNASSAILED_DAMAGE_PERCENT), " until the next melee attack against you.");
-            List<SpellEffectWOW> unassailedEffects = new List<SpellEffectWOW>();
-            unassailedEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDamagePercentDone, Configuration.CLASSAURA_WARRIOR_UNASSAILED_DAMAGE_PERCENT, SCHOOL_MASK_ALL, SpellWOWTargetType.UnitCaster));
-            spellTemplates.Add(BuildPermanentAuraTemplate("Unassailed", SpellClassAuraType.WarriorUnassailed, icon, unassailedDescription, unassailedEffects));
+            string assaultDescription = string.Concat("Damage dealt increased by ", Pct(Configuration.CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_DAMAGE_PERCENT_PER_STACK),
+                " per stack. Each melee, ranged, or single target spell attack that lands on you removes a stack.");
+            List<SpellEffectWOW> assaultEffects = new List<SpellEffectWOW>();
+            assaultEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDamagePercentDone, Configuration.CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_DAMAGE_PERCENT_PER_STACK, SCHOOL_MASK_ALL, SpellWOWTargetType.UnitCaster));
+            SpellTemplate assaultSpellTemplate = BuildPermanentAuraTemplate("Unrelenting Assault", SpellClassAuraType.WarriorUnrelentingAssault, icon, assaultDescription, assaultEffects);
+            assaultSpellTemplate.MaxStackAmount = Convert.ToUInt32(Math.Max(1, Configuration.CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_MAX_STACKS));
+            spellTemplates.Add(assaultSpellTemplate);
 
             // The visual is the WoW Riposte ability's (spell 14251), and the name is kept distinct from that ability so damage parsers never confuse the two
             SpellTemplate riposteSpellTemplate = BuildBaseTemplate("Warmaster Riposte", SpellClassAuraType.WarriorRiposte, icon, "A riposte answering a melee strike.", string.Empty);
@@ -659,19 +670,22 @@ namespace EQWOWConverter.Spells
         private static void AddWizardSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_WIZARD_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Casting while moving carries no movement speed penalty. Each spell cast raises spell damage by ",
-                Pct(Configuration.CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK), " for ", Seconds(Configuration.CLASSAURA_WIZARD_FOCUS_DURATION_IN_MS), ", stacking up to ",
+            string description = string.Concat("Casting while moving carries no movement speed penalty. Every ", Seconds(Configuration.CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS),
+                " standing still raises spell damage by ", Pct(Configuration.CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK), ", stacking up to ",
                 Configuration.CLASSAURA_WIZARD_FOCUS_MAX_STACKS.ToString(), " times. Starting to move removes ", GetStackWord(Configuration.CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT),
                 ", and so does every ", (Configuration.CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS / 1000).ToString(), " second", Configuration.CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS >= 2000 ? "s" : "",
                 " spent moving.");
             spellTemplates.Add(BuildPassiveTemplate("Unshaken Channeler", SpellClassAuraType.WizardPassive, icon, description));
             spellTemplates.Add(BuildPermanentAuraTemplate("Unshaken Channeler (Wizard)", SpellClassAuraType.WizardAura, icon, description, new List<SpellEffectWOW>()));
 
-            string focusDescription = string.Concat("Spell damage increased by ", Pct(Configuration.CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK), " per stack. Movement removes stacks.");
+            string focusDescription = string.Concat("Spell damage increased by ", Pct(Configuration.CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK), " per stack. Standing still adds stacks and movement removes them.");
             List<SpellEffectWOW> focusEffects = new List<SpellEffectWOW>();
             focusEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDamagePercentDone, Configuration.CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK, SCHOOL_MASK_MAGIC, SpellWOWTargetType.UnitCaster));
-            spellTemplates.Add(BuildStackingAuraTemplate("Channeler's Focus", SpellClassAuraType.WizardFocus, icon, focusDescription, focusEffects,
-                Configuration.CLASSAURA_WIZARD_FOCUS_MAX_STACKS, Configuration.CLASSAURA_WIZARD_FOCUS_DURATION_IN_MS, false));
+            // No duration, since standing still keeps adding to it and movement is what takes it away (the mod also removes it on death or losing the wizard aura)
+            SpellTemplate focusSpellTemplate = BuildStackingAuraTemplate("Channeler's Focus", SpellClassAuraType.WizardFocus, icon, focusDescription, focusEffects,
+                Configuration.CLASSAURA_WIZARD_FOCUS_MAX_STACKS, 0, false);
+            focusSpellTemplate.AuraDuration.IsInfinite = true;
+            spellTemplates.Add(focusSpellTemplate);
         }
 
         private static string GetStackWord(int stackCount)
@@ -830,32 +844,52 @@ namespace EQWOWConverter.Spells
         private static void AddShamanSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Targets you slow take ", Pct(Configuration.CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT), " more damage from spells. Your autoattacks have a ",
-                Pct(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT),
+            string statsText = "total stats";
+            string warspiritGrantText = string.Concat(Pct(Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_PERCENT_PER_STACK), " increased ", statsText, " for ",
+                Seconds(Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_MAX_STACKS.ToString(), " times");
+            string description = string.Concat("Your autoattacks have a ", Pct(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT),
                 " chance to extend any of your damage over time effects on the target by ", Seconds(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS),
-                ". Healing an ally grants them ", Pct(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK), " increased strength, agility, stamina, intellect, and spirit for ",
-                Seconds(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS.ToString(), " times.");
+                ". Healing an ally grants them ", Pct(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK), " increased ", statsText, " for ",
+                Seconds(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS.ToString(),
+                " times. Warspirit can be toggled on so your landed attacks, abilities, and damaging spells grant you ", warspiritGrantText, " instead, while your heals no longer grant anything.");
             spellTemplates.Add(BuildPassiveTemplate("Spirit Channeler", SpellClassAuraType.ShamanPassive, icon, description));
 
-            // Proc on a direct heal the shaman lands, which is what grants the vigor (no PROC_FLAG_DONE_PERIODIC, so heal over time ticks never grant it)
+            // Direct heals grant the vigor to allies, or with Warspirit on, landed attacks grant it to the shaman, which the script tells apart (no PROC_FLAG_DONE_PERIODIC, so ticks never grant either)
             SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Spirit Channeler (Shaman)", SpellClassAuraType.ShamanAura, icon, description, new List<SpellEffectWOW>());
             auraSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraShamanAuraScript";
-            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS,
-                PROC_SPELL_TYPE_HEAL, PROC_SPELL_PHASE_HIT, 0, 0, 0);
+            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_POS | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_POS | PROC_FLAG_DONE_MELEE_AUTO_ATTACK
+                | PROC_FLAG_DONE_RANGED_AUTO_ATTACK | PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS | PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS | PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG
+                | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG, PROC_SPELL_TYPE_HEAL | PROC_SPELL_TYPE_DAMAGE, PROC_SPELL_PHASE_HIT, 0, 0, 0);
             spellTemplates.Add(auraSpellTemplate);
 
-            // One shared copy per target however many shamans slow it, living as long as the longest qualifying slow (the mod manages the duration)
-            string slowMarkDescription = string.Concat("Takes ", Pct(Configuration.CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT), " more damage from spells.");
-            List<SpellEffectWOW> slowMarkEffects = new List<SpellEffectWOW>();
-            slowMarkEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDamagePercentTaken, Configuration.CLASSAURA_SHAMAN_SLOWED_DAMAGE_TAKEN_PERCENT, SCHOOL_MASK_MAGIC, SpellWOWTargetType.UnitTargetEnemy));
-            spellTemplates.Add(BuildStackingAuraTemplate("Spirit's Burden", SpellClassAuraType.ShamanSlowMark, icon, slowMarkDescription, slowMarkEffects, 1, 3600000, true));
+            // Warspirit (self stats from attacks instead of ally stats from heals)
+            string warspiritDescription = string.Concat("Toggle. While active, your landed attacks, abilities, and damaging spells grant you ", warspiritGrantText,
+                ". Your heals no longer grant Spirit's Vigor to allies.");
+            string warspiritAuraDescription = "Landed attacks, abilities, and damaging spells grant you Warspirit's Vigor. Heals no longer grant Spirit's Vigor.";
+            SpellTemplate warspiritSpellTemplate = BuildBaseTemplate("Warspirit", SpellClassAuraType.ShamanWarspirit, Configuration.CLASSAURA_SHAMAN_WARSPIRIT_SPELL_ICON_EQ_ID,
+                warspiritDescription, warspiritAuraDescription);
+            warspiritSpellTemplate.AuraDuration.IsInfinite = true;
+            warspiritSpellTemplate.WOWSpellEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitCaster));
+            warspiritSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat); // Unlike the other class aura spells, this one is in the spellbook
+            warspiritSpellTemplate.IsToggleAura = true;
+            warspiritSpellTemplate.ShowOnShapeshiftBar = true;
+            warspiritSpellTemplate.PersistThroughDeath = true;
+            warspiritSpellTemplate.AllowInShapeshift = true; // Feral druids can flip it without leaving cat or bear form
+            spellTemplates.Add(warspiritSpellTemplate);
 
             // Stacks pool across every shaman healing the target (one shared aura), so the cap holds no matter how many shamans are healing
-            string vigorDescription = string.Concat("Strength, agility, stamina, intellect, and spirit increased by ", Pct(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK), " per stack.");
+            string vigorDescription = string.Concat("Total stats increased by ", Pct(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK), " per stack.");
             List<SpellEffectWOW> vigorEffects = new List<SpellEffectWOW>();
             vigorEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModTotalStatPercentage, Configuration.CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK, STAT_ALL, SpellWOWTargetType.UnitTargetAlly));
             spellTemplates.Add(BuildStackingAuraTemplate("Spirit's Vigor", SpellClassAuraType.ShamanVigor, icon, vigorDescription, vigorEffects,
                 Configuration.CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS, Configuration.CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS, false));
+
+            // Only ever on the shaman who built it, and turning Warspirit off takes it away (the mod handles that)
+            string warspiritVigorDescription = string.Concat("Total stats increased by ", Pct(Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_PERCENT_PER_STACK), " per stack.");
+            List<SpellEffectWOW> warspiritVigorEffects = new List<SpellEffectWOW>();
+            warspiritVigorEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModTotalStatPercentage, Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_PERCENT_PER_STACK, STAT_ALL, SpellWOWTargetType.UnitCaster));
+            spellTemplates.Add(BuildStackingAuraTemplate("Warspirit's Vigor", SpellClassAuraType.ShamanWarspiritVigor, icon, warspiritVigorDescription, warspiritVigorEffects,
+                Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_MAX_STACKS, Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_DURATION_IN_MS, false));
         }
 
         private static void AddCastSpeedHelperSpell(List<SpellTemplate> spellTemplates)
