@@ -2234,12 +2234,18 @@ namespace EQWOWConverter
                     if (classAuraToggleSpellID != 0)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, classAuraToggleSpellID, 1);
 
+                    // EQ Class Aura active ability
+                    int classAuraActiveSpellID = SpellClassAuras.GetActiveSpellIDForClass(eqClassProperties.EQClass);
+                    if (classAuraActiveSpellID != 0)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, classAuraActiveSpellID, 1);
+
                     // Harm Touch
                     if (Configuration.COMBATSKILL_HARMTOUCH_ENABLED == true && Configuration.COMBATSKILL_HARMTOUCH_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.ShadowKnight)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_HARMTOUCH_PLAYER_SPELL_ID, 1);
 
-                    // Block (Existing WoW version) for WoW Death Knights
-                    modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 107, 1, ClassWOWType.DeathKnight); // Block
+                    // Block (Existing WoW version) for Shadow Knights / Paladin / Warrior
+                    if (eqClassProperties.EQClass == ClassEQType.Warrior || eqClassProperties.EQClass == ClassEQType.Paladin || eqClassProperties.EQClass == ClassEQType.ShadowKnight)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, 107, 1); // Block
 
                     // Stealth (Existing WoW version)
                     if (eqClassProperties.EQClass == ClassEQType.Rogue)

@@ -78,6 +78,9 @@ namespace EQWOWConverter.Spells
         DruidNaturesBalanceNature = 57,
         DruidEntangleStrike = 58,
         ShamanWarspiritVigor = 59,
-        Count = 60
+        ShadowKnightBloodDebt = 60,
+        ShadowKnightBloodDebtCharge = 61,
+        ShadowKnightBloodDebtHeal = 62,
+        Count = 63
     }
 }

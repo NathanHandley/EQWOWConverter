@@ -130,6 +130,17 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        public static int GetActiveSpellIDForClass(ClassEQType eqClass)
+        {
+            if (IsClassEnabled(eqClass) == false)
+                return 0;
+            switch (eqClass)
+            {
+                case ClassEQType.ShadowKnight: return GetSpellID(SpellClassAuraType.ShadowKnightBloodDebt);
+                default: return 0;
+            }
+        }
+
         public static List<KeyValuePair<string, string>> GetSystemConfigRows()
         {
             List<KeyValuePair<string, string>> rows = new List<KeyValuePair<string, string>>();
@@ -171,7 +182,31 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidEntangleStrikeBehindDamagePercentPerStack", Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraShamanDotExtendChancePercent", Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraShamanDotExtendInMS", Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraShadowKnightBloodDebtDamageTakenStoredPercent", Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_DAMAGE_TAKEN_STORED_PERCENT.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraShadowKnightBloodDebtMaxHealthPercent", Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_MAX_HEALTH_PERCENT.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraShadowKnightBloodDebtStoreDurationInMS", Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_STORE_DURATION_IN_MS.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraShadowKnightBloodDebtFullSpellVisualKitID", GetShadowKnightBloodDebtFullSpellVisualKitID().ToString()));
             return rows;
+        }
+
+        private static int GetShadowKnightBloodDebtFullSpellVisualKitID()
+        {
+            if (IsClassEnabled(ClassEQType.ShadowKnight) == false)
+                return 0;
+            int visualEffectIndex = GetValidatedSpellVisualEffectIndex(Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_FULL_EQ_VISUAL_EFFECT_INDEX, "CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_FULL_EQ_VISUAL_EFFECT_INDEX", 19);
+
+            // Only the impact stage (what lands on whoever receives the spell), so no cast animation or casting glow comes with it
+            return SpellVisual.GetSpellVisual(visualEffectIndex, SpellVisualType.Beneficial).SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Impact];
+        }
+
+        private static int GetValidatedSpellVisualEffectIndex(int visualEffectIndex, string configName, int defaultIndex)
+        {
+            if (visualEffectIndex < 0 || visualEffectIndex > 254)
+            {
+                Logger.WriteError(string.Concat(configName, " value must be 0-254. Setting to ", defaultIndex.ToString()));
+                return defaultIndex;
+            }
+            return visualEffectIndex;
         }
 
         private static bool IsSpellTypeEnabled(SpellClassAuraType spellType)
@@ -214,6 +249,9 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.ShadowKnightPassive:
                 case SpellClassAuraType.ShadowKnightAura:
                 case SpellClassAuraType.ShadowKnightEdge:
+                case SpellClassAuraType.ShadowKnightBloodDebt:
+                case SpellClassAuraType.ShadowKnightBloodDebtCharge:
+                case SpellClassAuraType.ShadowKnightBloodDebtHeal:
                     return Configuration.CLASSAURA_SHADOWKNIGHT_ENABLED;
                 case SpellClassAuraType.WarriorPassive:
                 case SpellClassAuraType.WarriorAura:
@@ -566,7 +604,7 @@ namespace EQWOWConverter.Spells
         private static void AddPaladinSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_PALADIN_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Blessed Deflection: grants the block skill, block chance is increased by ", Pct(Configuration.CLASSAURA_PALADIN_BLOCK_PERCENT), ", and ",
+            string description = string.Concat("Blessed Deflection: block chance is increased by ", Pct(Configuration.CLASSAURA_PALADIN_BLOCK_PERCENT), ", and ",
                 Pct(Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT), " of the damage you block is dealt as Holy damage to all enemies within ",
                 Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS.ToString(), " yards. Your heals also heal you for ",
                 Pct(Configuration.CLASSAURA_PALADIN_HEAL_SELF_PERCENT), " of the amount. Your attacks, abilities, and spells against undead and demons have a ",
@@ -611,9 +649,14 @@ namespace EQWOWConverter.Spells
         private static void AddShadowKnightSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_SHADOWKNIGHT_SPELL_ICON_EQ_ID;
+            int bloodDebtIcon = Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_SPELL_ICON_EQ_ID;
+            string bloodDebtStoreText = string.Concat(Pct(Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_DAMAGE_TAKEN_STORED_PERCENT), " of the damage you take is stored, up to ",
+                Pct(Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_MAX_HEALTH_PERCENT), " of your maximum health. Everything stored is lost after ",
+                Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_STORE_DURATION_IN_MS), " without taking damage");
             string description = string.Concat("Spell power increased by an amount equal to ", Pct(Configuration.CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT),
                 " of your attack power. Attack critical strikes make your next harmful spell within ", Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS),
-                " instant. Cannot occur more than once every ", Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS), ".");
+                " instant. Cannot occur more than once every ", Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS), ". Blood Debt: ", bloodDebtStoreText,
+                ". Blood Debt unleashes what is stored to drain your target for that amount as shadow damage and heal you for the full amount stored.");
             spellTemplates.Add(BuildPassiveTemplate("Spellsword", SpellClassAuraType.ShadowKnightPassive, icon, description));
 
             // The attack power share is the same as Sheath of Light pair
@@ -629,6 +672,50 @@ namespace EQWOWConverter.Spells
             edgeEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitCaster));
             spellTemplates.Add(BuildStackingAuraTemplate("Spellsword's Edge", SpellClassAuraType.ShadowKnightEdge, icon, "The next harmful spell cast is instant.", edgeEffects,
                 1, Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS, false));
+
+            // Blood Debt, the ability that unleashes what was stored.  It resolves like the player's Harm Touch: shadow, never misses, cannot crit, and damage modifiers leave the amount the mod hands in alone, though
+            // partial resists and absorbs still apply
+            string bloodDebtDescription = string.Concat("Drains the damage stored by your blood debt from the target as shadow damage and heals you for the full amount stored. ",
+                bloodDebtStoreText, ".");
+            SpellTemplate bloodDebtSpellTemplate = BuildBaseTemplate("Blood Debt", SpellClassAuraType.ShadowKnightBloodDebt, bloodDebtIcon, bloodDebtDescription, string.Empty);
+            bloodDebtSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat); // Unlike the other class aura spells, this one is in the spellbook
+            bloodDebtSpellTemplate.SpellRange = Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_RANGE;
+            bloodDebtSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Math.Max(0, Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_COOLDOWN_IN_MS));
+            bloodDebtSpellTemplate.HasCustomCooldown = true;
+            bloodDebtSpellTemplate.SchoolMask = 32; // Shadow
+            bloodDebtSpellTemplate.DefenseType = 1; // Magic
+            bloodDebtSpellTemplate.NeverMisses = true;
+            bloodDebtSpellTemplate.CannotCrit = true;
+            bloodDebtSpellTemplate.DamageIsFixed = true;
+            bloodDebtSpellTemplate.AllowInShapeshift = true;
+            bloodDebtSpellTemplate.EQSpellVisualEffectIndex = GetValidatedSpellVisualEffectIndex(Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_EQ_VISUAL_EFFECT_INDEX, "CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_EQ_VISUAL_EFFECT_INDEX", 8);
+            bloodDebtSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(bloodDebtSpellTemplate.EQSpellVisualEffectIndex, SpellVisualType.Detrimental).SpellVisualDBCID);
+
+            // The mod script replaces this placeholder damage with the stored amount on hit (it also reads the placeholder arriving as a sign that the hit landed)
+            SpellEffectWOW bloodDebtDamageEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 1, 0, 0, 0);
+            bloodDebtDamageEffect.ImplicitTargetA = SpellWOWTargetType.UnitTargetEnemy;
+            bloodDebtDamageEffect.ActionDescription = "drains";
+            bloodDebtSpellTemplate.WOWSpellEffects.Add(bloodDebtDamageEffect);
+            bloodDebtSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraShadowKnightBloodDebtSpellScript";
+            spellTemplates.Add(bloodDebtSpellTemplate);
+
+            // Only shows what is stored, one stack per percent of maximum health (the mod sets the stacks)
+            string chargeDescription = string.Concat("Each stack is 1% of your maximum health stored for Blood Debt. ", bloodDebtStoreText, ".");
+            List<SpellEffectWOW> chargeEffects = new List<SpellEffectWOW>();
+            chargeEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitCaster));
+            SpellTemplate chargeSpellTemplate = BuildStackingAuraTemplate("Blood Debt", SpellClassAuraType.ShadowKnightBloodDebtCharge, bloodDebtIcon, chargeDescription, chargeEffects,
+                Math.Min(255, Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_MAX_HEALTH_PERCENT), 0, false);
+            chargeSpellTemplate.AuraDuration.IsInfinite = true;
+            spellTemplates.Add(chargeSpellTemplate);
+
+            SpellTemplate bloodDebtHealSpellTemplate = BuildBaseTemplate("Blood Debt", SpellClassAuraType.ShadowKnightBloodDebtHeal, bloodDebtIcon, "Healed by an unleashed blood debt.", string.Empty);
+            SpellEffectWOW bloodDebtHealEffect = new SpellEffectWOW(SpellWOWEffectType.Heal, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0);
+            bloodDebtHealEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            bloodDebtHealSpellTemplate.WOWSpellEffects.Add(bloodDebtHealEffect);
+            bloodDebtHealSpellTemplate.GenerateNoThreat = true;
+            bloodDebtHealSpellTemplate.CannotCrit = true;
+            bloodDebtHealSpellTemplate.InfluencedBySpellPower = false;
+            spellTemplates.Add(bloodDebtHealSpellTemplate);
         }
 
         private static void AddWarriorSpells(List<SpellTemplate> spellTemplates)

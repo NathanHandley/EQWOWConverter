@@ -1308,7 +1308,7 @@ namespace EQWOWConverter
         // If true, every EQ class (primary or secondary) grants a permanent aura with class specific effects
         public static bool CLASSAURA_ENABLED = true;
 
-        // First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96059 as of writing)
+        // First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96062 as of writing)
         public static int CLASSAURA_SPELL_ID_START = 96000;
 
         // Enchanter "Mind of Clarity"
@@ -1373,6 +1373,14 @@ namespace EQWOWConverter
         public static int CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT = 30;
         public static int CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS = 15000;
         public static int CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS = 15000;
+        public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_SPELL_ICON_EQ_ID = 3;
+        public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_DAMAGE_TAKEN_STORED_PERCENT = 5;
+        public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_MAX_HEALTH_PERCENT = 50;
+        public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_STORE_DURATION_IN_MS = 20000;
+        public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_COOLDOWN_IN_MS = 4000;
+        public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_RANGE = 30;
+        public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_EQ_VISUAL_EFFECT_INDEX = 8; // Harm Touch
+        public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_FULL_EQ_VISUAL_EFFECT_INDEX = 19; // Call of Bones
 
         // Warrior "Warmaster"
         public static bool CLASSAURA_WARRIOR_ENABLED = true;
@@ -1388,9 +1396,9 @@ namespace EQWOWConverter
         public static int CLASSAURA_WIZARD_SPELL_ICON_EQ_ID = 15;
         public static int CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK = 2;
         public static int CLASSAURA_WIZARD_FOCUS_MAX_STACKS = 7;
-        public static int CLASSAURA_WIZARD_FOCUS_DURATION_IN_MS = 20000;
         public static int CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT = 1;
         public static int CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS = 1000;
+        public static int CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS = 2000;
 
         // Magician "Bound Conjurer"
         public static bool CLASSAURA_MAGICIAN_ENABLED = true;
@@ -2597,7 +2605,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ, "Creatures in this level range will never enrage (taken from TAKP's mob_ai.cpp CheckEnrage), with 0 in both disabling this suppression", false);
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ, "");
             OutputVariableToConfig("CLASSAURA_ENABLED", CLASSAURA_ENABLED, "Every EQ class (primary or secondary) grants a permanent aura with class specific effects. Values here bake into Spell.dbc, so a change needs a converter regen and DBC deploy", false);
-            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96059 as of writing)", false);
+            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96062 as of writing)", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_ENABLED", CLASSAURA_ENCHANTER_ENABLED, "Enchanter \"Mind of Clarity\": regenerates a percent of maximum mana on an interval, and spell damage and healing are increased while mana is at or above a threshold", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID", CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT", CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT, "", false);
@@ -2647,6 +2655,14 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT", CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS", CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS", CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS, "", false);
+            OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_SPELL_ICON_EQ_ID", CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_DAMAGE_TAKEN_STORED_PERCENT", CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_DAMAGE_TAKEN_STORED_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_MAX_HEALTH_PERCENT", CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_MAX_HEALTH_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_STORE_DURATION_IN_MS", CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_STORE_DURATION_IN_MS, "", false);
+            OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_COOLDOWN_IN_MS", CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_COOLDOWN_IN_MS, "", false);
+            OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_RANGE", CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_RANGE, "", false);
+            OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_EQ_VISUAL_EFFECT_INDEX", CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_EQ_VISUAL_EFFECT_INDEX, "", false);
+            OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_FULL_EQ_VISUAL_EFFECT_INDEX", CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_FULL_EQ_VISUAL_EFFECT_INDEX, "", false);
             OutputVariableToConfig("CLASSAURA_WARRIOR_ENABLED", CLASSAURA_WARRIOR_ENABLED, "Warrior", false);
             OutputVariableToConfig("CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID", CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT", CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT, "", false);
@@ -2658,9 +2674,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_WIZARD_SPELL_ICON_EQ_ID", CLASSAURA_WIZARD_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK", CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK, "", false);
             OutputVariableToConfig("CLASSAURA_WIZARD_FOCUS_MAX_STACKS", CLASSAURA_WIZARD_FOCUS_MAX_STACKS, "", false);
-            OutputVariableToConfig("CLASSAURA_WIZARD_FOCUS_DURATION_IN_MS", CLASSAURA_WIZARD_FOCUS_DURATION_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT", CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT, "", false);
             OutputVariableToConfig("CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS", CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS, "", false);
+            OutputVariableToConfig("CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS", CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_MAGICIAN_ENABLED", CLASSAURA_MAGICIAN_ENABLED, "Magician", false);
             OutputVariableToConfig("CLASSAURA_MAGICIAN_SPELL_ICON_EQ_ID", CLASSAURA_MAGICIAN_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_MAGICIAN_PET_STRIKE_SPELL_DAMAGE_PERCENT_PER_STACK", CLASSAURA_MAGICIAN_PET_STRIKE_SPELL_DAMAGE_PERCENT_PER_STACK, "", false);
