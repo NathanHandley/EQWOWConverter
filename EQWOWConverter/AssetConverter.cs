@@ -3774,6 +3774,7 @@ namespace EQWOWConverter
                 clamberSpellTemplate.AllowInShapeshift = true;
                 clamberSpellTemplate.AllowCastWhileMounted = true; // The mod dismounts the caster
                 clamberSpellTemplate.IsGroundTargeted = true;
+                clamberSpellTemplate.IgnoreLineOfSight = true;
                 clamberSpellTemplate.GenerateNoThreat = true;
                 clamberSpellTemplate.SuppressCasterProcs = true;
                 clamberSpellTemplate.PersistOnClassChange = true;

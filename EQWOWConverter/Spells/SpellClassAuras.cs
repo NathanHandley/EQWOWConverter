@@ -340,6 +340,22 @@ namespace EQWOWConverter.Spells
             return string.Concat(((float)durationInMS / 1000.0f).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture), " seconds");
         }
 
+        // Every distinct effect gets its own line with a blank line between, the way a multi-effect WoW spell like Demonic Empowerment reads
+        private static string Lines(params string[] lines)
+        {
+            List<string> usedLines = new List<string>();
+            foreach (string line in lines)
+                if (line.Length > 0)
+                    usedLines.Add(line);
+            return string.Join("\n\n", usedLines);
+        }
+
+        // An effect that has a name of its own leads with that name
+        private static string NamedLine(string effectName, string text)
+        {
+            return string.Concat(effectName, " - ", text);
+        }
+
         private static SpellTemplate BuildBaseTemplate(string name, SpellClassAuraType spellType, int spellIconEQID, string description, string auraDescription, bool useSpellItemIcon = false)
         {
             SpellTemplate spellTemplate = new SpellTemplate();
@@ -444,9 +460,11 @@ namespace EQWOWConverter.Spells
         private static void AddEnchanterSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Regenerates ", Pct(Configuration.CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT), " of maximum mana every ",
-                Seconds(Configuration.CLASSAURA_ENCHANTER_MANA_REGEN_INTERVAL_IN_MS), ". Spell damage and healing are increased by ", Pct(Configuration.CLASSAURA_ENCHANTER_FOCUS_SPELL_DAMAGE_AND_HEALING_PERCENT),
-                " while mana is at ", Pct(Configuration.CLASSAURA_ENCHANTER_FOCUS_MANA_THRESHOLD_PERCENT), " or more.");
+            string description = Lines(
+                string.Concat("Regenerates ", Pct(Configuration.CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT), " of maximum mana every ",
+                    Seconds(Configuration.CLASSAURA_ENCHANTER_MANA_REGEN_INTERVAL_IN_MS), "."),
+                NamedLine("Clarity of Thought", string.Concat("Spell damage and healing are increased by ", Pct(Configuration.CLASSAURA_ENCHANTER_FOCUS_SPELL_DAMAGE_AND_HEALING_PERCENT),
+                    " while mana is at ", Pct(Configuration.CLASSAURA_ENCHANTER_FOCUS_MANA_THRESHOLD_PERCENT), " or more.")));
             spellTemplates.Add(BuildPassiveTemplate("Mind of Clarity", SpellClassAuraType.EnchanterPassive, icon, description));
 
             List<SpellEffectWOW> auraEffects = new List<SpellEffectWOW>();
@@ -465,10 +483,12 @@ namespace EQWOWConverter.Spells
         private static void AddBardSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_BARD_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Melee autoattacks deal ", Pct(Configuration.CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT),
-                " more damage while holding a weapon in one hand and an instrument in the other. Successfully playing a song grants you ",
-                Pct(Configuration.CLASSAURA_BARD_VIGOR_HASTE_PERCENT), " haste to melee, ranged, and spells for ", Seconds(Configuration.CLASSAURA_BARD_VIGOR_DURATION_IN_MS),
-                ". This haste does not count against the haste cap. Song cast times cannot be changed by haste or slow effects.");
+            string description = Lines(
+                NamedLine("Troubadour's Tempo", string.Concat("Melee autoattacks deal ", Pct(Configuration.CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT),
+                    " more damage while holding a weapon in one hand and an instrument in the other.")),
+                NamedLine("Virtuoso Vigor", string.Concat("Successfully playing a song grants you ", Pct(Configuration.CLASSAURA_BARD_VIGOR_HASTE_PERCENT),
+                    " haste to melee, ranged, and spells for ", Seconds(Configuration.CLASSAURA_BARD_VIGOR_DURATION_IN_MS), ". This haste does not count against the haste cap.")),
+                "Song cast times cannot be changed by haste or slow effects.");
             spellTemplates.Add(BuildPassiveTemplate("Dexteritous Troubadour", SpellClassAuraType.BardPassive, icon, description));
 
             // Both effects are driven by the mod (the instrument marker below and the vigor cast on a new song), so the aura itself carries nothing
@@ -491,12 +511,15 @@ namespace EQWOWConverter.Spells
         private static void AddMonkSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_MONK_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Chi Surge: any non-instant, non-channeled spell with a base cast time under ", Seconds(Configuration.CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS),
-                " casts ", Pct(Configuration.CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT), " faster, and it returns ", Seconds(Configuration.CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS),
-                " after use. In cloth or leather: attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT),
-                " chance to strike twice, ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT), " of those strike a third time, and dodge is increased by ",
-                Pct(Configuration.CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT), ". In heavier armor: attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT),
-                " chance to strike twice.");
+            string description = Lines(
+                NamedLine("Chi Surge", string.Concat("Any non-instant, non-channeled spell with a base cast time under ", Seconds(Configuration.CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS),
+                    " casts ", Pct(Configuration.CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT), " faster, and it returns ", Seconds(Configuration.CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS),
+                    " after use.")),
+                NamedLine("Unburdened Agility", string.Concat("While wearing cloth or leather, attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT),
+                    " chance to strike twice, ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT), " of those strike a third time, and dodge is increased by ",
+                    Pct(Configuration.CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT), ".")),
+                NamedLine("Burdened Agility", string.Concat("While wearing mail or plate, attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT),
+                    " chance to strike twice.")));
             spellTemplates.Add(BuildPassiveTemplate("Agile Fighter", SpellClassAuraType.MonkPassive, icon, description));
             spellTemplates.Add(BuildPermanentAuraTemplate("Agile Fighter (Monk)", SpellClassAuraType.MonkAura, icon, description, new List<SpellEffectWOW>()));
 
@@ -505,9 +528,10 @@ namespace EQWOWConverter.Spells
             spellTemplates.Add(BuildPermanentAuraTemplate("Chi Surge", SpellClassAuraType.MonkChiSurge, Configuration.CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID, chiSurgeDescription, new List<SpellEffectWOW>()));
 
             // Monk multi-strike
-            string lightDescription = string.Concat("Attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT), " chance to strike twice, ",
-                Pct(Configuration.CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT), " of those strike a third time, and dodge is increased by ",
-                Pct(Configuration.CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT), " while wearing cloth or leather.");
+            string lightDescription = Lines(
+                string.Concat("Attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT), " chance to strike twice, and ",
+                    Pct(Configuration.CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT), " of those strike a third time, while wearing cloth or leather."),
+                string.Concat("Dodge increased by ", Pct(Configuration.CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT), " while wearing cloth or leather."));
             List<SpellEffectWOW> lightEffects = new List<SpellEffectWOW>();
             lightEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDodgePercent, Configuration.CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT, 0, SpellWOWTargetType.UnitCaster));
             SpellTemplate lightSpellTemplate = BuildPermanentAuraTemplate("Unburdened Agility", SpellClassAuraType.MonkLightArmor, icon, lightDescription, lightEffects);
@@ -525,11 +549,13 @@ namespace EQWOWConverter.Spells
         private static void AddRangerSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_RANGER_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Endless Quiver can be toggled on so your ranged attacks and abilities stop using up arrows and bullets, costing ",
-                Pct(Configuration.CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT), " of base mana per shot instead. Each ranged attack, ranged ability, and offensive spell tacks its target for ",
-                Seconds(Configuration.CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS),
-                ", raising the damage it takes from you and your pet by ", Pct(Configuration.CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK), " per stack, up to ",
-                Configuration.CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS.ToString(), " stacks. The bonus is doubled while the target moves.");
+            string description = Lines(
+                NamedLine("Endless Quiver", string.Concat("Can be toggled on so your ranged attacks and abilities stop using up arrows and bullets, costing ",
+                    Pct(Configuration.CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT), " of base mana per shot instead.")),
+                NamedLine("Tack Shot", string.Concat("Each ranged attack, ranged ability, and offensive spell tacks its target for ",
+                    Seconds(Configuration.CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS),
+                    ", raising the damage it takes from you and your pet by ", Pct(Configuration.CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK), " per stack, up to ",
+                    Configuration.CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS.ToString(), " stacks. The bonus is doubled while the target moves.")));
             spellTemplates.Add(BuildPassiveTemplate("Swift Reactions", SpellClassAuraType.RangerPassive, icon, description));
 
             SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Swift Reactions (Ranger)", SpellClassAuraType.RangerAura, icon, description, new List<SpellEffectWOW>());
@@ -567,10 +593,12 @@ namespace EQWOWConverter.Spells
         private static void AddRogueSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_ROGUE_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Lucky Strike: your next ability or spell that would not have been a critical strike becomes one. Cannot occur more than once every ",
-                Seconds(Configuration.CLASSAURA_ROGUE_LUCKY_STRIKE_COOLDOWN_IN_MS), ". Autoattacks and Auto Shot are not affected. Each landed attack raises all damage dealt by ",
-                Pct(Configuration.CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK), " for ", Seconds(Configuration.CLASSAURA_ROGUE_EXPLOIT_DURATION_IN_MS), ", stacking up to ",
-                Configuration.CLASSAURA_ROGUE_EXPLOIT_MAX_STACKS.ToString(), " times. A miss, dodge, or parry removes half of the stacks.");
+            string description = Lines(
+                NamedLine("Lucky Strike", string.Concat("Your next ability or spell that would not have been a critical strike becomes one. Cannot occur more than once every ",
+                    Seconds(Configuration.CLASSAURA_ROGUE_LUCKY_STRIKE_COOLDOWN_IN_MS), ". Autoattacks and Auto Shot are not affected.")),
+                NamedLine("Exploitive Momentum", string.Concat("Each landed attack raises all damage dealt by ",
+                    Pct(Configuration.CLASSAURA_ROGUE_EXPLOIT_DAMAGE_PERCENT_PER_STACK), " for ", Seconds(Configuration.CLASSAURA_ROGUE_EXPLOIT_DURATION_IN_MS), ", stacking up to ",
+                    Configuration.CLASSAURA_ROGUE_EXPLOIT_MAX_STACKS.ToString(), " times. A miss, dodge, or parry removes half of the stacks.")));
             spellTemplates.Add(BuildPassiveTemplate("Master Exploiter", SpellClassAuraType.RoguePassive, icon, description));
 
             // Every attack feeds the momentum, and every critical (heals included, hence the positive flags) can spend the lucky strike; the script tells them apart
@@ -604,11 +632,13 @@ namespace EQWOWConverter.Spells
         private static void AddPaladinSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_PALADIN_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Blessed Deflection: block chance is increased by ", Pct(Configuration.CLASSAURA_PALADIN_BLOCK_PERCENT), ", and ",
-                Pct(Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT), " of the damage you block is dealt as Holy damage to all enemies within ",
-                Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS.ToString(), " yards. Your heals also heal you for ",
-                Pct(Configuration.CLASSAURA_PALADIN_HEAL_SELF_PERCENT), " of the amount. Your attacks, abilities, and spells against undead and demons have a ",
-                Pct(Configuration.CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT), " chance to deal double damage.");
+            string description = Lines(
+                NamedLine("Blessed Deflection", string.Concat("Block chance is increased by ", Pct(Configuration.CLASSAURA_PALADIN_BLOCK_PERCENT), ", and ",
+                    Pct(Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT), " of the damage you block is dealt as Holy damage to all enemies within ",
+                    Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS.ToString(), " yards.")),
+                NamedLine("Light's Reward", string.Concat("Your heals also heal you for ", Pct(Configuration.CLASSAURA_PALADIN_HEAL_SELF_PERCENT), " of the amount.")),
+                string.Concat("Your attacks, abilities, and spells against undead and demons have a ",
+                    Pct(Configuration.CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT), " chance to deal double damage."));
             spellTemplates.Add(BuildPassiveTemplate("Champion of Light", SpellClassAuraType.PaladinPassive, icon, description));
 
             List<SpellEffectWOW> auraEffects = new List<SpellEffectWOW>();
@@ -653,10 +683,13 @@ namespace EQWOWConverter.Spells
             string bloodDebtStoreText = string.Concat(Pct(Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_DAMAGE_TAKEN_STORED_PERCENT), " of the damage you take is stored, up to ",
                 Pct(Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_MAX_HEALTH_PERCENT), " of your maximum health. Everything stored is lost after ",
                 Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_STORE_DURATION_IN_MS), " without taking damage");
-            string description = string.Concat("Spell power increased by an amount equal to ", Pct(Configuration.CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT),
-                " of your attack power. Attack critical strikes make your next harmful spell within ", Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS),
-                " instant. Cannot occur more than once every ", Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS), ". Blood Debt: ", bloodDebtStoreText,
-                ". Blood Debt unleashes what is stored to drain your target for that amount as shadow damage and heal you for the full amount stored.");
+            string description = Lines(
+                string.Concat("Spell power increased by an amount equal to ", Pct(Configuration.CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT),
+                    " of your attack power."),
+                NamedLine("Spellsword's Edge", string.Concat("Attack critical strikes make your next harmful spell within ", Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS),
+                    " instant. Cannot occur more than once every ", Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS), ".")),
+                NamedLine("Blood Debt", string.Concat(bloodDebtStoreText,
+                    ". Unleashing it drains your target for the amount stored as shadow damage and heals you for the full amount.")));
             spellTemplates.Add(BuildPassiveTemplate("Spellsword", SpellClassAuraType.ShadowKnightPassive, icon, description));
 
             // The attack power share is the same as Sheath of Light pair
@@ -721,11 +754,13 @@ namespace EQWOWConverter.Spells
         private static void AddWarriorSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Automatic Riposte: ", Pct(Configuration.CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT),
-                " of melee strikes against you are riposted, avoiding the blow and answering it with your main hand. Unrelenting Assault: every ",
-                Seconds(Configuration.CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_STACK_INTERVAL_IN_MS), " you gain a stack that raises the damage of every attack and spell by ",
-                Pct(Configuration.CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_DAMAGE_PERCENT_PER_STACK), ", up to ", Configuration.CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_MAX_STACKS.ToString(),
-                " stacks. Each melee, ranged, or single target spell attack that lands on you removes a stack, even when partially blocked. Misses, dodges, parries, full blocks, area attacks, and damage over time do not.");
+            string description = Lines(
+                NamedLine("Automatic Riposte", string.Concat(Pct(Configuration.CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT),
+                    " of melee strikes against you are riposted, avoiding the blow and answering it with your main hand.")),
+                NamedLine("Unrelenting Assault", string.Concat("Every ",
+                    Seconds(Configuration.CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_STACK_INTERVAL_IN_MS), " you gain a stack that raises the damage of every attack and spell by ",
+                    Pct(Configuration.CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_DAMAGE_PERCENT_PER_STACK), ", up to ", Configuration.CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_MAX_STACKS.ToString(),
+                    " stacks. Each melee, ranged, or single target spell attack that lands on you removes a stack, even when partially blocked. Misses, dodges, parries, full blocks, area attacks, and damage over time do not.")));
             spellTemplates.Add(BuildPassiveTemplate("Warmaster", SpellClassAuraType.WarriorPassive, icon, description));
 
             // The riposte comes from the melee outcome roll and the stacks from a timer, both in the mod.  A direct attack landing on the warrior takes a stack away (no PROC_FLAG_TAKEN_PERIODIC, so ticks never do)
@@ -757,11 +792,13 @@ namespace EQWOWConverter.Spells
         private static void AddWizardSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_WIZARD_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Casting while moving carries no movement speed penalty. Every ", Seconds(Configuration.CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS),
-                " standing still raises spell damage by ", Pct(Configuration.CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK), ", stacking up to ",
-                Configuration.CLASSAURA_WIZARD_FOCUS_MAX_STACKS.ToString(), " times. Starting to move removes ", GetStackWord(Configuration.CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT),
-                ", and so does every ", (Configuration.CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS / 1000).ToString(), " second", Configuration.CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS >= 2000 ? "s" : "",
-                " spent moving.");
+            string description = Lines(
+                "Casting while moving carries no movement speed penalty.",
+                NamedLine("Channeler's Focus", string.Concat("Every ", Seconds(Configuration.CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS),
+                    " standing still raises spell damage by ", Pct(Configuration.CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK), ", stacking up to ",
+                    Configuration.CLASSAURA_WIZARD_FOCUS_MAX_STACKS.ToString(), " times. Starting to move removes ", GetStackWord(Configuration.CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT),
+                    ", and so does every ", (Configuration.CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS / 1000).ToString(), " second", Configuration.CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS >= 2000 ? "s" : "",
+                    " spent moving.")));
             spellTemplates.Add(BuildPassiveTemplate("Unshaken Channeler", SpellClassAuraType.WizardPassive, icon, description));
             spellTemplates.Add(BuildPermanentAuraTemplate("Unshaken Channeler (Wizard)", SpellClassAuraType.WizardAura, icon, description, new List<SpellEffectWOW>()));
 
@@ -785,10 +822,11 @@ namespace EQWOWConverter.Spells
         private static void AddMagicianSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_MAGICIAN_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Your pet's strikes raise your spell damage by ", Pct(Configuration.CLASSAURA_MAGICIAN_PET_STRIKE_SPELL_DAMAGE_PERCENT_PER_STACK), " for ",
-                Seconds(Configuration.CLASSAURA_MAGICIAN_PET_STRIKE_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_MAGICIAN_PET_STRIKE_MAX_STACKS.ToString(),
-                " times. Your spell critical strikes raise your pet's damage by ", Pct(Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_PET_DAMAGE_PERCENT_PER_STACK), " for ",
-                Seconds(Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_MAX_STACKS.ToString(), " times.");
+            string description = Lines(
+                NamedLine("Conjurer's Insight", string.Concat("Your pet's strikes raise your spell damage by ", Pct(Configuration.CLASSAURA_MAGICIAN_PET_STRIKE_SPELL_DAMAGE_PERCENT_PER_STACK), " for ",
+                    Seconds(Configuration.CLASSAURA_MAGICIAN_PET_STRIKE_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_MAGICIAN_PET_STRIKE_MAX_STACKS.ToString(), " times.")),
+                NamedLine("Conjurer's Fury", string.Concat("Your spell critical strikes raise your pet's damage by ", Pct(Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_PET_DAMAGE_PERCENT_PER_STACK), " for ",
+                    Seconds(Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_MAX_STACKS.ToString(), " times.")));
             spellTemplates.Add(BuildPassiveTemplate("Bound Conjurer", SpellClassAuraType.MagicianPassive, icon, description));
 
             // Owner side: procs on the owner's own damaging spell crits
@@ -826,17 +864,20 @@ namespace EQWOWConverter.Spells
         private static void AddNecromancerSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_NECROMANCER_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Harmful effects enemies place on you pass to your pet instead, no more than once every ",
-                Seconds(Configuration.CLASSAURA_NECROMANCER_DEBUFF_TRANSFER_COOLDOWN_IN_MS), ". Each pet strike marks its target, raising the damage it takes from your direct spells by ",
-                Pct(Configuration.CLASSAURA_NECROMANCER_MARK_DIRECT_DAMAGE_PERCENT_PER_STACK), " and from your damage over time spells by ",
-                Pct(Configuration.CLASSAURA_NECROMANCER_MARK_DOT_DAMAGE_PERCENT_PER_STACK), " per mark for ", Seconds(Configuration.CLASSAURA_NECROMANCER_MARK_DURATION_IN_MS),
-                ", up to ", Configuration.CLASSAURA_NECROMANCER_MARK_MAX_STACKS.ToString(), " marks.");
+            string description = Lines(
+                string.Concat("Harmful effects enemies place on you pass to your pet instead, no more than once every ",
+                    Seconds(Configuration.CLASSAURA_NECROMANCER_DEBUFF_TRANSFER_COOLDOWN_IN_MS), "."),
+                NamedLine("Grave Mark", string.Concat("Each pet strike marks its target, raising the damage it takes from your direct spells by ",
+                    Pct(Configuration.CLASSAURA_NECROMANCER_MARK_DIRECT_DAMAGE_PERCENT_PER_STACK), " and from your damage over time spells by ",
+                    Pct(Configuration.CLASSAURA_NECROMANCER_MARK_DOT_DAMAGE_PERCENT_PER_STACK), " per mark for ", Seconds(Configuration.CLASSAURA_NECROMANCER_MARK_DURATION_IN_MS),
+                    ", up to ", Configuration.CLASSAURA_NECROMANCER_MARK_MAX_STACKS.ToString(), " marks.")));
             spellTemplates.Add(BuildPassiveTemplate("Grave Pact", SpellClassAuraType.NecromancerPassive, icon, description));
             spellTemplates.Add(BuildPermanentAuraTemplate("Grave Pact (Necromancer)", SpellClassAuraType.NecromancerAura, icon, description, new List<SpellEffectWOW>()));
 
             // The mark is a counter the mod reads in its damage hooks, so it carries no effect of its own
-            string markDescription = string.Concat("Takes ", Pct(Configuration.CLASSAURA_NECROMANCER_MARK_DIRECT_DAMAGE_PERCENT_PER_STACK), " more direct spell damage and ",
-                Pct(Configuration.CLASSAURA_NECROMANCER_MARK_DOT_DAMAGE_PERCENT_PER_STACK), " more damage over time from the necromancer per mark.");
+            string markDescription = Lines(
+                string.Concat("Takes ", Pct(Configuration.CLASSAURA_NECROMANCER_MARK_DIRECT_DAMAGE_PERCENT_PER_STACK), " more direct spell damage from the necromancer per mark."),
+                string.Concat("Takes ", Pct(Configuration.CLASSAURA_NECROMANCER_MARK_DOT_DAMAGE_PERCENT_PER_STACK), " more damage over time from the necromancer per mark."));
             List<SpellEffectWOW> markEffects = new List<SpellEffectWOW>();
             markEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitTargetEnemy));
             spellTemplates.Add(BuildStackingAuraTemplate("Grave Mark", SpellClassAuraType.NecromancerMark, icon, markDescription, markEffects,
@@ -846,11 +887,13 @@ namespace EQWOWConverter.Spells
         private static void AddClericSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_CLERIC_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Each area heal you cast readies a Sacred Focus charge for ", Seconds(Configuration.CLASSAURA_CLERIC_CADENCE_DURATION_IN_MS), ", up to ",
-                Configuration.CLASSAURA_CLERIC_CADENCE_MAX_STACKS.ToString(), ". A charge is spent to cut the cast time and mana cost of your next single target heal by ",
-                Pct(Configuration.CLASSAURA_CLERIC_CADENCE_REDUCTION_PERCENT), ". Complete Healing cannot use a charge. Single target heals also grant the target ",
-                Pct(Configuration.CLASSAURA_CLERIC_HEAL_HASTE_PERCENT_PER_STACK), " haste for ", Seconds(Configuration.CLASSAURA_CLERIC_HEAL_HASTE_DURATION_IN_MS), ", stacking up to ",
-                Configuration.CLASSAURA_CLERIC_HEAL_HASTE_MAX_STACKS.ToString(), " times and ignoring the haste cap.");
+            string description = Lines(
+                NamedLine("Sacred Focus", string.Concat("Each area heal you cast readies a charge for ", Seconds(Configuration.CLASSAURA_CLERIC_CADENCE_DURATION_IN_MS), ", up to ",
+                    Configuration.CLASSAURA_CLERIC_CADENCE_MAX_STACKS.ToString(), ". A charge is spent to cut the cast time and mana cost of your next single target heal by ",
+                    Pct(Configuration.CLASSAURA_CLERIC_CADENCE_REDUCTION_PERCENT), ". Complete Healing cannot use a charge.")),
+                NamedLine("Hastened Faith", string.Concat("Single target heals also grant the target ",
+                    Pct(Configuration.CLASSAURA_CLERIC_HEAL_HASTE_PERCENT_PER_STACK), " haste for ", Seconds(Configuration.CLASSAURA_CLERIC_HEAL_HASTE_DURATION_IN_MS), ", stacking up to ",
+                    Configuration.CLASSAURA_CLERIC_HEAL_HASTE_MAX_STACKS.ToString(), " times and ignoring the haste cap.")));
             spellTemplates.Add(BuildPassiveTemplate("Sacred Cadence", SpellClassAuraType.ClericPassive, icon, description));
             spellTemplates.Add(BuildPermanentAuraTemplate("Sacred Cadence (Cleric)", SpellClassAuraType.ClericAura, icon, description, new List<SpellEffectWOW>()));
 
@@ -872,15 +915,18 @@ namespace EQWOWConverter.Spells
         private static void AddDruidSpells(List<SpellTemplate> spellTemplates)
         {
             int icon = Configuration.CLASSAURA_DRUID_SPELL_ICON_EQ_ID;
-            string description = string.Concat("Your direct heals leave a regeneration that heals ", Pct(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT), " of the amount over ",
-                Seconds(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS), ". Nature's Balance: casting a fire, cold, or nature direct damage spell with a base cast time longer than ",
-                SecondsWithFraction(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_MIN_BASE_CAST_TIME_IN_MS), " builds a stack of that element for ",
-                Seconds(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DURATION_IN_MS), ", up to ", Configuration.CLASSAURA_DRUID_NATURES_BALANCE_MAX_STACKS.ToString(),
-                " stacks. Your next direct damage spell of a different element spends every stack at once, dealing ", Pct(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DAMAGE_PERCENT_PER_STACK),
-                " more damage for each stack spent. Entangle Strike: your landed melee and ranged attacks entangle the target for ",
-                Seconds(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_MAX_STACKS.ToString(),
-                " times. Each stack lowers the physical damage you and your pet take from that target by ", Pct(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK),
-                " and raises the melee damage you and your pet deal to it from behind by ", Pct(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK), ".");
+            string description = Lines(
+                NamedLine("Nature's Echo", string.Concat("Your direct heals leave a regeneration that heals ", Pct(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT), " of the amount over ",
+                    Seconds(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS), ".")),
+                NamedLine("Nature's Balance", string.Concat("Casting a fire, cold, or nature direct damage spell with a base cast time longer than ",
+                    SecondsWithFraction(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_MIN_BASE_CAST_TIME_IN_MS), " builds a stack of that element for ",
+                    Seconds(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DURATION_IN_MS), ", up to ", Configuration.CLASSAURA_DRUID_NATURES_BALANCE_MAX_STACKS.ToString(),
+                    " stacks. Your next direct damage spell of a different element spends every stack at once, dealing ", Pct(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DAMAGE_PERCENT_PER_STACK),
+                    " more damage for each stack spent.")),
+                NamedLine("Entangle Strike", string.Concat("Your landed melee and ranged attacks entangle the target for ",
+                    Seconds(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_MAX_STACKS.ToString(),
+                    " times. Each stack lowers the physical damage you and your pet take from that target by ", Pct(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK),
+                    " and raises the melee damage you and your pet deal to it from behind by ", Pct(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK), ".")));
             spellTemplates.Add(BuildPassiveTemplate("One With Nature", SpellClassAuraType.DruidPassive, icon, description));
 
             // Direct heals leave the echo and landed physical attacks entangle, both of which the script tells apart (no PROC_FLAG_DONE_PERIODIC, so heal over time ticks never count)
@@ -909,9 +955,11 @@ namespace EQWOWConverter.Spells
             spellTemplates.Add(BuildNaturesBalanceTemplate("Nature's Balance (Nature)", SpellClassAuraType.DruidNaturesBalanceNature, Configuration.CLASSAURA_DRUID_NATURES_BALANCE_NATURE_SPELL_ICON_EQ_ID));
 
             // A per-druid copy on the target, since only the druid who entangled it and that druid's pet are affected
-            string entangleDescription = string.Concat("The druid who entangled it and that druid's pet take ",
-                Pct(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK), " less physical damage from it per stack, and deal ",
-                Pct(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK), " more melee damage to it from behind per stack.");
+            string entangleDescription = Lines(
+                string.Concat("The druid who entangled it and that druid's pet take ",
+                    Pct(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK), " less physical damage from it per stack."),
+                string.Concat("They also deal ", Pct(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK),
+                    " more melee damage to it from behind per stack."));
             List<SpellEffectWOW> entangleEffects = new List<SpellEffectWOW>();
             entangleEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitTargetEnemy));
             spellTemplates.Add(BuildStackingAuraTemplate("Entangle Strike", SpellClassAuraType.DruidEntangleStrike, Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_SPELL_ICON_EQ_ID,
@@ -934,11 +982,14 @@ namespace EQWOWConverter.Spells
             string statsText = "total stats";
             string warspiritGrantText = string.Concat(Pct(Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_PERCENT_PER_STACK), " increased ", statsText, " for ",
                 Seconds(Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_MAX_STACKS.ToString(), " times");
-            string description = string.Concat("Your autoattacks have a ", Pct(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT),
-                " chance to extend any of your damage over time effects on the target by ", Seconds(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS),
-                ". Healing an ally grants them ", Pct(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK), " increased ", statsText, " for ",
-                Seconds(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS.ToString(),
-                " times. Warspirit can be toggled on so your landed attacks, abilities, and damaging spells grant you ", warspiritGrantText, " instead, while your heals no longer grant anything.");
+            string description = Lines(
+                string.Concat("Your autoattacks have a ", Pct(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT),
+                    " chance to extend any of your damage over time effects on the target by ", Seconds(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS), "."),
+                NamedLine("Spirit's Vigor", string.Concat("Healing an ally grants them ", Pct(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK), " increased ", statsText, " for ",
+                    Seconds(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS.ToString(), " times.")),
+                NamedLine("Warspirit", "Can be toggled on so your landed attacks, abilities, and damaging spells grant you Warspirit's Vigor instead, while your heals no longer grant Spirit's Vigor."),
+                NamedLine("Warspirit's Vigor", string.Concat(Pct(Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_PERCENT_PER_STACK), " increased ", statsText, " for ",
+                    Seconds(Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_MAX_STACKS.ToString(), " times.")));
             spellTemplates.Add(BuildPassiveTemplate("Spirit Channeler", SpellClassAuraType.ShamanPassive, icon, description));
 
             // Direct heals grant the vigor to allies, or with Warspirit on, landed attacks grant it to the shaman, which the script tells apart (no PROC_FLAG_DONE_PERIODIC, so ticks never grant either)
