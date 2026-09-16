@@ -330,6 +330,7 @@ namespace EQWOWConverter.Spells
         public bool GenerateNoThreat = false;
         public bool SuppressCasterProcs = false;
         public bool IgnoreTargetRequirements = false;
+        public bool IsUsableWhileCrowdControlled = false;
         public bool IgnoreLineOfSight = false;
         public bool ProcsOnMeleeAttacks = false;
         public SpellPet? SummonSpellPet = null;

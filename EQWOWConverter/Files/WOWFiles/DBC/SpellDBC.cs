@@ -661,6 +661,12 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 2097152; // 	SPELL_ATTR5_IGNORE_TARGET_REQUIREMENTS
             if (spellTemplate.HasAdditionalTickOnApply == true)
                 attributeFlags |= 512; // 	SPELL_ATTR5_EXTRA_INITIAL_PERIOD
+            if (spellTemplate.IsUsableWhileCrowdControlled == true)
+            {
+                attributeFlags |= 8; // SPELL_ATTR5_ALLOW_WHILE_STUNNED (0x00000008)
+                attributeFlags |= 131072; // SPELL_ATTR5_ALLOW_WHILE_FLEEING (0x00020000)
+                attributeFlags |= 262144; // SPELL_ATTR5_ALLOW_WHILE_CONFUSED (0x00040000)
+            }
             return attributeFlags;
         }
 

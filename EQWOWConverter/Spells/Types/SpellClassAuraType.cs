@@ -81,6 +81,7 @@ namespace EQWOWConverter.Spells
         ShadowKnightBloodDebt = 60,
         ShadowKnightBloodDebtCharge = 61,
         ShadowKnightBloodDebtHeal = 62,
-        Count = 63
+        NecromancerShadowExchange = 63,
+        Count = 64
     }
 }

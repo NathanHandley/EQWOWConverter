@@ -137,6 +137,7 @@ namespace EQWOWConverter.Spells
             switch (eqClass)
             {
                 case ClassEQType.ShadowKnight: return GetSpellID(SpellClassAuraType.ShadowKnightBloodDebt);
+                case ClassEQType.Necromancer: return GetSpellID(SpellClassAuraType.NecromancerShadowExchange);
                 default: return 0;
             }
         }
@@ -169,7 +170,7 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraWizardFocusStacksLostPerMovementEvent", Configuration.CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraWizardFocusMovementIntervalInMS", Configuration.CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraWizardFocusStillIntervalInMS", Configuration.CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS.ToString()));
-            rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerDebuffTransferCooldownInMS", Configuration.CLASSAURA_NECROMANCER_DEBUFF_TRANSFER_COOLDOWN_IN_MS.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerShadowExchangeMaxDistanceInYards", Configuration.CLASSAURA_NECROMANCER_SHADOW_EXCHANGE_MAX_DISTANCE_IN_YARDS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerMarkDirectDamagePercentPerStack", Configuration.CLASSAURA_NECROMANCER_MARK_DIRECT_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerMarkDotDamagePercentPerStack", Configuration.CLASSAURA_NECROMANCER_MARK_DOT_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraClericCadenceReductionPercent", Configuration.CLASSAURA_CLERIC_CADENCE_REDUCTION_PERCENT.ToString()));
@@ -271,6 +272,7 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.NecromancerPassive:
                 case SpellClassAuraType.NecromancerAura:
                 case SpellClassAuraType.NecromancerMark:
+                case SpellClassAuraType.NecromancerShadowExchange:
                     return Configuration.CLASSAURA_NECROMANCER_ENABLED;
                 case SpellClassAuraType.ClericPassive:
                 case SpellClassAuraType.ClericAura:
@@ -354,6 +356,17 @@ namespace EQWOWConverter.Spells
         private static string NamedLine(string effectName, string text)
         {
             return string.Concat(effectName, " - ", text);
+        }
+
+        // Whole minutes read better than a large second count on a long cooldown
+        private static string CooldownText(int durationInMS)
+        {
+            if (durationInMS >= 60000 && durationInMS % 60000 == 0)
+            {
+                int minutes = durationInMS / 60000;
+                return string.Concat(minutes.ToString(), minutes == 1 ? " minute" : " minutes");
+            }
+            return Seconds(durationInMS);
         }
 
         private static SpellTemplate BuildBaseTemplate(string name, SpellClassAuraType spellType, int spellIconEQID, string description, string auraDescription, bool useSpellItemIcon = false)
@@ -865,8 +878,8 @@ namespace EQWOWConverter.Spells
         {
             int icon = Configuration.CLASSAURA_NECROMANCER_SPELL_ICON_EQ_ID;
             string description = Lines(
-                string.Concat("Harmful effects enemies place on you pass to your pet instead, no more than once every ",
-                    Seconds(Configuration.CLASSAURA_NECROMANCER_DEBUFF_TRANSFER_COOLDOWN_IN_MS), "."),
+                NamedLine("Shadow Exchange", string.Concat("Trade places with your pet, moving every harmful effect an enemy placed on you onto it. Usable once every ",
+                    CooldownText(Configuration.CLASSAURA_NECROMANCER_SHADOW_EXCHANGE_COOLDOWN_IN_MS), ".")),
                 NamedLine("Grave Mark", string.Concat("Each pet strike marks its target, raising the damage it takes from your direct spells by ",
                     Pct(Configuration.CLASSAURA_NECROMANCER_MARK_DIRECT_DAMAGE_PERCENT_PER_STACK), " and from your damage over time spells by ",
                     Pct(Configuration.CLASSAURA_NECROMANCER_MARK_DOT_DAMAGE_PERCENT_PER_STACK), " per mark for ", Seconds(Configuration.CLASSAURA_NECROMANCER_MARK_DURATION_IN_MS),
@@ -882,6 +895,25 @@ namespace EQWOWConverter.Spells
             markEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitTargetEnemy));
             spellTemplates.Add(BuildStackingAuraTemplate("Grave Mark", SpellClassAuraType.NecromancerMark, icon, markDescription, markEffects,
                 Configuration.CLASSAURA_NECROMANCER_MARK_MAX_STACKS, Configuration.CLASSAURA_NECROMANCER_MARK_DURATION_IN_MS, true));
+
+            // Shadow Exchange, the active ability that trades places with the pet and sends the necromancer's debuffs along with it
+            string shadowExchangeDescription = Lines(
+                "Trade places with your pet, moving every harmful effect an enemy placed on you onto it.",
+                "Usable while stunned, feared, or confused.");
+            SpellTemplate shadowExchangeSpellTemplate = BuildBaseTemplate("Shadow Exchange", SpellClassAuraType.NecromancerShadowExchange,
+                Configuration.CLASSAURA_NECROMANCER_SHADOW_EXCHANGE_SPELL_ICON_EQ_ID, shadowExchangeDescription, string.Empty);
+            shadowExchangeSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat); // Unlike most class aura spells, this one is in the spellbook
+            shadowExchangeSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Math.Max(0, Configuration.CLASSAURA_NECROMANCER_SHADOW_EXCHANGE_COOLDOWN_IN_MS));
+            shadowExchangeSpellTemplate.HasCustomCooldown = true;
+            shadowExchangeSpellTemplate.IsUsableWhileCrowdControlled = true;
+            shadowExchangeSpellTemplate.AllowInShapeshift = true;
+            shadowExchangeSpellTemplate.GenerateNoThreat = true;
+            shadowExchangeSpellTemplate.SpellVisualID1 = Convert.ToUInt32(Configuration.CLASSAURA_NECROMANCER_SHADOW_EXCHANGE_SPELL_VISUAL_ID);
+            SpellEffectWOW shadowExchangeEffect = new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0);
+            shadowExchangeEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            shadowExchangeSpellTemplate.WOWSpellEffects.Add(shadowExchangeEffect);
+            shadowExchangeSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraNecromancerShadowExchangeSpellScript";
+            spellTemplates.Add(shadowExchangeSpellTemplate);
         }
 
         private static void AddClericSpells(List<SpellTemplate> spellTemplates)
