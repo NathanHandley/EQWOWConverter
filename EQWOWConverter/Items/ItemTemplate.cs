@@ -131,6 +131,7 @@ namespace EQWOWConverter.Items
         public int Block = 0;
         public bool DoesVanishOnLogout = false;
         public bool IsNoDrop = false;
+        public bool IsNeverLootStack = false;
         public bool IsMagic = false;
         public ItemDisplayInfo? ItemDisplayInfo = null;
         public bool DoesTeachSpell = false;
@@ -2286,6 +2287,7 @@ namespace EQWOWConverter.Items
 
                 // Binding Properties
                 newItemTemplate.IsNoDrop = int.Parse(columns["nodrop"]) == 0 ? true : false;
+                newItemTemplate.IsNeverLootStack = int.Parse(columns["never_loot_stack"]) == 1 ? true : false;
                 newItemTemplate.DoesVanishOnLogout = int.Parse(columns["norent"]) == 0 ? true : false;
                 newItemTemplate.IsMagic = int.Parse(columns["magic"]) != 0 ? true : false;
                 newItemTemplate.EQItemClass = int.Parse(columns["itemclass"]);
@@ -2780,6 +2782,7 @@ namespace EQWOWConverter.Items
             createdBagItemTemplate.WOWEntryID = originalItemTemplate.WOWEntryID; // Hand over the entry ID from the original item
             createdBagItemTemplate.EQItemID = originalItemTemplate.EQItemID;
             createdBagItemTemplate.IsNoDrop = originalItemTemplate.IsNoDrop;
+            createdBagItemTemplate.IsNeverLootStack = originalItemTemplate.IsNeverLootStack;
 
             createdBagItemTemplate.ContainedItems.Add(new ContainedItem());
             createdBagItemTemplate.ContainedItems[0].itemTemplateIDWOW = newItemWOWItemEntryID; // Add the item reference

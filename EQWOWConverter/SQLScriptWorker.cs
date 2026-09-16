@@ -1832,7 +1832,7 @@ namespace EQWOWConverter
                     illusionBodySet = 0;
                 int illusionTintID = CreatureIllusionTintPalette.GetTintIDForColorPacked(itemTemplate.ColorPacked);
                 modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryID, creatureWornEffectSpellID, itemTemplate.AllowedClassTypesEQ,
-                    illusionBodySet, illusionTintID);
+                    illusionBodySet, illusionTintID, itemTemplate.IsNeverLootStack);
 
                 // Associate spells if it's a learnable item
                 if (itemTemplate.DoesTeachSpell == true && itemTemplate.EQScrollSpellID != 0)
@@ -1877,7 +1877,7 @@ namespace EQWOWConverter
                             if (addedLearnScrollItemIDs.Contains(scrollPropertiesByClassType.Value.WOWItemTemplateID) == false)
                             {
                                 modEverquestItemTemplateSQL.AddRow(scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollPropertiesByClassType.Value.WOWItemTemplateID,
-                                    creatureWornEffectSpellID, new List<ClassEQType>() { scrollPropertiesByClassType.Key }, illusionBodySet, illusionTintID);
+                                    creatureWornEffectSpellID, new List<ClassEQType>() { scrollPropertiesByClassType.Key }, illusionBodySet, illusionTintID, itemTemplate.IsNeverLootStack);
                                 addedLearnScrollItemIDs.Add(scrollPropertiesByClassType.Value.WOWItemTemplateID);
                             }
                         }
