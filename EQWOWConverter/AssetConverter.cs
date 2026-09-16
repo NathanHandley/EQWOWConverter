@@ -202,6 +202,7 @@ namespace EQWOWConverter
                         {
                             keyedGameObject.KeyItemTemplate = itemTemplatesByEQDBID[keyedGameObject.KeyItemEQID];
                             keyedGameObject.KeyItemTemplate.IsGameObjectKey = true;
+                            keyedGameObject.KeyItemTemplate.RemoveClickEffectFromGameObjectKey();
                             keyedGameObject.KeyItemTemplate.SetAsKeyringKeyIfOnlyUsableAsKey();
                             if (keyedGameObject.AltKeyItemEQID > 0)
                             {
@@ -211,6 +212,7 @@ namespace EQWOWConverter
                                 {
                                     keyedGameObject.AltKeyItemTemplate = itemTemplatesByEQDBID[keyedGameObject.AltKeyItemEQID];
                                     keyedGameObject.AltKeyItemTemplate.IsGameObjectKey = true;
+                                    keyedGameObject.AltKeyItemTemplate.RemoveClickEffectFromGameObjectKey();
                                     keyedGameObject.AltKeyItemTemplate.SetAsKeyringKeyIfOnlyUsableAsKey();
                                 }
                             }

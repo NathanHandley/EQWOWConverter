@@ -2837,6 +2837,19 @@ namespace EQWOWConverter.Items
             CUR_ITEM_GENERATED_EQID++;
         }
 
+        public void RemoveClickEffectFromGameObjectKey()
+        {
+            // Using a key on its lock casts every on-use spell on the item, so a click effect fires (and spends its charges) alongside the opening spell and the unlock fails
+            if (EQClickSpellEffectID <= 0 || EQClickType == 6)
+                return;
+            Logger.WriteDebug("Removing click effect '", EQClickSpellEffectID.ToString(), "' from item '", Name, "' (", WOWEntryID.ToString(), ") since it opens a locked game object");
+            EQClickSpellEffectID = 0;
+            WOWClickSpellEffectID = 0;
+            EQClickType = 0;
+            EQClickLevel = 0;
+            MaxCharges = 0;
+        }
+
         public void SetAsKeyringKeyIfOnlyUsableAsKey()
         {
             // Items that are wearable or usable beyond opening locks keep their type, since key-class items can't be equipped or used
