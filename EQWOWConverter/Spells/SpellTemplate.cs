@@ -924,24 +924,18 @@ namespace EQWOWConverter.Spells
                     }
                 }
 
-                // Replicate form effects to child illusion effects and they must inherit the prarent's learn level so effec
-                // values are right.  If this doesn't happen, things like wolf form multiplies the bonus
+                // Illusion forms only carry the look.  Every other effect stays on the parent as its own aura, so the look can be clicked off without losing the effects
                 if (spellTemplate.IllusionSpellParent != null)
                 {
                     spellTemplate.MinimumPlayerLearnLevel = spellTemplate.IllusionSpellParent.MinimumPlayerLearnLevel;
-                    foreach (SpellEffectWOW spellEffect in spellTemplate.IllusionSpellParent.WOWSpellEffects)
-                    {
-                        // Dummy is used for the form change trigger, so skip that
-                        if (spellEffect.EffectType == SpellWOWEffectType.Dummy)
-                            continue;
-                        spellTemplate.WOWSpellEffects.Add(spellEffect.Clone());
-                    }
 
-                    // Add proper stacking rules for illusion spells
-                    foreach (int parentStackGroupID in spellTemplate.IllusionSpellParent.SpellGroupStackingIDs)
-                        if (spellTemplate.SpellGroupStackingIDs.Contains(parentStackGroupID) == false)
-                            spellTemplate.SpellGroupStackingIDs.Add(parentStackGroupID);
+                    // A form only stack-competes with other illusion forms
+                    foreach (int illusionStackGroupID in spellTemplate.IllusionSpellParent.GetIllusionSpellGroupStackingIDs())
+                        if (spellTemplate.SpellGroupStackingIDs.Contains(illusionStackGroupID) == false)
+                            spellTemplate.SpellGroupStackingIDs.Add(illusionStackGroupID);
                 }
+                if (spellTemplate.IsllusionSpellParent == true)
+                    spellTemplate.SeparateIllusionParentStackGroupsFromForms();
 
                 // Set the spell and aura descriptions
                 SetActionAndAuraDescriptions(ref spellTemplate, recourseSpellTemplate, procLinkSpellTemplate);
@@ -950,11 +944,6 @@ namespace EQWOWConverter.Spells
             // Spells that buy mana with the caster's own life scale like Life Tap does (mana gain only)
             foreach (SpellTemplate spellTemplate in SpellTemplatesByEQID.Values)
                 spellTemplate.SetLifeForManaSpellPowerHandling();
-
-            // Pull out all but the dummy to avoid too many icons showing for illusions
-            foreach (SpellTemplate spellTemplate in SpellTemplatesByEQID.Values)
-                if (spellTemplate.IsllusionSpellParent == true)
-                    spellTemplate.WOWSpellEffects.RemoveAll(IsNonDummySpellEffect);
 
             // Creatures cast through separate spell copies whenever the player version diverged from the unmodified conversion
             MarkSpellTemplatesNeedingCreatureCastVersions();
@@ -4294,6 +4283,7 @@ namespace EQWOWConverter.Spells
                                 maleFormSpellTemplate.Name = string.Concat(spellTemplate.Name);
                                 maleFormSpellTemplate.CopySpellResolutionPropertiesFrom(spellTemplate);
                                 maleFormSpellTemplate.NeverMisses = true; // The parent already rolled to hit
+                                maleFormSpellTemplate.DispelType = 0; // The form is only a look, so it only ends by clicking it off or expiring (the parent's effects stay dispellable)
                                 maleFormSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "maleform", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                 maleFormSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 maleFormSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
@@ -4358,6 +4348,7 @@ namespace EQWOWConverter.Spells
                                 femaleFormSpellTemplate.Name = string.Concat(spellTemplate.Name);
                                 femaleFormSpellTemplate.CopySpellResolutionPropertiesFrom(spellTemplate);
                                 femaleFormSpellTemplate.NeverMisses = true; // The parent already rolled to hit
+                                femaleFormSpellTemplate.DispelType = 0; // The form is only a look, so it only ends by clicking it off or expiring (the parent's effects stay dispellable)
                                 femaleFormSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "femaleform", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                 femaleFormSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 femaleFormSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
@@ -4420,10 +4411,18 @@ namespace EQWOWConverter.Spells
                                 if (illusionObjectClass != CreatureIllusionObjectClassType.None)
                                 {
                                     newSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", GetIllusionObjectDescriptionText(illusionObjectClass));
-                                    newSpellEffectWOW.AuraDescription = string.Concat("appear as ", GetIllusionObjectDescriptionText(illusionObjectClass));
-                                }
+
+                                // The look is its own aura on the form spell, so any aura the parent keeps for its other effects only describes those
+                                newSpellEffectWOW.AuraDescription = string.Empty;
                                 newSpellEffects.Add(newSpellEffectWOW);
                                 spellTemplate.IsllusionSpellParent = true;
+
+                                // Anything else a cosmetic illusion does has to last as long as its look does
+                                if (spellTemplate.IsCosmeticOnlyIllusion == true)
+                                {
+                                    spellTemplate.PersistThroughDeath = true;
+                                    spellTemplate.AuraStaysOnSecondaryClassSwitch = true;
+                                }
                             } break;
                         case SpellEQEffectType.FeignDeath:
                             {
@@ -4665,6 +4664,45 @@ namespace EQWOWConverter.Spells
             spellTemplate.AuraStackKeyFlagBits = (isBardSongAura ? 2 : 0) + (isDetrimental ? 1 : 0);
         }
 
+        // The composite stack keys that came from this spell's illusion effects alone
+        private List<int> GetIllusionStackCompositeKeys()
+        {
+            List<int> illusionCompositeKeys = new List<int>();
+            foreach (SpellEffectEQ eqEffect in EQSpellEffects)
+            {
+                if (eqEffect.EQEffectType != SpellEQEffectType.Illusion)
+                    continue;
+                int effectStackKey = MakeEffectStackKey(eqEffect.EQEffectType, eqEffect.EQEffectSlot);
+                if (AuraStackEffectKeys.Contains(effectStackKey) == false)
+                    continue;
+                int compositeKey = (effectStackKey * 8) + AuraStackKeyFlagBits;
+                if (illusionCompositeKeys.Contains(compositeKey) == false)
+                    illusionCompositeKeys.Add(compositeKey);
+            }
+            return illusionCompositeKeys;
+        }
+
+        // The stack groups that came from this spell's illusion effects alone, which is all an illusion form spell competes on
+        public List<int> GetIllusionSpellGroupStackingIDs()
+        {
+            List<int> illusionStackGroupIDs = new List<int>();
+            foreach (int compositeKey in GetIllusionStackCompositeKeys())
+                illusionStackGroupIDs.Add(GetOrCreateSpellGroupID(compositeKey));
+            return illusionStackGroupIDs;
+        }
+
+        // An illusion parent's own aura only holds its other effects, and it can never share a stack group with its own form
+        public void SeparateIllusionParentStackGroupsFromForms()
+        {
+            foreach (int compositeKey in GetIllusionStackCompositeKeys())
+            {
+                SpellGroupStackingIDs.Remove(GetOrCreateSpellGroupID(compositeKey));
+                int parentEffectsStackGroupID = GetOrCreateNamedSpellGroupID(string.Concat("illusionparenteffects", compositeKey.ToString()), 4); // SPELL_GROUP_STACK_RULE_EXCLUSIVE_HIGHEST, same as the effect key groups
+                if (SpellGroupStackingIDs.Contains(parentEffectsStackGroupID) == false)
+                    SpellGroupStackingIDs.Add(parentEffectsStackGroupID);
+            }
+        }
+
         // A stack group that only exists to be listed as a nested subgroup inside a stock WOW spell group, so it deliberately carries no stack rule of its own
         public static int GetOrCreateNamedSubgroupSpellGroupID(string groupKey)
         {
@@ -4833,11 +4871,14 @@ namespace EQWOWConverter.Spells
                 else
                     spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\n", levitationActionString);
 
-                // Aura Description
-                if (spellTemplate.AuraDescription.Length == 0)
-                    spellTemplate.AuraDescription = levitationAuraString;
-                else
-                    spellTemplate.AuraDescription = string.Concat(spellTemplate.AuraDescription, "\n\n", levitationAuraString);
+                // Aura Description (only on the form, since any aura the parent keeps is just its other effects)
+                if (spellTemplate.IsllusionSpellParent == false)
+                {
+                    if (spellTemplate.AuraDescription.Length == 0)
+                        spellTemplate.AuraDescription = levitationAuraString;
+                    else
+                        spellTemplate.AuraDescription = string.Concat(spellTemplate.AuraDescription, "\n\n", levitationAuraString);
+                }
             }
         }
 
@@ -5125,6 +5166,10 @@ namespace EQWOWConverter.Spells
                 }
             }
 
+            // The mod's illusion script hooks effect 0 of the primary block, so the form trigger has to lead the first block
+            if (IsllusionSpellParent == true)
+                MoveIllusionParentDummyEffectToFront();
+
             // Pre-group by 'max' levels so that spell value calculations work properly
             Dictionary<int, List<SpellEffectWOW>> spellEffectsByMaxLevel = new Dictionary<int, List<SpellEffectWOW>>();
             foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
@@ -5190,6 +5235,36 @@ namespace EQWOWConverter.Spells
             // Good proc and clicky spells each need copies of the base blocks
             GenerateMissingGoodProcOutputEffectBlocks();
             GenerateMissingClickyOutputEffectBlocks();
+        }
+
+        private void MoveIllusionParentDummyEffectToFront()
+        {
+            int illusionDummyEffectIndex = -1;
+            for (int i = 0; i < WOWSpellEffects.Count; i++)
+            {
+                if (WOWSpellEffects[i].EffectType == SpellWOWEffectType.Dummy && WOWSpellEffects[i].EffectMiscValueA == (int)SpellDummyType.IllusionParent)
+                {
+                    illusionDummyEffectIndex = i;
+                    break;
+                }
+            }
+            if (illusionDummyEffectIndex < 0)
+            {
+                Logger.WriteError("Spell '", Name, "' (eq id ", EQSpellID.ToString(), ") is an illusion parent with no illusion dummy effect");
+                return;
+            }
+
+            SpellEffectWOW illusionDummyEffect = WOWSpellEffects[illusionDummyEffectIndex];
+            foreach (SpellEffectWOW otherSpellEffect in WOWSpellEffects)
+            {
+                if (otherSpellEffect != illusionDummyEffect && otherSpellEffect.CalcEffectHighLevel != 0)
+                {
+                    illusionDummyEffect.CalcEffectHighLevel = otherSpellEffect.CalcEffectHighLevel;
+                    break;
+                }
+            }
+            WOWSpellEffects.RemoveAt(illusionDummyEffectIndex);
+            WOWSpellEffects.Insert(0, illusionDummyEffect);
         }
 
         private void GenerateCreatureCastOutputEffectBlocks()
