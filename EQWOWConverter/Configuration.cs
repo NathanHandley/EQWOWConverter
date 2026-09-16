@@ -1351,14 +1351,15 @@ namespace EQWOWConverter
         public static int CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS = 5000;
         public static int CLASSAURA_MONK_CHI_SURGE_RETURN_IN_MS = 10000;
 
-        // Ranger "Swift Reactions"
+        // Ranger "Endless Hunt"
         public static bool CLASSAURA_RANGER_ENABLED = true;
         public static int CLASSAURA_RANGER_SPELL_ICON_EQ_ID = 1;
         public static int CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ITEM_ICON_EQ_ID = 1;
         public static int CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT = 1;
-        public static int CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK = 1;
-        public static int CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS = 8;
-        public static int CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS = 20000;
+        public static int CLASSAURA_RANGER_COMPOUND_INJURY_DAMAGE_PERCENT_PER_STACK = 1;
+        public static int CLASSAURA_RANGER_COMPOUND_INJURY_MAX_STACKS = 8;
+        public static int CLASSAURA_RANGER_COMPOUND_INJURY_DURATION_IN_MS = 20000;
+        public static int CLASSAURA_RANGER_COMPOUND_INJURY_MOVING_DURATION_IN_MS = 4000;
 
         // Rogue "Master Exploiter"
         public static bool CLASSAURA_ROGUE_ENABLED = true;
@@ -2632,7 +2633,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ, "Creatures in this level range will never enrage (taken from TAKP's mob_ai.cpp CheckEnrage), with 0 in both disabling this suppression", false);
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ, "");
             OutputVariableToConfig("CLASSAURA_ENABLED", CLASSAURA_ENABLED, "Every EQ class (primary or secondary) grants a permanent aura with class specific effects. Values here bake into Spell.dbc, so a change needs a converter regen and DBC deploy", false);
-            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96063 as of writing)", false);
+            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96064 as of writing)", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_ENABLED", CLASSAURA_ENCHANTER_ENABLED, "Enchanter \"Mind of Clarity\": regenerates a percent of maximum mana on an interval, and spell damage and healing are increased while mana is at or above a threshold", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID", CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT", CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT, "", false);
@@ -2657,9 +2658,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_RANGER_SPELL_ICON_EQ_ID", CLASSAURA_RANGER_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ITEM_ICON_EQ_ID", CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ITEM_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT", CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT, "", false);
-            OutputVariableToConfig("CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK", CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK, "", false);
-            OutputVariableToConfig("CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS", CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS, "", false);
-            OutputVariableToConfig("CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS", CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS, "", false);
+            OutputVariableToConfig("CLASSAURA_RANGER_COMPOUND_INJURY_DAMAGE_PERCENT_PER_STACK", CLASSAURA_RANGER_COMPOUND_INJURY_DAMAGE_PERCENT_PER_STACK, "", false);
+            OutputVariableToConfig("CLASSAURA_RANGER_COMPOUND_INJURY_MAX_STACKS", CLASSAURA_RANGER_COMPOUND_INJURY_MAX_STACKS, "", false);
+            OutputVariableToConfig("CLASSAURA_RANGER_COMPOUND_INJURY_DURATION_IN_MS", CLASSAURA_RANGER_COMPOUND_INJURY_DURATION_IN_MS, "", false);
+            OutputVariableToConfig("CLASSAURA_RANGER_COMPOUND_INJURY_MOVING_DURATION_IN_MS", CLASSAURA_RANGER_COMPOUND_INJURY_MOVING_DURATION_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_ROGUE_ENABLED", CLASSAURA_ROGUE_ENABLED, "Rogue", false);
             OutputVariableToConfig("CLASSAURA_ROGUE_SPELL_ICON_EQ_ID", CLASSAURA_ROGUE_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_ROGUE_LUCKY_STRIKE_SPELL_ICON_EQ_ID", CLASSAURA_ROGUE_LUCKY_STRIKE_SPELL_ICON_EQ_ID, "", false);
@@ -3448,9 +3450,10 @@ namespace EQWOWConverter
             CLASSAURA_RANGER_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_RANGER_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_RANGER_SPELL_ICON_EQ_ID);
             CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ITEM_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ITEM_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ITEM_ICON_EQ_ID);
             CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT = ReadVariableFromConfigString("CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT", configValuesByVariableName, CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT);
-            CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK);
-            CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS = ReadVariableFromConfigString("CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS", configValuesByVariableName, CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS);
-            CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS);
+            CLASSAURA_RANGER_COMPOUND_INJURY_DAMAGE_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_RANGER_COMPOUND_INJURY_DAMAGE_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_RANGER_COMPOUND_INJURY_DAMAGE_PERCENT_PER_STACK);
+            CLASSAURA_RANGER_COMPOUND_INJURY_MAX_STACKS = ReadVariableFromConfigString("CLASSAURA_RANGER_COMPOUND_INJURY_MAX_STACKS", configValuesByVariableName, CLASSAURA_RANGER_COMPOUND_INJURY_MAX_STACKS);
+            CLASSAURA_RANGER_COMPOUND_INJURY_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_RANGER_COMPOUND_INJURY_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_RANGER_COMPOUND_INJURY_DURATION_IN_MS);
+            CLASSAURA_RANGER_COMPOUND_INJURY_MOVING_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_RANGER_COMPOUND_INJURY_MOVING_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_RANGER_COMPOUND_INJURY_MOVING_DURATION_IN_MS);
             CLASSAURA_ROGUE_ENABLED = ReadVariableFromConfigString("CLASSAURA_ROGUE_ENABLED", configValuesByVariableName, CLASSAURA_ROGUE_ENABLED);
             CLASSAURA_ROGUE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_ROGUE_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_ROGUE_SPELL_ICON_EQ_ID);
             CLASSAURA_ROGUE_LUCKY_STRIKE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_ROGUE_LUCKY_STRIKE_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_ROGUE_LUCKY_STRIKE_SPELL_ICON_EQ_ID);

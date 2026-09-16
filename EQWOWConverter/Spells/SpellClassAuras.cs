@@ -161,7 +161,7 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraRogueLuckyStrikeCritPercent", Configuration.CLASSAURA_ROGUE_LUCKY_STRIKE_CRIT_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraRogueLuckyStrikeCooldownInMS", Configuration.CLASSAURA_ROGUE_LUCKY_STRIKE_COOLDOWN_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraMonkDoubleToTripleAttackChancePercent", Configuration.CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT.ToString()));
-            rows.Add(new KeyValuePair<string, string>("ClassAuraRangerTackShotDamagePercentPerStack", Configuration.CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraRangerCompoundInjuryDamagePercentPerStack", Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraRangerEndlessQuiverBaseManaCostPercent", Configuration.CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinHealSelfPercent", Configuration.CLASSAURA_PALADIN_HEAL_SELF_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinUndeadDemonDoubleDamageChancePercent", Configuration.CLASSAURA_PALADIN_UNDEAD_DEMON_DOUBLE_DAMAGE_CHANCE_PERCENT.ToString()));
@@ -234,7 +234,8 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.RangerPassive:
                 case SpellClassAuraType.RangerAura:
                 case SpellClassAuraType.RangerEndlessQuiver:
-                case SpellClassAuraType.RangerTackShot:
+                case SpellClassAuraType.RangerCompoundInjury:
+                case SpellClassAuraType.RangerCompoundInjuryMoving:
                     return Configuration.CLASSAURA_RANGER_ENABLED;
                 case SpellClassAuraType.RoguePassive:
                 case SpellClassAuraType.RogueAura:
@@ -565,18 +566,21 @@ namespace EQWOWConverter.Spells
             string description = Lines(
                 NamedLine("Endless Quiver", string.Concat("Can be toggled on so your ranged attacks and abilities stop using up arrows and bullets, costing ",
                     Pct(Configuration.CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT), " of base mana per shot instead.")),
-                NamedLine("Tack Shot", string.Concat("Each ranged attack, ranged ability, and offensive spell tacks its target for ",
-                    Seconds(Configuration.CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS),
-                    ", raising the damage it takes from you and your pet by ", Pct(Configuration.CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK), " per stack, up to ",
-                    Configuration.CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS.ToString(), " stacks. The bonus is doubled while the target moves.")));
-            spellTemplates.Add(BuildPassiveTemplate("Swift Reactions", SpellClassAuraType.RangerPassive, icon, description));
+                NamedLine("Compound Injury", string.Concat("Your autoattacks, your harmful single target spells, and your pet's strikes compound the target's injuries for ",
+                    Seconds(Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_DURATION_IN_MS),
+                    ", raising the damage it takes from you and your pet by ", Pct(Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_DAMAGE_PERCENT_PER_STACK), " per stack, up to ",
+                    Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_MAX_STACKS.ToString(), " stacks. The bonus is doubled while the target is moving and for ",
+                    SecondsWithFraction(Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_MOVING_DURATION_IN_MS), " after it stops.")));
+            spellTemplates.Add(BuildPassiveTemplate("Endless Hunt", SpellClassAuraType.RangerPassive, icon, description));
 
-            SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Swift Reactions (Ranger)", SpellClassAuraType.RangerAura, icon, description, new List<SpellEffectWOW>());
+            SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Endless Hunt (Ranger)", SpellClassAuraType.RangerAura, icon, description, new List<SpellEffectWOW>());
             auraSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraRangerAuraScript";
 
-            // Ranged autoattacks (bow, gun, thrown), ranged abilities and harmful spells tack the target.  No spell type filter, since the flags already exclude heals
-            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_RANGED_AUTO_ATTACK | PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS
-                | PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG, 0, PROC_SPELL_PHASE_HIT, PROC_HIT_NORMAL | PROC_HIT_CRITICAL, 0, 0);
+            // Melee and ranged autoattacks, and harmful single target spells and abilities, compound the injury.  No spell type filter, since the flags already exclude heals,
+            // and the mod drops the area spells.  The pet's strikes are handled mod side instead, since a proc row only ever watches the ranger
+            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK | PROC_FLAG_DONE_RANGED_AUTO_ATTACK | PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS
+                | PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS | PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG, 0, PROC_SPELL_PHASE_HIT,
+                PROC_HIT_NORMAL | PROC_HIT_CRITICAL, 0, 0);
             spellTemplates.Add(auraSpellTemplate);
 
             // Endless Quiver (ammo saving but costs mana)
@@ -594,13 +598,23 @@ namespace EQWOWConverter.Spells
             quiverSpellTemplate.PersistThroughDeath = true;
             spellTemplates.Add(quiverSpellTemplate);
 
-            // Debuff on the target increasing damage by the hunter and pet, increasing if creature is in motion
-            string tackShotDescription = string.Concat("Takes ", Pct(Configuration.CLASSAURA_RANGER_TACK_SHOT_DAMAGE_PERCENT_PER_STACK),
-                " more damage per stack from the ranger who tacked it and that ranger's pet, doubled while moving.");
-            List<SpellEffectWOW> tackShotEffects = new List<SpellEffectWOW>();
-            tackShotEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitTargetEnemy));
-            spellTemplates.Add(BuildStackingAuraTemplate("Tack Shot", SpellClassAuraType.RangerTackShot, icon, tackShotDescription, tackShotEffects,
-                Configuration.CLASSAURA_RANGER_TACK_SHOT_MAX_STACKS, Configuration.CLASSAURA_RANGER_TACK_SHOT_DURATION_IN_MS, true));
+            // Debuff on the target increasing damage by the ranger and pet, doubled while the target is in motion.  Every ranger keeps their own copy, since the bonus only
+            // ever pays the ranger who put it there (the mod clears the single-copy attribute for this spell)
+            string compoundInjuryDescription = string.Concat("Takes ", Pct(Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_DAMAGE_PERCENT_PER_STACK),
+                " more damage per stack from the ranger who inflicted it and that ranger's pet, doubled while moving.");
+            List<SpellEffectWOW> compoundInjuryEffects = new List<SpellEffectWOW>();
+            compoundInjuryEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitTargetEnemy));
+            spellTemplates.Add(BuildStackingAuraTemplate("Compound Injury", SpellClassAuraType.RangerCompoundInjury, icon, compoundInjuryDescription, compoundInjuryEffects,
+                Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_MAX_STACKS, Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_DURATION_IN_MS, true));
+
+            // Only marks the window where the bonus is doubled.  The mod refreshes it on every strike that lands while the target is moving, so it runs out on its own once
+            // the target holds still.  One shared copy is right here, since moving is something the target is doing rather than something a ranger did to it
+            string compoundInjuryMovingDescription = string.Concat("The damage bonus from Compound Injury is doubled. Wears off ",
+                SecondsWithFraction(Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_MOVING_DURATION_IN_MS), " after the target stops moving.");
+            List<SpellEffectWOW> compoundInjuryMovingEffects = new List<SpellEffectWOW>();
+            compoundInjuryMovingEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitTargetEnemy));
+            spellTemplates.Add(BuildStackingAuraTemplate("Compound Injury (Moving)", SpellClassAuraType.RangerCompoundInjuryMoving, icon, compoundInjuryMovingDescription,
+                compoundInjuryMovingEffects, 1, Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_MOVING_DURATION_IN_MS, true));
         }
 
         private static void AddRogueSpells(List<SpellTemplate> spellTemplates)

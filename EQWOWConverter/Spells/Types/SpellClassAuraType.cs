@@ -31,7 +31,7 @@ namespace EQWOWConverter.Spells
         RangerPassive = 10,
         RangerAura = 11,
         RangerEndlessQuiver = 12,
-        RangerTackShot = 13,
+        RangerCompoundInjury = 13,
         RoguePassive = 14,
         RogueAura = 15,
         RogueExploit = 16,
@@ -82,6 +82,7 @@ namespace EQWOWConverter.Spells
         ShadowKnightBloodDebtCharge = 61,
         ShadowKnightBloodDebtHeal = 62,
         NecromancerShadowExchange = 63,
-        Count = 64
+        RangerCompoundInjuryMoving = 64,
+        Count = 65
     }
 }
