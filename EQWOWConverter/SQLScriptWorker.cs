@@ -3068,7 +3068,7 @@ namespace EQWOWConverter
             }
 
             // Every spell whose "moving breaks the cast" flag was taken out of Spell.dbc during dbc generation, so that the mod knows which casts should slow the caster while they move through them
-            foreach (int movementCastSnaredSpellID in MovementCastSpellRegistry.GetMovementCastSnaredSpellIDs())
+            foreach (int movementCastSnaredSpellID in SpellMovementCastSpellRegistry.GetMovementCastSnaredSpellIDs())
                 modEverquestSpellMovementCastSnareSQL.AddRow(movementCastSnaredSpellID);
 
             // Spell split data

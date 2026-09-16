@@ -16,7 +16,7 @@
 
 namespace EQWOWConverter.Spells
 {
-    internal static class MovementCastSpellRegistry
+    internal static class SpellMovementCastSpellRegistry
     {
         private static readonly object RegistryLock = new object();
         private static SortedSet<int> MovementCastSnaredSpellIDs = new SortedSet<int>();

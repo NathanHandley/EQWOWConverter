@@ -83,6 +83,8 @@ namespace EQWOWConverter.Spells
         ShadowKnightBloodDebtHeal = 62,
         NecromancerShadowExchange = 63,
         RangerCompoundInjuryMoving = 64,
-        Count = 65
+        MagicianDetonateSummoned = 65,
+        MagicianDetonateSummonedBlast = 66,
+        Count = 67
     }
 }

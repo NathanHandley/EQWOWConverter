@@ -35,7 +35,7 @@ namespace EQWOWConverter.WOWFiles
             if (Configuration.SPELL_MOVEMENT_CAST_ENABLED == true && isPlayerLearnedClassSpell == true && spellTemplate.InterruptOnMovement == true && spellTemplate.IsChanneled == false && spellTemplate.CastTimeInMS > 0)
             {
                 moveMovementInterruptToMod = true;
-                MovementCastSpellRegistry.RegisterMovementCastSnaredSpellID(effectBlock.WOWSpellID);
+                SpellMovementCastSpellRegistry.RegisterMovementCastSnaredSpellID(effectBlock.WOWSpellID);
             }
 
             // Don't show the summon aura
@@ -501,7 +501,7 @@ namespace EQWOWConverter.WOWFiles
                     continue;
 
                 SetInt32OnSourceRow(row, INTERRUPT_FLAGS_FIELD_BYTE_OFFSET, interruptFlags & ~SPELL_INTERRUPT_FLAG_MOVEMENT);
-                MovementCastSpellRegistry.RegisterMovementCastSnaredSpellID(spellID);
+                SpellMovementCastSpellRegistry.RegisterMovementCastSnaredSpellID(spellID);
                 movedSpellCount++;
             }
             return movedSpellCount;

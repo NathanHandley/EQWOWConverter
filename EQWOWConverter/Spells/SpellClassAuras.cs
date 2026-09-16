@@ -138,6 +138,7 @@ namespace EQWOWConverter.Spells
             {
                 case ClassEQType.ShadowKnight: return GetSpellID(SpellClassAuraType.ShadowKnightBloodDebt);
                 case ClassEQType.Necromancer: return GetSpellID(SpellClassAuraType.NecromancerShadowExchange);
+                case ClassEQType.Magician: return GetSpellID(SpellClassAuraType.MagicianDetonateSummoned);
                 default: return 0;
             }
         }
@@ -171,6 +172,7 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraWizardFocusMovementIntervalInMS", Configuration.CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraWizardFocusStillIntervalInMS", Configuration.CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerShadowExchangeMaxDistanceInYards", Configuration.CLASSAURA_NECROMANCER_SHADOW_EXCHANGE_MAX_DISTANCE_IN_YARDS.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraMagicianDetonateSummonedUnsummonDelayInMS", Math.Max(0, Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_UNSUMMON_DELAY_IN_MS).ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerMarkDirectDamagePercentPerStack", Configuration.CLASSAURA_NECROMANCER_MARK_DIRECT_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerMarkDotDamagePercentPerStack", Configuration.CLASSAURA_NECROMANCER_MARK_DOT_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraClericCadenceReductionPercent", Configuration.CLASSAURA_CLERIC_CADENCE_REDUCTION_PERCENT.ToString()));
@@ -269,6 +271,8 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.MagicianPetPassive:
                 case SpellClassAuraType.MagicianOwnerFocus:
                 case SpellClassAuraType.MagicianPetFury:
+                case SpellClassAuraType.MagicianDetonateSummoned:
+                case SpellClassAuraType.MagicianDetonateSummonedBlast:
                     return Configuration.CLASSAURA_MAGICIAN_ENABLED;
                 case SpellClassAuraType.NecromancerPassive:
                 case SpellClassAuraType.NecromancerAura:
@@ -607,14 +611,18 @@ namespace EQWOWConverter.Spells
             spellTemplates.Add(BuildStackingAuraTemplate("Compound Injury", SpellClassAuraType.RangerCompoundInjury, icon, compoundInjuryDescription, compoundInjuryEffects,
                 Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_MAX_STACKS, Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_DURATION_IN_MS, true));
 
-            // Only marks the window where the bonus is doubled.  The mod refreshes it on every strike that lands while the target is moving, so it runs out on its own once
-            // the target holds still.  One shared copy is right here, since moving is something the target is doing rather than something a ranger did to it
+            // Only marks the window where the bonus is doubled.  A strike that lands while the target is moving puts it on, and its periodic tick has the mod hold it at full
+            // duration for as long as the target keeps moving, so the whole duration only starts counting down once the target stops.  One shared copy is right here,
+            // since moving is something the target is doing rather than something a ranger did to it
+            const uint COMPOUND_INJURY_MOVING_REFRESH_INTERVAL_IN_MS = 250; // Also how far short of the full duration the tail can start
             string compoundInjuryMovingDescription = string.Concat("The damage bonus from Compound Injury is doubled. Wears off ",
                 SecondsWithFraction(Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_MOVING_DURATION_IN_MS), " after the target stops moving.");
             List<SpellEffectWOW> compoundInjuryMovingEffects = new List<SpellEffectWOW>();
-            compoundInjuryMovingEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitTargetEnemy));
-            spellTemplates.Add(BuildStackingAuraTemplate("Compound Injury (Moving)", SpellClassAuraType.RangerCompoundInjuryMoving, icon, compoundInjuryMovingDescription,
-                compoundInjuryMovingEffects, 1, Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_MOVING_DURATION_IN_MS, true));
+            compoundInjuryMovingEffects.Add(BuildAuraEffect(SpellWOWAuraType.PeriodicDummy, 0, 0, SpellWOWTargetType.UnitTargetEnemy, COMPOUND_INJURY_MOVING_REFRESH_INTERVAL_IN_MS));
+            SpellTemplate compoundInjuryMovingSpellTemplate = BuildStackingAuraTemplate("Compound Injury (Moving)", SpellClassAuraType.RangerCompoundInjuryMoving, icon, compoundInjuryMovingDescription,
+                compoundInjuryMovingEffects, 1, Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_MOVING_DURATION_IN_MS, true);
+            compoundInjuryMovingSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraRangerCompoundInjuryMovingAuraScript";
+            spellTemplates.Add(compoundInjuryMovingSpellTemplate);
         }
 
         private static void AddRogueSpells(List<SpellTemplate> spellTemplates)
@@ -853,7 +861,9 @@ namespace EQWOWConverter.Spells
                 NamedLine("Conjurer's Insight", string.Concat("Your pet's strikes raise your spell damage by ", Pct(Configuration.CLASSAURA_MAGICIAN_PET_STRIKE_SPELL_DAMAGE_PERCENT_PER_STACK), " for ",
                     Seconds(Configuration.CLASSAURA_MAGICIAN_PET_STRIKE_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_MAGICIAN_PET_STRIKE_MAX_STACKS.ToString(), " times.")),
                 NamedLine("Conjurer's Fury", string.Concat("Your spell critical strikes raise your pet's damage by ", Pct(Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_PET_DAMAGE_PERCENT_PER_STACK), " for ",
-                    Seconds(Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_MAX_STACKS.ToString(), " times.")));
+                    Seconds(Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_MAX_STACKS.ToString(), " times.")),
+                NamedLine("Detonate Summoned", string.Concat("Explode your summoned pet, dealing arcane damage equal to its current health to every enemy within ",
+                    Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_RADIUS_IN_YARDS.ToString(), " yards of it. The pet is destroyed.")));
             spellTemplates.Add(BuildPassiveTemplate("Bound Conjurer", SpellClassAuraType.MagicianPassive, icon, description));
 
             // Owner side: procs on the owner's own damaging spell crits
@@ -886,6 +896,44 @@ namespace EQWOWConverter.Spells
             petFuryEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDamagePercentDone, Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_PET_DAMAGE_PERCENT_PER_STACK, SCHOOL_MASK_ALL, SpellWOWTargetType.UnitTargetAlly));
             spellTemplates.Add(BuildStackingAuraTemplate("Conjurer's Fury", SpellClassAuraType.MagicianPetFury, icon, petFuryDescription, petFuryEffects,
                 Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_MAX_STACKS, Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_DURATION_IN_MS, false));
+
+            // Detonate Summoned, the active ability.  The mod has the pet set off the blast below and then unsummons it
+            int detonateRadius = Math.Max(1, Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_RADIUS_IN_YARDS);
+            string detonateDescription = Lines(
+                string.Concat("Explode your summoned pet, dealing arcane damage equal to its current health to every enemy within ", detonateRadius.ToString(), " yards of it."),
+                "The pet is destroyed.");
+            SpellTemplate detonateSpellTemplate = BuildBaseTemplate("Detonate Summoned", SpellClassAuraType.MagicianDetonateSummoned,
+                Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_SPELL_ICON_EQ_ID, detonateDescription, string.Empty);
+            detonateSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat); // Unlike most class aura spells, this one is in the spellbook
+            detonateSpellTemplate.CastTimeInMS = Math.Max(0, Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_TIME_IN_MS);
+            detonateSpellTemplate.HasCustomCooldown = true; // No cooldown, and the cooldown disable configs should leave it that way
+            detonateSpellTemplate.SchoolMask = 64; // Arcane
+            detonateSpellTemplate.DefenseType = 1; // Magic
+            detonateSpellTemplate.GenerateNoThreat = true;
+            SpellEffectWOW detonateEffect = new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0);
+            detonateEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            detonateSpellTemplate.WOWSpellEffects.Add(detonateEffect);
+            detonateSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraMagicianDetonateSummonedSpellScript";
+            spellTemplates.Add(detonateSpellTemplate);
+
+            // The blast itself.  The pet casts it so it is centered on the pet, with the magician as the original caster (damage and threat are the magician's).
+            // Its damage is the pet's health, handed in by the mod as the base points, so nothing on either side changes it
+            SpellTemplate blastSpellTemplate = BuildBaseTemplate("Summoned Detonation", SpellClassAuraType.MagicianDetonateSummonedBlast,
+                Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_SPELL_ICON_EQ_ID, "Arcane damage from an exploding summoned pet.", string.Empty);
+            blastSpellTemplate.SchoolMask = 64; // Arcane
+            blastSpellTemplate.DefenseType = 1; // Magic
+            blastSpellTemplate.SpellRadius = detonateRadius;
+            // Stock Arcane Explosion visual.  Its cast kit (the nova and its sound) plays on the caster, which is the pet, since the pet sets the blast off
+            blastSpellTemplate.SpellVisualID1 = Convert.ToUInt32(Math.Max(0, Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_SPELL_VISUAL_ID));
+            SpellEffectWOW blastEffect = new SpellEffectWOW(SpellWOWEffectType.SchoolDamage, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0);
+            blastEffect.ImplicitTargetA = SpellWOWTargetType.UnitSourceAreaEnemy;
+            blastEffect.EffectRadiusIndex = Convert.ToUInt32(blastSpellTemplate.SpellRadiusDBCID);
+            blastSpellTemplate.WOWSpellEffects.Add(blastEffect);
+            blastSpellTemplate.NeverMisses = true;
+            blastSpellTemplate.CannotCrit = true;
+            blastSpellTemplate.DamageIsFixed = true;
+            blastSpellTemplate.InfluencedBySpellPower = false;
+            spellTemplates.Add(blastSpellTemplate);
         }
 
         private static void AddNecromancerSpells(List<SpellTemplate> spellTemplates)
