@@ -1775,10 +1775,10 @@ namespace EQWOWConverter
             List<CreatureSpellList> creatureSpellLists = CreatureSpellList.GetCreatureSpellLists();
             SortedDictionary<int, List<CreatureSpellEntry>> creatureSpellEntriesByListID = CreatureSpellEntry.GetCreatureSpellEntriesByListID();
 
-            // Cull the lists down to only list entries that have valid spells within them
+            // Cull the lists down to only list entries that have valid spells within them, dropping spells that are nothing but a charm when creature charm is disabled
             foreach (List<CreatureSpellEntry> creatureSpellEntries in creatureSpellEntriesByListID.Values)
                 for (int i = creatureSpellEntries.Count - 1;  i >= 0; i--)
-                    if (spellTemplatesByEQID.ContainsKey(creatureSpellEntries[i].EQSpellID) == false)
+                    if (spellTemplatesByEQID.ContainsKey(creatureSpellEntries[i].EQSpellID) == false || spellTemplatesByEQID[creatureSpellEntries[i].EQSpellID].IsOnlyCharmForCreatureCast() == true)
                         creatureSpellEntries.RemoveAt(i);
 
             // Create a mapping of spell list for faster lookup
@@ -1809,7 +1809,7 @@ namespace EQWOWConverter
                 }
 
                 // Save On-Attack information
-                if (creatureSpellList.AttackProcID > 0 && spellTemplatesByEQID.ContainsKey(creatureSpellList.AttackProcID))
+                if (creatureSpellList.AttackProcID > 0 && spellTemplatesByEQID.ContainsKey(creatureSpellList.AttackProcID) && spellTemplatesByEQID[creatureSpellList.AttackProcID].IsOnlyCharmForCreatureCast() == false)
                 {
                     int eqSpellID = creatureSpellList.AttackProcID;
                     int procChance = creatureSpellList.ProcChance;
@@ -1833,7 +1833,7 @@ namespace EQWOWConverter
                         }
 
                         // Add the On-Attack
-                        if (creatureParentSpellList.AttackProcID > 0 && spellTemplatesByEQID.ContainsKey(creatureParentSpellList.AttackProcID))
+                        if (creatureParentSpellList.AttackProcID > 0 && spellTemplatesByEQID.ContainsKey(creatureParentSpellList.AttackProcID) && spellTemplatesByEQID[creatureParentSpellList.AttackProcID].IsOnlyCharmForCreatureCast() == false)
                         {
                             int eqSpellID = creatureParentSpellList.AttackProcID;
                             int procChance = creatureParentSpellList.ProcChance;

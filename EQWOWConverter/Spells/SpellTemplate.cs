@@ -363,6 +363,7 @@ namespace EQWOWConverter.Spells
         public bool IsToggleAura = false;
         public bool ShowOnShapeshiftBar = false; // Using this term because that's what the flag is called, but it's also where Paladin auras go as well as Warrior stances
         public int PeriodicAuraWOWSpellID = 0;
+        public SpellTemplate? PeriodicAuraSpellTemplate = null;
         public int PeriodicAuraSpellRadius = 0;
         public SpellFailableType FailableType = SpellFailableType.None;
         public int EffectFailChancePercent = 0;
@@ -2277,6 +2278,8 @@ namespace EQWOWConverter.Spells
                     linkedEQSpellIDs.Add(curSpellTemplate.ProcLinkEQSpellID);
                 foreach (SpellTemplate chainedSpellTemplate in curSpellTemplate.ChainedSpellTemplates)
                     linkedEQSpellIDs.Add(chainedSpellTemplate.EQSpellID);
+                if (curSpellTemplate.PeriodicAuraSpellTemplate != null)
+                    linkedEQSpellIDs.Add(curSpellTemplate.PeriodicAuraSpellTemplate.EQSpellID);
                 foreach (int linkedEQSpellID in linkedEQSpellIDs)
                     if (creatureCastableEQSpellIDs.Add(linkedEQSpellID) == true)
                         unexpandedEQSpellIDs.Enqueue(linkedEQSpellID);
@@ -2294,9 +2297,15 @@ namespace EQWOWConverter.Spells
                     spellTemplate.ManaCost != spellTemplate.CreatureCastManaCost || spellTemplate.AuraDuration != spellTemplate.CreatureCastAuraDuration ||
                     spellTemplate.DoesCreatureCastRecoveryTimeDifferFromPlayer() == true)
                     spellTemplate.NeedsCreatureCastVersion = true;
+
+                // A spell that does more than charm is still cast by creatures, just without the charm.  One that is only a charm is never cast by creatures, so it gets no copy at all
+                if (spellTemplate.IsOnlyCharmForCreatureCast() == true)
+                    spellTemplate.NeedsCreatureCastVersion = false;
+                else if (spellTemplate.IsCharmRemovedFromCreatureCast() == true)
+                    spellTemplate.NeedsCreatureCastVersion = true;
             }
 
-            // A creature's cast only reaches a chained spell's creature-cast copy through a creature-cast copy of the parent, so the need for one flows up the chain
+            // A creature's cast only reaches a chained spell's (or bard song tick's) creature-cast copy through a creature-cast copy of the parent, so the need for one flows up the chain
             bool foundNewCreatureCastVariant = true;
             while (foundNewCreatureCastVariant == true)
             {
@@ -2308,6 +2317,12 @@ namespace EQWOWConverter.Spells
                     SpellTemplate spellTemplate = SpellTemplatesByEQID[creatureCastableEQSpellID];
                     if (spellTemplate.WOWSpellIDCreatureCast <= 0 || spellTemplate.NeedsCreatureCastVersion == true)
                         continue;
+                    if (spellTemplate.PeriodicAuraSpellTemplate != null && spellTemplate.PeriodicAuraSpellTemplate.NeedsCreatureCastVersion == true)
+                    {
+                        spellTemplate.NeedsCreatureCastVersion = true;
+                        foundNewCreatureCastVariant = true;
+                        continue;
+                    }
                     foreach (SpellTemplate chainedSpellTemplate in spellTemplate.ChainedSpellTemplates)
                     {
                         if (chainedSpellTemplate.NeedsCreatureCastVersion == false)
@@ -2474,6 +2489,10 @@ namespace EQWOWConverter.Spells
                 effectGeneratedSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(spellTemplate.EQSpellVisualEffectIndex, SpellVisualType.BardTick).SpellVisualDBCID);
             SetActionAndAuraDescriptions(ref effectGeneratedSpellTemplate, null, null);
 
+            // A charm song's tick needs its own creature-cast copy, so that the charm can be left out of it when creatures are not allowed to charm
+            if (Configuration.CREATURE_SPELL_CHARM_DISABLED == true && effectGeneratedSpellTemplate.HasCharmEffect() == true)
+                effectGeneratedSpellTemplate.WOWSpellIDCreatureCast = IDGenerationTool.GenerateID("SpellID", "bardsongeffectcreaturecast", spellTemplate.EQSpellID.ToString());
+
             // Update properties for this song aura
             SpellEffectWOW auraEffect = new SpellEffectWOW();
             auraEffect.EffectType = SpellWOWEffectType.ApplyAura;
@@ -2500,6 +2519,7 @@ namespace EQWOWConverter.Spells
             spellTemplate.AuraDuration.IsInfinite = true;
             spellTemplate.IsToggleAura = true;
             spellTemplate.PeriodicAuraWOWSpellID = effectGeneratedSpellTemplate.WOWSpellID;
+            spellTemplate.PeriodicAuraSpellTemplate = effectGeneratedSpellTemplate;
             spellTemplate.PeriodicAuraSpellRadius = spellRadius;
             spellTemplate.ShowFocusBoostInDescriptionIfExists = true;
 
@@ -5170,9 +5190,18 @@ namespace EQWOWConverter.Spells
             if (IsllusionSpellParent == true)
                 MoveIllusionParentDummyEffectToFront();
 
+            GroupSpellEffectsIntoOutputEffectBlocks(WOWSpellEffects, WOWSpellID, "basesplit", _GroupedBaseSpellEffectBlocksForOutput);
+
+            // Good proc and clicky spells each need copies of the base blocks
+            GenerateMissingGoodProcOutputEffectBlocks();
+            GenerateMissingClickyOutputEffectBlocks();
+        }
+
+        private void GroupSpellEffectsIntoOutputEffectBlocks(List<SpellEffectWOW> spellEffects, int primaryWOWSpellID, string splitIDGenerationKey, List<SpellEffectBlock> outputEffectBlocks)
+        {
             // Pre-group by 'max' levels so that spell value calculations work properly
             Dictionary<int, List<SpellEffectWOW>> spellEffectsByMaxLevel = new Dictionary<int, List<SpellEffectWOW>>();
-            foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
+            foreach (SpellEffectWOW spellEffect in spellEffects)
             {
                 if (spellEffectsByMaxLevel.ContainsKey(spellEffect.CalcEffectHighLevel) == false)
                     spellEffectsByMaxLevel.Add(spellEffect.CalcEffectHighLevel, new List<SpellEffectWOW>());
@@ -5195,22 +5224,22 @@ namespace EQWOWConverter.Spells
                             baseEffectBlock.SpellEffects.Add(curEffectList[numOfExtractedEffects]);
                         numOfExtractedEffects += 1;
                     }
-                    if (_GroupedBaseSpellEffectBlocksForOutput.Count == 0)
+                    if (outputEffectBlocks.Count == 0)
                     {
                         baseEffectBlock.SpellName = Name;
-                        baseEffectBlock.WOWSpellID = WOWSpellID;
+                        baseEffectBlock.WOWSpellID = primaryWOWSpellID;
                     }
                     else
                     {
                         // When a primary block has no aura (like a damage spell), the split has the aura so we need to display the icon
-                        if (BlockHasAura(_GroupedBaseSpellEffectBlocksForOutput[0]) == false && BlockHasAura(baseEffectBlock) == true)
+                        if (BlockHasAura(outputEffectBlocks[0]) == false && BlockHasAura(baseEffectBlock) == true)
                         {
                             baseEffectBlock.SpellName = Name;
                             baseEffectBlock.ForceVisibleSplitAura = true;
                         }
                         else
-                            baseEffectBlock.SpellName = string.Concat(Name, " Split ", _GroupedBaseSpellEffectBlocksForOutput.Count.ToString());
-                        baseEffectBlock.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "basesplit", WOWSpellID.ToString(), _GroupedBaseSpellEffectBlocksForOutput.Count.ToString());
+                            baseEffectBlock.SpellName = string.Concat(Name, " Split ", outputEffectBlocks.Count.ToString());
+                        baseEffectBlock.WOWSpellID = IDGenerationTool.GenerateID("SpellID", splitIDGenerationKey, primaryWOWSpellID.ToString(), outputEffectBlocks.Count.ToString());
 
                         // Split blocks chained by hit trigger are re-cast by each hit unit with that unit as the caster (spell_linked_spell type 1), so retarget the effects onto that unit.
                         // (Keeping the parent's targets would re-run enemy area selection from the hit unit's perspective, bouncing the spell back onto the original caster and anything near each hit unit)
@@ -5228,13 +5257,9 @@ namespace EQWOWConverter.Spells
                             baseEffectBlock.SpellEffects[effectIndex] = retargetedSpellEffect;
                         }
                     }
-                    _GroupedBaseSpellEffectBlocksForOutput.Add(baseEffectBlock);
+                    outputEffectBlocks.Add(baseEffectBlock);
                 }
             }
-
-            // Good proc and clicky spells each need copies of the base blocks
-            GenerateMissingGoodProcOutputEffectBlocks();
-            GenerateMissingClickyOutputEffectBlocks();
         }
 
         private void MoveIllusionParentDummyEffectToFront()
@@ -5269,6 +5294,20 @@ namespace EQWOWConverter.Spells
 
         private void GenerateCreatureCastOutputEffectBlocks()
         {
+            // Without the charm, the remaining effects are regrouped so that none are left in a split block whose trigger was the charm
+            if (IsCharmRemovedFromCreatureCast() == true)
+            {
+                // Base block generation grooms the effects (knockback levels, effect order), so it has to happen first
+                if (_GroupedBaseSpellEffectBlocksForOutput.Count == 0)
+                    GenerateOutputEffectBlocks();
+                List<SpellEffectWOW> nonCharmSpellEffects = new List<SpellEffectWOW>();
+                foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
+                    if (IsCharmSpellEffect(spellEffect) == false)
+                        nonCharmSpellEffects.Add(spellEffect);
+                GroupSpellEffectsIntoOutputEffectBlocks(nonCharmSpellEffects, WOWSpellIDCreatureCast, "creaturecastsplit", _GroupedCreatureCastSpellEffectBlocksForOutput);
+                return;
+            }
+
             foreach (SpellEffectBlock baseEffectBlock in GroupedBaseSpellEffectBlocksForOutput)
             {
                 SpellEffectBlock creatureCastEffectBlock = new SpellEffectBlock();
@@ -5281,6 +5320,39 @@ namespace EQWOWConverter.Spells
                 creatureCastEffectBlock.SpellEffects = baseEffectBlock.SpellEffects;
                 _GroupedCreatureCastSpellEffectBlocksForOutput.Add(creatureCastEffectBlock);
             }
+        }
+
+        private static bool IsCharmSpellEffect(SpellEffectWOW spellEffect)
+        {
+            return spellEffect.EffectType == SpellWOWEffectType.ApplyAura && spellEffect.EffectAuraType == SpellWOWAuraType.ModCharm;
+        }
+
+        public bool HasCharmEffect()
+        {
+            foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
+                if (IsCharmSpellEffect(spellEffect) == true)
+                    return true;
+            return false;
+        }
+
+        public bool IsCharmRemovedFromCreatureCast()
+        {
+            return Configuration.CREATURE_SPELL_CHARM_DISABLED == true && HasCharmEffect() == true;
+        }
+
+        // True when taking the charm away leaves a creature nothing to cast
+        public bool IsOnlyCharmForCreatureCast()
+        {
+            if (Configuration.CREATURE_SPELL_CHARM_DISABLED == false)
+                return false;
+            if (PeriodicAuraSpellTemplate != null)
+                return PeriodicAuraSpellTemplate.IsOnlyCharmForCreatureCast();
+            if (HasCharmEffect() == false)
+                return false;
+            foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
+                if (spellEffect.EffectType != SpellWOWEffectType.None && IsCharmSpellEffect(spellEffect) == false)
+                    return false;
+            return true;
         }
 
         public int GetWOWSpellIDForCreatureCast()

@@ -109,7 +109,11 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("RecourseSpellID", 0);
             newRow.AddInt("SpellIDCastOnMeleeAttacker", spellTemplate.WOWSpellIDCastOnMeleeAttacker);
             newRow.AddInt("FocusBoostType", (int)spellTemplate.FocusBoostType);
-            newRow.AddInt("PeriodicAuraSpellID", spellTemplate.PeriodicAuraWOWSpellID);
+            // A creature-cast song ticks with the creature-cast copy of its effect spell
+            if (isCreatureCastVersion == true && spellTemplate.PeriodicAuraSpellTemplate != null)
+                newRow.AddInt("PeriodicAuraSpellID", spellTemplate.PeriodicAuraSpellTemplate.GetWOWSpellIDForCreatureCast());
+            else
+                newRow.AddInt("PeriodicAuraSpellID", spellTemplate.PeriodicAuraWOWSpellID);
             newRow.AddInt("PeriodicAuraSpellRadius", spellTemplate.PeriodicAuraSpellRadius);
             newRow.AddInt("MaleFormSpellID", spellTemplate.MaleFormSpellTemplateID);
             newRow.AddInt("FemaleFormSpellID", spellTemplate.FemaleFormSpellTemplateID);

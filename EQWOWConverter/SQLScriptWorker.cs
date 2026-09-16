@@ -2645,6 +2645,8 @@ namespace EQWOWConverter
                                 continue;
                             }
                             SpellTemplate castSpellTemplate = spellTemplatesByEQID[reaction.SpellEQID];
+                            if (castSpellTemplate.IsOnlyCharmForCreatureCast() == true)
+                                continue;
                             int castSpellID = castSpellTemplate.GetWOWSpellIDForCreatureCast();
                             string castComment = string.Concat("EQ ", creatureTemplateByWOWID[creatureTemplateID].Name, " Quest Cast ", castSpellTemplate.Name, " (", castSpellID.ToString(), ")");
                             smartScriptsSQL.AddRowForQuestCompleteSpellCastEvent(creatureTemplateID, firstQuestID, castSpellID, castComment);
@@ -2950,7 +2952,7 @@ namespace EQWOWConverter
             }
             if (spellTemplate.IsBardSongAura == true)
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_BardSongAuraScript");
-            if (spellTemplate.IsCharmSpell == true)
+            if (spellTemplate.IsCharmSpell == true && (isCreatureCastVersion == false || spellTemplate.IsCharmRemovedFromCreatureCast() == false))
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_CharmAuraScript");
             if (spellTemplate.IsllusionSpellParent == true)
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_IllusionSpellScript");
