@@ -336,6 +336,7 @@ namespace EQWOWConverter.Spells
         public int SummonPropertiesDBCID = 0;
         public int SummonCreatureTemplateID = 0;
         public bool IsBardSongAura = false;
+        public bool IsBardSongEffect = false; // The per-tick spell a bard song aura casts
         public bool IsCharmSpell = false;
         public bool HasAdditionalTickOnApply = false;
         public bool InterruptOnMovement = true;
@@ -999,11 +1000,6 @@ namespace EQWOWConverter.Spells
                 intenseHealingSpellTemplate.SpellFamilyFlags3 = Configuration.SPELL_EQ_INTENSE_HEALING_SPELL_FAMILY_FLAG;
                 intenseHealingSpellTemplate.AppliesIntenseHealingExhaustion = true;
             }
-        }
-
-        private static bool IsNonDummySpellEffect(SpellEffectWOW spellEffect)
-        {
-            return spellEffect.EffectType != SpellWOWEffectType.Dummy;
         }
 
         public void CalculateSpellPowerCoefficientsForBlock(SpellEffectBlock effectBlock, out float directCoefficient, out float dotCoefficient)
@@ -2467,6 +2463,7 @@ namespace EQWOWConverter.Spells
             effectGeneratedSpellTemplate.IsFocusBoostableEffect = true;
             effectGeneratedSpellTemplate.FocusBoostType = focusBoostType;
             effectGeneratedSpellTemplate.AuraDuration = auraDuration;
+            effectGeneratedSpellTemplate.IsBardSongEffect = true;
             Dictionary<int, CreatureTemplate> discardCreatureTemplates = new Dictionary<int, CreatureTemplate>();
             ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, effectGeneratedSpellTemplate.AuraDuration, 0, effectedSpellTargets,
                 spellTemplate.SpellRadiusDBCID, new SortedDictionary<int, ItemTemplate>(), isDetrimental, string.Empty, new Dictionary<string, ZoneProperties>(),
@@ -4409,7 +4406,6 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", textParticle, " ", raceName);
                                 newSpellEffectWOW.AuraDescription = string.Concat("appear as ", textParticle, " ", raceName);
                                 if (illusionObjectClass != CreatureIllusionObjectClassType.None)
-                                {
                                     newSpellEffectWOW.ActionDescription = string.Concat("changes the form to ", GetIllusionObjectDescriptionText(illusionObjectClass));
 
                                 // The look is its own aura on the form spell, so any aura the parent keeps for its other effects only describes those
@@ -4945,9 +4941,10 @@ namespace EQWOWConverter.Spells
             if (spellTemplate.SummonedPetTypeName.Length > 0)
                 descriptionSB.Append(string.Concat(" This is a ", spellTemplate.SummonedPetTypeName, " type pet."));
 
-            // Raw attack power buffs and armor reductions never add together, so say so on the tooltip (see the mod's attack power tracking and the WOW "Major Armor Debuffs" spell group)
+            // Raw attack power buffs and armor reductions never add together, so say so on the tooltip (see the mod's attack power tracking and the WOW "Major Armor Debuffs" spell group).
+            // A bard song's attack power gain only competes with other bard songs, the same way EQ songs stack with everything that isn't a song, but reductions all share one pool
             if (DoesSpellTemplateHaveHighestOnlyAttackPowerBuffEffect(spellTemplate) == true)
-                descriptionSB.Append(" Only the highest attack power effect will take effect on the target.");
+                descriptionSB.Append(spellTemplate.IsBardSongEffect == true ? " Only the highest bard song attack power effect will take effect on the target." : " Only the highest attack power effect will take effect on the target.");
             if (DoesSpellTemplateHaveHighestOnlyAttackPowerReductionEffect(spellTemplate) == true)
                 descriptionSB.Append(" Only the highest attack power reduction effect will take effect on the target.");
             if (DoesSpellTemplateHaveHighestOnlyArmorReductionEffect(spellTemplate) == true)
@@ -4993,7 +4990,8 @@ namespace EQWOWConverter.Spells
             if (spellTemplate.IsBardSongAura && spellTemplate.TargetDescriptionTextFragment.Length > 0)
                 auraDescription = string.Concat(auraDescription, " ", spellTemplate.TargetDescriptionTextFragment, ".");
 
-            if (spellTemplate.IsCosmeticOnlyIllusion == true)
+            // Only the form's aura is the look that factions would otherwise react to
+            if (spellTemplate.IsCosmeticOnlyIllusion == true && spellTemplate.IsllusionSpellParent == false)
                 auraDescription = string.Concat(auraDescription, " Will not alter faction standing with any groups.");
 
             return auraDescription;
