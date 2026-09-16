@@ -889,10 +889,10 @@ namespace EQWOWConverter
         public static bool SPELLS_MANA_COST_PERCENT_ENABLED = true;
         public static int SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE = 100;
         public static int SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL = 30;
-        public static float SPELLS_MANA_COST_PERCENT_MOD = 1.65f;
-        public static float SPELLS_MANA_COST_PERCENT_HEAL_MOD = 1.8f;
-        public static float SPELLS_MANA_COST_PERCENT_PERIODIC_MOD = 2.6f;
-        public static float SPELLS_MANA_COST_PERCENT_AOE_MOD = 1.3f;
+        public static float SPELLS_MANA_COST_PERCENT_MOD = 1.60f;
+        public static float SPELLS_MANA_COST_PERCENT_HEAL_MOD = 1.75f;
+        public static float SPELLS_MANA_COST_PERCENT_PERIODIC_MOD = 2.5f;
+        public static float SPELLS_MANA_COST_PERCENT_AOE_MOD = 1.2f;
         public static int SPELLS_MANA_COST_PERCENT_MIN = 1;
         public static int SPELLS_MANA_COST_PERCENT_MAX = 60;
 
@@ -1323,7 +1323,7 @@ namespace EQWOWConverter
         // If true, every EQ class (primary or secondary) grants a permanent aura with class specific effects
         public static bool CLASSAURA_ENABLED = true;
 
-        // First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96062 as of writing)
+        // First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96068 as of writing)
         public static int CLASSAURA_SPELL_ID_START = 96000;
 
         // Enchanter "Mind of Clarity"
@@ -1452,6 +1452,10 @@ namespace EQWOWConverter
         public static int CLASSAURA_CLERIC_HEAL_HASTE_PERCENT_PER_STACK = 2;
         public static int CLASSAURA_CLERIC_HEAL_HASTE_MAX_STACKS = 5;
         public static int CLASSAURA_CLERIC_HEAL_HASTE_DURATION_IN_MS = 20000;
+        public static int CLASSAURA_CLERIC_RADIANCE_SPELL_ICON_EQ_ID = 18;
+        public static int CLASSAURA_CLERIC_RADIANCE_DAMAGE_PERCENT = 10;
+        public static int CLASSAURA_CLERIC_RADIANCE_FREE_MANA_SPELL_ICON_EQ_ID = 8;
+        public static int CLASSAURA_CLERIC_RADIANCE_FREE_MANA_HEALTH_PERCENT = 20;
 
         // Druid "One With Nature"
         public static bool CLASSAURA_DRUID_ENABLED = true;
@@ -2640,7 +2644,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ, "Creatures in this level range will never enrage (taken from TAKP's mob_ai.cpp CheckEnrage), with 0 in both disabling this suppression", false);
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ, "");
             OutputVariableToConfig("CLASSAURA_ENABLED", CLASSAURA_ENABLED, "Every EQ class (primary or secondary) grants a permanent aura with class specific effects. Values here bake into Spell.dbc, so a change needs a converter regen and DBC deploy", false);
-            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96064 as of writing)", false);
+            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96068 as of writing)", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_ENABLED", CLASSAURA_ENCHANTER_ENABLED, "Enchanter \"Mind of Clarity\": regenerates a percent of maximum mana on an interval, and spell damage and healing are increased while mana is at or above a threshold", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID", CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT", CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT, "", false);
@@ -2744,6 +2748,10 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_CLERIC_HEAL_HASTE_PERCENT_PER_STACK", CLASSAURA_CLERIC_HEAL_HASTE_PERCENT_PER_STACK, "", false);
             OutputVariableToConfig("CLASSAURA_CLERIC_HEAL_HASTE_MAX_STACKS", CLASSAURA_CLERIC_HEAL_HASTE_MAX_STACKS, "", false);
             OutputVariableToConfig("CLASSAURA_CLERIC_HEAL_HASTE_DURATION_IN_MS", CLASSAURA_CLERIC_HEAL_HASTE_DURATION_IN_MS, "", false);
+            OutputVariableToConfig("CLASSAURA_CLERIC_RADIANCE_SPELL_ICON_EQ_ID", CLASSAURA_CLERIC_RADIANCE_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("CLASSAURA_CLERIC_RADIANCE_DAMAGE_PERCENT", CLASSAURA_CLERIC_RADIANCE_DAMAGE_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_CLERIC_RADIANCE_FREE_MANA_SPELL_ICON_EQ_ID", CLASSAURA_CLERIC_RADIANCE_FREE_MANA_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("CLASSAURA_CLERIC_RADIANCE_FREE_MANA_HEALTH_PERCENT", CLASSAURA_CLERIC_RADIANCE_FREE_MANA_HEALTH_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_DRUID_ENABLED", CLASSAURA_DRUID_ENABLED, "Druid", false);
             OutputVariableToConfig("CLASSAURA_DRUID_SPELL_ICON_EQ_ID", CLASSAURA_DRUID_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT", CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT, "", false);
@@ -3542,6 +3550,10 @@ namespace EQWOWConverter
             CLASSAURA_CLERIC_HEAL_HASTE_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_CLERIC_HEAL_HASTE_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_CLERIC_HEAL_HASTE_PERCENT_PER_STACK);
             CLASSAURA_CLERIC_HEAL_HASTE_MAX_STACKS = ReadVariableFromConfigString("CLASSAURA_CLERIC_HEAL_HASTE_MAX_STACKS", configValuesByVariableName, CLASSAURA_CLERIC_HEAL_HASTE_MAX_STACKS);
             CLASSAURA_CLERIC_HEAL_HASTE_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_CLERIC_HEAL_HASTE_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_CLERIC_HEAL_HASTE_DURATION_IN_MS);
+            CLASSAURA_CLERIC_RADIANCE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_CLERIC_RADIANCE_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_CLERIC_RADIANCE_SPELL_ICON_EQ_ID);
+            CLASSAURA_CLERIC_RADIANCE_DAMAGE_PERCENT = ReadVariableFromConfigString("CLASSAURA_CLERIC_RADIANCE_DAMAGE_PERCENT", configValuesByVariableName, CLASSAURA_CLERIC_RADIANCE_DAMAGE_PERCENT);
+            CLASSAURA_CLERIC_RADIANCE_FREE_MANA_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_CLERIC_RADIANCE_FREE_MANA_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_CLERIC_RADIANCE_FREE_MANA_SPELL_ICON_EQ_ID);
+            CLASSAURA_CLERIC_RADIANCE_FREE_MANA_HEALTH_PERCENT = ReadVariableFromConfigString("CLASSAURA_CLERIC_RADIANCE_FREE_MANA_HEALTH_PERCENT", configValuesByVariableName, CLASSAURA_CLERIC_RADIANCE_FREE_MANA_HEALTH_PERCENT);
             CLASSAURA_DRUID_ENABLED = ReadVariableFromConfigString("CLASSAURA_DRUID_ENABLED", configValuesByVariableName, CLASSAURA_DRUID_ENABLED);
             CLASSAURA_DRUID_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_DRUID_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_DRUID_SPELL_ICON_EQ_ID);
             CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT = ReadVariableFromConfigString("CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT", configValuesByVariableName, CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT);

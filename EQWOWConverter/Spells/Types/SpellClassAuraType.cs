@@ -85,6 +85,8 @@ namespace EQWOWConverter.Spells
         RangerCompoundInjuryMoving = 64,
         MagicianDetonateSummoned = 65,
         MagicianDetonateSummonedBlast = 66,
-        Count = 67
+        ClericRadiance = 67,
+        ClericRadianceFreeMana = 68,
+        Count = 69
     }
 }

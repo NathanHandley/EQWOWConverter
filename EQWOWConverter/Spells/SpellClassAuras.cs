@@ -176,6 +176,8 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerMarkDirectDamagePercentPerStack", Configuration.CLASSAURA_NECROMANCER_MARK_DIRECT_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerMarkDotDamagePercentPerStack", Configuration.CLASSAURA_NECROMANCER_MARK_DOT_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraClericCadenceReductionPercent", Configuration.CLASSAURA_CLERIC_CADENCE_REDUCTION_PERCENT.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraClericRadianceDamagePercent", Configuration.CLASSAURA_CLERIC_RADIANCE_DAMAGE_PERCENT.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraClericRadianceFreeManaHealthPercent", Configuration.CLASSAURA_CLERIC_RADIANCE_FREE_MANA_HEALTH_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinBlockDeflectionDamagePercent", Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidDirectHealRegenPercent", Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidDirectHealRegenTickCount", GetDruidRegenTickCount().ToString()));
@@ -283,6 +285,8 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.ClericAura:
                 case SpellClassAuraType.ClericCadence:
                 case SpellClassAuraType.ClericHaste:
+                case SpellClassAuraType.ClericRadiance:
+                case SpellClassAuraType.ClericRadianceFreeMana:
                     return Configuration.CLASSAURA_CLERIC_ENABLED;
                 case SpellClassAuraType.DruidPassive:
                 case SpellClassAuraType.DruidAura:
@@ -987,7 +991,11 @@ namespace EQWOWConverter.Spells
                     Pct(Configuration.CLASSAURA_CLERIC_CADENCE_REDUCTION_PERCENT), ". Complete Healing cannot use a charge.")),
                 NamedLine("Hastened Faith", string.Concat("Single target heals also grant the target ",
                     Pct(Configuration.CLASSAURA_CLERIC_HEAL_HASTE_PERCENT_PER_STACK), " haste for ", Seconds(Configuration.CLASSAURA_CLERIC_HEAL_HASTE_DURATION_IN_MS), ", stacking up to ",
-                    Configuration.CLASSAURA_CLERIC_HEAL_HASTE_MAX_STACKS.ToString(), " times and ignoring the haste cap.")));
+                    Configuration.CLASSAURA_CLERIC_HEAL_HASTE_MAX_STACKS.ToString(), " times and ignoring the haste cap.")),
+                NamedLine("Unbroken Radiance (Boost)", string.Concat("While at full health, all damage you and your pet deal is increased by ",
+                    Pct(Configuration.CLASSAURA_CLERIC_RADIANCE_DAMAGE_PERCENT), ".")),
+                NamedLine("Unbroken Radiance (Sustain)", string.Concat("While below ", Pct(Configuration.CLASSAURA_CLERIC_RADIANCE_FREE_MANA_HEALTH_PERCENT),
+                    " health, your damaging spells cost no mana.")));
             spellTemplates.Add(BuildPassiveTemplate("Sacred Cadence", SpellClassAuraType.ClericPassive, icon, description));
             spellTemplates.Add(BuildPermanentAuraTemplate("Sacred Cadence (Cleric)", SpellClassAuraType.ClericAura, icon, description, new List<SpellEffectWOW>()));
 
@@ -1004,6 +1012,15 @@ namespace EQWOWConverter.Spells
             hasteEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModCastingSpeedNotStack, Configuration.CLASSAURA_CLERIC_HEAL_HASTE_PERCENT_PER_STACK, 0, SpellWOWTargetType.UnitTargetAlly));
             spellTemplates.Add(BuildStackingAuraTemplate("Hastened Faith", SpellClassAuraType.ClericHaste, icon, hasteDescription, hasteEffects,
                 Configuration.CLASSAURA_CLERIC_HEAL_HASTE_MAX_STACKS, Configuration.CLASSAURA_CLERIC_HEAL_HASTE_DURATION_IN_MS, false));
+
+            // Both marks are put on and taken off mod side as the cleric's health crosses each line.  They carry no effects of their own, since the payouts read the health directly
+            string radianceDescription = string.Concat("Damage you and your pet deal increased by ", Pct(Configuration.CLASSAURA_CLERIC_RADIANCE_DAMAGE_PERCENT), ".");
+            spellTemplates.Add(BuildPermanentAuraTemplate("Unbroken Radiance (Boost)", SpellClassAuraType.ClericRadiance,
+                Configuration.CLASSAURA_CLERIC_RADIANCE_SPELL_ICON_EQ_ID, radianceDescription, new List<SpellEffectWOW>()));
+
+            string radianceFreeManaDescription = "Damaging spells cost no mana.";
+            spellTemplates.Add(BuildPermanentAuraTemplate("Unbroken Radiance (Sustain)", SpellClassAuraType.ClericRadianceFreeMana,
+                Configuration.CLASSAURA_CLERIC_RADIANCE_FREE_MANA_SPELL_ICON_EQ_ID, radianceFreeManaDescription, new List<SpellEffectWOW>()));
         }
 
         private static void AddDruidSpells(List<SpellTemplate> spellTemplates)
