@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 109;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 110;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1174,6 +1174,20 @@ namespace EQWOWConverter
         public static bool SPELL_PET_ATTACK_PROC_ENABLED = true;
         public static int SPELL_PET_ATTACK_PROC_SPELL_ID_START = 86980; // One sequential ID per distinct proc spell and chance pair, so 86980 - 86998
 
+        // "Glyph of Powerful Pets" mirrors the Glyph of Felguard (item 42459, glyph spell 56246), raising the total attack power of the owner's pets of one pet type
+        // TODO: Make this a config thing for future glyphs
+        public static bool SPELL_PET_GLYPH_POWERFUL_PETS_ENABLED = true;
+        public static int SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SPELL_ID = 86953; // Passive dummy aura on the owner, named by GlyphProperties.dbc
+        public static int SPELL_PET_GLYPH_POWERFUL_PETS_PET_SPELL_ID = 86954; // Passive attack power aura on the pet
+        public static int SPELL_PET_GLYPH_POWERFUL_PETS_INSCRIBE_SPELL_ID = 86955; // Used from the glyph item to put the glyph into a slot
+        public static int SPELL_PET_GLYPH_POWERFUL_PETS_SPELL_ICON_EQ_ID = 9;
+        public static int SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SLOT_SPELL_ICON_ID = 3116; // Stock SpellIcon.dbc glyph rune shown in the glyph pane (the same one Glyph of Felguard uses)
+        public static int SPELL_PET_GLYPH_POWERFUL_PETS_ATTACK_POWER_PERCENT = 20;
+        public static string SPELL_PET_GLYPH_POWERFUL_PETS_PET_TYPE = "powerful";
+        public static int SPELL_PET_GLYPH_POWERFUL_PETS_SHAMAN_EQ_ITEM_ID = 40046;
+        public static int SPELL_PET_GLYPH_POWERFUL_PETS_MAGE_EQ_ITEM_ID = 40047;
+        public static int SPELL_PET_GLYPH_POWERFUL_PETS_WARLOCK_EQ_ITEM_ID = 40048;
+
         // How far (in EQ units) Minor Illusion and Tree will look for a zone object to turn the caster into, where zero or less means anywhere in the zone
         public static float SPELL_ILLUSION_OBJECT_MAX_DISTANCE = 200f;
         public static float SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE = 0f;
@@ -1699,6 +1713,9 @@ namespace EQWOWConverter
         // One CreatureFamily.dbc row per row in PetTypes.csv, offset by the type's row order.  creature_template.family is a single byte, so these must stay under 256
         public static int DBCID_CREATUREFAMILY_PET_ID_START = 100;
 
+        // ID for the "Glyph of Powerful Pets" row in GlyphProperties.dbc (Blizzard's highest row is 911)
+        public static int DBCID_GLYPHPROPERTIES_POWERFUL_PETS_ID = 1000;
+
         // ID for skill line abilities found in SkillLineAbility.dbc
         public static int DBCID_SKILLLINEABILITY_ID_START = 25000;
 
@@ -1717,8 +1734,8 @@ namespace EQWOWConverter
         // ID for spells found in Spell.dbc
         // - Manually created spells reserve IDs from 86900 to 86999 and all are defined in the config (86925-86940 are the eight Taunt and eight Area Taunt pet ranks,
         //   86950-86952 are the pet Avoidance and Pet Frenzy clones, 86960-86975 are the per-pet-type spell damage passives, and
-        //   86980-86998 are the pet attack proc passives)
-        // - Recipes reserve IDs 87000 to 91368 (91369 to 91999 is free for more)
+        //   86953-86955 are the Glyph of Powerful Pets spells, and 86980-86998 are the pet attack proc passives)
+        // - Recipes reserve IDs 87000 to 91371 (91372 to 91999 is free for more)
         // - Converted spells IDs start at 92000 and base spells range to 95840 (95828 - 95840 are the custom "Guise" illusion spells)
         // - SpellIDs 96000 - 96099 reserved for the EQ class auras (CLASSAURA_SPELL_ID_START, see Spells/SpellClassAuras.cs)
         // - SpellIDs 96100 - 96199 reserved for 'coat' effects that come from rogue poisons, triggering another spell
@@ -1879,6 +1896,7 @@ namespace EQWOWConverter
         // - Tradeskill multi-item creation containers IDs range 117000 - 117349
         // - Guise illusion consumable items range 118000 - 118012
         // - Pick Pocket junkbox items range 115000 - 115007
+        // - Glyph items range 119000 - 119002
         // - Switched Slot items have IDs 120000 - 121000
         // - Companion Pet Items have IDs 123000 - 124000
         public static int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;
@@ -2538,6 +2556,17 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_PET_SPELL_DAMAGE_SPELL_ID_START", SPELL_PET_SPELL_DAMAGE_SPELL_ID_START, "", false);
             OutputVariableToConfig("SPELL_PET_ATTACK_PROC_ENABLED", SPELL_PET_ATTACK_PROC_ENABLED, "", false);
             OutputVariableToConfig("SPELL_PET_ATTACK_PROC_SPELL_ID_START", SPELL_PET_ATTACK_PROC_SPELL_ID_START, "", false);
+            OutputVariableToConfig("SPELL_PET_GLYPH_POWERFUL_PETS_ENABLED", SPELL_PET_GLYPH_POWERFUL_PETS_ENABLED, "\"Glyph of Powerful Pets\" mirrors the Glyph of Felguard (item 42459), raising the total attack power of the owner's pets of one pet type");
+            OutputVariableToConfig("SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SPELL_ID", SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SPELL_ID, "", false);
+            OutputVariableToConfig("SPELL_PET_GLYPH_POWERFUL_PETS_PET_SPELL_ID", SPELL_PET_GLYPH_POWERFUL_PETS_PET_SPELL_ID, "", false);
+            OutputVariableToConfig("SPELL_PET_GLYPH_POWERFUL_PETS_INSCRIBE_SPELL_ID", SPELL_PET_GLYPH_POWERFUL_PETS_INSCRIBE_SPELL_ID, "", false);
+            OutputVariableToConfig("SPELL_PET_GLYPH_POWERFUL_PETS_SPELL_ICON_EQ_ID", SPELL_PET_GLYPH_POWERFUL_PETS_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SLOT_SPELL_ICON_ID", SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SLOT_SPELL_ICON_ID, "Stock SpellIcon.dbc ID of the glyph rune shown in the glyph pane", false);
+            OutputVariableToConfig("SPELL_PET_GLYPH_POWERFUL_PETS_ATTACK_POWER_PERCENT", SPELL_PET_GLYPH_POWERFUL_PETS_ATTACK_POWER_PERCENT, "", false);
+            OutputVariableToConfig("SPELL_PET_GLYPH_POWERFUL_PETS_PET_TYPE", SPELL_PET_GLYPH_POWERFUL_PETS_PET_TYPE, "Pet type (from PetTypes.csv) whose pets the glyph affects", false);
+            OutputVariableToConfig("SPELL_PET_GLYPH_POWERFUL_PETS_SHAMAN_EQ_ITEM_ID", SPELL_PET_GLYPH_POWERFUL_PETS_SHAMAN_EQ_ITEM_ID, "EQ item IDs (ItemTemplates.csv) of the glyph item for each wow class", false);
+            OutputVariableToConfig("SPELL_PET_GLYPH_POWERFUL_PETS_MAGE_EQ_ITEM_ID", SPELL_PET_GLYPH_POWERFUL_PETS_MAGE_EQ_ITEM_ID, "", false);
+            OutputVariableToConfig("SPELL_PET_GLYPH_POWERFUL_PETS_WARLOCK_EQ_ITEM_ID", SPELL_PET_GLYPH_POWERFUL_PETS_WARLOCK_EQ_ITEM_ID, "", false);
             OutputVariableToConfig("SPELL_PET_TAUNT_SPELL_ID_START", SPELL_PET_TAUNT_SPELL_ID_START, "First of the eight sequential spell IDs used by the Taunt ranks", false);
             OutputVariableToConfig("SPELL_PET_TAUNT_SPELL_ICON_EQ_ID", SPELL_PET_TAUNT_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("SPELL_PET_AREATAUNT_SPELL_ID_START", SPELL_PET_AREATAUNT_SPELL_ID_START, "First of the eight sequential spell IDs used by the Area Taunt ranks", false);
@@ -3341,6 +3370,17 @@ namespace EQWOWConverter
             SPELL_PET_SPELL_DAMAGE_SPELL_ID_START = ReadVariableFromConfigString("SPELL_PET_SPELL_DAMAGE_SPELL_ID_START", configValuesByVariableName, SPELL_PET_SPELL_DAMAGE_SPELL_ID_START);
             SPELL_PET_ATTACK_PROC_ENABLED = ReadVariableFromConfigString("SPELL_PET_ATTACK_PROC_ENABLED", configValuesByVariableName, SPELL_PET_ATTACK_PROC_ENABLED);
             SPELL_PET_ATTACK_PROC_SPELL_ID_START = ReadVariableFromConfigString("SPELL_PET_ATTACK_PROC_SPELL_ID_START", configValuesByVariableName, SPELL_PET_ATTACK_PROC_SPELL_ID_START);
+            SPELL_PET_GLYPH_POWERFUL_PETS_ENABLED = ReadVariableFromConfigString("SPELL_PET_GLYPH_POWERFUL_PETS_ENABLED", configValuesByVariableName, SPELL_PET_GLYPH_POWERFUL_PETS_ENABLED);
+            SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SPELL_ID = ReadVariableFromConfigString("SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SPELL_ID", configValuesByVariableName, SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SPELL_ID);
+            SPELL_PET_GLYPH_POWERFUL_PETS_PET_SPELL_ID = ReadVariableFromConfigString("SPELL_PET_GLYPH_POWERFUL_PETS_PET_SPELL_ID", configValuesByVariableName, SPELL_PET_GLYPH_POWERFUL_PETS_PET_SPELL_ID);
+            SPELL_PET_GLYPH_POWERFUL_PETS_INSCRIBE_SPELL_ID = ReadVariableFromConfigString("SPELL_PET_GLYPH_POWERFUL_PETS_INSCRIBE_SPELL_ID", configValuesByVariableName, SPELL_PET_GLYPH_POWERFUL_PETS_INSCRIBE_SPELL_ID);
+            SPELL_PET_GLYPH_POWERFUL_PETS_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("SPELL_PET_GLYPH_POWERFUL_PETS_SPELL_ICON_EQ_ID", configValuesByVariableName, SPELL_PET_GLYPH_POWERFUL_PETS_SPELL_ICON_EQ_ID);
+            SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SLOT_SPELL_ICON_ID = ReadVariableFromConfigString("SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SLOT_SPELL_ICON_ID", configValuesByVariableName, SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SLOT_SPELL_ICON_ID);
+            SPELL_PET_GLYPH_POWERFUL_PETS_ATTACK_POWER_PERCENT = ReadVariableFromConfigString("SPELL_PET_GLYPH_POWERFUL_PETS_ATTACK_POWER_PERCENT", configValuesByVariableName, SPELL_PET_GLYPH_POWERFUL_PETS_ATTACK_POWER_PERCENT);
+            SPELL_PET_GLYPH_POWERFUL_PETS_PET_TYPE = ReadVariableFromConfigString("SPELL_PET_GLYPH_POWERFUL_PETS_PET_TYPE", configValuesByVariableName, SPELL_PET_GLYPH_POWERFUL_PETS_PET_TYPE);
+            SPELL_PET_GLYPH_POWERFUL_PETS_SHAMAN_EQ_ITEM_ID = ReadVariableFromConfigString("SPELL_PET_GLYPH_POWERFUL_PETS_SHAMAN_EQ_ITEM_ID", configValuesByVariableName, SPELL_PET_GLYPH_POWERFUL_PETS_SHAMAN_EQ_ITEM_ID);
+            SPELL_PET_GLYPH_POWERFUL_PETS_MAGE_EQ_ITEM_ID = ReadVariableFromConfigString("SPELL_PET_GLYPH_POWERFUL_PETS_MAGE_EQ_ITEM_ID", configValuesByVariableName, SPELL_PET_GLYPH_POWERFUL_PETS_MAGE_EQ_ITEM_ID);
+            SPELL_PET_GLYPH_POWERFUL_PETS_WARLOCK_EQ_ITEM_ID = ReadVariableFromConfigString("SPELL_PET_GLYPH_POWERFUL_PETS_WARLOCK_EQ_ITEM_ID", configValuesByVariableName, SPELL_PET_GLYPH_POWERFUL_PETS_WARLOCK_EQ_ITEM_ID);
             SPELL_PET_TAUNT_SPELL_ID_START = ReadVariableFromConfigString("SPELL_PET_TAUNT_SPELL_ID_START", configValuesByVariableName, SPELL_PET_TAUNT_SPELL_ID_START);
             SPELL_PET_TAUNT_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("SPELL_PET_TAUNT_SPELL_ICON_EQ_ID", configValuesByVariableName, SPELL_PET_TAUNT_SPELL_ICON_EQ_ID);
             SPELL_PET_AREATAUNT_SPELL_ID_START = ReadVariableFromConfigString("SPELL_PET_AREATAUNT_SPELL_ID_START", configValuesByVariableName, SPELL_PET_AREATAUNT_SPELL_ID_START);

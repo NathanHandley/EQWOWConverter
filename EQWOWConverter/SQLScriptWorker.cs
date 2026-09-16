@@ -126,6 +126,7 @@ namespace EQWOWConverter
         private PageTextSQL pageTextSQL = new PageTextSQL();
         private PetLevelStatsSQL petLevelStatsSQL = new PetLevelStatsSQL();
         private PetNameGenerationSQL petNameGenerationSQL = new PetNameGenerationSQL();
+        private SpellPetAurasSQL spellPetAurasSQL = new SpellPetAurasSQL();
         private PickpocketingLootTemplateSQL pickpocketingLootTemplateSQL = new PickpocketingLootTemplateSQL();
         private PlayerClassStatsSQL playerClassStatsSQL = new PlayerClassStatsSQL();
         private PlayerCreateInfoSQL playerCreateInfoSQL = new PlayerCreateInfoSQL();
@@ -1293,6 +1294,15 @@ namespace EQWOWConverter
                     // Combat stats for pet creatures come from their power tier, and not the creature's own EQ stats
                     if (Configuration.CREATURE_PET_USE_POWER_TIER_LEVEL_STATS == true)
                         petLevelStatsSQL.AddRowsForCreatureTemplate(creatureTemplate);
+
+                    // Glyph of Powerful Pets gives the pets of its type the attack power aura while the owner has the glyph
+                    if (Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_ENABLED == true && creatureTemplate.PetTypeName == Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_PET_TYPE)
+                        spellPetAurasSQL.AddRow(Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SPELL_ID, 0, creatureTemplate.WOWCreatureTemplateID,
+                            Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_PET_SPELL_ID);
+
+                    // Master Demonologist treats the pet as a Felguard
+                    if (Configuration.SPELL_WOW_TALENT_INTERACTION_ENABLED == true)
+                        spellPetAurasSQL.AddMasterDemonologistRowsForPet(creatureTemplate.WOWCreatureTemplateID);
 
                     int curIndex = 0;
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesOutOfCombatBuff)
@@ -3047,6 +3057,7 @@ namespace EQWOWConverter
                 
                 // Run alongside the stock script
                 spellScriptNamesSQL.AddRow(11958, "EverQuest_ColdSnapSpellScript");
+                spellScriptNamesSQL.AddRow(47193, "EverQuest_DemonicEmpowermentSpellScript");
 
                 // No stock script, only add spell filtering
                 spellScriptNamesSQL.AddRow(-18094, "EverQuest_NightfallAuraScript");
@@ -3810,6 +3821,7 @@ namespace EQWOWConverter
             spellEnchantProcDataSQL.SaveToDisk("spell_enchant_proc_data", SQLFileType.World);
             spellGroupSQL.SaveToDisk("spell_group", SQLFileType.World);
             spellProcSQL.SaveToDisk("spell_proc", SQLFileType.World); // spell_ex44
+            spellPetAurasSQL.SaveToDisk("spell_pet_auras", SQLFileType.World);
             spellRanksSQL.SaveToDisk("spell_ranks", SQLFileType.World);
             modEverquestTalentExclusionSQL.SaveToDisk("mod_everquest_talent_exclusion", SQLFileType.World); // spell_ex44
             modEverquestTalentAlignmentSQL.SaveToDisk("mod_everquest_talent_alignment", SQLFileType.World); // spell_ex44

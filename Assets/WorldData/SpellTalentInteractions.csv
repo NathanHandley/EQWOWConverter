@@ -152,8 +152,10 @@ Note: The tooltip will not reflect the reduction in cast time and the global coo
 18427|Rogue|Aggression|exclude|0|0|0|0|none|0|Increases the damage of your Sinister Strike, Backstab, and Eviscerate abilities by $s1%.
 18459|Mage|Incineration|align|0|126|1|0|pbaoe_damage|0|Also increases the critical strike chance of your EverQuest point blank area damage spells by $s1%.
 18530|Priest|Divine Fury|align|0|2|1|1|none|0|Also reduces the casting time of your EverQuest Holy damage and healing spells by $/1000;S1 sec.
+18705|Warlock|Demonic Brutality|describe|0|0|0|0|none|0|Also increases the effectiveness of your EverQuest pet's Taunt and Area Taunt by $s1%, and the attack power bonus on its Pet Frenzy effect by $s2%.
 18708|Warlock|Fel Domination|align|0|0|0|0|pet_summon|0|Also reduces the casting time of your next EverQuest pet summoning spell by $/1000;S1 sec and its mana cost by $s2%.
 18708|Warlock|Fel Domination|align|1|0|0|0|pet_summon|0|
+18731|Warlock|Fel Vitality|describe|0|0|0|0|none|0|The Stamina and Intellect increase also applies to your EverQuest pet.
 18769|Warlock|Unholy Power|describe|0|0|0|0|none|0|Also increases the damage done by your EverQuest pet by $s1%.
 19028|Warlock|Soul Link|describe|0|0|0|0|none|0|This also works with your EverQuest pet.
 19159|Hunter|Savage Strikes|exclude|0|0|0|0|none|0|Increases the critical strike chance of Raptor Strike, Mongoose Bite and Counterattack by $s1%.
@@ -169,6 +171,7 @@ Note: The tooltip will not reflect the reduction in cast time and the global coo
 20224|Paladin|Seals of the Pure|exclude|0|0|0|0|none|0|Increases the damage done by your Seal of Righteousness, Seal of Vengeance and Seal of Corruption and their Judgement effects by $s1%.
 20237|Paladin|Healing Light|align|0|0|0|1|none|0|Also increases the amount healed by your EverQuest healing spells by $s1%.
 20359|Paladin|Sanctified Light|align|0|0|0|1|none|0|Also increases the critical strike chance of your EverQuest healing spells by $s1%.
+23785|Warlock|Master Demonologist|describe|0|0|0|0|none|0|EverQuest pet - Grants the Felguard effect.
 24968|Druid|Tranquil Spirit|exclude|0|0|0|0|none|0|Reduces the mana cost of your Healing Touch, Nourish and Tranquility spells by $s1%.
 25956|Paladin|Improved Judgements|exclude|0|0|0|0|none|0|Decreases the cooldown of your Judgement spells by $/1000;s1 sec.
 27789|Priest|Holy Reach|align|0|2|1|0|none|0|Also increases the range of your EverQuest Holy damage spells and the radius of your EverQuest healing spells by $s1%.
@@ -187,8 +190,9 @@ Note: The tooltip will not reflect the reduction in cast time and the global coo
 30060|Warlock|Contagion|align|0|32|1|0|none|0|Also increases the damage of your EverQuest Shadow damage spells by $s1%.
 30060|Warlock|Contagion|align|1|32|1|0|none|0|
 30160|Shaman|Elemental Devastation|describe|0|0|0|0|none|0|Also triggers from your EverQuest spell critical strikes.
-30242|Warlock|Demonic Tactics|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells.
+30242|Warlock|Demonic Tactics|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells, and the critical strike chance increase to your EverQuest pet.
 30288|Warlock|Shadow and Flame|exclude|0|0|0|0|none|0|Spell power coefficient talents are not generalized to EverQuest spells.
+30326|Warlock|Mana Feed|describe|0|0|0|0|none|0|This also works with your EverQuest pet.
 30672|Shaman|Elemental Precision|describe|0|0|0|0|none|0|This also applies to your EverQuest Fire, Frost and Nature spells.
 30812|Shaman|Mental Quickness|align|0|126|1|1|none|1|Also reduces the mana cost of your instant cast EverQuest spells by $s1%.
 31226|Rogue|Master Poisoner|describe|0|0|0|0|none|0|Your EverQuest weapon poisons also mark their target, increasing your critical hit chance against it.
@@ -237,6 +241,7 @@ Note: The tooltip will not reflect the reduction in cast time and the global coo
 34936|Warlock|Backlash|align|0|36|1|0|direct_damage|0|Your next EverQuest direct damage Fire or Shadow spell is also instant.
 35363|Druid|Nature's Majesty|align|0|28|1|1|none|0|Also increases the critical strike chance of your EverQuest Fire, Frost and Nature damage spells and your EverQuest healing spells by $s1%.
 35578|Mage|Spell Power|align|0|126|1|0|none|0|Also increases the critical strike damage bonus of your EverQuest spells by $s1%.
+35691|Warlock|Demonic Knowledge|describe|0|0|0|0|none|0|This also works with your EverQuest pet.
 44400|Mage|Netherwind Presence|describe|0|0|0|0|none|0|The spell haste also applies to your EverQuest spells.
 44445|Mage|Hot Streak|describe|0|0|0|0|none|0|Critical strikes from your EverQuest direct damage Fire spells also count toward triggering this.
 44449|Mage|Burnout|align|0|126|1|0|none|0|Also increases the critical strike damage bonus of your EverQuest spells by $s1%, and your EverQuest spell criticals cost an additional $s2% of the spell's cost.
@@ -246,11 +251,12 @@ Note: The tooltip will not reflect the reduction in cast time and the global coo
 44566|Mage|Chilled to the Bone|align|0|16|1|0|none|0|Also increases the damage caused by your EverQuest Frost damage spells by $s1%.
 45234|Priest|Focused Will|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells.
 46859|Warrior|Unrelenting Assault|exclude|0|0|0|0|none|0|Reduces the cooldown of your Overpower and Revenge abilities by $/1000;s1 secs and increases the damage done by both abilities by $s2%. In addition, if you strike a player with Overpower while they are casting, their magical damage and healing will be reduced by $64849s1% for $64849d.
+47193|Warlock|Demonic Empowerment|describe|0|0|0|0|none|0|EverQuest pet - Grants the Felguard effect, increasing the pet's attack speed by $54508s1% and breaking all stun, snare and movement impairing effects and making it immune to them for $54508d.
 47195|Warlock|Eradication|describe|0|0|0|0|none|0|Also has a chance to trigger when your EverQuest Shadow damage over time spells deal damage.
 47198|Warlock|Death's Embrace|describe|0|0|0|0|none|0|The Shadow damage increase also applies to your EverQuest Shadow damage spells when the target is below 35% health.
 47201|Warlock|Everlasting Affliction|exclude|0|0|0|0|none|0|Your Corruption and Unstable Affliction spells gain an additional $s2% of your bonus spell damage, and your Drain Life, Drain Soul, Shadow Bolt, and Haunt spells have a $h% chance to reset the duration of your Corruption spell on the target.
 47230|Warlock|Fel Synergy|describe|0|0|0|0|none|0|Also triggers from damage done by your EverQuest spells.
-47236|Warlock|Demonic Pact|describe|0|0|0|0|none|0|The spell damage increase also applies to your EverQuest Fire and Shadow damage spells.
+47236|Warlock|Demonic Pact|describe|0|0|0|0|none|0|The spell damage increase also applies to your EverQuest Fire and Shadow damage spells, and critical strikes by your EverQuest pet also apply the Demonic Pact effect.
 47236|Warlock|Demonic Pact|exclude|0|0|0|0|none|0|Internal proc effect that does not map to EverQuest spells.
 47509|Priest|Divine Aegis|describe|0|0|0|0|none|0|Also triggers from critical heals with EverQuest healing spells.
 47516|Priest|Grace|describe|0|0|0|0|none|0|Your EverQuest single target direct healing spells can also trigger this.
@@ -294,6 +300,7 @@ Note: The tooltip will not reflect the reduction in cast time and the global coo
 53671|Paladin|Judgements of the Pure|exclude|0|0|0|0|none|0|Increases the damage done by your Seal and Judgement spells by $s2%, and your Judgement spells increase your casting and melee haste by $53655s1% for $53655d.
 53695|Paladin|Judgements of the Just|exclude|0|0|0|0|none|0|Seal effect value modifier that does not map to EverQuest spells.
 53754|Warlock|Improved Fear|describe|0|0|0|0|none|0|Your EverQuest fear spells also cause Nightmare when the fear effect ends.
+54347|Warlock|Improved Demonic Tactics|describe|0|0|0|0|none|0|This also works with your EverQuest pet.
 54646|Mage|Focus Magic|describe|0|0|0|0|none|0|The critical strike chance also applies to the target's EverQuest spells.
 55061|DeathKnight|Icy Reach|align|0|48|1|0|none|0|Also increases the range of your EverQuest Frost and Shadow damage spells by $s1 yards.
 56927|Warrior|Unending Fury|exclude|0|0|0|0|none|0|Increases the damage done by your Slam, Whirlwind and Bloodthirst abilities by $s2%.

@@ -138,6 +138,7 @@ namespace EQWOWConverter.Items
         public bool DoesTeachSpellToAllClasses = false;
         public int LearningSpellID = 483; // On-use spell for learn items (483 "Learning", 55884 for companion pets). The "Use:" tooltip text comes from the item description, not this spell.
         public bool IsCompanionPetItem = false;
+        public string OverrideIconFileNameNoExt = string.Empty; // A stock wow icon to use instead of the EQ one
         public string ScriptName = string.Empty;
         public int WOWSpellID1 = 0;
         public int WOWSpellTrigger1 = 0;
@@ -162,6 +163,7 @@ namespace EQWOWConverter.Items
         public int EQCombatProcSpellEffectID = 0;
         public int EQCombatProcSpellEffectMinLevel = 0;
         public int MaxCharges = 0;
+        public int WOWAllowableClassMask = -1; // -1 lets every wow class use the item
         public int WOWSpellCooldown1 = -1;
         public int WOWSpellCategory1 = 0; // 11 = food, 59 = water/alcohol
         public int WOWSpellCategoryCooldown1 = -1;

@@ -60,7 +60,7 @@ namespace EQWOWConverter.WOWFiles
             else
                 newRow.AddInt("SellPrice", itemTemplate.SellPriceInCopper);
             newRow.AddInt("InventoryType", Convert.ToInt32(itemTemplate.InventoryType));
-            newRow.AddInt("AllowableClass", -1);
+            newRow.AddInt("AllowableClass", itemTemplate.WOWAllowableClassMask);
             newRow.AddInt("AllowableRace", -1);
             newRow.AddInt("ItemLevel", Math.Clamp(itemTemplate.ItemLevel, 1, 300)); // Above 300 there's no DurabilityCosts.dbc row, which breaks repairing
             newRow.AddInt("RequiredLevel", requiredLevel);
@@ -239,6 +239,8 @@ namespace EQWOWConverter.WOWFiles
                 flags += 4;
             if (itemTemplate.DoesTeachSpell == true && itemTemplate.WOWSpellID1 != 0)
                 flags += 64; // ITEM_FLAG_PLAYERCAST
+            else if (itemTemplate.ClassID == 16 && itemTemplate.WOWSpellID1 != 0)
+                flags += 64; // ITEM_FLAG_PLAYERCAST, which every stock glyph item carries
             //    flags += 524288; // 0x080000 (means unique equipped)
             if (itemTemplate.Quality == ItemWOWQuality.Heirloom)
                 flags += 134217728; // ITEM_FLAG_IS_BOUND_TO_ACCOUNT

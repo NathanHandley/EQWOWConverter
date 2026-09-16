@@ -66,6 +66,82 @@ namespace EQWOWConverter.Spells
 
             if (Configuration.SPELL_PET_ATTACK_PROC_ENABLED == true)
                 AddAttackProcSpellTemplates(spellTemplates);
+
+            if (Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_ENABLED == true)
+            {
+                spellTemplates.Add(BuildGlyphOfPowerfulPetsGlyphSpellTemplate());
+                spellTemplates.Add(BuildGlyphOfPowerfulPetsPetSpellTemplate());
+                spellTemplates.Add(BuildGlyphOfPowerfulPetsInscribeSpellTemplate());
+            }
+        }
+
+        public static string GetGlyphOfPowerfulPetsName()
+        {
+            return "Glyph of Powerful Pets";
+        }
+
+        private static string GetGlyphOfPowerfulPetsDescription()
+        {
+            string petTypeName = Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_PET_TYPE;
+            if (petTypeName.Length > 0)
+                petTypeName = string.Concat(petTypeName.Substring(0, 1).ToUpperInvariant(), petTypeName.Substring(1));
+            return string.Concat("Increases Norrath '", petTypeName, "' pet's total attack power by ", Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_ATTACK_POWER_PERCENT.ToString(), "%");
+        }
+
+        private static SpellTemplate BuildGlyphOfPowerfulPetsGlyphSpellTemplate()
+        {
+            // Mirrors Glyph of Felguard (56246), a hidden passive dummy on the owner.  AzerothCore hands a dummy aura listed in spell_pet_auras to the owner's pets,
+            // which is how the attack power aura reaches only the pets of the configured type
+            string description = GetGlyphOfPowerfulPetsDescription();
+            SpellTemplate spellTemplate = BuildBaseTemplate(GetGlyphOfPowerfulPetsName(), Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SPELL_ID,
+                Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_SPELL_ICON_EQ_ID, description, description);
+            spellTemplate.IsGoodEffect = true;
+            spellTemplate.IsPassiveAbility = true;
+            spellTemplate.ForceHiddenFromDisplay = true;
+            spellTemplate.AuraDuration.IsInfinite = true;
+
+            SpellEffectWOW dummyEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0,
+                Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_ATTACK_POWER_PERCENT, 0, 0);
+            dummyEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            spellTemplate.WOWSpellEffects.Add(dummyEffect);
+            return spellTemplate;
+        }
+
+        private static SpellTemplate BuildGlyphOfPowerfulPetsPetSpellTemplate()
+        {
+            // A percent of total attack power, which is what the Glyph of Felguard adds on top of the felguard's attack power
+            string description = GetGlyphOfPowerfulPetsDescription();
+            SpellTemplate spellTemplate = BuildBaseTemplate(GetGlyphOfPowerfulPetsName(), Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_PET_SPELL_ID,
+                Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_SPELL_ICON_EQ_ID, description, description);
+            spellTemplate.IsGoodEffect = true;
+            spellTemplate.IsPassiveAbility = true;
+            spellTemplate.ForceHiddenFromDisplay = true;
+            spellTemplate.AuraDuration.IsInfinite = true;
+
+            SpellEffectWOW attackPowerEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModAttackPowerPct, 0, 0, 0,
+                Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_ATTACK_POWER_PERCENT, 0, 0);
+            attackPowerEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            spellTemplate.WOWSpellEffects.Add(attackPowerEffect);
+            return spellTemplate;
+        }
+
+        private static SpellTemplate BuildGlyphOfPowerfulPetsInscribeSpellTemplate()
+        {
+            // Matches the stock glyph item spells (like 56285 on the Glyph of Felguard), which target a glyph slot and apply a GlyphProperties.dbc row to it
+            string description = GetGlyphOfPowerfulPetsDescription();
+            SpellTemplate spellTemplate = BuildBaseTemplate(GetGlyphOfPowerfulPetsName(), Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_INSCRIBE_SPELL_ID,
+                Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_SPELL_ICON_EQ_ID, description, description);
+            spellTemplate.SpellIconID = 3267; // Glyph icon used by the stock glyph item spells
+            spellTemplate.SpellVisualID1 = 12369; // Inscribe visual used by the stock glyph item spells
+            spellTemplate.IsGoodEffect = true;
+            spellTemplate.AllowCastInCombat = false;
+            spellTemplate.AllowInShapeshift = true;
+            spellTemplate.TargetsGlyphSlot = true;
+
+            SpellEffectWOW applyGlyphEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyGlyph, SpellWOWAuraType.None, 0, 0, 0, 0,
+                Configuration.DBCID_GLYPHPROPERTIES_POWERFUL_PETS_ID, 0);
+            spellTemplate.WOWSpellEffects.Add(applyGlyphEffect);
+            return spellTemplate;
         }
 
         private static void AddAttackProcSpellTemplates(List<SpellTemplate> spellTemplates)
@@ -247,6 +323,13 @@ namespace EQWOWConverter.Spells
             spellTemplate.PreventAuraClickOff = true;
             spellTemplate.AuraDuration.SetFixedDuration(Configuration.SPELL_PET_FRENZY_DURATION_IN_MS);
             spellTemplate.MaxStackAmount = Convert.ToUInt32(Math.Max(1, Configuration.SPELL_PET_FRENZY_MAX_STACKS));
+
+            // Carrying Demonic Frenzy's (32851) warlock family flag lets Demonic Brutality's spell modifier raise the attack power per stack
+            if (Configuration.SPELL_WOW_TALENT_INTERACTION_ENABLED == true)
+            {
+                spellTemplate.SpellFamilyID = 5; // Warlock
+                spellTemplate.SpellFamilyFlags3 = 0x00000008; // Demonic Frenzy
+            }
 
             SpellEffectWOW attackPowerEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModAttackPowerPct, 0, 0, 0, percentPerStack, 0, 0);
             attackPowerEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;

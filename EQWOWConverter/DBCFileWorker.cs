@@ -53,6 +53,7 @@ namespace EQWOWConverter
         private FactionTemplateDBC factionTemplateDBC = new FactionTemplateDBC();
         private FootstepTerrainLookupDBC footstepTerrainLookupDBC = new FootstepTerrainLookupDBC();
         private GameObjectDisplayInfoDBC gameObjectDisplayInfoDBC = new GameObjectDisplayInfoDBC();
+        private GlyphPropertiesDBC glyphPropertiesDBC = new GlyphPropertiesDBC();
         private GameTableDBC gtSpellCritBaseDBC = new GameTableDBC();
         private GameTableDBC gtSpellCritDBC = new GameTableDBC();
         private GameTableDBC gtOCTRegenMPDBC = new GameTableDBC();
@@ -281,6 +282,7 @@ namespace EQWOWConverter
             factionTemplateDBC.LoadFromDisk(dbcInputFolder, "FactionTemplate.dbc");
             footstepTerrainLookupDBC.LoadFromDisk(dbcInputFolder, "FootstepTerrainLookup.dbc");
             gameObjectDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "GameObjectDisplayInfo.dbc");
+            glyphPropertiesDBC.LoadFromDisk(dbcInputFolder, "GlyphProperties.dbc");
             gtSpellCritBaseDBC.LoadFromDisk(dbcInputFolder, "gtChanceToSpellCritBase.dbc");
             gtSpellCritDBC.LoadFromDisk(dbcInputFolder, "gtChanceToSpellCrit.dbc");
             gtOCTRegenMPDBC.LoadFromDisk(dbcInputFolder, "gtOCTRegenMP.dbc");
@@ -908,6 +910,11 @@ namespace EQWOWConverter
                 skillRaceClassInfoDBC.AddRow(skillLineIDBySkillCategory.Value, new List<ClassWOWType>() { ClassWOWType.All });
             }
 
+            // Glyph of Powerful Pets
+            if (Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_ENABLED == true)
+                glyphPropertiesDBC.AddRow(Configuration.DBCID_GLYPHPROPERTIES_POWERFUL_PETS_ID, Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SPELL_ID, false,
+                    Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_GLYPH_SLOT_SPELL_ICON_ID);
+
             // One skill line and one creature family per pet type
             foreach (SpellPetType petType in SpellPetType.GetAllSpellPetTypes())
             {
@@ -1238,6 +1245,8 @@ namespace EQWOWConverter
             footstepTerrainLookupDBC.SaveToDisk(dbcOutputServerFolder);
             gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
             gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
+            glyphPropertiesDBC.SaveToDisk(dbcOutputClientFolder);
+            glyphPropertiesDBC.SaveToDisk(dbcOutputServerFolder);
             gtSpellCritBaseDBC.SaveToDisk(dbcOutputClientFolder);
             gtSpellCritBaseDBC.SaveToDisk(dbcOutputServerFolder);
             gtSpellCritDBC.SaveToDisk(dbcOutputClientFolder);

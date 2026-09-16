@@ -396,6 +396,7 @@ namespace EQWOWConverter.Spells
         public bool RequiresMainHandWeapon = false;
         public bool UsesRangedWeaponSlot = false;
         public bool AllowInShapeshift = false;
+        public bool TargetsGlyphSlot = false;
         public UInt64 OnlyInShapeshiftFormMask = 0;
         public bool AllowCastWhileSitting = false;
         public bool DoNotBreakStealthOrInvisibility = false;

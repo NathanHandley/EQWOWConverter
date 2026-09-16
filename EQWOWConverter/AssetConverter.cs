@@ -2530,6 +2530,8 @@ namespace EQWOWConverter
                 if (itemTemplate.IsCompanionPetItem == true)
                     continue;
                 string iconName = "INV_EQ_" + (itemTemplate.IconID).ToString();
+                if (itemTemplate.OverrideIconFileNameNoExt.Length > 0)
+                    iconName = itemTemplate.OverrideIconFileNameNoExt;
                 itemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo(itemTemplate.EQItemDisplayFileName, iconName,
                     itemTemplate.InventoryType, itemTemplate.EQArmorMaterialType, itemTemplate.ColorPacked);
             }
@@ -2845,6 +2847,13 @@ namespace EQWOWConverter
             tauntSpellTemplate.TriggersGlobalCooldown = true;
             tauntSpellTemplate.SpellVisualID1 = Convert.ToUInt32(Configuration.SPELL_PET_TAUNT_SPELL_VISUAL_ID);
             tauntSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+
+            // Sharing the Voidwalker line's warlock family flag lets Demonic Brutality's spell modifier reach both taunts
+            if (Configuration.SPELL_WOW_TALENT_INTERACTION_ENABLED == true)
+            {
+                tauntSpellTemplate.SpellFamilyID = 5; // Warlock
+                tauntSpellTemplate.SpellFamilyFlags1 = 0x02000000; // Torment, Suffering, Sacrifice and Consume Shadows
+            }
 
             // The skill line is what carries a rank onto a pet, so every rank has to be learned as soon as the family's skill line is, and it joins the skill line of every pet type flagged for this taunt in PetTypes.csv
             List<SpellPetType> tauntPetTypes = SpellPetType.GetAllSpellPetTypes().Where(petType => (isMultiTarget == true ? petType.HasMultiTaunt : petType.HasSingleTaunt) == true).ToList();
@@ -5155,6 +5164,34 @@ namespace EQWOWConverter
                     }
                     else
                         Logger.WriteError("Could not attach the key opening spell to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as both spell slots were already used");
+                }
+            }
+
+            // Glyph of Powerful Pets items, one per wow class, which all inscribe the same glyph
+            if (Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_ENABLED == true)
+            {
+                Dictionary<int, ClassWOWType> glyphClassTypesByEQItemID = new Dictionary<int, ClassWOWType>();
+                glyphClassTypesByEQItemID[Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_SHAMAN_EQ_ITEM_ID] = ClassWOWType.Shaman;
+                glyphClassTypesByEQItemID[Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_MAGE_EQ_ITEM_ID] = ClassWOWType.Mage;
+                glyphClassTypesByEQItemID[Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_WARLOCK_EQ_ITEM_ID] = ClassWOWType.Warlock;
+                foreach (ItemTemplate itemTemplate in itemTemplatesByWOWEntryID.Values)
+                {
+                    if (glyphClassTypesByEQItemID.ContainsKey(itemTemplate.EQItemID) == false)
+                        continue;
+                    if (itemTemplate.WOWSpellID1 != 0)
+                    {
+                        Logger.WriteError("Could not attach the Glyph of Powerful Pets spell to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as its first spell slot was already used");
+                        continue;
+                    }
+                    itemTemplate.WOWAllowableClassMask = 1 << (Convert.ToInt32(glyphClassTypesByEQItemID[itemTemplate.EQItemID]) - 1);
+                    itemTemplate.RequiredLevel = 15; // The first glyph slots unlock at 15, and a glyph used on a locked slot is still consumed
+                    itemTemplate.OverrideIconFileNameNoExt = string.Concat("INV_Glyph_Major", glyphClassTypesByEQItemID[itemTemplate.EQItemID].ToString()); // Stock major glyph icon of that class
+                    itemTemplate.WOWSpellID1 = Configuration.SPELL_PET_GLYPH_POWERFUL_PETS_INSCRIBE_SPELL_ID;
+                    itemTemplate.WOWSpellTrigger1 = 0; // Use (click)
+                    itemTemplate.WOWSpellCharges1 = -1; // Consumed on use
+                    itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
+                    itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
+                    itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
                 }
             }
 
