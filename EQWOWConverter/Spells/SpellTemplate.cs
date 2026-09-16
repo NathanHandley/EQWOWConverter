@@ -2180,14 +2180,17 @@ namespace EQWOWConverter.Spells
                     (Convert.ToSingle(Configuration.SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL) * Convert.ToSingle(spellTemplate.MinimumPlayerLearnLevel));
                 float percentCost = (Convert.ToSingle(spellTemplate.ManaCost) / eqManaPoolAtLearnLevel) * 100f * Configuration.SPELLS_MANA_COST_PERCENT_MOD;
 
-                // Heal and periodic (DoT/HoT) spells pay category surcharges so mana-per-point of output lands near the WOW class spell norms
+                // Heal, periodic (DoT/HoT) and area damage spells pay category surcharges so mana-per-point of output lands near the WOW class spell norms
                 bool dominantOutputIsHeal;
                 bool dominantOutputIsPeriodic;
-                CalculateManaCostOutputDominance(spellTemplate, out dominantOutputIsHeal, out dominantOutputIsPeriodic);
+                bool dominantOutputIsDamage;
+                CalculateManaCostOutputDominance(spellTemplate, out dominantOutputIsHeal, out dominantOutputIsPeriodic, out dominantOutputIsDamage);
                 if (dominantOutputIsHeal == true)
                     percentCost *= Configuration.SPELLS_MANA_COST_PERCENT_HEAL_MOD;
                 if (dominantOutputIsPeriodic == true)
                     percentCost *= Configuration.SPELLS_MANA_COST_PERCENT_PERIODIC_MOD;
+                if (dominantOutputIsDamage == true && spellTemplate.IsAreaOfEffectDamageTargetType() == true)
+                    percentCost *= Configuration.SPELLS_MANA_COST_PERCENT_AOE_MOD;
 
                 // Player-cast buffs pay no more than their own (lower) ceiling, since they are cast constantly and out of combat
                 int maxPercentCost = Configuration.SPELLS_MANA_COST_PERCENT_MAX;
@@ -2206,7 +2209,22 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        private static void CalculateManaCostOutputDominance(SpellTemplate spellTemplate, out bool dominantOutputIsHeal, out bool dominantOutputIsPeriodic)
+        private bool IsAreaOfEffectDamageTargetType()
+        {
+            switch (EQTargetType)
+            {
+                case SpellEQTargetType.PointBlankAreaOfEffect:
+                case SpellEQTargetType.TargetedAreaOfEffect:
+                case SpellEQTargetType.TargetedAreaOfEffectLifeTap:
+                case SpellEQTargetType.AreaOfEffectUndead:
+                case SpellEQTargetType.AreaOfEffectSummoned:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private static void CalculateManaCostOutputDominance(SpellTemplate spellTemplate, out bool dominantOutputIsHeal, out bool dominantOutputIsPeriodic, out bool dominantOutputIsDamage)
         {
             float directDamageTotal = 0;
             float directHealTotal = 0;
@@ -2238,8 +2256,16 @@ namespace EQWOWConverter.Spells
                 }
             }
 
+            // A rain lands its direct damage once per wave over time, the same way a WOW Blizzard or Rain of Fire does, so all of its waves count as periodic output
+            if (spellTemplate.RainWaveCount > 1)
+            {
+                periodicDamageTotal += directDamageTotal * Convert.ToSingle(spellTemplate.RainWaveCount);
+                directDamageTotal = 0;
+            }
+
             dominantOutputIsHeal = false;
             dominantOutputIsPeriodic = false;
+            dominantOutputIsDamage = false;
             float healTotal = directHealTotal + periodicHealTotal;
             float damageTotal = directDamageTotal + periodicDamageTotal;
             if (healTotal <= 0 && damageTotal <= 0)
@@ -2250,7 +2276,10 @@ namespace EQWOWConverter.Spells
                 dominantOutputIsPeriodic = periodicHealTotal > directHealTotal;
             }
             else
+            {
+                dominantOutputIsDamage = true;
                 dominantOutputIsPeriodic = periodicDamageTotal > directDamageTotal;
+            }
         }
 
         private static void MarkSpellTemplatesNeedingCreatureCastVersions()

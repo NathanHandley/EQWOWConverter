@@ -889,9 +889,10 @@ namespace EQWOWConverter
         public static bool SPELLS_MANA_COST_PERCENT_ENABLED = true;
         public static int SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_BASE = 100;
         public static int SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL = 30;
-        public static float SPELLS_MANA_COST_PERCENT_MOD = 1.25f;
-        public static float SPELLS_MANA_COST_PERCENT_HEAL_MOD = 2.4f;
-        public static float SPELLS_MANA_COST_PERCENT_PERIODIC_MOD = 2.0f;
+        public static float SPELLS_MANA_COST_PERCENT_MOD = 1.65f;
+        public static float SPELLS_MANA_COST_PERCENT_HEAL_MOD = 1.8f;
+        public static float SPELLS_MANA_COST_PERCENT_PERIODIC_MOD = 2.6f;
+        public static float SPELLS_MANA_COST_PERCENT_AOE_MOD = 1.3f;
         public static int SPELLS_MANA_COST_PERCENT_MIN = 1;
         public static int SPELLS_MANA_COST_PERCENT_MAX = 60;
 
@@ -2400,6 +2401,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_MOD", SPELLS_MANA_COST_PERCENT_MOD, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_HEAL_MOD", SPELLS_MANA_COST_PERCENT_HEAL_MOD, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_PERIODIC_MOD", SPELLS_MANA_COST_PERCENT_PERIODIC_MOD, "", false);
+            OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_AOE_MOD", SPELLS_MANA_COST_PERCENT_AOE_MOD, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_MIN", SPELLS_MANA_COST_PERCENT_MIN, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_MAX", SPELLS_MANA_COST_PERCENT_MAX, "");
             OutputVariableToConfig("SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE", SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE, "Player-cast single target and group buffs (the same set the buff cast time cap and duration floor use) never cost more than this percent of base mana.  0 to disable", false);
@@ -3197,6 +3199,7 @@ namespace EQWOWConverter
             SPELLS_MANA_COST_PERCENT_MOD = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_MOD", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_MOD);
             SPELLS_MANA_COST_PERCENT_HEAL_MOD = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_HEAL_MOD", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_HEAL_MOD);
             SPELLS_MANA_COST_PERCENT_PERIODIC_MOD = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_PERIODIC_MOD", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_PERIODIC_MOD);
+            SPELLS_MANA_COST_PERCENT_AOE_MOD = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_AOE_MOD", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_AOE_MOD);
             SPELLS_MANA_COST_PERCENT_MIN = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_MIN", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_MIN);
             SPELLS_MANA_COST_PERCENT_MAX = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_MAX", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_MAX);
             SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE = ReadVariableFromConfigString("SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE", configValuesByVariableName, SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE);
