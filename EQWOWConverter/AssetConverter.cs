@@ -3740,6 +3740,53 @@ namespace EQWOWConverter
                 spellTemplates.Add(mendSpellTemplate);
             }
 
+            // Clamber (the mod's spell script checks the spot and moves the player there)
+            if (Configuration.COMBATSKILL_CLAMBER_ENABLED == true)
+            {
+                int clamberIconID = Configuration.COMBATSKILL_CLAMBER_SPELL_ICON_EQ_ID;
+                if (clamberIconID < 0 || clamberIconID > 22)
+                {
+                    Logger.WriteError("COMBATSKILL_CLAMBER_SPELL_ICON_EQ_ID value must be 0-22. Setting to 1");
+                    clamberIconID = 1;
+                }
+                int clamberRange = Configuration.COMBATSKILL_CLAMBER_RANGE_IN_YARDS;
+                if (clamberRange < 1)
+                {
+                    Logger.WriteError("COMBATSKILL_CLAMBER_RANGE_IN_YARDS value must be at least 1. Setting to 10");
+                    clamberRange = 10;
+                }
+                SpellTemplate clamberSpellTemplate = new SpellTemplate();
+                clamberSpellTemplate.Name = "Clamber";
+                clamberSpellTemplate.WOWSpellID = Configuration.COMBATSKILL_CLAMBER_SPELL_ID;
+                clamberSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                clamberSpellTemplate.Description = "Clamber up to a nearby spot you can see, from the ground or out of water or lava, as long as it isn't too steep, too far below you or across a gap. Only works in Norrath.";
+                clamberSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(clamberIconID);
+                clamberSpellTemplate.CastTimeInMS = 0;
+                clamberSpellTemplate.SpellRange = clamberRange;
+                // RecoveryTime below SPELL_RECOVERY_TIME_MINIMUM_IN_MS is written as 0, so the cooldown rides on the category instead
+                clamberSpellTemplate.Category = Convert.ToUInt32(SpellCategoryDBC.GenerateDBCID("clamber"));
+                clamberSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_CLAMBER_COOLDOWN_IN_MS);
+                clamberSpellTemplate.HasCustomCooldown = true;
+                clamberSpellTemplate.SchoolMask = 1; // Physical
+                clamberSpellTemplate.IsGoodEffect = true;
+                clamberSpellTemplate.TriggersGlobalCooldown = false;
+                clamberSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                clamberSpellTemplate.AllowInShapeshift = true;
+                clamberSpellTemplate.AllowCastWhileMounted = true; // The mod dismounts the caster
+                clamberSpellTemplate.IsGroundTargeted = true;
+                clamberSpellTemplate.GenerateNoThreat = true;
+                clamberSpellTemplate.SuppressCasterProcs = true;
+                clamberSpellTemplate.PersistOnClassChange = true;
+                clamberSpellTemplate.AttachedAuraScriptName = "EverQuest_ClamberSpellScript";
+                clamberSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
+                clamberSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
+                SpellEffectWOW clamberEffect = new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0);
+                clamberEffect.ImplicitTargetA = SpellWOWTargetType.DestinationDestination;
+                clamberEffect.ActionDescription = "clambers";
+                clamberSpellTemplate.WOWSpellEffects.Add(clamberEffect);
+                spellTemplates.Add(clamberSpellTemplate);
+            }
+
             // Implementing creature ranged as a spell, and basing it on TAKP's NPC::RangedAttack
             if (Configuration.COMBATSKILL_RANGED_ENABLED == true)
             {

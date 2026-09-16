@@ -1292,6 +1292,17 @@ namespace EQWOWConverter
         public static int COMBATSKILL_MEND_COOLDOWN_IN_MS = 360000;
         public static int COMBATSKILL_MEND_HEAL_PERCENT = 33;
 
+        // Clamber is an ability every player gets, which runs them up to a spot they pick on the ground (EQ zones have slopes too steep to walk up in WoW)
+        public static bool COMBATSKILL_CLAMBER_ENABLED = true;
+        public static bool COMBATSKILL_CLAMBER_PLAYER_LEARNABLE = true;
+        public static int COMBATSKILL_CLAMBER_SPELL_ID = 86948;
+        public static int COMBATSKILL_CLAMBER_SPELL_ICON_EQ_ID = 1;
+        public static int COMBATSKILL_CLAMBER_RANGE_IN_YARDS = 60;
+        public static int COMBATSKILL_CLAMBER_COOLDOWN_IN_MS = 0;
+        public static float COMBATSKILL_CLAMBER_MAX_SLOPE_ANGLE_IN_DEGREES = 85f;
+        public static float COMBATSKILL_CLAMBER_MAX_DROP_IN_YARDS = 5f;
+        public static float COMBATSKILL_CLAMBER_MAX_GAP_DEPTH_IN_YARDS = 5f;
+
         // Ranged attack in EQ zones is based on TAKP, and creatures will ranged attack if they have a bow + arrow or the creature has a special skill attribute
         public static bool COMBATSKILL_RANGED_ENABLED = true;
         public static int COMBATSKILL_RANGED_SPELL_ID = 86914;
@@ -2598,6 +2609,15 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_MEND_SPELL_VISUAL_ID", COMBATSKILL_MEND_SPELL_VISUAL_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_MEND_COOLDOWN_IN_MS", COMBATSKILL_MEND_COOLDOWN_IN_MS, "", false);
             OutputVariableToConfig("COMBATSKILL_MEND_HEAL_PERCENT", COMBATSKILL_MEND_HEAL_PERCENT, "");
+            OutputVariableToConfig("COMBATSKILL_CLAMBER_ENABLED", COMBATSKILL_CLAMBER_ENABLED, "Clamber is an ability every player gets, which runs them up to a spot they pick on the ground (EQ zones have slopes too steep to walk up in WoW)", false);
+            OutputVariableToConfig("COMBATSKILL_CLAMBER_PLAYER_LEARNABLE", COMBATSKILL_CLAMBER_PLAYER_LEARNABLE, "", false);
+            OutputVariableToConfig("COMBATSKILL_CLAMBER_SPELL_ID", COMBATSKILL_CLAMBER_SPELL_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_CLAMBER_SPELL_ICON_EQ_ID", COMBATSKILL_CLAMBER_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("COMBATSKILL_CLAMBER_RANGE_IN_YARDS", COMBATSKILL_CLAMBER_RANGE_IN_YARDS, "", false);
+            OutputVariableToConfig("COMBATSKILL_CLAMBER_COOLDOWN_IN_MS", COMBATSKILL_CLAMBER_COOLDOWN_IN_MS, "", false);
+            OutputVariableToConfig("COMBATSKILL_CLAMBER_MAX_SLOPE_ANGLE_IN_DEGREES", COMBATSKILL_CLAMBER_MAX_SLOPE_ANGLE_IN_DEGREES, "", false);
+            OutputVariableToConfig("COMBATSKILL_CLAMBER_MAX_DROP_IN_YARDS", COMBATSKILL_CLAMBER_MAX_DROP_IN_YARDS, "", false);
+            OutputVariableToConfig("COMBATSKILL_CLAMBER_MAX_GAP_DEPTH_IN_YARDS", COMBATSKILL_CLAMBER_MAX_GAP_DEPTH_IN_YARDS, "");
             OutputVariableToConfig("COMBATSKILL_RANGED_ENABLED", COMBATSKILL_RANGED_ENABLED, "Ranged attack in EQ zones is based on TAKP, and creatures will ranged attack if they have a bow + arrow or the creature has a special skill attribute", false);
             OutputVariableToConfig("COMBATSKILL_RANGED_SPELL_ID", COMBATSKILL_RANGED_SPELL_ID, "", false);
             OutputVariableToConfig("COMBATSKILL_RANGED_SPELL_ICON_EQ_ID", COMBATSKILL_RANGED_SPELL_ICON_EQ_ID, "", false);
@@ -3376,6 +3396,15 @@ namespace EQWOWConverter
             COMBATSKILL_MEND_SPELL_VISUAL_ID = ReadVariableFromConfigString("COMBATSKILL_MEND_SPELL_VISUAL_ID", configValuesByVariableName, COMBATSKILL_MEND_SPELL_VISUAL_ID);
             COMBATSKILL_MEND_COOLDOWN_IN_MS = ReadVariableFromConfigString("COMBATSKILL_MEND_COOLDOWN_IN_MS", configValuesByVariableName, COMBATSKILL_MEND_COOLDOWN_IN_MS);
             COMBATSKILL_MEND_HEAL_PERCENT = ReadVariableFromConfigString("COMBATSKILL_MEND_HEAL_PERCENT", configValuesByVariableName, COMBATSKILL_MEND_HEAL_PERCENT);
+            COMBATSKILL_CLAMBER_ENABLED = ReadVariableFromConfigString("COMBATSKILL_CLAMBER_ENABLED", configValuesByVariableName, COMBATSKILL_CLAMBER_ENABLED);
+            COMBATSKILL_CLAMBER_PLAYER_LEARNABLE = ReadVariableFromConfigString("COMBATSKILL_CLAMBER_PLAYER_LEARNABLE", configValuesByVariableName, COMBATSKILL_CLAMBER_PLAYER_LEARNABLE);
+            COMBATSKILL_CLAMBER_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_CLAMBER_SPELL_ID", configValuesByVariableName, COMBATSKILL_CLAMBER_SPELL_ID);
+            COMBATSKILL_CLAMBER_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_CLAMBER_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_CLAMBER_SPELL_ICON_EQ_ID);
+            COMBATSKILL_CLAMBER_RANGE_IN_YARDS = ReadVariableFromConfigString("COMBATSKILL_CLAMBER_RANGE_IN_YARDS", configValuesByVariableName, COMBATSKILL_CLAMBER_RANGE_IN_YARDS);
+            COMBATSKILL_CLAMBER_COOLDOWN_IN_MS = ReadVariableFromConfigString("COMBATSKILL_CLAMBER_COOLDOWN_IN_MS", configValuesByVariableName, COMBATSKILL_CLAMBER_COOLDOWN_IN_MS);
+            COMBATSKILL_CLAMBER_MAX_SLOPE_ANGLE_IN_DEGREES = ReadVariableFromConfigString("COMBATSKILL_CLAMBER_MAX_SLOPE_ANGLE_IN_DEGREES", configValuesByVariableName, COMBATSKILL_CLAMBER_MAX_SLOPE_ANGLE_IN_DEGREES);
+            COMBATSKILL_CLAMBER_MAX_DROP_IN_YARDS = ReadVariableFromConfigString("COMBATSKILL_CLAMBER_MAX_DROP_IN_YARDS", configValuesByVariableName, COMBATSKILL_CLAMBER_MAX_DROP_IN_YARDS);
+            COMBATSKILL_CLAMBER_MAX_GAP_DEPTH_IN_YARDS = ReadVariableFromConfigString("COMBATSKILL_CLAMBER_MAX_GAP_DEPTH_IN_YARDS", configValuesByVariableName, COMBATSKILL_CLAMBER_MAX_GAP_DEPTH_IN_YARDS);
             COMBATSKILL_RANGED_ENABLED = ReadVariableFromConfigString("COMBATSKILL_RANGED_ENABLED", configValuesByVariableName, COMBATSKILL_RANGED_ENABLED);
             COMBATSKILL_RANGED_SPELL_ID = ReadVariableFromConfigString("COMBATSKILL_RANGED_SPELL_ID", configValuesByVariableName, COMBATSKILL_RANGED_SPELL_ID);
             COMBATSKILL_RANGED_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("COMBATSKILL_RANGED_SPELL_ICON_EQ_ID", configValuesByVariableName, COMBATSKILL_RANGED_SPELL_ICON_EQ_ID);

@@ -344,6 +344,9 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("IllusionObjectMaxDistance", (Configuration.SPELL_ILLUSION_OBJECT_MAX_DISTANCE * Configuration.GENERATE_WORLD_SCALE).ToString());
             modEverquestSystemConfigsSQL.AddRow("IllusionObjectTreeMaxDistance", (Configuration.SPELL_ILLUSION_OBJECT_TREE_MAX_DISTANCE * Configuration.GENERATE_WORLD_SCALE).ToString());
             modEverquestSystemConfigsSQL.AddRow("HarmTouchPlayerPvPDamagePercent", Configuration.COMBATSKILL_HARMTOUCH_PLAYER_PVP_DAMAGE_PERCENT.ToString());
+            modEverquestSystemConfigsSQL.AddRow("ClamberMaxSlopeAngleInDegrees", Configuration.COMBATSKILL_CLAMBER_MAX_SLOPE_ANGLE_IN_DEGREES.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            modEverquestSystemConfigsSQL.AddRow("ClamberMaxDropInYards", Configuration.COMBATSKILL_CLAMBER_MAX_DROP_IN_YARDS.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            modEverquestSystemConfigsSQL.AddRow("ClamberMaxGapDepthInYards", Configuration.COMBATSKILL_CLAMBER_MAX_GAP_DEPTH_IN_YARDS.ToString(System.Globalization.CultureInfo.InvariantCulture));
         }
 
         private void PopulateGameTableData()
@@ -2223,6 +2226,10 @@ namespace EQWOWConverter
                     // Mend
                     if (Configuration.COMBATSKILL_MEND_ENABLED == true && Configuration.COMBATSKILL_MEND_PLAYER_LEARNABLE == true && eqClassProperties.EQClass == ClassEQType.Monk)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_MEND_SPELL_ID, 1);
+
+                    // Clamber (every EQ class, so every player gets it)
+                    if (Configuration.COMBATSKILL_CLAMBER_ENABLED == true && Configuration.COMBATSKILL_CLAMBER_PLAYER_LEARNABLE == true)
+                        modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_CLAMBER_SPELL_ID, 1);
 
                     // EQ Class Aura passive
                     int classAuraPassiveSpellID = SpellClassAuras.GetPassiveSpellIDForClass(eqClassProperties.EQClass);

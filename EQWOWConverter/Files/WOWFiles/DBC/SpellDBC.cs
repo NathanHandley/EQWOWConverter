@@ -85,6 +85,8 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddUInt32(16); // Targets (Item Enchantment)
             else if (spellTemplate.CastOnCorpse == true)
                 newRow.AddUInt32(32768); // Targets (Corpse))
+            else if (spellTemplate.IsGroundTargeted == true)
+                newRow.AddUInt32(64); // Targets (Destination location)
             else
                 newRow.AddUInt32(0); // Targets (should this be non-zero?)
             newRow.AddUInt32(spellTemplate.TargetCreatureType); // TargetCreatureType
@@ -550,6 +552,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 2; // SPELL_ATTR0_USES_RANGED_SLOT (0x00000002) - makes the client render the arrow/bullet projectile
             if (spellTemplate.CanMountWhileInForm == true)
                 attributeFlags |= 16777216; // SPELL_ATTR0_ALLOW_WHILE_MOUNTED (0x01000000) - lets Unit::IsInDisallowedMountForm pass for this transform
+            if (spellTemplate.AllowCastWhileMounted == true)
+                attributeFlags |= 16777216; // SPELL_ATTR0_ALLOW_WHILE_MOUNTED (0x01000000)
             if (spellTemplate.CancelsAutoAttack == true)
                 attributeFlags |= 1048576; // SPELL_ATTR0_CANCELS_AUTO_ATTACK_COMBAT (0x00100000)
             return attributeFlags;

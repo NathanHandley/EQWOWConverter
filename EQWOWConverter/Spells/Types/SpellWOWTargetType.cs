@@ -36,6 +36,7 @@ namespace EQWOWConverter.Spells
         UnitDestinationAreaParty = 34,
         UnitTargetParty = 35,
         DestinationTargetEnemy = 53,
-        DestinationTargetAny = 63
+        DestinationTargetAny = 63,
+        DestinationDestination = 87 // This is a spot the caster picks on the ground
     }
 }
