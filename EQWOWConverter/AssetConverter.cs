@@ -3681,6 +3681,7 @@ namespace EQWOWConverter
                 feignDeathSpellTemplate.CategoryRecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_FEIGNDEATH_COOLDOWN_IN_MS);
                 feignDeathSpellTemplate.HasCustomCooldown = true;
                 feignDeathSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
+                feignDeathSpellTemplate.AllowInShapeshift = true;
                 feignDeathSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Combat;
                 feignDeathSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
                 feignDeathSpellTemplate.AuraDuration = new SpellDuration();

@@ -4492,6 +4492,7 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.FailableType = SpellFailableType.FeignDeath;
                                 spellTemplate.InterruptAuraOnCast = true;
                                 spellTemplate.InterruptAuraOnMeleeAttack = true;
+                                spellTemplate.AllowInShapeshift = true;
                             } break;
                         case SpellEQEffectType.NegateIfCombat:
                             {
