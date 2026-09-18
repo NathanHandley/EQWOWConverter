@@ -276805,3 +276805,5 @@ CreatureGUID|spawn~15000202~1000046|454443
 ItemDisplayInfoID|INV_Glyph_MajorShaman~eq_it63.mdx~False~0~0~0~0|107436
 ItemDisplayInfoID|INV_Glyph_MajorMage~eq_it63.mdx~False~0~0~0~0|107437
 ItemDisplayInfoID|INV_Glyph_MajorWarlock~eq_it63.mdx~False~0~0~0~0|107438
+SpellVisualID|ClassAuraMagicianDetonateSummonedCast|18391
+SkillLineAbilityID|820~96069|32918

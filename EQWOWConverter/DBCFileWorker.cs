@@ -195,6 +195,19 @@ namespace EQWOWConverter
                             blockActionDescription = exhaustionText;
                     }
 
+                    // Wizard's Intensified Skyfall cost for the tooltip
+                    if ((spellTemplate.SpellFamilyFlags3 & Configuration.SPELL_EQ_RAIN_SPELL_FAMILY_FLAG) != 0 && spellTemplate.MinimumPlayerLearnLevel > 0  && curEffectBlock.WOWSpellID == spellTemplate.WOWSpellID)
+                    {
+                        string skyfallCostStamp = SpellClassAuras.GetIntensifiedSkyfallRainTooltipCostStamp();
+                        if (skyfallCostStamp.Length > 0)
+                        {
+                            if (blockActionDescription.Length > 0)
+                                blockActionDescription = string.Concat(blockActionDescription, "\n\n", skyfallCostStamp);
+                            else
+                                blockActionDescription = skyfallCostStamp;
+                        }
+                    }
+
                     // Worn effects never get spell_bonus_data, so only cast blocks show the coefficient.  It goes last, in its own paragraph.
                     string spellPowerCoefficientText = spellTemplate.GetSpellPowerCoefficientTooltipTextForBlock(curEffectBlock, i);
                     if (spellPowerCoefficientText.Length > 0)
@@ -1069,6 +1082,15 @@ namespace EQWOWConverter
                     int handEffectID = spellVisual.GetVisualIDForAttachLocationStage(SpellEmitterModelAttachLocationType.Hands, (SpellVisualStageType)i);
                     spellVisualKitDBC.AddRow(spellVisual, (SpellVisualStageType)i, headEffectID, chestEffectID, baseEffectID, handEffectID);
                 }
+            }
+            // Magician "Detonate Summoned" borrows another spell's cast look
+            if (SpellClassAuras.IsClassEnabled(ClassEQType.Magician) == true)
+            {
+                SpellVisual detonateCastSourceSpellVisual = SpellClassAuras.GetMagicianDetonateSummonedCastSourceSpellVisual();
+                spellVisualDBC.AddRow(SpellClassAuras.MagicianDetonateSummonedCastSpellVisualDBCID,
+                    detonateCastSourceSpellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Precast],
+                    detonateCastSourceSpellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Cast],
+                    0, 0);
             }
             foreach (ObjectModel objectModel in SpellVisual.GetAllEmitterObjectModels())
             {

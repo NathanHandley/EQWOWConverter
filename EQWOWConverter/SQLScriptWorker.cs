@@ -303,6 +303,8 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("ClientDataVersionMismatchMessage", Configuration.DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE);
             modEverquestSystemConfigsSQL.AddRow("BardMaxConcurrentSongs", Configuration.SPELL_MAX_CONCURRENT_BARD_SONGS.ToString());
             modEverquestSystemConfigsSQL.AddRow("BuffLevelRestrictionsEnabled", Configuration.SPELL_BUFF_MIN_TARGET_LEVEL_RESTRICTION_SPELL_LEVEL_THRESHOLD > 0 ? "1" : "0");
+            modEverquestSystemConfigsSQL.AddRow("RainTargetHitCap", Configuration.SPELLS_RAIN_TARGET_HIT_CAP.ToString());
+            modEverquestSystemConfigsSQL.AddRow("RainTargetHitCapNoDirectDamage", Configuration.SPELLS_RAIN_TARGET_HIT_CAP_NO_DIRECT_DAMAGE.ToString());
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMin", Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString());
             modEverquestSystemConfigsSQL.AddRow("CreatureTemplateIDMax", Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH.ToString());
             modEverquestSystemConfigsSQL.AddRow("DazeEnabledInEQZones", Configuration.COMBAT_DAZE_IN_EQ_ZONES_ENABLED == true ? "1" : "0");
@@ -3013,8 +3015,14 @@ namespace EQWOWConverter
                 spellProcSQL.AddRow(spellEffectBlocks[0].WOWSpellID, 0, 0, spellTemplate.ProcRow.ProcFlags, spellTemplate.ProcRow.SpellTypeMask, spellTemplate.ProcRow.SpellPhaseMask,
                     spellTemplate.ProcRow.HitMask, spellTemplate.ProcRow.AttributesMask, spellTemplate.ProcRow.CooldownInMS, 0, spellTemplate.ProcRow.ChancePercent);
 
-            // A rain's follow-up waves are single-target casts, so the core never applies its area damage split to them (see the script)
-            if (spellTemplate.IsRainWaveSpell == true && commentFragment != " (Worn)")
+            // Rain scripts
+            if (spellTemplate.GetRainTargetHitCap() > 0 && commentFragment != " (Worn)" && commentFragment != " (Creature)")
+                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_RainTargetBudgetSpellScript");
+            if (spellTemplate.IsRainCloudSpell == true && commentFragment != " (Worn)" && commentFragment != " (Creature)")
+                spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_RainCloudTargetBudgetAuraScript");
+
+            // Wizard's Intensified Skyfall needs a separate script to calculate targets
+            if (spellTemplate.IsRainWaveSpell == true && commentFragment != " (Worn)" && commentFragment != " (Creature)")
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_RainWaveAreaCapSpellScript");
 
             // Pet (but avoid duplicates)

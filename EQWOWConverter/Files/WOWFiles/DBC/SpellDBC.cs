@@ -628,6 +628,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 1024; // SPELL_ATTR3_REQUIRES_MAIN_HAND_WEAPON (0x400)
             if (spellTemplate.DamageIsFixed == true)
                 attributeFlags |= 536870912; // SPELL_ATTR3_IGNORE_CASTER_MODIFIERS (0x20000000)
+            if (spellTemplate.TriggeredCastCanProc == true)
+                attributeFlags |= 512; // SPELL_ATTR3_NOT_A_PROC (0x00000200), which despite the name ALLOWS a triggered cast of this spell to trigger other auras' procs
             return attributeFlags;
         }
 

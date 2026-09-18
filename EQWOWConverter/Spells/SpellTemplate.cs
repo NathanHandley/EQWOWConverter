@@ -237,7 +237,9 @@ namespace EQWOWConverter.Spells
         public int EQAEDurationInMS = 0; // How long an EQ "rain" spell keeps landing at the spot it was aimed at
         public int RainWaveCount = 0; // How many times a rain spell lands in total, where 0 or 1 means the spell isn't a rain
         public int RainWaveIntervalInMS = 0;
-        public bool IsRainWaveSpell = false; // A generated single-target copy of a rain, cast on each unit in the cloud once per wave
+        public bool IsRainWaveSpell = false;
+        public bool IsRainCloudSpell = false;
+        public bool TriggeredCastCanProc = false; // SPELL_ATTR3_NOT_A_PROC, so the spell still sets off other auras' procs (talents, class auras) when something casts it triggered
         public int EQBuffDurationInTicks = 0;
         public int EQBuffDurationFormula = 0;
         public SpellDuration AuraDuration = new SpellDuration();
@@ -2190,8 +2192,10 @@ namespace EQWOWConverter.Spells
                     percentCost *= Configuration.SPELLS_MANA_COST_PERCENT_HEAL_MOD;
                 if (dominantOutputIsPeriodic == true)
                     percentCost *= Configuration.SPELLS_MANA_COST_PERCENT_PERIODIC_MOD;
-                if (dominantOutputIsDamage == true && spellTemplate.IsAreaOfEffectDamageTargetType() == true)
+                if (dominantOutputIsDamage == true && spellTemplate.IsAreaOfEffectDamageTargetType() == true && spellTemplate.RainWaveCount <= 1)
                     percentCost *= Configuration.SPELLS_MANA_COST_PERCENT_AOE_MOD;
+                if (spellTemplate.RainWaveCount > 1)
+                    percentCost *= Configuration.SPELLS_MANA_COST_PERCENT_RAIN_MOD;
 
                 // Player-cast buffs pay no more than their own (lower) ceiling, since they are cast constantly and out of combat
                 int maxPercentCost = Configuration.SPELLS_MANA_COST_PERCENT_MAX;
@@ -2255,13 +2259,6 @@ namespace EQWOWConverter.Spells
                             periodicDamageTotal += effectAmount * tickCount;
                     }
                 }
-            }
-
-            // A rain lands its direct damage once per wave over time, the same way a WOW Blizzard or Rain of Fire does, so all of its waves count as periodic output
-            if (spellTemplate.RainWaveCount > 1)
-            {
-                periodicDamageTotal += directDamageTotal * Convert.ToSingle(spellTemplate.RainWaveCount);
-                directDamageTotal = 0;
             }
 
             dominantOutputIsHeal = false;
@@ -4583,6 +4580,20 @@ namespace EQWOWConverter.Spells
             GenerateRainWaveSpellsIfRainSpell(ref spellTemplate, isDetrimental, ref effectGeneratedSpellTemplates);
         }
 
+        public int GetRainTargetHitCap()
+        {
+            if (RainWaveCount <= 1)
+                return 0;
+            foreach (SpellEffectWOW wowEffect in WOWSpellEffects)
+            {
+                if (wowEffect.EffectAuraType != SpellWOWAuraType.None)
+                    continue;
+                if (wowEffect.EffectType == SpellWOWEffectType.SchoolDamage || wowEffect.EffectType == SpellWOWEffectType.HealthLeech)
+                    return Configuration.SPELLS_RAIN_TARGET_HIT_CAP;
+            }
+            return Configuration.SPELLS_RAIN_TARGET_HIT_CAP_NO_DIRECT_DAMAGE;
+        }
+
         private static void GenerateRainWaveSpellsIfRainSpell(ref SpellTemplate spellTemplate, bool isDetrimental, ref List<SpellTemplate> effectGeneratedSpellTemplates)
         {
             if (Configuration.SPELLS_RAIN_ENABLED == false)
@@ -4633,6 +4644,7 @@ namespace EQWOWConverter.Spells
             waveSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
             waveSpellTemplate.TriggersGlobalCooldown = false;
             waveSpellTemplate.IsRainWaveSpell = true;
+            waveSpellTemplate.TriggeredCastCanProc = true;
             foreach (SpellEffectWOW spellEffect in spellTemplate.WOWSpellEffects)
             {
                 SpellEffectWOW waveSpellEffect = spellEffect.Clone();
@@ -4659,6 +4671,7 @@ namespace EQWOWConverter.Spells
             cloudSpellTemplate.TriggersGlobalCooldown = false;
             cloudSpellTemplate.ForceHiddenFromDisplay = true;
             cloudSpellTemplate.ChainAppliesViaCastTrigger = true;
+            cloudSpellTemplate.IsRainCloudSpell = true;
 
             // Half a wave of padding so that the final wave always lands before the aura falls off
             cloudSpellTemplate.AuraDuration = new SpellDuration();
@@ -4676,6 +4689,11 @@ namespace EQWOWConverter.Spells
 
             spellTemplate.RainWaveCount = followUpWaveCount + 1;
             spellTemplate.RainWaveIntervalInMS = waveIntervalInMS;
+            if (spellTemplate.GetRainTargetHitCap() > 0)
+            {
+                spellTemplate.SpellFamilyID = Convert.ToUInt32(Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
+                spellTemplate.SpellFamilyFlags3 |= Configuration.SPELL_EQ_RAIN_SPELL_FAMILY_FLAG;
+            }
 
             effectGeneratedSpellTemplates.Add(waveSpellTemplate);
             effectGeneratedSpellTemplates.Add(cloudSpellTemplate);
@@ -4988,6 +5006,13 @@ namespace EQWOWConverter.Spells
                 float rainDurationInSeconds = Convert.ToSingle((spellTemplate.RainWaveCount - 1) * spellTemplate.RainWaveIntervalInMS) / 1000f;
                 descriptionSB.Append(string.Concat(" Rains down ", spellTemplate.RainWaveCount.ToString(), " times over ",
                     rainDurationInSeconds.ToString("0.#"), " seconds where it lands."));
+                int rainTargetHitCap = spellTemplate.GetRainTargetHitCap();
+                if (rainTargetHitCap > 0)
+                {
+                    int hitsAgainstOneEnemy = Math.Min(spellTemplate.RainWaveCount, rainTargetHitCap);
+                    descriptionSB.Append(string.Concat(" Only strikes up to ", rainTargetHitCap.ToString(), " times in total across all enemies in range, and only up to ",
+                        hitsAgainstOneEnemy.ToString(), " times on a lone enemy."));
+                }
             }
             descriptionSB.Append(spellTemplate.GetMinimumTargetLevelDescriptionText());
             if (spellTemplate.IsCosmeticOnlyIllusion == true)

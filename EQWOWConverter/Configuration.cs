@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 110;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 112;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -104,7 +104,7 @@ namespace EQWOWConverter
         public static string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
 
         // Client files must match this between the server and the client, separate from "CONFIGONLY_CORE_MOD_VERSION"
-        public static int DEPLOY_CLIENT_DATA_VERSION = 12;
+        public static int DEPLOY_CLIENT_DATA_VERSION = 13;
         public static string DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE = "Your EverQuest client data is out of date. Please run the launcher to update, then log back in.";
 
         // ====================================================================
@@ -893,6 +893,7 @@ namespace EQWOWConverter
         public static float SPELLS_MANA_COST_PERCENT_HEAL_MOD = 1.75f;
         public static float SPELLS_MANA_COST_PERCENT_PERIODIC_MOD = 2.5f;
         public static float SPELLS_MANA_COST_PERCENT_AOE_MOD = 1.2f;
+        public static float SPELLS_MANA_COST_PERCENT_RAIN_MOD = 1.25f; // Rains skip the area and periodic surcharges (their hit budget makes them priced like a single target spell) and pay this instead
         public static int SPELLS_MANA_COST_PERCENT_MIN = 1;
         public static int SPELLS_MANA_COST_PERCENT_MAX = 60;
 
@@ -913,6 +914,10 @@ namespace EQWOWConverter
         // If true, EQ "rain" spells (targeted area of effect spells with an AEDuration) land their effect at the spot they were aimed at
         public static bool SPELLS_RAIN_ENABLED = true;
         public static int SPELLS_RAIN_WAVE_INTERVAL_IN_MS = 2500;
+
+        // Limits on rain spell hit caps
+        public static int SPELLS_RAIN_TARGET_HIT_CAP = 4;
+        public static int SPELLS_RAIN_TARGET_HIT_CAP_NO_DIRECT_DAMAGE = 5;
 
         // The most that a movement speed reduction can slow a target, and -100 fully stops movement (EQ-like for spells such as Torpor) and is the lowest valid value
         public static int SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE = -100;
@@ -1202,6 +1207,9 @@ namespace EQWOWConverter
         // SpellFamilyFlags bit given to every intense healing spell so the exhaustion debuff's mana cost mod can find them.  Word 3 bits 22-30 are set by no spell in the stock client data (neither as family flags nor as a spell mod's EffectSpellClassMask), so this bit can never pull a WoW spell into the mod
         public static UInt32 SPELL_EQ_INTENSE_HEALING_SPELL_FAMILY_FLAG = 0x00400000;
 
+        // SpellFamilyFlags bit given to every rain spell (in the private family above) so the Wizard's Intensified Skyfall mana cost mod can find them.  Same unused stretch of word 3 as the intense healing bit
+        public static UInt32 SPELL_EQ_RAIN_SPELL_FAMILY_FLAG = 0x00800000;
+
         // EQ has no "daze" snare when a creature melee-hits a player from behind so this can disable it (in EQ zones only)
         public static bool COMBAT_DAZE_IN_EQ_ZONES_ENABLED = true;
 
@@ -1429,6 +1437,8 @@ namespace EQWOWConverter
         public static int CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT = 1;
         public static int CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS = 1000;
         public static int CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS = 1000;
+        public static int CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_SPELL_ICON_EQ_ID = 15;
+        public static float CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_MANA_COST_MULTIPLIER = 2.0f;
 
         // Magician "Bound Conjurer"
         public static bool CLASSAURA_MAGICIAN_ENABLED = true;
@@ -1443,7 +1453,9 @@ namespace EQWOWConverter
         public static int CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_TIME_IN_MS = 2000;
         public static int CLASSAURA_MAGICIAN_DETONATE_SUMMONED_RADIUS_IN_YARDS = 10;
         public static int CLASSAURA_MAGICIAN_DETONATE_SUMMONED_SPELL_VISUAL_ID = 965; // SpellVisual.dbc id of Arcane Explosion (1449 and every rank)
-        public static int CLASSAURA_MAGICIAN_DETONATE_SUMMONED_UNSUMMON_DELAY_IN_MS = 1000; // How long the exploded pet lingers so the nova and sound play out on it before it is unsummoned
+        public static int CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_EQ_VISUAL_EFFECT_INDEX = 25; // EQ visual effect index of "Shock of Spikes" (EQ spell 113 / WoW spell 92111)
+        public static int CLASSAURA_MAGICIAN_DETONATE_SUMMONED_PET_HEALTH_COST_PERCENT = 50;
+        public static int CLASSAURA_MAGICIAN_DETONATE_SUMMONED_COOLDOWN_IN_MS = 60000;
 
         // Necromancer "Grave Pact"
         public static bool CLASSAURA_NECROMANCER_ENABLED = true;
@@ -2424,6 +2436,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_HEAL_MOD", SPELLS_MANA_COST_PERCENT_HEAL_MOD, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_PERIODIC_MOD", SPELLS_MANA_COST_PERCENT_PERIODIC_MOD, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_AOE_MOD", SPELLS_MANA_COST_PERCENT_AOE_MOD, "", false);
+            OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_RAIN_MOD", SPELLS_MANA_COST_PERCENT_RAIN_MOD, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_MIN", SPELLS_MANA_COST_PERCENT_MIN, "", false);
             OutputVariableToConfig("SPELLS_MANA_COST_PERCENT_MAX", SPELLS_MANA_COST_PERCENT_MAX, "");
             OutputVariableToConfig("SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE", SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE, "Player-cast single target and group buffs (the same set the buff cast time cap and duration floor use) never cost more than this percent of base mana.  0 to disable", false);
@@ -2433,7 +2446,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELLS_CONVERT_TO_DOT_ENABLED", SPELLS_CONVERT_TO_DOT_ENABLED, "If true, spells marked \"convert_to_dot\" in SpellTemplates.csv spread the damage over the duration", false);
             OutputVariableToConfig("SPELLS_CONVERT_TO_DOT_DURATION_IN_MS", SPELLS_CONVERT_TO_DOT_DURATION_IN_MS, "");
             OutputVariableToConfig("SPELLS_RAIN_ENABLED", SPELLS_RAIN_ENABLED, "If true, EQ \"rain\" spells (targeted area of effect spells with an AEDuration) land their effect at the spot they were aimed at", false);
-            OutputVariableToConfig("SPELLS_RAIN_WAVE_INTERVAL_IN_MS", SPELLS_RAIN_WAVE_INTERVAL_IN_MS, "");
+            OutputVariableToConfig("SPELLS_RAIN_WAVE_INTERVAL_IN_MS", SPELLS_RAIN_WAVE_INTERVAL_IN_MS, "", false);
+            OutputVariableToConfig("SPELLS_RAIN_TARGET_HIT_CAP", SPELLS_RAIN_TARGET_HIT_CAP, "", false);
+            OutputVariableToConfig("SPELLS_RAIN_TARGET_HIT_CAP_NO_DIRECT_DAMAGE", SPELLS_RAIN_TARGET_HIT_CAP_NO_DIRECT_DAMAGE, "");
             OutputVariableToConfig("SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE", SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE, "The most that a movement speed reduction can slow a target, and -100 fully stops movement (EQ-like for spells such as Torpor) and is the lowest valid value");
             OutputVariableToConfig("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", SPELL_PERIODIC_SECONDS_PER_TICK_WOW, "Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier");
             OutputVariableToConfig("SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS", SPELL_PERIODIC_BARD_TICK_BUFFER_IN_MS, "This is 'added time' in the periodic tick that comes from bard casters.");
@@ -2746,6 +2761,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT", CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT, "", false);
             OutputVariableToConfig("CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS", CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS", CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS, "", false);
+            OutputVariableToConfig("CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_SPELL_ICON_EQ_ID", CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_MANA_COST_MULTIPLIER", CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_MANA_COST_MULTIPLIER, "", false);
             OutputVariableToConfig("CLASSAURA_MAGICIAN_ENABLED", CLASSAURA_MAGICIAN_ENABLED, "Magician", false);
             OutputVariableToConfig("CLASSAURA_MAGICIAN_SPELL_ICON_EQ_ID", CLASSAURA_MAGICIAN_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_MAGICIAN_PET_STRIKE_SPELL_DAMAGE_PERCENT_PER_STACK", CLASSAURA_MAGICIAN_PET_STRIKE_SPELL_DAMAGE_PERCENT_PER_STACK, "", false);
@@ -2758,7 +2775,9 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_TIME_IN_MS", CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_TIME_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_RADIUS_IN_YARDS", CLASSAURA_MAGICIAN_DETONATE_SUMMONED_RADIUS_IN_YARDS, "", false);
             OutputVariableToConfig("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_SPELL_VISUAL_ID", CLASSAURA_MAGICIAN_DETONATE_SUMMONED_SPELL_VISUAL_ID, "", false);
-            OutputVariableToConfig("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_UNSUMMON_DELAY_IN_MS", CLASSAURA_MAGICIAN_DETONATE_SUMMONED_UNSUMMON_DELAY_IN_MS, "", false);
+            OutputVariableToConfig("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_EQ_VISUAL_EFFECT_INDEX", CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_EQ_VISUAL_EFFECT_INDEX, "", false);
+            OutputVariableToConfig("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_PET_HEALTH_COST_PERCENT", CLASSAURA_MAGICIAN_DETONATE_SUMMONED_PET_HEALTH_COST_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_COOLDOWN_IN_MS", CLASSAURA_MAGICIAN_DETONATE_SUMMONED_COOLDOWN_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_NECROMANCER_ENABLED", CLASSAURA_NECROMANCER_ENABLED, "Necromancer", false);
             OutputVariableToConfig("CLASSAURA_NECROMANCER_SPELL_ICON_EQ_ID", CLASSAURA_NECROMANCER_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_NECROMANCER_SHADOW_EXCHANGE_SPELL_ICON_EQ_ID", CLASSAURA_NECROMANCER_SHADOW_EXCHANGE_SPELL_ICON_EQ_ID, "", false);
@@ -3237,6 +3256,7 @@ namespace EQWOWConverter
             SPELLS_MANA_COST_PERCENT_HEAL_MOD = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_HEAL_MOD", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_HEAL_MOD);
             SPELLS_MANA_COST_PERCENT_PERIODIC_MOD = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_PERIODIC_MOD", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_PERIODIC_MOD);
             SPELLS_MANA_COST_PERCENT_AOE_MOD = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_AOE_MOD", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_AOE_MOD);
+            SPELLS_MANA_COST_PERCENT_RAIN_MOD = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_RAIN_MOD", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_RAIN_MOD);
             SPELLS_MANA_COST_PERCENT_MIN = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_MIN", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_MIN);
             SPELLS_MANA_COST_PERCENT_MAX = ReadVariableFromConfigString("SPELLS_MANA_COST_PERCENT_MAX", configValuesByVariableName, SPELLS_MANA_COST_PERCENT_MAX);
             SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE = ReadVariableFromConfigString("SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE", configValuesByVariableName, SPELLS_PLAYER_BUFF_COST_PERCENT_MAX_SINGLE);
@@ -3247,6 +3267,8 @@ namespace EQWOWConverter
             SPELLS_CONVERT_TO_DOT_DURATION_IN_MS = ReadVariableFromConfigString("SPELLS_CONVERT_TO_DOT_DURATION_IN_MS", configValuesByVariableName, SPELLS_CONVERT_TO_DOT_DURATION_IN_MS);
             SPELLS_RAIN_ENABLED = ReadVariableFromConfigString("SPELLS_RAIN_ENABLED", configValuesByVariableName, SPELLS_RAIN_ENABLED);
             SPELLS_RAIN_WAVE_INTERVAL_IN_MS = ReadVariableFromConfigString("SPELLS_RAIN_WAVE_INTERVAL_IN_MS", configValuesByVariableName, SPELLS_RAIN_WAVE_INTERVAL_IN_MS);
+            SPELLS_RAIN_TARGET_HIT_CAP = ReadVariableFromConfigString("SPELLS_RAIN_TARGET_HIT_CAP", configValuesByVariableName, SPELLS_RAIN_TARGET_HIT_CAP);
+            SPELLS_RAIN_TARGET_HIT_CAP_NO_DIRECT_DAMAGE = ReadVariableFromConfigString("SPELLS_RAIN_TARGET_HIT_CAP_NO_DIRECT_DAMAGE", configValuesByVariableName, SPELLS_RAIN_TARGET_HIT_CAP_NO_DIRECT_DAMAGE);
             SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE = ReadVariableFromConfigString("SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE", configValuesByVariableName, SPELLS_SLOWEST_MOVE_SPEED_EFFECT_VALUE);
             SPELL_PERIODIC_SECONDS_PER_TICK_EQ = ReadVariableFromConfigString("SPELL_PERIODIC_SECONDS_PER_TICK_EQ", configValuesByVariableName, SPELL_PERIODIC_SECONDS_PER_TICK_EQ);
             SPELL_PERIODIC_SECONDS_PER_TICK_WOW = ReadVariableFromConfigString("SPELL_PERIODIC_SECONDS_PER_TICK_WOW", configValuesByVariableName, SPELL_PERIODIC_SECONDS_PER_TICK_WOW);
@@ -3559,6 +3581,8 @@ namespace EQWOWConverter
             CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT = ReadVariableFromConfigString("CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT", configValuesByVariableName, CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT);
             CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS = ReadVariableFromConfigString("CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS", configValuesByVariableName, CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS);
             CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS = ReadVariableFromConfigString("CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS", configValuesByVariableName, CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS);
+            CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_SPELL_ICON_EQ_ID);
+            CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_MANA_COST_MULTIPLIER = ReadVariableFromConfigString("CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_MANA_COST_MULTIPLIER", configValuesByVariableName, CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_MANA_COST_MULTIPLIER);
             CLASSAURA_MAGICIAN_ENABLED = ReadVariableFromConfigString("CLASSAURA_MAGICIAN_ENABLED", configValuesByVariableName, CLASSAURA_MAGICIAN_ENABLED);
             CLASSAURA_MAGICIAN_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_MAGICIAN_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_MAGICIAN_SPELL_ICON_EQ_ID);
             CLASSAURA_MAGICIAN_PET_STRIKE_SPELL_DAMAGE_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_MAGICIAN_PET_STRIKE_SPELL_DAMAGE_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_MAGICIAN_PET_STRIKE_SPELL_DAMAGE_PERCENT_PER_STACK);
@@ -3571,7 +3595,9 @@ namespace EQWOWConverter
             CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_TIME_IN_MS = ReadVariableFromConfigString("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_TIME_IN_MS", configValuesByVariableName, CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_TIME_IN_MS);
             CLASSAURA_MAGICIAN_DETONATE_SUMMONED_RADIUS_IN_YARDS = ReadVariableFromConfigString("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_RADIUS_IN_YARDS", configValuesByVariableName, CLASSAURA_MAGICIAN_DETONATE_SUMMONED_RADIUS_IN_YARDS);
             CLASSAURA_MAGICIAN_DETONATE_SUMMONED_SPELL_VISUAL_ID = ReadVariableFromConfigString("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_SPELL_VISUAL_ID", configValuesByVariableName, CLASSAURA_MAGICIAN_DETONATE_SUMMONED_SPELL_VISUAL_ID);
-            CLASSAURA_MAGICIAN_DETONATE_SUMMONED_UNSUMMON_DELAY_IN_MS = ReadVariableFromConfigString("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_UNSUMMON_DELAY_IN_MS", configValuesByVariableName, CLASSAURA_MAGICIAN_DETONATE_SUMMONED_UNSUMMON_DELAY_IN_MS);
+            CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_EQ_VISUAL_EFFECT_INDEX = ReadVariableFromConfigString("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_EQ_VISUAL_EFFECT_INDEX", configValuesByVariableName, CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_EQ_VISUAL_EFFECT_INDEX);
+            CLASSAURA_MAGICIAN_DETONATE_SUMMONED_PET_HEALTH_COST_PERCENT = ReadVariableFromConfigString("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_PET_HEALTH_COST_PERCENT", configValuesByVariableName, CLASSAURA_MAGICIAN_DETONATE_SUMMONED_PET_HEALTH_COST_PERCENT);
+            CLASSAURA_MAGICIAN_DETONATE_SUMMONED_COOLDOWN_IN_MS = ReadVariableFromConfigString("CLASSAURA_MAGICIAN_DETONATE_SUMMONED_COOLDOWN_IN_MS", configValuesByVariableName, CLASSAURA_MAGICIAN_DETONATE_SUMMONED_COOLDOWN_IN_MS);
             CLASSAURA_NECROMANCER_ENABLED = ReadVariableFromConfigString("CLASSAURA_NECROMANCER_ENABLED", configValuesByVariableName, CLASSAURA_NECROMANCER_ENABLED);
             CLASSAURA_NECROMANCER_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_NECROMANCER_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_NECROMANCER_SPELL_ICON_EQ_ID);
             CLASSAURA_NECROMANCER_SHADOW_EXCHANGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_NECROMANCER_SHADOW_EXCHANGE_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_NECROMANCER_SHADOW_EXCHANGE_SPELL_ICON_EQ_ID);

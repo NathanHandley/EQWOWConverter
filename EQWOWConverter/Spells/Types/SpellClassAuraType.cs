@@ -87,6 +87,7 @@ namespace EQWOWConverter.Spells
         MagicianDetonateSummonedBlast = 66,
         ClericRadiance = 67,
         ClericRadianceFreeMana = 68,
-        Count = 69
+        WizardIntensifiedSkyfall = 69,
+        Count = 70
     }
 }

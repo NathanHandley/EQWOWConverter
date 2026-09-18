@@ -131,7 +131,7 @@ namespace EQWOWConverter.WOWFiles
                 extraFlags |= 2;   // 0x00000002 = CREATURE_FLAG_EXTRA_CIVILIAN (ignore agro / faction)
             }
             if (creatureTemplate.BindsRaidInstanceOnKill == true)
-                extraFlags |= 1;   // 0x00000001 = CREATURE_FLAG_EXTRA_INSTANCE_BIND (kill permanently locks raid members to the instance, does nothing in non-instanced maps)
+                extraFlags |= 16777216; // 0x01000000 = CREATURE_FLAG_EXTRA_MODULE, which mod-everquest reads to lock raid members to the instance on kill (CREATURE_FLAG_EXTRA_INSTANCE_BIND is not used since the core logs an error for every open world spawn of the same template)
             if (CreaturePresenceGroup.IsCreatureInAPresenceGroup(creatureTemplate.EQCreatureTemplateID) == true)
                 extraFlags |= 64;  // 0x00000040 = CREATURE_FLAG_EXTRA_NO_XP (prevent exp exploit farming)
 

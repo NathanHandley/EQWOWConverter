@@ -126,6 +126,7 @@ namespace EQWOWConverter.Spells
             {
                 case ClassEQType.Ranger: return GetSpellID(SpellClassAuraType.RangerEndlessQuiver);
                 case ClassEQType.Shaman: return GetSpellID(SpellClassAuraType.ShamanWarspirit);
+                case ClassEQType.Wizard: return IsSpellTypeEnabled(SpellClassAuraType.WizardIntensifiedSkyfall) == true ? GetSpellID(SpellClassAuraType.WizardIntensifiedSkyfall) : 0;
                 default: return 0;
             }
         }
@@ -172,7 +173,7 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraWizardFocusMovementIntervalInMS", Configuration.CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraWizardFocusStillIntervalInMS", Configuration.CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerShadowExchangeMaxDistanceInYards", Configuration.CLASSAURA_NECROMANCER_SHADOW_EXCHANGE_MAX_DISTANCE_IN_YARDS.ToString()));
-            rows.Add(new KeyValuePair<string, string>("ClassAuraMagicianDetonateSummonedUnsummonDelayInMS", Math.Max(0, Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_UNSUMMON_DELAY_IN_MS).ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraMagicianDetonateSummonedPetHealthCostPercent", Math.Clamp(Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_PET_HEALTH_COST_PERCENT, 0, 100).ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerMarkDirectDamagePercentPerStack", Configuration.CLASSAURA_NECROMANCER_MARK_DIRECT_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraNecromancerMarkDotDamagePercentPerStack", Configuration.CLASSAURA_NECROMANCER_MARK_DOT_DAMAGE_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraClericCadenceReductionPercent", Configuration.CLASSAURA_CLERIC_CADENCE_REDUCTION_PERCENT.ToString()));
@@ -202,6 +203,28 @@ namespace EQWOWConverter.Spells
 
             // Only the impact stage (what lands on whoever receives the spell), so no cast animation or casting glow comes with it
             return SpellVisual.GetSpellVisual(visualEffectIndex, SpellVisualType.Beneficial).SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Impact];
+        }
+
+        private static readonly object MagicianDetonateSummonedCastSpellVisualLock = new object();
+        private static int _MagicianDetonateSummonedCastSpellVisualDBCID = -1;
+        public static int MagicianDetonateSummonedCastSpellVisualDBCID
+        {
+            get
+            {
+                lock (MagicianDetonateSummonedCastSpellVisualLock)
+                {
+                    if (_MagicianDetonateSummonedCastSpellVisualDBCID == -1)
+                        _MagicianDetonateSummonedCastSpellVisualDBCID = IDGenerationTool.GenerateID("SpellVisualID", "ClassAuraMagicianDetonateSummonedCast");
+                    return _MagicianDetonateSummonedCastSpellVisualDBCID;
+                }
+            }
+        }
+
+        public static SpellVisual GetMagicianDetonateSummonedCastSourceSpellVisual()
+        {
+            int visualEffectIndex = GetValidatedSpellVisualEffectIndex(Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_EQ_VISUAL_EFFECT_INDEX,
+                "CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_EQ_VISUAL_EFFECT_INDEX", 25);
+            return SpellVisual.GetSpellVisual(visualEffectIndex, SpellVisualType.Detrimental);
         }
 
         private static int GetValidatedSpellVisualEffectIndex(int visualEffectIndex, string configName, int defaultIndex)
@@ -268,6 +291,8 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.WizardAura:
                 case SpellClassAuraType.WizardFocus:
                     return Configuration.CLASSAURA_WIZARD_ENABLED;
+                case SpellClassAuraType.WizardIntensifiedSkyfall:
+                    return Configuration.CLASSAURA_WIZARD_ENABLED && IsRainTargetBudgetEnabled();
                 case SpellClassAuraType.MagicianPassive:
                 case SpellClassAuraType.MagicianAura:
                 case SpellClassAuraType.MagicianPetPassive:
@@ -558,13 +583,15 @@ namespace EQWOWConverter.Spells
             lightEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModDodgePercent, Configuration.CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT, 0, SpellWOWTargetType.UnitCaster));
             SpellTemplate lightSpellTemplate = BuildPermanentAuraTemplate("Unburdened Agility", SpellClassAuraType.MonkLightArmor, icon, lightDescription, lightEffects);
             lightSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraMonkLightArmorAuraScript";
-            lightSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK, 0, 0, 0, 0, Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT);
+            lightSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK | PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS, 0, PROC_SPELL_PHASE_HIT, 0, 0,
+                Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT);
             spellTemplates.Add(lightSpellTemplate);
 
             string heavyDescription = string.Concat("Attacks have a ", Pct(Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT), " chance to strike twice while wearing mail or plate.");
             SpellTemplate heavySpellTemplate = BuildPermanentAuraTemplate("Burdened Agility", SpellClassAuraType.MonkHeavyArmor, icon, heavyDescription, new List<SpellEffectWOW>());
             heavySpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraMonkHeavyArmorAuraScript";
-            heavySpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK, 0, 0, 0, 0, Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT);
+            heavySpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK | PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS, 0, PROC_SPELL_PHASE_HIT, 0, 0,
+                Configuration.CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT);
             spellTemplates.Add(heavySpellTemplate);
         }
 
@@ -574,7 +601,7 @@ namespace EQWOWConverter.Spells
             string description = Lines(
                 NamedLine("Endless Quiver", string.Concat("Can be toggled on so your ranged attacks and abilities stop using up arrows and bullets, costing ",
                     Pct(Configuration.CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT), " of base mana per shot instead.")),
-                NamedLine("Compound Injury", string.Concat("Your autoattacks, your harmful single target spells, and your pet's strikes compound the target's injuries for ",
+                NamedLine("Compound Injury", string.Concat("Every single target attack, ability, or spell that deals direct damage, yours or your pet's, compounds the target's injuries for ",
                     Seconds(Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_DURATION_IN_MS),
                     ", raising the damage it takes from you and your pet by ", Pct(Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_DAMAGE_PERCENT_PER_STACK), " per stack, up to ",
                     Configuration.CLASSAURA_RANGER_COMPOUND_INJURY_MAX_STACKS.ToString(), " stacks. The bonus is doubled while the target is moving and for ",
@@ -582,13 +609,6 @@ namespace EQWOWConverter.Spells
             spellTemplates.Add(BuildPassiveTemplate("Endless Hunt", SpellClassAuraType.RangerPassive, icon, description));
 
             SpellTemplate auraSpellTemplate = BuildPermanentAuraTemplate("Endless Hunt (Ranger)", SpellClassAuraType.RangerAura, icon, description, new List<SpellEffectWOW>());
-            auraSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraRangerAuraScript";
-
-            // Melee and ranged autoattacks, and harmful single target spells and abilities, compound the injury.  No spell type filter, since the flags already exclude heals,
-            // and the mod drops the area spells.  The pet's strikes are handled mod side instead, since a proc row only ever watches the ranger
-            auraSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK | PROC_FLAG_DONE_RANGED_AUTO_ATTACK | PROC_FLAG_DONE_SPELL_MELEE_DMG_CLASS
-                | PROC_FLAG_DONE_SPELL_RANGED_DMG_CLASS | PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG | PROC_FLAG_DONE_SPELL_NONE_DMG_CLASS_NEG, 0, PROC_SPELL_PHASE_HIT,
-                PROC_HIT_NORMAL | PROC_HIT_CRITICAL, 0, 0);
             spellTemplates.Add(auraSpellTemplate);
 
             // Endless Quiver (ammo saving but costs mana)
@@ -771,13 +791,12 @@ namespace EQWOWConverter.Spells
             bloodDebtSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraShadowKnightBloodDebtSpellScript";
             spellTemplates.Add(bloodDebtSpellTemplate);
 
-            // Only shows what is stored, one stack per percent of maximum health (the mod sets the stacks)
+            // Only shows what is stored, one stack per percent of maximum health.  The duration is the storing time, and the mod sets the stacks and restarts the timer on each hit
             string chargeDescription = string.Concat("Each stack is 1% of your maximum health stored for Blood Debt. ", bloodDebtStoreText, ".");
             List<SpellEffectWOW> chargeEffects = new List<SpellEffectWOW>();
             chargeEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitCaster));
             SpellTemplate chargeSpellTemplate = BuildStackingAuraTemplate("Blood Debt", SpellClassAuraType.ShadowKnightBloodDebtCharge, bloodDebtIcon, chargeDescription, chargeEffects,
-                Math.Min(255, Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_MAX_HEALTH_PERCENT), 0, false);
-            chargeSpellTemplate.AuraDuration.IsInfinite = true;
+                Math.Min(255, Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_MAX_HEALTH_PERCENT), Math.Max(1, Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_STORE_DURATION_IN_MS), false);
             spellTemplates.Add(chargeSpellTemplate);
 
             SpellTemplate bloodDebtHealSpellTemplate = BuildBaseTemplate("Blood Debt", SpellClassAuraType.ShadowKnightBloodDebtHeal, bloodDebtIcon, "Healed by an unleashed blood debt.", string.Empty);
@@ -837,7 +856,9 @@ namespace EQWOWConverter.Spells
                     " standing still raises spell damage by ", Pct(Configuration.CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK), ", stacking up to ",
                     Configuration.CLASSAURA_WIZARD_FOCUS_MAX_STACKS.ToString(), " times. Starting to move removes ", GetStackWord(Configuration.CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT),
                     ", and so does every ", (Configuration.CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS / 1000).ToString(), " second", Configuration.CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS >= 2000 ? "s" : "",
-                    " spent moving.")));
+                    " spent moving.")),
+                IsSpellTypeEnabled(SpellClassAuraType.WizardIntensifiedSkyfall) == true ? NamedLine(WIZARD_INTENSIFIED_SKYFALL_NAME,
+                    string.Concat("Can be toggled on so your rain spells strike every enemy in them on every wave", GetIntensifiedSkyfallManaCostClause(", for "), ".")) : string.Empty);
             spellTemplates.Add(BuildPassiveTemplate("Unshaken Channeler", SpellClassAuraType.WizardPassive, icon, description));
             spellTemplates.Add(BuildPermanentAuraTemplate("Unshaken Channeler (Wizard)", SpellClassAuraType.WizardAura, icon, description, new List<SpellEffectWOW>()));
 
@@ -849,6 +870,67 @@ namespace EQWOWConverter.Spells
                 Configuration.CLASSAURA_WIZARD_FOCUS_MAX_STACKS, 0, false);
             focusSpellTemplate.AuraDuration.IsInfinite = true;
             spellTemplates.Add(focusSpellTemplate);
+
+            // Intensified Skyfall
+            if (IsSpellTypeEnabled(SpellClassAuraType.WizardIntensifiedSkyfall) == false)
+                return;
+            int skyfallManaCostPercent = GetIntensifiedSkyfallManaCostModPercent();
+            string skyfallCostSentence = skyfallManaCostPercent == 0 ? string.Empty : string.Concat(" Rain spells cost ", GetIntensifiedSkyfallManaCostText(), " mana.");
+            string skyfallDescription = string.Concat("Toggle. While active, your rain spells strike every enemy standing in them on every wave, instead of stopping after a few strikes in total.",
+                skyfallCostSentence, " Each strike deals its usual damage, shared out like any area spell once more than ", AREA_DAMAGE_SPLIT_TARGET_COUNT.ToString(), " enemies are struck.");
+            string skyfallAuraDescription = string.Concat("Rain spells strike every enemy in them on every wave", GetIntensifiedSkyfallManaCostClause(", at "), ".");
+            SpellTemplate skyfallSpellTemplate = BuildBaseTemplate(WIZARD_INTENSIFIED_SKYFALL_NAME, SpellClassAuraType.WizardIntensifiedSkyfall, Configuration.CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_SPELL_ICON_EQ_ID,
+                skyfallDescription, skyfallAuraDescription);
+            skyfallSpellTemplate.AuraDuration.IsInfinite = true;
+            // EffectMiscValueA 14 = SPELLMOD_COST.  A spell mod only reaches spells of its own family whose flags share a bit with its class mask
+            SpellEffectWOW skyfallCostEffect = BuildAuraEffect(SpellWOWAuraType.AddPctModifier, skyfallManaCostPercent, 14, SpellWOWTargetType.UnitCaster);
+            skyfallCostEffect.EffectSpellClassMask3 = Configuration.SPELL_EQ_RAIN_SPELL_FAMILY_FLAG;
+            skyfallSpellTemplate.WOWSpellEffects.Add(skyfallCostEffect);
+            skyfallSpellTemplate.SpellFamilyID = Convert.ToUInt32(Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
+            skyfallSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat); // Unlike most class aura spells, this one is in the spellbook
+            skyfallSpellTemplate.IsToggleAura = true;
+            skyfallSpellTemplate.ShowOnShapeshiftBar = true;
+            skyfallSpellTemplate.PersistThroughDeath = true;
+            spellTemplates.Add(skyfallSpellTemplate);
+        }
+
+        // The EQ_SpellTooltips addon finds the toggle among the player's buffs by this name, read from the stamp on each rain's tooltip
+        public const string WIZARD_INTENSIFIED_SKYFALL_NAME = "Intensified Skyfall";
+
+        // Mirrors the hardcoded cap in the core's Spell::DoAllEffectOnLaunchTarget, past which a player's area damage is split
+        private const int AREA_DAMAGE_SPLIT_TARGET_COUNT = 10;
+
+        public static bool IsRainTargetBudgetEnabled()
+        {
+            return Configuration.SPELLS_RAIN_ENABLED == true && (Configuration.SPELLS_RAIN_TARGET_HIT_CAP > 0 || Configuration.SPELLS_RAIN_TARGET_HIT_CAP_NO_DIRECT_DAMAGE > 0);
+        }
+
+        public static string GetIntensifiedSkyfallRainTooltipCostStamp()
+        {
+            int manaCostModPercent = GetIntensifiedSkyfallManaCostModPercent();
+            if (GetToggleSpellIDForClass(ClassEQType.Wizard) == 0 || manaCostModPercent == 0)
+                return string.Empty;
+            return string.Concat(WIZARD_INTENSIFIED_SKYFALL_NAME, ": ", manaCostModPercent > 0 ? "+" : "-", Math.Abs(manaCostModPercent).ToString(), "% mana cost");
+        }
+
+        private static int GetIntensifiedSkyfallManaCostModPercent()
+        {
+            return Math.Max(-100, Convert.ToInt32(Math.Round((Configuration.CLASSAURA_WIZARD_INTENSIFIED_SKYFALL_MANA_COST_MULTIPLIER - 1f) * 100f)));
+        }
+
+        private static string GetIntensifiedSkyfallManaCostClause(string lead)
+        {
+            if (GetIntensifiedSkyfallManaCostModPercent() == 0)
+                return string.Empty;
+            return string.Concat(lead, GetIntensifiedSkyfallManaCostText(), " mana");
+        }
+
+        private static string GetIntensifiedSkyfallManaCostText()
+        {
+            float multiplier = 1f + (Convert.ToSingle(GetIntensifiedSkyfallManaCostModPercent()) / 100f);
+            if (Math.Abs(multiplier - 2f) < 0.001f)
+                return "double the";
+            return string.Concat(multiplier.ToString("0.##"), " times the");
         }
 
         private static string GetStackWord(int stackCount)
@@ -867,7 +949,9 @@ namespace EQWOWConverter.Spells
                 NamedLine("Conjurer's Fury", string.Concat("Your spell critical strikes raise your pet's damage by ", Pct(Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_PET_DAMAGE_PERCENT_PER_STACK), " for ",
                     Seconds(Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_MAX_STACKS.ToString(), " times.")),
                 NamedLine("Detonate Summoned", string.Concat("Explode your summoned pet, dealing arcane damage equal to its current health to every enemy within ",
-                    Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_RADIUS_IN_YARDS.ToString(), " yards of it. The pet is destroyed.")));
+                    Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_RADIUS_IN_YARDS.ToString(), " yards of it. The pet survives, losing ",
+                    Pct(Math.Clamp(Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_PET_HEALTH_COST_PERCENT, 0, 100)), " of its health. Usable once every ",
+                    CooldownText(Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_COOLDOWN_IN_MS), ".")));
             spellTemplates.Add(BuildPassiveTemplate("Bound Conjurer", SpellClassAuraType.MagicianPassive, icon, description));
 
             // Owner side: procs on the owner's own damaging spell crits
@@ -901,19 +985,22 @@ namespace EQWOWConverter.Spells
             spellTemplates.Add(BuildStackingAuraTemplate("Conjurer's Fury", SpellClassAuraType.MagicianPetFury, icon, petFuryDescription, petFuryEffects,
                 Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_MAX_STACKS, Configuration.CLASSAURA_MAGICIAN_OWNER_CRIT_DURATION_IN_MS, false));
 
-            // Detonate Summoned, the active ability.  The mod has the pet set off the blast below and then unsummons it
+            // Detonate Summoned, the active ability.  The mod has the pet set off the blast below, and the pet pays part of its health for it rather than dying
             int detonateRadius = Math.Max(1, Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_RADIUS_IN_YARDS);
+            int detonateHealthCostPercent = Math.Clamp(Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_PET_HEALTH_COST_PERCENT, 0, 100);
             string detonateDescription = Lines(
                 string.Concat("Explode your summoned pet, dealing arcane damage equal to its current health to every enemy within ", detonateRadius.ToString(), " yards of it."),
-                "The pet is destroyed.");
+                string.Concat("The pet survives the blast, losing ", Pct(detonateHealthCostPercent), " of its health."));
             SpellTemplate detonateSpellTemplate = BuildBaseTemplate("Detonate Summoned", SpellClassAuraType.MagicianDetonateSummoned,
                 Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_SPELL_ICON_EQ_ID, detonateDescription, string.Empty);
             detonateSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat); // Unlike most class aura spells, this one is in the spellbook
             detonateSpellTemplate.CastTimeInMS = Math.Max(0, Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_CAST_TIME_IN_MS);
-            detonateSpellTemplate.HasCustomCooldown = true; // No cooldown, and the cooldown disable configs should leave it that way
+            detonateSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Math.Max(0, Configuration.CLASSAURA_MAGICIAN_DETONATE_SUMMONED_COOLDOWN_IN_MS));
+            detonateSpellTemplate.HasCustomCooldown = true; // Its own cooldown, which the cooldown disable configs should leave alone
             detonateSpellTemplate.SchoolMask = 64; // Arcane
             detonateSpellTemplate.DefenseType = 1; // Magic
             detonateSpellTemplate.GenerateNoThreat = true;
+            detonateSpellTemplate.SpellVisualID1 = Convert.ToUInt32(MagicianDetonateSummonedCastSpellVisualDBCID);
             SpellEffectWOW detonateEffect = new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0);
             detonateEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
             detonateSpellTemplate.WOWSpellEffects.Add(detonateEffect);
@@ -1033,7 +1120,7 @@ namespace EQWOWConverter.Spells
                     SecondsWithFraction(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_MIN_BASE_CAST_TIME_IN_MS), " builds a stack of that element for ",
                     Seconds(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DURATION_IN_MS), ", up to ", Configuration.CLASSAURA_DRUID_NATURES_BALANCE_MAX_STACKS.ToString(),
                     " stacks. Your next direct damage spell of a different element spends every stack at once, dealing ", Pct(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DAMAGE_PERCENT_PER_STACK),
-                    " more damage for each stack spent.")),
+                    " more damage for each stack spent. A rain keeps that bonus on every wave it lands.")),
                 NamedLine("Entangle Strike", string.Concat("Your landed melee and ranged attacks entangle the target for ",
                     Seconds(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_MAX_STACKS.ToString(),
                     " times. Each stack lowers the physical damage you and your pet take from that target by ", Pct(Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK),

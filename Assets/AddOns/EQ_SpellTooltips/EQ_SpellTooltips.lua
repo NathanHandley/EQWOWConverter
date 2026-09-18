@@ -49,9 +49,18 @@ local COEFFICIENT_LABEL = "Spell power coefficient:";
 -- does adding another spell to the debuff, since the stamp lands on every spell it applies to.  This only
 -- corrects printed text: the client still decides on its own whether a button looks affordable, so a
 -- cast it thinks you can pay for can still be refused by the server when you are low on mana.
+--
+-- The same stamp without "per stack" is for an aura that raises the cost once rather than per stack.  The
+-- Wizard's Intensified Skyfall toggle is one: it is a buff, not a debuff, and it is stamped on every rain
+-- spell so the rain's printed cost follows the toggle:
+--
+--   Intensified Skyfall: +100% mana cost
+--
+-- The aura is looked up among both the player's debuffs and buffs, so either kind works.
 
--- Matches "<aura name>: +<N>% mana cost per stack"
-local COST_PER_STACK_PATTERN = "([^\n]-): %+(%d+)%% mana cost per stack";
+-- Matches "<aura name>: +<N>% mana cost" (or -<N>% for a discount) plus whatever follows on that line (" per stack" for a stacking aura)
+local COST_STAMP_PATTERN = "([^\n]-): ([%+%-]%d+)%% mana cost([^\n]*)";
+local COST_STAMP_PER_STACK_SUFFIX = " per stack";
 
 -- Tag in the stamped line -> spell school index used by GetSpellBonusDamage (1 = physical, 2-7 = magic schools)
 local SCHOOL_INDEX = {
@@ -119,11 +128,12 @@ local function EQSpellTooltips_BuildAddedText(spellPower, directPercent, perTick
 	return format("%d %s", directAmount, noun);
 end
 
--- How many stacks of the named aura the player is carrying right now (0 when it is not up).  Matched by
--- name because that is what the stamped line carries.  The debuff list is contiguous, so a nil name is the end of it.
-local function EQSpellTooltips_GetDebuffStacks(auraName)
+-- How many stacks of the named aura the player is carrying in one aura list (0 when it is not there).
+-- Matched by name because that is what the stamped line carries.  Each list is contiguous, so a nil name
+-- is the end of it.
+local function EQSpellTooltips_GetStacksInAuraList(auraName, auraListFunction)
 	for i = 1, 40 do
-		local name, _, _, count = UnitDebuff("player", i);
+		local name, _, _, count = auraListFunction("player", i);
 		if ( not name ) then
 			return 0;
 		end
@@ -133,6 +143,15 @@ local function EQSpellTooltips_GetDebuffStacks(auraName)
 		end
 	end
 	return 0;
+end
+
+-- How many stacks of the named aura the player is carrying right now, debuff or buff (0 when it is not up)
+local function EQSpellTooltips_GetAuraStacks(auraName)
+	local stacks = EQSpellTooltips_GetStacksInAuraList(auraName, UnitDebuff);
+	if ( stacks > 0 ) then
+		return stacks;
+	end
+	return EQSpellTooltips_GetStacksInAuraList(auraName, UnitBuff);
 end
 
 -- Finds the tooltip's cost line and returns its font string plus the amount and the trailing label
@@ -167,7 +186,12 @@ local function EQSpellTooltips_RenderCost(tooltip, stacks)
 		return;
 	end
 
-	local multiplier = 1 + (tooltip.eqCostPercent * stacks / 100);
+	-- A per-stack stamp scales with the stack count, and any other stamp applies its percent once while the aura is up
+	local appliedStacks = stacks;
+	if ( not tooltip.eqCostPerStack and appliedStacks > 1 ) then
+		appliedStacks = 1;
+	end
+	local multiplier = 1 + (tooltip.eqCostPercent * appliedStacks / 100);
 	costFontString:SetText(format("%d %s", floor((tooltip.eqCostBase * multiplier) + 0.5), tooltip.eqCostLabel));
 
 	-- Blank rather than absent when the debuff falls off mid-hover, since a line cannot be removed from a
@@ -180,7 +204,11 @@ local function EQSpellTooltips_RenderCost(tooltip, stacks)
 		else
 			multiplierText = format("%.2fx", multiplier);
 		end
-		noteText = format("%s (%d): %s mana cost", tooltip.eqCostAuraName, stacks, multiplierText);
+		if ( tooltip.eqCostPerStack ) then
+			noteText = format("%s (%d): %s mana cost", tooltip.eqCostAuraName, stacks, multiplierText);
+		else
+			noteText = format("%s: %s mana cost", tooltip.eqCostAuraName, multiplierText);
+		end
 	end
 
 	local noteFontString = tooltip.eqCostNoteLine and _G[tooltip:GetName() .. "TextLeft" .. tooltip.eqCostNoteLine];
@@ -205,12 +233,12 @@ local function EQSpellTooltips_ApplyCostPerStack(tooltip)
 		return;
 	end
 
-	local auraName, percentPerStack;
+	local auraName, percent, stampSuffix;
 	for i = 1, tooltip:NumLines() do
 		local fontString = _G[tooltipName .. "TextLeft" .. i];
 		local text = fontString and fontString:GetText();
 		if ( text ) then
-			auraName, percentPerStack = text:match(COST_PER_STACK_PATTERN);
+			auraName, percent, stampSuffix = text:match(COST_STAMP_PATTERN);
 			if ( auraName ) then
 				break;
 			end
@@ -229,11 +257,12 @@ local function EQSpellTooltips_ApplyCostPerStack(tooltip)
 	end
 
 	tooltip.eqCostAuraName = auraName;
-	tooltip.eqCostPercent = tonumber(percentPerStack);
+	tooltip.eqCostPercent = tonumber(percent);
+	tooltip.eqCostPerStack = (stampSuffix == COST_STAMP_PER_STACK_SUFFIX);
 	tooltip.eqCostFontString = costFontString;
 	tooltip.eqCostBase = baseCost;
 	tooltip.eqCostLabel = costLabel;
-	EQSpellTooltips_RenderCost(tooltip, EQSpellTooltips_GetDebuffStacks(auraName));
+	EQSpellTooltips_RenderCost(tooltip, EQSpellTooltips_GetAuraStacks(auraName));
 end
 
 local function EQSpellTooltips_AddSpellPowerLine(tooltip)
@@ -274,6 +303,7 @@ local function EQSpellTooltips_Reset(tooltip)
 	tooltip.eqCostBase = nil;
 	tooltip.eqCostLabel = nil;
 	tooltip.eqCostPercent = nil;
+	tooltip.eqCostPerStack = nil;
 	tooltip.eqCostNoteLine = nil;
 end
 
@@ -320,7 +350,7 @@ end);
 -- UNIT_AURA above should be enough, but a tooltip parked on a button does not always come back through
 -- it, so the stack count is also watched directly.  This costs one table lookup per frame while no
 -- stamped spell is hovered: everything else is gated behind eqCostAuraName, which only gets set when a
--- tooltip carrying the stamp is drawn.  While one IS hovered it is five UnitDebuff scans a second, and
+-- tooltip carrying the stamp is drawn.  While one IS hovered it is five aura scans a second, and
 -- the tooltip is only rebuilt when the count actually differs from what the current draw used.
 local COST_WATCH_INTERVAL = 0.2;
 local costWatchElapsed = 0;
@@ -336,9 +366,10 @@ eventFrame:SetScript("OnUpdate", function(self, elapsed)
 	end
 	costWatchElapsed = 0;
 
-	if ( EQSpellTooltips_GetDebuffStacks(auraName) == GameTooltip.eqCostDrawnStacks ) then
+	local stacks = EQSpellTooltips_GetAuraStacks(auraName);
+	if ( stacks == GameTooltip.eqCostDrawnStacks ) then
 		return;
 	end
 
-	EQSpellTooltips_RenderCost(GameTooltip, EQSpellTooltips_GetDebuffStacks(auraName));
+	EQSpellTooltips_RenderCost(GameTooltip, stacks);
 end);

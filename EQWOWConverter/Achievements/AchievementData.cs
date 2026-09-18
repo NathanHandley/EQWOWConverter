@@ -90,7 +90,7 @@ namespace EQWOWConverter.Achievements
 
                 if (achievement.Type == AchievementType.InstanceClear)
                 {
-                    // Boss kills grant the raid instance lock through the core's CREATURE_FLAG_EXTRA_INSTANCE_BIND
+                    // Boss kills grant the raid instance lock through mod-everquest, flagged with CREATURE_FLAG_EXTRA_MODULE
                     foreach (CreatureTemplate creatureTemplate in achievement.CriteriaCreatureTemplates)
                         creatureTemplate.BindsRaidInstanceOnKill = true;
                     if (achievement.CriteriaCreatureTemplates.Count == 0)
