@@ -1359,8 +1359,8 @@ namespace EQWOWConverter
         public static bool CLASSAURA_MONK_ENABLED = true;
         public static int CLASSAURA_MONK_SPELL_ICON_EQ_ID = 9;
         public static int CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID = 10;
-        public static int CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT = 10;
-        public static int CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT = 50;
+        public static int CLASSAURA_MONK_DOUBLE_ATTACK_CHANCE_PERCENT = 20;
+        public static int CLASSAURA_MONK_DOUBLE_TO_TRIPLE_ATTACK_CHANCE_PERCENT = 33;
         public static int CLASSAURA_MONK_LIGHT_ARMOR_DODGE_PERCENT = 5;
         public static int CLASSAURA_MONK_CHI_SURGE_CAST_TIME_REDUCTION_PERCENT = 50;
         public static int CLASSAURA_MONK_CHI_SURGE_MAX_BASE_CAST_TIME_IN_MS = 5000;
@@ -1406,7 +1406,7 @@ namespace EQWOWConverter
         public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_SPELL_ICON_EQ_ID = 3;
         public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_DAMAGE_TAKEN_STORED_PERCENT = 5;
         public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_MAX_HEALTH_PERCENT = 50;
-        public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_STORE_DURATION_IN_MS = 20000;
+        public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_STORE_DURATION_IN_MS = 30000;
         public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_COOLDOWN_IN_MS = 4000;
         public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_RANGE = 30;
         public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_EQ_VISUAL_EFFECT_INDEX = 8; // Harm Touch
@@ -1416,19 +1416,19 @@ namespace EQWOWConverter
         public static bool CLASSAURA_WARRIOR_ENABLED = true;
         public static int CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID = 18;
         public static int CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT = 5;
-        public static int CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_DAMAGE_PERCENT_PER_STACK = 2;
-        public static int CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_MAX_STACKS = 5;
-        public static int CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_STACK_INTERVAL_IN_MS = 4000;
+        public static int CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_DAMAGE_PERCENT_PER_STACK = 1;
+        public static int CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_MAX_STACKS = 10;
+        public static int CLASSAURA_WARRIOR_UNRELENTING_ASSAULT_STACK_INTERVAL_IN_MS = 2000;
         public static int CLASSAURA_WARRIOR_RIPOSTE_SPELL_VISUAL_ID = 3799; // SpellVisual.dbc id of the WoW Riposte ability (spell 14251)
 
         // Wizard "Unshaken Channeler"
         public static bool CLASSAURA_WIZARD_ENABLED = true;
         public static int CLASSAURA_WIZARD_SPELL_ICON_EQ_ID = 15;
-        public static int CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK = 2;
-        public static int CLASSAURA_WIZARD_FOCUS_MAX_STACKS = 7;
+        public static int CLASSAURA_WIZARD_FOCUS_SPELL_DAMAGE_PERCENT_PER_STACK = 1;
+        public static int CLASSAURA_WIZARD_FOCUS_MAX_STACKS = 14;
         public static int CLASSAURA_WIZARD_FOCUS_STACKS_LOST_PER_MOVEMENT_EVENT = 1;
         public static int CLASSAURA_WIZARD_FOCUS_MOVEMENT_INTERVAL_IN_MS = 1000;
-        public static int CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS = 2000;
+        public static int CLASSAURA_WIZARD_FOCUS_STILL_INTERVAL_IN_MS = 1000;
 
         // Magician "Bound Conjurer"
         public static bool CLASSAURA_MAGICIAN_ENABLED = true;
