@@ -1369,7 +1369,7 @@ namespace EQWOWConverter
         // Ranger "Endless Hunt"
         public static bool CLASSAURA_RANGER_ENABLED = true;
         public static int CLASSAURA_RANGER_SPELL_ICON_EQ_ID = 1;
-        public static int CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ITEM_ICON_EQ_ID = 1;
+        public static int CLASSAURA_RANGER_ENDLESS_QUIVER_SPELL_ITEM_ICON_EQ_ID = 225;
         public static int CLASSAURA_RANGER_ENDLESS_QUIVER_BASE_MANA_COST_PERCENT = 1;
         public static int CLASSAURA_RANGER_COMPOUND_INJURY_DAMAGE_PERCENT_PER_STACK = 1;
         public static int CLASSAURA_RANGER_COMPOUND_INJURY_MAX_STACKS = 8;
