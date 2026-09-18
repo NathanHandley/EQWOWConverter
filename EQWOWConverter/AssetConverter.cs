@@ -2992,12 +2992,12 @@ namespace EQWOWConverter
             harmTouchSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
             if (dealDamageOverTime == true)
                 harmTouchSpellTemplate.Description = string.Concat("Touches the target with deathly energy, inflicting heavy shadow damage over ",
-                    (Configuration.SPELLS_CONVERT_TO_DOT_DURATION_IN_MS / 1000).ToString(), " seconds. Can only be used rarely.");
+                    (Configuration.SPELLS_CONVERT_TO_DOT_DURATION_IN_MS / 1000).ToString(), " seconds.");
             else if (isCreatureCast == true)
-                harmTouchSpellTemplate.Description = "Touches the target with deathly energy, inflicting heavy shadow damage. Can only be used rarely.";
+                harmTouchSpellTemplate.Description = "Touches the target with deathly energy, inflicting heavy shadow damage.";
             else
-                harmTouchSpellTemplate.Description = string.Concat("Touches the target with deathly energy, inflicting shadow damage equal to your maximum health, or ",
-                    Configuration.COMBATSKILL_HARMTOUCH_PLAYER_PVP_DAMAGE_PERCENT.ToString(), "% of it against players. Can only be used rarely.");
+                harmTouchSpellTemplate.Description = string.Concat("Touches the target with deathly energy, inflicting shadow damage equal to your maximum health against non-players.  For player targets, it deals ",
+                    Configuration.COMBATSKILL_HARMTOUCH_PLAYER_PVP_DAMAGE_PERCENT.ToString(), "% of the target player's maximum health.");
             harmTouchSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(harmTouchIconID);
             harmTouchSpellTemplate.CastTimeInMS = 0;
             harmTouchSpellTemplate.RecoveryTimeInMS = Convert.ToUInt32(Configuration.COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS);

@@ -1280,7 +1280,7 @@ namespace EQWOWConverter
         public static int COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS = 1000;
         public static int COMBATSKILL_HARMTOUCH_BASE_DAMAGE = 50; // Creature version only. 20 is EQ normal, but HP is 2.5x higher in WoW (generally)
         public static float COMBATSKILL_HARMTOUCH_DAMAGE_PER_LEVEL = 20.0f; // Creature version only. 8 is EQ normal, but HP is 2.5x higher in WoW (generally)
-        public static int COMBATSKILL_HARMTOUCH_PLAYER_PVP_DAMAGE_PERCENT = 50; // Player version deals the caster's max health, and this percent of that to players and what they own or charm
+        public static int COMBATSKILL_HARMTOUCH_PLAYER_PVP_DAMAGE_PERCENT = 50; // Casting against a player does this percent of damage against the target's max health
         public static int COMBATSKILL_HARMTOUCH_RANGE = 30;
 
         // Lay on Hands is a paladin ability (a long-cooldown large self heal used when badly hurt). HP is ~2.5x higher in WoW
