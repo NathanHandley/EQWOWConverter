@@ -180,6 +180,7 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraClericRadianceDamagePercent", Configuration.CLASSAURA_CLERIC_RADIANCE_DAMAGE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraClericRadianceFreeManaHealthPercent", Configuration.CLASSAURA_CLERIC_RADIANCE_FREE_MANA_HEALTH_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinBlockDeflectionDamagePercent", Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT.ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraPaladinFullBlockPercent", Math.Clamp(Configuration.CLASSAURA_PALADIN_FULL_BLOCK_PERCENT, 0, 100).ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidDirectHealRegenPercent", Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidDirectHealRegenTickCount", GetDruidRegenTickCount().ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidNaturesBalanceDamagePercentPerStack", Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DAMAGE_PERCENT_PER_STACK.ToString()));
@@ -692,8 +693,9 @@ namespace EQWOWConverter.Spells
         {
             int icon = Configuration.CLASSAURA_PALADIN_SPELL_ICON_EQ_ID;
             string description = Lines(
-                NamedLine("Blessed Deflection", string.Concat("Block chance is increased by ", Pct(Configuration.CLASSAURA_PALADIN_BLOCK_PERCENT), ", and ",
-                    Pct(Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT), " of the damage you block is dealt as Holy damage to all enemies within ",
+                NamedLine("Blessed Deflection", string.Concat("Block chance is increased by ", Pct(Configuration.CLASSAURA_PALADIN_BLOCK_PERCENT), ", ",
+                    Configuration.CLASSAURA_PALADIN_FULL_BLOCK_PERCENT > 0 ? string.Concat(Pct(Configuration.CLASSAURA_PALADIN_FULL_BLOCK_PERCENT), " of your blocks against melee swings stop the entire attack, ") : string.Empty,
+                    "and ", Pct(Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT), " of the damage you block is dealt as Holy damage to all enemies within ",
                     Configuration.CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS.ToString(), " yards.")),
                 NamedLine("Light's Reward", string.Concat("Your heals also heal you for ", Pct(Configuration.CLASSAURA_PALADIN_HEAL_SELF_PERCENT), " of the amount.")),
                 string.Concat("Your attacks, abilities, and spells against undead and demons have a ",

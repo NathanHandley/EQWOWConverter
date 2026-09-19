@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 112;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 113;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1397,8 +1397,9 @@ namespace EQWOWConverter
         // Paladin "Champion of Light"
         public static bool CLASSAURA_PALADIN_ENABLED = true;
         public static int CLASSAURA_PALADIN_SPELL_ICON_EQ_ID = 11;
-        public static int CLASSAURA_PALADIN_BLOCK_PERCENT = 5;
-        public static int CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT = 15;
+        public static int CLASSAURA_PALADIN_BLOCK_PERCENT = 10;
+        public static int CLASSAURA_PALADIN_FULL_BLOCK_PERCENT = 10;
+        public static int CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT = 35;
         public static int CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS = 6;
         public static int CLASSAURA_PALADIN_BLOCK_DEFLECTION_SPELL_VISUAL_ID = 5562;
         public static int CLASSAURA_PALADIN_HEAL_SPELL_VISUAL_ID = 5560;
@@ -2728,6 +2729,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_PALADIN_ENABLED", CLASSAURA_PALADIN_ENABLED, "Paladin", false);
             OutputVariableToConfig("CLASSAURA_PALADIN_SPELL_ICON_EQ_ID", CLASSAURA_PALADIN_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_PALADIN_BLOCK_PERCENT", CLASSAURA_PALADIN_BLOCK_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_PALADIN_FULL_BLOCK_PERCENT", CLASSAURA_PALADIN_FULL_BLOCK_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT", CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS", CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS, "", false);
             OutputVariableToConfig("CLASSAURA_PALADIN_BLOCK_DEFLECTION_SPELL_VISUAL_ID", CLASSAURA_PALADIN_BLOCK_DEFLECTION_SPELL_VISUAL_ID, "", false);
@@ -3548,6 +3550,7 @@ namespace EQWOWConverter
             CLASSAURA_PALADIN_ENABLED = ReadVariableFromConfigString("CLASSAURA_PALADIN_ENABLED", configValuesByVariableName, CLASSAURA_PALADIN_ENABLED);
             CLASSAURA_PALADIN_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_PALADIN_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_PALADIN_SPELL_ICON_EQ_ID);
             CLASSAURA_PALADIN_BLOCK_PERCENT = ReadVariableFromConfigString("CLASSAURA_PALADIN_BLOCK_PERCENT", configValuesByVariableName, CLASSAURA_PALADIN_BLOCK_PERCENT);
+            CLASSAURA_PALADIN_FULL_BLOCK_PERCENT = ReadVariableFromConfigString("CLASSAURA_PALADIN_FULL_BLOCK_PERCENT", configValuesByVariableName, CLASSAURA_PALADIN_FULL_BLOCK_PERCENT);
             CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT = ReadVariableFromConfigString("CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT", configValuesByVariableName, CLASSAURA_PALADIN_BLOCK_DEFLECTION_DAMAGE_PERCENT);
             CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS = ReadVariableFromConfigString("CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS", configValuesByVariableName, CLASSAURA_PALADIN_BLOCK_DEFLECTION_RADIUS_IN_YARDS);
             CLASSAURA_PALADIN_BLOCK_DEFLECTION_SPELL_VISUAL_ID = ReadVariableFromConfigString("CLASSAURA_PALADIN_BLOCK_DEFLECTION_SPELL_VISUAL_ID", configValuesByVariableName, CLASSAURA_PALADIN_BLOCK_DEFLECTION_SPELL_VISUAL_ID);

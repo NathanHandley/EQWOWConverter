@@ -41,3 +41,14 @@ In no particular order...
 - The people behind https://wowdev.wiki - Navigating the WoW file formats would have been near impossible without this documentation
 - WoW Modding Community Discord - For the one-off problem questions I've run into thus far (special callout to Aleist3r, Titi, Soup Aura, Stoneharry)
 - Jarl Gullberg and team working on libwarcraft (https://github.com/WowDevTools/libwarcraft) - Whenever confused by elements outlined in wowdev.wiki, this code worked as a reference sanity check
+
+# Eulogy of the Developer
+(this is 100% human written, by me)
+
+My name is Nathan Handley, and this project (EQWOWConverter) contains the last substantive hand-written code I've ever written.  It's not all hand-written code, but everything in 2024 (and before), most of 2025, and some of 2026+ is.
+
+I started writing code in the 90s as a kid with the common dream of being a game programmer.  Over the decades I have written hundreds of apps and utilities in both a private and public capacity.  It's been my passion to write code and I've been defined by it, but not anymore.  I am the slow part of the chain now and there's no output justification to ever write any substantial code again by hand. I'll miss that inner developer and cherish the skills and ability to read and write code, but it's time to move on just like the binary and ASM developers did as higher level languages came out.  And in time, soon, we'll see the end of human-readable code.
+
+In this repository (and mod-everquest) the code has slowly grown to be more AI-code.  Now in this case I had written a massive amount of code and structure prior to introducing AI in 2025 so the AI tools have been using my style and approach exactly to how I would write things.  But at time of writing this, my workflow has been "give detailed instructions and architecture layout, sometimes pre-frame the classes, and then let AI fill in the rest".  Unless it is anything lua, then in that case AI is writing it 100%.  Right now the longest part of my delivery is my instructions + review + human alignment cleanup + testing, not the actual code generation itself.  I actually think it would be a liability to write all the code now.
+
+I'm leaving my name on the copyright since the majority of this code base is hand-written and what the AI has written has been under my direction and little-to-no code has remained as-is from an AI writing it (I groom/adjust everything to align to patterns/or and fix bugs).  I'm not sure what copyright should look like anymore, but at a minimum I want to prevent people from using this code in a closed source project without giving back to the community, so I'll leave it like it is.
