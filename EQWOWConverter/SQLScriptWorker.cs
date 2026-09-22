@@ -3884,7 +3884,10 @@ namespace EQWOWConverter
                 using (MySqlConnection connection = new MySqlConnection(Configuration.DEPLOY_SQL_CONNECTION_STRING_WORLD))
                 {
                     connection.Open();
+                    using (MySqlCommand timeoutCommand = new MySqlCommand("SET SESSION net_read_timeout = 600, net_write_timeout = 600;", connection))
+                        timeoutCommand.ExecuteNonQuery();
                     string[] sqlFiles = Directory.GetFiles(worldSQLScriptFolder);
+                    Array.Sort(sqlFiles, StringComparer.OrdinalIgnoreCase);
                     foreach (string sqlFile in sqlFiles)
                     {
                         currentScriptFileName = sqlFile;

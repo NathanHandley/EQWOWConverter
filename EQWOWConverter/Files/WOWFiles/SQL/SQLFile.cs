@@ -135,6 +135,8 @@ namespace EQWOWConverter.WOWFiles
             {
                 string fullFilePath;
                 if (i < 10)
+                    fullFilePath = Path.Combine(outputFolder, tableName + "_00" + i.ToString() + ".sql");
+                else if (i < 100)
                     fullFilePath = Path.Combine(outputFolder, tableName + "_0" + i.ToString() + ".sql");
                 else
                     fullFilePath = Path.Combine(outputFolder, tableName + "_" + i.ToString() + ".sql");

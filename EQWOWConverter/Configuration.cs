@@ -169,8 +169,8 @@ namespace EQWOWConverter
         public static float GENERATE_ADDED_BOUNDARY_AMOUNT = 0.01f;
 
         // How many insert rows to restrict in a SQL output file
-        public static int GENERATE_SQL_FILE_BATCH_SIZE = 50000;
-        public static int GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE = 5000;
+        public static int GENERATE_SQL_FILE_BATCH_SIZE = 10000;
+        public static int GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE = 2000;
 
         // How many file names to batch up when converting (must be greater or equal to 1)
         public static int GENERATE_BLPCONVERTBATCHSIZE = 50;
