@@ -25,6 +25,8 @@ namespace EQWOWConverter.Common
         public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
         public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
         public List<UInt16> BoneIDs = new List<UInt16>(); // Note: Only single associations, but WOW can support up to 4 w/weights
+        public List<UInt16> SecondaryBoneIDs = new List<UInt16>();  // Second bone of a vertex made on a cut edge spanning two bones
+        public List<byte> SecondaryBoneWeights = new List<byte>();
         public List<AnimatedVertexFrames> AnimatedVertexFramesByVertexIndex = new List<AnimatedVertexFrames>();
         public List<MeshRenderGroup> RenderGroups = new List<MeshRenderGroup>();
 
@@ -48,6 +50,8 @@ namespace EQWOWConverter.Common
             TriangleFaces = new List<TriangleFace>(meshData.TriangleFaces);
             VertexColors = new List<ColorRGBA>(meshData.VertexColors);
             BoneIDs = new List<UInt16>(meshData.BoneIDs);
+            SecondaryBoneIDs = new List<UInt16>(meshData.SecondaryBoneIDs);
+            SecondaryBoneWeights = new List<byte>(meshData.SecondaryBoneWeights);
             AnimatedVertexFramesByVertexIndex = new List<AnimatedVertexFrames>(meshData.AnimatedVertexFramesByVertexIndex.Count);
             AnimatedVerticesDelayInMS = meshData.AnimatedVerticesDelayInMS;
             foreach (AnimatedVertexFrames frames in meshData.AnimatedVertexFramesByVertexIndex)
@@ -60,6 +64,44 @@ namespace EQWOWConverter.Common
             }
         }
 
+        public void CopySecondaryBoneTo(int oldIndex, MeshData target)
+        {
+            if (SecondaryBoneIDs.Count <= oldIndex)
+                return;
+            while (target.SecondaryBoneIDs.Count < target.Vertices.Count - 1)
+            {
+                target.SecondaryBoneIDs.Add(0);
+                target.SecondaryBoneWeights.Add(0);
+            }
+            target.SecondaryBoneIDs.Add(SecondaryBoneIDs[oldIndex]);
+            target.SecondaryBoneWeights.Add(SecondaryBoneWeights[oldIndex]);
+        }
+
+        private void RebuildSecondaryBones(List<int> oldIndexByNewIndex, out List<UInt16> newSecondaryBoneIDs, out List<byte> newSecondaryBoneWeights)
+        {
+            newSecondaryBoneIDs = new List<UInt16>();
+            newSecondaryBoneWeights = new List<byte>();
+            if (SecondaryBoneIDs.Count == 0)
+                return;
+            foreach (int oldIndex in oldIndexByNewIndex)
+            {
+                bool has = oldIndex >= 0 && oldIndex < SecondaryBoneIDs.Count;
+                newSecondaryBoneIDs.Add(has ? SecondaryBoneIDs[oldIndex] : (UInt16)0);
+                newSecondaryBoneWeights.Add(has ? SecondaryBoneWeights[oldIndex] : (byte)0);
+            }
+        }
+
+        private static List<int> OldIndexByNewIndexFromMap(Dictionary<int, int> oldToNew, int newCount)
+        {
+            List<int> oldIndexByNewIndex = new List<int>(newCount);
+            for (int i = 0; i < newCount; i++)
+                oldIndexByNewIndex.Add(-1);
+            foreach (var pair in oldToNew)
+                if (pair.Value >= 0 && pair.Value < newCount)
+                    oldIndexByNewIndex[pair.Value] = pair.Key;
+            return oldIndexByNewIndex;
+        }
+
         public void GenerateAsBox(BoundingBox boundingBox, int materialIndex, MeshBoxRenderType renderType, byte boneID = 0)
         {
             // Clear prior data
@@ -69,6 +111,8 @@ namespace EQWOWConverter.Common
             TriangleFaces.Clear();
             VertexColors.Clear();
             BoneIDs.Clear();
+            SecondaryBoneIDs.Clear();
+            SecondaryBoneWeights.Clear();
 
             // Set temp values
             float highX = boundingBox.TopCorner.X;
@@ -223,6 +267,8 @@ namespace EQWOWConverter.Common
             TriangleFaces.Clear();
             VertexColors.Clear();
             BoneIDs.Clear();
+            SecondaryBoneIDs.Clear();
+            SecondaryBoneWeights.Clear();
 
             // Set temp values
             float highX = topLeftCorner.X;
@@ -362,7 +408,18 @@ namespace EQWOWConverter.Common
             TextureCoordinates.AddRange(meshDataToAdd.TextureCoordinates);
             VertexColors.AddRange(meshDataToAdd.VertexColors);
             TriangleFaces.AddRange(meshDataToAdd.TriangleFaces);
+            int firstAddedVertexIndex = Vertices.Count - meshDataToAdd.Vertices.Count;
             BoneIDs.AddRange(meshDataToAdd.BoneIDs);
+            if (meshDataToAdd.SecondaryBoneIDs.Count > 0)
+            {
+                while (SecondaryBoneIDs.Count < firstAddedVertexIndex)
+                {
+                    SecondaryBoneIDs.Add(0);
+                    SecondaryBoneWeights.Add(0);
+                }
+                SecondaryBoneIDs.AddRange(meshDataToAdd.SecondaryBoneIDs);
+                SecondaryBoneWeights.AddRange(meshDataToAdd.SecondaryBoneWeights);
+            }
             AnimatedVertexFramesByVertexIndex.AddRange(meshDataToAdd.AnimatedVertexFramesByVertexIndex);
             if (AnimatedVerticesDelayInMS == 0)
                 AnimatedVerticesDelayInMS = meshDataToAdd.AnimatedVerticesDelayInMS;
@@ -428,6 +485,7 @@ namespace EQWOWConverter.Common
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
                     if (BoneIDs.Count != 0)
                         extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
+                    CopySecondaryBoneTo(oldVertIndex, extractedMeshData);
                     if (AnimatedVertexFramesByVertexIndex.Count != 0)
                         extractedMeshData.AnimatedVertexFramesByVertexIndex.Add(AnimatedVertexFramesByVertexIndex[oldVertIndex]);
                 }
@@ -454,6 +512,7 @@ namespace EQWOWConverter.Common
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
                     if (BoneIDs.Count != 0)
                         extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
+                    CopySecondaryBoneTo(oldVertIndex, extractedMeshData);
                     if (AnimatedVertexFramesByVertexIndex.Count != 0)
                         extractedMeshData.AnimatedVertexFramesByVertexIndex.Add(AnimatedVertexFramesByVertexIndex[oldVertIndex]);
                 }
@@ -480,6 +539,7 @@ namespace EQWOWConverter.Common
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
                     if (BoneIDs.Count != 0)
                         extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
+                    CopySecondaryBoneTo(oldVertIndex, extractedMeshData);
                     if (AnimatedVertexFramesByVertexIndex.Count != 0)
                         extractedMeshData.AnimatedVertexFramesByVertexIndex.Add(AnimatedVertexFramesByVertexIndex[oldVertIndex]);
                 }
@@ -543,6 +603,7 @@ namespace EQWOWConverter.Common
             result.TextureCoordinates = textureCoordinates;
             result.VertexColors = vertexColors;
             result.BoneIDs = boneIDs;
+            RebuildSecondaryBones(OldIndexByNewIndexFromMap(oldToNew, vertices.Count), out result.SecondaryBoneIDs, out result.SecondaryBoneWeights);
             result.AnimatedVertexFramesByVertexIndex = animVertexFrames;
             result.AnimatedVerticesDelayInMS = AnimatedVerticesDelayInMS;
 
@@ -583,6 +644,7 @@ namespace EQWOWConverter.Common
             List<TextureCoordinates> sortedTextureCoordinates = new List<TextureCoordinates>(TextureCoordinates.Count);
             List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>(VertexColors.Count);
             List<UInt16> sortedBoneIndexes = new List<UInt16>(BoneIDs.Count);
+            List<int> sortedOldIndexByNewIndex = new List<int>(Vertices.Count);
             List<AnimatedVertexFrames> sortedAnimatedVertexFrames = new List<AnimatedVertexFrames>(AnimatedVertexFramesByVertexIndex.Count);
 
             bool hasNormals = Normals.Count != 0;
@@ -613,6 +675,7 @@ namespace EQWOWConverter.Common
                         sortedVertexColors.Add(VertexColors[curTriangleFace.V1]);
                     if (hasBones == true)
                         sortedBoneIndexes.Add(BoneIDs[curTriangleFace.V1]);
+                    sortedOldIndexByNewIndex.Add(curTriangleFace.V1);
                     if (hasAnimatedVertexFrames == true)
                         sortedAnimatedVertexFrames.Add(AnimatedVertexFramesByVertexIndex[curTriangleFace.V1]);
                 }
@@ -633,6 +696,7 @@ namespace EQWOWConverter.Common
                         sortedVertexColors.Add(VertexColors[curTriangleFace.V2]);
                     if (hasBones == true)
                         sortedBoneIndexes.Add(BoneIDs[curTriangleFace.V2]);
+                    sortedOldIndexByNewIndex.Add(curTriangleFace.V2);
                     if (hasAnimatedVertexFrames == true)
                         sortedAnimatedVertexFrames.Add(AnimatedVertexFramesByVertexIndex[curTriangleFace.V2]);
                 }
@@ -653,6 +717,7 @@ namespace EQWOWConverter.Common
                         sortedVertexColors.Add(VertexColors[curTriangleFace.V3]);
                     if (hasBones == true)
                         sortedBoneIndexes.Add(BoneIDs[curTriangleFace.V3]);
+                    sortedOldIndexByNewIndex.Add(curTriangleFace.V3);
                     if (hasAnimatedVertexFrames == true)
                         sortedAnimatedVertexFrames.Add(AnimatedVertexFramesByVertexIndex[curTriangleFace.V3]);
                 }
@@ -667,6 +732,11 @@ namespace EQWOWConverter.Common
             TextureCoordinates = sortedTextureCoordinates;
             VertexColors = sortedVertexColors;
             BoneIDs = sortedBoneIndexes;
+            List<UInt16> sortedSecondaryBoneIDs;
+            List<byte> sortedSecondaryBoneWeights;
+            RebuildSecondaryBones(sortedOldIndexByNewIndex, out sortedSecondaryBoneIDs, out sortedSecondaryBoneWeights);
+            SecondaryBoneIDs = sortedSecondaryBoneIDs;
+            SecondaryBoneWeights = sortedSecondaryBoneWeights;
             AnimatedVertexFramesByVertexIndex = sortedAnimatedVertexFrames;
         }
 
@@ -704,6 +774,7 @@ namespace EQWOWConverter.Common
                         VertexColors.Add(VertexColors[oldIndex]);
                     if (BoneIDs.Count > 0)
                         BoneIDs.Add(BoneIDs[oldIndex]);
+                    CopySecondaryBoneTo(oldIndex, this);
                     if (AnimatedVertexFramesByVertexIndex.Count > 0)
                         AnimatedVertexFramesByVertexIndex.Add(AnimatedVertexFramesByVertexIndex[oldIndex]);
 
@@ -771,6 +842,7 @@ namespace EQWOWConverter.Common
             List<Vector3> normals = new List<Vector3>();
             List<TextureCoordinates> textureCoordinates = new List<TextureCoordinates>();
             List<ColorRGBA> vertexColors = new List<ColorRGBA>();
+            List<int> rebuiltOldIndexByNewIndex = new List<int>();
             List<UInt16> boneIDs = new List<UInt16>();
             List<AnimatedVertexFrames> animatedVertexFramesByVertexIndex = new List<AnimatedVertexFrames>();
 
@@ -864,6 +936,7 @@ namespace EQWOWConverter.Common
                             if (VertexColors.Count > 0) 
                                 vertexColors.Add(VertexColors[oldIdx]);
                             boneIDs.Add(BoneIDs[oldIdx]);
+                            rebuiltOldIndexByNewIndex.Add(oldIdx);
                             if (AnimatedVertexFramesByVertexIndex.Count > 0)
                                 animatedVertexFramesByVertexIndex.Add(AnimatedVertexFramesByVertexIndex[oldIdx]);
                         }
@@ -891,6 +964,11 @@ namespace EQWOWConverter.Common
             TextureCoordinates = textureCoordinates;
             VertexColors = vertexColors;
             BoneIDs = boneIDs;
+            List<UInt16> rebuiltSecondaryBoneIDs;
+            List<byte> rebuiltSecondaryBoneWeights;
+            RebuildSecondaryBones(rebuiltOldIndexByNewIndex, out rebuiltSecondaryBoneIDs, out rebuiltSecondaryBoneWeights);
+            SecondaryBoneIDs = rebuiltSecondaryBoneIDs;
+            SecondaryBoneWeights = rebuiltSecondaryBoneWeights;
             AnimatedVertexFramesByVertexIndex = animatedVertexFramesByVertexIndex;
         }
 

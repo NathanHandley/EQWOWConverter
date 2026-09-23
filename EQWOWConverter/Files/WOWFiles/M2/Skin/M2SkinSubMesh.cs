@@ -38,6 +38,11 @@ namespace EQWOWConverter.WOWFiles
 
         public M2SkinSubMesh(ObjectModelRenderGroup renderGroup, UInt16 boneLookupIndex)
         {
+            // Vertices made on cut edges spanning two bones carry a second weight
+            foreach (ObjectModelVertex vertex in renderGroup.Vertices)
+                if (vertex.BoneWeights[1] > 0)
+                    NumOfBonesInfluencing = 2;
+            SkinSectionID = renderGroup.SkinSectionID;
             VertexStart = renderGroup.VertexStart;
             VertexCount = renderGroup.VertexCount;
             TriangleIndexStart = Convert.ToUInt16(renderGroup.TriangleStart * 3); // The number of indices in the triangles

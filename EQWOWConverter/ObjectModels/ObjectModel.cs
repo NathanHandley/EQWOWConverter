@@ -183,7 +183,8 @@ namespace EQWOWConverter.ObjectModels
             GenerateModelVertices(meshData);
 
             // Correct any texture coordinates
-            CorrectTextureCoordinates();
+            if (IsPlayerCharacterModel() == false)
+                CorrectTextureCoordinates();
 
             // No texture replacement lookup (yet)
             ModelReplaceableTextureLookups.Add(0);
@@ -191,6 +192,11 @@ namespace EQWOWConverter.ObjectModels
             // Build the bones and animation structures
             // Note: Must come after bounding box generation (in GenerateModelVertices)
             ProcessBonesAndAnimation(spriteListEffects, particleCloudsByName);
+            if (IsPlayerCharacterModel() == true)
+            {
+                ApplyCharacterCompositeUVRemap(meshData);
+                SetPlayerCharacterTextureTypes();
+            }
 
             // Store the final state mesh data
             MeshData = meshData;
@@ -497,6 +503,14 @@ namespace EQWOWConverter.ObjectModels
                 ObjectModelRenderGroup curRenderGroup = new ObjectModelRenderGroup(meshRenderGroup);
                 curRenderGroup.MaterialIndex = Convert.ToUInt16(modelTriangles[meshRenderGroup.TriangleStart].MaterialIndex);
 
+                // Player character models put the robe mesh in the robe geoset (shown only while a robe is worn) and the body pieces a robe replaces in the geoset group's default (hidden while one is worn)
+                if (IsPlayerCharacterModel() == true && EQObjectModelData.CharacterComposite != null && curRenderGroup.MaterialIndex < ModelMaterials.Count)
+                {
+                    UInt32 geosetID = EQObjectModelData.CharacterComposite.GetGeosetIDForMaterial(ModelMaterials[curRenderGroup.MaterialIndex].Material.UniqueName);
+                    if (geosetID != 0)
+                        curRenderGroup.SkinSectionID = geosetID;
+                }
+
                 // Gather and update bone reference data for the render group
                 for (int triangleIndex = curRenderGroup.TriangleStart; triangleIndex < curRenderGroup.TriangleStart + curRenderGroup.TriangleCount; triangleIndex++)
                 {
@@ -517,6 +531,18 @@ namespace EQWOWConverter.ObjectModels
                     modelVertices[curTriangle.V1].BoneIndicesLookup[0] = Convert.ToByte(curRenderGroup.BoneLookupIndices.IndexOf(v1BoneIndexTrue));
                     modelVertices[curTriangle.V2].BoneIndicesLookup[0] = Convert.ToByte(curRenderGroup.BoneLookupIndices.IndexOf(v2BoneIndexTrue));
                     modelVertices[curTriangle.V3].BoneIndicesLookup[0] = Convert.ToByte(curRenderGroup.BoneLookupIndices.IndexOf(v3BoneIndexTrue));
+
+                    // Second bone of cut-edge vertices
+                    int[] triangleVertexIndexes = new int[3] { curTriangle.V1, curTriangle.V2, curTriangle.V3 };
+                    foreach (int triangleVertexIndex in triangleVertexIndexes)
+                    {
+                        if (modelVertices[triangleVertexIndex].BoneWeights[1] == 0)
+                            continue;
+                        UInt16 secondBoneIndexTrue = modelVertices[triangleVertexIndex].BoneIndicesTrue[1];
+                        if (curRenderGroup.BoneLookupIndices.Contains(secondBoneIndexTrue) == false)
+                            curRenderGroup.BoneLookupIndices.Add(secondBoneIndexTrue);
+                        modelVertices[triangleVertexIndex].BoneIndicesLookup[1] = Convert.ToByte(curRenderGroup.BoneLookupIndices.IndexOf(secondBoneIndexTrue));
+                    }
 
                     // Track vertices
                     if (curRenderGroup.VertexIndicies.Contains(curTriangle.V1) == false)
@@ -1242,7 +1268,11 @@ namespace EQWOWConverter.ObjectModels
 
             // Since a 'main' bone was added to the start, all other bone indices needs to be increased by 1
             foreach (ObjectModelVertex vertex in ModelVertices)
+            {
                 vertex.BoneIndicesTrue[0]++;
+                if (vertex.BoneWeights[1] > 0)
+                    vertex.BoneIndicesTrue[1]++;
+            }
 
             // First block in the bones themselves
             foreach (EQSkeleton.EQSkeletonBone eqBone in EQObjectModelData.SkeletonData.BoneStructures)
@@ -2352,6 +2382,13 @@ namespace EQWOWConverter.ObjectModels
                 newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(meshData.TextureCoordinates[i]);
                 if (meshData.BoneIDs.Count > 0)
                     newModelVertex.BoneIndicesTrue[0] = meshData.BoneIDs[i];
+                if (meshData.SecondaryBoneWeights.Count > i && meshData.SecondaryBoneWeights[i] > 0)
+                {
+                    // A vertex made on a cut edge spanning two bones (ObjectModelEQData.SplitTrianglesAtUVTileBoundaries) follows both
+                    newModelVertex.BoneIndicesTrue[1] = meshData.SecondaryBoneIDs[i];
+                    newModelVertex.BoneWeights[1] = meshData.SecondaryBoneWeights[i];
+                    newModelVertex.BoneWeights[0] = Convert.ToByte(255 - meshData.SecondaryBoneWeights[i]);
+                }
                 ModelVertices.Add(newModelVertex);
             }
         }
@@ -2488,8 +2525,8 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
-            // Perform color tinting if this was a creature and had colors set
-            if (Properties.CreatureModelTemplate != null && Properties.CreatureModelTemplate.ColorTint != null)
+            // Perform color tinting if this was a creature and had colors set (character based versions tint inside their skin bake instead)
+            if (Properties.CreatureModelTemplate != null && Properties.CreatureModelTemplate.ColorTint != null && Properties.CreatureModelTemplate.IsCharacterBasedVersion == false)
             {
                 CreatureTemplateColorTint colorTint = Properties.CreatureModelTemplate.ColorTint;
 
@@ -2538,41 +2575,47 @@ namespace EQWOWConverter.ObjectModels
                 ModelTextures.Add(newModelTexture);
             }
 
-            // Illusion models (face index 99) get their face textures replaced at runtime through CreatureDisplayInfo, so type those textures as creature skins instead of hardcoded paths
-            if (Properties.CreatureModelTemplate != null && Properties.CreatureModelTemplate.FaceIndex == CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX)
-                SetReplaceableFaceTextureTypes(Properties.CreatureModelTemplate.Race.SkeletonName);
         }
 
-        private void SetReplaceableFaceTextureTypes(string skeletonName)
+        private bool IsPlayerCharacterModel()
         {
-            // Gather the unique face texture names.  Sorting the full names sorts by head piece digit, since the names only differ in the last character
-            string faceTexturePrefix = string.Concat(skeletonName, "he00").ToLower();
-            List<string> faceTextureNames = new List<string>();
-            foreach (ObjectModelTexture modelTexture in ModelTextures)
+            return Properties.CreatureModelTemplate != null && Properties.CreatureModelTemplate.IsPlayerCharacterVersion == true;
+        }
+
+        private void ApplyCharacterCompositeUVRemap(MeshData meshData)
+        {
+            if (EQObjectModelData.CharacterComposite == null)
             {
-                string curTextureName = modelTexture.TextureName.ToLower();
-                if (curTextureName.StartsWith(faceTexturePrefix) == true && faceTextureNames.Contains(curTextureName) == false)
-                    faceTextureNames.Add(curTextureName);
-            }
-            if (faceTextureNames.Count == 0)
+                Logger.WriteError(string.Concat("Object model '", Name, "' is a player character model but has no character composite, so UVs are only being corrected"));
+                CorrectTextureCoordinates();
                 return;
-            faceTextureNames.Sort(StringComparer.Ordinal);
-            if (faceTextureNames.Count > 3)
-            {
-                Logger.WriteDebug(string.Concat("Object model '", Name, "' has '", faceTextureNames.Count.ToString(), "' face textures, but only 3 can be replaceable so the extras will remain hardcoded"));
-                faceTextureNames.RemoveRange(3, faceTextureNames.Count - 3);
             }
 
-            // Assign the types in head piece order
-            foreach (ObjectModelTexture modelTexture in ModelTextures)
+            // The half-texel edge pull-in every other model gets is applied by the remap itself, in composite texels, so it holds for rotated and scaled pieces
+            EQObjectModelData.CharacterComposite.ApplyUVRemap(ModelVertices, ModelTriangles, ModelMaterials);
+        }
+
+        private void SetPlayerCharacterTextureTypes()
+        {
+            ObjectModelCharacterComposite? characterComposite = EQObjectModelData.CharacterComposite;
+            if (characterComposite == null)
             {
-                int faceTextureIndex = faceTextureNames.IndexOf(modelTexture.TextureName.ToLower());
-                if (faceTextureIndex == 0)
-                    modelTexture.Type = ObjectModelTextureType.CreatureSkin1;
-                else if (faceTextureIndex == 1)
-                    modelTexture.Type = ObjectModelTextureType.CreatureSkin2;
-                else if (faceTextureIndex == 2)
-                    modelTexture.Type = ObjectModelTextureType.CreatureSkin3;
+                Logger.WriteError(string.Concat("Object model '", Name, "' is a player character model but has no character composite, so texture types are unchanged"));
+                return;
+            }
+            HashSet<string> mappedMaterialUniqueNames = new HashSet<string>();
+            foreach (ObjectModelCharacterComposite.CharacterCompositeSlice slice in characterComposite.Slices)
+                mappedMaterialUniqueNames.Add(slice.MaterialUniqueName);
+            for (int i = 0; i < ModelTextures.Count && i < ModelMaterials.Count; i++)
+            {
+                string materialUniqueName = ModelMaterials[i].Material.UniqueName;
+                if (mappedMaterialUniqueNames.Contains(materialUniqueName) == false)
+                    continue;
+                // A helmed head's private pieces sample the hair texture of its hair style (the head's own helm texture) and everything else the composite
+                if (characterComposite.IsHelmTextureMaterial(materialUniqueName) == true)
+                    ModelTextures[i].Type = ObjectModelTextureType.CharacterHair;
+                else
+                    ModelTextures[i].Type = ObjectModelTextureType.BodySkin;
             }
         }
 

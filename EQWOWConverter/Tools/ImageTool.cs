@@ -387,6 +387,7 @@ namespace EQWOWConverter
 
         public enum ImageAssociationType
         {
+            CharacterSkin,
             Creature,
             Clothing,
             Particle,
@@ -503,6 +504,10 @@ namespace EQWOWConverter
                 case ImageAssociationType.Clothing:
                     {
                         formatArg = "/FBLP_PAL_A8";
+                    } break;
+                case ImageAssociationType.CharacterSkin:
+                    {
+                        formatArg = "/FBLP_DXT1_A0"; // Opaque baked character skins, a quarter of the size of the palette format
                     } break;
                 case ImageAssociationType.Creature:
                     {

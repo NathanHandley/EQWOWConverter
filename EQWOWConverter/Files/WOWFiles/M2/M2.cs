@@ -99,8 +99,11 @@ namespace EQWOWConverter.WOWFiles
             // Vertices
             Vertices.AddArray(wowObjectModel.ModelVertices);
 
-            // Number of Skin Profiles
-            SkinProfileCount = 1;  // Fix to 1 for now
+            // Number of Skin Profiles.  Player character models claim 4 because the client's character render path selects LOD skin files 00-03 and crashes when they are missing
+            if (wowObjectModel.Properties.CreatureModelTemplate != null && wowObjectModel.Properties.CreatureModelTemplate.IsPlayerCharacterVersion == true)
+                SkinProfileCount = 4;
+            else
+                SkinProfileCount = 1;
 
             // Color and Alpha Animation Definitions
             //foreach (ColorRGBf color in wowObjectModel.ModelMaterialColors)
@@ -383,9 +386,8 @@ namespace EQWOWConverter.WOWFiles
                     Events.AddElement(playFidgetSound2);
                 }
 
-                // HandleFootfallAnimEvent ($FSD) - only used when not using mod-driven walk/run sounds.  Illusion version models are an exception.
-                bool isIllusionVersionModel = wowObjectModel.Properties.CreatureModelTemplate != null && wowObjectModel.Properties.CreatureModelTemplate.FaceIndex == CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX;
-                if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == false || isIllusionVersionModel == true)
+                // HandleFootfallAnimEvent ($FSD) - only used when not using mod-driven walk/run sounds
+                if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == false)
                 {
                     M2Event handleFootfallAnimEvent = new M2Event();
                     handleFootfallAnimEvent.PopulateAsHandleFootfallAnimEventFSD(wowObjectModel);
@@ -450,8 +452,14 @@ namespace EQWOWConverter.WOWFiles
             List<Byte> fileData = GetFileData();
             File.WriteAllBytes(m2FileName, fileData.ToArray());
 
-            // Create the skin
+            // Create the skin (one copy per skin profile, all identical)
             Skin.WriteToDisk(outputName, outputFolderPath);
+            for (UInt32 i = 1; i < SkinProfileCount; i++)
+            {
+                string sourceSkinFileName = Path.Combine(outputFolderPath, outputName + "00.skin");
+                string lodSkinFileName = Path.Combine(outputFolderPath, outputName + i.ToString("00") + ".skin");
+                File.Copy(sourceSkinFileName, lodSkinFileName, true);
+            }
         }
 
         private List<Byte> GetFileData()

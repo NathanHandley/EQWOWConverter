@@ -27,6 +27,7 @@ namespace EQWOWConverter.ObjectModels
         public UInt16 TriangleCount = 0;
         public UInt16 RootBone = 0;
         public UInt16 MaterialIndex = 0;
+        public UInt32 SkinSectionID = 0; // Geoset ID.  0 renders always
         public List<ObjectModelVertex> Vertices = new List<ObjectModelVertex>();
         public HashSet<int> VertexIndicies = new HashSet<int>();
 

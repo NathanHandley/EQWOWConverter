@@ -301,7 +301,9 @@ namespace EQWOWConverter
             if (Configuration.GENERATE_QUESTS == true)
                 ConvertQuests(ref questTemplates, ref creatureTemplates);
 
-            // Generate item graphics
+            // Generate item graphics.  The creature model files must be finished first
+            if (Configuration.CORE_ENABLE_MULTITHREADING == true)
+                creatureModelFilesTask.Wait();
             CreateItemGraphics(ref itemTemplatesByEQDBID);
 
             // Make sure threads are done
@@ -1419,14 +1421,33 @@ namespace EQWOWConverter
 
             LogCounter progressionCounter = new LogCounter("Creating creature model files...");
             CreatureModelTemplate.CreateCreatureModelTemplatesFromCreatureTemplates(creatureTemplates);
-            CreatureIllusionVersionRegistry.CreateModelTemplatesForRegisteredForms();
+            CreatureIllusionCharacterRegistry.CreateModelTemplatesForAllEquipShowingRaces();
 
-            // Put every race's model templates into a single work queue and process one per working thread.
+            // The player character models go first, then every other model template, each batch spread across the working threads
+            Queue<CreatureModelTemplate> playerCharacterWorkQueue = new Queue<CreatureModelTemplate>();
             Queue<CreatureModelTemplate> modelTemplateWorkQueue = new Queue<CreatureModelTemplate>();
             foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
+            {
                 foreach (CreatureModelTemplate modelTemplate in modelTemplatesByRaceID.Value)
-                    modelTemplateWorkQueue.Enqueue(modelTemplate);
+                {
+                    if (modelTemplate.IsPlayerCharacterVersion == true)
+                        playerCharacterWorkQueue.Enqueue(modelTemplate);
+                    else
+                        modelTemplateWorkQueue.Enqueue(modelTemplate);
+                }
+            }
+            ProcessCreatureModelTemplateWorkQueue(playerCharacterWorkQueue, charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath, progressionCounter, ref creatureModelTemplates);
+            ProcessCreatureModelTemplateWorkQueue(modelTemplateWorkQueue, charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath, progressionCounter, ref creatureModelTemplates);
 
+            // Sorting this will ensure dbc output row orders don't change when reruning
+            creatureModelTemplates.Sort(CreatureModelTemplate.CompareCreatureModelTemplatesByModelDataID);
+        }
+
+        private void ProcessCreatureModelTemplateWorkQueue(Queue<CreatureModelTemplate> modelTemplateWorkQueue, string charactersFolderRoot, string inputObjectTextureFolder,
+            string exportAnimatedObjectsFolder, string generatedTexturesFolderPath, LogCounter progressionCounter, ref List<CreatureModelTemplate> creatureModelTemplates)
+        {
+            if (modelTemplateWorkQueue.Count == 0)
+                return;
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
                 int taskCount = Configuration.CORE_THREAD_COUNT;
@@ -1452,9 +1473,6 @@ namespace EQWOWConverter
                 List<CreatureModelTemplate> processedModelTemplates = CreatureModelFileThreadWorker(1, modelTemplateWorkQueue, charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath, progressionCounter);
                 creatureModelTemplates.AddRange(processedModelTemplates);
             }
-
-            // Sorting this will ensure dbc output row orders don't change when reruning
-            creatureModelTemplates.Sort(CreatureModelTemplate.CompareCreatureModelTemplatesByModelDataID);
         }
 
         private List<CreatureModelTemplate> CreatureModelFileThreadWorker(int threadID, Queue<CreatureModelTemplate> modelTemplateWorkQueue,
@@ -2545,29 +2563,43 @@ namespace EQWOWConverter
 
             // Convert and copy all of the BLP files
             LogCounter progressionCounter = new LogCounter("Converting and copying equipment textures... ");
-            Task equipTexConv1Task = Task.Factory.StartNew(() =>
-            {
-                ConvertAndCopyEquipmentTextures("ArmLowerTexture", progressionCounter);
-                ConvertAndCopyEquipmentTextures("ArmUpperTexture", progressionCounter);
-                ConvertAndCopyEquipmentTextures("LegLowerTexture", progressionCounter);
-                ConvertAndCopyEquipmentTextures("LegUpperTexture", progressionCounter);
-                ConvertAndCopyEquipmentTextures("FootTexture", progressionCounter);
-            }, TaskCreationOptions.LongRunning);
+            Task equipTexConvArmLowerTexture = Task.Factory.StartNew(() => { ConvertAndCopyEquipmentTextures("ArmLowerTexture", progressionCounter); }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
-                equipTexConv1Task.Wait();
-            Task equipTexConv2Task = Task.Factory.StartNew(() =>
-            {
-                ConvertAndCopyEquipmentTextures("TorsoLowerTexture", progressionCounter);
-                ConvertAndCopyEquipmentTextures("TorsoUpperTexture", progressionCounter);
-                ConvertAndCopyEquipmentTextures("HandTexture", progressionCounter);
-            }, TaskCreationOptions.LongRunning);
+                equipTexConvArmLowerTexture.Wait();
+            Task equipTexConvArmUpperTexture = Task.Factory.StartNew(() => { ConvertAndCopyEquipmentTextures("ArmUpperTexture", progressionCounter); }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
-                equipTexConv2Task.Wait();
+                equipTexConvArmUpperTexture.Wait();
+            Task equipTexConvLegLowerTexture = Task.Factory.StartNew(() => { ConvertAndCopyEquipmentTextures("LegLowerTexture", progressionCounter); }, TaskCreationOptions.LongRunning);
+            if (Configuration.CORE_ENABLE_MULTITHREADING == false)
+                equipTexConvLegLowerTexture.Wait();
+            Task equipTexConvLegUpperTexture = Task.Factory.StartNew(() => { ConvertAndCopyEquipmentTextures("LegUpperTexture", progressionCounter); }, TaskCreationOptions.LongRunning);
+            if (Configuration.CORE_ENABLE_MULTITHREADING == false)
+                equipTexConvLegUpperTexture.Wait();
+            Task equipTexConvFootTexture = Task.Factory.StartNew(() => { ConvertAndCopyEquipmentTextures("FootTexture", progressionCounter); }, TaskCreationOptions.LongRunning);
+            if (Configuration.CORE_ENABLE_MULTITHREADING == false)
+                equipTexConvFootTexture.Wait();
+            Task equipTexConvTorsoLowerTexture = Task.Factory.StartNew(() => { ConvertAndCopyEquipmentTextures("TorsoLowerTexture", progressionCounter); }, TaskCreationOptions.LongRunning);
+            if (Configuration.CORE_ENABLE_MULTITHREADING == false)
+                equipTexConvTorsoLowerTexture.Wait();
+            Task equipTexConvTorsoUpperTexture = Task.Factory.StartNew(() => { ConvertAndCopyEquipmentTextures("TorsoUpperTexture", progressionCounter); }, TaskCreationOptions.LongRunning);
+            if (Configuration.CORE_ENABLE_MULTITHREADING == false)
+                equipTexConvTorsoUpperTexture.Wait();
+            Task equipTexConvHandTexture = Task.Factory.StartNew(() => { ConvertAndCopyEquipmentTextures("HandTexture", progressionCounter); }, TaskCreationOptions.LongRunning);
+            if (Configuration.CORE_ENABLE_MULTITHREADING == false)
+                equipTexConvHandTexture.Wait();
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
-                equipTexConv1Task.Wait();
-                equipTexConv2Task.Wait();
+                equipTexConvArmLowerTexture.Wait();
+                equipTexConvArmUpperTexture.Wait();
+                equipTexConvLegLowerTexture.Wait();
+                equipTexConvLegUpperTexture.Wait();
+                equipTexConvFootTexture.Wait();
+                equipTexConvTorsoLowerTexture.Wait();
+                equipTexConvTorsoUpperTexture.Wait();
+                equipTexConvHandTexture.Wait();
             }
+            // Untinted per-slot, per-material displays for WoW items worn in illusion forms (needs every race registered and all displays built)
+            ItemDisplayInfo.CreateGenericNativeDisplays();
             Logger.WriteInfo("Creating item graphics ended");
         }
 
@@ -4708,6 +4740,24 @@ namespace EQWOWConverter
             }
             else
             {
+                // A full main patch supersedes any delta patch still deployed from an earlier run (the client loads the higher patch number
+                // over the lower one, so a stale delta would shadow the fresh full patch)
+                string staleDeltaPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", Configuration.PATCH_LOCALIZATION_STRING, deltaPatchName);
+                if (File.Exists(staleDeltaPatchFileNameAndPath) == true)
+                {
+                    try
+                    {
+                        File.Delete(staleDeltaPatchFileNameAndPath);
+                        Logger.WriteInfo("Removed the previously deployed delta patch '" + deltaPatchName + "', since the full main patch replaces it");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.WriteError("Failed to delete the stale delta patch at '" + staleDeltaPatchFileNameAndPath + "', it may be in use (client running, open in MPQ editor, etc)");
+                        if (ex.StackTrace != null)
+                            Logger.WriteDebug(ex.StackTrace.ToString());
+                    }
+                }
+
                 // Make sure a patch was created
                 string dataLocPatchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
                 string sourcePatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, dataLocPatchMPQName);

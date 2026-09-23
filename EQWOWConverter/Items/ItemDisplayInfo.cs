@@ -33,6 +33,31 @@ namespace EQWOWConverter.Items
 
         private static Dictionary<string, List<Int64>> GeneratedArmorPartBySourceNameThenColorID = new Dictionary<string, List<long>>();
 
+        // Player-character-format illusion races with native worn armor components (registered when their character models generate)
+        private class NativeComponentRace
+        {
+            public string SkeletonName = string.Empty;
+            public int ChrRaceID = 0;
+            public int Gender = 0;
+        }
+        private static List<NativeComponentRace> NativeComponentRaces = new List<NativeComponentRace>();
+        private static Dictionary<string, ItemDisplayInfo?> NativeDisplayInfosByKey = new Dictionary<string, ItemDisplayInfo?>();
+        private static List<int[]> NativeDisplayMappings = new List<int[]>(); // Base display ID, ChrRaces ID, gender, native display ID
+        private static List<int[]> GenericNativeDisplayMappings = new List<int[]>(); // ChrRaces ID, gender, WoW inventory type, WoW armor subclass, native display ID
+        private static readonly object NativeDisplayLock = new object();
+        public const int NATIVE_ROBE_ARMOR_ID_BASE = 100; // Robe IDs (1-7) are keyed above the armor IDs
+        public static int GetNativeDisplayInfoID(string skeletonName, ItemWOWInventoryType inventoryType, int armorID, Int64 colorPacked)
+        {
+            lock (NativeDisplayLock)
+            {
+                string key = string.Concat(skeletonName.ToUpper(), "~", ((int)inventoryType).ToString(), "~", armorID.ToString(), "~", colorPacked.ToString());
+                ItemDisplayInfo? nativeDisplayInfo;
+                if (NativeDisplayInfosByKey.TryGetValue(key, out nativeDisplayInfo) == false || nativeDisplayInfo == null)
+                    return 0;
+                return nativeDisplayInfo.ItemDisplayInfoDBCID;
+            }
+        }
+
         public int ItemDisplayInfoDBCID = 0;
         public string IconFileNameNoExt = string.Empty;
         public string ModelName1 = string.Empty;
@@ -82,6 +107,171 @@ namespace EQWOWConverter.Items
                 materialTypeID, colorPacked);
         }
 
+        private ItemDisplayInfo(int itemDisplayInfoDBCID)
+        {
+            ItemDisplayInfoDBCID = itemDisplayInfoDBCID;
+        }
+
+        public static void RegisterNativeComponentRace(string skeletonName, int chrRaceID, int gender)
+        {
+            lock (NativeDisplayLock)
+            {
+                foreach (NativeComponentRace existingRace in NativeComponentRaces)
+                    if (existingRace.SkeletonName == skeletonName.ToUpper())
+                        return;
+                NativeComponentRace newRace = new NativeComponentRace();
+                newRace.SkeletonName = skeletonName.ToUpper();
+                newRace.ChrRaceID = chrRaceID;
+                newRace.Gender = gender;
+                NativeComponentRaces.Add(newRace);
+            }
+        }
+
+        public static List<int[]> GetNativeDisplayMappings()
+        {
+            lock (NativeDisplayLock)
+                return new List<int[]>(NativeDisplayMappings);
+        }
+
+        public static List<int[]> GetGenericNativeDisplayMappings()
+        {
+            lock (NativeDisplayLock)
+                return new List<int[]>(GenericNativeDisplayMappings);
+        }
+
+        // Untinted native displays per slot and armor material, one set per registered illusion race: what a WoW (non-EQ) item worn in an illusion form shows as, since WoW armor components are laid out for
+        // the stock models and draw garbage on the EQ layout.  WoW armor subclasses map onto the classic EQ texture sets (1 cloth, 2 leather, 3 chain, 4 plate)
+        public static void CreateGenericNativeDisplays()
+        {
+            lock (NativeDisplayLock)
+            {
+                ItemDisplayInfo stubBaseDisplayInfo = new ItemDisplayInfo(0);
+                ItemWOWInventoryType[] slotInventoryTypes = new ItemWOWInventoryType[] { ItemWOWInventoryType.Chest, ItemWOWInventoryType.Legs,
+                    ItemWOWInventoryType.Feet, ItemWOWInventoryType.Wrists, ItemWOWInventoryType.Hands };
+                foreach (NativeComponentRace race in NativeComponentRaces)
+                {
+                    foreach (ItemWOWInventoryType inventoryType in slotInventoryTypes)
+                    {
+                        for (int armorSubClass = 1; armorSubClass <= 4; armorSubClass++)
+                        {
+                            int armorID = armorSubClass; // Cloth 1, leather 2, chain 3, plate 4
+                            int nativeDisplayID = GetOrBuildNativeDisplayInfoID(stubBaseDisplayInfo, race.SkeletonName, inventoryType, armorID, 0);
+                            if (nativeDisplayID != 0)
+                                GenericNativeDisplayMappings.Add(new int[5] { race.ChrRaceID, race.Gender, (int)inventoryType, armorSubClass, nativeDisplayID });
+                        }
+                    }
+                    int robeDisplayID = GetOrBuildNativeDisplayInfoID(stubBaseDisplayInfo, race.SkeletonName, ItemWOWInventoryType.Robe, NATIVE_ROBE_ARMOR_ID_BASE + 1, 0);
+                    if (robeDisplayID != 0)
+                        for (int armorSubClass = 1; armorSubClass <= 4; armorSubClass++)
+                            GenericNativeDisplayMappings.Add(new int[5] { race.ChrRaceID, race.Gender, (int)ItemWOWInventoryType.Robe, armorSubClass, robeDisplayID });
+                }
+            }
+        }
+
+        private static int GetOrBuildNativeDisplayInfoID(ItemDisplayInfo baseDisplayInfo, string skeletonName, ItemWOWInventoryType inventoryType, int armorID, Int64 colorPacked)
+        {
+            string key = string.Concat(skeletonName.ToUpper(), "~", ((int)inventoryType).ToString(), "~", armorID.ToString(), "~", colorPacked.ToString());
+            ItemDisplayInfo? nativeDisplayInfo;
+            if (NativeDisplayInfosByKey.TryGetValue(key, out nativeDisplayInfo) == false)
+            {
+                nativeDisplayInfo = BuildNativeDisplayInfo(baseDisplayInfo, skeletonName.ToUpper(), inventoryType, armorID, colorPacked);
+                NativeDisplayInfosByKey.Add(key, nativeDisplayInfo);
+            }
+            if (nativeDisplayInfo == null)
+                return 0;
+            return nativeDisplayInfo.ItemDisplayInfoDBCID;
+        }
+
+        // For every registered illusion race, a display info whose components are that race's own EQ armor textures for this slot, armor set and color, shared by every base display info with
+        // the same slot, armor set and color.  The mod swaps an equipped item's display for the native one in the mirror image packet
+        private static void CreateNativeVariants(ItemDisplayInfo baseDisplayInfo, ItemWOWInventoryType inventoryType, int armorID, Int64 colorPacked)
+        {
+            lock (NativeDisplayLock)
+            {
+                foreach (NativeComponentRace race in NativeComponentRaces)
+                {
+                    string key = string.Concat(race.SkeletonName, "~", ((int)inventoryType).ToString(), "~", armorID.ToString(), "~", colorPacked.ToString());
+                    ItemDisplayInfo? nativeDisplayInfo;
+                    if (NativeDisplayInfosByKey.TryGetValue(key, out nativeDisplayInfo) == false)
+                    {
+                        nativeDisplayInfo = BuildNativeDisplayInfo(baseDisplayInfo, race.SkeletonName, inventoryType, armorID, colorPacked);
+                        NativeDisplayInfosByKey.Add(key, nativeDisplayInfo);
+                    }
+                    if (nativeDisplayInfo == null)
+                        continue;
+                    NativeDisplayMappings.Add(new int[4] { baseDisplayInfo.ItemDisplayInfoDBCID, race.ChrRaceID, race.Gender, nativeDisplayInfo.ItemDisplayInfoDBCID });
+                }
+            }
+        }
+
+        private static ItemDisplayInfo? BuildNativeDisplayInfo(ItemDisplayInfo baseDisplayInfo, string skeletonName, ItemWOWInventoryType inventoryType, int armorID, Int64 colorPacked)
+        {
+            // Component per slot: region folder, component name, and which ArmorTexture field.  Boots and gloves take no LegLower / ArmLower components, since those regions hold this race's
+            // legs and wrist pieces.  Robes rewrite the chest, upper arm and leg regions with the robe mesh's art and switch the client to the robe geoset
+            bool isRobe = armorID >= NATIVE_ROBE_ARMOR_ID_BASE;
+            List<string[]> components = new List<string[]>();
+            if (isRobe == true)
+            {
+                components.Add(new string[] { "TorsoUpperTexture", "Robe_Chest_TU", "4" });
+                components.Add(new string[] { "TorsoLowerTexture", "Robe_Chest_TL", "5" });
+                components.Add(new string[] { "ArmUpperTexture", "Robe_Arms_AU", "1" });
+                components.Add(new string[] { "LegUpperTexture", "Robe_Legs_LU", "6" });
+                components.Add(new string[] { "LegLowerTexture", "Robe_Legs_LL", "7" });
+            }
+            else switch (inventoryType)
+            {
+                case ItemWOWInventoryType.Chest:
+                    components.Add(new string[] { "TorsoUpperTexture", "Chest_TU", "4" });
+                    components.Add(new string[] { "TorsoLowerTexture", "Chest_TL", "5" });
+                    components.Add(new string[] { "ArmUpperTexture", "Arms_AU", "1" });
+                    break;
+                case ItemWOWInventoryType.Legs:
+                    components.Add(new string[] { "LegUpperTexture", "Legs_LU", "6" });
+                    components.Add(new string[] { "LegLowerTexture", "Legs_LL", "7" });
+                    break;
+                case ItemWOWInventoryType.Feet: components.Add(new string[] { "FootTexture", "Feet_FO", "8" }); break;
+                case ItemWOWInventoryType.Hands: components.Add(new string[] { "HandTexture", "Hand_HA", "3" }); break;
+                case ItemWOWInventoryType.Wrists: components.Add(new string[] { "ArmLowerTexture", "Wrist_AL", "2" }); break;
+                default: return null;
+            }
+            string armorIDString = (isRobe ? armorID - NATIVE_ROBE_ARMOR_ID_BASE : armorID).ToString("00");
+            string nativeComponentFolder = ObjectModels.ObjectModelCharacterComposite.GetNativeComponentFolder();
+
+            // Always a native display, even when this race has no art for the piece (a robe on a race without a robe mesh, a texture set the race lacks).
+            // A textureless display shows the base skin, where the shared components would draw garbage over this race's own layout
+            ItemDisplayInfo nativeDisplayInfo = new ItemDisplayInfo(IDGenerationTool.GenerateID("ItemDisplayInfoID", "native", skeletonName, ((int)inventoryType).ToString(),
+                armorID.ToString(), colorPacked.ToString()));
+            nativeDisplayInfo.IconFileNameNoExt = baseDisplayInfo.IconFileNameNoExt;
+            ItemDisplayInfos.Add(nativeDisplayInfo);
+            foreach (string[] component in components)
+            {
+                string componentPrefix = string.Concat("EQ_Native_", skeletonName, "_", component[1]);
+                string sourceFileNameNoExt = string.Concat(componentPrefix, "_", armorIDString);
+                if (File.Exists(Path.Combine(nativeComponentFolder, sourceFileNameNoExt + ".png")) == false)
+                    continue;
+                if (isRobe == true)
+                {
+                    nativeDisplayInfo.GeosetGroup1 = 1;
+                    nativeDisplayInfo.GeosetGroup3 = 1;
+                }
+                BuildAndCopyTexturesForArmorPart(component[0], componentPrefix, armorIDString, "U", colorPacked);
+                string textureName = string.Concat(sourceFileNameNoExt, "_C", colorPacked.ToString());
+                switch (component[2])
+                {
+                    case "1": nativeDisplayInfo.ArmorTexture1 = textureName; break;
+                    case "2": nativeDisplayInfo.ArmorTexture2 = textureName; break;
+                    case "3": nativeDisplayInfo.ArmorTexture3 = textureName; break;
+                    case "4": nativeDisplayInfo.ArmorTexture4 = textureName; break;
+                    case "5": nativeDisplayInfo.ArmorTexture5 = textureName; break;
+                    case "6": nativeDisplayInfo.ArmorTexture6 = textureName; break;
+                    case "7": nativeDisplayInfo.ArmorTexture7 = textureName; break;
+                    case "8": nativeDisplayInfo.ArmorTexture8 = textureName; break;
+                    default: break;
+                }
+            }
+            return nativeDisplayInfo;
+        }
+
         public static int GenerateUniqueItemDisplayInfoDBCID(string iconFileNameNoExt, string modelName, bool isShield,
             ItemWOWInventoryType inventoryType, int materialTypeID, Int64 colorPacked)
         {
@@ -98,6 +288,35 @@ namespace EQWOWConverter.Items
 
                 return IDGenerationTool.GenerateID("ItemDisplayInfoID", iconFileNameNoExt, modelName, isShield.ToString(), ((int)inventoryType).ToString(), materialTypeID.ToString(), colorPacked.ToString(), occurrence.ToString());
             }
+        }
+
+        public static int GetArmorIDForMaterialType(int materialTypeID)
+        {
+            int armorID = materialTypeID + 1;
+            if (materialTypeID == 7)
+                armorID = 3; // Kunark Chain => Classic Chain
+            else if (materialTypeID >= 17)
+            {
+                // Set it 1:1 for velious or higher
+                if (Configuration.GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS >= 2)
+                    armorID = materialTypeID - 11;
+                // Otherwise, remap any graphics to classic counterparts
+                else
+                {
+                    switch (materialTypeID)
+                    {
+                        case 17: armorID = 2; break; // Velious Leather => Classic Leather
+                        case 18: armorID = 3; break; // Velious Chain => Classic Chain
+                        case 19: armorID = 4; break; // Velious Plate => Classic Plate
+                        case 20: armorID = 2; break; // Velious Leather 2 => Classic Leather
+                        case 21: armorID = 3; break; // Velious Chain 2 => Classic Chain
+                        case 22: armorID = 4; break; // Velious Plate 2 => Classic Plate
+                        case 23: armorID = 5; break; // Velious Monk => Classic Monk
+                        default: armorID = 1; break; // Default to cloth
+                    }
+                }
+            }
+            return armorID;
         }
 
         private static void BuildAndCopyTexturesForArmorPart(string subfolderName, string fileNamePrefix, string armorIdentifier, string genderIdentifier, Int64 colorPacked)
@@ -138,6 +357,12 @@ namespace EQWOWConverter.Items
             }
 
             string sourceTextureFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "texturecomponents");
+
+            // Native components (a race's own EQ armor art, see ObjectModelCharacterComposite.GenerateNativeArmorComponentTextures) come
+            // from the character model generation output instead of the hand-authored assets
+            if (sourceFileNameNoExt.StartsWith("EQ_Native_") == true)
+                sourceTextureFolder = ObjectModels.ObjectModelCharacterComposite.GetNativeComponentFolder();
+
             string targetFileNameAndPathNoExt = Path.Combine(workingFolderName, targetFileNameNoExt);
 
             // Copy the texture, or generate a colored version
@@ -260,6 +485,7 @@ namespace EQWOWConverter.Items
                 newItemDisplayInfo.ArmorTexture5 = "EQ_Robe_Chest_TL_" + robeIDString + "_C" + colorPacked;
                 newItemDisplayInfo.ArmorTexture6 = "EQ_Robe_Legs_LU_" + robeIDString + "_C" + colorPacked;
                 newItemDisplayInfo.ArmorTexture7 = "EQ_Robe_Legs_LL_" + robeIDString + "_C" + colorPacked;
+                CreateNativeVariants(newItemDisplayInfo, inventoryType, NATIVE_ROBE_ARMOR_ID_BASE + robeID, colorPacked);
             }
             // Arrows will reuse a WOW model
             else if (inventoryType == ItemWOWInventoryType.Ammo)
@@ -289,30 +515,7 @@ namespace EQWOWConverter.Items
                 if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
                     return newItemDisplayInfo;
 
-                int armorID = materialTypeID + 1;
-                if (materialTypeID == 7)
-                    armorID = 3; // Kunark Chain => Classic Chain
-                else if (materialTypeID >= 17)
-                {
-                    // Set it 1:1 for velious or higher
-                    if (Configuration.GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS >= 2)
-                        armorID = materialTypeID - 11;
-                    // Otherwise, remap any graphics to classic counterparts
-                    else
-                    {
-                        switch (materialTypeID)
-                        {
-                            case 17: armorID = 2; break; // Velious Leather => Classic Leather
-                            case 18: armorID = 3; break; // Velious Chain => Classic Chain
-                            case 19: armorID = 4; break; // Velious Plate => Classic Plate
-                            case 20: armorID = 2; break; // Velious Leather 2 => Classic Leather
-                            case 21: armorID = 3; break; // Velious Chain 2 => Classic Chain
-                            case 22: armorID = 4; break; // Velious Plate 2 => Classic Plate
-                            case 23: armorID = 5; break; // Velious Monk => Classic Monk
-                            default: armorID = 1; break; // Default to cloth
-                        }
-                    }
-                }
+                int armorID = GetArmorIDForMaterialType(materialTypeID);
                 string armorIDString;
                 if (armorID < 10)
                     armorIDString = "0" + armorID.ToString();
@@ -377,6 +580,7 @@ namespace EQWOWConverter.Items
                             Logger.WriteError("Unable to set DisplayInfo for equipment with name '" + itemDisplayNameWithEQ + "' due to unhandled inventory type of '" + inventoryType.ToString() + "'");
                         } break;
                 }
+                CreateNativeVariants(newItemDisplayInfo, inventoryType, armorID, colorPacked);
             }
 
             return newItemDisplayInfo;

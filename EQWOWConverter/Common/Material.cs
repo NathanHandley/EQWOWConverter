@@ -30,6 +30,8 @@ namespace EQWOWConverter.Common
         public bool IsParticleEffect = false;
         public bool IsTwoSided = false;
         public int TransparencyPercentOverride = -1;
+        public float TileSeamPhaseU = 0f;
+        public float TileSeamPhaseV = 0f;
 
         public Material() { }
 
@@ -47,6 +49,8 @@ namespace EQWOWConverter.Common
             AlwaysBrightOverride = material.AlwaysBrightOverride;
             IsTwoSided = material.IsTwoSided;
             TransparencyPercentOverride = material.TransparencyPercentOverride;
+            TileSeamPhaseU = material.TileSeamPhaseU;
+            TileSeamPhaseV = material.TileSeamPhaseV;
         }
 
         public Material(string name, string originalName, UInt32 index, MaterialType materialType, List<string> textureNames, 

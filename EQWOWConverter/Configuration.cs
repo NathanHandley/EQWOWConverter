@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 113;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 114;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -104,7 +104,7 @@ namespace EQWOWConverter
         public static string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
 
         // Client files must match this between the server and the client, separate from "CONFIGONLY_CORE_MOD_VERSION"
-        public static int DEPLOY_CLIENT_DATA_VERSION = 13;
+        public static int DEPLOY_CLIENT_DATA_VERSION = 14;
         public static string DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE = "Your EverQuest client data is out of date. Please run the launcher to update, then log back in.";
 
         // ====================================================================
@@ -524,11 +524,13 @@ namespace EQWOWConverter
         // NPCs with an EQ level above this are immune to fear (EQ/TAKP like), note that it uses the original EQ min level for this to match live-like behavior
         public static int CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ = 52;
 
-        // How many colors are in the illusion chest tint palette, larger numbers mean larger builds but more color representation
-        public static int CREATURE_ILLUSION_TINT_PALETTE_SIZE = 12;
 
         // How high up from the ground the eye height is as a baseline in illusion spells
         public static float CREATURE_ILLUSION_EYE_HEIGHT_BASELINE = 2.031f;
+
+        // Generated size of the illusion character textures (base skin, face textures and worn armor components) as a multiple of the client's 256x256 composite layout
+        // 1 = the stock 256x256 composite space.  The 3.3.5 client composites player textures at 256x256, so anything larger is downsampled (blurred) on the client
+        public static int GENERATE_ILLUSION_CHARACTER_TEXTURE_SCALE = 1;
 
         // Creature respawn rates
         public static int CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC = 259200;
@@ -1658,13 +1660,22 @@ namespace EQWOWConverter
         // Generated block inside the AreaTrigger range, used for the copies of zone lines that live on raid instance maps
         public static int DBCID_AREATRIGGER_ID_GENERATED_START = 9000;
 
+        // IDs for CharHairGeosets.dbc rows added for the illusion character models (stock rows end around 500)
+        public static int DBCID_CHARHAIRGEOSETS_ID_START = 5000;
+
+        // IDs for ChrRaces.dbc, one per CanShowEquipInIllusion race (stock rows end at 22)
+        public static int DBCID_CHRRACES_ID_START = 100;
+
+        // IDs for CharSections.dbc rows added for the illusion character models (stock rows end around 14100)
+        public static int DBCID_CHARSECTIONS_ID_START = 100000;
+
         // IDs for CreatureDisplayInfo.dbc
         public static int DBCID_CREATUREDISPLAYINFO_ID_START = 34000;
         public static int DBCID_CREATUREDISPLAYINFO_ID_END = 80000;
 
         // IDs for CreatureDisplayInfoExtra.dbc
         public static int DBCID_CREATUREDISPLAYINFOEXTRA_ID_START = 23000;
-        public static int DBCID_CREATUREDISPLAYINFOEXTRA_ID_END = 23010;
+        public static int DBCID_CREATUREDISPLAYINFOEXTRA_ID_END = 60000;
 
         // IDs for CreatureModelData.dbc
         public static int DBCID_CREATUREMODELDATA_ID_START = 3500;
@@ -1965,6 +1976,7 @@ namespace EQWOWConverter
             generatedPatchFileNames.Add(string.Concat("patch-", PATCH_CLIENT_DATA_ID, ".mpq").ToLower());
             generatedPatchFileNames.Add(string.Concat("patch-", PATCH_LOCALIZATION_STRING, "-", PATCH_CLIENT_DATA_LOC_ID, ".mpq").ToLower());
             generatedPatchFileNames.Add(string.Concat("patch-", PATCH_LOCALIZATION_STRING, "-", CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID, ".mpq").ToLower());
+            generatedPatchFileNames.Add(string.Concat("patch-", PATCH_LOCALIZATION_STRING, "-9.mpq").ToLower()); // Been testing with -9 patch, so can be removed
             return generatedPatchFileNames;
         }
 
@@ -2278,7 +2290,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_FIDGET_CHANCE_PERCENT", CREATURE_FIDGET_CHANCE_PERCENT, "Percent chance (0-100) that a fidget animation plays after each completed calm stand cycle");
             OutputVariableToConfig("CREATURE_FIDGET_STAND_TIME_IN_MS", CREATURE_FIDGET_STAND_TIME_IN_MS, "How long (in ms) the calm standing animation plays before each fidget chance roll");
             OutputVariableToConfig("CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ", CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ, "NPCs with an EQ level above this are immune to fear (EQ/TAKP like), note that it uses the original EQ min level for this to match live-like behavior");
-            OutputVariableToConfig("CREATURE_ILLUSION_TINT_PALETTE_SIZE", CREATURE_ILLUSION_TINT_PALETTE_SIZE, "How many colors are in the illusion chest tint palette, larger numbers mean larger builds but more color representation");
             OutputVariableToConfig("CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC", CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC, "Creature respawn rates", false);
             OutputVariableToConfig("CREATURE_RAID_BOSS_VARIANCE_IN_SEC", CREATURE_RAID_BOSS_VARIANCE_IN_SEC, "", false);
             OutputVariableToConfig("CREATURE_RAID_MINI_BOSS_RESPAWN_CENTER_IN_SEC", CREATURE_RAID_MINI_BOSS_RESPAWN_CENTER_IN_SEC, "", false);
@@ -3082,7 +3093,6 @@ namespace EQWOWConverter
             CREATURE_FIDGET_STAND_TIME_IN_MS = ReadVariableFromConfigString("CREATURE_FIDGET_STAND_TIME_IN_MS", configValuesByVariableName, CREATURE_FIDGET_STAND_TIME_IN_MS);
 
             CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ = ReadVariableFromConfigString("CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ", configValuesByVariableName, CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ);
-            CREATURE_ILLUSION_TINT_PALETTE_SIZE = ReadVariableFromConfigString("CREATURE_ILLUSION_TINT_PALETTE_SIZE", configValuesByVariableName, CREATURE_ILLUSION_TINT_PALETTE_SIZE);
             CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC = ReadVariableFromConfigString("CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC", configValuesByVariableName, CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC);
             CREATURE_RAID_BOSS_VARIANCE_IN_SEC = ReadVariableFromConfigString("CREATURE_RAID_BOSS_VARIANCE_IN_SEC", configValuesByVariableName, CREATURE_RAID_BOSS_VARIANCE_IN_SEC);
             CREATURE_RAID_MINI_BOSS_RESPAWN_CENTER_IN_SEC = ReadVariableFromConfigString("CREATURE_RAID_MINI_BOSS_RESPAWN_CENTER_IN_SEC", configValuesByVariableName, CREATURE_RAID_MINI_BOSS_RESPAWN_CENTER_IN_SEC);

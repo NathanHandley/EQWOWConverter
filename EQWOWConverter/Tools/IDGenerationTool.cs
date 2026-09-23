@@ -74,6 +74,7 @@ namespace EQWOWConverter
                 Configuration.DBCID_AREATABLE_AREABIT_BLOCK_2_START, Configuration.DBCID_AREATABLE_AREABIT_BLOCK_2_END,
                 Configuration.DBCID_AREATABLE_AREABIT_BLOCK_3_START, Configuration.DBCID_AREATABLE_AREABIT_BLOCK_3_END);
             Initialize("CreatureDisplayInfoID", Configuration.DBCID_CREATUREDISPLAYINFO_ID_START, Configuration.DBCID_CREATUREDISPLAYINFO_ID_END);
+            Initialize("CreatureDisplayInfoExtraID", Configuration.DBCID_CREATUREDISPLAYINFOEXTRA_ID_START, Configuration.DBCID_CREATUREDISPLAYINFOEXTRA_ID_END);
             Initialize("CreatureFootstepID", Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START, int.MaxValue);
             Initialize("CreatureModelDataID", Configuration.DBCID_CREATUREMODELDATA_ID_START, int.MaxValue);
             Initialize("CreatureSoundDataID", Configuration.DBCID_CREATURESOUNDDATA_ID_START, int.MaxValue);

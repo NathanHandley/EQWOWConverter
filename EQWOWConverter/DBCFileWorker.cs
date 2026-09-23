@@ -43,7 +43,11 @@ namespace EQWOWConverter
         private AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
         private AuctionHouseDBC auctionHouseDBC = new AuctionHouseDBC();
         private CharBaseInfoDBC charBaseInfoDBC = new CharBaseInfoDBC();
+        private CharacterFacialHairStylesDBC characterFacialHairStylesDBC = new CharacterFacialHairStylesDBC();
+        private CharHairGeosetsDBC charHairGeosetsDBC = new CharHairGeosetsDBC();
+        private CharSectionsDBC charSectionsDBC = new CharSectionsDBC();
         private CharStartOutfitDBC charStartOutfitDBC = new CharStartOutfitDBC();
+        private ChrRacesDBC chrRacesDBC = new ChrRacesDBC();
         private CreatureDisplayInfoDBC creatureDisplayInfoDBC = new CreatureDisplayInfoDBC();
         private CreatureFamilyDBC creatureFamilyDBC = new CreatureFamilyDBC();
         private CreatureDisplayInfoExtraDBC creatureDisplayInfoExtraDBC = new CreatureDisplayInfoExtraDBC();
@@ -285,7 +289,11 @@ namespace EQWOWConverter
             areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
             auctionHouseDBC.LoadFromDisk(dbcInputFolder, "AuctionHouse.dbc");
             charBaseInfoDBC.LoadFromDisk(dbcInputFolder, "CharBaseInfo.dbc");
+            characterFacialHairStylesDBC.LoadFromDisk(dbcInputFolder, "CharacterFacialHairStyles.dbc");
+            charHairGeosetsDBC.LoadFromDisk(dbcInputFolder, "CharHairGeosets.dbc");
+            charSectionsDBC.LoadFromDisk(dbcInputFolder, "CharSections.dbc");
             charStartOutfitDBC.LoadFromDisk(dbcInputFolder, "CharStartOutfit.dbc");
+            chrRacesDBC.LoadFromDisk(dbcInputFolder, "ChrRaces.dbc");
             creatureDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfo.dbc");
             creatureDisplayInfoExtraDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfoExtra.dbc");
             creatureFamilyDBC.LoadFromDisk(dbcInputFolder, "CreatureFamily.dbc");
@@ -438,26 +446,53 @@ namespace EQWOWConverter
             // Creatures
             Dictionary<string, int> creatureFootstepIDBySoundNames = new Dictionary<string, int>();
             int curCreatureFootstepID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START;
+            HashSet<int> addedCreatureDisplayInfoExtraIDs = new HashSet<int>();
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
             {
-                // Illusion versiont models have replaceable face textures
-                string textureVariation1;
-                string textureVariation2;
-                string textureVariation3;
-                GetCreatureTextureVariations(creatureModelTemplate.FaceHeadPieceTextureNames, out textureVariation1, out textureVariation2, out textureVariation3);
-                creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCCreatureDisplayID, creatureModelTemplate.DBCCreatureModelDataID,
-                    creatureModelTemplate.GetDBCDisplayScale(), textureVariation1, textureVariation2, textureVariation3);
-
-                // Selectable illusion face displays share the model of the base display, swapping in the per-face textures
-                foreach (var faceDisplayIDByFaceIndex in creatureModelTemplate.IllusionFaceDisplayIDsByFaceIndex)
-                {
-                    GetCreatureTextureVariations(creatureModelTemplate.IllusionFaceTextureVariationsByFaceIndex[faceDisplayIDByFaceIndex.Key],
-                        out textureVariation1, out textureVariation2, out textureVariation3);
-                    creatureDisplayInfoDBC.AddRow(faceDisplayIDByFaceIndex.Value, creatureModelTemplate.DBCCreatureModelDataID,
-                        creatureModelTemplate.GetDBCDisplayScale(), textureVariation1, textureVariation2, textureVariation3);
-                }
-
                 string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
+
+                // Looks of a race with a player character model render that model with a baked skin through a CreatureDisplayInfoExtra row (shared by every display with the same look)
+                int extendedDisplayInfoID = 0;
+                if (creatureModelTemplate.IsCharacterBasedVersion == true && creatureModelTemplate.CharacterBaseModelTemplate != null)
+                {
+                    relativeModelPath = "Character\\" + CreatureIllusionCharacterRegistry.GetClientFileStringForRace(creatureModelTemplate.Race) + "\\" +
+                        CreatureIllusionCharacterRegistry.GetGenderFolderName(creatureModelTemplate.CharacterBaseModelTemplate.GenderType) + "\\" + creatureModelTemplate.CharacterBaseModelTemplate.GenerateFileName() + ".mdx";
+                    extendedDisplayInfoID = creatureModelTemplate.DBCCreatureDisplayInfoExtraID;
+                    if (extendedDisplayInfoID != 0 && addedCreatureDisplayInfoExtraIDs.Contains(extendedDisplayInfoID) == false)
+                    {
+                        addedCreatureDisplayInfoExtraIDs.Add(extendedDisplayInfoID);
+                        CreatureGenderType characterGenderType = (creatureModelTemplate.GenderType == CreatureGenderType.Female) ? CreatureGenderType.Female : CreatureGenderType.Male;
+                        CreatureIllusionCharacterRegistry.IllusionCharacterEntry? characterEntry = CreatureIllusionCharacterRegistry.GetEntry(creatureModelTemplate.Race.ID, characterGenderType);
+                        if (characterEntry != null)
+                        {
+                            int faceID = characterEntry.ValidFaceIndexes.Contains(creatureModelTemplate.FaceIndex) ? creatureModelTemplate.FaceIndex : 0;
+                            int sexID = (creatureModelTemplate.GenderType == CreatureGenderType.Female) ? 1 : 0;
+
+                            // Item displays for the look's texture set carry the geosets (the robe) and, should the client compose instead of using the bake, the untinted armor art.  Robes are keyed above the armor sets
+                            string skeletonName = creatureModelTemplate.Race.SkeletonName;
+                            int chestDisplayID = 0;
+                            int legsDisplayID = 0;
+                            int bootsDisplayID = 0;
+                            int wristDisplayID = 0;
+                            int glovesDisplayID = 0;
+                            if (creatureModelTemplate.TextureIndex >= 10 && creatureModelTemplate.TextureIndex <= 16)
+                                chestDisplayID = ItemDisplayInfo.GetNativeDisplayInfoID(skeletonName, ItemWOWInventoryType.Chest, ItemDisplayInfo.NATIVE_ROBE_ARMOR_ID_BASE + (creatureModelTemplate.TextureIndex - 9), 0);
+                            else
+                            {
+                                int armorID = ItemDisplayInfo.GetArmorIDForMaterialType(creatureModelTemplate.TextureIndex);
+                                chestDisplayID = ItemDisplayInfo.GetNativeDisplayInfoID(skeletonName, ItemWOWInventoryType.Chest, armorID, 0);
+                                legsDisplayID = ItemDisplayInfo.GetNativeDisplayInfoID(skeletonName, ItemWOWInventoryType.Legs, armorID, 0);
+                                bootsDisplayID = ItemDisplayInfo.GetNativeDisplayInfoID(skeletonName, ItemWOWInventoryType.Feet, armorID, 0);
+                                wristDisplayID = ItemDisplayInfo.GetNativeDisplayInfoID(skeletonName, ItemWOWInventoryType.Wrists, armorID, 0);
+                                glovesDisplayID = ItemDisplayInfo.GetNativeDisplayInfoID(skeletonName, ItemWOWInventoryType.Hands, armorID, 0);
+                            }
+                            creatureDisplayInfoExtraDBC.AddRow(extendedDisplayInfoID, characterEntry.ChrRacesID, sexID, 0, faceID, creatureModelTemplate.HelmTextureIndex, creatureModelTemplate.CharacterHelmTintIndex, 0,
+                                chestDisplayID, legsDisplayID, bootsDisplayID, wristDisplayID, glovesDisplayID, creatureModelTemplate.CreatureSkinBakeName);
+                        }
+                    }
+                }
+                creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCCreatureDisplayID, creatureModelTemplate.DBCCreatureModelDataID,
+                    creatureModelTemplate.GetDBCDisplayScale(), string.Empty, string.Empty, string.Empty, extendedDisplayInfoID);
 
                 // Races that render as a zone object (Minor Illusion, Tree) never build a creature model of their own, so their display points straight at the static doodad
                 if (creatureModelTemplate.Race.IllusionObjectModelName.Length > 0)
@@ -468,14 +503,19 @@ namespace EQWOWConverter
                     else
                         Logger.WriteError("Creature race ", creatureModelTemplate.Race.Name, " has an IllusionObjectModel of ", creatureModelTemplate.Race.IllusionObjectModelName, " but no static object model with that name was generated");
                 }
+
+                // Player character (dressable illusion) models live in the character folder tree so the client dresses them like player models
+                if (creatureModelTemplate.IsPlayerCharacterVersion == true)
+                    relativeModelPath = "Character\\" + CreatureIllusionCharacterRegistry.GetClientFileStringForRace(creatureModelTemplate.Race) + "\\" +
+                        CreatureIllusionCharacterRegistry.GetGenderFolderName(creatureModelTemplate.GenderType) + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
                 creatureModelDataDBC.AddRow(creatureModelTemplate, relativeModelPath, creatureModelTemplate.DBCCreatureModelDataID, creatureModelTemplate.DBCCreatureSoundDataID);
                 if (creatureModelTemplate.Race.SoundWalkingName.Trim().Length > 0 && creatureModelTemplate.IsCompanionPetVersion == false)
                 {
-                    // For illusion versions, use the stock walking sound
+                    // Player character (dressable illusion) versions use the stock walking sound
                     int creatureFootstepID = CreatureRace.FootstepIDBySoundName[creatureModelTemplate.Race.SoundWalkingName];
-                    if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true && creatureModelTemplate.FaceIndex == CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX)
+                    if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true && creatureModelTemplate.IsPlayerCharacterVersion == true)
                         creatureFootstepID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_DEFAULT;
-                    
+
                     // Player illusion forms and summoned pets stay quiet while idle, so they get no fidget sounds
                     creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, creatureModelTemplate.Race, creatureFootstepID, creatureModelTemplate.DoPlayFidgetSounds());
 
@@ -484,12 +524,8 @@ namespace EQWOWConverter
                     {
                         creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCSilentTamedPetCreatureSoundDataID, creatureModelTemplate.Race, creatureFootstepID, false);
                         creatureModelDataDBC.AddRow(creatureModelTemplate, relativeModelPath, creatureModelTemplate.DBCSilentTamedPetCreatureModelDataID, creatureModelTemplate.DBCSilentTamedPetCreatureSoundDataID);
-                        string silentTextureVariation1;
-                        string silentTextureVariation2;
-                        string silentTextureVariation3;
-                        GetCreatureTextureVariations(creatureModelTemplate.FaceHeadPieceTextureNames, out silentTextureVariation1, out silentTextureVariation2, out silentTextureVariation3);
                         creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCSilentTamedPetCreatureDisplayID, creatureModelTemplate.DBCSilentTamedPetCreatureModelDataID,
-                            creatureModelTemplate.GetDBCDisplayScale(), silentTextureVariation1, silentTextureVariation2, silentTextureVariation3);
+                            creatureModelTemplate.GetDBCDisplayScale(), string.Empty, string.Empty, string.Empty);
                     }
                 }
             }
@@ -516,6 +552,106 @@ namespace EQWOWConverter
                     illusionObjectModel.InteractionBoundingBox);
             }
 
+            // Player character (dressable illusion) models have a second display per model for the mirror-data refresh flip, plus the ChrRaces rows and the CharSections rows carrying the baked base skin and per-face head textures
+            List<CreatureIllusionCharacterRegistry.IllusionCharacterEntry> illusionCharacterEntries = CreatureIllusionCharacterRegistry.GetEntries();
+
+            // ChrRaces rows are per race, using the male and female model display IDs
+            Dictionary<int, int> maleDisplayIDsByRaceID = new Dictionary<int, int>();
+            Dictionary<int, int> femaleDisplayIDsByRaceID = new Dictionary<int, int>();
+            Dictionary<int, CreatureIllusionCharacterRegistry.IllusionCharacterEntry> raceEntryByChrRacesID = new Dictionary<int, CreatureIllusionCharacterRegistry.IllusionCharacterEntry>();
+            foreach (CreatureIllusionCharacterRegistry.IllusionCharacterEntry entry in illusionCharacterEntries)
+            {
+                if (entry.ModelTemplate == null)
+                    continue;
+                if (entry.GenderType == CreatureGenderType.Female)
+                    femaleDisplayIDsByRaceID[entry.Race.ID] = entry.ModelTemplate.DBCCreatureDisplayID;
+                else
+                    maleDisplayIDsByRaceID[entry.Race.ID] = entry.ModelTemplate.DBCCreatureDisplayID;
+                if (raceEntryByChrRacesID.ContainsKey(entry.ChrRacesID) == false)
+                    raceEntryByChrRacesID.Add(entry.ChrRacesID, entry);
+            }
+            foreach (var raceEntryByID in raceEntryByChrRacesID)
+            {
+                CreatureIllusionCharacterRegistry.IllusionCharacterEntry raceEntry = raceEntryByID.Value;
+                int maleDisplayID = 0;
+                int femaleDisplayID = 0;
+                if (maleDisplayIDsByRaceID.ContainsKey(raceEntry.Race.ID) == true)
+                    maleDisplayID = maleDisplayIDsByRaceID[raceEntry.Race.ID];
+                if (femaleDisplayIDsByRaceID.ContainsKey(raceEntry.Race.ID) == true)
+                    femaleDisplayID = femaleDisplayIDsByRaceID[raceEntry.Race.ID];
+                chrRacesDBC.AddRowClonedFromHuman(raceEntryByID.Key, string.Concat("EQ ", raceEntry.Race.Name),
+                    CreatureIllusionCharacterRegistry.GetClientFileStringForRace(raceEntry.Race), maleDisplayID, femaleDisplayID);
+            }
+
+            // Per race+gender the alt display (same model file, different model data row) and the CharSections rows
+            for (int entryIndex = 0; entryIndex < illusionCharacterEntries.Count; entryIndex++)
+            {
+                CreatureIllusionCharacterRegistry.IllusionCharacterEntry entry = illusionCharacterEntries[entryIndex];
+                if (entry.ModelTemplate == null)
+                    continue;
+                CreatureModelTemplate modelTemplate = entry.ModelTemplate;
+                string relativeModelPath = "Character\\" + CreatureIllusionCharacterRegistry.GetClientFileStringForRace(entry.Race) + "\\" +
+                    CreatureIllusionCharacterRegistry.GetGenderFolderName(entry.GenderType) + "\\" + modelTemplate.GenerateFileName() + ".mdx";
+                creatureModelDataDBC.AddRow(modelTemplate, relativeModelPath, entry.AltCreatureModelDataID, modelTemplate.DBCCreatureSoundDataID);
+                creatureDisplayInfoDBC.AddRow(entry.AltCreatureDisplayID, entry.AltCreatureModelDataID, modelTemplate.GetDBCDisplayScale(), string.Empty, string.Empty, string.Empty);
+
+                // Hair style and facial hair rows for every selectable byte value.  Without these the client aborts its character customization setup (including the CharSections face blit that carries the EQ head),
+                // rendering the head untextured. The hair styles select the head geoset and style 0 is the bare EQ head, styles 1-3 the helmed heads (NPC displays and worn helms pick them), and every other style falls back to the bare head
+                for (int variationIndex = 0; variationIndex <= 19; variationIndex++)
+                {
+                    int hairGeosetID = Configuration.DBCID_CHARHAIRGEOSETS_ID_START + (entryIndex * 20) + variationIndex;
+                    int headGeosetID = Convert.ToInt32(ObjectModelCharacterComposite.HEAD_GEOSET_ID);
+                    if (variationIndex >= 1 && variationIndex <= 3)
+                        headGeosetID += variationIndex;
+                    charHairGeosetsDBC.AddRow(hairGeosetID, entry.ChrRacesID, Convert.ToInt32(entry.GenderType), variationIndex, headGeosetID);
+                    characterFacialHairStylesDBC.AddRow(entry.ChrRacesID, Convert.ToInt32(entry.GenderType), variationIndex);
+                }
+
+                // CharSections
+                int sexID = 0;
+                if (entry.GenderType == CreatureGenderType.Female)
+                    sexID = 1;
+                // Sections that should not draw anything (underwear, facial hair, hair) use EMPTY texture name
+                int entryIDBase = Configuration.DBCID_CHARSECTIONS_ID_START + (entryIndex * 2000);
+                for (int colorIndex = 0; colorIndex <= 9; colorIndex++)
+                {
+                    int baseSkinSectionID = entryIDBase + (CharSectionsDBC.SECTION_BASE_SKIN * 400) + colorIndex;
+                    charSectionsDBC.AddRow(baseSkinSectionID, raceID: entry.ChrRacesID, sexID: sexID, baseSection: CharSectionsDBC.SECTION_BASE_SKIN,
+                        texture1: entry.BodyTextureRelativePath, texture2: string.Empty, texture3: string.Empty, variationIndex: 0, colorIndex: colorIndex);
+                    int underwearSectionID = entryIDBase + (CharSectionsDBC.SECTION_UNDERWEAR * 400) + colorIndex;
+                    charSectionsDBC.AddRow(underwearSectionID, raceID: entry.ChrRacesID, sexID: sexID, baseSection: CharSectionsDBC.SECTION_UNDERWEAR,
+                        texture1: string.Empty, texture2: string.Empty, texture3: string.Empty, variationIndex: 0, colorIndex: colorIndex);
+                    // Face rows carry the EQ head textures (the mod sends the EQ face selection in the face byte)
+                    for (int variationIndex = 0; variationIndex <= 19; variationIndex++)
+                    {
+                        int faceIndexToUse = 0;
+                        if (entry.ValidFaceIndexes.Contains(variationIndex) == true)
+                            faceIndexToUse = variationIndex;
+                        int faceSectionID = entryIDBase + (CharSectionsDBC.SECTION_FACE * 400) + (variationIndex * 20) + colorIndex;
+                        charSectionsDBC.AddRow(faceSectionID, raceID: entry.ChrRacesID, sexID: sexID, baseSection: CharSectionsDBC.SECTION_FACE,
+                            texture1: entry.GetFaceLowerTextureRelativePath(faceIndexToUse), texture2: entry.GetFaceUpperTextureRelativePath(faceIndexToUse),
+                            texture3: string.Empty, variationIndex: variationIndex, colorIndex: colorIndex);
+                    }
+                    for (int variationIndex = 0; variationIndex <= 19; variationIndex++)
+                    {
+                        int facialHairSectionID = entryIDBase + (CharSectionsDBC.SECTION_FACIAL_HAIR * 400) + (variationIndex * 20) + colorIndex;
+                        charSectionsDBC.AddRow(facialHairSectionID, raceID: entry.ChrRacesID, sexID: sexID, baseSection: CharSectionsDBC.SECTION_FACIAL_HAIR,
+                            texture1: string.Empty, texture2: string.Empty, texture3: string.Empty, variationIndex: variationIndex, colorIndex: colorIndex);
+                    }
+
+                    // Hair rows styles 1-3 are the helmed heads, whose hair texture (texture1, applied to the head geoset) is that head's helm texture, tinted per
+                    // hair color for the NPC helm colors; every other style draws nothing (the bare EQ head rides the face rows)
+                    for (int variationIndex = 0; variationIndex <= 19; variationIndex++)
+                    {
+                        int hairSectionID = entryIDBase + (CharSectionsDBC.SECTION_HAIR * 400) + (variationIndex * 20) + colorIndex;
+                        string hairTexture = string.Empty;
+                        if (variationIndex >= 1 && variationIndex <= 3 && entry.HelmVariantIndexes.Contains(variationIndex) == true)
+                            hairTexture = entry.GetHelmTextureRelativePath(variationIndex, colorIndex <= entry.HelmTintCount ? colorIndex : 0);
+                        charSectionsDBC.AddRow(hairSectionID, raceID: entry.ChrRacesID, sexID: sexID, baseSection: CharSectionsDBC.SECTION_HAIR,
+                            texture1: hairTexture, texture2: string.Empty, texture3: string.Empty, variationIndex: variationIndex, colorIndex: colorIndex);
+                    }
+                }
+            }
             string creatureSoundsDirectory = "Sound\\Creature\\Everquest";
             foreach (var soundByName in CreatureRace.SoundsBySoundNameAndDistance)
                 foreach (var soundByDistance in soundByName.Value)
@@ -1249,6 +1385,14 @@ namespace EQWOWConverter
             charBaseInfoDBC.SaveToDisk(dbcOutputServerFolder); // May not be needed on the server...
             charStartOutfitDBC.SaveToDisk(dbcOutputClientFolder);
             charStartOutfitDBC.SaveToDisk(dbcOutputServerFolder);
+            characterFacialHairStylesDBC.SaveToDisk(dbcOutputClientFolder);
+            characterFacialHairStylesDBC.SaveToDisk(dbcOutputServerFolder);
+            charHairGeosetsDBC.SaveToDisk(dbcOutputClientFolder);
+            charHairGeosetsDBC.SaveToDisk(dbcOutputServerFolder);
+            charSectionsDBC.SaveToDisk(dbcOutputClientFolder);
+            charSectionsDBC.SaveToDisk(dbcOutputServerFolder);
+            chrRacesDBC.SaveToDisk(dbcOutputClientFolder);
+            chrRacesDBC.SaveToDisk(dbcOutputServerFolder);
             creatureDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
             creatureDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
             creatureDisplayInfoExtraDBC.SaveToDisk(dbcOutputClientFolder);
@@ -1616,20 +1760,6 @@ namespace EQWOWConverter
         private static string GetStaticDoodadRelativeModelPath(string objectModelName)
         {
             return string.Concat("World\\Everquest\\StaticDoodads\\", objectModelName, "\\", objectModelName, ".mdx");
-        }
-
-        private static void GetCreatureTextureVariations(List<string> textureNames, out string textureVariation1,
-            out string textureVariation2, out string textureVariation3)
-        {
-            textureVariation1 = string.Empty;
-            textureVariation2 = string.Empty;
-            textureVariation3 = string.Empty;
-            if (textureNames.Count >= 1)
-                textureVariation1 = textureNames[0];
-            if (textureNames.Count >= 2)
-                textureVariation2 = textureNames[1];
-            if (textureNames.Count >= 3)
-                textureVariation3 = textureNames[2];
         }
 
         private static int GetDungeonFinderGroupIDForExpansionID(int expansionID)

@@ -99,8 +99,9 @@ namespace EQWOWConverter
         private ModEverquestCreatureWaypointSQL modEverquestCreatureWaypointSQL = new ModEverquestCreatureWaypointSQL();
         private ModEverquestFactionSQL modEverquestFactionSQL = new ModEverquestFactionSQL();
         private ModEverquestForageZoneItemsSQL modEverquestForageZoneItemsSQL = new ModEverquestForageZoneItemsSQL();
-        private ModEverquestIllusionDisplaySQL modEverquestIllusionDisplaySQL = new ModEverquestIllusionDisplaySQL();
-        private ModEverquestIllusionFaceSQL modEverquestIllusionFaceSQL = new ModEverquestIllusionFaceSQL();
+        private ModEverquestIllusionCharacterSQL modEverquestIllusionCharacterSQL = new ModEverquestIllusionCharacterSQL();
+        private ModEverquestIllusionItemDisplaySQL modEverquestIllusionItemDisplaySQL = new ModEverquestIllusionItemDisplaySQL();
+        private ModEverquestIllusionGenericItemDisplaySQL modEverquestIllusionGenericItemDisplaySQL = new ModEverquestIllusionGenericItemDisplaySQL();
         private ModEverquestIllusionObjectSQL modEverquestIllusionObjectSQL = new ModEverquestIllusionObjectSQL();
         private ModEverquestItemTemplateSQL modEverquestItemTemplateSQL = new ModEverquestItemTemplateSQL();
         private ModEverquestItemWoWToEQSwapSQL modEverquestItemWoWToEQSwapSQL = new ModEverquestItemWoWToEQSwapSQL();
@@ -224,7 +225,9 @@ namespace EQWOWConverter
             PopulateItemWoWToEQSwapData();
 
             // Illusion appearance displays
-            PopulateIllusionDisplayData(creatureModelTemplates);
+            PopulateIllusionObjectData();
+            PopulateIllusionCharacterData();
+            PopulateIllusionItemDisplayData();
 
             // Forage
             PopulateForageData();
@@ -1369,9 +1372,8 @@ namespace EQWOWConverter
             {
                 creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
 
-                // When playing walk/run sounds through the mod (and not an illusion form or a silent companion pet), need to send the data to the server
-                if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true && creatureModelTemplate.FaceIndex != CreatureModelTemplate.ILLUSION_REPLACEABLE_FACE_INDEX
-                    && creatureModelTemplate.IsCompanionPetVersion == false)
+                // When playing walk/run sounds through the mod (and not a silent companion pet), need to send the data to the server
+                if (Configuration.AUDIO_CREATURE_MOVEMENT_SOUNDS_FROM_MOD_ENABLED == true && creatureModelTemplate.IsCompanionPetVersion == false)
                 {
                     AddCreatureMovementSoundRowIfNeeded(creatureModelTemplate, creatureModelTemplate.DBCCreatureDisplayID);
                 }
@@ -1839,12 +1841,8 @@ namespace EQWOWConverter
 
                 // Save any additional metadata
                 int creatureWornEffectSpellID = itemTemplate.GetCreatureGrantableWornEffectSpellID(spellTemplatesByEQID);
-                int illusionBodySet = CreatureIllusionTintPalette.GetBodySetForEQArmorMaterialType(itemTemplate.EQArmorMaterialType);
-                if (illusionBodySet < 0)
-                    illusionBodySet = 0;
-                int illusionTintID = CreatureIllusionTintPalette.GetTintIDForColorPacked(itemTemplate.ColorPacked);
                 modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryID, creatureWornEffectSpellID, itemTemplate.AllowedClassTypesEQ,
-                    illusionBodySet, illusionTintID, itemTemplate.IsNeverLootStack);
+                    itemTemplate.IsNeverLootStack);
 
                 // Associate spells if it's a learnable item
                 if (itemTemplate.DoesTeachSpell == true && itemTemplate.EQScrollSpellID != 0)
@@ -1889,7 +1887,7 @@ namespace EQWOWConverter
                             if (addedLearnScrollItemIDs.Contains(scrollPropertiesByClassType.Value.WOWItemTemplateID) == false)
                             {
                                 modEverquestItemTemplateSQL.AddRow(scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollPropertiesByClassType.Value.WOWItemTemplateID,
-                                    creatureWornEffectSpellID, new List<ClassEQType>() { scrollPropertiesByClassType.Key }, illusionBodySet, illusionTintID, itemTemplate.IsNeverLootStack);
+                                    creatureWornEffectSpellID, new List<ClassEQType>() { scrollPropertiesByClassType.Key }, itemTemplate.IsNeverLootStack);
                                 addedLearnScrollItemIDs.Add(scrollPropertiesByClassType.Value.WOWItemTemplateID);
                             }
                         }
@@ -1980,33 +1978,8 @@ namespace EQWOWConverter
             pieceSoundDurationsMS = soundDurationsSB.ToString();
         }
 
-        private void PopulateIllusionDisplayData(List<CreatureModelTemplate> creatureModelTemplates)
+        private void PopulateIllusionObjectData()
         {
-            // These rows are generated during creature model file generation, so that must run before this
-            List<CreatureIllusionDisplayRow> displayRows = CreatureIllusionVersionRegistry.GetDisplayRows();
-
-            // Keep only unique primary key
-            HashSet<string> addedRowKeys = new HashSet<string>();
-            foreach (CreatureIllusionDisplayRow displayRow in displayRows)
-            {
-                string rowKey = string.Concat(displayRow.FormSpellID, "|", displayRow.BodySet, "|", displayRow.TintID, "|", displayRow.HelmOn);
-                if (addedRowKeys.Contains(rowKey) == true)
-                    continue;
-                addedRowKeys.Add(rowKey);
-                modEverquestIllusionDisplaySQL.AddRow(displayRow.FormSpellID, displayRow.BodySet, displayRow.TintID, displayRow.HelmOn, displayRow.DisplayID);
-            }
-
-            // Selectable faces per illusion. These face displays are always in CreatureDisplayInfo.dbc since DBCFileWorker generates the DBC rows from the
-            // same template data, and each face display also gets a creature_model_info row
-            foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
-            {
-                foreach (var faceDisplayIDByFaceIndex in creatureModelTemplate.IllusionFaceDisplayIDsByFaceIndex)
-                {
-                    modEverquestIllusionFaceSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, faceDisplayIDByFaceIndex.Key, faceDisplayIDByFaceIndex.Value);
-                    creatureModelInfoSQL.AddRow(faceDisplayIDByFaceIndex.Value, Convert.ToInt32(creatureModelTemplate.GenderType));
-                }
-            }
-
             // Every placed zone object, so the object based illusions (Minor Illusion, Illusion: Tree) can turn a player into whatever is nearest them.  Only the open world
             // map copy is written, since the mod resolves instance copies back to the open world map before looking a position up
             int illusionObjectRowID = 1;
@@ -2056,6 +2029,34 @@ namespace EQWOWConverter
             }
             if (noDisplayInfoRowCount > 0)
                 Logger.WriteError("PopulateItemWoWToEQSwapData wrote ", noDisplayInfoRowCount.ToString(), " rows with a display ID of zero, since those item templates had no item display info generated");
+        }
+
+        private void PopulateIllusionCharacterData()
+        {
+            // These rows are generated during creature model file generation, so that must run before this
+            foreach (CreatureIllusionCharacterRegistry.IllusionCharacterEntry entry in CreatureIllusionCharacterRegistry.GetEntries())
+            {
+                if (entry.ModelTemplate == null)
+                    continue;
+                int gender = Convert.ToInt32(entry.GenderType);
+                int isRobeCapable = 0;
+                if (entry.IsRobeCapable == true)
+                    isRobeCapable = 1;
+                modEverquestIllusionCharacterSQL.AddRow(entry.Race.ID, gender, entry.ChrRacesID, entry.ModelTemplate.DBCCreatureDisplayID,
+                    entry.AltCreatureDisplayID, entry.ValidFaceIndexes.Count, isRobeCapable, entry.Scale);
+
+                // The alt display needs a creature_model_info row too, or the world server will not boot
+                creatureModelInfoSQL.AddRow(entry.AltCreatureDisplayID, gender);
+            }
+        }
+
+        private void PopulateIllusionItemDisplayData()
+        {
+            // These rows are generated with the item display infos, so that must run before this
+            foreach (int[] mapping in ItemDisplayInfo.GetNativeDisplayMappings())
+                modEverquestIllusionItemDisplaySQL.AddRow(mapping[0], mapping[1], mapping[2], mapping[3]);
+            foreach (int[] mapping in ItemDisplayInfo.GetGenericNativeDisplayMappings())
+                modEverquestIllusionGenericItemDisplaySQL.AddRow(mapping[0], mapping[1], mapping[2], mapping[3], mapping[4]);
         }
 
         private void PopulateForageData()
@@ -3776,8 +3777,9 @@ namespace EQWOWConverter
             modEverquestCreatureWaypointSQL.SaveToDisk("mod_everquest_creature_waypoint", SQLFileType.World);
             modEverquestFactionSQL.SaveToDisk("mod_everquest_faction", SQLFileType.World);
             modEverquestForageZoneItemsSQL.SaveToDisk("mod_everquest_forage_zone_items", SQLFileType.World);
-            modEverquestIllusionDisplaySQL.SaveToDisk("mod_everquest_illusion_display", SQLFileType.World);
-            modEverquestIllusionFaceSQL.SaveToDisk("mod_everquest_illusion_face", SQLFileType.World);
+            modEverquestIllusionCharacterSQL.SaveToDisk("mod_everquest_illusion_character", SQLFileType.World);
+            modEverquestIllusionItemDisplaySQL.SaveToDisk("mod_everquest_illusion_item_display", SQLFileType.World);
+            modEverquestIllusionGenericItemDisplaySQL.SaveToDisk("mod_everquest_illusion_generic_item_display", SQLFileType.World);
             modEverquestIllusionObjectSQL.SaveToDisk("mod_everquest_illusion_object", SQLFileType.World);
             modEverquestItemTemplateSQL.SaveToDisk("mod_everquest_item_template", SQLFileType.World);
             modEverquestItemWoWToEQSwapSQL.SaveToDisk("mod_everquest_item_wow_to_eq_swap", SQLFileType.World);

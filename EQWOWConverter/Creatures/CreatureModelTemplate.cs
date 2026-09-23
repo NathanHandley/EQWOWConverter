@@ -25,8 +25,6 @@ namespace EQWOWConverter.Creatures
     internal class CreatureModelTemplate
     {
         // FaceIndex of 99 marks an illusion version model with replaceable face textures (real faces are only 0-9).  These get their own M2 files
-        // (separate from any NPC-shared templates) where the head/face textures are typed as creature skins, so the face is selected at runtime through CreatureDisplayInfo texture variations instead of being baked in
-        public const int ILLUSION_REPLACEABLE_FACE_INDEX = 99;
 
         public static Dictionary<int, List<CreatureModelTemplate>> AllTemplatesByRaceID = new Dictionary<int, List<CreatureModelTemplate>>();
 
@@ -41,6 +39,14 @@ namespace EQWOWConverter.Creatures
         public bool IsCompanionPetVersion = false;
         public bool IsIllusionFormVersion = false;
         public bool IsPetVersion = false;
+        public bool IsPlayerCharacterVersion = false;
+        public bool IsCharacterBasedVersion = false;
+        public CreatureModelTemplate? CharacterBaseModelTemplate = null;
+        public int DBCCreatureDisplayInfoExtraID = 0;
+        public int CharacterHelmTintIndex = 0; // 0 = untinted
+        public string CreatureSkinBakeName = string.Empty; // BakeName of the CreatureDisplayInfoExtra row (Textures\BakedNpcTextures\{name}.blp)
+        private static HashSet<string> BakedCreatureSkinNames = new HashSet<string>();
+        private static readonly object BakedCreatureSkinLock = new object();
         public float ModelStandingHeight = 0; // Z extent of the stand-posed geometry in final (rendered) model space
         public BoundingBox ModelStandingGeometryBox = new BoundingBox();
         public BoundingBox ModelClickBoundingBox = new BoundingBox(); // The finished clickable box that went into the M2
@@ -68,14 +74,10 @@ namespace EQWOWConverter.Creatures
             return new object();
         }
 
-        // Illusion version (FaceIndex 99) face data, populated during CreateModelFiles.  Face 0 head piece texture names are stored in head piece order, and per selectable face the display ID and texture variation names (one per head piece)
-        public List<string> FaceHeadPieceTextureNames = new List<string>();
-        public SortedDictionary<int, int> IllusionFaceDisplayIDsByFaceIndex = new SortedDictionary<int, int>();
-        public SortedDictionary<int, List<string>> IllusionFaceTextureVariationsByFaceIndex = new SortedDictionary<int, List<string>>();
 
         public CreatureModelTemplate(CreatureRace creatureRace, CreatureGenderType genderType, int helmTextureID,
             int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale, bool isCompanionPetVersion, bool isIllusionFormVersion,
-            bool isPetVersion)
+            bool isPetVersion, bool isPlayerCharacterVersion = false)
         {
             string raceIDString = creatureRace.ID.ToString();
             string genderIDString = Convert.ToInt32(genderType).ToString();
@@ -85,7 +87,15 @@ namespace EQWOWConverter.Creatures
 
             // Summoned pet versions get no ID of their own, only their sound row differ (no fidget sounds)
             IsPetVersion = isPetVersion;
-            if (isCompanionPetVersion == true)
+            IsPlayerCharacterVersion = isPlayerCharacterVersion;
+            if (isPlayerCharacterVersion == true)
+            {
+                // Player character versions key separately from every other template type
+                DBCCreatureModelDataID = IDGenerationTool.GenerateID("CreatureModelDataID", "playercharacter", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
+                DBCCreatureDisplayID = IDGenerationTool.GenerateID("CreatureDisplayInfoID", "playercharacter", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
+                DBCCreatureSoundDataID = IDGenerationTool.GenerateID("CreatureSoundDataID", "playercharacter", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
+            }
+            else if (isCompanionPetVersion == true)
             {
                 // Companion pet versions key separately from the shared NPC templates
                 DBCCreatureModelDataID = IDGenerationTool.GenerateID("CreatureModelDataID", "companionpet", raceIDString, genderIDString, helmTextureID.ToString(), textureIndex.ToString(), faceIndex.ToString(), colorTintID.ToString(), scaleString);
@@ -138,7 +148,7 @@ namespace EQWOWConverter.Creatures
 
         public bool DoUseOwnModelFiles()
         {
-            return IsCompanionPetVersion == true || IsIllusionFormVersion == true || FaceIndex == ILLUSION_REPLACEABLE_FACE_INDEX;
+            return IsCompanionPetVersion == true || IsIllusionFormVersion == true || IsPlayerCharacterVersion == true;
         }
 
         private static bool DoGenerateSilentTamedPetVersionForProperties(CreatureRace creatureRace, int faceIndex, bool isCompanionPetVersion,
@@ -146,8 +156,6 @@ namespace EQWOWConverter.Creatures
         {
             // A tamed pet copies the display of a world creature, so only the world NPC templates need a silent version
             if (isCompanionPetVersion == true || isIllusionFormVersion == true || isPetVersion == true)
-                return false;
-            if (faceIndex == ILLUSION_REPLACEABLE_FACE_INDEX)
                 return false;
             if (creatureRace.WOWCreatureType != 1) // Only beasts are tameable
                 return false;
@@ -182,17 +190,17 @@ namespace EQWOWConverter.Creatures
 
         public bool DoPlayFidgetSounds()
         {
-            // Forms that a player controls (illusions and summoned pets) stay quiet while idle
-            if (IsIllusionFormVersion == true || IsPetVersion == true)
-                return false;
-            if (FaceIndex == ILLUSION_REPLACEABLE_FACE_INDEX)
+            // Forms that a player controls (illusions, summoned pets, and dressable player character models) stay quiet while idle
+            if (IsIllusionFormVersion == true || IsPetVersion == true || IsPlayerCharacterVersion == true)
                 return false;
             return true;
         }
 
         public float GetDBCDisplayScale()
         {
-            // Client grows/shrinks unit's attached models by object scale and CreatureDisplayINfo scale.
+            // Client grows/shrinks unit's attached models by object scale and CreatureDisplayInfo scale.
+            if (IsPlayerCharacterVersion == true)
+                return 1f;
             if (ModelTemplateScale <= Configuration.GENERATE_FLOAT_EPSILON)
                 return 1f;
             return ModelTemplateScale;
@@ -230,12 +238,6 @@ namespace EQWOWConverter.Creatures
             return Race.CanHoldVisualItems == false || Race.CanHoldVisualShields == false;
         }
 
-        private static int GetOrCreateIllusionFaceDisplayID(int raceID, CreatureGenderType genderType, int helmTextureID,
-            int textureIndex, int colorTintID, int faceIndex)
-        {
-            return IDGenerationTool.GenerateID("CreatureDisplayInfoID", "illusionface", raceID.ToString(), Convert.ToInt32(genderType).ToString(), helmTextureID.ToString(), textureIndex.ToString(), colorTintID.ToString(), faceIndex.ToString());
-        }
-
         public static CreatureModelTemplate CreateCreatureModelTemplateForWaypointDebugging()
         {
             lock (CreatureLock)
@@ -251,7 +253,7 @@ namespace EQWOWConverter.Creatures
 
         public static CreatureModelTemplate GetOrCreateCreatureModelTemplate(CreatureRace creatureRace, CreatureGenderType genderType, int helmTextureID,
             int textureIndex, int faceIndex, int colorTintID, float modelTemplateScale, bool isCompanionPetVersion, bool isIllusionFormVersion,
-            bool isPetVersion)
+            bool isPetVersion, bool isPlayerCharacterVersion = false)
         {
             lock (CreatureLock)
             {
@@ -271,7 +273,8 @@ namespace EQWOWConverter.Creatures
                         modelTemplate.ModelTemplateScale == modelTemplateScale &&
                         modelTemplate.IsCompanionPetVersion == isCompanionPetVersion &&
                         modelTemplate.IsIllusionFormVersion == isIllusionFormVersion &&
-                        modelTemplate.IsPetVersion == isPetVersion)
+                        modelTemplate.IsPetVersion == isPetVersion &&
+                        modelTemplate.IsPlayerCharacterVersion == isPlayerCharacterVersion)
                     {
                         return modelTemplate;
                     }
@@ -279,7 +282,7 @@ namespace EQWOWConverter.Creatures
 
                 // Otherwise create a new one
                 CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(creatureRace, genderType, helmTextureID,
-                    textureIndex, faceIndex, colorTintID, modelTemplateScale, isCompanionPetVersion, isIllusionFormVersion, isPetVersion);
+                    textureIndex, faceIndex, colorTintID, modelTemplateScale, isCompanionPetVersion, isIllusionFormVersion, isPetVersion, isPlayerCharacterVersion);
 
                 // Pet versions share an ID context with the non-pet templates
                 foreach (CreatureModelTemplate existingModelTemplate in AllTemplatesByRaceID[creatureRace.ID])
@@ -344,12 +347,36 @@ namespace EQWOWConverter.Creatures
             }
 
             // Base paths
-            string outputObjectFolderName = GetCreatureModelFolderName();        
+            string outputObjectFolderName = GetCreatureModelFolderName();
             string relativeMPQPath = Path.Combine("Creature", "Everquest", outputObjectFolderName);
             string outputFullMPQPath = Path.Combine(exportAnimatedObjectsFolder, outputObjectFolderName);
+            if (IsPlayerCharacterVersion == true)
+            {
+                string clientFileString = CreatureIllusionCharacterRegistry.GetClientFileStringForRace(Race);
+                string genderFolderName = CreatureIllusionCharacterRegistry.GetGenderFolderName(GenderType);
+                outputObjectFolderName = Path.Combine(clientFileString, genderFolderName);
+                relativeMPQPath = Path.Combine("Character", clientFileString, genderFolderName);
+                outputFullMPQPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Character", clientFileString, genderFolderName);
+            }
+
+            // Looks of a race with a player character model render that model instead of files of their own
+            CreatureIllusionCharacterRegistry.IllusionCharacterEntry? characterEntry = null;
+            if (IsPlayerCharacterVersion == false)
+            {
+                // Neutral gender looks (the same skeleton as the male) render on the male character model
+                CreatureGenderType characterGenderType = (GenderType == CreatureGenderType.Female) ? CreatureGenderType.Female : CreatureGenderType.Male;
+                characterEntry = CreatureIllusionCharacterRegistry.GetEntry(Race.ID, characterGenderType);
+                if (characterEntry != null && (characterEntry.ModelTemplate == null || characterEntry.CharacterComposite == null || characterEntry.Race.SkeletonName != Race.SkeletonName))
+                    characterEntry = null;
+                if (characterEntry != null)
+                {
+                    IsCharacterBasedVersion = true;
+                    CharacterBaseModelTemplate = characterEntry.ModelTemplate;
+                }
+            }
 
             // Create folder if it doesn't exist
-            if (Directory.Exists(outputFullMPQPath) == false)
+            if (IsCharacterBasedVersion == false && Directory.Exists(outputFullMPQPath) == false)
                 Directory.CreateDirectory(outputFullMPQPath);
 
             // Load in an object
@@ -371,6 +398,14 @@ namespace EQWOWConverter.Creatures
             nameSB.Append(GenerateFileName());
             curObject.Name = nameSB.ToString();
 
+            // Character based versions only needed the bounds above as their look is a baked skin on the shared character model
+            if (IsCharacterBasedVersion == true && characterEntry != null && characterEntry.CharacterComposite != null)
+            {
+                GenerateCharacterBasedDisplayData(characterEntry.CharacterComposite);
+                Logger.WriteDebug(String.Concat("For creature template '", objectName, "', completed generating the character based display data"));
+                return;
+            }
+
             // Set fidget count for M2 (companion pet versions are silent, so they keep zero fidget sounds)
             if (IsCompanionPetVersion == false)
             {
@@ -385,12 +420,30 @@ namespace EQWOWConverter.Creatures
             lock (GetOutputFolderLock(Path.Combine(outputObjectFolderName, GenerateFileName())))
                 objectM2.WriteToDisk(GenerateFileName(), outputFullMPQPath);
 
+            // The client's glue screens preload a model for every ChrRaces row through the naming convention Character\{ClientFileString}\{Sex}\{ClientFileString}{Sex}.m2,
+            // and a missing file there intermittently crashes the client on an async loader thread, so player character models also get alias copies under that name
+            if (IsPlayerCharacterVersion == true)
+            {
+                string aliasBaseName = string.Concat(CreatureIllusionCharacterRegistry.GetClientFileStringForRace(Race),
+                    CreatureIllusionCharacterRegistry.GetGenderFolderName(GenderType));
+                lock (GetOutputFolderLock(Path.Combine(outputObjectFolderName, aliasBaseName)))
+                {
+                    FileTool.CopyFile(Path.Combine(outputFullMPQPath, GenerateFileName() + ".m2"), Path.Combine(outputFullMPQPath, aliasBaseName + ".m2"));
+                    for (int lodIndex = 0; lodIndex < 4; lodIndex++)
+                    {
+                        string lodSuffix = lodIndex.ToString("00");
+                        FileTool.CopyFile(Path.Combine(outputFullMPQPath, GenerateFileName() + lodSuffix + ".skin"),
+                            Path.Combine(outputFullMPQPath, aliasBaseName + lodSuffix + ".skin"));
+                    }
+                }
+            }
+
             // Place the related textures. Serialized per shared race output folder because every model template of a race copies into the same folder
             lock (GetOutputFolderLock(outputObjectFolderName))
             {
                 foreach (ObjectModelTexture texture in curObject.ModelTextures)
                 {
-                    // Replaceable textures (illusion version faces) have no baked filename in the M2, and the actual face textures get copied in GenerateIllusionFaceData below
+                    // Only hardcoded textures have a file to copy
                     if (texture.Type != ObjectModelTextureType.Hardcoded)
                         continue;
 
@@ -419,83 +472,98 @@ namespace EQWOWConverter.Creatures
                 }
             }
 
-            // Illusion versions get replaceable face textures and per-face display IDs
-            if (FaceIndex == ILLUSION_REPLACEABLE_FACE_INDEX)
-                GenerateIllusionFaceData(curObject, inputObjectTextureFolder, outputFullMPQPath);
+            // Player character versions bake their composite skin and head atlas textures, and record their output data for DBC/SQL generation
+            if (IsPlayerCharacterVersion == true)
+                GeneratePlayerCharacterData(curObject);
 
             Logger.WriteDebug(String.Concat("For creature template '", objectName, "', completed creating the object files"));
         }
 
-        private void GenerateIllusionFaceData(ObjectModel curObject, string inputObjectTextureFolder, string outputFullMPQPath)
+        private void GenerateCharacterBasedDisplayData(ObjectModelCharacterComposite characterComposite)
         {
-            FaceHeadPieceTextureNames.Clear();
-            IllusionFaceDisplayIDsByFaceIndex.Clear();
-            IllusionFaceTextureVariationsByFaceIndex.Clear();
+            string genderCode = (GenderType == CreatureGenderType.Female) ? "F" : "M";
+            CreatureSkinBakeName = string.Concat("EQ_", Race.SkeletonName.ToUpper(), "_", genderCode, "_h", HelmTextureIndex.ToString(), "t", TextureIndex.ToString(),
+                "f", FaceIndex.ToString(), "c", ColorTintID.ToString());
+            DBCCreatureDisplayInfoExtraID = IDGenerationTool.GenerateID("CreatureDisplayInfoExtraID", CreatureSkinBakeName);
+            if (HelmTextureIndex > 0 && ColorTint != null)
+                CharacterHelmTintIndex = characterComposite.GetHelmTintIndex(ColorTint.HelmColor);
 
-            // Collect the face texture names in head piece order, which were typed CreatureSkin1/2/3 during the object model build
-            SortedDictionary<int, string> pieceTextureNamesBySkinSlot = new SortedDictionary<int, string>();
-            foreach (ObjectModelTexture modelTexture in curObject.ModelTextures)
+            lock (BakedCreatureSkinLock)
             {
-                if (modelTexture.Type == ObjectModelTextureType.CreatureSkin1)
-                    pieceTextureNamesBySkinSlot[0] = modelTexture.TextureName;
-                else if (modelTexture.Type == ObjectModelTextureType.CreatureSkin2)
-                    pieceTextureNamesBySkinSlot[1] = modelTexture.TextureName;
-                else if (modelTexture.Type == ObjectModelTextureType.CreatureSkin3)
-                    pieceTextureNamesBySkinSlot[2] = modelTexture.TextureName;
+                if (BakedCreatureSkinNames.Contains(CreatureSkinBakeName) == true)
+                    return;
+                BakedCreatureSkinNames.Add(CreatureSkinBakeName);
             }
-            foreach (var pieceTextureNameBySkinSlot in pieceTextureNamesBySkinSlot)
-                FaceHeadPieceTextureNames.Add(pieceTextureNameBySkinSlot.Value);
-
-            // Helm-tier versions (HelmTextureIndex > 0) have no face materials, so they get no face displays
-            if (FaceHeadPieceTextureNames.Count == 0)
+            string workingFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures", "BakedNpcTextures");
+            string outputFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Textures", "BakedNpcTextures");
+            lock (BakedCreatureSkinLock)
+            {
+                if (Directory.Exists(workingFolder) == false)
+                    Directory.CreateDirectory(workingFolder);
+                if (Directory.Exists(outputFolder) == false)
+                    Directory.CreateDirectory(outputFolder);
+            }
+            string pngPath = Path.Combine(workingFolder, CreatureSkinBakeName + ".png");
+            if (characterComposite.BakeCreatureSkin(TextureIndex, FaceIndex, HelmTextureIndex, ColorTint, pngPath) == false)
+            {
+                Logger.WriteError(string.Concat("Creature model template '", GenerateFileName(), "' could not bake its character skin"));
                 return;
-
-            // Copy every face texture that exists for the head pieces (faces 0-9)
-            lock (GetOutputFolderLock(GetCreatureModelFolderName()))
-            {
-                foreach (string faceZeroTextureName in FaceHeadPieceTextureNames)
-                {
-                    for (int faceIndex = 0; faceIndex <= 9; faceIndex++)
-                    {
-                        string faceTextureName = GetFaceTextureName(faceZeroTextureName, faceIndex);
-                        string inputTexturePath = Path.Combine(inputObjectTextureFolder, faceTextureName + ".blp");
-                        string outputFaceTexturePath = Path.Combine(outputFullMPQPath, faceTextureName + ".blp");
-                        if (File.Exists(inputTexturePath) == true && File.Exists(outputFaceTexturePath) == false)
-                            FileTool.CopyFile(inputTexturePath, outputFaceTexturePath);
-                    }
-                }
             }
-
-            // Build a display per selectable face index
-            for (int faceIndex = 1; faceIndex <= 9; faceIndex++)
+            ImageTool.ConvertPNGTexturesToBLP(new List<string>() { pngPath }, ImageTool.ImageAssociationType.CharacterSkin);
+            string blpPath = Path.ChangeExtension(pngPath, ".blp");
+            if (File.Exists(blpPath) == false)
             {
-                bool faceTextureExistsForAnyPiece = false;
-                List<string> variationTextureNames = new List<string>();
-                foreach (string faceZeroTextureName in FaceHeadPieceTextureNames)
-                {
-                    string faceTextureName = GetFaceTextureName(faceZeroTextureName, faceIndex);
-                    if (File.Exists(Path.Combine(inputObjectTextureFolder, faceTextureName + ".blp")) == true)
-                    {
-                        faceTextureExistsForAnyPiece = true;
-                        variationTextureNames.Add(faceTextureName);
-                    }
-                    else
-                        variationTextureNames.Add(faceZeroTextureName);
-                }
-                if (faceTextureExistsForAnyPiece == false)
-                    continue;
-
-                int faceDisplayID = GetOrCreateIllusionFaceDisplayID(Race.ID, GenderType, HelmTextureIndex, TextureIndex, ColorTintID, faceIndex);
-                IllusionFaceDisplayIDsByFaceIndex.Add(faceIndex, faceDisplayID);
-                IllusionFaceTextureVariationsByFaceIndex.Add(faceIndex, variationTextureNames);
+                Logger.WriteError(string.Concat("Creature model template '", GenerateFileName(), "' baked skin BLP was not generated at '", blpPath, "'"));
+                return;
             }
+            FileTool.CopyFile(blpPath, Path.Combine(outputFolder, CreatureSkinBakeName + ".blp"));
         }
 
-        // Face textures are named '{skeleton}he00{faceIndex}{headPieceDigit}', so swap the second-to-last character
-        private static string GetFaceTextureName(string faceZeroTextureName, int faceIndex)
+        private void GeneratePlayerCharacterData(ObjectModel curObject)
         {
-            return string.Concat(faceZeroTextureName.Substring(0, faceZeroTextureName.Length - 2), faceIndex.ToString(),
-                faceZeroTextureName[faceZeroTextureName.Length - 1]);
+            ObjectModelCharacterComposite? characterComposite = curObject.EQObjectModelData.CharacterComposite;
+            if (characterComposite == null)
+            {
+                Logger.WriteError(string.Concat("Player character model template '", GenerateFileName(), "' has no character composite, so no textures or race data were generated"));
+                return;
+            }
+            string workingRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCharacterTextures");
+            string outputFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Character",
+                CreatureIllusionCharacterRegistry.GetClientFileStringForRace(Race), CreatureIllusionCharacterRegistry.GetGenderFolderName(GenderType));
+            string blankTextureOutputFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Character", "EverQuest");
+            if (Directory.Exists(workingRootFolder) == false)
+                Directory.CreateDirectory(workingRootFolder);
+            if (Directory.Exists(blankTextureOutputFolder) == false)
+                Directory.CreateDirectory(blankTextureOutputFolder);
+            // NPC helm colors of this race's looks become the tinted helm textures (hair colors 1..)
+            List<ColorRGBA> helmColors = new List<ColorRGBA>();
+            lock (CreatureLock)
+            {
+                if (AllTemplatesByRaceID.ContainsKey(Race.ID) == true)
+                {
+                    foreach (CreatureModelTemplate otherTemplate in AllTemplatesByRaceID[Race.ID])
+                    {
+                        CreatureGenderType otherGender = (otherTemplate.GenderType == CreatureGenderType.Female) ? CreatureGenderType.Female : CreatureGenderType.Male;
+                        if (otherGender != GenderType || otherTemplate.HelmTextureIndex <= 0 || otherTemplate.ColorTint == null || otherTemplate.ColorTint.HelmColor == null)
+                            continue;
+                        helmColors.Add((ColorRGBA)otherTemplate.ColorTint.HelmColor);
+                    }
+                }
+            }
+            characterComposite.SetHelmTintPalette(helmColors);
+            characterComposite.GenerateBakedTextures(workingRootFolder, outputFolder, blankTextureOutputFolder);
+            CreatureIllusionCharacterRegistry.SetModelOutputData(Race.ID, GenderType, characterComposite);
+
+            // Worn armor components in this race's own EQ art, which the armor item display infos get native variants of (see ItemDisplayInfo.CreateNativeVariants) for the mod to swap in when dressing this race's illusion
+            int nativeComponentCount = characterComposite.GenerateNativeArmorComponentTextures(ObjectModelCharacterComposite.GetNativeComponentFolder());
+            if (nativeComponentCount > 0)
+            {
+                int chrRacesID = CreatureIllusionCharacterRegistry.GetChrRacesID(Race.ID, GenderType);
+                if (chrRacesID > 0)
+                    Items.ItemDisplayInfo.RegisterNativeComponentRace(characterComposite.SkeletonName, chrRacesID, Convert.ToInt32(GenderType));
+                else
+                    Logger.WriteError(string.Concat("Player character model template '", GenerateFileName(), "' has no ChrRaces ID, so its native armor components are unreferenced"));
+            }
         }
 
         public string GenerateFileName()
@@ -516,6 +584,8 @@ namespace EQWOWConverter.Creatures
                 sb.Append("cp");
             else if (IsIllusionFormVersion == true)
                 sb.Append("il");
+            else if (IsPlayerCharacterVersion == true)
+                sb.Append("pc");
             return sb.ToString();
         }
 

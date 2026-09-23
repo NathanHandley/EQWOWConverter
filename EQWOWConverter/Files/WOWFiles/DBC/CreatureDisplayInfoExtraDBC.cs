@@ -18,11 +18,8 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class CreatureDisplayInfoExtraDBC : DBCFile
     {
-        private static readonly object IDLock = new object();
-        private static int CurrentID = Configuration.DBCID_CREATUREDISPLAYINFOEXTRA_ID_START;
-
-        public void AddRow(int id, int displayRaceID, int displaySexID, int skinID, int faceID,
-            int hairStyleID, int hairColorID, int facialHairID, int chestDisplayID)
+        public void AddRow(int id, int displayRaceID, int displaySexID, int skinID, int faceID, int hairStyleID, int hairColorID, int facialHairID,
+            int chestDisplayID, int legsDisplayID, int bootsDisplayID, int wristDisplayID, int glovesDisplayID, string bakeName)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID
@@ -38,25 +35,16 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // Shirt ItemDisplayInfo.ID
             newRow.AddInt32(chestDisplayID); // Cuirass ItemDisplayInfo.ID
             newRow.AddInt32(0); // Belt ItemDisplayInfo.ID
-            newRow.AddInt32(0); // Legs ItemDisplayInfo.ID
-            newRow.AddInt32(0); // Boots ItemDisplayInfo.ID
-            newRow.AddInt32(0); // Wrist ItemDisplayInfo.ID
-            newRow.AddInt32(0); // Gloves ItemDisplayInfo.ID
+            newRow.AddInt32(legsDisplayID); // Legs ItemDisplayInfo.ID
+            newRow.AddInt32(bootsDisplayID); // Boots ItemDisplayInfo.ID
+            newRow.AddInt32(wristDisplayID); // Wrist ItemDisplayInfo.ID
+            newRow.AddInt32(glovesDisplayID); // Gloves ItemDisplayInfo.ID
             newRow.AddInt32(0); // Tabard ItemDisplayInfo.ID
             newRow.AddInt32(0); // Cape ItemDisplayInfo.ID
-            newRow.AddInt32(0); // Flags (CanEquipWeapons (0 = no, 1 = yes) ?)
-            newRow.AddString("EQ" + id.ToString()); // BakeName
+            newRow.AddInt32(0); // Flags
+            newRow.AddString(bakeName); // BakeName (Textures\BakedNpcTextures\{BakeName}.blp)
+            newRow.SortValue1 = id;
             Rows.Add(newRow);
-        }
-
-        public static int GenerateAndGetGetID()
-        {
-            lock (IDLock)
-            {
-                int returnID = CurrentID;
-                CurrentID++;
-                return returnID;
-            }
         }
     }
 }

@@ -61,6 +61,8 @@ namespace EQWOWConverter.WOWFiles
             public int SortValue1 = 0;
             public int SortValue2 = 0;
             public int SortValue3 = 0;
+            private static long creationCounter = 0; // Sort tiebreaker
+            public readonly long CreationSequence = System.Threading.Interlocked.Increment(ref creationCounter);
 
             public class DBCField
             {
@@ -281,8 +283,10 @@ namespace EQWOWConverter.WOWFiles
                     return SortValue1.CompareTo(other.SortValue1);
                 else if (SortValue2 != other.SortValue2)
                     return SortValue2.CompareTo(other.SortValue2);
-                else
+                else if (SortValue3 != other.SortValue3)
                     return SortValue3.CompareTo(other.SortValue3);
+                else
+                    return CreationSequence.CompareTo(other.CreationSequence);
             }
 
             public bool Equals(DBCRow? other)

@@ -30,15 +30,13 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`NPCEquipItemTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`WornEffectSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`AllowedEQClassMask` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
-            stringBuilder.AppendLine("`EQArmorMaterial` INT(10) NOT NULL DEFAULT '0', ");
-            stringBuilder.AppendLine("`IllusionTintID` INT(10) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`NeverLootStack` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`ItemTemplateID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
         public void AddRow(int itemTemplateID, int npcEquipItemTemplateID, int wornEffectSpellID, List<ClassEQType> allowedEQClassTypes,
-            int eqArmorMaterial, int illusionTintID, bool neverLootStack)
+            bool neverLootStack)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ItemTemplateID", itemTemplateID);
@@ -48,8 +46,6 @@ namespace EQWOWConverter.WOWFiles
             foreach (ClassEQType classType in allowedEQClassTypes)
                 classMask += (int)classType;
             newRow.AddInt("AllowedEQClassMask", classMask);
-            newRow.AddInt("EQArmorMaterial", eqArmorMaterial);
-            newRow.AddInt("IllusionTintID", illusionTintID);
             newRow.AddInt("NeverLootStack", neverLootStack == true ? 1 : 0);
             Rows.Add(newRow);
         }
