@@ -26,12 +26,15 @@ namespace EQWOWConverter.WOWFiles
         public M2TrackSequences<QuaternionShort> RotationTrack;
         public M2TrackSequences<Vector3> ScaleTrack;
 
-        public M2Bone(ObjectModelBone modelBone)
+        public M2Bone(ObjectModelBone modelBone, bool shareIdenticalSequenceData)
         {
             Bone = modelBone;
             TranslationTrack = new M2TrackSequences<Vector3>(modelBone.TranslationTrack);
             RotationTrack = new M2TrackSequences<QuaternionShort>(modelBone.RotationTrack);
             ScaleTrack = new M2TrackSequences<Vector3>(modelBone.ScaleTrack);
+            TranslationTrack.ShareIdenticalSequenceData = shareIdenticalSequenceData;
+            RotationTrack.ShareIdenticalSequenceData = shareIdenticalSequenceData;
+            ScaleTrack.ShareIdenticalSequenceData = shareIdenticalSequenceData;
         }
 
         public UInt32 GetHeaderSize()

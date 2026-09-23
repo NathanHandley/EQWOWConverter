@@ -24,6 +24,7 @@ namespace EQWOWConverter.WOWFiles
         public ObjectModelTrackSequences<T> TrackSequences;
         public UInt32 TimestampsOffset = 0;
         public UInt32 ValuesOffset = 0;
+        public bool ShareIdenticalSequenceData = false;
 
         public M2TrackSequences()
         {
@@ -83,24 +84,14 @@ namespace EQWOWConverter.WOWFiles
             byteBuffer.AddRange(new byte[totalSubHeaderSpaceToReserve]);
 
             // Add timestamp data
+            Dictionary<string, UInt32> writtenDataOffsetsByBytes = new Dictionary<string, UInt32>();
             foreach (ObjectModelTrackSequenceTimestamps timestamp in TrackSequences.Timestamps)
-            {
-                timestamp.DataOffset = Convert.ToUInt32(byteBuffer.Count);
-                byteBuffer.AddRange(timestamp.GetDataBytes());
-
-                // Align memory
-                AddBytesToAlign(ref byteBuffer, 16);
-            }
+                timestamp.DataOffset = AddSequenceDataBytes(ref byteBuffer, timestamp.GetDataBytes(), writtenDataOffsetsByBytes);
 
             // Add value data
+            writtenDataOffsetsByBytes.Clear();
             foreach (ObjectModelTrackSequenceValues<T> values in TrackSequences.Values)
-            {
-                values.DataOffset = Convert.ToUInt32(byteBuffer.Count);
-                byteBuffer.AddRange(values.GetDataBytes());
-
-                // Align memory
-                AddBytesToAlign(ref byteBuffer, 16);
-            }
+                values.DataOffset = AddSequenceDataBytes(ref byteBuffer, values.GetDataBytes(), writtenDataOffsetsByBytes);
 
             // Write the track header data
             List<byte> trackHeaderBytes = new List<byte>();
@@ -110,6 +101,27 @@ namespace EQWOWConverter.WOWFiles
                 trackHeaderBytes.AddRange(values.GetHeaderBytes());
             for (int i = 0; i < totalSubHeaderSpaceToReserve; i++)
                 byteBuffer[i + Convert.ToInt32(TimestampsOffset)] = trackHeaderBytes[i];
+        }
+
+        private UInt32 AddSequenceDataBytes(ref List<byte> byteBuffer, List<byte> dataBytes, Dictionary<string, UInt32> writtenDataOffsetsByBytes)
+        {
+            string dataKey = string.Empty;
+            if (ShareIdenticalSequenceData == true && dataBytes.Count > 0)
+            {
+                dataKey = Convert.ToBase64String(dataBytes.ToArray());
+                if (writtenDataOffsetsByBytes.ContainsKey(dataKey) == true)
+                    return writtenDataOffsetsByBytes[dataKey];
+            }
+
+            UInt32 dataOffset = Convert.ToUInt32(byteBuffer.Count);
+            byteBuffer.AddRange(dataBytes);
+
+            // Align memory
+            AddBytesToAlign(ref byteBuffer, 16);
+
+            if (dataKey.Length > 0)
+                writtenDataOffsetsByBytes.Add(dataKey, dataOffset);
+            return dataOffset;
         }
 
         private void AddBytesToAlign(ref List<byte> byteBuffer, int byteAlignMultiplier)

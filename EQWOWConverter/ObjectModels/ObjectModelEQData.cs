@@ -1518,9 +1518,9 @@ namespace EQWOWConverter.ObjectModels
                     Animation.BoneAnimationFrame curFrame = new Animation.BoneAnimationFrame();
                     curFrame.BoneFullNameInPath = boneFullName;
                     curFrame.FrameIndex = frameIndex;
-                    curFrame.XPosition = curPosOffset.X * -1; // Rotate around Z axis
+                    curFrame.XPosition = curPosOffset.X;
                     curFrame.ZPosition = curPosOffset.Z;
-                    curFrame.YPosition = curPosOffset.Y * -1; // Rotate around Z axis
+                    curFrame.YPosition = curPosOffset.Y;
                     curFrame.XRotation = 0;
                     curFrame.ZRotation = 0;
                     curFrame.YRotation = 0;

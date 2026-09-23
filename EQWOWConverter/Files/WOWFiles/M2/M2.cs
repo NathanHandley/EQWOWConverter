@@ -89,8 +89,9 @@ namespace EQWOWConverter.WOWFiles
                 AnimationSequenceLookup.Add(new M2Int16(value));
 
             // Bones
+            bool shareIdenticalSequenceData = wowObjectModel.ModelType == ObjectModelType.StaticDoodad || wowObjectModel.ModelType == ObjectModelType.Creature;
             foreach (ObjectModelBone bone in wowObjectModel.ModelBones)
-                Bones.AddElement(new M2Bone(bone));
+                Bones.AddElement(new M2Bone(bone, shareIdenticalSequenceData));
 
             // Key Bone ID Lookup
             foreach (Int16 value in wowObjectModel.ModelBoneKeyLookups)
