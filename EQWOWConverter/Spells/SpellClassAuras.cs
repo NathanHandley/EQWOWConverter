@@ -282,6 +282,7 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.ShadowKnightBloodDebt:
                 case SpellClassAuraType.ShadowKnightBloodDebtCharge:
                 case SpellClassAuraType.ShadowKnightBloodDebtHeal:
+                case SpellClassAuraType.ShadowKnightBloodDebtVitality:
                     return Configuration.CLASSAURA_SHADOWKNIGHT_ENABLED;
                 case SpellClassAuraType.WarriorPassive:
                 case SpellClassAuraType.WarriorAura:
@@ -370,6 +371,15 @@ namespace EQWOWConverter.Spells
         private static string Seconds(int durationInMS)
         {
             return string.Concat((durationInMS / 1000).ToString(), " seconds");
+        }
+
+        // Whole minutes read as minutes, anything else falls back to seconds
+        private static string MinutesOrSeconds(int durationInMS)
+        {
+            if (durationInMS <= 0 || durationInMS % 60000 != 0)
+                return Seconds(durationInMS);
+            int minutes = durationInMS / 60000;
+            return string.Concat(minutes.ToString(), minutes == 1 ? " minute" : " minutes");
         }
 
         private static string SecondsWithFraction(int durationInMS)
@@ -743,14 +753,16 @@ namespace EQWOWConverter.Spells
             int bloodDebtIcon = Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_SPELL_ICON_EQ_ID;
             string bloodDebtStoreText = string.Concat(Pct(Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_DAMAGE_TAKEN_STORED_PERCENT), " of the damage you take is stored, up to ",
                 Pct(Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_MAX_HEALTH_PERCENT), " of your maximum health. Everything stored is lost after ",
-                Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_STORE_DURATION_IN_MS), " without taking damage");
+                MinutesOrSeconds(Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_STORE_DURATION_IN_MS), " without taking damage");
+            string bloodDebtVitalityText = string.Concat("Your maximum health is also raised by the amount stored for ", Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_COOLDOWN_IN_MS),
+                ", so the heal is never wasted, and the health healed is kept when it fades");
             string description = Lines(
                 string.Concat("Spell power increased by an amount equal to ", Pct(Configuration.CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT),
                     " of your attack power."),
                 NamedLine("Spellsword's Edge", string.Concat("Attack critical strikes make your next harmful spell within ", Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS),
                     " instant. Cannot occur more than once every ", Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS), ".")),
                 NamedLine("Blood Debt", string.Concat(bloodDebtStoreText,
-                    ". Unleashing it drains your target for the amount stored as shadow damage and heals you for the full amount.")));
+                    ". Unleashing it drains your target for the amount stored as shadow damage and heals you for the full amount. ", bloodDebtVitalityText, ".")));
             spellTemplates.Add(BuildPassiveTemplate("Spellsword", SpellClassAuraType.ShadowKnightPassive, icon, description));
 
             // The attack power share is the same as Sheath of Light pair
@@ -770,7 +782,7 @@ namespace EQWOWConverter.Spells
             // Blood Debt, the ability that unleashes what was stored.  It resolves like the player's Harm Touch: shadow, never misses, cannot crit, and damage modifiers leave the amount the mod hands in alone, though
             // partial resists and absorbs still apply
             string bloodDebtDescription = string.Concat("Drains the damage stored by your blood debt from the target as shadow damage and heals you for the full amount stored. ",
-                bloodDebtStoreText, ".");
+                bloodDebtVitalityText, ". ", bloodDebtStoreText, ".");
             SpellTemplate bloodDebtSpellTemplate = BuildBaseTemplate("Blood Debt", SpellClassAuraType.ShadowKnightBloodDebt, bloodDebtIcon, bloodDebtDescription, string.Empty);
             bloodDebtSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat); // Unlike the other class aura spells, this one is in the spellbook
             bloodDebtSpellTemplate.SpellRange = Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_RANGE;
@@ -809,6 +821,21 @@ namespace EQWOWConverter.Spells
             bloodDebtHealSpellTemplate.CannotCrit = true;
             bloodDebtHealSpellTemplate.InfluencedBySpellPower = false;
             spellTemplates.Add(bloodDebtHealSpellTemplate);
+
+            // Raises maximum health by the amount spent until the cooldown is up, cast just before the heal so a knight at full health still gains it.  The mod hands in the amount, and its
+            // aura script only moves maximum health, so health healed into the raised part is kept (down to the lowered maximum) when it fades
+            List<SpellEffectWOW> vitalityEffects = new List<SpellEffectWOW>();
+            vitalityEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModIncreaseHealth, 0, 0, SpellWOWTargetType.UnitCaster));
+            SpellTemplate vitalitySpellTemplate = BuildStackingAuraTemplate("Blood Debt", SpellClassAuraType.ShadowKnightBloodDebtVitality, bloodDebtIcon,
+                "Maximum health raised by an unleashed blood debt.", vitalityEffects, 1, Math.Max(1, Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_COOLDOWN_IN_MS), false);
+            vitalitySpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraShadowKnightBloodDebtVitalityAuraScript";
+
+            // It always lands and stays for its full time: no dispel type (so no dispel, purge, or mass dispel can take it), never stolen, past any immunity, and in no spell group
+            // (class aura templates carry no EQ effects, so they never get the EQ stacking groups).  A raise still running is removed by the mod before the new one goes on
+            vitalitySpellTemplate.DispelType = 0;
+            vitalitySpellTemplate.CannotBeStolen = true;
+            vitalitySpellTemplate.IgnoreImmunities = true;
+            spellTemplates.Add(vitalitySpellTemplate);
         }
 
         private static void AddWarriorSpells(List<SpellTemplate> spellTemplates)
