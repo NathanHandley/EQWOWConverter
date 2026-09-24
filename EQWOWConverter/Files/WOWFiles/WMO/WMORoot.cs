@@ -553,7 +553,7 @@ namespace EQWOWConverter.WOWFiles
                 if (objectInstance.DoodadType == ZoneDoodadInstanceType.StaticObject)
                     objectFullPath = Path.Combine(relativeStaticDoodadsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
                 else if (objectInstance.DoodadType == ZoneDoodadInstanceType.ZoneMaterial || objectInstance.DoodadType == ZoneDoodadInstanceType.SoundInstance)
-                    objectFullPath = Path.Combine(relativeZoneObjectsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
+                    objectFullPath = Path.Combine(relativeZoneObjectsFolder, objectName + ".MDX" + "\0").ToUpper();
                 else
                     Logger.WriteError("Unhandled type of doodad instance '" + objectInstance.DoodadType.ToString() + "' for doodad name '" + objectInstance.ObjectName + "'");
 

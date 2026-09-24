@@ -648,10 +648,10 @@ namespace EQWOWConverter.GameObjects
                         if (gameObject.CloseSound != null)
                             curObjectModel.SoundsByAnimationType.Add(AnimationType.Close, gameObject.CloseSound);
 
-                        // Create the M2 and Skin
-                        string relativeMPQPath = Path.Combine("World", "Everquest", "GameObjects", modelFileName);
+                        // Create the M2 and Skin.  All open types of a model share one folder (named by the model) so textures are only stored once
+                        string relativeMPQPath = GetModelRelativeFolderPath(gameObject.OriginalModelName);
                         M2 objectM2 = new M2(curObjectModel, relativeMPQPath);
-                        string curGameObjectOutputFolder = Path.Combine(gameObjectOutputFolderRoot, modelFileName);
+                        string curGameObjectOutputFolder = Path.Combine(exportMPQRootFolder, relativeMPQPath);
                         objectM2.WriteToDisk(modelFileName, curGameObjectOutputFolder);
 
                         // Place the related textures
@@ -660,6 +660,12 @@ namespace EQWOWConverter.GameObjects
                         {
                             string inputTextureName = Path.Combine(objectTextureFolder, texture.TextureName + ".blp");
                             string outputTextureName = Path.Combine(curGameObjectOutputFolder, texture.TextureName + ".blp");
+                            if (File.Exists(outputTextureName) == true)
+                            {
+                                // Already placed by another open type of this model
+                                Logger.WriteDebug("- [" + curObjectModel.Name + "]: Texture named '" + texture.TextureName + ".blp' already exists in the shared folder");
+                                continue;
+                            }
                             if (Path.Exists(inputTextureName) == true)
                                 FileTool.CopyFile(inputTextureName, outputTextureName);
                             else
@@ -686,6 +692,11 @@ namespace EQWOWConverter.GameObjects
                 }
             }
         }
+        public static string GetModelRelativeFolderPath(string originalModelName)
+        {
+            return Path.Combine("World", "Everquest", "GameObjects", originalModelName);
+        }
+
         private static GameObjectOpenType GetOpenType(int openTypeID)
         {
             switch (openTypeID)

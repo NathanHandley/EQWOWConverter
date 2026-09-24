@@ -904,7 +904,7 @@ namespace EQWOWConverter
 
                     // Display info
                     string fileName = string.Concat(nameAndOpenType.Item1, "_", nameAndOpenType.Item2.ToString());
-                    string relativeObjectFileName = Path.Combine("World", "Everquest", "GameObjects", fileName, fileName + ".mdx");
+                    string relativeObjectFileName = Path.Combine(GameObject.GetModelRelativeFolderPath(nameAndOpenType.Item1), fileName + ".mdx");
                     gameObjectDisplayInfoDBC.AddRow(gameObjectDisplayInfoIDsByModelNameAndOpenType[nameAndOpenType],
                         relativeObjectFileName.ToLower(),
                         geoboxBounding,

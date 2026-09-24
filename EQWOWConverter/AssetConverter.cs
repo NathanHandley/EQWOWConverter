@@ -1344,34 +1344,23 @@ namespace EQWOWConverter
             WDL zoneWDL = new WDL(curZone);
             zoneWDL.WriteToDisk(exportMPQRootFolder);
 
+            // All zone-specific objects write into the one zone folder (no per-object subfolders) so shared textures are only stored once
+            string zoneObjectsFolder = Path.Combine(exportMPQRootFolder, relativeZoneObjectsPath);
+            if (curZone.GeneratedZoneObjects.Count > 0 || curZone.SoundInstanceObjectModels.Count > 0)
+                FileTool.CreateBlankDirectory(zoneObjectsFolder, false);
+
             // Create the zone-specific generated object files
             foreach (ObjectModel zoneObject in curZone.GeneratedZoneObjects)
             {
-                // Recreate the folder if needed
-                string curZoneObjectRelativePath = Path.Combine(relativeZoneObjectsPath, zoneObject.Name);
-                string curZoneObjectFolder = Path.Combine(exportMPQRootFolder, curZoneObjectRelativePath);
-                if (Directory.Exists(curZoneObjectFolder))
-                    Directory.Delete(curZoneObjectFolder, true);
-                Directory.CreateDirectory(curZoneObjectFolder);
-
-                // Build this zone object M2 Data
-                M2 objectM2 = new M2(zoneObject, curZoneObjectRelativePath);
-                objectM2.WriteToDisk(zoneObject.Name, curZoneObjectFolder);
+                M2 objectM2 = new M2(zoneObject, relativeZoneObjectsPath);
+                objectM2.WriteToDisk(zoneObject.Name, zoneObjectsFolder);
             }
 
             // Create the zone-specific sound instance objects
             foreach (ObjectModel zoneSoundInstanceObject in curZone.SoundInstanceObjectModels)
             {
-                // Recreate the folder if needed
-                string curZoneObjectRelativePath = Path.Combine(relativeZoneObjectsPath, zoneSoundInstanceObject.Name);
-                string curZoneObjectFolder = Path.Combine(exportMPQRootFolder, curZoneObjectRelativePath);
-                if (Directory.Exists(curZoneObjectFolder))
-                    Directory.Delete(curZoneObjectFolder, true);
-                Directory.CreateDirectory(curZoneObjectFolder);
-
-                // Build this zone object M2 Data
-                M2 objectM2 = new M2(zoneSoundInstanceObject, curZoneObjectRelativePath);
-                objectM2.WriteToDisk(zoneSoundInstanceObject.Name, curZoneObjectFolder);
+                M2 objectM2 = new M2(zoneSoundInstanceObject, relativeZoneObjectsPath);
+                objectM2.WriteToDisk(zoneSoundInstanceObject.Name, zoneObjectsFolder);
             }
 
             // Place the related textures
@@ -5489,13 +5478,16 @@ namespace EQWOWConverter
                 }
             }
 
-            // Also copy textures for the zone specific objects
+            // Also copy textures for the zone specific objects (they all share the zone objects folder, so each texture is copied only once)
+            HashSet<string> copiedZoneObjectTextureNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (ObjectModel zoneObject in zone.GeneratedZoneObjects)
             {
                 foreach(ObjectModelTexture texture in zoneObject.ModelTextures)
                 {
+                    if (copiedZoneObjectTextureNames.Add(texture.TextureName) == false)
+                        continue;
                     string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", texture.TextureName + ".blp");
-                    string outputTextureFullPath = Path.Combine(wowExportPath, relativeZoneMaterialDoodadsPath, zoneObject.Name, texture.TextureName + ".blp");
+                    string outputTextureFullPath = Path.Combine(wowExportPath, relativeZoneMaterialDoodadsPath, texture.TextureName + ".blp");
                     if (File.Exists(sourceTextureFullPath) == false)
                     {
                         Logger.WriteError("Could not copy texture '" + sourceTextureFullPath + "', it did not exist. Did you run blpconverter?");
@@ -5510,15 +5502,13 @@ namespace EQWOWConverter
             if (Configuration.AUDIO_SOUNDINSTANCE_DRAW_AS_BOX == true)
             {
                 string soundInstanceInputTextureFullPath = Path.Combine(inputObjectTextureFolder, Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME + ".blp");
-                foreach (ObjectModel zoneObject in zone.SoundInstanceObjectModels)
+                if (zone.SoundInstanceObjectModels.Count > 0)
                 {
-                    string soundInstanceOutputTextureFullPath = Path.Combine(wowExportPath, relativeZoneMaterialDoodadsPath, zoneObject.Name, Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME + ".blp");
+                    string soundInstanceOutputTextureFullPath = Path.Combine(wowExportPath, relativeZoneMaterialDoodadsPath, Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME + ".blp");
                     if (File.Exists(soundInstanceInputTextureFullPath) == false)
-                    {
                         Logger.WriteError("Could not copy texture '" + soundInstanceInputTextureFullPath + "', it did not exist. Did you run blpconverter?");
-                        continue;
-                    }
-                    FileTool.CopyFile(soundInstanceInputTextureFullPath, soundInstanceOutputTextureFullPath);
+                    else
+                        FileTool.CopyFile(soundInstanceInputTextureFullPath, soundInstanceOutputTextureFullPath);
                 }
             }
 
