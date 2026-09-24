@@ -157,6 +157,28 @@ namespace EQWOWConverter
             process.Start();
             process.WaitForExit();
 
+            // The stock player death skeletons (bones)
+            string wowDataFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data");
+            string exportedDeathSkeletonFolder = Path.Combine(wowExportPath, "ExportedDeathSkeletons");
+            FileTool.CreateBlankDirectory(exportedDeathSkeletonFolder, false);
+            StringBuilder deathSkeletonExtractScriptText = new StringBuilder();
+            foreach (string baseArchiveName in new string[] { "common.MPQ", "common-2.MPQ", "expansion.MPQ", "lichking.MPQ", "patch.MPQ", "patch-2.MPQ", "patch-3.MPQ" })
+            {
+                string baseArchivePath = Path.Combine(wowDataFolder, baseArchiveName);
+                if (File.Exists(baseArchivePath) == false || generatedPatchFileNames.Contains(baseArchiveName.ToLower()) == true)
+                    continue;
+                deathSkeletonExtractScriptText.AppendLine("extract \"" + baseArchivePath + "\" World\\Generic\\PassiveDoodads\\DeathSkeletons\\*DeathSkeleton* \"" + exportedDeathSkeletonFolder + "\"");
+            }
+            string deathSkeletonExtractionScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "deathskeletonextract.txt");
+            using (var deathSkeletonExtractionScriptFile = new StreamWriter(deathSkeletonExtractionScriptFileName))
+                deathSkeletonExtractionScriptFile.WriteLine(deathSkeletonExtractScriptText.ToString());
+            System.Diagnostics.Process deathSkeletonProcess = new System.Diagnostics.Process();
+            deathSkeletonProcess.StartInfo.RedirectStandardOutput = true;
+            deathSkeletonProcess.StartInfo.Arguments = "console \"" + deathSkeletonExtractionScriptFileName + "\"";
+            deathSkeletonProcess.StartInfo.FileName = mpqEditorFullPath;
+            deathSkeletonProcess.Start();
+            deathSkeletonProcess.WaitForExit();
+
             Logger.WriteDebug("Extracting client DBC files complete");
         }
 
@@ -594,6 +616,10 @@ namespace EQWOWConverter
                     CreatureIllusionCharacterRegistry.GetGenderFolderName(entry.GenderType) + "\\" + modelTemplate.GenerateFileName() + ".mdx";
                 creatureModelDataDBC.AddRow(modelTemplate, relativeModelPath, entry.AltCreatureModelDataID, modelTemplate.DBCCreatureSoundDataID);
                 creatureDisplayInfoDBC.AddRow(entry.AltCreatureDisplayID, entry.AltCreatureModelDataID, modelTemplate.GetDBCDisplayScale(), string.Empty, string.Empty, string.Empty);
+
+                // The illusion's corpse display
+                creatureModelDataDBC.AddRow(modelTemplate, relativeModelPath, entry.CorpseCreatureModelDataID, modelTemplate.DBCCreatureSoundDataID, 0x4);
+                creatureDisplayInfoDBC.AddRow(entry.CorpseCreatureDisplayID, entry.CorpseCreatureModelDataID, entry.Scale, string.Empty, string.Empty, string.Empty);
 
                 // Hair style and facial hair rows for every selectable byte value.  Without these the client aborts its character customization setup (including the CharSections face blit that carries the EQ head),
                 // rendering the head untextured. The hair styles select the head geoset and style 0 is the bare EQ head, styles 1-3 the helmed heads (NPC displays and worn helms pick them), and every other style falls back to the bare head

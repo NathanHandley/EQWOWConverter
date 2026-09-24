@@ -33,11 +33,12 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`FaceCount` INT(10) NOT NULL DEFAULT '1', ");
             stringBuilder.AppendLine("`IsRobeCapable` TINYINT(3) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`Scale` FLOAT NOT NULL DEFAULT '1', ");
+            stringBuilder.AppendLine("`CorpseDisplayID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`EQRaceID`, `Gender`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
-        public void AddRow(int eqRaceID, int gender, int chrRaceID, int displayID, int altDisplayID, int faceCount, int isRobeCapable, float scale)
+        public void AddRow(int eqRaceID, int gender, int chrRaceID, int displayID, int altDisplayID, int faceCount, int isRobeCapable, float scale, int corpseDisplayID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("EQRaceID", eqRaceID);
@@ -48,6 +49,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("FaceCount", faceCount);
             newRow.AddInt("IsRobeCapable", isRobeCapable);
             newRow.AddFloat("Scale", scale); // Object scale the mod applies with the display (the display rows themselves stay at scale 1)
+            newRow.AddInt("CorpseDisplayID", corpseDisplayID);
             Rows.Add(newRow);
         }
     }

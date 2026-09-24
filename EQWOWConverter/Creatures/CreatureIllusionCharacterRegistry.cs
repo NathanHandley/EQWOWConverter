@@ -30,6 +30,8 @@ namespace EQWOWConverter.Creatures
             public int ChrRacesID = 0;
             public int AltCreatureDisplayID = 0; // Second display of the same model, for the same-model display flip that re-applies mirror image data
             public int AltCreatureModelDataID = 0;
+            public int CorpseCreatureDisplayID = 0;
+            public int CorpseCreatureModelDataID = 0;
             public bool IsRobeCapable = false;
             public List<int> ValidFaceIndexes = new List<int>();
             public ObjectModelCharacterComposite? CharacterComposite = null; // Set once the model files generate; NPC skins of this race bake through it
@@ -146,6 +148,8 @@ namespace EQWOWConverter.Creatures
                     string genderIDString = Convert.ToInt32(race.Gender).ToString();
                     entry.AltCreatureModelDataID = IDGenerationTool.GenerateID("CreatureModelDataID", "playercharacteralt", raceIDString, genderIDString);
                     entry.AltCreatureDisplayID = IDGenerationTool.GenerateID("CreatureDisplayInfoID", "playercharacteralt", raceIDString, genderIDString);
+                    entry.CorpseCreatureModelDataID = IDGenerationTool.GenerateID("CreatureModelDataID", "playercharactercorpse", raceIDString, genderIDString);
+                    entry.CorpseCreatureDisplayID = IDGenerationTool.GenerateID("CreatureDisplayInfoID", "playercharactercorpse", raceIDString, genderIDString);
                     entry.ModelTemplate = CreatureModelTemplate.GetOrCreateCreatureModelTemplate(race, race.Gender, 0, 0, 0, 0, scale, false, false, false, isPlayerCharacterVersion: true);
                     EntriesByRaceAndGender.Add(entryKey, entry);
                     if (raceIDs.Contains(race.ID) == false)
@@ -189,6 +193,12 @@ namespace EQWOWConverter.Creatures
             if (entry1.Race.ID != entry2.Race.ID)
                 return entry1.Race.ID.CompareTo(entry2.Race.ID);
             return Convert.ToInt32(entry1.GenderType).CompareTo(Convert.ToInt32(entry2.GenderType));
+        }
+
+        // The stock death skeleton (bones) each EQ race uses
+        public static string GetDeathSkeletonSourceName(CreatureRace race)
+        {
+            return "Human";
         }
 
         public static List<IllusionCharacterEntry> GetEntries()

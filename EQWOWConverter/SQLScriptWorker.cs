@@ -2044,10 +2044,11 @@ namespace EQWOWConverter
                 if (entry.IsRobeCapable == true)
                     isRobeCapable = 1;
                 modEverquestIllusionCharacterSQL.AddRow(entry.Race.ID, gender, entry.ChrRacesID, entry.ModelTemplate.DBCCreatureDisplayID,
-                    entry.AltCreatureDisplayID, entry.ValidFaceIndexes.Count, isRobeCapable, entry.Scale);
+                    entry.AltCreatureDisplayID, entry.ValidFaceIndexes.Count, isRobeCapable, entry.Scale, entry.CorpseCreatureDisplayID);
 
                 // The alt display needs a creature_model_info row too, or the world server will not boot
                 creatureModelInfoSQL.AddRow(entry.AltCreatureDisplayID, gender);
+                creatureModelInfoSQL.AddRow(entry.CorpseCreatureDisplayID, gender);
             }
         }
 

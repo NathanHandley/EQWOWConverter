@@ -72,11 +72,11 @@ namespace EQWOWConverter.WOWFiles
             newRow.SortValue1 = modelDataID;
         }
 
-        public void AddRow(CreatureModelTemplate creatureModelTemplate, string modelName, int modelDataID, int creatureSoundDataID)
+        public void AddRow(CreatureModelTemplate creatureModelTemplate, string modelName, int modelDataID, int creatureSoundDataID, int flags = 0)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(modelDataID); // ID
-            newRow.AddPackedFlags(0); // Flags,0x40: ?, 0x80: Can Form Mount, 0x10000: Has Wheels
+            newRow.AddPackedFlags(flags); // Flags,0x4: player corpses of this model compose from the corpse's race/appearance bytes and item fields (stock character models carry it), 0x40: ?, 0x80: Can Form Mount, 0x10000: Has Wheels
             newRow.AddString(modelName); // Model Path ("Creature\....mdx), always ending in mdx
             newRow.AddInt32(1); // SizeClass (Big models are ~4, most 1)
             newRow.AddFloat(1); // ModelScale (always 1 since a model template's size lives in CreatureDisplayInfo (see CreatureModelTemplate.GetDBCDisplayScale))

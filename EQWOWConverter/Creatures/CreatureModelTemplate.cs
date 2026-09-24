@@ -438,6 +438,29 @@ namespace EQWOWConverter.Creatures
                 }
             }
 
+            // The race's bones model
+            if (IsPlayerCharacterVersion == true)
+            {
+                string genderName = CreatureIllusionCharacterRegistry.GetGenderFolderName(GenderType);
+                string exportedDeathSkeletonFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "ExportedDeathSkeletons"); // MPQEditor extracts without the folders
+                string sourceBaseName = string.Concat(CreatureIllusionCharacterRegistry.GetDeathSkeletonSourceName(Race), genderName, "DeathSkeleton");
+                if (File.Exists(Path.Combine(exportedDeathSkeletonFolder, sourceBaseName + ".m2")) == false)
+                    sourceBaseName = string.Concat(CreatureIllusionCharacterRegistry.GetDeathSkeletonSourceName(Race), "MaleDeathSkeleton");
+                string targetBaseName = string.Concat(CreatureIllusionCharacterRegistry.GetClientFileStringForRace(Race), genderName, "DeathSkeleton");
+                string deathSkeletonOutputFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "World", "Generic", "PassiveDoodads", "DeathSkeletons");
+                if (File.Exists(Path.Combine(exportedDeathSkeletonFolder, sourceBaseName + ".m2")) == false)
+                    Logger.WriteError(string.Concat("No stock death skeleton '", sourceBaseName, "' was extracted from the WoW client, so '", targetBaseName, "' bones will show a missing-model box"));
+                else
+                {
+                    lock (GetOutputFolderLock(Path.Combine("DeathSkeletons", targetBaseName)))
+                    {
+                        Directory.CreateDirectory(deathSkeletonOutputFolder);
+                        FileTool.CopyFile(Path.Combine(exportedDeathSkeletonFolder, sourceBaseName + ".m2"), Path.Combine(deathSkeletonOutputFolder, targetBaseName + ".m2"));
+                        FileTool.CopyFile(Path.Combine(exportedDeathSkeletonFolder, sourceBaseName + "00.skin"), Path.Combine(deathSkeletonOutputFolder, targetBaseName + "00.skin"));
+                    }
+                }
+            }
+
             // Place the related textures. Serialized per shared race output folder because every model template of a race copies into the same folder
             lock (GetOutputFolderLock(outputObjectFolderName))
             {
