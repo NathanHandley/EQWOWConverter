@@ -327,6 +327,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("AdventurerAuraSpellID", Configuration.ACHIEVEMENT_EQ_ADVENTURER_ENABLED == true ? Configuration.SPELL_EQ_ADVENTURER_AURA_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("MentorshipMentorAuraSpellID", Configuration.MENTORSHIP_ENABLED == true ? Configuration.MENTORSHIP_MENTOR_AURA_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("MentorshipApprenticeAuraSpellID", Configuration.MENTORSHIP_ENABLED == true ? Configuration.MENTORSHIP_APPRENTICE_AURA_SPELL_ID.ToString() : "0");
+            modEverquestSystemConfigsSQL.AddRow("HearthstoneTetherSpellID", Configuration.SPELLS_HEARTHSTONE_TETHER_ENABLED == true ? Configuration.SPELLS_HEARTHSTONETETHER_SPELLDBC_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMin", Configuration.DBCID_MAP_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMax", Configuration.DBCID_MAP_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("ShipEntryTemplateIDMin", Configuration.SQL_GAMEOBJECTTEMPLATE_SHIP_ID_START.ToString());

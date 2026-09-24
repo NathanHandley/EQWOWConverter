@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: EQ Tethers
+## Notes: Shows where your Gate and Hearthstone tether buffs will return you to on their tooltips
+## Version: 1.0
+
+EQ_Tethers.lua

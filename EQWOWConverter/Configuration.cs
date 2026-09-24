@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 114;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 115;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -104,7 +104,7 @@ namespace EQWOWConverter
         public static string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
 
         // Client files must match this between the server and the client, separate from "CONFIGONLY_CORE_MOD_VERSION"
-        public static int DEPLOY_CLIENT_DATA_VERSION = 14;
+        public static int DEPLOY_CLIENT_DATA_VERSION = 15;
         public static string DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE = "Your EverQuest client data is out of date. Please run the launcher to update, then log back in.";
 
         // ====================================================================
@@ -845,9 +845,13 @@ namespace EQWOWConverter
         // If true, the player can return to their gate point by clicking off the buff (within 30 minutes)
         public static bool SPELLS_GATE_TETHER_ENABLED = true;
 
+        // If true, using a Hearthstone leaves a separate 30 minute tether buff that returns the player to where they used it when clicked off
+        public static bool SPELLS_HEARTHSTONE_TETHER_ENABLED = true;
+
         // IDs for special spells that need an exact match of ID between this and mod-everquest
         public static int SPELLS_GATECUSTOM_SPELLDBC_ID = 86900;
         public static int SPELLS_BINDCUSTOM_SPELLDBC_ID = 86901;
+        public static int SPELLS_HEARTHSTONETETHER_SPELLDBC_ID = 86920;
 
         // Mark of Karn is made to be the same as the WOW paladin spell "Judgement of Light" mechanically for the heal effect part
         public static int SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID = 20185;
@@ -2157,6 +2161,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("AUDIO_USE_ALTERNATE_TRACKS", AUDIO_USE_ALTERNATE_TRACKS, "If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience");
             OutputVariableToConfig("SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR", SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR, "If this is true, use the level as defined in everquest for summoned pets as well as the control behavior. (Highly advisable to leave False)");
             OutputVariableToConfig("SPELLS_GATE_TETHER_ENABLED", SPELLS_GATE_TETHER_ENABLED, "If true, the player can return to their gate point by clicking off the buff (within 30 minutes)");
+            OutputVariableToConfig("SPELLS_HEARTHSTONE_TETHER_ENABLED", SPELLS_HEARTHSTONE_TETHER_ENABLED, "If true, using a Hearthstone leaves a separate 30 minute tether buff that returns the player to where they used it when clicked off");
             OutputVariableToConfig("SPELL_MAX_CONCURRENT_BARD_SONGS", SPELL_MAX_CONCURRENT_BARD_SONGS, "Bards can have this many songs playing at the same time.");
             OutputVariableToConfig("SPELL_MOD_FACTION_REP_MULTIPLIER", SPELL_MOD_FACTION_REP_MULTIPLIER, "What to multiply EQ AddFaction (Alliance line) spell values by to get WOW reputation points");
             OutputVariableToConfig("SPELL_PERIODIC_SECONDS_PER_TICK_EQ", SPELL_PERIODIC_SECONDS_PER_TICK_EQ, "Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier (WoW typically has 3)");
@@ -2423,6 +2428,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL", SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL, "This is how high (WOW side) stats will be be scaled to.  This should almost always be set to the server max level configuration.");
             OutputVariableToConfig("SPELLS_GATECUSTOM_SPELLDBC_ID", SPELLS_GATECUSTOM_SPELLDBC_ID, "IDs for special spells that need an exact match of ID between this and mod-everquest", false);
             OutputVariableToConfig("SPELLS_BINDCUSTOM_SPELLDBC_ID", SPELLS_BINDCUSTOM_SPELLDBC_ID, "");
+            OutputVariableToConfig("SPELLS_HEARTHSTONETETHER_SPELLDBC_ID", SPELLS_HEARTHSTONETETHER_SPELLDBC_ID, "");
             OutputVariableToConfig("SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID", SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID, "Mark of Karn is made to be the same as the WOW paladin spell \"Judgement of Light\" mechanically for the heal effect part", false);
             OutputVariableToConfig("SPELLS_JUDGEMENTOFLIGHT_PROCS_PER_MINUTE", SPELLS_JUDGEMENTOFLIGHT_PROCS_PER_MINUTE, "", false);
             OutputVariableToConfig("SPELLS_JUDGEMENTOFLIGHT_PROC_FLAGS", SPELLS_JUDGEMENTOFLIGHT_PROC_FLAGS, "", false);
@@ -3239,8 +3245,10 @@ namespace EQWOWConverter
             SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR = ReadVariableFromConfigString("SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR", configValuesByVariableName, SPELL_EFFECT_SUMMON_PETS_USE_EQ_LEVEL_AND_BEHAVIOR);
             SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL = ReadVariableFromConfigString("SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL", configValuesByVariableName, SPELL_EFFECT_CALC_STATS_FOR_MAX_LEVEL);
             SPELLS_GATE_TETHER_ENABLED = ReadVariableFromConfigString("SPELLS_GATE_TETHER_ENABLED", configValuesByVariableName, SPELLS_GATE_TETHER_ENABLED);
+            SPELLS_HEARTHSTONE_TETHER_ENABLED = ReadVariableFromConfigString("SPELLS_HEARTHSTONE_TETHER_ENABLED", configValuesByVariableName, SPELLS_HEARTHSTONE_TETHER_ENABLED);
             SPELLS_GATECUSTOM_SPELLDBC_ID = ReadVariableFromConfigString("SPELLS_GATECUSTOM_SPELLDBC_ID", configValuesByVariableName, SPELLS_GATECUSTOM_SPELLDBC_ID);
             SPELLS_BINDCUSTOM_SPELLDBC_ID = ReadVariableFromConfigString("SPELLS_BINDCUSTOM_SPELLDBC_ID", configValuesByVariableName, SPELLS_BINDCUSTOM_SPELLDBC_ID);
+            SPELLS_HEARTHSTONETETHER_SPELLDBC_ID = ReadVariableFromConfigString("SPELLS_HEARTHSTONETETHER_SPELLDBC_ID", configValuesByVariableName, SPELLS_HEARTHSTONETETHER_SPELLDBC_ID);
 
             SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID = ReadVariableFromConfigString("SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID", configValuesByVariableName, SPELLS_JUDGEMENTOFLIGHT_WOW_SPELL_ID);
             SPELLS_JUDGEMENTOFLIGHT_PROCS_PER_MINUTE = ReadVariableFromConfigString("SPELLS_JUDGEMENTOFLIGHT_PROCS_PER_MINUTE", configValuesByVariableName, SPELLS_JUDGEMENTOFLIGHT_PROCS_PER_MINUTE);

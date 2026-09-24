@@ -413,6 +413,13 @@ namespace EQWOWConverter
                     Directory.Delete(targetMentorshipAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceMentorshipAddOnFolder, targetMentorshipAddOnFolder, true, true);
 
+                // Copy the tether addon into the prep location
+                string sourceTethersAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_Tethers");
+                string targetTethersAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_Tethers");
+                if (Directory.Exists(targetTethersAddOnFolder) == true)
+                    Directory.Delete(targetTethersAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceTethersAddOnFolder, targetTethersAddOnFolder, true, true);
+
                 // Copy the interface options page addon into the prep location
                 string sourceOptionsAddOnFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "AddOns", "EQ_Options");
                 string targetOptionsAddOnFolder = Path.Combine(exportAddOnsRootFolder, "EQ_Options");
@@ -3140,6 +3147,28 @@ namespace EQWOWConverter
             gateSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
             spellTemplates.Add(gateSpellTemplate);
 
+            // Hearthstone tether, which the mod puts on the player when they use a Hearthstone.  Kept apart from the gate tether so both can be held at once
+            if (Configuration.SPELLS_HEARTHSTONE_TETHER_ENABLED == true)
+            {
+                SpellTemplate hearthstoneTetherSpellTemplate = new SpellTemplate();
+                hearthstoneTetherSpellTemplate.Name = "Hearthstone Tether";
+                hearthstoneTetherSpellTemplate.WOWSpellID = Configuration.SPELLS_HEARTHSTONETETHER_SPELLDBC_ID;
+                hearthstoneTetherSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+                hearthstoneTetherSpellTemplate.Description = "Tethers you for 30 minutes to the location where you used your Hearthstone.";
+                hearthstoneTetherSpellTemplate.AuraDescription = "You are tethered to the location where you used your Hearthstone. Click off before the buff wears off to return there. The tether will fail if you attempt return while in combat.";
+                hearthstoneTetherSpellTemplate.AuraDuration.SetFixedDuration(1800000); // 30 minutes
+                hearthstoneTetherSpellTemplate.AuraStaysOnSecondaryClassSwitch = true;
+                hearthstoneTetherSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, (int)SpellDummyType.HearthstoneTether, 0));
+                hearthstoneTetherSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                hearthstoneTetherSpellTemplate.SpellIconID = 776; // Same icon as the stock Hearthstone spell
+                hearthstoneTetherSpellTemplate.CastTimeInMS = 0;
+                hearthstoneTetherSpellTemplate.RecoveryTimeInMS = 0;
+                hearthstoneTetherSpellTemplate.TriggersGlobalCooldown = false;
+                hearthstoneTetherSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+                hearthstoneTetherSpellTemplate.SkillLine = 0; // Don't show in the spellbook, since the mod is the only thing that applies it
+                spellTemplates.Add(hearthstoneTetherSpellTemplate);
+            }
+
             // Custom Bind Affinity (Self)
             SpellTemplate bindAffinitySelfSpellTemplate = new SpellTemplate();
             bindAffinitySelfSpellTemplate.Name = "Bind Affinity (Self)";
@@ -4873,6 +4902,11 @@ namespace EQWOWConverter
                 if (Directory.Exists(targetMentorshipAddOnFolder) == true)
                     Directory.Delete(targetMentorshipAddOnFolder, true);
                 FileTool.CopyDirectoryAndContents(sourceMentorshipAddOnFolder, targetMentorshipAddOnFolder, true, true);
+                string sourceTethersAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_Tethers");
+                string targetTethersAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_Tethers");
+                if (Directory.Exists(targetTethersAddOnFolder) == true)
+                    Directory.Delete(targetTethersAddOnFolder, true);
+                FileTool.CopyDirectoryAndContents(sourceTethersAddOnFolder, targetTethersAddOnFolder, true, true);
                 string sourceOptionsAddOnFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "AddOnsReady", "EQ_Options");
                 string targetOptionsAddOnFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Interface", "AddOns", "EQ_Options");
                 if (Directory.Exists(targetOptionsAddOnFolder) == true)

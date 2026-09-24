@@ -42,5 +42,6 @@ namespace EQWOWConverter.Spells
         SummonPC = 20,
         RemoveDamageShield = 21,
         HealMeleeAttackers = 22,
+        HearthstoneTether = 23,
     }
 }
