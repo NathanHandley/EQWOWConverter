@@ -289,6 +289,7 @@ namespace EQWOWConverter.Spells
         public bool IsGeneratedStunEffectSpell = false; 
         public SpellEQTargetType EQTargetType = SpellEQTargetType.Single;
         public bool IsSelfCenteredAreaBreath = false; // Dragon breath
+        public bool IsCasterCenteredDetrimentalArea = false; // Point blank AE (such as Dragon Roar), which has no range so creatures must cast it on themselves
         public bool CanTargetBothFriendlyAndEnemy = false;
         public UInt32 TargetCreatureType = 0; // No specific creature type
         public bool CastOnCorpse = false;
@@ -1650,6 +1651,7 @@ namespace EQWOWConverter.Spells
                             // Referenced from Blast Wave
                             spellWOWTargetTypes.Add(SpellWOWTargetType.SourceCaster);
                             spellWOWTargetTypes.Add(SpellWOWTargetType.UnitSourceAreaEnemy);
+                            spellTemplate.IsCasterCenteredDetrimentalArea = true;
                             spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets ", targetTypeDescriptionFragment, "enemies within ", spellRadius, " yards around the caster");
                         }
                         if (isDetrimental == false)

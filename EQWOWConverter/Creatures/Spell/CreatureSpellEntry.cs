@@ -102,6 +102,24 @@ namespace EQWOWConverter.Creatures
             return Math.Min(typeChance, priorityChance);
         }
 
+        public static int GetBossExpectedEQRollWaitInMS(int eqSpellTypeFlags)
+        {
+            int typeChance = Configuration.CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE;
+            if ((eqSpellTypeFlags & 4) == 4) typeChance = Configuration.CREATURE_SPELL_COMBAT_ROOT_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 128) == 128) typeChance = Configuration.CREATURE_SPELL_COMBAT_SNARE_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 256) == 256) typeChance = Configuration.CREATURE_SPELL_COMBAT_DOT_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 512) == 512) typeChance = Configuration.CREATURE_SPELL_COMBAT_DISPEL_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 2048) == 2048) typeChance = Configuration.CREATURE_SPELL_COMBAT_MEZ_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 4096) == 4096) typeChance = Configuration.CREATURE_SPELL_COMBAT_CHARM_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 8192) == 8192) typeChance = Configuration.CREATURE_SPELL_COMBAT_SLOW_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 16384) == 16384) typeChance = Configuration.CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE;
+            else if ((eqSpellTypeFlags & 64) == 64) typeChance = Configuration.CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE;
+
+            // Both the detrimental and type roll have to pass on the same check, and the expected number of failed checks before a pass is (1 / p) - 1
+            float passChancePerCheck = (Math.Clamp(Configuration.CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE, 1, 100) / 100f) * (Math.Clamp(typeChance, 1, 100) / 100f);
+            return Convert.ToInt32(Configuration.CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS * ((1f / passChancePerCheck) - 1f));
+        }
+
         public int CompareTo(CreatureSpellEntry other)
         {
             // Proper way to do this is to sort by "Priority", however doing that will cause much less

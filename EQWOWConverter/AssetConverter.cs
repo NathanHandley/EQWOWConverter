@@ -1862,8 +1862,16 @@ namespace EQWOWConverter
                     CreatureSpellEntry curEntry = allValidSpellEntries[i];
                     SpellTemplate spellTemplate = spellTemplatesByEQID[allValidSpellEntries[i].EQSpellID];
                     int originalRecastDelayInMS = allValidSpellEntries[i].OriginalRecastDelayInMS;
-                    // Creatures cast with the unmodified (pre player-only modification) aura durations
-                    curEntry.CalculatedMinimumDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, spellTemplate.CreatureCastAuraDuration.GetBuffDurationForLevel(creatureTemplate.Level)), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
+                    // Creatures cast with the unmodified (pre player-only modification) aura durations.  The aura duration stands in for TAKP's "can the target take this buff" check, which TAKP skips
+                    // for zero mana nukes,  so those (dragon breaths like Freezing Breath with its 5 minute snare) go back to their plain recast
+                    int effectiveManaCost = curEntry.ManaCost;
+                    if (effectiveManaCost == -1)
+                        effectiveManaCost = Convert.ToInt32(spellTemplate.CreatureCastManaCost);
+                    else if (effectiveManaCost == -2)
+                        effectiveManaCost = 0;
+                    bool ignoreAuraDuration = (curEntry.TypeFlags & 1) == 1 && effectiveManaCost == 0;
+                    int auraDurationDelayInMS = ignoreAuraDuration ? 0 : spellTemplate.CreatureCastAuraDuration.GetBuffDurationForLevel(creatureTemplate.Level);
+                    curEntry.CalculatedMinimumDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, auraDurationDelayInMS), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
                     curEntry.BuffDurationInMS = spellTemplate.CreatureCastAuraDuration.GetBuffDurationForLevel(creatureTemplate.Level);
                     allValidSpellEntries[i] = curEntry;
                 }

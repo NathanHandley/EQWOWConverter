@@ -60,6 +60,7 @@ namespace EQWOWConverter.Creatures
         public bool HasMana = false;
         public float HPMod = 1f;
         public float DamageMod = 1f;
+        public float SpellDamageMultiplier = 1f;
         public int AttackTime = (int)Configuration.CREATURE_STAT_MOD_ATKDELAY_DEFAULT_AMT;
         public CreatureWOWRankType Rank = CreatureWOWRankType.Normal;
         public CreatureDifficultyType DifficultyType = CreatureDifficultyType.Normal;
@@ -307,6 +308,20 @@ namespace EQWOWConverter.Creatures
             return DifficultyType == CreatureDifficultyType.RaidTrash || DifficultyType == CreatureDifficultyType.RaidBoss || DifficultyType == CreatureDifficultyType.RaidMiniBoss;
         }
 
+        public float GetTotalSpellDamageMultiplier()
+        {
+            float difficultyAdd = 0f;
+            switch (DifficultyType)
+            {
+                case CreatureDifficultyType.Normal: difficultyAdd = Configuration.CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL; break;
+                case CreatureDifficultyType.RaidTrash: difficultyAdd = Configuration.CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH; break;
+                case CreatureDifficultyType.RaidMiniBoss: difficultyAdd = Configuration.CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS; break;
+                case CreatureDifficultyType.RaidBoss: difficultyAdd = Configuration.CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_BOSS; break;
+                default: break;
+            }
+            return Math.Max(0f, SpellDamageMultiplier + difficultyAdd);
+        }
+
         public bool IsRaidBossTierCreature()
         {
             return DifficultyType == CreatureDifficultyType.RaidBoss || DifficultyType == CreatureDifficultyType.RaidMiniBoss;
@@ -487,6 +502,12 @@ namespace EQWOWConverter.Creatures
                     // Scaled Stats
                     newCreatureTemplate.HPMod = GetStatOrMod("hp", newCreatureTemplate.Level, float.Parse(columns["hp"]), CreatureStatModType.RelativeMod, float.Parse(columns["hp_multi_override"]));
                     newCreatureTemplate.DamageMod = GetStatOrMod("avgdamage", newCreatureTemplate.Level, float.Parse(columns["avgdmg"]), CreatureStatModType.RelativeMod, float.Parse(columns["avgdmg_multi_override"]));
+                    newCreatureTemplate.SpellDamageMultiplier = float.Parse(columns["spell_damage_multiplier"]);
+                    if (newCreatureTemplate.SpellDamageMultiplier < 0)
+                    {
+                        Logger.WriteError("Creature template eqid ", columns["eq_id"], " has a negative spell_damage_multiplier, so it was set to 1");
+                        newCreatureTemplate.SpellDamageMultiplier = 1f;
+                    }
                     newCreatureTemplate.AttackTime = (int)GetStatOrMod("attackdelay", newCreatureTemplate.Level, float.Parse(columns["attack_delay"]), CreatureStatModType.FixedValue);
 
                     // Raw EQ attack round time is what drives enrage/flurry/rampage rolls, and TAKP treats attack_delay values under 401 as hundreds of milliseconds

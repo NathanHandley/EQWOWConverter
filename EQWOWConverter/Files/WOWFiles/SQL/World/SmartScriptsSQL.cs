@@ -150,20 +150,22 @@ namespace EQWOWConverter.WOWFiles
         }
 
         public void AddRowForCreatureTemplateInCombatSpellCast(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
-            string comment, int eventChance = 100, bool castOnSelf = false, bool dontResetOnLeaveCombat = false)
+            string comment, int eventChance = 100, bool castOnSelf = false, bool dontResetOnLeaveCombat = false, int victimMaxRangeForCasterCenteredArea = 0,
+            int initialDelayMaxInMS = 1)
         {
             int recastDelayInMSMax = recastDelayInMS + Convert.ToInt32(Convert.ToSingle(recastDelayInMS) * Configuration.CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
-            int targetType = castOnSelf ? 1 : 2; // SMART_TARGET_SELF : SMART_TARGET_VICTIM
+            bool isCasterCenteredArea = victimMaxRangeForCasterCenteredArea > 0;
+            int targetType = (castOnSelf || isCasterCenteredArea) ? 1 : 2; // SMART_TARGET_SELF : SMART_TARGET_VICTIM
             AddRow(creatureTemplateID,
                 0,
-                0, // SMART_EVENT_UPDATE_IC
+                isCasterCenteredArea ? 9 : 0, // SMART_EVENT_RANGE : SMART_EVENT_UPDATE_IC
                 eventChance,
                 1, // Initial delay in MS (minimum) - Set to 1 so it defaults after heals
-                1, // Initial delay in MS (maximum) - Set to 1 so it defaults after heals
+                Math.Max(1, initialDelayMaxInMS), // Initial delay in MS (maximum)
                 recastDelayInMS, // Recast delay in MS (minimum)
                 recastDelayInMSMax, // Recast delay in MS (maximum)
-                0,
-                0,
+                0, // Victim minimum range (SMART_EVENT_RANGE only)
+                isCasterCenteredArea ? victimMaxRangeForCasterCenteredArea : 0, // Victim maximum range (SMART_EVENT_RANGE only)
                 11, // SMART_ACTION_CAST
                 wowSpellID,
                 32, // SMARTCAST_AURA_NOT_PRESENT

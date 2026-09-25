@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 116;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 117;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -670,6 +670,19 @@ namespace EQWOWConverter
         public static int CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD = 1;
         public static int CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP = 30;
         public static int CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN = 20;
+
+        // Raid boss and raid mini boss timing for non-priority-0 combat spells.  TAKP rolls a spell's chance on every engaged autocast check (roughly every 0.75-2 seconds) once
+        // its recast is up, so a failed roll only delays the cast by a few checks
+        public static bool CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED = true;
+        public static int CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS = 1375; // Average of TAKP AI_EngagedNoSpellMinRecast (750) and AI_EngagedNoSpellMaxRecast (2000)
+        public static int CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE = 25; // TAKP AI_EngagedDetrimentalChance, rolled before any non-priority-0 detrimental spell
+        public static int CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE = 40; // TAKP SpellType_Nuke roll for non-priority-0 nukes
+
+        // Extra spell damage multiplier per creature difficulty type, ADDED to the per creature spell_damage_multiplier in CreatureTemplates.csv.  0 = no change
+        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL = 0f;
+        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH = 0f;
+        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS = 0f;
+        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_BOSS = 0f;
 
         // How long to cooldown an attack proc from a creature, such as Ice Borrower's 'Frost Breath'
         public static int CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS = 3000;
@@ -2366,6 +2379,14 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD", CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD, "Spell pick priority order weights", false);
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP", CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP, "", false);
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN", CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN, "");
+            OutputVariableToConfig("CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED", CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED, "Raid boss and raid mini boss timing for non-priority-0 combat spells.  TAKP rolls a spell's chance on every engaged autocast check (roughly every 0.75-2 seconds) once its recast is up, so a failed roll only delays the cast by a few checks", false);
+            OutputVariableToConfig("CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS", CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE", CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE", CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE, "");
+            OutputVariableToConfig("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL", CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL, "Extra spell damage multiplier per creature difficulty type, ADDED to the per creature spell_damage_multiplier in CreatureTemplates.csv.  0 = no change", false);
+            OutputVariableToConfig("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH", CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS", CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_BOSS", CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_BOSS, "");
             OutputVariableToConfig("CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS", CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS, "How long to cooldown an attack proc from a creature, such as Ice Borrower's 'Frost Breath'");
             OutputVariableToConfig("CREATURE_SPELL_ESCAPE_HEALTH_TRIGGER_PCT", CREATURE_SPELL_ESCAPE_HEALTH_TRIGGER_PCT, "Health and cast chance a creature will cast an escape spell", false);
             OutputVariableToConfig("CREATURE_SPELL_ESCAPE_CAST_CHANCE", CREATURE_SPELL_ESCAPE_CAST_CHANCE, "", false);
@@ -3179,6 +3200,14 @@ namespace EQWOWConverter
             CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD);
             CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP);
             CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN);
+            CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED = ReadVariableFromConfigString("CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED", configValuesByVariableName, CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED);
+            CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS", configValuesByVariableName, CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS);
+            CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE", configValuesByVariableName, CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE);
+            CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE);
+            CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL = ReadVariableFromConfigString("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL", configValuesByVariableName, CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL);
+            CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH = ReadVariableFromConfigString("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH", configValuesByVariableName, CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH);
+            CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS = ReadVariableFromConfigString("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS", configValuesByVariableName, CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS);
+            CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_BOSS = ReadVariableFromConfigString("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_BOSS", configValuesByVariableName, CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_BOSS);
             CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS", configValuesByVariableName, CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS);
             CREATURE_SPELL_ESCAPE_HEALTH_TRIGGER_PCT = ReadVariableFromConfigString("CREATURE_SPELL_ESCAPE_HEALTH_TRIGGER_PCT", configValuesByVariableName, CREATURE_SPELL_ESCAPE_HEALTH_TRIGGER_PCT);
             CREATURE_SPELL_ESCAPE_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_ESCAPE_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_ESCAPE_CAST_CHANCE);

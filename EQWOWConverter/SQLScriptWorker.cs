@@ -1085,7 +1085,7 @@ namespace EQWOWConverter
                     creatureTemplate.RampageChancePercent, rampageRangeWOW, creatureTemplate.RampageDamagePercent, creatureTemplate.HasWildRampageAbility,
                     creatureTemplate.WildRampageChancePercent, creatureTemplate.WildRampageMaxTargets, creatureTemplate.WildRampageDamagePercent,
                     creatureTemplate.EQAttackRoundTimeInMS, Convert.ToInt32(creatureTemplate.DifficultyType),
-                    creatureTemplate.IsGossipOnlyFromHailText());
+                    creatureTemplate.IsGossipOnlyFromHailText(), creatureTemplate.GetTotalSpellDamageMultiplier());
 
                 // Determine the display id
                 int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;
@@ -1194,11 +1194,32 @@ namespace EQWOWConverter
 
                         // Gates detrimental casts behind per-type rolls and honor priority order (lower number = preferred)
                         int eventChance = CreatureSpellEntry.GetCombatSpellEventChance(creatureSpellEntry.TypeFlags, creatureSpellEntry.Priority);
+                        int recastDelayInMS = creatureSpellEntry.CalculatedMinimumDelayInMS;
+                        int initialDelayMaxInMS = 1;
+
+                        // Raid bosses re-roll like TAKP instead of losing whole recast cycles to failed rolls, but only where that casts more often
+                        // (a short recast spell, such as a 2.5 second nuke at 50%, already comes around faster than the TAKP roll wait would allow)
+                        if (Configuration.CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED == true && creatureTemplate.IsRaidBossTierCreature() == true && eventChance > 0 && eventChance < 100)
+                        {
+                            int expectedRollWaitInMS = CreatureSpellEntry.GetBossExpectedEQRollWaitInMS(creatureSpellEntry.TypeFlags);
+                            long expectedIntervalWithChanceInMS = (long)recastDelayInMS * 100 / eventChance;
+                            if ((long)recastDelayInMS + expectedRollWaitInMS < expectedIntervalWithChanceInMS)
+                            {
+                                recastDelayInMS += expectedRollWaitInMS;
+                                initialDelayMaxInMS = expectedRollWaitInMS;
+                                eventChance = 100;
+                            }
+                        }
+
+                        // Point blank AEs only go off while the victim stands inside them
+                        int victimMaxRangeForCasterCenteredArea = 0;
+                        if (curSpellTemplate.IsCasterCenteredDetrimentalArea == true)
+                            victimMaxRangeForCasterCenteredArea = Math.Max(1, curSpellTemplate.SpellRadius);
 
                         string comment = string.Concat("EQ In Combat ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.GetWOWSpellIDForCreatureCast(), ")");
                         smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID,
-                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.GetWOWSpellIDForCreatureCast(), comment, eventChance, curSpellTemplate.IsSelfCenteredAreaBreath,
-                            curSpellTemplate.ConvertDirectDamageToDoT);
+                            recastDelayInMS, curSpellTemplate.GetWOWSpellIDForCreatureCast(), comment, eventChance, curSpellTemplate.IsSelfCenteredAreaBreath,
+                            curSpellTemplate.ConvertDirectDamageToDoT, victimMaxRangeForCasterCenteredArea, initialDelayMaxInMS);
                     }
 
                     // Add spell events for every in-combat self buff entry (cast on self, not the victim)
