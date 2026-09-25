@@ -328,6 +328,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("MentorshipMentorAuraSpellID", Configuration.MENTORSHIP_ENABLED == true ? Configuration.MENTORSHIP_MENTOR_AURA_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("MentorshipApprenticeAuraSpellID", Configuration.MENTORSHIP_ENABLED == true ? Configuration.MENTORSHIP_APPRENTICE_AURA_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("HearthstoneTetherSpellID", Configuration.SPELLS_HEARTHSTONE_TETHER_ENABLED == true ? Configuration.SPELLS_HEARTHSTONETETHER_SPELLDBC_ID.ToString() : "0");
+            modEverquestSystemConfigsSQL.AddRow("PriestOfDiscordPortalCooldownSpellID", Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true && Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0 ? Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMin", Configuration.DBCID_MAP_ID_START.ToString());
             modEverquestSystemConfigsSQL.AddRow("MapDBCIDMax", Configuration.DBCID_MAP_ID_END.ToString());
             modEverquestSystemConfigsSQL.AddRow("ShipEntryTemplateIDMin", Configuration.SQL_GAMEOBJECTTEMPLATE_SHIP_ID_START.ToString());
@@ -3647,12 +3648,14 @@ namespace EQWOWConverter
                         else if (gameObject.ObjectType == GameObjects.GameObjectType.Teleport)
                         {
                             string scriptComment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUID, " Teleports to ", gameObject.DestinationZoneShortName);
+                            int teleportSmartScriptID;
                             if (gameObject.LockDBCID != 0)
-                                smartScriptsSQL.AddRowForGameObjectTriggeredTeleportOnActivate(gameObject.GameObjectTemplateEntryID, gameObject.DestinationMapID, gameObject.DestinationPosition.X,
+                                teleportSmartScriptID = smartScriptsSQL.AddRowForGameObjectTriggeredTeleportOnActivate(gameObject.GameObjectTemplateEntryID, gameObject.DestinationMapID, gameObject.DestinationPosition.X,
                                     gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
                             else
-                                smartScriptsSQL.AddRowForGameObjectTriggeredTeleport(gameObject.GameObjectTemplateEntryID, gameObject.DestinationMapID, gameObject.DestinationPosition.X,
-                                    gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
+                                teleportSmartScriptID = smartScriptsSQL.AddRowForGameObjectTriggeredTeleport(gameObject.GameObjectTemplateEntryID, gameObject.DestinationMapID, gameObject.DestinationPosition.X,
+                                    gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment, gameObject.UsesPoDCooldownTeleportRestriction());
+                            AddPoDCooldownTeleportRestrictionAndAura(gameObject, gameObject.GameObjectTemplateEntryID, teleportSmartScriptID);
                         }
 
                         // Duplicate the spawn onto the low raid instance map if this zone has one
@@ -3683,12 +3686,14 @@ namespace EQWOWConverter
                                 if (gameObject.DestinationZoneShortName.ToLower().Trim() == gameObjectByShortName.Key)
                                     raidDestinationMapID = raidMapID;
                                 string scriptComment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUIDRaidLow, " Teleports to ", gameObject.DestinationZoneShortName, " RaidLow");
+                                int teleportSmartScriptID;
                                 if (gameObject.LockDBCID != 0)
-                                    smartScriptsSQL.AddRowForGameObjectTriggeredTeleportOnActivate(-gameObject.GameObjectGUIDRaidLow, raidDestinationMapID, gameObject.DestinationPosition.X,
+                                    teleportSmartScriptID = smartScriptsSQL.AddRowForGameObjectTriggeredTeleportOnActivate(-gameObject.GameObjectGUIDRaidLow, raidDestinationMapID, gameObject.DestinationPosition.X,
                                         gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
                                 else
-                                    smartScriptsSQL.AddRowForGameObjectTriggeredTeleport(-gameObject.GameObjectGUIDRaidLow, raidDestinationMapID, gameObject.DestinationPosition.X,
-                                        gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
+                                    teleportSmartScriptID = smartScriptsSQL.AddRowForGameObjectTriggeredTeleport(-gameObject.GameObjectGUIDRaidLow, raidDestinationMapID, gameObject.DestinationPosition.X,
+                                        gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment, gameObject.UsesPoDCooldownTeleportRestriction());
+                                AddPoDCooldownTeleportRestrictionAndAura(gameObject, -gameObject.GameObjectGUIDRaidLow, teleportSmartScriptID);
                             }
                         }
 
@@ -3723,17 +3728,29 @@ namespace EQWOWConverter
                                 else if (zonePropertiesByShortName.ContainsKey(destinationZoneShortName) == true && zonePropertiesByShortName[destinationZoneShortName].ShouldGenerateInstanceDungeon() == true)
                                     dungeonDestinationMapID = zonePropertiesByShortName[destinationZoneShortName].DBCMapIDDungeon;
                                 string scriptComment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUIDDungeon, " Teleports to ", gameObject.DestinationZoneShortName, " Dungeon");
+                                int teleportSmartScriptID;
                                 if (gameObject.LockDBCID != 0)
-                                    smartScriptsSQL.AddRowForGameObjectTriggeredTeleportOnActivate(-gameObject.GameObjectGUIDDungeon, dungeonDestinationMapID, gameObject.DestinationPosition.X,
+                                    teleportSmartScriptID = smartScriptsSQL.AddRowForGameObjectTriggeredTeleportOnActivate(-gameObject.GameObjectGUIDDungeon, dungeonDestinationMapID, gameObject.DestinationPosition.X,
                                         gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
                                 else
-                                    smartScriptsSQL.AddRowForGameObjectTriggeredTeleport(-gameObject.GameObjectGUIDDungeon, dungeonDestinationMapID, gameObject.DestinationPosition.X,
-                                        gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment);
+                                    teleportSmartScriptID = smartScriptsSQL.AddRowForGameObjectTriggeredTeleport(-gameObject.GameObjectGUIDDungeon, dungeonDestinationMapID, gameObject.DestinationPosition.X,
+                                        gameObject.DestinationPosition.Y, gameObject.DestinationPosition.Z, gameObject.DestinationOrientation, scriptComment, gameObject.UsesPoDCooldownTeleportRestriction());
+                                AddPoDCooldownTeleportRestrictionAndAura(gameObject, -gameObject.GameObjectGUIDDungeon, teleportSmartScriptID);
                             }
                         }
                     }
                 }
             }
+        }
+
+        private void AddPoDCooldownTeleportRestrictionAndAura(GameObject gameObject, int smartScriptEntryOrGUID, int smartScriptID)
+        {
+            if (gameObject.UsesPoDCooldownTeleportRestriction() == false)
+                return;
+            string conditionComment = string.Concat("Block teleport for GameObject ", smartScriptEntryOrGUID, " if player has spell aura ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID);
+            conditionsSQL.AddRowForSmartEventAuraMissingRestriction(smartScriptEntryOrGUID, 1, smartScriptID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, conditionComment);
+            string auraComment = string.Concat("EQ GameObject ", smartScriptEntryOrGUID, " Apply Azeroth-Norrath Teleport Cooldown Aura");
+            smartScriptsSQL.AddLinkedRowForAuraOnInvoker(smartScriptEntryOrGUID, 1, smartScriptID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, auraComment);
         }
 
         private void OutputSQLScriptsToDisk()

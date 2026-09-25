@@ -621,11 +621,11 @@ namespace EQWOWConverter.WOWFiles
             //);
         }
 
-        public void AddRowForGameObjectTriggeredTeleportOnActivate(int gameObjectTemplateID, int targetMapID, float targetX, float targetY, float targetZ,
+        public int AddRowForGameObjectTriggeredTeleportOnActivate(int gameObjectTemplateID, int targetMapID, float targetX, float targetY, float targetZ,
             float targetOrientation, string comment)
         {
             // Locked (keyed) teleports activate through the key's unlock "spell", which skips the gossip so listen here for the state (both unlock and clicking will cause this)
-            AddRow(gameObjectTemplateID, // Negative for GUID, Positive for Entry
+            return AddRow(gameObjectTemplateID, // Negative for GUID, Positive for Entry
                 1,  // SMART_SCRIPT_TYPE_GAMEOBJECT
                 70, // SMART_EVENT_GO_STATE_CHANGED
                 100,
@@ -652,14 +652,14 @@ namespace EQWOWConverter.WOWFiles
                 comment);
         }
 
-        public void AddRowForGameObjectTriggeredTeleport(int gameObjectTemplateID, int targetMapID, float targetX, float targetY, float targetZ,
-            float targetOrientation, string comment)
+        public int AddRowForGameObjectTriggeredTeleport(int gameObjectTemplateID, int targetMapID, float targetX, float targetY, float targetZ,
+            float targetOrientation, string comment, bool skipReportUse = false)
         {
-            AddRow(gameObjectTemplateID, // Negative for GUID, Positive for Entry
+            return AddRow(gameObjectTemplateID, // Negative for GUID, Positive for Entry
                 1,  // SMART_SCRIPT_TYPE_GAMEOBJECT
                 64, // SMART_EVENT_GOSSIP_HELLO - When you click on it
                 100,
-                0,
+                skipReportUse == true ? 1 : 0, // Filter: 0 = Use and ReportUse, 1 = Use only (CMSG_GAMEOBJ_REPORT_USE skips script hooks)
                 0,
                 0,
                 0,
@@ -712,6 +712,59 @@ namespace EQWOWConverter.WOWFiles
                 comment);
         }
 
+        public void AddLinkedRowForAuraOnInvoker(int entryOrGUIDID, int sourceType, int parentRowID, int spellTemplateID, string comment)
+        {
+            int auraRowID = AddRow(entryOrGUIDID, // Negative for GUID, Positive for Entry
+                sourceType,
+                61, // SMART_EVENT_LINK (only fires when the parent row's action runs)
+                100,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                75,  // SMART_ACTION_ADD_AURA (works from any source, where SMART_ACTION_CAST needs a creature caster)
+                spellTemplateID,
+                0,
+                0,
+                0,
+                0,
+                0,
+                7, // SMART_TARGET_ACTION_INVOKER
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                comment);
+
+            // Point the parent row at the new one (searching backwards, since the parent is normally the row just before)
+            string entryOrGUIDIDString = entryOrGUIDID.ToString();
+            string sourceTypeString = sourceType.ToString();
+            string parentRowIDString = parentRowID.ToString();
+            for (int i = Rows.Count - 1; i >= 0; i--)
+            {
+                SQLRow row = Rows[i];
+                if (GetColumnValue(row, "entryorguid") != entryOrGUIDIDString || GetColumnValue(row, "source_type") != sourceTypeString || GetColumnValue(row, "id") != parentRowIDString)
+                    continue;
+                foreach (SQLRow.SQLColumn column in row.SQLColumns)
+                    if (column.Name == "link")
+                        column.Value = auraRowID.ToString();
+                return;
+            }
+            Logger.WriteError("SmartScriptsSQL could not find parent row ", parentRowIDString, " for entryorguid ", entryOrGUIDIDString, " to link the aura row for spell ", spellTemplateID.ToString());
+        }
+
+        private string GetColumnValue(SQLRow row, string columnName)
+        {
+            foreach (SQLRow.SQLColumn column in row.SQLColumns)
+                if (column.Name == columnName)
+                    return column.Value;
+            return string.Empty;
+        }
+
         public void AddRowForMenuOptionTriggeredAura(int creatureEntry, int menuID, int menuOptionID, int spellTemplateID, string comment)
         {
             AddRow(creatureEntry, // Negative for GUID, Positive for Entry
@@ -741,7 +794,7 @@ namespace EQWOWConverter.WOWFiles
                 comment);
         }
 
-        public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventChance, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
+        public int AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventChance, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
             int eventParam5, int eventParam6, int actionType, int actionParam1, int actionParam2, int actionParam3, int actionParam4, int actionParam5, int actionParam6, 
             int targetType, int targetParam1, int targetParam2, float targetX, float targetY, float targetZ, float targetOrientation, string comment, int idOverride = -1,
             int eventFlags = 0)
@@ -749,10 +802,10 @@ namespace EQWOWConverter.WOWFiles
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entryorguid", entryOrGUIDID);
             newRow.AddInt("source_type", sourceType); // 0 = Creature, 1 = GameObject, 2 = AreaTrigger, 9 = TimedActionList
+            int id = idOverride;
             if (idOverride == -1)
-                newRow.AddInt("id", GetUniqueID(entryOrGUIDID, sourceType));
-            else
-                newRow.AddInt("id", idOverride);
+                id = GetUniqueID(entryOrGUIDID, sourceType);
+            newRow.AddInt("id", id);
             newRow.AddInt("link", 0);
             newRow.AddInt("event_type", eventType); 
             newRow.AddInt("event_phase_mask", 0);
@@ -782,6 +835,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("target_o", targetOrientation);
             newRow.AddString("comment", comment);
             Rows.Add(newRow);
+            return id;
         }
     }
 }

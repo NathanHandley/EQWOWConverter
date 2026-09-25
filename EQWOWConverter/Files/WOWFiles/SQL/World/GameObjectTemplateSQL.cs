@@ -94,6 +94,10 @@ namespace EQWOWConverter.WOWFiles
                     } break;
                 case GameObjectType.Teleport:
                     {
+                        // The script blocks use (with a message) while the Priest of Discord portal cooldown aura is up
+                        string scriptName = string.Empty;
+                        if (gameObject.UsesPoDCooldownTeleportRestriction() == true)
+                            scriptName = "EverQuest_PoDCooldownTeleportScript";
                         AddRow(gameObject.GameObjectTemplateEntryID,
                             0, // Door <- Overrides the visibility distance making it visible from very far away, but should be "10" (Goober)
                             gameObject.GameObjectDisplayInfoID, name,
@@ -102,7 +106,7 @@ namespace EQWOWConverter.WOWFiles
                             50, // Autoclose time in MS (which is the 'make reusable time' in this case)
                             0, // N/A
                             1, // "Area of Interest" is set to infinite (see from any distance)
-                            0, 0, gameObject.Scale, aiName, string.Empty);
+                            0, 0, gameObject.Scale, aiName, scriptName);
                     } break;
                 case GameObjectType.TradeskillFocus:
                     {

@@ -89,6 +89,13 @@ namespace EQWOWConverter.GameObjects
         public int MaxSpawnNum = 0; // Consider removing
         public int RespawnTimeInMS = 0;
         public bool EventSpawnedOnly = false;
+        public bool StopTeleportOnPoDCooldown = false;
+
+        public bool UsesPoDCooldownTeleportRestriction()
+        {
+            return StopTeleportOnPoDCooldown == true && Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true
+                && Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0;
+        }
         public int ContainedEQItemID = 0;
         public ItemTemplate? ContainedItemTemplate = null;
         public int KeyItemEQID = 0;
@@ -380,6 +387,10 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.RespawnTimeInMS = int.Parse(gameObjectsRow["respawn_time"]);
                 newGameObject.ContainedEQItemID = int.Parse(gameObjectsRow["contained_item"]);
                 newGameObject.EventSpawnedOnly = gameObjectsRow["event_spawned"].Trim() == "1";
+
+                // Teleports flagged this way are unusable while the Priest of Discord portal cooldown aura is up
+                if (gameObjectType == GameObjectType.Teleport)
+                    newGameObject.StopTeleportOnPoDCooldown = gameObjectsRow["stop_tele_on_pod_cooldown"].Trim() == "1";
 
                 // Keys
                 if (gameObjectType == GameObjectType.Door || gameObjectType == GameObjectType.Teleport)
