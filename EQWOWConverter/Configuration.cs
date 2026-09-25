@@ -338,7 +338,7 @@ namespace EQWOWConverter
         public static bool DUNGEON_FINDER_ENABLED = true;
 
         // If true, the stock WoW dungeon finder entries (except seasonal) are removed
-        public static bool DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS = false;
+        public static bool DUNGEON_FINDER_REMOVE_STANDARD_WOW_DUNGEONS = true;
 
         // Low Raid (pre-61+) dungeon instances
         public static bool DUNGEON_RAID_LOW_INSTANCES_ENABLED = true;
@@ -349,7 +349,7 @@ namespace EQWOWConverter
         public static int DUNGEON_INSTANCE_MAX_PLAYERS = 40;
 
         // If true, the instanced versions of EQ dungeons (non-raid) are queueable in the dungeon finder
-        public static bool DUNGEON_FINDER_ADD_EQ_DUNGEON_INSTANCES = true;
+        public static bool DUNGEON_FINDER_ADD_EQ_DUNGEON_INSTANCES = false;
 
         // Highest EQ expansion whose dungeons are listed in the dungeon finder
         public static int DUNGEON_FINDER_EQ_MAX_EXPANSION_ID = 1;
