@@ -1355,7 +1355,7 @@ namespace EQWOWConverter
         // If true, every EQ class (primary or secondary) grants a permanent aura with class specific effects
         public static bool CLASSAURA_ENABLED = true;
 
-        // First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96068 as of writing)
+        // First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96072 as of writing)
         public static int CLASSAURA_SPELL_ID_START = 96000;
 
         // Enchanter "Mind of Clarity"
@@ -1507,6 +1507,8 @@ namespace EQWOWConverter
         public static int CLASSAURA_DRUID_NATURES_BALANCE_FIRE_SPELL_ICON_EQ_ID = 15;
         public static int CLASSAURA_DRUID_NATURES_BALANCE_COLD_SPELL_ICON_EQ_ID = 19;
         public static int CLASSAURA_DRUID_NATURES_BALANCE_NATURE_SPELL_ICON_EQ_ID = 13;
+        public static int CLASSAURA_DRUID_NATURES_BALANCE_SHADOW_SPELL_ICON_EQ_ID = 3;
+        public static int CLASSAURA_DRUID_NATURES_BALANCE_ARCANE_SPELL_ICON_EQ_ID = 21;
         public static int CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK = 1;
         public static int CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK = 2;
         public static int CLASSAURA_DRUID_ENTANGLE_STRIKE_MAX_STACKS = 5;
@@ -2709,7 +2711,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ, "Creatures in this level range will never enrage (taken from TAKP's mob_ai.cpp CheckEnrage), with 0 in both disabling this suppression", false);
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ, "");
             OutputVariableToConfig("CLASSAURA_ENABLED", CLASSAURA_ENABLED, "Every EQ class (primary or secondary) grants a permanent aura with class specific effects. Values here bake into Spell.dbc, so a change needs a converter regen and DBC deploy", false);
-            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96068 as of writing)", false);
+            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96072 as of writing)", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_ENABLED", CLASSAURA_ENCHANTER_ENABLED, "Enchanter \"Mind of Clarity\": regenerates a percent of maximum mana on an interval, and spell damage and healing are increased while mana is at or above a threshold", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID", CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT", CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT, "", false);
@@ -2834,6 +2836,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_DRUID_NATURES_BALANCE_FIRE_SPELL_ICON_EQ_ID", CLASSAURA_DRUID_NATURES_BALANCE_FIRE_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_DRUID_NATURES_BALANCE_COLD_SPELL_ICON_EQ_ID", CLASSAURA_DRUID_NATURES_BALANCE_COLD_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_DRUID_NATURES_BALANCE_NATURE_SPELL_ICON_EQ_ID", CLASSAURA_DRUID_NATURES_BALANCE_NATURE_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("CLASSAURA_DRUID_NATURES_BALANCE_SHADOW_SPELL_ICON_EQ_ID", CLASSAURA_DRUID_NATURES_BALANCE_SHADOW_SPELL_ICON_EQ_ID, "", false);
+            OutputVariableToConfig("CLASSAURA_DRUID_NATURES_BALANCE_ARCANE_SPELL_ICON_EQ_ID", CLASSAURA_DRUID_NATURES_BALANCE_ARCANE_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK", CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK, "", false);
             OutputVariableToConfig("CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK", CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK, "", false);
             OutputVariableToConfig("CLASSAURA_DRUID_ENTANGLE_STRIKE_MAX_STACKS", CLASSAURA_DRUID_ENTANGLE_STRIKE_MAX_STACKS, "", false);
@@ -3655,6 +3659,8 @@ namespace EQWOWConverter
             CLASSAURA_DRUID_NATURES_BALANCE_FIRE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_DRUID_NATURES_BALANCE_FIRE_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_DRUID_NATURES_BALANCE_FIRE_SPELL_ICON_EQ_ID);
             CLASSAURA_DRUID_NATURES_BALANCE_COLD_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_DRUID_NATURES_BALANCE_COLD_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_DRUID_NATURES_BALANCE_COLD_SPELL_ICON_EQ_ID);
             CLASSAURA_DRUID_NATURES_BALANCE_NATURE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_DRUID_NATURES_BALANCE_NATURE_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_DRUID_NATURES_BALANCE_NATURE_SPELL_ICON_EQ_ID);
+            CLASSAURA_DRUID_NATURES_BALANCE_SHADOW_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_DRUID_NATURES_BALANCE_SHADOW_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_DRUID_NATURES_BALANCE_SHADOW_SPELL_ICON_EQ_ID);
+            CLASSAURA_DRUID_NATURES_BALANCE_ARCANE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_DRUID_NATURES_BALANCE_ARCANE_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_DRUID_NATURES_BALANCE_ARCANE_SPELL_ICON_EQ_ID);
             CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK);
             CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK);
             CLASSAURA_DRUID_ENTANGLE_STRIKE_MAX_STACKS = ReadVariableFromConfigString("CLASSAURA_DRUID_ENTANGLE_STRIKE_MAX_STACKS", configValuesByVariableName, CLASSAURA_DRUID_ENTANGLE_STRIKE_MAX_STACKS);

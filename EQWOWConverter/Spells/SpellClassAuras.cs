@@ -321,6 +321,8 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.DruidNaturesBalanceFire:
                 case SpellClassAuraType.DruidNaturesBalanceCold:
                 case SpellClassAuraType.DruidNaturesBalanceNature:
+                case SpellClassAuraType.DruidNaturesBalanceShadow:
+                case SpellClassAuraType.DruidNaturesBalanceArcane:
                 case SpellClassAuraType.DruidEntangleStrike:
                     return Configuration.CLASSAURA_DRUID_ENABLED;
                 case SpellClassAuraType.ShamanPassive:
@@ -1145,7 +1147,7 @@ namespace EQWOWConverter.Spells
             string description = Lines(
                 NamedLine("Nature's Echo", string.Concat("Your direct heals leave a regeneration that heals ", Pct(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_PERCENT), " of the amount over ",
                     Seconds(Configuration.CLASSAURA_DRUID_DIRECT_HEAL_REGEN_DURATION_IN_MS), ".")),
-                NamedLine("Nature's Balance", string.Concat("Casting a fire, cold, or nature direct damage spell with a base cast time longer than ",
+                NamedLine("Nature's Balance", string.Concat("Casting a fire, cold, nature, shadow, or arcane direct damage spell with a base cast time longer than ",
                     SecondsWithFraction(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_MIN_BASE_CAST_TIME_IN_MS), " builds a stack of that element for ",
                     Seconds(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DURATION_IN_MS), ", up to ", Configuration.CLASSAURA_DRUID_NATURES_BALANCE_MAX_STACKS.ToString(),
                     " stacks. Your next direct damage spell of a different element spends every stack at once, dealing ", Pct(Configuration.CLASSAURA_DRUID_NATURES_BALANCE_DAMAGE_PERCENT_PER_STACK),
@@ -1180,6 +1182,8 @@ namespace EQWOWConverter.Spells
             spellTemplates.Add(BuildNaturesBalanceTemplate("Nature's Balance (Fire)", SpellClassAuraType.DruidNaturesBalanceFire, Configuration.CLASSAURA_DRUID_NATURES_BALANCE_FIRE_SPELL_ICON_EQ_ID));
             spellTemplates.Add(BuildNaturesBalanceTemplate("Nature's Balance (Cold)", SpellClassAuraType.DruidNaturesBalanceCold, Configuration.CLASSAURA_DRUID_NATURES_BALANCE_COLD_SPELL_ICON_EQ_ID));
             spellTemplates.Add(BuildNaturesBalanceTemplate("Nature's Balance (Nature)", SpellClassAuraType.DruidNaturesBalanceNature, Configuration.CLASSAURA_DRUID_NATURES_BALANCE_NATURE_SPELL_ICON_EQ_ID));
+            spellTemplates.Add(BuildNaturesBalanceTemplate("Nature's Balance (Shadow)", SpellClassAuraType.DruidNaturesBalanceShadow, Configuration.CLASSAURA_DRUID_NATURES_BALANCE_SHADOW_SPELL_ICON_EQ_ID));
+            spellTemplates.Add(BuildNaturesBalanceTemplate("Nature's Balance (Arcane)", SpellClassAuraType.DruidNaturesBalanceArcane, Configuration.CLASSAURA_DRUID_NATURES_BALANCE_ARCANE_SPELL_ICON_EQ_ID));
 
             // A per-druid copy on the target, since only the druid who entangled it and that druid's pet are affected
             string entangleDescription = Lines(

@@ -89,6 +89,8 @@ namespace EQWOWConverter.Spells
         ClericRadianceFreeMana = 68,
         WizardIntensifiedSkyfall = 69,
         ShadowKnightBloodDebtVitality = 70,
-        Count = 71
+        DruidNaturesBalanceShadow = 71,
+        DruidNaturesBalanceArcane = 72,
+        Count = 73
     }
 }

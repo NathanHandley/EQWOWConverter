@@ -300961,3 +300961,5 @@ CreatureModelDataID|playercharactercorpse~128~0|10261
 CreatureDisplayInfoID|playercharactercorpse~128~0|63680
 CreatureModelDataID|playercharactercorpse~128~1|10262
 CreatureDisplayInfoID|playercharactercorpse~128~1|63681
+SpellRangeID|1000|237
+SkillLineAbilityID|811~86902|32919
