@@ -26,6 +26,7 @@ namespace EQWOWConverter.Creatures
     {
         private static Dictionary<int, CreatureTemplate> CreatureTemplateListByEQID = new Dictionary<int, CreatureTemplate>();
         private static Dictionary<int, CreatureTemplate> CreatureTemplateListByWOWID = new Dictionary<int, CreatureTemplate>();
+        private static Dictionary<int, (float, float)> WOWBaseHPByUnitClassByLevel = new Dictionary<int, (float, float)>();
         private static SortedDictionary<int, Dictionary<string, float>> StatBaselinesByLevels = new SortedDictionary<int, Dictionary<string, float>>();
         private static Dictionary<string, float> StatBaselineMinimums = new Dictionary<string, float>();
         private static Dictionary<string, float> StatBaselineMaximums = new Dictionary<string, float>();
@@ -500,7 +501,7 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.MinRespawnTimeInSec = int.Parse(columns["min_respawn_in_sec"]);
 
                     // Scaled Stats
-                    newCreatureTemplate.HPMod = GetStatOrMod("hp", newCreatureTemplate.Level, float.Parse(columns["hp"]), CreatureStatModType.RelativeMod, float.Parse(columns["hp_multi_override"]));
+                    newCreatureTemplate.HPMod = GetHPModForWOWHP(newCreatureTemplate.Level, newCreatureTemplate.MaxLevel, newCreatureTemplate.HasMana, float.Parse(columns["hp_wow"]));
                     newCreatureTemplate.DamageMod = GetStatOrMod("avgdamage", newCreatureTemplate.Level, float.Parse(columns["avgdmg"]), CreatureStatModType.RelativeMod, float.Parse(columns["avgdmg_multi_override"]));
                     newCreatureTemplate.SpellDamageMultiplier = float.Parse(columns["spell_damage_multiplier"]);
                     if (newCreatureTemplate.SpellDamageMultiplier < 0)
@@ -1061,6 +1062,7 @@ namespace EQWOWConverter.Creatures
         {
             // Clear old data
             StatBaselinesByLevels.Clear();
+            WOWBaseHPByUnitClassByLevel.Clear();
             StatBaselineMinimums.Clear();
             StatBaselineMaximums.Clear();
             StatBaselineDefaults.Clear();
@@ -1073,23 +1075,21 @@ namespace EQWOWConverter.Creatures
             {
                 // Pull values
                 int level = int.Parse(columns["level"]);
-                float hp = float.Parse(columns["hp"]);
                 //float mana = float.Parse(columns["mana"]);
                 float avgDamage = float.Parse(columns["avgdmg"]);
                 float attackDelay = float.Parse(columns["attackdelay"]);
 
                 // Create level baseline record
                 StatBaselinesByLevels.Add(level, new Dictionary<string, float>());
-                StatBaselinesByLevels[level].Add("hp", hp);
                 //StatBaselinesByLevels[level].Add("mana", mana);
                 StatBaselinesByLevels[level].Add("avgdamage", avgDamage);
                 StatBaselinesByLevels[level].Add("attackdelay", attackDelay);
+
+                // Stock creature_classlevelstats.basehp0 for unit_class 1 and 2, which the server multiplies by HealthModifier
+                WOWBaseHPByUnitClassByLevel.Add(level, (float.Parse(columns["wow_basehp_unitclass1"]), float.Parse(columns["wow_basehp_unitclass2"])));
             }
 
             // Precache min/max values for later calcs
-            StatBaselineMinimums.Add("hp", Configuration.CREATURE_STAT_MOD_HP_MIN_MOD);
-            StatBaselineMaximums.Add("hp", Configuration.CREATURE_STAT_MOD_HP_MAX_MOD);
-            StatBaselineDefaults.Add("hp", Configuration.CREATURE_STAT_MOD_HP_DEFAULT_MOD);
             StatBaselineMinimums.Add("avgdamage", Configuration.CREATURE_STAT_MOD_DMG_MIN_MOD);
             StatBaselineMaximums.Add("avgdamage", Configuration.CREATURE_STAT_MOD_DMG_MAX_MOD);
             StatBaselineDefaults.Add("avgdamage", Configuration.CREATURE_STAT_MOD_DMG_DEFAULT_MOD);
@@ -1106,6 +1106,18 @@ namespace EQWOWConverter.Creatures
             else if (levelFractionMod > 1f)
                 levelFractionMod = 1f;
             return level1Mod + ((levelCapMod - level1Mod) * levelFractionMod);
+        }
+
+        private static float GetHPModForWOWHP(int minLevel, int maxLevel, bool hasMana, float targetWOWHP)
+        {
+            // Server health is ceil(basehp0[level, unit_class] * HealthModifier)
+            int lowLevel = Math.Min(minLevel, maxLevel);
+            int highLevel = Math.Max(minLevel, maxLevel);
+            int midLevelLow = (lowLevel + highLevel) / 2;
+            int midLevelHigh = (lowLevel + highLevel + 1) / 2;
+            float baseHPLow = hasMana == true ? WOWBaseHPByUnitClassByLevel[midLevelLow].Item2 : WOWBaseHPByUnitClassByLevel[midLevelLow].Item1; // unit_class 2 when the creature has mana
+            float baseHPHigh = hasMana == true ? WOWBaseHPByUnitClassByLevel[midLevelHigh].Item2 : WOWBaseHPByUnitClassByLevel[midLevelHigh].Item1;
+            return targetWOWHP / ((baseHPLow + baseHPHigh) * 0.5f);
         }
 
         private static float GetStatOrMod(string statName, int creatureLevel, float creatureStatValue, CreatureStatModType statModType, float overrideValue = -1.0f)
@@ -1133,12 +1145,7 @@ namespace EQWOWConverter.Creatures
             // Determine the range intensity (higher makes the low/high swing greater) and amount to add after calculations
             float addedMod = 0f;
             float rangeIntensity = 1.0f;
-            if (statName == "hp")
-            {
-                rangeIntensity = GetModInLevelSpan(Configuration.CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD, Configuration.CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD, Configuration.CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL, creatureLevel);
-                addedMod = GetModInLevelSpan(Configuration.CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD, Configuration.CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD, Configuration.CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL, creatureLevel);
-            }
-            else if (statName == "avgdamage")
+            if (statName == "avgdamage")
             {
                 rangeIntensity = GetModInLevelSpan(Configuration.CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVEL1_MOD, Configuration.CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD, Configuration.CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL, creatureLevel);
                 addedMod = GetModInLevelSpan(Configuration.CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD, Configuration.CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD, Configuration.CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL, creatureLevel);

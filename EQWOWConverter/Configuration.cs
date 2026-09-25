@@ -549,12 +549,6 @@ namespace EQWOWConverter
         // Stat modifiers for creatures
         // - "MODADD" are values added after all dynamic calculations
         // - "RANGEINTENSITY" is the amount of 'swing' differences in stats come out to be
-        public static float CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD = 0.2f;
-        public static float CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD = 3f;
-        public static int CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL = 60;
-        public static float CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD = 1.0f;
-        public static float CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD = 3.0f;
-        public static int CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL = 63;
         public static float CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD = 0f;
         public static float CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD = 0.5f;
         public static int CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL = 60;
@@ -563,9 +557,6 @@ namespace EQWOWConverter
         public static int CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL = 63;
 
         // Min/Max/Default values for stat mods on creatures (overrides can violate these)
-        public static float CREATURE_STAT_MOD_HP_MIN_MOD = 0.001f;
-        public static float CREATURE_STAT_MOD_HP_MAX_MOD = 80f;
-        public static float CREATURE_STAT_MOD_HP_DEFAULT_MOD = 1f;
         public static float CREATURE_STAT_MOD_DMG_MIN_MOD = 0.01f;
         public static float CREATURE_STAT_MOD_DMG_MAX_MOD = 15f;
         public static float CREATURE_STAT_MOD_DMG_DEFAULT_MOD = 1f;
@@ -680,9 +671,9 @@ namespace EQWOWConverter
 
         // Extra spell damage multiplier per creature difficulty type, ADDED to the per creature spell_damage_multiplier in CreatureTemplates.csv.  0 = no change
         public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL = 0f;
-        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH = 0f;
-        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS = 0f;
-        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_BOSS = 0f;
+        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH = 0.5f;
+        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS = 1f;
+        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_BOSS = 1.5f;
 
         // How long to cooldown an attack proc from a creature, such as Ice Borrower's 'Frost Breath'
         public static int CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS = 3000;
@@ -2316,22 +2307,13 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_STANDARD_RESPAWN_MAX_TIME_IN_SEC", CREATURE_STANDARD_RESPAWN_MAX_TIME_IN_SEC, "");
             OutputVariableToConfig("CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC", CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC, "Spawn groups with a spawn limit whose points all respawn within this many seconds are 'cycle' groups (like the Trakanon's Teeth forager-hunter cycles and the Swamp of No Hope froglok camps)");
             OutputVariableToConfig("CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC", CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC, "Natural respawn time given to every creature row in a cycle group, kept long since the mod drives the actual cycle respawns");
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD", CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD, "Stat modifiers for creatures - \"MODADD\" are values added after all dynamic calculations", false);
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD", CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD, "", false);
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL", CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL, "", false);
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD", CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD, "", false);
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD", CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD, "", false);
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL", CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL, "", false);
-            OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD", CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD", CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD, "Stat modifiers for creatures - \"MODADD\" are values added after all dynamic calculations", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD", CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL", CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVEL1_MOD", CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVEL1_MOD, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD", CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL", CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL, "");
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MIN_MOD", CREATURE_STAT_MOD_HP_MIN_MOD, "Min/Max/Default values for stat mods on creatures (overrides can violate these)", false);
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_MAX_MOD", CREATURE_STAT_MOD_HP_MAX_MOD, "", false);
-            OutputVariableToConfig("CREATURE_STAT_MOD_HP_DEFAULT_MOD", CREATURE_STAT_MOD_HP_DEFAULT_MOD, "", false);
-            OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MIN_MOD", CREATURE_STAT_MOD_DMG_MIN_MOD, "", false);
+            OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MIN_MOD", CREATURE_STAT_MOD_DMG_MIN_MOD, "Min/Max/Default values for stat mods on creatures (overrides can violate these)", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_DMG_MAX_MOD", CREATURE_STAT_MOD_DMG_MAX_MOD, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_DMG_DEFAULT_MOD", CREATURE_STAT_MOD_DMG_DEFAULT_MOD, "", false);
             OutputVariableToConfig("CREATURE_STAT_MOD_ATKDELAY_MIN_AMT", CREATURE_STAT_MOD_ATKDELAY_MIN_AMT, "", false);
@@ -3129,12 +3111,6 @@ namespace EQWOWConverter
             CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC", configValuesByVariableName, CREATURE_SPAWN_CYCLE_MAX_EQ_RESPAWN_TIME_IN_SEC);
             CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC = ReadVariableFromConfigString("CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC", configValuesByVariableName, CREATURE_SPAWN_CYCLE_MEMBER_RESPAWN_TIME_IN_SEC);
 
-            CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MODADD_LEVEL1_MOD);
-            CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_MOD);
-            CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL", configValuesByVariableName, CREATURE_STAT_MOD_HP_MODADD_LEVELCAP_LEVEL);
-            CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVEL1_MOD);
-            CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_MOD);
-            CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL", configValuesByVariableName, CREATURE_STAT_MOD_HP_RANGEINTENSITY_LEVELCAP_LEVEL);
             CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD", configValuesByVariableName, CREATURE_STAT_MOD_DMG_MODADD_LEVEL1_MOD);
             CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD", configValuesByVariableName, CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_MOD);
             CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL", configValuesByVariableName, CREATURE_STAT_MOD_DMG_MODADD_LEVELCAP_LEVEL);
@@ -3142,9 +3118,6 @@ namespace EQWOWConverter
             CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD", configValuesByVariableName, CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_MOD);
             CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL", configValuesByVariableName, CREATURE_STAT_MOD_DMG_RANGEINTENSITY_LEVELCAP_LEVEL);
 
-            CREATURE_STAT_MOD_HP_MIN_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MIN_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MIN_MOD);
-            CREATURE_STAT_MOD_HP_MAX_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_MAX_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_MAX_MOD);
-            CREATURE_STAT_MOD_HP_DEFAULT_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_HP_DEFAULT_MOD", configValuesByVariableName, CREATURE_STAT_MOD_HP_DEFAULT_MOD);
             CREATURE_STAT_MOD_DMG_MIN_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_MIN_MOD", configValuesByVariableName, CREATURE_STAT_MOD_DMG_MIN_MOD);
             CREATURE_STAT_MOD_DMG_MAX_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_MAX_MOD", configValuesByVariableName, CREATURE_STAT_MOD_DMG_MAX_MOD);
             CREATURE_STAT_MOD_DMG_DEFAULT_MOD = ReadVariableFromConfigString("CREATURE_STAT_MOD_DMG_DEFAULT_MOD", configValuesByVariableName, CREATURE_STAT_MOD_DMG_DEFAULT_MOD);
