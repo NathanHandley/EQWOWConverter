@@ -1188,9 +1188,33 @@ namespace EQWOWConverter
                             creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.GetWOWSpellIDForCreatureCast(), curSpellTemplate.SpellRange, comment);
                     }
 
-                    // Add spell events for every combat entry
-                    foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesCombat)
+                    // Raid bosses pace their non-priority-0 combat spells together like TAKP's autocast loop so a failed roll no longer burns a whole recast and a boss with many short recast spells no longer chain casts over melee
+                    Dictionary<int, int> bossRollWaitInMSByCombatEntryIndex = new Dictionary<int, int>();
+                    if (creatureTemplate.IsRaidBossTierCreature() == true)
                     {
+                        List<int> rolledEntryIndices = new List<int>();
+                        for (int i = 0; i < creatureTemplate.CreatureSpellEntriesCombat.Count; i++)
+                            if (creatureTemplate.CreatureSpellEntriesCombat[i].Priority > 0)
+                                rolledEntryIndices.Add(i);
+                        float[] passChances = new float[rolledEntryIndices.Count];
+                        int[] recastDelays = new int[rolledEntryIndices.Count];
+                        int[] castTimes = new int[rolledEntryIndices.Count];
+                        for (int i = 0; i < rolledEntryIndices.Count; i++)
+                        {
+                            CreatureSpellEntry rolledEntry = creatureTemplate.CreatureSpellEntriesCombat[rolledEntryIndices[i]];
+                            passChances[i] = CreatureSpellEntry.GetBossEQPassChancePerCheck(rolledEntry.TypeFlags, creatureTemplate.EQClass, creatureTemplate.EQSpellCountInLevelBand);
+                            recastDelays[i] = rolledEntry.CalculatedMinimumDelayInMS;
+                            castTimes[i] = spellTemplatesByEQID[rolledEntry.EQSpellID].CreatureCastTimeInMS;
+                        }
+                        int[] rollWaits = CreatureSpellEntry.CalculateBossEQRollWaitsInMS(passChances, recastDelays, castTimes);
+                        for (int i = 0; i < rolledEntryIndices.Count; i++)
+                            bossRollWaitInMSByCombatEntryIndex.Add(rolledEntryIndices[i], rollWaits[i]);
+                    }
+
+                    // Add spell events for every combat entry
+                    for (int combatEntryIndex = 0; combatEntryIndex < creatureTemplate.CreatureSpellEntriesCombat.Count; combatEntryIndex++)
+                    {
+                        CreatureSpellEntry creatureSpellEntry = creatureTemplate.CreatureSpellEntriesCombat[combatEntryIndex];
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
 
                         // Gates detrimental casts behind per-type rolls and honor priority order (lower number = preferred)
@@ -1198,18 +1222,13 @@ namespace EQWOWConverter
                         int recastDelayInMS = creatureSpellEntry.CalculatedMinimumDelayInMS;
                         int initialDelayMaxInMS = 1;
 
-                        // Raid bosses re-roll like TAKP instead of losing whole recast cycles to failed rolls, but only where that casts more often
-                        // (a short recast spell, such as a 2.5 second nuke at 50%, already comes around faster than the TAKP roll wait would allow)
-                        if (Configuration.CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED == true && creatureTemplate.IsRaidBossTierCreature() == true && eventChance > 0 && eventChance < 100)
+                        // Priority 0 spells always cast in TAKP, so they never get a roll wait
+                        if (bossRollWaitInMSByCombatEntryIndex.ContainsKey(combatEntryIndex) == true)
                         {
-                            int expectedRollWaitInMS = CreatureSpellEntry.GetBossExpectedEQRollWaitInMS(creatureSpellEntry.TypeFlags);
-                            long expectedIntervalWithChanceInMS = (long)recastDelayInMS * 100 / eventChance;
-                            if ((long)recastDelayInMS + expectedRollWaitInMS < expectedIntervalWithChanceInMS)
-                            {
-                                recastDelayInMS += expectedRollWaitInMS;
-                                initialDelayMaxInMS = expectedRollWaitInMS;
-                                eventChance = 100;
-                            }
+                            int expectedRollWaitInMS = bossRollWaitInMSByCombatEntryIndex[combatEntryIndex];
+                            recastDelayInMS += expectedRollWaitInMS;
+                            initialDelayMaxInMS = expectedRollWaitInMS;
+                            eventChance = 100;
                         }
 
                         // Point blank AEs only go off while the victim stands inside them

@@ -44,6 +44,8 @@ namespace EQWOWConverter.Creatures
         public int MaxLevel = 1;
         public CreatureRace Race = new CreatureRace();
         public int EQClass = 1;
+        public int LevelEQ = 0;
+        public int EQSpellCountInLevelBand = 0; // TAKP AIspells.size(), which drives the per-type cast roll modifier
         public int EQBodyType = 24; // This is common for the body type
         public int FaceID = 0;
         public int ColorTintID = 0;
@@ -553,6 +555,7 @@ namespace EQWOWConverter.Creatures
                         newCreatureTemplate.RangedAttackDamageModPercent = rangedDamageModPercent;
                     }
                     int minLevelEQ = int.Parse(columns["levelEQ"]);
+                    newCreatureTemplate.LevelEQ = minLevelEQ;
 
                     // Enrage
                     if ((minLevelEQ < Configuration.COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ || minLevelEQ > Configuration.COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ) &&

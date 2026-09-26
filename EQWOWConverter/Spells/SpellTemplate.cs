@@ -254,6 +254,7 @@ namespace EQWOWConverter.Spells
         public bool HasCustomCooldown = false;
         public int EQSpellVisualEffectIndex = 0;
         public UInt32 SpellVisualID1 = 0;
+        public int CasterVisualKitID = 0; // SpellVisualKit mod-everquest plays on the caster when the spell goes off (instant dragon breaths)
         public UInt32 SpellVisualID2 = 0;
         public string SummonedPetTypeName = string.Empty;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
@@ -785,9 +786,7 @@ namespace EQWOWConverter.Spells
 
                 // Visual
                 newSpellTemplate.EQSpellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
-                if (newSpellTemplate.EQSpellVisualEffectIndex >= 61 && newSpellTemplate.EQSpellVisualEffectIndex <= 64 // These are dragonbreath
-                    && newSpellTemplate.CastTimeInMS < Configuration.SPELL_EFFECT_DRAGONBREATH_CAST_TIME_IN_MS)
-                    newSpellTemplate.CastTimeInMS = Configuration.SPELL_EFFECT_DRAGONBREATH_CAST_TIME_IN_MS;
+                bool isDragonBreathVisual = newSpellTemplate.EQSpellVisualEffectIndex >= 61 && newSpellTemplate.EQSpellVisualEffectIndex <= 64;
                 if (newSpellTemplate.EQSpellVisualEffectIndex >= 0 && newSpellTemplate.EQSpellVisualEffectIndex < 255)
                 {
                     SpellVisualType spellVisualType = SpellVisualType.Beneficial;
@@ -795,7 +794,14 @@ namespace EQWOWConverter.Spells
                         spellVisualType = SpellVisualType.BardSong;
                     else if (isDetrimental == true)
                         spellVisualType = SpellVisualType.Detrimental;
-                    newSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(newSpellTemplate.EQSpellVisualEffectIndex, spellVisualType).SpellVisualDBCID);
+                    SpellVisual spellVisual = SpellVisual.GetSpellVisual(newSpellTemplate.EQSpellVisualEffectIndex, spellVisualType);
+                    newSpellTemplate.SpellVisualID1 = Convert.ToUInt32(spellVisual.SpellVisualDBCID);
+
+                    // Dragon breaths (EQ visual 61-64, all NPC-only) stay instant like EQ, so they neither delay their damage nor stop the dragon's melee
+                    // for a cast bar.  An instant cast would mirror the breath's caster kit onto the target, so the spell's own visual keeps only its
+                    // impact kit (see SpellVisualDBC) and mod-everquest plays the breath (the caster-only Cast stage kit) on the caster when it goes off
+                    if (isDragonBreathVisual == true)
+                        newSpellTemplate.CasterVisualKitID = spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Cast];
                 }
 
                 // School class

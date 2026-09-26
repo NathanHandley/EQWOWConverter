@@ -59,6 +59,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`IntensifyingRampStartMultiplier1` FLOAT NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`IntensifyingRampStartMultiplier2` FLOAT NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`IntensifyingRampStartMultiplier3` FLOAT NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`CasterVisualKitID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -157,6 +158,7 @@ namespace EQWOWConverter.WOWFiles
                     rampStartMultiplier = blockSpellEffects[effectIndex].IntensifyingRampStartMultiplier;
                 newRow.AddFloat(string.Concat("IntensifyingRampStartMultiplier", (effectIndex + 1).ToString()), rampStartMultiplier);
             }
+            newRow.AddInt("CasterVisualKitID", spellTemplate.CasterVisualKitID);
             Rows.Add(newRow);
         }
     }

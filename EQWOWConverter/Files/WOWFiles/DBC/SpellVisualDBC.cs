@@ -22,11 +22,16 @@ namespace EQWOWConverter.WOWFiles
     {
         public void AddRow(SpellVisual spellVisual)
         {
-            AddRow(spellVisual.SpellVisualDBCID,
-                    spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Precast],
-                    spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Cast],
-                    spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Impact],
-                    0);
+            // An instant dragon breath would mirror its caster kits onto the target, so they stay out of the visual and mod-everquest plays the
+            // Cast stage kit on the caster instead (the kit rows themselves are still written)
+            int precastKitID = spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Precast];
+            int castKitID = spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Cast];
+            if (spellVisual.CategoryType == SpellVisualCategoryType.DragonBreath)
+            {
+                precastKitID = 0;
+                castKitID = 0;
+            }
+            AddRow(spellVisual.SpellVisualDBCID, precastKitID, castKitID, spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Impact], 0);
         }
 
         public void AddRow(int id, int precastKitID, int castKitID, int impactKitID, int stateKitID)

@@ -129,7 +129,7 @@ namespace EQWOWConverter.WOWFiles
             string fieldsSegment = GenerateFieldsSegment();
 
             // Break rows into groups to avoid making SQL files that are too big to import
-            int rowsPerBatch = Configuration.GENERATE_SQL_FILE_BATCH_SIZE;
+            int rowsPerBatch = Configuration.GENERATE_SQL_FILES_BATCH_SIZE;
             int batches = Rows.Count / rowsPerBatch + 1;
             for (int i = 0; i < batches; i++)
             {
@@ -178,14 +178,14 @@ namespace EQWOWConverter.WOWFiles
                     stringBuilder.Append(row.GetValuesStringInSQL());
 
                     // Cap off the last rows, otherwise add a comma
-                    if (curInsertRowIter == Configuration.GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE - 1 || rowIter == endRowIter - 1)
+                    if (curInsertRowIter == Configuration.GENERATE_SQL_FILES_INLINE_INSERT_ROWCOUNT_SIZE - 1 || rowIter == endRowIter - 1)
                         stringBuilder.AppendLine(";");
                     else
                         stringBuilder.Append(",");
 
                     // Add to the insert block iter, and cycle back if the end is hit
                     curInsertRowIter++;
-                    if (curInsertRowIter == Configuration.GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE)
+                    if (curInsertRowIter == Configuration.GENERATE_SQL_FILES_INLINE_INSERT_ROWCOUNT_SIZE)
                         curInsertRowIter = 0;
                 }
 

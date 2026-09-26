@@ -102,8 +102,23 @@ namespace EQWOWConverter.Creatures
             return Math.Min(typeChance, priorityChance);
         }
 
-        public static int GetBossExpectedEQRollWaitInMS(int eqSpellTypeFlags)
+        // TAKP's chance that one engaged autocast check casts this spell if it is off recast: the NPC's detrimental gate, then the spell type's roll
+        public static float GetBossEQPassChancePerCheck(int eqSpellTypeFlags, int eqClass, int eqSpellCount)
         {
+            // TAKP roll_mod: NPCs with more spells roll each one less often (dispel alone ignores it)
+            int rollMod = 0;
+            if (eqSpellCount < 4)
+                rollMod = 10;
+            else if (eqSpellCount > 9)
+                rollMod = -10;
+            else if (eqSpellCount > 6)
+                rollMod = -5;
+
+            // TAKP detrimental gate: hybrids (paladin 3, ranger 4, shadow knight 5, bard 8, beastlord 15) almost never cast detrimental spells
+            int detrimentalChance = Configuration.CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE;
+            if (eqClass == 3 || eqClass == 4 || eqClass == 5 || eqClass == 8 || eqClass == 15)
+                detrimentalChance = Configuration.CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE_HYBRID;
+
             int typeChance = Configuration.CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE;
             if ((eqSpellTypeFlags & 4) == 4) typeChance = Configuration.CREATURE_SPELL_COMBAT_ROOT_CAST_CHANCE;
             else if ((eqSpellTypeFlags & 128) == 128) typeChance = Configuration.CREATURE_SPELL_COMBAT_SNARE_CAST_CHANCE;
@@ -114,10 +129,61 @@ namespace EQWOWConverter.Creatures
             else if ((eqSpellTypeFlags & 8192) == 8192) typeChance = Configuration.CREATURE_SPELL_COMBAT_SLOW_CAST_CHANCE;
             else if ((eqSpellTypeFlags & 16384) == 16384) typeChance = Configuration.CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE;
             else if ((eqSpellTypeFlags & 64) == 64) typeChance = Configuration.CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE;
+            if ((eqSpellTypeFlags & 512) != 512)
+                typeChance += rollMod;
 
-            // Both the detrimental and type roll have to pass on the same check, and the expected number of failed checks before a pass is (1 / p) - 1
-            float passChancePerCheck = (Math.Clamp(Configuration.CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE, 1, 100) / 100f) * (Math.Clamp(typeChance, 1, 100) / 100f);
-            return Convert.ToInt32(Configuration.CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS * ((1f / passChancePerCheck) - 1f));
+            return (Math.Clamp(detrimentalChance, 1, 100) / 100f) * (Math.Clamp(typeChance, 1, 100) / 100f);
+        }
+
+        // Expected wait, on top of each spell's recast, that TAKP's autocast loop puts between a raid boss's non-priority-0 combat spells.  TAKP runs
+        // one check about every 1.4 seconds while the NPC is idle (none while casting or during the recovery after a cast), rolls the detrimental
+        // gate once per check and casts the FIRST eligible spell whose type roll passes, so a boss's spells share one gate instead of each rolling
+        // on its own.  Treating them independently makes a boss with many spells chain cast.  Solved as a fixed point over: how often each spell is
+        // off recast, the share of the gate each gets, and the fraction of time the NPC is idle.  Checked against a direct simulation of the TAKP
+        // loop for Severilous (level 60 shaman list): one cast every ~14 seconds and ~36% of the time casting, where the simulation gives ~14 and ~38%
+        public static int[] CalculateBossEQRollWaitsInMS(float[] passChancePerCheck, int[] recastDelayInMS, int[] castTimeInMS)
+        {
+            int spellCount = passChancePerCheck.Length;
+            float[] waitsInMS = new float[spellCount];
+            float[] availableFraction = new float[spellCount];
+            for (int i = 0; i < spellCount; i++)
+                availableFraction[i] = 1f;
+            float busyFraction = 0f;
+            float checkIntervalInMS = Configuration.CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS;
+            float postCastRecoveryInMS = Configuration.CREATURE_SPELL_BOSS_EQ_POST_CAST_RECOVERY_IN_MS;
+
+            for (int iteration = 0; iteration < 200; iteration++)
+            {
+                // Chance that some spell casts on a check, spread across the spells in proportion to their own pass chance
+                float noneCastChance = 1f;
+                float passChanceSum = 0f;
+                for (int i = 0; i < spellCount; i++)
+                {
+                    float weightedPassChance = availableFraction[i] * passChancePerCheck[i];
+                    noneCastChance *= 1f - weightedPassChance;
+                    passChanceSum += weightedPassChance;
+                }
+                float shareFactor = passChanceSum > 0f ? (1f - noneCastChance) / passChanceSum : 1f;
+                float idleFraction = Math.Max(0.05f, 1f - busyFraction);
+
+                float newBusyFraction = 0f;
+                for (int i = 0; i < spellCount; i++)
+                {
+                    float effectivePassChance = Math.Max(0.0001f, passChancePerCheck[i] * shareFactor);
+                    waitsInMS[i] = checkIntervalInMS * ((1f / effectivePassChance) - 1f) / idleFraction;
+                    float cycleInMS = Math.Max(1f, recastDelayInMS[i] + waitsInMS[i]);
+                    availableFraction[i] = waitsInMS[i] / cycleInMS;
+                    newBusyFraction += (castTimeInMS[i] + postCastRecoveryInMS) / cycleInMS;
+                }
+
+                // Damped so the busy/idle feedback settles instead of oscillating
+                busyFraction = (0.5f * busyFraction) + (0.5f * Math.Min(newBusyFraction, 0.95f));
+            }
+
+            int[] waitsOut = new int[spellCount];
+            for (int i = 0; i < spellCount; i++)
+                waitsOut[i] = Convert.ToInt32(Math.Min(waitsInMS[i], 3600000f));
+            return waitsOut;
         }
 
         public int CompareTo(CreatureSpellEntry other)

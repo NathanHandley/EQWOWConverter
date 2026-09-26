@@ -1856,6 +1856,16 @@ namespace EQWOWConverter
                     }
                 }
 
+                // TAKP picks spell list level bands (and the NPC's buff durations) by the NPC's EQ level, which can differ from the rebalanced WOW level
+                int spellLevel = creatureTemplate.LevelEQ > 0 ? creatureTemplate.LevelEQ : creatureTemplate.Level;
+
+                // TAKP's per-type cast rolls are modified by how many spells the NPC ended up with (a parent list spell already in the child list is not added twice)
+                HashSet<int> spellIDsInLevelBand = new HashSet<int>();
+                foreach (CreatureSpellEntry spellEntry in allValidSpellEntries)
+                    if (spellEntry.MinLevel <= spellLevel && spellEntry.MaxLevel >= spellLevel)
+                        spellIDsInLevelBand.Add(spellEntry.EQSpellID);
+                creatureTemplate.EQSpellCountInLevelBand = spellIDsInLevelBand.Count;
+
                 // Calculate a true minimum recast delay by factoring in spell cast and/or aura time
                 for (int i = 0; i < allValidSpellEntries.Count; i++)
                 {
@@ -1870,9 +1880,9 @@ namespace EQWOWConverter
                     else if (effectiveManaCost == -2)
                         effectiveManaCost = 0;
                     bool ignoreAuraDuration = (curEntry.TypeFlags & 1) == 1 && effectiveManaCost == 0;
-                    int auraDurationDelayInMS = ignoreAuraDuration ? 0 : spellTemplate.CreatureCastAuraDuration.GetBuffDurationForLevel(creatureTemplate.Level);
+                    int auraDurationDelayInMS = ignoreAuraDuration ? 0 : spellTemplate.CreatureCastAuraDuration.GetBuffDurationForLevel(spellLevel);
                     curEntry.CalculatedMinimumDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, auraDurationDelayInMS), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
-                    curEntry.BuffDurationInMS = spellTemplate.CreatureCastAuraDuration.GetBuffDurationForLevel(creatureTemplate.Level);
+                    curEntry.BuffDurationInMS = spellTemplate.CreatureCastAuraDuration.GetBuffDurationForLevel(spellLevel);
                     allValidSpellEntries[i] = curEntry;
                 }
 
@@ -1880,7 +1890,7 @@ namespace EQWOWConverter
                 foreach (CreatureSpellEntry spellEntry in allValidSpellEntries)
                 {
                     // Skip any that aren't in the right level band
-                    if (spellEntry.MinLevel > creatureTemplate.Level || spellEntry.MaxLevel < creatureTemplate.Level)
+                    if (spellEntry.MinLevel > spellLevel || spellEntry.MaxLevel < spellLevel)
                         continue;
 
                     SpellTemplate curSpellTemplate = spellTemplatesByEQID[spellEntry.EQSpellID];

@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 118;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 119;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -169,8 +169,8 @@ namespace EQWOWConverter
         public static float GENERATE_ADDED_BOUNDARY_AMOUNT = 0.01f;
 
         // How many insert rows to restrict in a SQL output file
-        public static int GENERATE_SQL_FILE_BATCH_SIZE = 10000;
-        public static int GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE = 2000;
+        public static int GENERATE_SQL_FILES_BATCH_SIZE = 10000;
+        public static int GENERATE_SQL_FILES_INLINE_INSERT_ROWCOUNT_SIZE = 2000;
 
         // How many file names to batch up when converting (must be greater or equal to 1)
         public static int GENERATE_BLPCONVERTBATCHSIZE = 50;
@@ -662,18 +662,18 @@ namespace EQWOWConverter
         public static int CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP = 30;
         public static int CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN = 20;
 
-        // Raid boss and raid mini boss timing for non-priority-0 combat spells.  TAKP rolls a spell's chance on every engaged autocast check (roughly every 0.75-2 seconds) once
-        // its recast is up, so a failed roll only delays the cast by a few checks
-        public static bool CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED = true;
+        // TAKP rolls a spell's chance on every engaged autocast check (roughly every 0.75-2 seconds) once its recast is up: first the NPC's detrimental gate, then the spell type's roll
         public static int CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS = 1375; // Average of TAKP AI_EngagedNoSpellMinRecast (750) and AI_EngagedNoSpellMaxRecast (2000)
-        public static int CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE = 25; // TAKP AI_EngagedDetrimentalChance, rolled before any non-priority-0 detrimental spell
+        public static int CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE = 25; // TAKP AI_EngagedDetrimentalChance / AI_EngagedDetrimentalChanceHealer, rolled before any non-priority-0 detrimental spell
+        public static int CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE_HYBRID = 3; // TAKP AI_EngagedDetrimentalChanceHybrid, used for paladin, ranger, shadow knight, bard and beastlord NPCs
         public static int CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE = 40; // TAKP SpellType_Nuke roll for non-priority-0 nukes
+        public static int CREATURE_SPELL_BOSS_EQ_POST_CAST_RECOVERY_IN_MS = 2250; // TAKP restarts the autocast check after a cast with the spell's recovery_time, which is 2250-2500 on nearly every NPC spell
 
         // Extra spell damage multiplier per creature difficulty type, ADDED to the per creature spell_damage_multiplier in CreatureTemplates.csv.  0 = no change
         public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL = 0f;
-        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH = 0.5f;
-        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS = 1f;
-        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_BOSS = 1.5f;
+        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH = 1f;
+        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS = 1.5f;
+        public static float CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_BOSS = 2f;
 
         // How long to cooldown an attack proc from a creature, such as Ice Borrower's 'Frost Breath'
         public static int CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS = 3000;
@@ -1023,7 +1023,6 @@ namespace EQWOWConverter
         public static float SPELL_EFFECT_EMITTER_SPAWN_RATE_DISC_MOD = 1f;
         public static float SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_MOD = 1.25f;
         public static int SPELL_EFFECT_EMITTER_DURATION_DRAGONBREATH_IN_MS = 3000;
-        public static int SPELL_EFFECT_DRAGONBREATH_CAST_TIME_IN_MS = 2000; // Without this, you won't see the lingering dragon breath effect
 
         // Sprite List particles
         public static float SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MIN = 0.1f;
@@ -2213,8 +2212,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("GENERATE_QUESTS", GENERATE_QUESTS, "If true, quests are generated");
             OutputVariableToConfig("GENERATE_WORLDMAPS", GENERATE_WORLDMAPS, "If true, generate and copy maps / minimaps");
             OutputVariableToConfig("GENERATE_ADDED_BOUNDARY_AMOUNT", GENERATE_ADDED_BOUNDARY_AMOUNT, "An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.");
-            OutputVariableToConfig("GENERATE_SQL_FILE_BATCH_SIZE", GENERATE_SQL_FILE_BATCH_SIZE, "How many insert rows to restrict in a SQL output file", false);
-            OutputVariableToConfig("GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE", GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE, "");
+            OutputVariableToConfig("GENERATE_SQL_FILES_BATCH_SIZE", GENERATE_SQL_FILES_BATCH_SIZE, "How many insert rows to restrict in a SQL output file", false);
+            OutputVariableToConfig("GENERATE_SQL_FILES_INLINE_INSERT_ROWCOUNT_SIZE", GENERATE_SQL_FILES_INLINE_INSERT_ROWCOUNT_SIZE, "");
             OutputVariableToConfig("GENERATE_BLPCONVERTBATCHSIZE", GENERATE_BLPCONVERTBATCHSIZE, "How many file names to batch up when converting (must be greater or equal to 1)");
             OutputVariableToConfig("GENERATE_FLOAT_EPSILON", GENERATE_FLOAT_EPSILON, "What edge buffer to add when doing floating point month");
             OutputVariableToConfig("GENERATE_FORCE_SQL_UPDATES", GENERATE_FORCE_SQL_UPDATES, "If true, SQL files will be generated in a way where they will have a unique ID to force an update if ran by azerothcore, regardless of changes");
@@ -2363,10 +2362,11 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD", CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD, "Spell pick priority order weights", false);
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP", CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP, "", false);
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN", CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN, "");
-            OutputVariableToConfig("CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED", CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED, "Raid boss and raid mini boss timing for non-priority-0 combat spells.  TAKP rolls a spell's chance on every engaged autocast check (roughly every 0.75-2 seconds) once its recast is up, so a failed roll only delays the cast by a few checks", false);
             OutputVariableToConfig("CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS", CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS, "", false);
             OutputVariableToConfig("CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE", CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE, "", false);
-            OutputVariableToConfig("CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE", CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE, "");
+            OutputVariableToConfig("CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE_HYBRID", CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE_HYBRID, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE", CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE, "", false);
+            OutputVariableToConfig("CREATURE_SPELL_BOSS_EQ_POST_CAST_RECOVERY_IN_MS", CREATURE_SPELL_BOSS_EQ_POST_CAST_RECOVERY_IN_MS, "");
             OutputVariableToConfig("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL", CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL, "Extra spell damage multiplier per creature difficulty type, ADDED to the per creature spell_damage_multiplier in CreatureTemplates.csv.  0 = no change", false);
             OutputVariableToConfig("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH", CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH, "", false);
             OutputVariableToConfig("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS", CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS, "", false);
@@ -2517,7 +2517,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_DISC_MOD", SPELL_EFFECT_EMITTER_SPAWN_RATE_DISC_MOD, "", false);
             OutputVariableToConfig("SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_MOD", SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_MOD, "", false);
             OutputVariableToConfig("SPELL_EFFECT_EMITTER_DURATION_DRAGONBREATH_IN_MS", SPELL_EFFECT_EMITTER_DURATION_DRAGONBREATH_IN_MS, "");
-            OutputVariableToConfig("SPELL_EFFECT_DRAGONBREATH_CAST_TIME_IN_MS", SPELL_EFFECT_DRAGONBREATH_CAST_TIME_IN_MS, "", false);
             OutputVariableToConfig("SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MIN", SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MIN, "Sprite List particles", false);
             OutputVariableToConfig("SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX", SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX, "", false);
             OutputVariableToConfig("SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX_EQ_VALUE", SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX_EQ_VALUE, "", false);
@@ -2956,8 +2955,8 @@ namespace EQWOWConverter
             GENERATE_WORLDMAPS = ReadVariableFromConfigString("GENERATE_WORLDMAPS", configValuesByVariableName, GENERATE_WORLDMAPS);
 
             GENERATE_ADDED_BOUNDARY_AMOUNT = ReadVariableFromConfigString("GENERATE_ADDED_BOUNDARY_AMOUNT", configValuesByVariableName, GENERATE_ADDED_BOUNDARY_AMOUNT);
-            GENERATE_SQL_FILE_BATCH_SIZE = ReadVariableFromConfigString("GENERATE_SQL_FILE_BATCH_SIZE", configValuesByVariableName, GENERATE_SQL_FILE_BATCH_SIZE);
-            GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE = ReadVariableFromConfigString("GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE", configValuesByVariableName, GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE);
+            GENERATE_SQL_FILES_BATCH_SIZE = ReadVariableFromConfigString("GENERATE_SQL_FILES_BATCH_SIZE", configValuesByVariableName, GENERATE_SQL_FILES_BATCH_SIZE);
+            GENERATE_SQL_FILES_INLINE_INSERT_ROWCOUNT_SIZE = ReadVariableFromConfigString("GENERATE_SQL_FILES_INLINE_INSERT_ROWCOUNT_SIZE", configValuesByVariableName, GENERATE_SQL_FILES_INLINE_INSERT_ROWCOUNT_SIZE);
             GENERATE_BLPCONVERTBATCHSIZE = ReadVariableFromConfigString("GENERATE_BLPCONVERTBATCHSIZE", configValuesByVariableName, GENERATE_BLPCONVERTBATCHSIZE);
             GENERATE_FLOAT_EPSILON = ReadVariableFromConfigString("GENERATE_FLOAT_EPSILON", configValuesByVariableName, GENERATE_FLOAT_EPSILON);
             GENERATE_FORCE_SQL_UPDATES = ReadVariableFromConfigString("GENERATE_FORCE_SQL_UPDATES", configValuesByVariableName, GENERATE_FORCE_SQL_UPDATES);
@@ -3177,10 +3176,11 @@ namespace EQWOWConverter
             CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD);
             CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP);
             CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN);
-            CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED = ReadVariableFromConfigString("CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED", configValuesByVariableName, CREATURE_SPELL_BOSS_EQ_ROLL_TIMING_ENABLED);
             CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS", configValuesByVariableName, CREATURE_SPELL_BOSS_EQ_AUTOCAST_CHECK_IN_MS);
             CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE", configValuesByVariableName, CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE);
+            CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE_HYBRID = ReadVariableFromConfigString("CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE_HYBRID", configValuesByVariableName, CREATURE_SPELL_BOSS_EQ_DETRIMENTAL_CHANCE_HYBRID);
             CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_BOSS_EQ_NUKE_CAST_CHANCE);
+            CREATURE_SPELL_BOSS_EQ_POST_CAST_RECOVERY_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_BOSS_EQ_POST_CAST_RECOVERY_IN_MS", configValuesByVariableName, CREATURE_SPELL_BOSS_EQ_POST_CAST_RECOVERY_IN_MS);
             CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL = ReadVariableFromConfigString("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL", configValuesByVariableName, CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_NORMAL);
             CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH = ReadVariableFromConfigString("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH", configValuesByVariableName, CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_TRASH);
             CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS = ReadVariableFromConfigString("CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS", configValuesByVariableName, CREATURE_SPELL_DAMAGE_MULTIPLIER_ADD_RAID_MINI_BOSS);
@@ -3343,7 +3343,6 @@ namespace EQWOWConverter
             SPELL_EFFECT_EMITTER_SPAWN_RATE_DISC_MOD = ReadVariableFromConfigString("SPELL_EFFECT_EMITTER_SPAWN_RATE_DISC_MOD", configValuesByVariableName, SPELL_EFFECT_EMITTER_SPAWN_RATE_DISC_MOD);
             SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_MOD = ReadVariableFromConfigString("SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_MOD", configValuesByVariableName, SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_MOD);
             SPELL_EFFECT_EMITTER_DURATION_DRAGONBREATH_IN_MS = ReadVariableFromConfigString("SPELL_EFFECT_EMITTER_DURATION_DRAGONBREATH_IN_MS", configValuesByVariableName, SPELL_EFFECT_EMITTER_DURATION_DRAGONBREATH_IN_MS);
-            SPELL_EFFECT_DRAGONBREATH_CAST_TIME_IN_MS = ReadVariableFromConfigString("SPELL_EFFECT_DRAGONBREATH_CAST_TIME_IN_MS", configValuesByVariableName, SPELL_EFFECT_DRAGONBREATH_CAST_TIME_IN_MS);
             SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MIN = ReadVariableFromConfigString("SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MIN", configValuesByVariableName, SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MIN);
             SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX = ReadVariableFromConfigString("SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX", configValuesByVariableName, SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX);
             SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX_EQ_VALUE = ReadVariableFromConfigString("SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX_EQ_VALUE", configValuesByVariableName, SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX_EQ_VALUE);
