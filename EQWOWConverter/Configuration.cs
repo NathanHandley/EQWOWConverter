@@ -695,8 +695,7 @@ namespace EQWOWConverter
 
         // If "GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION" is true, this is the text
         // that displays when you talk to a Priest of Discord
-        public static string CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT = "Ah, child of Azeroth. The Priests of Discord have torn the rift wide so that your wars and ours may bleed together. Where shall I send you to spread the Discord?";
-        public static string CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT = "Hail, traveler of Norrath. I can only send you back through the rift to the land in Azeroth that calls calls to your blood. Let your arrival there spread confusion and chaos among your kin. Where does your heritage demand I deliver you?";
+        public static string CREATURE_PRIEST_OF_DISCORD_TELEPORTER_GOSSIP_TEXT = "Hail, traveler. The Priests of Discord have torn the rift wide so that the wars of Azeroth and Norrath may bleed together. Where shall I send you to spread the Discord?";
         public static string CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT = "Greetings. As much as I wish to help you sow Discord, you carry with you the recent echo of one of our portals. See me again once that echo fades, and I shall aid you.";
 
         // If "GENERANE_ENABLE_PLANES_TELEPORTATION" is true, this is the text that displays
@@ -2384,8 +2383,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE", CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE, "Chance to cast an in-combat buff");
             OutputVariableToConfig("CREATURE_MANA_REGEN_PERCENT ", CREATURE_MANA_REGEN_PERCENT, "Percent (0-100) of the normal mana regeneration rate that spell-casting creatures should have, with approximately 10% being more EQ like");
             OutputTextLineToConfig("# If \"GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION\" is true, this is the text");
-            OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT, "that displays when you talk to a Priest of Discord", false);
-            OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT, "");
+            OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_GOSSIP_TEXT, "that displays when you talk to a Priest of Discord", false);
             OutputVariableToConfig("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT", CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT, "");
             OutputVariableToConfig("CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT", CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT, "If \"GENERANE_ENABLE_PLANES_TELEPORTATION\" is true, this is the text that displays when you talk to a planes teleporter");
             OutputVariableToConfig("CREATURE_RAID_COORDINATOR_GOSSIP_TEXT", CREATURE_RAID_COORDINATOR_GOSSIP_TEXT, "This is the text that displays when you talk to a raid coordinator (creature class 110)");
@@ -3199,8 +3197,7 @@ namespace EQWOWConverter
             CREATURE_SPELL_ESCAPE_RECAST_DELAY_IN_MS = ReadVariableFromConfigString("CREATURE_SPELL_ESCAPE_RECAST_DELAY_IN_MS", configValuesByVariableName, CREATURE_SPELL_ESCAPE_RECAST_DELAY_IN_MS);
             CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_INCOMBAT_BUFF_CAST_CHANCE);
             CREATURE_MANA_REGEN_PERCENT = ReadVariableFromConfigString("CREATURE_MANA_REGEN_PERCENT", configValuesByVariableName, CREATURE_MANA_REGEN_PERCENT);
-            CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_AZEROTH_GOSSIP_TEXT);
-            CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_NORRATH_GOSSIP_TEXT);
+            CREATURE_PRIEST_OF_DISCORD_TELEPORTER_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_GOSSIP_TEXT);
             CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PRIEST_OF_DISCORD_TELEPORTER_CANT_PORT_GOSSIP_TEXT);
             CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT", configValuesByVariableName, CREATURE_PLANES_TELEPORTER_GOSSIP_TEXT);
             CREATURE_RAID_COORDINATOR_GOSSIP_TEXT = ReadVariableFromConfigString("CREATURE_RAID_COORDINATOR_GOSSIP_TEXT", configValuesByVariableName, CREATURE_RAID_COORDINATOR_GOSSIP_TEXT);

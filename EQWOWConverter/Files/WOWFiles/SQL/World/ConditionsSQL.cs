@@ -108,6 +108,48 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
+        public void AddRowForMenuOptionNotInZoneRestriction(int gossipMenuID, int gossipMenuOptionID, int zoneID, string comment, int elseGroupID = 0)
+        {
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("SourceTypeOrReferenceId", 15); // CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION
+            newRow.AddInt("SourceGroup", gossipMenuID);
+            newRow.AddInt("SourceEntry", gossipMenuOptionID);
+            newRow.AddInt("SourceId", 0);
+            newRow.AddInt("ElseGroup", elseGroupID);
+            newRow.AddInt("ConditionTypeOrReference", 4); // CONDITION_ZONEID
+            newRow.AddInt("ConditionTarget", 0);
+            newRow.AddInt("ConditionValue1", zoneID);
+            newRow.AddInt("ConditionValue2", 0);
+            newRow.AddInt("ConditionValue3", 0);
+            newRow.AddInt("NegativeCondition", 1); // Setting to "1" means this will fire when the player is NOT in this zone
+            newRow.AddInt("ErrorType", 0);
+            newRow.AddInt("ErrorTextId", 0);
+            newRow.AddString("ScriptName", 64, string.Empty);
+            newRow.AddString("Comment", 255, "EQ " + comment);
+            Rows.Add(newRow);
+        }
+
+        public void AddRowForMenuOptionNotOnMapRestriction(int gossipMenuID, int gossipMenuOptionID, int mapID, string comment, int elseGroupID = 0)
+        {
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("SourceTypeOrReferenceId", 15); // CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION
+            newRow.AddInt("SourceGroup", gossipMenuID);
+            newRow.AddInt("SourceEntry", gossipMenuOptionID);
+            newRow.AddInt("SourceId", 0);
+            newRow.AddInt("ElseGroup", elseGroupID);
+            newRow.AddInt("ConditionTypeOrReference", 22); // CONDITION_MAPID
+            newRow.AddInt("ConditionTarget", 0);
+            newRow.AddInt("ConditionValue1", mapID);
+            newRow.AddInt("ConditionValue2", 0);
+            newRow.AddInt("ConditionValue3", 0);
+            newRow.AddInt("NegativeCondition", 1); // Setting to "1" means this will fire when the player is NOT on this map
+            newRow.AddInt("ErrorType", 0);
+            newRow.AddInt("ErrorTextId", 0);
+            newRow.AddString("ScriptName", 64, string.Empty);
+            newRow.AddString("Comment", 255, "EQ " + comment);
+            Rows.Add(newRow);
+        }
+
         public void AddRowForSmartEventAuraMissingRestriction(int smartScriptEntryOrGUID, int smartScriptSourceType, int smartScriptID, int auraSpellID, string comment)
         {
             SQLRow newRow = new SQLRow();

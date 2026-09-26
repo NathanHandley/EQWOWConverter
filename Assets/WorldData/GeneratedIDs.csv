@@ -300963,3 +300963,30 @@ CreatureModelDataID|playercharactercorpse~128~1|10262
 CreatureDisplayInfoID|playercharactercorpse~128~1|63681
 SpellRangeID|1000|237
 SkillLineAbilityID|811~86902|32919
+GossipMenuID|pod|64030
+BroadcastTextID|podmenu|84832
+NPCTextID|podmenu|82097
+BroadcastTextID|podoption~0~Send me to Stormwind|84833
+BroadcastTextID|podoption~1~Send me to Orgrimmar|84834
+BroadcastTextID|podoption~2~Send me to Ironforge|84835
+BroadcastTextID|podoption~3~Send me to Darnassus|84836
+BroadcastTextID|podoption~4~Send me to Undercity|84837
+BroadcastTextID|podoption~5~Send me to Thunder Bluff|84838
+BroadcastTextID|podoption~6~Send me to Ironforge|84839
+BroadcastTextID|podoption~7~Send me to Orgrimmar|84840
+BroadcastTextID|podoption~8~Send me to Silvermoon|84841
+BroadcastTextID|podoption~9~Send me to Exodar|84842
+BroadcastTextID|podoption~10~Send me to Ak'Anon|84843
+BroadcastTextID|podoption~11~Send me to Cabilis|84844
+BroadcastTextID|podoption~12~Send me to Erudin|84845
+BroadcastTextID|podoption~13~Send me to Felwithe|84846
+BroadcastTextID|podoption~14~Send me to Freeport|84847
+BroadcastTextID|podoption~15~Send me to Grobb|84848
+BroadcastTextID|podoption~16~Send me to Halas|84849
+BroadcastTextID|podoption~17~Send me to Kaladim|84850
+BroadcastTextID|podoption~18~Send me to Kelethin|84851
+BroadcastTextID|podoption~19~Send me to Neriak|84852
+BroadcastTextID|podoption~20~Send me to Oggok|84853
+BroadcastTextID|podoption~21~Send me to Paineel|84854
+BroadcastTextID|podoption~22~Send me to Qeynos|84855
+BroadcastTextID|podoption~23~Send me to Rivervale|84856
