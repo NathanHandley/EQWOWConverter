@@ -657,6 +657,10 @@ namespace EQWOWConverter
         // If true, creatures never charm
         public static bool CREATURE_SPELL_CHARM_DISABLED = true;
 
+        // If true, creatures never cast dispels (EQ spell list entries typed Dispel), so they don't even try
+        public static bool CREATURE_SPELL_DISPEL_DISABLED = true;
+        public static bool CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT = true;
+
         // Spell pick priority order weights
         public static int CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD = 1;
         public static int CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP = 30;
@@ -2359,6 +2363,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE", CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE, "", false);
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE", CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE, "");
             OutputVariableToConfig("CREATURE_SPELL_CHARM_DISABLED", CREATURE_SPELL_CHARM_DISABLED, "If true, creatures never charm");
+            OutputVariableToConfig("CREATURE_SPELL_DISPEL_DISABLED", CREATURE_SPELL_DISPEL_DISABLED, "If true, creatures never cast dispels.  With the boss exemption on, raid bosses and raid mini bosses keep their dispels", false);
+            OutputVariableToConfig("CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT", CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT, "");
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD", CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD, "Spell pick priority order weights", false);
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP", CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP, "", false);
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN", CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN, "");
@@ -3173,6 +3179,8 @@ namespace EQWOWConverter
             CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_COMBAT_DEBUFF_CAST_CHANCE);
             CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE", configValuesByVariableName, CREATURE_SPELL_COMBAT_LIFETAP_CAST_CHANCE);
             CREATURE_SPELL_CHARM_DISABLED = ReadVariableFromConfigString("CREATURE_SPELL_CHARM_DISABLED", configValuesByVariableName, CREATURE_SPELL_CHARM_DISABLED);
+            CREATURE_SPELL_DISPEL_DISABLED = ReadVariableFromConfigString("CREATURE_SPELL_DISPEL_DISABLED", configValuesByVariableName, CREATURE_SPELL_DISPEL_DISABLED);
+            CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT = ReadVariableFromConfigString("CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT", configValuesByVariableName, CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT);
             CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD);
             CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP);
             CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN);

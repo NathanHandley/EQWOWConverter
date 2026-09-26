@@ -1893,6 +1893,10 @@ namespace EQWOWConverter
                     if (spellEntry.MinLevel > spellLevel || spellEntry.MaxLevel < spellLevel)
                         continue;
 
+                    // Dispels can be switched off for creatures (optionally leaving bosses theirs), so they are never scripted and never waste a cast
+                    if ((spellEntry.TypeFlags & 512) == 512 && Configuration.CREATURE_SPELL_DISPEL_DISABLED == true && (Configuration.CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT == false || creatureTemplate.IsRaidBossTierCreature() == false))
+                        continue;
+
                     SpellTemplate curSpellTemplate = spellTemplatesByEQID[spellEntry.EQSpellID];
 
                     bool addedToList = false;
