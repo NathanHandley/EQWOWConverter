@@ -3215,6 +3215,8 @@ namespace EQWOWConverter
                     priestOfDiscordPortalCooldownTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.UnitTargetAny;
                     priestOfDiscordPortalCooldownTemplate.PreventAuraClickOff = true;
                     priestOfDiscordPortalCooldownTemplate.AlwaysPersist = true;
+                    priestOfDiscordPortalCooldownTemplate.ExpiresWhileOffline = true;
+                    priestOfDiscordPortalCooldownTemplate.AuraStaysOnSecondaryClassSwitch = true;
                     priestOfDiscordPortalCooldownTemplate.SpellRange = 1000;
                     priestOfDiscordPortalCooldownTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
                     priestOfDiscordPortalCooldownTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);

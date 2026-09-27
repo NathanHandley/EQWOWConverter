@@ -361,6 +361,7 @@ namespace EQWOWConverter.Spells
         public bool IgnoreImmunities = false;
         public bool AlwaysPersist = false; // Can't click off
         public bool PersistThroughDeath = false; // Can click off
+        public bool ExpiresWhileOffline = false; // Remaining duration keeps counting down while the player is logged off
         public bool IsCosmeticOnlyIllusion = false;
         public bool PersistOnClassChange = false; // When learned all secondary classes have it
         public SpellFocusBoostType FocusBoostType = SpellFocusBoostType.None;

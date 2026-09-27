@@ -653,6 +653,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 1048576; // SPELL_ATTR4_AURA_NEVER_BOUNCES
             if (spellTemplate.DamageIsFixed == true)
                 attributeFlags |= 256; // SPELL_ATTR4_IGNORE_DAMAGE_TAKEN_MODIFIERS (0x00000100)
+            if (spellTemplate.ExpiresWhileOffline == true)
+                attributeFlags |= 4; // SPELL_ATTR4_AURA_EXPIRES_OFFLINE (0x00000004)
             return attributeFlags;
         }
 
