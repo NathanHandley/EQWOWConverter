@@ -131,9 +131,17 @@ end
 -- is wanted here: the mouse is taken off it and the cursor falls through to the entry underneath
 local hookedExpandArrows = {};
 
--- Runs whenever the shared arrow is shown again, including for the stock entries that really do want it clickable
+-- Runs whenever the shared arrow is shown again, including for the stock entries that really do want it clickable.
+-- It decides from the entry the arrow sits on rather than blindly handing the mouse back: the entry is added while
+-- the menu is still hidden, so the Show() below does not fire this -- the menu's own Show() does, afterwards, and
+-- turning the mouse back on there left the arrow live on this entry every time the menu opened
 local function EQ_DungeonMode_ExpandArrowOnShow(expandArrow)
-	expandArrow:EnableMouse(true);
+	local entryButton = expandArrow:GetParent();
+	if ( entryButton ~= nil and entryButton.value == MENU_ROOT ) then
+		expandArrow:EnableMouse(false);
+	else
+		expandArrow:EnableMouse(true);
+	end
 end
 
 local function EQ_DungeonMode_ShowExpandArrowAsPicture(button)
@@ -247,8 +255,36 @@ local function EQ_DungeonMode_MenuButtonOnEnter(button)
 	EQ_DungeonMode_HideSubMenu();
 end
 
+-- The client grows every one of its dropdown lists whenever some menu anywhere needs more than the template's eight
+-- entries (UIDropDownMenu_CreateFrames raises UIDROPDOWNMENU_MAXBUTTONS and adds the buttons to DropDownList1..N only),
+-- and the template's own OnShow sizes every button up to that count by name.  This list is not one the client knows
+-- about, so it is brought up to the same count here or its OnShow indexes a button that was never made.  The menu's
+-- own new buttons are picked up at the same time, so hovering one of them still closes this
+local hookedMenuButtons = {};
+
+local function EQ_DungeonMode_SyncSubMenuButtons()
+	if ( subMenuList == nil ) then
+		return;
+	end
+	local listName = subMenuList:GetName();
+	for index = 1, UIDROPDOWNMENU_MAXBUTTONS do
+		if ( _G[listName .. "Button" .. index] == nil ) then
+			local newButton = CreateFrame("Button", listName .. "Button" .. index, subMenuList, "UIDropDownMenuButtonTemplate");
+			newButton:SetID(index);
+			newButton:Hide();
+		end
+		local menuButtonName = "DropDownList1Button" .. index;
+		local menuButton = _G[menuButtonName];
+		if ( menuButton ~= nil and hookedMenuButtons[menuButtonName] == nil ) then
+			hookedMenuButtons[menuButtonName] = true;
+			menuButton:HookScript("OnEnter", EQ_DungeonMode_MenuButtonOnEnter);
+		end
+	end
+end
+
 local function EQ_DungeonMode_GetSubMenuList()
 	if ( subMenuList ~= nil ) then
+		EQ_DungeonMode_SyncSubMenuButtons();
 		return subMenuList;
 	end
 
@@ -271,12 +307,7 @@ local function EQ_DungeonMode_GetSubMenuList()
 	-- Whatever takes the menu down takes this with it: a click, the escape key, the menu timing out, or another
 	-- menu opening anywhere in the UI (which hides this one first)
 	parentList:HookScript("OnHide", EQ_DungeonMode_HideSubMenu);
-	for index = 1, UIDROPDOWNMENU_MAXBUTTONS do
-		local menuButton = _G["DropDownList1Button" .. index];
-		if ( menuButton ~= nil ) then
-			menuButton:HookScript("OnEnter", EQ_DungeonMode_MenuButtonOnEnter);
-		end
-	end
+	EQ_DungeonMode_SyncSubMenuButtons();
 
 	return subMenuList;
 end
@@ -403,6 +434,9 @@ local function EQ_DungeonMode_BuildSubMenu(rootButton)
 	listFrame:SetFrameStrata(parentList:GetFrameStrata());
 	listFrame:ClearAllPoints();
 	listFrame:SetPoint("TOPLEFT", rootButton, "TOPRIGHT", 0, 0);
+	-- Pointed at its menu before the show as well as after it, so nothing that runs during the show (another addon's
+	-- OnShow hook, a dropdown skin) ever finds this list without a parent
+	listFrame.parent = parentList;
 	listFrame:Show();
 
 	-- Sized here rather than left to the template's OnShow, so the list is never left at whatever width it happened
