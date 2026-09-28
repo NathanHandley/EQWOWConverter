@@ -92,6 +92,12 @@ namespace EQWOWConverter.WOWFiles
                 sb.Append(spellIconNameByIndex.Value);
                 sb.AppendLine("\",");
             }
+            foreach (string spellGemIconName in GetSpellGemTabIconNames())
+            {
+                sb.Append("\"Interface\\\\Icons\\\\");
+                sb.Append(spellGemIconName);
+                sb.AppendLine("\",");
+            }
             sb.AppendLine("}");
 
             // Write it
@@ -130,6 +136,27 @@ namespace EQWOWConverter.WOWFiles
                 iconNamesByIndex.Add(iconIndex, iconName);
             }
             return iconNamesByIndex;
+        }
+
+        // Spell gem icons grouped by spell icon, with each color variant in backdrop order
+        private static List<string> GetSpellGemTabIconNames()
+        {
+            List<string> iconNames = new List<string>();
+            string spellIconFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellicons");
+            for (int iconID = 0; iconID < ImageTool.SPELL_GEM_ICON_COUNT; iconID++)
+            {
+                for (int backdropIndex = 0; backdropIndex < ImageTool.SPELL_GEM_BACKDROP_COUNT; backdropIndex++)
+                {
+                    string iconName = ImageTool.GetSpellGemIconFileNameNoExt(iconID, backdropIndex);
+                    if (File.Exists(Path.Combine(spellIconFolder, iconName + ".blp")) == false)
+                    {
+                        Logger.WriteError("Could not add spell gem icon '" + iconName + "' to the spellbook tab icon list, as the blp did not exist in '" + spellIconFolder + "'");
+                        continue;
+                    }
+                    iconNames.Add(iconName);
+                }
+            }
+            return iconNames;
         }
     }
 }
