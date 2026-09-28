@@ -344,7 +344,9 @@ internal class Program
                                 //string outputMusicFolderRoot = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "music");
                                 AssetConditioner conditioner = new AssetConditioner();
                                 //conditioner.ConditionMusicFiles(outputMusicFolderRoot);
-                                conditioner.GenerateSpriteSheets();
+                                //conditioner.GenerateSpriteSheets();
+                                conditioner.CreateIndividualIconFiles();
+                                conditioner.ConvertPNGFilesToBLP();
                             } break;
                         default: break;
                     }

@@ -780,9 +780,13 @@ namespace EQWOWConverter.Spells
                 if (newSpellTemplate.EQSkillCategory != SpellEQSkillCategory.Unknown)
                     newSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(newSpellTemplate.EQSkillCategory);
 
-                // Icon
+                // Icon, preferring the spell gem icon from memicon and falling back to the plain spell icon
                 int spellIconID = int.Parse(columns["icon"]);
-                if (spellIconID >= 2500)
+                int memIconID = int.Parse(columns["memicon"]);
+                int spellGemIconDBCID;
+                if (SpellIconDBC.TryGetDBCIDForMemIconID(memIconID, out spellGemIconDBCID) == true)
+                    newSpellTemplate.SpellIconID = spellGemIconDBCID;
+                else if (spellIconID >= 2500)
                     newSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(spellIconID - 2500);
 
                 // Visual
@@ -1400,7 +1404,7 @@ namespace EQWOWConverter.Spells
                 enchantSpell.WeaponItemEnchantSpellName = itemName;
                 enchantSpell.WeaponItemEnchantProcsPerMinute = procsPerMinute;
                 enchantSpell.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.EnchantItemTemporary, 0, 0, 0, 1, 0, enchantID, 0));
-                enchantSpell.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(procSpellTemplate.SpellIconID);
+                enchantSpell.SpellIconID = procSpellTemplate.SpellIconID; // Already a SpellIcon.dbc ID
                 enchantSpell.SpellVisualID1 = Convert.ToUInt32(Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_APPLYING_VISUAL_ID);
                 enchantSpell.CastTimeInMS = Configuration.SPELL_ENCHANT_ROGUE_POISON_APPLY_TIME_IN_MS;
 

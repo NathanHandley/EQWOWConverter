@@ -1180,10 +1180,13 @@ namespace EQWOWConverter
             }
 
             // Spells
-            for (int i = 0; i < 23; i++)
+            for (int i = 0; i < SpellIconDBC.SPELL_ICON_COUNT; i++)
                 spellIconDBC.AddSpellIconRow(i);
-            for (int i = 0; i < 751; i++)
+            for (int i = 0; i < SpellIconDBC.ITEM_ICON_COUNT; i++)
                 spellIconDBC.AddItemIconRow(i);
+            for (int i = 0; i < ImageTool.SPELL_GEM_ICON_COUNT; i++)
+                for (int backdropIndex = 0; backdropIndex < ImageTool.SPELL_GEM_BACKDROP_COUNT; backdropIndex++)
+                    spellIconDBC.AddSpellGemIconRow(i, backdropIndex);
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
                 // Block-specific data

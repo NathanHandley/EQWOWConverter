@@ -117,6 +117,8 @@ namespace EQWOWConverter.WOWFiles
             foreach (string spellIconFilePath in spellIconFilePaths)
             {
                 string iconName = Path.GetFileNameWithoutExtension(spellIconFilePath);
+                if (iconName.StartsWith(ImageTool.SPELL_GEM_ICON_FILE_PREFIX) == true)
+                    continue;
                 int lastUnderscoreIndex = iconName.LastIndexOf('_');
                 if (lastUnderscoreIndex == -1 || lastUnderscoreIndex == iconName.Length - 1)
                     continue;

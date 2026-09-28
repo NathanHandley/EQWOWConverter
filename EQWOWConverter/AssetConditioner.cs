@@ -790,6 +790,19 @@ namespace EQWOWConverter
                 return;
             }
 
+            // Spell Gem Icons (memicon), which are every spell icon cut out with a mask and placed on each gem color backdrop
+            Logger.WriteDebug("Creating spell gem icons.");
+            try
+            {
+                string curIconImageSourceFile = Path.Combine(miscImagesFolder, "spelicon.png");
+                ImageTool.GenerateSpellGemIconImagesFromFile(curIconImageSourceFile, spellIconsFolder);
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("Error occurred while creating icon files.  Spell gem icons threw an exception: " + ex.Message);
+                return;
+            }
+
             Logger.WriteInfo("Creating icon files complete.");
         }
 

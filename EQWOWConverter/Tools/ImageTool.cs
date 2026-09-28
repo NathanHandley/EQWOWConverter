@@ -240,6 +240,136 @@ namespace EQWOWConverter
             Logger.WriteDebug("Generating item icons from '" + inputImageToCutUp + "' completed.");
         }
 
+        // Spell gem icons are every spelicon.png icon cut out with SpellIconMask.png and placed on each SpellBackdrop color
+        public static readonly int SPELL_GEM_ICON_COUNT = 23;
+        public static readonly int SPELL_GEM_BACKDROP_COUNT = 6;
+        public static readonly string SPELL_GEM_ICON_FILE_PREFIX = "Spell_EQGem_";
+
+        public static string GetSpellGemIconFileNameNoExt(int spellIconID, int backdropIndex)
+        {
+            return string.Concat(SPELL_GEM_ICON_FILE_PREFIX, spellIconID.ToString(), "_", backdropIndex.ToString());
+        }
+
+        public static void GenerateSpellGemIconImagesFromFile(string inputSpellIconImageFile, string outputFolderPath)
+        {
+            Logger.WriteDebug("Generating spell gem icons from '" + inputSpellIconImageFile + "' started...");
+
+            string iconsAssetFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "icons");
+            string maskFullPath = Path.Combine(iconsAssetFolder, "SpellIconMask.png");
+            if (Path.Exists(maskFullPath) == false)
+            {
+                Logger.WriteError("Failed to generate spell gem icons since the mask image of '" + maskFullPath + "' did not exist");
+                return;
+            }
+
+            // Read in the backdrops
+            List<Bitmap> backdrops = new List<Bitmap>();
+            try
+            {
+                for (int i = 0; i < SPELL_GEM_BACKDROP_COUNT; i++)
+                {
+                    string backdropFullPath = Path.Combine(iconsAssetFolder, "SpellBackdrop" + i.ToString() + ".png");
+                    if (Path.Exists(backdropFullPath) == false)
+                    {
+                        Logger.WriteError("Failed to generate spell gem icons since the backdrop image of '" + backdropFullPath + "' did not exist");
+                        return;
+                    }
+                    backdrops.Add(new Bitmap(backdropFullPath));
+                }
+
+                using (Bitmap inputIconsMosaic = new Bitmap(inputSpellIconImageFile))
+                using (Bitmap maskMosaic = new Bitmap(maskFullPath))
+                {
+                    // The mask is transparent where the icon should be kept and (mostly) opaque elsewhere, so scale by the most opaque value
+                    int maxMaskAlpha = 1;
+                    for (int y = 0; y < maskMosaic.Height; y++)
+                        for (int x = 0; x < maskMosaic.Width; x++)
+                            maxMaskAlpha = Math.Max(maxMaskAlpha, (int)maskMosaic.GetPixel(x, y).A);
+
+                    for (int spellIconID = 0; spellIconID < SPELL_GEM_ICON_COUNT; spellIconID++)
+                    {
+                        // Grid position 19 is blank, so icons 19+ are shifted one position
+                        int gridPosition = spellIconID < 19 ? spellIconID : spellIconID + 1;
+                        int inputPixelStartX = (gridPosition % 5) * 40;
+                        int inputPixelStartY = (gridPosition / 5) * 40;
+
+                        // Cut the icon out using the mask
+                        using (Bitmap sourceIconImage = new Bitmap(40, 40))
+                        {
+                            for (int y = 0; y < 40; y++)
+                            {
+                                for (int x = 0; x < 40; x++)
+                                {
+                                    Color iconPixel = inputIconsMosaic.GetPixel(inputPixelStartX + x, inputPixelStartY + y);
+                                    int maskAlpha = Math.Min((int)maskMosaic.GetPixel(inputPixelStartX + x, inputPixelStartY + y).A, maxMaskAlpha);
+                                    int keptAlpha = (iconPixel.A * (maxMaskAlpha - maskAlpha)) / maxMaskAlpha;
+                                    sourceIconImage.SetPixel(x, y, Color.FromArgb(keptAlpha, iconPixel.R, iconPixel.G, iconPixel.B));
+                                }
+                            }
+
+                            // Scale to the backdrop interior
+                            using (Bitmap scaledIconImage = new Bitmap(58, 58))
+                            {
+                                using (Graphics graphics = Graphics.FromImage(scaledIconImage))
+                                using (ImageAttributes imageAttributes = new ImageAttributes())
+                                {
+                                    graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                                    graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                                    imageAttributes.SetWrapMode(WrapMode.TileFlipXY);
+                                    graphics.DrawImage(sourceIconImage, new Rectangle(0, 0, 58, 58), 0, 0, 40, 40, GraphicsUnit.Pixel, imageAttributes);
+                                }
+
+                                // Output one image per backdrop
+                                for (int backdropIndex = 0; backdropIndex < SPELL_GEM_BACKDROP_COUNT; backdropIndex++)
+                                {
+                                    using (Bitmap outputImage = new Bitmap(backdrops[backdropIndex]))
+                                    {
+                                        for (int y = 0; y < 58; y++)
+                                        {
+                                            for (int x = 0; x < 58; x++)
+                                            {
+                                                // Skip the corner blocks
+                                                if ((x == 0 || x == 57) && (y < 3 || y > 54))
+                                                    continue;
+                                                if ((x == 1 || x == 56) && (y < 2 || y > 55))
+                                                    continue;
+                                                if ((x == 2 || x == 55) && (y < 1 || y > 56))
+                                                    continue;
+
+                                                Color scaledPixelColor = scaledIconImage.GetPixel(x, y);
+                                                if (scaledPixelColor.A == 0)
+                                                    continue;
+                                                Color targetPixelColor = outputImage.GetPixel(x + 3, y + 3);
+
+                                                // Output factoring for alpha values
+                                                float scaledAlpha = Convert.ToSingle(scaledPixelColor.A) / 255f;
+                                                float targetAlpha = Convert.ToSingle(targetPixelColor.A) / 255f;
+                                                float blendedAlpha = scaledAlpha + targetAlpha * (1 - scaledAlpha);
+                                                int blendedR = (int)((scaledPixelColor.R * scaledAlpha) + (targetPixelColor.R * targetAlpha * (1 - scaledAlpha)));
+                                                int blendedG = (int)((scaledPixelColor.G * scaledAlpha) + (targetPixelColor.G * targetAlpha * (1 - scaledAlpha)));
+                                                int blendedB = (int)((scaledPixelColor.B * scaledAlpha) + (targetPixelColor.B * targetAlpha * (1 - scaledAlpha)));
+                                                outputImage.SetPixel(x + 3, y + 3, Color.FromArgb((int)(blendedAlpha * 255), blendedR, blendedG, blendedB));
+                                            }
+                                        }
+
+                                        string outputFileName = Path.Combine(outputFolderPath, GetSpellGemIconFileNameNoExt(spellIconID, backdropIndex) + ".png");
+                                        outputImage.Save(outputFileName, ImageFormat.Png);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                foreach (Bitmap backdrop in backdrops)
+                    backdrop.Dispose();
+            }
+
+            Logger.WriteDebug("Generating spell gem icons from '" + inputSpellIconImageFile + "' completed.");
+        }
+
         public static (int spriteWidth, int spriteHeight) GetWidthAndHeightOfImage(string imageFullPath)
         {
             using (Bitmap image = new Bitmap(imageFullPath))
