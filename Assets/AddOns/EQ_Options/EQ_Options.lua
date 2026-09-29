@@ -21,8 +21,8 @@
 -- Okay runs the same chat commands a player would have typed.  Only settings that actually changed are sent,
 -- so opening the page and closing it again is silent.
 --
--- The one exception is the class aura icon setting, which is purely a matter of what this client draws and so
--- lives in this addon's per character saved variables (EQ_OptionsDB) and never touches the server.
+-- The exceptions are the class aura icon and spell icon type settings, which are purely a matter of what this client
+-- draws and so live in this addon's per character saved variables (EQ_OptionsDB) and never touch the server.
 local EQOPTIONS_PREFIX = "EQOPTIONS";
 
 local DEFAULT_MOVE_WHILE_CASTING = true;
@@ -31,6 +31,10 @@ local DEFAULT_SHOW_BARD_PULSE = true;
 local DEFAULT_HIDE_WOW_GEAR = false;
 local DEFAULT_HAIL_WINDOW = false;
 local DEFAULT_SHOW_CLASS_AURA_ICONS = true;
+local ICON_TYPE_GENERIC = "generic"; -- Same values as EQ_SPELL_ICON_TYPE_GENERIC and EQ_SPELL_ICON_TYPE_TARGET_AWARE in FrameXML's EQSpellIcons.lua
+local ICON_TYPE_TARGET_AWARE = "targetaware";
+local DEFAULT_AURA_ICON_TYPE = ICON_TYPE_GENERIC;
+local DEFAULT_ACTION_ICON_TYPE = ICON_TYPE_TARGET_AWARE;
 local DEFAULT_SHOW_DISPEL_MESSAGE = false;
 local DEFAULT_DISPEL_COLOR = 0xFFAA00;
 local DEFAULT_SHOW_MEZ_BREAK_MESSAGE = true;
@@ -99,6 +103,30 @@ local DRUID_FORM_MENUS = {
 	},
 };
 
+-- Which look EverQuest spells take: the generic spell icon, or the colored spell gem icon ("Target Aware").  FrameXML's
+-- EQSpellIcons.lua does the swapping, and these are client side only, saved per character
+local ICON_TYPE_CHOICES = {
+	{ value = ICON_TYPE_GENERIC, text = "Generic" },
+	{ value = ICON_TYPE_TARGET_AWARE, text = "Target Aware" },
+};
+
+local SPELL_ICON_TYPE_MENUS = {
+	{
+		settingKey = "auraIconType",
+		name = "AuraIconType",
+		label = "Buff/Debuff Icon Type",
+		tooltip = "How EverQuest spells look as buffs and debuffs, both on your own buff bar and on the target, focus, party and pet frames.  Generic shows the plain spell icon, and Target Aware shows the colored spell gem icon.  This one is saved on this computer for this character.",
+		choices = ICON_TYPE_CHOICES,
+	},
+	{
+		settingKey = "actionIconType",
+		name = "ActionIconType",
+		label = "Action Bar and Spellbook Icon Type",
+		tooltip = "How EverQuest spells look on your action bars and in your spellbook.  Target Aware shows the colored spell gem icon, and Generic shows the plain spell icon.  This one is saved on this computer for this character.",
+		choices = ICON_TYPE_CHOICES,
+	},
+};
+
 local function EQ_Options_IsPlayerADruid()
 	local _, classFileName = UnitClass("player");
 	return classFileName == "DRUID";
@@ -119,8 +147,8 @@ local function EQ_Options_GetDefaultDruidFormValue(settingKey)
 	return 0;
 end
 
--- A value the server sent that this addon has no entry for (an option added on a newer server) falls back to the first choice
-local function EQ_Options_GetDruidFormChoice(menu, value)
+-- A value this addon has no entry for (an option added on a newer server) falls back to the first choice
+local function EQ_Options_GetMenuChoice(menu, value)
 	for _, choice in ipairs(menu.choices) do
 		if ( choice.value == value ) then
 			return choice;
@@ -162,6 +190,12 @@ local function EQ_Options_GetClientSettings()
 	end
 	if ( EQ_OptionsDB.showClassAuraIcons == nil ) then
 		EQ_OptionsDB.showClassAuraIcons = DEFAULT_SHOW_CLASS_AURA_ICONS;
+	end
+	if ( EQ_OptionsDB.auraIconType ~= ICON_TYPE_GENERIC and EQ_OptionsDB.auraIconType ~= ICON_TYPE_TARGET_AWARE ) then
+		EQ_OptionsDB.auraIconType = DEFAULT_AURA_ICON_TYPE;
+	end
+	if ( EQ_OptionsDB.actionIconType ~= ICON_TYPE_GENERIC and EQ_OptionsDB.actionIconType ~= ICON_TYPE_TARGET_AWARE ) then
+		EQ_OptionsDB.actionIconType = DEFAULT_ACTION_ICON_TYPE;
 	end
 	return EQ_OptionsDB;
 end
@@ -208,6 +242,8 @@ local function EQ_Options_CopyServerValuesToPending()
 	pendingValues.hideWoWGear = serverValues.hideWoWGear;
 	pendingValues.hailWindow = serverValues.hailWindow;
 	pendingValues.showClassAuraIcons = EQ_Options_GetClientSettings().showClassAuraIcons;
+	pendingValues.auraIconType = EQ_Options_GetClientSettings().auraIconType;
+	pendingValues.actionIconType = EQ_Options_GetClientSettings().actionIconType;
 	pendingValues.showDispelMessage = serverValues.showDispelMessage;
 	pendingValues.dispelColor = serverValues.dispelColor;
 	pendingValues.showMezBreakMessage = serverValues.showMezBreakMessage;
@@ -227,10 +263,10 @@ panel.name = "EverQuest";
 panel:Hide();
 
 -- The Interface Options panel is a fixed 413 x 428 (InterfaceOptionsFrame.xml sizes it off the category list), which is
--- not quite enough for these settings plus the druid form dropdowns.  So everything below lives in a scroll frame and
+-- not quite enough for these settings plus the spell icon and druid form dropdowns.  So everything below lives in a scroll frame and
 -- the page scrolls rather than running off the bottom, which also leaves room for whatever gets added next.
 local EQ_OPTIONS_SCROLLBAR_WIDTH = 26;
-local EQ_OPTIONS_CONTENT_HEIGHT = 540;
+local EQ_OPTIONS_CONTENT_HEIGHT = 650;
 
 local scrollFrame = CreateFrame("ScrollFrame", "EQOptionsScrollFrame", panel, "UIPanelScrollFrameTemplate");
 scrollFrame:SetPoint("TOPLEFT", panel, "TOPLEFT", 0, 0);
@@ -452,61 +488,45 @@ faceSlider:SetScript("OnValueChanged", function(self, value)
 	_G["EQOptionsFaceSliderText"]:SetText("Illusion face: " .. faceID);
 end);
 
--- Druid form looks ----------------------------------------------------------------
+-- Dropdowns -----------------------------------------------------------------------
 
--- These go under everything else, in two columns, and the whole block is simply absent for anyone who is not a
--- WoW druid and so has no shapeshift forms to dress.  The gap below the slider clears the waiting-on-the-server line
-local DRUID_FORM_COLUMN_WIDTH = 140;
-local DRUID_FORM_COLUMN_SPACING = 190;
-
-local druidFormHeader = content:CreateFontString("EQOptionsDruidFormHeader", "ARTWORK", "GameFontNormal");
-druidFormHeader:SetPoint("TOPLEFT", faceSlider, "BOTTOMLEFT", -30, -34);
-druidFormHeader:SetText("Druid form looks");
-
-local druidFormDropDowns = {};
+-- Every dropdown on the page is built from a menu table (settingKey, label, tooltip and choices), so the spell icon
+-- and druid form ones share the same code
+local EQ_OPTIONS_DROPDOWN_WIDTH = 140;
 
 -- UIDropDownMenu_AddButton copies only a fixed set of fields from the info table onto the button it builds, so a
 -- custom key put on the info table is simply gone by the time this runs.  arg1 is one of the fields that does carry
 -- over, and UIDropDownMenuButton_OnClick passes it as the second argument
-local function EQ_Options_DruidFormDropDown_OnClick(self, dropDown)
+local function EQ_Options_MenuDropDown_OnClick(self, dropDown)
 	if ( dropDown == nil ) then
 		return;
 	end
 	pendingValues[dropDown.eqMenu.settingKey] = self.value;
 	UIDropDownMenu_SetSelectedValue(dropDown, self.value);
-	UIDropDownMenu_SetText(dropDown, EQ_Options_GetDruidFormChoice(dropDown.eqMenu, self.value).text);
+	UIDropDownMenu_SetText(dropDown, EQ_Options_GetMenuChoice(dropDown.eqMenu, self.value).text);
 end
 
-local function EQ_Options_DruidFormDropDown_Initialize(self)
+local function EQ_Options_MenuDropDown_Initialize(self)
 	for _, choice in ipairs(self.eqMenu.choices) do
 		local info = UIDropDownMenu_CreateInfo();
 		info.text = choice.text;
 		info.value = choice.value;
-		info.func = EQ_Options_DruidFormDropDown_OnClick;
+		info.func = EQ_Options_MenuDropDown_OnClick;
 		info.arg1 = self;
 		info.checked = (pendingValues[self.eqMenu.settingKey] == choice.value);
 		UIDropDownMenu_AddButton(info);
 	end
 end
 
--- The last dropdown placed in each column, which the next one in that column hangs off of
-local previousDruidFormAnchorByColumn = {};
-for menuIndex, menu in ipairs(DRUID_FORM_MENUS) do
-	local dropDownName = "EQOptionsDruidForm" .. menu.formKeyword .. "DropDown";
+-- Builds the dropdown and the label above it.  The caller anchors it
+local function EQ_Options_CreateMenuDropDown(dropDownName, menu)
 	local dropDown = CreateFrame("Frame", dropDownName, content, "UIDropDownMenuTemplate");
-	-- The -16 undoes the dropdown template's own left padding, so the box lines up with the settings above it
-	local previousInColumn = previousDruidFormAnchorByColumn[menu.column];
-	if ( previousInColumn == nil ) then
-		dropDown:SetPoint("TOPLEFT", druidFormHeader, "BOTTOMLEFT", -16 + ((menu.column - 1) * DRUID_FORM_COLUMN_SPACING), -20);
-	else
-		dropDown:SetPoint("TOPLEFT", previousInColumn, "BOTTOMLEFT", 0, -12);
-	end
-	previousDruidFormAnchorByColumn[menu.column] = dropDown;
 	dropDown.eqMenu = menu;
 
 	local dropDownLabel = content:CreateFontString(dropDownName .. "Label", "ARTWORK", "GameFontNormalSmall");
 	dropDownLabel:SetPoint("BOTTOMLEFT", dropDown, "TOPLEFT", 20, 2);
 	dropDownLabel:SetText(menu.label);
+	dropDown.eqLabel = dropDownLabel;
 
 	-- The dropdown itself swallows mouse events, so the tooltip hangs off the button inside it that the player actually points at
 	local dropDownButton = _G[dropDownName .. "Button"];
@@ -517,7 +537,7 @@ for menuIndex, menu in ipairs(DRUID_FORM_MENUS) do
 		dropDownButton:HookScript("OnLeave", EQ_Options_Widget_OnLeave);
 	end
 
-	UIDropDownMenu_SetWidth(dropDown, DRUID_FORM_COLUMN_WIDTH);
+	UIDropDownMenu_SetWidth(dropDown, EQ_OPTIONS_DROPDOWN_WIDTH);
 
 	-- UIDropDownMenuTemplate anchors $parentText with a y offset of 2, which leaves the selection sitting slightly
 	-- above the middle of the box.  Re-anchoring it at 0 centers it
@@ -527,9 +547,62 @@ for menuIndex, menu in ipairs(DRUID_FORM_MENUS) do
 		dropDownText:ClearAllPoints();
 		dropDownText:SetPoint("RIGHT", dropDownRight, "RIGHT", -43, 0);
 	end
-	UIDropDownMenu_Initialize(dropDown, EQ_Options_DruidFormDropDown_Initialize);
+	UIDropDownMenu_Initialize(dropDown, EQ_Options_MenuDropDown_Initialize);
+	return dropDown;
+end
+
+local function EQ_Options_RefreshMenuDropDown(dropDown)
+	local value = pendingValues[dropDown.eqMenu.settingKey];
+	UIDropDownMenu_SetSelectedValue(dropDown, value);
+	UIDropDownMenu_SetText(dropDown, EQ_Options_GetMenuChoice(dropDown.eqMenu, value).text);
+end
+
+-- Spell icon types ----------------------------------------------------------------
+
+-- One dropdown under the other, below the slider.  The gap below the slider clears the waiting-on-the-server line
+local spellIconHeader = content:CreateFontString("EQOptionsSpellIconHeader", "ARTWORK", "GameFontNormal");
+spellIconHeader:SetPoint("TOPLEFT", faceSlider, "BOTTOMLEFT", -30, -34);
+spellIconHeader:SetText("Spell icons");
+
+local spellIconDropDowns = {};
+local previousSpellIconDropDown = nil;
+for menuIndex, menu in ipairs(SPELL_ICON_TYPE_MENUS) do
+	local dropDown = EQ_Options_CreateMenuDropDown("EQOptions" .. menu.name .. "DropDown", menu);
+	-- The -16 undoes the dropdown template's own left padding, so the box lines up with the settings above it
+	if ( previousSpellIconDropDown == nil ) then
+		dropDown:SetPoint("TOPLEFT", spellIconHeader, "BOTTOMLEFT", -16, -20);
+	else
+		dropDown:SetPoint("TOPLEFT", previousSpellIconDropDown, "BOTTOMLEFT", 0, -12);
+	end
+	previousSpellIconDropDown = dropDown;
+	spellIconDropDowns[menuIndex] = dropDown;
+end
+
+-- Druid form looks ----------------------------------------------------------------
+
+-- These go under everything else, in two columns, and the whole block is simply absent for anyone who is not a
+-- WoW druid and so has no shapeshift forms to dress
+local DRUID_FORM_COLUMN_SPACING = 190;
+
+local druidFormHeader = content:CreateFontString("EQOptionsDruidFormHeader", "ARTWORK", "GameFontNormal");
+druidFormHeader:SetPoint("TOPLEFT", previousSpellIconDropDown, "BOTTOMLEFT", 16, -14);
+druidFormHeader:SetText("Druid form looks");
+
+local druidFormDropDowns = {};
+
+-- The last dropdown placed in each column, which the next one in that column hangs off of
+local previousDruidFormAnchorByColumn = {};
+for menuIndex, menu in ipairs(DRUID_FORM_MENUS) do
+	local dropDown = EQ_Options_CreateMenuDropDown("EQOptionsDruidForm" .. menu.formKeyword .. "DropDown", menu);
+	-- The -16 undoes the dropdown template's own left padding, so the box lines up with the settings above it
+	local previousInColumn = previousDruidFormAnchorByColumn[menu.column];
+	if ( previousInColumn == nil ) then
+		dropDown:SetPoint("TOPLEFT", druidFormHeader, "BOTTOMLEFT", -16 + ((menu.column - 1) * DRUID_FORM_COLUMN_SPACING), -20);
+	else
+		dropDown:SetPoint("TOPLEFT", previousInColumn, "BOTTOMLEFT", 0, -12);
+	end
+	previousDruidFormAnchorByColumn[menu.column] = dropDown;
 	druidFormDropDowns[menuIndex] = dropDown;
-	dropDown.eqLabel = dropDownLabel;
 end
 
 local function EQ_Options_RefreshDruidFormPanel()
@@ -541,9 +614,7 @@ local function EQ_Options_RefreshDruidFormPanel()
 	end
 	for _, dropDown in ipairs(druidFormDropDowns) do
 		if ( isDruid == true ) then
-			local value = pendingValues[dropDown.eqMenu.settingKey];
-			UIDropDownMenu_SetSelectedValue(dropDown, value);
-			UIDropDownMenu_SetText(dropDown, EQ_Options_GetDruidFormChoice(dropDown.eqMenu, value).text);
+			EQ_Options_RefreshMenuDropDown(dropDown);
 			dropDown:Show();
 			dropDown.eqLabel:Show();
 		else
@@ -574,6 +645,9 @@ local function EQ_Options_RefreshPanel()
 	EQ_Options_RefreshDispelColorDisplay();
 	EQ_Options_RefreshDispelColorEnabled();
 	mezBreakMessageCheckButton:SetChecked(pendingValues.showMezBreakMessage);
+	for _, dropDown in ipairs(spellIconDropDowns) do
+		EQ_Options_RefreshMenuDropDown(dropDown);
+	end
 	EQ_Options_RefreshDruidFormPanel();
 
 	-- A server that reported no illusion faces at all leaves nothing to pick between
@@ -607,12 +681,26 @@ local function EQ_Options_SendCommand(commandText)
 	SendChatMessage(commandText, "SAY");
 end
 
+-- Hands the spell icon types to FrameXML's EQSpellIcons.lua, which redraws whatever they change
+local function EQ_Options_ApplySpellIconTypes()
+	if ( EQSpellIcons_SetIconTypes == nil ) then
+		return;
+	end
+	local clientSettings = EQ_Options_GetClientSettings();
+	EQSpellIcons_SetIconTypes(clientSettings.auraIconType, clientSettings.actionIconType);
+end
+
 function panel.okay()
-	-- The client side setting applies on its own, whether or not the server has answered yet
+	-- The client side settings apply on their own, whether or not the server has answered yet
 	local clientSettings = EQ_Options_GetClientSettings();
 	if ( pendingValues.showClassAuraIcons ~= clientSettings.showClassAuraIcons ) then
 		clientSettings.showClassAuraIcons = pendingValues.showClassAuraIcons;
 		BuffFrame_Update();
+	end
+	if ( pendingValues.auraIconType ~= clientSettings.auraIconType or pendingValues.actionIconType ~= clientSettings.actionIconType ) then
+		clientSettings.auraIconType = pendingValues.auraIconType;
+		clientSettings.actionIconType = pendingValues.actionIconType;
+		EQ_Options_ApplySpellIconTypes();
 	end
 
 	-- Without the server's values there is nothing to compare against, so nothing can be known to have changed
@@ -648,7 +736,7 @@ function panel.okay()
 		for _, menu in ipairs(DRUID_FORM_MENUS) do
 			local pendingValue = pendingValues[menu.settingKey];
 			if ( pendingValue ~= serverValues[menu.settingKey] ) then
-				EQ_Options_SendCommand(".eqdruidform " .. menu.formKeyword .. " " .. EQ_Options_GetDruidFormChoice(menu, pendingValue).keyword);
+				EQ_Options_SendCommand(".eqdruidform " .. menu.formKeyword .. " " .. EQ_Options_GetMenuChoice(menu, pendingValue).keyword);
 			end
 		end
 	end
@@ -670,6 +758,8 @@ function panel.default()
 	pendingValues.hideWoWGear = DEFAULT_HIDE_WOW_GEAR;
 	pendingValues.hailWindow = DEFAULT_HAIL_WINDOW;
 	pendingValues.showClassAuraIcons = DEFAULT_SHOW_CLASS_AURA_ICONS;
+	pendingValues.auraIconType = DEFAULT_AURA_ICON_TYPE;
+	pendingValues.actionIconType = DEFAULT_ACTION_ICON_TYPE;
 	pendingValues.showDispelMessage = DEFAULT_SHOW_DISPEL_MESSAGE;
 	pendingValues.dispelColor = DEFAULT_DISPEL_COLOR;
 	pendingValues.showMezBreakMessage = DEFAULT_SHOW_MEZ_BREAK_MESSAGE;
@@ -836,9 +926,20 @@ function EQ_Options_HandlePayload(payload)
 end
 
 local eventFrame = CreateFrame("Frame", "EQOptionsEventFrame");
+eventFrame:RegisterEvent("ADDON_LOADED");
 eventFrame:RegisterEvent("CHAT_MSG_ADDON");
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 eventFrame:SetScript("OnEvent", function(self, event, arg1, arg2)
+	-- The saved variables only exist from here on, so this is when the spell icon types this character picked take over
+	-- from EQSpellIcons.lua's defaults.  The page is filled again too, as it was first filled before they loaded
+	if ( event == "ADDON_LOADED" ) then
+		if ( arg1 == "EQ_Options" ) then
+			EQ_Options_ApplySpellIconTypes();
+			EQ_Options_CopyServerValuesToPending();
+			EQ_Options_RefreshPanel();
+		end
+		return;
+	end
 	-- The server pushes these at login, but asking again on entering the world covers the case where that
 	-- message landed before this addon finished loading.  "sync" prints nothing, it only pushes the values back
 	if ( event == "PLAYER_ENTERING_WORLD" ) then
