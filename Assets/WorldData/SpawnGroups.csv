@@ -8600,3 +8600,8 @@ id|zone|name|spawn_limit|min_x|max_x|min_y|max_y|min_z|max_z|delay|mindelay|desp
 1000032|emeraldjungle|emeraldjungle_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
 1000033|timorous|timorous_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
 1000034|oot|oot_Priest_of_Discord|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1
+1000035|overthere|overthere_Priest_of_Discord|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1
+1000036|firiona|firiona_Priest_of_Discord|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1
+1000037|thurgadina|thurgadina_Priest_of_Discord|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1
+1000038|kael|kael_Priest_of_Discord|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1
+1000039|skyshrine|skyshrine_Priest_of_Discord|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1

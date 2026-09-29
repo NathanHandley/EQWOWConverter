@@ -1023,12 +1023,12 @@ namespace EQWOWConverter.Creatures
                 case 100: // Priest of Discord (in Norrath)
                     {
                         creatureTemplate.IsNorrathPriestOfDiscord = true;
-                        creatureTemplate.SubName = "Azeroth Gatemaster";
+                        creatureTemplate.SubName = "Discord Gatemaster";
                     } break;
                 case 101: // Priest of Discord (in Azeroth)
                     {
                         creatureTemplate.IsAzerothPriestOfDiscord = true;
-                        creatureTemplate.SubName = "Norrath Gatemaster";
+                        creatureTemplate.SubName = "Discord Gatemaster";
                     } break;
                 case 102: // Stablemaster
                     {

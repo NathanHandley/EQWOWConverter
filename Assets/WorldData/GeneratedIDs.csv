@@ -300990,3 +300990,8 @@ BroadcastTextID|podoption~20~Send me to Oggok|84853
 BroadcastTextID|podoption~21~Send me to Paineel|84854
 BroadcastTextID|podoption~22~Send me to Qeynos|84855
 BroadcastTextID|podoption~23~Send me to Rivervale|84856
+CreatureGUID|spawn~15000203~1000047|454444
+CreatureGUID|spawn~15000204~1000048|454445
+CreatureGUID|spawn~15000205~1000049|454446
+CreatureGUID|spawn~15000206~1000050|454447
+CreatureGUID|spawn~15000207~1000051|454448
