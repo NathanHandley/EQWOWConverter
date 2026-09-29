@@ -799,55 +799,15 @@ namespace EQWOWConverter
                     // Menu Option
                     gossipMenuOptionSQL.AddRow(priestOfDiscordGossipMenuID, curMenuOptionID, 0, teleportLocation.MenuItemText, menuBroadcastID, 1, 1, 0);
 
-                    // Option conditionals, which is based on alignment                   
+                    // Option conditionals, which are based on alignment and on the achievements that unlock the destination.  Every
+                    // alignment group is repeated once per unlocking achievement, since else groups are the only way to OR conditions
+                    List<int> unlockAchievementIDs = GetPriestOfDiscordDestinationUnlockAchievementIDs(teleportLocation);
                     int curElseGroup = 0;
-
-                    // Good
-                    if (teleportLocation.AllowGood)
-                    {
-                        // Class is Good
-                        conditionsSQL.AddRowForMenuOptionClassRestriction(priestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetGoodClasses(),
-                            "Good alignment (Class Good)", curElseGroup);
-                        AddPriestOfDiscordMenuOptionSharedRestrictions(priestOfDiscordGossipMenuID, curMenuOptionID, curElseGroup, -1, destinationMapID, teleportLocation.MenuItemText);
-                        curElseGroup++;
-
-                        // Class NOT Evil AND Race is Good
-                        conditionsSQL.AddRowForMenuOptionClassRestriction(priestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetEvilClasses(),
-                            "Good alignment (Class NOT Evil)", curElseGroup, true);
-                        conditionsSQL.AddRowForMenuOptionRaceRestriction(priestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetGoodRaces(),
-                            "Good alignment (Race Good)", curElseGroup);
-                        AddPriestOfDiscordMenuOptionSharedRestrictions(priestOfDiscordGossipMenuID, curMenuOptionID, curElseGroup, -1, destinationMapID, teleportLocation.MenuItemText);
-                        curElseGroup++;
-                    }
-
-                    // Evil
-                    if (teleportLocation.AllowEvil)
-                    {
-                        // Class is Evil
-                        conditionsSQL.AddRowForMenuOptionClassRestriction(priestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetEvilClasses(),
-                            "Evil alignment (Class Evil)", curElseGroup);
-                        AddPriestOfDiscordMenuOptionSharedRestrictions(priestOfDiscordGossipMenuID, curMenuOptionID, curElseGroup, -1, destinationMapID, teleportLocation.MenuItemText);
-                        curElseGroup++;
-
-                        // Class NOT Good AND Race is Evil
-                        conditionsSQL.AddRowForMenuOptionClassRestriction(priestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetGoodClasses(),
-                            "Evil alignment (Class NOT Good)", curElseGroup, true);
-                        conditionsSQL.AddRowForMenuOptionRaceRestriction(priestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetEvilRaces(),
-                            "Evil alignment (Race Evil)", curElseGroup);
-                        AddPriestOfDiscordMenuOptionSharedRestrictions(priestOfDiscordGossipMenuID, curMenuOptionID, curElseGroup, -1, destinationMapID, teleportLocation.MenuItemText);
-                        curElseGroup++;
-                    }
-
-                    // Neutral
-                    if (teleportLocation.AllowNeutral)
-                    {
-                        // Class Neutral AND Race Neutral
-                        conditionsSQL.AddRowForMenuOptionClassRestriction(priestOfDiscordGossipMenuID, curMenuOptionID, CreatureTeleportLocationNorrath.GetNeutralClasses(),
-                            "Neutral alignment (Class Neutral)", curElseGroup);
-                        conditionsSQL.AddRowForMenuOptionRaceRestriction(priestOfDiscordGossipMenuID, curMenuOptionID,
-                            CreatureTeleportLocationNorrath.GetNeutralRaces(), "Neutral alignment (Race Neutral)", curElseGroup);
-                        AddPriestOfDiscordMenuOptionSharedRestrictions(priestOfDiscordGossipMenuID, curMenuOptionID, curElseGroup, -1, destinationMapID, teleportLocation.MenuItemText);
-                    }
+                    if (unlockAchievementIDs.Count == 0)
+                        AddPriestOfDiscordNorrathMenuOptionAlignmentRestrictions(priestOfDiscordGossipMenuID, curMenuOptionID, teleportLocation, destinationMapID, 0, ref curElseGroup);
+                    else
+                        foreach (int unlockAchievementID in unlockAchievementIDs)
+                            AddPriestOfDiscordNorrathMenuOptionAlignmentRestrictions(priestOfDiscordGossipMenuID, curMenuOptionID, teleportLocation, destinationMapID, unlockAchievementID, ref curElseGroup);
 
                     norrathTeleportLocationsByGossipMenuOptionID.Add(curMenuOptionID, teleportLocation);
                     curMenuOptionID++;
@@ -1047,7 +1007,7 @@ namespace EQWOWConverter
                     creatureTemplate.RampageChancePercent, rampageRangeWOW, creatureTemplate.RampageDamagePercent, creatureTemplate.HasWildRampageAbility,
                     creatureTemplate.WildRampageChancePercent, creatureTemplate.WildRampageMaxTargets, creatureTemplate.WildRampageDamagePercent,
                     creatureTemplate.EQAttackRoundTimeInMS, Convert.ToInt32(creatureTemplate.DifficultyType),
-                    creatureTemplate.IsGossipOnlyFromHailText(), creatureTemplate.GetTotalSpellDamageMultiplier());
+                    creatureTemplate.IsGossipOnlyFromHailText(), creatureTemplate.GetTotalSpellDamageMultiplier(), creatureTemplate.GossipHelloAchievementID);
 
                 // Determine the display id
                 int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;
@@ -1513,6 +1473,102 @@ namespace EQWOWConverter
                     requiredReputation.RequiredWOWFactionID, requiredReputation.GetRequiredReputationRankMask(), comment, curElseGroupID);
                 curElseGroupID++;
             }
+        }
+
+        private void AddPriestOfDiscordNorrathMenuOptionAlignmentRestrictions(int gossipMenuID, int gossipMenuOptionID, CreatureTeleportLocationNorrath teleportLocation,
+            int destinationMapID, int requiredAchievementID, ref int curElseGroup)
+        {
+            // Good
+            if (teleportLocation.AllowGood)
+            {
+                // Class is Good
+                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, gossipMenuOptionID, CreatureTeleportLocationNorrath.GetGoodClasses(),
+                    "Good alignment (Class Good)", curElseGroup);
+                AddPriestOfDiscordNorrathMenuOptionGroupRestrictions(gossipMenuID, gossipMenuOptionID, curElseGroup, destinationMapID, requiredAchievementID, teleportLocation.MenuItemText);
+                curElseGroup++;
+
+                // Class NOT Evil AND Race is Good
+                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, gossipMenuOptionID, CreatureTeleportLocationNorrath.GetEvilClasses(),
+                    "Good alignment (Class NOT Evil)", curElseGroup, true);
+                conditionsSQL.AddRowForMenuOptionRaceRestriction(gossipMenuID, gossipMenuOptionID, CreatureTeleportLocationNorrath.GetGoodRaces(),
+                    "Good alignment (Race Good)", curElseGroup);
+                AddPriestOfDiscordNorrathMenuOptionGroupRestrictions(gossipMenuID, gossipMenuOptionID, curElseGroup, destinationMapID, requiredAchievementID, teleportLocation.MenuItemText);
+                curElseGroup++;
+            }
+
+            // Evil
+            if (teleportLocation.AllowEvil)
+            {
+                // Class is Evil
+                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, gossipMenuOptionID, CreatureTeleportLocationNorrath.GetEvilClasses(),
+                    "Evil alignment (Class Evil)", curElseGroup);
+                AddPriestOfDiscordNorrathMenuOptionGroupRestrictions(gossipMenuID, gossipMenuOptionID, curElseGroup, destinationMapID, requiredAchievementID, teleportLocation.MenuItemText);
+                curElseGroup++;
+
+                // Class NOT Good AND Race is Evil
+                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, gossipMenuOptionID, CreatureTeleportLocationNorrath.GetGoodClasses(),
+                    "Evil alignment (Class NOT Good)", curElseGroup, true);
+                conditionsSQL.AddRowForMenuOptionRaceRestriction(gossipMenuID, gossipMenuOptionID, CreatureTeleportLocationNorrath.GetEvilRaces(),
+                    "Evil alignment (Race Evil)", curElseGroup);
+                AddPriestOfDiscordNorrathMenuOptionGroupRestrictions(gossipMenuID, gossipMenuOptionID, curElseGroup, destinationMapID, requiredAchievementID, teleportLocation.MenuItemText);
+                curElseGroup++;
+            }
+
+            // Neutral
+            if (teleportLocation.AllowNeutral)
+            {
+                // Class Neutral AND Race Neutral
+                conditionsSQL.AddRowForMenuOptionClassRestriction(gossipMenuID, gossipMenuOptionID, CreatureTeleportLocationNorrath.GetNeutralClasses(),
+                    "Neutral alignment (Class Neutral)", curElseGroup);
+                conditionsSQL.AddRowForMenuOptionRaceRestriction(gossipMenuID, gossipMenuOptionID,
+                    CreatureTeleportLocationNorrath.GetNeutralRaces(), "Neutral alignment (Race Neutral)", curElseGroup);
+                AddPriestOfDiscordNorrathMenuOptionGroupRestrictions(gossipMenuID, gossipMenuOptionID, curElseGroup, destinationMapID, requiredAchievementID, teleportLocation.MenuItemText);
+                curElseGroup++;
+            }
+        }
+
+        private void AddPriestOfDiscordNorrathMenuOptionGroupRestrictions(int gossipMenuID, int gossipMenuOptionID, int elseGroupID, int destinationMapID, int requiredAchievementID, string menuItemText)
+        {
+            AddPriestOfDiscordMenuOptionSharedRestrictions(gossipMenuID, gossipMenuOptionID, elseGroupID, -1, destinationMapID, menuItemText);
+            if (requiredAchievementID > 0)
+            {
+                string conditionsComment = string.Concat("Show Priest of Discord option '", menuItemText, "' if player has achievement ", requiredAchievementID.ToString());
+                conditionsSQL.AddRowForMenuOptionAchievementRestriction(gossipMenuID, gossipMenuOptionID, requiredAchievementID, conditionsComment, elseGroupID);
+            }
+        }
+
+        // A destination opens with the discovery achievement for its own priest, and start town destinations also open with either broad achievement
+        private static List<int> GetPriestOfDiscordDestinationUnlockAchievementIDs(CreatureTeleportLocationNorrath teleportLocation)
+        {
+            List<int> unlockAchievementIDs = new List<int>();
+            AchievementData? discoveryAchievement = AchievementData.GetPriestOfDiscordDiscoveryAchievement(teleportLocation.ZoneShortName);
+            if (discoveryAchievement != null)
+                unlockAchievementIDs.Add(discoveryAchievement.AchievementID);
+            if (teleportLocation.CoveredByBroadAchievements == true)
+            {
+                if (Configuration.ACHIEVEMENT_LEGACY_ACCOUNT_ENABLED == true)
+                    unlockAchievementIDs.Add(Configuration.DBCID_ACHIEVEMENT_ID_START);
+                if (Configuration.ACHIEVEMENT_EQ_ADVENTURER_ENABLED == true)
+                    unlockAchievementIDs.Add(Configuration.DBCID_ACHIEVEMENT_ID_START + 1);
+            }
+            if (unlockAchievementIDs.Count == 0)
+                Logger.WriteError("Priest of Discord destination '" + teleportLocation.ZoneShortName + "' has no discovery achievement and no enabled broad achievement covers it, so it is shown without an achievement requirement");
+            return unlockAchievementIDs;
+        }
+
+        private static int GetPriestOfDiscordStartAchievementID(PlayerClassRaceProperties classRaceProperties)
+        {
+            if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == false || classRaceProperties.PriestOfDiscordAchievementID <= 0)
+                return 0;
+            SortedDictionary<int, AchievementData> achievementsByID = AchievementData.GetAchievementsByAchievementID();
+            if (achievementsByID.ContainsKey(classRaceProperties.PriestOfDiscordAchievementID) == false
+                || achievementsByID[classRaceProperties.PriestOfDiscordAchievementID].Type != AchievementType.PriestOfDiscordDiscovery)
+            {
+                Logger.WriteError("PlayerClassRaceProperties row for race '" + classRaceProperties.RaceID + "' and class '" + classRaceProperties.ClassID + "' has PriestOfDiscordAchievementID '" +
+                    classRaceProperties.PriestOfDiscordAchievementID + "' which is not a PriestOfDiscordDiscovery achievement, so no start achievement is granted");
+                return 0;
+            }
+            return classRaceProperties.PriestOfDiscordAchievementID;
         }
 
         private void AddPriestOfDiscordMenuOptionSharedRestrictions(int gossipMenuID, int gossipMenuOptionID, int elseGroupID, int excludedZoneID, int excludedMapID, string menuItemText)
@@ -2167,7 +2223,8 @@ namespace EQWOWConverter
 
                     modEverquestPlayerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[startZoneShortName],
                         areaIDsByShortName[startZoneShortName], classRaceProperties.Value.StartPositionX, classRaceProperties.Value.StartPositionY,
-                        classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation, classRaceProperties.Value.IssuedIllusionItemWOWID);
+                        classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation, classRaceProperties.Value.IssuedIllusionItemWOWID,
+                        GetPriestOfDiscordStartAchievementID(classRaceProperties.Value));
 
                     // The core will not create a character for a race and class pairing that has no playercreateinfo row
                     if (Configuration.PLAYER_ENABLE_ALL_RACE_CLASS_COMBINATIONS == true)
@@ -3775,6 +3832,7 @@ namespace EQWOWConverter
             creatureQuestStarterSQL.SaveToDisk("creature_queststarter", SQLFileType.World);
             creatureTemplateSQL.SaveToDisk("creature_template", SQLFileType.World);
             creatureTemplateModelSQL.SaveToDisk("creature_template_model", SQLFileType.World);
+            creatureTemplateAddonSQL.SaveToDisk("creature_template_addon", SQLFileType.World);
             creatureTemplateSpellSQL.SaveToDisk("creature_template_spell", SQLFileType.World);
             creatureTextSQL.SaveToDisk("creature_text", SQLFileType.World);
             fishingLootTemplateSQL.SaveToDisk("fishing_loot_template", SQLFileType.World);

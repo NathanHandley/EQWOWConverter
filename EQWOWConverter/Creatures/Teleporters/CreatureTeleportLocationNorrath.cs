@@ -30,6 +30,7 @@ namespace EQWOWConverter.Creatures.Teleporters
         public float ZPosition;
         public float Orientation;
         public string MenuItemText = string.Empty;
+        public bool CoveredByBroadAchievements; // If true, the Legacy of the Old Guard and Everquest Adventurer achievements also unlock this destination
 
         private static List<CreatureTeleportLocationNorrath> TeleportLocations = new List<CreatureTeleportLocationNorrath>();
         private static HashSet<ClassWOWType> GoodClasses = new HashSet<ClassWOWType>();
@@ -171,6 +172,7 @@ namespace EQWOWConverter.Creatures.Teleporters
                 teleportLocation.ZPosition = float.Parse(columns["Z"]) * Configuration.GENERATE_WORLD_SCALE;
                 teleportLocation.Orientation = float.Parse(columns["O"]);
                 teleportLocation.MenuItemText = columns["MenuItemText"];
+                teleportLocation.CoveredByBroadAchievements = columns["CoveredByBroadAchievements"].Trim() == "1" ? true : false;
                 TeleportLocations.Add(teleportLocation);
             }
         }

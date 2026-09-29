@@ -52,6 +52,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`DifficultyType` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`GossipIsOnlyFromHailText` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`SpellDamageMultiplier` FLOAT NOT NULL DEFAULT '1', ");
+            stringBuilder.AppendLine("`GossipHelloAchievementID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`CreatureTemplateID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -61,7 +62,7 @@ namespace EQWOWConverter.WOWFiles
             float agroSocialDistanceMod, bool enrageEnabled, int enrageHPPct, int enrageDurationInMS, int enrageCooldownInMS,
             bool flurryEnabled, int flurryChancePct, bool rampageEnabled, int rampageChancePct, int rampageRange, int rampageDamagePct,
             bool wildRampageEnabled, int wildRampageChancePct, int wildRampageMaxTargets, int wildRampageDamagePct, int attackRoundTimeInMS,
-            int difficultyType, bool gossipIsOnlyFromHailText, float spellDamageMultiplier)
+            int difficultyType, bool gossipIsOnlyFromHailText, float spellDamageMultiplier, int gossipHelloAchievementID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("CreatureTemplateID", creatureTemplateID);
@@ -91,6 +92,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("DifficultyType", difficultyType);
             newRow.AddInt("GossipIsOnlyFromHailText", gossipIsOnlyFromHailText == true ? 1 : 0);
             newRow.AddFloat("SpellDamageMultiplier", spellDamageMultiplier);
+            newRow.AddInt("GossipHelloAchievementID", gossipHelloAchievementID);
             Rows.Add(newRow);
         }
     }

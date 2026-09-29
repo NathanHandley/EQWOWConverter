@@ -61,5 +61,26 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // Shares_Criteria
             Rows.Add(newRow);
         }
+
+        // Has no criteria rows, since mod-everquest grants it directly when the player talks to the creature
+        public void AddRowForDiscovery(int achievementID, string name, string description, int categoryID, int points, int iconDBCID)
+        {
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt32(achievementID); // ID
+            newRow.AddInt32(-1); // Faction (-1 = both factions)
+            newRow.AddInt32(-1); // Instance_Id (-1 = all maps)
+            newRow.AddInt32(0); // Supercedes (previous achievement in a chain)
+            newRow.AddStringLang(name); // Title
+            newRow.AddStringLang(description); // Description
+            newRow.AddInt32(categoryID); // Category (Achievement_Category.dbc)
+            newRow.AddInt32(points); // Points
+            newRow.AddInt32(0); // UI order
+            newRow.AddInt32(0); // Flags
+            newRow.AddInt32(iconDBCID); // IconID (SpellIcon.dbc)
+            newRow.AddStringLang(string.Empty); // Reward text
+            newRow.AddInt32(0); // Minimum_Criteria
+            newRow.AddInt32(0); // Shares_Criteria
+            Rows.Add(newRow);
+        }
     }
 }

@@ -29,6 +29,7 @@ namespace EQWOWConverter.Player
         public float StartOrientation;
         public List<int> StartItemIDs = new List<int>();
         public int IssuedIllusionItemWOWID = 0;
+        public int PriestOfDiscordAchievementID = 0; // Discovery achievement for the Priest of Discord nearest this start location, granted free by mod-everquest
 
         public static Dictionary<(int, int), PlayerClassRaceProperties> GetClassRacePropertiesByRaceAndClassID()
         {
@@ -75,6 +76,7 @@ namespace EQWOWConverter.Player
                 if (startItemID6 > -1)
                     curProperties.StartItemIDs.Add(startItemID6);
                 curProperties.IssuedIllusionItemWOWID = int.Parse(columns["IssuedIllusionItemWOWID"]);
+                curProperties.PriestOfDiscordAchievementID = int.Parse(columns["PriestOfDiscordAchievementID"]);
 
                 // Add if unique
                 if (PlayerClassRacePropertiesByRaceAndClassIDs.ContainsKey((curProperties.RaceID, curProperties.ClassID)) == true)

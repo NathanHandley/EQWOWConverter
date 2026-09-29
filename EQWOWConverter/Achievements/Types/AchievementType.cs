@@ -19,6 +19,7 @@ namespace EQWOWConverter.Achievements
     internal enum AchievementType
     {
         Unknown = 0,
-        InstanceClear = 1 // Kill all defined creatures in a zone. Data1 = instance type, Data2+ = creature template WOW IDs whose kills complete the achievement
+        InstanceClear = 1, // Kill all defined creatures in a zone. Data1 = instance type, Data2+ = creature template WOW IDs whose kills complete the achievement
+        PriestOfDiscordDiscovery = 2 // Talk to a Priest of Discord in Norrath. ZoneShortName = the priest's zone (and teleport destination it unlocks), Data2 = the priest's creature template WOW ID
     }
 }

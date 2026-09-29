@@ -78,6 +78,7 @@ namespace EQWOWConverter.Creatures
         public bool IsRidingTrainer = false;
         public bool IsNorrathPriestOfDiscord = false;
         public bool IsAzerothPriestOfDiscord = false;
+        public int GossipHelloAchievementID = 0; // Achievement granted by mod-everquest when a player opens this creature's gossip
         public bool IsPlaneTeleporter = false;
         public bool IsRaidCoordinator = false;
         public ClassWOWType ClassTrainerType = ClassWOWType.None;

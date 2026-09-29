@@ -740,6 +740,20 @@ namespace EQWOWConverter
                 zoneContinentsByContinentType.Add(continent.ContinentType, continent);
             }
             HashSet<int> usedAchievementCategoryIDs = new HashSet<int>();
+
+            // Priest of Discord discovery achievements, which also unlock that priest's teleport destination
+            if (Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
+            {
+                foreach (AchievementData achievement in AchievementData.GetAchievementsByAchievementID().Values)
+                {
+                    if (achievement.Type != AchievementType.PriestOfDiscordDiscovery)
+                        continue;
+                    achievementDBC.AddRowForDiscovery(achievement.AchievementID, achievement.Name, achievement.Description, achievement.ParentCategoryID,
+                        achievement.Points, achievement.GetIconDBCID());
+                    usedAchievementCategoryIDs.Add(achievement.ParentCategoryID);
+                }
+            }
+
             foreach (Zone zone in zones)
             {
                 ZoneProperties zoneProperties = zone.ZoneProperties;

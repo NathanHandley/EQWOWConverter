@@ -23,6 +23,7 @@ namespace EQWOWConverter.Achievements
     {
         private static SortedDictionary<int, AchievementData> AchievementsByAchievementID = new SortedDictionary<int, AchievementData>();
         private static Dictionary<string, AchievementData> InstanceClearAchievementsByZoneAndInstanceType = new Dictionary<string, AchievementData>();
+        private static Dictionary<string, AchievementData> PriestOfDiscordDiscoveryAchievementsByZone = new Dictionary<string, AchievementData>();
         private static readonly object AchievementReadLock = new object();
 
         public int AchievementID;
@@ -61,6 +62,19 @@ namespace EQWOWConverter.Achievements
             }
         }
 
+        public static AchievementData? GetPriestOfDiscordDiscoveryAchievement(string zoneShortName)
+        {
+            lock (AchievementReadLock)
+            {
+                if (AchievementsByAchievementID.Count == 0)
+                    PopulateAchievementList();
+                string lookupKey = zoneShortName.ToLower().Trim();
+                if (PriestOfDiscordDiscoveryAchievementsByZone.ContainsKey(lookupKey) == false)
+                    return null;
+                return PriestOfDiscordDiscoveryAchievementsByZone[lookupKey];
+            }
+        }
+
         public int GetIconDBCID()
         {
             // Can use either type of icon
@@ -95,6 +109,18 @@ namespace EQWOWConverter.Achievements
                         creatureTemplate.BindsRaidInstanceOnKill = true;
                     if (achievement.CriteriaCreatureTemplates.Count == 0)
                         Logger.WriteError("AchievementData with ID '" + achievement.AchievementID + "' has no criteria creatures in its Data columns, so the achievement can never complete");
+                }
+                else if (achievement.Type == AchievementType.PriestOfDiscordDiscovery && Configuration.GENERATE_ENABLE_PRIEST_OF_DISCORD_WORLD_TRANSPORTATION == true)
+                {
+                    // Talking to the priest grants the achievement through mod-everquest
+                    foreach (CreatureTemplate creatureTemplate in achievement.CriteriaCreatureTemplates)
+                    {
+                        if (creatureTemplate.IsNorrathPriestOfDiscord == false)
+                            Logger.WriteError("AchievementData with ID '" + achievement.AchievementID + "' references creature template WOW ID '" + creatureTemplate.WOWCreatureTemplateID + "' which is not a Norrath Priest of Discord");
+                        creatureTemplate.GossipHelloAchievementID = achievement.AchievementID;
+                    }
+                    if (achievement.CriteriaCreatureTemplates.Count == 0)
+                        Logger.WriteError("AchievementData with ID '" + achievement.AchievementID + "' has no priest creature in its Data columns, so the achievement can never be earned by talking to one");
                 }
             }
         }
@@ -135,6 +161,7 @@ namespace EQWOWConverter.Achievements
                 switch (achievementTypeValue)
                 {
                     case "InstanceClear": achievement.Type = AchievementType.InstanceClear; break;
+                    case "PriestOfDiscordDiscovery": achievement.Type = AchievementType.PriestOfDiscordDiscovery; break;
                     default:
                         {
                             Logger.WriteError("AchievementData with ID '" + achievement.AchievementID + "' has unhandled AchievementType of '" + achievementTypeValue + "', so the row is skipped");
@@ -158,6 +185,15 @@ namespace EQWOWConverter.Achievements
                         continue;
                     }
                     InstanceClearAchievementsByZoneAndInstanceType.Add(lookupKey, achievement);
+                }
+                else if (achievement.Type == AchievementType.PriestOfDiscordDiscovery)
+                {
+                    if (PriestOfDiscordDiscoveryAchievementsByZone.ContainsKey(achievement.ZoneShortName) == true)
+                    {
+                        Logger.WriteError("AchievementData.csv has more than one PriestOfDiscordDiscovery row for zone '" + achievement.ZoneShortName + "', so extra rows are ignored for zone lookups");
+                        continue;
+                    }
+                    PriestOfDiscordDiscoveryAchievementsByZone.Add(achievement.ZoneShortName, achievement);
                 }
             }
         }

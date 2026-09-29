@@ -1,15 +1,21 @@
-ZoneShortName|AllowGood|AllowNeutral|AllowEvil|X|Y|Z|O|MenuItemText
-akanon|1|1|1|489.421692|-91.83342|-27.99737|5.58416|Send me to Ak'Anon
-cabeast|1|1|1|777.102173|-204.829117|14|4.7703714|Send me to Cabilis
-erudnext|1|1|1|-122.231232|35.826111|36.000198|0.47118|Send me to Erudin
-felwithea|1|1|1|13.11507|-276.381958|0|1.58729|Send me to Felwithe
-freporte|1|1|1|141.940521|-668.886902|-55.968739|3.12197|Send me to Freeport
-grobb|1|1|1|23.90066|-0.25706|0|5.45065|Send me to Grobb
-halas|1|1|1|134.768845|53.548248|0|0.10206|Send me to Halas
-kaladima|1|1|1|43.366692|39.641869|-0.19467|1.25271|Send me to Kaladim
-gfaydark|1|1|1|189.536774|219.435333|-3.75126|5.87873|Send me to Kelethin
-neriakb|1|1|1|-57.026218|-558.409241|-41.968552|3.79345|Send me to Neriak
-oggok|1|1|1|209.857559|511.635773|55.968861|1.80644|Send me to Oggok
-paineel|1|1|1|803.93866|203.568222|-0.24207|3.08269|Send me to Paineel
-qeynos2|1|1|1|17.403481|235.138519|-1|3.15731|Send me to Qeynos
-rivervale|1|1|1|-10.75181|-114.053917|0|5.3721|Send me to Rivervale
+ZoneShortName|AllowGood|AllowNeutral|AllowEvil|X|Y|Z|O|MenuItemText|CoveredByBroadAchievements
+akanon|1|1|1|489.421692|-91.83342|-27.99737|5.58416|Send me to Ak'Anon|1
+cabeast|1|1|1|777.102173|-204.829117|14|4.7703714|Send me to Cabilis|1
+erudnext|1|1|1|-122.231232|35.826111|36.000198|0.47118|Send me to Erudin|1
+felwithea|1|1|1|13.11507|-276.381958|0|1.58729|Send me to Felwithe|1
+firiona|1|1|1|-3551.579102|2902.639648|-80.905647|1.56689|Send me to Firiona Vie|0
+freporte|1|1|1|141.940521|-668.886902|-55.968739|3.12197|Send me to Freeport|1
+grobb|1|1|1|23.90066|-0.25706|0|5.45065|Send me to Grobb|1
+halas|1|1|1|134.768845|53.548248|0|0.10206|Send me to Halas|1
+kael|1|1|1|11.17417|1731.894409|-201.906204|1.53153|Send me to Kael Drakkel|0
+kaladima|1|1|1|43.366692|39.641869|-0.19467|1.25271|Send me to Kaladim|1
+gfaydark|1|1|1|189.536774|219.435333|-3.75126|5.87873|Send me to Kelethin|1
+neriakb|1|1|1|-57.026218|-558.409241|-41.968552|3.79345|Send me to Neriak|1
+oggok|1|1|1|209.857559|511.635773|55.968861|1.80644|Send me to Oggok|1
+paineel|1|1|1|782.682617|243.119263|0.67937|3.08269|Send me to Paineel|1
+qeynos2|1|1|1|17.403481|235.138519|-1|3.15731|Send me to Qeynos|1
+rivervale|1|1|1|-10.75181|-114.053917|0|5.3721|Send me to Rivervale|1
+skyshrine|1|1|1|480.085388|-328.088623|39.964909|6.28316|Send me to Skyshrine|0
+qrg|1|1|1|-20.81444|163.516068|0|1.58258|Send me to Surefall Glade|1
+overthere|1|1|1|2806.504883|2287.737305|-53.093498|1.68859|Send me to The Overthere|0
+thurgadina|1|1|1|-443.68399|-17.468809|0|5.50171|Send me to Thurgadin|0
