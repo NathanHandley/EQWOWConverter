@@ -1781,6 +1781,16 @@ namespace EQWOWConverter
             return true;
         }
 
+        public static int GetCreatureLossOfControlOnlyRecastDelayInMS(SpellTemplate spellTemplate, int casterLevel)
+        {
+            // 0 when the spell does something beyond taking control away, or the recast multiplier is off
+            if (Configuration.CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER <= 0f)
+                return 0;
+            if (spellTemplate.IsLossOfControlOnlyAbility() == false)
+                return 0;
+            return Convert.ToInt32(spellTemplate.GetCreatureLossOfControlMaxDurationInMS(casterLevel) * Configuration.CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER);
+        }
+
         public void ConvertCreatureSpellAI(ref List<CreatureTemplate> creatureTemplates, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
         {
             Logger.WriteInfo("Converting Creature Spell AI...");
@@ -1882,6 +1892,11 @@ namespace EQWOWConverter
                     bool ignoreAuraDuration = (curEntry.TypeFlags & 1) == 1 && effectiveManaCost == 0;
                     int auraDurationDelayInMS = ignoreAuraDuration ? 0 : spellTemplate.CreatureCastAuraDuration.GetBuffDurationForLevel(spellLevel);
                     curEntry.CalculatedMinimumDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, auraDurationDelayInMS), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
+
+                    // An ability that only takes control away waits a multiple of its longest control before coming around again, so a player is not kept under it
+                    int lossOfControlRecastDelayInMS = GetCreatureLossOfControlOnlyRecastDelayInMS(spellTemplate, spellLevel);
+                    if (lossOfControlRecastDelayInMS > curEntry.CalculatedMinimumDelayInMS)
+                        curEntry.CalculatedMinimumDelayInMS = lossOfControlRecastDelayInMS;
                     curEntry.BuffDurationInMS = spellTemplate.CreatureCastAuraDuration.GetBuffDurationForLevel(spellLevel);
                     allValidSpellEntries[i] = curEntry;
                 }

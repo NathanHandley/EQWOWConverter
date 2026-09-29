@@ -287,6 +287,7 @@ namespace EQWOWConverter.Spells
         public int CreatureCastSpellCastTimeDBCID = 1;
         public SpellDuration CreatureCastAuraDuration = new SpellDuration();
         public UInt32 CreatureCastManaCost = 0; // Flat mana cost before the percent-of-base-mana conversion, used by the creature-cast copy
+        public SpellTemplate? StunParentSpellTemplate = null; // For a generated stun chain spell, the spell (ability) that chains it
         public bool IsGeneratedStunEffectSpell = false; 
         public SpellEQTargetType EQTargetType = SpellEQTargetType.Single;
         public bool IsSelfCenteredAreaBreath = false; // Dragon breath
@@ -2078,6 +2079,72 @@ namespace EQWOWConverter.Spells
             return false;
         }
 
+        private static bool IsLossOfControlEQEffect(SpellEffectEQ eqEffect)
+        {
+            if (eqEffect.EQEffectType == SpellEQEffectType.Stun)
+                return eqEffect.EQBaseValue > 1;
+            return eqEffect.EQEffectType == SpellEQEffectType.Fear || eqEffect.EQEffectType == SpellEQEffectType.Charm || eqEffect.EQEffectType == SpellEQEffectType.Mez;
+        }
+
+        public bool HasLossOfControlEQEffect()
+        {
+            foreach (SpellEffectEQ eqEffect in EQSpellEffects)
+                if (IsLossOfControlEQEffect(eqEffect) == true)
+                    return true;
+            return false;
+        }
+
+        public bool IsLossOfControlOnlyAbility()
+        {
+            bool hasLossOfControl = false;
+            foreach (SpellEffectEQ eqEffect in EQSpellEffects)
+            {
+                if (IsLossOfControlEQEffect(eqEffect) == true)
+                {
+                    hasLossOfControl = true;
+                    continue;
+                }
+                if (eqEffect.EQEffectType == SpellEQEffectType.Stun)
+                    continue;
+                if (eqEffect.EQBaseValue != 0)
+                    return false;
+                switch (eqEffect.EQEffectType)
+                {
+                    case SpellEQEffectType.Root:
+                    case SpellEQEffectType.Silence:
+                    case SpellEQEffectType.Gate:
+                    case SpellEQEffectType.Teleport:
+                    case SpellEQEffectType.Succor:
+                        return false;
+                    default:
+                        break;
+                }
+            }
+            return hasLossOfControl;
+        }
+
+        public int GetCreatureLossOfControlMaxDurationInMS(int casterLevel)
+        {
+            int maxDurationInMS = 0;
+            foreach (SpellEffectEQ eqEffect in EQSpellEffects)
+            {
+                if (IsLossOfControlEQEffect(eqEffect) == false || eqEffect.EQEffectType == SpellEQEffectType.Stun)
+                    continue;
+                int auraDurationInMS = CreatureCastAuraDuration.IsInfinite == true ? CreatureCastAuraDuration.MaxDurationInMS : CreatureCastAuraDuration.GetBuffDurationForLevel(casterLevel);
+                maxDurationInMS = Math.Max(maxDurationInMS, auraDurationInMS);
+            }
+            foreach (SpellTemplate chainedSpellTemplate in ChainedSpellTemplates)
+                if (chainedSpellTemplate.IsGeneratedStunEffectSpell == true)
+                    maxDurationInMS = Math.Max(maxDurationInMS, chainedSpellTemplate.CreatureCastAuraDuration.MaxDurationInMS);
+            return maxDurationInMS;
+        }
+
+        public bool DoesCreatureLossOfControlGrantPlayerImmunity()
+        {
+            SpellTemplate ability = (IsGeneratedStunEffectSpell == true && StunParentSpellTemplate != null) ? StunParentSpellTemplate : this;
+            return ability.HasLossOfControlEQEffect() == true && ability.IsLossOfControlOnlyAbility() == false;
+        }
+
         public void ApplyCreatureOnlyCrowdControlDurationMod()
         {
             if (Configuration.SPELLS_CROWD_CONTROL_DURATION_MOD == 1f)
@@ -3516,6 +3583,7 @@ namespace EQWOWConverter.Spells
                                 // The stun duration is a crowd control duration, which is reduced for creature casts only, so this chain spell needs its own creature-cast copy
                                 effectGeneratedSpellTemplate.WOWSpellIDCreatureCast = IDGenerationTool.GenerateID("SpellID", "stuncreaturecast", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                 effectGeneratedSpellTemplate.IsGeneratedStunEffectSpell = true;
+                                effectGeneratedSpellTemplate.StunParentSpellTemplate = spellTemplate;
                                 effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
                                 effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;

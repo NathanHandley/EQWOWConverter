@@ -1261,8 +1261,10 @@ namespace EQWOWConverter
                             break;
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[eqSpellIDAndProcChance.Item1];
                         string comment = string.Concat("EQ Attack Proc ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.GetWOWSpellIDForCreatureCast(), ")");
+                        int procCooldownInMS = Math.Max(Configuration.CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS,
+                            AssetConverter.GetCreatureLossOfControlOnlyRecastDelayInMS(curSpellTemplate, creatureTemplate.LevelEQ > 0 ? creatureTemplate.LevelEQ : creatureTemplate.Level));
                         smartScriptsSQL.AddRowForCreatureTemplateApplySpellOnDamageDone(creatureTemplate.WOWCreatureTemplateID, eqSpellIDAndProcChance.Item2,
-                            curSpellTemplate.GetWOWSpellIDForCreatureCast(), Configuration.CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS, comment);
+                            curSpellTemplate.GetWOWSpellIDForCreatureCast(), procCooldownInMS, comment);
                     }
 
                     // Summons need to add an aura to the caster

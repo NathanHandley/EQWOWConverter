@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 119;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 120;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -660,6 +660,10 @@ namespace EQWOWConverter
         // If true, creatures never cast dispels (EQ spell list entries typed Dispel), so they don't even try
         public static bool CREATURE_SPELL_DISPEL_DISABLED = true;
         public static bool CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT = true;
+
+        // A creature ability that does nothing but take control away (stun, fear, charm, mesmerize) waits at least this many times the longest control it applies before it is cast again (0 = off)
+        // Abilities that also do something else (damage, debuffs) are paced normally and instead give the player a short immunity to that control in mod-everquest
+        public static float CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER = 4f;
 
         // Spell pick priority order weights
         public static int CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD = 1;
@@ -2364,6 +2368,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_SPELL_CHARM_DISABLED", CREATURE_SPELL_CHARM_DISABLED, "If true, creatures never charm");
             OutputVariableToConfig("CREATURE_SPELL_DISPEL_DISABLED", CREATURE_SPELL_DISPEL_DISABLED, "If true, creatures never cast dispels.  With the boss exemption on, raid bosses and raid mini bosses keep their dispels", false);
             OutputVariableToConfig("CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT", CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT, "");
+            OutputVariableToConfig("CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER", CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER, "A creature ability that only takes control away (stun, fear, charm, mesmerize) waits at least this many times its longest control before being cast again.  0 turns this off");
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD", CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD, "Spell pick priority order weights", false);
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP", CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP, "", false);
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN", CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN, "");
@@ -3179,6 +3184,7 @@ namespace EQWOWConverter
             CREATURE_SPELL_CHARM_DISABLED = ReadVariableFromConfigString("CREATURE_SPELL_CHARM_DISABLED", configValuesByVariableName, CREATURE_SPELL_CHARM_DISABLED);
             CREATURE_SPELL_DISPEL_DISABLED = ReadVariableFromConfigString("CREATURE_SPELL_DISPEL_DISABLED", configValuesByVariableName, CREATURE_SPELL_DISPEL_DISABLED);
             CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT = ReadVariableFromConfigString("CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT", configValuesByVariableName, CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT);
+            CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER = ReadVariableFromConfigString("CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER", configValuesByVariableName, CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER);
             CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD);
             CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP);
             CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_MIN);
