@@ -213,6 +213,7 @@ namespace EQWOWConverter.Spells
             string description = string.Concat("The pet's melee attacks have a ", procChancePercent.ToString(), "% chance to cast ", procSpellTemplate.Name, ".");
             SpellTemplate spellTemplate = BuildBaseTemplate(procSpellTemplate.Name, wowSpellID, 0, description, description);
             spellTemplate.SpellIconID = procSpellTemplate.SpellIconID; // Wear the icon of the spell the proc casts
+            spellTemplate.GenericSpellIconEQID = procSpellTemplate.GenericSpellIconEQID;
             spellTemplate.RankName = "Passive";
             spellTemplate.IsGoodEffect = true;
             spellTemplate.IsPassiveAbility = true;

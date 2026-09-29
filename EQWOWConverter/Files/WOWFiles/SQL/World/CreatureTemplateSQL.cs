@@ -121,8 +121,8 @@ namespace EQWOWConverter.WOWFiles
                 unitFlags |= 512; // 0x00000200 = UNIT_FLAG_IMMUNE_TO_NPC (disable combat assistance w/NPCs)
                 unitFlags |= 256; // 0x00000100 = UNIT_FLAG_IMMUNE_TO_PC (disable combat assistance w/Player)
             }
-            if (creatureTemplate.IsUnattackable == true)
-                unitFlags |= 256; // 0x00000100 = UNIT_FLAG_IMMUNE_TO_PC (can't be attacked by players and won't aggro them, but stays visible and selectable)
+            if (creatureTemplate.IsUnattackable == true || creatureTemplate.IsEyeOfZomm == true)
+                unitFlags |= 256; // 0x00000100 = UNIT_FLAG_IMMUNE_TO_PC
             int extraFlags = 0;
             if (creatureTemplate.IsNonNPC == true)
             {
@@ -134,6 +134,8 @@ namespace EQWOWConverter.WOWFiles
                 extraFlags |= 16777216; // 0x01000000 = CREATURE_FLAG_EXTRA_MODULE, which mod-everquest reads to lock raid members to the instance on kill (CREATURE_FLAG_EXTRA_INSTANCE_BIND is not used since the core logs an error for every open world spawn of the same template)
             if (CreaturePresenceGroup.IsCreatureInAPresenceGroup(creatureTemplate.EQCreatureTemplateID) == true)
                 extraFlags |= 64;  // 0x00000040 = CREATURE_FLAG_EXTRA_NO_XP (prevent exp exploit farming)
+            if (creatureTemplate.IsEyeOfZomm == true)
+                extraFlags |= 2;   // 0x00000002 = CREATURE_FLAG_EXTRA_CIVILIAN
 
             // Create the row
             SQLRow newRow = new SQLRow();
@@ -160,7 +162,10 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("faction", creatureTemplate.WOWFactionTemplateID); // References FactionTemplate.dbc
             newRow.AddInt("npcflag", npcFlags);
             newRow.AddFloat("speed_walk", 1); // 1 is very common, but can be other values
-            newRow.AddFloat("speed_run", 1.14286f); // 1.14286 seems common
+            if (creatureTemplate.IsEyeOfZomm == true)
+                newRow.AddFloat("speed_run", 1.42857f);
+            else
+                newRow.AddFloat("speed_run", 1.14286f); // 1.14286 seems common
             newRow.AddFloat("speed_swim", 1);
             newRow.AddFloat("speed_flight", 1);
             newRow.AddFloat("detection_range", creatureTemplate.DetectionRange); 
@@ -202,18 +207,20 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddString("AIName", 64, string.Empty);
             newRow.AddInt("MovementType", 0); // 0 = Stay in Place, 1 = Random Move within wander_distance, 2 = Waypoint Movement
             newRow.AddFloat("HoverHeight", 1);
-            if (Configuration.CREATURE_PET_ALLOW_STAT_MOD_SCALING == true || creatureTemplate.IsPet == false)
+            if (creatureTemplate.IsEyeOfZomm == true)
+                newRow.AddFloat("HealthModifier", 0.1f);)
+            else if (Configuration.CREATURE_PET_ALLOW_STAT_MOD_SCALING == true || creatureTemplate.IsPet == false)
                 newRow.AddFloat("HealthModifier", creatureTemplate.HPMod);
             else
                 newRow.AddFloat("HealthModifier", 1);
             newRow.AddFloat("ManaModifier", 1);
             newRow.AddFloat("ArmorModifier", 1);
-            if (creatureTemplate.IsPet == true)
+            if (creatureTemplate.IsPet == true || creatureTemplate.IsEyeOfZomm == true)
                 newRow.AddFloat("ExperienceModifier", 0);  // No EXP for summoned creatures
             else
                 newRow.AddFloat("ExperienceModifier", creatureTemplate.ExperienceMultiplier);
             newRow.AddInt("RacialLeader", 0);
-			newRow.AddInt("movementId", 0);
+            newRow.AddInt("movementId", creatureTemplate.IsEyeOfZomm == true ? 144 : 0); // 144 is the Eye of Kilrogg
             newRow.AddInt("RegenHealth", 1);
             newRow.AddInt("CreatureImmunitiesId", creatureTemplate.CreatureImmunitiesId);
             newRow.AddInt("flags_extra", extraFlags);

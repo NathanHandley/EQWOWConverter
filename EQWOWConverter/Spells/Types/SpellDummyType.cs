@@ -43,5 +43,10 @@ namespace EQWOWConverter.Spells
         RemoveDamageShield = 21,
         HealMeleeAttackers = 22,
         HearthstoneTether = 23,
+        WipeHateList = 24,
+        Harmony = 25,
+        TrueNorth = 26,
+        EyeOfZomm = 27,
+        Telescope = 28,
     }
 }

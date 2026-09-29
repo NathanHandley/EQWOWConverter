@@ -184,6 +184,7 @@ namespace EQWOWConverter.Spells
         public UInt32 CategoryRecoveryTimeInMS = 0; // When non-zero (with a shared Category), spells in the same category share a cooldown
         public UInt32 ChannelInterruptFlags = 0;
         public int SpellIconID = 0;
+        public int GenericSpellIconEQID = -1; // Generic spell icon (Spell_EQ_<id>) the client can show instead of the spell gem icon, -1 if none
         public TradeskillRecipe? TradeskillRecipe = null;
         protected int _SpellCastTimeDBCID = 1; // First row, instant cast
         public int SpellCastTimeDBCID { get { return _SpellCastTimeDBCID; } }
@@ -293,6 +294,9 @@ namespace EQWOWConverter.Spells
         public bool IsSelfCenteredAreaBreath = false; // Dragon breath
         public bool IsCasterCenteredDetrimentalArea = false; // Point blank AE (such as Dragon Roar), which has no range so creatures must cast it on themselves
         public bool CanTargetBothFriendlyAndEnemy = false;
+        public bool HasUnmappedEQEffect = false; // An EQ effect this converter doesn't map, so the spell does more in EQ than its converted effects show
+        public bool IsPossessSummon = false; // Summons a creature the caster possesses and sees through (Eye of Zomm, like Eye of Kilrogg)
+        public bool IsNeutralNPCTargetSpell = false; // Flagged beneficial in EQ but lands on NPCs (lulls, memory blurs), see IsNeutralNPCSpell
         public UInt32 TargetCreatureType = 0; // No specific creature type
         public bool CastOnCorpse = false;
         public Dictionary<ClassEQType, SpellLearnScrollProperties> LearnScrollPropertiesByEQClassType = new Dictionary<ClassEQType, SpellLearnScrollProperties>();
@@ -508,11 +512,26 @@ namespace EQWOWConverter.Spells
                     case SpellEQEffectType.Root:
                     case SpellEQEffectType.Silence:
                     case SpellEQEffectType.Mez:
-                    case SpellEQEffectType.ModelSize: return true;
+                    case SpellEQEffectType.ModelSize:
+                    case SpellEQEffectType.WipeHateList: // Memory blurs and lulls are cast at NPCs
+                    case SpellEQEffectType.Harmony:
+                    case SpellEQEffectType.ChangeFrenzyRadius:
+                    case SpellEQEffectType.EyeOfZomm: return true; // The eye is channeled
+                    case SpellEQEffectType.MagnifyVision:
+                        {
+                            // Telescopes are channeled, but buffs that only carry the magnify alongside other effects stay buffs
+                            if (IsMagnifyVisionOnlySpell(this) == true)
+                                return true;
+                        } break;
                     default: break;
                 }
             }
             return false;
+        }
+
+        public bool HasCallPetEffect()
+        {
+            return HasEQEffectType(EQSpellEffects, SpellEQEffectType.CallPet);
         }
 
         public bool HasPetSummonEffect()
@@ -784,9 +803,18 @@ namespace EQWOWConverter.Spells
                 // Icon, preferring the spell gem icon from memicon and falling back to the plain spell icon
                 int spellIconID = int.Parse(columns["icon"]);
                 int memIconID = int.Parse(columns["memicon"]);
-                int spellGemIconDBCID;
-                if (SpellIconDBC.TryGetDBCIDForMemIconID(memIconID, out spellGemIconDBCID) == true)
-                    newSpellTemplate.SpellIconID = spellGemIconDBCID;
+                int spellGemIconID;
+                int spellGemBackdropIndex;
+                if (SpellIconDBC.TryGetSpellGemForMemIconID(memIconID, out spellGemIconID, out spellGemBackdropIndex) == true)
+                {
+                    newSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellGemIconID(spellGemIconID, spellGemBackdropIndex);
+
+                    // The generic icon (an option on the client) is the plain spell icon, or the gem's own icon when there isn't one
+                    if (spellIconID >= 2500 && spellIconID - 2500 < SpellIconDBC.SPELL_ICON_COUNT)
+                        newSpellTemplate.GenericSpellIconEQID = spellIconID - 2500;
+                    else
+                        newSpellTemplate.GenericSpellIconEQID = spellGemIconID;
+                }
                 else if (spellIconID >= 2500)
                     newSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(spellIconID - 2500);
 
@@ -815,7 +843,7 @@ namespace EQWOWConverter.Spells
                 // Resisttype 0 in EQ means the spell can not be resisted (TAKP Mob::CheckResistSpell RESIST_NONE)
                 if (resistType == 0)
                     newSpellTemplate.IsUnresistable = true;
-                else if (isDetrimental == true)
+                else if (isDetrimental == true || IsNeutralNPCSpell(newSpellTemplate.EQSpellEffects, newSpellTemplate.EQTargetType) == true) // Lulls and memory blurs are resisted like detrimental spells
                     newSpellTemplate.ResistDiff = int.Parse(columns["ResistDiff"]);
                 newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
 
@@ -1406,6 +1434,7 @@ namespace EQWOWConverter.Spells
                 enchantSpell.WeaponItemEnchantProcsPerMinute = procsPerMinute;
                 enchantSpell.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.EnchantItemTemporary, 0, 0, 0, 1, 0, enchantID, 0));
                 enchantSpell.SpellIconID = procSpellTemplate.SpellIconID; // Already a SpellIcon.dbc ID
+                enchantSpell.GenericSpellIconEQID = procSpellTemplate.GenericSpellIconEQID;
                 enchantSpell.SpellVisualID1 = Convert.ToUInt32(Configuration.SPELLS_ENCHANT_ROGUE_POISON_ENCHANT_APPLYING_VISUAL_ID);
                 enchantSpell.CastTimeInMS = Configuration.SPELL_ENCHANT_ROGUE_POISON_APPLY_TIME_IN_MS;
 
@@ -1596,6 +1625,50 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        private static bool HasEQEffectType(List<SpellEffectEQ> eqSpellEffects, SpellEQEffectType effectType)
+        {
+            foreach (SpellEffectEQ eqEffect in eqSpellEffects)
+                if (eqEffect.EQEffectType == effectType)
+                    return true;
+            return false;
+        }
+
+        private static bool IsNeutralNPCSpell(List<SpellEffectEQ> eqSpellEffects, SpellEQTargetType eqTargetType)
+        {
+            if (eqTargetType == SpellEQTargetType.Self || eqTargetType == SpellEQTargetType.Pet || eqTargetType == SpellEQTargetType.GroupV1
+                || eqTargetType == SpellEQTargetType.GroupV2 || eqTargetType == SpellEQTargetType.Corpse)
+                return false;
+            if (HasEQEffectType(eqSpellEffects, SpellEQEffectType.Harmony) == true || HasEQEffectType(eqSpellEffects, SpellEQEffectType.ChangeFrenzyRadius) == true)
+                return true;
+            return HasEQEffectType(eqSpellEffects, SpellEQEffectType.WipeHateList) == true && HasEQEffectType(eqSpellEffects, SpellEQEffectType.Mez) == false;
+        }
+
+        private static bool IsMagnifyVisionOnlySpell(SpellTemplate spellTemplate)
+        {
+            // Unmapped effects count too, since Sight and Magnify also carry infravision and ultravision
+            if (spellTemplate.HasUnmappedEQEffect == true)
+                return false;
+            bool hasMagnifyVision = false;
+            foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
+            {
+                if (eqEffect.EQEffectType == SpellEQEffectType.MagnifyVision)
+                    hasMagnifyVision = true;
+                else
+                    return false;
+            }
+            return hasMagnifyVision;
+        }
+
+        private static int GetMagnifyVisionDistanceInYards(List<SpellEffectEQ> eqSpellEffects)
+        {
+            int magnifyValue = 0;
+            foreach (SpellEffectEQ eqEffect in eqSpellEffects)
+                if (eqEffect.EQEffectType == SpellEQEffectType.MagnifyVision)
+                    magnifyValue = Math.Max(magnifyValue, eqEffect.EQBaseValue);
+            int distanceInYards = Convert.ToInt32(MathF.Round(magnifyValue * Configuration.SPELL_EFFECT_MAGNIFY_VISION_YARDS_PER_POINT));
+            return Math.Clamp(distanceInYards, 1, Math.Max(1, Configuration.SPELL_EFFECT_MAGNIFY_VISION_MAX_DISTANCE_IN_YARDS));
+        }
+
         private static List<SpellWOWTargetType> CalculateTargets(ref SpellTemplate spellTemplate, int eqTargetTypeID, bool isDetrimental, List<SpellEffectEQ> eqSpellEffects, int range, int spellRadius)
         {
             List<SpellWOWTargetType> spellWOWTargetTypes = new List<SpellWOWTargetType>();
@@ -1609,6 +1682,15 @@ namespace EQWOWConverter.Spells
             }
             else
                 spellTemplate.EQTargetType = (SpellEQTargetType)eqTargetTypeID;
+
+            // Lull and memory blur lines are flagged beneficial, but they are meant for NPCs, so they target enemies without starting a fight
+            if (isDetrimental == false && IsNeutralNPCSpell(eqSpellEffects, spellTemplate.EQTargetType) == true)
+            {
+                isDetrimental = true;
+                spellTemplate.ForceAsDebuff = true;
+                spellTemplate.GenerateNoThreat = true;
+                spellTemplate.IsNeutralNPCTargetSpell = true;
+            }
 
             // Some spell effects allow targeting both friendly and enemy
             foreach (SpellEffectEQ effect in eqSpellEffects)
@@ -1696,8 +1778,33 @@ namespace EQWOWConverter.Spells
                     break;
                 case SpellEQTargetType.Self:
                     {
-                        spellWOWTargetTypes.Add(SpellWOWTargetType.UnitCaster);
-                        spellTemplate.TargetDescriptionTextFragment = "Targets self";
+                        // An eye of zomm is summoned next to the caster (like Eye of Kilrogg's summon spot), and any other effects still land on the caster
+                        if (HasEQEffectType(eqSpellEffects, SpellEQEffectType.EyeOfZomm) == true)
+                        {
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitCaster);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationCasterSummon);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets self";
+                        }
+                        // Calling the pet is cast on self, but it's the pet that moves (to the caster)
+                        else if (HasEQEffectType(eqSpellEffects, SpellEQEffectType.CallPet) == true)
+                        {
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitPet);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationCaster);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets your pet";
+                        }
+                        // A telescope looks out from a spot in front of the caster, and the radius is how far in front that is
+                        else if (IsMagnifyVisionOnlySpell(spellTemplate) == true)
+                        {
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitCaster);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.DestinationCasterFront);
+                            spellTemplate.SpellRadius = GetMagnifyVisionDistanceInYards(eqSpellEffects);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets self";
+                        }
+                        else
+                        {
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.UnitCaster);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets self";
+                        }
                     }
                     break;
                 //case SpellEQTargetType.TargetedAreaOfEffectLifeTap: // Not used anywhere?
@@ -2166,7 +2273,8 @@ namespace EQWOWConverter.Spells
             bool hasCrowdControl = false;
             foreach (SpellEffectEQ eqEffect in EQSpellEffects)
                 if (eqEffect.EQEffectType == SpellEQEffectType.Charm || eqEffect.EQEffectType == SpellEQEffectType.Fear ||
-                        eqEffect.EQEffectType == SpellEQEffectType.Mez || eqEffect.EQEffectType == SpellEQEffectType.Root)
+                        eqEffect.EQEffectType == SpellEQEffectType.Mez || eqEffect.EQEffectType == SpellEQEffectType.Root ||
+                        eqEffect.EQEffectType == SpellEQEffectType.Blind)
                     hasCrowdControl = true;
             if (hasCrowdControl == false)
                 return;
@@ -2451,6 +2559,7 @@ namespace EQWOWConverter.Spells
                 return;
             if (Enum.IsDefined(typeof(SpellEQEffectType), effectIDRaw) == false)
             {
+                spellTemplate.HasUnmappedEQEffect = true;
                 Logger.WriteDebug(string.Concat("Skipping population of SpellEffect with EQID of ", spellTemplate.EQSpellID, " as the type ID ", effectIDRaw, " is not mapped"));
                 return;
             }
@@ -2518,6 +2627,12 @@ namespace EQWOWConverter.Spells
                     spellTemplate.CanTargetBothFriendlyAndEnemy = true;
             }
 
+            // Lull songs are flagged beneficial, but they are sung at NPCs (see CalculateTargets)
+            SpellEQTargetType songEQTargetType = Enum.IsDefined(typeof(SpellEQTargetType), eqTargetType) == true ? (SpellEQTargetType)eqTargetType : SpellEQTargetType.Self;
+            bool isNeutralNPCSong = isDetrimental == false && IsNeutralNPCSpell(spellTemplate.EQSpellEffects, songEQTargetType) == true;
+            if (isNeutralNPCSong == true)
+                isDetrimental = true;
+
             // Use targets to determine the dummy type
             SpellDummyType dummyType = SpellDummyType.None;
             List<SpellWOWTargetType> effectedSpellTargets = new List<SpellWOWTargetType>();
@@ -2579,6 +2694,7 @@ namespace EQWOWConverter.Spells
             effectGeneratedSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "bardsongeffect", spellTemplate.EQSpellID.ToString());
             effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
             effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+            effectGeneratedSpellTemplate.GenericSpellIconEQID = spellTemplate.GenericSpellIconEQID;
             effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
             effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
             effectGeneratedSpellTemplate.EQSpellEffects = spellTemplate.EQSpellEffects;
@@ -2589,6 +2705,11 @@ namespace EQWOWConverter.Spells
             effectGeneratedSpellTemplate.FocusBoostType = focusBoostType;
             effectGeneratedSpellTemplate.AuraDuration = auraDuration;
             effectGeneratedSpellTemplate.IsBardSongEffect = true;
+            if (isNeutralNPCSong == true)
+            {
+                effectGeneratedSpellTemplate.ForceAsDebuff = true;
+                effectGeneratedSpellTemplate.GenerateNoThreat = true;
+            }
             Dictionary<int, CreatureTemplate> discardCreatureTemplates = new Dictionary<int, CreatureTemplate>();
             ConvertEQSpellEffectsIntoWOWEffects(ref effectGeneratedSpellTemplate, schoolMask, effectGeneratedSpellTemplate.AuraDuration, 0, effectedSpellTargets,
                 spellTemplate.SpellRadiusDBCID, new SortedDictionary<int, ItemTemplate>(), isDetrimental, string.Empty, new Dictionary<string, ZoneProperties>(),
@@ -3056,6 +3177,7 @@ namespace EQWOWConverter.Spells
                                 effectGeneratedSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "completehealresidual", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                 effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                                effectGeneratedSpellTemplate.GenericSpellIconEQID = spellTemplate.GenericSpellIconEQID;
                                 effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
                                 effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
                                 effectGeneratedSpellTemplate.SpellRange = spellTemplate.SpellRange;
@@ -3547,25 +3669,217 @@ namespace EQWOWConverter.Spells
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
-                        // Not happy with this
-                        //case SpellEQEffectType.Blind:
-                        //    {
-                        //        SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
-                        //        newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
-                        //        newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModAttackerMeleeHitChance;
-                        //        newSpellEffectWOW.EffectBasePoints = -200;
-                        //        newSpellEffectWOW.ActionDescription = string.Concat("cause blindness which makes all hits miss and stops movement");
-                        //        newSpellEffectWOW.AuraDescription = string.Concat("unable to land hits or move due to blindness");
-                        //        newSpellEffects.Add(newSpellEffectWOW);
+                        case SpellEQEffectType.Blind:
+                            {
+                                // A beneficial blind with no duration is a cure (Cure Blindness, Restore Sight), like TAKP
+                                if (isDetrimental == false)
+                                {
+                                    // Beneficial spells that blind for a while (Mana Flare, Blinding Step, Wizard Mastery) would only black out their own caster
+                                    if (hasSpellDuration == true)
+                                    {
+                                        Logger.WriteDebug("Skipping the blind effect on beneficial eq spell id ", spellTemplate.EQSpellID.ToString(), " since it has a duration");
+                                        continue;
+                                    }
+                                    SpellEffectWOW cureSpellEffectWOW = new SpellEffectWOW();
+                                    cureSpellEffectWOW.EffectType = SpellWOWEffectType.DispelMechanic;
+                                    cureSpellEffectWOW.EffectMiscValueA = (int)SpellMechanicType.Disoriented;
+                                    cureSpellEffectWOW.ActionDescription = string.Concat("cures blindness");
+                                    newSpellEffects.Add(cureSpellEffectWOW);
+                                    break;
+                                }
+                                if (hasSpellDuration == false)
+                                {
+                                    Logger.WriteDebug("Skipping the blind effect on eq spell id ", spellTemplate.EQSpellID.ToString(), " since it has no duration");
+                                    continue;
+                                }
 
-                        //        // Add a second for stopping movement
-                        //        SpellEffectWOW newSpellEffectWOW2 = newSpellEffectWOW.Clone();
-                        //        newSpellEffectWOW2.ActionDescription = string.Empty;
-                        //        newSpellEffectWOW2.AuraDescription = string.Empty;
-                        //        newSpellEffectWOW2.EffectBasePoints = 0;
-                        //        newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModRoot;
-                        //        newSpellEffects.Add(newSpellEffectWOW2);
-                        //    } break;
+                                // Blacks out the world on a player's screen.  The mod (EverQuest_BlindAuraScript) makes a blinded creature wander with a separate confuse
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ScreenEffect;
+                                newSpellEffectWOW.EffectMiscValueA = Configuration.SPELL_EFFECT_BLIND_SCREEN_EFFECT_ID;
+                                newSpellEffectWOW.EffectMechanic = SpellMechanicType.Disoriented;
+                                newSpellEffectWOW.ActionDescription = string.Concat("blinds the target");
+                                newSpellEffectWOW.AuraDescription = string.Concat("blinded");
+                                newSpellEffects.Add(newSpellEffectWOW);
+
+                                // A split block carrying it targets its own caster (see AddSpellChain), which would otherwise leave it a positive aura a player could cancel
+                                spellTemplate.ForceAsDebuff = true;
+                            } break;
+                        case SpellEQEffectType.WipeHateList:
+                            {
+                                if (eqEffect.EQBaseValue <= 0)
+                                    continue;
+
+                                // The mod rolls the chance (with TAKP's bonus against higher level targets on the first roll) and makes a creature that
+                                // passes forget its fight.  Lasting ones that don't mesmerize roll again each tick, and a mesmerize only rolls when it first lands
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                if (hasSpellDuration == true)
+                                {
+                                    bool isMesmerize = HasEQEffectType(spellTemplate.EQSpellEffects, SpellEQEffectType.Mez);
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                    newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
+                                    newSpellEffectWOW.EffectMiscValueB = isMesmerize == true ? 0 : 1; // 1 = roll again each tick
+                                    if (isMesmerize == true)
+                                        newSpellEffectWOW.ActionDescription = string.Concat("may make the target forget who it is fighting");
+                                    else
+                                        newSpellEffectWOW.ActionDescription = string.Concat("may make the target forget who it is fighting, with another chance every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                }
+                                else
+                                {
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.Dummy;
+                                    newSpellEffectWOW.ActionDescription = string.Concat("may make the target forget who it is fighting");
+                                }
+                                newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.WipeHateList;
+                                newSpellEffectWOW.EffectBasePoints = Math.Min(eqEffect.EQBaseValue, 100);
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
+                        case SpellEQEffectType.Harmony:
+                            {
+                                if (eqEffect.EQBaseValue < 0)
+                                    continue;
+
+                                // TAKP lifts the level cap on Harmony (250) itself until Planes of Power
+                                if (eqEffect.EQMaxValue > 0 && spellTemplate.EQSpellID != 250 && (spellTemplate.MaxCreatureTargetLevel == 0 || eqEffect.EQMaxValue < spellTemplate.MaxCreatureTargetLevel))
+                                    spellTemplate.MaxCreatureTargetLevel = eqEffect.EQMaxValue;
+
+                                // The value replaces the target's assist radius (TAKP SE_Harmony), and is carried in hundredths of a yard for the mod
+                                float assistRangeInYards = eqEffect.EQBaseValue * Configuration.GENERATE_WORLD_SCALE;
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
+                                newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.Harmony;
+                                newSpellEffectWOW.EffectMechanic = SpellMechanicType.Distracted; // So TAKP's pacify immunity (converted to distracted immunity) blocks it
+                                newSpellEffectWOW.EffectBasePoints = Convert.ToInt32(MathF.Round(assistRangeInYards * 100f));
+                                string assistRangeText = assistRangeInYards.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture);
+                                newSpellEffectWOW.ActionDescription = string.Concat("calms the target so it only answers calls for help from within ", assistRangeText, " yards");
+                                newSpellEffectWOW.AuraDescription = string.Concat("only answering calls for help from within ", assistRangeText, " yards");
+                                spellTemplate.GenerateNoThreat = true;
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
+                        case SpellEQEffectType.ChangeFrenzyRadius:
+                            {
+                                if (eqEffect.EQBaseValue < 0)
+                                    continue;
+
+                                // Same level cap as the harmony half of the lull (TAKP lifts it on Harmony (250) itself until Planes of Power)
+                                if (eqEffect.EQMaxValue > 0 && spellTemplate.EQSpellID != 250 && (spellTemplate.MaxCreatureTargetLevel == 0 || eqEffect.EQMaxValue < spellTemplate.MaxCreatureTargetLevel))
+                                    spellTemplate.MaxCreatureTargetLevel = eqEffect.EQMaxValue;
+
+                                // The value replaces the target's aggro radius (TAKP SE_ChangeFrenzyRad).  It rides in the misc value in hundredths of a yard, and the
+                                // aura amount (which the core adds to the aggro radius) is worked out by the mod's EverQuest_LullAggroRangeAuraScript as how far below
+                                // the creature's own radius that is, counting only the smallest lull on it.  The base points stay 0 so the amount is never positive
+                                float aggroRangeInYards = eqEffect.EQBaseValue * Configuration.GENERATE_WORLD_SCALE;
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModDetectRange;
+                                newSpellEffectWOW.EffectBasePoints = 0;
+                                newSpellEffectWOW.EffectMiscValueA = Convert.ToInt32(MathF.Round(aggroRangeInYards * 100f));
+                                newSpellEffectWOW.EffectMechanic = SpellMechanicType.Distracted; // So TAKP's pacify immunity (converted to distracted immunity) blocks it
+                                string aggroRangeText = aggroRangeInYards.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture);
+                                newSpellEffectWOW.ActionDescription = string.Concat("calms the target so it only notices enemies within ", aggroRangeText, " yards");
+                                newSpellEffectWOW.AuraDescription = string.Concat("only noticing enemies within ", aggroRangeText, " yards");
+                                spellTemplate.GenerateNoThreat = true;
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
+                        case SpellEQEffectType.TrueNorth:
+                            {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.Dummy;
+                                newSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.TrueNorth;
+                                newSpellEffectWOW.ActionDescription = string.Concat("turns the caster to face north");
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
+                        case SpellEQEffectType.MagnifyVision:
+                            {
+                                // Only a telescope spell (see IsMagnifyVisionOnlySpell) becomes a far sight, looking out from a spot ahead of the caster
+                                if (spellTemplate.EQTargetType != SpellEQTargetType.Self || IsMagnifyVisionOnlySpell(spellTemplate) == false || hasSpellDuration == false)
+                                    continue;
+                                bool alreadyHasFarsight = false;
+                                foreach (SpellEffectWOW existingSpellEffect in newSpellEffects)
+                                    if (existingSpellEffect.EffectType == SpellWOWEffectType.AddFarsight)
+                                        alreadyHasFarsight = true;
+                                if (alreadyHasFarsight == true)
+                                    continue;
+
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.AddFarsight;
+                                newSpellEffectWOW.ActionDescription = string.Concat("lets the caster see from ", spellTemplate.SpellRadius, " yards ahead until moving");
+                                newSpellEffects.Add(newSpellEffectWOW);
+
+                                // Like Eagle Eye, a caster aura carries the channel: it gets the EQ duration (the DBC duration is endless), the channel ends when it
+                                // does, and the mod's EverQuest_TelescopeAuraScript gives the far sight object that same lifetime
+                                SpellEffectWOW channelSpellEffectWOW = new SpellEffectWOW();
+                                channelSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                channelSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
+                                channelSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.Telescope;
+                                newSpellEffects.Add(channelSpellEffectWOW);
+
+                                // Channeled like Eagle Eye, so moving (or cancelling) ends it and hands the view back
+                                spellTemplate.IsChanneled = true;
+                                spellTemplate.GenerateNoThreat = true;
+                                spellTemplate.InterruptOnCast = false;
+                                spellTemplate.InterruptOnPushback = false;
+                                spellTemplate.ChannelInterruptFlags = 31772;
+                            } break;
+                        case SpellEQEffectType.Fearless:
+                            {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.MechanicImmunity;
+                                newSpellEffectWOW.EffectMiscValueA = (int)SpellMechanicType.Fleeing;
+                                newSpellEffectWOW.ActionDescription = string.Concat("grants immunity to fear");
+                                newSpellEffectWOW.AuraDescription = string.Concat("immune to fear");
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
+                        case SpellEQEffectType.CallPet:
+                            {
+                                // Targets are the pet and the caster's spot (see CalculateTargets), and the mod refuses the cast while the pet is fighting (TAKP)
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.TeleportUnits;
+                                newSpellEffectWOW.ActionDescription = string.Concat("calls your pet to your side, if it is not fighting");
+                                newSpellEffects.Add(newSpellEffectWOW);
+                                spellTemplate.IgnoreLineOfSight = true; // A pet out of sight is the one that needs calling
+
+                                // EQ gives the spell no range (it's cast on self), but the pet is the target here and can be anywhere, so it gets the same reach as
+                                // Call of the Hero (EQ range 20000)
+                                spellTemplate.SpellRange = Convert.ToInt32(20000f * Configuration.SPELLS_RANGE_MULTIPLIER);
+                            } break;
+                        case SpellEQEffectType.EyeOfZomm:
+                            {
+                                // Works like Eye of Kilrogg (126): a channel that summons an eye the caster possesses, with the EQ eye as the creature
+                                SpellPet? eyeSpellPet = SpellPet.GetSpellPetByTypeName(teleportZoneOrPetTypeName);
+                                if (eyeSpellPet == null || creatureTemplatesByEQID.ContainsKey(eyeSpellPet.EQCreatureTemplateID) == false)
+                                {
+                                    Logger.WriteError("Could not assign an eye of zomm creature for eq spell id ", spellTemplate.EQSpellID.ToString(), " with type name ", teleportZoneOrPetTypeName);
+                                    continue;
+                                }
+                                if (spellTemplate.EQTargetType != SpellEQTargetType.Self || hasSpellDuration == false || spellTemplate.IsPossessSummon == true)
+                                    continue;
+                                CreatureTemplate eyeCreatureTemplate = creatureTemplatesByEQID[eyeSpellPet.EQCreatureTemplateID];
+                                eyeCreatureTemplate.IsEyeOfZomm = true;
+                                eyeCreatureTemplate.Name = "Eye of Zomm";
+
+                                SpellEffectWOW summonSpellEffectWOW = new SpellEffectWOW();
+                                summonSpellEffectWOW.EffectType = SpellWOWEffectType.Summon;
+                                summonSpellEffectWOW.EffectMiscValueA = eyeCreatureTemplate.WOWCreatureTemplateID;
+                                summonSpellEffectWOW.EffectMiscValueB = Configuration.SPELL_EYE_OF_ZOMM_SUMMON_PROPERTIES_ID;
+                                summonSpellEffectWOW.ActionDescription = "summons an eye you control and see through while channeling";
+                                newSpellEffects.Add(summonSpellEffectWOW);
+
+                                // The mod's EverQuest_EyeOfZommSpellScript does what Eye of Kilrogg's aura script does (sets the pet aside, and ends the eye with the channel)
+                                SpellEffectWOW controlSpellEffectWOW = new SpellEffectWOW();
+                                controlSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                controlSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Dummy;
+                                controlSpellEffectWOW.EffectMiscValueA = (int)SpellDummyType.EyeOfZomm;
+                                newSpellEffects.Add(controlSpellEffectWOW);
+
+                                spellTemplate.IsPossessSummon = true;
+                                spellTemplate.IsChanneled = true;
+                                spellTemplate.GenerateNoThreat = true;
+                                spellTemplate.InterruptOnPushback = false;
+                                spellTemplate.ChannelInterruptFlags = 15420; // Eye of Kilrogg's
+                            } break;
                         case SpellEQEffectType.Stun:
                             {
                                 // Skip zero stuns (and for now, stuns with value of 1)
@@ -3586,6 +3900,7 @@ namespace EQWOWConverter.Spells
                                 effectGeneratedSpellTemplate.StunParentSpellTemplate = spellTemplate;
                                 effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                                effectGeneratedSpellTemplate.GenericSpellIconEQID = spellTemplate.GenericSpellIconEQID;
                                 effectGeneratedSpellTemplate.DoNotInterruptAutoActionsAndSwingTimers = true;
                                 effectGeneratedSpellTemplate.TriggersGlobalCooldown = false;
                                 effectGeneratedSpellTemplate.EQSpellEffects = new List<SpellEffectEQ>() { eqEffect };
@@ -4127,6 +4442,7 @@ namespace EQWOWConverter.Spells
                                         effectGeneratedSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "heal", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                         effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                         effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                                        effectGeneratedSpellTemplate.GenericSpellIconEQID = spellTemplate.GenericSpellIconEQID;
                                         effectGeneratedSpellTemplate.SpellVisualID1 = 5560; // Lesser Heal visual, like Judgement of Light
                                         effectGeneratedSpellTemplate.SchoolMask = spellTemplate.HasSchoolOverride == true ? spellTemplate.SchoolMask : 2; // Holy, unless the parent's school was overridden
                                         effectGeneratedSpellTemplate.HideCaster = true;
@@ -4415,6 +4731,7 @@ namespace EQWOWConverter.Spells
                                 maleFormSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "maleform", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                 maleFormSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 maleFormSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                                maleFormSpellTemplate.GenericSpellIconEQID = spellTemplate.GenericSpellIconEQID;
                                 SpellEffectWOW maleFormSpellEffectWOW = new SpellEffectWOW();
                                 maleFormSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 maleFormSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Transform;
@@ -4478,6 +4795,7 @@ namespace EQWOWConverter.Spells
                                 femaleFormSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "femaleform", spellTemplate.EQSpellID.ToString(), eqEffect.EQEffectSlot.ToString());
                                 femaleFormSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                                 femaleFormSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                                femaleFormSpellTemplate.GenericSpellIconEQID = spellTemplate.GenericSpellIconEQID;
                                 SpellEffectWOW femaleFormSpellEffectWOW = new SpellEffectWOW();
                                 femaleFormSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 femaleFormSpellEffectWOW.EffectAuraType = SpellWOWAuraType.Transform;
@@ -4626,6 +4944,7 @@ namespace EQWOWConverter.Spells
                     effectGeneratedSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "tossupselfhit", spellTemplate.EQSpellID.ToString(), "0");
                     effectGeneratedSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
                     effectGeneratedSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+                    effectGeneratedSpellTemplate.GenericSpellIconEQID = spellTemplate.GenericSpellIconEQID;
                     effectGeneratedSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
                     effectGeneratedSpellTemplate.CopySpellResolutionPropertiesFrom(spellTemplate);
                     effectGeneratedSpellTemplate.NeverMisses = true; // The parent already rolled to hit
@@ -4699,6 +5018,7 @@ namespace EQWOWConverter.Spells
             waveSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "rainwave", spellTemplate.EQSpellID.ToString());
             waveSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
             waveSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+            waveSpellTemplate.GenericSpellIconEQID = spellTemplate.GenericSpellIconEQID;
             waveSpellTemplate.SpellVisualID1 = spellTemplate.SpellVisualID1;
             waveSpellTemplate.SpellVisualID2 = spellTemplate.SpellVisualID2;
             waveSpellTemplate.SchoolMask = spellTemplate.SchoolMask;
@@ -4736,6 +5056,7 @@ namespace EQWOWConverter.Spells
             cloudSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "raincloud", spellTemplate.EQSpellID.ToString());
             cloudSpellTemplate.EQSpellID = GenerateUniqueEQSpellID();
             cloudSpellTemplate.SpellIconID = spellTemplate.SpellIconID;
+            cloudSpellTemplate.GenericSpellIconEQID = spellTemplate.GenericSpellIconEQID;
             cloudSpellTemplate.SchoolMask = spellTemplate.SchoolMask;
             cloudSpellTemplate.SpellRange = spellTemplate.SpellRange;
             cloudSpellTemplate.SpellRadius = spellTemplate.SpellRadius;
@@ -5222,6 +5543,14 @@ namespace EQWOWConverter.Spells
             return timeSB.ToString();
         }
 
+        public static bool BlockHasBlind(SpellEffectBlock effectBlock)
+        {
+            foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
+                if (spellEffect.EffectType == SpellWOWEffectType.ApplyAura && spellEffect.EffectAuraType == SpellWOWAuraType.ScreenEffect)
+                    return true;
+            return false;
+        }
+
         private static bool BlockHasAura(SpellEffectBlock effectBlock)
         {
             foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
@@ -5324,6 +5653,10 @@ namespace EQWOWConverter.Spells
             if (IsllusionSpellParent == true)
                 MoveIllusionParentDummyEffectToFront();
 
+            // The eye's summon and the channeled aura that controls it have to share the primary block (the caster's channel), ahead of any other effects
+            if (IsPossessSummon == true)
+                MoveEyeOfZommEffectsToFront();
+
             GroupSpellEffectsIntoOutputEffectBlocks(WOWSpellEffects, WOWSpellID, "basesplit", _GroupedBaseSpellEffectBlocksForOutput);
 
             // Good proc and clicky spells each need copies of the base blocks
@@ -5365,8 +5698,9 @@ namespace EQWOWConverter.Spells
                     }
                     else
                     {
-                        // When a primary block has no aura (like a damage spell), the split has the aura so we need to display the icon
-                        if (BlockHasAura(outputEffectBlocks[0]) == false && BlockHasAura(baseEffectBlock) == true)
+                        // When a primary block has no aura (like a damage spell), the split has the aura so we need to display the icon.  A blind is always shown,
+                        // since the client finds it in the player's debuffs to black out the world (EQBlindness.lua), and hidden auras don't show up there
+                        if ((BlockHasAura(outputEffectBlocks[0]) == false && BlockHasAura(baseEffectBlock) == true) || BlockHasBlind(baseEffectBlock) == true)
                         {
                             baseEffectBlock.SpellName = Name;
                             baseEffectBlock.ForceVisibleSplitAura = true;
@@ -5394,6 +5728,34 @@ namespace EQWOWConverter.Spells
                     outputEffectBlocks.Add(baseEffectBlock);
                 }
             }
+        }
+
+        private void MoveEyeOfZommEffectsToFront()
+        {
+            List<SpellEffectWOW> eyeOfZommEffects = new List<SpellEffectWOW>();
+            List<SpellEffectWOW> otherEffects = new List<SpellEffectWOW>();
+            foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
+            {
+                bool isEyeSummon = spellEffect.EffectType == SpellWOWEffectType.Summon && spellEffect.EffectMiscValueB == Configuration.SPELL_EYE_OF_ZOMM_SUMMON_PROPERTIES_ID;
+                bool isEyeControl = spellEffect.EffectType == SpellWOWEffectType.ApplyAura && spellEffect.EffectAuraType == SpellWOWAuraType.Dummy && spellEffect.EffectMiscValueA == (int)SpellDummyType.EyeOfZomm;
+                if (isEyeSummon == true || isEyeControl == true)
+                    eyeOfZommEffects.Add(spellEffect);
+                else
+                    otherEffects.Add(spellEffect);
+            }
+            if (eyeOfZommEffects.Count != 2)
+            {
+                Logger.WriteError("Spell '", Name, "' (eq id ", EQSpellID.ToString(), ") summons an eye of zomm without exactly one summon and one control effect");
+                return;
+            }
+
+            // Blocks group by level band in the order the bands first appear, so the eye effects lead with the band the rest of the spell starts in
+            int leadingLevelBand = otherEffects.Count > 0 ? otherEffects[0].CalcEffectHighLevel : 0;
+            foreach (SpellEffectWOW eyeOfZommEffect in eyeOfZommEffects)
+                eyeOfZommEffect.CalcEffectHighLevel = leadingLevelBand;
+            WOWSpellEffects.Clear();
+            WOWSpellEffects.AddRange(eyeOfZommEffects);
+            WOWSpellEffects.AddRange(otherEffects);
         }
 
         private void MoveIllusionParentDummyEffectToFront()
@@ -5555,6 +5917,7 @@ namespace EQWOWConverter.Spells
                         clickEffectBlock.SpellEffects.Add(effectClone);
                     }
                     clickEffectBlock.SpellName = string.Concat(baseEffectBlock.SpellName);
+                    clickEffectBlock.ForceVisibleSplitAura = baseEffectBlock.ForceVisibleSplitAura;
                     clickyBlocks.Add(clickEffectBlock);
                 }
                 _GroupedClickySpellEffectBlocksForOutputBySpellParameters.Add(clickyBlocks);

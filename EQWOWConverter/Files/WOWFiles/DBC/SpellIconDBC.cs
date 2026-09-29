@@ -79,21 +79,20 @@ namespace EQWOWConverter.WOWFiles
         }
 
         // Returns false if the memicon doesn't map to a spell gem
-        public static bool TryGetDBCIDForMemIconID(int memIconID, out int dbcID)
+        public static bool TryGetSpellGemForMemIconID(int memIconID, out int iconID, out int backdropIndex)
         {
-            dbcID = 0;
+            iconID = 0;
+            backdropIndex = 0;
             int gridIndex = memIconID - MEMICON_GRID_START;
             if (gridIndex < 0 || gridIndex >= MEMICON_GRID_COLUMNS * MEMICON_GRID_ROWS)
                 return false;
             int row = gridIndex / MEMICON_GRID_COLUMNS;
             int column = gridIndex % MEMICON_GRID_COLUMNS;
-            int iconID;
             if (row < ImageTool.SPELL_GEM_BACKDROP_COUNT)
                 iconID = MEMICON_SPELL_ICON_IDS_BY_COLUMN_UPPER_ROWS[column];
             else
                 iconID = MEMICON_SPELL_ICON_IDS_BY_COLUMN_LOWER_ROWS[column];
-            int backdropIndex = row % ImageTool.SPELL_GEM_BACKDROP_COUNT;
-            dbcID = GetDBCIDForSpellGemIconID(iconID, backdropIndex);
+            backdropIndex = row % ImageTool.SPELL_GEM_BACKDROP_COUNT;
             return true;
         }
     }

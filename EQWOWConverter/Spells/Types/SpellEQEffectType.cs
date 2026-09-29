@@ -40,7 +40,7 @@ namespace EQWOWConverter.Spells
         //NPCAwareness = 17, // What is this?
         //Pacify = 18, -- This isn't implemented in eq emulators so always skip it
         ModFaction = 19,
-        //Blind = 20,
+        Blind = 20,
         Stun = 21,
         Charm = 22,
         Fear = 23,
@@ -49,6 +49,8 @@ namespace EQWOWConverter.Spells
         Gate = 26,
         CancelMagic = 27,
         InvisVsUndead = 28,
+        //....
+        ChangeFrenzyRadius = 30, // Lull: shrinks how close an enemy has to come before the target aggros
         //....
         Mez = 31,
         SummonItems = 32,
@@ -69,16 +71,16 @@ namespace EQWOWConverter.Spells
         // SenseSummoned = 53
         // SenseAnimals = 54
         Rune = 55, // Absorb all melee damage until a maximum amount of damage is taken and it fades
-        // TrueNorth = 56
+        TrueNorth = 56, // Turns the caster to face north
         Levitate = 57,
         Illusion = 58,
         DamageShield = 59, // Attacker takes damage if they hit someone with this
         //....
-        // WipeHateList = 63,
+        WipeHateList = 63, // Memory blur, a percent chance for the target to forget its hate list
         //....
         // InfraVision = 65,
         // UltraVision = 66,
-        // EyeOfZomm = 67,
+        EyeOfZomm = 67, // Summons an eye the caster controls, like Eye of Kilrogg
         // ReclaimPet = 68 // Destroys pet and gives some of the mana back
         TotalHP = 69,
         //....
@@ -96,8 +98,8 @@ namespace EQWOWConverter.Spells
         Teleport = 83,
         TossUp = 84,
         WeaponProc = 85,
-        // Harmony = 86, // Reduce agro reaction radius
-        // MagnifyVision = 87,
+        Harmony = 86, // Reduce the assist (call for help) radius of the target
+        MagnifyVision = 87, // Telescope
         Succor = 88, // Teleport self or the group to a safe spot in a zone
         ModelSize = 89, // Grow/Shrink
         //....
@@ -112,8 +114,8 @@ namespace EQWOWConverter.Spells
         Root = 99,
         HealOverTime = 100,
         CompleteHeal = 101, // Not to be confused with the regular complete heal, this one heals 7500 x base value up front and its buff blocks reuse until it wears off (Donal's Chestplate, Celestial Aura)
-        // Fearless = 102,
-        // CallPet = 103,
+        Fearless = 102, // Immune to fear
+        CallPet = 103, // Pull the pet to the caster
         // Translocate = 104, // Move the target to a place
         //....
         ResistAll = 111,

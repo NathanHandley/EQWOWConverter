@@ -58,6 +58,7 @@ namespace EQWOWConverter
         private CreatureQuestStarterSQL creatureQuestStarterSQL = new CreatureQuestStarterSQL();
         private CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
         private CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
+        private CreatureTemplateAddonSQL creatureTemplateAddonSQL = new CreatureTemplateAddonSQL();
         private CreatureTemplateSpellSQL creatureTemplateSpellSQL = new CreatureTemplateSpellSQL();
         private CreatureTextSQL creatureTextSQL = new CreatureTextSQL();
         private FishingLootTemplateSQL fishingLootTemplateSQL = new FishingLootTemplateSQL();
@@ -340,6 +341,7 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("WorldScale", Configuration.GENERATE_WORLD_SCALE.ToString());
             modEverquestSystemConfigsSQL.AddRow("RangedAttackSpellID", Configuration.COMBATSKILL_RANGED_ENABLED == true ? Configuration.COMBATSKILL_RANGED_SPELL_ID.ToString() : "0");
             modEverquestSystemConfigsSQL.AddRow("ResistAdjustmentSpellID", Configuration.SPELL_RESIST_ADJUSTMENT_SPELL_ID.ToString());
+            modEverquestSystemConfigsSQL.AddRow("BlindWanderSpellID", Configuration.SPELL_BLIND_WANDER_SPELL_ID.ToString());
             modEverquestSystemConfigsSQL.AddRow("RoguePoisonMarkerSpellID", Configuration.SPELL_ROGUE_POISON_MARKER_SPELL_ID.ToString());
             foreach (KeyValuePair<string, string> classAuraSystemConfigRow in SpellClassAuras.GetSystemConfigRows())
                 modEverquestSystemConfigsSQL.AddRow(classAuraSystemConfigRow.Key, classAuraSystemConfigRow.Value);
@@ -1037,6 +1039,10 @@ namespace EQWOWConverter
                     scale = (Configuration.CREATURE_COMPANION_PETS_MODEL_HEIGHT / creatureTemplate.ModelTemplate.ModelStandingHeight) * creatureTemplate.CompanionPetSizeMod;
                 creatureTemplateSQL.AddRow(creatureTemplate);
                 creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, displayID, scale);
+
+                // An eye of zomm carries the Eye of Kilrogg passive (stealth and speed), which the Eye of Kilrogg gets the same way
+                if (creatureTemplate.IsEyeOfZomm == true)
+                    creatureTemplateAddonSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, Configuration.SPELL_EYE_OF_ZOMM_PASSIVE_AURA_SPELL_ID.ToString());
 
                 // If it's a vendor, add the vendor records too
                 if ((creatureTemplate.MerchantID != 0 && vendorItems.ContainsKey(creatureTemplate.MerchantID)) || creatureTemplate.IsReagentVendor == true)
@@ -3019,6 +3025,54 @@ namespace EQWOWConverter
                     }
                 }
 
+                // Blind, memory blur, lull and call pet blocks get the scripts that carry out the parts WOW has no effect for
+                if (commentFragment != " (Worn)")
+                {
+                    bool blockHasBlind = false;
+                    bool blockHasInstantWipeHateList = false;
+                    bool blockHasLastingWipeHateList = false;
+                    bool blockHasHarmony = false;
+                    bool blockHasCallPet = false;
+                    bool blockHasEyeOfZomm = false;
+                    bool blockHasTelescope = false;
+                    bool blockHasLullAggroRange = false;
+                    foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
+                    {
+                        if (blockEffect.EffectType == SpellWOWEffectType.ApplyAura && blockEffect.EffectAuraType == SpellWOWAuraType.ScreenEffect)
+                            blockHasBlind = true;
+                        else if (blockEffect.EffectType == SpellWOWEffectType.Dummy && blockEffect.EffectMiscValueA == (int)SpellDummyType.WipeHateList)
+                            blockHasInstantWipeHateList = true;
+                        else if (blockEffect.EffectType == SpellWOWEffectType.ApplyAura && blockEffect.EffectAuraType == SpellWOWAuraType.Dummy && blockEffect.EffectMiscValueA == (int)SpellDummyType.WipeHateList)
+                            blockHasLastingWipeHateList = true;
+                        else if (blockEffect.EffectType == SpellWOWEffectType.ApplyAura && blockEffect.EffectAuraType == SpellWOWAuraType.Dummy && blockEffect.EffectMiscValueA == (int)SpellDummyType.Harmony)
+                            blockHasHarmony = true;
+                        else if (blockEffect.EffectType == SpellWOWEffectType.TeleportUnits && blockEffect.ImplicitTargetA == SpellWOWTargetType.UnitPet)
+                            blockHasCallPet = true;
+                        else if (blockEffect.EffectType == SpellWOWEffectType.ApplyAura && blockEffect.EffectAuraType == SpellWOWAuraType.Dummy && blockEffect.EffectMiscValueA == (int)SpellDummyType.EyeOfZomm)
+                            blockHasEyeOfZomm = true;
+                        else if (blockEffect.EffectType == SpellWOWEffectType.ApplyAura && blockEffect.EffectAuraType == SpellWOWAuraType.Dummy && blockEffect.EffectMiscValueA == (int)SpellDummyType.Telescope)
+                            blockHasTelescope = true;
+                        else if (blockEffect.EffectType == SpellWOWEffectType.ApplyAura && blockEffect.EffectAuraType == SpellWOWAuraType.ModDetectRange)
+                            blockHasLullAggroRange = true;
+                    }
+                    if (blockHasBlind == true)
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_BlindAuraScript");
+                    if (blockHasInstantWipeHateList == true)
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_WipeHateListSpellScript");
+                    if (blockHasLastingWipeHateList == true)
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_WipeHateListAuraScript");
+                    if (blockHasHarmony == true)
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_HarmonyAuraScript");
+                    if (blockHasCallPet == true)
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_CallPetSpellScript");
+                    if (blockHasEyeOfZomm == true)
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_EyeOfZommSpellScript");
+                    if (blockHasTelescope == true)
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_TelescopeAuraScript");
+                    if (blockHasLullAggroRange == true)
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_LullAggroRangeAuraScript");
+                }
+
                 // Any block cutting armor by a percent is a major armor debuff, the same category the stock WOW armor debuffs are in
                 if (commentFragment != " (Worn)")
                 {
@@ -3210,7 +3264,9 @@ namespace EQWOWConverter
                 // Teleports
                 for (int i = 0; i < spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0].SpellEffects.Count; i++)
                 {
-                    if (spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0].SpellEffects[i].EffectType == SpellWOWEffectType.TeleportUnits)
+                    // Only a teleport to a fixed spot has a position row (calling a pet goes to the caster instead)
+                    if (spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0].SpellEffects[i].EffectType == SpellWOWEffectType.TeleportUnits &&
+                        spellTemplate.GroupedBaseSpellEffectBlocksForOutput[0].SpellEffects[i].ImplicitTargetB == SpellWOWTargetType.DestinationDatabaseForTeleport)
                     {
                         List<SpellEffectBlock> groupedBaseSpellEffectBlocksForOutput = spellTemplate.GroupedBaseSpellEffectBlocksForOutput;
                         SpellEffectWOW curEffect = groupedBaseSpellEffectBlocksForOutput[0].SpellEffects[i];

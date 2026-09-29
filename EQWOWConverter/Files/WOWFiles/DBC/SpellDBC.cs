@@ -199,6 +199,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(spellTemplate.SpellVisualID1); // SpellVisualID1
             newRow.AddUInt32(spellTemplate.SpellVisualID2); // SpellVisualID2
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellIconID)); // SpellIconID
+            if (spellTemplate.GenericSpellIconEQID >= 0)
+                EQSpellGenericIconsLUA.RegisterGenericIcon(effectBlock.WOWSpellID, spellTemplate.GenericSpellIconEQID); // The client can show the generic icon instead of the spell gem
+            if (SpellTemplate.BlockHasBlind(effectBlock) == true)
+                EQBlindSpellsLUA.RegisterBlindSpell(effectBlock.WOWSpellID); // The client blacks out the game world while one of these is on the player
             if (isToggleAura == true)
                 newRow.AddUInt32(122); // ActiveIconID (use same as paladin auras)
             else
@@ -579,6 +583,11 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 524288; // SPELL_ATTR1_EXCLUDE_CASTER
                 attributeFlags |= 67108864; // SPELL_ATTR1_REQUIRE_ALL_TARGETS
             }
+            if (spellTemplate.IsPossessSummon == true)
+            {
+                attributeFlags |= 8192; // SPELL_ATTR1_TOGGLE_FAR_SIGHT (0x00002000)
+                attributeFlags |= 131072; // SPELL_ATTR1_NO_AUTOCAST_AI
+            }
             if (spellTemplate.GenerateNoThreat == true)
                 attributeFlags |= 1024; // SPELL_ATTR1_NO_THREAT (0x00000400)
             if (spellTemplate.InitiatesAutoAttack == true)
@@ -739,6 +748,10 @@ namespace EQWOWConverter.WOWFiles
         public UInt32 GetAuraInterruptFlags(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
         {
             if (auraType == SpellWOWAuraType.Phase)
+                return 0;
+
+            // An eye of zomm lasts its whole channel like Eye of Kilrogg (126 has none), which the break-on-damage and similar flags from an invisibility
+            if (spellTemplate.IsPossessSummon == true)
                 return 0;
 
             UInt32 interruptFlags = 0;

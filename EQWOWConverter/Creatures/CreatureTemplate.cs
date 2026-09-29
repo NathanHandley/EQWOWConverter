@@ -134,6 +134,7 @@ namespace EQWOWConverter.Creatures
         public bool SeesInvisibleUndead = false;
         public bool SeesStealth = false;
         public bool IsPet = false;
+        public bool IsEyeOfZomm = false; // Summoned by an EQ eye of zomm spell and possessed by the caster, set up like the Eye of Kilrogg
         public string PetTypeName = string.Empty;
         public bool IsCompanionPet = false;
         public bool IsIllusionForm = false; 
@@ -770,6 +771,8 @@ namespace EQWOWConverter.Creatures
                 mask |= (1L << (int)SpellMechanicType.Snared) | (1L << (int)SpellMechanicType.Rooted);
             if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 17) == true) // FearImmunity
                 mask |= 1L << (int)SpellMechanicType.Fleeing;
+            if (HasSpecialAbilityEnabled(specialAbilitiesRaw, 31) == true) // PacifyImmunity (the converted lull effects carry the distracted mechanic)
+                mask |= 1L << (int)SpellMechanicType.Distracted;
 
             // TAKP hardcaps fear immunity for all NPCs above level 52 regardless of special abilities, even against NPC casters
             if (Configuration.CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ > 0 && minLevelEQ > Configuration.CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ)

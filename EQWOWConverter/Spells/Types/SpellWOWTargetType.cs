@@ -34,6 +34,7 @@ namespace EQWOWConverter.Spells
         UnitDestinationAreaAlly = 31,
         DestinationCasterSummon = 32,
         UnitDestinationAreaParty = 34,
+        DestinationCasterFront = 47, // A spot the effect radius in front of the caster, stopping at the first collision
         UnitTargetParty = 35,
         DestinationTargetEnemy = 53,
         DestinationTargetAny = 63,

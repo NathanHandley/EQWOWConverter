@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 120;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 121;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1074,6 +1074,14 @@ namespace EQWOWConverter
         // How far outward (yards per second) a 'toss up' shoves the target, which must stay above zero or creatures won't be thrown at all
         public static float SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED = 2f;
 
+        // ScreenEffect.dbc row a blind puts over a player's view.  201 ("Ebon Hold - Transition", the Death Gate fade) is solid black. This is thrown away but should be valid. Not saved to config
+        public static int SPELL_EFFECT_BLIND_SCREEN_EFFECT_ID = 201;
+
+        // Telescope spells (Glimpse, Telescope, Magnify, ...) look out from a spot this many yards in front of the caster per point of the
+        // EQ magnify value (30 to 80 on those spells), capped by the max
+        public static float SPELL_EFFECT_MAGNIFY_VISION_YARDS_PER_POINT = 1f;
+        public static int SPELL_EFFECT_MAGNIFY_VISION_MAX_DISTANCE_IN_YARDS = 100;
+
         // Default time that a shrink/grow spell will last for
         public static int SPELL_MODEL_SIZE_CHANGE_EFFECT_DEFAULT_TIME_IN_MS = 1800000;
 
@@ -1127,6 +1135,13 @@ namespace EQWOWConverter
 
         // Hidden short-duration aura the mod applies to a caster during a cast to shift the spell hit roll by the EQ ResistDiff amount
         public static int SPELL_RESIST_ADJUSTMENT_SPELL_ID = 86915;
+
+        // Hidden confuse the mod puts on a blinded creature (not a player or a boss) so it wanders for as long as the blind lasts
+        public static int SPELL_BLIND_WANDER_SPELL_ID = 86956;
+
+        // Eye of Zomm spells work like the Eye of Kilrogg (126) so use the same reference values (Not saved to config)
+        public static int SPELL_EYE_OF_ZOMM_SUMMON_PROPERTIES_ID = 65;
+        public static int SPELL_EYE_OF_ZOMM_PASSIVE_AURA_SPELL_ID = 2585;
 
         // Hidden debuff that every EQ rogue weapon poison puts on what it hits, so that poison talents have a "poisoned" target to see
         public static int SPELL_ROGUE_POISON_MARKER_SPELL_ID = 86919;
@@ -2495,6 +2510,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD", SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD, "What to multiply the EQ 'toss up' effect value by to get how fast (yards per second) the target is thrown into the air");
             OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX", SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX, "The fastest a 'toss up' can throw a target upward, and going above 23.7 will start causing fall damage on landing");
             OutputVariableToConfig("SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED", SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED, "How far outward (yards per second) a 'toss up' shoves the target, which must stay above zero or creatures won't be thrown at all");
+            OutputVariableToConfig("SPELL_EFFECT_MAGNIFY_VISION_YARDS_PER_POINT", SPELL_EFFECT_MAGNIFY_VISION_YARDS_PER_POINT, "Telescope spells (Glimpse, Telescope, ...) look out from a spot this many yards in front of the caster per point of the EQ magnify value (30 to 80)");
+            OutputVariableToConfig("SPELL_EFFECT_MAGNIFY_VISION_MAX_DISTANCE_IN_YARDS", SPELL_EFFECT_MAGNIFY_VISION_MAX_DISTANCE_IN_YARDS, "The farthest in front of the caster a telescope spell can look out from");
             OutputVariableToConfig("SPELLS_LEARNABLE_FROM_ITEMS_ENABLED", SPELLS_LEARNABLE_FROM_ITEMS_ENABLED, "If true, you can learn spells from items");
             OutputVariableToConfig("SPELLS_LEARNABLE_FROM_ITEMS_SCROLL_STACK_SIZE", SPELLS_LEARNABLE_FROM_ITEMS_SCROLL_STACK_SIZE, "How many spell scrolls can be stacked");
             OutputVariableToConfig("SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS", SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS, "All spell properties");
@@ -2565,6 +2582,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", SPELL_INVIS_VS_UNDEAD_INVIS_TYPE, "WoW invisibility group (InvisibilityType) reserved for EQ 'invis vs undead' (0 = general invis, 1 should be unused)");
             OutputVariableToConfig("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID, "Custom detect aura granted to everything that should see through 'invis vs undead' (non-undead + see_invis_undead undead)");
             OutputVariableToConfig("SPELL_RESIST_ADJUSTMENT_SPELL_ID", SPELL_RESIST_ADJUSTMENT_SPELL_ID, "Hidden short-duration aura the mod applies to a caster during a cast to shift the spell hit roll by the EQ ResistDiff amount");
+            OutputVariableToConfig("SPELL_BLIND_WANDER_SPELL_ID", SPELL_BLIND_WANDER_SPELL_ID, "Hidden confuse the mod puts on a blinded creature (not a player or a boss) so it wanders for as long as the blind lasts");
             OutputVariableToConfig("SPELL_ROGUE_POISON_MARKER_SPELL_ID", SPELL_ROGUE_POISON_MARKER_SPELL_ID, "Hidden debuff that every EQ rogue weapon poison puts on what it hits, so that poison talents have a \"poisoned\" target to see", false);
             OutputVariableToConfig("SPELL_ROGUE_POISON_MARKER_DURATION_IN_MS", SPELL_ROGUE_POISON_MARKER_DURATION_IN_MS, "");
             OutputVariableToConfig("SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED", SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED, "\"Intense Healing Exhaustion\" is a stacking debuff that makes every spell that triggers it cost more mana");
@@ -3323,6 +3341,8 @@ namespace EQWOWConverter
             SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MOD);
             SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_VERTICAL_SPEED_MAX);
             SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED = ReadVariableFromConfigString("SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED", configValuesByVariableName, SPELL_EFFECT_TOSS_UP_HORIZONTAL_SPEED);
+            SPELL_EFFECT_MAGNIFY_VISION_YARDS_PER_POINT = ReadVariableFromConfigString("SPELL_EFFECT_MAGNIFY_VISION_YARDS_PER_POINT", configValuesByVariableName, SPELL_EFFECT_MAGNIFY_VISION_YARDS_PER_POINT);
+            SPELL_EFFECT_MAGNIFY_VISION_MAX_DISTANCE_IN_YARDS = ReadVariableFromConfigString("SPELL_EFFECT_MAGNIFY_VISION_MAX_DISTANCE_IN_YARDS", configValuesByVariableName, SPELL_EFFECT_MAGNIFY_VISION_MAX_DISTANCE_IN_YARDS);
             SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = ReadVariableFromConfigString("SPELLS_LEARNABLE_FROM_ITEMS_ENABLED", configValuesByVariableName, SPELLS_LEARNABLE_FROM_ITEMS_ENABLED);
             SPELLS_LEARNABLE_FROM_ITEMS_SCROLL_STACK_SIZE = ReadVariableFromConfigString("SPELLS_LEARNABLE_FROM_ITEMS_SCROLL_STACK_SIZE", configValuesByVariableName, SPELLS_LEARNABLE_FROM_ITEMS_SCROLL_STACK_SIZE);
             SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = ReadVariableFromConfigString("SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS", configValuesByVariableName, SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS);
@@ -3393,6 +3413,7 @@ namespace EQWOWConverter
             SPELL_INVIS_VS_UNDEAD_INVIS_TYPE = ReadVariableFromConfigString("SPELL_INVIS_VS_UNDEAD_INVIS_TYPE", configValuesByVariableName, SPELL_INVIS_VS_UNDEAD_INVIS_TYPE);
             SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID = ReadVariableFromConfigString("SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID", configValuesByVariableName, SPELL_CREATURE_INVIS_VS_UNDEAD_DETECT_SPELL_ID);
             SPELL_RESIST_ADJUSTMENT_SPELL_ID = ReadVariableFromConfigString("SPELL_RESIST_ADJUSTMENT_SPELL_ID", configValuesByVariableName, SPELL_RESIST_ADJUSTMENT_SPELL_ID);
+            SPELL_BLIND_WANDER_SPELL_ID = ReadVariableFromConfigString("SPELL_BLIND_WANDER_SPELL_ID", configValuesByVariableName, SPELL_BLIND_WANDER_SPELL_ID);
             SPELL_ROGUE_POISON_MARKER_SPELL_ID = ReadVariableFromConfigString("SPELL_ROGUE_POISON_MARKER_SPELL_ID", configValuesByVariableName, SPELL_ROGUE_POISON_MARKER_SPELL_ID);
             SPELL_ROGUE_POISON_MARKER_DURATION_IN_MS = ReadVariableFromConfigString("SPELL_ROGUE_POISON_MARKER_DURATION_IN_MS", configValuesByVariableName, SPELL_ROGUE_POISON_MARKER_DURATION_IN_MS);
             SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED = ReadVariableFromConfigString("SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED", configValuesByVariableName, SPELL_INTENSE_HEALING_EXHAUSTION_ENABLED);

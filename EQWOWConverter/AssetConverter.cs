@@ -346,6 +346,12 @@ namespace EQWOWConverter
                 // Write the client data version so the client can report it for the server's version check
                 EQVersionLUA.Generate();
 
+                // Map each EQ spell to its generic icon, which the client can show instead of the spell gem icon that Spell.dbc carries
+                EQSpellGenericIconsLUA.Generate();
+
+                // List the spells that blind, which the client looks for on the player to black out the game world
+                EQBlindSpellsLUA.Generate();
+
                 // Build the FrameXML and GlueXML files (stock files with the EQ changes applied, plus the custom EQ files)
                 interfaceFileWorker.GenerateInterfaceFiles();
 
@@ -3922,6 +3928,29 @@ namespace EQWOWConverter
                 spellTemplates.Add(rangedAttackSpellTemplate);
             }
 
+            // Blinded (hidden confuse the mod puts on a blinded creature so it wanders, see EverQuest_BlindAuraScript)
+            SpellTemplate blindWanderSpellTemplate = new SpellTemplate();
+            blindWanderSpellTemplate.Name = "Blinded";
+            blindWanderSpellTemplate.WOWSpellID = Configuration.SPELL_BLIND_WANDER_SPELL_ID;
+            blindWanderSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            blindWanderSpellTemplate.Description = "Stumbles around blind.";
+            blindWanderSpellTemplate.AuraDescription = "Blinded.";
+            blindWanderSpellTemplate.AuraDuration = new SpellDuration();
+            blindWanderSpellTemplate.AuraDuration.SetFixedDuration(120000);
+            SpellEffectWOW blindWanderEffect = new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.ModConfuse, 0, 0, 0, 0, 0, 0);
+            blindWanderEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            blindWanderEffect.EffectMechanic = SpellMechanicType.Disoriented;
+            blindWanderSpellTemplate.WOWSpellEffects.Add(blindWanderEffect);
+            blindWanderSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
+            blindWanderSpellTemplate.CastTimeInMS = 0;
+            blindWanderSpellTemplate.RecoveryTimeInMS = 0;
+            blindWanderSpellTemplate.EQSkillCategory = SpellEQSkillCategory.Alteration;
+            blindWanderSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Alteration);
+            blindWanderSpellTemplate.TriggersGlobalCooldown = false;
+            blindWanderSpellTemplate.ForceHiddenFromDisplay = true;
+            blindWanderSpellTemplate.ForceAsDebuff = true;
+            spellTemplates.Add(blindWanderSpellTemplate);
+
             Logger.WriteDebug("Generating custom spells completed.");
         }
 
@@ -5197,6 +5226,9 @@ namespace EQWOWConverter
                         bool forceSelfOnly = false;
                         if (spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID].IsGoodEffect == true && (itemTemplate.EQClickType == 1 || itemTemplate.EQClickType == 3 || itemTemplate.EQClickType == 5))
                             forceSelfOnly = true;
+                        // Except spells that are good but aimed elsewhere (calling the pet, lulls or memory blurs)
+                        if (spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID].IsNeutralNPCTargetSpell == true || spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID].HasCallPetEffect() == true)
+                            forceSelfOnly = false;
 
                         // Tierd potions cast at the item's click level
                         int clickyFixedLevel = 0;

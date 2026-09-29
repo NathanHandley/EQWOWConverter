@@ -300995,3 +300995,139 @@ CreatureGUID|spawn~15000204~1000048|454445
 CreatureGUID|spawn~15000205~1000049|454446
 CreatureGUID|spawn~15000206~1000050|454447
 CreatureGUID|spawn~15000207~1000051|454448
+SpellRadiusID|55|107
+SpellID|bardsongeffect~728|101562
+SkillLineAbilityID|811~92043|32920
+SkillLineAbilityID|811~96270|32921
+SkillLineAbilityID|811~92045|32922
+SkillLineAbilityID|811~96284|32923
+SkillLineAbilityID|814~92049|32924
+SkillLineAbilityID|814~96320|32925
+SpellID|basesplit~92132~1|101563
+SpellID|clickyblock~96446~1|101564
+SpellID|creaturecastsplit~122132~1|101565
+SkillLineAbilityID|814~92141|32926
+SkillLineAbilityID|814~96455|32927
+SkillLineAbilityID|811~92190|32928
+SkillLineAbilityID|811~92191|32929
+SkillLineAbilityID|811~96521|32930
+SkillLineAbilityID|811~92192|32931
+SpellID|basesplit~92199~1|101566
+SpellID|creaturecastsplit~122199~1|101567
+SkillLineAbilityID|814~92203|32932
+SkillLineAbilityID|811~92206|32933
+SkillLineAbilityID|811~96542|32934
+SkillLineAbilityID|811~92210|32935
+SkillLineAbilityID|811~92238|32936
+SkillLineAbilityID|810~92248|32937
+SkillLineAbilityID|811~92295|32938
+SkillLineAbilityID|811~92299|32939
+SkillLineAbilityID|813~92321|32940
+SkillLineAbilityID|813~96688|32941
+SkillLineAbilityID|813~96687|32942
+SkillLineAbilityID|813~96686|32943
+SkillLineAbilityID|810~92345|32944
+SkillLineAbilityID|810~92446|32945
+SkillLineAbilityID|811~92478|32946
+SkillLineAbilityID|811~96847|32947
+SkillLineAbilityID|811~92499|32948
+SkillLineAbilityID|811~96861|32949
+SkillLineAbilityID|811~96862|32950
+SkillLineAbilityID|811~92511|32951
+SkillLineAbilityID|814~92526|32952
+SkillLineAbilityID|814~96892|32953
+SkillLineAbilityID|814~92634|32954
+SkillLineAbilityID|817~92722|32955
+SkillLineAbilityID|811~92811|32956
+SkillLineAbilityID|814~92880|32957
+SpellID|basesplit~92923~1|101568
+SpellID|creaturecastsplit~122923~1|101569
+SkillLineAbilityID|811~92935|32958
+SkillLineAbilityID|811~97029|32959
+SkillLineAbilityID|820~92942|32960
+SkillLineAbilityID|814~92944|32961
+SkillLineAbilityID|814~97030|32962
+SkillLineAbilityID|814~97031|32963
+SkillLineAbilityID|813~92945|32964
+SkillLineAbilityID|815~93003|32965
+SkillLineAbilityID|811~93044|32966
+SkillLineAbilityID|820~93070|32967
+SkillLineAbilityID|820~93087|32968
+SkillLineAbilityID|820~93088|32969
+SpellID|basesplit~93092~1|101570
+SkillLineAbilityID|811~93171|32970
+SkillLineAbilityID|811~97097|32971
+SkillLineAbilityID|811~93227|32972
+SkillLineAbilityID|813~93228|32973
+SkillLineAbilityID|813~97243|32974
+SkillLineAbilityID|811~93481|32975
+SpellID|basesplit~93485~1|101571
+SpellID|creaturecastsplit~123485~1|101572
+SpellID|basesplit~93489~2|101573
+SkillLineAbilityID|811~93654|32976
+SpellID|basesplit~93660~1|101574
+SkillLineAbilityID|814~93706|32977
+SpellID|basesplit~93772~1|101575
+SpellID|basesplit~93779~1|101576
+SpellID|creaturecastsplit~123779~1|101577
+SpellID|basesplit~93780~1|101578
+SpellID|creaturecastsplit~123780~1|101579
+SkillLineAbilityID|820~93992|32978
+SpellID|basesplit~94689~1|101580
+SkillLineAbilityID|820~94696|32979
+SpellID|basesplit~94702~1|101581
+SpellID|creaturecastsplit~124702~1|101582
+SpellID|basesplit~94722~1|101583
+SpellID|creaturecastsplit~124722~1|101584
+SpellID|basesplit~94723~1|101585
+SpellID|basesplit~94724~1|101586
+SpellID|creaturecastsplit~124724~1|101587
+SpellID|basesplit~94786~1|101588
+SkillLineAbilityID|811~94814|32980
+SpellID|creaturecastsplit~124918~1|101589
+SpellID|basesplit~94921~1|101590
+SpellID|creaturecastsplit~124921~1|101591
+SpellID|basesplit~94927~1|101592
+SpellID|creaturecastsplit~124927~1|101593
+SkillLineAbilityID|811~95032|32981
+SkillLineAbilityID|810~95415|32982
+SpellID|basesplit~95475~1|101594
+SkillLineAbilityID|811~86956|32983
+CreatureGUID|spawn~15000208~1000052|454449
+BroadcastTextID|podoption~14~Send me to Firiona Vie|84857
+BroadcastTextID|podoption~15~Send me to Freeport|84858
+BroadcastTextID|podoption~16~Send me to Grobb|84859
+BroadcastTextID|podoption~17~Send me to Halas|84860
+BroadcastTextID|podoption~18~Send me to Kael Drakkel|84861
+BroadcastTextID|podoption~19~Send me to Kaladim|84862
+BroadcastTextID|podoption~20~Send me to Kelethin|84863
+BroadcastTextID|podoption~21~Send me to Neriak|84864
+BroadcastTextID|podoption~22~Send me to Oggok|84865
+BroadcastTextID|podoption~23~Send me to Paineel|84866
+BroadcastTextID|podoption~24~Send me to Qeynos|84867
+BroadcastTextID|podoption~25~Send me to Rivervale|84868
+BroadcastTextID|podoption~26~Send me to Skyshrine|84869
+BroadcastTextID|podoption~27~Send me to The Overthere|84870
+BroadcastTextID|podoption~28~Send me to Thurgadin|84871
+CreatureImmunitiesID|20498|4034
+CreatureImmunitiesID|20496|4035
+CreatureImmunitiesID|20530|4036
+CreatureImmunitiesID|18610|4037
+CreatureImmunitiesID|18866|4038
+CreatureImmunitiesID|18|4039
+CreatureImmunitiesID|16402|4040
+CreatureImmunitiesID|50|4041
+CreatureImmunitiesID|22706|4042
+CreatureImmunitiesID|48|4043
+CreatureImmunitiesID|22962|4044
+CreatureImmunitiesID|6322|4045
+CreatureImmunitiesID|22704|4046
+CreatureImmunitiesID|16434|4047
+CreatureImmunitiesID|4114|4048
+CreatureImmunitiesID|16|4049
+CreatureImmunitiesID|18578|4050
+CreatureImmunitiesID|18834|4051
+CreatureGUID|spawn~15000209~1000053|454450
+BroadcastTextID|podoption~27~Send me to Surefall Glade|84872
+BroadcastTextID|podoption~28~Send me to The Overthere|84873
+BroadcastTextID|podoption~29~Send me to Thurgadin|84874
