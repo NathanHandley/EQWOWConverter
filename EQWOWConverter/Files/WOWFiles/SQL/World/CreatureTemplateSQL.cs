@@ -208,7 +208,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("MovementType", 0); // 0 = Stay in Place, 1 = Random Move within wander_distance, 2 = Waypoint Movement
             newRow.AddFloat("HoverHeight", 1);
             if (creatureTemplate.IsEyeOfZomm == true)
-                newRow.AddFloat("HealthModifier", 0.1f);)
+                newRow.AddFloat("HealthModifier", 0.1f);
             else if (Configuration.CREATURE_PET_ALLOW_STAT_MOD_SCALING == true || creatureTemplate.IsPet == false)
                 newRow.AddFloat("HealthModifier", creatureTemplate.HPMod);
             else
