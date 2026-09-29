@@ -32,6 +32,9 @@ namespace EQWOWConverter.EQFiles
             public EQSkeletonBone() { }
         }
 
+        // A child bone whose name is only the model base (like EYE's EYE_DAG) gets extracted as a second 'root', so it's renamed to this
+        public static readonly string DUPLICATE_ROOT_BONE_NAME = "root_child";
+
         public List<string> MeshNames = new List<string>();
         public List<string> SecondaryMeshNames = new List<string>();
         public List<EQSkeletonBone> BoneStructures = new List<EQSkeletonBone>();
@@ -144,6 +147,8 @@ namespace EQWOWConverter.EQFiles
 
                 EQSkeletonBone boneStruct = new EQSkeletonBone();
                 boneStruct.BoneName = blocks[0];
+                if (boneStruct.BoneName == "root" && BoneStructures.Count > 0)
+                    boneStruct.BoneName = DUPLICATE_ROOT_BONE_NAME;
                 string[] children = blocks[1].Split(";");
                 foreach (string child in children)
                     if (child != string.Empty)

@@ -109,7 +109,12 @@ namespace EQWOWConverter.EQFiles
                 }
 
                 Animation.BoneAnimationFrame animationFrame = new Animation.BoneAnimationFrame();
-                animationFrame.BoneFullNameInPath = blocks[0];
+                // Only the first path part is the real root, so match the skeleton's rename of any later 'root' part
+                string[] bonePathParts = blocks[0].Split('/');
+                for (int i = 1; i < bonePathParts.Length; i++)
+                    if (bonePathParts[i] == "root")
+                        bonePathParts[i] = EQSkeleton.DUPLICATE_ROOT_BONE_NAME;
+                animationFrame.BoneFullNameInPath = string.Join('/', bonePathParts);
                 animationFrame.FrameIndex = int.Parse(blocks[1]);
                 animationFrame.XPosition = float.Parse(blocks[2]);
                 animationFrame.ZPosition = float.Parse(blocks[3]);

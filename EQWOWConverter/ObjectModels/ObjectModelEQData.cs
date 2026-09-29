@@ -136,7 +136,18 @@ namespace EQWOWConverter.ObjectModels
                 }
                 Dictionary<string, byte> meshNamesInDictionary = new Dictionary<string, byte>();
                 foreach (string meshName in meshNames)
-                    meshNamesInDictionary.Add(meshName, 0);
+                {
+                    byte meshBoneIndex = 0;
+                    for (byte i = 0; i < SkeletonData.BoneStructures.Count; i++)
+                    {
+                        if (SkeletonData.BoneStructures[i].MeshName == meshName)
+                        {
+                            meshBoneIndex = i;
+                            break;
+                        }
+                    }
+                    meshNamesInDictionary.Add(meshName, meshBoneIndex);
+                }
                 LoadRenderMeshData(name, meshNamesInDictionary, inputObjectFolder, characterMeshContextByVertexIndex);
 
                 // Load the materials, with special logic for invisible man

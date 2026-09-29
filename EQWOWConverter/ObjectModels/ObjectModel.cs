@@ -1936,6 +1936,14 @@ namespace EQWOWConverter.ObjectModels
                                     frameRotation.Y = -frameRotation.Y;
                                 }
 
+                                // A duplicate root carries EQ's root-level track, which rotates the opposite way of child bone tracks (EYE faces backwards otherwise)
+                                if (curBone.BoneNameEQ == EQSkeleton.DUPLICATE_ROOT_BONE_NAME)
+                                {
+                                    frameRotation.X = -frameRotation.X;
+                                    frameRotation.Y = -frameRotation.Y;
+                                    frameRotation.Z = -frameRotation.Z;
+                                }
+
                                 // Make sure the frames don't do an extra 180 degree rotation
                                 if (curBone.RotationTrack.Values.Count > 0 && curBone.RotationTrack.Values[curBone.RotationTrack.Values.Count - 1].Values.Count > 0)
                                 {
