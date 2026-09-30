@@ -309,6 +309,8 @@ namespace EQWOWConverter.Spells
         public bool NeverMisses = false; // Skips the hit/miss roll but still respects immunities (unlike IsUnresistable)
         public bool CannotCrit = false;
         public int ResistDiff = 0; // EQ resist roll modifier, negative lands more often
+        public int EQResistType = 0; // EQ resist type (1 Magic, 2 Fire, 3 Cold, 4 Poison, 5 Disease) the mod rolls the target's resist of, 0 = no EQ resist roll
+        public bool IsEQPartialResistCapable = false; // TAKP IsPartialCapableSpell, so only a deep resist roll fully resists it
         public UInt32 DefenseType = 0; // 0 None, 1 Magic, 2 Melee, 3 Ranged
         public UInt32 PreventionType = 0; // 0 None, 1 Silence, 2 Pacify, 4 No Actions
         public int WeaponSpellItemEnchantmentDBCID = 0;
@@ -844,7 +846,15 @@ namespace EQWOWConverter.Spells
                 if (resistType == 0)
                     newSpellTemplate.IsUnresistable = true;
                 else if (isDetrimental == true || IsNeutralNPCSpell(newSpellTemplate.EQSpellEffects, newSpellTemplate.EQTargetType) == true) // Lulls and memory blurs are resisted like detrimental spells
+                {
                     newSpellTemplate.ResistDiff = int.Parse(columns["ResistDiff"]);
+                    // The target's resist of this type is rolled by the mod (TAKP Mob::CheckResistSpell), which stays apart from the spell's school since a school override doesn't change what resists it
+                    if (resistType >= 1 && resistType <= 5)
+                    {
+                        newSpellTemplate.EQResistType = resistType;
+                        newSpellTemplate.IsEQPartialResistCapable = IsEQSpellRowPartialResistCapable(columns);
+                    }
+                }
                 newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
 
                 // A school override supersedes the school from the resist type (the resist type still drives resistability and dispel type)
@@ -1578,6 +1588,27 @@ namespace EQWOWConverter.Spells
             NeverMisses = parentSpellTemplate.NeverMisses;
             CannotCrit = parentSpellTemplate.CannotCrit;
             ResistDiff = parentSpellTemplate.ResistDiff;
+            EQResistType = parentSpellTemplate.EQResistType;
+            IsEQPartialResistCapable = parentSpellTemplate.IsEQPartialResistCapable;
+        }
+
+        // TAKP IsPartialCapableSpell (common/spdat.cpp): only a spell whose first non-blank effect is hit point damage can partially resist, unless it's flagged no_partial_resist
+        private static bool IsEQSpellRowPartialResistCapable(Dictionary<string, string> columns)
+        {
+            if (columns["no_partial_resist"].Trim() == "1")
+                return false;
+            for (int slotID = 1; slotID <= 12; slotID++)
+            {
+                int effectID = int.Parse(columns[string.Concat("effectid", slotID)]);
+                int baseValue = int.Parse(columns[string.Concat("effect_base_value", slotID)]);
+                int formula = slotID < 12 ? int.Parse(columns[string.Concat("formula", slotID)]) : 0;
+
+                // TAKP IsBlankSpellEffect: blank, the charisma "spacer", and the stacking commands
+                if (effectID == 254 || (effectID == 10 && baseValue == 0 && formula == 100) || effectID == 148 || effectID == 149)
+                    continue;
+                return (effectID == (int)SpellEQEffectType.CurrentHitPoints || effectID == (int)SpellEQEffectType.CurrentHitPointsOnce) && baseValue < 0;
+            }
+            return false;
         }
 
         private static UInt32 GetSchoolMaskForResistType(int eqResistType)
@@ -5034,6 +5065,8 @@ namespace EQWOWConverter.Spells
             waveSpellTemplate.NeverMisses = spellTemplate.NeverMisses;
             waveSpellTemplate.NoPartialImmunity = spellTemplate.NoPartialImmunity;
             waveSpellTemplate.ResistDiff = spellTemplate.ResistDiff;
+            waveSpellTemplate.EQResistType = spellTemplate.EQResistType;
+            waveSpellTemplate.IsEQPartialResistCapable = spellTemplate.IsEQPartialResistCapable;
             waveSpellTemplate.MaxCreatureTargetLevel = spellTemplate.MaxCreatureTargetLevel;
             waveSpellTemplate.DefenseType = spellTemplate.DefenseType;
             waveSpellTemplate.PreventionType = spellTemplate.PreventionType;

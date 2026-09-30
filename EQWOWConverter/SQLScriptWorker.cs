@@ -3109,7 +3109,7 @@ namespace EQWOWConverter
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_CharmAuraScript");
             if (spellTemplate.IsllusionSpellParent == true)
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_IllusionSpellScript");
-            if (spellTemplate.ResistDiff != 0 && commentFragment != " (Worn)")
+            if ((spellTemplate.ResistDiff != 0 || spellTemplate.EQResistType != 0) && commentFragment != " (Worn)")
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_ResistDiffSpellScript");
             if (spellTemplate.IsPlayerCasterOnlySpell == true)
                 spellScriptNamesSQL.AddRow(spellEffectBlocks[0].WOWSpellID, "EverQuest_PlayerCasterOnlySpellScript");

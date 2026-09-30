@@ -62,6 +62,8 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`CasterVisualKitID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`CreatureLossOfControlGrantsImmunity` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`HideAuraIcon` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`EQResistType` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`IsEQPartialResistCapable` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -163,6 +165,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("CasterVisualKitID", spellTemplate.CasterVisualKitID);
             newRow.AddInt("CreatureLossOfControlGrantsImmunity", (isWorn == false && spellTemplate.DoesCreatureLossOfControlGrantPlayerImmunity() == true) ? 1 : 0);
             newRow.AddInt("HideAuraIcon", hideAuraIcon == true ? 1 : 0);
+            newRow.AddInt("EQResistType", isWorn == true ? 0 : spellTemplate.EQResistType);
+            newRow.AddInt("IsEQPartialResistCapable", (isWorn == false && spellTemplate.IsEQPartialResistCapable == true) ? 1 : 0);
             Rows.Add(newRow);
         }
     }
