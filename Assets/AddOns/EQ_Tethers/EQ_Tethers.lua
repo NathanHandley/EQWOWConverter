@@ -20,6 +20,13 @@
 --
 --   EQTETHER<tab><aura spell ID><tab><area name>
 --
+-- Gate spells get the same kind of line naming the bind point they send you to, on the spell's tooltip (spellbook, action
+-- bars, links) and on the tooltip of any item whose use effect is a gate.  Which spells gate and where the bind point is
+-- come the same way:
+--
+--   EQTETHER<tab>GATESPELLS<tab><spell ID>,<spell ID>,...   (may arrive in several pieces, each adds to the list)
+--   EQTETHER<tab>BIND<tab><area name>                       (a bare "BIND" means there is no bind point in Norrath)
+--
 -- A bare "EQTETHER" with nothing after it means forget everything, and is sent ahead of the full list that
 -- ".eqtether sync" pushes back.  Nothing is stored between sessions, the server is asked again on entering the world.
 local EQTETHER_PREFIX = "EQTETHER";
@@ -28,14 +35,51 @@ local LINE_COLOR_R, LINE_COLOR_G, LINE_COLOR_B = 0.3, 1.0, 0.3;
 
 local tetherAreaNamesBySpellID = {};
 
+-- Gate spells by ID for spell tooltips, and by name for item tooltips, which only hand back the use spell's name
+local gateSpellIDs = {};
+local gateSpellNames = {};
+
+-- nil until the server says, false when there is no bind point in Norrath
+local bindAreaName = nil;
+
+local function EQ_Tethers_AddGateSpellIDs(spellIDListText)
+	for spellIDText in string.gmatch(spellIDListText or "", "%d+") do
+		local spellID = tonumber(spellIDText);
+		gateSpellIDs[spellID] = true;
+		local spellName = GetSpellInfo(spellID);
+		if ( spellName ) then
+			gateSpellNames[spellName] = true;
+		end
+	end
+end
+
 function EQ_Tethers_HandlePayload(payload)
 	if ( payload == nil or payload == "" ) then
 		for spellID in pairs(tetherAreaNamesBySpellID) do
 			tetherAreaNamesBySpellID[spellID] = nil;
 		end
+		for spellID in pairs(gateSpellIDs) do
+			gateSpellIDs[spellID] = nil;
+		end
+		for spellName in pairs(gateSpellNames) do
+			gateSpellNames[spellName] = nil;
+		end
+		bindAreaName = nil;
 		return;
 	end
 	local spellIDText, areaName = strsplit("\t", payload, 2);
+	if ( spellIDText == "GATESPELLS" ) then
+		EQ_Tethers_AddGateSpellIDs(areaName);
+		return;
+	end
+	if ( spellIDText == "BIND" ) then
+		if ( areaName == nil or areaName == "" ) then
+			bindAreaName = false;
+		else
+			bindAreaName = areaName;
+		end
+		return;
+	end
 	local spellID = tonumber(spellIDText);
 	if ( spellID == nil or areaName == nil or areaName == "" ) then
 		return;
@@ -70,6 +114,59 @@ end
 
 hooksecurefunc(GameTooltip, "SetUnitAura", EQ_Tethers_OnSetUnitAura);
 hooksecurefunc(GameTooltip, "SetUnitBuff", EQ_Tethers_OnSetUnitBuff);
+
+-- The bind point line for a gate spell or gate item.  OnTooltipSetSpell can fire more than once on the same draw, so it only goes on once
+local function EQ_Tethers_AddBindLine(tooltip)
+	if ( tooltip.eqBindLineAdded or bindAreaName == nil ) then
+		return;
+	end
+	tooltip.eqBindLineAdded = true;
+	if ( bindAreaName == false ) then
+		tooltip:AddLine("You have no bind point in Norrath", LINE_COLOR_R, LINE_COLOR_G, LINE_COLOR_B, true);
+	else
+		tooltip:AddLine("Your bind point: " .. bindAreaName, LINE_COLOR_R, LINE_COLOR_G, LINE_COLOR_B, true);
+	end
+	tooltip:Show();
+end
+
+-- GetSpell hands the ID back directly where the client supports it, and the spell link is the fallback
+local function EQ_Tethers_OnTooltipSetSpell(tooltip)
+	local name, rank, spellID = tooltip:GetSpell();
+	if ( not name ) then
+		return;
+	end
+	if ( not spellID ) then
+		local link = (rank and rank ~= "" and GetSpellLink(name .. "(" .. rank .. ")")) or GetSpellLink(name);
+		spellID = link and link:match("spell:(%d+)");
+	end
+	spellID = tonumber(spellID);
+	if ( spellID and gateSpellIDs[spellID] ) then
+		EQ_Tethers_AddBindLine(tooltip);
+	end
+end
+
+-- Gate clickies (potions, jewelry and so on) only name their use spell
+local function EQ_Tethers_OnTooltipSetItem(tooltip)
+	local _, itemLink = tooltip:GetItem();
+	if ( not itemLink ) then
+		return;
+	end
+	local useSpellName = GetItemSpell(itemLink);
+	if ( useSpellName and gateSpellNames[useSpellName] ) then
+		EQ_Tethers_AddBindLine(tooltip);
+	end
+end
+
+local function EQ_Tethers_OnTooltipCleared(tooltip)
+	tooltip.eqBindLineAdded = nil;
+end
+
+for _, tooltip in ipairs({ GameTooltip, ItemRefTooltip }) do
+	tooltip:HookScript("OnTooltipSetSpell", EQ_Tethers_OnTooltipSetSpell);
+	tooltip:HookScript("OnTooltipSetItem", EQ_Tethers_OnTooltipSetItem);
+	tooltip:HookScript("OnTooltipCleared", EQ_Tethers_OnTooltipCleared);
+	tooltip:HookScript("OnHide", EQ_Tethers_OnTooltipCleared);
+end
 
 local function EQ_Tethers_OnEvent(self, event, arg1, arg2)
 	-- Asking on entering the world covers a tether that was made or loaded while this addon wasn't listening.  "sync" prints nothing
