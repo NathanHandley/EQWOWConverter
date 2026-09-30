@@ -87,21 +87,19 @@ namespace EQWOWConverter.Spells
 
         public static void GenerateWOWSpellVisualData()
         {
-            Logger.WriteDebug("Generating wow spell visual data started...");
-            SpellVisualsByType.Clear();
-            SpellVisualsByType.Add(SpellVisualType.Beneficial, new List<SpellVisual>());
-            SpellVisualsByType.Add(SpellVisualType.Detrimental, new List<SpellVisual>());
-            SpellVisualsByType.Add(SpellVisualType.BardSong, new List<SpellVisual>());
-            SpellVisualsByType.Add(SpellVisualType.BardTick, new List<SpellVisual>());
-
             lock (SpellVisualLock)
             {
-                // Load the EQ spell data
                 if (EQSpellsEFF != null)
-                {
-                    Logger.WriteError("Attempted to generate spell visual data twice.");
                     return;
-                }
+
+                Logger.WriteDebug("Generating wow spell visual data started...");
+                SpellVisualsByType.Clear();
+                SpellVisualsByType.Add(SpellVisualType.Beneficial, new List<SpellVisual>());
+                SpellVisualsByType.Add(SpellVisualType.Detrimental, new List<SpellVisual>());
+                SpellVisualsByType.Add(SpellVisualType.BardSong, new List<SpellVisual>());
+                SpellVisualsByType.Add(SpellVisualType.BardTick, new List<SpellVisual>());
+
+                // Load the EQ spell data
                 LoadEQSpellVisualEffectsData();
                 if (EQSpellsEFF == null)
                     return;
@@ -127,8 +125,8 @@ namespace EQWOWConverter.Spells
                         SpellVisualsByType[spellVisualType].Add(spellVisual);
                     }
                 }
+                Logger.WriteDebug("Generating wow spell visual data complete.");
             }
-            Logger.WriteDebug("Generating wow spell visual data complete.");
         }
 
         private static void ConvertStageVisualData(ref SpellVisual spellVisual, EQSpellsEFF.EQSpellEffect spellEffect, SpellVisualStageType stageType, SpellVisualType spellVisualType)
