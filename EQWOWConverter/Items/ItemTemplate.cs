@@ -506,11 +506,11 @@ namespace EQWOWConverter.Items
                 return 0;
             }
 
-            // Maintain a minimum boundary
+            // Maintain a minimum boundary (sign must still be restored for negative stats)
             if (eqStatValue == statEqLow)
-                return statWowLow;
+                return flipStatSign == true ? -statWowLow : statWowLow;
             if (eqStatValue == statEqHigh)
-                return statWowHigh;
+                return flipStatSign == true ? -statWowHigh : statWowHigh;
 
             // Set a floor on the stat value
             eqStatValue = MathF.Max(eqStatValue, statEqLow);
@@ -596,7 +596,7 @@ namespace EQWOWConverter.Items
                 eqStrength == eqIntelligence && eqStrength == eqStamina && eqStrength == eqWisdom))
             {
                 // Skip Stamina, since that's always higher in WoW values
-                float highestValue = MathF.Min(GetConvertedStatInArmorTypeContext(itemSlot, "Str", eqStrength, classID, subClassID), 0);
+                float highestValue = MathF.Max(GetConvertedStatInArmorTypeContext(itemSlot, "Str", eqStrength, classID, subClassID), 0);
                 highestValue = MathF.Max(highestValue, GetConvertedStatInArmorTypeContext(itemSlot, "Agi", eqAgility, classID, subClassID));
                 highestValue = MathF.Max(highestValue, GetConvertedStatInArmorTypeContext(itemSlot, "Int", eqIntelligence, classID, subClassID));
                 highestValue = MathF.Max(highestValue, GetConvertedStatInArmorTypeContext(itemSlot, "Spr", eqWisdom, classID, subClassID));
