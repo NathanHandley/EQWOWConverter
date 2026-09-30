@@ -57,10 +57,63 @@ local COEFFICIENT_LABEL = "Spell power coefficient:";
 --   Intensified Skyfall: +100% mana cost
 --
 -- The aura is looked up among both the player's debuffs and buffs, so either kind works.
+--
+-- A spell can carry more than one cost stamp, and the server adds cost percents together, so the printed
+-- cost does the same.
+--
+-- The Shadow Knight's Spellsword's Focus toggle makes offensive spells with a cast time instant, but only
+-- out to melee range.  Every such EQ spell is stamped:
+--
+--   Spellsword's Focus: instant cast, melee range
+--
+-- While that toggle is up the cast time line reads as instant and the range line as melee range, since the
+-- client knows nothing of either change.  The stamp is only for characters who can turn the toggle on, so
+-- it is cut out of the tooltip for everyone else (a spell name only resolves through GetSpellInfo when it is
+-- in the player's spellbook).
+--
+-- Stock WoW spells cannot be stamped, so for those the same rule the server uses is repeated here: a stock
+-- spell (ID below the converter's spell range) that is harmful, has a cast time and has no minimum range.
+--
+-- The action bars get the same treatment for the range indicator (the hotkey text, or the dot when there is
+-- no binding): while the toggle is up, an affected spell's button reads its range from a 5 yard melee range
+-- item instead of the spell's own range, which is exactly the range entry Bash uses and what the server
+-- holds these casts to.
 
 -- Matches "<aura name>: +<N>% mana cost" (or -<N>% for a discount) plus whatever follows on that line (" per stack" for a stacking aura)
 local COST_STAMP_PATTERN = "([^\n]-): ([%+%-]%d+)%% mana cost([^\n]*)";
 local COST_STAMP_PER_STACK_SUFFIX = " per stack";
+
+-- Matches "<aura name>: instant cast, melee range"
+local FOCUS_STAMP_PATTERN = "([^\n]-): instant cast, melee range";
+local FOCUS_STAMP_MARKER = ": instant cast, melee range";
+
+-- For stock WoW spells, which carry no stamp.  These mirror the converter's SpellClassAuras.SHADOWKNIGHT_FOCUS_NAME
+-- and DBCID_SPELL_ID_START (every converter spell sits at or above it)
+local STOCK_FOCUS_AURA_NAME = "Spellsword's Focus";
+local CONVERTER_SPELL_ID_START = 86900;
+
+-- Ruby Acorn, whose use spell has the 5 yard melee range entry (SpellRange 2, the one Bash uses).  IsItemInRange works off
+-- the item's ID, so it does not need to be carried, only known to the client's item cache
+local MELEE_RANGE_ITEM_ID = 37727;
+local MELEE_RANGE_TEXT = MELEE_RANGE or "Melee Range";
+
+-- Turns a GlobalStrings format ("%.3g sec cast", "%s yd range") into a whole-line pattern whose number slot takes any number or number range
+local function EQSpellTooltips_FormatToLinePattern(formatString)
+	if ( not formatString ) then
+		return nil;
+	end
+	local escaped = formatString:gsub("[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0");
+	escaped = escaped:gsub("%%%%%%%.3g", "[%%d%%.]+");
+	escaped = escaped:gsub("%%%%s", "[%%d%%.%%-]+");
+	return "^" .. escaped .. "$";
+end
+
+local CAST_TIME_LINE_PATTERNS = {
+	EQSpellTooltips_FormatToLinePattern(SPELL_CAST_TIME_SEC or "%.3g sec cast"),
+	EQSpellTooltips_FormatToLinePattern(SPELL_CAST_TIME_MIN or "%.3g min cast"),
+};
+local RANGE_LINE_PATTERN = EQSpellTooltips_FormatToLinePattern(SPELL_RANGE or "%s yd range");
+local INSTANT_CAST_TEXT = SPELL_CAST_TIME_INSTANT_NO_MANA or "Instant";
 
 -- Tag in the stamped line -> spell school index used by GetSpellBonusDamage (1 = physical, 2-7 = magic schools)
 local SCHOOL_INDEX = {
@@ -175,42 +228,118 @@ local function EQSpellTooltips_FindCostLine(tooltip, tooltipName)
 	return nil;
 end
 
--- Writes the current stack count onto an already-drawn tooltip.  This edits the existing font strings
+-- Finds the first font string (either column) whose whole text matches one of the patterns
+local function EQSpellTooltips_FindLineMatching(tooltip, tooltipName, patterns)
+	for i = 1, tooltip:NumLines() do
+		for _, side in ipairs({ "TextLeft", "TextRight" }) do
+			local fontString = _G[tooltipName .. side .. i];
+			local text = fontString and fontString:GetText();
+			if ( text ) then
+				for _, pattern in ipairs(patterns) do
+					if ( pattern and text:match(pattern) ) then
+						return fontString, text;
+					end
+				end
+			end
+		end
+	end
+	return nil;
+end
+
+local function EQSpellTooltips_FormatMultiplier(multiplier)
+	if ( multiplier == floor(multiplier) ) then
+		return format("%dx", multiplier);
+	end
+	return format("%.2fx", multiplier);
+end
+
+-- The stack count behind every stamp, joined into one string so a change in any of them is easy to spot
+local function EQSpellTooltips_GetStampStacksKey(stamps)
+	local parts = {};
+	for i, stamp in ipairs(stamps) do
+		parts[i] = EQSpellTooltips_GetAuraStacks(stamp.auraName);
+	end
+	return table.concat(parts, ",");
+end
+
+-- The spell a tooltip shows and its ID.  GetSpell hands the ID back directly where the client supports it, and the spell link is the fallback
+local function EQSpellTooltips_GetTooltipSpell(tooltip)
+	local name, rank, spellID = tooltip:GetSpell();
+	if ( not name ) then
+		return nil;
+	end
+	if ( not spellID ) then
+		local link = (rank and rank ~= "" and GetSpellLink(name .. "(" .. rank .. ")")) or GetSpellLink(name);
+		spellID = link and link:match("spell:(%d+)");
+	end
+	return name, tonumber(spellID);
+end
+
+-- Whether Spellsword's Focus reaches a stock WoW spell: the same rule the server uses (harmful magic, a real cast, no minimum range), for a
+-- character who has the toggle.  A channeled spell reports no cast time, which keeps it out
+local function EQSpellTooltips_IsStockFocusSpellID(spellID)
+	if ( not spellID or spellID >= CONVERTER_SPELL_ID_START or not GetSpellInfo(STOCK_FOCUS_AURA_NAME) ) then
+		return false;
+	end
+	local name = GetSpellInfo(spellID);
+	if ( not name or not IsHarmfulSpell(name) ) then
+		return false;
+	end
+	-- The server only takes magic spells, which the client cannot see, so a mana cost stands in for it (keeping out rage and energy abilities with a cast, like Slam)
+	local _, _, _, _, _, powerType, castTime, minRange = GetSpellInfo(spellID);
+	if ( powerType ~= 0 or not castTime or castTime <= 0 or (minRange and minRange > 0) ) then
+		return false;
+	end
+	return true;
+end
+
+-- Writes the current stack counts onto an already-drawn tooltip.  This edits the existing font strings
 -- rather than asking the client to rebuild, because an action button usually has no UpdateTooltip to
 -- call (ActionButton_SetTooltip only assigns one when GameTooltip:SetAction reports success), which
--- left every rebuild-based refresh a no-op.  The untouched cost is kept in eqCostBase so repeated
--- renders always scale from the original number instead of compounding.
-local function EQSpellTooltips_RenderCost(tooltip, stacks)
-	local costFontString = tooltip.eqCostFontString;
-	if ( not costFontString ) then
+-- left every rebuild-based refresh a no-op.  The untouched cost, cast time and range are kept on the
+-- tooltip so repeated renders always start from the original text instead of compounding.
+local function EQSpellTooltips_RenderCost(tooltip)
+	local stamps = tooltip.eqCostStamps;
+	if ( not stamps ) then
 		return;
 	end
 
-	-- A per-stack stamp scales with the stack count, and any other stamp applies its percent once while the aura is up
-	local appliedStacks = stacks;
-	if ( not tooltip.eqCostPerStack and appliedStacks > 1 ) then
-		appliedStacks = 1;
+	-- Percents from different auras add together (as the server's cost modifiers do).  A per-stack stamp scales with the stack count, and any other stamp applies its percent once while the aura is up
+	local totalPercent = 0;
+	local noteLines = {};
+	local isFocusUp = false;
+	for _, stamp in ipairs(stamps) do
+		local stacks = EQSpellTooltips_GetAuraStacks(stamp.auraName);
+		if ( stacks > 0 ) then
+			if ( stamp.isFocus ) then
+				isFocusUp = true;
+			else
+				local appliedStacks = stamp.perStack and stacks or 1;
+				totalPercent = totalPercent + (stamp.percent * appliedStacks);
+				local multiplierText = EQSpellTooltips_FormatMultiplier(1 + (stamp.percent * appliedStacks / 100));
+				if ( stamp.perStack ) then
+					tinsert(noteLines, format("%s (%d): %s mana cost", stamp.auraName, stacks, multiplierText));
+				else
+					tinsert(noteLines, format("%s: %s mana cost", stamp.auraName, multiplierText));
+				end
+			end
+		end
 	end
-	local multiplier = 1 + (tooltip.eqCostPercent * appliedStacks / 100);
-	costFontString:SetText(format("%d %s", floor((tooltip.eqCostBase * multiplier) + 0.5), tooltip.eqCostLabel));
 
-	-- Blank rather than absent when the debuff falls off mid-hover, since a line cannot be removed from a
+	if ( tooltip.eqCostFontString ) then
+		local multiplier = 1 + (totalPercent / 100);
+		tooltip.eqCostFontString:SetText(format("%d %s", floor((tooltip.eqCostBase * multiplier) + 0.5), tooltip.eqCostLabel));
+	end
+	if ( tooltip.eqCastTimeFontString ) then
+		tooltip.eqCastTimeFontString:SetText(isFocusUp and INSTANT_CAST_TEXT or tooltip.eqCastTimeBaseText);
+	end
+	if ( tooltip.eqRangeFontString ) then
+		tooltip.eqRangeFontString:SetText(isFocusUp and MELEE_RANGE_TEXT or tooltip.eqRangeBaseText);
+	end
+
+	-- Blank rather than absent when the aura falls off mid-hover, since a line cannot be removed from a
 	-- drawn tooltip.  The next hover rebuilds from scratch and the gap goes away.
-	local noteText = "";
-	if ( stacks > 0 ) then
-		local multiplierText;
-		if ( multiplier == floor(multiplier) ) then
-			multiplierText = format("%dx", multiplier);
-		else
-			multiplierText = format("%.2fx", multiplier);
-		end
-		if ( tooltip.eqCostPerStack ) then
-			noteText = format("%s (%d): %s mana cost", tooltip.eqCostAuraName, stacks, multiplierText);
-		else
-			noteText = format("%s: %s mana cost", tooltip.eqCostAuraName, multiplierText);
-		end
-	end
-
+	local noteText = table.concat(noteLines, "\n");
 	local noteFontString = tooltip.eqCostNoteLine and _G[tooltip:GetName() .. "TextLeft" .. tooltip.eqCostNoteLine];
 	if ( noteFontString ) then
 		noteFontString:SetText(noteText);
@@ -219,11 +348,23 @@ local function EQSpellTooltips_RenderCost(tooltip, stacks)
 		tooltip.eqCostNoteLine = tooltip:NumLines();
 	end
 
-	tooltip.eqCostDrawnStacks = stacks;
+	tooltip.eqCostDrawnStacksKey = EQSpellTooltips_GetStampStacksKey(stamps);
 	tooltip:Show();
 end
 
--- Runs once per draw: locates the stamp and the cost line, stashes what a re-render needs, then renders.
+-- Cuts one stamp line out of a description, together with the blank line in front of it
+local function EQSpellTooltips_CutStampLine(text, stampLine)
+	local startIndex, endIndex = text:find(stampLine, 1, true);
+	if ( not startIndex ) then
+		return text;
+	end
+	while ( startIndex > 1 and text:sub(startIndex - 1, startIndex - 1) == "\n" ) do
+		startIndex = startIndex - 1;
+	end
+	return text:sub(1, startIndex - 1) .. text:sub(endIndex + 1);
+end
+
+-- Runs once per draw: locates the stamps and the lines they change, stashes what a re-render needs, then renders.
 local function EQSpellTooltips_ApplyCostPerStack(tooltip)
 	if ( tooltip.eqCostLineAdjusted ) then
 		return;
@@ -233,36 +374,61 @@ local function EQSpellTooltips_ApplyCostPerStack(tooltip)
 		return;
 	end
 
-	local auraName, percent, stampSuffix;
+	local stamps = {};
+	local focusStamp;
 	for i = 1, tooltip:NumLines() do
 		local fontString = _G[tooltipName .. "TextLeft" .. i];
 		local text = fontString and fontString:GetText();
 		if ( text ) then
-			auraName, percent, stampSuffix = text:match(COST_STAMP_PATTERN);
-			if ( auraName ) then
-				break;
+			local keptText = text;
+			if ( text:find(" mana cost", 1, true) ) then
+				for auraName, percent, stampSuffix in text:gmatch(COST_STAMP_PATTERN) do
+					tinsert(stamps, { auraName = auraName, percent = tonumber(percent), perStack = (stampSuffix == COST_STAMP_PER_STACK_SUFFIX) });
+				end
+			end
+			if ( text:find(FOCUS_STAMP_MARKER, 1, true) ) then
+				for stampLine, auraName in text:gmatch("(" .. FOCUS_STAMP_PATTERN .. ")") do
+					if ( GetSpellInfo(auraName) ) then
+						focusStamp = { auraName = auraName, isFocus = true };
+					else
+						-- A toggle this character cannot use
+						keptText = EQSpellTooltips_CutStampLine(keptText, stampLine);
+					end
+				end
+			end
+			if ( keptText ~= text ) then
+				fontString:SetText(keptText);
 			end
 		end
 	end
-	if ( not auraName ) then
+	if ( not focusStamp ) then
+		local _, spellID = EQSpellTooltips_GetTooltipSpell(tooltip);
+		if ( EQSpellTooltips_IsStockFocusSpellID(spellID) ) then
+			focusStamp = { auraName = STOCK_FOCUS_AURA_NAME, isFocus = true };
+		end
+	end
+
+	-- Flag before rendering: Show() re-enters this through the OnShow hook below
+	tooltip.eqCostLineAdjusted = true;
+
+	-- The focus only rewrites a spell that shows a cast time, so a channel or an instant spell is never touched
+	if ( focusStamp ) then
+		tooltip.eqCastTimeFontString, tooltip.eqCastTimeBaseText = EQSpellTooltips_FindLineMatching(tooltip, tooltipName, CAST_TIME_LINE_PATTERNS);
+		if ( tooltip.eqCastTimeFontString ) then
+			tooltip.eqRangeFontString, tooltip.eqRangeBaseText = EQSpellTooltips_FindLineMatching(tooltip, tooltipName, { RANGE_LINE_PATTERN });
+			tinsert(stamps, focusStamp);
+		end
+	end
+	if ( #stamps == 0 ) then
 		return;
 	end
 
 	local costFontString, baseCost, costLabel = EQSpellTooltips_FindCostLine(tooltip, tooltipName);
-
-	-- Flag before rendering: Show() re-enters this through the OnShow hook below
-	tooltip.eqCostLineAdjusted = true;
-	if ( not costFontString ) then
-		return;
-	end
-
-	tooltip.eqCostAuraName = auraName;
-	tooltip.eqCostPercent = tonumber(percent);
-	tooltip.eqCostPerStack = (stampSuffix == COST_STAMP_PER_STACK_SUFFIX);
+	tooltip.eqCostStamps = stamps;
 	tooltip.eqCostFontString = costFontString;
 	tooltip.eqCostBase = baseCost;
 	tooltip.eqCostLabel = costLabel;
-	EQSpellTooltips_RenderCost(tooltip, EQSpellTooltips_GetAuraStacks(auraName));
+	EQSpellTooltips_RenderCost(tooltip);
 end
 
 local function EQSpellTooltips_AddSpellPowerLine(tooltip)
@@ -297,13 +463,15 @@ end
 local function EQSpellTooltips_Reset(tooltip)
 	tooltip.eqSpellPowerLineAdded = nil;
 	tooltip.eqCostLineAdjusted = nil;
-	tooltip.eqCostAuraName = nil;
-	tooltip.eqCostDrawnStacks = nil;
+	tooltip.eqCostStamps = nil;
+	tooltip.eqCostDrawnStacksKey = nil;
 	tooltip.eqCostFontString = nil;
 	tooltip.eqCostBase = nil;
 	tooltip.eqCostLabel = nil;
-	tooltip.eqCostPercent = nil;
-	tooltip.eqCostPerStack = nil;
+	tooltip.eqCastTimeFontString = nil;
+	tooltip.eqCastTimeBaseText = nil;
+	tooltip.eqRangeFontString = nil;
+	tooltip.eqRangeBaseText = nil;
 	tooltip.eqCostNoteLine = nil;
 end
 
@@ -348,15 +516,15 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
 end);
 
 -- UNIT_AURA above should be enough, but a tooltip parked on a button does not always come back through
--- it, so the stack count is also watched directly.  This costs one table lookup per frame while no
--- stamped spell is hovered: everything else is gated behind eqCostAuraName, which only gets set when a
--- tooltip carrying the stamp is drawn.  While one IS hovered it is five aura scans a second, and
--- the tooltip is only rebuilt when the count actually differs from what the current draw used.
+-- it, so the stack counts are also watched directly.  This costs one table lookup per frame while no
+-- stamped spell is hovered: everything else is gated behind eqCostStamps, which only gets set when a
+-- tooltip carrying a stamp is drawn.  While one IS hovered it is five aura scans a second per stamp, and
+-- the tooltip is only redrawn when a count actually differs from what the current draw used.
 local COST_WATCH_INTERVAL = 0.2;
 local costWatchElapsed = 0;
 eventFrame:SetScript("OnUpdate", function(self, elapsed)
-	local auraName = GameTooltip.eqCostAuraName;
-	if ( not auraName or not GameTooltip:IsShown() ) then
+	local stamps = GameTooltip.eqCostStamps;
+	if ( not stamps or not GameTooltip:IsShown() ) then
 		return;
 	end
 
@@ -366,10 +534,121 @@ eventFrame:SetScript("OnUpdate", function(self, elapsed)
 	end
 	costWatchElapsed = 0;
 
-	local stacks = EQSpellTooltips_GetAuraStacks(auraName);
-	if ( stacks == GameTooltip.eqCostDrawnStacks ) then
+	if ( EQSpellTooltips_GetStampStacksKey(stamps) == GameTooltip.eqCostDrawnStacksKey ) then
 		return;
 	end
 
-	EQSpellTooltips_RenderCost(GameTooltip, stacks);
+	EQSpellTooltips_RenderCost(GameTooltip);
+end);
+
+-- Action bar range for Spellsword's Focus.  The stock ActionButton_OnUpdate re-reads IsActionInRange every TOOLTIP_UPDATE_TIME
+-- and colors the hotkey text (or shows the range dot) from it, but the client measures that against the spell's own range,
+-- so a Focus spell looked castable from anywhere.  This runs right after the stock update, only on the pass that just re-read
+-- the range, and repaints the same indicator from the melee range item while the toggle is up.
+
+-- Whether the spell tooltip carries the Focus stamp, read once per spell off a hidden tooltip (the stamp never changes)
+local focusStampBySpellID = {};
+local scanTooltip = CreateFrame("GameTooltip", "EQSpellTooltipsScanTooltip", nil, "GameTooltipTemplate");
+
+local function EQSpellTooltips_HasFocusStamp(spellID)
+	local cached = focusStampBySpellID[spellID];
+	if ( cached ~= nil ) then
+		return cached;
+	end
+	scanTooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
+	scanTooltip:ClearLines();
+	scanTooltip:SetHyperlink("spell:" .. spellID);
+	local hasStamp = false;
+	for i = 1, scanTooltip:NumLines() do
+		local fontString = _G["EQSpellTooltipsScanTooltipTextLeft" .. i];
+		local text = fontString and fontString:GetText();
+		if ( text and text:find(FOCUS_STAMP_MARKER, 1, true) ) then
+			hasStamp = true;
+			break;
+		end
+	end
+	scanTooltip:Hide();
+	focusStampBySpellID[spellID] = hasStamp;
+	return hasStamp;
+end
+
+-- The spell an action slot casts, directly or as a macro's spell
+local function EQSpellTooltips_GetActionSpellID(action)
+	local actionType, id, _, globalID = GetActionInfo(action);
+	if ( actionType == "spell" ) then
+		if ( globalID ) then
+			return tonumber(globalID);
+		end
+		local link = GetSpellLink(id, BOOKTYPE_SPELL or "spell");
+		return tonumber(link and link:match("spell:(%d+)"));
+	elseif ( actionType == "macro" ) then
+		local name, rank = GetMacroSpell(id);
+		if ( not name ) then
+			return nil;
+		end
+		local link = (rank and rank ~= "" and GetSpellLink(name .. "(" .. rank .. ")")) or GetSpellLink(name);
+		return tonumber(link and link:match("spell:(%d+)"));
+	end
+	return nil;
+end
+
+-- Whether the toggle is up, kept current from aura events so the per-button check never scans auras
+local isFocusActive = false;
+local function EQSpellTooltips_RefreshFocusActive()
+	isFocusActive = GetSpellInfo(STOCK_FOCUS_AURA_NAME) ~= nil and EQSpellTooltips_GetStacksInAuraList(STOCK_FOCUS_AURA_NAME, UnitBuff) > 0;
+end
+
+local focusEventFrame = CreateFrame("Frame");
+focusEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
+focusEventFrame:RegisterEvent("UNIT_AURA");
+focusEventFrame:SetScript("OnEvent", function(self, event, arg1)
+	if ( event == "UNIT_AURA" and arg1 ~= "player" ) then
+		return;
+	end
+	if ( event == "PLAYER_ENTERING_WORLD" and not GetItemInfo(MELEE_RANGE_ITEM_ID) ) then
+		-- IsItemInRange needs the item in the client's cache, and showing its link asks the server for it
+		scanTooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
+		scanTooltip:SetHyperlink("item:" .. MELEE_RANGE_ITEM_ID);
+		scanTooltip:Hide();
+	end
+	EQSpellTooltips_RefreshFocusActive();
+end);
+
+hooksecurefunc("ActionButton_OnUpdate", function(self, elapsed)
+	-- Only the pass where the stock code just re-read the range (it resets the timer to exactly this)
+	if ( not isFocusActive or not self.action or self.rangeTimer ~= TOOLTIP_UPDATE_TIME ) then
+		return;
+	end
+	if ( not UnitExists("target") or not UnitCanAttack("player", "target") ) then
+		return;
+	end
+	local spellID = EQSpellTooltips_GetActionSpellID(self.action);
+	if ( not spellID ) then
+		return;
+	end
+	if ( spellID >= CONVERTER_SPELL_ID_START ) then
+		if ( not EQSpellTooltips_HasFocusStamp(spellID) ) then
+			return;
+		end
+	elseif ( not EQSpellTooltips_IsStockFocusSpellID(spellID) ) then
+		return;
+	end
+	local valid = IsItemInRange(MELEE_RANGE_ITEM_ID, "target");
+	if ( valid == nil ) then
+		return;
+	end
+
+	-- The same painting the stock code does
+	local hotkey = _G[self:GetName() .. "HotKey"];
+	if ( not hotkey ) then
+		return;
+	end
+	if ( hotkey:GetText() == RANGE_INDICATOR ) then
+		hotkey:Show();
+	end
+	if ( valid == 0 ) then
+		hotkey:SetVertexColor(1.0, 0.1, 0.1);
+	else
+		hotkey:SetVertexColor(0.6, 0.6, 0.6);
+	end
 end);

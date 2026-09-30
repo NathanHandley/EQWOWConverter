@@ -227,10 +227,18 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddUInt32(0); // StartRecoveryTime
             }
             newRow.AddUInt32(0); // MaxTargetLevel
-            newRow.AddUInt32(spellTemplate.SpellFamilyID); // SpellClassSet
+            // The Shadow Knight's Spellsword's Focus reaches the spell a player casts through the private family and its own flag.  Only the learned copy carries it, so creature casts and item clicks of the same spell are never touched
+            UInt32 spellFamilyID = spellTemplate.SpellFamilyID;
+            UInt32 spellFamilyFlags3 = spellTemplate.SpellFamilyFlags3;
+            if (isPlayerLearnedClassSpell == true && isCreatureCastVersion == false && isClickyVersion == false && SpellClassAuras.IsShadowKnightFocusAffectedSpell(spellTemplate) == true)
+            {
+                spellFamilyID = Convert.ToUInt32(Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
+                spellFamilyFlags3 |= Configuration.SPELL_EQ_SHADOWKNIGHT_FOCUS_SPELL_FAMILY_FLAG;
+            }
+            newRow.AddUInt32(spellFamilyID); // SpellClassSet
             newRow.AddUInt32(spellTemplate.SpellFamilyFlags1); // SpellClassMask1
             newRow.AddUInt32(spellTemplate.SpellFamilyFlags2); // SpellClassMask2
-            newRow.AddUInt32(spellTemplate.SpellFamilyFlags3); // SpellClassMask3
+            newRow.AddUInt32(spellFamilyFlags3); // SpellClassMask3
             newRow.AddUInt32(0); // MaxTargets
             newRow.AddUInt32(spellTemplate.DefenseType); // DefenseType
             if (isUsableWhileSilenced == true)

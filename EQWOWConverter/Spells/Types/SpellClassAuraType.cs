@@ -91,6 +91,7 @@ namespace EQWOWConverter.Spells
         ShadowKnightBloodDebtVitality = 70,
         DruidNaturesBalanceShadow = 71,
         DruidNaturesBalanceArcane = 72,
-        Count = 73
+        ShadowKnightFocus = 73,
+        Count = 74
     }
 }

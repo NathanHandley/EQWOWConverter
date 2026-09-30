@@ -234,6 +234,16 @@ namespace EQWOWConverter
                         }
                     }
 
+                    // Shadow Knight's Spellsword's Focus, on the cast the player learns (the same row SpellDBC gives the focus flag to)
+                    if (isPlayerLearnedSpell == true && i == 0 && spellTemplate.SkillLine != 0 && isCreatureCastVersion == false && isClickyVersion == false && SpellClassAuras.IsShadowKnightFocusAffectedSpell(spellTemplate) == true)
+                    {
+                        string focusStamp = SpellClassAuras.GetShadowKnightFocusTooltipStamp();
+                        if (blockActionDescription.Length > 0)
+                            blockActionDescription = string.Concat(blockActionDescription, "\n\n", focusStamp);
+                        else
+                            blockActionDescription = focusStamp;
+                    }
+
                     // Worn effects never get spell_bonus_data, so only cast blocks show the coefficient.  It goes last, in its own paragraph.
                     string spellPowerCoefficientText = spellTemplate.GetSpellPowerCoefficientTooltipTextForBlock(curEffectBlock, i);
                     if (spellPowerCoefficientText.Length > 0)

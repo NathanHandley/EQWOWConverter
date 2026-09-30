@@ -125,6 +125,7 @@ namespace EQWOWConverter.Spells
             switch (eqClass)
             {
                 case ClassEQType.Ranger: return GetSpellID(SpellClassAuraType.RangerEndlessQuiver);
+                case ClassEQType.ShadowKnight: return GetSpellID(SpellClassAuraType.ShadowKnightFocus);
                 case ClassEQType.Shaman: return GetSpellID(SpellClassAuraType.ShamanWarspirit);
                 case ClassEQType.Wizard: return IsSpellTypeEnabled(SpellClassAuraType.WizardIntensifiedSkyfall) == true ? GetSpellID(SpellClassAuraType.WizardIntensifiedSkyfall) : 0;
                 default: return 0;
@@ -193,6 +194,8 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraShadowKnightBloodDebtMaxHealthPercent", Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_MAX_HEALTH_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraShadowKnightBloodDebtStoreDurationInMS", Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_STORE_DURATION_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraShadowKnightBloodDebtFullSpellVisualKitID", GetShadowKnightBloodDebtFullSpellVisualKitID().ToString()));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraShadowKnightFocusSpellFamilyFlag", IsClassEnabled(ClassEQType.ShadowKnight) == true ? Configuration.SPELL_EQ_SHADOWKNIGHT_FOCUS_SPELL_FAMILY_FLAG.ToString() : "0"));
+            rows.Add(new KeyValuePair<string, string>("ClassAuraShadowKnightFocusCooldownFromBaseCastTimePercent", Math.Max(0, Configuration.CLASSAURA_SHADOWKNIGHT_FOCUS_COOLDOWN_FROM_BASE_CAST_TIME_PERCENT).ToString()));
             return rows;
         }
 
@@ -283,6 +286,7 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.ShadowKnightBloodDebtCharge:
                 case SpellClassAuraType.ShadowKnightBloodDebtHeal:
                 case SpellClassAuraType.ShadowKnightBloodDebtVitality:
+                case SpellClassAuraType.ShadowKnightFocus:
                     return Configuration.CLASSAURA_SHADOWKNIGHT_ENABLED;
                 case SpellClassAuraType.WarriorPassive:
                 case SpellClassAuraType.WarriorAura:
@@ -762,7 +766,8 @@ namespace EQWOWConverter.Spells
                 string.Concat("Spell power increased by an amount equal to ", Pct(Configuration.CLASSAURA_SHADOWKNIGHT_SPELL_POWER_FROM_ATTACK_POWER_PERCENT),
                     " of your attack power."),
                 NamedLine("Spellsword's Edge", string.Concat("Attack critical strikes make your next harmful spell within ", Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS),
-                    " instant. Cannot occur more than once every ", Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS), ".")),
+                    " instant, without triggering the global cooldown. Cannot occur more than once every ", Seconds(Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_COOLDOWN_IN_MS), ".")),
+                NamedLine(SHADOWKNIGHT_FOCUS_NAME, string.Concat("Can be toggled on so your offensive spells with a cast time become instant, ", GetShadowKnightFocusEffectsText(), ". Disables Spellsword's Edge.")),
                 NamedLine("Blood Debt", string.Concat(bloodDebtStoreText,
                     ". Unleashing it drains your target for the amount stored as shadow damage and heals you for the full amount. ", bloodDebtVitalityText, ".")));
             spellTemplates.Add(BuildPassiveTemplate("Spellsword", SpellClassAuraType.ShadowKnightPassive, icon, description));
@@ -778,8 +783,29 @@ namespace EQWOWConverter.Spells
 
             List<SpellEffectWOW> edgeEffects = new List<SpellEffectWOW>();
             edgeEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitCaster));
-            spellTemplates.Add(BuildStackingAuraTemplate("Spellsword's Edge", SpellClassAuraType.ShadowKnightEdge, icon, "The next harmful spell cast is instant.", edgeEffects,
+            spellTemplates.Add(BuildStackingAuraTemplate("Spellsword's Edge", SpellClassAuraType.ShadowKnightEdge, icon, "The next harmful spell cast is instant and does not trigger the global cooldown.", edgeEffects,
                 1, Configuration.CLASSAURA_SHADOWKNIGHT_INSTANT_CAST_DURATION_IN_MS, false));
+
+            // Spellsword's Focus, a stance bar toggle.  For EQ spells the instant cast rides on a spell mod aimed at the spells the converter marked with the focus family flag.
+            // The client ignores spell mods on those spells (private family), so their tooltips carry a stamp the EQ_SpellTooltips addon uses to show the changes instead.  Stock
+            // WoW spells cannot be marked, so the mod makes those instant itself, cast by cast.  The melee range limit (checked like Bash's) and the added cooldown are the mod's
+            // for both kinds
+            string focusEffectsText = GetShadowKnightFocusEffectsText();
+            string focusDescription = string.Concat("Toggle. While active, your offensive spells with a cast time become instant, ", focusEffectsText, ". Spellsword's Edge is disabled.");
+            string focusAuraDescription = string.Concat("Offensive spells with a cast time are instant, ", focusEffectsText, ". Spellsword's Edge is disabled.");
+            SpellTemplate focusSpellTemplate = BuildBaseTemplate(SHADOWKNIGHT_FOCUS_NAME, SpellClassAuraType.ShadowKnightFocus, Configuration.CLASSAURA_SHADOWKNIGHT_FOCUS_SPELL_ICON_EQ_ID,
+                focusDescription, focusAuraDescription);
+            focusSpellTemplate.AuraDuration.IsInfinite = true;
+
+            // EffectMiscValueA 10 = SPELLMOD_CASTING_TIME, as a flat cut far beyond any cast time (a percent cut skips casts of 10 seconds or more)
+            focusSpellTemplate.WOWSpellEffects.Add(BuildShadowKnightFocusModEffect(SpellWOWAuraType.AddFlatModifier, SHADOWKNIGHT_FOCUS_CAST_TIME_FLAT_MOD_IN_MS, 10));
+            focusSpellTemplate.SpellFamilyID = Convert.ToUInt32(Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID);
+            focusSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat); // Unlike most class aura spells, this one is in the spellbook
+            focusSpellTemplate.IsToggleAura = true;
+            focusSpellTemplate.ShowOnShapeshiftBar = true;
+            focusSpellTemplate.PersistThroughDeath = true;
+            focusSpellTemplate.TriggersGlobalCooldown = true; // Turning it off is a cast as well, so both directions start the global cooldown
+            spellTemplates.Add(focusSpellTemplate);
 
             // Blood Debt, the ability that unleashes what was stored.  It resolves like the player's Harm Touch: shadow, never misses, cannot crit, and damage modifiers leave the amount the mod hands in alone, though
             // partial resists and absorbs still apply
@@ -838,6 +864,46 @@ namespace EQWOWConverter.Spells
             vitalitySpellTemplate.CannotBeStolen = true;
             vitalitySpellTemplate.IgnoreImmunities = true;
             spellTemplates.Add(vitalitySpellTemplate);
+        }
+
+        public const string SHADOWKNIGHT_FOCUS_NAME = "Spellsword's Focus";
+
+        // Far longer than any cast, so the flat cut always lands on instant
+        private const int SHADOWKNIGHT_FOCUS_CAST_TIME_FLAT_MOD_IN_MS = -600000;
+
+        private static SpellEffectWOW BuildShadowKnightFocusModEffect(SpellWOWAuraType auraType, int amount, int spellModOp)
+        {
+            // A spell mod only reaches spells of its own family whose flags share a bit with its class mask
+            SpellEffectWOW effect = BuildAuraEffect(auraType, amount, spellModOp, SpellWOWTargetType.UnitCaster);
+            effect.EffectSpellClassMask3 = Configuration.SPELL_EQ_SHADOWKNIGHT_FOCUS_SPELL_FAMILY_FLAG;
+            return effect;
+        }
+
+        private static string GetShadowKnightFocusEffectsText()
+        {
+            return string.Concat("but only reach melee range and add ", Pct(Configuration.CLASSAURA_SHADOWKNIGHT_FOCUS_COOLDOWN_FROM_BASE_CAST_TIME_PERCENT),
+                " of their base cast time to their cooldown (not affected by haste)");
+        }
+
+        // Stamped onto every affected EQ spell's tooltip in the shape the EQ_SpellTooltips addon reads, which tells it to show the cast as instant at melee range while the aura
+        // is up.  The addon drops the line for characters who do not know the toggle
+        public static string GetShadowKnightFocusTooltipStamp()
+        {
+            return string.Concat(SHADOWKNIGHT_FOCUS_NAME, ": instant cast, melee range");
+        }
+
+        // Every spell a player learns that is offensive and takes time to cast.  Channels and songs are left out, since their time is not a cast to skip, and so are spells that
+        // ignore caster modifiers (DamageIsFixed), which no spell mod can reach
+        public static bool IsShadowKnightFocusAffectedSpell(SpellTemplate spellTemplate)
+        {
+            if (IsClassEnabled(ClassEQType.ShadowKnight) == false)
+                return false;
+            if (spellTemplate.CastTimeInMS <= 0 || spellTemplate.IsChanneled == true || spellTemplate.IsBardSongAura == true || spellTemplate.IsBardSongEffect == true
+                || spellTemplate.DamageIsFixed == true)
+                return false;
+            if (spellTemplate.SpellFamilyID != 0 && spellTemplate.SpellFamilyID != Convert.ToUInt32(Configuration.SPELL_EQ_PRIVATE_SPELL_FAMILY_ID))
+                return false;
+            return spellTemplate.IsOffensiveSpell();
         }
 
         private static void AddWarriorSpells(List<SpellTemplate> spellTemplates)
