@@ -3391,3 +3391,43 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 33425|overthere|Utandar_Rizndown|say|Here is the scroll that I promised. We have both gained much knowledge today. I hope to do business with you again soon. Farewell!|||||||
 33426|overthere|Utandar_Rizndown|say|Here is the scroll that I promised. We have both gained much knowledge today. I hope to do business with you again soon. Farewell!|||||||
 33427|overthere|Utandar_Rizndown|say|Here is the scroll that I promised. We have both gained much knowledge today. I hope to do business with you again soon. Farewell!|||||||
+33428|chardok|Herald_Telcha|say|Ah, most excellent! You are sure to be more highly valued as our servant once I speak to my masters of this! Mountain Death Mineral Salts, they shall grace the Overkings table this very night! Be off, minion! Fetch us some more salts to prove your value!|||||||
+33429|chardok|Herald_Telcha|say|Green Goblin Skin! You have indeed been busy! I shall speak to my masters of this, continue your good work and return to me with more skins.|||||||
+33430|erudnext|Tiam_Khonsir|say|Wonderful work, friend  $N. One less land dwelling, flea ridden, primitive for our wondrous lord to sweep aside when the apocalypse is upon us. Here is your reward. Perhaps if you gather enough molars, we can offer you a quest of greater importance.|||||||
+33431|paineel|Royal_Guard_Lilkus|say|Not bad,  $N. Here is your reward. If you slay enough of these dogs, Sheltuin may have a more important task for you to perform.|||||||
+33432|felwitheb|Niola_Impholder|say|Ah yes.  These are exactly what I need.  Thank you very much.|||||||
+33433|freportn|Theron_Rolius|say|Fantastic work, my young knight.  Here is a small token of the my appreciation.  I would offer you a sharkskin shield, but I have made only a few and the paladins are testing them.|||||||
+33434|freportw|Cain_Darkmoore|say|Very fine work  $N. With your help, we shall soon rid the commonlands of the orcs. Then we can move on to a bigger problem.|||||||
+33435|freportw|Captain_Hazran|say|Good work, warrior. You are good militia material. Beware though, there are some who dare to call us foe. You have performed so well!|||||||
+33436|freportw|Pandos_Flintside|say|Mmmm. This smells delicious. Oh great!! No milk!! Don't you have any sense?! Just tell me the name of the bakery and I will run and get it myself. I am sure Lady Shae will be safe.|||||||
+33437|commons|Mojax_Hikspin|say|Aaahhhh. Now that is refreshing. Just let me rest for a bit. The note is safe and sound in my bedroll inside the inn.|||||||
+33437|commons|Mojax_Hikspin|walkgrid|9:0-230|||||||
+33437|commons|Mojax_Hikspin|say|Here you are.  I hid it in this box behind the marker.  Take it to Eastyana of the Temple of Marr. Goodbye.|||||||
+33437|commons|Mojax_Hikspin|spawnobject|4639|||||||
+33437|commons|Mojax_Hikspin|walkgrid|9:230-574|||||||
+33437|commons|Mojax_Hikspin|despawn|self|||||||
+33438|kael|Captain_Bvellos|say|Excellent,  $N. Here is the bounty as promised.|||||||
+33439|lakerathe|Srynda|say|A lightstone? Thank you very much. Here is a copy of 'Runes and Research'.|||||||
+33440|lakerathe|Srynda|say|A greater lightstone? Thank you very much. Here is a 'Concordance of Research' for you.|||||||
+33441|northkarana|Mrysila|say|A lightstone? Thank you very much. Here is a copy of 'Runes and Research'.|||||||
+33442|northkarana|Mrysila|say|A greater lightstone? Thank you very much. Here is a 'Concordance of Research' for you.|||||||
+33443|oasis|Synthan|say|A lightstone? Thank you very much. Here is a copy of 'Runes and Research'.|||||||
+33444|oasis|Synthan|say|A greater lightstone? Thank you very much. Here is a 'Concordance of Research' for you.|||||||
+33445|sro|Smith_Tv`ysa|say|A lightstone ? Thank you very much. Here is a copy of 'Runes and Research' for you.|||||||
+33446|sro|Smith_Tv`ysa|say|A greater lightstone? Thank you very much. Here is a 'Concordance of Research' for you.|||||||
+33447|misty|Deputy_Budo|say|Grand work. Deputy  $N! You will become a full-fledged deputy in no time. You should check in with Marshal Ghobber from time to time to see if you have earned your squad ring. Just go up to him and ask. 'Am I one with the Wall?' He will know. but you must first show your bravery in many battles against the goblins.|||||||
+33448|misty|Joogl_Honeybugger|say|Oh thank you,  $N. If you are ever going to gather bixie honeycomb's pray you do not run into the queen. The only way I know of collecting the honey is by intercepting the drone's and taking the honeycomb's they sometime's carry. Good luck!!|||||||
+33449|neriakc|Lokar_To`Biath|say|Ah, yes, let me pray to our god.. Yes, Innoruuk has given me wisdom. A Scribe of Dal still exists, disguised as a barkeep in the Blind Fish. This information will not help you though, for she has sworn a vow of silence and will not speak of the Dal.|||||||
+33450|northkarana|Capt_Linarius|say|What a pity. Such a promising soldier. I thank you for ridding us of this corruption and offer you this as a reward. It is nothing more than junk which littered the roadways of the Plains of Karana. I hope you can find a use for it.|||||||
+33451|oot|Doran_Vargnus|say|Ahh! You must have been sent by Beno of the Stormguard. I have been wondering when he would return my card. I have not been playing with a full deck. How about a reward? Hmm. Let's see what I have lying around... Here! Take this. I cannot possibly give you any of my good armor.|||||||
+33452|qeynos|Chesgard_Sydwen|say|Good work, knight! The Karana Bandits have been plaguing the Rainkeepers flock for some time.  Take this as a small reward for your devotion.  Continue the fight against the Karana Bandits.  Ahh... I wish Cheslin was equally as skilled.|||||||
+33453|qeynos|Edvard_Tommels|say|Why thank you,  $N. If you do happen to come across any more of these, please bring them to me.|||||||
+33454|qeynos|Edvard_Tommels|say|Why thank you,  $N. If you do happen to come across any more of these, please bring them to me.|||||||
+33455|qeynos|Edvard_Tommels|say|Why thank you,  $N. If you do happen to come across any more of these, please bring them to me.|||||||
+33456|qeynos|Edvard_Tommels|say|Why thank you,  $N. If you do happen to come across any more of these, please bring them to me.|||||||
+33457|skyshrine|Sentry_Enots|say|Very good, you are on your way to proving yourself.|||||||
+33458|skyshrine|Sentry_Kcor|say|Very good, you are on your way to proving yourself.|||||||
+33459|skyshrine|Sentry_Kcor|say|Ahh these will go nicely with the rest of my collection.  Here is a small reward for your trouble.|||||||
+33460|skyshrine|Sentry_Kcor|say|Ahhh yes! Well done. Here is your reward. Your status with our people grows with each interloper you eradicate.|||||||
+33461|skyshrine|Sentry_Kcor|say|Ahh these will go nicely with the rest of my collection.  Here is a small reward for your trouble.|||||||
+33462|firiona|Frist_Furtun|say|Here is the scroll that I promised. We have both gained much knowledge today. I hope to do business with you again soon. Farewell!|||||||
