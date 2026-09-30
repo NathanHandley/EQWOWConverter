@@ -448,7 +448,7 @@ id|zone|trigger_eq_npc_id|action|target_eq_npc_id|chance|alt_group|alt_id|alt_we
 451|sleeper|1000031|respawntarget|128094|100|0|0|0|0|0|0|0|0|0|0|0|||||0|0|0|-1|-1|death|-1|sleeping Kerafyrm returns after the awakened form is slain
 452|sleeper|1000031|despawn|1000031|100|0|0|0|0|0|0|0|0|7200000|0|0|||||0|0|0|-1|-1|ooctimer|0|awakened Kerafyrm departs after 2 unbothered hours
 453|sleeper|1000031|respawntarget|128094|100|0|0|0|0|0|0|0|0|7200000|0|0|||||0|0|0|-1|-1|ooctimer|1200|sleeping Kerafyrm returns after the awakened form departs
-454|hateplane|76302|spawn|76387|100|0|0|0|1|0|0|0|0|0|0|76387|||||0|0|0|-1|-1|death|0|a_scorn_banshee
+454|hateplane|76302|spawn|76387|11|0|0|0|1|0|0|0|0|0|0|76387|||||0|0|0|-1|-1|death|0|a_scorn_banshee
 455|charasis|105007|spawn|105018|100|0|0|0|1|0|0|0|0|30000|30000|105018|||||0|0|0|-1|-1|ooctimer|0|Vauris_Sathir reaches the tomb
 456|charasis|105007|despawn|105007|100|0|0|0|0|0|0|0|0|30000|30000|0|||||0|0|0|-1|-1|ooctimer|0|Vauris_Sathir
 457|charasis|105018|spawn|105021|100|0|0|0|0|-670|-5|4|64|150000|150000|105021|||||0|0|0|-1|-1|ooctimer|0|A_Swirling_Bone_Mass
