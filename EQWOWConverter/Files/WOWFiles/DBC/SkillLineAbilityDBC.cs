@@ -161,6 +161,46 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
+        public void AddMissingPaladinMountRaces()
+        {
+            int allianceRaceMask = 0;
+            int hordeRaceMask = 0;
+            foreach (RaceType raceType in Enum.GetValues(typeof(RaceType)))
+            {
+                if (raceType == RaceType.All)
+                    continue;
+                int raceBit = 1 << (Convert.ToInt32(raceType) - 1);
+                if (PlayerWOWRaceProperties.IsAllianceRace(raceType) == true)
+                    allianceRaceMask |= raceBit;
+                else
+                    hordeRaceMask |= raceBit;
+            }
+
+            Dictionary<int, int> raceMasksBySpellID = new Dictionary<int, int>()
+            {
+                { 13819, allianceRaceMask }, // Summon Warhorse
+                { 23214, allianceRaceMask }, // Summon Charger
+                { 34769, hordeRaceMask }, // Summon Warhorse (Thalassian)
+                { 34767, hordeRaceMask } // Summon Charger (Thalassian)
+            };
+
+            // Every row for the spell is updated, since each is on more than one skill line (class line and mounts)
+            HashSet<int> updatedSpellIDs = new HashSet<int>();
+            foreach (DBCRow row in Rows)
+            {
+                DBCRow.DBCFieldInt32 spellField = (DBCRow.DBCFieldInt32)row.AddedFields[2];
+                if (raceMasksBySpellID.ContainsKey(spellField.Value) == false)
+                    continue;
+                DBCRow.DBCFieldInt32 raceMaskField = (DBCRow.DBCFieldInt32)row.AddedFields[3];
+                if (raceMaskField.Value != 0)
+                    raceMaskField.Value |= raceMasksBySpellID[spellField.Value];
+                updatedSpellIDs.Add(spellField.Value);
+            }
+            foreach (int spellID in raceMasksBySpellID.Keys)
+                if (updatedSpellIDs.Contains(spellID) == false)
+                    Logger.WriteError(string.Concat("SkillLineAbilityDBC could not find a row for paladin mount spell ID '", spellID.ToString(), "' when opening it to all races"));
+        }
+
         // Every wow class mask or'd together (class ID 10 does not exist, so 512 is skipped)
         private static readonly int ALL_CLASSES_MASK = 1535;
 

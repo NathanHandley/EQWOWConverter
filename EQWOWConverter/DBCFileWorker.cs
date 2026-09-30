@@ -419,6 +419,7 @@ namespace EQWOWConverter
             {
                 charBaseInfoDBC.AddMissingRaceClassCombinations();
                 AdjustRacialAbilitiesForAllRaceClassCombinations();
+                skillLineAbilityDBC.AddMissingPaladinMountRaces();
             }
 
             // Achievements
