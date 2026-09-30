@@ -1,44 +1,48 @@
-AchievementID|ParentCategoryID|AchievementType|Name|Description|Points|IconSpellEQID|IconItemEQID|ZoneShortName|Data1|Data2|Data3
-5100|15100|InstanceClear|Conqueror of Plane of Sky|Defeat Eye of Veeshan in Plane of Sky.|10|-1|145|airplane|RaidLow|50865|
-5101|15100|InstanceClear|Conqueror of Plane of Fear|Defeat Cazic Thule in Plane of Fear.|10|-1|145|fearplane|RaidLow|50912|
-5102|15102|InstanceClear|Conqueror of Plane of Growth|Defeat Tunare in Plane of Growth.|10|-1|145|growthplane|RaidLow|55300|
-5103|15100|InstanceClear|Conqueror of Plane of Hate|Defeat Innoruuk in Plane of Hate.|10|-1|145|hateplane|RaidLow|51196|
-5104|15102|InstanceClear|Conqueror of Kael Drakkal|Defeat King Tormax and The Avatar of War in Kael Drakkal.|10|-1|145|kael|RaidLow|53779|53808
-5106|15102|InstanceClear|Conqueror of Dragon Necropolis|Defeat Zlandicar in Dragon Necropolis.|10|-1|145|necropolis|RaidLow|54893|
-5107|15100|InstanceClear|Conqueror of Permafrost Caverns|Defeat Lady Vox in Permafrost Caverns.|10|-1|145|permafrost|RaidLow|50968|
-5108|15101|InstanceClear|Conqueror of Old Sebilis|Defeat Trakanon in Old Sebilis.|10|-1|145|sebilis|RaidLow|52112|
-5109|15102|InstanceClear|Conqueror of Skyshrine|Defeat Lord Yelinak in Skyshrine.|10|-1|145|skyshrine|RaidLow|54146|
-5110|15102|InstanceClear|Conqueror of Sleeper's Tomb|Defeat The Sleeper (Karafyrm) in Sleeper's Tomb.|10|-1|145|sleeper|RaidLow|55818|
-5111|15100|InstanceClear|Conqueror of Nagafen's Lair|Defeat Lord Nagafen in Nagafen's Lair.|10|-1|145|soldungb|RaidLow|47803|
-5112|15102|InstanceClear|Conqueror of Temple of Veeshan|Defeat Valak'Aerr in Temple of Veeshan.|10|-1|145|templeveeshan|RaidLow|55045|
-5113|15102|InstanceClear|Conqueror of Icewell Keep|Defeat Dain Frostreaver IV in Icewell Keep.|10|-1|145|thurgadinb|RaidLow|55381|
-5114|15101|InstanceClear|Conqueror of Veeshan's Peak|Defeat Phara Dar in Veeshan's Peak.|10|-1|145|veeshan|RaidLow|53282|
-5115|15100|InstanceClear|Conqueror of The Hole|Defeat Master Yael in The Hole.|10|-1|145|hole|RaidLow|48233|
-5116|15100|InstanceClear|Conqueror of Kedge Keep|Defeat Phinigel Autropos in Kedge Keep.|10|-1|145|kedge|RaidLow|50335|
-5117|15101|InstanceClear|Conqueror of Chardok|Defeat Overking Bathezid in Chardok.|10|-1|145|chardok|RaidLow|52871|
-5118|15101|InstanceClear|Conqueror of Karnor's Castle|Defeat Venril Sathir in Karnor's Castle.|10|-1|145|karnor|RaidLow|52778|
-5119|15101|InstanceClear|Conqueror of Howling Stones|Defeat Drusella Sathir in Howling Stones.|10|-1|145|charasis|RaidLow|53072|
-5120|15101|InstanceClear|Conqueror of The Dreadlands|Defeat Gorenaire in The Dreadlands.|10|-1|145|dreadlands|RaidLow|51924|
-5121|15101|InstanceClear|Conqueror of the Emerald Jungle|Defeat Severilous in the Emerald Jungle.|10|-1|145|emeraldjungle|RaidLow|52383|
-5122|15101|InstanceClear|Conqueror of the Skyfire Mountains|Defeat Talendor in the Skyfire Mountains.|10|-1|145|skyfire|RaidLow|52193|
-5123|15101|InstanceClear|Conqueror of Timorous Deep|Defeat Faydedar in Timorous Deep.|10|-1|145|timorous|RaidLow|52534|
-5200|15103|PriestOfDiscordDiscovery|Discord in Qeynos|Find and speak with the Priest of Discord in Qeynos.|10|-1|145|qeynos2||45374|
-5201|15103|PriestOfDiscordDiscovery|Discord in Freeport|Find and speak with the Priest of Discord in Freeport.|10|-1|145|freporte||46152|
-5202|15103|PriestOfDiscordDiscovery|Discord in Rivervale|Find and speak with the Priest of Discord in Rivervale.|10|-1|145|rivervale||46916|
-5203|15103|PriestOfDiscordDiscovery|Discord in Halas|Find and speak with the Priest of Discord in Halas.|10|-1|145|halas||47656|
-5204|15103|PriestOfDiscordDiscovery|Discord in Neriak|Find and speak with the Priest of Discord in Neriak.|10|-1|145|neriakb||48400|
-5205|15103|PriestOfDiscordDiscovery|Discord in Oggok|Find and speak with the Priest of Discord in Oggok.|10|-1|145|oggok||49033|
-5206|15103|PriestOfDiscordDiscovery|Discord in Grobb|Find and speak with the Priest of Discord in Grobb.|10|-1|145|grobb||49378|
-5207|15104|PriestOfDiscordDiscovery|Discord in Kelethin|Find and speak with the Priest of Discord in Kelethin.|10|-1|145|gfaydark||49452|
-5208|15104|PriestOfDiscordDiscovery|Discord in Ak'Anon|Find and speak with the Priest of Discord in Ak'Anon.|10|-1|145|akanon||49693|
-5209|15104|PriestOfDiscordDiscovery|Discord in Kaladim|Find and speak with the Priest of Discord in Kaladim.|10|-1|145|kaladima||50164|
-5210|15104|PriestOfDiscordDiscovery|Discord in Felwithe|Find and speak with the Priest of Discord in Felwithe.|10|-1|145|felwithea||50244|
-5211|15105|PriestOfDiscordDiscovery|Discord in Erudin|Find and speak with the Priest of Discord in Erudin.|10|-1|145|erudnext||47401|
-5212|15106|PriestOfDiscordDiscovery|Discord in Cabilis|Find and speak with the Priest of Discord in Cabilis.|10|-1|145|cabeast||55814|
-5213|15106|PriestOfDiscordDiscovery|Discord in The Overthere|Find and speak with the Priest of Discord in The Overthere.|10|-1|145|overthere||55834|
-5214|15106|PriestOfDiscordDiscovery|Discord in Firiona Vie|Find and speak with the Priest of Discord in Firiona Vie.|10|-1|145|firiona||55835|
-5215|15107|PriestOfDiscordDiscovery|Discord in Thurgadin|Find and speak with the Priest of Discord in Thurgadin.|10|-1|145|thurgadina||55836|
-5216|15107|PriestOfDiscordDiscovery|Discord in Kael Drakkel|Find and speak with the Priest of Discord in Kael Drakkel.|10|-1|145|kael||55837|
-5217|15107|PriestOfDiscordDiscovery|Discord in Skyshrine|Find and speak with the Priest of Discord in Skyshrine.|10|-1|145|skyshrine||55838|
-5218|15105|PriestOfDiscordDiscovery|Discord in Paineel|Find and speak with the Priest of Discord in Paineel.|10|-1|145|paineel||55839|
-5219|15103|PriestOfDiscordDiscovery|Discord in Surefall Glade|Find and speak with the Priest of Discord in Surefall Glade.|10|-1|145|qrg||55840|
+AchievementID|ParentCategoryID|AchievementType|Name|Description|Points|IconSpellEQID|IconItemEQID|ZoneShortName|Data1|Data2|Data3|Data4
+5100|15100|InstanceClear|Conqueror of Plane of Sky|Defeat Eye of Veeshan in Plane of Sky.|10|-1|145|airplane|RaidLow|50865||
+5101|15100|InstanceClear|Conqueror of Plane of Fear|Defeat Cazic Thule in Plane of Fear.|10|-1|145|fearplane|RaidLow|50912||
+5102|15102|InstanceClear|Conqueror of Plane of Growth|Defeat Tunare in Plane of Growth.|10|-1|145|growthplane|RaidLow|55300||
+5103|15100|InstanceClear|Conqueror of Plane of Hate|Defeat Innoruuk in Plane of Hate.|10|-1|145|hateplane|RaidLow|51196||
+5104|15102|InstanceClear|Conqueror of Kael Drakkal|Defeat King Tormax and The Avatar of War in Kael Drakkal.|10|-1|145|kael|RaidLow|53779|53808|
+5106|15102|InstanceClear|Conqueror of Dragon Necropolis|Defeat Zlandicar in Dragon Necropolis.|10|-1|145|necropolis|RaidLow|54893||
+5107|15100|InstanceClear|Conqueror of Permafrost Caverns|Defeat Lady Vox in Permafrost Caverns.|10|-1|145|permafrost|RaidLow|50968||
+5108|15101|InstanceClear|Conqueror of Old Sebilis|Defeat Trakanon in Old Sebilis.|10|-1|145|sebilis|RaidLow|52112||
+5109|15102|InstanceClear|Conqueror of Skyshrine|Defeat Lord Yelinak in Skyshrine.|10|-1|145|skyshrine|RaidLow|54146||
+5110|15102|InstanceClear|Conqueror of Sleeper's Tomb|Defeat The Sleeper (Karafyrm) in Sleeper's Tomb.|10|-1|145|sleeper|RaidLow|55818||
+5111|15100|InstanceClear|Conqueror of Nagafen's Lair|Defeat Lord Nagafen in Nagafen's Lair.|10|-1|145|soldungb|RaidLow|47803||
+5112|15102|InstanceClear|Conqueror of Temple of Veeshan|Defeat Valak'Aerr in Temple of Veeshan.|10|-1|145|templeveeshan|RaidLow|55045||
+5113|15102|InstanceClear|Conqueror of Icewell Keep|Defeat Dain Frostreaver IV in Icewell Keep.|10|-1|145|thurgadinb|RaidLow|55381||
+5114|15101|InstanceClear|Conqueror of Veeshan's Peak|Defeat Phara Dar in Veeshan's Peak.|10|-1|145|veeshan|RaidLow|53282||
+5115|15100|InstanceClear|Conqueror of The Hole|Defeat Master Yael in The Hole.|10|-1|145|hole|RaidLow|48233||
+5116|15100|InstanceClear|Conqueror of Kedge Keep|Defeat Phinigel Autropos in Kedge Keep.|10|-1|145|kedge|RaidLow|50335||
+5117|15101|InstanceClear|Conqueror of Chardok|Defeat Overking Bathezid in Chardok.|10|-1|145|chardok|RaidLow|52871||
+5118|15101|InstanceClear|Conqueror of Karnor's Castle|Defeat Venril Sathir in Karnor's Castle.|10|-1|145|karnor|RaidLow|52778||
+5119|15101|InstanceClear|Conqueror of Howling Stones|Defeat Drusella Sathir in Howling Stones.|10|-1|145|charasis|RaidLow|53072||
+5120|15101|InstanceClear|Conqueror of The Dreadlands|Defeat Gorenaire in The Dreadlands.|10|-1|145|dreadlands|RaidLow|51924||
+5121|15101|InstanceClear|Conqueror of the Emerald Jungle|Defeat Severilous in the Emerald Jungle.|10|-1|145|emeraldjungle|RaidLow|52383||
+5122|15101|InstanceClear|Conqueror of the Skyfire Mountains|Defeat Talendor in the Skyfire Mountains.|10|-1|145|skyfire|RaidLow|52193||
+5123|15101|InstanceClear|Conqueror of Timorous Deep|Defeat Faydedar in Timorous Deep.|10|-1|145|timorous|RaidLow|52534||
+5124|15102|InstanceClear|Conqueror of Cobalt Scar|Defeat Kelorek'Dar in Cobalt Scar.|10|-1|145|cobaltscar|RaidLow|54477||
+5125|15102|InstanceClear|Conqueror of Velketor's Labyrinth|Defeat Velketor the Sorcerer and Lord Doljonijiarnimorinar in Velketor's Labyrinth.|10|-1|145|velketor|RaidLow|53493|53517|
+5126|15102|InstanceClear|Conqueror of the Wakening Land|Defeat Wuoshi in the Wakening Land.|10|-1|145|wakening|RaidLow|54685||
+5127|15102|InstanceClear|Conqueror of the Western Wastes|Defeat Sontalak, Klandicar and Harla Dar in the Western Wastes.|10|-1|145|westwastes|RaidLow|54705|54773|54757
+5200|15103|PriestOfDiscordDiscovery|Discord in Qeynos|Find and speak with the Priest of Discord in Qeynos.|10|-1|145|qeynos2||45374||
+5201|15103|PriestOfDiscordDiscovery|Discord in Freeport|Find and speak with the Priest of Discord in Freeport.|10|-1|145|freporte||46152||
+5202|15103|PriestOfDiscordDiscovery|Discord in Rivervale|Find and speak with the Priest of Discord in Rivervale.|10|-1|145|rivervale||46916||
+5203|15103|PriestOfDiscordDiscovery|Discord in Halas|Find and speak with the Priest of Discord in Halas.|10|-1|145|halas||47656||
+5204|15103|PriestOfDiscordDiscovery|Discord in Neriak|Find and speak with the Priest of Discord in Neriak.|10|-1|145|neriakb||48400||
+5205|15103|PriestOfDiscordDiscovery|Discord in Oggok|Find and speak with the Priest of Discord in Oggok.|10|-1|145|oggok||49033||
+5206|15103|PriestOfDiscordDiscovery|Discord in Grobb|Find and speak with the Priest of Discord in Grobb.|10|-1|145|grobb||49378||
+5207|15104|PriestOfDiscordDiscovery|Discord in Kelethin|Find and speak with the Priest of Discord in Kelethin.|10|-1|145|gfaydark||49452||
+5208|15104|PriestOfDiscordDiscovery|Discord in Ak'Anon|Find and speak with the Priest of Discord in Ak'Anon.|10|-1|145|akanon||49693||
+5209|15104|PriestOfDiscordDiscovery|Discord in Kaladim|Find and speak with the Priest of Discord in Kaladim.|10|-1|145|kaladima||50164||
+5210|15104|PriestOfDiscordDiscovery|Discord in Felwithe|Find and speak with the Priest of Discord in Felwithe.|10|-1|145|felwithea||50244||
+5211|15105|PriestOfDiscordDiscovery|Discord in Erudin|Find and speak with the Priest of Discord in Erudin.|10|-1|145|erudnext||47401||
+5212|15106|PriestOfDiscordDiscovery|Discord in Cabilis|Find and speak with the Priest of Discord in Cabilis.|10|-1|145|cabeast||55814||
+5213|15106|PriestOfDiscordDiscovery|Discord in The Overthere|Find and speak with the Priest of Discord in The Overthere.|10|-1|145|overthere||55834||
+5214|15106|PriestOfDiscordDiscovery|Discord in Firiona Vie|Find and speak with the Priest of Discord in Firiona Vie.|10|-1|145|firiona||55835||
+5215|15107|PriestOfDiscordDiscovery|Discord in Thurgadin|Find and speak with the Priest of Discord in Thurgadin.|10|-1|145|thurgadina||55836||
+5216|15107|PriestOfDiscordDiscovery|Discord in Kael Drakkel|Find and speak with the Priest of Discord in Kael Drakkel.|10|-1|145|kael||55837||
+5217|15107|PriestOfDiscordDiscovery|Discord in Skyshrine|Find and speak with the Priest of Discord in Skyshrine.|10|-1|145|skyshrine||55838||
+5218|15105|PriestOfDiscordDiscovery|Discord in Paineel|Find and speak with the Priest of Discord in Paineel.|10|-1|145|paineel||55839||
+5219|15103|PriestOfDiscordDiscovery|Discord in Surefall Glade|Find and speak with the Priest of Discord in Surefall Glade.|10|-1|145|qrg||55840||
