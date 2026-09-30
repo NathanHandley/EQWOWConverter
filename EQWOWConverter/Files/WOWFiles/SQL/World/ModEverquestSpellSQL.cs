@@ -61,12 +61,13 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`IntensifyingRampStartMultiplier3` FLOAT NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`CasterVisualKitID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`CreatureLossOfControlGrantsImmunity` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`HideAuraIcon` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`SpellID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
         public void AddRow(SpellTemplate spellTemplate, int spellID, List<SpellEffectWOW> blockSpellEffects, bool isWorn, int clickyFixedLevel, int blockEQHasteVersion,
-            float manaGainSpellPowerCoefficient, bool isCreatureCastVersion = false, bool isClickyVersion = false)
+            float manaGainSpellPowerCoefficient, bool hideAuraIcon, bool isCreatureCastVersion = false, bool isClickyVersion = false)
         {
             // Creature-cast copies keep the aura duration from before any player-only modifications, and item clickies keep the one from before the player buff duration floor
             SpellDuration auraDuration = spellTemplate.AuraDuration;
@@ -161,6 +162,7 @@ namespace EQWOWConverter.WOWFiles
             }
             newRow.AddInt("CasterVisualKitID", spellTemplate.CasterVisualKitID);
             newRow.AddInt("CreatureLossOfControlGrantsImmunity", (isWorn == false && spellTemplate.DoesCreatureLossOfControlGrantPlayerImmunity() == true) ? 1 : 0);
+            newRow.AddInt("HideAuraIcon", hideAuraIcon == true ? 1 : 0);
             Rows.Add(newRow);
         }
     }

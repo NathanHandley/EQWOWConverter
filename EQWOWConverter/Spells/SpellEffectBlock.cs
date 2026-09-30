@@ -22,6 +22,7 @@ namespace EQWOWConverter.Spells
         public int WOWSpellID = 0;
         public List<SpellEffectWOW> SpellEffects = new List<SpellEffectWOW>(); // Guarenteed to be 3 elements
         public bool ForceVisibleSplitAura = false; // Sometimes auras can sit behind non-aura base spells
+        public bool ShowSplitInCombatLog = false; // Damage or healing in a split must stay visible, since the client drops hidden spells from the combat log (the mod strips the extra aura icon instead)
         public string AuraDescriptionOverride = string.Empty; // Used for fixed-level spells on items
         public string ActionDescriptionOverride = string.Empty; // Used for fixed-level clickies (tiered potions) so item tooltips show exact values
     }

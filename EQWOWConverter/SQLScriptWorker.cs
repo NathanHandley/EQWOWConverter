@@ -2911,7 +2911,9 @@ namespace EQWOWConverter
                 float manaGainSpellPowerCoefficient = 0f;
                 if (commentFragment != " (Worn)")
                     manaGainSpellPowerCoefficient = spellTemplate.GetManaGainSpellPowerCoefficientForBlock(curEffectBlock);
-                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, curEffectBlock.SpellEffects, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion, manaGainSpellPowerCoefficient, isCreatureCastVersion, isClickyVersion);
+                // A split kept visible only for the combat log would otherwise show a second icon next to the base spell's
+                bool hideAuraIcon = commentFragment != " (Worn)" && curEffectBlock.ShowSplitInCombatLog == true && SpellTemplate.BlockHasAura(curEffectBlock) == true;
+                modEverquestSpellSQL.AddRow(spellTemplate, curEffectBlock.WOWSpellID, curEffectBlock.SpellEffects, commentFragment == " (Worn)", clickyFixedLevel, blockEQHasteVersion, manaGainSpellPowerCoefficient, hideAuraIcon, isCreatureCastVersion, isClickyVersion);
 
                 // A block holding an effect from an EQ intensifying (Splurt family) formula needs the script that ramps its per-tick amount back out
                 if (commentFragment != " (Worn)")

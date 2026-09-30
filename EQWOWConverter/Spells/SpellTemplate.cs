@@ -5551,11 +5551,43 @@ namespace EQWOWConverter.Spells
             return false;
         }
 
-        private static bool BlockHasAura(SpellEffectBlock effectBlock)
+        public static bool BlockHasAura(SpellEffectBlock effectBlock)
         {
             foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
                 if (spellEffect.IsAuraType() == true)
                     return true;
+            return false;
+        }
+
+        private static bool BlockHasDamageOrHealing(SpellEffectBlock effectBlock)
+        {
+            foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
+            {
+                switch (spellEffect.EffectType)
+                {
+                    case SpellWOWEffectType.SchoolDamage:
+                    case SpellWOWEffectType.EnvironmentalDamage:
+                    case SpellWOWEffectType.HealthLeech:
+                    case SpellWOWEffectType.Heal:
+                    case SpellWOWEffectType.HealMaxHealth:
+                    case SpellWOWEffectType.HealPct:
+                        return true;
+                    default: break;
+                }
+                if (spellEffect.IsAuraType() == false)
+                    continue;
+                switch (spellEffect.EffectAuraType)
+                {
+                    case SpellWOWAuraType.PeriodicDamage:
+                    case SpellWOWAuraType.PeriodicDamagePercent:
+                    case SpellWOWAuraType.PeriodicHeal:
+                    case SpellWOWAuraType.ObsModHealth:
+                    case SpellWOWAuraType.PeriodicLeech:
+                    case SpellWOWAuraType.PeriodicHealthFunnel:
+                        return true;
+                    default: break;
+                }
+            }
             return false;
         }
 
@@ -5705,6 +5737,12 @@ namespace EQWOWConverter.Spells
                             baseEffectBlock.SpellName = Name;
                             baseEffectBlock.ForceVisibleSplitAura = true;
                         }
+                        // Hidden spells never show in the combat log, so a split carrying damage or healing (like Asystole's DoT behind its debuffs) stays visible under the base name
+                        else if (BlockHasDamageOrHealing(baseEffectBlock) == true)
+                        {
+                            baseEffectBlock.SpellName = Name;
+                            baseEffectBlock.ShowSplitInCombatLog = true;
+                        }
                         else
                             baseEffectBlock.SpellName = string.Concat(Name, " Split ", outputEffectBlocks.Count.ToString());
                         baseEffectBlock.WOWSpellID = IDGenerationTool.GenerateID("SpellID", splitIDGenerationKey, primaryWOWSpellID.ToString(), outputEffectBlocks.Count.ToString());
@@ -5813,6 +5851,7 @@ namespace EQWOWConverter.Spells
                     creatureCastEffectBlock.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "creaturecastsplit", WOWSpellIDCreatureCast.ToString(), _GroupedCreatureCastSpellEffectBlocksForOutput.Count.ToString());
                 creatureCastEffectBlock.SpellName = baseEffectBlock.SpellName;
                 creatureCastEffectBlock.ForceVisibleSplitAura = baseEffectBlock.ForceVisibleSplitAura;
+                creatureCastEffectBlock.ShowSplitInCombatLog = baseEffectBlock.ShowSplitInCombatLog;
                 creatureCastEffectBlock.SpellEffects = baseEffectBlock.SpellEffects;
                 _GroupedCreatureCastSpellEffectBlocksForOutput.Add(creatureCastEffectBlock);
             }
@@ -5880,6 +5919,7 @@ namespace EQWOWConverter.Spells
                     goodProcEffectBlock.SpellEffects.Add(effectClone);
                 }
                 goodProcEffectBlock.SpellName = baseEffectBlock.SpellName;
+                goodProcEffectBlock.ShowSplitInCombatLog = baseEffectBlock.ShowSplitInCombatLog;
                 _GroupedGoodProcSpellEffectBlocksForOutput.Add(goodProcEffectBlock);
             }
         }
@@ -5918,6 +5958,7 @@ namespace EQWOWConverter.Spells
                     }
                     clickEffectBlock.SpellName = string.Concat(baseEffectBlock.SpellName);
                     clickEffectBlock.ForceVisibleSplitAura = baseEffectBlock.ForceVisibleSplitAura;
+                    clickEffectBlock.ShowSplitInCombatLog = baseEffectBlock.ShowSplitInCombatLog;
                     clickyBlocks.Add(clickEffectBlock);
                 }
                 _GroupedClickySpellEffectBlocksForOutputBySpellParameters.Add(clickyBlocks);

@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 122;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 123;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1947,7 +1947,7 @@ namespace EQWOWConverter
         // - Class-Specific scroll IDs range 110500 - 112887
         // - Equipped Click Bag IDs range 113000 - 113932
         // - Equipped Click Essence IDs range 114000 - 114932
-        // - Quest Template multi-item reward containers IDs range 116000 - 116259
+        // - Quest Template multi-item reward containers IDs range 116000 - 116268
         // - Tradeskill multi-item creation containers IDs range 117000 - 117349
         // - Guise illusion consumable items range 118000 - 118012
         // - Pick Pocket junkbox items range 115000 - 115007

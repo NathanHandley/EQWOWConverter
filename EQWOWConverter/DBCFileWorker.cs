@@ -198,7 +198,7 @@ namespace EQWOWConverter
                 if (isWorn == false)
                 {
                     // Don't hide the chain spells if there's an aura under the non-aura
-                    bool hideFromDisplay = (i != 0) && (curEffectBlock.ForceVisibleSplitAura == false);
+                    bool hideFromDisplay = (i != 0) && (curEffectBlock.ForceVisibleSplitAura == false) && (curEffectBlock.ShowSplitInCombatLog == false);
 
                     string blockActionDescription = actionDescription;
 
