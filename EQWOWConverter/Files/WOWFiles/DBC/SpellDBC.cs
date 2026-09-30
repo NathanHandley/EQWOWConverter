@@ -22,7 +22,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public void AddRow(SpellEffectBlock effectBlock, string spellDescription, string auraDescription, SpellTemplate spellTemplate, bool doHideFromDisplay, bool overrideDurationToInfinite,
             bool preventClickOff, int maximumSpellLevel, bool isToggleAura, int castTimeDBCID, bool isWornEquipEffect, bool isUsableWhileSilenced, bool isCreatureCastVersion = false,
-            bool isPlayerLearnedClassSpell = false, bool isClickyVersion = false, bool isInstantClickyVersion = false)
+            bool isPlayerLearnedClassSpell = false, bool isClickyVersion = false, bool isInstantClickyVersion = false, bool isSplitBlock = false)
         {
             if (effectBlock.SpellEffects.Count != 3)
             {
@@ -78,7 +78,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(attributesExD); // AttributesExD
             newRow.AddUInt32(GetAttributesExE(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExE
             newRow.AddUInt32(GetAttributesExF(spellTemplate, effectBlock.SpellEffects[0].EffectAuraType)); // AttributesExF
-            newRow.AddUInt32(GetAttributesExG(spellTemplate)); // AttributesExG
+            newRow.AddUInt32(GetAttributesExG(spellTemplate, isSplitBlock)); // AttributesExG
             newRow.AddUInt64(shapeshiftMask); // ShapeshiftMask
             newRow.AddUInt64(shapeshiftExcludeMask); // ShapeshiftExclude
             if (spellTemplate.WeaponSpellItemEnchantmentDBCID != 0)
@@ -700,10 +700,11 @@ namespace EQWOWConverter.WOWFiles
             return attributeFlags;
         }
 
-        private UInt32 GetAttributesExG(SpellTemplate spellTemplate)
+        private UInt32 GetAttributesExG(SpellTemplate spellTemplate, bool isSplitBlock)
         {
             UInt32 attributeFlags = 0;
-            if (spellTemplate.NeverMisses == true)
+            // A split block is re-cast by each unit the first block hit, with the original caster kept, so without this it would roll to hit a second time
+            if (spellTemplate.NeverMisses == true || isSplitBlock == true)
                 attributeFlags |= 33554432; // SPELL_ATTR7_NO_ATTACK_MISS (0x02000000) - Skips the hit/miss roll, but immunities/evade/reflect still apply (unlike SPELL_ATTR3_ALWAYS_HIT)
             return attributeFlags;
         }

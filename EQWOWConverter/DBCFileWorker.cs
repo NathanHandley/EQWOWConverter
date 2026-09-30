@@ -248,7 +248,7 @@ namespace EQWOWConverter
                     bool isPlayerLearnedClassSpell = isPlayerLearnedSpell == true && i == 0 && spellTemplate.SkillLine != 0;
                     spellDBC.AddRow(curEffectBlock, blockActionDescription, auraDescription, spellTemplate, hideFromDisplay, spellTemplate.AuraDuration.IsInfinite, spellTemplate.PreventAuraClickOff,
                         curEffectBlock.SpellEffects[0].CalcEffectHighLevel, spellTemplate.IsToggleAura, castTimeDBCID, false, isUsableWhileSilenced, isCreatureCastVersion, isPlayerLearnedClassSpell,
-                        isClickyVersion, isInstantClickyVersion);
+                        isClickyVersion, isInstantClickyVersion, i != 0);
                 }
                 else
                 {
