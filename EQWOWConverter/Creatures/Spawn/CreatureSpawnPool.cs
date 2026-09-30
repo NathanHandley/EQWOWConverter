@@ -43,6 +43,24 @@ namespace EQWOWConverter.Creatures
 
         public CreatureSpawnPool? CreateCopyWithoutRaidCreatures()
         {
+            return CreateCopyWithFilteredCreatures(true, false);
+        }
+
+        public CreatureSpawnPool? CreateCopyWithoutRaidCoordinators()
+        {
+            return CreateCopyWithFilteredCreatures(false, true);
+        }
+
+        public bool HasRaidCoordinator()
+        {
+            foreach (CreatureTemplate creatureTemplate in CreatureTemplates)
+                if (creatureTemplate.IsRaidCoordinator == true)
+                    return true;
+            return false;
+        }
+
+        private CreatureSpawnPool? CreateCopyWithFilteredCreatures(bool removeRaidCreatures, bool removeRaidCoordinators)
+        {
             CreatureSpawnPool filteredSpawnPool = new CreatureSpawnPool(SpawnGroup);
             filteredSpawnPool.SpawnLimit = SpawnLimit;
             filteredSpawnPool.LinkedSpawnGameEvent = LinkedSpawnGameEvent;
@@ -50,7 +68,9 @@ namespace EQWOWConverter.Creatures
             filteredSpawnPool.CreatureSpawnInstances = new List<CreatureSpawnInstance>(CreatureSpawnInstances);
             for (int i = 0; i < CreatureTemplates.Count; i++)
             {
-                if (CreatureTemplates[i].IsRaidCreature() == true)
+                if (removeRaidCreatures == true && CreatureTemplates[i].IsRaidCreature() == true)
+                    continue;
+                if (removeRaidCoordinators == true && CreatureTemplates[i].IsRaidCoordinator == true)
                     continue;
                 int chance = i < CreatureTemplateChances.Count ? CreatureTemplateChances[i] : 0;
                 filteredSpawnPool.AddCreatureTemplate(CreatureTemplates[i], chance);

@@ -49,6 +49,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`TriggerMinLevel` INT(10) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`TriggerMaxLevel` INT(10) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`RespawnTimeSec` INT(10) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`RespawnUsesRaidLockout` TINYINT(3) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`Comment` VARCHAR(128) NOT NULL DEFAULT '', ");
             stringBuilder.AppendLine("PRIMARY KEY (`ID`) USING BTREE ); ");
             return stringBuilder.ToString();
@@ -58,7 +59,7 @@ namespace EQWOWConverter.WOWFiles
             float chance, int altGroup, int altID, float altWeight, bool spawnAtCorpse, float positionX, float positionY,
             float positionZ, float orientation, int delayMinMS, int delayMaxMS, int onlyIfNotAliveCreatureTemplateID,
             string requireDeadCreatureTemplateIDs, string requireAliveCreatureTemplateIDs, bool addToHateList,
-            int triggerMinLevel, int triggerMaxLevel, int respawnTimeSec, string comment)
+            int triggerMinLevel, int triggerMaxLevel, int respawnTimeSec, bool respawnUsesRaidLockout, string comment)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ID", id);
@@ -85,6 +86,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("TriggerMinLevel", triggerMinLevel);
             newRow.AddInt("TriggerMaxLevel", triggerMaxLevel);
             newRow.AddInt("RespawnTimeSec", respawnTimeSec);
+            newRow.AddInt("RespawnUsesRaidLockout", respawnUsesRaidLockout ? 1 : 0);
             newRow.AddString("Comment", 128, comment);
             Rows.Add(newRow);
         }

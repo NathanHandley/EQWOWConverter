@@ -651,7 +651,7 @@ namespace EQWOWConverter
                     killSpawn.AltGroup, killSpawn.AltID, killSpawn.AltWeight, killSpawn.SpawnAtCorpse, killSpawn.XPosition, killSpawn.YPosition,
                     killSpawn.ZPosition, killSpawn.Orientation, killSpawn.DelayMinMS, killSpawn.DelayMaxMS, onlyIfNotAliveWOWID,
                     string.Join(",", requireDeadWOWIDs), string.Join(",", requireAliveWOWIDs), killSpawn.AddToHateList,
-                    killSpawn.TriggerMinLevel, killSpawn.TriggerMaxLevel, respawnTimeInSec, killSpawn.Comment);
+                    killSpawn.TriggerMinLevel, killSpawn.TriggerMaxLevel, respawnTimeInSec, killSpawn.RespawnUsesRaidLockout, killSpawn.Comment);
             }
         }
 
@@ -717,13 +717,20 @@ namespace EQWOWConverter
                     }
                 }
 
-                // Raid instance versions of the zone mirror the open world copy (every creature, full pools, chances, respawn times, waypoints and game event links) with one difference.  Named raid
-                // creatures stay dead for the whole lockout by giving raid boss and raid mini boss spawns a respawn time of the instance reset time
+                // Raid instance versions of the zone mirror the open world copy (every creature, full pools, chances, respawn times, waypoints and game event links) with two differences.  Named raid
+                // creatures stay dead for the whole lockout by giving raid boss and raid mini boss spawns a respawn time of the instance reset time, and raid coordinators are left out since their
+                // only job is sending players into raid instances
                 if (spawnPool.CreatureSpawnInstances.Count > 0 && spawnPool.CreatureTemplates.Count > 0 && mapIDsByShortName.ContainsKey(spawnPool.CreatureSpawnInstances[0].ZoneShortName) == true)
                 {
                     ZoneProperties? raidLowZoneProperties = GetInstanceRaidLowZoneProperties(spawnPool.CreatureSpawnInstances[0]);
                     if (raidLowZoneProperties != null)
-                        CreateSpawnPoolSQLEntriesForMap(spawnPool, raidLowZoneProperties.DBCMapIDRaidLow, "raidlow", ", Low Raid Instance", Convert.ToInt32(raidLowZoneProperties.InstanceResetTimeInSecRaidLow));
+                    {
+                        CreatureSpawnPool? raidLowSpawnPool = spawnPool;
+                        if (spawnPool.HasRaidCoordinator() == true)
+                            raidLowSpawnPool = spawnPool.CreateCopyWithoutRaidCoordinators();
+                        if (raidLowSpawnPool != null)
+                            CreateSpawnPoolSQLEntriesForMap(raidLowSpawnPool, raidLowZoneProperties.DBCMapIDRaidLow, "raidlow", ", Low Raid Instance", Convert.ToInt32(raidLowZoneProperties.InstanceResetTimeInSecRaidLow));
+                    }
                 }
             }
 

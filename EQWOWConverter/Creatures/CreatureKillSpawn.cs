@@ -48,6 +48,7 @@ namespace EQWOWConverter.Creatures
         public int TriggerMinLevel;
         public int TriggerMaxLevel;
         public int RespawnTimeInSec;
+        public bool RespawnUsesRaidLockout; // The raid boss respawn window, which inside a raid instance becomes the instance lockout
         public string Comment = string.Empty;
 
         public static List<CreatureKillSpawn> GetKillSpawnList()
@@ -153,7 +154,10 @@ namespace EQWOWConverter.Creatures
                 // TODO: Have a lookup for boss creatures so it uses the right respawn max time (could be raid trash)
                 newKillSpawn.RespawnTimeInSec = int.Parse(columns["respawn_time_sec"]);
                 if (newKillSpawn.RespawnTimeInSec == -1)
+                {
                     newKillSpawn.RespawnTimeInSec = Configuration.CREATURE_RAID_BOSS_RESPAWN_CENTER_IN_SEC;
+                    newKillSpawn.RespawnUsesRaidLockout = true;
+                }
                 newKillSpawn.Comment = columns["comment"];
                 KillSpawnList.Add(newKillSpawn);
 
