@@ -30,7 +30,7 @@ namespace EQWOWConverter.WOWFiles
             return string.Concat("DELETE FROM spell_proc WHERE `SpellId` IN (", string.Join(",", spellIDStrings), ");");
         }
 
-        public void AddRow(int spellID, int schoolMask, int spellFamilyName, int procFlags, int spellTypeMask, int spellPhaseMask, int hitMask, int attributesMask, int cooldown, float procsPerMinute = 0, int chance = 0)
+        public void AddRow(int spellID, int schoolMask, int spellFamilyName, int procFlags, int spellTypeMask, int spellPhaseMask, int hitMask, int attributesMask, int cooldown, float procsPerMinute = 0, int chance = 0, int charges = 0)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("SpellId", spellID);
@@ -48,7 +48,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("ProcsPerMinute", procsPerMinute);
             newRow.AddFloat("Chance", chance);
             newRow.AddInt("Cooldown", cooldown);
-            newRow.AddInt("Charges", 0);
+            newRow.AddInt("Charges", charges); // Zero takes the spell data's own charges
             Rows.Add(newRow);
             OverriddenSpellIDs.Add(spellID);
         }
@@ -101,8 +101,11 @@ namespace EQWOWConverter.WOWFiles
 
             // Death Knight
             AddRow(49796, 48, 0, 0, 0, 4, 0, 8, 0);  // Deathchill charge consumption (frost cast for WOW, frost or shadow for the EQ spells it reaches, that used the crit modifier)
-            // (DK core script requires blood runes to be on cooldown, so this only widens which casts are considered, not when the talent is allowed to fire)
-            AddRow(-49182, 0, 0, 0, 0, 1, 0, 0, 0);  // Blade Barrier (on cast)
+            // Killing Machine's crit buff: the stock row's flags, type, phase and single charge (the core's spell corrections supply that charge today, the row states it anyway), without the family gate and
+            // scoped to frost (its WOW spells) or arcane (the EQ spells it reaches).  REQ_SPELLMOD keeps the charge to a cast its crit modifier actually applied to
+            AddRow(51124, 80, 0, 65552, 1, 4, 0, 8, 0, 0, 0, 1);
+            // Blade Barrier: the stock row, family gate included, written back so a database that still has the old family-wide override (any cast, EQ spells too) returns to stock
+            AddRow(-49182, 0, 15, 0, 0, 1, 0, 0, 0);  // Blade Barrier (Death Knight spell casts only)
 
             // Warlock
             AddRow(-18094, 32, 0, 0, 1, 2, 0, 0, 6000);   // Nightfall (shadow damage; the mod's added script filters the spells)

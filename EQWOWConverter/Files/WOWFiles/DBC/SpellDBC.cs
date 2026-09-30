@@ -245,7 +245,7 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddUInt32(0); // PreventionType (0 = None, so silence doesn't block the cast)
             else
                 newRow.AddUInt32(spellTemplate.PreventionType); // PreventionType
-            newRow.AddUInt32(0); // StanceBarOrder
+            newRow.AddUInt32(spellTemplate.ShowOnShapeshiftBar == true ? Convert.ToUInt32(Math.Max(0, Configuration.CLASSAURA_TOGGLE_STANCE_BAR_ORDER)) : 0); // StanceBarOrder
             newRow.AddFloat(0); // EffectChainAmplitude1
             newRow.AddFloat(0); // EffectChainAmplitude2
             newRow.AddFloat(0); // EffectChainAmplitude3

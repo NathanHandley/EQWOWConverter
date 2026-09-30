@@ -1382,6 +1382,9 @@ namespace EQWOWConverter
         // First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96073 as of writing)
         public static int CLASSAURA_SPELL_ID_START = 96000;
 
+        // Makes all of the class aura toggles show up at the end of the bar
+        public static int CLASSAURA_TOGGLE_STANCE_BAR_ORDER = 9;
+
         // Enchanter "Mind of Clarity"
         public static bool CLASSAURA_ENCHANTER_ENABLED = true;
         public static int CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID = 8;
@@ -2743,6 +2746,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ, "");
             OutputVariableToConfig("CLASSAURA_ENABLED", CLASSAURA_ENABLED, "Every EQ class (primary or secondary) grants a permanent aura with class specific effects. Values here bake into Spell.dbc, so a change needs a converter regen and DBC deploy", false);
             OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96073 as of writing)", false);
+            OutputVariableToConfig("CLASSAURA_TOGGLE_STANCE_BAR_ORDER", CLASSAURA_TOGGLE_STANCE_BAR_ORDER, "Makes all of the class aura toggles show up at the end of the bar", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_ENABLED", CLASSAURA_ENCHANTER_ENABLED, "Enchanter \"Mind of Clarity\": regenerates a percent of maximum mana on an interval, and spell damage and healing are increased while mana is at or above a threshold", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID", CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT", CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT, "", false);
@@ -3573,6 +3577,7 @@ namespace EQWOWConverter
             COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ = ReadVariableFromConfigString("COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ", configValuesByVariableName, COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ);
             CLASSAURA_ENABLED = ReadVariableFromConfigString("CLASSAURA_ENABLED", configValuesByVariableName, CLASSAURA_ENABLED);
             CLASSAURA_SPELL_ID_START = ReadVariableFromConfigString("CLASSAURA_SPELL_ID_START", configValuesByVariableName, CLASSAURA_SPELL_ID_START);
+            CLASSAURA_TOGGLE_STANCE_BAR_ORDER = ReadVariableFromConfigString("CLASSAURA_TOGGLE_STANCE_BAR_ORDER", configValuesByVariableName, CLASSAURA_TOGGLE_STANCE_BAR_ORDER);
             CLASSAURA_ENCHANTER_ENABLED = ReadVariableFromConfigString("CLASSAURA_ENCHANTER_ENABLED", configValuesByVariableName, CLASSAURA_ENCHANTER_ENABLED);
             CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID);
             CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT = ReadVariableFromConfigString("CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT", configValuesByVariableName, CLASSAURA_ENCHANTER_MANA_REGEN_PERCENT);

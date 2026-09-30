@@ -268,17 +268,25 @@ Note: The tooltip will not reflect the reduction in cast time and the global coo
 48488|Druid|Gale Winds|align|0|8|1|0|area_damage|0|Also increases the damage of your EverQuest Nature area damage spells by $s1%.
 48506|Druid|Earth and Moon|describe|0|0|0|0|none|0|The spell damage increase also applies to your EverQuest spells.
 48532|Druid|Improved Mangle|exclude|0|0|0|0|none|0|Feral ability modifier whose mask also matches Regrowth.
-48962|DeathKnight|Virulence|describe|0|0|0|0|none|0|The spell hit chance also applies to your EverQuest spells.
+48962|DeathKnight|Virulence|describe|0|0|0|0|none|0|The spell hit chance also applies to your EverQuest spells.  Your EverQuest Shadow damage spells also have a 33% chance per point in this talent (100% at 3 points) to apply Blood Plague to each target they strike.
+48963|DeathKnight|Morbidity|describe|0|0|0|0|none|0|Also increases the damage and healing of your EverQuest lifetap spells by $s1%.
 48987|DeathKnight|Dark Conviction|describe|0|0|0|0|none|0|The critical strike chance also applies to your EverQuest spells.
 48988|DeathKnight|Bloody Vengeance|describe|0|0|0|0|none|0|Also triggers from your EverQuest critical strikes.
+49004|DeathKnight|Scent of Blood|describe|0|0|0|0|none|0|While the effect is active, your EverQuest Fire damage spells also use a charge to generate 10 runic power.
+49027|DeathKnight|Bloodworms|describe|0|0|0|0|none|0|Your EverQuest Fire damage spells also have a $h% chance to cause each target they strike to spawn Bloodworms.
 49140|DeathKnight|Black Ice|describe|0|0|0|0|none|0|This also applies to your EverQuest Frost and Shadow damage spells.
-49182|DeathKnight|Blade Barrier|describe|0|0|0|0|none|0|Also triggers from your EverQuest spell casts.
+49149|DeathKnight|Chill of the Grave|describe|0|0|0|0|none|0|Your EverQuest Frost and Arcane damage spells also generate the additional runic power.
+49175|DeathKnight|Improved Icy Touch|describe|0|0|0|0|none|0|Your EverQuest Frost and Arcane damage spells also have a 33% chance per point in this talent (100% at 3 points) to apply Frost Fever to each target they strike.
 49222|DeathKnight|Bone Shield|describe|0|0|0|0|none|0|The damage increase also applies to your EverQuest spells.
+49223|DeathKnight|Dirge|describe|0|0|0|0|none|0|Your EverQuest Shadow damage spells also generate the additional runic power.
+49467|DeathKnight|Death Rune Mastery|describe|0|0|0|0|none|0|Your EverQuest Fire damage spells with a base cast time of 2 sec or longer also have a $h% chance to turn up to two recharging Frost or Unholy Runes into Death Runes.
 49796|DeathKnight|Deathchill|align|0|48|1|0|direct_damage|0|When activated, also applies to your next EverQuest direct damage Frost or Shadow spell.
 50334|Druid|Berserk|exclude|0|0|0|0|none|0|When activated, this ability causes your Mangle (Bear) ability to hit up to $58923s1 targets and have no cooldown, and reduces the energy cost of all your Cat Form abilities by $s1%. Lasts $d. You cannot use Tiger's Fury while Berserk is active. Clears the effect of Fear and makes you immune to Fear for the duration.
 50365|DeathKnight|Improved Blood Presence|describe|0|0|0|0|none|0|Also triggers from damage done by your EverQuest spells.
 50685|Warrior|Incite|exclude|0|0|0|0|none|0|Increases the critical strike chance of your Heroic Strike, Thunder Clap and Cleave abilities by $s1%.
 51099|DeathKnight|Ebon Plaguebringer|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells.
+51123|DeathKnight|Killing Machine|describe|0|0|0|0|none|0|When it triggers, your next EverQuest direct damage Frost or Arcane spell is also a critical strike.
+51124|DeathKnight|Killing Machine|align|0|80|1|0|direct_damage|0|Also makes your next EverQuest direct damage Frost or Arcane spell a critical strike.
 51179|Druid|Gift of the Earthmother|describe|0|0|0|0|none|0|The spell haste also applies to your EverQuest spells.
 51179|Druid|Gift of the Earthmother|exclude|0|0|0|0|none|0|Global cooldown micro-reduction that does not map to EverQuest spells.
 51466|Shaman|Elemental Oath|describe|0|0|0|0|none|0|The spell critical strike chance also applies to your EverQuest spells.
