@@ -43,7 +43,6 @@ namespace EQWOWConverter
         private static readonly object CreatureModelWorkLock = new object();
         private static Queue<string> ObjectNamesToProcess = new Queue<string>();
         private static readonly object ObjectConversionLock = new object();
-        private static bool DeltaPatchSkippedForNoChanges = false;
         private static readonly ConcurrentDictionary<string, object> SharedSoundCopyLocksByTargetPath = new ConcurrentDictionary<string, object>();
 
         public bool ConvertEQDataToWOW()
@@ -1196,7 +1195,7 @@ namespace EQWOWConverter
             string exportZonesObjectsFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "ZoneObjects");
             string exportInterfaceFolder = Path.Combine(exportMPQRootFolder, "Interface");
             string exportMusicFolder = Path.Combine(exportMPQRootFolder, "Sound", "Music");
-            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ"));
+            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_MAIN_ID, ".MPQ"));
             string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
 
             // Generate folders
@@ -4481,7 +4480,7 @@ namespace EQWOWConverter
                 throw new Exception("There was no MPQReady folder inside of '" + Configuration.PATH_EXPORT_FOLDER + "'");
 
             // Resolve output patch and file manifest locations
-            string patchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
+            string patchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_MAIN_ID, ".MPQ");
             string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, patchMPQName);
             string patchManifestFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, patchMPQName + ".filehashes.txt");
 
@@ -4489,40 +4488,63 @@ namespace EQWOWConverter
             Logger.WriteDebug("Hashing files staged in MPQReady to determine patch contents");
             Dictionary<string, string> currentFileHashesByRelativePath = ComputeMPQReadyFileHashes(mpqReadyFolder);
 
-            // Clear any prior delta file
-            string deltaPatchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
+            // Clear any prior delta file, since it is always regenerated against the main patch
+            string deltaPatchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_DELTA_ID, ".MPQ");
             string outputDeltaPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, deltaPatchMPQName);
             Logger.WriteDebug("Deleting old delta patch file if it exists");
             if (File.Exists(outputDeltaPatchFileName) == true)
                 File.Delete(outputDeltaPatchFileName);
 
-            // If set, create a delta-only file if there is a main patch and a manifest.  Note that this will NOT update either of those files
-            if (Configuration.CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH == true && File.Exists(outputPatchFileName) == true && File.Exists(patchManifestFileName) == true)
-            {
-                if (CreateDeltaOnlyMainPatchMPQ(outputDeltaPatchFileName, mpqReadyFolder, patchManifestFileName, currentFileHashesByRelativePath) == false)
-                    Logger.WriteError("Delta-only main patch generation failed");
-
-                // Intentionally do NOT write the main patch manifest here as it must only reflect changes made to the main patch
-                Logger.WriteDebug("Building main patch MPQ complete (delta-only mode, main patch and manifest left unchanged)");
-                return;
-            }
-
-            // If there's no existing patch (or no manifest to compare against), build a brand new patch from scratch.  Otherwise only do the add/update/remove.
-            bool patchOperationSucceeded;
+            // A full main patch build is needed when there is no prior main patch (or manifest), when too many files changed for a delta
+            // to make sense, or when files were removed (a delta can only add or override files, it can never remove them from the main)
+            bool doFullMainPatchBuild = false;
+            List<string> relativePathsToAddOrUpdate = new List<string>();
             if (File.Exists(outputPatchFileName) == false || File.Exists(patchManifestFileName) == false)
-                patchOperationSucceeded = CreateMainPatchMPQ(mpqReadyFolder, outputPatchFileName, currentFileHashesByRelativePath.Count);
-            else
-                patchOperationSucceeded = UpdateMainPatchMPQ(mpqReadyFolder, outputPatchFileName, patchManifestFileName, currentFileHashesByRelativePath);
-
-            // Only record the manifest once the patch is confirmed built. 
-            if (patchOperationSucceeded == false)
             {
-                Logger.WriteError("Failed the patch MPQ create or update, so not updating the patch file manifest");
+                Logger.WriteInfo("No prior main patch MPQ and manifest found, so doing a full main patch build");
+                doFullMainPatchBuild = true;
+            }
+            else
+            {
+                Dictionary<string, string> previousFileHashesByRelativePath = ReadPatchFileManifest(patchManifestFileName);
+                ComputePatchFileDelta(currentFileHashesByRelativePath, previousFileHashesByRelativePath, out relativePathsToAddOrUpdate, out List<string> relativePathsToRemove);
+                Logger.WriteInfo("- Patch changes since the main patch: ", relativePathsToAddOrUpdate.Count.ToString(), " new/updated, ", relativePathsToRemove.Count.ToString(), " removed");
+                if (relativePathsToAddOrUpdate.Count > Configuration.PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN)
+                {
+                    Logger.WriteInfo("- New/updated file count exceeds PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN (", Configuration.PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN.ToString(), "), so doing a full main patch build");
+                    doFullMainPatchBuild = true;
+                }
+                else if (relativePathsToRemove.Count > 0)
+                {
+                    Logger.WriteInfo("- Files were removed, which a delta patch cannot represent, so doing a full main patch build");
+                    doFullMainPatchBuild = true;
+                }
+            }
+
+            // Full build puts everything into the main patch, and the delta is left empty
+            if (doFullMainPatchBuild == true)
+            {
+                if (CreateMainPatchMPQ(mpqReadyFolder, outputPatchFileName, currentFileHashesByRelativePath.Count) == false)
+                {
+                    // Make sure a stale manifest can't make a later run think the failed main patch is current
+                    Logger.WriteError("Failed the main patch MPQ create, so not updating the patch file manifest");
+                    if (File.Exists(patchManifestFileName) == true)
+                        File.Delete(patchManifestFileName);
+                    return;
+                }
+                WritePatchFileManifest(patchManifestFileName, currentFileHashesByRelativePath);
+                relativePathsToAddOrUpdate.Clear();
+            }
+
+            // Always generate the delta patch, so a deployed delta can never conflict with the main patch it was built against.  Note that
+            // the main patch manifest is intentionally NOT written in delta mode, as it must only reflect what is in the main patch
+            if (CreateDeltaPatchMPQ(outputDeltaPatchFileName, mpqReadyFolder, relativePathsToAddOrUpdate) == false)
+            {
+                Logger.WriteError("Delta patch generation failed");
                 return;
             }
-            WritePatchFileManifest(patchManifestFileName, currentFileHashesByRelativePath);
 
-            Logger.WriteDebug("Building main patch MPQ complete");
+            Logger.WriteDebug("Building main and delta patch MPQs complete");
         }
 
         private bool CreateMainPatchMPQ(string mpqReadyFolder, string outputPatchFileName, int mpqReadyFileCount)
@@ -4556,73 +4578,12 @@ namespace EQWOWConverter
             return RunMPQEditorScriptInBatches(scriptLines, workingGeneratedScriptsFolder, "mpqnew", "Failed to generate MPQ file.");
         }
 
-        private bool UpdateMainPatchMPQ(string mpqReadyFolder, string outputPatchFileName, string patchManifestFileName,
-            Dictionary<string, string> currentFileHashesByRelativePath)
+        private bool CreateDeltaPatchMPQ(string outputDeltaPatchFileName, string mpqReadyFolder, List<string> relativePathsToAddOrUpdate)
         {
-            Logger.WriteInfo("Updating main patch MPQ...");
-
-            // Load the manifest from the previous run and diff the current candidate files against it
-            Dictionary<string, string> previousFileHashesByRelativePath = ReadPatchFileManifest(patchManifestFileName);
-            ComputePatchFileDelta(currentFileHashesByRelativePath, previousFileHashesByRelativePath, out List<string> relativePathsToAddOrUpdate, out List<string> relativePathsToRemove);
-
-            Logger.WriteInfo("- Patch delta: " + relativePathsToAddOrUpdate.Count + " added/updated, " + relativePathsToRemove.Count + " removed");
-
-            // If nothing changed, there's no reason to touch the existing patch at all
-            if (relativePathsToAddOrUpdate.Count == 0 && relativePathsToRemove.Count == 0)
-            {
-                Logger.WriteInfo("- No file changes detected, leaving the existing patch MPQ as-is");
-                return true;
-            }
-
-            // Generate a script to update the existing MPQ, only operating on the changed files
-            Logger.WriteDebug("Generating script to update the MPQ file");
-            string workingGeneratedScriptsFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
-            FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
-            List<string> scriptLines = new List<string>();
-
-            // Remove files that are no longer needed
-            foreach (string relativePathToRemove in relativePathsToRemove)
-                scriptLines.Add("delete \"" + outputPatchFileName + "\" \"" + relativePathToRemove + "\"");
-
-            // Add or overwrite the new or changed files
-            foreach (string relativePathToAddOrUpdate in relativePathsToAddOrUpdate)
-            {
-                string fullFilePath = Path.Combine(mpqReadyFolder, relativePathToAddOrUpdate);
-                scriptLines.Add("add \"" + outputPatchFileName + "\" \"" + fullFilePath + "\" \"" + relativePathToAddOrUpdate + "\"");
-            }
-
-            // Compact it
-            scriptLines.Add("compact \"" + outputPatchFileName + "\" /r");
-
-            // Update the MPQ using the script(s)
-            Logger.WriteDebug("Updating MPQ file");
-            return RunMPQEditorScriptInBatches(scriptLines, workingGeneratedScriptsFolder, "mpqupdate", "Failed to update MPQ file.");
-        }
-
-        private bool CreateDeltaOnlyMainPatchMPQ(string outputDeltaPatchFileName, string mpqReadyFolder, string patchManifestFileName,
-            Dictionary<string, string> currentFileHashesByRelativePath)
-        {
-            Logger.WriteInfo("Building delta-only main patch MPQ...");
-            DeltaPatchSkippedForNoChanges = false;
-
-            // Determine which files would have been added/updated into the main patch this run
-            Dictionary<string, string> previousFileHashesByRelativePath = ReadPatchFileManifest(patchManifestFileName);
-            ComputePatchFileDelta(currentFileHashesByRelativePath, previousFileHashesByRelativePath,
-                out List<string> relativePathsToAddOrUpdate, out List<string> relativePathsToRemove);
-
-            // Different message based on if there are files to remove
-            if (relativePathsToRemove.Count > 0)
-                Logger.WriteInfo("Delta patch contents: ", relativePathsToAddOrUpdate.Count.ToString(), " new/updated files (", relativePathsToRemove.Count.ToString(), " removed files cannot be represented in a delta patch)");
-            else
-                Logger.WriteInfo("Delta patch contents: ", relativePathsToAddOrUpdate.Count.ToString(), " new/updated files");
-
-            // Skip if there's nothing to put in the patch
             if (relativePathsToAddOrUpdate.Count == 0)
-            {
-                Logger.WriteInfo("No new or updated files, skipping delta patch generation");
-                DeltaPatchSkippedForNoChanges = true;
-                return true;
-            }
+                Logger.WriteInfo("Building delta patch MPQ (empty, all content is in the main patch)...");
+            else
+                Logger.WriteInfo("Building delta patch MPQ with ", relativePathsToAddOrUpdate.Count.ToString(), " new/updated files...");
 
             // Generate a script to build the delta patch from just the new/updated files
             Logger.WriteDebug("Generating script to generate the delta patch MPQ file");
@@ -4639,6 +4600,14 @@ namespace EQWOWConverter
             // The 'new' must be first so it lands at the start of the first batch and creates the archive before any adds
             List<string> scriptLines = new List<string>();
             scriptLines.Add("new \"" + outputDeltaPatchFileName + "\" " + mpqMaxFileCount);
+
+            // An empty delta still holds a placeholder file, so it's always a valid archive that replaces any older deployed delta
+            if (relativePathsToAddOrUpdate.Count == 0)
+            {
+                string dummyFileName = Path.Combine(workingGeneratedScriptsFolder, "dummy.txt");
+                File.WriteAllText(dummyFileName, "Empty delta patch, all content is in the main patch");
+                scriptLines.Add("add \"" + outputDeltaPatchFileName + "\" \"" + dummyFileName + "\" \"dummy.txt\"");
+            }
             foreach (string relativePathToAddOrUpdate in relativePathsToAddOrUpdate)
             {
                 string fullFilePath = Path.Combine(mpqReadyFolder, relativePathToAddOrUpdate);
@@ -4647,7 +4616,7 @@ namespace EQWOWConverter
 
             // Generate the delta patch MPQ using the script(s)
             Logger.WriteDebug("Generating delta patch MPQ file");
-            return RunMPQEditorScriptInBatches(scriptLines, workingGeneratedScriptsFolder, "mpqdelta", "Failed to generate delta-only main patch MPQ file.");
+            return RunMPQEditorScriptInBatches(scriptLines, workingGeneratedScriptsFolder, "mpqdelta", "Failed to generate delta patch MPQ file.");
         }
 
         private void ComputePatchFileDelta(Dictionary<string, string> currentFileHashesByRelativePath,
@@ -4792,87 +4761,60 @@ namespace EQWOWConverter
             return fileHashesByRelativePath;
         }
 
+        private bool DeployLocalizedPatchToClient(string patchName)
+        {
+            // Make sure the patch was created
+            string sourcePatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, patchName);
+            if (File.Exists(sourcePatchFileNameAndPath) == false)
+            {
+                Logger.WriteError("Failed to deploy to client. Patch at '" + sourcePatchFileNameAndPath + "' did not exist");
+                return false;
+            }
+
+            // Skip the copy if the deployed one is already this exact file (copies keep the source's write time), since the main patch can be several GB
+            string targetPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", Configuration.PATCH_LOCALIZATION_STRING, patchName);
+            FileInfo sourcePatchFileInfo = new FileInfo(sourcePatchFileNameAndPath);
+            FileInfo targetPatchFileInfo = new FileInfo(targetPatchFileNameAndPath);
+            if (targetPatchFileInfo.Exists == true && targetPatchFileInfo.Length == sourcePatchFileInfo.Length && targetPatchFileInfo.LastWriteTimeUtc == sourcePatchFileInfo.LastWriteTimeUtc)
+            {
+                Logger.WriteInfo("- Patch '" + patchName + "' is unchanged on the client, so not copying it");
+                return true;
+            }
+
+            // Delete the old one if it's already deployed on the client
+            if (targetPatchFileInfo.Exists == true)
+            {
+                try
+                {
+                    File.Delete(targetPatchFileNameAndPath);
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteError("Failed to delete the file at '" + targetPatchFileNameAndPath + "', it may be in use (client running, open in MPQ editor, etc)");
+                    if (ex.StackTrace != null)
+                        Logger.WriteDebug(ex.StackTrace.ToString());
+                    return false;
+                }
+            }
+
+            // Copy it
+            Logger.WriteInfo("- Deploying patch '" + patchName + "' to the client");
+            FileTool.CopyFile(sourcePatchFileNameAndPath, targetPatchFileNameAndPath);
+            return true;
+        }
+
         public void DeployClient()
         {
             Logger.WriteInfo("Deploying to client...");
 
-            // Deploy the delta-only patch if it was generated, otherwise the normal patch
-            string deltaPatchName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
-            string sourceDeltaPatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, deltaPatchName);
-            if (Configuration.CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH == true && DeltaPatchSkippedForNoChanges == true)
-                Logger.WriteInfo("The delta patch had no new or updated files this run, so not deploying it to the client");
-            else if (Configuration.CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH == true && File.Exists(sourceDeltaPatchFileNameAndPath) == true)
+            // Always deploy the main and delta patches together, as the delta is only valid against the main patch it was built from
+            // (localized patches live under Data/<localization>)
+            string mainPatchName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_MAIN_ID, ".MPQ");
+            string deltaPatchName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_DELTA_ID, ".MPQ");
+            if (DeployLocalizedPatchToClient(mainPatchName) == false || DeployLocalizedPatchToClient(deltaPatchName) == false)
             {
-                // Delete the old one if it's already deployed on the client (localized patch lives under Data/<localization>)
-                string targetDeltaPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", Configuration.PATCH_LOCALIZATION_STRING, deltaPatchName);
-                if (File.Exists(targetDeltaPatchFileNameAndPath) == true)
-                {
-                    try
-                    {
-                        File.Delete(targetDeltaPatchFileNameAndPath);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.WriteError("Failed to delete the file at '" + targetDeltaPatchFileNameAndPath + "', it may be in use (client running, open in MPQ editor, etc)");
-                        if (ex.StackTrace != null)
-                            Logger.WriteDebug(ex.StackTrace.ToString());
-                        Logger.WriteError("Deploying to client failed");
-                        return;
-                    }
-                }
-
-                // Copy it
-                FileTool.CopyFile(sourceDeltaPatchFileNameAndPath, targetDeltaPatchFileNameAndPath);
-            }
-            else
-            {
-                // A full main patch supersedes any delta patch still deployed from an earlier run (the client loads the higher patch number
-                // over the lower one, so a stale delta would shadow the fresh full patch)
-                string staleDeltaPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", Configuration.PATCH_LOCALIZATION_STRING, deltaPatchName);
-                if (File.Exists(staleDeltaPatchFileNameAndPath) == true)
-                {
-                    try
-                    {
-                        File.Delete(staleDeltaPatchFileNameAndPath);
-                        Logger.WriteInfo("Removed the previously deployed delta patch '" + deltaPatchName + "', since the full main patch replaces it");
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.WriteError("Failed to delete the stale delta patch at '" + staleDeltaPatchFileNameAndPath + "', it may be in use (client running, open in MPQ editor, etc)");
-                        if (ex.StackTrace != null)
-                            Logger.WriteDebug(ex.StackTrace.ToString());
-                    }
-                }
-
-                // Make sure a patch was created
-                string dataLocPatchMPQName = string.Concat("patch-", Configuration.PATCH_LOCALIZATION_STRING, "-", Configuration.PATCH_CLIENT_DATA_LOC_ID, ".MPQ");
-                string sourcePatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, dataLocPatchMPQName);
-                if (File.Exists(sourcePatchFileNameAndPath) == false)
-                {
-                    Logger.WriteError("Failed to deploy to client. Patch at '" + sourcePatchFileNameAndPath + "' did not exist");
-                    return;
-                }
-
-                // Delete the old one if it's already deployed on the client
-                string targetPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", Configuration.PATCH_LOCALIZATION_STRING, dataLocPatchMPQName);
-                if (File.Exists(targetPatchFileNameAndPath) == true)
-                {
-                    try
-                    {
-                        File.Delete(targetPatchFileNameAndPath);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.WriteError("Failed to delete the file at '" + targetPatchFileNameAndPath + "', it may be in use (client running, open in MPQ editor, etc)");
-                        if (ex.StackTrace != null)
-                            Logger.WriteDebug(ex.StackTrace.ToString());
-                        Logger.WriteError("Deploying to client failed");
-                        return;
-                    }
-                }
-
-                // Copy it
-                FileTool.CopyFile(sourcePatchFileNameAndPath, targetPatchFileNameAndPath);
+                Logger.WriteError("Deploying to client failed");
+                return;
             }
 
             // Also deploy the minimaps patch & addon, if configured to do so

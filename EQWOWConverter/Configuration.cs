@@ -41,11 +41,6 @@ namespace EQWOWConverter
         // will load and work properly
         public static List<string> CONFIGONLY_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { };
 
-        // If true, a special 'config only' delta patch is created.  This is a patch that will use the ID shown and will only
-        // contain any new/updated/deleted files based on the manifest
-        public static bool CONFIGONLY_GENERATE_DELTA_ONLY_MAIN_PATCH = true;
-        public static string CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID = "6";
-
         // Added to the end of a zone's name for the raid instance copy of that zone, so it's clear which version a player is in.
         // Not config exposed since the config reader trims values, and the leading space is significant
         public static string CONFIGONLY_DUNGEON_NAME_SUFFIX = " (instanced)";
@@ -74,8 +69,10 @@ namespace EQWOWConverter
         // ID to append to the end of the /Data/ patch file (such as the "4" in "patch-4.mpq). Make it uniquely new.
         public static string PATCH_CLIENT_DATA_ID = "4";
 
-        // ID to append to the localized patch file in /Data/<locale> (such as the "5" in patch-enUS-5.mpq). Make it uniquely new.
-        public static string PATCH_CLIENT_DATA_LOC_ID = "5";
+        // ID to append to the localized patch file in /Data/<locale> (such as the "5" in patch-enUS-5.mpq). Make it uniquely new.  The delta is a second one, make that unique as well
+        public static string PATCH_CLIENT_DATA_LOC_MAIN_ID = "5";
+        public static string PATCH_CLIENT_DATA_LOC_DELTA_ID = "6";
+        public static int PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN = 1000;
 
         // What language to generate things as
         public static string PATCH_LOCALIZATION_STRING = "enUS";
@@ -2013,8 +2010,8 @@ namespace EQWOWConverter
         {
             List<string> generatedPatchFileNames = new List<string>();
             generatedPatchFileNames.Add(string.Concat("patch-", PATCH_CLIENT_DATA_ID, ".mpq").ToLower());
-            generatedPatchFileNames.Add(string.Concat("patch-", PATCH_LOCALIZATION_STRING, "-", PATCH_CLIENT_DATA_LOC_ID, ".mpq").ToLower());
-            generatedPatchFileNames.Add(string.Concat("patch-", PATCH_LOCALIZATION_STRING, "-", CONFIGONLY_DELTA_ONLY_MAIN_PATCH_CLIENT_DATA_LOC_ID, ".mpq").ToLower());
+            generatedPatchFileNames.Add(string.Concat("patch-", PATCH_LOCALIZATION_STRING, "-", PATCH_CLIENT_DATA_LOC_MAIN_ID, ".mpq").ToLower());
+            generatedPatchFileNames.Add(string.Concat("patch-", PATCH_LOCALIZATION_STRING, "-", PATCH_CLIENT_DATA_LOC_DELTA_ID, ".mpq").ToLower());
             generatedPatchFileNames.Add(string.Concat("patch-", PATCH_LOCALIZATION_STRING, "-9.mpq").ToLower()); // Been testing with -9 patch, so can be removed
             return generatedPatchFileNames;
         }
@@ -2217,7 +2214,9 @@ namespace EQWOWConverter
             OutputTextLineToConfig("# +---------------------------------------------------------------------------+");
             OutputBlankLineToConfig();
             OutputVariableToConfig("PATCH_CLIENT_DATA_ID", PATCH_CLIENT_DATA_ID, "ID to append to the end of the /Data/ patch file (such as the \"4\" in \"patch-4.mpq). Make it uniquely new.");
-            OutputVariableToConfig("PATCH_CLIENT_DATA_LOC_ID", PATCH_CLIENT_DATA_LOC_ID, "ID to append to the localized patch file in /Data/<locale> (such as the \"5\" in patch-enUS-5.mpq). Make it uniquely new.");
+            OutputVariableToConfig("PATCH_CLIENT_DATA_LOC_ID", PATCH_CLIENT_DATA_LOC_MAIN_ID, "ID to append to the localized patch file in /Data/<locale> (such as the \"5\" in patch-enUS-5.mpq). Make it uniquely new.");
+            OutputVariableToConfig("PATCH_CLIENT_DATA_LOC_DELTA_ID", PATCH_CLIENT_DATA_LOC_DELTA_ID, "ID to append to the delta version of the patch, which also must be uniquely new");
+            OutputVariableToConfig("PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN", PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN, "If the number of changed files is greater than this, then a delta will be generated");
             OutputVariableToConfig("PATCH_LOCALIZATION_STRING", PATCH_LOCALIZATION_STRING, "What language to generate things as");
             OutputVariableToConfig("DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY", DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY, "If true and when deploying client files, clear the cache (only relevant if you set DEPLOY_CLIENT_FILES to true, otherwise ignored)");
             OutputVariableToConfig("CORE_CONSOLE_BEEP_ON_COMPLETE", CORE_CONSOLE_BEEP_ON_COMPLETE, "Plays a beep sound when the generate completes if set to true");
@@ -2953,7 +2952,9 @@ namespace EQWOWConverter
             PATH_ASSETS_FOLDER = FileTool.CleanPath(ReadVariableFromConfigString("PATH_ASSETS_FOLDER", configValuesByVariableName, PATH_ASSETS_FOLDER));
             PATH_WORKING_FOLDER = FileTool.CleanPath(ReadVariableFromConfigString("PATH_WORKING_FOLDER", configValuesByVariableName, PATH_WORKING_FOLDER));
             PATCH_CLIENT_DATA_ID = ReadVariableFromConfigString("PATCH_CLIENT_DATA_ID", configValuesByVariableName, PATCH_CLIENT_DATA_ID);
-            PATCH_CLIENT_DATA_LOC_ID = ReadVariableFromConfigString("PATCH_CLIENT_DATA_LOC_ID", configValuesByVariableName, PATCH_CLIENT_DATA_LOC_ID);
+            PATCH_CLIENT_DATA_LOC_MAIN_ID = ReadVariableFromConfigString("PATCH_CLIENT_DATA_LOC_ID", configValuesByVariableName, PATCH_CLIENT_DATA_LOC_MAIN_ID);
+            PATCH_CLIENT_DATA_LOC_DELTA_ID = ReadVariableFromConfigString("PATCH_CLIENT_DATA_LOC_DELTA_ID", configValuesByVariableName, PATCH_CLIENT_DATA_LOC_DELTA_ID);
+            PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN = ReadVariableFromConfigString("PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN", configValuesByVariableName, PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN);
             PATCH_LOCALIZATION_STRING = ReadVariableFromConfigString("PATCH_LOCALIZATION_STRING", configValuesByVariableName, PATCH_LOCALIZATION_STRING);
 
             DEPLOY_CLIENT_FILES = ReadVariableFromConfigString("DEPLOY_CLIENT_FILES", configValuesByVariableName, DEPLOY_CLIENT_FILES);
