@@ -697,11 +697,160 @@ namespace EQWOWConverter
                 process.Start();
                 //process.WaitForExit();
                 Logger.WriteDebug(process.StandardOutput.ReadToEnd());
+                process.WaitForExit();
                 Console.Title = "EverQuest to WoW Converter";
                 curFileArgListSB.Clear();
+                foreach (string curFile in fileNameBatch)
+                    CompleteBLPMipChain(Path.ChangeExtension(curFile, ".blp"));
                 if (progressionCounter != null)
                     progressionCounter.Write(1);
             }
+        }
+
+        // BLPConverter's /M stops the mip chain once the SMALLER side reaches 1 pixel, so every non-square texture (32x64, etc) is short one or more levels of the full chain down to 1x1
+        // The client draws them fine until the D3D device resets (windowed <-> fullscreen, resolution change), where it rebuilds the texture expecting the full chain and the model
+        // renders solid white.  This appends the missing levels, each downsampled from the level before it. Returns true if the file was changed
+        public static bool CompleteBLPMipChain(string blpFullPath)
+        {
+            const int headerSize = 1172; // Magic through the 256 color palette
+            if (File.Exists(blpFullPath) == false)
+            {
+                Logger.WriteError("CompleteBLPMipChain failed, as '" + blpFullPath + "' does not exist");
+                return false;
+            }
+            byte[] blpBytes = File.ReadAllBytes(blpFullPath);
+            if (blpBytes.Length < headerSize || blpBytes[0] != 'B' || blpBytes[1] != 'L' || blpBytes[2] != 'P' || blpBytes[3] != '2')
+            {
+                Logger.WriteError("CompleteBLPMipChain failed, as '" + blpFullPath + "' is not a BLP2 file");
+                return false;
+            }
+            byte compression = blpBytes[8];
+            byte alphaDepth = blpBytes[9];
+            byte hasMips = blpBytes[11];
+            int width = BitConverter.ToInt32(blpBytes, 12);
+            int height = BitConverter.ToInt32(blpBytes, 16);
+            if (hasMips == 0 || width <= 0 || height <= 0)
+                return false;
+
+            // Count the levels present vs the full chain
+            int presentLevelCount = 0;
+            while (presentLevelCount < 16 && BitConverter.ToUInt32(blpBytes, 20 + presentLevelCount * 4) != 0)
+                presentLevelCount++;
+            int fullLevelCount = 1;
+            for (int curMaxSide = Math.Max(width, height); curMaxSide > 1; curMaxSide >>= 1)
+                fullLevelCount++;
+            if (presentLevelCount == 0 || presentLevelCount >= fullLevelCount)
+                return false;
+
+            // Smallest existing level
+            int prevLevel = presentLevelCount - 1;
+            int prevOffset = BitConverter.ToInt32(blpBytes, 20 + prevLevel * 4);
+            int prevSize = BitConverter.ToInt32(blpBytes, 84 + prevLevel * 4);
+            if (prevOffset + prevSize > blpBytes.Length)
+            {
+                Logger.WriteError("CompleteBLPMipChain failed, as '" + blpFullPath + "' has a mip level past the end of the file");
+                return false;
+            }
+            byte[] prevData = new byte[prevSize];
+            Array.Copy(blpBytes, prevOffset, prevData, 0, prevSize);
+            int prevWidth = Math.Max(1, width >> prevLevel);
+            int prevHeight = Math.Max(1, height >> prevLevel);
+
+            // DXT block size comes from the existing level, which avoids decoding the DXT1/3/5 alpha type flags
+            int dxtBlockSize = 0;
+            if (compression == 2)
+            {
+                int prevBlockCount = ((prevWidth + 3) / 4) * ((prevHeight + 3) / 4);
+                dxtBlockSize = prevSize / prevBlockCount;
+                if (dxtBlockSize != 8 && dxtBlockSize != 16)
+                {
+                    Logger.WriteError("CompleteBLPMipChain failed, as '" + blpFullPath + "' has an unexpected DXT block size of " + dxtBlockSize);
+                    return false;
+                }
+            }
+            else if (compression != 1 && compression != 3)
+            {
+                Logger.WriteError("CompleteBLPMipChain failed, as '" + blpFullPath + "' has unhandled compression type " + compression);
+                return false;
+            }
+
+            List<byte> outputBytes = new List<byte>(blpBytes);
+            for (int curLevel = presentLevelCount; curLevel < fullLevelCount; curLevel++)
+            {
+                int curWidth = Math.Max(1, width >> curLevel);
+                int curHeight = Math.Max(1, height >> curLevel);
+                byte[] curData;
+                if (compression == 2)
+                {
+                    // Pick the source block covering the same area (blocks at or under 4 pixels just carry over)
+                    int prevBlocksX = (prevWidth + 3) / 4;
+                    int prevBlocksY = (prevHeight + 3) / 4;
+                    int curBlocksX = (curWidth + 3) / 4;
+                    int curBlocksY = (curHeight + 3) / 4;
+                    curData = new byte[curBlocksX * curBlocksY * dxtBlockSize];
+                    for (int blockY = 0; blockY < curBlocksY; blockY++)
+                    {
+                        for (int blockX = 0; blockX < curBlocksX; blockX++)
+                        {
+                            int sourceBlockX = Math.Min(prevBlocksX - 1, blockX * (prevBlocksX / curBlocksX));
+                            int sourceBlockY = Math.Min(prevBlocksY - 1, blockY * (prevBlocksY / curBlocksY));
+                            Array.Copy(prevData, (sourceBlockY * prevBlocksX + sourceBlockX) * dxtBlockSize, curData,
+                                (blockY * curBlocksX + blockX) * dxtBlockSize, dxtBlockSize);
+                        }
+                    }
+                }
+                else
+                {
+                    // Palette indices (1 byte) followed by packed alpha bits, or raw BGRA (4 bytes)
+                    int bytesPerPixel = compression == 1 ? 1 : 4;
+                    int prevPixelCount = prevWidth * prevHeight;
+                    int curPixelCount = curWidth * curHeight;
+                    int alphaBits = compression == 1 ? alphaDepth : 0;
+                    curData = new byte[curPixelCount * bytesPerPixel + (curPixelCount * alphaBits + 7) / 8];
+                    for (int y = 0; y < curHeight; y++)
+                    {
+                        for (int x = 0; x < curWidth; x++)
+                        {
+                            int sourcePixel = Math.Min(prevHeight - 1, y * 2) * prevWidth + Math.Min(prevWidth - 1, x * 2);
+                            int curPixel = y * curWidth + x;
+                            Array.Copy(prevData, sourcePixel * bytesPerPixel, curData, curPixel * bytesPerPixel, bytesPerPixel);
+                            if (alphaBits > 0)
+                            {
+                                int sourceBit = sourcePixel * alphaBits;
+                                int alphaMask = (1 << alphaBits) - 1;
+                                int alphaValue = (prevData[prevPixelCount + sourceBit / 8] >> (sourceBit % 8)) & alphaMask;
+                                int curBit = curPixel * alphaBits;
+                                curData[curPixelCount + curBit / 8] |= (byte)(alphaValue << (curBit % 8));
+                            }
+                        }
+                    }
+                }
+
+                // Append the level and point the header at it
+                byte[] offsetBytes = BitConverter.GetBytes(outputBytes.Count);
+                byte[] sizeBytes = BitConverter.GetBytes(curData.Length);
+                for (int i = 0; i < 4; i++)
+                {
+                    outputBytes[20 + curLevel * 4 + i] = offsetBytes[i];
+                    outputBytes[84 + curLevel * 4 + i] = sizeBytes[i];
+                }
+                outputBytes.AddRange(curData);
+                prevData = curData;
+                prevWidth = curWidth;
+                prevHeight = curHeight;
+            }
+            File.WriteAllBytes(blpFullPath, outputBytes.ToArray());
+            return true;
+        }
+
+        // Runs CompleteBLPMipChain on every BLP under the folder, returning how many were changed
+        public static int CompleteBLPMipChainsInFolder(string folderFullPath)
+        {
+            int changedCount = 0;
+            foreach (string blpFullPath in Directory.GetFiles(folderFullPath, "*.blp", SearchOption.AllDirectories))
+                if (CompleteBLPMipChain(blpFullPath) == true)
+                    changedCount++;
+            return changedCount;
         }
 
         public static void SplitMapImageInto12Segments(string inputFilePath, string outputFolder, out List<string> outputImageFullPaths)

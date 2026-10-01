@@ -1127,8 +1127,11 @@ namespace EQWOWConverter
                 process.Start();
                 //process.WaitForExit();
                 Logger.WriteDebug(process.StandardOutput.ReadToEnd());
+                process.WaitForExit();
                 Console.Title = "EverQuest to WoW Converter";
                 curFileArgListSB.Clear();
+                foreach (string curFile in fileNameBatch)
+                    ImageTool.CompleteBLPMipChain(Path.ChangeExtension(curFile, ".blp"));
                 progressCounter.Write(fileNameBatch.Count);
             }
 
