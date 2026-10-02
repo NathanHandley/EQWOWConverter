@@ -188,7 +188,6 @@ namespace EQWOWConverter.Spells
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidNaturesBalanceMinBaseCastTimeInMS", Configuration.CLASSAURA_DRUID_NATURES_BALANCE_MIN_BASE_CAST_TIME_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidEntangleStrikeDamageTakenPercentPerStack", Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_DAMAGE_TAKEN_PERCENT_PER_STACK.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraDruidEntangleStrikeBehindDamagePercentPerStack", Configuration.CLASSAURA_DRUID_ENTANGLE_STRIKE_BEHIND_DAMAGE_PERCENT_PER_STACK.ToString()));
-            rows.Add(new KeyValuePair<string, string>("ClassAuraShamanDotExtendChancePercent", Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraShamanDotExtendInMS", Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraShadowKnightBloodDebtDamageTakenStoredPercent", Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_DAMAGE_TAKEN_STORED_PERCENT.ToString()));
             rows.Add(new KeyValuePair<string, string>("ClassAuraShadowKnightBloodDebtMaxHealthPercent", Configuration.CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_MAX_HEALTH_PERCENT.ToString()));
@@ -278,6 +277,8 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.PaladinHeal:
                 case SpellClassAuraType.PaladinDeflection:
                     return Configuration.CLASSAURA_PALADIN_ENABLED;
+                case SpellClassAuraType.ShadowKnightFocusMana:
+                    return Configuration.CLASSAURA_SHADOWKNIGHT_ENABLED && Configuration.CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_PERCENT_PER_STRIKE > 0;
                 case SpellClassAuraType.ShadowKnightPassive:
                 case SpellClassAuraType.ShadowKnightAura:
                 case SpellClassAuraType.ShadowKnightEdge:
@@ -797,7 +798,29 @@ namespace EQWOWConverter.Spells
             focusSpellTemplate.ShowOnShapeshiftBar = true;
             focusSpellTemplate.PersistThroughDeath = true;
             focusSpellTemplate.TriggersGlobalCooldown = true; // Turning it off is a cast as well, so both directions start the global cooldown
+
+            // Each melee autoattack that lands hands back a share of maximum mana.  The toggle carries the proc (white swings from either hand, partial blocks and fully absorbed swings included, since those
+            // still land) and the mod's script casts the mana spell below
+            if (Configuration.CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_PERCENT_PER_STRIKE > 0)
+            {
+                focusSpellTemplate.AttachedAuraScriptName = "EverQuest_ClassAuraShadowKnightFocusAuraScript";
+                focusSpellTemplate.ProcRow = new SpellProcRow(PROC_FLAG_DONE_MELEE_AUTO_ATTACK, 0, 0, PROC_HIT_NORMAL | PROC_HIT_CRITICAL | PROC_HIT_ABSORB, 0, 0);
+            }
             spellTemplates.Add(focusSpellTemplate);
+
+            // The mana a landed strike restores, with the look of the Judgement of Wisdom mana gain on the knight.  EffectMiscValueA is the power type
+            if (Configuration.CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_PERCENT_PER_STRIKE > 0)
+            {
+                SpellTemplate focusManaSpellTemplate = BuildBaseTemplate(SHADOWKNIGHT_FOCUS_NAME, SpellClassAuraType.ShadowKnightFocusMana, Configuration.CLASSAURA_SHADOWKNIGHT_FOCUS_SPELL_ICON_EQ_ID,
+                    "Mana restored by a landed strike.", string.Empty);
+                SpellEffectWOW focusManaEffect = new SpellEffectWOW(SpellWOWEffectType.EnergizePct, SpellWOWAuraType.None, 0, 0, 0, Configuration.CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_PERCENT_PER_STRIKE,
+                    POWER_MANA, 0);
+                focusManaEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+                focusManaSpellTemplate.WOWSpellEffects.Add(focusManaEffect);
+                focusManaSpellTemplate.SpellVisualID1 = Convert.ToUInt32(Math.Max(0, Configuration.CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_SPELL_VISUAL_ID));
+                focusManaSpellTemplate.GenerateNoThreat = true;
+                spellTemplates.Add(focusManaSpellTemplate);
+            }
 
             // Blood Debt, the ability that unleashes what was stored.  It resolves like the player's Harm Touch: shadow, never misses, cannot crit, and damage modifiers leave the amount the mod hands in alone, though
             // partial resists and absorbs still apply
@@ -873,8 +896,10 @@ namespace EQWOWConverter.Spells
 
         private static string GetShadowKnightFocusEffectsText()
         {
+            string manaText = Configuration.CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_PERCENT_PER_STRIKE > 0 ? string.Concat(". Each melee autoattack that lands restores ",
+                Pct(Configuration.CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_PERCENT_PER_STRIKE), " of your maximum mana") : string.Empty;
             return string.Concat("but only reach melee range and add ", Pct(Configuration.CLASSAURA_SHADOWKNIGHT_FOCUS_COOLDOWN_FROM_BASE_CAST_TIME_PERCENT),
-                " of their base cast time to their cooldown (not affected by haste)");
+                " of their base cast time to their cooldown (not affected by haste)", manaText);
         }
 
         // Stamped onto every affected EQ spell's tooltip in the shape the EQ_SpellTooltips addon reads, which tells it to show the cast as instant at melee range while the aura
@@ -1272,8 +1297,8 @@ namespace EQWOWConverter.Spells
             string warspiritGrantText = string.Concat(Pct(Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_PERCENT_PER_STACK), " increased ", statsText, " for ",
                 Seconds(Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_MAX_STACKS.ToString(), " times");
             string description = Lines(
-                string.Concat("Your autoattacks have a ", Pct(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT),
-                    " chance to extend any of your damage over time effects on the target by ", Seconds(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS), "."),
+                string.Concat("Each of your autoattacks extends one of your damage over time effects on the target, the one closest to expiring, by ",
+                    Seconds(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS), ", up to its original duration."),
                 NamedLine("Spirit's Vigor", string.Concat("Healing an ally grants them ", Pct(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK), " increased ", statsText, " for ",
                     Seconds(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS.ToString(), " times.")),
                 NamedLine("Warspirit", "Can be toggled on so your landed attacks, abilities, and damaging spells grant you Warspirit's Vigor instead, while your heals no longer grant Spirit's Vigor."),

@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 127;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 128;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1376,7 +1376,7 @@ namespace EQWOWConverter
         // If true, every EQ class (primary or secondary) grants a permanent aura with class specific effects
         public static bool CLASSAURA_ENABLED = true;
 
-        // First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96073 as of writing)
+        // First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96074 as of writing)
         public static int CLASSAURA_SPELL_ID_START = 96000;
 
         // Makes all of the class aura toggles show up at the end of the bar
@@ -1454,6 +1454,8 @@ namespace EQWOWConverter
         public static int CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_FULL_EQ_VISUAL_EFFECT_INDEX = 19; // Call of Bones
         public static int CLASSAURA_SHADOWKNIGHT_FOCUS_SPELL_ICON_EQ_ID = 3;
         public static int CLASSAURA_SHADOWKNIGHT_FOCUS_COOLDOWN_FROM_BASE_CAST_TIME_PERCENT = 150; // Share of the unhasted base cast time added to the spell's own cooldown while Spellsword's Focus is on (never changed by haste)
+        public static int CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_PERCENT_PER_STRIKE = 1; // Share of maximum mana each landed melee autoattack restores while Spellsword's Focus is on (zero turns it off)
+        public static int CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_SPELL_VISUAL_ID = 5560; // The visual of the Judgement of Wisdom mana gain (spell 20268), which is also Judgement of Light's
 
         // Warrior "Warmaster"
         public static bool CLASSAURA_WARRIOR_ENABLED = true;
@@ -1542,7 +1544,6 @@ namespace EQWOWConverter
         // Shaman "Spirit Channeler"
         public static bool CLASSAURA_SHAMAN_ENABLED = true;
         public static int CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID = 21;
-        public static int CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT = 33;
         public static int CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS = 3000;
         public static int CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK = 1;
         public static int CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS = 5;
@@ -2742,7 +2743,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MIN_LEVEL_EQ, "Creatures in this level range will never enrage (taken from TAKP's mob_ai.cpp CheckEnrage), with 0 in both disabling this suppression", false);
             OutputVariableToConfig("COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ", COMBATSKILL_ENRAGE_SUPPRESSED_MAX_LEVEL_EQ, "");
             OutputVariableToConfig("CLASSAURA_ENABLED", CLASSAURA_ENABLED, "Every EQ class (primary or secondary) grants a permanent aura with class specific effects. Values here bake into Spell.dbc, so a change needs a converter regen and DBC deploy", false);
-            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96073 as of writing)", false);
+            OutputVariableToConfig("CLASSAURA_SPELL_ID_START", CLASSAURA_SPELL_ID_START, "First of the sequential spell IDs the class auras use (see ClassAuraSpellType in Spells/Types/ClassAuraSpellType.cs, 96000-96074 as of writing)", false);
             OutputVariableToConfig("CLASSAURA_TOGGLE_STANCE_BAR_ORDER", CLASSAURA_TOGGLE_STANCE_BAR_ORDER, "Makes all of the class aura toggles show up at the end of the bar", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_ENABLED", CLASSAURA_ENCHANTER_ENABLED, "Enchanter \"Mind of Clarity\": regenerates a percent of maximum mana on an interval, and spell damage and healing are increased while mana is at or above a threshold", false);
             OutputVariableToConfig("CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID", CLASSAURA_ENCHANTER_SPELL_ICON_EQ_ID, "", false);
@@ -2803,6 +2804,8 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_FULL_EQ_VISUAL_EFFECT_INDEX", CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_FULL_EQ_VISUAL_EFFECT_INDEX, "", false);
             OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_FOCUS_SPELL_ICON_EQ_ID", CLASSAURA_SHADOWKNIGHT_FOCUS_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_FOCUS_COOLDOWN_FROM_BASE_CAST_TIME_PERCENT", CLASSAURA_SHADOWKNIGHT_FOCUS_COOLDOWN_FROM_BASE_CAST_TIME_PERCENT, "", false);
+            OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_PERCENT_PER_STRIKE", CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_PERCENT_PER_STRIKE, "", false);
+            OutputVariableToConfig("CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_SPELL_VISUAL_ID", CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_SPELL_VISUAL_ID, "", false);
             OutputVariableToConfig("CLASSAURA_WARRIOR_ENABLED", CLASSAURA_WARRIOR_ENABLED, "Warrior", false);
             OutputVariableToConfig("CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID", CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT", CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT, "", false);
@@ -2877,7 +2880,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_DRUID_ENTANGLE_STRIKE_SPELL_ICON_EQ_ID", CLASSAURA_DRUID_ENTANGLE_STRIKE_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_SHAMAN_ENABLED", CLASSAURA_SHAMAN_ENABLED, "Shaman", false);
             OutputVariableToConfig("CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID", CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID, "", false);
-            OutputVariableToConfig("CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT", CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT, "", false);
             OutputVariableToConfig("CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS", CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK", CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK, "", false);
             OutputVariableToConfig("CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS", CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS, "", false);
@@ -3634,6 +3636,8 @@ namespace EQWOWConverter
             CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_FULL_EQ_VISUAL_EFFECT_INDEX = ReadVariableFromConfigString("CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_FULL_EQ_VISUAL_EFFECT_INDEX", configValuesByVariableName, CLASSAURA_SHADOWKNIGHT_BLOOD_DEBT_FULL_EQ_VISUAL_EFFECT_INDEX);
             CLASSAURA_SHADOWKNIGHT_FOCUS_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_SHADOWKNIGHT_FOCUS_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_SHADOWKNIGHT_FOCUS_SPELL_ICON_EQ_ID);
             CLASSAURA_SHADOWKNIGHT_FOCUS_COOLDOWN_FROM_BASE_CAST_TIME_PERCENT = ReadVariableFromConfigString("CLASSAURA_SHADOWKNIGHT_FOCUS_COOLDOWN_FROM_BASE_CAST_TIME_PERCENT", configValuesByVariableName, CLASSAURA_SHADOWKNIGHT_FOCUS_COOLDOWN_FROM_BASE_CAST_TIME_PERCENT);
+            CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_PERCENT_PER_STRIKE = ReadVariableFromConfigString("CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_PERCENT_PER_STRIKE", configValuesByVariableName, CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_PERCENT_PER_STRIKE);
+            CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_SPELL_VISUAL_ID = ReadVariableFromConfigString("CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_SPELL_VISUAL_ID", configValuesByVariableName, CLASSAURA_SHADOWKNIGHT_FOCUS_MANA_SPELL_VISUAL_ID);
             CLASSAURA_WARRIOR_ENABLED = ReadVariableFromConfigString("CLASSAURA_WARRIOR_ENABLED", configValuesByVariableName, CLASSAURA_WARRIOR_ENABLED);
             CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_WARRIOR_SPELL_ICON_EQ_ID);
             CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT = ReadVariableFromConfigString("CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT", configValuesByVariableName, CLASSAURA_WARRIOR_RIPOSTE_CHANCE_PERCENT);
@@ -3708,7 +3712,6 @@ namespace EQWOWConverter
             CLASSAURA_DRUID_ENTANGLE_STRIKE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_DRUID_ENTANGLE_STRIKE_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_DRUID_ENTANGLE_STRIKE_SPELL_ICON_EQ_ID);
             CLASSAURA_SHAMAN_ENABLED = ReadVariableFromConfigString("CLASSAURA_SHAMAN_ENABLED", configValuesByVariableName, CLASSAURA_SHAMAN_ENABLED);
             CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_SHAMAN_SPELL_ICON_EQ_ID);
-            CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT = ReadVariableFromConfigString("CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT", configValuesByVariableName, CLASSAURA_SHAMAN_DOT_EXTEND_CHANCE_PERCENT);
             CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS = ReadVariableFromConfigString("CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS", configValuesByVariableName, CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS);
             CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK = ReadVariableFromConfigString("CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK", configValuesByVariableName, CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK);
             CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS = ReadVariableFromConfigString("CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS", configValuesByVariableName, CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS);

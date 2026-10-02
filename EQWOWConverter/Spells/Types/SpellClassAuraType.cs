@@ -92,6 +92,7 @@ namespace EQWOWConverter.Spells
         DruidNaturesBalanceShadow = 71,
         DruidNaturesBalanceArcane = 72,
         ShadowKnightFocus = 73,
-        Count = 74
+        ShadowKnightFocusMana = 74,
+        Count = 75
     }
 }
