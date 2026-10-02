@@ -1804,10 +1804,11 @@ namespace EQWOWConverter
             List<CreatureSpellList> creatureSpellLists = CreatureSpellList.GetCreatureSpellLists();
             SortedDictionary<int, List<CreatureSpellEntry>> creatureSpellEntriesByListID = CreatureSpellEntry.GetCreatureSpellEntriesByListID();
 
-            // Cull the lists down to only list entries that have valid spells within them, dropping spells that are nothing but a charm when creature charm is disabled
+            // Cull the lists down to only list entries that have valid spells within them, dropping spells that are nothing but a charm when creature charm is disabled.
+            // Spells that only move threat (Jolt, Concussion) go too, since a creature has no threat to shed on a player and would only waste the cast
             foreach (List<CreatureSpellEntry> creatureSpellEntries in creatureSpellEntriesByListID.Values)
                 for (int i = creatureSpellEntries.Count - 1;  i >= 0; i--)
-                    if (spellTemplatesByEQID.ContainsKey(creatureSpellEntries[i].EQSpellID) == false || spellTemplatesByEQID[creatureSpellEntries[i].EQSpellID].IsOnlyCharmForCreatureCast() == true)
+                    if (spellTemplatesByEQID.ContainsKey(creatureSpellEntries[i].EQSpellID) == false || spellTemplatesByEQID[creatureSpellEntries[i].EQSpellID].IsOnlyCharmForCreatureCast() == true || spellTemplatesByEQID[creatureSpellEntries[i].EQSpellID].IsOnlyThreatChange() == true)
                         creatureSpellEntries.RemoveAt(i);
 
             // Create a mapping of spell list for faster lookup
@@ -4507,8 +4508,8 @@ namespace EQWOWConverter
             else
             {
                 Dictionary<string, string> previousFileHashesByRelativePath = ReadPatchFileManifest(patchManifestFileName);
-                ComputePatchFileDelta(currentFileHashesByRelativePath, previousFileHashesByRelativePath, out relativePathsToAddOrUpdate, out List<string> relativePathsToRemove);
-                Logger.WriteInfo("- Patch changes since the main patch: ", relativePathsToAddOrUpdate.Count.ToString(), " new/updated, ", relativePathsToRemove.Count.ToString(), " removed");
+                ComputePatchFileDelta(currentFileHashesByRelativePath, previousFileHashesByRelativePath, out relativePathsToAddOrUpdate, out _);
+                Logger.WriteInfo("- Patch changes since the main patch: ", relativePathsToAddOrUpdate.Count.ToString(), " new/updated files");
                 if (relativePathsToAddOrUpdate.Count > Configuration.PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN)
                 {
                     Logger.WriteInfo("- New/updated file count exceeds PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN (", Configuration.PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN.ToString(), "), so doing a full main patch build");

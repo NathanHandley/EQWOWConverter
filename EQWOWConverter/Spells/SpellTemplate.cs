@@ -3784,6 +3784,19 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.EffectBasePoints = Math.Min(eqEffect.EQBaseValue, 100);
                                 newSpellEffects.Add(newSpellEffectWOW);
                             } break;
+                        case SpellEQEffectType.InstantHate:
+                            {
+                                if (eqEffect.EQBaseValue == 0)
+                                    continue;
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.Threat;
+                                newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "DamageDirectDPS", SpellEffectWOWConversionScaleType.None);
+                                if (eqEffect.EQBaseValue > 0)
+                                    newSpellEffectWOW.ActionDescription = string.Concat("generate ", newSpellEffectWOW.GetFormattedEffectActionString(false), " additional threat");
+                                else
+                                    newSpellEffectWOW.ActionDescription = string.Concat("reduce your threat by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
+                                newSpellEffects.Add(newSpellEffectWOW);
+                            } break;
                         case SpellEQEffectType.Harmony:
                             {
                                 if (eqEffect.EQBaseValue < 0)
@@ -5327,7 +5340,8 @@ namespace EQWOWConverter.Spells
             if (procLinkSpellTemplate != null)
                 spellTemplate.Description = string.Concat(spellTemplate.Description, "\n\nSometimes on hit cast:\n", procLinkSpellTemplate.Name, "\n", GenerateActionDescription(procLinkSpellTemplate));
             bool focusBoostWasAddedToDescription = false;
-            if (spellTemplate.ShowFocusBoostInDescriptionIfExists == true)
+            // Instruments never change a hate amount (TAKP Mob::CheckAggroAmount works from the plain formula value)
+            if (spellTemplate.ShowFocusBoostInDescriptionIfExists == true && spellTemplate.IsOnlyThreatChange() == false)
             {
                 string songSkillTypeString = string.Empty;
                 switch (spellTemplate.FocusBoostType)
@@ -5733,6 +5747,8 @@ namespace EQWOWConverter.Spells
                 }
             }
 
+            MoveThreatEffectsToFront();
+
             // The mod's illusion script hooks effect 0 of the primary block, so the form trigger has to lead the first block
             if (IsllusionSpellParent == true)
                 MoveIllusionParentDummyEffectToFront();
@@ -5818,6 +5834,30 @@ namespace EQWOWConverter.Spells
                     outputEffectBlocks.Add(baseEffectBlock);
                 }
             }
+        }
+
+        private void MoveThreatEffectsToFront()
+        {
+            // The core only gives the threat to whichever unit executes the spell, and a split block is executed by the unit it hit (see GroupSpellEffectsIntoOutputEffectBlocks),
+            // so a threat effect only works from the primary block with the true caster
+            List<SpellEffectWOW> threatEffects = new List<SpellEffectWOW>();
+            foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
+                if (spellEffect.EffectType == SpellWOWEffectType.Threat)
+                    threatEffects.Add(spellEffect);
+            if (threatEffects.Count == 0 || threatEffects.Count == WOWSpellEffects.Count)
+                return;
+            if (threatEffects.Count > 3)
+                Logger.WriteError("Spell '", Name, "' (eq id ", EQSpellID.ToString(), ") has more than three threat effects, so those past the third land in a split block and do nothing");
+
+            // Blocks group by level band in the order the bands first appear.  A flat amount has no use for its own band, so it joins the one the spell
+            // already starts in instead of pushing those effects into a split block
+            foreach (SpellEffectWOW threatEffect in threatEffects)
+                WOWSpellEffects.Remove(threatEffect);
+            int leadingLevelBand = WOWSpellEffects[0].CalcEffectHighLevel;
+            foreach (SpellEffectWOW threatEffect in threatEffects)
+                if (threatEffect.EffectRealPointsPerLevel == 0)
+                    threatEffect.CalcEffectHighLevel = leadingLevelBand;
+            WOWSpellEffects.InsertRange(0, threatEffects);
         }
 
         private void MoveEyeOfZommEffectsToFront()
@@ -5940,6 +5980,22 @@ namespace EQWOWConverter.Spells
                 if (spellEffect.EffectType != SpellWOWEffectType.None && IsCharmSpellEffect(spellEffect) == false)
                     return false;
             return true;
+        }
+
+        // True when the spell does nothing but add or remove threat
+        public bool IsOnlyThreatChange()
+        {
+            if (ChainedSpellTemplates.Count > 0)
+                return false;
+            bool hasThreatEffect = false;
+            foreach (SpellEffectWOW spellEffect in WOWSpellEffects)
+            {
+                if (spellEffect.EffectType == SpellWOWEffectType.Threat)
+                    hasThreatEffect = true;
+                else if (spellEffect.EffectType != SpellWOWEffectType.None)
+                    return false;
+            }
+            return hasThreatEffect;
         }
 
         public int GetWOWSpellIDForCreatureCast()

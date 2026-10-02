@@ -104,7 +104,7 @@ namespace EQWOWConverter.Spells
         ModelSize = 89, // Grow/Shrink
         //....
         // SummonCorpse = 91 // Summon the corpse of the targeted player
-        // InstantHate = 92 // Add or remove a set amount of hate
+        InstantHate = 92, // Add or remove a set amount of hate
         // StopRain = 93 // Stops any active rain
         NegateIfCombat = 94, // "Fragile" buffs (Scale of Wolf, Spirit of Scale) break if casting a spell or attacking
         //....
