@@ -688,6 +688,7 @@ namespace EQWOWConverter.Items
                 IsPackedClassMask(ClassEQType.Druid, classMask) ||
                 IsPackedClassMask(ClassEQType.Shaman, classMask) ||
                 IsPackedClassMask(ClassEQType.Wizard, classMask) ||
+                IsPackedClassMask(ClassEQType.Bard, classMask) ||
                 IsPackedClassMask(ClassEQType.Magician, classMask) ||
                 IsPackedClassMask(ClassEQType.Necromancer, classMask) ||
                 IsPackedClassMask(ClassEQType.ShadowKnight, classMask) ||
