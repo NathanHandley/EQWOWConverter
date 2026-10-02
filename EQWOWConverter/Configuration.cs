@@ -905,7 +905,7 @@ namespace EQWOWConverter
         public static int SPELLS_MANA_COST_PERCENT_EQ_MANA_POOL_PER_LEVEL = 30;
         public static float SPELLS_MANA_COST_PERCENT_MOD = 1.60f;
         public static float SPELLS_MANA_COST_PERCENT_HEAL_MOD = 1.75f;
-        public static float SPELLS_MANA_COST_PERCENT_PERIODIC_MOD = 2.5f;
+        public static float SPELLS_MANA_COST_PERCENT_PERIODIC_MOD = 1.25f;
         public static float SPELLS_MANA_COST_PERCENT_AOE_MOD = 1.2f;
         public static float SPELLS_MANA_COST_PERCENT_RAIN_MOD = 1.25f; // Rains skip the area and periodic surcharges (their hit budget makes them priced like a single target spell) and pay this instead
         public static int SPELLS_MANA_COST_PERCENT_MIN = 1;
