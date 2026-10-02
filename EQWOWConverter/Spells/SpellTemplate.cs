@@ -2146,6 +2146,25 @@ namespace EQWOWConverter.Spells
             return GetManaGainSpellPowerCoefficientForEffects(effectBlock.SpellEffects, out isPeriodic);
         }
 
+        public void GetCasterLifeCostTypesForBlock(SpellEffectBlock effectBlock, out bool hasDirectLifeCost, out bool hasPeriodicLifeCost)
+        {
+            // WOW's Life Tap takes its life as a cost rather than as damage, so the mod pays these outside of the damage path (no combat log entry, absorb or Soul Link share)
+            hasDirectLifeCost = false;
+            hasPeriodicLifeCost = false;
+            if (IsLifeForManaSpell == false)
+                return;
+            foreach (SpellEffectWOW spellEffect in effectBlock.SpellEffects)
+            {
+                if (spellEffect.ImplicitTargetA != SpellWOWTargetType.UnitCaster)
+                    continue;
+                if (spellEffect.EffectType == SpellWOWEffectType.SchoolDamage)
+                    hasDirectLifeCost = true;
+                else if (spellEffect.IsAuraType() == true
+                    && (spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamage || spellEffect.EffectAuraType == SpellWOWAuraType.PeriodicDamagePercent))
+                    hasPeriodicLifeCost = true;
+            }
+        }
+
         private static float GetManaGainSpellPowerCoefficientForEffects(List<SpellEffectWOW> spellEffects, out bool isPeriodic)
         {
             isPeriodic = false;

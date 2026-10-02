@@ -2950,6 +2950,18 @@ namespace EQWOWConverter
                         Logger.WriteError("Spell '", spellTemplate.Name, "' (EQ ID '", spellTemplate.EQSpellID.ToString(), "') has a mana gain spell power coefficient on a block with no energize effect, so no script was attached");
                 }
 
+                // The life a life-for-mana spell takes off its caster is paid by the mod as a cost, the way Life Tap's is, instead of landing as damage
+                if (commentFragment != " (Worn)")
+                {
+                    bool blockHasDirectLifeCost;
+                    bool blockHasPeriodicLifeCost;
+                    spellTemplate.GetCasterLifeCostTypesForBlock(curEffectBlock, out blockHasDirectLifeCost, out blockHasPeriodicLifeCost);
+                    if (blockHasDirectLifeCost == true)
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_LifeCostSpellScript");
+                    if (blockHasPeriodicLifeCost == true)
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_LifeCostAuraScript");
+                }
+
                 // Spell power
                 if (spellTemplate.InfluencedBySpellPower == true && commentFragment != " (Worn)")
                 {
