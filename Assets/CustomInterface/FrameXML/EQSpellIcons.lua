@@ -6,15 +6,27 @@
 -- generic icon (Interface\Icons\Spell_EQ_<icon>), the plain icon EverQuest shows for the spell.
 --
 -- Two settings pick which look is shown where.  EQ_Options sets them from its per character saved variables,
--- and these are the defaults whenever it has not (or is not loaded):
---   * EQ_AURA_ICON_TYPE: buffs and debuffs on the player's buff bar and on the target, focus, party and pet frames
---   * EQ_ACTION_ICON_TYPE: action bars (and the pet bar) and the spellbook
+-- and the defaults apply whenever it has not (or is not loaded):
+--   * Aura icon type (default generic): buffs and debuffs on the player's buff bar and on the target, focus, party and pet frames
+--   * Action icon type (default target aware): action bars (and the pet bar) and the spellbook
 --
 EQ_SPELL_ICON_TYPE_GENERIC = "generic";
 EQ_SPELL_ICON_TYPE_TARGET_AWARE = "targetaware";
 
-EQ_AURA_ICON_TYPE = EQ_SPELL_ICON_TYPE_GENERIC;
-EQ_ACTION_ICON_TYPE = EQ_SPELL_ICON_TYPE_TARGET_AWARE;
+-- The settings come from an addon, and anything an addon writes into a Lua variable taints every stock function that
+-- later reads it (the pet bar and the spellbook then get blocked from their protected calls).  So they are kept as the
+-- ID of a frame instead, since a value handed to the client and read back comes back untainted.  An ID of 0 is the defaults
+local EQ_SPELL_ICON_SETTING_AURA_TARGET_AWARE = 1;
+local EQ_SPELL_ICON_SETTING_ACTION_GENERIC = 2;
+local eqSpellIconSettingsFrame = CreateFrame("Frame");
+
+local function EQSpellIcons_IsAuraIconTargetAware()
+	return math.fmod(eqSpellIconSettingsFrame:GetID(), 2) == EQ_SPELL_ICON_SETTING_AURA_TARGET_AWARE;
+end
+
+local function EQSpellIcons_IsActionIconGeneric()
+	return eqSpellIconSettingsFrame:GetID() >= EQ_SPELL_ICON_SETTING_ACTION_GENERIC;
+end
 
 -- Returns the icon index in a spell gem texture path, or nil for anything that is not a spell gem icon
 local function EQSpellIcons_GetSpellGemIconID(texture)
@@ -41,7 +53,7 @@ end
 
 -- The texture to show for an aura, given what UnitAura/UnitBuff/UnitDebuff returned for it
 function EQSpellIcons_GetAuraTexture(texture, spellID)
-	if ( EQ_AURA_ICON_TYPE == EQ_SPELL_ICON_TYPE_TARGET_AWARE ) then
+	if ( EQSpellIcons_IsAuraIconTargetAware() ) then
 		return texture;
 	end
 	return EQSpellIcons_GetGenericTexture(texture, spellID);
@@ -49,7 +61,7 @@ end
 
 -- The texture to show on an action button, given what GetActionTexture returned for it
 function EQSpellIcons_GetActionTexture(texture, action)
-	if ( EQ_ACTION_ICON_TYPE == EQ_SPELL_ICON_TYPE_TARGET_AWARE ) then
+	if ( not EQSpellIcons_IsActionIconGeneric() ) then
 		return texture;
 	end
 	return EQSpellIcons_GetGenericTexture(texture, nil, EQSpellIcons_GetActionSpellID, action);
@@ -57,7 +69,7 @@ end
 
 -- The texture to show on a pet action button, given what GetPetActionInfo returned for it
 function EQSpellIcons_GetPetActionTexture(texture)
-	if ( EQ_ACTION_ICON_TYPE == EQ_SPELL_ICON_TYPE_TARGET_AWARE ) then
+	if ( not EQSpellIcons_IsActionIconGeneric() ) then
 		return texture;
 	end
 	return EQSpellIcons_GetGenericTexture(texture);
@@ -65,7 +77,7 @@ end
 
 -- The texture to show on a spellbook button, given what GetSpellTexture returned for the slot
 function EQSpellIcons_GetSpellBookTexture(texture, slot, bookType)
-	if ( EQ_ACTION_ICON_TYPE == EQ_SPELL_ICON_TYPE_TARGET_AWARE ) then
+	if ( not EQSpellIcons_IsActionIconGeneric() ) then
 		return texture;
 	end
 	return EQSpellIcons_GetGenericTexture(texture, nil, EQSpellIcons_GetSpellBookSpellID, slot, bookType);
@@ -160,10 +172,18 @@ end
 
 -- Called by EQ_Options with the two settings.  The spellbook is left alone, as it redraws itself every time it opens
 function EQSpellIcons_SetIconTypes(auraIconType, actionIconType)
-	local auraChanged = (auraIconType ~= EQ_AURA_ICON_TYPE);
-	local actionChanged = (actionIconType ~= EQ_ACTION_ICON_TYPE);
-	EQ_AURA_ICON_TYPE = auraIconType;
-	EQ_ACTION_ICON_TYPE = actionIconType;
+	local isAuraIconTargetAware = (auraIconType == EQ_SPELL_ICON_TYPE_TARGET_AWARE);
+	local isActionIconGeneric = (actionIconType == EQ_SPELL_ICON_TYPE_GENERIC);
+	local auraChanged = (isAuraIconTargetAware ~= EQSpellIcons_IsAuraIconTargetAware());
+	local actionChanged = (isActionIconGeneric ~= EQSpellIcons_IsActionIconGeneric());
+	local settingsID = 0;
+	if ( isAuraIconTargetAware ) then
+		settingsID = settingsID + EQ_SPELL_ICON_SETTING_AURA_TARGET_AWARE;
+	end
+	if ( isActionIconGeneric ) then
+		settingsID = settingsID + EQ_SPELL_ICON_SETTING_ACTION_GENERIC;
+	end
+	eqSpellIconSettingsFrame:SetID(settingsID);
 	if ( auraChanged ) then
 		EQSpellIcons_RefreshAuras();
 	end

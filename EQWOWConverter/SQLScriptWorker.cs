@@ -762,9 +762,11 @@ namespace EQWOWConverter
                 menuNPCTextID = IDGenerationTool.GenerateID("NPCTextID", "podmenu");
                 npcTextSQL.AddRow(menuNPCTextID, Configuration.CREATURE_PRIEST_OF_DISCORD_TELEPORTER_GOSSIP_TEXT, menuBroadcastTextID);
                 gossipMenuSQL.AddRow(priestOfDiscordGossipMenuID, menuNPCTextID);
-                gossipMenuSQL.AddRow(priestOfDiscordGossipMenuID, priestOfDiscordCooldownMenuNPCTextID);
+
+                // The cooldown text only joins the menu along with the conditions that pick between the two.  Without those the core shows whichever text row it reads last
                 if (Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_DURATION_IN_MIN > 0)
                 {
+                    gossipMenuSQL.AddRow(priestOfDiscordGossipMenuID, priestOfDiscordCooldownMenuNPCTextID);
                     string menuConditionComment = string.Concat("Show Priest of Discord menu if player does not have spell aura ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());
                     conditionsSQL.AddRowForMenuRestrictionIfAura(priestOfDiscordGossipMenuID, menuNPCTextID, Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID, menuConditionComment, true);
                     menuConditionComment = string.Concat("Show Priest of Discord cooldown menu if player does have spell aura ", Configuration.SPELL_PRIEST_OF_DISCORD_PORTAL_COOLDOWN_SPELL_ID.ToString());

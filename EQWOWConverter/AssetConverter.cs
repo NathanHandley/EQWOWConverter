@@ -433,12 +433,14 @@ namespace EQWOWConverter
                 FileTool.CopyDirectoryAndContents(sourceOptionsAddOnFolder, targetOptionsAddOnFolder, true, true);
 
                 // Create or update the MPQs
-                CreateOrUpdateMainPatchMPQ();
+                bool arePatchMPQsBuilt = CreateOrUpdateMainPatchMPQ();
                 if (Configuration.GENERATE_WORLDMAPS == true)
                     CreateMinimapPatchMPQ();
 
-                // Deploy 
-                if (Configuration.DEPLOY_CLIENT_FILES == true)
+                // Deploy, but never a main and delta patch pair that failed to build, since a stale one of the two shadows the other on the client
+                if (arePatchMPQsBuilt == false)
+                    Logger.WriteError("Not deploying to the client, since the main and delta patch MPQs did not both build");
+                else if (Configuration.DEPLOY_CLIENT_FILES == true)
                 {
                     DeployClient();
                     if (Configuration.DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY == true)
@@ -4469,7 +4471,8 @@ namespace EQWOWConverter
             Logger.WriteDebug("Building minimap patch MPQ complete");
         }
 
-        public void CreateOrUpdateMainPatchMPQ()
+        // Returns false when the main and delta patch MPQs did not both build
+        public bool CreateOrUpdateMainPatchMPQ()
         {
             // Make sure the output folder exists
             if (Directory.Exists(Configuration.PATH_EXPORT_FOLDER) == false)
@@ -4520,13 +4523,13 @@ namespace EQWOWConverter
             // Full build puts everything into the main patch, and the delta is left empty
             if (doFullMainPatchBuild == true)
             {
+                // The old manifest goes before the build starts, so neither a failed build nor one cut off part way can leave it describing a main patch that is no longer there
+                if (File.Exists(patchManifestFileName) == true)
+                    File.Delete(patchManifestFileName);
                 if (CreateMainPatchMPQ(mpqReadyFolder, outputPatchFileName, currentFileHashesByRelativePath.Count) == false)
                 {
-                    // Make sure a stale manifest can't make a later run think the failed main patch is current
-                    Logger.WriteError("Failed the main patch MPQ create, so not updating the patch file manifest");
-                    if (File.Exists(patchManifestFileName) == true)
-                        File.Delete(patchManifestFileName);
-                    return;
+                    Logger.WriteError("Failed the main patch MPQ create, so not writing the patch file manifest");
+                    return false;
                 }
                 WritePatchFileManifest(patchManifestFileName, currentFileHashesByRelativePath);
                 relativePathsToAddOrUpdate.Clear();
@@ -4537,10 +4540,11 @@ namespace EQWOWConverter
             if (CreateDeltaPatchMPQ(outputDeltaPatchFileName, mpqReadyFolder, relativePathsToAddOrUpdate) == false)
             {
                 Logger.WriteError("Delta patch generation failed");
-                return;
+                return false;
             }
 
             Logger.WriteDebug("Building main and delta patch MPQs complete");
+            return true;
         }
 
         private bool CreateMainPatchMPQ(string mpqReadyFolder, string outputPatchFileName, int mpqReadyFileCount)

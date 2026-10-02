@@ -35,7 +35,7 @@ namespace EQWOWConverter.EQFiles
                 return fileNameIn;
         }
 
-        public bool LoadFromDisk(string fileFullPath)
+        public bool LoadFromDisk(string fileFullPath, bool renameDuplicateRootBones)
         {
             string animationFileName = Path.GetFileNameWithoutExtension(fileFullPath);
             string animationName = animationFileName.Split("_")[1];
@@ -45,8 +45,9 @@ namespace EQWOWConverter.EQFiles
 
             Logger.WriteDebug(" - Reading EQ Animation Data from '" + fileFullPath + "'...");
 
-            // If there is a cached version, just clone from it
-            if (CachedAnimationDataForFile.TryGetValue(fileFullPath, out Animation? cachedAnimation) == true)
+            // If there is a cached version, just clone from it.  The two ways of reading a file are cached apart
+            string cacheKey = renameDuplicateRootBones == true ? fileFullPath + "|renamedroot" : fileFullPath;
+            if (CachedAnimationDataForFile.TryGetValue(cacheKey, out Animation? cachedAnimation) == true)
             {
                 Animation = new Animation(cachedAnimation);
                 Logger.WriteDebug(" - Done reading EQ Animation Data from '" + fileFullPath + "' via cache");
@@ -112,7 +113,7 @@ namespace EQWOWConverter.EQFiles
                 // Only the first path part is the real root, so match the skeleton's rename of any later 'root' part
                 string[] bonePathParts = blocks[0].Split('/');
                 for (int i = 1; i < bonePathParts.Length; i++)
-                    if (bonePathParts[i] == "root")
+                    if (renameDuplicateRootBones == true && bonePathParts[i] == "root")
                         bonePathParts[i] = EQSkeleton.DUPLICATE_ROOT_BONE_NAME;
                 animationFrame.BoneFullNameInPath = string.Join('/', bonePathParts);
                 animationFrame.FrameIndex = int.Parse(blocks[1]);
@@ -131,7 +132,7 @@ namespace EQWOWConverter.EQFiles
             Logger.WriteDebug(" - Done reading EQ Animation Data from '" + fileFullPath + "'");
 
             // Store copy on the cache
-            CachedAnimationDataForFile.TryAdd(fileFullPath, new Animation(Animation));
+            CachedAnimationDataForFile.TryAdd(cacheKey, new Animation(Animation));
 
             return true;
         }

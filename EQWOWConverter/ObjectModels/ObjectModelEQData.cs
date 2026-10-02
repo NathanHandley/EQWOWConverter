@@ -52,7 +52,7 @@ namespace EQWOWConverter.ObjectModels
             // Load skeleton, if possible
             string skeletonFileName = Path.Combine(inputObjectFolder, "Skeletons", eqInputObjectFileName + ".txt");
             if (File.Exists(skeletonFileName))
-                LoadSkeletonData(eqInputObjectFileName, inputObjectFolder);
+                LoadSkeletonData(eqInputObjectFileName, inputObjectFolder, creatureModelTemplate != null);
 
             if (creatureModelTemplate != null)
             {
@@ -235,7 +235,7 @@ namespace EQWOWConverter.ObjectModels
                 if (creatureModelTemplate != null)
                     animationSupplimentName = creatureModelTemplate.Race.Skeleton2Name;
 
-                LoadAnimationData(name, eqInputObjectFileName, inputObjectFolder, animationSupplimentName);
+                LoadAnimationData(name, eqInputObjectFileName, inputObjectFolder, animationSupplimentName, creatureModelTemplate != null);
 
                 // Load collision
                 LoadCollisionMeshData(name, meshNamesInDictionary.Keys.ToList(), inputObjectFolder);
@@ -278,7 +278,7 @@ namespace EQWOWConverter.ObjectModels
                     GenerateAnimationFromAnimatedVertexSkeleton(name, MeshData);
                 }
                 else
-                    LoadAnimationData(name, eqInputObjectFileName, inputObjectFolder, string.Empty);
+                    LoadAnimationData(name, eqInputObjectFileName, inputObjectFolder, string.Empty, creatureModelTemplate != null);
 
                 // Load collision
                 LoadCollisionMeshData(name, meshBoneIndexByName.Keys.ToList(), inputObjectFolder);
@@ -1427,21 +1427,22 @@ namespace EQWOWConverter.ObjectModels
             CollisionVertices = collisionMeshData.Vertices;
         }
 
-        private void LoadSkeletonData(string inputObjectName, string inputObjectFolder)
+        private void LoadSkeletonData(string inputObjectName, string inputObjectFolder, bool renameDuplicateRootBones)
         {
             Logger.WriteDebug("- [" + inputObjectName + "]: Reading skeleton data...");
             string skeletonFileName = Path.Combine(inputObjectFolder, "Skeletons", inputObjectName + ".txt");
-            if (CachedSkeletonDataByFileName.TryGetValue(skeletonFileName, out EQSkeleton? cachedSkeleton) == true)
+            string cacheKey = renameDuplicateRootBones == true ? skeletonFileName + "|renamedroot" : skeletonFileName;
+            if (CachedSkeletonDataByFileName.TryGetValue(cacheKey, out EQSkeleton? cachedSkeleton) == true)
                 SkeletonData = new EQSkeleton(cachedSkeleton);
             else
             {
                 SkeletonData = new EQSkeleton();
-                if (SkeletonData.LoadFromDisk(skeletonFileName) == false)
+                if (SkeletonData.LoadFromDisk(skeletonFileName, renameDuplicateRootBones) == false)
                 {
                     Logger.WriteError("- [" + inputObjectName + "]: Issue loading skeleton data that should be at '" + skeletonFileName + "'");
                     return;
                 }
-                CachedSkeletonDataByFileName.TryAdd(skeletonFileName, new EQSkeleton(SkeletonData));
+                CachedSkeletonDataByFileName.TryAdd(cacheKey, new EQSkeleton(SkeletonData));
             }
         }
 
@@ -1546,7 +1547,7 @@ namespace EQWOWConverter.ObjectModels
             Animations.Add("pos", newAnimation);
         }
 
-        private void LoadAnimationData(string inputObjectName, string eqInputObjectFileName, string inputObjectFolder, string animationSupplementalName)
+        private void LoadAnimationData(string inputObjectName, string eqInputObjectFileName, string inputObjectFolder, string animationSupplementalName, bool renameDuplicateRootBones)
         {
             Logger.WriteDebug("- [" + inputObjectName + "]: Reading animation data...");
 
@@ -1560,7 +1561,7 @@ namespace EQWOWConverter.ObjectModels
                 string animationFileName = Path.GetFileNameWithoutExtension(animationFileInfo.FullName);
                 string animationName = animationFileName.Split("_")[1];
                 EQAnimation curEQAnimation = new EQAnimation();
-                if (curEQAnimation.LoadFromDisk(animationFileInfo.FullName))
+                if (curEQAnimation.LoadFromDisk(animationFileInfo.FullName, renameDuplicateRootBones))
                     Animations.Add(animationName, curEQAnimation.Animation);
                 else
                     Logger.WriteError("- [" + inputObjectName + "]: Could not load animation data that should be at '" + animationFileName + "'");
@@ -1578,7 +1579,7 @@ namespace EQWOWConverter.ObjectModels
                         continue;
 
                     EQAnimation curEQAnimation = new EQAnimation();
-                    if (curEQAnimation.LoadFromDisk(animationFileInfo.FullName))
+                    if (curEQAnimation.LoadFromDisk(animationFileInfo.FullName, renameDuplicateRootBones))
                         Animations.Add(animationName, curEQAnimation.Animation);
                     else
                         Logger.WriteError("- [" + inputObjectName + "]: Could not load animation data that should be at '" + animationFileName + "'");

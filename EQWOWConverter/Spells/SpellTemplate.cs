@@ -1595,18 +1595,26 @@ namespace EQWOWConverter.Spells
         // TAKP IsPartialCapableSpell (common/spdat.cpp): only a spell whose first non-blank effect is hit point damage can partially resist, unless it's flagged no_partial_resist
         private static bool IsEQSpellRowPartialResistCapable(Dictionary<string, string> columns)
         {
-            if (columns["no_partial_resist"].Trim() == "1")
+            // TAKP reads the flag as set for any value but zero (the data holds -1, 0 and 1)
+            string noPartialResist = columns["no_partial_resist"].Trim();
+            if (noPartialResist.Length > 0 && noPartialResist != "0")
                 return false;
             for (int slotID = 1; slotID <= 12; slotID++)
             {
+                // The base value is only read on the effects that need it, since other effects hold values that aren't whole numbers (teleport coordinates, even in blank slots)
                 int effectID = int.Parse(columns[string.Concat("effectid", slotID)]);
-                int baseValue = int.Parse(columns[string.Concat("effect_base_value", slotID)]);
-                int formula = slotID < 12 ? int.Parse(columns[string.Concat("formula", slotID)]) : 0;
 
                 // TAKP IsBlankSpellEffect: blank, the charisma "spacer", and the stacking commands
-                if (effectID == 254 || (effectID == 10 && baseValue == 0 && formula == 100) || effectID == 148 || effectID == 149)
+                if (effectID == 254 || effectID == 148 || effectID == 149)
                     continue;
-                return (effectID == (int)SpellEQEffectType.CurrentHitPoints || effectID == (int)SpellEQEffectType.CurrentHitPointsOnce) && baseValue < 0;
+                bool isHitPointEffect = (effectID == (int)SpellEQEffectType.CurrentHitPoints || effectID == (int)SpellEQEffectType.CurrentHitPointsOnce);
+                if (effectID != 10 && isHitPointEffect == false)
+                    return false;
+                int baseValue = int.Parse(columns[string.Concat("effect_base_value", slotID)]);
+                int formula = slotID < 12 ? int.Parse(columns[string.Concat("formula", slotID)]) : 0;
+                if (effectID == 10 && baseValue == 0 && formula == 100)
+                    continue;
+                return isHitPointEffect == true && baseValue < 0;
             }
             return false;
         }

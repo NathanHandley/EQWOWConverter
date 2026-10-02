@@ -784,8 +784,8 @@ namespace EQWOWConverter.Items
             }
 
             // Block Value on shields determined by armor class
-            if (isShield == true) // Shields only
-                itemTemplate.Block = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "BlockValue", eqArmorClass));
+            if (isShield == true) // Shields only (block is an unsigned column, so a shield with negative armor class gets none)
+                itemTemplate.Block = Math.Max(0, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "BlockValue", eqArmorClass)));
 
             // HP
             if (eqHp != 0)

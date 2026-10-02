@@ -87,7 +87,8 @@ namespace EQWOWConverter.EQFiles
             }
         }
 
-        public bool LoadFromDisk(string fileFullPath)
+        // Only creature skeletons get their duplicate root renamed.  Some equipment skeletons carry one too, and those keep it under the root's own name as they always have
+        public bool LoadFromDisk(string fileFullPath, bool renameDuplicateRootBones)
         {
             Logger.WriteDebug(" - Reading EQ Skeleton Data from '" + fileFullPath + "'...");
             if (File.Exists(fileFullPath) == false)
@@ -147,7 +148,7 @@ namespace EQWOWConverter.EQFiles
 
                 EQSkeletonBone boneStruct = new EQSkeletonBone();
                 boneStruct.BoneName = blocks[0];
-                if (boneStruct.BoneName == "root" && BoneStructures.Count > 0)
+                if (renameDuplicateRootBones == true && boneStruct.BoneName == "root" && BoneStructures.Count > 0)
                     boneStruct.BoneName = DUPLICATE_ROOT_BONE_NAME;
                 string[] children = blocks[1].Split(";");
                 foreach (string child in children)
