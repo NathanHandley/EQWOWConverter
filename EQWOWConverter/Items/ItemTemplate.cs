@@ -46,6 +46,7 @@ namespace EQWOWConverter.Items
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByWOWEntryID = new SortedDictionary<int, ItemTemplate>();
         private static ItemDisplayInfo? CompanionPetItemDisplayInfo = null; // Same across all companion pets
         private static int CUR_ITEM_GENERATED_EQID = 50000;
+        private const int ITEM_DESCRIPTION_MAX_LENGTH = 255; // Size of item_template.description
         private static readonly object ItemLock = new object();
 
         // Slotshifting items are wearable items in multiple slots (in EQ) that change to other slots on click
@@ -98,6 +99,7 @@ namespace EQWOWConverter.Items
         public int EQItemID = 0;
         public int WOWEntryID = 0;
         public int NonEssenceWOWEntryID = 0; // Filled in only for "essence split clickies" for tradeskills/quests to reference a non-essence version
+        public ItemTemplate? ClickyBagEquipItemTemplate = null; // Filled in only on "essence split clicky" bags, as the wearable item inside it
         public int ClassID = 0;
         public int SubClassID = 0;
         public string Name = string.Empty;
@@ -2818,13 +2820,15 @@ namespace EQWOWConverter.Items
             createdBagItemTemplate.ClassID = 0;
             createdBagItemTemplate.SubClassID = 8; // Other
             createdBagItemTemplate.Name = string.Concat(originalItemTemplate.Name, " Container");
-            createdBagItemTemplate.Description = string.Concat("Contains the item and the essence of the item '", originalItemTemplate.Name, "'.");
-            createdBagItemTemplate.IconID = Configuration.ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID;
+            createdBagItemTemplate.Description = string.Concat("Contains the item and the essence of the item '", originalItemTemplate.Name, "'."); // Replaced by PopulateClickyBagDescription
+            createdBagItemTemplate.ClickyBagEquipItemTemplate = originalItemTemplate;
+            createdBagItemTemplate.IconID = originalItemTemplate.IconID; // Looks like the item inside, so it's recognizable as loot
+            createdBagItemTemplate.OverrideIconFileNameNoExt = originalItemTemplate.OverrideIconFileNameNoExt;
             createdBagItemTemplate.Quality = originalItemTemplate.Quality;
             createdBagItemTemplate.BuyPriceInCopper = originalItemTemplate.BuyPriceInCopper;
             createdBagItemTemplate.SellPriceInCopper = originalItemTemplate.SellPriceInCopper;
             createdBagItemTemplate.CanBeOpened = true;
-            createdBagItemTemplate.AllowedClassTypesEQ = new List<ClassEQType>() { ClassEQType.All };
+            createdBagItemTemplate.AllowedClassTypesEQ = new List<ClassEQType>(originalItemTemplate.AllowedClassTypesEQ); // Opening isn't class gated, so this is only who the item inside is for
 
             // Create the essence
             createdEssenceItem = new ItemTemplate();
@@ -2886,6 +2890,271 @@ namespace EQWOWConverter.Items
             SubClassID = 0; // Key
         }
 
+        // Describes the wearable item inside of an "essence split clicky" bag, so it's clear what the bag is when it shows up as loot
+        // This must run after the item spell effects are assigned
+        public void PopulateClickyBagDescription(Dictionary<int, SpellTemplate> spellTemplatesByEQID)
+        {
+            if (ClickyBagEquipItemTemplate == null)
+                return;
+            ItemTemplate equipItemTemplate = ClickyBagEquipItemTemplate;
+
+            // Worn effect or proc, whichever was attached to the item
+            string effectLine = string.Empty;
+            if (equipItemTemplate.WOWSpellID1 != 0 && equipItemTemplate.WOWSpellTrigger1 == 1 && equipItemTemplate.WOWSpellID1 == equipItemTemplate.WOWWornEffectSpellID
+                && spellTemplatesByEQID.ContainsKey(equipItemTemplate.EQWornEffectSpellID) == true)
+                effectLine = string.Concat("Equip: ", spellTemplatesByEQID[equipItemTemplate.EQWornEffectSpellID].Name);
+            else if (equipItemTemplate.WOWSpellID1 != 0 && equipItemTemplate.WOWSpellTrigger1 == 2 && spellTemplatesByEQID.ContainsKey(equipItemTemplate.EQCombatProcSpellEffectID) == true)
+                effectLine = string.Concat("Chance on hit: ", spellTemplatesByEQID[equipItemTemplate.EQCombatProcSpellEffectID].Name);
+
+            // Click effect, which is what the essence casts
+            string useLine = string.Empty;
+            if (spellTemplatesByEQID.ContainsKey(equipItemTemplate.EQClickSpellEffectID) == true)
+                useLine = string.Concat("Use: ", spellTemplatesByEQID[equipItemTemplate.EQClickSpellEffectID].Name);
+
+            // The description shares the item_template.description column with the "EQ Classes:" line (and newline) that gets stamped in front of it
+            Description = string.Empty;
+            int descriptionMaxLength = ITEM_DESCRIPTION_MAX_LENGTH - (GetDescriptionStringWithAddedAllowedClasses(AllowedClassTypesEQ).Length + 2);
+
+            // Lines are in display order
+            string[] descriptionLines = new string[]
+            {
+                "Contains the item and its essence:",
+                equipItemTemplate.GetSlotAndTypeSummaryLine(),
+                equipItemTemplate.GetWeaponDamageSummaryLine(),
+                equipItemTemplate.GetArmorSummaryLine(),
+                equipItemTemplate.GetStatSummaryLine(false),
+                equipItemTemplate.GetResistSummaryLine(false),
+                effectLine,
+                useLine
+            };
+            string description = GetJoinedDescriptionLines(descriptionLines);
+
+            // When there isn't enough room, shorten the stat names and then give up lines starting with the least important
+            if (description.Length > descriptionMaxLength)
+            {
+                descriptionLines[4] = equipItemTemplate.GetStatSummaryLine(true);
+                descriptionLines[5] = equipItemTemplate.GetResistSummaryLine(true);
+                description = GetJoinedDescriptionLines(descriptionLines);
+            }
+            int[] lineIndexesInDropOrder = new int[] { 0, 5, 3, 2, 1, 7, 6, 4 };
+            foreach (int lineIndex in lineIndexesInDropOrder)
+            {
+                if (description.Length <= descriptionMaxLength)
+                    break;
+                Logger.WriteDebug("Clicky bag '", Name, "' (", WOWEntryID.ToString(), ") description was too long, so dropped the line '", descriptionLines[lineIndex], "'");
+                descriptionLines[lineIndex] = string.Empty;
+                description = GetJoinedDescriptionLines(descriptionLines);
+            }
+            Description = description;
+        }
+
+        private static string GetJoinedDescriptionLines(string[] descriptionLines)
+        {
+            StringBuilder descriptionBuilder = new StringBuilder();
+            foreach (string descriptionLine in descriptionLines)
+            {
+                if (descriptionLine.Length == 0)
+                    continue;
+                if (descriptionBuilder.Length > 0)
+                    descriptionBuilder.Append("|n"); // Newline
+                descriptionBuilder.Append(descriptionLine);
+            }
+            return descriptionBuilder.ToString();
+        }
+
+        private string GetSlotAndTypeSummaryLine()
+        {
+            string slotName;
+            switch (InventoryType)
+            {
+                case ItemWOWInventoryType.Head: slotName = "Head"; break;
+                case ItemWOWInventoryType.Neck: slotName = "Neck"; break;
+                case ItemWOWInventoryType.Shoulder: slotName = "Shoulder"; break;
+                case ItemWOWInventoryType.Shirt: slotName = "Shirt"; break;
+                case ItemWOWInventoryType.Chest: slotName = "Chest"; break;
+                case ItemWOWInventoryType.Robe: slotName = "Chest"; break;
+                case ItemWOWInventoryType.Waist: slotName = "Waist"; break;
+                case ItemWOWInventoryType.Legs: slotName = "Legs"; break;
+                case ItemWOWInventoryType.Feet: slotName = "Feet"; break;
+                case ItemWOWInventoryType.Wrists: slotName = "Wrist"; break;
+                case ItemWOWInventoryType.Hands: slotName = "Hands"; break;
+                case ItemWOWInventoryType.Finger: slotName = "Finger"; break;
+                case ItemWOWInventoryType.Trinket: slotName = "Trinket"; break;
+                case ItemWOWInventoryType.OneHand: slotName = "One-Hand"; break;
+                case ItemWOWInventoryType.Shield: slotName = "Off Hand"; break;
+                case ItemWOWInventoryType.Ranged: slotName = "Ranged"; break;
+                case ItemWOWInventoryType.RangedRight: slotName = "Ranged"; break;
+                case ItemWOWInventoryType.Back: slotName = "Back"; break;
+                case ItemWOWInventoryType.TwoHand: slotName = "Two-Hand"; break;
+                case ItemWOWInventoryType.Tabard: slotName = "Tabard"; break;
+                case ItemWOWInventoryType.MainHand: slotName = "Main Hand"; break;
+                case ItemWOWInventoryType.OffHandWeapon: slotName = "Off Hand"; break;
+                case ItemWOWInventoryType.HeldInOffHand: slotName = "Held In Off-hand"; break;
+                case ItemWOWInventoryType.Ammo: slotName = "Projectile"; break;
+                case ItemWOWInventoryType.Thrown: slotName = "Thrown"; break;
+                case ItemWOWInventoryType.Relic: slotName = "Relic"; break;
+                default: return string.Empty;
+            }
+
+            string typeName = string.Empty;
+            if (ClassID == 2) // Weapon
+            {
+                switch ((ItemWOWWeaponSubclassType)SubClassID)
+                {
+                    case ItemWOWWeaponSubclassType.AxeOneHand: typeName = "Axe"; break;
+                    case ItemWOWWeaponSubclassType.AxeTwoHand: typeName = "Axe"; break;
+                    case ItemWOWWeaponSubclassType.Bow: typeName = "Bow"; break;
+                    case ItemWOWWeaponSubclassType.Gun: typeName = "Gun"; break;
+                    case ItemWOWWeaponSubclassType.MaceOneHand: typeName = "Mace"; break;
+                    case ItemWOWWeaponSubclassType.MaceTwoHand: typeName = "Mace"; break;
+                    case ItemWOWWeaponSubclassType.Polearm: typeName = "Polearm"; break;
+                    case ItemWOWWeaponSubclassType.SwordOneHand: typeName = "Sword"; break;
+                    case ItemWOWWeaponSubclassType.SwordTwoHand: typeName = "Sword"; break;
+                    case ItemWOWWeaponSubclassType.Staff: typeName = "Staff"; break;
+                    case ItemWOWWeaponSubclassType.FistWeapon: typeName = "Fist Weapon"; break;
+                    case ItemWOWWeaponSubclassType.Dagger: typeName = "Dagger"; break;
+                    case ItemWOWWeaponSubclassType.Thrown: typeName = "Thrown"; break;
+                    case ItemWOWWeaponSubclassType.Spear: typeName = "Spear"; break;
+                    case ItemWOWWeaponSubclassType.Crossbow: typeName = "Crossbow"; break;
+                    case ItemWOWWeaponSubclassType.Wand: typeName = "Wand"; break;
+                    case ItemWOWWeaponSubclassType.FishingPole: typeName = "Fishing Pole"; break;
+                    default: break; // No type worth showing
+                }
+            }
+            else if (ClassID == 4) // Armor
+            {
+                switch ((ItemWOWArmorSubclassType)SubClassID)
+                {
+                    case ItemWOWArmorSubclassType.Cloth: typeName = "Cloth"; break;
+                    case ItemWOWArmorSubclassType.Leather: typeName = "Leather"; break;
+                    case ItemWOWArmorSubclassType.Mail: typeName = "Mail"; break;
+                    case ItemWOWArmorSubclassType.Plate: typeName = "Plate"; break;
+                    case ItemWOWArmorSubclassType.Shield: typeName = "Shield"; break;
+                    case ItemWOWArmorSubclassType.Libram: typeName = "Libram"; break;
+                    case ItemWOWArmorSubclassType.Idol: typeName = "Idol"; break;
+                    case ItemWOWArmorSubclassType.Totem: typeName = "Totem"; break;
+                    case ItemWOWArmorSubclassType.Sigil: typeName = "Sigil"; break;
+                    default: break; // No type worth showing
+                }
+            }
+            if (typeName.Length == 0 || typeName == slotName)
+                return slotName;
+            return string.Concat(slotName, " (", typeName, ")");
+        }
+
+        private string GetWeaponDamageSummaryLine()
+        {
+            if (ClassID != 2 || WeaponMaxDamage <= 0)
+                return string.Empty;
+            string damageLine = string.Concat(WeaponMinDamage.ToString(), " - ", WeaponMaxDamage.ToString(), " Damage");
+            if (WeaponDelay > 0)
+                damageLine = string.Concat(damageLine, ", Speed ", (WeaponDelay / 1000).ToString(), ".", ((WeaponDelay % 1000) / 10).ToString("D2"));
+            return damageLine;
+        }
+
+        private string GetArmorSummaryLine()
+        {
+            StringBuilder armorLineBuilder = new StringBuilder();
+            if (Armor > 0)
+                armorLineBuilder.Append(string.Concat(Armor.ToString(), " Armor"));
+            if (Block > 0)
+            {
+                if (armorLineBuilder.Length > 0)
+                    armorLineBuilder.Append(", ");
+                armorLineBuilder.Append(string.Concat(Block.ToString(), " Block"));
+            }
+            return armorLineBuilder.ToString();
+        }
+
+        private static void AppendSignedValueToSummaryLine(StringBuilder summaryLineBuilder, int value, string valueName)
+        {
+            if (value == 0)
+                return;
+            if (summaryLineBuilder.Length > 0)
+                summaryLineBuilder.Append(", ");
+            if (value > 0)
+                summaryLineBuilder.Append("+");
+            summaryLineBuilder.Append(value.ToString());
+            summaryLineBuilder.Append(" ");
+            summaryLineBuilder.Append(valueName);
+        }
+
+        private string GetStatSummaryLine(bool useShortNames)
+        {
+            StringBuilder statLineBuilder = new StringBuilder();
+            foreach ((ItemWOWStatType statType, int statValue) in StatValues)
+            {
+                string statName;
+                switch (statType)
+                {
+                    case ItemWOWStatType.Mana: statName = "Mana"; break;
+                    case ItemWOWStatType.Health: statName = useShortNames ? "HP" : "Health"; break;
+                    case ItemWOWStatType.Agility: statName = useShortNames ? "Agi" : "Agility"; break;
+                    case ItemWOWStatType.Strength: statName = useShortNames ? "Str" : "Strength"; break;
+                    case ItemWOWStatType.Intellect: statName = useShortNames ? "Int" : "Intellect"; break;
+                    case ItemWOWStatType.Spirit: statName = useShortNames ? "Spi" : "Spirit"; break;
+                    case ItemWOWStatType.Stamina: statName = useShortNames ? "Sta" : "Stamina"; break;
+                    case ItemWOWStatType.DefenseSkillRating: statName = useShortNames ? "Def" : "Defense Rating"; break;
+                    case ItemWOWStatType.DodgeRating: statName = useShortNames ? "Dodge" : "Dodge Rating"; break;
+                    case ItemWOWStatType.ParryRating: statName = useShortNames ? "Parry" : "Parry Rating"; break;
+                    case ItemWOWStatType.BlockRating: statName = useShortNames ? "Block" : "Block Rating"; break;
+                    case ItemWOWStatType.SpellHitRating: statName = useShortNames ? "Spell Hit" : "Spell Hit Rating"; break;
+                    case ItemWOWStatType.SpellHasteRating: statName = useShortNames ? "Spell Haste" : "Spell Haste Rating"; break;
+                    case ItemWOWStatType.HitRating: statName = useShortNames ? "Hit" : "Hit Rating"; break;
+                    case ItemWOWStatType.CritRating: statName = useShortNames ? "Crit" : "Critical Strike Rating"; break;
+                    case ItemWOWStatType.HasteRating: statName = useShortNames ? "Haste" : "Haste Rating"; break;
+                    case ItemWOWStatType.ExpertiseRating: statName = useShortNames ? "Exp" : "Expertise Rating"; break;
+                    case ItemWOWStatType.ManaRegeneration: statName = useShortNames ? "MP5" : "Mana per 5 sec"; break;
+                    case ItemWOWStatType.SpellPower: statName = useShortNames ? "SP" : "Spell Power"; break;
+                    case ItemWOWStatType.HealthRegen: statName = useShortNames ? "HP5" : "Health per 5 sec"; break;
+                    case ItemWOWStatType.BlockValue: statName = useShortNames ? "Block Val" : "Block Value"; break;
+                    default: continue; // Nothing known to show
+                }
+                AppendSignedValueToSummaryLine(statLineBuilder, statValue, statName);
+            }
+            return statLineBuilder.ToString();
+        }
+
+        private string GetResistSummaryLine(bool useShortNames)
+        {
+            string resistSuffix = useShortNames ? " Res" : " Resistance";
+            StringBuilder resistLineBuilder = new StringBuilder();
+            AppendSignedValueToSummaryLine(resistLineBuilder, FireResist, string.Concat("Fire", resistSuffix));
+            AppendSignedValueToSummaryLine(resistLineBuilder, NatureResist, string.Concat("Nature", resistSuffix));
+            AppendSignedValueToSummaryLine(resistLineBuilder, FrostResist, string.Concat("Frost", resistSuffix));
+            AppendSignedValueToSummaryLine(resistLineBuilder, ShadowResist, string.Concat("Shadow", resistSuffix));
+            AppendSignedValueToSummaryLine(resistLineBuilder, ArcaneResist, string.Concat("Arcane", resistSuffix));
+            return resistLineBuilder.ToString();
+        }
+
+        private static string GetClassAbbreviationsString(List<ClassEQType> classTypesEQ)
+        {
+            StringBuilder classStringBuilder = new StringBuilder();
+            foreach (ClassEQType classType in classTypesEQ)
+            {
+                switch (classType)
+                {
+                    case ClassEQType.Warrior: classStringBuilder.Append("WAR "); break;
+                    case ClassEQType.Cleric: classStringBuilder.Append("CLR "); break;
+                    case ClassEQType.Paladin: classStringBuilder.Append("PAL "); break;
+                    case ClassEQType.Ranger: classStringBuilder.Append("RNG "); break;
+                    case ClassEQType.ShadowKnight: classStringBuilder.Append("SHD "); break;
+                    case ClassEQType.Druid: classStringBuilder.Append("DRU "); break;
+                    case ClassEQType.Monk: classStringBuilder.Append("MNK "); break;
+                    case ClassEQType.Bard: classStringBuilder.Append("BRD "); break;
+                    case ClassEQType.Rogue: classStringBuilder.Append("ROG "); break;
+                    case ClassEQType.Shaman: classStringBuilder.Append("SHM "); break;
+                    case ClassEQType.Necromancer: classStringBuilder.Append("NEC "); break;
+                    case ClassEQType.Wizard: classStringBuilder.Append("WIZ "); break;
+                    case ClassEQType.Magician: classStringBuilder.Append("MAG "); break;
+                    case ClassEQType.Enchanter: classStringBuilder.Append("ENC "); break;
+                    case ClassEQType.All: classStringBuilder.Append("ALL "); break;
+                    default: break; // Do Nothing
+                }
+            }
+            return classStringBuilder.ToString().TrimEnd();
+        }
+
         public string GetDescriptionStringWithAddedAllowedClasses(List<ClassEQType> allowedClassTypesEQ)
         {
             // Build the class string
@@ -2894,30 +3163,7 @@ namespace EQWOWConverter.Items
             if (allowedClassTypesEQ.Count == 0)
                 allowedClassStringBuilder.Append("NONE");
             else
-            {
-                foreach (ClassEQType allowedClassType in allowedClassTypesEQ)
-                {
-                    switch (allowedClassType)
-                    {
-                        case ClassEQType.Warrior: allowedClassStringBuilder.Append("WAR "); break;
-                        case ClassEQType.Cleric: allowedClassStringBuilder.Append("CLR "); break;
-                        case ClassEQType.Paladin: allowedClassStringBuilder.Append("PAL "); break;
-                        case ClassEQType.Ranger: allowedClassStringBuilder.Append("RNG "); break;
-                        case ClassEQType.ShadowKnight: allowedClassStringBuilder.Append("SHD "); break;
-                        case ClassEQType.Druid: allowedClassStringBuilder.Append("DRU "); break;
-                        case ClassEQType.Monk: allowedClassStringBuilder.Append("MNK "); break;
-                        case ClassEQType.Bard: allowedClassStringBuilder.Append("BRD "); break;
-                        case ClassEQType.Rogue: allowedClassStringBuilder.Append("ROG "); break;
-                        case ClassEQType.Shaman: allowedClassStringBuilder.Append("SHM "); break;
-                        case ClassEQType.Necromancer: allowedClassStringBuilder.Append("NEC "); break;
-                        case ClassEQType.Wizard: allowedClassStringBuilder.Append("WIZ "); break;
-                        case ClassEQType.Magician: allowedClassStringBuilder.Append("MAG "); break;
-                        case ClassEQType.Enchanter: allowedClassStringBuilder.Append("ENC "); break;
-                        case ClassEQType.All: allowedClassStringBuilder.Append("ALL "); break;
-                        default: break; // Do Nothing
-                    }
-                }
-            }
+                allowedClassStringBuilder.Append(GetClassAbbreviationsString(allowedClassTypesEQ));
 
             // Build the full string
             StringBuilder fullDescription = new StringBuilder();

@@ -1932,6 +1932,9 @@ namespace EQWOWConverter
                 if (itemTemplate.IsExistingItemAlready == true)
                     continue;
 
+                // Clicky bags describe the wearable item inside, which needs the assigned spell effects
+                itemTemplate.PopulateClickyBagDescription(spellTemplatesByEQID);
+
                 // Save any additional metadata
                 int creatureWornEffectSpellID = itemTemplate.GetCreatureGrantableWornEffectSpellID(spellTemplatesByEQID);
                 modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryID, creatureWornEffectSpellID, itemTemplate.AllowedClassTypesEQ,
