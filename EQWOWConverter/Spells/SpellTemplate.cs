@@ -2694,7 +2694,7 @@ namespace EQWOWConverter.Spells
                     {
                         effectedSpellTargets.Add(SpellWOWTargetType.UnitTargetAlly);
                         dummyType = SpellDummyType.BardSongFriendlyParty;
-                        spellTemplate.TargetDescriptionTextFragment = string.Concat("Applies the effect every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to all party members within ", spellRadius, " yards");
+                        spellTemplate.TargetDescriptionTextFragment = string.Concat("Applies the effect every ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds to all party members and their pets within ", spellRadius, " yards");
                         effectSpellRange = spellRadius;
                     } break;
                 case 4: // PointBlankAreaOfEffect
