@@ -8607,3 +8607,12 @@ id|zone|name|spawn_limit|min_x|max_x|min_y|max_y|min_z|max_z|delay|mindelay|desp
 1000039|skyshrine|skyshrine_Priest_of_Discord|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1
 1000040|paineel|paineel_Priest_of_Discord|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1
 1000041|qrg|qrg_Priest_of_Discord|0|0|0|0|0|0|0|0|15000|0|100|0|1200|0|0|0|1|-1|-1
+1000042|wakening|wakening_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
+1000043|greatdivide|greatdivide_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
+1000044|eastwastes|eastwastes_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
+1000045|eastwastes|eastwastes_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
+1000046|wakening|wakening_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
+1000047|cobaltscar|cobaltscar_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
+1000048|westwastes|westwastes_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
+1000049|westwastes|westwastes_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
+1000050|greatdivide|greatdivide_raid_coordinator|0|0|0|0|0|0|0|0|0|0|0|0|1200|0|0|0|1|-1|-1
