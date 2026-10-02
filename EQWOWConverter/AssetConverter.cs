@@ -4495,8 +4495,8 @@ namespace EQWOWConverter
             if (File.Exists(outputDeltaPatchFileName) == true)
                 File.Delete(outputDeltaPatchFileName);
 
-            // A full main patch build is needed when there is no prior main patch (or manifest), when too many files changed for a delta
-            // to make sense, or when files were removed (a delta can only add or override files, it can never remove them from the main)
+            // A full main patch build is needed when there is no prior main patch (or manifest), or when too many files changed for a delta
+            // to make sense.  Removed files are not considered
             bool doFullMainPatchBuild = false;
             List<string> relativePathsToAddOrUpdate = new List<string>();
             if (File.Exists(outputPatchFileName) == false || File.Exists(patchManifestFileName) == false)
@@ -4512,11 +4512,6 @@ namespace EQWOWConverter
                 if (relativePathsToAddOrUpdate.Count > Configuration.PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN)
                 {
                     Logger.WriteInfo("- New/updated file count exceeds PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN (", Configuration.PATCH_CLIENT_DATA_LOC_MIN_FILE_COUNT_FOR_FULL_REGEN.ToString(), "), so doing a full main patch build");
-                    doFullMainPatchBuild = true;
-                }
-                else if (relativePathsToRemove.Count > 0)
-                {
-                    Logger.WriteInfo("- Files were removed, which a delta patch cannot represent, so doing a full main patch build");
                     doFullMainPatchBuild = true;
                 }
             }
