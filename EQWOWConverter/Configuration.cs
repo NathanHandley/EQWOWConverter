@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 126;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 127;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -101,7 +101,7 @@ namespace EQWOWConverter
         public static string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
 
         // Client files must match this between the server and the client, separate from "CONFIGONLY_CORE_MOD_VERSION"
-        public static int DEPLOY_CLIENT_DATA_VERSION = 15;
+        public static int DEPLOY_CLIENT_DATA_VERSION = 16;
         public static string DEPLOY_CLIENT_DATA_VERSION_MISMATCH_MESSAGE = "Your EverQuest client data is out of date. Please run the launcher to update, then log back in.";
 
         // ====================================================================
@@ -1394,8 +1394,6 @@ namespace EQWOWConverter
         public static bool CLASSAURA_BARD_ENABLED = true;
         public static int CLASSAURA_BARD_SPELL_ICON_EQ_ID = 18;
         public static int CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT = 33;
-        public static int CLASSAURA_BARD_VIGOR_HASTE_PERCENT = 33;
-        public static int CLASSAURA_BARD_VIGOR_DURATION_IN_MS = 9000;
 
         // Monk "Agile Fighter"
         public static bool CLASSAURA_MONK_ENABLED = true;
@@ -2755,8 +2753,6 @@ namespace EQWOWConverter
             OutputVariableToConfig("CLASSAURA_BARD_ENABLED", CLASSAURA_BARD_ENABLED, "Bard", false);
             OutputVariableToConfig("CLASSAURA_BARD_SPELL_ICON_EQ_ID", CLASSAURA_BARD_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT", CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT, "", false);
-            OutputVariableToConfig("CLASSAURA_BARD_VIGOR_HASTE_PERCENT", CLASSAURA_BARD_VIGOR_HASTE_PERCENT, "", false);
-            OutputVariableToConfig("CLASSAURA_BARD_VIGOR_DURATION_IN_MS", CLASSAURA_BARD_VIGOR_DURATION_IN_MS, "", false);
             OutputVariableToConfig("CLASSAURA_MONK_ENABLED", CLASSAURA_MONK_ENABLED, "Monk", false);
             OutputVariableToConfig("CLASSAURA_MONK_SPELL_ICON_EQ_ID", CLASSAURA_MONK_SPELL_ICON_EQ_ID, "", false);
             OutputVariableToConfig("CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID", CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID, "", false);
@@ -3588,8 +3584,6 @@ namespace EQWOWConverter
             CLASSAURA_BARD_ENABLED = ReadVariableFromConfigString("CLASSAURA_BARD_ENABLED", configValuesByVariableName, CLASSAURA_BARD_ENABLED);
             CLASSAURA_BARD_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_BARD_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_BARD_SPELL_ICON_EQ_ID);
             CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT = ReadVariableFromConfigString("CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT", configValuesByVariableName, CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT);
-            CLASSAURA_BARD_VIGOR_HASTE_PERCENT = ReadVariableFromConfigString("CLASSAURA_BARD_VIGOR_HASTE_PERCENT", configValuesByVariableName, CLASSAURA_BARD_VIGOR_HASTE_PERCENT);
-            CLASSAURA_BARD_VIGOR_DURATION_IN_MS = ReadVariableFromConfigString("CLASSAURA_BARD_VIGOR_DURATION_IN_MS", configValuesByVariableName, CLASSAURA_BARD_VIGOR_DURATION_IN_MS);
             CLASSAURA_MONK_ENABLED = ReadVariableFromConfigString("CLASSAURA_MONK_ENABLED", configValuesByVariableName, CLASSAURA_MONK_ENABLED);
             CLASSAURA_MONK_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_MONK_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_MONK_SPELL_ICON_EQ_ID);
             CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID = ReadVariableFromConfigString("CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID", configValuesByVariableName, CLASSAURA_MONK_CHI_SURGE_SPELL_ICON_EQ_ID);

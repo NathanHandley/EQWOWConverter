@@ -1337,6 +1337,18 @@ namespace EQWOWConverter.Items
             }
         }
 
+        private static bool IsInstrumentWearableInRangedSlot(ItemTemplate itemTemplate, ItemWOWInventoryType baseInventoryType)
+        {
+            // Instrument parts (Trumpet Valves) carry an instrument type but no song modifier, so they are not playable instruments
+            if (itemTemplate.FocusType == ItemFocusType.None || itemTemplate.FocusValue <= 0)
+                return false;
+
+            // An instrument that is also a weapon (Singing Short Sword) stays in the hands
+            if (itemTemplate.ClassID == 2)
+                return false;
+            return IsHandEquippedInventoryType(baseInventoryType);
+        }
+
         private static List<ItemWOWInventoryType> GetSlotshiftTargetInventoryTypes(ItemTemplate itemTemplate)
         {
             List<ItemWOWInventoryType> targetInventoryTypes = new List<ItemWOWInventoryType>();
@@ -1374,6 +1386,10 @@ namespace EQWOWConverter.Items
                 if (inventoryType == baseInventoryType)
                     continue;
                 if (IsSlotshiftWearableInInventoryType(itemTemplate.EQSlotMask, baseInventoryType, inventoryType) == true)
+                    targetInventoryTypes.Add(inventoryType);
+
+                // Instruments also shift into the ranged slot whatever their EQ slots are, where the mod holds the bard to songs of that instrument type and singing
+                else if (inventoryType == ItemWOWInventoryType.Ranged && IsInstrumentWearableInRangedSlot(itemTemplate, baseInventoryType) == true)
                     targetInventoryTypes.Add(inventoryType);
             }
 

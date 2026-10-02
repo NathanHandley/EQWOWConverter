@@ -343,6 +343,11 @@ namespace EQWOWConverter
             modEverquestSystemConfigsSQL.AddRow("ResistAdjustmentSpellID", Configuration.SPELL_RESIST_ADJUSTMENT_SPELL_ID.ToString());
             modEverquestSystemConfigsSQL.AddRow("BlindWanderSpellID", Configuration.SPELL_BLIND_WANDER_SPELL_ID.ToString());
             modEverquestSystemConfigsSQL.AddRow("RoguePoisonMarkerSpellID", Configuration.SPELL_ROGUE_POISON_MARKER_SPELL_ID.ToString());
+            modEverquestSystemConfigsSQL.AddRow("InstrumentTotemCategoryIDWind", Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_WIND.ToString());
+            modEverquestSystemConfigsSQL.AddRow("InstrumentTotemCategoryIDString", Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_STRING.ToString());
+            modEverquestSystemConfigsSQL.AddRow("InstrumentTotemCategoryIDBrass", Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_BRASS.ToString());
+            modEverquestSystemConfigsSQL.AddRow("InstrumentTotemCategoryIDPercussion", Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_PERCUSSION.ToString());
+            modEverquestSystemConfigsSQL.AddRow("InstrumentTotemCategoryIDAll", Configuration.ITEM_INSTRUMENT_TOTEM_CATEGORY_DBCID_ALL.ToString());
             foreach (KeyValuePair<string, string> classAuraSystemConfigRow in SpellClassAuras.GetSystemConfigRows())
                 modEverquestSystemConfigsSQL.AddRow(classAuraSystemConfigRow.Key, classAuraSystemConfigRow.Value);
             modEverquestSystemConfigsSQL.AddRow("SlowBossEffectivenessMod", Configuration.SPELL_SLOW_BOSS_EFFECTINESS_MOD.ToString(System.Globalization.CultureInfo.InvariantCulture));

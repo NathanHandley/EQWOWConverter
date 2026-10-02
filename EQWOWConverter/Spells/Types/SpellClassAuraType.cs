@@ -69,7 +69,7 @@ namespace EQWOWConverter.Spells
         DruidNaturesBalanceFire = 48,
         WarriorUnrelentingAssault = 49,
         WarriorRiposte = 50,
-        BardVigor = 51,
+        Unused51 = 51, // Was the Bard's Virtuoso Vigor.  Kept so every later spell keeps its ID, and free for the next new spell
         MonkChiSurge = 52,
         PaladinDeflection = 53,
         RogueLuckyStrike = 54,

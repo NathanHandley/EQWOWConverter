@@ -254,7 +254,6 @@ namespace EQWOWConverter.Spells
                 case SpellClassAuraType.BardPassive:
                 case SpellClassAuraType.BardAura:
                 case SpellClassAuraType.BardInstrument:
-                case SpellClassAuraType.BardVigor:
                     return Configuration.CLASSAURA_BARD_ENABLED;
                 case SpellClassAuraType.MonkPassive:
                 case SpellClassAuraType.MonkAura:
@@ -550,12 +549,12 @@ namespace EQWOWConverter.Spells
             string description = Lines(
                 NamedLine("Troubadour's Tempo", string.Concat("Melee autoattacks deal ", Pct(Configuration.CLASSAURA_BARD_INSTRUMENT_MELEE_AUTOATTACK_DAMAGE_PERCENT),
                     " more damage while holding a weapon in one hand and an instrument in the other.")),
-                NamedLine("Virtuoso Vigor", string.Concat("Successfully playing a song grants you ", Pct(Configuration.CLASSAURA_BARD_VIGOR_HASTE_PERCENT),
-                    " haste to melee, ranged, and spells for ", Seconds(Configuration.CLASSAURA_BARD_VIGOR_DURATION_IN_MS), ". This haste does not count against the haste cap.")),
-                "Song cast times cannot be changed by haste or slow effects.");
+                "Song cast times cannot be changed by haste or slow effects.",
+                "You may parry or dodge attacks while casting a song (shows as miss).",
+                "Instruments equipped in the ranged slot restrict active songs to that instrument type and singing only.");
             spellTemplates.Add(BuildPassiveTemplate("Dexteritous Troubadour", SpellClassAuraType.BardPassive, icon, description));
 
-            // Both effects are driven by the mod (the instrument marker below and the vigor cast on a new song), so the aura itself carries nothing
+            // Everything here is driven by the mod (the instrument marker below, and the song rules), so the aura itself carries nothing
             spellTemplates.Add(BuildPermanentAuraTemplate("Dexteritous Troubadour (Bard)", SpellClassAuraType.BardAura, icon, description, new List<SpellEffectWOW>()));
 
             // Only a marker: the mod applies the bonus in its melee swing hook since a damage percent aura would also raise melee abilities and ranged shots
@@ -563,13 +562,6 @@ namespace EQWOWConverter.Spells
             List<SpellEffectWOW> instrumentEffects = new List<SpellEffectWOW>();
             instrumentEffects.Add(BuildAuraEffect(SpellWOWAuraType.Dummy, 0, 0, SpellWOWTargetType.UnitCaster));
             spellTemplates.Add(BuildPermanentAuraTemplate("Troubadour's Tempo", SpellClassAuraType.BardInstrument, icon, instrumentDescription, instrumentEffects));
-
-            string vigorDescription = string.Concat("Haste increased by ", Pct(Configuration.CLASSAURA_BARD_VIGOR_HASTE_PERCENT), " for melee, ranged, and spells.");
-            List<SpellEffectWOW> vigorEffects = new List<SpellEffectWOW>();
-            vigorEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModMeleeRangedHaste, Configuration.CLASSAURA_BARD_VIGOR_HASTE_PERCENT, 0, SpellWOWTargetType.UnitCaster));
-            vigorEffects.Add(BuildAuraEffect(SpellWOWAuraType.ModCastingSpeedNotStack, Configuration.CLASSAURA_BARD_VIGOR_HASTE_PERCENT, 0, SpellWOWTargetType.UnitCaster));
-            spellTemplates.Add(BuildStackingAuraTemplate("Virtuoso Vigor", SpellClassAuraType.BardVigor, icon, vigorDescription, vigorEffects, 1,
-                Configuration.CLASSAURA_BARD_VIGOR_DURATION_IN_MS, false));
         }
 
         private static void AddMonkSpells(List<SpellTemplate> spellTemplates)
