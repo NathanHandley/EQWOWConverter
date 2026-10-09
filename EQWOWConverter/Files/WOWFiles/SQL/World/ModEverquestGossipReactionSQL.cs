@@ -61,6 +61,7 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`RequiredNearZ` FLOAT NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`RequiredNearDistance` FLOAT NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`FiresOnArrival` TINYINT(3) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`SpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY(`ID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
@@ -74,7 +75,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("OptionID", gossipReaction.OptionID);
             newRow.AddString("OptionText", 255, gossipReaction.OptionText);
             newRow.AddInt("ReactionType", (Int32)gossipReaction.ReactionType);
-            newRow.AddString("SayText", 512, gossipReaction.ReactionValue);
+            newRow.AddString("SayText", 512, gossipReaction.ReactionType == QuestReactionType.CastSpell ? string.Empty : gossipReaction.ReactionValue);
             newRow.AddInt("TargetCreatureTemplateID", targetCreatureTemplateID);
             newRow.AddInt("UsePlayerX", gossipReaction.UsePlayerX == false ? 0 : 1);
             newRow.AddInt("UsePlayerY", gossipReaction.UsePlayerY == false ? 0 : 1);
@@ -101,6 +102,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("RequiredNearZ", gossipReaction.RequiredNearZ);
             newRow.AddFloat("RequiredNearDistance", gossipReaction.RequiredNearDistance);
             newRow.AddInt("FiresOnArrival", gossipReaction.FiresOnArrival == false ? 0 : 1);
+            newRow.AddInt("SpellID", gossipReaction.SpellWOWID);
             Rows.Add(newRow);
 
             CUR_ID++;

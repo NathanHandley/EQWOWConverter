@@ -148,7 +148,7 @@ id|zone|npc_name|eq_npc_id|event|emote_type|chance|param1|param2|min_expansion|m
 147|lakerathe|Princess_Lenya_Thex|51176|spawn|shout|100|0|0|-1|-1|I am free..|event_spawn speech
 148|lakerathe|Princess_Lenya_Thex|51176|spawn|emote|100|0|0|-1|-1|<glug>' She motions to you to follow her to shore.'|event_spawn speech
 149|lavastorm|Eejag|27119|spawn|shout|100|0|0|-1|-1|What imbecile dares challenge a Celestial Fist?! Do you even know who you are challenging? HA! You are nothing but an insect! I will enjoy crushing you, I have not charred the flesh of an idiot in decades! If you truly wish to fight me, the battle shall be held in my own element. Come, challenger, come down to the pits of flowing fire.|event_spawn speech
-150|mischiefplane|#Lithiniath|126014|timer|shout|100|120000|240000|-1|-1|The madness has fled my mind and I am once again whole! Give Gelistial my regards, I must leave this place and try to quell the madness I have inflicted.|event_waypoint_arrive bark (approximated as timer)
+150|mischiefplane|#Lithiniath|126014|spawn|shout|100|0|0|-1|-1|The madness has fled my mind and I am once again whole! Give Gelistial my regards, I must leave this place and try to quell the madness I have inflicted.|event_waypoint_arrive bark at waypoint 1, which is where he spawns
 151|mischiefplane|Rissa|126235|timer|say|100|120000|240000|-1|-1|Ahhhhhh! Someone help me! This crazy Bixie is chasing me!|event_waypoint_arrive bark (approximated as timer)
 152|mischiefplane|Rissa|126235|timer|say|100|120000|240000|-1|-1|Its almost got me! Someone help!|event_waypoint_arrive bark (approximated as timer)
 153|mischiefplane|Rissa|126235|timer|say|100|120000|240000|-1|-1|Won't anyone help me! Ahhh!|event_waypoint_arrive bark (approximated as timer)

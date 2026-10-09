@@ -90,6 +90,7 @@ namespace EQWOWConverter.Creatures
         public string SpawnZones = string.Empty;
         public bool IsQuestGiver = false;
         public bool HasGossipReactions = false;
+        public bool HasHailReactions = false; // Does something when talked to (a kill spawn row with a hail trigger), without having a menu
         public bool HasHailText = false;
         public int HailTextGossipMenuID = 0;
         public int SpawnLimit = 0;
@@ -153,6 +154,8 @@ namespace EQWOWConverter.Creatures
                 return true;
             if (HasGossipReactions == true)
                 return true;
+            if (HasHailReactions == true)
+                return true;
             if (IsBanker == true)
                 return true;
             if (MerchantID != 0)
@@ -196,6 +199,8 @@ namespace EQWOWConverter.Creatures
             if (HasDirectRightClickRole() == true)
                 return false;
             if (HasGossipReactions == true)
+                return false;
+            if (HasHailReactions == true)
                 return false;
             if (HasHailedEmote == true)
                 return false;

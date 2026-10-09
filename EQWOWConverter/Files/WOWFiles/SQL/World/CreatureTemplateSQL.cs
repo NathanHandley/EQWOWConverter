@@ -99,6 +99,8 @@ namespace EQWOWConverter.WOWFiles
                 numOfRoles+=2;
             if (creatureTemplate.HasGossipReactions == true)
                 numOfRoles += 2;
+            if (creatureTemplate.HasHailReactions == true)
+                numOfRoles += 2;
             if (creatureTemplate.HasHailedEmote == true)
                 numOfRoles += 2;
             // A vendor, banker or stablemaster is right clicked straight into its own window, so hail text must not put it into gossip mode as the text menu it would open has no options and no way through to that window

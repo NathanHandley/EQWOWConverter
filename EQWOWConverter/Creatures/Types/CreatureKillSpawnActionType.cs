@@ -21,6 +21,15 @@ namespace EQWOWConverter.Creatures
         Spawn = 0,
         Despawn = 1,
         RespawnSelf = 2,
-        RespawnTarget = 3
+        RespawnTarget = 3,
+        Say = 4,
+        Emote = 5,
+        Yell = 6,
+        AttackPlayer = 7,
+        WalkGrid = 8,
+        CastSpell = 12,
+        MoveTo = 13,
+        Follow = 15, // Follows the nearest living creature of the target template
+        Root = 16 // Doesn't move / holds still
     }
 }

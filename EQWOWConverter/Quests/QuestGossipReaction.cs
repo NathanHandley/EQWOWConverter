@@ -45,6 +45,8 @@ namespace EQWOWConverter.Quests
         public float AddedY;
         public bool CreatureIsSelf = false;
         public int CreatureEQID = 0;
+        public int SpellEQID = 0;
+        public int SpellWOWID = 0;
         public int DelayInMS = 0;
         public bool MovementIsRun = false;
         public int PathGridID = -1;
@@ -126,6 +128,24 @@ namespace EQWOWConverter.Quests
                         {
                             reaction.ReactionType = QuestReactionType.Yell;
                             reaction.ReactionValue = reactionValue1;
+                        } break;
+                    case "npcsay": // Written as '<eq creature id>:<text>'
+                        {
+                            int separatorIndex = reactionValue1.IndexOf(':');
+                            int speakerEQID;
+                            if (separatorIndex <= 0 || int.TryParse(reactionValue1.Substring(0, separatorIndex).Trim(), out speakerEQID) == false)
+                            {
+                                Logger.WriteError(string.Concat("Unreadable npcsay value of '", reactionValue1, "'"));
+                                continue;
+                            }
+                            reaction.ReactionType = QuestReactionType.NpcSay;
+                            reaction.CreatureEQID = speakerEQID;
+                            reaction.ReactionValue = reactionValue1.Substring(separatorIndex + 1).Trim();
+                        } break;
+                    case "castspell":
+                        {
+                            reaction.ReactionType = QuestReactionType.CastSpell;
+                            reaction.SpellEQID = int.Parse(reactionValue1);
                         } break;
                     case "spawn":
                         {

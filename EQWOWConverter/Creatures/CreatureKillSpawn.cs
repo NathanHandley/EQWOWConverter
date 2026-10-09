@@ -20,6 +20,7 @@ namespace EQWOWConverter.Creatures
     {
         private static List<CreatureKillSpawn> KillSpawnList = new List<CreatureKillSpawn>();
         private static HashSet<int> SpawnedTargetEQCreatureTemplateIDs = new HashSet<int>();
+        private static Dictionary<string, HashSet<int>> HailTriggerEQCreatureTemplateIDsByZoneShortName = new Dictionary<string, HashSet<int>>();
         private static readonly object KillSpawnLock = new object();
 
         public const int MAX_REQUIRE_DEAD_CREATURE_TEMPLATES = 3;
@@ -49,6 +50,14 @@ namespace EQWOWConverter.Creatures
         public int TriggerMaxLevel;
         public int RespawnTimeInSec;
         public bool RespawnUsesRaidLockout; // The raid boss respawn window, which inside a raid instance becomes the instance lockout
+        public float TriggerRadius;
+        public int SpellEQID;
+        public int PathGridID = -1;
+        public int PathGridStartNode = -1;
+        public int PathGridEndNode = -1;
+        public CreatureKillSpawnArrivalBehaviorType ArrivalBehavior = CreatureKillSpawnArrivalBehaviorType.None;
+        public bool IsPersistent; // The spawn stands in for a real spawn point, so it never times out
+        public string Text = string.Empty;
         public string Comment = string.Empty;
 
         public static List<CreatureKillSpawn> GetKillSpawnList()
@@ -61,14 +70,14 @@ namespace EQWOWConverter.Creatures
             }
         }
 
-        // Targets of kill-triggered spawns are valid creatures even without static spawn zones
-        public static bool IsKillSpawnTarget(int eqCreatureTemplateID)
+        // Creatures that react to being hailed need to be talkable, the same as ones with a gossip menu
+        public static Dictionary<string, HashSet<int>> GetHailTriggerEQCreatureTemplateIDsByZoneShortName()
         {
             lock (KillSpawnLock)
             {
                 if (KillSpawnList.Count == 0)
                     PopulateKillSpawnList();
-                return SpawnedTargetEQCreatureTemplateIDs.Contains(eqCreatureTemplateID);
+                return HailTriggerEQCreatureTemplateIDsByZoneShortName;
             }
         }
 
@@ -97,6 +106,9 @@ namespace EQWOWConverter.Creatures
                     case "combat": newKillSpawn.TriggerType = CreatureKillSpawnTriggerType.Combat; break;
                     case "evade": newKillSpawn.TriggerType = CreatureKillSpawnTriggerType.Evade; break;
                     case "ooctimer": newKillSpawn.TriggerType = CreatureKillSpawnTriggerType.OutOfCombatTimer; break;
+                    case "spawn": newKillSpawn.TriggerType = CreatureKillSpawnTriggerType.Spawn; break;
+                    case "proximity": newKillSpawn.TriggerType = CreatureKillSpawnTriggerType.Proximity; break;
+                    case "hail": newKillSpawn.TriggerType = CreatureKillSpawnTriggerType.Hail; break;
                     default:
                         {
                             Logger.WriteError("CreatureKillSpawn row '" + newKillSpawn.ID + "' has unknown trigger_event '" + columns["trigger_event"] + "'");
@@ -109,6 +121,15 @@ namespace EQWOWConverter.Creatures
                     case "despawn": newKillSpawn.ActionType = CreatureKillSpawnActionType.Despawn; break;
                     case "respawnself": newKillSpawn.ActionType = CreatureKillSpawnActionType.RespawnSelf; break;
                     case "respawntarget": newKillSpawn.ActionType = CreatureKillSpawnActionType.RespawnTarget; break;
+                    case "say": newKillSpawn.ActionType = CreatureKillSpawnActionType.Say; break;
+                    case "emote": newKillSpawn.ActionType = CreatureKillSpawnActionType.Emote; break;
+                    case "yell": newKillSpawn.ActionType = CreatureKillSpawnActionType.Yell; break;
+                    case "attackplayer": newKillSpawn.ActionType = CreatureKillSpawnActionType.AttackPlayer; break;
+                    case "walkgrid": newKillSpawn.ActionType = CreatureKillSpawnActionType.WalkGrid; break;
+                    case "castspell": newKillSpawn.ActionType = CreatureKillSpawnActionType.CastSpell; break;
+                    case "moveto": newKillSpawn.ActionType = CreatureKillSpawnActionType.MoveTo; break;
+                    case "follow": newKillSpawn.ActionType = CreatureKillSpawnActionType.Follow; break;
+                    case "root": newKillSpawn.ActionType = CreatureKillSpawnActionType.Root; break;
                     default:
                         {
                             Logger.WriteError("CreatureKillSpawn row '" + newKillSpawn.ID + "' has unknown action '" + columns["action"] + "'");
@@ -159,7 +180,71 @@ namespace EQWOWConverter.Creatures
                     newKillSpawn.RespawnUsesRaidLockout = true;
                 }
                 newKillSpawn.Comment = columns["comment"];
+
+                // The radius is an EQ distance
+                string triggerRadiusString = columns["trigger_radius"].Trim();
+                if (triggerRadiusString.Length > 0)
+                    newKillSpawn.TriggerRadius = float.Parse(triggerRadiusString) * Configuration.GENERATE_WORLD_SCALE;
+                if (newKillSpawn.TriggerType == CreatureKillSpawnTriggerType.Proximity && newKillSpawn.TriggerRadius <= 0)
+                {
+                    Logger.WriteError("CreatureKillSpawn row '" + newKillSpawn.ID + "' has a proximity trigger with no trigger_radius");
+                    continue;
+                }
+                string spellEQIDString = columns["spell_eq_id"].Trim();
+                if (spellEQIDString.Length > 0)
+                    newKillSpawn.SpellEQID = int.Parse(spellEQIDString);
+                if (newKillSpawn.ActionType == CreatureKillSpawnActionType.CastSpell && newKillSpawn.SpellEQID <= 0)
+                {
+                    Logger.WriteError("CreatureKillSpawn row '" + newKillSpawn.ID + "' is a castspell with no spell_eq_id");
+                    continue;
+                }
+                string pathGridString = columns["path_grid"].Trim();
+                if (pathGridString.Length > 0)
+                {
+                    int gridID;
+                    int startNode;
+                    int endNode;
+                    if (Quests.QuestReaction.TryParseWalkGridValue(pathGridString, out gridID, out startNode, out endNode) == false)
+                    {
+                        Logger.WriteError("CreatureKillSpawn row '" + newKillSpawn.ID + "' has an unreadable path_grid of '" + pathGridString + "'");
+                        continue;
+                    }
+                    newKillSpawn.PathGridID = gridID;
+                    newKillSpawn.PathGridStartNode = startNode;
+                    newKillSpawn.PathGridEndNode = endNode;
+                }
+                if (newKillSpawn.ActionType == CreatureKillSpawnActionType.WalkGrid && newKillSpawn.PathGridID == -1)
+                {
+                    Logger.WriteError("CreatureKillSpawn row '" + newKillSpawn.ID + "' is a walkgrid with no path_grid");
+                    continue;
+                }
+                switch (columns["arrival_behavior"].ToLower().Trim())
+                {
+                    case "": newKillSpawn.ArrivalBehavior = CreatureKillSpawnArrivalBehaviorType.None; break;
+                    case "sit": newKillSpawn.ArrivalBehavior = CreatureKillSpawnArrivalBehaviorType.Sit; break;
+                    case "despawn": newKillSpawn.ArrivalBehavior = CreatureKillSpawnArrivalBehaviorType.Despawn; break;
+                    default:
+                        {
+                            Logger.WriteError("CreatureKillSpawn row '" + newKillSpawn.ID + "' has unknown arrival_behavior '" + columns["arrival_behavior"] + "'");
+                            continue;
+                        }
+                }
+                newKillSpawn.IsPersistent = columns["persistent"].Trim() == "1";
+                newKillSpawn.Text = columns["text"].Trim().Replace("\"", "'");
+                if ((newKillSpawn.ActionType == CreatureKillSpawnActionType.Say || newKillSpawn.ActionType == CreatureKillSpawnActionType.Emote
+                    || newKillSpawn.ActionType == CreatureKillSpawnActionType.Yell) && newKillSpawn.Text.Length == 0)
+                {
+                    Logger.WriteError("CreatureKillSpawn row '" + newKillSpawn.ID + "' speaks but has no text");
+                    continue;
+                }
                 KillSpawnList.Add(newKillSpawn);
+
+                if (newKillSpawn.TriggerType == CreatureKillSpawnTriggerType.Hail)
+                {
+                    if (HailTriggerEQCreatureTemplateIDsByZoneShortName.ContainsKey(newKillSpawn.ZoneShortName) == false)
+                        HailTriggerEQCreatureTemplateIDsByZoneShortName.Add(newKillSpawn.ZoneShortName, new HashSet<int>());
+                    HailTriggerEQCreatureTemplateIDsByZoneShortName[newKillSpawn.ZoneShortName].Add(newKillSpawn.TriggerEQCreatureTemplateID);
+                }
 
                 if (newKillSpawn.ActionType == CreatureKillSpawnActionType.Spawn && newKillSpawn.TargetEQCreatureTemplateID > 0)
                     SpawnedTargetEQCreatureTemplateIDs.Add(newKillSpawn.TargetEQCreatureTemplateID);

@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 128;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 129;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -1802,7 +1802,7 @@ namespace EQWOWConverter
         // - SpellIDs 97700 - 97715 reserved for 'good clicky' effects (defined in SpellTemplate.csv under wow_good_proc_id)
         // - SpellIDs 98000 - 98358 reserved for 'worn' effects (effects that always take effect when worn, defined in ItemTemplate.csv)
         // - SpellIDs 98500 - 120000 used for 'generated spell IDs'
-        // - SpellIDs 120001 - 120366 reserved for companion pets (defined in CompanionPetsMap.csv)
+        // - SpellIDs 120001 - 120369 reserved for companion pets (defined in CompanionPetsMap.csv)
         // - SpellIDs 122000 - 125841 reserved for creature-cast spell copies (defined in SpellTemplates.csv under wow_creature_cast_id, always base wow_id + 30000)
         public static int DBCID_SPELL_ID_START = 86900;
         public static int DBCID_SPELL_ID_GENERATED_START = 98500;

@@ -21,6 +21,9 @@ namespace EQWOWConverter.Creatures
         Death = 0,
         Combat = 1,
         Evade = 2,
-        OutOfCombatTimer = 3 // Fires after delay_min_ms of continuous out-of-combat time; combat resets the countdown
+        OutOfCombatTimer = 3, // After delay_min_ms of continuous out-of-combat time (combat resets the countdown)
+        Spawn = 4,
+        Proximity = 5, // Player moves within trigger_radius
+        Hail = 6 // Player talks to it
     }
 }

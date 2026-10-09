@@ -210,6 +210,36 @@ kithicor|Grim_Oakfist|It is good to finally meet one who respects the discipline
 kithicor|Grim_Oakfist|It is good to finally meet one who respects the disciplines of the Ashen Order.  All I have met are rangers.  They have interfered with my mission in the woods.|2|I am a fellow monk.|spawnunique|20000|-58|876|95.61734|0|||||
 lavastorm|a_fire_sprite|Greetings, $N.|1|I wish to challenge Eejag.|despawn|self|||||||||
 lavastorm|a_fire_sprite|Greetings, $N.|1|I wish to challenge Eejag.|spawnunique|27119|1037|298|-60|0|||||
+mischiefplane|Ashley||1|I would like to see you dance.|npcsay|126213:Hey! Yeah! Do the Marinara!|||||||||
+mischiefplane|Ashley||1|I would like to see you dance.|npcsay|126187:Hey! Yeah! Do the Marinara!|||||||||
+mischiefplane|Ashley||1|I would like to see you dance.|npcsay|126184:Hey! Yeah! Do the Marinara!|||||||||
+mischiefplane|Ashley||2|Teach me to dance.|castspell|806|||||||||
+mischiefplane|Ashley||2|Teach me to dance.|say|Look at you! You can dance! Go, go, go! That's the spirit, you got it! Keep up the good work! Don't get too tired now, you are looking a little pale!|||||||||
+mischiefplane|Brittina||1|I would like to see you dance.|npcsay|126207:Hey! Yeah! Do the Marinara!|||||||||
+mischiefplane|Brittina||1|I would like to see you dance.|npcsay|126187:Hey! Yeah! Do the Marinara!|||||||||
+mischiefplane|Brittina||1|I would like to see you dance.|npcsay|126184:Hey! Yeah! Do the Marinara!|||||||||
+mischiefplane|Brittina||2|Teach me to dance.|castspell|806|||||||||
+mischiefplane|Brittina||2|Teach me to dance.|say|Look at you! You can dance! Go, go, go! That's the spirit, you got it! Keep up the good work! Don't get too tired now, you are looking a little pale!|||||||||
+mischiefplane|Diana||1|I would like to see you dance.|npcsay|126207:Hey! Yeah! Do the Marinara!|||||||||
+mischiefplane|Diana||1|I would like to see you dance.|npcsay|126213:Hey! Yeah! Do the Marinara!|||||||||
+mischiefplane|Diana||1|I would like to see you dance.|npcsay|126184:Hey! Yeah! Do the Marinara!|||||||||
+mischiefplane|Diana||2|Teach me to dance.|castspell|806|||||||||
+mischiefplane|Diana||2|Teach me to dance.|say|Look at you! You can dance! Go, go, go! That's the spirit, you got it! Keep up the good work! Don't get too tired now, you are looking a little pale!|||||||||
+mischiefplane|Roxxanne||1|I would like to see you dance.|npcsay|126207:Hey! Yeah! Do the Marinara!|||||||||
+mischiefplane|Roxxanne||1|I would like to see you dance.|npcsay|126213:Hey! Yeah! Do the Marinara!|||||||||
+mischiefplane|Roxxanne||1|I would like to see you dance.|npcsay|126187:Hey! Yeah! Do the Marinara!|||||||||
+mischiefplane|Roxxanne||2|Teach me to dance.|castspell|806|||||||||
+mischiefplane|Roxxanne||2|Teach me to dance.|say|Look at you! You can dance! Go, go, go! That's the spirit, you got it! Keep up the good work! Don't get too tired now, you are looking a little pale!|||||||||
+mischiefplane|Ferjeneror||1|Yes.|say|THEN GIVE IT!|||||||||
+mischiefplane|Ferjeneror||2|No.|say|Then DIE!|||||||||
+mischiefplane|Ferjeneror||2|No.|attackplayer||||||||||
+mischiefplane|Pinky_Ekkolofezznaboten_III||1|Who's there?|say|Will.|||||||||
+mischiefplane|Pinky_Ekkolofezznaboten_III||2|Will who?|say|Will you tell ME a knock knock joke?|||||||||
+mischiefplane|Pinky_Ekkolofezznaboten_III||3|Knock knock.|say|Here is a knock for ya! Har har har haaaarrr!!!|||||||||
+mischiefplane|Pinky_Ekkolofezznaboten_III||3|Knock knock.|castspell|904|||||||||
+mischiefplane|#a_maniacal_dark_knight|Greetings, $N.|1|Hail, a maniacal dark knight.|say|Greetings, friend.  Perhaps an intelligent $R such as you can assist me in a friendly game of find the exit. I really like being with friends rather than being alo... No!  NONONO!  Make the fluffy goodness stop! You must help me! Squire!!!  Squire!  Curse him where is he when I need him. Find my squire you pathetic fool!|||||||||
+mischiefplane|#a_maniacal_dark_knight|Greetings, $N.|1|Hail, a maniacal dark knight.|spawnunique|126180|npcX|npcY|npcZ|npcHeading|||1000||
+mischiefplane|#a_maniacal_dark_knight|Greetings, $N.|1|Hail, a maniacal dark knight.|despawn|self|||||||1000||
 misty|Bronin_Higginsbot|Hello. It is dangerous out in the woods. You should go to Rivervale. It's at the end of the path. You will find good times there. Travel safely, my friend!|1|I will do you a small favor.|say|I have been tracked here by a bounty hunter named Slaythe. I have heard reports of his presence beyond the Great Wall. Please seek him out and bring me some body part of his as proof of his passing. Do this and the emerald shard is yours.|||||||||
 misty|Bronin_Higginsbot|Hello. It is dangerous out in the woods. You should go to Rivervale. It's at the end of the path. You will find good times there. Travel safely, my friend!|1|I will do you a small favor.|spawnunique|33146|664|893|-38.488468|0|||||
 oggok|Marda|Welcome to intelligence, young  $N! Did you think all ogres were inept? Ha!! I hope you show the glimmer. We shamans need more within our ranks. Our race needs to evolve!! So, are you one of the smart ogres or have I spoken too many syllables?|1|Tell me about the secret mission.|say|I have heard of your advancements. You are a fine addition to Oggok. I require your skill in handling a delicate matter. I want you to run out to the Bouncer's keep near the entrance to Oggok. There, you shall find a froglok named Glib. He will pose no threat to you. He has come on business and I have promised him protection. Tell him the Greenblood shaman sent you. He shall fill you in. Go at once.|||||||||

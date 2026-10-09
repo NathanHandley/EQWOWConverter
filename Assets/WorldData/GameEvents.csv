@@ -26,7 +26,7 @@ id|zone|zone_event_id|name|normalize_type|is_scheduled||trigger_hour|duration_in
 25|lakerathe|2|Day|day|1||7|14|2|0
 26|lfaydark|1|Night|night|1||21|10|1|0
 27|lfaydark|2|Day|day|1||7|14|2|0
-28|mischiefplane|1|Theate Event|none|1||7|3|1|0
+28|mischiefplane|1|Theater Event|none|1||7|3|1|0
 29|neriakb|1|Night|night|1||21|10|1|0
 30|neriakb|2|Day|day|1||7|14|2|0
 31|northkarana|1|Night|night|1||21|10|1|0

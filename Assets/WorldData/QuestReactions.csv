@@ -1552,8 +1552,8 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 31376|lfaydark|Scout_Rahjiq|say|Keep your head down, mate! The spirit that you have come for is very close. I have spotted it several times today. It keeps appearing near that odd structure just over the hill. Be careful not to attract the attention of those invisible creatures that roam near the structure. Just release the spirit and return the totem to me. I'll prepare the totem for placement in the container that you were given.|||||||
 31376|lfaydark|Scout_Rahjiq|spawn|57119|-349|-1632|-0.12234|0|||
 31376|lfaydark|Scout_Rahjiq|spawnunique|57005|playerX|playerY|playerZ|0|||
-31377|mischiefplane|a_white_stallion|despawn|self|||||||
-31377|mischiefplane|a_white_stallion|spawnunique|126014|playerX|playerY|playerZ|playerHeading|||
+31377|mischiefplane|a_white_stallion|spawnunique|126014|npcX|npcY|npcZ|npcHeading|||
+31377|mischiefplane|a_white_stallion|despawn|self|||||||500
 31378|mischiefplane|Bob_the_painter|say|Ay!!! this is poifect! 'ere take this pot o' gold. It's empty at the moment. Go ask my brother Vinny about the pot and mebbe he'll have a clue how ta get it full agin.|||||||
 31379|mischiefplane|Debbis_the_Fish|say|Oh wow! A rabbits foot!! Thank you so much. Here take this, I won't need this smelly thing any more.|||||||
 31380|mischiefplane|Ferjeneror|say|Indeed you found the one I need. I give you this to feed your greed. A paper knight of blackened heart. A paper throne to match his art. A paper crown of darkest night. A throne of ice to chill the sight. Inside the deck you place the four, to guard the wings that fly the floor.|||||||
@@ -3431,3 +3431,9 @@ wow_questid|zone_shortname|questgiver_name|Type|ReactionValue|PositionX|Position
 33460|skyshrine|Sentry_Kcor|say|Ahhh yes! Well done. Here is your reward. Your status with our people grows with each interloper you eradicate.|||||||
 33461|skyshrine|Sentry_Kcor|say|Ahh these will go nicely with the rest of my collection.  Here is a small reward for your trouble.|||||||
 33462|firiona|Frist_Furtun|say|Here is the scroll that I promised. We have both gained much knowledge today. I hope to do business with you again soon. Farewell!|||||||
+33463|mischiefplane|#a_jovial_white_knight|say|You have found it!!  Thank Tunare! I apologize for my rude behaviour.  These tunnels twist and bend my very thoughts. Perhaps this will assist you in your escape from this cruel joke Fizzlethorpe has been playing with our minds. I thank you friend.|||||||
+33463|mischiefplane|#a_jovial_white_knight|spawnunique|126379|npcX|npcY|npcZ|npcHeading|||500
+33463|mischiefplane|#a_jovial_white_knight|despawn|self|||||||500
+33464|mischiefplane|#a_maniacal_dark_knight|say|You have found it!!  Thank Tunare! I apologize for my rude behaviour.  These tunnels twist and bend my very thoughts. Perhaps this will assist you in your escape from this cruel joke Fizzlethorpe has been playing with our minds. I thank you friend.|||||||
+33464|mischiefplane|#a_maniacal_dark_knight|spawnunique|126180|npcX|npcY|npcZ|npcHeading|||500
+33464|mischiefplane|#a_maniacal_dark_knight|despawn|self|||||||500

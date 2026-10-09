@@ -203,6 +203,9 @@ namespace EQWOWConverter
             // Talk-triggered (gossip) reactions, before creature data so the gossip flags are set prior to creature_template rows generating
             PopulateCreatureGossipData();
 
+            // Creatures that react to being hailed, also before creature data for the same reason
+            PopulateCreatureHailReactionData();
+
             // Creature say/emote events, also before creature data since 'hailed' emotes set gossip flags on the creature templates
             PopulateCreatureEmoteData();
 
@@ -546,6 +549,16 @@ namespace EQWOWConverter
                             gossipReaction.PositionY = objectY;
                             gossipReaction.PositionZ = objectZ;
                         }
+                        if (gossipReaction.ReactionType == QuestReactionType.CastSpell && gossipReaction.SpellWOWID == 0)
+                        {
+                            Dictionary<int, SpellTemplate> gossipSpellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
+                            if (gossipSpellTemplatesByEQID.ContainsKey(gossipReaction.SpellEQID) == false)
+                            {
+                                Logger.WriteError(string.Concat("Gossip for creature '", creatureName, "' casts EQ spell ", gossipReaction.SpellEQID.ToString(), ", but no spell template has that ID"));
+                                continue;
+                            }
+                            gossipReaction.SpellWOWID = gossipSpellTemplatesByEQID[gossipReaction.SpellEQID].GetWOWSpellIDForCreatureCast();
+                        }
                         if (gossipReaction.ReactionType == QuestReactionType.WalkGrid && gossipReaction.PathListID == 0)
                         {
                             int pathListID;
@@ -565,6 +578,27 @@ namespace EQWOWConverter
                         }
                         modEverquestGossipReactionSQL.AddRow(gossipCreatureTemplate.WOWCreatureTemplateID, menuNPCTextID, gossipReaction, targetCreatureTemplateID);
                     }
+                }
+            }
+        }
+
+        private void PopulateCreatureHailReactionData()
+        {
+            Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
+            foreach (var hailTriggersForZone in CreatureKillSpawn.GetHailTriggerEQCreatureTemplateIDsByZoneShortName())
+            {
+                foreach (int eqCreatureTemplateID in hailTriggersForZone.Value)
+                {
+                    if (creatureTemplatesByEQID.ContainsKey(eqCreatureTemplateID) == false)
+                    {
+                        Logger.WriteDebug(string.Concat("Skipping hail reactions for creature '", eqCreatureTemplateID.ToString(), "' in zone '", hailTriggersForZone.Key, "' as no creature template could be found"));
+                        continue;
+                    }
+                    CreatureTemplate hailCreatureTemplate = creatureTemplatesByEQID[eqCreatureTemplateID];
+                    hailCreatureTemplate.HasHailReactions = true;
+
+                    // The client only lets a creature be talked to when it does not read as hostile, the same as for a gossip menu
+                    hailCreatureTemplate.RemapOnlyAttackableFactionToInteractive();
                 }
             }
         }
@@ -651,12 +685,41 @@ namespace EQWOWConverter
                     respawnedCreatureTemplate = creatureTemplatesByEQID[killSpawn.TargetEQCreatureTemplateID];
                 if (respawnTimeInSec > 0 && respawnedCreatureTemplate != null && respawnedCreatureTemplate.MinRespawnTimeInSec > 0)
                     respawnTimeInSec = Math.Max(respawnTimeInSec, respawnedCreatureTemplate.MinRespawnTimeInSec);
+
+                // A spell cast by the trigger creature
+                int spellWOWID = 0;
+                if (killSpawn.SpellEQID > 0)
+                {
+                    Dictionary<int, SpellTemplate> killSpawnSpellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
+                    if (killSpawnSpellTemplatesByEQID.ContainsKey(killSpawn.SpellEQID) == false)
+                    {
+                        Logger.WriteError("Skipping creature kill spawn '" + killSpawn.ID + "' since it casts EQ spell '" + killSpawn.SpellEQID + "', which has no spell template");
+                        continue;
+                    }
+                    spellWOWID = killSpawnSpellTemplatesByEQID[killSpawn.SpellEQID].GetWOWSpellIDForCreatureCast();
+                }
+
+                // A path grid the trigger creature walks
+                int pathListID = 0;
+                if (killSpawn.PathGridID != -1)
+                {
+                    float lastNodeX;
+                    float lastNodeY;
+                    float lastNodeZ;
+                    if (TryBuildReactionPathList(killSpawn.ZoneShortName, killSpawn.PathGridID, killSpawn.PathGridStartNode, killSpawn.PathGridEndNode,
+                        out pathListID, out lastNodeX, out lastNodeY, out lastNodeZ) == false)
+                    {
+                        Logger.WriteError("Skipping creature kill spawn '" + killSpawn.ID + "' since path grid '" + killSpawn.PathGridID + "' of zone '" + killSpawn.ZoneShortName + "' has no usable nodes");
+                        continue;
+                    }
+                }
                 modEverquestCreatureKillSpawnSQL.AddRow(killSpawn.ID, creatureTemplatesByEQID[killSpawn.TriggerEQCreatureTemplateID].WOWCreatureTemplateID,
                     Convert.ToInt32(killSpawn.TriggerType), mapIDsByShortName[killSpawn.ZoneShortName], Convert.ToInt32(killSpawn.ActionType), targetWOWID, killSpawn.Chance,
                     killSpawn.AltGroup, killSpawn.AltID, killSpawn.AltWeight, killSpawn.SpawnAtCorpse, killSpawn.XPosition, killSpawn.YPosition,
                     killSpawn.ZPosition, killSpawn.Orientation, killSpawn.DelayMinMS, killSpawn.DelayMaxMS, onlyIfNotAliveWOWID,
                     string.Join(",", requireDeadWOWIDs), string.Join(",", requireAliveWOWIDs), killSpawn.AddToHateList,
-                    killSpawn.TriggerMinLevel, killSpawn.TriggerMaxLevel, respawnTimeInSec, killSpawn.RespawnUsesRaidLockout, killSpawn.Comment);
+                    killSpawn.TriggerMinLevel, killSpawn.TriggerMaxLevel, respawnTimeInSec, killSpawn.RespawnUsesRaidLockout, killSpawn.TriggerRadius, spellWOWID,
+                    pathListID, Convert.ToInt32(killSpawn.ArrivalBehavior), killSpawn.IsPersistent, killSpawn.Text, killSpawn.Comment);
             }
         }
 

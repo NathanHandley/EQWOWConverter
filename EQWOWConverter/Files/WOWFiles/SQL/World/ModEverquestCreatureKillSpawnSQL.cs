@@ -50,6 +50,12 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`TriggerMaxLevel` INT(10) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`RespawnTimeSec` INT(10) NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`RespawnUsesRaidLockout` TINYINT(3) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`TriggerRadius` FLOAT NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`SpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`PathListID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`ArrivalBehavior` TINYINT(3) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`IsPersistent` TINYINT(3) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`SayText` VARCHAR(512) NOT NULL DEFAULT '', ");
             stringBuilder.AppendLine("`Comment` VARCHAR(128) NOT NULL DEFAULT '', ");
             stringBuilder.AppendLine("PRIMARY KEY (`ID`) USING BTREE ); ");
             return stringBuilder.ToString();
@@ -59,7 +65,8 @@ namespace EQWOWConverter.WOWFiles
             float chance, int altGroup, int altID, float altWeight, bool spawnAtCorpse, float positionX, float positionY,
             float positionZ, float orientation, int delayMinMS, int delayMaxMS, int onlyIfNotAliveCreatureTemplateID,
             string requireDeadCreatureTemplateIDs, string requireAliveCreatureTemplateIDs, bool addToHateList,
-            int triggerMinLevel, int triggerMaxLevel, int respawnTimeSec, bool respawnUsesRaidLockout, string comment)
+            int triggerMinLevel, int triggerMaxLevel, int respawnTimeSec, bool respawnUsesRaidLockout, float triggerRadius, int spellID, int pathListID,
+            int arrivalBehavior, bool isPersistent, string sayText, string comment)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ID", id);
@@ -87,6 +94,12 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("TriggerMaxLevel", triggerMaxLevel);
             newRow.AddInt("RespawnTimeSec", respawnTimeSec);
             newRow.AddInt("RespawnUsesRaidLockout", respawnUsesRaidLockout ? 1 : 0);
+            newRow.AddFloat("TriggerRadius", triggerRadius);
+            newRow.AddInt("SpellID", spellID);
+            newRow.AddInt("PathListID", pathListID);
+            newRow.AddInt("ArrivalBehavior", arrivalBehavior);
+            newRow.AddInt("IsPersistent", isPersistent ? 1 : 0);
+            newRow.AddString("SayText", 512, sayText);
             newRow.AddString("Comment", 128, comment);
             Rows.Add(newRow);
         }

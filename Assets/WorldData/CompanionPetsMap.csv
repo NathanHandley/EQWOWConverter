@@ -365,3 +365,7 @@ id|enabled|wow_itemid|wow_spelltemplateid|drop_rate|name|size_mod|race_id|match_
 364|1|123363|120364|high|Ghost Dragon|1|196|-1|-1|-1|-1|2|0|0|0
 365|1|123364|120365|always|Prismatic Dragon|1|198|-1|-1|-1|-1|2|3|0|0
 366|1|123365|120366|low|Scaled Wolf|0.7|481|-1|-1|-1|-1|1|0|0|0
+367|1|123366|120367|high|Solusek Ro|1|58|-1|-1|-1|-1|2|0|0|0
+368|1|123367|120368|high|Erollisi|1|150|-1|-1|-1|-1|2|0|0|0
+369|1|123368|120369|high|Tribunal|1|151|-1|-1|-1|-1|2|0|0|0
+370|1|123369|120370|high|Bristlebane|1|153|-1|-1|-1|-1|2|0|0|0
