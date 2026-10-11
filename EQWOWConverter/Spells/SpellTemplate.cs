@@ -415,6 +415,7 @@ namespace EQWOWConverter.Spells
         public bool AllowCastWhileCasting = false;
         public bool AllowCastWhileMounted = false;
         public bool IsGroundTargeted = false; // Gives the caster a targeting circle to pick a spot on the ground with
+        public bool TargetsItem = false; // Gives the caster an item cursor to pick an item in their bags with, like Disenchant
         public UInt32 SpellFamilyID = 0;
         public UInt32 SpellFamilyFlags1 = 0;
         public UInt32 SpellFamilyFlags2 = 0;

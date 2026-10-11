@@ -3895,6 +3895,31 @@ namespace EQWOWConverter
                 spellTemplates.Add(clamberSpellTemplate);
             }
 
+            // Slotshift Transform (targets an item in the bags like Disenchant does, and the mod's spell script swaps it for the version in its next slot)
+            SpellTemplate slotshiftTransformSpellTemplate = new SpellTemplate();
+            slotshiftTransformSpellTemplate.Name = "Slotshift Transform";
+            slotshiftTransformSpellTemplate.WOWSpellID = Configuration.ITEMS_SLOTSHIFT_TRANSFORM_SPELL_ID;
+            slotshiftTransformSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
+            slotshiftTransformSpellTemplate.Description = "Reforms an unequipped item in your bags so it can be worn in another slot. Only works on fully repaired items that say they can slotshift, and each use moves the item on to the next slot it fits. Temporary enchantments are lost, and a permanent enchantment stays with the version it was put on until the item is shifted back.";
+            slotshiftTransformSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(21);
+            slotshiftTransformSpellTemplate.SpellVisualID1 = Convert.ToUInt32(Configuration.ITEMS_SLOTSHIFT_TRANSFORM_SPELL_VISUAL_ID);
+            slotshiftTransformSpellTemplate.CastTimeInMS = Configuration.ITEMS_SLOTSHIFT_TRANSFORM_CAST_TIME_IN_MS;
+            slotshiftTransformSpellTemplate.SchoolMask = 1; // Physical
+            slotshiftTransformSpellTemplate.IsGoodEffect = true;
+            slotshiftTransformSpellTemplate.TargetsItem = true;
+            slotshiftTransformSpellTemplate.AllowCastInCombat = false;
+            slotshiftTransformSpellTemplate.AllowInShapeshift = true;
+            slotshiftTransformSpellTemplate.GenerateNoThreat = true;
+            slotshiftTransformSpellTemplate.SuppressCasterProcs = true;
+            slotshiftTransformSpellTemplate.PersistOnClassChange = true;
+            slotshiftTransformSpellTemplate.AttachedAuraScriptName = "EverQuest_SlotshiftTransformSpellScript";
+            slotshiftTransformSpellTemplate.SkillLine = SkillLineDBC.GetIDForSkillCatagory(SpellEQSkillCategory.Combat);
+            SpellEffectWOW slotshiftTransformEffect = new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0);
+            slotshiftTransformEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
+            slotshiftTransformEffect.ActionDescription = "slotshifts an item";
+            slotshiftTransformSpellTemplate.WOWSpellEffects.Add(slotshiftTransformEffect);
+            spellTemplates.Add(slotshiftTransformSpellTemplate);
+
             // Implementing creature ranged as a spell, and basing it on TAKP's NPC::RangedAttack
             if (Configuration.COMBATSKILL_RANGED_ENABLED == true)
             {
@@ -5282,61 +5307,23 @@ namespace EQWOWConverter
                 }
             }
 
-            // Create the slotshift spells, which swap a multi-slot item between its per-slot versions when clicked
+            // Slotshift rings (the Slotshift Transform spell turns each version into the next)
             foreach (ItemTemplate itemTemplate in itemTemplatesByWOWEntryID.Values)
             {
                 if (itemTemplate.SlotshiftNextItemTemplate == null)
                     continue;
-                ItemTemplate slotshiftNextItemTemplate = itemTemplate.SlotshiftNextItemTemplate;
-                if (itemTemplatesByWOWEntryID.ContainsKey(slotshiftNextItemTemplate.WOWEntryID) == false)
+                foreach (ItemTemplate ringItemTemplate in itemTemplate.SlotshiftRingItemTemplates)
                 {
-                    Logger.WriteError("Could not create the slotshift spell for item '", itemTemplate.Name, "' (wowid '", itemTemplate.WOWEntryID.ToString(),
-                        "') since the next item in its slotshift ring (wowid '", slotshiftNextItemTemplate.WOWEntryID.ToString(), "') was removed");
-                    continue;
+                    if (itemTemplatesByWOWEntryID.ContainsKey(ringItemTemplate.WOWEntryID) == true)
+                        continue;
+                    Logger.WriteError("Item '", itemTemplate.Name, "' (wowid '", itemTemplate.WOWEntryID.ToString(),
+                        "') can't slotshift since a version in its slotshift ring (wowid '", ringItemTemplate.WOWEntryID.ToString(), "') was removed");
+                    itemTemplate.SlotshiftNextItemTemplate = null;
+                    break;
                 }
-
-                SpellTemplate slotshiftSpellTemplate = new SpellTemplate();
-                slotshiftSpellTemplate.Name = "Slotshift";
-                slotshiftSpellTemplate.WOWSpellID = IDGenerationTool.GenerateID("SpellID", "slotshift", itemTemplate.WOWEntryID.ToString());
-                slotshiftSpellTemplate.EQSpellID = SpellTemplate.GenerateUniqueEQSpellID();
-                slotshiftSpellTemplate.Description = string.Concat("Reforms this item so it can be worn in the ", GetSlotshiftSlotName(slotshiftNextItemTemplate.InventoryType), " slot.");
-                slotshiftSpellTemplate.SchoolMask = 1; // "Normal"
-                slotshiftSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(itemTemplate.IconID);
-                slotshiftSpellTemplate.AllowCastInCombat = false;
-                slotshiftSpellTemplate.AllowInShapeshift = true;
-                slotshiftSpellTemplate.SpellVisualID1 = Convert.ToUInt32(ItemTemplate.SlotshiftSpellVisualID);
-                SpellEffectWOW slotshiftCreateItemEffect = new SpellEffectWOW(SpellWOWEffectType.CreateItem, SpellWOWAuraType.None, 0, Convert.ToUInt32(slotshiftNextItemTemplate.WOWEntryID), 1, 0, 0, 0);
-                slotshiftCreateItemEffect.ImplicitTargetA = SpellWOWTargetType.UnitCaster;
-                slotshiftSpellTemplate.WOWSpellEffects.Add(slotshiftCreateItemEffect);
-                spellTemplates.Add(slotshiftSpellTemplate);
-                itemTemplate.WOWSlotshiftSpellID = slotshiftSpellTemplate.WOWSpellID;
             }
-        }
-
-        private static string GetSlotshiftSlotName(ItemWOWInventoryType inventoryType)
-        {
-            switch (inventoryType)
-            {
-                case ItemWOWInventoryType.Head: return "head";
-                case ItemWOWInventoryType.Neck: return "neck";
-                case ItemWOWInventoryType.Shoulder: return "shoulder";
-                case ItemWOWInventoryType.Back: return "back";
-                case ItemWOWInventoryType.Chest: return "chest";
-                case ItemWOWInventoryType.Robe: return "chest";
-                case ItemWOWInventoryType.Wrists: return "wrist";
-                case ItemWOWInventoryType.Hands: return "hands";
-                case ItemWOWInventoryType.Waist: return "waist";
-                case ItemWOWInventoryType.Legs: return "legs";
-                case ItemWOWInventoryType.Feet: return "feet";
-                case ItemWOWInventoryType.Finger: return "finger";
-                case ItemWOWInventoryType.Trinket: return "trinket";
-                case ItemWOWInventoryType.Shield: return "off hand (as a shield)";
-                case ItemWOWInventoryType.Ranged: return "ranged";
-                case ItemWOWInventoryType.HeldInOffHand: return "off hand (as a held item)";
-                case ItemWOWInventoryType.MainHand: return "main hand";
-                case ItemWOWInventoryType.TwoHand: return "main hand (as a two-hand weapon)";
-                default: return inventoryType.ToString().ToLower();
-            }
+            foreach (ItemTemplate itemTemplate in itemTemplatesByWOWEntryID.Values)
+                itemTemplate.PopulateSlotshiftDescription();
         }
 
         private bool IsGameObjectKeyDisabled(int keyItemEQID, SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)

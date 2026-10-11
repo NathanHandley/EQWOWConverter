@@ -47,9 +47,10 @@ namespace EQWOWConverter.Items
         private static ItemDisplayInfo? CompanionPetItemDisplayInfo = null; // Same across all companion pets
         private static int CUR_ITEM_GENERATED_EQID = 50000;
         private const int ITEM_DESCRIPTION_MAX_LENGTH = 255; // Size of item_template.description
+        private const string SLOTSHIFT_DESCRIPTION_COLOR = "|cFF71D5FF"; // Light blue, so the slotshift lines stand apart from the description (the EQ_ItemTooltips addon keys off it)
         private static readonly object ItemLock = new object();
 
-        // Slotshifting items are wearable items in multiple slots (in EQ) that change to other slots on click
+        // Slotshifting items are wearable items in multiple slots (in EQ) that the Slotshift Transform spell changes to other slots
         private static readonly List<(string ColumnName, ItemWOWInventoryType InventoryType)> SlotshiftSlotsByColumnName = new List<(string, ItemWOWInventoryType)>()
         {
             ("wowid_head", ItemWOWInventoryType.Head),
@@ -68,34 +69,6 @@ namespace EQWOWConverter.Items
             ("wowid_mainhand", ItemWOWInventoryType.MainHand)
         };
 
-        // Sound-only spell visual shared by all slotshift spells
-        private static int _SlotshiftSpellVisualID = -1;
-        public static int SlotshiftSpellVisualID
-        {
-            get
-            {
-                lock (ItemLock)
-                {
-                    if (_SlotshiftSpellVisualID == -1)
-                        _SlotshiftSpellVisualID = IDGenerationTool.GenerateID("SpellVisualID", "Slotshift");
-                    return _SlotshiftSpellVisualID;
-                }
-            }
-        }
-        private static int _SlotshiftSpellVisualKitID = -1;
-        public static int SlotshiftSpellVisualKitID
-        {
-            get
-            {
-                lock (ItemLock)
-                {
-                    if (_SlotshiftSpellVisualKitID == -1)
-                        _SlotshiftSpellVisualKitID = IDGenerationTool.GenerateID("SpellVisualKitID", "Slotshift");
-                    return _SlotshiftSpellVisualKitID;
-                }
-            }
-        }
-        
         public int EQItemID = 0;
         public int WOWEntryID = 0;
         public int NonEssenceWOWEntryID = 0; // Filled in only for "essence split clickies" for tradeskills/quests to reference a non-essence version
@@ -209,8 +182,9 @@ namespace EQWOWConverter.Items
         public int StarterVersionItemTemplateID = -1;
         public Dictionary<ItemWOWInventoryType, int> SlotshiftWOWIDsBySlot = new Dictionary<ItemWOWInventoryType, int>();
         public ItemTemplate? SlotshiftNextItemTemplate = null;
+        public List<ItemTemplate> SlotshiftRingItemTemplates = new List<ItemTemplate>(); // Every version in the ring (shared list), in ring order
         public bool IsSlotshiftVariant = false;
-        public int WOWSlotshiftSpellID = 0;
+        public string SlotshiftDescription = string.Empty; // Colored lines added to the bottom of the description, saying which slots this can slotshift into
         public bool IsUnique = false;
 
         public ItemTemplate()
@@ -1414,10 +1388,7 @@ namespace EQWOWConverter.Items
         {
             List<ItemTemplate> variantItemTemplates = new List<ItemTemplate>();
 
-            // Items with a click effect can never slotshift, since a single click would fire both the click effect and the slotshift
-            if (baseItemTemplate.EQClickSpellEffectID > 0)
-                return variantItemTemplates;
-
+            // Click effect items can slotshift too, since the shift is done by the Slotshift Transform spell targeting the item and not by clicking it
             // Stackable items can't slotshift since the shift consumes and creates exactly one item
             if (baseItemTemplate.StackSize > 1)
                 return variantItemTemplates;
@@ -1511,11 +1482,14 @@ namespace EQWOWConverter.Items
                 variantItemTemplates.Add(variantItemTemplate);
             }
 
-            // Link the ring so each version's slotshift spell can point at the next one
+            // Link the ring so each version knows which one the Slotshift Transform spell turns it into
             List<ItemTemplate> slotshiftRingItemTemplates = new List<ItemTemplate>() { baseItemTemplate };
             slotshiftRingItemTemplates.AddRange(variantItemTemplates);
             for (int i = 0; i < slotshiftRingItemTemplates.Count; i++)
+            {
                 slotshiftRingItemTemplates[i].SlotshiftNextItemTemplate = slotshiftRingItemTemplates[(i + 1) % slotshiftRingItemTemplates.Count];
+                slotshiftRingItemTemplates[i].SlotshiftRingItemTemplates = slotshiftRingItemTemplates;
+            }
 
             return variantItemTemplates;
         }
@@ -2487,7 +2461,7 @@ namespace EQWOWConverter.Items
                 else
                     newItemTemplate.Quality = (ItemWOWQuality)qualityOverride;
 
-                // Slotshifting (items wearable in multiple slots become a ring of per-slot versions that swap on click)
+                // Slotshifting (items wearable in multiple slots become a ring of per-slot versions that the Slotshift Transform spell swaps between)
                 foreach ((string slotshiftColumnName, ItemWOWInventoryType slotshiftInventoryType) in SlotshiftSlotsByColumnName)
                 {
                     if (columns.ContainsKey(slotshiftColumnName) == false)
@@ -3156,7 +3130,67 @@ namespace EQWOWConverter.Items
             return classStringBuilder.ToString().TrimEnd();
         }
 
-        public string GetDescriptionStringWithAddedAllowedClasses(List<ClassEQType> allowedClassTypesEQ)
+        // Writes the lines that go under the description of an item that can slotshift, naming the slot it becomes next and the other slots it can reach after that
+        // This must run after the item list is final, since a ring that lost a version can't slotshift
+        public void PopulateSlotshiftDescription()
+        {
+            SlotshiftDescription = string.Empty;
+            if (SlotshiftNextItemTemplate == null)
+                return;
+
+            // Other slots are listed in the order further slotshifts reach them
+            int ringIndex = SlotshiftRingItemTemplates.IndexOf(this);
+            List<string> otherSlotNames = new List<string>();
+            for (int i = 2; i < SlotshiftRingItemTemplates.Count; i++)
+                otherSlotNames.Add(GetSlotshiftSlotDisplayName(SlotshiftRingItemTemplates[(ringIndex + i) % SlotshiftRingItemTemplates.Count].InventoryType));
+            string nextLine = string.Concat(SLOTSHIFT_DESCRIPTION_COLOR, "Slotshift next: ", GetSlotshiftSlotDisplayName(SlotshiftNextItemTemplate.InventoryType), "|r");
+            string otherLine = otherSlotNames.Count == 0 ? string.Empty : string.Concat(SLOTSHIFT_DESCRIPTION_COLOR, "Other slots: ", string.Join(", ", otherSlotNames), "|r");
+
+            // Shares item_template.description with the class line and any description, so drop the other slots line first if there isn't room
+            int descriptionMaxLength = ITEM_DESCRIPTION_MAX_LENGTH - (GetDescriptionStringWithAddedAllowedClasses(AllowedClassTypesEQ, false).Length + 2);
+            string slotshiftDescription = otherLine.Length == 0 ? nextLine : string.Concat(nextLine, "|n", otherLine);
+            if (slotshiftDescription.Length > descriptionMaxLength)
+            {
+                Logger.WriteDebug("Item '", Name, "' (", WOWEntryID.ToString(), ") had no room to list its other slotshift slots in the description");
+                slotshiftDescription = nextLine;
+            }
+            if (slotshiftDescription.Length > descriptionMaxLength)
+            {
+                Logger.WriteError("Item '", Name, "' (", WOWEntryID.ToString(), ") had no room in the description to say it can slotshift");
+                return;
+            }
+            SlotshiftDescription = slotshiftDescription;
+        }
+
+        public static string GetSlotshiftSlotDisplayName(ItemWOWInventoryType inventoryType)
+        {
+            switch (inventoryType)
+            {
+                case ItemWOWInventoryType.Head: return "Head";
+                case ItemWOWInventoryType.Neck: return "Neck";
+                case ItemWOWInventoryType.Shoulder: return "Shoulder";
+                case ItemWOWInventoryType.Back: return "Back";
+                case ItemWOWInventoryType.Chest: return "Chest";
+                case ItemWOWInventoryType.Robe: return "Chest";
+                case ItemWOWInventoryType.Wrists: return "Wrist";
+                case ItemWOWInventoryType.Hands: return "Hands";
+                case ItemWOWInventoryType.Waist: return "Waist";
+                case ItemWOWInventoryType.Legs: return "Legs";
+                case ItemWOWInventoryType.Feet: return "Feet";
+                case ItemWOWInventoryType.Finger: return "Finger";
+                case ItemWOWInventoryType.Trinket: return "Trinket";
+                case ItemWOWInventoryType.Shield: return "Shield";
+                case ItemWOWInventoryType.Ranged: return "Ranged";
+                case ItemWOWInventoryType.HeldInOffHand: return "Held In Off Hand";
+                case ItemWOWInventoryType.OneHand: return "One-Hand";
+                case ItemWOWInventoryType.MainHand: return "Main Hand";
+                case ItemWOWInventoryType.OffHandWeapon: return "Off Hand";
+                case ItemWOWInventoryType.TwoHand: return "Two-Hand";
+                default: return inventoryType.ToString();
+            }
+        }
+
+        public string GetDescriptionStringWithAddedAllowedClasses(List<ClassEQType> allowedClassTypesEQ, bool includeSlotshiftDescription = true)
         {
             // Build the class string
             StringBuilder allowedClassStringBuilder = new StringBuilder();
@@ -3185,6 +3219,14 @@ namespace EQWOWConverter.Items
                         fullDescription.Append("|n"); // Newline
                 }
                 fullDescription.Append(Description);
+            }
+
+            // Slotshift lines always go at the very bottom
+            if (includeSlotshiftDescription == true && SlotshiftDescription.Length > 0)
+            {
+                if (fullDescription.Length > 0)
+                    fullDescription.Append("|n"); // Newline
+                fullDescription.Append(SlotshiftDescription);
             }
             return fullDescription.ToString();
         }

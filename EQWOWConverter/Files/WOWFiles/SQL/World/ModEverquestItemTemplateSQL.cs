@@ -31,12 +31,13 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("`WornEffectSpellID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`AllowedEQClassMask` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("`NeverLootStack` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`SlotshiftNextItemTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
             stringBuilder.AppendLine("PRIMARY KEY (`ItemTemplateID`) USING BTREE ); ");
             return stringBuilder.ToString();
         }
 
         public void AddRow(int itemTemplateID, int npcEquipItemTemplateID, int wornEffectSpellID, List<ClassEQType> allowedEQClassTypes,
-            bool neverLootStack)
+            bool neverLootStack, int slotshiftNextItemTemplateID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ItemTemplateID", itemTemplateID);
@@ -47,6 +48,7 @@ namespace EQWOWConverter.WOWFiles
                 classMask += (int)classType;
             newRow.AddInt("AllowedEQClassMask", classMask);
             newRow.AddInt("NeverLootStack", neverLootStack == true ? 1 : 0);
+            newRow.AddInt("SlotshiftNextItemTemplateID", slotshiftNextItemTemplateID);
             Rows.Add(newRow);
         }
     }

@@ -1070,10 +1070,6 @@ namespace EQWOWConverter
             spellVisualKitDBC.AddRow(ItemDisplayInfo.IT159SpellVisualStateKitID, -1, 0, 0, 0, 0, ItemDisplayInfo.IT159SpellVisualEffectNameID);
             spellVisualEffectNameDBC.AddRow(ItemDisplayInfo.IT159SpellVisualEffectNameID, "EQ Celestial Fists", ItemDisplayInfo.IT159RelativeFileName);
 
-            // Sound-only visual for slotshift spells
-            spellVisualDBC.AddRow(ItemTemplate.SlotshiftSpellVisualID, 0, ItemTemplate.SlotshiftSpellVisualKitID, 0, 0);
-            spellVisualKitDBC.AddRow(ItemTemplate.SlotshiftSpellVisualKitID, -1, Configuration.DBCID_SOUNDENTRIES_SLOTSHIFT_SOUND_ID, 0, 0, 0, 0);
-
             // Shield-bash animation visuals for the Bash and Slam combat skills
             if (Configuration.COMBATSKILL_BASH_ENABLED == true)
             {

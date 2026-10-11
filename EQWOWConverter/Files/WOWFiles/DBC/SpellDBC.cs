@@ -89,6 +89,8 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddUInt32(64); // Targets (Destination location)
             else if (spellTemplate.TargetsGlyphSlot == true)
                 newRow.AddUInt32(131072); // Targets (Glyph slot)
+            else if (spellTemplate.TargetsItem == true)
+                newRow.AddUInt32(16); // Targets (Item)
             else
                 newRow.AddUInt32(0); // Targets (should this be non-zero?)
             newRow.AddUInt32(spellTemplate.TargetCreatureType); // TargetCreatureType

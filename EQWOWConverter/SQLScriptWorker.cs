@@ -2002,8 +2002,9 @@ namespace EQWOWConverter
 
                 // Save any additional metadata
                 int creatureWornEffectSpellID = itemTemplate.GetCreatureGrantableWornEffectSpellID(spellTemplatesByEQID);
+                int slotshiftNextItemTemplateID = itemTemplate.SlotshiftNextItemTemplate != null ? itemTemplate.SlotshiftNextItemTemplate.WOWEntryID : 0;
                 modEverquestItemTemplateSQL.AddRow(itemTemplate.WOWEntryID, itemTemplate.WOWEntryID, creatureWornEffectSpellID, itemTemplate.AllowedClassTypesEQ,
-                    itemTemplate.IsNeverLootStack);
+                    itemTemplate.IsNeverLootStack, slotshiftNextItemTemplateID);
 
                 // Associate spells if it's a learnable item
                 if (itemTemplate.DoesTeachSpell == true && itemTemplate.EQScrollSpellID != 0)
@@ -2048,7 +2049,7 @@ namespace EQWOWConverter
                             if (addedLearnScrollItemIDs.Contains(scrollPropertiesByClassType.Value.WOWItemTemplateID) == false)
                             {
                                 modEverquestItemTemplateSQL.AddRow(scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollPropertiesByClassType.Value.WOWItemTemplateID,
-                                    creatureWornEffectSpellID, new List<ClassEQType>() { scrollPropertiesByClassType.Key }, itemTemplate.IsNeverLootStack);
+                                    creatureWornEffectSpellID, new List<ClassEQType>() { scrollPropertiesByClassType.Key }, itemTemplate.IsNeverLootStack, 0);
                                 addedLearnScrollItemIDs.Add(scrollPropertiesByClassType.Value.WOWItemTemplateID);
                             }
                         }
@@ -2063,7 +2064,8 @@ namespace EQWOWConverter
                         string startVersionName = itemTemplate.Name;
                         if (startVersionName.Contains("*") == false)
                             startVersionName = String.Concat(startVersionName, "*");
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.StarterVersionItemTemplateID, startVersionName, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(itemTemplate.AllowedClassTypesEQ), itemTemplate.RequiredLevel, itemTemplate.ItemDisplayInfo);
+                        // Starter versions can't slotshift, since that would turn a free item into one that sells
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.StarterVersionItemTemplateID, startVersionName, itemTemplate.GetDescriptionStringWithAddedAllowedClasses(itemTemplate.AllowedClassTypesEQ, false), itemTemplate.RequiredLevel, itemTemplate.ItemDisplayInfo);
                     }
                     for (int i = 0; i < itemTemplate.ContainedItems.Count; i++)
                     {
@@ -2406,6 +2408,9 @@ namespace EQWOWConverter
                     // Clamber (every EQ class, so every player gets it)
                     if (Configuration.COMBATSKILL_CLAMBER_ENABLED == true && Configuration.COMBATSKILL_CLAMBER_PLAYER_LEARNABLE == true)
                         modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.COMBATSKILL_CLAMBER_SPELL_ID, 1);
+
+                    // Slotshift Transform (every EQ class, so every player gets it)
+                    modEverquestPlayerAutoLearnSpellsSQL.AddRow(eqClassProperties.EQClass, raceType, Configuration.ITEMS_SLOTSHIFT_TRANSFORM_SPELL_ID, 1);
 
                     // EQ Class Aura passive
                     int classAuraPassiveSpellID = SpellClassAuras.GetPassiveSpellIDForClass(eqClassProperties.EQClass);

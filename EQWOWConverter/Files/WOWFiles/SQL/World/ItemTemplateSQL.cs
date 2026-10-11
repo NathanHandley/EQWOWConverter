@@ -124,8 +124,6 @@ namespace EQWOWConverter.WOWFiles
             }
             if (itemTemplate.DoesTeachSpell == true && itemTemplate.WOWSpellID1 != 0)
             {
-                if (itemTemplate.WOWSlotshiftSpellID != 0)
-                    Logger.WriteError("Item '", itemTemplate.Name, "' (wowid '", entryID.ToString(), "') teaches a spell but also has a slotshift spell, which can't be attached since all three spell slots are used");
                 newRow.AddInt("spellid_1", itemTemplate.LearningSpellID); // "Learning" wow spell ID (483, or 55884 for companion pets)
                 newRow.AddInt("spelltrigger_1", 0);
                 newRow.AddInt("spellcharges_1", -1);
@@ -164,9 +162,9 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("spellcooldown_2", -1);
                 newRow.AddInt("spellcategory_2", 0);
                 newRow.AddInt("spellcategorycooldown_2", -1);
-                newRow.AddInt("spellid_3", itemTemplate.WOWSlotshiftSpellID);
-                newRow.AddInt("spelltrigger_3", 0); // Use (click)
-                newRow.AddInt("spellcharges_3", itemTemplate.WOWSlotshiftSpellID != 0 ? -1 : 0); // Slotshift consumes this version of the item
+                newRow.AddInt("spellid_3", 0);
+                newRow.AddInt("spelltrigger_3", 0);
+                newRow.AddInt("spellcharges_3", 0);
                 newRow.AddFloat("spellppmRate_3", 0);
                 newRow.AddInt("spellcooldown_3", -1);
                 newRow.AddInt("spellcategory_3", 0);

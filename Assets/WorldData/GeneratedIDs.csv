@@ -312591,3 +312591,15 @@ CreatureModelDataID|companionpet~151~2~0~0~0~0~1|10271
 CreatureDisplayInfoID|companionpet~151~2~0~0~0~0~1|63690
 CreatureModelDataID|companionpet~153~2~0~0~0~0~1|10272
 CreatureDisplayInfoID|companionpet~153~2~0~0~0~0~1|63691
+SkillLineAbilityID|778~120367|33005
+SkillLineAbilityID|778~120368|33006
+SkillLineAbilityID|778~120369|33007
+SkillLineAbilityID|778~120370|33008
+ItemDisplayInfoID|INV_EQ_78~eq_it10021.mdx~False~15~0~0~0|131128
+ItemDisplayInfoID|INV_EQ_221~eq_it63.mdx~False~15~0~0~0|131129
+ItemDisplayInfoID|INV_EQ_393~eq_it63.mdx~False~21~0~0~0|131130
+ItemDisplayInfoID|INV_EQ_637~eq_it15.mdx~False~15~0~0~0|131131
+ItemDisplayInfoID|INV_EQ_47~eq_it47.mdx~False~21~0~0~0|131132
+ItemDisplayInfoID|INV_EQ_305~eq_it205.mdx~False~16~0~0~0|131133
+ItemDisplayInfoID|INV_EQ_222~eq_it63.mdx~False~21~0~0~0|131134
+SkillLineAbilityID|820~86949|33009

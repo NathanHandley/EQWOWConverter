@@ -49,6 +49,9 @@ local CLASS_ABBR = {
 local COLOR_USABLE   = "|cff20ff20"; -- green
 local COLOR_UNUSABLE = "|cffff2020"; -- red
 
+-- The converter stamps the lines saying where an item can slotshift in this light blue, below the rest of the description
+local SLOTSHIFT_STAMP = "|cFF71D5FFSlotshift";
+
 -- Set of class abbreviations the player can currently use (primary + active secondary).
 local playerAbbrs = {};
 -- Stays false until the first EQCLASS message arrives; while false we leave tooltips untouched
@@ -125,7 +128,8 @@ end
 --
 -- The client wraps the whole description field in orange double quotes, so they land in front of
 -- the "EQ Classes:" line.  We strip them off that line; if a real description follows (after the
--- converter's "|n"), the quotes are moved to wrap just that description instead.
+-- converter's "|n"), the quotes are moved to wrap just that description instead.  Slotshift lines at the
+-- bottom are kept out of the quotes too.
 --
 -- Keying off the raw stamped white prefix ("|cFFFFFFFFEQ Classes:") also makes this idempotent:
 -- once rewritten the prefix is gone, so re-fires of OnTooltipSetItem on the same line are skipped.
@@ -173,18 +177,28 @@ local function EQItemTooltips_ColorTooltip(tooltip)
 				-- Color the classes line green (usable) / red (not usable)
 				classesPart = classesPart:gsub("|cFFFFFFFFEQ Classes:", color .. "EQ Classes:");
 
-				local newText;
+				-- Slotshift lines are not part of the description, so they come off the end of it
+				local slotshiftPart;
+				if ( restPart ) then
+					local stampStart = restPart:find(SLOTSHIFT_STAMP, 1, true);
+					if ( stampStart ) then
+						slotshiftPart = restPart:sub(stampStart);
+						restPart = (restPart:sub(1, stampStart - 1):gsub("|n$", ""));
+					end
+				end
+
+				local newText = classesPart;
 				if ( restPart and restPart ~= "" ) then
 					-- Description present: quotes wrap only the description (only re-add them if the
 					-- client had put quotes there in the first place)
 					if ( hadQuotes ) then
-						newText = classesPart .. "|n\"" .. restPart .. "\"";
+						newText = newText .. "|n\"" .. restPart .. "\"";
 					else
-						newText = classesPart .. "|n" .. restPart;
+						newText = newText .. "|n" .. restPart;
 					end
-				else
-					-- Classes line only: no quotes at all
-					newText = classesPart;
+				end
+				if ( slotshiftPart ) then
+					newText = newText .. "|n" .. slotshiftPart;
 				end
 				fontString:SetText(newText);
 			end

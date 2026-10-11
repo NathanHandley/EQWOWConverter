@@ -26,7 +26,7 @@ namespace EQWOWConverter
         public static string CONFIGONLY_CONFIGURATION_FILE_NAME = "configuration.txt";
 
         // This is the version that the mod-everquest AzerothCore module needs to be compatible with
-        public static int CONFIGONLY_CORE_MOD_VERSION = 129;
+        public static int CONFIGONLY_CORE_MOD_VERSION = 130;
 
         // If true, all creatures and their waypoints will spawn as a default non-mobile object. This should only be
         // done for debugging reasons, as the game will not look or feel anything like it should
@@ -770,6 +770,11 @@ namespace EQWOWConverter
 
         // Multiplier applied to a two hand weapon's damage for its one hand slotshift version
         public static float ITEMS_SLOTSHIFT_TWOHAND_WEAPON_ONEHAND_DAMAGE_MOD = 0.77f;
+
+        // Slotshift Transform is the spell every player gets that turns a multi-slot item in their bags into its version for the next slot
+        public static int ITEMS_SLOTSHIFT_TRANSFORM_SPELL_ID = 86949;
+        public static int ITEMS_SLOTSHIFT_TRANSFORM_SPELL_VISUAL_ID = 3220; // Stock SpellVisual.dbc row of Disenchant, for its cast animation and sound
+        public static int ITEMS_SLOTSHIFT_TRANSFORM_CAST_TIME_IN_MS = 1500;
 
         // Item level is what WOW uses to price a durability point when repairing
         public static int ITEMS_ITEM_LEVEL_MINIMUM = 10;
@@ -1784,16 +1789,13 @@ namespace EQWOWConverter
         // ID for sounds found in SoundEntries.dbc
         public static int DBCID_SOUNDENTRIES_ID_START = 22000;
 
-        // ID of the existing client sound played when a slotshift spell is used ("JewelcraftingFinalize", the socket gems sound)
-        public static int DBCID_SOUNDENTRIES_SLOTSHIFT_SOUND_ID = 10590;
-
         // ID for sounds found in SoundAmbience.dbc
         public static int DBCID_SOUNDAMBIENCE_ID_START = 600;
 
         // ID for spells found in Spell.dbc
         // - Manually created spells reserve IDs from 86900 to 86999 and all are defined in the config (86925-86940 are the eight Taunt and eight Area Taunt pet ranks,
         //   86950-86952 are the pet Avoidance and Pet Frenzy clones, 86960-86975 are the per-pet-type spell damage passives, and
-        //   86953-86955 are the Glyph of Powerful Pets spells, and 86980-86998 are the pet attack proc passives)
+        //   86953-86955 are the Glyph of Powerful Pets spells, 86949 is Slotshift Transform, and 86980-86998 are the pet attack proc passives)
         // - Recipes reserve IDs 87000 to 91371 (91372 to 91999 is free for more)
         // - Converted spells IDs start at 92000 and base spells range to 95840 (95828 - 95840 are the custom "Guise" illusion spells)
         // - SpellIDs 96000 - 96099 reserved for the EQ class auras (CLASSAURA_SPELL_ID_START, see Spells/SpellClassAuras.cs)
