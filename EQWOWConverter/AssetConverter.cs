@@ -2509,10 +2509,10 @@ namespace EQWOWConverter
 
             // Bosses use their own drop rate, otherwise it comes from the companion pet's drop_rate
             float dropChance;
-            if (creatureTemplate.Rank == CreatureWOWRankType.Boss)
-                dropChance = Configuration.CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT;
-            else if (companionPet.DropRateType == CreatureCompanionDropRateType.Always)
+            if (companionPet.DropRateType == CreatureCompanionDropRateType.Always)
                 dropChance = 100f;
+            else if (creatureTemplate.Rank == CreatureWOWRankType.Boss)
+                dropChance = Configuration.CREATURE_COMPANION_PETS_BOSS_DROP_RATE_PCT;
             else if (companionPet.DropRateType == CreatureCompanionDropRateType.High)
                 dropChance = Configuration.CREATURE_COMPANION_PETS_HIGH_DROP_RATE_PCT;
             else
