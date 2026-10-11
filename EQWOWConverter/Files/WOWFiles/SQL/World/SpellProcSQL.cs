@@ -88,6 +88,7 @@ namespace EQWOWConverter.WOWFiles
             AddRow(-34753, 0, 0, 0, 2, 2, 2, 2, 1);  // Holy Concentration (critical heals; the mod's added script filters the spells)
             AddRow(-47516, 0, 0, 0, 0, 2, 0, 2, 0);  // Grace (heal cast; the mod's added script filters the spells)
             AddRow(-15337, 0, 0, 0, 1, 2, 2, 2, 0);  // Improved Spirit Tap (damage criticals; the mod's replacement script filters the spells)
+            AddRow(14751, 0, 0, 0, 0, 1, 0, 8, 0);   // Inner Focus charge consumption (its free-mana and crit modifiers reach EQ spells by alignment)
 
             // Shaman
             AddRow(-51525, 0, 0, 0, 1, 2, 0, 0, 0);  // Static Shock (any damaging spell hit)
