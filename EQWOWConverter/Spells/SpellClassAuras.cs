@@ -552,7 +552,7 @@ namespace EQWOWConverter.Spells
                     " more damage while holding a weapon in one hand and an instrument in the other.")),
                 "Song cast times cannot be changed by haste or slow effects.",
                 "You may parry or dodge attacks while casting a song (shows as miss).",
-                "Instruments equipped in the ranged slot restrict active songs to that instrument type and singing only.");
+                "Instruments equipped in the ranged slot restrict active songs to singing and the instrument types held in the ranged slot and hands.");
             spellTemplates.Add(BuildPassiveTemplate("Dexteritous Troubadour", SpellClassAuraType.BardPassive, icon, description));
 
             // Everything here is driven by the mod (the instrument marker below, and the song rules), so the aura itself carries nothing
