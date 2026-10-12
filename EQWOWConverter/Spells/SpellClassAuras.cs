@@ -1297,7 +1297,7 @@ namespace EQWOWConverter.Spells
             string warspiritGrantText = string.Concat(Pct(Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_PERCENT_PER_STACK), " increased ", statsText, " for ",
                 Seconds(Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_SHAMAN_WARSPIRIT_STAT_MAX_STACKS.ToString(), " times");
             string description = Lines(
-                string.Concat("Each of your autoattacks extends one of your damage over time effects on the target, the one closest to expiring, by ",
+                string.Concat("Each of your melee and ranged autoattacks extends one of your damage over time effects on the target, the one closest to expiring, by ",
                     Seconds(Configuration.CLASSAURA_SHAMAN_DOT_EXTEND_IN_MS), ", up to its original duration."),
                 NamedLine("Spirit's Vigor", string.Concat("Healing an ally grants them ", Pct(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_PERCENT_PER_STACK), " increased ", statsText, " for ",
                     Seconds(Configuration.CLASSAURA_SHAMAN_HEAL_STAT_DURATION_IN_MS), ", stacking up to ", Configuration.CLASSAURA_SHAMAN_HEAL_STAT_MAX_STACKS.ToString(), " times.")),
