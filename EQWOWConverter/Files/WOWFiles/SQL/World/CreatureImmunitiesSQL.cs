@@ -61,6 +61,7 @@ namespace EQWOWConverter.WOWFiles
             {
                 case SpellMechanicType.Charmed: return "Charm";
                 case SpellMechanicType.Fleeing: return "Fear";
+                case SpellMechanicType.Horrified: return "Horror";
                 case SpellMechanicType.Rooted: return "Root";
                 case SpellMechanicType.Slowed: return "Slow";
                 case SpellMechanicType.Snared: return "Snare";

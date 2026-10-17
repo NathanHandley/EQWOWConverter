@@ -782,6 +782,10 @@ namespace EQWOWConverter.Creatures
             // TAKP hardcaps fear immunity for all NPCs above level 52 regardless of special abilities, even against NPC casters
             if (Configuration.CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ > 0 && minLevelEQ > Configuration.CREATURE_FEAR_IMMUNITY_ABOVE_LEVEL_EQ)
                 mask |= 1L << (int)SpellMechanicType.Fleeing;
+
+            // WoW horror effects (Death Coil, Psychic Horror, etc) are fear-like, so anything fear immune is horror immune too
+            if ((mask & (1L << (int)SpellMechanicType.Fleeing)) != 0)
+                mask |= 1L << (int)SpellMechanicType.Horrified;
             return mask;
         }
 
