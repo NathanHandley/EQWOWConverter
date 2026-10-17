@@ -3405,9 +3405,10 @@ namespace EQWOWConverter.Spells
                                 SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModMaximumHealth;
+                                // Maximum health buffs keep the EQ value as-is (no baseline rescale)
                                 if (eqEffect.EQBaseValue >= 0)
                                 {
-                                    newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "MaxHPBuff", SpellEffectWOWConversionScaleType.None);
+                                    newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, "", SpellEffectWOWConversionScaleType.None);
                                     newSpellEffectWOW.ActionDescription = string.Concat("increase maximum health by ", newSpellEffectWOW.GetFormattedEffectActionString(false));
                                     newSpellEffectWOW.SetAuraDescription("maximum health increased", false, " by ", "");
                                 }

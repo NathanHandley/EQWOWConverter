@@ -11,7 +11,7 @@ ArmorClassBuff|15|90|8|685
 ArmorClassDebuff|3|33|4|20
 AttackBuff|10|100|25|290
 AttackDebuff|0|0|0|0
-MaxHPBuff|10|150|50|510
+MaxHPBuff|10|1100|10|1100
 MaxManaToIntBuff|1|250|1|50
 MaxManaToIntDebuff|1|250|1|50
 StrengthBuff|0|0|0|0
