@@ -1236,9 +1236,14 @@ namespace EQWOWConverter
                             victimMaxRangeForCasterCenteredArea = Math.Max(1, curSpellTemplate.SpellRadius);
 
                         string comment = string.Concat("EQ In Combat ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.GetWOWSpellIDForCreatureCast(), ")");
-                        smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID,
+                        bool isVictimCast = curSpellTemplate.IsSelfCenteredAreaBreath == false && victimMaxRangeForCasterCenteredArea == 0;
+                        bool useCrossCast = isVictimCast == true && ShouldUseCrossCastForCreatureVictimSpell(curSpellTemplate.SpellRange);
+                        int smartScriptRowID = smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID,
                             recastDelayInMS, curSpellTemplate.GetWOWSpellIDForCreatureCast(), comment, eventChance, curSpellTemplate.IsSelfCenteredAreaBreath,
-                            curSpellTemplate.ConvertDirectDamageToDoT, victimMaxRangeForCasterCenteredArea, initialDelayMaxInMS);
+                            curSpellTemplate.ConvertDirectDamageToDoT, victimMaxRangeForCasterCenteredArea, initialDelayMaxInMS, useCrossCast);
+                        if (useCrossCast == true)
+                            conditionsSQL.AddSmartScriptRestrictionIfCasting(creatureTemplate.WOWCreatureTemplateID, smartScriptRowID + 1, 0,
+                                string.Concat("Wait to cast ", curSpellTemplate.Name, " until not casting for ", creatureTemplate.Name));
                     }
 
                     // Add spell events for every in-combat self buff entry (cast on self, not the victim)
@@ -1302,7 +1307,7 @@ namespace EQWOWConverter
                         int procCooldownInMS = Math.Max(Configuration.CREATURE_SPELL_ATTACK_PROC_COOLDOWN_IN_MS,
                             AssetConverter.GetCreatureLossOfControlOnlyRecastDelayInMS(curSpellTemplate, creatureTemplate.LevelEQ > 0 ? creatureTemplate.LevelEQ : creatureTemplate.Level));
                         smartScriptsSQL.AddRowForCreatureTemplateApplySpellOnDamageDone(creatureTemplate.WOWCreatureTemplateID, eqSpellIDAndProcChance.Item2,
-                            curSpellTemplate.GetWOWSpellIDForCreatureCast(), procCooldownInMS, comment);
+                            curSpellTemplate.GetWOWSpellIDForCreatureCast(), procCooldownInMS, comment, ShouldUseCrossCastForCreatureVictimSpell(curSpellTemplate.SpellRange));
                     }
 
                     // Summons need to add an aura to the caster
@@ -1324,8 +1329,13 @@ namespace EQWOWConverter
                 if (creatureTemplate.UsesHarmTouch == true && creatureTemplate.IsPet == false)
                 {
                     string comment = string.Concat("EQ Harm Touch ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast Harm Touch (", Configuration.COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID, ")");
-                    smartScriptsSQL.AddRowForCreatureTemplateAttackSpellCastOnVictimNoResetOnLeaveCombat(creatureTemplate.WOWCreatureTemplateID,
-                        Configuration.COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS, Configuration.COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS, Configuration.COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID, comment);
+                    bool useCrossCast = ShouldUseCrossCastForCreatureVictimSpell(Configuration.COMBATSKILL_HARMTOUCH_RANGE);
+                    int smartScriptRowID = smartScriptsSQL.AddRowForCreatureTemplateAttackSpellCastOnVictimNoResetOnLeaveCombat(creatureTemplate.WOWCreatureTemplateID,
+                        Configuration.COMBATSKILL_HARMTOUCH_CREATURE_INITIAL_DELAY_IN_MS, Configuration.COMBATSKILL_HARMTOUCH_COOLDOWN_IN_MS, Configuration.COMBATSKILL_HARMTOUCH_CREATURE_SPELL_ID, comment,
+                        useCrossCast);
+                    if (useCrossCast == true)
+                        conditionsSQL.AddSmartScriptRestrictionIfCasting(creatureTemplate.WOWCreatureTemplateID, smartScriptRowID + 1, 0,
+                            string.Concat("Wait to cast Harm Touch until not casting for ", creatureTemplate.Name));
                 }
 
                 // Assign Lay on Hands to creatures
@@ -1666,6 +1676,13 @@ namespace EQWOWConverter
                 string conditionsComment = string.Concat("Hide Priest of Discord option '", menuItemText, "' while on its map ", excludedMapID.ToString());
                 conditionsSQL.AddRowForMenuOptionNotOnMapRestriction(gossipMenuID, gossipMenuOptionID, excludedMapID, conditionsComment, elseGroupID);
             }
+        }
+
+        // Only spells with more range than melee (NOMINAL_MELEE_RANGE, 5 yards) hit AzerothCore's rooted target distancing, so melee range
+        // abilities like Bash keep the regular cast and its retry
+        private static bool ShouldUseCrossCastForCreatureVictimSpell(int spellRange)
+        {
+            return Configuration.CREATURE_SPELL_RANGED_VICTIM_CASTS_IGNORE_ROOTED_TARGET == true && spellRange > 5;
         }
 
         private static int GetCreatureRespawnTimeInSeconds(CreatureTemplate creatureTemplate, CreatureSpawnInstance? spawnInstance = null)
@@ -3116,6 +3133,16 @@ namespace EQWOWConverter
                             spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_MesmerizeAuraScript");
                             break;
                         }
+                    }
+                }
+
+                // Any block applying general invisibility gets the script that takes away the full screen 'nether world' effect the core turns on for it
+                foreach (SpellEffectWOW blockEffect in curEffectBlock.SpellEffects)
+                {
+                    if (blockEffect.EffectType == SpellWOWEffectType.ApplyAura && blockEffect.EffectAuraType == SpellWOWAuraType.ModInvisibility && blockEffect.EffectMiscValueA == 0)
+                    {
+                        spellScriptNamesSQL.AddRow(curEffectBlock.WOWSpellID, "EverQuest_InvisibilityAuraScript");
+                        break;
                     }
                 }
 

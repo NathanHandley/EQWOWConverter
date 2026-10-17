@@ -658,6 +658,10 @@ namespace EQWOWConverter
         public static bool CREATURE_SPELL_DISPEL_DISABLED = true;
         public static bool CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT = true;
 
+        // If true, ranged creature casts at the victim use a cross cast instead of a regular cast, since AzerothCore's regular cast backs the creature
+        // out of melee range (and skips the cast) whenever the victim is rooted.  Cost: a failed cast waits for its next recast instead of retrying
+        public static bool CREATURE_SPELL_RANGED_VICTIM_CASTS_IGNORE_ROOTED_TARGET = true;
+
         // A creature ability that does nothing but take control away (stun, fear, charm, mesmerize) waits at least this many times the longest control it applies before it is cast again (0 = off)
         // Abilities that also do something else (damage, debuffs) are paced normally and instead give the player a short immunity to that control in mod-everquest
         public static float CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER = 4f;
@@ -2391,6 +2395,7 @@ namespace EQWOWConverter
             OutputVariableToConfig("CREATURE_SPELL_CHARM_DISABLED", CREATURE_SPELL_CHARM_DISABLED, "If true, creatures never charm");
             OutputVariableToConfig("CREATURE_SPELL_DISPEL_DISABLED", CREATURE_SPELL_DISPEL_DISABLED, "If true, creatures never cast dispels.  With the boss exemption on, raid bosses and raid mini bosses keep their dispels", false);
             OutputVariableToConfig("CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT", CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT, "");
+            OutputVariableToConfig("CREATURE_SPELL_RANGED_VICTIM_CASTS_IGNORE_ROOTED_TARGET", CREATURE_SPELL_RANGED_VICTIM_CASTS_IGNORE_ROOTED_TARGET, "If true, creatures keep fighting in melee and casting when their target is rooted instead of backing away to cast.  A failed ranged cast then waits for its next recast instead of retrying");
             OutputVariableToConfig("CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER", CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER, "A creature ability that only takes control away (stun, fear, charm, mesmerize) waits at least this many times its longest control before being cast again.  0 turns this off");
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD", CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD, "Spell pick priority order weights", false);
             OutputVariableToConfig("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP", CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP, "", false);
@@ -3214,6 +3219,7 @@ namespace EQWOWConverter
             CREATURE_SPELL_CHARM_DISABLED = ReadVariableFromConfigString("CREATURE_SPELL_CHARM_DISABLED", configValuesByVariableName, CREATURE_SPELL_CHARM_DISABLED);
             CREATURE_SPELL_DISPEL_DISABLED = ReadVariableFromConfigString("CREATURE_SPELL_DISPEL_DISABLED", configValuesByVariableName, CREATURE_SPELL_DISPEL_DISABLED);
             CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT = ReadVariableFromConfigString("CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT", configValuesByVariableName, CREATURE_SPELL_DISPEL_DISABLED_BOSS_EXEMPT);
+            CREATURE_SPELL_RANGED_VICTIM_CASTS_IGNORE_ROOTED_TARGET = ReadVariableFromConfigString("CREATURE_SPELL_RANGED_VICTIM_CASTS_IGNORE_ROOTED_TARGET", configValuesByVariableName, CREATURE_SPELL_RANGED_VICTIM_CASTS_IGNORE_ROOTED_TARGET);
             CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER = ReadVariableFromConfigString("CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER", configValuesByVariableName, CREATURE_SPELL_LOSS_OF_CONTROL_ONLY_RECAST_MULTIPLIER);
             CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_PRIMARY_THRESHOLD);
             CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP = ReadVariableFromConfigString("CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP", configValuesByVariableName, CREATURE_SPELL_COMBAT_PRIORITY_CHANCE_STEP);

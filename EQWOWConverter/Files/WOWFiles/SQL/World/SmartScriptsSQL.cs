@@ -149,14 +149,16 @@ namespace EQWOWConverter.WOWFiles
                 comment);
         }
 
-        public void AddRowForCreatureTemplateInCombatSpellCast(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
+        // Returns the smart script row ID.  useCrossCastOnVictim only applies when the target is the victim (see GetVictimCastActionType)
+        public int AddRowForCreatureTemplateInCombatSpellCast(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
             string comment, int eventChance = 100, bool castOnSelf = false, bool dontResetOnLeaveCombat = false, int victimMaxRangeForCasterCenteredArea = 0,
-            int initialDelayMaxInMS = 1)
+            int initialDelayMaxInMS = 1, bool useCrossCastOnVictim = false)
         {
             int recastDelayInMSMax = recastDelayInMS + Convert.ToInt32(Convert.ToSingle(recastDelayInMS) * Configuration.CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
             bool isCasterCenteredArea = victimMaxRangeForCasterCenteredArea > 0;
             int targetType = (castOnSelf || isCasterCenteredArea) ? 1 : 2; // SMART_TARGET_SELF : SMART_TARGET_VICTIM
-            AddRow(creatureTemplateID,
+            bool useCrossCast = useCrossCastOnVictim == true && targetType == 2;
+            return AddRow(creatureTemplateID,
                 0,
                 isCasterCenteredArea ? 9 : 0, // SMART_EVENT_RANGE : SMART_EVENT_UPDATE_IC
                 eventChance,
@@ -166,10 +168,10 @@ namespace EQWOWConverter.WOWFiles
                 recastDelayInMSMax, // Recast delay in MS (maximum)
                 0, // Victim minimum range (SMART_EVENT_RANGE only)
                 isCasterCenteredArea ? victimMaxRangeForCasterCenteredArea : 0, // Victim maximum range (SMART_EVENT_RANGE only)
-                11, // SMART_ACTION_CAST
+                GetVictimCastActionType(useCrossCast),
                 wowSpellID,
                 32, // SMARTCAST_AURA_NOT_PRESENT
-                0,
+                GetVictimCastActionCasterTargetType(useCrossCast),
                 0,
                 0,
                 0,
@@ -186,9 +188,11 @@ namespace EQWOWConverter.WOWFiles
             );
         }
 
-        public void AddRowForCreatureTemplateAttackSpellCastOnVictimNoResetOnLeaveCombat(int creatureTemplateID, int initialDelayInMS, int recastDelayInMS, int wowSpellID, string comment)
+        // Returns the smart script row ID
+        public int AddRowForCreatureTemplateAttackSpellCastOnVictimNoResetOnLeaveCombat(int creatureTemplateID, int initialDelayInMS, int recastDelayInMS, int wowSpellID, string comment,
+            bool useCrossCast = false)
         {
-            AddRow(creatureTemplateID,
+            return AddRow(creatureTemplateID,
                 0,
                 0, // SMART_EVENT_UPDATE_IC
                 100,
@@ -198,10 +202,10 @@ namespace EQWOWConverter.WOWFiles
                 recastDelayInMS,  // Recast delay in MS (maximum)
                 0,
                 0,
-                11, // SMART_ACTION_CAST
+                GetVictimCastActionType(useCrossCast),
                 wowSpellID,
                 0, // Cast Flags (none)
-                0,
+                GetVictimCastActionCasterTargetType(useCrossCast),
                 0,
                 0,
                 0,
@@ -571,7 +575,8 @@ namespace EQWOWConverter.WOWFiles
             );
         }
 
-        public void AddRowForCreatureTemplateApplySpellOnDamageDone(int creatureTemplateID, int chance, int wowSpellID, int cooldownInMS, /* int spellVisualImpactKitID, */string comment)
+        public void AddRowForCreatureTemplateApplySpellOnDamageDone(int creatureTemplateID, int chance, int wowSpellID, int cooldownInMS, /* int spellVisualImpactKitID, */string comment,
+            bool useCrossCast = false)
         {
             AddRow(creatureTemplateID,
                 0,
@@ -583,10 +588,10 @@ namespace EQWOWConverter.WOWFiles
                 cooldownInMS, // Cooldown max (ms) between procs
                 0,
                 0,
-                11, // SMART_ACTION_CAST
+                GetVictimCastActionType(useCrossCast),
                 wowSpellID,
                 0, // Cast Flags (none)
-                0,
+                GetVictimCastActionCasterTargetType(useCrossCast),
                 0,
                 0,
                 0,
@@ -792,6 +797,20 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 0,
                 comment);
+        }
+
+        // SMART_ACTION_CAST backs the creature out of melee range and skips the cast whenever a ranged spell's target is rooted (SmartScript.cpp).
+        // SMART_ACTION_CROSS_CAST with the creature itself as the caster has no such branch, but also no retry when the cast fails and no wait while
+        // the creature is already casting (a timed cross cast needs a 'not casting' condition, or it interrupts the creature's own cast)
+        private static int GetVictimCastActionType(bool useCrossCast)
+        {
+            return useCrossCast == true ? 86 : 11; // SMART_ACTION_CROSS_CAST : SMART_ACTION_CAST
+        }
+
+        // For a cross cast this is action_param3, the caster target type.  For a regular cast it is the trigger flags (none)
+        private static int GetVictimCastActionCasterTargetType(bool useCrossCast)
+        {
+            return useCrossCast == true ? 1 : 0; // SMART_TARGET_SELF
         }
 
         public int AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventChance, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
